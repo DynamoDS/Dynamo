@@ -8,38 +8,8 @@ namespace Dynamo.Wpf.Controls.SubControls
 {
     public class ParabolicCurve : CurveBase
     {
-        private CurveMapperControlPoint controlPoint1;
-        private CurveMapperControlPoint controlPoint2;
         private PolyLineSegment polySegment;
-
-        private double maxWidth;
-        private double maxHeight;
         private const double parabolicIncrementX = 1.0;
-
-        public double MaxWidth
-        {
-            get => maxWidth;
-            set
-            {
-                if (maxWidth != value)
-                {
-                    maxWidth = value;
-                    Regenerate(controlPoint1); // Ensure the curve regenerates if needed
-                }
-            }
-        }
-        public double MaxHeight
-        {
-            get => maxHeight;
-            set
-            {
-                if (maxHeight != value)
-                {
-                    maxHeight = value;
-                    Regenerate(controlPoint1); // Ensure the curve regenerates if needed
-                }
-            }
-        }
 
         /// <summary>
         /// Initializes a parabolic curve with control points, dimensions, and visual properties.
@@ -48,8 +18,8 @@ namespace Dynamo.Wpf.Controls.SubControls
         {
             this.controlPoint1 = controlPoint1;
             this.controlPoint2 = controlPoint2;
-            this.maxWidth = maxWidth;
-            this.maxHeight = maxHeight;
+            MaxWidth = maxWidth;
+            MaxHeight = maxHeight;
 
             PathFigure = new PathFigure();
 
@@ -65,8 +35,8 @@ namespace Dynamo.Wpf.Controls.SubControls
             PathCurve = new Path()
             {
                 Data = PathGeometry,
-                Stroke = new SolidColorBrush(Color.FromRgb(0xB3, 0x85, 0xF2)), // Purple color
-                StrokeThickness = 3
+                Stroke = CurveColor,
+                StrokeThickness = CurveThickness
             };
         }
 
@@ -98,11 +68,11 @@ namespace Dynamo.Wpf.Controls.SubControls
                 polySegment.Points.Clear();
             }
 
-            double boundaryY = (controlPoint2.Point.Y > controlPoint1.Point.Y) ? maxHeight : 0.0;
+            double boundaryY = (controlPoint2.Point.Y > controlPoint1.Point.Y) ? MaxHeight : 0.0;
             double startX = SolveParabolaForX(boundaryY, true);
             double endX = SolveParabolaForX(boundaryY);
             double minX = Math.Max(0, Math.Min(startX, endX));
-            double maxX = Math.Min(maxWidth, Math.Max(startX, endX));
+            double maxX = Math.Min(MaxWidth, Math.Max(startX, endX));
 
             if (PathFigure != null)
             {
@@ -113,7 +83,7 @@ namespace Dynamo.Wpf.Controls.SubControls
             for (double d = minX; d < maxX; d += parabolicIncrementX)
             {
                 double vy = SolveParabolaForY(d);
-                if (vy >= 0 && vy < maxHeight)
+                if (vy >= 0 && vy < MaxHeight)
                     polySegment.Points.Add(new Point(d, vy));
             }
 
@@ -148,28 +118,23 @@ namespace Dynamo.Wpf.Controls.SubControls
                 return null;
 
             int incount = count - 1;
-            for (double d = 0.0; d < maxWidth; d += (maxWidth / incount))
+            for (double d = 0.0; d < MaxWidth; d += (MaxWidth / incount))
             {
-                double md = maxHeight - SolveParabolaForY(d);
-                double rd = (highLimit - lowLimit) * md / maxHeight;
+                double md = MaxHeight - SolveParabolaForY(d);
+                double rd = (highLimit - lowLimit) * md / MaxHeight;
                 rd += lowLimit;
                 values.Add(rd);
             }
 
             if (values.Count < count)
             {
-                double mdx = maxHeight - SolveParabolaForY(maxWidth);
-                double rdx = (highLimit - lowLimit) * mdx / maxHeight;
+                double mdx = MaxHeight - SolveParabolaForY(MaxWidth);
+                double rdx = (highLimit - lowLimit) * mdx / MaxHeight;
                 rdx += lowLimit;
                 values.Add(rdx);
             }
 
             return values;
-        }
-
-        public override List<double> GetCurveXValues(double lowLimit, double highLimit, int count)
-        {
-            return null;
         }
     }
 }

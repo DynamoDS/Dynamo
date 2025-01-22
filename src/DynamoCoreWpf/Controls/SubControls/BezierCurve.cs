@@ -82,45 +82,11 @@ namespace Dynamo.Wpf.Controls.SubControls
                 t * t * t * p4.Y;
         }
 
-        private void GenerateXYPairs()
-        {
-            xToYMap.Clear();
-
-            for (double t = 0; t <= 1.0; t += 1.0 / (MaxWidth * 5.0))
-            {
-                GetValueAtT(t, out double x, out double y);
-                x = Math.Round(x, 0);
-                if (!xToYMap.ContainsKey(x))
-                {
-                    xToYMap.Add(x, y);
-                }
-            }
-        }
-
         /// <summary>
         /// Gets interpolated Y values based on the assigned parameters and limits.
         /// </summary>
         public List<double> GetBezierCurveYValues(double lowLimit, double highLimit, int count, double canvasSize)
         {
-            //if (count < 1) return null;
-
-            //GenerateXYPairs();
-
-            //var values = new List<double>();
-
-            //for (int i = 0; i < count; i++)
-            //{
-            //    double x = Math.Round((MaxWidth / (count - 1.0)) * i);
-            //    if (xToYMap.TryGetValue(x, out double y))
-            //    {
-            //        double normalizedY = MaxHeight - y;
-            //        double scaledY = lowLimit + ((highLimit - lowLimit) * normalizedY / MaxHeight);
-            //        scaledY = Math.Round(scaledY, rounding);
-            //        values.Add(scaledY);
-            //    }
-            //}
-            //return values;
-
             if (count < 1) return null;
 
             var values = new List<double>();
@@ -137,14 +103,11 @@ namespace Dynamo.Wpf.Controls.SubControls
                 ySamples.Add(y);
             }
 
-            // Now, pick values at evenly spaced X points
+            // Pick values at evenly spaced X points
             for (int i = 0; i < count; i++)
             {
                 double targetX = (i / (double)(count - 1)) * MaxWidth;
-
-                // Find closest X-value in the precomputed list
                 int closestIndex = xSamples.IndexOf(xSamples.OrderBy(x => Math.Abs(x - targetX)).First());
-
                 double y = ySamples[closestIndex];
 
                 // Normalize Y to the user-specified range
@@ -154,27 +117,45 @@ namespace Dynamo.Wpf.Controls.SubControls
             }
             return values;
         }
-            /// <summary>
-            /// Regenerates the bezier curve when a control point is updated.
-            /// </summary>
-            public void Regenerate(CurveMapperControlPoint updatedControlPoint)
+
+        /// <summary>
+        /// Regenerates the bezier curve when a control point is updated.
+        /// </summary>
+        public void Regenerate(CurveMapperControlPoint updatedControlPoint)
         {
-            if (updatedControlPoint == controlPoint1)
+            switch (updatedControlPoint)
             {
-                PathFigure.StartPoint = updatedControlPoint.Point;
+                case var point when point == controlPoint1:
+                    PathFigure.StartPoint = point.Point;
+                    break;
+                case var point when point == controlPoint2:
+                    bezierSegment.Point3 = point.Point;
+                    break;
+                case var point when point == freeControlPoint1:
+                    bezierSegment.Point1 = point.Point;
+                    break;
+                case var point when point == freeControlPoint2:
+                    bezierSegment.Point2 = point.Point;
+                    break;
             }
-            else if (updatedControlPoint == controlPoint2)
+        }
+
+        /// <summary>
+        /// Regenerates the bezier curve fully.
+        /// </summary>
+        public override void Regenerate()
+        {
+            if (PathFigure == null || bezierSegment == null ||
+                controlPoint1 == null || controlPoint2 == null ||
+                freeControlPoint1 == null || freeControlPoint2 == null)
             {
-                bezierSegment.Point3 = updatedControlPoint.Point;
+                return; // Exit if dependencies are not ready
             }
-            else if (updatedControlPoint == freeControlPoint1)
-            {
-                bezierSegment.Point1 = updatedControlPoint.Point;
-            }
-            else if (updatedControlPoint == freeControlPoint2)
-            {
-                bezierSegment.Point2 = updatedControlPoint.Point;
-            }
+
+            PathFigure.StartPoint = controlPoint1.Point;
+            bezierSegment.Point3 = controlPoint2.Point;
+            bezierSegment.Point1 = freeControlPoint1.Point;
+            bezierSegment.Point2 = freeControlPoint2.Point;
         }
     }
 }

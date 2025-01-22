@@ -231,15 +231,15 @@ namespace Dynamo.Wpf.Controls
             if (CurveBezier != null)
                 CurveBezier.Regenerate(this);
             if (CurveSine != null)
-                CurveSine.Regenerate(this);
+                CurveSine.Regenerate();
             if (CurveCosine != null)
-                CurveCosine.Regenerate(this);
+                CurveCosine.Regenerate();
             if (CurveTangent != null)
                 CurveTangent.Regenerate(this);
             if (CurveParabolic != null)
                 CurveParabolic.Regenerate(this);
             if (CurvePerlin != null)
-                CurvePerlin.Regenerate(this);
+                CurvePerlin.Regenerate();
         }
 
         private void Thumb_DragStarted(object sender, DragStartedEventArgs e)

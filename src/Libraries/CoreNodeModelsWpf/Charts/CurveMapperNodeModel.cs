@@ -1,14 +1,13 @@
 using Autodesk.DesignScript.Runtime;
 using CoreNodeModelsWpf.Charts.Controls;
 using CoreNodeModelsWpf.Converters;
-using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.Controls.SubControls;
 using Dynamo.Wpf.Properties;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using ProtoCore.AST.AssociativeAST;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -20,27 +19,13 @@ namespace CoreNodeModelsWpf.Charts
     [NodeCategory("Math.Graph.Create")]
     [NodeDescription("CurveMapperNodeDescription", typeof(CoreNodeModelWpfResources))]
     [NodeSearchTags("CurveMapperSearchTags", typeof(CoreNodeModelWpfResources))]
-    //[InPortNames("x-MinLimit", "x-MaxLimit", "y-MinLimit", "y-MaxLimit", "count")]
-    //[InPortTypes("double", "double", "double", "double", "double")]
-    //[InPortDescriptions(typeof(CoreNodeModelWpfResources),
-    //    "CurveMapperXMinLimitDataPortToolTip",
-    //    "CurveMapperXMaxLimitDataPortToolTip",
-    //    "CurveMapperYMinLimitDataPortToolTip",
-    //    "CurveMapperYMaxLimitDataPortToolTip",
-    //    "CurveMapperListDataPortToolTip")]
-    //[OutPortNames("numbers")]
-    //[OutPortTypes("List<double>")]
-    //[OutPortDescriptions(typeof(CoreNodeModelWpfResources),
-    //    "CurveMapperOutputDataPortToolTip")]
-    [AlsoKnownAs("CoreNodeModelsWpf.Charts.CurveMapper")] // move to Math
     public class CurveMapperNodeModel : NodeModel
     {
-        #region Properties
-
         [JsonIgnore]
-        internal EngineController EngineController { get; set; }
+        public CurveMapperControl CurveMapperControl { get; set; }
 
-        #region Input Properties
+        #region Input | Output
+
         private double minLimitX;
         private double maxLimitX = 1;
         private double minLimitY;
@@ -54,8 +39,9 @@ namespace CoreNodeModelsWpf.Charts
         private readonly IntNode maxLimitYDefaultValue = new IntNode(1);
         private readonly IntNode pointsCountDefaultValue = new IntNode(10);
         private GraphTypes selectedGraphType;
-        
-        [JsonIgnore]  // Should those properties be serialized ???
+
+        // TODO: Should those properties be serialized?
+        [JsonIgnore]  
         public double MinLimitX
         {
             get => minLimitX;
@@ -139,7 +125,7 @@ namespace CoreNodeModelsWpf.Charts
             }
         }
         
-        [JsonIgnore] // [JsonConverter(typeof(StringEnumConverter))]
+        [JsonConverter(typeof(StringEnumConverter))]
         public GraphTypes SelectedGraphType
         {
             get => selectedGraphType;
@@ -151,9 +137,7 @@ namespace CoreNodeModelsWpf.Charts
                 OnNodeModified();
             }
         }
-        #endregion
 
-        #region Output properties
         [JsonIgnore]
         public List<double> OutputValuesY
         {
@@ -174,198 +158,76 @@ namespace CoreNodeModelsWpf.Charts
                 OnNodeModified();
             }
         }
+
         #endregion
 
-        #region Linear Curve
+        #region Curves
+
+        // Linear curve
         [JsonIgnore]
-        public CurveMapperControlPoint PointLinearStart { get; set; }
+        public CurveMapperControlPoint ControlPointLinear1 { get; set; }
         [JsonIgnore]
-        public CurveMapperControlPoint PointLinearEnd { get; set; }
+        public CurveMapperControlPoint ControlPointLinear2 { get; set; }
         [JsonIgnore]
         public LinearCurve LinearCurve { get; set; }
-        [JsonIgnore]
-        public CurveMapperControl CurveMapperControl { get; set; }
-        #endregion
 
-        #region Bezier Curve
-        // represent fixed control points of a Bezier curve
-        // likely the non-draggable control points of the curve that define ends or anchors
+        // Bezier curve
         [JsonIgnore]
-        public CurveMapperControlPoint BezierControlPoint1 { get; set; }
+        public CurveMapperControlPoint ControlPointBezier1 { get; set; }
         [JsonIgnore]
-        public CurveMapperControlPoint BezierControlPoint2 { get; set; }
+        public CurveMapperControlPoint ControlPointBezier2 { get; set; }
         [JsonIgnore]
-        public CurveMapperControlPoint BezierFixedPoint1 { get; set; }
+        public CurveMapperControlPoint OrthoControlPointBezier1 { get; set; }
         [JsonIgnore]
-        public CurveMapperControlPoint BezierFixedPoint2 { get; set; }
+        public CurveMapperControlPoint OrthoControlPointBezier2 { get; set; }
         [JsonIgnore]
-        public ControlLine CurveBezierControlLine1 { get; set; }
+        public ControlLine ControlLineBezier1 { get; set; }
         [JsonIgnore]
-        public ControlLine CurveBezierControlLine2 { get; set; }
+        public ControlLine ControlLineBezier2 { get; set; }
         [JsonIgnore]
         public BezierCurve BezierCurve {  get; set; }
-        #endregion
 
-        #region Sine Curve
-        private CurveMapperControlPoint controlPointSine1;
-        private CurveMapperControlPoint controlPointSine2;
-
-        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
-        public CurveMapperControlPoint ControlPointSine1
-        {
-            get => controlPointSine1;
-            set
-            {
-                controlPointSine1 = value;
-                OnNodeModified();
-            }
-        }
-        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
-        public CurveMapperControlPoint ControlPointSine2
-        {
-            get => controlPointSine2;
-            set
-            {
-                controlPointSine2 = value;
-                OnNodeModified();
-            }
-        }
+        // Sine wave
+        [JsonIgnore]
+        public CurveMapperControlPoint ControlPointSine1 { get; set; }
+        [JsonIgnore]
+        public CurveMapperControlPoint ControlPointSine2 { get; set; }
         [JsonIgnore]
         public SineCurve SineWave { get; set; }
-        #endregion
 
-        #region Cosine Curve
-        private CurveMapperControlPoint controlPointCosine1;
-        private CurveMapperControlPoint controlPointCosine2;
-
-        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
-        public CurveMapperControlPoint ControlPointCosine1
-        {
-            get => controlPointCosine1;
-            set
-            {
-                controlPointCosine1 = value;
-                OnNodeModified();
-            }
-        }
-        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
-        public CurveMapperControlPoint ControlPointCosine2
-        {
-            get => controlPointCosine2;
-            set
-            {
-                controlPointCosine2 = value;
-                OnNodeModified();
-            }
-        }
+        //Cosine wave
+        [JsonIgnore]
+        public CurveMapperControlPoint ControlPointCosine1 { get; set; }
+        [JsonIgnore]
+        public CurveMapperControlPoint ControlPointCosine2 { get; set; }
         [JsonIgnore]
         public SineCurve CosineWave { get; set; }
-        #endregion
 
-        #region Tangent Curve
-        private CurveMapperControlPoint controlPointTangent1;
-        private CurveMapperControlPoint controlPointTangent2;
-
-        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
-        public CurveMapperControlPoint ControlPointTangent1
-        {
-            get => controlPointTangent1;
-            set
-            {
-                controlPointTangent1 = value;
-                OnNodeModified();
-            }
-        }
-        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
-        public CurveMapperControlPoint ControlPointTangent2
-        {
-            get => controlPointTangent2;
-            set
-            {
-                controlPointTangent2 = value;
-                OnNodeModified();
-            }
-        }
+        // Tangent curve
+        [JsonIgnore]
+        public CurveMapperControlPoint ControlPointTangent1 { get; set; }
+        [JsonIgnore]
+        public CurveMapperControlPoint ControlPointTangent2 { get; set; }
         [JsonIgnore]
         public TangentCurve TangentCurve { get; set; }
-        #endregion
 
-        #region Parabolic Curve
-        private CurveMapperControlPoint controlPointParabolic1;
-        private CurveMapperControlPoint controlPointParabolic2;
-
-        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
-        public CurveMapperControlPoint ControlPointParabolic1
-        {
-            get => controlPointParabolic1;
-            set
-            {
-                controlPointParabolic1 = value;
-                OnNodeModified();
-            }
-        }
-        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
-        public CurveMapperControlPoint ControlPointParabolic2
-        {
-            get => controlPointParabolic2;
-            set
-            {
-                controlPointParabolic2 = value;
-                OnNodeModified();
-            }
-        }
+        // Parabolic curve
+        [JsonIgnore]
+        public CurveMapperControlPoint ControlPointParabolic1 { get; set; }
+        [JsonIgnore]
+        public CurveMapperControlPoint ControlPointParabolic2 { get; set; }
         [JsonIgnore]
         public ParabolicCurve ParabolicCurve { get; set; }
-        #endregion
 
-        #region Perlin Curve
-        private CurveMapperControlPoint fixedPointPerlin1;
-        private CurveMapperControlPoint fixedPointPerlin2;
-        private CurveMapperControlPoint controlPointPerlin;
-
-        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
-        public CurveMapperControlPoint FixedPointPerlin1
-        {
-            get => fixedPointPerlin1;
-            set
-            {
-                fixedPointPerlin1 = value;
-                OnNodeModified();
-            }
-        }
-        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
-        public CurveMapperControlPoint FixedPointPerlin2
-        {
-            get => fixedPointPerlin2;
-            set
-            {
-                fixedPointPerlin2 = value;
-                OnNodeModified();
-            }
-        }
-        [JsonIgnore] //[JsonConverter(typeof(StringToPointThumbConverter))]
-        public CurveMapperControlPoint ControlPointPerlin
-        {
-            get => controlPointPerlin;
-            set
-            {
-                controlPointPerlin = value;
-                OnNodeModified();
-            }
-        }
+        // Perlin noise
+        [JsonIgnore]
+        public CurveMapperControlPoint OrthoControlPointPerlin1 { get; set; }
+        [JsonIgnore]
+        public CurveMapperControlPoint OrthoControlPointPerlin2 { get; set; }
+        [JsonIgnore]
+        public CurveMapperControlPoint ControlPointPerlin { get; set; }
         [JsonIgnore]
         public PerlinCurve PerlinNoiseCurve { get; set; }
-        #endregion
-
-        /// <summary>
-        /// Triggers when port is connected or disconnected
-        /// </summary>
-        public event EventHandler PortUpdated;
-
-        protected virtual void OnPortUpdated(EventArgs args)
-        {
-            PortUpdated?.Invoke(this, args);
-        }
 
         #endregion
 
@@ -395,9 +257,6 @@ namespace CoreNodeModelsWpf.Charts
 
             RegisterAllPorts();
 
-            //PortConnected += CurveMapperNodeModel_PortConnected;
-            //PortDisconnected += CurveMapperNodeModel_PortDisconnected;
-
             foreach (var port in InPorts)
             {
                 port.Connectors.CollectionChanged += Connectors_CollectionChanged;
@@ -406,99 +265,63 @@ namespace CoreNodeModelsWpf.Charts
             SelectedGraphType = GraphTypes.Empty;
             ArgumentLacing = LacingStrategy.Disabled;
         }
+
         [JsonConstructor]
         public CurveMapperNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-            //PortDisconnected += GraphMapNodeModel_PortDisconnected;
-            //PropertyChanged += GraphMapNodeModel_PropertyChanged;
+            foreach (var port in InPorts)
+            {
+                port.Connectors.CollectionChanged += Connectors_CollectionChanged;
+            }
 
             ArgumentLacing = LacingStrategy.Disabled;
         }
+
         #endregion
-
-
-
 
         internal void GenerateOutputValues()
         {
             if (CurveMapperControl == null)
-            {
                 return;
-            }
 
-            switch (SelectedGraphType)
+            if (LinearCurve != null && SelectedGraphType == GraphTypes.LinearCurve)
             {
-                case GraphTypes.Empty:
-                    if (LinearCurve != null)
-                    {
-                        OutputValuesY = new List<double> { 5, 9, 1984};
-                        OutputValuesY = new List<double> { 4, 8, 1984 };
-                    }
-                    break;
-                case GraphTypes.Linear:
-                    if (LinearCurve != null)
-                    {
-                        OutputValuesY = LinearCurve.GetLinearCurveYValues(
-                            minLimitX, maxLimitX,
-                            minLimitY, maxLimitY,
-                            pointsCount, CurveMapperControl.DynamicCanvasSize);
-                        OutputValuesX = LinearCurve.GetLinearCurveXValues(
-                            minLimitX, maxLimitX,
-                            minLimitY, maxLimitY,
-                            pointsCount, CurveMapperControl.DynamicCanvasSize);
-                    }
-                    break;
-                case GraphTypes.Bezier:
-                    if (BezierCurve != null)
-                    {
-                        OutputValuesY = BezierCurve.GetBezierCurveYValues(minLimitY, maxLimitY,
-                            pointsCount, CurveMapperControl.DynamicCanvasSize);
-                        OutputValuesX = BezierCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
-                    }
-                    break;
-                case GraphTypes.SineWave:
-                    if (SineWave != null)
-                    {
-                        OutputValuesY = SineWave.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
-                        OutputValuesX = SineWave.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
-                    }
-                    break;
-                case GraphTypes.CosineWave:
-                    if (CosineWave != null)
-                    {
-                        OutputValuesY = CosineWave.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
-                        OutputValuesX = CosineWave.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
-                    }
-                    break;
-                case GraphTypes.ParabolicCurve:
-                    if (ParabolicCurve != null)
-                    {
-                        OutputValuesY = ParabolicCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
-                        OutputValuesX = ParabolicCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
-                    }
-                    break;
-                case GraphTypes.PerlinNoiseCurve:
-                    if (PerlinNoiseCurve != null)
-                    {
-                        OutputValuesY = PerlinNoiseCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
-                        OutputValuesX = PerlinNoiseCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
-                    }
-                    break;
+                OutputValuesY = LinearCurve.GetLinearCurveYValues(
+                    minLimitX, maxLimitX, minLimitY, maxLimitY,
+                    pointsCount, CurveMapperControl.DynamicCanvasSize);
+                OutputValuesX = LinearCurve.GetLinearCurveXValues(
+                    minLimitX, maxLimitX, minLimitY, maxLimitY,
+                    pointsCount, CurveMapperControl.DynamicCanvasSize);
+            }
+            else if (BezierCurve != null && SelectedGraphType == GraphTypes.BezierCurve)
+            {
+                OutputValuesY = BezierCurve.GetBezierCurveYValues(minLimitY, maxLimitY, pointsCount, CurveMapperControl.DynamicCanvasSize);
+                OutputValuesX = BezierCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
+            }
+            else if (SineWave != null && SelectedGraphType == GraphTypes.SineWave)
+            {
+                OutputValuesY = SineWave.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
+                OutputValuesX = SineWave.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
+            }
+            else if (CosineWave != null && SelectedGraphType == GraphTypes.CosineWave)
+            {
+                OutputValuesY = CosineWave.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
+                OutputValuesX = CosineWave.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
+            }
+            else if (ParabolicCurve != null && SelectedGraphType == GraphTypes.ParabolicCurve)
+            {
+                OutputValuesY = ParabolicCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
+                OutputValuesX = ParabolicCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
+            }
+            else if (PerlinNoiseCurve != null && SelectedGraphType == GraphTypes.PerlinNoiseCurve)
+            {
+                OutputValuesY = PerlinNoiseCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
+                OutputValuesX = PerlinNoiseCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-
         #region DataBridge
+
         /// <summary>
         /// Register the data bridge callback.
         /// </summary>
@@ -507,22 +330,21 @@ namespace CoreNodeModelsWpf.Charts
             base.OnBuilt();
             VMDataBridge.DataBridge.Instance.RegisterCallback(GUID.ToString(), DataBridgeCallback);
         }
+
         private void DataBridgeCallback(object data)
         {
+            // Ignore invalid inputs
+            if (!(data is ArrayList inputs) || inputs.Count < 5)
+                return;
+
             // Grab input data which always returned as an ArrayList
-            var inputs = data as ArrayList;
+            inputs = data as ArrayList;
 
             var minValueX = double.TryParse(inputs[0]?.ToString(), out var minX) ? minX : MinLimitX;
             var maxValueX = double.TryParse(inputs[1]?.ToString(), out var maxX) ? maxX : MaxLimitX;
             var minValueY = double.TryParse(inputs[2]?.ToString(), out var minY) ? minY : MinLimitY;
             var maxValueY = double.TryParse(inputs[3]?.ToString(), out var maxY) ? maxY : MaxLimitY;
             var listValue = int.TryParse(inputs[4]?.ToString(), out var parsedCount) ? parsedCount : PointsCount;
-
-            if (!InPorts[0].IsConnected && !InPorts[1].IsConnected && // do we need this id we are using default values?
-                !InPorts[2].IsConnected && !InPorts[3].IsConnected)
-            {
-                return;
-            }
 
             // Check port connectivity
             if (InPorts[0].IsConnected) MinLimitX = minValueX;
@@ -538,7 +360,6 @@ namespace CoreNodeModelsWpf.Charts
             RaisePropertyChanged(nameof(MaxLimitY));
             RaisePropertyChanged(nameof(PointsCount));
 
-
             // Trigger additional UI updates if necessary
             RaisePropertyChanged("DataUpdated");
         }
@@ -546,21 +367,6 @@ namespace CoreNodeModelsWpf.Charts
         [IsVisibleInDynamoLibrary(false)]
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            //if (!InPorts[0].IsConnected || !InPorts[1].IsConnected ||
-            //    !InPorts[2].IsConnected || !InPorts[3].IsConnected ||
-            //    !InPorts[4].IsConnected)
-            //{
-            //    return new[]
-            //    {
-            //        AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode()),
-            //        //AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), AstFactory.BuildNullNode())
-            //    };
-            //}
-
-
-
-
-
             // Assign to output ports
             var xValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode());
             var yValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), AstFactory.BuildNullNode());
@@ -586,12 +392,7 @@ namespace CoreNodeModelsWpf.Charts
                     }
                     xValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), AstFactory.BuildExprList(doubListX));
                 }                
-            }         
-
-
-
-
-
+            }
 
             // DataBridge call
             var dataBridgeCall = AstFactory.BuildAssignment(
@@ -607,16 +408,13 @@ namespace CoreNodeModelsWpf.Charts
             };
         }
 
-
-
-
         #endregion
 
         #region Events
 
         private void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
-            OnNodeModified(); // This will ensure the node is re-executed
+            OnNodeModified();
         }
 
         #endregion
@@ -630,9 +428,9 @@ namespace CoreNodeModelsWpf.Charts
         [Description("Select type")]
         Empty = 0,
         [Description("Linear Curve")]
-        Linear = 1,
+        LinearCurve = 1,
         [Description("Bezier Curve")]
-        Bezier = 2,
+        BezierCurve = 2,
         [Description("Sine Wave")]
         SineWave = 3,
         [Description("Cosine Wave")]

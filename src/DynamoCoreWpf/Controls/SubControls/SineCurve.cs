@@ -1,3 +1,4 @@
+using Dynamo.PackageManager;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -84,13 +85,10 @@ namespace Dynamo.Wpf.Controls.SubControls
         /// <summary>
         /// Regenerates the sine wave when a control point is updated.
         /// </summary>
-        public void Regenerate(CurveMapperControlPoint updatedControlPoint)
+        public override void Regenerate()
         {
-            if (controlPoint1 == updatedControlPoint || controlPoint2 == updatedControlPoint)
-            {
-                GetEquationCoefficients();
-                GenerateSineWave();
-            }
+            GetEquationCoefficients();
+            GenerateSineWave();
         }
 
         /// <summary>

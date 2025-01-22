@@ -1,55 +1,25 @@
 using CoreNodeModelsWpf.Charts;
 using CoreNodeModelsWpf.Charts.Controls;
-using CoreNodeModelsWpf.Converters;
 using Dynamo.Controls;
 using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.Controls.SubControls;
 using System;
 using System.Globalization;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
-using System.Windows.Shapes;
 
 namespace Dynamo.Wpf.Charts
 {
     public class CurveMapperNodeView : INodeViewCustomization<CurveMapperNodeModel>
     {
+        #region Properties
+
         private CurveMapperNodeModel curveMapperNodeModel;
         private CurveMapperControl curveMapperControl;
-        private LinearCurve linearCurve;
-        private CurveMapperControlPoint startControlPointLinear;
-        private CurveMapperControlPoint endControlPointLinear;
 
-        private BezierCurve bezierCurve;
-        private ControlLine curveBezierControlLine1;
-        private ControlLine curveBezierControlLine2;
-        private CurveMapperControlPoint pointBezierControl1;
-        private CurveMapperControlPoint pointBezierControl2;
-        private CurveMapperControlPoint pointBezierFix1;
-        private CurveMapperControlPoint pointBezierFix2;
-
-        private CurveMapperControlPoint controlPointSine1;
-        private CurveMapperControlPoint controlPointSine2;
-        private SineCurve sineCurve;
-
-        // TODO: check if we should have separate Cosine Curve class
-        private CurveMapperControlPoint controlPointCosine1;
-        private CurveMapperControlPoint controlPointCosine2;
-        private SineCurve cosineCurve;
-
-        private CurveMapperControlPoint controlPointTangent1;
-        private CurveMapperControlPoint controlPointTangent2;
-        private TangentCurve tangentCurve;
-
-        private CurveMapperControlPoint controlPointParabolic1;
-        private CurveMapperControlPoint controlPointParabolic2;
-        private ParabolicCurve parabolicCurve;
-
-        private CurveMapperControlPoint fixedPointPerlin1;
-        private CurveMapperControlPoint fixedPointPerlin2;
-        private CurveMapperControlPoint controlPointPerlin;
-        private PerlinCurve perlinCurve;
+        #endregion
 
 
         public void CustomizeView(CurveMapperNodeModel model, NodeView nodeView)
@@ -66,360 +36,303 @@ namespace Dynamo.Wpf.Charts
             // Defer adding elements until the canvas is loaded
             curveMapperControl.GraphCanvas.Loaded += (s, e) =>
             {
-                #region Linear
+                #region Create curves and points and add to canvas
+
+                // Linear curve
                 // Create the control points based on DynamicCanvasSize and add to canvas
-                model.PointLinearStart = startControlPointLinear = new CurveMapperControlPoint(
+                model.ControlPointLinear1  = new CurveMapperControlPoint(
                     new Point(0, curveMapperControl.DynamicCanvasSize),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
                 );
-                model.PointLinearEnd = endControlPointLinear = new CurveMapperControlPoint(
+                model.ControlPointLinear2 = new CurveMapperControlPoint(
                     new Point(curveMapperControl.DynamicCanvasSize, 0),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
                 );
                 // Bind properties for startControlPoint and endControlPoint
-                ApplyBindingsToControlPoints(startControlPointLinear, model, curveMapperControl);
-                ApplyBindingsToControlPoints(endControlPointLinear, model, curveMapperControl);
+                ApplyBindingsToControlPoints(model.ControlPointLinear1, model, curveMapperControl);
+                ApplyBindingsToControlPoints(model.ControlPointLinear2, model, curveMapperControl);
                 // Add the control points to the canvas
-                curveMapperControl.GraphCanvas.Children.Add(startControlPointLinear);
-                curveMapperControl.GraphCanvas.Children.Add(endControlPointLinear);
-                Canvas.SetZIndex(startControlPointLinear, 20);
-                Canvas.SetZIndex(endControlPointLinear, 20);
-
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointLinear1);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointLinear2);
+                Canvas.SetZIndex(model.ControlPointLinear1, 20);
+                Canvas.SetZIndex(model.ControlPointLinear2, 20);
                 // Add the linear curve
                 model.LinearCurve = new LinearCurve(
-                    startControlPointLinear,
-                    endControlPointLinear,
+                    model.ControlPointLinear1,
+                    model.ControlPointLinear2,
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize
                 );
-                linearCurve = model.LinearCurve;
                 Canvas.SetZIndex(model.LinearCurve, 10);
                 curveMapperControl.GraphCanvas.Children.Add(model.LinearCurve.PathCurve);
-
                 // Assign curves to control points
-                model.PointLinearStart.CurveLinear = model.LinearCurve;
-                model.PointLinearEnd.CurveLinear = model.LinearCurve;
-                #endregion
+                model.ControlPointLinear1.CurveLinear = model.LinearCurve;
+                model.ControlPointLinear2.CurveLinear = model.LinearCurve;
 
-                #region Bezier
-
-                // Create control points and add to the canvas
-                model.BezierControlPoint1 = pointBezierControl1 = new CurveMapperControlPoint(
+                // Bezier curve
+                model.ControlPointBezier1 = new CurveMapperControlPoint(
                     new Point(curveMapperControl.DynamicCanvasSize * 0.2, curveMapperControl.DynamicCanvasSize * 0.2),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
                 );
-                model.BezierControlPoint2 = pointBezierControl2 = new CurveMapperControlPoint(
+                model.ControlPointBezier2 = new CurveMapperControlPoint(
                     new Point(curveMapperControl.DynamicCanvasSize * 0.8, curveMapperControl.DynamicCanvasSize * 0.2),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
                 );
-
-                model.BezierFixedPoint1 = pointBezierFix1 = new CurveMapperControlPoint(
+                model.OrthoControlPointBezier1 = new CurveMapperControlPoint(
                     new Point(0, curveMapperControl.DynamicCanvasSize),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
                     true, true
                 );
-                model.BezierFixedPoint2 = pointBezierFix2 = new CurveMapperControlPoint(
+                model.OrthoControlPointBezier2 = new CurveMapperControlPoint(
                     new Point(curveMapperControl.DynamicCanvasSize, curveMapperControl.DynamicCanvasSize),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
                     true, true
                 );
-                curveMapperControl.GraphCanvas.Children.Add(pointBezierControl1);
-                curveMapperControl.GraphCanvas.Children.Add(pointBezierControl2);
-                curveMapperControl.GraphCanvas.Children.Add(pointBezierFix1);
-                curveMapperControl.GraphCanvas.Children.Add(pointBezierFix2);
-                Canvas.SetZIndex(pointBezierControl1, 10);
-                Canvas.SetZIndex(pointBezierControl2, 10);
-                Canvas.SetZIndex(pointBezierFix1, 20);
-                Canvas.SetZIndex(pointBezierFix2, 20);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointBezier1);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointBezier2);
+                curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointBezier1);
+                curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointBezier2);
+                Canvas.SetZIndex(model.ControlPointBezier1, 10);
+                Canvas.SetZIndex(model.ControlPointBezier2, 10);
+                Canvas.SetZIndex(model.OrthoControlPointBezier1, 20);
+                Canvas.SetZIndex(model.OrthoControlPointBezier2, 20);
 
-                // Create the control lines add to the canvas
-                model.CurveBezierControlLine1 = curveBezierControlLine1 = new ControlLine(
-                    model.BezierControlPoint1.Point,
-                    model.BezierFixedPoint1.Point
+                model.ControlLineBezier1 = new ControlLine(
+                    model.ControlPointBezier1.Point,
+                    model.OrthoControlPointBezier1.Point
                 );
-                model.CurveBezierControlLine2 = curveBezierControlLine2 = new ControlLine(
-                    model.BezierControlPoint2.Point,
-                    model.BezierFixedPoint2.Point
+                model.ControlLineBezier2 = new ControlLine(
+                    model.ControlPointBezier2.Point,
+                    model.OrthoControlPointBezier2.Point
                 );
-                curveMapperControl.GraphCanvas.Children.Add(curveBezierControlLine1.PathCurve);
-                curveMapperControl.GraphCanvas.Children.Add(curveBezierControlLine2.PathCurve);
-                Canvas.SetZIndex(curveBezierControlLine1.PathCurve, 9);
-                Canvas.SetZIndex(curveBezierControlLine2.PathCurve, 9);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlLineBezier1.PathCurve);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlLineBezier2.PathCurve);
+                Canvas.SetZIndex(model.ControlLineBezier1.PathCurve, 9);
+                Canvas.SetZIndex(model.ControlLineBezier2.PathCurve, 9);
 
-                // Create the bezier curve and add to the canvas
                 model.BezierCurve = new BezierCurve(
-                    model.BezierFixedPoint1,
-                    model.BezierFixedPoint2,
-                    model.BezierControlPoint1,
-                    model.BezierControlPoint2,
+                    model.OrthoControlPointBezier1,
+                    model.OrthoControlPointBezier2,
+                    model.ControlPointBezier1,
+                    model.ControlPointBezier2,
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize);
-                bezierCurve = model.BezierCurve;
                 Canvas.SetZIndex(model.BezierCurve, 10);
                 curveMapperControl.GraphCanvas.Children.Add(model.BezierCurve.PathCurve);
 
+                model.OrthoControlPointBezier1.CurveBezier = model.BezierCurve;
+                model.OrthoControlPointBezier2.CurveBezier = model.BezierCurve;
+                model.OrthoControlPointBezier1.ControlLineBezier = model.ControlLineBezier1;
+                model.OrthoControlPointBezier2.ControlLineBezier = model.ControlLineBezier2;
+                model.ControlPointBezier1.CurveBezier = model.BezierCurve;
+                model.ControlPointBezier2.CurveBezier = model.BezierCurve;
+                model.ControlPointBezier1.ControlLineBezier = model.ControlLineBezier1;
+                model.ControlPointBezier2.ControlLineBezier = model.ControlLineBezier2;
 
-                // Assign curves to control points
-                model.BezierFixedPoint1.CurveBezier = model.BezierCurve;
-                model.BezierFixedPoint2.CurveBezier = model.BezierCurve;
-                model.BezierFixedPoint1.ControlLineBezier = model.CurveBezierControlLine1;
-                model.BezierFixedPoint2.ControlLineBezier = model.CurveBezierControlLine2;
-                model.BezierControlPoint1.CurveBezier = model.BezierCurve;
-                model.BezierControlPoint2.CurveBezier = model.BezierCurve;
-                model.BezierControlPoint1.ControlLineBezier = model.CurveBezierControlLine1;
-                model.BezierControlPoint2.ControlLineBezier = model.CurveBezierControlLine2;
+                ApplyBindingsToControlPoints(model.OrthoControlPointBezier1, model, curveMapperControl);
+                ApplyBindingsToControlPoints(model.OrthoControlPointBezier2, model, curveMapperControl);
 
-                // Bind properties for startControlPoint and endControlPoint
-                ApplyBindingsToControlPoints(pointBezierFix1, model, curveMapperControl);
-                ApplyBindingsToControlPoints(pointBezierFix2, model, curveMapperControl);
-
-                #endregion
-
-                #region Sine
-                // Create control points and add to the canvas
-                model.ControlPointSine1 = controlPointSine1 = new CurveMapperControlPoint(
+                // Sine wave
+                model.ControlPointSine1 = new CurveMapperControlPoint(
                     new Point(curveMapperControl.DynamicCanvasSize * 0.25, 0),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
                 );
-                model.ControlPointSine2 = controlPointSine2 = new CurveMapperControlPoint(
+                model.ControlPointSine2 = new CurveMapperControlPoint(
                     new Point(curveMapperControl.DynamicCanvasSize * 0.75, curveMapperControl.DynamicCanvasSize),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
                 );
-                curveMapperControl.GraphCanvas.Children.Add(controlPointSine1);
-                curveMapperControl.GraphCanvas.Children.Add(controlPointSine2);
-                Canvas.SetZIndex(controlPointSine1, 20);
-                Canvas.SetZIndex(controlPointSine2, 20);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointSine1);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointSine2);
+                Canvas.SetZIndex(model.ControlPointSine1, 20);
+                Canvas.SetZIndex(model.ControlPointSine2, 20);
 
-                // Create the sine curve and add to the canvas
                 model.SineWave = new SineCurve(
                     model.ControlPointSine1,
                     model.ControlPointSine2,
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize);
-                sineCurve = model.SineWave;
                 Canvas.SetZIndex(model.SineWave, 10);
                 curveMapperControl.GraphCanvas.Children.Add(model.SineWave.PathCurve);
 
-                ////// Assign curves to control points
                 model.ControlPointSine1.CurveSine = model.SineWave;
                 model.ControlPointSine2.CurveSine = model.SineWave;
 
-                // Bind properties for startControlPoint and endControlPoint
-                ApplyBindingsToControlPoints(controlPointSine1, model, curveMapperControl);
-                ApplyBindingsToControlPoints(controlPointSine2, model, curveMapperControl);
-                #endregion
+                ApplyBindingsToControlPoints(model.ControlPointSine1, model, curveMapperControl);
+                ApplyBindingsToControlPoints(model.ControlPointSine2, model, curveMapperControl);
 
-                #region Cosine
+                // Cosine wave
                 // TODO: check if we should have separate Cosine Curve class
-                // Create control points and add to the canvas
-                model.ControlPointCosine1 = controlPointCosine1 = new CurveMapperControlPoint(
+                model.ControlPointCosine1 = new CurveMapperControlPoint(
                     new Point(0, 0),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
                 );
-                model.ControlPointCosine2 = controlPointCosine2 = new CurveMapperControlPoint(
+                model.ControlPointCosine2 = new CurveMapperControlPoint(
                     new Point(curveMapperControl.DynamicCanvasSize * 0.5, curveMapperControl.DynamicCanvasSize),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
                 );
-                curveMapperControl.GraphCanvas.Children.Add(controlPointCosine1);
-                curveMapperControl.GraphCanvas.Children.Add(controlPointCosine2);
-                Canvas.SetZIndex(controlPointCosine1, 20);
-                Canvas.SetZIndex(controlPointCosine2, 20);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointCosine1);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointCosine2);
+                Canvas.SetZIndex(model.ControlPointCosine1, 20);
+                Canvas.SetZIndex(model.ControlPointCosine2, 20);
 
-                // Create the sine curve and add to the canvas
                 model.CosineWave = new SineCurve(
                     model.ControlPointCosine1,
                     model.ControlPointCosine2,
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize);
-                cosineCurve = model.CosineWave;
                 Canvas.SetZIndex(model.CosineWave, 10);
                 curveMapperControl.GraphCanvas.Children.Add(model.CosineWave.PathCurve);
 
-                ////// Assign curves to control points
                 model.ControlPointCosine1.CurveCosine = model.CosineWave;
                 model.ControlPointCosine2.CurveCosine = model.CosineWave;
 
-                // Bind properties for startControlPoint and endControlPoint
-                ApplyBindingsToControlPoints(controlPointCosine1, model, curveMapperControl);
-                ApplyBindingsToControlPoints(controlPointCosine2, model, curveMapperControl);
-                #endregion
+                ApplyBindingsToControlPoints(model.ControlPointCosine1, model, curveMapperControl);
+                ApplyBindingsToControlPoints(model.ControlPointCosine2, model, curveMapperControl);
 
-                #region Tangent
-                // Create control points and add to the canvas
-                model.ControlPointTangent1 = controlPointTangent1 = new CurveMapperControlPoint(
+                // Tangent
+                model.ControlPointTangent1 = new CurveMapperControlPoint(
                     new Point(0, curveMapperControl.DynamicCanvasSize * 0.5),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
                 );
-                model.ControlPointTangent2 = controlPointTangent2 = new CurveMapperControlPoint(
+                model.ControlPointTangent2 = new CurveMapperControlPoint(
                     new Point(curveMapperControl.DynamicCanvasSize, curveMapperControl.DynamicCanvasSize * 0.5),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
                 );
-                curveMapperControl.GraphCanvas.Children.Add(controlPointTangent1);
-                curveMapperControl.GraphCanvas.Children.Add(controlPointTangent2);
-                Canvas.SetZIndex(controlPointTangent1, 20);
-                Canvas.SetZIndex(controlPointTangent2, 20);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointTangent1);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointTangent2);
+                Canvas.SetZIndex(model.ControlPointTangent1, 20);
+                Canvas.SetZIndex(model.ControlPointTangent2, 20);
 
-                // Create the sine curve and add to the canvas
                 model.TangentCurve = new TangentCurve(
                     model.ControlPointTangent1,
                     model.ControlPointTangent2,
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize);
-                tangentCurve = model.TangentCurve;
                 Canvas.SetZIndex(model.TangentCurve, 10);
                 curveMapperControl.GraphCanvas.Children.Add(model.TangentCurve.PathCurve);
 
-                ////// Assign curves to control points
                 model.ControlPointTangent1.CurveTangent = model.TangentCurve;
                 model.ControlPointTangent2.CurveTangent = model.TangentCurve;
 
-                // Bind properties for startControlPoint and endControlPoint
-                ApplyBindingsToControlPoints(controlPointTangent1, model, curveMapperControl);
-                ApplyBindingsToControlPoints(controlPointTangent2, model, curveMapperControl);
-                #endregion
+                ApplyBindingsToControlPoints(model.ControlPointTangent1, model, curveMapperControl);
+                ApplyBindingsToControlPoints(model.ControlPointTangent2, model, curveMapperControl);
 
-                #region Parabolic
-                // Create control points and add to the canvas
-                model.ControlPointParabolic1 = controlPointParabolic1 = new CurveMapperControlPoint(
+                // Parabolic curve
+                model.ControlPointParabolic1 = new CurveMapperControlPoint(
                     new Point(curveMapperControl.DynamicCanvasSize * 0.5, curveMapperControl.DynamicCanvasSize * 0.1),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
                 );
-                model.ControlPointParabolic2 = controlPointParabolic2 = new CurveMapperControlPoint(
+                model.ControlPointParabolic2 = new CurveMapperControlPoint(
                     new Point(curveMapperControl.DynamicCanvasSize, curveMapperControl.DynamicCanvasSize),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
                 );
-                curveMapperControl.GraphCanvas.Children.Add(controlPointParabolic1);
-                curveMapperControl.GraphCanvas.Children.Add(controlPointParabolic2);
-                Canvas.SetZIndex(controlPointSine1, 20);
-                Canvas.SetZIndex(controlPointSine2, 20);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointParabolic1);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointParabolic2);
+                Canvas.SetZIndex(model.ControlPointParabolic1, 20);
+                Canvas.SetZIndex(model.ControlPointParabolic2, 20);
 
-                // Create the sine curve and add to the canvas
                 model.ParabolicCurve = new ParabolicCurve(
                     model.ControlPointParabolic1,
                     model.ControlPointParabolic2,
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize);
-                parabolicCurve = model.ParabolicCurve;
                 Canvas.SetZIndex(model.ParabolicCurve, 10);
                 curveMapperControl.GraphCanvas.Children.Add(model.ParabolicCurve.PathCurve);
 
-                ////// Assign curves to control points
                 model.ControlPointParabolic1.CurveParabolic = model.ParabolicCurve;
                 model.ControlPointParabolic2.CurveParabolic = model.ParabolicCurve;
 
-                // Bind properties for startControlPoint and endControlPoint
-                ApplyBindingsToControlPoints(controlPointParabolic1, model, curveMapperControl);
-                ApplyBindingsToControlPoints(controlPointParabolic2, model, curveMapperControl);
-                #endregion
+                ApplyBindingsToControlPoints(model.ControlPointParabolic1, model, curveMapperControl);
+                ApplyBindingsToControlPoints(model.ControlPointParabolic2, model, curveMapperControl);
 
-                #region Perlin
-                // Create control points and add to the canvas
-                model.FixedPointPerlin1 = fixedPointPerlin1 = new CurveMapperControlPoint(
+                // Perlin noise
+                model.OrthoControlPointPerlin1 = new CurveMapperControlPoint(
                     new Point(curveMapperControl.DynamicCanvasSize * 0.5, 0),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
                     true, false
                 );
-                model.FixedPointPerlin2 = fixedPointPerlin2 = new CurveMapperControlPoint(
+                model.OrthoControlPointPerlin2 = new CurveMapperControlPoint(
                     new Point(0, curveMapperControl.DynamicCanvasSize),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
                     true, true
                 );                
-                model.ControlPointPerlin = controlPointPerlin = new CurveMapperControlPoint(
+                model.ControlPointPerlin = new CurveMapperControlPoint(
                     new Point(curveMapperControl.DynamicCanvasSize * 0.5, curveMapperControl.DynamicCanvasSize * 0.5),
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize,
                     model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
                 );
-                curveMapperControl.GraphCanvas.Children.Add(fixedPointPerlin1);
-                curveMapperControl.GraphCanvas.Children.Add(fixedPointPerlin2);
-                curveMapperControl.GraphCanvas.Children.Add(controlPointPerlin);
-                Canvas.SetZIndex(fixedPointPerlin1, 20);
-                Canvas.SetZIndex(fixedPointPerlin2, 20);
-                Canvas.SetZIndex(controlPointPerlin, 20);
+                curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointPerlin1);
+                curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointPerlin2);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointPerlin);
+                Canvas.SetZIndex(model.OrthoControlPointPerlin1, 20);
+                Canvas.SetZIndex(model.OrthoControlPointPerlin2, 20);
+                Canvas.SetZIndex(model.ControlPointPerlin, 20);
 
-                // Create the sine curve and add to the canvas
                 model.PerlinNoiseCurve = new PerlinCurve(
-                    model.FixedPointPerlin1,
-                    model.FixedPointPerlin2,
-                    model.ControlPointPerlin,
-                    1,
+                    model.OrthoControlPointPerlin1,
+                    model.OrthoControlPointPerlin2,
+                    model.ControlPointPerlin, 1,
                     curveMapperControl.DynamicCanvasSize,
                     curveMapperControl.DynamicCanvasSize);
-                perlinCurve = model.PerlinNoiseCurve;
                 Canvas.SetZIndex(model.PerlinNoiseCurve, 10);
                 curveMapperControl.GraphCanvas.Children.Add(model.PerlinNoiseCurve.PathCurve);
 
-                ////// Assign curves to control points
-                model.FixedPointPerlin1.CurvePerlin = model.PerlinNoiseCurve;
-                model.FixedPointPerlin2.CurvePerlin = model.PerlinNoiseCurve;
+                model.OrthoControlPointPerlin1.CurvePerlin = model.PerlinNoiseCurve;
+                model.OrthoControlPointPerlin2.CurvePerlin = model.PerlinNoiseCurve;
                 model.ControlPointPerlin.CurvePerlin = model.PerlinNoiseCurve;
 
-                // Bind properties for startControlPoint and endControlPoint
-                ApplyBindingsToControlPoints(fixedPointPerlin1, model, curveMapperControl);
-                ApplyBindingsToControlPoints(fixedPointPerlin2, model, curveMapperControl);
-                ApplyBindingsToControlPoints(controlPointPerlin, model, curveMapperControl);
+                ApplyBindingsToControlPoints(model.OrthoControlPointPerlin1, model, curveMapperControl);
+                ApplyBindingsToControlPoints(model.OrthoControlPointPerlin2, model, curveMapperControl);
+                ApplyBindingsToControlPoints(model.ControlPointPerlin, model, curveMapperControl);
+
                 #endregion
 
-                // Add visibility binding if needed
                 BindVisibility(model);
 
                 // Attach event handlers to detect when control points are released,
                 // to trigger curve updates and re-computation.
-                model.PointLinearStart.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
-                model.PointLinearEnd.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
-
-                model.BezierControlPoint1.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
-                model.BezierControlPoint2.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
-                model.BezierFixedPoint1.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
-                model.BezierFixedPoint2.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
-
-                model.ControlPointSine1.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
-                model.ControlPointSine2.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
-
-                model.ControlPointCosine1.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
-                model.ControlPointCosine2.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
-
-                model.FixedPointPerlin1.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
-                model.FixedPointPerlin2.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
-                model.ControlPointPerlin.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
-
-                model.ControlPointTangent1.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
-                model.ControlPointTangent2.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
-
-                model.ControlPointParabolic1.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
-                model.ControlPointParabolic2.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
+                AttachMouseUpEvent(model.ControlPointLinear1, model.ControlPointLinear2);
+                AttachMouseUpEvent(model.ControlPointBezier1, model.ControlPointBezier2,
+                    model.OrthoControlPointBezier1, model.OrthoControlPointBezier2);
+                AttachMouseUpEvent(model.ControlPointSine1, model.ControlPointSine2);
+                AttachMouseUpEvent(model.ControlPointCosine1, model.ControlPointCosine2);
+                AttachMouseUpEvent(model.OrthoControlPointPerlin1, model.OrthoControlPointPerlin2,
+                    model.ControlPointPerlin);
+                AttachMouseUpEvent(model.ControlPointTangent1, model.ControlPointTangent2);
+                AttachMouseUpEvent(model.ControlPointParabolic1, model.ControlPointParabolic2);
             };
         }
 
@@ -437,118 +350,118 @@ namespace Dynamo.Wpf.Charts
 
         private void BindVisibility(CurveMapperNodeModel model)
         {
-            // Bind the visibility of the curve and control points to the GraphType
+            // Linear curve
             var linearVisibilityBinding = new Binding("SelectedGraphType")
             {
                 Source = model,
                 Converter = new GraphTypeToVisibilityConverter(),
-                ConverterParameter = GraphTypes.Linear, // Only show for Linear GraphType
+                ConverterParameter = GraphTypes.LinearCurve,
                 Mode = BindingMode.OneWay
             };
-            if (startControlPointLinear != null)
-                startControlPointLinear.SetBinding(UIElement.VisibilityProperty, linearVisibilityBinding);
-            if (endControlPointLinear != null)
-                endControlPointLinear.SetBinding(UIElement.VisibilityProperty, linearVisibilityBinding);
-            if (linearCurve != null)
-                linearCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, linearVisibilityBinding);
+            if (model.ControlPointLinear1 != null)
+                model.ControlPointLinear1.SetBinding(UIElement.VisibilityProperty, linearVisibilityBinding);
+            if (model.ControlPointLinear2 != null)
+                model.ControlPointLinear2.SetBinding(UIElement.VisibilityProperty, linearVisibilityBinding);
+            if (model.LinearCurve != null)
+                model.LinearCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, linearVisibilityBinding);
 
-            // Visibility binding for Bezier GraphType
+            // Bezier curve
             var bezierVisibilityBinding = new Binding("SelectedGraphType")
             {
                 Source = model,
                 Converter = new GraphTypeToVisibilityConverter(),
-                ConverterParameter = GraphTypes.Bezier, // Only show for Bezier GraphType
+                ConverterParameter = GraphTypes.BezierCurve,
                 Mode = BindingMode.OneWay
             };
-            if (pointBezierControl1 != null)
-                pointBezierControl1.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
-            if (pointBezierControl2 != null)
-                pointBezierControl2.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
-            if (pointBezierFix1 != null)
-                pointBezierFix1.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
-            if (pointBezierFix2 != null)
-                pointBezierFix2.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
-            if (curveBezierControlLine1 != null)
-                curveBezierControlLine1.PathCurve.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
-            if (curveBezierControlLine2 != null)
-                curveBezierControlLine2.PathCurve.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
+            if (model.ControlPointBezier1 != null)
+                model.ControlPointBezier1.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
+            if (model.ControlPointBezier2 != null)
+                model.ControlPointBezier2.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
+            if (model.OrthoControlPointBezier1 != null)
+                model.OrthoControlPointBezier1.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
+            if (model.OrthoControlPointBezier2 != null)
+                model.OrthoControlPointBezier2.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
+            if (model.ControlLineBezier1 != null)
+                model.ControlLineBezier1.PathCurve.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
+            if (model.ControlLineBezier2 != null)
+                model.ControlLineBezier2.PathCurve.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
             if (model.BezierCurve != null)
                 model.BezierCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
 
-            // Visibility binding for Sine GraphType
+            // Sine wave
             var sineVisibilityBinding = new Binding("SelectedGraphType")
             {
                 Source = model,
                 Converter = new GraphTypeToVisibilityConverter(),
-                ConverterParameter = GraphTypes.SineWave, // Only show for Sine GraphType
+                ConverterParameter = GraphTypes.SineWave,
                 Mode = BindingMode.OneWay
             };
-            if (controlPointSine1 != null)
-                controlPointSine1.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
-            if (controlPointSine2 != null)
-                controlPointSine2.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
+            if (model.ControlPointSine1 != null)
+                model.ControlPointSine1.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
+            if (model.ControlPointSine2 != null)
+                model.ControlPointSine2.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
             if (model.SineWave != null)
                 model.SineWave.PathCurve.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
 
-            // Visibility binding for Cosine GraphType
+            // Cosine wave
             var cosineVisibilityBinding = new Binding("SelectedGraphType")
             {
                 Source = model,
                 Converter = new GraphTypeToVisibilityConverter(),
-                ConverterParameter = GraphTypes.CosineWave, // Only show for Cosine GraphType
+                ConverterParameter = GraphTypes.CosineWave,
                 Mode = BindingMode.OneWay
             };
-            if (controlPointCosine1 != null)
-                controlPointCosine1.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
-            if (controlPointCosine2 != null)
-                controlPointCosine2.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
+            if (model.ControlPointCosine1 != null)
+                model.ControlPointCosine1.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
+            if (model.ControlPointCosine2 != null)
+                model.ControlPointCosine2.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
             if (model.CosineWave != null)
                 model.CosineWave.PathCurve.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
 
-            // Visibility binding for Tangent GraphType
+            // Tangent wave
             var tangentVisibilityBinding = new Binding("SelectedGraphType")
             {
                 Source = model,
                 Converter = new GraphTypeToVisibilityConverter(),
-                ConverterParameter = GraphTypes.TangentWave, // Only show for Cosine GraphType
+                ConverterParameter = GraphTypes.TangentWave,
                 Mode = BindingMode.OneWay
             };
-            if (controlPointTangent1 != null)
-                controlPointTangent1.SetBinding(UIElement.VisibilityProperty, tangentVisibilityBinding);
-            if (controlPointTangent2 != null)
-                controlPointTangent2.SetBinding(UIElement.VisibilityProperty, tangentVisibilityBinding);
+            if (model.ControlPointTangent1 != null)
+                model.ControlPointTangent1.SetBinding(UIElement.VisibilityProperty, tangentVisibilityBinding);
+            if (model.ControlPointTangent2 != null)
+                model.ControlPointTangent2.SetBinding(UIElement.VisibilityProperty, tangentVisibilityBinding);
             if (model.TangentCurve != null)
                 model.TangentCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, tangentVisibilityBinding);
 
-            // Visibility binding for Parabolic GraphType
+            // Parabolic curve
             var parabolicVisibilityBinding = new Binding("SelectedGraphType")
             {
                 Source = model,
                 Converter = new GraphTypeToVisibilityConverter(),
-                ConverterParameter = GraphTypes.ParabolicCurve, // Only show for Parabolic GraphType
+                ConverterParameter = GraphTypes.ParabolicCurve,
                 Mode = BindingMode.OneWay
             };
-            if (controlPointParabolic1 != null)
-                controlPointParabolic1.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
-            if (controlPointParabolic2 != null)
-                controlPointParabolic2.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
+            if (model.ControlPointParabolic1 != null)
+                model.ControlPointParabolic1.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
+            if (model.ControlPointParabolic2 != null)
+                model.ControlPointParabolic2.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
             if (model.ParabolicCurve != null)
                 model.ParabolicCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
 
-            // Visibility binding for Perlin GraphType
+            // Perlin noise
             var perlinVisibilityBinding = new Binding("SelectedGraphType")
             {
                 Source = model,
                 Converter = new GraphTypeToVisibilityConverter(),
-                ConverterParameter = GraphTypes.PerlinNoiseCurve, // Only show for Parabolic GraphType
+                ConverterParameter = GraphTypes.PerlinNoiseCurve,
                 Mode = BindingMode.OneWay
             };
-            if (fixedPointPerlin1 != null)
-                fixedPointPerlin1.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
-            if (fixedPointPerlin2 != null)
-                fixedPointPerlin2.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
-            if (controlPointPerlin != null)
-                controlPointPerlin.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
+            if (model.OrthoControlPointPerlin1 != null)
+                model.OrthoControlPointPerlin1.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
+            if (model.OrthoControlPointPerlin2 != null)
+                model.OrthoControlPointPerlin2.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
+            if (model.ControlPointPerlin != null)
+                model.ControlPointPerlin.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
             if (model.PerlinNoiseCurve != null)
                 model.PerlinNoiseCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
         }
@@ -579,7 +492,33 @@ namespace Dynamo.Wpf.Charts
 
         public void Dispose()
         {
-            //throw new NotImplementedException();
+            DetachMouseUpEvent(curveMapperNodeModel.ControlPointLinear1, curveMapperNodeModel.ControlPointLinear2);
+            DetachMouseUpEvent(curveMapperNodeModel.ControlPointBezier1, curveMapperNodeModel.ControlPointBezier2,
+                curveMapperNodeModel.OrthoControlPointBezier1, curveMapperNodeModel.OrthoControlPointBezier2);
+            DetachMouseUpEvent(curveMapperNodeModel.ControlPointSine1, curveMapperNodeModel.ControlPointSine2);
+            DetachMouseUpEvent(curveMapperNodeModel.ControlPointCosine1, curveMapperNodeModel.ControlPointCosine2);
+            DetachMouseUpEvent(curveMapperNodeModel.OrthoControlPointPerlin1, curveMapperNodeModel.OrthoControlPointPerlin2,
+                curveMapperNodeModel.ControlPointPerlin);
+            DetachMouseUpEvent(curveMapperNodeModel.ControlPointTangent1, curveMapperNodeModel.ControlPointTangent2);
+            DetachMouseUpEvent(curveMapperNodeModel.ControlPointParabolic1, curveMapperNodeModel.ControlPointParabolic2);
+        }
+
+        private void AttachMouseUpEvent(params CurveMapperControlPoint[] controlPoints)
+        {
+            foreach (var point in controlPoints)
+            {
+                if (point != null)
+                    point.PreviewMouseLeftButtonUp += CanvasPreviewMouseLeftUp;
+            }
+        }
+
+        private void DetachMouseUpEvent(params CurveMapperControlPoint[] controlPoints)
+        {
+            foreach (var point in controlPoints)
+            {
+                if (point != null)
+                    point.PreviewMouseLeftButtonUp -= CanvasPreviewMouseLeftUp;
+            }
         }
     }
 

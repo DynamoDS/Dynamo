@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Forms;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -16,42 +15,11 @@ namespace Dynamo.Wpf.Controls.SubControls
         private readonly List<double> randomValues;
         private readonly Random rand;
 
-        private double maxWidth;
-        private double maxHeight;
-
         private const int PerlinVertices = 2000;
         private readonly int perlinVerticesMask;
+        private readonly double initialWidth;
         private double amplitude = 1.0;
         private double scale = 1.0;
-
-        public double MaxWidth
-        {
-            get => maxWidth;
-            set
-            {
-                if (maxWidth != value)
-                {
-                    maxWidth = value;
-                    Regenerate(orthoPoint1); // Ensure the curve regenerates if needed
-                    Regenerate(orthoPoint2);
-                    Regenerate(controlPoint);
-                }
-            }
-        }
-        public double MaxHeight
-        {
-            get => maxHeight;
-            set
-            {
-                if (maxHeight != value)
-                {
-                    maxHeight = value;
-                    Regenerate(orthoPoint1); // Ensure the curve regenerates if needed
-                    Regenerate(orthoPoint2);
-                    Regenerate(controlPoint);
-                }
-            }
-        }
 
         /// <summary>
         /// Initializes a perlin noise curve with control points, dimensions, and visual properties.
@@ -61,8 +29,9 @@ namespace Dynamo.Wpf.Controls.SubControls
             this.orthoPoint1 = oPoint1;
             this.orthoPoint2 = oPoint2;
             this.controlPoint = controlPoint;
-            this.maxWidth = maxWidth;
-            this.maxHeight = maxHeight;
+            MaxWidth = maxWidth;
+            MaxHeight = maxHeight;
+            this.initialWidth = maxWidth;
 
             perlinVerticesMask = PerlinVertices - 1;
             rand = new Random(seed);
@@ -76,7 +45,7 @@ namespace Dynamo.Wpf.Controls.SubControls
             }
 
             PathFigure = new PathFigure();
-
+                
             GeneratePerlinCurve();
 
             PathFigure.Segments.Add(polySegment);
@@ -89,8 +58,8 @@ namespace Dynamo.Wpf.Controls.SubControls
             PathCurve = new Path
             {
                 Data = PathGeometry,
-                Stroke = new SolidColorBrush(Color.FromRgb(0xB3, 0x85, 0xF2)), // Purple color
-                StrokeThickness = 3,
+                Stroke = CurveColor,
+                StrokeThickness = CurveThickness,
                 StrokeLineJoin = PenLineJoin.Round
             };
         }
@@ -101,8 +70,8 @@ namespace Dynamo.Wpf.Controls.SubControls
             double rawY = GetHeight(-controlPoint.Point.X + x, 0.0) + controlPoint.Point.Y;
 
             // Clamp the values to ensure they stay within the canvas
-            double clampedX = Math.Max(0, Math.Min(x, maxWidth));
-            double clampedY = Math.Max(0, Math.Min(rawY, maxHeight));
+            double clampedX = Math.Max(0, Math.Min(x, MaxWidth));
+            double clampedY = Math.Max(0, Math.Min(rawY, MaxHeight));
 
             return new Point(clampedX, clampedY);
         }
@@ -111,17 +80,18 @@ namespace Dynamo.Wpf.Controls.SubControls
         {
             if (polySegment == null)
             {
-                polySegment = new PolyLineSegment();
-                polySegment.IsStroked = true;
+                polySegment = new PolyLineSegment { IsStroked = true };
             }
             else
             {
                 polySegment.Points.Clear();
             }
 
-            scale = (maxWidth - orthoPoint1.Point.X) / (maxWidth * 3.0);
+            double scalingFactor = MaxWidth / initialWidth;
+
+            scale = (MaxWidth - orthoPoint1.Point.X) / (MaxWidth * 3.0);
             amplitude = orthoPoint2.Point.Y * 1.1;
-            baseFrequency = scale;
+            baseFrequency = scale / scalingFactor;
 
             if (PathFigure != null)
             {
@@ -130,36 +100,17 @@ namespace Dynamo.Wpf.Controls.SubControls
 
             if (polySegment != null)
             {
-                for (double x = 1.0; x < maxWidth; x += 1.0)
+                for (double x = 1.0; x < MaxWidth; x += 1.0)
                 {
                     polySegment.Points.Add(PerlinAddPointsToCurve(x));
                 }
 
-                polySegment.Points.Add(PerlinAddPointsToCurve(maxWidth));
+                polySegment.Points.Add(PerlinAddPointsToCurve(MaxWidth));
             }
-        }
+        }        
 
-        /// <summary>
-        /// Regenerates the curve when control points are updated.
-        /// </summary>
-        public void Regenerate(CurveMapperControlPoint updatedControlPoint)
+        public override void Regenerate()
         {
-            if (updatedControlPoint == null)
-                return;
-
-            if (updatedControlPoint.IsOrthogonal)
-            {
-                if (updatedControlPoint == orthoPoint1 || updatedControlPoint == orthoPoint2)
-                {
-                    orthoPoint1 = (updatedControlPoint == orthoPoint1) ? updatedControlPoint : orthoPoint1;
-                    orthoPoint2 = (updatedControlPoint == orthoPoint2) ? updatedControlPoint : orthoPoint2;
-                }
-            }
-            else if (updatedControlPoint == controlPoint)
-            {
-                controlPoint = updatedControlPoint;
-            }
-
             GeneratePerlinCurve();
         }
 
@@ -171,20 +122,20 @@ namespace Dynamo.Wpf.Controls.SubControls
             List<double> values = new List<double>();
 
             int steps = count - 1;
-            for (double d = 0.0; d < maxWidth; d += (maxWidth / steps))
+            for (double d = 0.0; d < MaxWidth; d += (MaxWidth / steps))
             {
                 double rawHeight = GetHeight(-controlPoint.Point.X + d, 0.0);
-                double adjustedHeight = -rawHeight + (maxHeight - controlPoint.Point.Y);
-                double normalizedValue = (highLimit - lowLimit) * adjustedHeight / maxHeight;
+                double adjustedHeight = -rawHeight + (MaxHeight - controlPoint.Point.Y);
+                double normalizedValue = (highLimit - lowLimit) * adjustedHeight / MaxHeight;
                 normalizedValue += lowLimit;
                 values.Add(normalizedValue);
             }
 
             if (values.Count < count)
             {
-                double rawHeight = GetHeight(-controlPoint.Point.X + maxWidth, 0.0);
-                double adjustedHeight = -rawHeight + (maxHeight - controlPoint.Point.Y);
-                double normalizedValue = (highLimit - lowLimit) * adjustedHeight / maxHeight;
+                double rawHeight = GetHeight(-controlPoint.Point.X + MaxWidth, 0.0);
+                double adjustedHeight = -rawHeight + (MaxHeight - controlPoint.Point.Y);
+                double normalizedValue = (highLimit - lowLimit) * adjustedHeight / MaxHeight;
                 normalizedValue += lowLimit;
                 values.Add(normalizedValue);
             }

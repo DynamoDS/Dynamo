@@ -90,7 +90,7 @@ namespace Dynamo.Wpf.Controls.SubControls
         /// </summary>
         public virtual List<double> GetCurveXValues(double minLimitX, double maxLimitX, int count)
         {
-            if (count < 1 || Math.Abs(controlPoint1.Point.X - controlPoint2.Point.X) < double.Epsilon)
+            if (count < 1)
                 return null;
 
             var values = new List<double>();
