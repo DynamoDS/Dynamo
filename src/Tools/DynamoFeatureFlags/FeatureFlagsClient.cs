@@ -87,7 +87,9 @@ namespace DynamoFeatureFlags
                     //in tests we want instancing on so we can test it.
                     { "graphics-primitive-instancing", LdValue.Of(true) },
                     //in tests we want search debouncing on so we can test it.
-                    { "searchbar_debounce", LdValue.Of(true) } });
+                    { "searchbar_debounce", LdValue.Of(true) },
+                    //in tests we want to run search on non UI thread so we can test it.
+                    { "searchbar_spearate_thread", LdValue.Of(true) }});
                 return;
             }
 

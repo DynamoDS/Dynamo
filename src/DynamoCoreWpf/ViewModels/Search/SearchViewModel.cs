@@ -82,6 +82,8 @@ namespace Dynamo.ViewModels
         internal ActionDebouncer searchDebouncer = null;
         // Cancel token source used for the node search operations.
         internal CancellationTokenSource searchCancelTooken;
+        // Enable running Search on a thread pool thread.
+        private bool enableSeachThreading;
 
         private string searchText = string.Empty;
         /// <summary>
@@ -402,16 +404,21 @@ namespace Dynamo.ViewModels
 
             iconServices = new IconServices(pathManager);
 
-            DynamoFeatureFlagsManager.FlagsRetrieved += TryInitializeDebouncer;
+            DynamoFeatureFlagsManager.FlagsRetrieved += TryInitializeSearchFlags;
 
             InitializeCore();
         }
 
-        private void TryInitializeDebouncer()
+        private void TryInitializeSearchFlags()
         {
             if (DynamoModel.FeatureFlags?.CheckFeatureFlag("searchbar_debounce", false) ?? false)
             {
                 searchDebouncer ??= new ActionDebouncer(dynamoViewModel?.Model?.Logger);
+            }
+
+            if (DynamoModel.FeatureFlags?.CheckFeatureFlag("searchbar_spearate_thread", false) ?? false)
+            {
+                enableSeachThreading = true;
             }
         }
 
@@ -446,7 +453,7 @@ namespace Dynamo.ViewModels
             Model.EntryRemoved -= RemoveEntry;
 
             searchDebouncer?.Dispose();
-            DynamoFeatureFlagsManager.FlagsRetrieved -= TryInitializeDebouncer;
+            DynamoFeatureFlagsManager.FlagsRetrieved -= TryInitializeSearchFlags;
 
             base.Dispose();
         }
@@ -477,7 +484,7 @@ namespace Dynamo.ViewModels
             InsertClassesIntoTree(LibraryRootCategories);
 
             // If feature flags are already cached, try to initialize the debouncer
-            TryInitializeDebouncer();
+            TryInitializeSearchFlags();
         }
 
         private void AddEntry(NodeSearchElement entry)
@@ -928,22 +935,36 @@ namespace Dynamo.ViewModels
             if (string.IsNullOrEmpty(query))
                 return;
 
-            // A new search should cancel any existring seraches.
-            searchCancelTooken?.Cancel();
-            searchCancelTooken?.Dispose();
-            searchCancelTooken = new();
+            if (enableSeachThreading)
+            {
+                // A new search should cancel any existing searches.
+                searchCancelTooken?.Cancel();
+                searchCancelTooken?.Dispose();
+                searchCancelTooken = new();
 
-            // We run the searches on the thread pool to reduce the impact on the UI thread.
-            Task.Run(() =>
+                // We run the searches on the thread pool to reduce the impact on the UI thread.
+                Task.Run(() =>
+                {
+                    return Search(query, searchCancelTooken.Token);
+
+                }, searchCancelTooken.Token).ContinueWith((t, o) =>
+                {
+                    // This continuation will execute on the UI thread (forced by using FromCurrentSynchronizationContext())
+                    searchResults = new List<NodeSearchElementViewModel>(t.Result);
+
+                    FilteredResults = searchResults;
+                    UpdateSearchCategories();
+                }, TaskScheduler.FromCurrentSynchronizationContext(), TaskContinuationOptions.OnlyOnRanToCompletion);
+            }
+            else
             {
-                return Search(query, searchCancelTooken.Token);
- 
-            }, searchCancelTooken.Token).ContinueWith((t, o) =>
-            {
-                // This continuation will execute on the UI thread (forced by using FromCurrentSynchronizationContext())
-                FilteredResults = t.Result;
+                //Passing the second parameter as true will search using Lucene.NET
+                var foundNodes = Search(query);
+                searchResults = new List<NodeSearchElementViewModel>(foundNodes);
+
+                FilteredResults = searchResults;
                 UpdateSearchCategories();
-            }, TaskScheduler.FromCurrentSynchronizationContext(), TaskContinuationOptions.OnlyOnRanToCompletion);
+            }
         }
 
         /// <summary>
