@@ -85,71 +85,23 @@ namespace Dynamo.Wpf.Controls.SubControls
         /// <summary>
         /// Calculates the Y-axis values for the curve based on input limits and count.
         /// </summary>
-        public  List<double> GetLinearCurveYValues(double minX, double maxX, double minY, double maxY, int pointCount, double canvasSize)
+        public override List<double> GetCurveYValues(double minX, double maxX, int pointCount)
         {
-            var (calcMinY, calcMaxY) = GetCurveLimits(minX, maxX, canvasSize, false);
-            minY = Math.Max(minY, calcMinY);
-            maxY = Math.Min(maxY, calcMaxY);
-
-            // TODO: Return values when the curve is vertical ?
-            if (pointCount < 1) return null;
+            if (pointCount < 1 || controlPoint1.Point.X == controlPoint2.Point.X || double.IsNaN(LineEquation(0.0)))
+                return null;
 
             var values = new List<double>();
-            double step = (maxY-minY) / (pointCount -1) ;
+            double step = MaxWidth / (pointCount - 1);
 
             for (int i = 0; i < pointCount; i++)
             {
-                values.Add(minY + i * step);
+                double d = i * step;
+                double md = MaxHeight - LineEquation(d);
+                double rd = minX + (maxX - minX) * md / MaxHeight;
+                values.Add(Math.Round(rd, rounding));
             }
 
             return values;
-        }
-
-        /// <summary>
-        /// Calculates the X-axis values for the curve based on input limits and count.
-        /// </summary>
-        public List<double> GetLinearCurveXValues(double minX, double maxX, double minY, double maxY, int pointCount, double canvasSize)
-        {
-            var (calcMinX, calcMaxX) = GetCurveLimits(minY, maxY, canvasSize, true);
-            minX = Math.Max(minX, calcMinX);
-            maxX = Math.Min(maxX, calcMaxX);
-
-            // TODO: Return values when the curve is horizontal ?
-            if (pointCount < 1) return null;
-
-            var values = new List<double>();
-            double step = (maxX - minX) / (pointCount - 1);
-
-            for (int i = 0; i < pointCount; i++)
-            {
-                values.Add(minX + i * step);
-            }
-
-            return values;
-        }
-
-        private (double min, double max) GetCurveLimits(double minValue, double maxValue, double canvasSize, bool computeX)
-        {
-            double x1 = controlPoint1.Point.X;
-            double x2 = controlPoint2.Point.X;
-            double y1 = canvasSize - controlPoint1.Point.Y;
-            double y2 = canvasSize - controlPoint2.Point.Y;
-
-            // Determine which variable is independent
-            double independent1 = computeX ? y1 : x1;
-            double independent2 = computeX ? y2 : x2;
-            double dependent1 = computeX ? x1 : y1;
-            double dependent2 = computeX ? x2 : y2;
-
-            double dIndependent = (independent2 - independent1) / canvasSize;
-            double dDependent = (dependent2 - dependent1) / canvasSize;
-
-            if (Math.Abs(dIndependent) < double.Epsilon) return (dependent1, dependent2); // Avoid division by zero
-
-            double m = dDependent / dIndependent;
-            double b = dependent1 / canvasSize - m * independent1 / canvasSize;
-
-            return (Math.Max(m * minValue + b, minValue), Math.Min(m * maxValue + b, maxValue));
         }
     }
 }

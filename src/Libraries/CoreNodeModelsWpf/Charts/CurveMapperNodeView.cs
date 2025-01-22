@@ -209,38 +209,6 @@ namespace Dynamo.Wpf.Charts
                 ApplyBindingsToControlPoints(model.ControlPointCosine1, model, curveMapperControl);
                 ApplyBindingsToControlPoints(model.ControlPointCosine2, model, curveMapperControl);
 
-                // Tangent
-                model.ControlPointTangent1 = new CurveMapperControlPoint(
-                    new Point(0, curveMapperControl.DynamicCanvasSize * 0.5),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
-                );
-                model.ControlPointTangent2 = new CurveMapperControlPoint(
-                    new Point(curveMapperControl.DynamicCanvasSize, curveMapperControl.DynamicCanvasSize * 0.5),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
-                );
-                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointTangent1);
-                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointTangent2);
-                Canvas.SetZIndex(model.ControlPointTangent1, 20);
-                Canvas.SetZIndex(model.ControlPointTangent2, 20);
-
-                model.TangentCurve = new TangentCurve(
-                    model.ControlPointTangent1,
-                    model.ControlPointTangent2,
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize);
-                Canvas.SetZIndex(model.TangentCurve, 10);
-                curveMapperControl.GraphCanvas.Children.Add(model.TangentCurve.PathCurve);
-
-                model.ControlPointTangent1.CurveTangent = model.TangentCurve;
-                model.ControlPointTangent2.CurveTangent = model.TangentCurve;
-
-                ApplyBindingsToControlPoints(model.ControlPointTangent1, model, curveMapperControl);
-                ApplyBindingsToControlPoints(model.ControlPointTangent2, model, curveMapperControl);
-
                 // Parabolic curve
                 model.ControlPointParabolic1 = new CurveMapperControlPoint(
                     new Point(curveMapperControl.DynamicCanvasSize * 0.5, curveMapperControl.DynamicCanvasSize * 0.1),
@@ -331,7 +299,6 @@ namespace Dynamo.Wpf.Charts
                 AttachMouseUpEvent(model.ControlPointCosine1, model.ControlPointCosine2);
                 AttachMouseUpEvent(model.OrthoControlPointPerlin1, model.OrthoControlPointPerlin2,
                     model.ControlPointPerlin);
-                AttachMouseUpEvent(model.ControlPointTangent1, model.ControlPointTangent2);
                 AttachMouseUpEvent(model.ControlPointParabolic1, model.ControlPointParabolic2);
             };
         }
@@ -418,21 +385,6 @@ namespace Dynamo.Wpf.Charts
             if (model.CosineWave != null)
                 model.CosineWave.PathCurve.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
 
-            // Tangent wave
-            var tangentVisibilityBinding = new Binding("SelectedGraphType")
-            {
-                Source = model,
-                Converter = new GraphTypeToVisibilityConverter(),
-                ConverterParameter = GraphTypes.TangentWave,
-                Mode = BindingMode.OneWay
-            };
-            if (model.ControlPointTangent1 != null)
-                model.ControlPointTangent1.SetBinding(UIElement.VisibilityProperty, tangentVisibilityBinding);
-            if (model.ControlPointTangent2 != null)
-                model.ControlPointTangent2.SetBinding(UIElement.VisibilityProperty, tangentVisibilityBinding);
-            if (model.TangentCurve != null)
-                model.TangentCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, tangentVisibilityBinding);
-
             // Parabolic curve
             var parabolicVisibilityBinding = new Binding("SelectedGraphType")
             {
@@ -499,7 +451,6 @@ namespace Dynamo.Wpf.Charts
             DetachMouseUpEvent(curveMapperNodeModel.ControlPointCosine1, curveMapperNodeModel.ControlPointCosine2);
             DetachMouseUpEvent(curveMapperNodeModel.OrthoControlPointPerlin1, curveMapperNodeModel.OrthoControlPointPerlin2,
                 curveMapperNodeModel.ControlPointPerlin);
-            DetachMouseUpEvent(curveMapperNodeModel.ControlPointTangent1, curveMapperNodeModel.ControlPointTangent2);
             DetachMouseUpEvent(curveMapperNodeModel.ControlPointParabolic1, curveMapperNodeModel.ControlPointParabolic2);
         }
 

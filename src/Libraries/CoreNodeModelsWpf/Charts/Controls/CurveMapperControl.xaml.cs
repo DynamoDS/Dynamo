@@ -139,19 +139,6 @@ namespace CoreNodeModelsWpf.Charts.Controls
                         Canvas.SetZIndex(model.CosineWave.PathCurve, 10);
                     }
                 }
-                // Tangent wave
-                if (model.ControlPointTangent1 != null && model.ControlPointTangent2 != null)
-                {
-                    UpdateControlPoints(newCanvasSize, model.ControlPointTangent1, model.ControlPointTangent2);
-                    if (model.TangentCurve != null)
-                    {
-                        model.TangentCurve.MaxWidth = newCanvasSize;
-                        model.TangentCurve.MaxHeight = newCanvasSize;
-                        model.TangentCurve.Regenerate(model.ControlPointTangent1);
-                        model.TangentCurve.Regenerate(model.ControlPointTangent2);
-                        Canvas.SetZIndex(model.TangentCurve.PathCurve, 10);
-                    }
-                }
                 // Parabolic curve
                 if (model.ControlPointParabolic1 != null && model.ControlPointParabolic2 != null)
                 {

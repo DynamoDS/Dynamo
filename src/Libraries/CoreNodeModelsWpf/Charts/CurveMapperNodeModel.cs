@@ -203,14 +203,6 @@ namespace CoreNodeModelsWpf.Charts
         [JsonIgnore]
         public SineCurve CosineWave { get; set; }
 
-        // Tangent curve
-        [JsonIgnore]
-        public CurveMapperControlPoint ControlPointTangent1 { get; set; }
-        [JsonIgnore]
-        public CurveMapperControlPoint ControlPointTangent2 { get; set; }
-        [JsonIgnore]
-        public TangentCurve TangentCurve { get; set; }
-
         // Parabolic curve
         [JsonIgnore]
         public CurveMapperControlPoint ControlPointParabolic1 { get; set; }
@@ -286,16 +278,13 @@ namespace CoreNodeModelsWpf.Charts
 
             if (LinearCurve != null && SelectedGraphType == GraphTypes.LinearCurve)
             {
-                OutputValuesY = LinearCurve.GetLinearCurveYValues(
-                    minLimitX, maxLimitX, minLimitY, maxLimitY,
-                    pointsCount, CurveMapperControl.DynamicCanvasSize);
-                OutputValuesX = LinearCurve.GetLinearCurveXValues(
-                    minLimitX, maxLimitX, minLimitY, maxLimitY,
-                    pointsCount, CurveMapperControl.DynamicCanvasSize);
+                OutputValuesY = LinearCurve.GetCurveYValues(minLimitX, maxLimitX, pointsCount);
+                OutputValuesX = LinearCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
             }
             else if (BezierCurve != null && SelectedGraphType == GraphTypes.BezierCurve)
             {
-                OutputValuesY = BezierCurve.GetBezierCurveYValues(minLimitY, maxLimitY, pointsCount, CurveMapperControl.DynamicCanvasSize);
+                OutputValuesY = BezierCurve.GetBezierCurveYValues(minLimitY, maxLimitY,
+                    pointsCount, CurveMapperControl.DynamicCanvasSize);
                 OutputValuesX = BezierCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
             }
             else if (SineWave != null && SelectedGraphType == GraphTypes.SineWave)
@@ -435,14 +424,10 @@ namespace CoreNodeModelsWpf.Charts
         SineWave = 3,
         [Description("Cosine Wave")]
         CosineWave = 4,
-        [Description("Tangent Wave")]
-        TangentWave = 5,
-        [Description("Gaussian Wave")]
-        GaussianWave = 6,
         [Description("Parabolic Curve")]
-        ParabolicCurve = 7,
+        ParabolicCurve = 5,
         [Description("Perlin Noise")]
-        PerlinNoiseCurve = 8
+        PerlinNoiseCurve = 6
     }
 
     #endregion

@@ -20,9 +20,6 @@ namespace Dynamo.Wpf.Controls
 
         public bool IsOrthogonal { get; set; }
         public bool IsVertical { get; set; }
-
-        public CrossHair CrossHairHorizontal { get; set; }
-        public CrossHair CrossHairVertical { get; set; }
         public UVCoordText uvText { get; set; }
         public double LimitWidth { get; set; }
         public double LimitHeight { get; set; }
@@ -133,11 +130,6 @@ namespace Dynamo.Wpf.Controls
         public SineCurve CurveCosine { get; set; }
 
         /// <summary>
-        /// Gets or sets the associated tangent curve for the control point.
-        /// </summary>
-        public TangentCurve CurveTangent { get; set; }
-
-        /// <summary>
         /// Gets or sets the associated parabolic curve for the control point.
         /// </summary>
         public ParabolicCurve CurveParabolic { get; set; }
@@ -234,8 +226,6 @@ namespace Dynamo.Wpf.Controls
                 CurveSine.Regenerate();
             if (CurveCosine != null)
                 CurveCosine.Regenerate();
-            if (CurveTangent != null)
-                CurveTangent.Regenerate(this);
             if (CurveParabolic != null)
                 CurveParabolic.Regenerate(this);
             if (CurvePerlin != null)
