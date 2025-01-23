@@ -8,7 +8,7 @@ namespace Dynamo.Wpf.Utilities
 {
     static class CrashUtilities
     {
-        public enum ReportType
+        internal enum ReportType
         {
             Bug,
             Crash
