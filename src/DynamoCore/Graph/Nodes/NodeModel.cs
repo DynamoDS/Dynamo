@@ -1232,11 +1232,7 @@ namespace Dynamo.Graph.Nodes
         /// <returns>Assembly Name</returns>
         internal virtual AssemblyName GetNameOfAssemblyReferencedByNode()
         {
-            if (NameOfAssemblyReferencedByNode == null)
-            {
-                NameOfAssemblyReferencedByNode = GetType().Assembly.GetName();
-            }
-
+            NameOfAssemblyReferencedByNode ??= GetType().Assembly.GetName();
             return NameOfAssemblyReferencedByNode;
         }
 
