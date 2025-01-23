@@ -68,18 +68,18 @@ namespace PythonNodeModels
         /// The method returns the assembly name from which the node originated.
         /// </summary>
         /// <returns>Assembly Name</returns>
-        internal override string GetNameOfAssemblyReferencedByNode()
+        internal override AssemblyName GetNameOfAssemblyReferencedByNode()
         {
-            if (string.IsNullOrEmpty(cachedAsmName))
+            if (NameOfAssemblyReferencedByNode == null)
             {
                 var pyEng = PythonEngineManager.Instance.AvailableEngines.Where(x => x.Name.Equals(this.EngineName)).FirstOrDefault();
                 if (pyEng != null)
                 {
-                    cachedAsmName = pyEng.GetType().Assembly.FullName;
+                    NameOfAssemblyReferencedByNode = pyEng.GetType().Assembly.GetName();
                 }
             }
 
-            return cachedAsmName;
+            return NameOfAssemblyReferencedByNode;
         }
 
         /// <summary>

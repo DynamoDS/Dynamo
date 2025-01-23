@@ -1224,20 +1224,20 @@ namespace Dynamo.Graph.Nodes
         }
 
 
-        internal string cachedAsmName = null;
+        internal AssemblyName NameOfAssemblyReferencedByNode = null;
 
         /// <summary>
         /// The method returns the assembly name from which the node originated.
         /// </summary>
         /// <returns>Assembly Name</returns>
-        internal virtual string GetNameOfAssemblyReferencedByNode()
+        internal virtual AssemblyName GetNameOfAssemblyReferencedByNode()
         {
-            if (string.IsNullOrEmpty(cachedAsmName))
+            if (NameOfAssemblyReferencedByNode == null)
             {
-                cachedAsmName = GetType().Assembly.FullName;
+                NameOfAssemblyReferencedByNode = GetType().Assembly.GetName();
             }
 
-            return cachedAsmName;
+            return NameOfAssemblyReferencedByNode;
         }
 
         /// <summary>
