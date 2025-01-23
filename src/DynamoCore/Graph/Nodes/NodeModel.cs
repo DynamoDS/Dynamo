@@ -1224,7 +1224,7 @@ namespace Dynamo.Graph.Nodes
         }
 
 
-        internal AssemblyName NameOfAssemblyReferencedByNode = null;
+        protected AssemblyName NameOfAssemblyReferencedByNode = null;
 
         /// <summary>
         /// The method returns the assembly name from which the node originated.
