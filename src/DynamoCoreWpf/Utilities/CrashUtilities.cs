@@ -8,7 +8,13 @@ namespace Dynamo.Wpf.Utilities
 {
     static class CrashUtilities
     {
-        internal static string GithubNewIssueUrlFromCrashContent(object crashContent, string reportType = "Crash")
+        public enum ReportType
+        {
+            Bug,
+            Crash
+        }
+
+        internal static string GithubNewIssueUrlFromCrashContent(object crashContent, ReportType reportType = ReportType.Crash)
         {
             var baseUri = new UriBuilder(Configurations.GitHubBugReportingLink);
 
