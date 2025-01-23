@@ -12,7 +12,7 @@ namespace Dynamo.Wpf.Utilities
         {
             var baseUri = new UriBuilder(Configurations.GitHubBugReportingLink);
 
-            var issueTitle = "Issue report from Dynamo {0}";
+            var issueTitle = "Crash report from Dynamo {0}";
             var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.1.0+";
 
             // append the title and body to the URL as query parameters
