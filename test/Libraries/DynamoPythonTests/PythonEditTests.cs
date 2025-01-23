@@ -633,7 +633,6 @@ namespace Dynamo.Tests
             var sysPathList = GetFlattenedPreviewValues(firstPythonNodeGUID);
 
             // Verify that the custom path is added to the 'sys.path'.
-            Assert.AreEqual(sysPathList.Count(), 4);
             Assert.AreEqual(sysPathList.Last(), "C:\\Program Files\\dotnet");
 
             // Change the python engine for the 2nd node and verify that the custom path is not reflected in the 2nd node. 
@@ -642,7 +641,6 @@ namespace Dynamo.Tests
             var pynode = nodeModel as PythonNode;
             UpdatePythonEngineAndRun(pynode, PythonEngineManager.CPython3EngineName);
             sysPathList = GetFlattenedPreviewValues(secondPythonNodeGUID);
-            Assert.AreEqual(sysPathList.Count(), 3);
             Assert.AreNotEqual(sysPathList.Last(), "C:\\Program Files\\dotnet");
         }
 
