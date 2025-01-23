@@ -189,7 +189,7 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.3231"/>
+      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.3546"/>
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="3.0.2.6533" />
@@ -432,6 +432,7 @@
     <Compile Include="ViewModels\Preview\ConnectorAnchorViewModel.cs" />
     <Compile Include="ViewModels\Preview\ConnectorContextMenuViewModel.cs" />
     <Compile Include="ViewModels\RunSettingsViewModel.cs" />
+    <Compile Include="Utilities\ActionDebouncer.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
     <Compile Include="ViewModels\Search\NodeAutoCompleteSearchViewModel.cs" />

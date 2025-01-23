@@ -170,7 +170,36 @@ namespace DynamoCoreWpfTests
             }
 
             TestUtilities.WebView2Tag = string.Empty;
-            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Finished test: {TestContext.CurrentContext.Test.Name}");
+            using (var currentProc = Process.GetCurrentProcess())
+            {
+                int id = currentProc.Id;
+                var name = TestContext.CurrentContext.Test.Name;
+                System.Console.WriteLine($"PID {id} Finished test: {name} with DispatcherOpsCounter = {DispatcherOpsCounter}");
+                System.Console.WriteLine($"PID {id} Finished test: {name} with WorkingSet = {currentProc.WorkingSet64}");
+                System.Console.WriteLine($"PID {id} Finished test: {name} with PrivateBytes = {currentProc.PrivateMemorySize64}");
+                System.Console.Write($"PID {id} Finished test: {name} with GC Memory Info: ");
+                PrettyPrint(GC.GetGCMemoryInfo());
+            }
+        }
+
+        private static void PrettyPrint(object obj)
+        {
+            Type type = obj.GetType();
+            PropertyInfo[] properties = type.GetProperties();
+
+            Console.WriteLine("{");
+            foreach (var property in properties)
+            {
+                try
+                {
+                    Console.WriteLine($"  {property.Name}: {property.GetValue(obj)}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"  {property.Name}: {e.Message}");
+                }
+            }
+            Console.WriteLine("}");
         }
 
         protected virtual void GetLibrariesToPreload(List<string> libraries)

@@ -242,6 +242,11 @@ namespace Dynamo.Models
         internal bool NoNetworkMode { get; }
 
         /// <summary>
+        /// Locale forced by cli arguments
+        /// </summary>
+        internal string CLILocale { get; set; }
+
+        /// <summary>
         ///     The path manager that configures path information required for
         ///     Dynamo to function properly. See IPathManager interface for more
         ///     details.
@@ -589,6 +594,7 @@ namespace Dynamo.Models
             /// CLIMode indicates if we are running in DynamoCLI or DynamoWPFCLI mode.
             /// </summary>
             public bool CLIMode { get; set; }
+            public string CLILocale { get; set; }
         }
 
         /// <summary>
@@ -635,6 +641,7 @@ namespace Dynamo.Models
                 DefaultPythonEngine = defaultStartConfig.DefaultPythonEngine;
                 CLIMode = defaultStartConfig.CLIMode;
                 IsServiceMode = defaultStartConfig.IsServiceMode;
+                CLILocale = defaultStartConfig.CLILocale;
             }
 
             if (config is IStartConfigCrashReporter cerConfig)
@@ -685,7 +692,7 @@ namespace Dynamo.Models
 
             if (PreferenceSettings != null)
             {
-                SetUICulture(PreferenceSettings.Locale);
+                SetUICulture(CLILocale ?? PreferenceSettings.Locale);
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
                 PreferenceSettings.MessageLogged += LogMessage;
             }

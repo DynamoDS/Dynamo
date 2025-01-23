@@ -1332,7 +1332,7 @@ You can always redownload the package.</value>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>No node could be found with that Id.</value>
   </data>
-    <data name="MessageFailedToFindGroupById" xml:space="preserve">
+  <data name="MessageFailedToFindGroupById" xml:space="preserve">
     <value>No group could be found with that Id.</value>
   </data>
   <data name="MessageFailedToOpenCorruptedFile" xml:space="preserve">
@@ -4057,14 +4057,11 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="PackageDetailsCompatibilityWithSetup" xml:space="preserve">
     <value>Compatible with your current setup</value>
   </data>
-    <data name="PackageDetailsIncompatibilityWithSetup" xml:space="preserve">
+  <data name="PackageDetailsIncompatibilityWithSetup" xml:space="preserve">
     <value>Incompatible with your current setup</value>
   </data>
   <data name="PackageDetailsXCompatibilityWithSetup" xml:space="preserve">
     <value>Unknown compatibility with your current setup</value>
-  </data>
-  <data name="PackageDetailsSize" xml:space="preserve">
-    <value>Size</value>
   </data>
   <data name="PackageDetailsCompatibleVersionTooltip" xml:space="preserve">
     <value>This version should be compatible with your current setup</value>
@@ -4104,5 +4101,8 @@ To make this file into a new template, save it to a different folder, then move 
   </data>
   <data name="PackageVersionTooltip" xml:space="preserve">
     <value>Versions marked with .x include all versions in the specified major or minor release</value>
+  </data>
+  <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
+    <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
   </data>
 </root>
