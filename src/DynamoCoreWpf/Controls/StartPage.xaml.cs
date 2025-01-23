@@ -465,7 +465,7 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        private static string[] jsonKeys = { "Description", "Thumbnail", "Author" };
+        private readonly string[] jsonKeys = { "Description", "Thumbnail", "Author" };
         private Dictionary<string, string> DeserializeJsonFile(string filePath)
         {
             try
@@ -484,7 +484,7 @@ namespace Dynamo.UI.Controls
                         if (jr.TokenType == JsonToken.PropertyName)
                         {
                             var key = jr.Value?.ToString();
-                            if (jsonKeys.Contains(jr.Value))
+                            if (jsonKeys.Contains(key) && !data.ContainsKey(key))
                             {
                                 jr.Read();
                                 data[key] = jr.Value?.ToString() ?? "";
