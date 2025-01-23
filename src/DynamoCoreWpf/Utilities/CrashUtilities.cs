@@ -8,17 +8,17 @@ namespace Dynamo.Wpf.Utilities
 {
     static class CrashUtilities
     {
-        internal static string GithubNewIssueUrlFromCrashContent(object crashContent)
+        internal static string GithubNewIssueUrlFromCrashContent(object crashContent, string reportType = "Crash")
         {
             var baseUri = new UriBuilder(Configurations.GitHubBugReportingLink);
 
-            var issueTitle = "Crash report from Dynamo {0}";
+            var issueTitle = "{0} report from Dynamo {1}";
             var dynamoVersion = AssemblyHelper.GetDynamoVersion().ToString() ?? "2.1.0+";
 
             // append the title and body to the URL as query parameters
             // making sure we properly escape content since stack traces may contain characters not suitable
             // for use in URLs
-            var title = "title=" + Uri.EscapeDataString(string.Format(issueTitle, dynamoVersion));
+            var title = "title=" + Uri.EscapeDataString(string.Format(issueTitle, reportType, dynamoVersion));
             var template = "template=issue.yml";
             var fields = "dynamo_version=" + Uri.EscapeDataString(dynamoVersion)
                 + "&os=" +  Uri.EscapeDataString(Environment.OSVersion.ToString())
