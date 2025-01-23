@@ -164,7 +164,7 @@ namespace Dynamo.DocumentationBrowser
                     //This indicates in which location will be created the WebView2 cache folder
                     documentationBrowser.CreationProperties = new CoreWebView2CreationProperties()
                     {
-                        UserDataFolder = WebBrowserUserDataFolder
+                        UserDataFolder = DynamoModel.IsTestMode ? TestUtilities.UserDataFolderDuringTests() : WebBrowserUserDataFolder
                     };
                 }
 
