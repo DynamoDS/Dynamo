@@ -26,7 +26,7 @@ namespace DynamoCoreWpfTests
 {
     internal class TestDiagnostics
     {
-        private int DispatcherOpsCounter = 0;
+        internal int DispatcherOpsCounter = 0;
         // Use this flag to skip trying to execute all the dispatched operations during the test lifetime.
         // This flag should only be used very sparingly
         internal bool SkipDispatcherFlush = false;
@@ -112,6 +112,20 @@ namespace DynamoCoreWpfTests
         protected DynamoView View { get; set; }
         protected DynamoModel Model { get; set; }
 
+        // Use this flag to skip trying to execute all the dispatched operations during the test lifetime.
+        // This flag should only be used very sparingly
+        protected bool SkipDispatcherFlush {
+            get => testDiagnostics.SkipDispatcherFlush;
+            set => testDiagnostics.SkipDispatcherFlush = value;
+        }
+
+        [Obsolete("This property will be deprecated as it is for internal use only.")]
+        protected int DispatcherOpsCounter {
+            get => testDiagnostics.DispatcherOpsCounter;
+        } 
+
+        private TestDiagnostics testDiagnostics = new();
+
         protected string ExecutingDirectory
         {
             get { return Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location); }
@@ -122,6 +136,7 @@ namespace DynamoCoreWpfTests
         [SetUp]
         public virtual void Start()
         {
+            testDiagnostics.SetupStartupDiagnostics();
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
@@ -189,6 +204,8 @@ namespace DynamoCoreWpfTests
         [TearDown]
         public void Exit()
         {
+            testDiagnostics.SetupBeforeCleanupDiagnostics();
+
             //Ensure that we leave the workspace marked as
             //not having changes.
             ViewModel.HomeSpace.HasUnsavedChanges = false;
@@ -218,6 +235,7 @@ namespace DynamoCoreWpfTests
             {
                 Console.WriteLine(ex.StackTrace);
             }
+            testDiagnostics.SetupAfterCleanupDiagnostics();
         }
 
         protected virtual void GetLibrariesToPreload(List<string> libraries)
