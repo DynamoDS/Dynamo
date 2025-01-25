@@ -573,6 +573,21 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// This signifies if the node should be rendered
+        /// </summary>
+        [JsonIgnore]
+        public bool IsVisibleInCanvas
+        {
+            get => isVisibleInCanvas;
+            set
+            {
+                isVisibleInCanvas = value;
+                RaisePropertyChanged(nameof(isVisibleInCanvas));
+            }
+        }
+        private bool isVisibleInCanvas = true;
+
         private bool isNodeNewlyAdded;
         private ImageSource imageSource;
         private string imgGlyphOneSource;

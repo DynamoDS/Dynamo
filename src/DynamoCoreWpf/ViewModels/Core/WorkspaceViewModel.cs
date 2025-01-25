@@ -1862,7 +1862,36 @@ namespace Dynamo.ViewModels
             return foundModels;
         }
 
-        
+        internal void UpdateWorkspaceElementVisibility(double visibleWidth, double visibleHeight)
+        {
+            var width = visibleWidth / Zoom;
+            var height = visibleHeight / Zoom;
+            var left = -X / Zoom;
+            var top = -Y / Zoom;
+
+            var visibleRect = new Rect2D(left, top, width, height);
+            foreach (var node in Nodes)
+            {
+                node.IsVisibleInCanvas = visibleRect.IntersectsWith(node.NodeModel.Rect);
+            }
+
+            foreach (var note in Notes)
+            {
+                note.IsVisibleInCanvas = visibleRect.IntersectsWith(note.Model.Rect);
+            }
+
+            foreach (var group in Annotations)
+            {
+                group.IsVisibleInCanvas = visibleRect.IntersectsWith(group.AnnotationModel.Rect);
+            }
+#if DEBUG
+            var total = Nodes.Count + Notes.Count + Annotations.Count;
+            var hidden = Nodes.Count(n => !n.IsVisibleInCanvas) +
+                         Notes.Count(n => !n.IsVisibleInCanvas) +
+                         Annotations.Count(a => !a.IsVisibleInCanvas);
+            Debug.WriteLine($"{hidden}/{total} workspace elements hidden");
+#endif
+        }
     }
 
     public class ViewModelEventArgs : EventArgs

@@ -371,6 +371,21 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(GroupStyleList));
             }
         }
+
+        /// <summary>
+        /// This signifies if the node should be rendered
+        /// </summary>
+        [JsonIgnore]
+        public bool IsVisibleInCanvas
+        {
+            get => isVisibleInCanvas;
+            set
+            {
+                isVisibleInCanvas = value;
+                RaisePropertyChanged(nameof(isVisibleInCanvas));
+            }
+        }
+        private bool isVisibleInCanvas = true;
         #endregion
 
         #region Commands

@@ -149,6 +149,8 @@ namespace Dynamo.Views
             ViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
             DynamoSelection.Instance.Selection.CollectionChanged -= OnSelectionCollectionChanged;
             infiniteGridView.DetachFromZoomBorder(zoomBorder);
+
+            zoomBorder.ViewSettingsChanged -= CallUpdateWorkspaceElementVisibility;
         }
 
         /// <summary>
@@ -178,6 +180,22 @@ namespace Dynamo.Views
             ViewModel.Model.CurrentOffsetChanged += vm_CurrentOffsetChanged;
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
             infiniteGridView.AttachToZoomBorder(zoomBorder);
+
+            zoomBorder.ViewSettingsChanged += CallUpdateWorkspaceElementVisibility;
+        }
+
+        private void CallUpdateWorkspaceElementVisibility(ViewSettingsChangedEventArgs _) => UpdateWorkspaceElementVisibility();
+
+        private void UpdateWorkspaceElementVisibility()
+        {
+            double visibleWidth = outerCanvas?.ActualWidth ?? 0;
+            double visibleHeight = outerCanvas?.ActualHeight ?? 0;
+            if (visibleWidth <= 0 || visibleHeight <= 0)
+            {
+                return;
+            }
+
+            ViewModel.UpdateWorkspaceElementVisibility(visibleWidth, visibleHeight);
         }
 
         private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)

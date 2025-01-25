@@ -185,6 +185,9 @@
                                 Value="{Binding Top}" />
                         <Setter Property="Panel.ZIndex"
                                 Value="{Binding ZIndex}" />
+                        <Setter
+                            Property="Visibility"
+                            Value="{Binding IsVisibleInCanvas, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, FallbackValue=Visible}" />
                     </Style>
                 </ItemsControl.ItemContainerStyle>
 

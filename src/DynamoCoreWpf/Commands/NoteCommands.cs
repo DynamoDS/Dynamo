@@ -93,5 +93,20 @@ namespace Dynamo.ViewModels
                 return unpinFromNodeCommand;
             }
         }
+
+        /// <summary>
+        /// This signifies if the note should be rendered
+        /// </summary>
+        [JsonIgnore]
+        public bool IsVisibleInCanvas
+        {
+            get => isVisibleInCanvas;
+            set
+            {
+                isVisibleInCanvas = value;
+                RaisePropertyChanged(nameof(isVisibleInCanvas));
+            }
+        }
+        private bool isVisibleInCanvas = true;
     }
 }
