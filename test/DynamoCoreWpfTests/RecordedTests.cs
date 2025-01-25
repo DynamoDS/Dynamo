@@ -40,6 +40,7 @@ namespace DynamoCoreWpfTests
         protected System.Random randomizer = null;
         private IEnumerable<string> customNodesToBeLoaded;
         private CommandCallback commandCallback;
+        private TestDiagnostics testDiagnostics = new();
 
         // Geometry preloading related members.
         protected bool preloadGeometry;
@@ -50,36 +51,22 @@ namespace DynamoCoreWpfTests
         protected WorkspaceViewModel workspaceViewModel = null;
         protected double tolerance = 1e-6;
         protected double codeBlockPortHeight = Configurations.PortHeightInPixels;
-        protected int DispatcherOpsCounter = 0;
-
-        private void Hooks_OperationPosted(object sender, DispatcherHookEventArgs e)
-        {
-            e.Operation.Task.ContinueWith((t) => Interlocked.Decrement(ref DispatcherOpsCounter));
-            Interlocked.Increment(ref DispatcherOpsCounter);
-        }
 
         public override void Setup()
         {
-            base.Setup();
+            testDiagnostics.SetupStartupDiagnostics();
 
-            Dispatcher.CurrentDispatcher.Hooks.OperationPosted += Hooks_OperationPosted;
+            base.Setup();
             // Fixed seed randomizer for predictability.
             randomizer = new System.Random(123456);
         }
 
         public override void Cleanup()
         {
-            Dispatcher.CurrentDispatcher.Hooks.OperationPosted -= Hooks_OperationPosted;
-            DispatcherUtil.DoEventsLoop(() => DispatcherOpsCounter == 0);
-
-            var name = TestContext.CurrentContext.Test.Name;
-            using (var currentProc = Process.GetCurrentProcess())
-            {
-                System.Console.WriteLine($"PID {currentProc.Id} Finished test: {name} with DispatcherOpsCounter = {DispatcherOpsCounter}");
-            }
-
+            testDiagnostics.SetupBeforeCleanupDiagnostics();
             commandCallback = null;
             base.Cleanup();
+            testDiagnostics.SetupAfterCleanupDiagnostics();
         }
 
         #endregion

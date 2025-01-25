@@ -24,6 +24,86 @@ using TestServices;
 
 namespace DynamoCoreWpfTests
 {
+    internal class TestDiagnostics
+    {
+        private int DispatcherOpsCounter = 0;
+        // Use this flag to skip trying to execute all the dispatched operations during the test lifetime.
+        // This flag should only be used very sparingly
+        internal bool SkipDispatcherFlush = false;
+
+        private void Hooks_OperationPosted(object sender, DispatcherHookEventArgs e)
+        {
+            e.Operation.Task.ContinueWith((t) => {
+                Interlocked.Decrement(ref DispatcherOpsCounter);
+            }, TaskScheduler.Default);
+            Interlocked.Increment(ref DispatcherOpsCounter);
+        }
+
+        private void PrettyPrint(object obj)
+        {
+            Type type = obj.GetType();
+            PropertyInfo[] properties = type.GetProperties();
+
+            Console.WriteLine("{");
+            foreach (var property in properties)
+            {
+                try
+                {
+                    Console.WriteLine($"  {property.Name}: {property.GetValue(obj)}");
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine($"  {property.Name}: {e.Message}");
+                }
+            }
+            Console.WriteLine("}");
+        }
+
+        internal void SetupStartupDiagnostics()
+        {
+            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Start test: {TestContext.CurrentContext.Test.Name}");
+            TestUtilities.WebView2Tag = TestContext.CurrentContext.Test.Name;
+
+            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
+
+            if (!SkipDispatcherFlush)
+            {
+                Dispatcher.CurrentDispatcher.Hooks.OperationPosted += Hooks_OperationPosted;
+            }
+        }
+
+        internal void SetupBeforeCleanupDiagnostics()
+        {
+            if (!SkipDispatcherFlush)
+            {
+                Dispatcher.CurrentDispatcher.Hooks.OperationPosted -= Hooks_OperationPosted;
+
+                DispatcherUtil.DoEventsLoop(() => DispatcherOpsCounter == 0);
+            }
+        }
+
+        internal void SetupAfterCleanupDiagnostics()
+        {
+            TestUtilities.WebView2Tag = string.Empty;
+            using (var currentProc = Process.GetCurrentProcess())
+            {
+                int id = currentProc.Id;
+                var name = TestContext.CurrentContext.Test.Name;
+                System.Console.WriteLine($"PID {id} Finished test: {name} with DispatcherOpsCounter = {DispatcherOpsCounter}");
+                System.Console.WriteLine($"PID {id} Finished test: {name} with WorkingSet = {currentProc.WorkingSet64}");
+                System.Console.WriteLine($"PID {id} Finished test: {name} with PrivateBytes = {currentProc.PrivateMemorySize64}");
+                System.Console.Write($"PID {id} Finished test: {name} with GC Memory Info: ");
+                PrettyPrint(GC.GetGCMemoryInfo());
+            }
+        }
+
+        internal void SetupCleanupDiagnostics()
+        {
+            SetupBeforeCleanupDiagnostics();
+            SetupAfterCleanupDiagnostics();
+        }
+    }
+
     public class DynamoTestUIBase
     {
         protected Preloader preloader;
@@ -31,11 +111,6 @@ namespace DynamoCoreWpfTests
         protected DynamoViewModel ViewModel { get; set; }
         protected DynamoView View { get; set; }
         protected DynamoModel Model { get; set; }
-
-        // Use this flag to skip trying to execute all the dispatched operations during the test lifetime.
-        // This flag should only be used very sparingly
-        protected bool SkipDispatcherFlush = false;
-        protected int DispatcherOpsCounter = 0;
 
         protected string ExecutingDirectory
         {
@@ -47,9 +122,6 @@ namespace DynamoCoreWpfTests
         [SetUp]
         public virtual void Start()
         {
-            System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Start test: {TestContext.CurrentContext.Test.Name}");
-            TestUtilities.WebView2Tag = TestContext.CurrentContext.Test.Name;
-
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
@@ -87,13 +159,6 @@ namespace DynamoCoreWpfTests
             //create the view
             View = new DynamoView(ViewModel);
             View.Show();
-
-            SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
-
-            if (!SkipDispatcherFlush)
-            {
-                Dispatcher.CurrentDispatcher.Hooks.OperationPosted += Hooks_OperationPosted;
-            }
         }
 
         protected static void RaiseLoadedEvent(FrameworkElement element)
@@ -104,14 +169,6 @@ namespace DynamoCoreWpfTests
             RoutedEventArgs args = new RoutedEventArgs(FrameworkElement.LoadedEvent);
 
             eventMethod.Invoke(element, new object[] { args });
-        }
-
-        private void Hooks_OperationPosted(object sender, DispatcherHookEventArgs e)
-        {
-            e.Operation.Task.ContinueWith((t) => {
-                Interlocked.Decrement(ref DispatcherOpsCounter);
-            }, TaskScheduler.Default);
-            Interlocked.Increment(ref DispatcherOpsCounter);
         }
 
         /// <summary>
@@ -132,13 +189,6 @@ namespace DynamoCoreWpfTests
         [TearDown]
         public void Exit()
         {
-            if (!SkipDispatcherFlush)
-            {
-                Dispatcher.CurrentDispatcher.Hooks.OperationPosted -= Hooks_OperationPosted;
-
-                DispatcherUtil.DoEventsLoop(() => DispatcherOpsCounter == 0);
-            }
-
             //Ensure that we leave the workspace marked as
             //not having changes.
             ViewModel.HomeSpace.HasUnsavedChanges = false;
@@ -168,38 +218,6 @@ namespace DynamoCoreWpfTests
             {
                 Console.WriteLine(ex.StackTrace);
             }
-
-            TestUtilities.WebView2Tag = string.Empty;
-            using (var currentProc = Process.GetCurrentProcess())
-            {
-                int id = currentProc.Id;
-                var name = TestContext.CurrentContext.Test.Name;
-                System.Console.WriteLine($"PID {id} Finished test: {name} with DispatcherOpsCounter = {DispatcherOpsCounter}");
-                System.Console.WriteLine($"PID {id} Finished test: {name} with WorkingSet = {currentProc.WorkingSet64}");
-                System.Console.WriteLine($"PID {id} Finished test: {name} with PrivateBytes = {currentProc.PrivateMemorySize64}");
-                System.Console.Write($"PID {id} Finished test: {name} with GC Memory Info: ");
-                PrettyPrint(GC.GetGCMemoryInfo());
-            }
-        }
-
-        private static void PrettyPrint(object obj)
-        {
-            Type type = obj.GetType();
-            PropertyInfo[] properties = type.GetProperties();
-
-            Console.WriteLine("{");
-            foreach (var property in properties)
-            {
-                try
-                {
-                    Console.WriteLine($"  {property.Name}: {property.GetValue(obj)}");
-                }
-                catch (Exception e)
-                {
-                    Console.WriteLine($"  {property.Name}: {e.Message}");
-                }
-            }
-            Console.WriteLine("}");
         }
 
         protected virtual void GetLibrariesToPreload(List<string> libraries)
