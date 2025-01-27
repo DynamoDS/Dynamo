@@ -479,20 +479,26 @@ namespace Dynamo.ViewModels
             }
         }
 
+       /// <summary>
+       /// When enabled, some child wpf framework elements will not animate opacity changes.
+       /// Useful for improving performance during zoom.
+       /// </summary>
         [JsonIgnore]
-        public bool StopAnimations
+        public bool StopNodeViewOpacityAnimations
         {
-            get => stopAnimations;
+            get => stopNodeViewOpacityAnimations;
             set
             {
-                if (stopAnimations != value)
+                if (stopNodeViewOpacityAnimations != value)
                 {
-                    stopAnimations = value;
-                    RaisePropertyChanged(nameof(StopAnimations));
+                    stopNodeViewOpacityAnimations = value;
+                    RaisePropertyChanged(nameof(StopNodeViewOpacityAnimations));
                 }
             }
         }
-        private  bool stopAnimations = false;
+        private  bool stopNodeViewOpacityAnimations = false;
+
+        private int zoomAnimationThresholdFeatureFlagVal = 0;
 
 
 
@@ -632,7 +638,38 @@ namespace Dynamo.ViewModels
 
             geoScalingViewModel = new GeometryScalingViewModel(this.DynamoViewModel);
             geoScalingViewModel.ScaleValue = Convert.ToInt32(Math.Log10(Model.ScaleFactor));
+
+            DynamoFeatureFlagsManager.FlagsRetrieved += OnFlagsRetrieved;
+            //if we've already retrieved flags, grab the value,
+            SetStopNodeZoomAnimationBehavior((int)(DynamoModel.FeatureFlags?.CheckFeatureFlag<long>("zoom_opacity_animation_nodenum_threshold", 0) ?? 0));
         }
+
+        private void OnFlagsRetrieved()
+        {
+            zoomAnimationThresholdFeatureFlagVal = (int)(DynamoModel.FeatureFlags?.CheckFeatureFlag<long>("zoom_opacity_animation_nodenum_threshold", 0) ?? 0);
+            SetStopNodeZoomAnimationBehavior(zoomAnimationThresholdFeatureFlagVal);
+            DynamoFeatureFlagsManager.FlagsRetrieved -= OnFlagsRetrieved;
+        }
+
+        private void SetStopNodeZoomAnimationBehavior(int featureFlagValue)
+        {
+            //threshold mode so we can tune the cutoff.
+            if (featureFlagValue>0)
+            {
+                StopNodeViewOpacityAnimations = Nodes.Count > zoomAnimationThresholdFeatureFlagVal;
+            }
+            //always enable animations (ie, disable the feature flag)
+            else if (featureFlagValue == 0)
+            {
+                StopNodeViewOpacityAnimations = false;
+            }
+            //always disable animations
+            else if (featureFlagValue<0)
+            {
+                StopNodeViewOpacityAnimations = true;
+            }
+        }
+
         /// <summary>
         /// This event is triggered from Workspace Model. Used in instrumentation
         /// </summary>
@@ -904,7 +941,6 @@ namespace Dynamo.ViewModels
             nodeViewModel.NodeLogic.Modified -= OnNodeModified;
         }
 
-        private const int MaxNodesBeforeAnimationStops = 10;
 
         void Model_NodeRemoved(NodeModel node)
         {
@@ -922,9 +958,7 @@ namespace Dynamo.ViewModels
 
             PostNodeChangeActions();
 
-            //TODO might also need to set this when switching current workspace if we make it static.
-            //profile and decide if it's worth it to get rid of the wpf ancestor look up.
-            StopAnimations = Nodes.Count > MaxNodesBeforeAnimationStops;
+            SetStopNodeZoomAnimationBehavior(zoomAnimationThresholdFeatureFlagVal);
         }
 
         void Model_NodeAdded(NodeModel node)
@@ -941,7 +975,7 @@ namespace Dynamo.ViewModels
 
             PostNodeChangeActions();
 
-            StopAnimations = Nodes.Count > MaxNodesBeforeAnimationStops;
+            SetStopNodeZoomAnimationBehavior(zoomAnimationThresholdFeatureFlagVal);
         }
 
         void PostNodeChangeActions()
@@ -1899,4 +1933,5 @@ namespace Dynamo.ViewModels
             ViewModel = vm;
         }
     }
-}
+
+    }

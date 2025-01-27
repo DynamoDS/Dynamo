@@ -34,6 +34,9 @@ using Thickness = System.Windows.Thickness;
 
 namespace Dynamo.Controls
 {
+    /// <summary>
+    /// selects from one of two styles based on a boolean value.
+    /// </summary>
     public class BooleanToStyleConverter : IValueConverter
     {
         public Style TrueStyle { get; set; }
