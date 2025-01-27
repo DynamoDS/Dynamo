@@ -4092,4 +4092,7 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="PackageVersionTooltip" xml:space="preserve">
     <value>Versions marked with .x include all versions in the specified major or minor release</value>
   </data>
+  <data name="CannotAddNodeToWorkspace" xml:space="preserve">
+    <value>You cannot add a custom node to its own workspace.</value>
+  </data>
 </root>

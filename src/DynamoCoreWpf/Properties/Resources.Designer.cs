@@ -322,6 +322,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You cannot add a custom node to its own workspace..
+        /// </summary>
+        public static string CannotAddNodeToWorkspace {
+            get {
+                return ResourceManager.GetString("CannotAddNodeToWorkspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot Download Package.
         /// </summary>
         public static string CannotDownloadPackageMessageBoxTitle {

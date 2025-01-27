@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using CoreNodeModels.Properties;
 using Dynamo.Extensions;
+using Dynamo.Graph.Workspaces;
 using Dynamo.LibraryViewExtensionWebView2.Handlers;
 using Dynamo.LibraryViewExtensionWebView2.ViewModels;
 using Dynamo.LibraryViewExtensionWebView2.Views;
@@ -187,6 +188,19 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 {
                     this.disableObserver = true;
                 }
+
+                // check to make sure a custom node cannot be added to its own workspace.
+                if (dynamoViewModel.CurrentSpace is CustomNodeWorkspaceModel customNodeWorkspaceModel)
+                {
+                    var nodeGuid = Guid.Parse(nodeName);
+
+                    if (nodeGuid.Equals(customNodeWorkspaceModel.CustomNodeId))
+                    {
+                        dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.CannotAddNodeToWorkspace);
+                        return;
+                    }
+                }
+
                 //Create the node of given item name
                 var cmd = new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), nodeName, -1, -1, true, false);
                 commandExecutive.ExecuteCommand(cmd, Guid.NewGuid().ToString(), LibraryViewExtensionWebView2.ExtensionName);

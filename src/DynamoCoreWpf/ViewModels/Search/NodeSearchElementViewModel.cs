@@ -368,6 +368,21 @@ namespace Dynamo.Wpf.ViewModels
                 try
                 {
                     var nodeModel = Model.CreateNode();
+
+                    // check to make sure a custom node cannot be added to its own workspace.
+                    var dynamoViewModel = searchViewModel.dynamoViewModel;
+
+                    if (dynamoViewModel.CurrentSpace is CustomNodeWorkspaceModel customNodeWorkspaceModel)
+                    {
+                        var nodeGuid = Guid.Parse(nodeModel.CreationName);
+
+                        if (nodeGuid.Equals(customNodeWorkspaceModel.CustomNodeId))
+                        {
+                            dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.CannotAddNodeToWorkspace);
+                            return;
+                        }
+                    }
+
                     Clicked(nodeModel, Position);
                 }
                 catch (Exception ex)
