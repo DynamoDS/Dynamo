@@ -227,6 +227,12 @@ namespace CoreNodeModelsWpf.Charts
         [JsonIgnore]
         public PerlinCurve PerlinNoiseCurve { get; set; }
 
+        // Power noise
+        [JsonIgnore]
+        public CurveMapperControlPoint ControlPointPower { get; set; }
+        [JsonIgnore]
+        public PowerCurve PowerCurve { get; set; }
+
         #endregion
 
         #region Constructors
@@ -287,7 +293,8 @@ namespace CoreNodeModelsWpf.Charts
                 (SelectedGraphType == GraphTypes.LinearCurve && ControlPointLinear1.Point.X == ControlPointLinear2.Point.X) ||
                 (SelectedGraphType == GraphTypes.CosineWave && ControlPointCosine1.Point.X == ControlPointCosine2.Point.X) ||
                 (SelectedGraphType == GraphTypes.SineWave && ControlPointSine1.Point.X == ControlPointSine2.Point.X) ||
-                (SelectedGraphType == GraphTypes.ParabolicCurve && ControlPointParabolic1.Point.X == ControlPointParabolic2.Point.X)
+                (SelectedGraphType == GraphTypes.ParabolicCurve && ControlPointParabolic1.Point.X == ControlPointParabolic2.Point.X) ||
+                (SelectedGraphType == GraphTypes.PowerCurve && (ControlPointPower.Point.X == MinLimitX || ControlPointPower.Point.Y == MinLimitY))
             )
             {
                 ClearErrorsAndWarnings();
@@ -300,7 +307,7 @@ namespace CoreNodeModelsWpf.Charts
 
             if (LinearCurve != null && SelectedGraphType == GraphTypes.LinearCurve)
             {
-                OutputValuesY = LinearCurve.GetCurveYValues(minLimitX, maxLimitX, pointsCount);
+                OutputValuesY = LinearCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
                 OutputValuesX = LinearCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
             }
             else if (BezierCurve != null && SelectedGraphType == GraphTypes.BezierCurve)
@@ -328,6 +335,11 @@ namespace CoreNodeModelsWpf.Charts
             {
                 OutputValuesY = PerlinNoiseCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
                 OutputValuesX = PerlinNoiseCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
+            }
+            else if (PowerCurve != null && SelectedGraphType == GraphTypes.PowerCurve)
+            {
+                OutputValuesY = PowerCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
+                OutputValuesX = PowerCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
             }
         }
 
@@ -543,7 +555,9 @@ namespace CoreNodeModelsWpf.Charts
         [Description("Parabolic Curve")]
         ParabolicCurve = 5,
         [Description("Perlin Noise")]
-        PerlinNoiseCurve = 6
+        PerlinNoiseCurve = 6,
+        [Description("Power Curve")]
+        PowerCurve = 7
     }
 
     #endregion

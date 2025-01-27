@@ -140,6 +140,11 @@ namespace Dynamo.Wpf.Controls
         public PerlinCurve CurvePerlin { get; set; }
 
         /// <summary>
+        /// Gets or sets the associated parabolic curve for the control point.
+        /// </summary>
+        public PowerCurve CurvePower { get; set; }
+
+        /// <summary>
         /// Gets or sets the associated control curve for the control point.
         /// </summary>
         public ControlLine ControlLineBezier { get; set; }
@@ -230,6 +235,8 @@ namespace Dynamo.Wpf.Controls
                 CurveParabolic.Regenerate(this);
             if (CurvePerlin != null)
                 CurvePerlin.Regenerate();
+            if (CurvePower != null)
+                CurvePower.Regenerate();
         }
 
         private void Thumb_DragStarted(object sender, DragStartedEventArgs e)

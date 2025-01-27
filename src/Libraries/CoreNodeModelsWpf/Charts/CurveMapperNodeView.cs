@@ -287,6 +287,27 @@ namespace Dynamo.Wpf.Charts
                 ApplyBindingsToControlPoints(model.OrthoControlPointPerlin2, model, curveMapperControl);
                 ApplyBindingsToControlPoints(model.ControlPointPerlin, model, curveMapperControl);
 
+                // Power curve
+                model.ControlPointPower = new CurveMapperControlPoint(
+                    new Point(curveMapperControl.DynamicCanvasSize * 0.5, curveMapperControl.DynamicCanvasSize * 0.5),
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                );
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointPower);
+                Canvas.SetZIndex(model.ControlPointPower, 20);
+
+                model.PowerCurve = new  PowerCurve(
+                    model.ControlPointPower,
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize);
+                Canvas.SetZIndex(model.PowerCurve, 10);
+                curveMapperControl.GraphCanvas.Children.Add(model.PowerCurve.PathCurve);
+
+                model.ControlPointPower.CurvePower = model.PowerCurve;
+
+                ApplyBindingsToControlPoints(model.ControlPointPower, model, curveMapperControl);
+
                 #endregion
 
                 BindVisibility(model);
@@ -301,6 +322,7 @@ namespace Dynamo.Wpf.Charts
                 AttachMouseUpEvent(model.OrthoControlPointPerlin1, model.OrthoControlPointPerlin2,
                     model.ControlPointPerlin);
                 AttachMouseUpEvent(model.ControlPointParabolic1, model.ControlPointParabolic2);
+                AttachMouseUpEvent(model.ControlPointPower);
             };
         }
 
@@ -417,6 +439,20 @@ namespace Dynamo.Wpf.Charts
                 model.ControlPointPerlin.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
             if (model.PerlinNoiseCurve != null)
                 model.PerlinNoiseCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
+
+            // Power curve
+            var powerVisibilityBinding = new Binding("SelectedGraphType")
+            {
+                Source = model,
+                Converter = new GraphTypeToVisibilityConverter(),
+                ConverterParameter = GraphTypes.PowerCurve,
+                Mode = BindingMode.OneWay
+            };
+            if (model.ControlPointPower != null)
+                model.ControlPointPower.SetBinding(UIElement.VisibilityProperty, powerVisibilityBinding);
+            if (model.PowerCurve != null)
+                model.PowerCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, powerVisibilityBinding);
+
         }
 
         /// <summary>
@@ -453,6 +489,7 @@ namespace Dynamo.Wpf.Charts
             DetachMouseUpEvent(curveMapperNodeModel.OrthoControlPointPerlin1, curveMapperNodeModel.OrthoControlPointPerlin2,
                 curveMapperNodeModel.ControlPointPerlin);
             DetachMouseUpEvent(curveMapperNodeModel.ControlPointParabolic1, curveMapperNodeModel.ControlPointParabolic2);
+            DetachMouseUpEvent(curveMapperNodeModel.ControlPointPower);
         }
 
         private void AttachMouseUpEvent(params CurveMapperControlPoint[] controlPoints)

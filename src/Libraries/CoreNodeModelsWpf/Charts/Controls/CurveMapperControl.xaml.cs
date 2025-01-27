@@ -165,6 +165,18 @@ namespace CoreNodeModelsWpf.Charts.Controls
                         Canvas.SetZIndex(model.PerlinNoiseCurve.PathCurve, 10);
                     }
                 }
+                // Power curve
+                if (model.ControlPointPower != null)
+                {
+                    UpdateControlPoints(newCanvasSize, model.ControlPointPower);
+                    if (model.PowerCurve != null)
+                    {
+                        model.PowerCurve.MaxWidth = newCanvasSize;
+                        model.PowerCurve.MaxHeight = newCanvasSize;
+                        model.PowerCurve.Regenerate();
+                        Canvas.SetZIndex(model.PowerCurve.PathCurve, 10);
+                    }
+                }
 
                 previousCanvasSize = newCanvasSize;
 
@@ -315,7 +327,11 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     model.ControlPointPerlin.Point = new Point(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
                     model.PerlinNoiseCurve?.Regenerate();
                     break;
-                // Add mode curves here
+                case GraphTypes.PowerCurve:
+                    model.ControlPointPower.Point = new Point(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
+                    model.PowerCurve?.Regenerate();
+                    break;
+                    // Add mode curves here
             }
 
             // Force Output Recalculation
