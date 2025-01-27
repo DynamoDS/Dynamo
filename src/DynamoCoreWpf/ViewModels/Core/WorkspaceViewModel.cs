@@ -482,6 +482,9 @@ namespace Dynamo.ViewModels
        /// <summary>
        /// When enabled, some child wpf framework elements will not animate opacity changes.
        /// Useful for improving performance during zoom.
+       /// TODO DYN-8193 a future optimiztion if found to be neccesary is to modify the styles this flag controls
+       /// to set visibility instead of opacity, this will likely lead to many fewers elements in the visual tree to
+       /// layout and render.
        /// </summary>
         [JsonIgnore]
         public bool StopNodeViewOpacityAnimations
