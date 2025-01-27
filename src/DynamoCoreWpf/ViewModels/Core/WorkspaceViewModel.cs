@@ -641,7 +641,8 @@ namespace Dynamo.ViewModels
 
             DynamoFeatureFlagsManager.FlagsRetrieved += OnFlagsRetrieved;
             //if we've already retrieved flags, grab the value,
-            SetStopNodeZoomAnimationBehavior((int)(DynamoModel.FeatureFlags?.CheckFeatureFlag<long>("zoom_opacity_animation_nodenum_threshold", 0) ?? 0));
+            zoomAnimationThresholdFeatureFlagVal = (int)(DynamoModel.FeatureFlags?.CheckFeatureFlag<long>("zoom_opacity_animation_nodenum_threshold", 0) ?? 0);
+            SetStopNodeZoomAnimationBehavior(zoomAnimationThresholdFeatureFlagVal);
         }
 
         private void OnFlagsRetrieved()
@@ -656,7 +657,7 @@ namespace Dynamo.ViewModels
             //threshold mode so we can tune the cutoff.
             if (featureFlagValue>0)
             {
-                StopNodeViewOpacityAnimations = Nodes.Count > zoomAnimationThresholdFeatureFlagVal;
+                StopNodeViewOpacityAnimations = Nodes.Count > featureFlagValue;
             }
             //always enable animations (ie, disable the feature flag)
             else if (featureFlagValue == 0)
