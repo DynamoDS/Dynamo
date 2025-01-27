@@ -502,6 +502,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The provided original values cannot be redistributed using the curve equation..
+        /// </summary>
+        public static string CurveMapperInputWarning {
+            get {
+                return ResourceManager.GetString("CurveMapperInputWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Number of values to generate.
         ///
         ///double.

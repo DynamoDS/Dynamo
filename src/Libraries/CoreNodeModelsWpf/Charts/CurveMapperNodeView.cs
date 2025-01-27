@@ -29,6 +29,7 @@ namespace Dynamo.Wpf.Charts
             curveMapperControl.DataContext = model;
             curveMapperNodeModel = model;
             model.CurveMapperControl = curveMapperControl;
+            model.EngineController = nodeView.ViewModel.DynamoViewModel.EngineController;
 
             // Add the control to the NodeView's inputGrid
             nodeView.inputGrid.Children.Add(curveMapperControl);

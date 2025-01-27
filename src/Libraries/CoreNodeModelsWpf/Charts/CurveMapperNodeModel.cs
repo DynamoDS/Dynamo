@@ -1,6 +1,7 @@
 using Autodesk.DesignScript.Runtime;
 using CoreNodeModelsWpf.Charts.Controls;
 using CoreNodeModelsWpf.Converters;
+using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
 using Dynamo.Wpf.Controls;
 using Dynamo.Wpf.Controls.SubControls;
@@ -8,9 +9,12 @@ using Dynamo.Wpf.Properties;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using ProtoCore.AST.AssociativeAST;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
+using System.Linq;
 
 namespace CoreNodeModelsWpf.Charts
 {
@@ -23,6 +27,8 @@ namespace CoreNodeModelsWpf.Charts
     {
         [JsonIgnore]
         public CurveMapperControl CurveMapperControl { get; set; }
+        public EngineController EngineController { get; set; }
+
 
         #region Input | Output
 
@@ -276,6 +282,22 @@ namespace CoreNodeModelsWpf.Charts
             if (CurveMapperControl == null)
                 return;
 
+            // Ensure at least 2 points and a non-vertical curve; otherwise, display a warning.
+            if (PointsCount < 2 ||
+                (SelectedGraphType == GraphTypes.LinearCurve && ControlPointLinear1.Point.X == ControlPointLinear2.Point.X) ||
+                (SelectedGraphType == GraphTypes.CosineWave && ControlPointCosine1.Point.X == ControlPointCosine2.Point.X) ||
+                (SelectedGraphType == GraphTypes.SineWave && ControlPointSine1.Point.X == ControlPointSine2.Point.X) ||
+                (SelectedGraphType == GraphTypes.ParabolicCurve && ControlPointParabolic1.Point.X == ControlPointParabolic2.Point.X)
+            )
+            {
+                ClearErrorsAndWarnings();
+                Warning(CoreNodeModelWpfResources.CurveMapperInputWarning, isPersistent: true);
+            }
+            else
+            {
+                ClearErrorsAndWarnings();
+            }
+
             if (LinearCurve != null && SelectedGraphType == GraphTypes.LinearCurve)
             {
                 OutputValuesY = LinearCurve.GetCurveYValues(minLimitX, maxLimitX, pointsCount);
@@ -356,6 +378,16 @@ namespace CoreNodeModelsWpf.Charts
         [IsVisibleInDynamoLibrary(false)]
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
+            //// This requires the input nodes to be executed.
+            //// If the value of input node changes, the graph will still need to execute twice,
+            //// once for the new value to be registered and the second time for the value to be passes to
+            //// the property
+            //if (InPorts[0].IsConnected) MinLimitX = GetInputValueOrDefault(0, minLimitX);
+            //if (InPorts[1].IsConnected) MaxLimitX = GetInputValueOrDefault(1, maxLimitX);
+            //if (InPorts[2].IsConnected) MinLimitY = GetInputValueOrDefault(2, minLimitY);
+            //if (InPorts[3].IsConnected) MaxLimitY = GetInputValueOrDefault(3, maxLimitY);
+            //if (InPorts[4].IsConnected) PointsCount = GetInputValueOrDefault(4, pointsCount);
+
             // Assign to output ports
             var xValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode());
             var yValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), AstFactory.BuildNullNode());
@@ -407,6 +439,90 @@ namespace CoreNodeModelsWpf.Charts
         }
 
         #endregion
+
+
+        private double GetInputValueOrDefault(int portIndex, double defaultValue)
+        {
+            // Ensure the port index is valid
+            if (portIndex < 0 || portIndex >= InPorts.Count || !InPorts[portIndex].IsConnected)
+                return defaultValue;
+
+            var connector = InPorts[portIndex].Connectors.FirstOrDefault();
+            if (connector == null) return defaultValue;
+
+            var inputNode = connector.Start.Owner as NodeModel;
+            if (inputNode == null) return defaultValue;
+
+            int inputNodeIndex = connector.Start.Index;
+
+            // Ensure EngineController is not null
+            if (this.EngineController == null) return defaultValue;
+
+            var inputNodeId = inputNode.GetAstIdentifierForOutputIndex(inputNodeIndex).Name;
+
+            var inputNodeMirror = this.EngineController.GetMirror(inputNodeId);
+            if (inputNodeMirror == null || inputNodeMirror.GetData() == null)
+                return defaultValue;
+
+            object inputNodeObject;
+
+            if (inputNodeMirror.GetData().IsCollection)
+                inputNodeObject = inputNodeMirror.GetData().GetElements().Select(x => x.Data).FirstOrDefault();
+            else
+                inputNodeObject = inputNodeMirror.GetData().Data;
+
+            if (inputNodeObject == null) return defaultValue;
+
+            if (double.TryParse(inputNodeObject.ToString(), System.Globalization.NumberStyles.Any,
+                                System.Globalization.CultureInfo.InvariantCulture, out double parsedValue))
+            {
+                return parsedValue;
+            }
+
+            return defaultValue;
+        }
+        private int GetInputValueOrDefault(int portIndex, int defaultValue)
+        {
+            // Ensure the port index is valid and connected
+            if (portIndex < 0 || portIndex >= InPorts.Count || !InPorts[portIndex].IsConnected)
+                return defaultValue;
+
+            var connector = InPorts[portIndex].Connectors.FirstOrDefault();
+            if (connector == null) return defaultValue;
+
+            var inputNode = connector.Start.Owner as NodeModel;
+            if (inputNode == null) return defaultValue;
+
+            int inputNodeIndex = connector.Start.Index;
+
+            // Ensure EngineController is not null
+            if (this.EngineController == null) return defaultValue;
+
+            var inputNodeId = inputNode.GetAstIdentifierForOutputIndex(inputNodeIndex).Name;
+
+            var inputNodeMirror = this.EngineController.GetMirror(inputNodeId);
+            if (inputNodeMirror == null || inputNodeMirror.GetData() == null)
+                return defaultValue;
+
+            object inputNodeObject;
+
+            if (inputNodeMirror.GetData().IsCollection)
+                inputNodeObject = inputNodeMirror.GetData().GetElements().Select(x => x.Data).FirstOrDefault();
+            else
+                inputNodeObject = inputNodeMirror.GetData().Data;
+
+            if (inputNodeObject == null) return defaultValue;
+
+            if (int.TryParse(inputNodeObject.ToString(), System.Globalization.NumberStyles.Any,
+                             System.Globalization.CultureInfo.InvariantCulture, out int parsedValue))
+            {
+                return parsedValue;
+            }
+
+            return defaultValue;
+        }
+
+
     }
 
     #region GraphTypes
