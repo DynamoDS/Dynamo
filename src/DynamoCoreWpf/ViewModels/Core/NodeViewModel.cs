@@ -11,6 +11,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Configuration;
+using Dynamo.Controls;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
@@ -20,6 +21,7 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Selection;
+using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Core;
 using Newtonsoft.Json;
 using Point = System.Windows.Point;
@@ -31,7 +33,7 @@ namespace Dynamo.ViewModels
     /// Interaction logic for dynControl.xaml
     /// </summary>
 
-    public partial class NodeViewModel : ViewModelBase
+    public partial class NodeViewModel : ViewModelBase, IWorkspaceElement
     {
         #region delegates
         public delegate void SetToolTipDelegate(string message);
@@ -586,7 +588,9 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(isVisibleInCanvas));
             }
         }
-        private bool isVisibleInCanvas = true;
+        private bool isVisibleInCanvas = false;
+
+        public Rect2D Rect => NodeModel.Rect;
 
         private bool isNodeNewlyAdded;
         private ImageSource imageSource;

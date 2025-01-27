@@ -1,9 +1,11 @@
-﻿using Dynamo.UI.Commands;
+using Dynamo.Controls;
+using Dynamo.UI.Commands;
+using Dynamo.Utilities;
 using Newtonsoft.Json;
 
 namespace Dynamo.ViewModels
 {
-    public partial class NoteViewModel
+    public partial class NoteViewModel: IWorkspaceElement
     {
         private DelegateCommand _selectCommand;
         [JsonIgnore]
@@ -107,6 +109,8 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(isVisibleInCanvas));
             }
         }
-        private bool isVisibleInCanvas = true;
+        private bool isVisibleInCanvas = false;
+
+        public Rect2D Rect => Model.Rect;
     }
 }

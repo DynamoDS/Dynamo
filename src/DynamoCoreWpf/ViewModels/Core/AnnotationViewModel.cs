@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Configuration;
+using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -20,7 +21,7 @@ using Color = System.Windows.Media.Color;
 
 namespace Dynamo.ViewModels
 {
-    public class AnnotationViewModel : ViewModelBase
+    public class AnnotationViewModel : ViewModelBase, IWorkspaceElement
     {
         private AnnotationModel annotationModel;
         private IEnumerable<PortModel> originalInPorts;
@@ -385,7 +386,10 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(isVisibleInCanvas));
             }
         }
-        private bool isVisibleInCanvas = true;
+        private bool isVisibleInCanvas = false;
+
+        public Rect2D Rect => AnnotationModel.Rect;
+
         #endregion
 
         #region Commands
