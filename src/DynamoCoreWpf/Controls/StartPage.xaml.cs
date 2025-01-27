@@ -466,13 +466,38 @@ namespace Dynamo.UI.Controls
         }
 
         private readonly string[] jsonKeys = { "Description", "Thumbnail", "Author" };
+        private readonly Dictionary<string, object> propertyLookup = [];
+        private static DefaultJsonNameTable propertyTable = null;
+
+        private class GraphData
+        {
+            public string Author = "";
+            public string Description = "";
+            public string Thumbnail = "";
+        }
+
+        private GraphData DeserializeJsonFileTest(string filePath)
+        {
+            return JsonConvert.DeserializeObject<GraphData>(File.ReadAllText(filePath));
+        }
+
         private Dictionary<string, string> DeserializeJsonFile(string filePath)
         {
+            if (propertyTable == null)
+            {
+                propertyTable = new DefaultJsonNameTable();
+                foreach (var pn in jsonKeys)
+                {
+                    propertyLookup[pn] = propertyTable.Add(pn);
+                }
+            }
+
             try
             {
                 var data = new Dictionary<string, string>();
+                // JsonTextRead will automatically dispose of the stream reader
                 using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
-                using (var jr = new JsonTextReader(new StreamReader(fs))) //will dispose of the stream reader
+                using (var jr = new JsonTextReader(new StreamReader(fs)) { PropertyNameTable = propertyTable })
                 {
                     while(jr.Read())
                     {
@@ -481,17 +506,23 @@ namespace Dynamo.UI.Controls
                             break;
                         }
 
+                        if (jr.Depth != 1)
+                        {
+                            continue;
+                        }
+
                         if (jr.TokenType == JsonToken.PropertyName)
                         {
-                            var key = jr.Value?.ToString();
-                            if (jsonKeys.Contains(key) && !data.ContainsKey(key))
+                            foreach (var prop in propertyLookup)
                             {
-                                jr.Read();
-                                data[key] = jr.Value?.ToString() ?? "";
+                                if (jr.Value == prop.Value)
+                                {
+                                    data[prop.Key] = jr.ReadAsString() ?? "";
+                                    break;
+                                }
                             }
                         }
                     }
-                    
                 }
 
                 return data;
@@ -558,6 +589,7 @@ namespace Dynamo.UI.Controls
             try
             {
                 var jsonObject = DeserializeJsonFile(filePath);
+                //var test = DeserializeJsonFileTest(filePath);
                 var description = jsonObject?.TryGetValue("Description", out var description_) == true ?
                     description_ : string.Empty;
                 var author = jsonObject?.TryGetValue("Author", out var author_) == true ?
