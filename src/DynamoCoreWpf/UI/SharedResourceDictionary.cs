@@ -67,7 +67,37 @@ namespace Dynamo.UI
         private static ResourceDictionary outPortsDictionary;
         private static ResourceDictionary inPortsDictionary;
         private static ResourceDictionary _liveChartDictionary;
-        
+
+
+        public static void Clear()
+        {
+            _dynamoModernDictionary?.Clear();
+            _dynamoModernDictionary = null;
+            _dataTemplatesDictionary?.Clear();
+            _dataTemplatesDictionary = null;
+            _dynamoColorsAndBrushesDictionary?.Clear();
+            _dynamoColorsAndBrushesDictionary = null;
+            _dynamoConvertersDictionary?.Clear();
+            _dynamoConvertersDictionary = null;
+            _dynamoTextDictionary?.Clear();
+            _dynamoTextDictionary = null;
+            _menuStyleDictionary?.Clear();
+            _menuStyleDictionary = null;
+            _toolbarStyleDictionary?.Clear();
+            _toolbarStyleDictionary = null;
+            _connectorsDictionary?.Clear();
+            _connectorsDictionary = null;
+            _portsDictionary?.Clear();
+            _portsDictionary = null;
+            _sidebarGridDictionary?.Clear();
+            _sidebarGridDictionary = null;
+            outPortsDictionary?.Clear();
+            outPortsDictionary = null;
+            inPortsDictionary?.Clear();
+            inPortsDictionary = null;
+            _liveChartDictionary?.Clear();
+            _liveChartDictionary = null;
+        }
 
         public static string ThemesDirectory 
         {
