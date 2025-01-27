@@ -89,8 +89,10 @@ namespace DynamoCoreWpfTests
             var ss = new Dynamo.UI.Views.SplashScreen();
             ss.Title = "Dynamo SplashScreen Test";
 
+            bool navigationCompletedHit = false;
             void WebView_NavigationCompleted(object sender, Microsoft.Web.WebView2.Core.CoreWebView2NavigationCompletedEventArgs e)
             {
+                navigationCompletedHit = true;
                 ss.webView.NavigationCompleted -= WebView_NavigationCompleted;
 
                 IntPtr WindowToFind = FindWindow(null, "Dynamo SplashScreen Test");
@@ -99,16 +101,16 @@ namespace DynamoCoreWpfTests
                 // Simulate clicking on the close button several times while the main thread is stuck waiting.
                 _ = Task.Run(() =>
                 {
-                    Thread.Sleep(100);
+                    Thread.Sleep(200);
                     _ = SendMessage(WindowToFind, (int)WindowsMessage.WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
                 });
                 _ = Task.Run(() =>
                 {
-                    Thread.Sleep(100);
+                    Thread.Sleep(200);
                     _ = SendMessage(WindowToFind, (int)WindowsMessage.WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
                 });
 
-                Task.Delay(1000).Wait();
+                Task.Delay(2000).Wait();
             }
             ss.webView.NavigationCompleted += WebView_NavigationCompleted;
 
@@ -122,7 +124,9 @@ namespace DynamoCoreWpfTests
 
             ss.Show();
 
-            DispatcherUtil.DoEventsLoop(() => windowClosed, 50);
+            DispatcherUtil.DoEventsLoop(() => windowClosed, 120);
+
+            Assert.IsTrue(navigationCompletedHit, "The navigationCompleted handler should have been hit");
 
             ss.Closed -= WindowClosed;
 
