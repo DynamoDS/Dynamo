@@ -1,8 +1,6 @@
 using System;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using Dynamo.Models;
 using Dynamo.Wpf.Properties;
 using DynamoUtilities;
 using Microsoft.Web.WebView2.Core;
@@ -26,6 +24,7 @@ namespace Dynamo.Wpf.Utilities
         public DynamoWebView2() : base()
         {
             tag = TestUtilities.WebView2Tag;
+            DefaultBackgroundColor = System.Drawing.Color.FromArgb(0, 0, 0, 0);
         }
 
         /// <summary>

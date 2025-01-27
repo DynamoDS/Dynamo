@@ -93,6 +93,7 @@
     </Target>
 
     <ItemGroup>
+    <None Remove="Packages\PackageManagerWizard\build\index.html" />
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="Packages\DynamoHome\build\index.bundle.js" />
@@ -499,6 +500,7 @@
     </Compile>
     <Compile Include="Views\HomePage\HomePage.xaml.cs" />
     <Compile Include="Views\Input\ParameterEditor.cs" />
+    <Compile Include="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\CustomBrowserControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\FilterTagControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml.cs" />
@@ -583,6 +585,9 @@
     </Compile>
     <Compile Include="Views\Core\WorkspaceView.xaml.cs">
       <DependentUpon>WorkspaceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml.cs">
+        <DependentUpon>PackageManagerWizard.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\WpfUtilities.cs" />
     <Compile Include="Controls\ZoomBorder.cs" />
@@ -873,6 +878,7 @@
     <EmbeddedResource Include="UI\GuidedTour\DynamoOnboardingGuide_HouseCreationDS.dyn">
 	</EmbeddedResource>
     <None Include="ViewModels\Watch3D\shaderSource\CompileShaders.bat" />
+    <Resource Include="Packages\PackageManagerWizard\build\index.html" />
     <Resource Include="UI\Images\AboutWindow\logo_about_dark.png">
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Resource>
@@ -1625,6 +1631,12 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
@@ -1839,6 +1851,9 @@
     <None Update="Views\HomePage\HomePage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
+    <None Update="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
     <None Update="Views\PackageManager\Controls\CustomBrowserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
@@ -1860,6 +1875,9 @@
     <None Update="Views\PackageManager\Pages\PublishPackageSelectPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
+    <None Update="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml">
+        <Generator>MSBuild:Compile</Generator>
+    </None>
   </ItemGroup>
  <Target Name="AfterBuildOps" AfterTargets="Build">
     <ItemGroup>
@@ -1867,5 +1885,11 @@
     </ItemGroup>
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
     <Copy SourceFiles="@(ExternTuneUpPkg)" DestinationFolder="$(OutputPath)\Built-In Packages\packages\TuneUp\%(RecursiveDir)" />
+  </Target>
+  <Target Name="CopyPMWizardHtmlFiles" AfterTargets="Build">
+    <ItemGroup>
+        <HtmlAndBundleFiles Include="Packages\PackageManagerWizard\build\index.html" />
+    </ItemGroup>
+    <Copy SourceFiles="@(HtmlAndBundleFiles)" DestinationFolder="$(OutputPath)\PackageManager\" />
   </Target>
 </Project>

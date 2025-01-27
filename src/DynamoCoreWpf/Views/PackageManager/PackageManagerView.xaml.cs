@@ -57,6 +57,8 @@ namespace Dynamo.PackageManager.UI
 
             InitializeComponent();
 
+            PreloadPackageManagerPublishControl();
+
             if (packageManagerViewModel != null )
             {
                 packageManagerViewModel.PackageSearchViewModel.RequestShowFileDialog += OnRequestShowFileDialog;
@@ -102,6 +104,16 @@ namespace Dynamo.PackageManager.UI
                 MessageBoxService.Show(errorMessage, Wpf.Properties.Resources.UnableToAccessPackageDirectory, MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
+
+        private void PreloadPackageManagerPublishControl()
+        {
+            if (packageManagerPublish is PackageManagerPublishControl publishControl)
+            {
+                // Call a Preload method in the PackageManagerPublishControl to initialize WebView2, etc.
+                return;
+            }
+        }
+
 
         #region ui tools
 
@@ -232,7 +244,7 @@ namespace Dynamo.PackageManager.UI
                     var pmPublishControl = this.packageManagerPublish as PackageManagerPublishControl;
                     if (pmPublishControl != null)
                     {
-                        pmPublishControl.ResetPageOrder();
+                        //pmPublishControl.ResetPageOrder();
                     }
                 }
                 else

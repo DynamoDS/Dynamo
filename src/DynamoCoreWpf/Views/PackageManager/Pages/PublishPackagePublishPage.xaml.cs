@@ -102,7 +102,7 @@ namespace Dynamo.PackageManager.UI
             var pmPublishControl = GetUserControlFromPage(this) as PackageManagerPublishControl;
             if (pmPublishControl != null)
             {
-                pmPublishControl.BreadcrumbButton_Click(sender, e);
+                //pmPublishControl.BreadcrumbButton_Click(sender, e);
             }
         }
 
