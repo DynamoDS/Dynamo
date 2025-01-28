@@ -23,7 +23,8 @@
 
     <Target Name="CombineXamlDictionaries" BeforeTargets="BeforeBuild">
         <ItemGroup>
-            <XAMLCombineItems Include="UI\Themes\Modern\*.xaml">
+            <XAMLCombineItems Include="UI\Themes\Modern\*.xaml"
+                         Exclude="UI\Themes\Modern\DataTemplates.xaml">
                 <TargetFile>UI\Themes\Modern_Combined.xaml</TargetFile>
                 <Visible>False</Visible>
             </XAMLCombineItems>

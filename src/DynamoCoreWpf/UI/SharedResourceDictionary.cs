@@ -62,6 +62,7 @@ namespace Dynamo.UI
     public static class SharedDictionaryManager
     {
         private static ResourceDictionary _dynamoModernDictionary;
+        private static ResourceDictionary _dataTemplatesDictionary;
 
         public static string ThemesDirectory 
         {
@@ -69,6 +70,15 @@ namespace Dynamo.UI
             {
                 return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
                     @"UI\Themes\");
+            }
+        }
+
+        public static string ModernDirectory
+        {
+            get
+            {
+                return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    @"UI\Themes\Modern\");
             }
         }
 

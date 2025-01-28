@@ -5,7 +5,6 @@
 <!--
 Source files:
 UI\Themes\Modern\Connectors.xaml
-UI\Themes\Modern\DataTemplates.xaml
 UI\Themes\Modern\DynamoColorsAndBrushes.xaml
 UI\Themes\Modern\DynamoConverters.xaml
 UI\Themes\Modern\DynamoModern.xaml
@@ -18,7 +17,7 @@ UI\Themes\Modern\Ports.xaml
 UI\Themes\Modern\SidebarGridStyleDictionary.xaml
 UI\Themes\Modern\ToolbarStyleDictionary.xaml
 -->
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:viewModels="clr-namespace:Dynamo.ViewModels" xmlns:ui="clr-namespace:Dynamo.UI" xmlns:i="clr-namespace:Dynamo.Microsoft.Xaml.Behaviors;assembly=Dynamo.Microsoft.Xaml.Behaviors" xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:nodes="clr-namespace:Dynamo.Nodes" xmlns:mouse="clr-namespace:Dynamo.Wpf.UI" xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore" xmlns:sys="clr-namespace:System;assembly=mscorlib" xmlns:models="clr-namespace:Dynamo.Models;assembly=DynamoCore" xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit" xmlns:clr="clr-namespace:System;assembly=mscorlib" xmlns:views="clr-namespace:Dynamo.Views" xmlns:dynui="clr-namespace:Dynamo.UI.Controls" xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net" xmlns:p="clr-namespace:Dynamo.Wpf.Properties" xmlns:interactivity="clr-namespace:Dynamo.Microsoft.Xaml.Behaviors;assembly=Dynamo.Microsoft.Xaml.Behaviors" xmlns:uiViews="clr-namespace:Dynamo.UI.Views" xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF" xmlns:system="clr-namespace:System;assembly=mscorlib" xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase" xmlns:fai="http://schemas.fontawesome.io/icons/" xmlns:graphNodes="clr-namespace:Dynamo.Graph.Nodes;assembly=DynamoCore">
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:viewModels="clr-namespace:Dynamo.ViewModels" xmlns:ui="clr-namespace:Dynamo.UI" xmlns:i="clr-namespace:Dynamo.Microsoft.Xaml.Behaviors;assembly=Dynamo.Microsoft.Xaml.Behaviors" xmlns:controls="clr-namespace:Dynamo.Controls" xmlns:nodes="clr-namespace:Dynamo.Nodes" xmlns:mouse="clr-namespace:Dynamo.Wpf.UI" xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore" xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit" xmlns:clr="clr-namespace:System;assembly=mscorlib" xmlns:views="clr-namespace:Dynamo.Views" xmlns:dynui="clr-namespace:Dynamo.UI.Controls" xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net" xmlns:p="clr-namespace:Dynamo.Wpf.Properties" xmlns:interactivity="clr-namespace:Dynamo.Microsoft.Xaml.Behaviors;assembly=Dynamo.Microsoft.Xaml.Behaviors" xmlns:uiViews="clr-namespace:Dynamo.UI.Views" xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF" xmlns:system="clr-namespace:System;assembly=mscorlib" xmlns:diag="clr-namespace:System.Diagnostics;assembly=WindowsBase" xmlns:fai="http://schemas.fontawesome.io/icons/" xmlns:graphNodes="clr-namespace:Dynamo.Graph.Nodes;assembly=DynamoCore">
   <DataTemplate x:Key="connectorContextMenuViewModel" DataType="{x:Type viewModels:ConnectorContextMenuViewModel}">
     <controls:ConnectorContextMenuView DataContext="{Binding}" />
   </DataTemplate>
@@ -108,18 +107,6 @@ UI\Themes\Modern\ToolbarStyleDictionary.xaml
       </DataTrigger>
     </Style.Triggers>
   </Style>
-  <DataTemplate x:Key="nodeViewModel" DataType="{x:Type viewModels:NodeViewModel}">
-    <controls:NodeView />
-  </DataTemplate>
-  <DataTemplate x:Key="noteViewModel" DataType="{x:Type viewModels:NoteViewModel}">
-    <nodes:NoteView />
-  </DataTemplate>
-  <DataTemplate x:Key="infoBubbleViewModel" DataType="{x:Type viewModels:InfoBubbleViewModel}">
-    <controls:InfoBubbleView />
-  </DataTemplate>
-  <DataTemplate x:Key="annotationViewModel" DataType="{x:Type viewModels:AnnotationViewModel}">
-    <nodes:AnnotationView />
-  </DataTemplate>
   <SolidColorBrush x:Key="DynamoStandardLabelTextBrush" Color="#BBBBBB" />
   <Color x:Key="PrimaryCharcoal100">#EEEEEE</Color>
   <Color x:Key="PrimaryCharcoal200">#DCDCDC</Color>
