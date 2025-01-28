@@ -12,25 +12,6 @@ namespace DynamoCoreWpfTests
 {
 
     [TestFixture]
-    class SplashScreenViewTests: DynamoTestUIBase
-    {
-        [Test]
-        public void SplashScreen_ClosePersistSetsPrefs()
-        {
-            var ss = new Dynamo.UI.Views.SplashScreen();
-            ss.DynamoView = View;
-            var oldPref = ViewModel.PreferenceSettings.EnableStaticSplashScreen;
-            Assert.IsTrue(oldPref);
-
-            ss.CloseWindow(true);
-            var newPref = ViewModel.PreferenceSettings.EnableStaticSplashScreen;
-            Assert.False(newPref);
-
-            Assert.IsTrue(ss.CloseWasExplicit);
-        }
-    }
-
-    [TestFixture]
     internal class SplashScreenTests
     {
         TestDiagnostics testDiagnostics = new();

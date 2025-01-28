@@ -18,9 +18,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
-using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
-using DynamoUtilities;
 
 namespace Dynamo.ViewModels
 {
@@ -75,11 +73,7 @@ namespace Dynamo.ViewModels
             set { browserVisibility = value; RaisePropertyChanged("BrowserVisibility"); }
         }
 
-        internal int searchDelayTimeout = 150;
-        // Feature flags activated debouncer for the search UI.
-        internal ActionDebouncer searchDebouncer = null;
-
-        private string searchText = string.Empty;
+        private string searchText;
         /// <summary>
         ///     SearchText property
         /// </summary>
@@ -92,28 +86,10 @@ namespace Dynamo.ViewModels
             set
             {
                 searchText = value;
-
+                OnSearchTextChanged(this, EventArgs.Empty);
                 RaisePropertyChanged("SearchText");
                 RaisePropertyChanged("BrowserRootCategories");
                 RaisePropertyChanged("CurrentMode");
-
-                // The searchText is set multiple times before the control becomes visible and interactable.
-                // To prevent any debounces from triggering at some unexpected point before or after the control
-                // becomes visible, this flag is only set once the searchText value is set by the user
-                // (unless it somehow gets set somewhere else)
-                //
-                // pinzart: The search text is set multiple times with an empty value. Seems sufficient to only use the debouncer
-                // if we get a non-empty value.
-                if (!string.IsNullOrEmpty(searchText) && searchDebouncer != null)
-                {
-                    searchDebouncer.Debounce(searchDelayTimeout, () => OnSearchTextChanged(this, EventArgs.Empty));
-                }
-                else
-                {
-                    // Make sure any previously scheduled debounces are cancelled
-                    searchDebouncer?.Cancel();
-                    OnSearchTextChanged(this, EventArgs.Empty);
-                }
             }
         }
 
@@ -398,17 +374,7 @@ namespace Dynamo.ViewModels
 
             iconServices = new IconServices(pathManager);
 
-            DynamoFeatureFlagsManager.FlagsRetrieved += TryInitializeDebouncer;
-
             InitializeCore();
-        }
-
-        private void TryInitializeDebouncer()
-        {
-            if (DynamoModel.FeatureFlags?.CheckFeatureFlag("searchbar_debounce", false) ?? false)
-            {
-                searchDebouncer ??= new ActionDebouncer(dynamoViewModel?.Model?.Logger);
-            }
         }
 
         // Just for tests. Please refer to LibraryTests.cs
@@ -441,9 +407,6 @@ namespace Dynamo.ViewModels
             Model.EntryUpdated -= UpdateEntry;
             Model.EntryRemoved -= RemoveEntry;
 
-            searchDebouncer?.Dispose();
-            DynamoFeatureFlagsManager.FlagsRetrieved -= TryInitializeDebouncer;
-
             base.Dispose();
         }
 
@@ -471,9 +434,6 @@ namespace Dynamo.ViewModels
 
             DefineFullCategoryNames(LibraryRootCategories, "");
             InsertClassesIntoTree(LibraryRootCategories);
-
-            // If feature flags are already cached, try to initialize the debouncer
-            TryInitializeDebouncer();
         }
 
         private void AddEntry(NodeSearchElement entry)

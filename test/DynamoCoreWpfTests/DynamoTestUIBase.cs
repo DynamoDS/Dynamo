@@ -66,18 +66,14 @@ namespace DynamoCoreWpfTests
 
             SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
 
-            if (!SkipDispatcherFlush)
-            {
-                Dispatcher.CurrentDispatcher.Hooks.OperationPosted += Hooks_OperationPosted;
-            }
+            Dispatcher.CurrentDispatcher.Hooks.OperationPosted += Hooks_OperationPosted;
         }
 
         internal void SetupBeforeCleanupDiagnostics()
         {
+            Dispatcher.CurrentDispatcher.Hooks.OperationPosted -= Hooks_OperationPosted;
             if (!SkipDispatcherFlush)
             {
-                Dispatcher.CurrentDispatcher.Hooks.OperationPosted -= Hooks_OperationPosted;
-
                 DispatcherUtil.DoEventsLoop(() => DispatcherOpsCounter == 0);
             }
         }
@@ -204,8 +200,6 @@ namespace DynamoCoreWpfTests
         [TearDown]
         public void Exit()
         {
-            testDiagnostics.SetupBeforeCleanupDiagnostics();
-
             //Ensure that we leave the workspace marked as
             //not having changes.
             ViewModel.HomeSpace.HasUnsavedChanges = false;
