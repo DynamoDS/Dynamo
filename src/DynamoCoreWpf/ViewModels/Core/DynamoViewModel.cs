@@ -1264,7 +1264,7 @@ namespace Dynamo.ViewModels
         /// <param name="bodyContent">Crash details body. If null, nothing will be filled-in.</param>
         public static void ReportABug(object bodyContent)
         {
-            var urlWithParameters = Wpf.Utilities.CrashUtilities.GithubNewIssueUrlFromCrashContent(bodyContent);
+            var urlWithParameters = Wpf.Utilities.CrashUtilities.GithubNewIssueUrlFromCrashContent(bodyContent, CrashUtilities.ReportType.Bug);
 
             // launching the process using explorer.exe will format the URL incorrectly
             // and Github will not recognise the query parameters in the URL
