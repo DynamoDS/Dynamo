@@ -919,58 +919,6 @@
         TrueStyle="{StaticResource SZoomFadeBase_Basic}"
         FalseStyle="{StaticResource SZoomFadeBase_Animation}" />
 
-    <!--  Zoom fade animation style  -->
-    <Style
-        x:Key="SZoomFadePreview_Animation"
-        TargetType="{x:Type FrameworkElement}">
-        <Style.Triggers>
-            <DataTrigger
-                Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}"
-                Value="true">
-                <DataTrigger.EnterActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                             To="0.4"
-                                             Duration="0:0:0.5" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </DataTrigger.EnterActions>
-                <DataTrigger.ExitActions>
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                             To="0.7"
-                                             Duration="0:0:0.5" />
-                        </Storyboard>
-                    </BeginStoryboard>
-                </DataTrigger.ExitActions>
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-
-    <Style
-        x:Key="SZoomFadePreview_Basic"
-        TargetType="{x:Type FrameworkElement}">
-        <Setter
-            Property="Opacity"
-            Value="0.7" />
-        <Style.Triggers>
-            <DataTrigger
-                Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}"
-                Value="true">
-                <Setter
-                    Property="Opacity"
-                    Value="0.4" />
-            </DataTrigger>
-        </Style.Triggers>
-    </Style>
-
-    <conv:BooleanToStyleConverter
-        x:Key="SZoomFadePreview"
-        TrueStyle="{StaticResource SZoomFadePreview_Basic}"
-        FalseStyle="{StaticResource SZoomFadePreview_Animation}" />
-
     <!--  Zoom fade-in preview  -->
     <Style
         x:Key="SZoomFadeInPreview_Animation"
