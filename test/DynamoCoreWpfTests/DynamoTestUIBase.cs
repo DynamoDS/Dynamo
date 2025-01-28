@@ -90,10 +90,8 @@ namespace DynamoCoreWpfTests
 
             SynchronizationContext.SetSynchronizationContext(new DispatcherSynchronizationContext());
 
-            if (!SkipDispatcherFlush)
-            {
-                Dispatcher.CurrentDispatcher.Hooks.OperationPosted += Hooks_OperationPosted;
-            }
+            Dispatcher.CurrentDispatcher.Hooks.OperationPosted += Hooks_OperationPosted;
+            
         }
 
         protected static void RaiseLoadedEvent(FrameworkElement element)
@@ -132,10 +130,10 @@ namespace DynamoCoreWpfTests
         [TearDown]
         public void Exit()
         {
+          
+            Dispatcher.CurrentDispatcher.Hooks.OperationPosted -= Hooks_OperationPosted;
             if (!SkipDispatcherFlush)
             {
-                Dispatcher.CurrentDispatcher.Hooks.OperationPosted -= Hooks_OperationPosted;
-
                 DispatcherUtil.DoEventsLoop(() => DispatcherOpsCounter == 0);
             }
 
