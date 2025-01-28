@@ -37,6 +37,9 @@ namespace Dynamo.Controls
     /// <summary>
     /// selects from one of two styles based on a boolean value.
     /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("ApiDesign",
+        "RS0016:Add public types and members to the declared API",
+        Justification = "Converters are not part of the API")]
     public class BooleanToStyleConverter : IValueConverter
     {
         public Style TrueStyle { get; set; }
