@@ -118,33 +118,33 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ArraySizeOverflow" xml:space="preserve">
-    <value>Array size overflow</value>
+    <value>Dépassement de la taille du réseau</value>
   </data>
   <data name="ClassNameAsVariableError" xml:space="preserve">
-    <value>{0} is a class name, can't be used as a variable.</value>
+    <value>{0} est un nom de classe et ne peut pas être utilisé en tant que variable.</value>
   </data>
   <data name="ConstantExpectedInArrayDeclaration" xml:space="preserve">
-    <value>Array declaration expected constant expression</value>
+    <value>Expression constante attendue avec cette déclaration de réseau</value>
   </data>
   <data name="FunctionAsVaribleError" xml:space="preserve">
-    <value>\"{0}\"is a function and not allowed as a variable name</value>
+    <value>\"{0}\" est une fonction et n'est pas autorisé en tant que nom de variable</value>
   </data>
   <data name="FunctionPointerNotAllowedAtBinaryExpression" xml:space="preserve">
-    <value>Function pointer is not allowed at binary expression other than assignment.</value>
+    <value>Le pointeur de fonction n'est pas autorisé dans une expression binaire autre qu'une affectation.</value>
   </data>
   <data name="IdentifierRedefinition" xml:space="preserve">
-    <value>redefinition of identifier '{0}'</value>
+    <value>redéfinition de l'identificateur '{0}'</value>
   </data>
   <data name="ImperativeSymbolsAreReadOnly" xml:space="preserve">
-    <value>Variables declared in an outer scope cannot be changed inside an imperative block.</value>
+    <value>Les variables déclarées dans une étendue externe ne peuvent pas être modifiées dans un bloc d'impératif.</value>
   </data>
   <data name="InvalidArrayInitializer" xml:space="preserve">
-    <value>array initializer must be an expression list</value>
+    <value>l'initialiseur de réseau doit être une liste d'expression</value>
   </data>
   <data name="InvalidNestedImperativeBlock" xml:space="preserve">
-    <value>An imperative language block is declared within an imperative language block.</value>
+    <value>Un bloc de langage impératif est déclaré dans un bloc de langage impératif.</value>
   </data>
   <data name="OnlyIdentifierOrIdentifierListCanBeOnLeftSide" xml:space="preserve">
-    <value>Only identifier or identifier list can appear on the left hand side of assignment.</value>
+    <value>Seul un identificateur ou une liste d'identificateurs peut apparaître sur le côté gauche de l'affectation.</value>
   </data>
 </root>

@@ -1,7 +1,7 @@
 {
   "Uuid": "edde076a-9bfc-4186-a966-cf4d379c32ae",
   "IsCustomNode": false,
-  "Description": "This graph demonstrates how to place Revit elements by point. Place rows of chairs in a selected room and write unique numbers to their Mark Parameter",
+  "Description": "Этот график демонстрирует размещение элементов Revit по точкам. Разместите ряды стульев в выбранном помещении и запишите уникальные номера в параметре «Марка»",
   "Name": "Revit_PlaceFamiliesByLevel_Set Parameters",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -13,7 +13,7 @@
       "Type": "selection",
       "Type2": "dropdownSelection",
       "Value": "Chair-Breuer:Chair-Breuer",
-      "Description": "All family types available in the document.",
+      "Description": "Все типоразмеры в семействе, доступные в документе.",
       "SelectedIndex": 74
     },
     {
@@ -22,7 +22,7 @@
       "Type": "selection",
       "Type2": "dropdownSelection",
       "Value": "L3",
-      "Description": "Select a level in the active document",
+      "Description": "Выберите уровень в активном документе",
       "SelectedIndex": 8
     },
     {
@@ -31,7 +31,7 @@
       "Type": "selection",
       "Type2": "hostSelection",
       "Value": "bbb19349-04db-4d1e-886a-6de27dc8e3fa-000ca979",
-      "Description": "Select a model element from the document."
+      "Description": "Выбор элемента модели в документе."
     },
     {
       "Id": "d3441f79a99b4fe09ecef222a8c6ba65",
@@ -43,7 +43,7 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Создание числовых значений"
     },
     {
       "Id": "cc6716ec7b704e0c95a7bff10d97e5b6",
@@ -55,7 +55,7 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Создание числовых значений"
     },
     {
       "Id": "5527db3e6b724864b32100ccf1353256",
@@ -67,7 +67,7 @@
       "MinimumValue": 0.15,
       "StepValue": 0.05,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Создание числовых значений"
     },
     {
       "Id": "8d17d354eaab43759d24770b2293e2d0",
@@ -79,7 +79,7 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Создание числовых значений"
     },
     {
       "Id": "a2077841f60e4083a10b44827beb0b58",
@@ -91,7 +91,7 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Создание числовых значений"
     },
     {
       "Id": "932b2e6acbae49f487f23427f13fe3ed",
@@ -103,7 +103,7 @@
       "MinimumValue": 2.0,
       "StepValue": 1.0,
       "NumberType": "Integer",
-      "Description": "Produces integer values"
+      "Description": "Создание целых значений"
     },
     {
       "Id": "cdb069216756498ea0654656dc96f302",
@@ -115,15 +115,15 @@
       "MinimumValue": 5.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Создание числовых значений"
     },
     {
       "Id": "54440452ae1144ce893c49e59c5b4c14",
-      "Name": "Mark Prefix",
+      "Name": "Префикс марки",
       "Type": "string",
       "Type2": "string",
       "Value": "C-",
-      "Description": "Creates a string"
+      "Description": "Создание строки"
     }
   ],
   "Outputs": [
@@ -132,7 +132,7 @@
       "Name": "Watch",
       "Type": "unknown",
       "InitialValue": "",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     }
   ],
   "Nodes": [
@@ -147,7 +147,7 @@
         {
           "Id": "3e305a38f4ca4cf48da556542a95fec3",
           "Name": "Family Type",
-          "Description": "The selected Family Type",
+          "Description": "Выбранный типоразмер в семействе",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -155,7 +155,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "All family types available in the document."
+      "Description": "Все типоразмеры в семействе, доступные в документе."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -165,7 +165,7 @@
         {
           "Id": "c8badfa45fb64176b69f3f629624b0fb",
           "Name": "familyType",
-          "Description": "Family Type. Also called Family Symbol.\n\nFamilyType",
+          "Description": "Типоразмер в семействе. Также называется обозначением семейства.\n\nFamilyType",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -174,7 +174,7 @@
         {
           "Id": "c9d538db0c434dbd99c0144eccf1bdfb",
           "Name": "point",
-          "Description": "Point in meters.\n\nPoint",
+          "Description": "Точка в метрах.\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -183,7 +183,7 @@
         {
           "Id": "7620f27cdf81435db1649df3e71c79ff",
           "Name": "level",
-          "Description": "Level to host Family Instance.\n\nLevel",
+          "Description": "Уровень для размещения экземпляра семейства.\n\nLevel",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -203,7 +203,7 @@
       ],
       "FunctionSignature": "Revit.Elements.FamilyInstance.ByPointAndLevel@Revit.Elements.FamilyType,Autodesk.DesignScript.Geometry.Point,Revit.Elements.Level",
       "Replication": "Auto",
-      "Description": "Place a Revit FamilyInstance given the FamilyType (also known as the FamilySymbol in the Revit API), it's coordinates in world space, and the Level\n\nFamilyInstance.ByPointAndLevel (familyType: FamilyType, point: Point, level: Level): FamilyInstance"
+      "Description": "Размещение объекта Revit FamilyInstance с учетом типоразмера FamilyType (FamilySymbol в API Revit), координат МСК и уровня.\n\nFamilyInstance.ByPointAndLevel (familyType: FamilyType, point: Point, level: Level): FamilyInstance"
     },
     {
       "ConcreteType": "DSRevitNodesUI.Levels, DSRevitNodesUI",
@@ -216,7 +216,7 @@
         {
           "Id": "269b7bf67a984a0a9b142714558d3f09",
           "Name": "Levels",
-          "Description": "The selected Levels",
+          "Description": "Выбранные уровни",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -224,7 +224,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Select a level in the active document"
+      "Description": "Выберите уровень в активном документе"
     },
     {
       "ConcreteType": "CoreNodeModels.Range, CoreNodeModels",
@@ -234,7 +234,7 @@
         {
           "Id": "d9ec9ae28d714413bac308aa78979c25",
           "Name": "start",
-          "Description": "Number or letter to start the sequence at\r\nDefault value: 0 (disabled)",
+          "Description": "Число или буква, с которой будет начинаться последовательность.\nЗначение по умолчанию: 0 (отключено)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -243,7 +243,7 @@
         {
           "Id": "896e0760a9b1406782f92685875e172c",
           "Name": "end",
-          "Description": "Number or letter to end the sequence at\r\nDefault value: 9 (disabled)",
+          "Description": "Число или буква, на которой будет заканчиваться последовательность.\nЗначение по умолчанию: 9 (отключено)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -252,7 +252,7 @@
         {
           "Id": "ad0f580deb884f59be13c3cd3d03e787",
           "Name": "step",
-          "Description": "Space between numbers or letters\r\nDefault value: 1 (disabled)",
+          "Description": "Интервал между числами или буквами.\nЗначение по умолчанию: 1 (отключено)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -263,7 +263,7 @@
         {
           "Id": "13a91a1ed1734aa980f18585449a49ca",
           "Name": "seq",
-          "Description": "New sequence",
+          "Description": "Создать последовательность",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -271,7 +271,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Creates a sequence of numbers or letters in the given range"
+      "Description": "Создание последовательности чисел или букв в заданном диапазоне"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -290,7 +290,7 @@
         {
           "Id": "c0497f4a24b84af38ed4036ac07825d4",
           "Name": "parameterName",
-          "Description": "The name of the parameter to set.\n\nstring",
+          "Description": "Имя задаваемого параметра.\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -299,7 +299,7 @@
         {
           "Id": "eeec384ca0094a48acb85fedd9aa45b6",
           "Name": "value",
-          "Description": "The value.\n\nvar",
+          "Description": "Значение.\n\nvar",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -319,7 +319,7 @@
       ],
       "FunctionSignature": "Revit.Elements.Element.SetParameterByName@string,var",
       "Replication": "Auto",
-      "Description": "Set one of the element's parameters.\n\nElement.SetParameterByName (parameterName: string, value: var): Element"
+      "Description": "Задание параметров для одного из элементов.\n\nElement.SetParameterByName (parameterName: string, value: var): Element"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
@@ -338,8 +338,8 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a string",
-      "InputValue": "Mark"
+      "Description": "Создание строки",
+      "InputValue": "Марка"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -349,7 +349,7 @@
         {
           "Id": "d3f9830b10bb46e2b1aefed96a45e0e9",
           "Name": "list",
-          "Description": "List to get the item count of.\n\nvar[]..[]",
+          "Description": "Список, элементы которого требуется сосчитать.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -360,7 +360,7 @@
         {
           "Id": "deb9df735ab84cef92175480660f7bc7",
           "Name": "int",
-          "Description": "List length.",
+          "Description": "Длина списка.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -369,7 +369,7 @@
       ],
       "FunctionSignature": "DSCore.List.Count@var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns the number of items stored in the given list.\n\nList.Count (list: var[]..[]): int"
+      "Description": "Возврат количества элементов, хранящихся в данном списке.\n\nList.Count (list: var[]..[]): int"
     },
     {
       "ConcreteType": "CoreNodeModels.Sequence, CoreNodeModels",
@@ -379,7 +379,7 @@
         {
           "Id": "7ed7436057b94394864f378135123ee9",
           "Name": "start",
-          "Description": "Number or letter to start the sequence at\r\nDefault value: 0 (disabled)",
+          "Description": "Число или буква, с которой будет начинаться последовательность.\nЗначение по умолчанию: 0 (отключено)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -388,7 +388,7 @@
         {
           "Id": "97c296a1c63f42879cf146b6800811a7",
           "Name": "amount",
-          "Description": "Amount of numbers in the sequence\r\nDefault value: 10 (disabled)",
+          "Description": "Количество чисел в последовательности.\nЗначение по умолчанию: 10 (отключено)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -397,7 +397,7 @@
         {
           "Id": "9ccdf87ab37445a98d0568597a4fe97d",
           "Name": "step",
-          "Description": "Space between numbers or letters\r\nDefault value: 1 (disabled)",
+          "Description": "Интервал между числами или буквами.\nЗначение по умолчанию: 1 (отключено)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -408,7 +408,7 @@
         {
           "Id": "1e9183d3ec51437a96be38b9c29985c3",
           "Name": "seq",
-          "Description": "New sequence",
+          "Description": "Создать последовательность",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -416,7 +416,7 @@
         }
       ],
       "Replication": "Longest",
-      "Description": "Creates a sequence of numbers"
+      "Description": "Создание последовательности чисел"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -436,7 +436,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Создание числа",
       "InputValue": 1.0
     },
     {
@@ -447,7 +447,7 @@
         {
           "Id": "13430473c84e433990fdb832e8e03d21",
           "Name": "obj",
-          "Description": "Object to be serialized",
+          "Description": "Объект индексации",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -458,7 +458,7 @@
         {
           "Id": "84b9ee8aaca94550bd0ccd5acfe2045b",
           "Name": "str",
-          "Description": "Result of math computation",
+          "Description": "Результат математических вычислений",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -466,7 +466,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Converts an object to a string representation"
+      "Description": "Преобразование объекта в строчное представление"
     },
     {
       "ConcreteType": "Dynamo.Nodes.DSModelElementSelection, DSRevitNodesUI",
@@ -480,7 +480,7 @@
         {
           "Id": "609d656ddff94c4481af5fb60f941167",
           "Name": "Element",
-          "Description": "The selected elements.",
+          "Description": "Выбранные элементы.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -488,7 +488,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Select a model element from the document."
+      "Description": "Выбор элемента модели в документе."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -509,7 +509,7 @@
         {
           "Id": "c33dd8009a424435a2a7db62cf92cb1a",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Точка",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -518,7 +518,7 @@
       ],
       "FunctionSignature": "Revit.Elements.Room.Location",
       "Replication": "Auto",
-      "Description": "Get Room Location\n\nRoom.Location: Point"
+      "Description": "Получение местоположения помещения\n\nRoom.Location: Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -528,7 +528,7 @@
         {
           "Id": "0de2a67b74c9432aaaaad3584407b1e8",
           "Name": "centerPoint",
-          "Description": "Center point of circle\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "Description": "Центр окружности\n\nPoint\nЗначение по умолчанию: Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -537,7 +537,7 @@
         {
           "Id": "5557f5b3d9c24c24ac69cdb4aa458aa5",
           "Name": "radius",
-          "Description": "Radius\n\ndouble\nDefault value : 1",
+          "Description": "Радиус\n\ndouble\nЗначение по умолчанию: 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -548,7 +548,7 @@
         {
           "Id": "592a91410b814ef59fa5cadf39321628",
           "Name": "Circle",
-          "Description": "Circle created with center point and radius",
+          "Description": "Окружность, созданная по центру и радиусу",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -557,7 +557,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
       "Replication": "Auto",
-      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+      "Description": "Создание окружности с заданным центром и радиусом в плоскости XY МСК с осью Z МСК в качестве нормали.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -578,7 +578,7 @@
         {
           "Id": "aeb57d06728248308e842d1b117a98da",
           "Name": "Surface",
-          "Description": "A Surface on the interior of the curve",
+          "Description": "Поверхность внутренней части кривой",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -587,7 +587,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.Patch",
       "Replication": "Auto",
-      "Description": "Patch a closed Curve\n\nCurve.Patch ( ): Surface"
+      "Description": "Замыкание замкнутой кривой\n\nCurve.Patch ( ): Surface"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -606,7 +606,7 @@
         {
           "Id": "4a615e0065d047a2a6bb7861d5136591",
           "Name": "u",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\nЗначение по умолчанию: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -615,7 +615,7 @@
         {
           "Id": "b745658962f24e9cba20111b73d1540b",
           "Name": "v",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\nЗначение по умолчанию: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -626,7 +626,7 @@
         {
           "Id": "a1a34660451d4e7d91a7ad9abd39a574",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Точка",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -635,7 +635,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.PointAtParameter@double,double",
       "Replication": "CrossProduct",
-      "Description": "Return the Point at specified U and V parameters.\n\nSurface.PointAtParameter (u: double = 0, v: double = 0): Point"
+      "Description": "Получение точки с заданными параметрами U и V.\n\nSurface.PointAtParameter (u: double = 0, v: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -674,7 +674,7 @@
         {
           "Id": "27015a66580a4c67be4b227172c675b4",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -682,7 +682,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Возможность непосредственной разработки кода DesignScript",
       "Code": "start..finish..#steps;"
     },
     {
@@ -693,7 +693,7 @@
         {
           "Id": "e2c5b6d8138040a0b47b2de85972719e",
           "Name": "list",
-          "Description": "List to flatten.\n\nvar[]..[]",
+          "Description": "Список для выравнивания.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -702,7 +702,7 @@
         {
           "Id": "0674ea7afe2449b19fc0449dd2d9e4d9",
           "Name": "amount",
-          "Description": "Layers of list nesting to remove (-1 will remove all list nestings)\n\nint\nDefault value : -1",
+          "Description": "Слои в списке, которые требуется исключить (–1 приведет к удалению всех вложенных в список слоев)\n\nint\nЗначение по умолчанию: -1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -713,7 +713,7 @@
         {
           "Id": "4f091c84e88f4a9099daf9cccb6e6c37",
           "Name": "list",
-          "Description": "Flattened list by amount",
+          "Description": "Список с выравниванием по объему",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -722,7 +722,7 @@
       ],
       "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+      "Description": "Выравнивание вложенного перечня списков по определенному количественному значению.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
@@ -745,7 +745,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Создание числовых значений",
       "InputValue": 0.2
     },
     {
@@ -769,7 +769,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Создание числовых значений",
       "InputValue": 1.4
     },
     {
@@ -793,7 +793,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Создание числовых значений",
       "InputValue": 0.35
     },
     {
@@ -817,7 +817,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Создание числовых значений",
       "InputValue": 0.3
     },
     {
@@ -841,7 +841,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Создание числовых значений",
       "InputValue": 2.2
     },
     {
@@ -865,7 +865,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces integer values",
+      "Description": "Создание целых значений",
       "InputValue": 8
     },
     {
@@ -889,7 +889,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Создание числовых значений",
       "InputValue": 6.4
     },
     {
@@ -909,7 +909,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a string",
+      "Description": "Создание строки",
       "InputValue": "C-"
     },
     {
@@ -920,7 +920,7 @@
         {
           "Id": "ce6a6932b61a423c98955dead6e7be43",
           "Name": "string",
-          "Description": "String to insert into.\n\nstring",
+          "Description": "Строка, в которую выполняется вставка.\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -929,7 +929,7 @@
         {
           "Id": "730e86f6ee934508bb660145e668eb89",
           "Name": "index",
-          "Description": "Index to insert at.\n\nint",
+          "Description": "Индекс, в котором выполняется вставка.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -938,7 +938,7 @@
         {
           "Id": "bb238793083d4b1e80294b203eede1e9",
           "Name": "toInsert",
-          "Description": "String to be inserted.\n\nstring",
+          "Description": "Строка для вставки.\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -949,7 +949,7 @@
         {
           "Id": "fd4dda6ddf7140b4b69eee24599f5aa3",
           "Name": "string",
-          "Description": "String with inserted substring.",
+          "Description": "Строки со вставленной подстрокой.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -958,7 +958,7 @@
       ],
       "FunctionSignature": "DSCore.String.Insert@string,int,string",
       "Replication": "Auto",
-      "Description": "Inserts a string into another string at a given index.\n\nString.Insert (string: string, index: int, toInsert: string): string"
+      "Description": "Вставка одной строки в другую в заданном индексе.\n\nString.Insert (string: string, index: int, toInsert: string): string"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -969,7 +969,7 @@
         {
           "Id": "5e7dc9531ad9401080c7004dce40ddcf",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -977,7 +977,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "0;"
     },
     {
@@ -990,7 +990,7 @@
         {
           "Id": "d46d61202258486a913846ae4a34bf1f",
           "Name": "",
-          "Description": "Node to show output from",
+          "Description": "Узел для отображения выходных данных",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1001,7 +1001,7 @@
         {
           "Id": "7dd3cf7d000e492aa3f1b1138c4707b1",
           "Name": "",
-          "Description": "Node output",
+          "Description": "Выходные данные узла",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1009,7 +1009,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     }
   ],
   "Connectors": [
@@ -1196,7 +1196,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Свойства",
       "Version": "2.13",
       "Data": {}
     },
@@ -1232,7 +1232,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Фоновый просмотр",
       "EyeX": -98.95553588867188,
       "EyeY": 114.75212860107422,
       "EyeZ": 63.7170295715332,
@@ -1397,7 +1397,7 @@
       },
       {
         "Id": "ca8bbc3762c8451085ca897036139035",
-        "Name": "Rows offset sequence",
+        "Name": "Последовательность смещения рядов",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1487,7 +1487,7 @@
       },
       {
         "Id": "54440452ae1144ce893c49e59c5b4c14",
-        "Name": "Mark Prefix",
+        "Name": "Префикс марки",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1529,8 +1529,8 @@
     "Annotations": [
       {
         "Id": "7db1bbd418b944029dbed8fc9c103ef1",
-        "Title": "Set row offsets",
-        "DescriptionText": "The values for row offsets are not distance but the U and V values",
+        "Title": "Задание смещений рядов",
+        "DescriptionText": "Значения смещений рядов указывают не расстояние, а значения U и V",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -1556,7 +1556,7 @@
       },
       {
         "Id": "e87db2925d944d9c8c84de3f812701b2",
-        "Title": "Select Revit Elements",
+        "Title": "Выбор элементов Revit",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1584,8 +1584,8 @@
       },
       {
         "Id": "f7b606e8ae0247e193aae62c9c87ffe8",
-        "Title": "Generate offsets for rows",
-        "DescriptionText": "Series of numbers corresponding to the U and V positions on the surface. Values can exceed the 0 to 1 domain",
+        "Title": "Создание смещений для рядов",
+        "DescriptionText": "Набор чисел, соответствующих положениям U и V на поверхности. Значения могут превышать область от 0 до 1",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -1609,8 +1609,8 @@
       },
       {
         "Id": "baa0af20ae3c4f2fb458d257f1d57b82",
-        "Title": "Prepare location points",
-        "DescriptionText": "Description <Double click here to edit group description>",
+        "Title": "Подготовка точек местоположения",
+        "DescriptionText": "Описание <Дважды нажмите здесь, чтобы изменить описание группы>",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -1638,7 +1638,7 @@
       },
       {
         "Id": "b50982599b2c40f2b0d702296e7d24e1",
-        "Title": "To Revit: Place Family Instances",
+        "Title": "В Revit: размещение экземпляров семейства",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1661,7 +1661,7 @@
       },
       {
         "Id": "2ed9876b430e438f93df4fc5fbd3ad9f",
-        "Title": "To Revit: Set Parameter Values",
+        "Title": "В Revit: задание значений параметров",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1685,7 +1685,7 @@
       },
       {
         "Id": "190eb7fca4594411b2b77e336ba16848",
-        "Title": "Generate Mark Numbers",
+        "Title": "Создание номеров марок",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1716,7 +1716,7 @@
       },
       {
         "Id": "664430b5d08a43c1b9e3b4f43e8f8981",
-        "Title": "Info",
+        "Title": "Сведения",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1739,8 +1739,8 @@
       },
       {
         "Id": "26c5d640c57c4c50a06411976d12d8c4",
-        "Title": "Mark Prefix",
-        "DescriptionText": "Use a custom prefix for placed elements Mark number",
+        "Title": "Префикс марки",
+        "DescriptionText": "Использование пользовательского префикса для номера марки размещаемых элементов",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -1761,7 +1761,7 @@
       },
       {
         "Id": "6b07578143e1447584663102df24ece7",
-        "Title": "Check Results",
+        "Title": "Проверка результатов",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1784,7 +1784,7 @@
       },
       {
         "Id": "6d1482eca8e44064a8b21d10327f959a",
-        "Title": "Run this graph the Snowdon Towers Sample Architectural.rvt file in the Samples folder located with your Revit installation\n\r\nC:\\Program Files\\Autodesk\\Revit 2026\\Samples",
+        "Title": "Запустите этот график из файла Snowdon Towers Sample Architectural.rvt, который находится в папке Samples, расположенной в папке установки Revit\n\r\nC:\\Program Files\\Autodesk\\Revit 2026\\Samples",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1804,7 +1804,7 @@
       },
       {
         "Id": "ec9421fca490466e9bf29f3084b09f9a",
-        "Title": "Place Family Instances\r\nMost Families Can also be placed by Point location.  Adaptive Components can be placed with multiple points, Structural Framing is placed with Curves",
+        "Title": "Размещение экземпляров семейств\r\nБольшинство семейств также можно разместить по местоположению точки. Адаптивные компоненты можно разместить при помощи нескольких точек, а несущий каркас — при помощи кривых",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1825,7 +1825,7 @@
       },
       {
         "Id": "88280111f80f47339312137e1e809eb8",
-        "Title": "Set the Mark parameter with a list of values. The list structure of elements and values inputs must match, or just one value can be used. Parameters can also be read using an Element.GetParameterByName node",
+        "Title": "Укажите для параметра «Марка» список значений. Структура списка элементов и входных значений должны совпадать, или можно использовать только одно значение. Параметры также можно прочитать с помощью узла Element.GetParameterByName",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1846,7 +1846,7 @@
       },
       {
         "Id": "fa0eb09689914dd9a0c611d2cde622bb",
-        "Title": "Place rows of chairs in a selected room and write unique numbers to their Mark Parameter",
+        "Title": "Размещение рядов стульев в выбранном помещении и запись уникальных номеров в соответствующий параметр «Марка»",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1866,7 +1866,7 @@
       },
       {
         "Id": "527a1fd4113047fca131ee5150269835",
-        "Title": "Generate a series of numbers within a range, with a given step",
+        "Title": "Создание набора чисел в диапазоне с заданным шагом",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1887,7 +1887,7 @@
       },
       {
         "Id": "7199d7c8c9864472b67cb714f9c14819",
-        "Title": "An alternative to creating a sequence by defining the sequence start, finish and the number of steps",
+        "Title": "Альтернатива созданию последовательности путем определения начала, конца и количества шагов",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1908,7 +1908,7 @@
       },
       {
         "Id": "e64f57e2e3ea45269608dd97aa70eaae",
-        "Title": "Select Family Type for the instances being placed from the Family Types in the Project",
+        "Title": "Выберите тип семейства для вставляемых экземпляров из типов семейств в проекте",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1929,7 +1929,7 @@
       },
       {
         "Id": "8dd296c92ace485b978a41eab7a08b98",
-        "Title": "Select the Level on which to place elements ",
+        "Title": "Выберите уровень, на котором требуется разместить элементы ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1950,7 +1950,7 @@
       },
       {
         "Id": "9ff59d9e0e974becafbd986c23b62cc4",
-        "Title": "Select a Room in which to place the elements. You will need to navigate to a view where rooms are visible (Floor Plan)",
+        "Title": "Выберите помещение для размещения элементов. Необходимо перейти к виду, на котором отображаются помещения (план этажа)",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1971,7 +1971,7 @@
       },
       {
         "Id": "29565e7d370141548b1544c946babf4c",
-        "Title": "Using sequences of U and V values, create a matrix of points. Set the lacing of the node to Cross-Product by right-clicking and selecting Lacing.",
+        "Title": "Используя последовательности значений U и V, создайте матрицу точек. Задайте для переплетения узла векторное произведение, щелкнув правой кнопкой мыши и выбрав «Переплетение».",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1992,7 +1992,7 @@
       },
       {
         "Id": "42804f43e87141ddb78c5232759b370b",
-        "Title": "Convert the circle into a surface in order to use it for positioning points",
+        "Title": "Преобразование окружности в поверхность для позиционирования точек",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2013,7 +2013,7 @@
       },
       {
         "Id": "0a403a4cf73a4829b43c4e618dde72e0",
-        "Title": "The placement point of the selected room",
+        "Title": "Точка размещения выбранного помещения",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2034,7 +2034,7 @@
       },
       {
         "Id": "8c352062360444f4ab8354003ba71179",
-        "Title": "Circle defining an initial area of placement. The shape of the circle does not matter in this case, but it is the quickest way to define a closed surface ",
+        "Title": "Окружность, определяющая исходную область размещения. Форма окружности в данном случае не имеет значения, но это самый быстрый способ определения замкнутой поверхности ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2055,7 +2055,7 @@
       },
       {
         "Id": "f19cb7119cd04a10974a4c52f6809517",
-        "Title": "Dispose of list structure - get one list containing all items",
+        "Title": "Удаление структуры списка — получение одного списка, содержащего все элементы",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2076,7 +2076,7 @@
       },
       {
         "Id": "4370b24df9134c4d88da7043efba5591",
-        "Title": "Count the number of items in the list",
+        "Title": "Подсчет количества элементов в списке",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2097,7 +2097,7 @@
       },
       {
         "Id": "635af5d0063e4ca4b29e9cb3ff8881fe",
-        "Title": "Generate the numbers from 1 to n",
+        "Title": "Создание чисел от 1 до n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2118,7 +2118,7 @@
       },
       {
         "Id": "e8fae999df1241e7be37cbef9aeb7656",
-        "Title": "To participate in string operations, the number must be first converted into a string",
+        "Title": "Для использования в строковых операциях число сначала необходимо преобразовать в строку",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2139,7 +2139,7 @@
       },
       {
         "Id": "43c720ac60944674956a060285935ad0",
-        "Title": "Insert a custom prefix to the item number",
+        "Title": "Вставка пользовательского префикса в номер элемента",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2160,7 +2160,7 @@
       },
       {
         "Id": "e78c45a565044ccdb83bfd9e5709311c",
-        "Title": "Watch node can be used to check if the results are as expected",
+        "Title": "Узел Watch позволяет проверить, соответствуют ли результаты ожидаемым",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

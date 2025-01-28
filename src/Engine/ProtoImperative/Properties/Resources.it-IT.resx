@@ -118,33 +118,33 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ArraySizeOverflow" xml:space="preserve">
-    <value>Array size overflow</value>
+    <value>Overflow dimensione matrice</value>
   </data>
   <data name="ClassNameAsVariableError" xml:space="preserve">
-    <value>{0} is a class name, can't be used as a variable.</value>
+    <value>{0} è un nome di classe e non può essere utilizzato come variabile.</value>
   </data>
   <data name="ConstantExpectedInArrayDeclaration" xml:space="preserve">
-    <value>Array declaration expected constant expression</value>
+    <value>La dichiarazione di matrice prevedeva un'espressione costante</value>
   </data>
   <data name="FunctionAsVaribleError" xml:space="preserve">
-    <value>\"{0}\"is a function and not allowed as a variable name</value>
+    <value>\"{0}\" è una funzione e non può essere utilizzata come nome di variabile</value>
   </data>
   <data name="FunctionPointerNotAllowedAtBinaryExpression" xml:space="preserve">
-    <value>Function pointer is not allowed at binary expression other than assignment.</value>
+    <value>I puntatori funzione non sono consentiti per le espressioni binarie diverse dalle assegnazioni.</value>
   </data>
   <data name="IdentifierRedefinition" xml:space="preserve">
-    <value>redefinition of identifier '{0}'</value>
+    <value>Ridefinizione dell'identificatore '{0}'</value>
   </data>
   <data name="ImperativeSymbolsAreReadOnly" xml:space="preserve">
-    <value>Variables declared in an outer scope cannot be changed inside an imperative block.</value>
+    <value>Impossibile modificare le variabili dichiarate in un ambito esterno all'interno di un blocco imperativo.</value>
   </data>
   <data name="InvalidArrayInitializer" xml:space="preserve">
-    <value>array initializer must be an expression list</value>
+    <value>L'inizializzatore di matrice deve essere un elenco di espressioni</value>
   </data>
   <data name="InvalidNestedImperativeBlock" xml:space="preserve">
-    <value>An imperative language block is declared within an imperative language block.</value>
+    <value>È stato dichiarato un blocco di linguaggio imperativo all'interno di un blocco di linguaggio imperativo.</value>
   </data>
   <data name="OnlyIdentifierOrIdentifierListCanBeOnLeftSide" xml:space="preserve">
-    <value>Only identifier or identifier list can appear on the left hand side of assignment.</value>
+    <value>Sul lato sinistro di un'assegnazione possono essere visualizzati solo l'identificatore o un elenco di identificatori.</value>
   </data>
 </root>

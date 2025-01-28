@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "Demonstratest how to export data from Dynamo to .csv file.",
+  "Description": "Демонстрация экспорта данных из Dynamo в файл CSV.",
   "Name": "ImportExport_Data To Excel",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -17,7 +17,7 @@
         {
           "Id": "b63dc8493243498eb0d6ad1837aa7fc1",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Координата X\n\ndouble\nЗначение по умолчанию: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -26,7 +26,7 @@
         {
           "Id": "22ddd00923814f0ea103c705ae4472a7",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Координата Y\n\ndouble\nЗначение по умолчанию: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -35,7 +35,7 @@
         {
           "Id": "89d7c0b116d5488082ce2c15ebaef847",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Координата Z\n\ndouble\nЗначение по умолчанию: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -46,7 +46,7 @@
         {
           "Id": "43c7009cdf1742e49eabe32a2a54fa02",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Точка, созданная по координатам",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -55,7 +55,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Longest",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Построение точки на основе трех заданных декартовых координат.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -65,7 +65,7 @@
         {
           "Id": "258478d24ffa4fcdb76ab9f386b4a92a",
           "Name": "angle",
-          "Description": "Angle in degrees to take the cosine of.\n\ndouble",
+          "Description": "Угол в градусах для получения косинуса.\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -76,7 +76,7 @@
         {
           "Id": "16f164b8510f4aa098765f039b5f8013",
           "Name": "double",
-          "Description": "Cosine of the angle",
+          "Description": "Косинус угла",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -85,7 +85,7 @@
       ],
       "FunctionSignature": "DSCore.Math.Cos@double",
       "Replication": "Longest",
-      "Description": "Finds the cosine of an angle.\n\nMath.Cos (angle: double): double"
+      "Description": "Получение косинуса угла.\n\nMath.Cos (angle: double): double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -95,7 +95,7 @@
         {
           "Id": "7e3f6e59d2ca4d19ba5f68cf156e1eb3",
           "Name": "angle",
-          "Description": "Angle in degrees to take the sine of.\n\ndouble",
+          "Description": "Угол в градусах для получения синуса.\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -106,7 +106,7 @@
         {
           "Id": "ae92e4fa54624deb804db94b52b70be3",
           "Name": "double",
-          "Description": "Sine of the angle.",
+          "Description": "Синус угла.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -115,7 +115,7 @@
       ],
       "FunctionSignature": "DSCore.Math.Sin@double",
       "Replication": "Longest",
-      "Description": "Finds the sine of an angle.\n\nMath.Sin (angle: double): double"
+      "Description": "Получение синуса угла.\n\nMath.Sin (angle: double): double"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
@@ -134,7 +134,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a string",
+      "Description": "Создание строки",
       "InputValue": "helix"
     },
     {
@@ -155,7 +155,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Создание числа",
       "InputValue": 0.0
     },
     {
@@ -167,7 +167,7 @@
         {
           "Id": "9622a78e84a2462081837244b3b269b4",
           "Name": "",
-          "Description": "Filename",
+          "Description": "Имя файла",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -175,7 +175,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows you to select a file on the system and returns its file path",
+      "Description": "Возможность выбрать файл в системе и возврат пути к нему",
       "HintPath": "C:\\Users\\DeyanNenov\\Documents\\GitHub\\Dynamo\\doc\\distrib\\Samples\\Data\\icosohedron_points.csv",
       "InputValue": "..\\..\\Data\\icosohedron_points.csv"
     },
@@ -187,7 +187,7 @@
         {
           "Id": "4e676ec6cef6404997844bc773425b91",
           "Name": "lists",
-          "Description": "List of lists to be transposed\n\nvar[]..[]",
+          "Description": "Перечень списков для переноса\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -198,7 +198,7 @@
         {
           "Id": "038119b9a0dd42fe930edb4b16e09a18",
           "Name": "lists",
-          "Description": "List of transposed lists",
+          "Description": "Перечень перенесенных списков",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -207,7 +207,7 @@
       ],
       "FunctionSignature": "DSCore.List.Transpose@var[]..[]",
       "Replication": "Disabled",
-      "Description": "Swaps rows and columns in a list of lists. If there are some rows that are shorter than others, null values are inserted as place holders in the resultant array such that it is always rectangular.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
+      "Description": "Замена строк и столбцов в перечне списков. Если некоторые строки короче других, то в итоговый массив в качестве заполнителей вставляются нулевые значения, благодаря чему он всегда остается прямоугольным.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -228,7 +228,7 @@
         {
           "Id": "5f3c5b4c27e14c568122bdc163de9818",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -236,7 +236,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Возможность непосредственной разработки кода DesignScript",
       "Code": "[pt.X,pt.Y,pt.Z];"
     },
     {
@@ -258,7 +258,7 @@
         {
           "Id": "08e65edefdcd4f91b37441ed429d9b5c",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -266,7 +266,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Возможность непосредственной разработки кода DesignScript",
       "Code": "0..(360*numCircles)..10;"
     },
     {
@@ -288,7 +288,7 @@
         {
           "Id": "fa4a96df70eb485287d9c6c7cfe4f85e",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -296,7 +296,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "x/100;"
     },
     {
@@ -320,7 +320,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Создание числовых значений",
       "InputValue": 1.793
     },
     {
@@ -376,7 +376,7 @@
         {
           "Id": "52864b3dda144b30ac4ff29362782e2d",
           "Name": "overWrite",
-          "Description": "bool\nDefault value : false",
+          "Description": "bool\nЗначение по умолчанию: False",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -385,7 +385,7 @@
         {
           "Id": "5c88315e4cf94bbc98403e03f3f17a9a",
           "Name": "writeAsString",
-          "Description": "bool\nDefault value : false",
+          "Description": "bool\nЗначение по умолчанию: False",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -510,7 +510,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Свойства",
       "Version": "2.13",
       "Data": {}
     }
@@ -533,7 +533,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Фоновый просмотр",
       "EyeX": -1.2037445306777954,
       "EyeY": 1.917763590812683,
       "EyeZ": 7.328202724456787,
@@ -670,8 +670,8 @@
     "Annotations": [
       {
         "Id": "29a91d70ff0a431abec499b1719ee3d4",
-        "Title": "Title <Double click here to edit group title>",
-        "DescriptionText": "Description <Double click here to edit group description>",
+        "Title": "Заголовок <Дважды нажмите здесь, чтобы изменить заголовок группы>",
+        "DescriptionText": "Описание <Дважды нажмите здесь, чтобы изменить описание группы>",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -701,8 +701,8 @@
       },
       {
         "Id": "9341ad54eaa243a9a893c5be2aaf9d22",
-        "Title": "Title <Double click here to edit group title>",
-        "DescriptionText": "Description <Double click here to edit group description>",
+        "Title": "Заголовок <Дважды нажмите здесь, чтобы изменить заголовок группы>",
+        "DescriptionText": "Описание <Дважды нажмите здесь, чтобы изменить описание группы>",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -729,7 +729,7 @@
       },
       {
         "Id": "df1de2b0f3094d91b5d8b5787387ed79",
-        "Title": "Title <Double click here to edit group title>",
+        "Title": "Заголовок <Дважды нажмите здесь, чтобы изменить заголовок группы>",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -751,7 +751,7 @@
       },
       {
         "Id": "1d7922a7c26d4112878b5b8a0a30fe75",
-        "Title": "New Note",
+        "Title": "Создать примечание",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -772,7 +772,7 @@
       },
       {
         "Id": "bc372445903a4b50a74e84c259a7759d",
-        "Title": "New Note",
+        "Title": "Создать примечание",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -793,7 +793,7 @@
       },
       {
         "Id": "320298d96dca4037baf95af14fb80ffa",
-        "Title": "New Note",
+        "Title": "Создать примечание",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -814,7 +814,7 @@
       },
       {
         "Id": "9c7c88bce0f74696a17cda2ef05abfea",
-        "Title": "New Note",
+        "Title": "Создать примечание",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -835,7 +835,7 @@
       },
       {
         "Id": "fa83280a068547f3ad82c95d19694cc8",
-        "Title": "New Note",
+        "Title": "Создать примечание",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -856,7 +856,7 @@
       },
       {
         "Id": "9e5125f6ab67458fafea515138a89430",
-        "Title": "New Note",
+        "Title": "Создать примечание",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -877,7 +877,7 @@
       },
       {
         "Id": "39eaa6172dc34b3280c6b3e1457deb5b",
-        "Title": "New Note",
+        "Title": "Создать примечание",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

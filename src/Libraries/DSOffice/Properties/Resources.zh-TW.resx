@@ -121,9 +121,9 @@
     <value>This node is obsolete and will be removed in a future version of Dynamo, please use the corresponding one that is OpenXML based.</value>
   </data>
   <data name="ReadObsolete" xml:space="preserve">
-    <value>Use File.FromPath -&gt; Excel.ReadFromFile node instead.</value>
+    <value>改為使用 File.FromPath -&gt; Excel.ReadFromFile 節點。</value>
   </data>
   <data name="StreamWriterNotFoundException" xml:space="preserve">
-    <value>The file or directory cannot be found</value>
+    <value>找不到檔案或目錄</value>
   </data>
 </root>

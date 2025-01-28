@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "This graph demonstrates a method of creating Dynamo Solid geometry and using it to create a Revit Import Instance element. Construct a new roof shape by creating a series of arc profiles and using them to create a loft surface.",
+  "Description": "Dieses Diagramm veranschaulicht eine Methode zum Erstellen von Dynamo-Volumenkörpergeometrie und ihrer Verwendung zum Erstellen eines Revit-Importexemplar-Elements. Konstruieren Sie eine neue Dachform, indem Sie eine Reihe von Bogenprofilen erstellen und diese zum Erstellen einer erhabenen Fläche verwenden.",
   "Name": "Revit_ImportSolid",
   "ElementResolver": {
     "ResolutionMap": {
@@ -26,7 +26,7 @@
         {
           "Id": "7a4cdd931adc4c7e88ec57dcad2d4569",
           "Name": "Element",
-          "Description": "The selected elements.",
+          "Description": "Die ausgewählten Elemente",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -34,7 +34,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Select a model element from the document."
+      "Description": "Wählen Sie ein Modellelement aus dem Dokument aus."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -53,7 +53,7 @@
         {
           "Id": "8e65997edca545c58e90d319d8540499",
           "Name": "detailLevel",
-          "Description": "Detail level\n\nstring\nDefault value : \"Medium\"",
+          "Description": "Detaillierungsgrad\n\nstring\nVorgabewert: \"Medium\"",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -64,7 +64,7 @@
         {
           "Id": "fca8b14c91384a07b4b489da4a77473b",
           "Name": "var[]",
-          "Description": "List of geometry from the element",
+          "Description": "Liste der Geometrie aus dem Element",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -73,7 +73,7 @@
       ],
       "FunctionSignature": "Revit.Elements.Element.GetGeometry@string",
       "Replication": "Auto",
-      "Description": "Returns all geometry associated with an element. Ignores transforms when used with linked elements.\n\nElement.GetGeometry (detailLevel: string = \"Medium\"): var[]"
+      "Description": "Gibt die gesamte Geometrie zurück, die mit einem Element verknüpft ist. Ignoriert Transformationen bei Verwendung mit verknüpften Elementen.\n\nElement.GetGeometry (detailLevel: string = \"Medium\"): var[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -103,7 +103,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Explode",
       "Replication": "Auto",
-      "Description": "Separates compound or non-separated elements into their component parts.\n\nGeometry.Explode ( ): Geometry[]"
+      "Description": "Trennt zusammengesetzte oder nicht getrennte Elemente in die Teile, aus denen sie bestehen.\n\nGeometry.Explode ( ): Geometry[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -113,7 +113,7 @@
         {
           "Id": "d335f2b271674163b15ed9e0c0a5b451",
           "Name": "list",
-          "Description": "list to be sorted\n\nvar[]..[]",
+          "Description": "zu sortierende Liste\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -122,7 +122,7 @@
         {
           "Id": "e6dc56170f2e461da147af9d840d06d2",
           "Name": "keys",
-          "Description": "list of keys, keys have to be sortable (e.g. numbers,strings)\n\nvar[]..[]",
+          "Description": "Liste der Schlüssel; Schlüssel müssen sortiert werden können (z. B. Nummern, Zeichenfolgen)\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -151,7 +151,7 @@
       ],
       "FunctionSignature": "DSCore.List.SortByKey@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Sort list based on its keys\n\nList.SortByKey (list: var[]..[], keys: var[]..[]): var[]..[]"
+      "Description": "Liste anhand ihrer Schlüssel sortieren\n\nList.SortByKey (list: var[]..[], keys: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -161,7 +161,7 @@
         {
           "Id": "c721ed551c864c1288699a3c71b2b39f",
           "Name": "list",
-          "Description": "List to get the last item of\n\nvar[]..[]",
+          "Description": "Liste, deren letztes Element abgerufen werden soll\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -172,7 +172,7 @@
         {
           "Id": "9674519557e14eb28dd46f8c922ed8e4",
           "Name": "item",
-          "Description": "Last item in the list",
+          "Description": "Das letzte Element in der Liste",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -181,7 +181,7 @@
       ],
       "FunctionSignature": "DSCore.List.LastItem@var[]..[]",
       "Replication": "Auto",
-      "Description": "Retrieves the last item in a list.\n\nList.LastItem (list: var[]..[]): var[]..[]"
+      "Description": "Ruft das letzte Element in einer Liste ab.\n\nList.LastItem (list: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -211,7 +211,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.Area",
       "Replication": "Auto",
-      "Description": "Returns the total surface area.\n\nSurface.Area: double"
+      "Description": "Gibt den Gesamtflächeninhalt der Oberfläche zurück.\n\nSurface.Area: double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -230,7 +230,7 @@
         {
           "Id": "9e1b902690724df4a9369581db616c6e",
           "Name": "u",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\nVorgabewert: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -239,7 +239,7 @@
         {
           "Id": "5533b838e6da4d9aa336236508bb111b",
           "Name": "v",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\nVorgabewert: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -250,7 +250,7 @@
         {
           "Id": "e3cdd5ce0ae24d0cafe18ebfc87c8a8c",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Punkt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -259,7 +259,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.PointAtParameter@double,double",
       "Replication": "Longest",
-      "Description": "Return the Point at specified U and V parameters.\n\nSurface.PointAtParameter (u: double = 0, v: double = 0): Point"
+      "Description": "Gibt den Punkt für die angegebenen U- und V-Parameter zurück.\n\nSurface.PointAtParameter (u: double = 0, v: double = 0): Punkt"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -278,7 +278,7 @@
         {
           "Id": "c815e6251cec4234a752364ca850bf0f",
           "Name": "u",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\nVorgabewert: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -287,7 +287,7 @@
         {
           "Id": "8af74c268f09465b92faa1f6e05b397a",
           "Name": "v",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\nVorgabewert: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -298,7 +298,7 @@
         {
           "Id": "02fb4ce3514443d9b7ff4e21db419984",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Punkt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -307,7 +307,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.PointAtParameter@double,double",
       "Replication": "Longest",
-      "Description": "Return the Point at specified U and V parameters.\n\nSurface.PointAtParameter (u: double = 0, v: double = 0): Point"
+      "Description": "Gibt den Punkt für die angegebenen U- und V-Parameter zurück.\n\nSurface.PointAtParameter (u: double = 0, v: double = 0): Punkt"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -328,7 +328,7 @@
         {
           "Id": "49ca2c0181574a06986b1101f53a1a9f",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wert des Ausdrucks in Zeile 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -336,7 +336,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code.",
       "Code": "[0..1..#steps];"
     },
     {
@@ -358,7 +358,7 @@
         {
           "Id": "cc438cd0e0774c23a14fa1cd8eb36d4b",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wert des Ausdrucks in Zeile 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -366,7 +366,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code.",
       "Code": "steps;"
     },
     {
@@ -386,7 +386,7 @@
         {
           "Id": "f61b600c3f904b8a921d341b5df88704",
           "Name": "xTranslation",
-          "Description": "Displacement along X-axis.\n\ndouble\nDefault value : 0",
+          "Description": "Verschiebung entlang der X-Achse.\n\ndouble\nVorgabewert: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -395,7 +395,7 @@
         {
           "Id": "959a9ba2dade4730b3cad5f8bb297d51",
           "Name": "yTranslation",
-          "Description": "Displacement along Y-axis.\n\ndouble\nDefault value : 0",
+          "Description": "Verschiebung entlang der Y-Achse.\n\ndouble\nVorgabewert: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -404,7 +404,7 @@
         {
           "Id": "f0b95d92fe4b4327b49bf24888cc22c6",
           "Name": "zTranslation",
-          "Description": "Displacement along Z-axis.\n\ndouble\nDefault value : 0",
+          "Description": "Verschiebung entlang der Z-Achse.\n\ndouble\nVorgabewert: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -415,7 +415,7 @@
         {
           "Id": "65bda070bf0f498492c13e7db8af9617",
           "Name": "Geometry",
-          "Description": "Transformed Geometry.",
+          "Description": "Transformierte Geometrie",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -424,7 +424,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double",
       "Replication": "Auto",
-      "Description": "Translates any given geometry by the given displacements in the x, y, and z directions defined in WCS respectively.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
+      "Description": "Verschiebt angegebene Geometrie beliebigen Typs um die angegebenen Werte in X-, Y- und Z-Richtung, wie im WKS definiert.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -434,7 +434,7 @@
         {
           "Id": "562e7f2d8acd4279ab5562ecd2ca448f",
           "Name": "angle",
-          "Description": "Angle in degrees to take the sine of.\n\ndouble",
+          "Description": "Winkel in Grad, dessen Sinus ermittelt wird.\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -445,7 +445,7 @@
         {
           "Id": "d29d29cab80547a38ddcdbff2e52abe0",
           "Name": "double",
-          "Description": "Sine of the angle.",
+          "Description": "Sinus des Winkels.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -454,7 +454,7 @@
       ],
       "FunctionSignature": "DSCore.Math.Sin@double",
       "Replication": "Auto",
-      "Description": "Finds the sine of an angle.\n\nMath.Sin (angle: double): double"
+      "Description": "Ermittelt den Sinus eines Winkels.\n\nMath.Sin (angle: double): double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -464,7 +464,7 @@
         {
           "Id": "9db7c93bb81941abb5bf277cbe6b33e9",
           "Name": "angle",
-          "Description": "Angle in degrees to take the cosine of.\n\ndouble",
+          "Description": "Winkel in Grad, dessen Kosinus ermittelt wird.\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -475,7 +475,7 @@
         {
           "Id": "8d5d3fbd41604b269749a66a7c37f13c",
           "Name": "double",
-          "Description": "Cosine of the angle",
+          "Description": "Kosinus des Winkels",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -484,7 +484,7 @@
       ],
       "FunctionSignature": "DSCore.Math.Cos@double",
       "Replication": "Auto",
-      "Description": "Finds the cosine of an angle.\n\nMath.Cos (angle: double): double"
+      "Description": "Ermittelt den Kosinus eines Winkels.\n\nMath.Cos (angle: double): double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -505,7 +505,7 @@
         {
           "Id": "8af072a20bec48588bdc146c04275eea",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wert des Ausdrucks in Zeile 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -513,7 +513,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code.",
       "Code": "-1..1..#steps;"
     },
     {
@@ -524,7 +524,7 @@
         {
           "Id": "6a8ea51de5e444f48a18815c6f3cca54",
           "Name": "numbers",
-          "Description": "List of numbers to adjust range of.\n\ndouble[]",
+          "Description": "Liste der Zahlen, deren Bereich angepasst werden soll.\n\ndouble[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -533,7 +533,7 @@
         {
           "Id": "132f1b86392541dc87d86c9a682c4553",
           "Name": "newMin",
-          "Description": "New minimum of the range.\n\ndouble\nDefault value : 0",
+          "Description": "Neuer Mindestwert des Bereichs.\n\ndouble\nVorgabewert: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -542,7 +542,7 @@
         {
           "Id": "cc361ba644084d4aa69d8b3eb6f48cdd",
           "Name": "newMax",
-          "Description": "New maximum of the range\n\ndouble\nDefault value : 1",
+          "Description": "Neuer Höchstwert des Bereichs\n\ndouble\nVorgabewert: 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -553,7 +553,7 @@
         {
           "Id": "47c22aae6f43486fbe377e95f1e897c7",
           "Name": "list",
-          "Description": "List remapped to new range.",
+          "Description": "Dem neuen Bereich zugeordnete Liste",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -562,7 +562,7 @@
       ],
       "FunctionSignature": "DSCore.Math.RemapRange@double[],double,double",
       "Replication": "Auto",
-      "Description": "Adjusts the range of a list of numbers while preserving the distribution ratio.\n\nMath.RemapRange (numbers: double[], newMin: double = 0, newMax: double = 1): var[]..[]"
+      "Description": "Passt den Bereich einer Liste von Zahlen an, wobei deren Verteilungsverhältnis erhalten bleibt.\n\nMath.RemapRange (numbers: double[], newMin: double = 0, newMax: double = 1): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction, DynamoCore",
@@ -574,7 +574,7 @@
         {
           "Id": "52c9508f0cdd482b9dfdb9a713ab51f6",
           "Name": "list0",
-          "Description": "Lists to join into one.\n\nvar[]..[]",
+          "Description": "Zu einer Liste zu verbindende Listen.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -594,7 +594,7 @@
         {
           "Id": "8e529612848b422fa3365700a9279add",
           "Name": "list",
-          "Description": "Joined list.",
+          "Description": "Verbundene Liste",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -602,7 +602,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Concatenates all given lists into a single list.\n\nList.Join (lists: var[]..[]): var[]..[]"
+      "Description": "Verkettet alle angegebenen Listen zu einer einzigen Liste.\n\nList.Join (lists: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -612,7 +612,7 @@
         {
           "Id": "16f9474fcd1a4d3fbf14f8e39ac833b0",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "Liste, aus der ein Element abgerufen werden soll.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -621,7 +621,7 @@
         {
           "Id": "f5d1227cfdb14df58f54050616c1aa5c",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "Index des abzurufenden Elements.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -632,7 +632,7 @@
         {
           "Id": "8fbb3ec4b67c4661b5b2d8fcfaa45b9a",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "Element am angegebenen Index in der Liste.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -641,7 +641,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Gibt ein Element aus der angegebenen Liste zurück, das sich am angegebenen Index befindet.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -652,7 +652,7 @@
         {
           "Id": "38b386a782a44e29b13719e2caa4a03a",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wert des Ausdrucks in Zeile 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -661,7 +661,7 @@
         {
           "Id": "e8d080a47634427bb561b50848d2feff",
           "Name": "",
-          "Description": "Value of expression at line 2",
+          "Description": "Wert des Ausdrucks in Zeile 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -670,7 +670,7 @@
         {
           "Id": "10248f258aed4acc94c95baf0c5270e2",
           "Name": "",
-          "Description": "Value of expression at line 3",
+          "Description": "Wert des Ausdrucks in Zeile 3",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -678,7 +678,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code.",
       "Code": "0;\n1;\n2;"
     },
     {
@@ -689,7 +689,7 @@
         {
           "Id": "91884c1e0cc24320af200bdc60065c0f",
           "Name": "firstPoint",
-          "Description": "1st point of arc\n\nPoint",
+          "Description": "Erster Punkt des Bogens\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -698,7 +698,7 @@
         {
           "Id": "f23a1536e1794d999521f40ac245b3f7",
           "Name": "secondPoint",
-          "Description": "2nd point of arc\n\nPoint",
+          "Description": "Zweiter Punkt des Bogens\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -707,7 +707,7 @@
         {
           "Id": "aaa10811549d4f15808182740433694a",
           "Name": "thirdPoint",
-          "Description": "3rd point of arc\n\nPoint",
+          "Description": "Dritter Punkt des Bogens\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -718,7 +718,7 @@
         {
           "Id": "fbcd8b5d7f234c028ed491a7aca62349",
           "Name": "Arc",
-          "Description": "Arc created from three points",
+          "Description": "Bogen erstellt aus drei Punkten",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -727,7 +727,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Arc.ByThreePoints@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Create an arc by providing three sequential points along its circumference.\n\nArc.ByThreePoints (firstPoint: Point, secondPoint: Point, thirdPoint: Point): Arc"
+      "Description": "Erstellt einen Bogen durch Angabe dreier aufeinander folgender Punkte auf seinem Umfang.\n\nArc.ByThreePoints (firstPoint: Point, secondPoint: Point, thirdPoint: Point): Arc"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -737,7 +737,7 @@
         {
           "Id": "e34185d0cd054ded879531012ee574c8",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "Liste, aus der ein Element abgerufen werden soll.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -746,7 +746,7 @@
         {
           "Id": "5ceebf3d8de74261b04330d48467acf0",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "Index des abzurufenden Elements.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -757,7 +757,7 @@
         {
           "Id": "d45be543dd634c9dbcacb852d802002e",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "Element am angegebenen Index in der Liste.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -766,7 +766,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Gibt ein Element aus der angegebenen Liste zurück, das sich am angegebenen Index befindet.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -776,7 +776,7 @@
         {
           "Id": "eafe6ffabd314635bc26f9d5daf7e41c",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "Liste, aus der ein Element abgerufen werden soll.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -785,7 +785,7 @@
         {
           "Id": "ce1e81d0ce15414ba816520a3a54ccb0",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "Index des abzurufenden Elements.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -796,7 +796,7 @@
         {
           "Id": "51af248dfbef4a3a8e28db2e3f595d3a",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "Element am angegebenen Index in der Liste.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -805,7 +805,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Gibt ein Element aus der angegebenen Liste zurück, das sich am angegebenen Index befindet.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -824,7 +824,7 @@
         {
           "Id": "03a19d79f9624557bd13d26903c3ce03",
           "Name": "distance",
-          "Description": "Distance to extend\n\ndouble\nDefault value : 1",
+          "Description": "Entfernung zum Verlängern\n\ndouble\nVorgabewert: 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -835,7 +835,7 @@
         {
           "Id": "c5571191d74e40a7a5847dce80caeca3",
           "Name": "Curve",
-          "Description": "The extended Curve",
+          "Description": "Verlängerte Kurve",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -844,7 +844,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.ExtendStart@double",
       "Replication": "Auto",
-      "Description": "Extend a Curve by a given distance on its start side. Closed curves like Circles and Ellipses cannot be extended. If the curve being extended is linear, the extension will also be linear.\n\nCurve.ExtendStart (distance: double = 1): Curve"
+      "Description": "Erweitern Sie eine Kurve um einen bestimmten Abstand auf ihrer Startseite. Geschlossene Kurven wie Kreise und Ellipsen können nicht erweitert werden. Wenn die zu erweiternde Kurve linear ist, ist die Erweiterung ebenfalls linear.\n\nCurve.ExtendStart (distance: double = 1): Curve"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -863,7 +863,7 @@
         {
           "Id": "f40e302a4f68406ea11338a41c2848b5",
           "Name": "distance",
-          "Description": "Distance to extend\n\ndouble\nDefault value : 1",
+          "Description": "Entfernung zum Verlängern\n\ndouble\nVorgabewert: 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -874,7 +874,7 @@
         {
           "Id": "0666202181a746e6a963792309d688d7",
           "Name": "Curve",
-          "Description": "The extended Curve",
+          "Description": "Verlängerte Kurve",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -883,7 +883,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.ExtendEnd@double",
       "Replication": "Auto",
-      "Description": "Extend a Curve by a given distance on its end. Closed curves like Circles and Ellipses cannot be extended. If the curve being extended is linear, the extension will also be linear.\n\nCurve.ExtendEnd (distance: double = 1): Curve"
+      "Description": "Erweitern Sie eine Kurve um einen bestimmten Abstand am Ende. Geschlossene Kurven wie Kreise und Ellipsen können nicht erweitert werden. Wenn die zu erweiternde Kurve linear ist, ist die Erweiterung ebenfalls linear.\n\nCurve.ExtendEnd (distance: double = 1): Curve"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -893,7 +893,7 @@
         {
           "Id": "b5c4b36ad71742088147b04bdd2ede20",
           "Name": "crossSections",
-          "Description": "Curves to loft through\n\nCurve[]",
+          "Description": "Für Erhebung zu verwendende Kurven\n\nCurve[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -904,7 +904,7 @@
         {
           "Id": "dbdf47fa3fb6475a995ae7ee796b424b",
           "Name": "Surface",
-          "Description": "Surface created by loft",
+          "Description": "Durch die Erhebung erstellte Oberfläche",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -913,7 +913,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.ByLoft@Autodesk.DesignScript.Geometry.Curve[]",
       "Replication": "Auto",
-      "Description": "Create a Surface by lofting between input cross section Curves.\n\nSurface.ByLoft (crossSections: Curve[]): Surface"
+      "Description": "Erstellt eine Oberfläche durch Erhebung zwischen den eingegebenen Querschnittskurven.\n\nSurface.ByLoft (crossSections: Curve[]): Surface"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -932,7 +932,7 @@
         {
           "Id": "a1495860b7b1474cbef3a8624cdc4943",
           "Name": "thickness",
-          "Description": "Amount to thicken\n\ndouble\nDefault value : 1",
+          "Description": "Angegebene Verdickung\n\ndouble\nVorgabewert: 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -943,7 +943,7 @@
         {
           "Id": "f3a76c4173cd41a5bb62aa7bec2b981e",
           "Name": "Solid",
-          "Description": "Thickened surface as solid",
+          "Description": "Verdickte Oberfläche als Volumenkörper",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -952,7 +952,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.Thicken@double",
       "Replication": "Auto",
-      "Description": "Thicken Surface into a Solid, extruding in the direction of Surface normals on both sides of the Surface.\n\nSurface.Thicken (thickness: double = 1): Solid"
+      "Description": "Wandelt eine Oberfläche durch Extrusion in Richtung der Oberflächennormalen auf beiden Seiten der Oberfläche in einen Volumenkörper um.\n\nSurface.Thicken (thickness: double = 1): Solid"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -962,7 +962,7 @@
         {
           "Id": "0c5772415f4944d29577e881543640a4",
           "Name": "geometry",
-          "Description": "A single piece of geometry\n\nGeometry",
+          "Description": "Ein einzelnes Geometrie-Element\n\nGeometry",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -982,7 +982,7 @@
       ],
       "FunctionSignature": "Revit.Elements.ImportInstance.ByGeometry@Autodesk.DesignScript.Geometry.Geometry",
       "Replication": "Auto",
-      "Description": "Import a collection of Geometry (Solid, Curve, Surface, etc) into Revit as an ImportInstance.\n\nImportInstance.ByGeometry (geometry: Geometry): ImportInstance"
+      "Description": "Importieren Sie eine Sammlung von Geometrie (Volumenkörper, Kurve, Fläche usw.) als ImportInstance-Objekt nach Revit.\n\nImportInstance.ByGeometry (geometry: Geometry): ImportInstance"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1001,7 +1001,7 @@
         {
           "Id": "31b4ececcec7465190454b9073fd6efc",
           "Name": "basePoint",
-          "Description": "Point",
+          "Description": "Punkt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1010,7 +1010,7 @@
         {
           "Id": "3a670292d16043849f041eb788007ede",
           "Name": "from",
-          "Description": "Point",
+          "Description": "Punkt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1019,7 +1019,7 @@
         {
           "Id": "1c99ff576cc84b20b5c3962b80b38e30",
           "Name": "to",
-          "Description": "Point",
+          "Description": "Punkt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1030,7 +1030,7 @@
         {
           "Id": "ba907a26750440349f7b9f5f996f7e8a",
           "Name": "Geometry",
-          "Description": "Geometry",
+          "Description": "Geometrie",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1039,7 +1039,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Scale@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Scale uniformly around a given point, using two pick points as scalars\n\nGeometry.Scale (basePoint: Point, from: Point, to: Point): Geometry"
+      "Description": "Gleichmäßig um einen bestimmten Punkt skalieren, wobei zwei Auswahlpunkte als Skalare verwendet werden\n\nGeometry.Scale (basePoint: Point, from: Point, to: Point): Geometry"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1058,7 +1058,7 @@
         {
           "Id": "e672b8e50037422aa8352a7153cb4f06",
           "Name": "u",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\nVorgabewert: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1067,7 +1067,7 @@
         {
           "Id": "9d7e4da8dcd14182ba384ce657c36f4f",
           "Name": "v",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\nVorgabewert: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1078,7 +1078,7 @@
         {
           "Id": "504ae06c6af74f548ac2d1b84e042662",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Punkt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1087,7 +1087,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.PointAtParameter@double,double",
       "Replication": "Auto",
-      "Description": "Return the Point at specified U and V parameters.\n\nSurface.PointAtParameter (u: double = 0, v: double = 0): Point"
+      "Description": "Gibt den Punkt für die angegebenen U- und V-Parameter zurück.\n\nSurface.PointAtParameter (u: double = 0, v: double = 0): Punkt"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1098,7 +1098,7 @@
         {
           "Id": "532d193965844675b775ce122b9bdd1f",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wert des Ausdrucks in Zeile 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1106,7 +1106,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code.",
       "Code": "0.5;"
     },
     {
@@ -1135,7 +1135,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code.",
       "Code": "point1 = Point.ByCoordinates(1, 1);\npoint2 = Point.ByCoordinates(-40, -40);"
     },
     {
@@ -1155,7 +1155,7 @@
         {
           "Id": "89eb9aa111a34e86ad9d3e9d6fd6e966",
           "Name": "parameterName",
-          "Description": "The name of the parameter to set.\n\nstring",
+          "Description": "Der Name des festzulegenden Parameters\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1164,7 +1164,7 @@
         {
           "Id": "52d83f90ac4b400d91c0d8ab260c0792",
           "Name": "value",
-          "Description": "The value.\n\nvar",
+          "Description": "Der Wert.\n\nvar",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1184,7 +1184,7 @@
       ],
       "FunctionSignature": "Revit.Elements.Element.SetParameterByName@string,var",
       "Replication": "Auto",
-      "Description": "Set one of the element's parameters.\n\nElement.SetParameterByName (parameterName: string, value: var): Element"
+      "Description": "Legt einen der Parameter für das Element fest.\n\nElement.SetParameterByName (parameterName: string, value: var): Element"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1195,7 +1195,7 @@
         {
           "Id": "642fda9615c84dd3acf612b2cc1bd1c8",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wert des Ausdrucks in Zeile 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1203,8 +1203,8 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
-      "Code": "\"Work Plane\";"
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code.",
+      "Code": "\"Arbeitsebene\";"
     },
     {
       "ConcreteType": "DSRevitNodesUI.Levels, DSRevitNodesUI",
@@ -1217,7 +1217,7 @@
         {
           "Id": "bb419686a803465183bacf6f2e758314",
           "Name": "Levels",
-          "Description": "The selected Levels",
+          "Description": "Die ausgewählten Ebenen",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1225,7 +1225,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Select a level in the active document"
+      "Description": "Ebene im aktiven Dokument auswählen"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
@@ -1248,7 +1248,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces integer values",
+      "Description": "Erzeugt ganzzahlige Werte",
       "InputValue": 6
     },
     {
@@ -1272,7 +1272,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Erzeugt numerische Werte",
       "InputValue": 2.1
     },
     {
@@ -1296,7 +1296,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Erzeugt numerische Werte",
       "InputValue": 7.0
     },
     {
@@ -1320,7 +1320,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Erzeugt numerische Werte",
       "InputValue": 0.5
     },
     {
@@ -1342,7 +1342,7 @@
         {
           "Id": "6dde087528974af987bc1bb9e3a1bae6",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wert des Ausdrucks in Zeile 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1350,7 +1350,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code",
       "Code": "roof_extension;"
     },
     {
@@ -1370,7 +1370,7 @@
         {
           "Id": "604f758fdf834dbab02d9ebf81c055cc",
           "Name": "xTranslation",
-          "Description": "Displacement along X-axis.\n\ndouble\nDefault value : 0",
+          "Description": "Verschiebung entlang der X-Achse.\n\ndouble\nVorgabewert: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1379,7 +1379,7 @@
         {
           "Id": "21b4c79c81a3475db762618092e96025",
           "Name": "yTranslation",
-          "Description": "Displacement along Y-axis.\n\ndouble\nDefault value : 0",
+          "Description": "Verschiebung entlang der Y-Achse.\n\ndouble\nVorgabewert: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1388,7 +1388,7 @@
         {
           "Id": "9f0200b438224e86986c5e07ccbed54c",
           "Name": "zTranslation",
-          "Description": "Displacement along Z-axis.\n\ndouble\nDefault value : 0",
+          "Description": "Verschiebung entlang der Z-Achse.\n\ndouble\nVorgabewert: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1399,7 +1399,7 @@
         {
           "Id": "cff3f2e62a6846228062f43b73291d85",
           "Name": "Geometry",
-          "Description": "Transformed Geometry.",
+          "Description": "Transformierte Geometrie",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1408,7 +1408,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double",
       "Replication": "Auto",
-      "Description": "Translates any given geometry by the given displacements in the x, y, and z directions defined in WCS respectively.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
+      "Description": "Verschiebt angegebene Geometrie beliebigen Typs um die angegebenen Werte in X-, Y- und Z-Richtung, wie im WKS definiert.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -1428,7 +1428,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Erstellt eine Zahl",
       "InputValue": 1.5
     },
     {
@@ -1439,7 +1439,7 @@
         {
           "Id": "7c447cfc159344bf96d5f23ae1d96c35",
           "Name": "list",
-          "Description": "List to flatten.\n\nvar[]..[]",
+          "Description": "Zu vereinfachende Liste.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1448,7 +1448,7 @@
         {
           "Id": "aaf3fd27929242d5b201f448feb2f17a",
           "Name": "amount",
-          "Description": "Layers of list nesting to remove (-1 will remove all list nestings)\n\nint\nDefault value : -1",
+          "Description": "Layer der zu entfernenden Listenverschachtelung (-1 entfernt alle Listenverschachtelungen)\n\nint\nVorgabewert: -1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1459,7 +1459,7 @@
         {
           "Id": "5f879bb83a8e42a9a6bddb11ec58c853",
           "Name": "list",
-          "Description": "Flattened list by amount",
+          "Description": "Vereinfachte Liste nach Betrag",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1468,7 +1468,7 @@
       ],
       "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+      "Description": "Vereinfacht eine verschachtelte Liste von Listen um eine bestimmte Anzahl von Ebenen.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1479,7 +1479,7 @@
         {
           "Id": "ad019ae6b2504f24a2ddffee8c575657",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wert des Ausdrucks in Zeile 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1487,7 +1487,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code.",
       "Code": "[0,1];"
     },
     {
@@ -1509,7 +1509,7 @@
         {
           "Id": "b54504c29d7e4f9b931d7614b0d329c2",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wert des Ausdrucks in Zeile 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1517,7 +1517,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code.",
       "Code": "[0..1..#steps];"
     },
     {
@@ -1529,7 +1529,7 @@
         {
           "Id": "f64ea1effeb342b4b3335e9482d79f93",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wert des Ausdrucks in Zeile 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1537,7 +1537,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code.",
       "Code": "[0.5];"
     },
     {
@@ -1561,7 +1561,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Erzeugt numerische Werte",
       "InputValue": 0.5
     }
   ],
@@ -1911,7 +1911,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Eigenschaften",
       "Version": "2.13",
       "Data": {}
     },
@@ -1947,7 +1947,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Hintergrundvorschau",
       "EyeX": 64.67993927001953,
       "EyeY": 76.81316375732422,
       "EyeZ": 37.078948974609375,
@@ -1999,7 +1999,7 @@
     "NodeViews": [
       {
         "Id": "d0700dab25ac46eabcfcacd2bc28f17e",
-        "Name": "Select Flat Roof",
+        "Name": "Flachdach auswählen",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -2079,7 +2079,7 @@
       },
       {
         "Id": "996a1304e8b34017be22b582b3432fb3",
-        "Name": "V positions for middle row",
+        "Name": "V-Positionen für mittlere Reihe",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -2089,7 +2089,7 @@
       },
       {
         "Id": "d01223e7361c44cf80c9a83c2aec7da6",
-        "Name": "Nr of profiles",
+        "Name": "Anzahl der Profile",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -2129,7 +2129,7 @@
       },
       {
         "Id": "4cfa2e2cc4b1479997bd27be70ec041d",
-        "Name": "Sequence of angles",
+        "Name": "Winkelsequenz",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -2169,7 +2169,7 @@
       },
       {
         "Id": "9e8782b2291643df849f09d9711a04e1",
-        "Name": "Item index",
+        "Name": "Elementindex",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -2279,7 +2279,7 @@
       },
       {
         "Id": "42c018d0bf064d3bb4f270bfeb721140",
-        "Name": "UV position ",
+        "Name": "UV-Position ",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -2289,7 +2289,7 @@
       },
       {
         "Id": "19847484c7254cb29b2d70d914282d2b",
-        "Name": "Scale from Point, to Point",
+        "Name": "Von Punkt zu Punkt skalieren",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -2329,7 +2329,7 @@
       },
       {
         "Id": "a78893e38b994dababc21bd1b5e644eb",
-        "Name": "Number of Profiles",
+        "Name": "Anzahl der Profile",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -2339,7 +2339,7 @@
       },
       {
         "Id": "a9be712113434a58a7ce66a4ed9ec056",
-        "Name": "Roof Section Min",
+        "Name": "Dachprofil Min.",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -2349,7 +2349,7 @@
       },
       {
         "Id": "7ca91343e3df4d478573dc9b37be7b5a",
-        "Name": "Roof Section Max",
+        "Name": "Dachprofil Max.",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -2359,7 +2359,7 @@
       },
       {
         "Id": "990fd6e07d5c4fb4b7e62102682b7300",
-        "Name": "Roof sides extension",
+        "Name": "Erweiterung der Dachseiten",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -2369,7 +2369,7 @@
       },
       {
         "Id": "7ba9594f64d14979ba28140b5c49630c",
-        "Name": "Extend edges",
+        "Name": "Kanten erweitern",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -2409,7 +2409,7 @@
       },
       {
         "Id": "669d92735d294aebbce75fa004ab3abe",
-        "Name": "U positions for edge rows",
+        "Name": "U-Positionen für Kantenreihen",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -2419,7 +2419,7 @@
       },
       {
         "Id": "9eb5567b1b0d4e8689b5cbfb2ed2e789",
-        "Name": "V positions for edge rows",
+        "Name": "V-Positionen für Kantenreihen",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -2429,7 +2429,7 @@
       },
       {
         "Id": "2510c4393fe04a80abe69416607a2539",
-        "Name": "U position for middle row",
+        "Name": "U-Position für mittlere Reihe",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -2439,7 +2439,7 @@
       },
       {
         "Id": "62f7b0170e9d486581d8f90e6203d2b1",
-        "Name": "Roof thickness",
+        "Name": "Dachdicke",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -2451,7 +2451,7 @@
     "Annotations": [
       {
         "Id": "2422bb5677794fa7869c470ec0b15e0d",
-        "Title": "New Roof configuration",
+        "Title": "Neue Dachkonfiguration",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2506,8 +2506,8 @@
       },
       {
         "Id": "2accad1df9b44326950e03f53fbd1f29",
-        "Title": "Select Roof",
-        "DescriptionText": "Select source roof element",
+        "Title": "Dach auswählen",
+        "DescriptionText": "Quelldachelement auswählen",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2529,8 +2529,8 @@
       },
       {
         "Id": "d07fc47ee87647469dc069824961bdb7",
-        "Title": "Get Roof Face",
-        "DescriptionText": "Explode the source element's geometry and pick one face with the largest area",
+        "Title": "Dachfläche abrufen",
+        "DescriptionText": "Geometrie des Quellelements auflösen und eine Fläche mit dem größten Bereich auswählen",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2564,8 +2564,8 @@
       },
       {
         "Id": "16a64a33859b40ddba6a21be6fa28b38",
-        "Title": "Offset outwards (scale)",
-        "DescriptionText": "Scale the surface to extend its edges outwards",
+        "Title": "Nach außen versetzen (Skalieren)",
+        "DescriptionText": "Fläche skalieren, um die Kanten nach außen zu erweitern",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2589,8 +2589,8 @@
       },
       {
         "Id": "ec6a770b1e494dd0976650f62aa895b0",
-        "Title": "Points on surface",
-        "DescriptionText": "Generate three lists of equally spaced points  - two rows along the longer edges and one row in the middle",
+        "Title": "Punkte auf Fläche",
+        "DescriptionText": "Drei Listen mit gleichmäßig verteilten Punkten erstellen - zwei Reihen entlang der längeren Kanten und eine Reihe in der Mitte",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2622,8 +2622,8 @@
       },
       {
         "Id": "e643d966ce354fa293bd0537e6c71696",
-        "Title": "Offset points up",
-        "DescriptionText": "Offset the points of the middle row in the shape of a cosine wave",
+        "Title": "Punkte nach oben versetzen",
+        "DescriptionText": "Punkte der mittleren Reihe in Form einer Kosinuswelle versetzen",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2653,8 +2653,8 @@
       },
       {
         "Id": "f0eed72993834c5ba26cb6eee9ed63b5",
-        "Title": "Create profiles from arcs",
-        "DescriptionText": "Use the points to create arcs",
+        "Title": "Profile aus Bogen erstellen",
+        "DescriptionText": "Punkte zum Erstellen von Bogen verwenden",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2681,8 +2681,8 @@
       },
       {
         "Id": "3cc10b89310149509d80722ad62929fc",
-        "Title": "To Revit: ",
-        "DescriptionText": "Convert Dynamo geometry into a Revit element via ImportInstance and Set Level parameter",
+        "Title": "Nach Revit: ",
+        "DescriptionText": "Dynamo-Geometrie über ImportInstance und den Parameter Ebene festlegen in ein Revit-Element konvertieren",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2708,8 +2708,8 @@
       },
       {
         "Id": "6f2f8b907d314deeae95a76e34158746",
-        "Title": "Extend profiles ",
-        "DescriptionText": "Extend the curves of each profile by a given distance",
+        "Title": "Profile erweitern ",
+        "DescriptionText": "Kurven jedes Profils um einen bestimmten Abstand erweitern",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2733,8 +2733,8 @@
       },
       {
         "Id": "44d57261115c4ee1a7c5c57ce778706d",
-        "Title": "Loft and Thicken",
-        "DescriptionText": "Create a loft surface and give it a thickness",
+        "Title": "Erhebung und Verdickung",
+        "DescriptionText": "Erhabene Fläche mit einer bestimmten Dicke erstellen",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2756,7 +2756,7 @@
       },
       {
         "Id": "370f5e82ca1a4f9a93d1f064a76ddbdb",
-        "Title": "Source element (Roof) has been pre-selected from Revit, with Element IDs saved with the Dynamo file",
+        "Title": "Quellelement (Dach) wurde in Revit vorausgewählt, Element-IDs wurden mit der Dynamo-Datei gespeichert",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2776,7 +2776,7 @@
       },
       {
         "Id": "a5dd9cfc31564778b33662fd8b7e26b7",
-        "Title": "Run this graph the Snowdon Towers Sample Architectural.rvt file in the Samples folder located with your Revit installation\r\nC:\\Program Files\\Autodesk\\Revit 2026\\Samples",
+        "Title": "Dieses Diagramm ausführen: Datei Snowdon Towers Sample Architectural.rvt im Ordner Samples in Ihrer Revit-Installation\r\nC:\\Programme\\Autodesk\\Revit 2026\\Samples",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2796,7 +2796,7 @@
       },
       {
         "Id": "8dd36d86278741cf92e0f89eddf64eba",
-        "Title": "Construct a new roof shape from a selected roof element by creating a series of arc profiles and using them to create a loft surface. The geometry is converted into an Import Instance to integrate it into the Revit environment",
+        "Title": "Konstruieren Sie eine neue Dachform aus einem ausgewählten Dachelement, indem Sie eine Reihe von Bogenprofilen erstellen und diese zum Erstellen einer erhabenen Fläche verwenden. Die Geometrie wird in ein Importexemplar konvertiert, um sie in die Revit-Umgebung zu integrieren",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2816,7 +2816,7 @@
       },
       {
         "Id": "9e68fb8fc13c451d9b00b9909a396052",
-        "Title": "The number of profiles from which the Loft surface will be created",
+        "Title": "Die Anzahl der Profile, aus denen die erhabene Fläche erstellt wird",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2837,7 +2837,7 @@
       },
       {
         "Id": "ad2557c11175413eb2f8f82c1ffee5b5",
-        "Title": "The height at the short ends of the new roof",
+        "Title": "Höhe an den kurzen Enden des neuen Dachs",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2858,7 +2858,7 @@
       },
       {
         "Id": "5095d914ffce4d83a7eb13d4f5260419",
-        "Title": "The height at the middle of the roof",
+        "Title": "Höhe in der Mitte des Dachs",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2879,7 +2879,7 @@
       },
       {
         "Id": "276bfb4c64c94b1fbe9f78af01567b89",
-        "Title": "Extend the arc profiles sideways by this value",
+        "Title": "Bogenprofile um diesen Wert seitlich erweitern",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2900,7 +2900,7 @@
       },
       {
         "Id": "ec0c78fc67dd4ac89b4542ccc85bf2e2",
-        "Title": "In order to get the face of the seleced element, first get its geometry ",
+        "Title": "Um die Fläche des ausgewählten Elements abzurufen, zuerst die Geometrie abrufen ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2921,7 +2921,7 @@
       },
       {
         "Id": "08a98aad311845e2ac4aac44f3a79a4d",
-        "Title": "Explode the geometry to get individual faces  ",
+        "Title": "Geometrie auflösen, um einzelne Flächen zu erhalten  ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2942,7 +2942,7 @@
       },
       {
         "Id": "aadd4acfcfac48909681cd53542c584a",
-        "Title": "Dispose of list structure. Note that this step will not be required if multiple source objects are used",
+        "Title": "Löschen Sie die Listenstruktur. Beachten Sie, dass dieser Schritt nicht erforderlich ist, wenn mehrere Quellobjekte verwendet werden",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2963,7 +2963,7 @@
       },
       {
         "Id": "d83e998bfd574b71885f35633b827b96",
-        "Title": "Sort the list of surfaces by their area. The surface with the largest ares will be the last item in the list of sortedList output",
+        "Title": "Sortieren Sie die Liste der Oberflächen nach ihrer Fläche. Die Oberfläche mit den größten Flächen ist das letzte Element in der Liste der sortedList-Ausgabe",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2984,7 +2984,7 @@
       },
       {
         "Id": "669e0a20ecb84e85ba6dfe4faf0c43bc",
-        "Title": "Translate the surface upwards",
+        "Title": "Fläche nach oben verschieben",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3005,7 +3005,7 @@
       },
       {
         "Id": "f80c8ae18e254b44abb89021161a103a",
-        "Title": "Right-click and untick 'Preview Geometry' for a clearer view of the final result",
+        "Title": "Klicken Sie mit der rechten Maustaste, und deaktivieren Sie Geometrievorschau, um eine bessere Ansicht des Endergebnisses zu erhalten",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3025,7 +3025,7 @@
       },
       {
         "Id": "7a6aa4a0404549ba83bf11f4e8426575",
-        "Title": "Use the Longest Lacing setting by right-click on the node > Lacing.  \nThe longest lacing will match inputs with different list structures. In this case the result will be two lists of points, where number of points in each list matches the longest input list. ",
+        "Title": "Verwenden Sie die Einstellung Längste Vergitterung, indem Sie mit der rechten Maustaste auf den Block und dann auf Vergitterung klicken. \nDie längste Vergitterung entspricht Eingaben mit unterschiedlichen Listenstrukturen. In diesem Fall werden zwei Punktlisten erstellt, wobei die Anzahl der Punkte in jeder Liste der längsten Eingabeliste entspricht. ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3046,7 +3046,7 @@
       },
       {
         "Id": "8511062e940749dfb23de4be5c15e4d6",
-        "Title": "0 and 1 are positions along longer edges of the surface",
+        "Title": "0 und 1 sind Positionen entlang längerer Kanten der Fläche",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3067,7 +3067,7 @@
       },
       {
         "Id": "fcb3f602857d4fcb867982128a26c9c5",
-        "Title": "V positions along the longer edges, in a sequence from 0 to 1 and N steps",
+        "Title": "V-Positionen entlang der längeren Kanten, in einer Sequenz von 0 bis 1 und N Schritten",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3088,7 +3088,7 @@
       },
       {
         "Id": "d058df4e47d74e8e850bd7df72ef43eb",
-        "Title": "The U value of 0.5 will position points along the middle of the surface",
+        "Title": "Mit dem U-Wert 0.5 werden Punkte entlang der Mitte der Fläche positioniert",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3109,7 +3109,7 @@
       },
       {
         "Id": "9f0c1c790f884630903f3f65594bd74a",
-        "Title": "V positions along the middle row of points, in a sequence from 0 to 1 and N steps",
+        "Title": "V-Positionen entlang der mittleren Reihe von Punkten in einer Sequenz von 0 bis 1 und N Schritten",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3130,7 +3130,7 @@
       },
       {
         "Id": "4bb9ea9c70424649b6eba106b5a21f92",
-        "Title": "Longest Lacing is used for this node. The result is one list of points, where the number of points in the list matches the longest input list. ",
+        "Title": "Für diesen Block wird die längste Vergitterung verwendet. Das Ergebnis ist eine Liste mit Punkten, wobei die Anzahl der Punkte in der Liste der längsten Eingabeliste entspricht. ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3151,7 +3151,7 @@
       },
       {
         "Id": "61998c233fdd4378b72fa2c73189fbe3",
-        "Title": "Alternative: Use the Sine for a different roof shape",
+        "Title": "Alternativ: Sinus für eine andere Dachform verwenden",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3172,7 +3172,7 @@
       },
       {
         "Id": "b318c682b9214054bc58f43c1239842a",
-        "Title": "a sequence of values to generate a series of offsets",
+        "Title": "eine Sequenz von Werten zum Erstellen einer Reihe von Versätzen",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3193,7 +3193,7 @@
       },
       {
         "Id": "77035e36aea24a5081e97783db6e2e69",
-        "Title": "values in a cosine wave",
+        "Title": "Werte in einer Kosinuswelle",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3214,7 +3214,7 @@
       },
       {
         "Id": "143b38807de14019a920b5a70967f698",
-        "Title": "remap the values to a new domain ",
+        "Title": "Werte einer neuen Domäne zuordnen ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3235,7 +3235,7 @@
       },
       {
         "Id": "59951434b5354b00a71b9d59a73026de",
-        "Title": "translate the points of the middle row ",
+        "Title": "Punkte der mittleren Reihe verschieben ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3256,7 +3256,7 @@
       },
       {
         "Id": "191c5e08bdd449939d44ad59992a38ea",
-        "Title": "Join the edge and middle rows into one list",
+        "Title": "Kante und mittlere Reihen in einer Liste verbinden",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3277,7 +3277,7 @@
       },
       {
         "Id": "8d5ed7c35ed54c1aaac481f2b9378a7e",
-        "Title": "The value of exension is set as input in the left side of the graph. ",
+        "Title": "Der Wert für die Erweiterung wird als Eingabe auf der linken Seite des Diagramms festgelegt. ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3298,7 +3298,7 @@
       },
       {
         "Id": "feee2c03bc0d49c4ad910796c26a43d7",
-        "Title": "All inputs marked at 'IsInput' can be set from Dynamo Player",
+        "Title": "Alle mit IsInput markierten Eingaben können in Dynamo Player festgelegt werden",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3319,7 +3319,7 @@
       },
       {
         "Id": "1d32d99f96104b289d18eb41e29f036f",
-        "Title": "Thickness of the new Roof shape",
+        "Title": "Dicke der neuen Dachform",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3340,7 +3340,7 @@
       },
       {
         "Id": "3384eaf2af26445291a1584055510725",
-        "Title": "Correct the height of the placed Import Instance by setting the Work Plane parameter to the Level which elevation matches the Internal Origin position.",
+        "Title": "Korrigieren Sie die Höhe des platzierten Importexemplars, indem Sie den Parameter Arbeitsebene auf die Ebene festlegen, deren Höhe mit der Position des internen Ursprungs übereinstimmt.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3361,7 +3361,7 @@
       },
       {
         "Id": "d44741a563584e0aa3b0d2ed32621e24",
-        "Title": "In order to integrate geometry into the Revit environment, it first needs to be converted into a Revit Element. \r\nSolids can be transformed into an Import Instance that will be visible both Project and model Family environments. ",
+        "Title": "Um Geometrie in die Revit-Umgebung zu integrieren, muss sie zunächst in ein Revit-Element konvertiert werden. \r\nVolumenkörper können in ein Importexemplar umgewandelt werden, das sowohl in der Projekt- als auch in der Modellfamilienumgebung sichtbar ist. ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

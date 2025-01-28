@@ -118,33 +118,33 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ArraySizeOverflow" xml:space="preserve">
-    <value>Array size overflow</value>
+    <value>陣列大小溢位</value>
   </data>
   <data name="ClassNameAsVariableError" xml:space="preserve">
-    <value>{0} is a class name, can't be used as a variable.</value>
+    <value>{0} 為類別名稱，無法做為變數。</value>
   </data>
   <data name="ConstantExpectedInArrayDeclaration" xml:space="preserve">
-    <value>Array declaration expected constant expression</value>
+    <value>陣列宣告預期常數表示式</value>
   </data>
   <data name="FunctionAsVaribleError" xml:space="preserve">
-    <value>\"{0}\"is a function and not allowed as a variable name</value>
+    <value>\"{0}\" 為函數，因此不允許做為變數名稱</value>
   </data>
   <data name="FunctionPointerNotAllowedAtBinaryExpression" xml:space="preserve">
-    <value>Function pointer is not allowed at binary expression other than assignment.</value>
+    <value>二進位表示式中不允許函數指標，但指定除外。</value>
   </data>
   <data name="IdentifierRedefinition" xml:space="preserve">
-    <value>redefinition of identifier '{0}'</value>
+    <value>重新定義識別碼 '{0}'</value>
   </data>
   <data name="ImperativeSymbolsAreReadOnly" xml:space="preserve">
-    <value>Variables declared in an outer scope cannot be changed inside an imperative block.</value>
+    <value>在外側範圍宣告的變數無法在必要區塊內變更。</value>
   </data>
   <data name="InvalidArrayInitializer" xml:space="preserve">
-    <value>array initializer must be an expression list</value>
+    <value>陣列起始器必須是表示式清單</value>
   </data>
   <data name="InvalidNestedImperativeBlock" xml:space="preserve">
-    <value>An imperative language block is declared within an imperative language block.</value>
+    <value>已在必要語言區塊內宣告必要語言區塊。</value>
   </data>
   <data name="OnlyIdentifierOrIdentifierListCanBeOnLeftSide" xml:space="preserve">
-    <value>Only identifier or identifier list can appear on the left hand side of assignment.</value>
+    <value>唯一識別碼或識別碼清單可以出現在指定左側。</value>
   </data>
 </root>

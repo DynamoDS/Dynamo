@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,107 +118,107 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptButtonTooltip" xml:space="preserve">
-    <value>Accept the current code changes.</value>
+    <value>현재 코드 변경 사항을 수락합니다.</value>
   </data>
   <data name="CustomNodesPythonDependencyHeader" xml:space="preserve">
-    <value>Custom Nodes that have an IronPython2 dependency</value>
+    <value>IronPython2 종속성이 있는 사용자 정의 노드</value>
   </data>
   <data name="DiffButtonTooltip" xml:space="preserve">
-    <value>Change between Side-by-Side and Inline view.</value>
+    <value>나란히 뷰 및 인라인 뷰 간에 변경합니다.</value>
   </data>
   <data name="IronPythonDialogDescription" xml:space="preserve">
-    <value>Dynamo has moved away from the old IronPython2 (Python 2) engine towards a new CPython3 (Python 3) engine. 
-The IronPython engine is still available as a package from the Dynamo package manager, but only the CPython3 engine will be supported.</value>
+    <value>Dynamo가 이전 IronPython2(Python 2) 엔진에서 새로운 CPython3(Python 3) 엔진으로 바뀌었습니다. 
+IronPython 엔진은 여전히 Dynamo Package Manager를 통해 패키지로 제공되지만, 앞으로는 CPython3 엔진만 지원됩니다.</value>
   </data>
   <data name="IronPythonDialogSummary" xml:space="preserve">
-    <value>This graph contains nodes that reference an outdated Python engine.</value>
+    <value>이 그래프에는 오래된 Python 엔진을 참조하는 노드가 포함되어 있습니다.</value>
   </data>
   <data name="IronPythonDialogTitle" xml:space="preserve">
-    <value>Graph contains outdated Python engine</value>
+    <value>그래프에 오래된 Python 엔진이 포함되어 있음</value>
   </data>
   <data name="IronPythonDisableAlertMessage" xml:space="preserve">
-    <value>Do not show again.</value>
+    <value>다시 표시하지 않습니다.</value>
   </data>
   <data name="IronPythonNotificationDetailedMessage" xml:space="preserve">
-    <value>This graph currently contains python nodes that are using the old IronPython Engine which has been deprecated. Consider updating these nodes to use the new CPython 3.7 Engine.</value>
+    <value>이 그래프에는 현재 사용되지 않는 이전 IronPython 엔진을 사용하는 Python 노드가 포함되어 있습니다. 이러한 노드를 업데이트하여 새 CPython 3.7 엔진을 사용해 보십시오.</value>
   </data>
   <data name="IronPythonNotificationShortMessage" xml:space="preserve">
-    <value>This graph currently contains nodes that are using the old IronPython2 (Python 2) engine which has been deprecated. A new CPython3 (Python 3) has been implemented and is accessible inside the Python editor.</value>
+    <value>이 그래프에는 현재 사용되지 않는 이전 IronPython2(Python 2) 엔진을 사용하는 노드가 포함되어 있습니다. 새 CPython3(Python 3)이 구현되었으며 Python 편집기 내에서 액세스 가능합니다.</value>
   </data>
   <data name="MigrationAssistantDisclaimerContinueButtonContent" xml:space="preserve">
-    <value>Continue</value>
+    <value>계속</value>
   </data>
   <data name="MigrationAssistantDisclaimerDecline" xml:space="preserve">
-    <value>Decline</value>
+    <value>거부</value>
   </data>
   <data name="MigrationAssistantDisclaimerDisable" xml:space="preserve">
-    <value>Do not show again.</value>
+    <value>다시 표시하지 않습니다.</value>
   </data>
   <data name="MigrationAssistantDisclaimerHeader" xml:space="preserve">
-    <value>You are about to make changes to your Python code</value>
+    <value>Python 코드를 변경하려고 함</value>
   </data>
   <data name="MigrationAssistantDisclaimerMessage" xml:space="preserve">
-    <value>The Migration Assistant helps users to update scripts from Python 2 to Python 3.
-By clicking “Continue”, you are agreeing to implement the syntax changes to your source code as suggested by the Migration Assistant. The Migration Assistant is a component of open source Dynamo, and as such it is licensed to you under the terms of the Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0 ). Under the terms of the Apache License 2.0, Dynamo and the Migration Assistant are provided to you on an “AS IS” basis.</value>
+    <value>마이그레이션 보조 도구를 사용하면 사용자가 Python 2에서 Python 3으로 스크립트를 업데이트할 수 있습니다.
+"계속"을 클릭하면 마이그레이션 보조 도구에서 제안한 대로 소스 코드에 구문 변경 사항을 구현하는 데 동의하게 됩니다. 마이그레이션 보조 도구는 오픈 소스 Dynamo의 구성요소입니다. 따라서 Apache License 2.0(https://www.apache.org/licenses/LICENSE-2.0)의 약관에 따라 사용자에게 라이센스가 부여됩니다. Apache License 2.0의 약관에 따라 Dynamo 및 마이그레이션 보조 도구는 "그대로" 제공됩니다.</value>
   </data>
   <data name="MigrationAssistantDisclaimerWindowTitle" xml:space="preserve">
-    <value>Migration Assistant Disclaimer</value>
+    <value>마이그레이션 보조 도구 고지 사항</value>
   </data>
   <data name="MigrationAssistantNoChangesStateHeader" xml:space="preserve">
-    <value>Nothing to see here!</value>
+    <value>여기에 표시되는 항목이 없음</value>
   </data>
   <data name="MigrationAssistantNoChangesStateMessage" xml:space="preserve">
-    <value>Your code is ready to run with the Python 3 engine. Click accept and we'll switch to the Python 3 engine for you.</value>
+    <value>코드가 Python 3 엔진에서 실행될 준비가 되었습니다. 동의를 클릭하면 Python 3 엔진으로 전환됩니다.</value>
   </data>
   <data name="MigrationAssistantErrorStateHeader" xml:space="preserve">
-    <value>There is an error in your code!</value>
+    <value>코드에 오류가 있습니다!</value>
   </data>
   <data name="MigrationAssistantErrorStateMessage" xml:space="preserve">
-    <value>Fix all errors before attempting code migration.</value>
+    <value>코드 마이그레이션을 시도하기 전에 모든 오류를 수정하십시오.</value>
   </data>
   <data name="PackagedCustomNodesHeader" xml:space="preserve">
-    <value>Packaged</value>
+    <value>패키지</value>
   </data>
   <data name="PackagedCustomNodesTooltip" xml:space="preserve">
-    <value>Please notify the package author to update the package</value>
+    <value>패키지 작성자에게 패키지 업데이트를 알리십시오.</value>
   </data>
   <data name="PythonMigrationAssistantCodeAfter" xml:space="preserve">
-    <value>After</value>
+    <value>이후</value>
   </data>
   <data name="PythonMigrationAssistantCodeBefore" xml:space="preserve">
-    <value>Before</value>
+    <value>이전</value>
   </data>
   <data name="PythonMigrationAssistantInlinePaneTitle" xml:space="preserve">
-    <value>Before -&gt; After</value>
+    <value>이전 -&gt; 이후</value>
   </data>
   <data name="PythonMigrationAssistantWindowTitle" xml:space="preserve">
-    <value>Migration Assistant</value>
+    <value>마이그레이션 보조 도구</value>
   </data>
   <data name="PythonMigrationBackupExtension" xml:space="preserve">
     <value>Python2</value>
   </data>
   <data name="PythonMigrationBackupFileCreatedMessage" xml:space="preserve">
-    <value>Before applying the Python code migration, a backup of this graph has been saved to the configured backup location : {0}</value>
+    <value>Python 코드 마이그레이션을 적용하기 전에 구성된 백업 위치({0})에 이 그래프의 백업을 저장했습니다.</value>
   </data>
   <data name="RejectButtonTooltip" xml:space="preserve">
-    <value>Reject the current code changes.</value>
+    <value>현재 코드 변경 사항을 거부합니다.</value>
   </data>
   <data name="UserDefinitionCustomNodesTooltip" xml:space="preserve">
-    <value>Double-click on the custom node to open its workspace</value>
+    <value>사용자 노드를 두 번 클릭하여 해당 작업공간을 엽니다.</value>
   </data>
   <data name="UserDefinitionsHeader" xml:space="preserve">
-    <value>Definitions</value>
+    <value>정의</value>
   </data>
   <data name="MoreInformationButton" xml:space="preserve">
-    <value>More Information</value>
+    <value>추가 정보</value>
   </data>
   <data name="AcceptButton" xml:space="preserve">
-    <value>Accept</value>
+    <value>동의</value>
   </data>
   <data name="RejectButton" xml:space="preserve">
-    <value>Cancel</value>
+    <value>취소</value>
   </data>
   <data name="SwitchViewButton" xml:space="preserve">
-    <value>Switch View</value>
+    <value>뷰 전환</value>
   </data>
 </root>

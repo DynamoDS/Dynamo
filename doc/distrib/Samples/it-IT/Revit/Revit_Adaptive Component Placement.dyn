@@ -1,7 +1,7 @@
 {
   "Uuid": "8777f033-f09c-47ee-bfca-46427bd1da87",
   "IsCustomNode": false,
-  "Description": "This graph positions Adaptive Components by Points in a model.",
+  "Description": "Questo grafico posiziona i componenti adattivi in base ai punti in un modello.",
   "Name": "Revit_Adaptive Component Placement",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -13,16 +13,16 @@
       "Type": "selection",
       "Type2": "dropdownSelection",
       "Value": "AdaptivePanel:AdaptivePanel",
-      "Description": "All family types available in the document.",
+      "Description": "Tutti i tipi di famiglia disponibili nel documento.",
       "SelectedIndex": 5
     },
     {
       "Id": "6b81b78758ad4b52b53add6f747db074",
-      "Name": "Select Edges",
+      "Name": "Seleziona bordi",
       "Type": "selection",
       "Type2": "hostSelection",
       "Value": "817801dd-655e-443c-9f69-d5f14efae8a3-0019f3a5:0:LINEAR,817801dd-655e-443c-9f69-d5f14efae8a3-0019f3a7:0:LINEAR,817801dd-655e-443c-9f69-d5f14efae8a3-0019f3a9:0:LINEAR,817801dd-655e-443c-9f69-d5f14efae8a3-0019f3ab:0:LINEAR,817801dd-655e-443c-9f69-d5f14efae8a3-0019f3ad:0:LINEAR,817801dd-655e-443c-9f69-d5f14efae8a3-0019f3af:0:LINEAR,817801dd-655e-443c-9f69-d5f14efae8a3-0019f3b1:0:LINEAR",
-      "Description": "Select multiple edges."
+      "Description": "Selezionare più bordi."
     }
   ],
   "Outputs": [],
@@ -35,7 +35,7 @@
         {
           "Id": "09cb13f75f3b43c4a72e241b09b61ace",
           "Name": "points",
-          "Description": "a two-dimensional array of points\n\nPoint[][]",
+          "Description": "Matrice bidimensionale di punti\n\nPoint[][]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -44,7 +44,7 @@
         {
           "Id": "b00a9630397141d484728e8d62cb9b30",
           "Name": "familyType",
-          "Description": "a family type to use to create the adaptive components\n\nFamilyType",
+          "Description": "Tipo di famiglia da utilizzare per la creazione dei componenti adattivi\n\nFamilyType",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -64,7 +64,7 @@
       ],
       "FunctionSignature": "Revit.Elements.AdaptiveComponent.ByPoints@Autodesk.DesignScript.Geometry.Point[][],Revit.Elements.FamilyType",
       "Replication": "Auto",
-      "Description": "Create a list of adaptive components from two-dimensional array of points\n\nAdaptiveComponent.ByPoints (points: Point[][], familyType: FamilyType): AdaptiveComponent[]..[]"
+      "Description": "Crea un elenco di componenti adattivi da una matrice bidimensionale di punti.\n\nAdaptiveComponent.ByPoints (points: Point[][], familyType: FamilyType): AdaptiveComponent[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -83,7 +83,7 @@
         {
           "Id": "1825c44a9fb8410598d947b4b81be465",
           "Name": "param",
-          "Description": "The parameter at which to evaluate\n\ndouble\nDefault value : 0 (disabled)",
+          "Description": "Parametro in corrispondenza del quale eseguire la valutazione\n\ndouble\nValore di default: 0 (disabled)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -94,7 +94,7 @@
         {
           "Id": "b235d7ee25614be3b53cb535614f89fe",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Punto",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -103,7 +103,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.PointAtParameter@double",
       "Replication": "CrossProduct",
-      "Description": "Get a Point on the Curve at a specified parameter between StartParameter() and EndParameter()\n\nCurve.PointAtParameter (param: double = 0): Point"
+      "Description": "Ottiene un punto sulla curva in corrispondenza di un parametro specificato, incluso tra StartParameter() ed EndParameter().\n\nCurve.PointAtParameter (param: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -114,7 +114,7 @@
         {
           "Id": "2666ffedf1ea4edcb3f251dc2e672eb8",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -122,7 +122,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "[0,0.5,1];"
     },
     {
@@ -136,7 +136,7 @@
         {
           "Id": "c59535008fb04da990584ca3b7bc3afb",
           "Name": "Family Type",
-          "Description": "The selected Family Type",
+          "Description": "Tipo di famiglia selezionato",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -144,7 +144,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "All family types available in the document."
+      "Description": "Tutti i tipi di famiglia disponibili nel documento."
     },
     {
       "ConcreteType": "Dynamo.Nodes.SelectEdges, DSRevitNodesUI",
@@ -164,7 +164,7 @@
         {
           "Id": "1996439372414ccd9d81edfcc526f0bc",
           "Name": "Curves",
-          "Description": "The selected elements.",
+          "Description": "Elementi selezionati.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -172,7 +172,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Select multiple edges."
+      "Description": "Selezionare più bordi."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -183,7 +183,7 @@
         {
           "Id": "23ed11284a58401bbf47e4c55c059e6f",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -192,7 +192,7 @@
         {
           "Id": "5c81293130da4b0996c20bf22a0a53fe",
           "Name": "",
-          "Description": "Value of expression at line 2",
+          "Description": "Valore dell'espressione alla riga 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -200,7 +200,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "0;\n2;"
     },
     {
@@ -220,7 +220,7 @@
         {
           "Id": "96cc3e9d809943ebb7e694a3c6abb16b",
           "Name": "xTranslation",
-          "Description": "Displacement along X-axis.\n\ndouble\nDefault value : 0",
+          "Description": "Spostamento lungo l'asse X.\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -229,7 +229,7 @@
         {
           "Id": "d0e8c3d688c64de58fefd3baf6543449",
           "Name": "yTranslation",
-          "Description": "Displacement along Y-axis.\n\ndouble\nDefault value : 0",
+          "Description": "Spostamento lungo l'asse Y.\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -238,7 +238,7 @@
         {
           "Id": "f11a02654b114aa4bed8b6b8b0503520",
           "Name": "zTranslation",
-          "Description": "Displacement along Z-axis.\n\ndouble\nDefault value : 0",
+          "Description": "Spostamento lungo l'asse Z.\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -249,7 +249,7 @@
         {
           "Id": "a8a88941291642b297b1c6b8ccd41da5",
           "Name": "Geometry",
-          "Description": "Transformed Geometry.",
+          "Description": "Geometria trasformata.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -258,7 +258,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double",
       "Replication": "Auto",
-      "Description": "Translates any given geometry by the given displacements in the x, y, and z directions defined in WCS respectively.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
+      "Description": "Trasla qualsiasi geometria data in base agli spostamenti specificati rispettivamente nelle direzioni X, Y e Z definiti nel sistema WCS.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -268,7 +268,7 @@
         {
           "Id": "e7eab06e3b7c4e4d8f3f0cd43fbc0121",
           "Name": "list",
-          "Description": "List to get the item count of.\n\nvar[]..[]",
+          "Description": "Elenco del quale ottenere il numero di voci.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -279,7 +279,7 @@
         {
           "Id": "16f38a94644947a0866eb9c1f9905a6e",
           "Name": "int",
-          "Description": "List length.",
+          "Description": "Lunghezza dell'elenco.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -288,7 +288,7 @@
       ],
       "FunctionSignature": "DSCore.List.Count@var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns the number of items stored in the given list.\n\nList.Count (list: var[]..[]): int"
+      "Description": "Restituisce il numero di voci memorizzate nell'elenco dato.\n\nList.Count (list: var[]..[]): int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -309,7 +309,7 @@
         {
           "Id": "28d33c95d3244a5ab985b54dcb1279c1",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -317,7 +317,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "0..1..#steps;"
     },
     {
@@ -328,7 +328,7 @@
         {
           "Id": "872b5f5bd88c4280bdefec79b58b1c6f",
           "Name": "angle",
-          "Description": "Angle in degrees to take the sine of.\n\ndouble",
+          "Description": "Angolo in gradi di cui calcolare il seno.\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -339,7 +339,7 @@
         {
           "Id": "792c5f3d4e1040e8a847899be6250402",
           "Name": "double",
-          "Description": "Sine of the angle.",
+          "Description": "Seno dell'angolo.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -348,7 +348,7 @@
       ],
       "FunctionSignature": "DSCore.Math.Sin@double",
       "Replication": "Auto",
-      "Description": "Finds the sine of an angle.\n\nMath.Sin (angle: double): double"
+      "Description": "Trova il seno di un angolo.\n\nMath.Sin (angle: double): double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -358,7 +358,7 @@
         {
           "Id": "b8a5e67f7a844a109c3d454289a2353d",
           "Name": "numbers",
-          "Description": "List of numbers to adjust range of.\n\ndouble[]",
+          "Description": "Elenco di numeri di cui regolare l'intervallo.\n\ndouble[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -367,7 +367,7 @@
         {
           "Id": "57120e3e08bb426f96d7ad8cdc0559a5",
           "Name": "newMin",
-          "Description": "New minimum of the range.\n\ndouble\nDefault value : 0",
+          "Description": "Nuovo valore minimo dell'intervallo.\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -376,7 +376,7 @@
         {
           "Id": "fdd6ce5c4e924712a66ef1affc9aa245",
           "Name": "newMax",
-          "Description": "New maximum of the range\n\ndouble\nDefault value : 1",
+          "Description": "Nuovo valore massimo dell'intervallo.\n\ndouble\nValore di default: 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -387,7 +387,7 @@
         {
           "Id": "e1f17fcac3364bca822f9b5af648836c",
           "Name": "list",
-          "Description": "List remapped to new range.",
+          "Description": "Elenco mappato sul nuovo intervallo.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -396,7 +396,7 @@
       ],
       "FunctionSignature": "DSCore.Math.RemapRange@double[],double,double",
       "Replication": "Auto",
-      "Description": "Adjusts the range of a list of numbers while preserving the distribution ratio.\n\nMath.RemapRange (numbers: double[], newMin: double = 0, newMax: double = 1): var[]..[]"
+      "Description": "Regola l'intervallo di un elenco di numeri, mantenendo il rapporto di distribuzione.\n\nMath.RemapRange (numbers: double[], newMin: double = 0, newMax: double = 1): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
@@ -407,7 +407,7 @@
         {
           "Id": "662e142e6efe47d78c3e96b37fd6f4ea",
           "Name": "item0",
-          "Description": "Item Index #0",
+          "Description": "Indice elemento 0",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -416,7 +416,7 @@
         {
           "Id": "0de7f698a4224834b792d20f5859d57d",
           "Name": "item1",
-          "Description": "Item Index #1",
+          "Description": "Indice dell'elemento n. 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -425,7 +425,7 @@
         {
           "Id": "797602875734479f869f2fba86792722",
           "Name": "item2",
-          "Description": "Item Index #2",
+          "Description": "Indice dell'elemento n. 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -434,7 +434,7 @@
         {
           "Id": "381555e6f3094be89baefe3a0ff7aee2",
           "Name": "item3",
-          "Description": "Item Index #3",
+          "Description": "Indice dell'elemento n. 3",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -445,7 +445,7 @@
         {
           "Id": "7a8fa01029f34867a2b5e0ed607ee48e",
           "Name": "list",
-          "Description": "A list (type: var[]..[])",
+          "Description": "Elenco (tipo: var[]..[])",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -453,7 +453,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Makes a new list from the given inputs"
+      "Description": "Crea un nuovo elenco in base agli input specificati."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -463,7 +463,7 @@
         {
           "Id": "322e4ab0f84d41888a3a6397375cfe79",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "Elenco dal quale ricavare la voce.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": true,
@@ -472,7 +472,7 @@
         {
           "Id": "768c8eb24b5140d88148b6116736afe9",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "Indice dell'elemento da recuperare.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -483,7 +483,7 @@
         {
           "Id": "18b68bfeb5504392a1eadf7bbe2af24c",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "Voce dell'elenco corrispondente all'indice dato.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -492,7 +492,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Restituisce un elemento dall'elenco dato, situato in corrispondenza dell'indice specificato.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -502,7 +502,7 @@
         {
           "Id": "a03b8f989e8b482d8197fe7ed83dcb95",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "Elenco dal quale ricavare la voce.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": true,
@@ -511,7 +511,7 @@
         {
           "Id": "56586db6e9e640e68ab69bbcf1964b11",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "Indice dell'elemento da recuperare.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -522,7 +522,7 @@
         {
           "Id": "a5d5b960e68945dea722597253f7e318",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "Voce dell'elenco corrispondente all'indice dato.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -531,7 +531,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Restituisce un elemento dall'elenco dato, situato in corrispondenza dell'indice specificato.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -541,7 +541,7 @@
         {
           "Id": "9cebdbf0ceef4e3b8522322399f3315c",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "Elenco dal quale ricavare la voce.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": true,
@@ -550,7 +550,7 @@
         {
           "Id": "a285641def7449d88ca93621c834b39a",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "Indice dell'elemento da recuperare.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -561,7 +561,7 @@
         {
           "Id": "662d8be214f14febbe67793b1937dd52",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "Voce dell'elenco corrispondente all'indice dato.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -570,7 +570,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Restituisce un elemento dall'elenco dato, situato in corrispondenza dell'indice specificato.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -581,7 +581,7 @@
         {
           "Id": "883bb6cdd9bc4104b45d78526fdacfad",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -589,7 +589,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "1;"
     },
     {
@@ -600,7 +600,7 @@
         {
           "Id": "6720fbee63be4d4b95296d66f5dab058",
           "Name": "lists",
-          "Description": "List of lists to be transposed\n\nvar[]..[]",
+          "Description": "Elenco di elenchi da sottoporre allo scambio\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -611,7 +611,7 @@
         {
           "Id": "187b9b216b424c5b9252efb60aeb8721",
           "Name": "lists",
-          "Description": "List of transposed lists",
+          "Description": "Lista di elenchi sottoposti allo scambio",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -620,7 +620,7 @@
       ],
       "FunctionSignature": "DSCore.List.Transpose@var[]..[]",
       "Replication": "Auto",
-      "Description": "Swaps rows and columns in a list of lists. If there are some rows that are shorter than others, null values are inserted as place holders in the resultant array such that it is always rectangular.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
+      "Description": "Scambia righe e colonne in un elenco di elenchi. Se alcune righe sono più corte di altre, nella matrice risultante vengono inseriti valori null come segnaposto, per ottenere sempre una matrice rettangolare.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
@@ -643,7 +643,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Genera valori numerici.",
       "InputValue": 1.4
     },
     {
@@ -667,7 +667,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Genera valori numerici.",
       "InputValue": 4.3
     },
     {
@@ -689,7 +689,7 @@
         {
           "Id": "c1c8e16af2774e69b1a2ac0f175e896c",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -697,7 +697,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "-y;"
     },
     {
@@ -717,7 +717,7 @@
         {
           "Id": "c2085568e0f749838f91cebfd1063b49",
           "Name": "xTranslation",
-          "Description": "Displacement along X-axis.\n\ndouble\nDefault value : 0",
+          "Description": "Spostamento lungo l'asse X.\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -726,7 +726,7 @@
         {
           "Id": "85bb57f01c814062ab77e559b04ffd26",
           "Name": "yTranslation",
-          "Description": "Displacement along Y-axis.\n\ndouble\nDefault value : 0",
+          "Description": "Spostamento lungo l'asse Y.\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -735,7 +735,7 @@
         {
           "Id": "50f5a82302b344adaf3bd06cf8649253",
           "Name": "zTranslation",
-          "Description": "Displacement along Z-axis.\n\ndouble\nDefault value : 0",
+          "Description": "Spostamento lungo l'asse Z.\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -746,7 +746,7 @@
         {
           "Id": "5b041e893c264ef4a9ffce297d3d4f10",
           "Name": "Geometry",
-          "Description": "Transformed Geometry.",
+          "Description": "Geometria trasformata.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -755,7 +755,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double",
       "Replication": "Auto",
-      "Description": "Translates any given geometry by the given displacements in the x, y, and z directions defined in WCS respectively.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
+      "Description": "Trasla qualsiasi geometria data in base agli spostamenti specificati rispettivamente nelle direzioni X, Y e Z definiti nel sistema WCS.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -776,7 +776,7 @@
         {
           "Id": "41d6499d07c4486a88d1074450a1da80",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -784,7 +784,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "y;"
     }
   ],
@@ -972,7 +972,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Proprietà",
       "Version": "2.12",
       "Data": {}
     },
@@ -1008,7 +1008,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Anteprima sfondo",
       "EyeX": -21.938243865966797,
       "EyeY": 9.230457305908203,
       "EyeZ": -7.329970359802246,
@@ -1043,7 +1043,7 @@
       },
       {
         "Id": "af7b9fc0acda4b309fe5c241ef8fe097",
-        "Name": "List of parameters",
+        "Name": "Elenco di parametri",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1063,7 +1063,7 @@
       },
       {
         "Id": "6b81b78758ad4b52b53add6f747db074",
-        "Name": "Select Edges",
+        "Name": "Seleziona bordi",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1073,7 +1073,7 @@
       },
       {
         "Id": "0e04d1abbacd412e8f6026b4c99c1229",
-        "Name": "start and end points indices",
+        "Name": "indici dei punti iniziali e finali",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1173,7 +1173,7 @@
       },
       {
         "Id": "eeb8dc13104745b48d4de6b2b0ed1f75",
-        "Name": "Mid point index",
+        "Name": "Indice punto medio",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1193,7 +1193,7 @@
       },
       {
         "Id": "92f76a138e58430088a8bc5827b008c3",
-        "Name": "min Displacement",
+        "Name": "Spostamento minimo",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1203,7 +1203,7 @@
       },
       {
         "Id": "7b5d3634fb8543ef9ce662f0159d83d7",
-        "Name": "max Displacement",
+        "Name": "Spostamento massimo",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1213,7 +1213,7 @@
       },
       {
         "Id": "7a9264d7a6cf4a0c8a5895a9a2f2db6e",
-        "Name": "Negate value",
+        "Name": "Valore negativo",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1233,7 +1233,7 @@
       },
       {
         "Id": "99173643f79a425d9e042edd52e25c39",
-        "Name": "Negate value",
+        "Name": "Valore negativo",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1245,7 +1245,7 @@
     "Annotations": [
       {
         "Id": "7e1f96772a304ef8959cd75f3a5a4fe1",
-        "Title": "Info",
+        "Title": "Informazioni",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1269,7 +1269,7 @@
       },
       {
         "Id": "21dd466b01aa46e9acedf53f7bebfbcc",
-        "Title": "Inputs",
+        "Title": "Input",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1297,7 +1297,7 @@
       },
       {
         "Id": "31433f573778440ab5bc141a848eda1f",
-        "Title": "To Revit: Place component",
+        "Title": "In Revit: Posiziona componente",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1320,7 +1320,7 @@
       },
       {
         "Id": "26b382cf60514af8a68280f216c6910a",
-        "Title": "Grab mid point from each curve",
+        "Title": "Ottiene il punto medio da ogni curva.",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1344,7 +1344,7 @@
       },
       {
         "Id": "4ebb38770c0a40cab4b58ce1af6cd435",
-        "Title": "Grab start and end points from each curve",
+        "Title": "Ottiene i punti iniziale e finale da ogni curva.",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1369,7 +1369,7 @@
       },
       {
         "Id": "27720fa4e16d4e0b842c2b6504d72d29",
-        "Title": "Create a Sine wave",
+        "Title": "Crea un'onda sinusoidale.",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1398,7 +1398,7 @@
       },
       {
         "Id": "85d54b242de04e8abc40be58c68637cf",
-        "Title": "Displace mid points",
+        "Title": "Sposta i punti medi.",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1423,7 +1423,7 @@
       },
       {
         "Id": "d8a009c0fe3b447a97e5d336cca5850e",
-        "Title": "Rejoin points in lists",
+        "Title": "Riunisce i punti in elenchi.",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1447,7 +1447,7 @@
       },
       {
         "Id": "3380824479aa4b19b1287d064567a332",
-        "Title": "Curtain Wall Grid Lines have been pre-selected from Revit, Element IDs saved with the Dynamo file",
+        "Title": "Le linee della griglia della facciata continua sono state preselezionate da Revit; gli ID elemento sono stati salvati con il file di Dynamo.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1467,7 +1467,7 @@
       },
       {
         "Id": "431987b465b44dc09eb7b88d570befe7",
-        "Title": "\nRun this graph the Snowdon Towers Sample Architectural.rvt file in the Samples folder located with your Revit installation: \n\nC:\\Program Files\\Autodesk\\Revit 2026\\Samples\n\nRun this graph after you load the adaptive family AdaptivePanel.rfa from the Dynamo datasets location.",
+        "Title": "\nEseguire questo grafico del file Snowdon Towers Sample Architectural.rvt nella cartella Esempi dell'installazione di Revit: \n\nC:\\Programmi\\Autodesk\\Revit 2026\\Esempi",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1487,7 +1487,7 @@
       },
       {
         "Id": "278575d9f70a4065b31e24800ea8af8d",
-        "Title": "Place Adaptive Components relative to some elements selected in a Revit file. \n\nAdaptive components require a set of points equal to the number of Placement points of the Family being placed",
+        "Title": "Posiziona componenti adattivi rispetto ad alcuni elementi selezionati in un file di Revit.\n\nI componenti adattivi richiedono un gruppo di punti pari al numero di punti di posizionamento della famiglia in fase di posizionamento.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1507,7 +1507,7 @@
       },
       {
         "Id": "80d7bfade1e448fe8bc6362b7b7952b3",
-        "Title": "Select Curtain Wall Grid Lines ",
+        "Title": "Seleziona linee della griglia della facciata continua ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1528,7 +1528,7 @@
       },
       {
         "Id": "5cadcd68144f4f848232bf190545ef25",
-        "Title": "Create a list of point positions along a curve, 0 being the Start, 0.5 - Middle and 1 being the End ",
+        "Title": "Crea un elenco di posizioni dei punti lungo una curva, dove 0 è l'inizio, 0.5 è il centro e 1 è la fine. ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1549,7 +1549,7 @@
       },
       {
         "Id": "459f18f8d80f437db27d96b65f407b3d",
-        "Title": "Select Adaptive Component family",
+        "Title": "Seleziona famiglia Componente adattivo",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1570,7 +1570,7 @@
       },
       {
         "Id": "77c6ea9e233f43ba977326f3594954c4",
-        "Title": "Set the minimum and maximum displacement for the fin middle point",
+        "Title": "Imposta lo spostamento minimo e massimo per il punto medio dell'aletta.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1591,7 +1591,7 @@
       },
       {
         "Id": "02e1a6c6d759486f89cb0896f48eb442",
-        "Title": "Create a sequence of N values from 0 to 1",
+        "Title": "Crea una sequenza di valori N da 0 a 1.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1612,7 +1612,7 @@
       },
       {
         "Id": "784d4bf56b5143b79ec2aed941d48010",
-        "Title": "Count how many source curves are selected",
+        "Title": "Conta il numero di curve di origine selezionate.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1633,7 +1633,7 @@
       },
       {
         "Id": "0e12f041d06d4e90a4de32ff73d6a5b8",
-        "Title": "Create a sine wave",
+        "Title": "Crea un'onda sinusoidale.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1654,7 +1654,7 @@
       },
       {
         "Id": "956062d2ac834a30b51e8f05d28f10aa",
-        "Title": "Remap the values of the sine wave to a new Max and MIn",
+        "Title": "Riassocia i valori dell'onda sinusoidale ad un nuovo valore massimo e minimo.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1675,7 +1675,7 @@
       },
       {
         "Id": "d3a843ef268646b49aa2b7d0049c6864",
-        "Title": "For Y displacement, negate the value to displace towards the outside of the Curtain Wall",
+        "Title": "Per lo spostamento Y, negare il valore di spostamento verso l'esterno della facciata continua.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1696,7 +1696,7 @@
       },
       {
         "Id": "24f70f88535b4a6aa1a3d0aed97fcd53",
-        "Title": "Displace the middle points of the fin",
+        "Title": "Sposta i punti centrali dell'aletta.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1717,7 +1717,7 @@
       },
       {
         "Id": "7ba619375cc04240a16eee4d881f31d2",
-        "Title": "Locate start, middle and end points on each curve",
+        "Title": "Individua i punti iniziale, centrale e finale su ogni curva.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1738,7 +1738,7 @@
       },
       {
         "Id": "3042251207704205a0f6cc39fe6ac33e",
-        "Title": "Use list Levels of the input 'list'. By default, the result of the node will be the list with the index one (the second curve). Right-Click on the 'list' input and select 'Use Levels' at @L2. This will select the item with index 1 from each nested list (middle points from each curve)",
+        "Title": "Utilizzare i livelli dell'elenco dell'input \"list\". Per default, il risultato del nodo sarà l'elenco con l'indice uno (la seconda curva). Fare clic con il pulsante destro del mouse sull'input \"list\" e selezionare Usa livelli in corrispondenza di @L2. In questo modo verrà selezionato l'elemento con indice 1 da ogni elenco nidificato (punti centrali da ciascuna curva).",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1759,7 +1759,7 @@
       },
       {
         "Id": "d752a9ec387e4cd1a5809b64510e3959",
-        "Title": "Similar to selecting the Mid point, use Levels to select the start and end points from each curve",
+        "Title": "Analogamente alla selezione del punto medio, utilizzare i livelli per selezionare i punti iniziale e finale da ogni curva.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1780,7 +1780,7 @@
       },
       {
         "Id": "0bad35fbc42141e3aebac9990ef67869",
-        "Title": "Flip the matrix and organize lists in sets of 3",
+        "Title": "Inverte la matrice e organizza gli elenchi in gruppi di 3.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1801,7 +1801,7 @@
       },
       {
         "Id": "c0fc76ff7d594730b7e16f5c31962c88",
-        "Title": "Adaptive components can be positioned using sets of points equal to the number of Placement points of the Family.",
+        "Title": "I componenti adattivi possono essere posizionati utilizzando gruppi di punti uguali al numero di punti di posizionamento della famiglia.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1822,7 +1822,7 @@
       },
       {
         "Id": "0340ea408f03483c957d6555689bcbbb",
-        "Title": "Displace the middle points of the fin",
+        "Title": "Sposta i punti centrali dell'aletta.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1843,7 +1843,7 @@
       },
       {
         "Id": "1e34222e75c343ba9c314076df54734a",
-        "Title": "For Y displacement, negate the value to displace towards the outside of the Curtain Wall",
+        "Title": "Per lo spostamento Y, negare il valore di spostamento verso l'esterno della facciata continua.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

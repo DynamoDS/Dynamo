@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,207 +118,207 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ChartsBarChartDescription" xml:space="preserve">
-    <value>Create a new Bar Chart</value>
+    <value>Cree un nuevo gráfico de barras.</value>
   </data>
   <data name="ChartsBarChartSearchTags" xml:space="preserve">
     <value>bar;barchart</value>
   </data>
   <data name="ChartsBarChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of labels for the bar chart categories.
+    <value>Una lista de etiquetas para las categorías del gráfico de barras.
 
 List&lt;string&gt;</value>
   </data>
   <data name="ChartsBarChartValuesDataPortToolTip" xml:space="preserve">
-    <value>A list (of lists) to supply values for the bars in each category.
+    <value>Una lista (de listas) para proporcionar valores para las barras de cada categoría.
 
 List&lt;var&gt;</value>
   </data>
   <data name="ChartsBarChartColorsDataPortToolTip" xml:space="preserve">
-    <value>A list of colors for each bar chart category.
+    <value>Una lista de colores para cada categoría del gráfico de barras.
 
 List&lt;color&gt;</value>
   </data>
   <data name="ChartsBarChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>Dictionary containing label:value key-pairs
+    <value>Diccionario que contiene los pares de claves de etiqueta:valor.
 
 Dictionary&lt;string, double&gt;</value>
   </data>
   <data name="ChartsBasicLineChartDescription" xml:space="preserve">
-    <value>Create a new Basic Line Chart</value>
+    <value>Cree un nuevo gráfico de líneas básicas.</value>
   </data>
   <data name="ChartsBasicLineChartSearchTags" xml:space="preserve">
     <value>index;indexvalue;indexvaluelineplot</value>
   </data>
   <data name="ChartsBasicLineChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of string labels for each line to be plotted.
+    <value>Una lista de etiquetas de cadena para cada línea que se va a trazar.
 
 List&lt;string&gt;</value>
   </data>
   <data name="ChartsBasicLineChartValuesDataPortToolTip" xml:space="preserve">
-    <value>List of lists each containing double values to be plotted against X-Axis values.
+    <value>Lista de listas que contienen valores dobles que se trazarán con valores del eje X.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
   <data name="ChartsBasicLineChartColorsDataPortToolTip" xml:space="preserve">
-    <value>A list of colors for each line.
+    <value>Una lista de colores para cada línea.
 
 List&lt;color&gt;</value>
   </data>
   <data name="ChartsBasicLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>Dictionary containing label:value key-pairs
+    <value>Diccionario que contiene los pares de claves de etiqueta:valor.
 
 Dictionary&lt;string, List&lt;double&gt;&gt;</value>
   </data>
   <data name="ChartsHeatSeriesDescription" xml:space="preserve">
-    <value>Create a heat series plot</value>
+    <value>Cree un gráfico de serie de calor.</value>
   </data>
   <data name="ChartsHeatSeriesSearchTags" xml:space="preserve">
     <value>heat;heatseries;heatseriesplot</value>
   </data>
   <data name="ChartsHeatSeriesXLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of string labels for the x-axis.
+    <value>Una lista de etiquetas de cadena para el eje X.
 
 List&lt;string&gt;</value>
   </data>
   <data name="ChartsHeatSeriesYLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of string labels for the y-axis.
+    <value>Una lista de etiquetas de cadena para el eje Y.
 
 List&lt;string&gt;</value>
   </data>
   <data name="ChartsHeatSeriesValuesDataPortToolTip" xml:space="preserve">
-    <value>A list of lists each containing double values representing items in a column. 
+    <value>Una lista de listas que contienen valores dobles que representan elementos de una columna. 
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-    <data name="ChartsHeatSeriesColorsDataPortToolTip" xml:space="preserve">
-    <value>A list of colors for each bar chart category.
+  <data name="ChartsHeatSeriesColorsDataPortToolTip" xml:space="preserve">
+    <value>Una lista de colores para cada categoría del gráfico de barras.
 
 List&lt;color&gt;</value>
   </data>
-    <data name="ChartsHeatSeriesLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>Dictionary containing label:value key-pairs
+  <data name="ChartsHeatSeriesLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Diccionario que contiene los pares de claves de etiqueta:valor.
 
 Dictionary&lt;string, Dictionary&lt;string, double&gt;&gt;</value>
   </data>
-    <data name="ChartsPieChartDescription" xml:space="preserve">
-    <value>Create a new Pie Chart</value>
+  <data name="ChartsPieChartDescription" xml:space="preserve">
+    <value>Cree un nuevo gráfico circular.</value>
   </data>
-    <data name="ChartsPieChartSearchTags" xml:space="preserve">
+  <data name="ChartsPieChartSearchTags" xml:space="preserve">
     <value>pie;piechart</value>
   </data>
-    <data name="ChartsPieChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of string labels for each segment in the pie chart.
+  <data name="ChartsPieChartLabelsDataPortToolTip" xml:space="preserve">
+    <value>Una lista de etiquetas de cadena para cada segmento del gráfico circular.
 
 List&lt;string&gt;</value>
   </data>
-    <data name="ChartsPieChartValuesDataPortToolTip" xml:space="preserve">
-    <value>A list of double values to supply a value for each segment of the pie chart.
+  <data name="ChartsPieChartValuesDataPortToolTip" xml:space="preserve">
+    <value>Una lista de valores dobles para proporcionar un valor para cada segmento del gráfico circular.
 
 List&lt;double&gt;</value>
   </data>
-    <data name="ChartsPieChartColorsDataPortToolTip" xml:space="preserve">
-    <value>A list of colors for each segment of the pie chart.
+  <data name="ChartsPieChartColorsDataPortToolTip" xml:space="preserve">
+    <value>Una lista de colores para cada segmento del gráfico circular.
 
 List&lt;color&gt;</value>
   </data>
-    <data name="ChartsPieChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>Dictionary containing label:value key-pairs
+  <data name="ChartsPieChartLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Diccionario que contiene los pares de claves de etiqueta:valor.
 
 Dictionary&lt;string, double&gt;</value>
   </data>
-    <data name="ChartsScatterPlotDescription" xml:space="preserve">
-    <value>Create a scatter plot</value>
+  <data name="ChartsScatterPlotDescription" xml:space="preserve">
+    <value>Cree un gráfico de dispersión.</value>
   </data>
-    <data name="ChartsScatterPlotSearchTags" xml:space="preserve">
+  <data name="ChartsScatterPlotSearchTags" xml:space="preserve">
     <value>scatter;scatterplot</value>
   </data>
-    <data name="ChartsScatterPlotLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of string labels for each group of points to be plotted.
+  <data name="ChartsScatterPlotLabelsDataPortToolTip" xml:space="preserve">
+    <value>Una lista de etiquetas de cadena para cada grupo de puntos que se va a trazar.
 
 List&lt;string&gt;</value>
   </data>
-    <data name="ChartsScatterPlotXLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of lists each containing double values representing x-coordinates.
+  <data name="ChartsScatterPlotXLabelsDataPortToolTip" xml:space="preserve">
+    <value>Una lista de listas que contienen valores dobles que representan las coordenadas X.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-    <data name="ChartsScatterPlotYLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of lists each containing double values representing y-coordinates.
+  <data name="ChartsScatterPlotYLabelsDataPortToolTip" xml:space="preserve">
+    <value>Una lista de listas que contienen valores dobles que representan las coordenadas Y.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-    <data name="ChartsScatterPlotColorsDataPortToolTip" xml:space="preserve">
-    <value>A list of colors for each group of points.
+  <data name="ChartsScatterPlotColorsDataPortToolTip" xml:space="preserve">
+    <value>Una lista de colores para cada grupo de puntos.
 
 List&lt;color&gt;</value>
   </data>
-    <data name="ChartsScatterPlotLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>Dictionary containing label:value key-pairs
+  <data name="ChartsScatterPlotLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Diccionario que contiene los pares de claves de etiqueta:valor.
 
 Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   </data>
-    <data name="ChartsXYLineChartDescription" xml:space="preserve">
-    <value>Create a new XY line plot</value>
+  <data name="ChartsXYLineChartDescription" xml:space="preserve">
+    <value>Cree un nuevo gráfico de líneas XY.</value>
   </data>
-    <data name="ChartsXYLineChartSearchTags" xml:space="preserve">
+  <data name="ChartsXYLineChartSearchTags" xml:space="preserve">
     <value>lineplot;xylineplot</value>
   </data>
-    <data name="ChartsXYLineChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of string labels for each line to be plotted
+  <data name="ChartsXYLineChartLabelsDataPortToolTip" xml:space="preserve">
+    <value>Una lista de etiquetas de cadena para cada línea que se va a trazar.
 
 List&lt;string&gt;</value>
   </data>
-    <data name="ChartsXYLineChartXLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of lists each containing double values representing x-coordinates for each point in a line.
+  <data name="ChartsXYLineChartXLabelsDataPortToolTip" xml:space="preserve">
+    <value>Una lista de listas que contienen valores dobles que representan las coordenadas X de cada punto de una línea.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-    <data name="ChartsXYLineChartYLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of lists each containing double values representing x-coordinates for each point in a line.
+  <data name="ChartsXYLineChartYLabelsDataPortToolTip" xml:space="preserve">
+    <value>Una lista de listas que contienen valores dobles que representan las coordenadas X de cada punto de una línea.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-    <data name="ChartsXYLineChartColorsDataPortToolTip" xml:space="preserve">
-    <value>A list of colors for each line in the line plot.
+  <data name="ChartsXYLineChartColorsDataPortToolTip" xml:space="preserve">
+    <value>Una lista de colores para cada línea del trazado de líneas.
 
 List&lt;color&gt;</value>
   </data>
-    <data name="ChartsXYLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>Dictionary containing label:value key-pairs
+  <data name="ChartsXYLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Diccionario que contiene los pares de claves de etiqueta:valor.
 
 Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   </data>
-    <data name="ColorPaletteUIAdvancedButtonHeader" xml:space="preserve">
-    <value>Advanced</value>
+  <data name="ColorPaletteUIAdvancedButtonHeader" xml:space="preserve">
+    <value>Avanzado</value>
   </data>
-    <data name="ColorPaletteUIRecentColors" xml:space="preserve">
-    <value>Recent Colors</value>
+  <data name="ColorPaletteUIRecentColors" xml:space="preserve">
+    <value>Colores recientes</value>
   </data>
-    <data name="ColorPaletteUIStandardButtonHeader" xml:space="preserve">
-    <value>Standard</value>
+  <data name="ColorPaletteUIStandardButtonHeader" xml:space="preserve">
+    <value>Estándar</value>
   </data>
-    <data name="ColorPaletteUIStandardColors" xml:space="preserve">
-    <value>Standard Colors</value>
+  <data name="ColorPaletteUIStandardColors" xml:space="preserve">
+    <value>Colores estándar</value>
   </data>
-    <data name="DateTimeInputToolTip" xml:space="preserve">
-    <value>Enter time and date in the format 'MMMM dd, yyyy h:mm tt'</value>
+  <data name="DateTimeInputToolTip" xml:space="preserve">
+    <value>Escriba la hora y la fecha en el formato 'MMMM dd, yyyy h:mm tt'</value>
   </data>
-    <data name="LblDisplay" xml:space="preserve">
-    <value>Display</value>
+  <data name="LblDisplay" xml:space="preserve">
+    <value>Mostrar</value>
   </data>
-    <data name="LblValue" xml:space="preserve">
-    <value>Value</value>
+  <data name="LblValue" xml:space="preserve">
+    <value>Valor</value>
   </data>
-    <data name="ProvideDefaultColorsWarningMessage" xml:space="preserve">
-    <value>Default colors are used. To define custom colors, provide an equal number of colors and labels inputs.</value>
+  <data name="ProvideDefaultColorsWarningMessage" xml:space="preserve">
+    <value>Se utilizan los colores por defecto. Para definir colores personalizados, proporcione un número igual de entradas de colores y etiquetas.</value>
   </data>
-    <data name="ResizeThumbToolTip" xml:space="preserve">
-    <value>Drag to modify the size of the chart</value>
+  <data name="ResizeThumbToolTip" xml:space="preserve">
+    <value>Arrastre para modificar el tamaño del gráfico.</value>
   </data>
   <data name="GateClose" xml:space="preserve">
-    <value>Close</value>
+    <value>Cerrar</value>
   </data>
   <data name="GateOpen" xml:space="preserve">
-    <value>Open</value>
+    <value>Abrir</value>
   </data>
 </root>

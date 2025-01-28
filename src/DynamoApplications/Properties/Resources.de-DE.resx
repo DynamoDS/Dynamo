@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="MismatchedAssemblyList" xml:space="preserve">
-    <value>It is likely one of the following assemblies loaded the incompatible version:</value>
+    <value>Die inkompatible Version wurde wahrscheinlich für eine der folgenden Assemblys geladen.</value>
   </data>
   <data name="MismatchedAssemblyVersion" xml:space="preserve">
-    <value>While loading assembly {0}, Dynamo detected that the dependency {1} was already loaded with an incompatible version. It is likely that another Revit Addin has loaded this assembly, please try uninstalling other Addins, and starting Dynamo again. Dynamo may be unstable in this state.</value>
+    <value>Beim Laden der Assembly {0} hat Dynamo erkannt, dass die Abhängigkeit {1} bereits mit einer inkompatiblen Version geladen ist. Diese Assembly ist wahrscheinlich in einem anderen Revit-Zusatzmodul geladen. Deinstallieren Sie andere Zusatzmodule, und starten Sie Dynamo erneut. Dynamo ist in diesem Zustand möglicherweise instabil.</value>
   </data>
   <data name="MismatchedAssemblyVersionShortMessage" xml:space="preserve">
-    <value>Dynamo has detected a conflict with a dependency and may be unstable. If any issues are detected, please uninstall addins or packages and contact the provider.</value>
+    <value>Dynamo hat einen Konflikt mit einer Abhängigkeit erkannt ist und ist möglicherweise instabil. Wenn Probleme erkannt werden, deinstallieren Sie Zusatzmodule oder Pakete und wenden Sie sich an den Anbieter.</value>
   </data>
   <data name="MismatchedAssemblyVersionTitle" xml:space="preserve">
-    <value>Error Loading A Dependency</value>
+    <value>Fehler beim Laden einer Abhängigkeit</value>
   </data>
   <data name="SplashScreenPreLoadingAsm" xml:space="preserve">
-    <value>Preloading Geometry library</value>
+    <value>Geometriebibliothek wird vorgeladen</value>
   </data>
 </root>

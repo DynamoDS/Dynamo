@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "This graph showcases several methods of creating Curves in Dynamo and using them to create Revit elements (Model Lines)",
+  "Description": "이 그래프는 Dynamo에서 곡선을 작성하고 이를 사용하여 Revit 요소(모델 선)를 작성하는 몇 가지 방법을 보여줍니다.",
   "Name": "Revit_GeometryCreation_Curves",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -17,7 +17,7 @@
         {
           "Id": "7e4ecb613da44ca096e01392bc76cb9a",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "X 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -26,7 +26,7 @@
         {
           "Id": "71d831bf6e164d7ba43a8a5e620956e9",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Y 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -35,7 +35,7 @@
         {
           "Id": "643d9297ac474b36affa5bf4a97000ce",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Z 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -46,7 +46,7 @@
         {
           "Id": "84830109d30f46f19ae4ee0abf993f6f",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "좌표로 작성된 점",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -55,7 +55,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "지정된 3개의 직교 좌표를 사용하여 점 형성\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -65,7 +65,7 @@
         {
           "Id": "792a8e92696d4784ba634c5c58445feb",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "X 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -74,7 +74,7 @@
         {
           "Id": "2c87aff610e94f9fb20e0bb9a0f40e35",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Y 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -83,7 +83,7 @@
         {
           "Id": "81f82d1becc84afda4aae302076ef4ed",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Z 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -94,7 +94,7 @@
         {
           "Id": "6b94b48be9fc4c8c851a52aa9565b0cf",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "좌표로 작성된 점",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -103,7 +103,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "지정된 3개의 직교 좌표를 사용하여 점 형성\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -113,7 +113,7 @@
         {
           "Id": "bc23b06d3147480693728d866bfd3102",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "X 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -122,7 +122,7 @@
         {
           "Id": "7b010d41d65a49e685d54a57366419ba",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Y 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -131,7 +131,7 @@
         {
           "Id": "0ccd412574e94dc6936d1649ffc21811",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Z 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -142,7 +142,7 @@
         {
           "Id": "d55937f018e744279d94882a59fb8409",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "좌표로 작성된 점",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -151,7 +151,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "지정된 3개의 직교 좌표를 사용하여 점 형성\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -161,7 +161,7 @@
         {
           "Id": "c919e25fda2943c7bd5c704caa87cc90",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "X 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -170,7 +170,7 @@
         {
           "Id": "2d77c81d684845dcaea3eea68c1aa545",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Y 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -179,7 +179,7 @@
         {
           "Id": "cfeaf1818800471a9fe122fd398d366e",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Z 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -190,7 +190,7 @@
         {
           "Id": "fa1c20952f814e918726af8d7a24b380",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "좌표로 작성된 점",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -199,7 +199,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "지정된 3개의 직교 좌표를 사용하여 점 형성\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -209,7 +209,7 @@
         {
           "Id": "609698e1619f46078fbb750b1d926960",
           "Name": "points",
-          "Description": "Points for nurbs curve\n\nPoint[]",
+          "Description": "NURBS 곡선의 점\n\n점[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -220,7 +220,7 @@
         {
           "Id": "72d79541a1fb4ee49ac85053f914fe10",
           "Name": "NurbsCurve",
-          "Description": "Nurbscurve created from points",
+          "Description": "점에서 작성된 Nurbscurve",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -229,7 +229,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[]",
       "Replication": "Auto",
-      "Description": "Create a BSplineCurve by interpolating between points.\n\nNurbsCurve.ByPoints (points: Point[]): NurbsCurve"
+      "Description": "점 사이를 보간하여 BSplineCurve를 작성합니다.\n\nNurbsCurve.ByPoints (points: Point[]): NurbsCurve"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -239,7 +239,7 @@
         {
           "Id": "048ff454c3374fcab7b871d07c3e04ff",
           "Name": "points",
-          "Description": "Points to make polycurve\n\nPoint[]",
+          "Description": "PolyCurve를 만들 점\n\nPoint[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -248,7 +248,7 @@
         {
           "Id": "e30de962998a472a91c08689973f18de",
           "Name": "connectLastToFirst",
-          "Description": "True to connect last point to first point, false to leave open\n\nbool\nDefault value : false",
+          "Description": "마지막 점을 첫 번째 점에 연결하려면 true, 그대로 두려면 false\n\nbool\n기본값: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -259,7 +259,7 @@
         {
           "Id": "ca9bee947bd14dd892b213bec464fd0d",
           "Name": "PolyCurve",
-          "Description": "Polycurve created by points",
+          "Description": "점으로 작성된 Polycurve",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -268,7 +268,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[],bool",
       "Replication": "Auto",
-      "Description": "Make PolyCurve by connecting points. Set the 'connectLastToFirst' input to true to close the PolyCurve.\n\nPolyCurve.ByPoints (points: Point[], connectLastToFirst: bool = false): PolyCurve"
+      "Description": "점을 연결하여 PolyCurve를 만듭니다. 'connectLastToFirst' 입력을 true로 설정하여 PolyCurve를 닫습니다.\n\nPolyCurve.ByPoints (points: Point[], connectLastToFirst: bool = false): PolyCurve"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
@@ -287,7 +287,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Enables selection between True and False",
+      "Description": "True와 False 간 선택을 활성화합니다",
       "InputValue": false
     },
     {
@@ -298,7 +298,7 @@
         {
           "Id": "bf9fb50678ac44aebbb9bd32cafa6887",
           "Name": "points",
-          "Description": "Points for nurbs curve\n\nPoint[]",
+          "Description": "NURBS 곡선의 점\n\n점[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -307,7 +307,7 @@
         {
           "Id": "2bcfcb568a974392ab2d7ee0b8fd296f",
           "Name": "degree",
-          "Description": "int\nDefault value : 3",
+          "Description": "int\n기본값: 3",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -316,7 +316,7 @@
         {
           "Id": "4a2381071b1541c8b27a188890efb64f",
           "Name": "closeCurve",
-          "Description": "bool\nDefault value : false",
+          "Description": "bool\n기본값: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -327,7 +327,7 @@
         {
           "Id": "689da248fa3e452797be31dedccbb9b5",
           "Name": "NurbsCurve",
-          "Description": "Nurbscurve created from points",
+          "Description": "점에서 작성된 Nurbscurve",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -336,7 +336,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByControlPoints@Autodesk.DesignScript.Geometry.Point[],int,bool",
       "Replication": "Auto",
-      "Description": "Create a BSplineCurve by using explicit control points. NOTE 1: BSplineCurves with deg=1 have G1 discontinuities, which cause problems for extrusion, sweep, and other operations. They should be avoided. Use a PolyCurve instead. NOTE 2: If the curve is periodic (closed), then the first and last points MUST be the same.\n\nNurbsCurve.ByControlPoints (points: Point[], degree: int = 3, closeCurve: bool = false): NurbsCurve"
+      "Description": "명시적 제어점을 사용하여 BSplineCurve를 만듭니다. 주 1: deg=1인 BSplineCurves에는 G1 불연속성이 있습니다. 이로 인해 돌출, 스윕 및 기타 작업 시 문제가 발생하는데, 이러한 문제는 피해야 하므로 PolyCurve를 대신 사용하십시오. 주 2: 곡선이 주기적인(닫힌) 경우 첫 번째 점과 마지막 점이 같아야 합니다.\n\nNurbsCurve.ByControlPoints (points: Point[], degree: int = 3, closeCurve: bool = false): NurbsCurve"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -346,7 +346,7 @@
         {
           "Id": "1bdd3a63c00f4233a6d2499ee275950c",
           "Name": "curve",
-          "Description": "Curve",
+          "Description": "곡선",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -366,7 +366,7 @@
       ],
       "FunctionSignature": "Revit.Elements.ModelCurve.ByCurve@Autodesk.DesignScript.Geometry.Curve",
       "Replication": "Auto",
-      "Description": "Construct a Revit ModelCurve element from a Curve\n\nModelCurve.ByCurve (curve: Curve): ModelCurve"
+      "Description": "곡선에서 Revit ModelCurve 요소 구성\n\nModelCurve.ByCurve (curve: Curve): ModelCurve"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -386,7 +386,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "숫자를 만듭니다",
       "InputValue": -35.0
     },
     {
@@ -407,7 +407,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "숫자를 만듭니다",
       "InputValue": -55.0
     },
     {
@@ -428,7 +428,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "숫자를 만듭니다",
       "InputValue": -40.0
     },
     {
@@ -449,7 +449,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "숫자를 만듭니다",
       "InputValue": -10.0
     },
     {
@@ -470,7 +470,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "숫자를 만듭니다",
       "InputValue": -17.0
     },
     {
@@ -491,7 +491,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "숫자를 만듭니다",
       "InputValue": -60.0
     },
     {
@@ -502,7 +502,7 @@
         {
           "Id": "8ea19848e60e45bdbcc6a8a628f7ac1e",
           "Name": "curve",
-          "Description": "Curve",
+          "Description": "곡선",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -522,7 +522,7 @@
       ],
       "FunctionSignature": "Revit.Elements.ModelCurve.ByCurve@Autodesk.DesignScript.Geometry.Curve",
       "Replication": "Auto",
-      "Description": "Construct a Revit ModelCurve element from a Curve\n\nModelCurve.ByCurve (curve: Curve): ModelCurve"
+      "Description": "곡선에서 Revit ModelCurve 요소 구성\n\nModelCurve.ByCurve (curve: Curve): ModelCurve"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -532,7 +532,7 @@
         {
           "Id": "60860dacac804d3aaa17161da6aa08b3",
           "Name": "curve",
-          "Description": "Curve",
+          "Description": "곡선",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -552,7 +552,7 @@
       ],
       "FunctionSignature": "Revit.Elements.ModelCurve.ByCurve@Autodesk.DesignScript.Geometry.Curve",
       "Replication": "Auto",
-      "Description": "Construct a Revit ModelCurve element from a Curve\n\nModelCurve.ByCurve (curve: Curve): ModelCurve"
+      "Description": "곡선에서 Revit ModelCurve 요소 구성\n\nModelCurve.ByCurve (curve: Curve): ModelCurve"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -582,7 +582,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.Curves",
       "Replication": "Auto",
-      "Description": "Returns curves of the polycurve\n\nPolyCurve.Curves ( ): Curve[]"
+      "Description": "PolyCurve의 곡선 반환\n\nPolyCurve.Curves ( ): Curve[]"
     },
     {
       "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
@@ -593,7 +593,7 @@
         {
           "Id": "1fec333f911b4421a609b95ca863b26e",
           "Name": "item0",
-          "Description": "Item Index #0",
+          "Description": "항목 인덱스 #0",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -602,7 +602,7 @@
         {
           "Id": "a56b23a7028d44d28c6565a8edd7cb8f",
           "Name": "item1",
-          "Description": "Item Index #1",
+          "Description": "항목 인덱스 #1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -611,7 +611,7 @@
         {
           "Id": "763d3a3082b2427f83cfbd38e78857de",
           "Name": "item2",
-          "Description": "Item Index #2",
+          "Description": "항목 인덱스 #2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -620,7 +620,7 @@
         {
           "Id": "0d995ca540f04223aed4736375b1a43c",
           "Name": "item3",
-          "Description": "Item Index #3",
+          "Description": "항목 인덱스 #3",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -631,7 +631,7 @@
         {
           "Id": "8219e933de2b430bb2334819919e7833",
           "Name": "list",
-          "Description": "A list (type: var[]..[])",
+          "Description": "리스트(유형: var[]..[])",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -639,7 +639,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Makes a new list from the given inputs"
+      "Description": "지정된 입력에서 새 리스트를 만듭니다"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -649,7 +649,7 @@
         {
           "Id": "30f82abbafe94e50829423cb82292293",
           "Name": "curve",
-          "Description": "Curve",
+          "Description": "곡선",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -669,7 +669,7 @@
       ],
       "FunctionSignature": "Revit.Elements.ModelCurve.ByCurve@Autodesk.DesignScript.Geometry.Curve",
       "Replication": "Auto",
-      "Description": "Construct a Revit ModelCurve element from a Curve\n\nModelCurve.ByCurve (curve: Curve): ModelCurve"
+      "Description": "곡선에서 Revit ModelCurve 요소 구성\n\nModelCurve.ByCurve (curve: Curve): ModelCurve"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -679,7 +679,7 @@
         {
           "Id": "8f8c49ed861741c4a07075dd69a5f9a9",
           "Name": "startPoint",
-          "Description": "Line start point\n\nPoint",
+          "Description": "선 시작점\n\n점",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -688,7 +688,7 @@
         {
           "Id": "4d978a6e8c514419b8a015d8215629ab",
           "Name": "endPoint",
-          "Description": "Line end point\n\nPoint",
+          "Description": "선 끝점\n\n점",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -699,7 +699,7 @@
         {
           "Id": "bd5e5c4ee3e54c44b9b29729da58b223",
           "Name": "Line",
-          "Description": "Line from start and end point",
+          "Description": "시작점과 끝점에서의 선",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -708,7 +708,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Creates a straight Line between two input Points.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
+      "Description": "두 입력 점 사이에 직선을 작성합니다.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
     }
   ],
   "Connectors": [
@@ -859,7 +859,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "특성",
       "Version": "2.13",
       "Data": {}
     },
@@ -913,7 +913,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "배경 미리보기(_B)",
       "EyeX": -27.014995574951172,
       "EyeY": 87.88890838623047,
       "EyeZ": 104.05896759033203,
@@ -1140,8 +1140,8 @@
     "Annotations": [
       {
         "Id": "5e90b28dbc0145089e1a1852045835c3",
-        "Title": "Four Points",
-        "DescriptionText": "Description <Double click here to edit group description>",
+        "Title": "4개의 점",
+        "DescriptionText": "설명 <그룹 설명을 편집하려면 여기를 두 번 클릭하십시오.>",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -1171,7 +1171,7 @@
       },
       {
         "Id": "754293e1c9b8403898dbe88dbbec3a89",
-        "Title": "Create Model curve from Nurbs Curve (by Control Points)",
+        "Title": "Nurbs 곡선에서 모델 곡선을 작성합니다(제어점으로)",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1197,7 +1197,7 @@
       },
       {
         "Id": "d465195cc97a40fe8b20783380d40465",
-        "Title": "Create Model curve from Polycurve",
+        "Title": "NURBS 곡선에서 모델 곡선을 작성합니다",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1223,7 +1223,7 @@
       },
       {
         "Id": "9290c5ad95244f35a4ea127083f91ac9",
-        "Title": "Create Model curve from Nurbs Curve (by Points)",
+        "Title": "Nurbs 곡선에서 모델 곡선을 작성합니다(점으로)",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1248,7 +1248,7 @@
       },
       {
         "Id": "5786a5408bfa4c15a97506bfab370dce",
-        "Title": "Info",
+        "Title": "정보",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1271,7 +1271,7 @@
       },
       {
         "Id": "62d1d9e4be3c4a43bfd7299ec51e04a5",
-        "Title": "Create Model curve from Line",
+        "Title": "선에서 모델 곡선을 작성합니다",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1296,7 +1296,7 @@
       },
       {
         "Id": "6d21a2a5a44848f2a110aec8699a34ff",
-        "Title": "Use the NURBS curve to create a Revit Model Line",
+        "Title": "NURBS 곡선을 사용하여 Revit 모델 선을 작성합니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1317,7 +1317,7 @@
       },
       {
         "Id": "1c013dad3a7a499e8ed1a444326bf468",
-        "Title": "Use the NURBS curve to create a Revit Model Line",
+        "Title": "NURBS 곡선을 사용하여 Revit 모델 선을 작성합니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1338,7 +1338,7 @@
       },
       {
         "Id": "b23101b8849c4528bb5e1791681bc40f",
-        "Title": "This graph uses several methods of creating curves to be used as input for creating Revit Model Curves",
+        "Title": "이 그래프에서는 Revit 모델 곡선을 작성하기 위한 입력으로 사용할 곡선을 작성하는 여러 가지 방법을 사용합니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1358,7 +1358,7 @@
       },
       {
         "Id": "58be9dea44e7499eadfbdeeb8890e65d",
-        "Title": "Run this graph the Snowdon Towers Sample Architectural.rvt file in the Samples folder located with your Revit installation\r\nC:\\Program Files\\Autodesk\\Revit 2026\\Samples",
+        "Title": "Revit 설치 시 함께 생성되는 샘플 폴더의 Snowdon Towers Sample Architectural.rvt 파일에서 이 그래프를 실행합니다\r\nC:\\Program Files\\Autodesk\\Revit 2026\\Samples",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1378,7 +1378,7 @@
       },
       {
         "Id": "03f41a5110794238a607dd48ffa350bb",
-        "Title": "Use the Line (Curve) to create a Revit Model Curve",
+        "Title": "선(곡선)을 사용하여 Revit 모델 곡선을 작성합니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1399,7 +1399,7 @@
       },
       {
         "Id": "724635231cea4135b320176e240209a5",
-        "Title": "Create a curve from two points",
+        "Title": "두 점에서 곡선을 작성합니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1420,7 +1420,7 @@
       },
       {
         "Id": "84ce0e9f989a4de09fdfae91d4653bb0",
-        "Title": "Create a Polycurve from a list of points",
+        "Title": "점 리스트에서 Polycurve를 작성합니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1441,7 +1441,7 @@
       },
       {
         "Id": "0ab3afeffe014dc886ec156fea29a981",
-        "Title": "Use the list of curves to create a set of Revit Model Line",
+        "Title": "곡선 리스트를 사용하여 Revit 모델 선 세트를 작성합니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1462,7 +1462,7 @@
       },
       {
         "Id": "93c96f09176641af8f507429c0b27fb1",
-        "Title": "Create a NURBS curve from a list of points as Control Points",
+        "Title": "점 리스트에서 제어점으로 NURBS 곡선을 작성합니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1483,7 +1483,7 @@
       },
       {
         "Id": "3c428901ff2c42fdb360b8a00cb98750",
-        "Title": "Create a NURBS curve from a list of points",
+        "Title": "점 리스트에서 NURBS 곡선을 작성합니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "Using Python node inside Dynamo",
+  "Description": "Usar o nó do Python dentro do Dynamo",
   "Name": "Core_Python",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -20,7 +20,7 @@
         {
           "Id": "41353cdece124df2b3cf6bb2b47d9f8b",
           "Name": "Sign",
-          "Description": "Input #0",
+          "Description": "Entrada 0",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -29,7 +29,7 @@
         {
           "Id": "39a36c06db324c54819b6a5b7426e711",
           "Name": "List",
-          "Description": "Input #1",
+          "Description": "Entrada 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -40,7 +40,7 @@
         {
           "Id": "354f304cf9974f69a0c6aaf6799535cb",
           "Name": "OUT",
-          "Description": "Result of the python script",
+          "Description": "Resultado do script Python",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -48,7 +48,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Runs an embedded Python script."
+      "Description": "Executa um script Python incorporado."
     },
     {
       "ConcreteType": "CoreNodeModels.Input.IntegerSlider, CoreNodeModels",
@@ -71,7 +71,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces integer values",
+      "Description": "Produz valores inteiros",
       "InputValue": 1
     },
     {
@@ -83,7 +83,7 @@
         {
           "Id": "30ec0136279d47edacf06a1f0ae3d56a",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valor da expressão na linha 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -91,7 +91,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Permite que o código DesignScript seja criado diretamente",
       "Code": "0..10;"
     },
     {
@@ -104,7 +104,7 @@
         {
           "Id": "2c99500649ac4a0fbdda7e8d5c5394e3",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nó a ser avaliado.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -115,7 +115,7 @@
         {
           "Id": "bbd65533e9e5454e95e316fce80d747c",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Observar conteúdo.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -123,7 +123,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualiza a saída de um nó"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -135,7 +135,7 @@
         {
           "Id": "fc6b6de408b34bd18b99d188f934948f",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nó a ser avaliado.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -146,7 +146,7 @@
         {
           "Id": "54a9b51572504f0c90b4c5ddbad208f7",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Observar conteúdo.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -154,7 +154,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualiza a saída de um nó"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -164,7 +164,7 @@
         {
           "Id": "98136c591df845b5a7fcc43ee5ab038b",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "Lista da qual obter um item.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -173,7 +173,7 @@
         {
           "Id": "9b76cdd0155c4c8bbce734543e2dd0f1",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "Índice do item a ser obtido.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -184,7 +184,7 @@
         {
           "Id": "a403056ec1e54e7fb27b9d32d78859a4",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "Item na lista no determinado índice.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -193,7 +193,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Retorna um item da lista fornecida que está localizado no índice especificado.\n\nList.GetItemAtIndex (lista: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -204,7 +204,7 @@
         {
           "Id": "08a98db6988e4ae3943f8c84d4ee8bd2",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valor da expressão na linha 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -212,7 +212,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Permite que o código DesignScript seja criado diretamente",
       "Code": "0;"
     },
     {
@@ -223,7 +223,7 @@
         {
           "Id": "f1986b0c6336414fbd50afd83eeadac9",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "Lista da qual obter um item.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -232,7 +232,7 @@
         {
           "Id": "dc288af0453f45fcb783786b86d0a1c2",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "Índice do item a ser obtido.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -243,7 +243,7 @@
         {
           "Id": "8672fa33a64b40ed98370ac556d920ba",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "Item na lista no determinado índice.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -252,7 +252,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Retorna um item da lista fornecida que está localizado no índice especificado.\n\nList.GetItemAtIndex (lista: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -263,7 +263,7 @@
         {
           "Id": "e74a6d9e041f45498775d1e07a81e84b",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valor da expressão na linha 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -271,7 +271,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Permite que o código DesignScript seja criado diretamente",
       "Code": "1;"
     },
     {
@@ -284,7 +284,7 @@
         {
           "Id": "d6844988eb0b40bdb93bcc5fdcc8f7f0",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nó a ser avaliado.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -295,7 +295,7 @@
         {
           "Id": "4150d8445c9144b69fbccef79db57aff",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Observar conteúdo.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -303,7 +303,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualiza a saída de um nó"
     },
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
@@ -317,7 +317,7 @@
         {
           "Id": "0aa978274d144f5aad5c99ead2877477",
           "Name": "Geometry",
-          "Description": "Result of the python script",
+          "Description": "Resultado do script Python",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -325,7 +325,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Runs an embedded Python script."
+      "Description": "Executa um script Python incorporado."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -346,7 +346,7 @@
         {
           "Id": "59d88e24f9a74bff9929b2d9143d29c8",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valor da expressão na linha 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -355,7 +355,7 @@
         {
           "Id": "0ab66368430d41f2a3854c7b4ff9da7a",
           "Name": "",
-          "Description": "Value of expression at line 2",
+          "Description": "Valor da expressão na linha 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -364,7 +364,7 @@
         {
           "Id": "6a006dc2cf674e36a423c6ef2d9aba6c",
           "Name": "",
-          "Description": "Value of expression at line 3",
+          "Description": "Valor da expressão na linha 3",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -372,7 +372,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Permite que o código DesignScript seja criado diretamente",
       "Code": "output[0];\noutput[1];\noutput[2];"
     },
     {
@@ -385,7 +385,7 @@
         {
           "Id": "5d176dc4f4e248e5a94727ffe7f50a75",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nó a ser avaliado.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -396,7 +396,7 @@
         {
           "Id": "4ac892f578cf4514ab1f01b904347893",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Observar conteúdo.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -404,7 +404,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualiza a saída de um nó"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -416,7 +416,7 @@
         {
           "Id": "6b70fab44360492b93f9686389353196",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nó a ser avaliado.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -427,7 +427,7 @@
         {
           "Id": "cfb18f13538e4cb38c68f8714c4194a2",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Observar conteúdo.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -435,7 +435,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualiza a saída de um nó"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -447,7 +447,7 @@
         {
           "Id": "d33eb5c806f24d118b5d31d6bc437313",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nó a ser avaliado.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -458,7 +458,7 @@
         {
           "Id": "fa45a97732094754af58da09da6c1861",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Observar conteúdo.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -466,7 +466,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualiza a saída de um nó"
     }
   ],
   "Connectors": [
@@ -557,7 +557,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Propriedades",
       "Version": "2.13",
       "Data": {}
     }
@@ -580,7 +580,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Visualização do plano de fundo",
       "EyeX": -13.402437210083008,
       "EyeY": 25.972103118896484,
       "EyeZ": 28.87965202331543,
@@ -747,7 +747,7 @@
     "Annotations": [
       {
         "Id": "70d6972f27d84735a183421a8a7ca602",
-        "Title": "Create input list",
+        "Title": "Criar lista de entrada",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -770,8 +770,8 @@
       },
       {
         "Id": "f3a8d72c1dc24ae297b6b0577ee9aa51",
-        "Title": "Chose positive, 0 or negative number",
-        "DescriptionText": "Description <Double click here to edit group description>",
+        "Title": "Escolher número positivo, 0 ou número negativo",
+        "DescriptionText": "Descrição <Clique duas vezes aqui para editar a descrição do grupo>",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -793,7 +793,7 @@
       },
       {
         "Id": "4e67cd8e8eea4653958afd95af8574c7",
-        "Title": "Info",
+        "Title": "Informações",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -816,7 +816,7 @@
       {
         "Id": "50b0290a80684ddaad09696559ade2e8",
         "Title": "Python ",
-        "DescriptionText": "Applies sign manipulation",
+        "DescriptionText": "Aplica manipulação de sinal",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -838,7 +838,7 @@
       },
       {
         "Id": "9f87abe301a64538b9a4901a50c1f9a6",
-        "Title": "Resulting list",
+        "Title": "Lista resultante",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -863,7 +863,7 @@
       },
       {
         "Id": "486d61667219421a846593596520a1f7",
-        "Title": "Resulting sum",
+        "Title": "Soma resultante",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -888,7 +888,7 @@
       },
       {
         "Id": "5de22235e5e647cea9f3f3aa02f06faa",
-        "Title": "Using Python node to apply sign manipulation to list",
+        "Title": "Usar o nó do Python para aplicar manipulação de sinal à lista",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -910,7 +910,7 @@
       },
       {
         "Id": "16d8890ac87d4b8988fcc073bf82ea8b",
-        "Title": "Python geometry creation",
+        "Title": "Criação da geometria do Python",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -933,7 +933,7 @@
       },
       {
         "Id": "d3a1dfa524e340b79c11255083a5011c",
-        "Title": "Review resulting output",
+        "Title": "Revisar saída resultante",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -959,7 +959,7 @@
       },
       {
         "Id": "921d119036464fc2a9854b4693a6c026",
-        "Title": "Choose the sign for the operation\r\n    number < 0      subtract each\r\n    number = 0      0\r\n    number > 0      add each",
+        "Title": "Selecione o sinal para a operação\r\n    número <0     subtrair cada\r\n    número = 0    0\r\n    número > 0    adicionar cada",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -980,7 +980,7 @@
       },
       {
         "Id": "b5550f99c810408f878200d172d5757a",
-        "Title": "Create any list",
+        "Title": "Criar qualquer lista",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1001,7 +1001,7 @@
       },
       {
         "Id": "761ae015acea41aab066b54b694f39a3",
-        "Title": "The total result.",
+        "Title": "O resultado total.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1022,7 +1022,7 @@
       },
       {
         "Id": "0d7f597b1e7c46b6b55091eda861b848",
-        "Title": "The series of partial results.",
+        "Title": "A série de resultados parciais.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1043,7 +1043,7 @@
       },
       {
         "Id": "3316bcb825c946cbbb71e61d1f449192",
-        "Title": "PYTHON\r\n\r\nDynamo supports CPython through one of two types of Python nodes. (A second type of Python node, not shown here, can read a script from an external file to be executed.)\r\n\r\nDouble click on the Python node to see the script it contains.\r\n\r\nInput is contained in the IN array.  Output must be assigned to the OUT variable.  The output can be a single value or an array itself.",
+        "Title": "PYTHON\r\n\r\nO Dynamo suporta o CPython através de um dos dois tipos de nós Python. (Um segundo tipo de nó Python, não mostrado aqui, pode ler um script em um arquivo externo para ser executado).\r\n\r\nClique duas vezes no nó do Python para ver o script que ele contém.\r\n\r\nA entrada está contida na matriz IN. O resultado deve ser atribuído à variável OUT. O resultado pode ser um único valor ou uma matriz.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1063,7 +1063,7 @@
       },
       {
         "Id": "fc54c00a15034189a61233646c89b0da",
-        "Title": "The output from OUT is an array, where the first item is a single value and the second item is a list of values.  This data structure was specified in the Python definition itself.  Specifying an array allows you to send any number of outputs to the Dynamo graph.",
+        "Title": "A saída do check-out é uma matriz, onde o primeiro item é um valor único e o segundo item é uma lista de valores.  Esta estrutura de dados foi especificada na própria definição Python.  A especificação de uma matriz permite enviar qualquer número de saídas para o gráfico Dynamo.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1084,7 +1084,7 @@
       },
       {
         "Id": "ee76b77e33f840539f33dc43aa97fd98",
-        "Title": "This example will add or subtract all of the items in a list.  It's inputs are a number, whose sign determines whether addition or subtraction is used, and a list of numbers.",
+        "Title": "Este exemplo irá adicionar ou subtrair todos os itens em uma lista.  Suas entradas são números, cujo sinal determina se a soma ou subtração será usada, e uma lista de números.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1104,7 +1104,7 @@
       },
       {
         "Id": "2d664edce60d414bad938c09c2e549c0",
-        "Title": "Tip: Use a Code Block to\r\naccess certain items in a list.",
+        "Title": "Dica: Use um Code Block para\nacessar determinados itens em uma lista.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1125,7 +1125,7 @@
       },
       {
         "Id": "8d0cb3fc32db4220b727887b354d2867",
-        "Title": "This Python example has no inputs.  It demonstrates how to create geometry using Dynamo's protogeometry library.  Since the Python node creates visible geometry, selecting it, just like any other node, will cause the geometry to be highlighted.",
+        "Title": "Este exemplo Python não tem entradas.  Ele demonstra como criar a geometria usando a biblioteca de protogeometria do Dynamo.  Como o nó Python cria a geometria visível, ao ser selecionada, assim como qualquer outro nó, ela será realçada.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

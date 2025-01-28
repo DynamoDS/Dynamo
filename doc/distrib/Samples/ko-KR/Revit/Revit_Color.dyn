@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "This graph evaluates the surface area of selected elements and applies Graphic Overrides to color the elements based on that value. ",
+  "Description": "이 그래프는 선택한 요소의 표면적을 평가하고 그래픽 재지정을 적용하여 해당 값을 기준으로 요소의 색상을 지정합니다. ",
   "Name": "Revit_Color",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -13,7 +13,7 @@
       "Type": "selection",
       "Type2": "hostSelection",
       "Value": "45ed4799-d124-4abc-8e2b-9d29089bad28-000b7d3c,45ed4799-d124-4abc-8e2b-9d29089bad28-000b7d59,45ed4799-d124-4abc-8e2b-9d29089bad28-000b7d87,8dd6f36e-c3c3-4f56-8d51-5f14900ffe7e-000cc535,8dd6f36e-c3c3-4f56-8d51-5f14900ffe7e-000cc5ca,8dd6f36e-c3c3-4f56-8d51-5f14900ffe7e-000cc732,8dd6f36e-c3c3-4f56-8d51-5f14900ffe7e-000cc761,8dd6f36e-c3c3-4f56-8d51-5f14900ffe7e-000cc78e,ee03061f-d7b4-4e6a-b397-fa44f24a42a7-000d8d2a,ee03061f-d7b4-4e6a-b397-fa44f24a42a7-000d8dc4,be7c41aa-3dbe-41ab-a35e-bc804583677c-001431f3,be7c41aa-3dbe-41ab-a35e-bc804583677c-001432d8,be7c41aa-3dbe-41ab-a35e-bc804583677c-001433fb,be7c41aa-3dbe-41ab-a35e-bc804583677c-0014355f,03907ce2-d6bf-41d6-b870-f44df8a9f0d9-00143791,cd385e70-9bdd-443f-864f-9b1e057a8a5c-0015a7ee,2a2a5167-04a0-4202-bdcf-0377e2f524eb-001687b4,addda3e8-7d30-4bf4-87a0-3c8bdf6639ff-001688dc,addda3e8-7d30-4bf4-87a0-3c8bdf6639ff-001689a4,1e43b841-b995-46db-b1d2-6664b7dfa367-00168a9b,1e43b841-b995-46db-b1d2-6664b7dfa367-00168aae,1e43b841-b995-46db-b1d2-6664b7dfa367-00168aeb,1e43b841-b995-46db-b1d2-6664b7dfa367-00168b0f,1e43b841-b995-46db-b1d2-6664b7dfa367-00168b41,1e43b841-b995-46db-b1d2-6664b7dfa367-00168b7e,ad2588d0-c655-4eef-965a-6d983a5e846c-00168c26,ad2588d0-c655-4eef-965a-6d983a5e846c-00168c78,ad2588d0-c655-4eef-965a-6d983a5e846c-001692ae,ad2588d0-c655-4eef-965a-6d983a5e846c-001692d7,ad2588d0-c655-4eef-965a-6d983a5e846c-0016930e,ad2588d0-c655-4eef-965a-6d983a5e846c-0016936d,ad2588d0-c655-4eef-965a-6d983a5e846c-00169386,ad2588d0-c655-4eef-965a-6d983a5e846c-00169397",
-      "Description": "Select multiple elements from the Revit document."
+      "Description": "Revit 문서에서 여러 요소를 선택합니다."
     }
   ],
   "Outputs": [
@@ -22,7 +22,7 @@
       "Name": "/",
       "Type": "unknown",
       "InitialValue": "",
-      "Description": "Returns division of x over y\n\n/ (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "x를 y로 나누어 반환\n\n/ (x: var[]..[], y: var[]..[]): var[]..[]"
     }
   ],
   "Nodes": [
@@ -43,7 +43,7 @@
         {
           "Id": "c7e5fb17a4b3453b969a8d8f7ac7cc6e",
           "Name": "color",
-          "Description": "The color to apply to a solid fill on the element.\n\nColor",
+          "Description": "요소에서 솔리드 채우기에 적용할 색상입니다.\n\nColor",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -63,7 +63,7 @@
       ],
       "FunctionSignature": "Revit.Elements.Element.OverrideColorInView@DSCore.Color",
       "Replication": "Longest",
-      "Description": "Override the element's color in the active view.\n\nElement.OverrideColorInView (color: Color): Element"
+      "Description": "활성 보기에서 요소의 색상을 재지정합니다.\n\nElement.OverrideColorInView (color: Color): Element"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -73,7 +73,7 @@
         {
           "Id": "0d4c4a2fc54e4233bf0760a8f2046bc9",
           "Name": "alpha",
-          "Description": "Alpha value (between 0 and 255 inclusive)\n\nint\nDefault value : 255 (disabled)",
+          "Description": "알파 값(0에서 255 사이)\n\nint\n기본값: 255(비활성화됨)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -82,7 +82,7 @@
         {
           "Id": "db9ae2bf99604763a3203a2c38cbc2f3",
           "Name": "red",
-          "Description": "Red value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0 (disabled)",
+          "Description": "RGB 색상 모델의 빨간색 값(0에서 255 사이)\n\nint\n기본값: 0(비활성화됨)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -91,7 +91,7 @@
         {
           "Id": "08e88461fdf94d8aaf0c44c007f0bc52",
           "Name": "green",
-          "Description": "Green value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0 (disabled)",
+          "Description": "RGB 색상 모델의 녹색 값(0에서 255 사이)\n\nint\n기본값: 0(비활성화됨)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -100,7 +100,7 @@
         {
           "Id": "2dbc754af1c3417ab8d505baa4f78ec6",
           "Name": "blue",
-          "Description": "Blue value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0 (disabled)",
+          "Description": "RGB 색상 모델의 파란색 값(0에서 255 사이)\n\nint\n기본값: 0(비활성화됨)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -111,7 +111,7 @@
         {
           "Id": "724c93b1e0e24b89a29c2a09e9a1b846",
           "Name": "color",
-          "Description": "Color created from ARGB",
+          "Description": "ARGB에서 작성된 색상",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -120,7 +120,7 @@
       ],
       "FunctionSignature": "DSCore.Color.ByARGB@int,int,int,int",
       "Replication": "Longest",
-      "Description": "Construct a color by alpha, red, green, and blue components.\n\nColor.ByARGB (alpha: int = 255, red: int = 0, green: int = 0, blue: int = 0): Color"
+      "Description": "알파, 빨간색, 녹색, 파란색 구성요소로 색상을 구성합니다.\n\nColor.ByARGB (alpha: int = 255, red: int = 0, green: int = 0, blue: int = 0): Color"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -140,7 +140,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "숫자를 만듭니다",
       "InputValue": 255.0
     },
     {
@@ -161,7 +161,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "숫자를 만듭니다",
       "InputValue": 0.0
     },
     {
@@ -172,7 +172,7 @@
         {
           "Id": "1a649dfd397a4bb78d16b6386de72a03",
           "Name": "alpha",
-          "Description": "Alpha value (between 0 and 255 inclusive)\n\nint\nDefault value : 255 (disabled)",
+          "Description": "알파 값(0에서 255 사이)\n\nint\n기본값: 255(비활성화됨)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -181,7 +181,7 @@
         {
           "Id": "50a63468639f4c1c84e6b4c34dfaf5c4",
           "Name": "red",
-          "Description": "Red value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0 (disabled)",
+          "Description": "RGB 색상 모델의 빨간색 값(0에서 255 사이)\n\nint\n기본값: 0(비활성화됨)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -190,7 +190,7 @@
         {
           "Id": "6d721abbac8f44bebcd159b97508c0f8",
           "Name": "green",
-          "Description": "Green value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0 (disabled)",
+          "Description": "RGB 색상 모델의 녹색 값(0에서 255 사이)\n\nint\n기본값: 0(비활성화됨)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -199,7 +199,7 @@
         {
           "Id": "636f89a5240541559287d1c8dde38c6d",
           "Name": "blue",
-          "Description": "Blue value for RGB color model (between 0 and 255 inclusive)\n\nint\nDefault value : 0 (disabled)",
+          "Description": "RGB 색상 모델의 파란색 값(0에서 255 사이)\n\nint\n기본값: 0(비활성화됨)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -210,7 +210,7 @@
         {
           "Id": "e4aa7660c9ee4930890d161fe43a3925",
           "Name": "color",
-          "Description": "Color created from ARGB",
+          "Description": "ARGB에서 작성된 색상",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -219,7 +219,7 @@
       ],
       "FunctionSignature": "DSCore.Color.ByARGB@int,int,int,int",
       "Replication": "Longest",
-      "Description": "Construct a color by alpha, red, green, and blue components.\n\nColor.ByARGB (alpha: int = 255, red: int = 0, green: int = 0, blue: int = 0): Color"
+      "Description": "알파, 빨간색, 녹색, 파란색 구성요소로 색상을 구성합니다.\n\nColor.ByARGB (alpha: int = 255, red: int = 0, green: int = 0, blue: int = 0): Color"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -239,7 +239,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "숫자를 만듭니다",
       "InputValue": 0.0
     },
     {
@@ -260,7 +260,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "숫자를 만듭니다",
       "InputValue": 255.0
     },
     {
@@ -281,7 +281,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "숫자를 만듭니다",
       "InputValue": 100.0
     },
     {
@@ -292,7 +292,7 @@
         {
           "Id": "62aac27825ff4e35bf331fa8af34f33c",
           "Name": "colors",
-          "Description": "List of colors to include in the range",
+          "Description": "범위에 포함할 색상 리스트",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -301,7 +301,7 @@
         {
           "Id": "6d9522a919024234a662d9fb3a1f6c21",
           "Name": "indices",
-          "Description": "List of values between 0.0 and 1.0 which position the input colors along the range",
+          "Description": "범위를 따라 입력 색상의 위치를 지정하는 0.0과 1.0 사이의 값 리스트",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -310,7 +310,7 @@
         {
           "Id": "8e9c1f84d2a24f44b7a3c01f8af566df",
           "Name": "value",
-          "Description": "List of values between 0.0 and 1.0. These values define the colors that are picked along the color range to create the color list.",
+          "Description": "0.0과 1.0 사이의 값 리스트입니다. 이러한 값은 색상 범위 내에서 선택된 색상을 정의하여 색상 리스트를 만듭니다.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -321,7 +321,7 @@
         {
           "Id": "9d8155ee1bab405a85d5c31e977a833a",
           "Name": "color",
-          "Description": "Selected colors",
+          "Description": "선택된 색상",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -329,7 +329,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Returns a color given a color range"
+      "Description": "지정된 색상 범위에서 색상을 반환합니다"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -339,7 +339,7 @@
         {
           "Id": "86cd5e920d9d4aba9989ddc6e60b64cd",
           "Name": "x",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "정수 또는 double 값\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -348,7 +348,7 @@
         {
           "Id": "62af667db97343458878abfb639fbc6c",
           "Name": "y",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "정수 또는 double 값\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -359,7 +359,7 @@
         {
           "Id": "a193c00cacb24bd9803b061082d9f022",
           "Name": "double",
-          "Description": "Result of division",
+          "Description": "나누기 결과",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -368,7 +368,7 @@
       ],
       "FunctionSignature": "/@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns division of x over y\n\n/ (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "x를 y로 나누어 반환\n\n/ (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -378,7 +378,7 @@
         {
           "Id": "5784fe1ed3f1411bb6025016d693046b",
           "Name": "list",
-          "Description": "List of comparable items to take the maximum value from\n\nvar[]",
+          "Description": "최대값을 가져올 비교 가능한 항목의 리스트\n\nvar[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -389,7 +389,7 @@
         {
           "Id": "cd35820f804d4d08a735ff2924800bb4",
           "Name": "item",
-          "Description": "Maximum item from the list.",
+          "Description": "리스트의 최대값 항목",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -398,7 +398,7 @@
       ],
       "FunctionSignature": "DSCore.List.MaximumItem@var[]",
       "Replication": "Auto",
-      "Description": "Returns the maximum value from a list.\n\nList.MaximumItem (list: var[]): var[]..[]"
+      "Description": "리스트에서 최대값을 반환합니다.\n\nList.MaximumItem (list: var[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -428,7 +428,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Solid.Area",
       "Replication": "Auto",
-      "Description": "Returns the surface area -- sum of all the areas of all faces\n\nSolid.Area: double"
+      "Description": "표면적(모든 면의 면적의 합)을 반환합니다\n\nSolid.Area: double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -438,7 +438,7 @@
         {
           "Id": "6d380f128a35461dac402551f9718ef5",
           "Name": "list",
-          "Description": "List to flatten.\n\nvar[]..[]",
+          "Description": "단순화할 리스트입니다.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -447,7 +447,7 @@
         {
           "Id": "c3361f6f99e84786b9d047e123c3aad8",
           "Name": "amount",
-          "Description": "Layers of list nesting to remove (-1 will remove all list nestings)\n\nint\nDefault value : -1",
+          "Description": "제거할 리스트 내포 레이어(-1은 모든 리스트 내포 제거)\n\nint\n기본값: -1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -458,7 +458,7 @@
         {
           "Id": "f6ec2d128ba2412297899e7c428aba84",
           "Name": "list",
-          "Description": "Flattened list by amount",
+          "Description": "양 기준으로 단순화한 리스트",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -467,7 +467,7 @@
       ],
       "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+      "Description": "리스트의 내포된 리스트를 특정한 크기만큼 단순화합니다.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
@@ -478,7 +478,7 @@
         {
           "Id": "35e17c176ef7478b9e331540a2793f54",
           "Name": "item0",
-          "Description": "Item Index #0",
+          "Description": "항목 인덱스 #0",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -487,7 +487,7 @@
         {
           "Id": "b18a854cb6bf43ebb69da85d25b614f1",
           "Name": "item1",
-          "Description": "Item Index #1",
+          "Description": "항목 인덱스 #1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -498,7 +498,7 @@
         {
           "Id": "2adfe4aae9ad46aaaee064e1b5cf4461",
           "Name": "list",
-          "Description": "A list",
+          "Description": "리스트",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -506,7 +506,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Makes a new list from the given inputs"
+      "Description": "지정된 입력에서 새 리스트를 만듭니다"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -517,7 +517,7 @@
         {
           "Id": "25d9e8ec99f74ecd83320fde2931e0ff",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "행 1의 표현식 값",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -525,7 +525,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "DesignScript 코드를 직접 작성할 수 있습니다",
       "Code": "[0,1];"
     },
     {
@@ -545,7 +545,7 @@
         {
           "Id": "a3efc8f9e6914e608d27056cbbcbdf8d",
           "Name": "detailLevel",
-          "Description": "Detail level\n\nstring\nDefault value : \"Medium\"",
+          "Description": "상세 수준\n\n문자열\n기본값: \"중간\"",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -556,7 +556,7 @@
         {
           "Id": "ab07b53e5a464318ba113673e182c08e",
           "Name": "var[]",
-          "Description": "List of geometry from the element",
+          "Description": "요소의 형상 리스트",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -565,7 +565,7 @@
       ],
       "FunctionSignature": "Revit.Elements.Element.GetGeometry@string",
       "Replication": "Auto",
-      "Description": "Returns all geometry associated with an element. Ignores transforms when used with linked elements.\n\nElement.GetGeometry (detailLevel: string = \"Medium\"): var[]"
+      "Description": "요소와 연관된 모든 형상을 반환합니다. 링크된 요소와 함께 사용하는 경우 변환을 무시합니다.\n\nElement.GetGeometry (detailLevel: string = \"Medium\"): var[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Logic.RefactoredIf, CoreNodeModels",
@@ -575,7 +575,7 @@
         {
           "Id": "66c325ff5d8e4b26ade677e6ac3e385d",
           "Name": "test",
-          "Description": "Boolean test",
+          "Description": "부울 테스트",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -584,7 +584,7 @@
         {
           "Id": "7f43b8cdc1194785921fc82c6c4b45de",
           "Name": "true",
-          "Description": "Returned if test is true",
+          "Description": "테스트가 true인 경우 반환됨",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -593,7 +593,7 @@
         {
           "Id": "6e1a1feaa41e4af994371ea11971d473",
           "Name": "false",
-          "Description": "Returned if test is false",
+          "Description": "테스트가 false인 경우 반환됨",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -604,7 +604,7 @@
         {
           "Id": "f0ef4b0e1542465da370c91b9a7c27c0",
           "Name": "result",
-          "Description": "Result block produced",
+          "Description": "결과 블록이 생성됨",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -612,7 +612,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Returns the result of either True or False input depending on what boolean value is toggled in the test input. Supports recursion which requires that only a single branch be executed. It's critical that that both True and False branches are isolated and do not interact with each other!"
+      "Description": "테스트 입력에서 전환되는 부울 값에 따라 True 또는 False 입력의 결과를 반환합니다. 하나의 분기만 실행되도록 요구하는 재귀를 지원합니다. True 및 False 브랜치 모두 분리되고 서로와 상호 작용하지 않아야 합니다."
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -632,7 +632,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "숫자를 만듭니다",
       "InputValue": 1.0
     },
     {
@@ -653,7 +653,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "숫자를 만듭니다",
       "InputValue": 0.0
     },
     {
@@ -664,7 +664,7 @@
         {
           "Id": "71f0087895f4457ab6f7315962b815a3",
           "Name": "x",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "정수 또는 double 값\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -673,7 +673,7 @@
         {
           "Id": "05c8a7b0c8b3473888281739f15bffb7",
           "Name": "y",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "정수 또는 double 값\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -684,7 +684,7 @@
         {
           "Id": "53cd4297ea3d460f8ba65dc13616dae2",
           "Name": "bool",
-          "Description": "True if x is greater than y, false if not",
+          "Description": "x가 y보다 크면 true, 그렇지 않으면 false",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -693,7 +693,7 @@
       ],
       "FunctionSignature": ">@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Compares if x is greater than y\n\n> (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "x가 y보다 큰지 비교\n\n> (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -705,7 +705,7 @@
         {
           "Id": "082d22a14dd54b25b91871a81c33d9ec",
           "Name": "",
-          "Description": "Node to show output from",
+          "Description": "출력을 표시할 노드",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -716,7 +716,7 @@
         {
           "Id": "07db4bcc2981494280e20a53d745af21",
           "Name": "",
-          "Description": "Node output",
+          "Description": "노드 출력",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -724,7 +724,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "노드의 출력을 시각화합니다."
     },
     {
       "ConcreteType": "Dynamo.Nodes.DSModelElementsSelection, DSRevitNodesUI",
@@ -770,7 +770,7 @@
         {
           "Id": "509003f0d1df4eccbff1ac902a173455",
           "Name": "Elements",
-          "Description": "The selected elements.",
+          "Description": "선택한 요소.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -778,7 +778,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Select multiple elements from the Revit document."
+      "Description": "Revit 문서에서 여러 요소를 선택합니다."
     }
   ],
   "Connectors": [
@@ -953,7 +953,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "특성",
       "Version": "2.13",
       "Data": {}
     },
@@ -982,7 +982,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "배경 미리보기(_B)",
       "EyeX": -127.6622543334961,
       "EyeY": 138.72370147705078,
       "EyeZ": 105.53301239013672,
@@ -1226,7 +1226,7 @@
     "Annotations": [
       {
         "Id": "57d38c261dfc4f2bbb89befb182b50ef",
-        "Title": "Alternative - evaluate if criteria passes a given threshold",
+        "Title": "대안 - 기준이 지정된 임계값을 통과하는지 평가합니다",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1256,7 +1256,7 @@
       },
       {
         "Id": "3a4ec673cf52427a8a0a48ee0f041a2e",
-        "Title": "Evaluate element surface area",
+        "Title": "요소 표면적을 평가합니다",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1286,7 +1286,7 @@
       },
       {
         "Id": "ce9391679fc743d69a81fde7dd844139",
-        "Title": "To Revit: Override Element Color in View",
+        "Title": "Revit에: 뷰에서 요소 색상 재지정",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1309,8 +1309,8 @@
       },
       {
         "Id": "0b1e3865352f4374805f94d2618aae1a",
-        "Title": "Create colors",
-        "DescriptionText": "Prepare the color scheme to color-code the elements",
+        "Title": "색상 작성",
+        "DescriptionText": "요소의 색상 코드를 지정할 색상 구성표를 준비합니다.",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -1342,8 +1342,8 @@
       },
       {
         "Id": "42a72a2cf2a84526929fd56feec80ebe",
-        "Title": "Select Model elements",
-        "DescriptionText": "Select facade walls ",
+        "Title": "모델 요소 선택",
+        "DescriptionText": "정면 벽을 선택합니다 ",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -1365,7 +1365,7 @@
       },
       {
         "Id": "d1b51d67b91b482db8f9cd85443e1916",
-        "Title": "Info",
+        "Title": "정보",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1388,7 +1388,7 @@
       },
       {
         "Id": "cf49f7017e784246a5bcc4aaecd9d60c",
-        "Title": "Threshold",
+        "Title": "임계값",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1410,7 +1410,7 @@
       },
       {
         "Id": "2a2839faf0dc449280f79845b668755d",
-        "Title": "Get highest value",
+        "Title": "가장 높은 값 가져오기",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1431,7 +1431,7 @@
       },
       {
         "Id": "32341fd072af4937bdaffe5b772dcb2f",
-        "Title": "Normalize at highest value",
+        "Title": "가장 높은 값에서 정규화",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1452,7 +1452,7 @@
       },
       {
         "Id": "ea56f2857a8c4579b471a98799bae890",
-        "Title": "set color range",
+        "Title": "색상 범위 설정",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1473,7 +1473,7 @@
       },
       {
         "Id": "79d256e41c694ce3b117ad2bba92b9df",
-        "Title": "identify areas within a tolerance",
+        "Title": "공차 내에서 영역 식별",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1494,7 +1494,7 @@
       },
       {
         "Id": "2e6ef76c6bc94fd886349a35c9504d40",
-        "Title": "Extract Surface Area of Geometry",
+        "Title": "형상의 표면적 추출",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1515,7 +1515,7 @@
       },
       {
         "Id": "46696f9e598745099faa07e651896032",
-        "Title": "Run this graph the Snowdon Towers Sample Architectural.rvt file in the Samples folder located with your Revit installation\r\nC:\\Program Files\\Autodesk\\Revit 2026\\Samples",
+        "Title": "Revit 설치 시 함께 생성되는 샘플 폴더의 Snowdon Towers Sample Architectural.rvt 파일에서 이 그래프를 실행합니다\r\nC:\\Program Files\\Autodesk\\Revit 2026\\Samples",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1535,7 +1535,7 @@
       },
       {
         "Id": "6173a9eec7ff4f03a05a33f5b72bc7fd",
-        "Title": "This graph colors Revit Elements based on a measurable criteria (Surface Area). \nElements are colored using the Override Graphics in View > By Element method.",
+        "Title": "이 그래프는 측정 가능한 기준에 따라 Revit 요소의 색상을 지정합니다(표면적). \n요소는 뷰 > 요소별 방법에서 그래픽 재지정을 사용하여 색상이 지정됩니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1555,7 +1555,7 @@
       },
       {
         "Id": "f1c12f85c3bb41c4ba7618ade1235a60",
-        "Title": "color green",
+        "Title": "색상 초록색",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1576,7 +1576,7 @@
       },
       {
         "Id": "82fd71e4e96f4347b0e0cd3a861d2661",
-        "Title": "color red",
+        "Title": "색상 빨간색",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1597,7 +1597,7 @@
       },
       {
         "Id": "dcc8e7298bcb414c9f85a4bc650cfc01",
-        "Title": "this result can be used as 'indices' input of the Color Range node",
+        "Title": "이 결과를 색상 범위 노드의 '색인' 입력으로 사용할 수 있습니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1618,7 +1618,7 @@
       },
       {
         "Id": "d02bbc53462e4017bcfede690bdda0b4",
-        "Title": "Get element's geometry ",
+        "Title": "요소의 형상 가져오기 ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1639,7 +1639,7 @@
       },
       {
         "Id": "6721c9001b92484c9c2fca9f5634b516",
-        "Title": "Click 'Change' to choose elements from the Revit model",
+        "Title": "'변경'을 클릭하여 Revit 모델에서 요소를 선택합니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1660,7 +1660,7 @@
       },
       {
         "Id": "97547975312e443cbce10001398a87bd",
-        "Title": "This overrides the color of the element in the active view",
+        "Title": "활성 뷰에 있는 요소의 색상이 재지정됩니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1681,7 +1681,7 @@
       },
       {
         "Id": "e8dc1940afa840ffac31c83e195544a5",
-        "Title": "Compare with a threshold value ",
+        "Title": "임계값과 비교합니다 ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1702,7 +1702,7 @@
       },
       {
         "Id": "c4a96cd12dcd468c933bf69b9b2fab35",
-        "Title": "Numbers will indicate the position on the color spectrum - from 0 to 1",
+        "Title": "숫자는 색상 스펙트럼에서 0부터 1까지의 위치를 나타냅니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

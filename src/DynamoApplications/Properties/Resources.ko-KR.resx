@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="MismatchedAssemblyList" xml:space="preserve">
-    <value>It is likely one of the following assemblies loaded the incompatible version:</value>
+    <value>다음 어셈블리 중 하나가 호환되지 않는 버전으로 로드된 것 같습니다.</value>
   </data>
   <data name="MismatchedAssemblyVersion" xml:space="preserve">
-    <value>While loading assembly {0}, Dynamo detected that the dependency {1} was already loaded with an incompatible version. It is likely that another Revit Addin has loaded this assembly, please try uninstalling other Addins, and starting Dynamo again. Dynamo may be unstable in this state.</value>
+    <value>{0} 어셈블리를 로드하는 동안 Dyanmo가 {1} 종속성이 호환되지 않는 버전으로 이미 로드되었음을 감지했습니다. 다른 Revit 애드인에서 이 어셈블리를 로드한 것 같습니다. 해당 애드인을 설치제거하고 Dynamo를 다시 시작하십시오. 이 상태의 Dynamo는 불안정할 수 있습니다.</value>
   </data>
   <data name="MismatchedAssemblyVersionShortMessage" xml:space="preserve">
-    <value>Dynamo has detected a conflict with a dependency and may be unstable. If any issues are detected, please uninstall addins or packages and contact the provider.</value>
+    <value>Dynamo가 종속성에 충돌이 있음을 감지하여 불안정할 수 있습니다. 문제가 발견되면 애드인 또는 패키지를 설치 제거하고 제공업체에 문의하십시오.</value>
   </data>
   <data name="MismatchedAssemblyVersionTitle" xml:space="preserve">
-    <value>Error Loading A Dependency</value>
+    <value>종속성 로드 중 오류 발생</value>
   </data>
   <data name="SplashScreenPreLoadingAsm" xml:space="preserve">
-    <value>Preloading Geometry library</value>
+    <value>형상 라이브러리를 미리 로드하는 중</value>
   </data>
 </root>
