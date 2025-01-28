@@ -903,7 +903,7 @@ This package likely contains an assembly that is blocked. You will need to load 
     <value>Failed to insert the file as some of the nodes already exist in the current worspace.</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Insert Dynamo Definition...</value>
+    <value>Insert Dynamo Graph...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>Example file added to workspace. Run mode changed to Manual.</value>
@@ -925,5 +925,8 @@ This package likely contains an assembly that is blocked. You will need to load 
   </data>
   <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
     <value>This node is currently experimental. Its behavior, name, and signature are subject to change.</value>
+  </data>
+  <data name="052465" xml:space="preserve">
+    <value />
   </data>
 </root>
