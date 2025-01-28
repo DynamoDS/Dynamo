@@ -111,6 +111,7 @@ namespace Dynamo.Tests.Logging
         }
 
         [Test]
+        [Category("FailureDynCore")]
         public void FeatureFlagsThrowsIfCheckIngNonSupportedType()
         {
             var testflagsManager = new DynamoUtilities.DynamoFeatureFlagsManager("testkey", new SynchronizationContext(), true);
