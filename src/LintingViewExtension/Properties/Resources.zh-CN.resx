@@ -118,24 +118,24 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExtensionName" xml:space="preserve">
-    <value>Graph Status</value>
+    <value>图形状态</value>
   </data>
   <data name="GraphIssues" xml:space="preserve">
-    <value>Graph Issues</value>
+    <value>图形问题</value>
   </data>
   <data name="GraphType" xml:space="preserve">
-    <value>Graph Type</value>
+    <value>图形类型</value>
   </data>
   <data name="GraphTypeHelpTooltip" xml:space="preserve">
-    <value>What is a Graph Type?</value>
+    <value>什么是图形类型？</value>
   </data>
   <data name="MenuItemText" xml:space="preserve">
-    <value>Show Graph _Status</value>
+    <value>显示图形状态(_S)</value>
   </data>
   <data name="NodeIssues" xml:space="preserve">
-    <value>Node Issues</value>
+    <value>节点问题</value>
   </data>
   <data name="NoneLinterDescriptorName" xml:space="preserve">
-    <value>None</value>
+    <value>无</value>
   </data>
 </root>

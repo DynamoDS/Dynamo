@@ -1,7 +1,7 @@
 {
   "Uuid": "d31928e2-8b00-4060-b078-b8288e4924d6",
   "IsCustomNode": false,
-  "Description": "This graph creates a structure out of Structural Framing and Columns relative to a selected Revit Floor. ",
+  "Description": "Ten wykres tworzy strukturę na podstawie słupów i ram konstrukcyjnych względem wybranego stropu programu Revit. ",
   "Name": "Revit_StructuralFraming",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -9,7 +9,7 @@
   "Inputs": [
     {
       "Id": "331a51d26a3f482bbf7f98d8f0203f9c",
-      "Name": "Number of Beams",
+      "Name": "Liczba belek",
       "Type": "number",
       "Type2": "number",
       "Value": "9",
@@ -17,15 +17,15 @@
       "MinimumValue": 2.0,
       "StepValue": 1.0,
       "NumberType": "Integer",
-      "Description": "Produces integer values"
+      "Description": "Tworzy wartości liczb całkowitych"
     },
     {
       "Id": "546ba908a5bc4abd9e9277f543639a58",
-      "Name": "Structure Level",
+      "Name": "Poziom konstrukcji",
       "Type": "selection",
       "Type2": "dropdownSelection",
       "Value": "L1 - Block 43",
-      "Description": "Select a level in the active document",
+      "Description": "Wybierz poziom w aktywnym dokumencie",
       "SelectedIndex": 6
     },
     {
@@ -34,29 +34,29 @@
       "Type": "selection",
       "Type2": "dropdownSelection",
       "Value": "W12X26",
-      "Description": "Select a structural framing type in the active document",
+      "Description": "Wybierz typ ramy konstrukcyjnej w aktywnym dokumencie",
       "SelectedIndex": 0
     },
     {
       "Id": "0b9ae75bc49d418282f5d1c364b57813",
-      "Name": "Structural Column Types",
+      "Name": "Typy słupów konstrukcyjnych",
       "Type": "selection",
       "Type2": "dropdownSelection",
       "Value": "",
-      "Description": "Select a structural column type in the active document",
+      "Description": "Wybierz typ słupa konstrukcyjnego w aktywnym dokumencie",
       "SelectedIndex": 0
     },
     {
       "Id": "25f0e72e423e420e9bff4d2906e2b243",
-      "Name": "Select Source Floor",
+      "Name": "Wybierz strop źródłowy",
       "Type": "selection",
       "Type2": "hostSelection",
       "Value": "30b382b6-087b-407b-9fe7-257a49470bb8-0012ba28",
-      "Description": "Select a model element from the document."
+      "Description": "Wybierz element modelu z dokumentu."
     },
     {
       "Id": "98a09985e2d34632ad5480bc2fcd4093",
-      "Name": "Height",
+      "Name": "Wysokość",
       "Type": "number",
       "Type2": "number",
       "Value": "8.4",
@@ -64,7 +64,7 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Tworzy wartości liczbowe"
     }
   ],
   "Outputs": [],
@@ -90,7 +90,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces integer values",
+      "Description": "Tworzy wartości liczb całkowitych",
       "InputValue": 9
     },
     {
@@ -104,7 +104,7 @@
         {
           "Id": "0c820f0548af4e4281eb14433df45bf7",
           "Name": "Levels",
-          "Description": "The selected Levels",
+          "Description": "Wybrane poziomy",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -112,7 +112,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Select a level in the active document"
+      "Description": "Wybierz poziom w aktywnym dokumencie"
     },
     {
       "ConcreteType": "DSRevitNodesUI.StructuralFramingTypes, DSRevitNodesUI",
@@ -125,7 +125,7 @@
         {
           "Id": "581f0032faec46e3a9c78aaffbbea3d7",
           "Name": "Framing Types",
-          "Description": "The selected Framing Types",
+          "Description": "Wybrane typy ram",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -133,7 +133,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Select a structural framing type in the active document"
+      "Description": "Wybierz typ ramy konstrukcyjnej w aktywnym dokumencie"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -143,7 +143,7 @@
         {
           "Id": "71318a985de44226a1a30a75f2314093",
           "Name": "curve",
-          "Description": "The curve which defines the center line of the beam.\n\nCurve",
+          "Description": "Krzywa definiująca linię środkową belki.\n\nCurve",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -152,7 +152,7 @@
         {
           "Id": "7f43517409a8434ea991e3a597944d3a",
           "Name": "level",
-          "Description": "The level with which you'd like the beam to be associated.\n\nLevel",
+          "Description": "Poziom, z którym ma być skojarzona belka.\n\nLevel",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -161,7 +161,7 @@
         {
           "Id": "cffaf3ca906f42ad9d1b21b2d97c6e9e",
           "Name": "structuralFramingType",
-          "Description": "The structural framing type representing the beam.\n\nFamilyType",
+          "Description": "Typ ramy konstrukcyjnej reprezentujący belkę.\n\nFamilyType",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -181,7 +181,7 @@
       ],
       "FunctionSignature": "Revit.Elements.StructuralFraming.BeamByCurve@Autodesk.DesignScript.Geometry.Curve,Revit.Elements.Level,Revit.Elements.FamilyType",
       "Replication": "Auto",
-      "Description": "Create a beam.\n\nStructuralFraming.BeamByCurve (curve: Curve, level: Level, structuralFramingType: FamilyType): StructuralFraming"
+      "Description": "Utwórz belkę.\n\nStructuralFraming.BeamByCurve (curve: Curve, level: Level, structuralFramingType: FamilyType): StructuralFraming"
     },
     {
       "ConcreteType": "DSRevitNodesUI.StructuralColumnTypes, DSRevitNodesUI",
@@ -194,7 +194,7 @@
         {
           "Id": "5f558837ba41420b822f2a071bfdc705",
           "Name": "Column Types",
-          "Description": "The selected Column Types",
+          "Description": "Wybrane typy słupów",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -202,7 +202,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Select a structural column type in the active document"
+      "Description": "Wybierz typ słupa konstrukcyjnego w aktywnym dokumencie"
     },
     {
       "ConcreteType": "Dynamo.Nodes.DSModelElementSelection, DSRevitNodesUI",
@@ -216,7 +216,7 @@
         {
           "Id": "d062b8c6e6ac410ba910d56b7f5f0f43",
           "Name": "Element",
-          "Description": "The selected elements.",
+          "Description": "Wybrane elementy.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -224,7 +224,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Select a model element from the document."
+      "Description": "Wybierz element modelu z dokumentu."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -243,7 +243,7 @@
         {
           "Id": "e9390cb51d3543af93aedce5033f3d87",
           "Name": "detailLevel",
-          "Description": "Detail level\n\nstring\nDefault value : \"Medium\"",
+          "Description": "Poziom szczegółów\n\nstring\nWartość domyślna: \"Medium\"",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -254,7 +254,7 @@
         {
           "Id": "fb59c777c4de4a6080612cbcb5266904",
           "Name": "var[]",
-          "Description": "List of geometry from the element",
+          "Description": "Lista geometrii z elementu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -263,7 +263,7 @@
       ],
       "FunctionSignature": "Revit.Elements.Element.GetGeometry@string",
       "Replication": "Auto",
-      "Description": "Returns all geometry associated with an element. Ignores transforms when used with linked elements.\n\nElement.GetGeometry (detailLevel: string = \"Medium\"): var[]"
+      "Description": "Zwraca całą geometrię skojarzoną z elementem. Ignoruje przekształcenia w przypadku używania z połączonymi elementami.\n\nElement.GetGeometry (detailLevel: string = \"Medium\"): var[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -284,7 +284,7 @@
         {
           "Id": "8341a84b14894d369ae579cfb2238ba8",
           "Name": "BoundingBox",
-          "Description": "Oriented bounding box arounding input geometries.",
+          "Description": "Zorientowana ramka ograniczająca wokół geometrii wejściowych.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -293,7 +293,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.BoundingBox.ByMinimumVolume@Autodesk.DesignScript.Geometry.Geometry[]",
       "Replication": "Auto",
-      "Description": "Create a non-axis-aligned, minimum-volume, oriented bounding box around the input geometries.\n\nBoundingBox.ByMinimumVolume (geom: Geometry[]): BoundingBox"
+      "Description": "Utwórz niewyrównaną do osi, zorientowaną ramkę ograniczającą o minimalnej objętości wokół geometrii wejściowych.\n\nBoundingBox.ByMinimumVolume (geom: Geometry[]): BoundingBox"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -314,7 +314,7 @@
         {
           "Id": "a6eac2b2e39049119d17a8aa9aee5886",
           "Name": "Cuboid",
-          "Description": "Returns cuboid representation of the bounding box.",
+          "Description": "Zwraca prostopadłościenną reprezentację ramki ograniczającej.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -323,7 +323,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.BoundingBox.ToCuboid",
       "Replication": "Auto",
-      "Description": "Get the bounding box as a solid cuboid.\n\nBoundingBox.ToCuboid ( ): Cuboid"
+      "Description": "Pobierz ramkę ograniczającą jako prostopadłościan bryłowy.\n\nBoundingBox.ToCuboid ( ): Cuboid"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -342,7 +342,7 @@
         {
           "Id": "58156c3cc5ac4693a3358bc25b6bf94e",
           "Name": "u",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -351,7 +351,7 @@
         {
           "Id": "bdc36005a8514e1f91941f1249c51662",
           "Name": "v",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -362,7 +362,7 @@
         {
           "Id": "57309b68263d4d56af74497683a1c17a",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Punkt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -371,7 +371,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.PointAtParameter@double,double",
       "Replication": "Auto",
-      "Description": "Return the Point at specified U and V parameters.\n\nSurface.PointAtParameter (u: double = 0, v: double = 0): Point"
+      "Description": "Zwróć punkt o określonych parametrach U i V.\n\nSurface.PointAtParameter (u: double = 0, v: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -382,7 +382,7 @@
         {
           "Id": "c014aa632458481c92043fe5b9dba3f2",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wartość wyrażenia w wierszu 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -390,7 +390,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umożliwia bezpośrednie utworzenie kodu DesignScript",
       "Code": "0.5;"
     },
     {
@@ -421,7 +421,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Explode",
       "Replication": "Auto",
-      "Description": "Separates compound or non-separated elements into their component parts.\n\nGeometry.Explode ( ): Geometry[]"
+      "Description": "Rozdziela elementy złożone lub elementy nierozdzielone na części składowe.\n\nGeometry.Explode ( ): Geometry[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -431,7 +431,7 @@
         {
           "Id": "c0cceb40683843208c9f19a7bd0338af",
           "Name": "list",
-          "Description": "list to be sorted\n\nvar[]..[]",
+          "Description": "lista do posortowania\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -440,7 +440,7 @@
         {
           "Id": "031ce8d167024db09546216e0037e889",
           "Name": "keys",
-          "Description": "list of keys, keys have to be sortable (e.g. numbers,strings)\n\nvar[]..[]",
+          "Description": "lista kluczy; klucze muszą podlegać sortowaniu (np. być liczbami, ciągami)\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -469,7 +469,7 @@
       ],
       "FunctionSignature": "DSCore.List.SortByKey@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Sort list based on its keys\n\nList.SortByKey (list: var[]..[], keys: var[]..[]): var[]..[]"
+      "Description": "Sortuj listę na podstawie jej kluczy\n\nList.SortByKey (list: var[]..[], keys: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -499,7 +499,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.Z",
       "Replication": "Auto",
-      "Description": "Get the Z component of a Point\n\nPoint.Z: double"
+      "Description": "Pobierz składową Z punktu (Point)\n\nPoint.Z: double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -509,7 +509,7 @@
         {
           "Id": "69ebfd5a8efd4b01be122b923f711873",
           "Name": "list",
-          "Description": "List to get the last item of\n\nvar[]..[]",
+          "Description": "Lista, z której zostanie pobrany ostatni element\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -520,7 +520,7 @@
         {
           "Id": "5d3d49e081404bb09c03e10f696ad74c",
           "Name": "item",
-          "Description": "Last item in the list",
+          "Description": "Ostatni element na liście",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -529,7 +529,7 @@
       ],
       "FunctionSignature": "DSCore.List.LastItem@var[]..[]",
       "Replication": "Auto",
-      "Description": "Retrieves the last item in a list.\n\nList.LastItem (list: var[]..[]): var[]..[]"
+      "Description": "Pobiera ostatni element na liście.\n\nList.LastItem (list: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -548,7 +548,7 @@
         {
           "Id": "825138c2988646c78db0e6b4971132fa",
           "Name": "u",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -557,7 +557,7 @@
         {
           "Id": "5a8295f9086c46fab7df2d1897a99c4d",
           "Name": "v",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -568,7 +568,7 @@
         {
           "Id": "b1aaa5ca0064466caeb4a057f5ba4bb6",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Punkt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -577,7 +577,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.PointAtParameter@double,double",
       "Replication": "CrossProduct",
-      "Description": "Return the Point at specified U and V parameters.\n\nSurface.PointAtParameter (u: double = 0, v: double = 0): Point"
+      "Description": "Zwróć punkt o określonych parametrach U i V.\n\nSurface.PointAtParameter (u: double = 0, v: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -598,7 +598,7 @@
         {
           "Id": "7291777441b64cbd923bc04107c2a42c",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wartość wyrażenia w wierszu 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -606,7 +606,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umożliwia bezpośrednie utworzenie kodu DesignScript",
       "Code": "0.1..0.9..#n;"
     },
     {
@@ -618,7 +618,7 @@
         {
           "Id": "a0f3034590884166b2d253a5cf4d24ea",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wartość wyrażenia w wierszu 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -626,7 +626,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umożliwia bezpośrednie utworzenie kodu DesignScript",
       "Code": "[0.1,0.9];"
     },
     {
@@ -637,7 +637,7 @@
         {
           "Id": "a84f42d60c8a47b182700afdd344ded2",
           "Name": "startPoint",
-          "Description": "Line start point\n\nPoint",
+          "Description": "Punkt początkowy linii\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -646,7 +646,7 @@
         {
           "Id": "d194b491947b45dcb16aee3b58aa7336",
           "Name": "endPoint",
-          "Description": "Line end point\n\nPoint",
+          "Description": "Punkt końcowy linii\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -657,7 +657,7 @@
         {
           "Id": "e99b74d39c5b4556a51db67ecfab6629",
           "Name": "Line",
-          "Description": "Line from start and end point",
+          "Description": "Linia utworzona z punktu początkowego i końcowego",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -666,7 +666,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Creates a straight Line between two input Points.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
+      "Description": "Tworzy linię prostą między dwoma punktami wejściowymi.\n\nLine.ByStartPointEndPoint (punktPoczątkowy: Point, punktKońcowy: Point): Line"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -676,7 +676,7 @@
         {
           "Id": "03012dee3dae4d8a9551ecc335c783a0",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "Lista, z której zostanie pobrany element.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": true,
@@ -685,7 +685,7 @@
         {
           "Id": "c51f82130a3d44e9b1f7027c2f948f34",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "Indeks elementu do pobrania.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -696,7 +696,7 @@
         {
           "Id": "eca3f75ed56143958daf4c6d8fc5f027",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "Element na liście o danym indeksie.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -705,7 +705,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Zwraca element o określonym indeksie z danej listy.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -716,7 +716,7 @@
         {
           "Id": "62ac1ec015ac4db8891c1a82302d2f4e",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wartość wyrażenia w wierszu 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -725,7 +725,7 @@
         {
           "Id": "975d75f2f60b465f994f09a955d41d55",
           "Name": "",
-          "Description": "Value of expression at line 2",
+          "Description": "Wartość wyrażenia w wierszu 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -733,7 +733,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umożliwia bezpośrednie utworzenie kodu DesignScript.",
       "Code": "0;\n1;"
     },
     {
@@ -744,7 +744,7 @@
         {
           "Id": "4a40f8d3203f43e2a506b9286be2f773",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "Lista, z której zostanie pobrany element.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": true,
@@ -753,7 +753,7 @@
         {
           "Id": "cf9ce5422eb640a685b7433a4dc5eeb9",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "Indeks elementu do pobrania.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -764,7 +764,7 @@
         {
           "Id": "19548a868440481faf3e61c8a5f17d46",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "Element na liście o danym indeksie.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -773,7 +773,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Zwraca element o określonym indeksie z danej listy.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -783,7 +783,7 @@
         {
           "Id": "fa9e21b08117463c9c321a63acc69d56",
           "Name": "startPoint",
-          "Description": "Line start point\n\nPoint",
+          "Description": "Punkt początkowy linii\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -792,7 +792,7 @@
         {
           "Id": "c1b6e6b681cf4d0fbfe293a6a0ea6ff5",
           "Name": "endPoint",
-          "Description": "Line end point\n\nPoint",
+          "Description": "Punkt końcowy linii\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -803,7 +803,7 @@
         {
           "Id": "dc903ed77f3540b6b002f7dad319a160",
           "Name": "Line",
-          "Description": "Line from start and end point",
+          "Description": "Linia utworzona z punktu początkowego i końcowego",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -812,7 +812,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Creates a straight Line between two input Points.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
+      "Description": "Tworzy linię prostą (Line) między dwoma punktami wejściowymi.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -822,7 +822,7 @@
         {
           "Id": "c5798ad560104884b707919bbefa8ffc",
           "Name": "curve",
-          "Description": "The curve which defines the center line of the beam.\n\nCurve",
+          "Description": "Krzywa definiująca linię środkową belki.\n\nCurve",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -831,7 +831,7 @@
         {
           "Id": "88c299ddd0e1474e9098714e28f46a2a",
           "Name": "level",
-          "Description": "The level with which you'd like the beam to be associated.\n\nLevel",
+          "Description": "Poziom, z którym ma być skojarzona belka.\n\nLevel",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -840,7 +840,7 @@
         {
           "Id": "a5aa2ace627f4d4299801aa65ec40691",
           "Name": "structuralFramingType",
-          "Description": "The structural framing type representing the beam.\n\nFamilyType",
+          "Description": "Typ ramy konstrukcyjnej reprezentujący belkę.\n\nFamilyType",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -860,7 +860,7 @@
       ],
       "FunctionSignature": "Revit.Elements.StructuralFraming.BeamByCurve@Autodesk.DesignScript.Geometry.Curve,Revit.Elements.Level,Revit.Elements.FamilyType",
       "Replication": "Auto",
-      "Description": "Create a beam.\n\nStructuralFraming.BeamByCurve (curve: Curve, level: Level, structuralFramingType: FamilyType): StructuralFraming"
+      "Description": "Utwórz belkę.\n\nStructuralFraming.BeamByCurve (curve: Curve, level: Level, structuralFramingType: FamilyType): StructuralFraming"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -870,7 +870,7 @@
         {
           "Id": "4c1cc69f541b47e59d4c01fb2e11b774",
           "Name": "list",
-          "Description": "List to get the last item of\n\nvar[]..[]",
+          "Description": "Lista, z której zostanie pobrany ostatni element\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -881,7 +881,7 @@
         {
           "Id": "a3b482ac897d4da18c15516af5ff8b9b",
           "Name": "item",
-          "Description": "Last item in the list",
+          "Description": "Ostatni element na liście",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -890,7 +890,7 @@
       ],
       "FunctionSignature": "DSCore.List.LastItem@var[]..[]",
       "Replication": "Auto",
-      "Description": "Retrieves the last item in a list.\n\nList.LastItem (list: var[]..[]): var[]..[]"
+      "Description": "Pobiera ostatni element na liście.\n\nList.LastItem (list: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -900,7 +900,7 @@
         {
           "Id": "c63d2e41ff314f178ae095efb30a0f19",
           "Name": "list",
-          "Description": "List to get the first item from.\n\nvar[]..[]",
+          "Description": "Lista, z której zostanie pobrany pierwszy element.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -911,7 +911,7 @@
         {
           "Id": "b1d7119bda3243758ce72689078afa2e",
           "Name": "item",
-          "Description": "First item in the list.",
+          "Description": "Pierwszy element na liście.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -920,7 +920,7 @@
       ],
       "FunctionSignature": "DSCore.List.FirstItem@var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns the first item in a list.\n\nList.FirstItem (list: var[]..[]): var[]..[]"
+      "Description": "Zwraca pierwszy element na liście.\n\nList.FirstItem (list: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -939,7 +939,7 @@
         {
           "Id": "2a761ac6a02a42eab7fbb84f5590cd5f",
           "Name": "xTranslation",
-          "Description": "Displacement along X-axis.\n\ndouble\nDefault value : 0",
+          "Description": "Przemieszczenie wzdłuż osi X.\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -948,7 +948,7 @@
         {
           "Id": "2b00a8ff6aac4b8a92f0bfde895da002",
           "Name": "yTranslation",
-          "Description": "Displacement along Y-axis.\n\ndouble\nDefault value : 0",
+          "Description": "Przemieszczenie wzdłuż osi Y.\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -957,7 +957,7 @@
         {
           "Id": "70752f12602848879a0a42c7e5f32622",
           "Name": "zTranslation",
-          "Description": "Displacement along Z-axis.\n\ndouble\nDefault value : 0",
+          "Description": "Przemieszczenie wzdłuż osi Z.\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -968,7 +968,7 @@
         {
           "Id": "d77d4ebac46c47c5874be0e48624b9c5",
           "Name": "Geometry",
-          "Description": "Transformed Geometry.",
+          "Description": "Przekształcona geometria.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -977,7 +977,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double",
       "Replication": "Auto",
-      "Description": "Translates any given geometry by the given displacements in the x, y, and z directions defined in WCS respectively.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
+      "Description": "Przekształca dowolną daną geometrię o dane przemieszczenia w kierunkach x, y i z zdefiniowanych odpowiednio w GUW.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
@@ -1000,7 +1000,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Tworzy wartości liczbowe",
       "InputValue": 8.4
     },
     {
@@ -1020,7 +1020,7 @@
         {
           "Id": "b7d87a2086e64028b3b8cbd8741d10ce",
           "Name": "xTranslation",
-          "Description": "Displacement along X-axis.\n\ndouble\nDefault value : 0",
+          "Description": "Przemieszczenie wzdłuż osi X.\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1029,7 +1029,7 @@
         {
           "Id": "7e238a9ef2cf438bb4d26c53cef1ac32",
           "Name": "yTranslation",
-          "Description": "Displacement along Y-axis.\n\ndouble\nDefault value : 0",
+          "Description": "Przemieszczenie wzdłuż osi Y.\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1038,7 +1038,7 @@
         {
           "Id": "ce4122e925ac4e199114f33b4ac53387",
           "Name": "zTranslation",
-          "Description": "Displacement along Z-axis.\n\ndouble\nDefault value : 0",
+          "Description": "Przemieszczenie wzdłuż osi Z.\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1049,7 +1049,7 @@
         {
           "Id": "9987d072ca884b648a1f2f8f268559c9",
           "Name": "Geometry",
-          "Description": "Transformed Geometry.",
+          "Description": "Przekształcona geometria.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1058,7 +1058,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@double,double,double",
       "Replication": "Auto",
-      "Description": "Translates any given geometry by the given displacements in the x, y, and z directions defined in WCS respectively.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
+      "Description": "Przekształca dowolną daną geometrię o dane przemieszczenia w kierunkach x, y i z zdefiniowanych odpowiednio w GUW.\n\nGeometry.Translate (xTranslation: double = 0, yTranslation: double = 0, zTranslation: double = 0): Geometry"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1068,7 +1068,7 @@
         {
           "Id": "140fc6a54ce14e17a509461ea1495d72",
           "Name": "list",
-          "Description": "List to chop into sublists\n\nvar[]..[]",
+          "Description": "Lista do podzielenia na listy podrzędne\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1077,7 +1077,7 @@
         {
           "Id": "efd274850d11419dad340eb2dab84962",
           "Name": "lengths",
-          "Description": "Lengths of consecutive sublists to be created from the input list\n\nint[]",
+          "Description": "Długości kolejnych list podrzędnych które zostaną utworzone z listy wejściowej\n\nint[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1088,7 +1088,7 @@
         {
           "Id": "09219e4b016942e18713e5249bce95e2",
           "Name": "lists",
-          "Description": "Sublists created from the list",
+          "Description": "Listy podrzędne utworzone z listy",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1097,7 +1097,7 @@
       ],
       "FunctionSignature": "DSCore.List.Chop@var[]..[],int[]",
       "Replication": "Auto",
-      "Description": "Chop a list into a set of consecutive sublists with the specified lengths. List division begins at the top of the list.\n\nList.Chop (list: var[]..[], lengths: int[]): var[]..[]"
+      "Description": "Dzieli listę na zestaw kolejnych list (list) podrzędnych o określonych długościach (lengths). Podział listy rozpoczyna się w górnej części listy.\n\nList.Chop (list: var[]..[], lengths: int[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1108,7 +1108,7 @@
         {
           "Id": "3a8dad16192f405e9719d7c429f5ec7b",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wartość wyrażenia w wierszu 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1116,7 +1116,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umożliwia bezpośrednie utworzenie kodu DesignScript.",
       "Code": "2;"
     },
     {
@@ -1127,7 +1127,7 @@
         {
           "Id": "3203a8b9691a4a1ab47285cc5632e473",
           "Name": "list",
-          "Description": "List to get the first item from.\n\nvar[]..[]",
+          "Description": "Lista, z której zostanie pobrany pierwszy element.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 3,
           "UseLevels": true,
@@ -1138,7 +1138,7 @@
         {
           "Id": "af4f79e0166c4b31b0afe38f60fe0766",
           "Name": "item",
-          "Description": "First item in the list.",
+          "Description": "Pierwszy element na liście.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1147,7 +1147,7 @@
       ],
       "FunctionSignature": "DSCore.List.FirstItem@var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns the first item in a list.\n\nList.FirstItem (list: var[]..[]): var[]..[]"
+      "Description": "Zwraca pierwszy element na liście.\n\nList.FirstItem (list: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1168,7 +1168,7 @@
         {
           "Id": "4c12f26acacc4f938e8211cafee4660e",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wartość wyrażenia w wierszu 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1176,7 +1176,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umożliwia bezpośrednie utworzenie kodu DesignScript.",
       "Code": "-H;"
     },
     {
@@ -1187,7 +1187,7 @@
         {
           "Id": "f0021a97b1b7453793a32be52f8aa6f1",
           "Name": "startPoint",
-          "Description": "Line start point\n\nPoint",
+          "Description": "Punkt początkowy linii\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1196,7 +1196,7 @@
         {
           "Id": "f109995a433f442c868a9a12d4e4d5e3",
           "Name": "endPoint",
-          "Description": "Line end point\n\nPoint",
+          "Description": "Punkt końcowy linii\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1207,7 +1207,7 @@
         {
           "Id": "de895bd36d6541c282f0890b706d4fe9",
           "Name": "Line",
-          "Description": "Line from start and end point",
+          "Description": "Linia utworzona z punktu początkowego i końcowego",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1216,7 +1216,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Creates a straight Line between two input Points.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
+      "Description": "Tworzy linię prostą między dwoma punktami wejściowymi.\n\nLine.ByStartPointEndPoint (punktPoczątkowy: Point, punktKońcowy: Point): Line"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1226,7 +1226,7 @@
         {
           "Id": "0601c64f77b44aca8e5404e6010042be",
           "Name": "curve",
-          "Description": "The curve which defines the center line of the column.\n\nCurve",
+          "Description": "Krzywa definiująca linię środkową słupa.\n\nCurve",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1235,7 +1235,7 @@
         {
           "Id": "31dedd255a344688aa093bf1cde9d9e4",
           "Name": "level",
-          "Description": "The level with which you'd like the column to be associated.\n\nLevel",
+          "Description": "Poziom, z którym ma zostać skojarzony słup.\n\nLevel",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1244,7 +1244,7 @@
         {
           "Id": "5af69bf233694b31beda311e3b4a123a",
           "Name": "structuralColumnType",
-          "Description": "The structural column type representing the column.\n\nFamilyType",
+          "Description": "Typ słupa konstrukcyjnego reprezentującego słup.\n\nFamilyType",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1264,7 +1264,7 @@
       ],
       "FunctionSignature": "Revit.Elements.StructuralFraming.ColumnByCurve@Autodesk.DesignScript.Geometry.Curve,Revit.Elements.Level,Revit.Elements.FamilyType",
       "Replication": "Auto",
-      "Description": "Create a column.\n\nStructuralFraming.ColumnByCurve (curve: Curve, level: Level, structuralColumnType: FamilyType): StructuralFraming"
+      "Description": "Utwórz słup.\n\nStructuralFraming.ColumnByCurve (curve: Curve, level: Level, structuralColumnType: FamilyType): StructuralFraming"
     }
   ],
   "Connectors": [
@@ -1541,7 +1541,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Właściwości",
       "Version": "2.13",
       "Data": {}
     },
@@ -1589,7 +1589,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Podgląd tła",
       "EyeX": -99.2560806274414,
       "EyeY": 26.861238479614258,
       "EyeZ": 69.49171447753906,
@@ -1629,7 +1629,7 @@
     "NodeViews": [
       {
         "Id": "331a51d26a3f482bbf7f98d8f0203f9c",
-        "Name": "Number of Beams",
+        "Name": "Liczba belek",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1639,7 +1639,7 @@
       },
       {
         "Id": "546ba908a5bc4abd9e9277f543639a58",
-        "Name": "Structure Level",
+        "Name": "Poziom konstrukcji",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1669,7 +1669,7 @@
       },
       {
         "Id": "0b9ae75bc49d418282f5d1c364b57813",
-        "Name": "Structural Column Types",
+        "Name": "Typy słupów konstrukcyjnych",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1679,7 +1679,7 @@
       },
       {
         "Id": "25f0e72e423e420e9bff4d2906e2b243",
-        "Name": "Select Source Floor",
+        "Name": "Wybierz strop źródłowy",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1789,7 +1789,7 @@
       },
       {
         "Id": "9a476b6c7a534cd9be1328b232381edf",
-        "Name": "Sequence of U values",
+        "Name": "Sekwencja wartości U",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1799,7 +1799,7 @@
       },
       {
         "Id": "fd3845bf3a924977a1359047f62664ac",
-        "Name": "Edge offsets",
+        "Name": "Odsunięcia krawędzi",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1829,7 +1829,7 @@
       },
       {
         "Id": "af89901ae0b9488190d59e7394c1f019",
-        "Name": "Indices",
+        "Name": "Indeksy",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1899,7 +1899,7 @@
       },
       {
         "Id": "98a09985e2d34632ad5480bc2fcd4093",
-        "Name": "Height",
+        "Name": "Wysokość",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1949,7 +1949,7 @@
       },
       {
         "Id": "5bf3a703a124422a8c8bdc9bb7e6bc10",
-        "Name": "Reverse Height",
+        "Name": "Odwróć wysokość",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1981,7 +1981,7 @@
     "Annotations": [
       {
         "Id": "58d3c501f5e94c198552608083d9d967",
-        "Title": "To Revit: Place beams by curve",
+        "Title": "Do programu Revit: umieść belki na podstawie krzywej",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2008,7 +2008,7 @@
       },
       {
         "Id": "2121fdc23abe470bbc8f6af8b6ab4ce2",
-        "Title": "Inputs",
+        "Title": "Dane wejściowe",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2040,7 +2040,7 @@
       },
       {
         "Id": "5acf1053b2ff421692587d6f49797e83",
-        "Title": "Info",
+        "Title": "Informacje",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2063,8 +2063,8 @@
       },
       {
         "Id": "009db4cd548b4d11a80f92f96de8c982",
-        "Title": "Get the solids's top surface",
-        "DescriptionText": "Evaluate all solid's surfaces by the elevation in their center and get the top one",
+        "Title": "Pobierz powierzchnię górną brył",
+        "DescriptionText": "Oblicz wszystkie powierzchnie bryły na podstawie rzędnej w ich środku i pobierz powierzchnię górną",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2095,8 +2095,8 @@
       },
       {
         "Id": "2d309e2a06c74ab49b012a49a9bed479",
-        "Title": "Prepare geometry",
-        "DescriptionText": "Prepare a clean solid expression of the selected element's geometry",
+        "Title": "Przygotuj geometrię",
+        "DescriptionText": "Przygotuj wyrażenie czystej bryły dla geometrii wybranego elementu",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2124,8 +2124,8 @@
       },
       {
         "Id": "f070d3b3d6b049bba047c3433d7025e2",
-        "Title": "Curves for Perimeter Beams",
-        "DescriptionText": "Description <Double click here to edit group description>",
+        "Title": "Krzywe dla belek obwodowych",
+        "DescriptionText": "Opis <Kliknij dwukrotnie tutaj, aby edytować opis grupy>",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2148,8 +2148,8 @@
       },
       {
         "Id": "74008ddf1481449a92bb1fdfeccbc4d5",
-        "Title": "Create Lines for Interior Beams",
-        "DescriptionText": "Connect points and create lines",
+        "Title": "Utwórz linie dla belek wewnętrznych",
+        "DescriptionText": "Połącz punkty i utwórz linie",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2174,7 +2174,7 @@
       },
       {
         "Id": "dd6ca26e318547808b234c08dbf1ff02",
-        "Title": "Offset series of points on the surface",
+        "Title": "Odsuń serię punktów na powierzchni",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2200,8 +2200,8 @@
       },
       {
         "Id": "945acdf6e12d429e84b56f7efc6add60",
-        "Title": "Curves for Columns",
-        "DescriptionText": "Take each second row of points to create lines for columns placement",
+        "Title": "Krzywe dla słupów",
+        "DescriptionText": "Zbierz poszczególne drugie rzędy punktów, aby utworzyć linie do umieszczenia słupów",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2231,7 +2231,7 @@
       },
       {
         "Id": "8d852fce0e50478fbb775e841649cb9f",
-        "Title": "Place Interior Beams",
+        "Title": "Umieść belki wewnętrzne",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2252,7 +2252,7 @@
       },
       {
         "Id": "716d7ebfb5754c409e728c9ce1fb7b08",
-        "Title": "Place Structural Framing Beams and Columns relative to an element selected in a Revit model.",
+        "Title": "Umieść słupy i belki ram konstrukcyjnych względem elementu wybranego w modelu programu Revit.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2272,7 +2272,7 @@
       },
       {
         "Id": "c1b68eb7e63840c28010853172c0260a",
-        "Title": "Place the perimeter beams",
+        "Title": "Umieść belki obwodowe",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2293,7 +2293,7 @@
       },
       {
         "Id": "74b608eab40040eb9e49b29e1e2070fe",
-        "Title": "Run this graph the Snowdon Towers Sample Architectural.rvt file in the Samples folder located with your Revit installation \n\nC:\\Program Files\\Autodesk\\Revit 2026\\Samples",
+        "Title": "Uruchom ten wykres w pliku Snowdon Towers Sample Architectural.rvt w folderze Samples znajdującym się w instalacji programu Revit \n\nC:\\Program Files\\Autodesk\\Revit 2026\\Samples",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2313,7 +2313,7 @@
       },
       {
         "Id": "3003bf6211e6484fa097a674a3cf4a3e",
-        "Title": "Select a Revit Floor element relative to which the new pergola structure will be created",
+        "Title": "Wybierz element stropu programu Revit, względem którego zostanie utworzona nowa struktura pergoli",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2334,7 +2334,7 @@
       },
       {
         "Id": "1634b9c2ed1e44d486a0826e7b3c5645",
-        "Title": "Select the Level on which to place the structure",
+        "Title": "Wybierz poziom, na którym ma zostać umieszczona konstrukcja",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2355,7 +2355,7 @@
       },
       {
         "Id": "81b3f43c86f049abb7c46e66b5564356",
-        "Title": "Select a Framing type for the perimeter beams. This type will also be used to create a new Structural Framing type",
+        "Title": "Wybierz typ ramy dla belek obwodowych. Ten typ zostanie też użyty do utworzenia nowego typu ram konstrukcyjnych",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2376,7 +2376,7 @@
       },
       {
         "Id": "87408d30f86d4351b290be779ed750c9",
-        "Title": "Structure Height",
+        "Title": "Wysokość struktury",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2397,7 +2397,7 @@
       },
       {
         "Id": "6e7c767bf6794a3180a3e2c2042338ee",
-        "Title": "Select a Family Type of the created Columns",
+        "Title": "Wybierz typ rodziny utworzonych słupów",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2418,7 +2418,7 @@
       },
       {
         "Id": "615899a41d77465ea0c9cf6e8507d9ce",
-        "Title": "Get the geometry of the Revit element",
+        "Title": "Pobierz geometrię elementu programu Revit",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2439,7 +2439,7 @@
       },
       {
         "Id": "373234500b7344e7af4938e9841d1e99",
-        "Title": "As a quick way to discard the element openings, get its bounding box - a virtual cuboid containing the element",
+        "Title": "Szybkim sposobem na odrzucenie otworów w elemencie jest pobranie jego ramki ograniczającej — wirtualnego prostopadłościanu zawierającego ten element",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2460,7 +2460,7 @@
       },
       {
         "Id": "f017313837c145d188836ad1bcbc4ed1",
-        "Title": "More actions are available for Solids than Bounding boxes. To allow for further transformations, first convert the Bounding Box to a cuboid (which is type of a Solid)",
+        "Title": "Dla brył jest dostępnych więcej operacji niż dla ramek ograniczających. Aby umożliwić dalsze przekształcenia, najpierw przekształć ramkę ograniczającą w prostopadłościan (typ bryły)",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2481,7 +2481,7 @@
       },
       {
         "Id": "63904e2e17d8482680c7838b38cca8f0",
-        "Title": "Translate the Solid Cuboid by a Height (zTranslation) set by the Numeric Slider in the graph Inputs section",
+        "Title": "Przekształć prostopadłościan bryłowy o wysokość (zTranslation) ustawioną za pomocą suwaka Numeric Slider w sekcji danych wejściowych wykresu",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2502,7 +2502,7 @@
       },
       {
         "Id": "6770c844289a421e928f03b05ba2cfc9",
-        "Title": "Explode the solid into surfaces",
+        "Title": "Rozbij bryłę na powierzchnie",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2523,7 +2523,7 @@
       },
       {
         "Id": "e6b3efd17333424baa7de70995c644b7",
-        "Title": "Locate a point at the center of the surface",
+        "Title": "Zlokalizuj punkt w środku powierzchni",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2544,7 +2544,7 @@
       },
       {
         "Id": "bd22b40664ec475db7acc83614f61bf5",
-        "Title": "Get a numeric value for each centerpoint's elevation",
+        "Title": "Pobierz wartość liczbową dla rzędnej każdego punktu środkowego",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2565,7 +2565,7 @@
       },
       {
         "Id": "80431105052940aea09684edac57c568",
-        "Title": "Sort one list by another: use the elevation values to sort the surfaces",
+        "Title": "Sortuj jedną listę na podstawie drugiej: użyj wartości rzędnych, aby posortować powierzchnie",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2586,7 +2586,7 @@
       },
       {
         "Id": "cca319e428f1416482526eda0a64f3be",
-        "Title": "The last surface in the list is the top surface",
+        "Title": "Ostatnią powierzchnią na liście jest powierzchnia górna",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2607,7 +2607,7 @@
       },
       {
         "Id": "ed3c67ba734540ecae5f30f397c97a76",
-        "Title": "Place the structural columns",
+        "Title": "Umieść słupy konstrukcyjne",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2628,7 +2628,7 @@
       },
       {
         "Id": "8abedf0422384fd1a849425966205401",
-        "Title": "Position an array of points on the surface by using U and V parameters. Use the Cross Product Lacing (right-click on the node and choose Lacing) to generate an array.",
+        "Title": "Umieść szyk punktów na powierzchni za pomocą parametrów U i V. Wygeneruj szyk za pomocą skratowania z opcją iloczynu wektorowego (kliknij węzeł prawym przyciskiem myszy i wybierz opcję Skratowanie).",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2649,7 +2649,7 @@
       },
       {
         "Id": "b20d728b0b9a4bbc960f293d13bf11f7",
-        "Title": "Use a simple formula to create a sequence of values from min (0.1) to max (0.9) with an 'n' number of steps",
+        "Title": "Użyj prostego wzoru, aby utworzyć sekwencję wartości z zakresu od wartości minimalnej (0,1) do maksymalnej (0,9) z liczbą kroków 'n'",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2670,7 +2670,7 @@
       },
       {
         "Id": "44ec775e2a9b45dd8078075c84f9695d",
-        "Title": "Click on the > symbol next to the 'list' input to Use Levels. This means that the result will be the item with the index 0 from each lowest nested list (@L2)",
+        "Title": "Kliknij symbol > obok wartości wejściowej 'list', aby użyć poziomów. Oznacza to, że wynikiem będzie element z indeksem 0 z każdej najniższej listy zagnieżdżonej (na poziomie 2, L2)",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2691,7 +2691,7 @@
       },
       {
         "Id": "a3b56d763506484ca8360c58b79fa42e",
-        "Title": "Chop the list into lists of 2",
+        "Title": "Podziel listę na listy zawierające po 2 elementy",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2712,7 +2712,7 @@
       },
       {
         "Id": "332ef550b36d43009696604977b3ce50",
-        "Title": "Use list levels logic and only take the first list at @L3",
+        "Title": "Użyj logiki poziomów listy i pobierz tylko pierwszą listę na poziomie 3 (L3)",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2733,7 +2733,7 @@
       },
       {
         "Id": "27a48bc2089d4d07a20c2415bc6244c0",
-        "Title": "Translate the points back down",
+        "Title": "Przekształć punkty z powrotem w dół",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2754,7 +2754,7 @@
       },
       {
         "Id": "e5f3c0bf60604a0a849ff99e1286048c",
-        "Title": "Connect the points to create lines",
+        "Title": "Połącz punkty, aby utworzyć linie",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

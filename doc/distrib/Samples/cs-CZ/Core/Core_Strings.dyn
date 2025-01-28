@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "This graph demonstrates actions that can be performed on strings.",
+  "Description": "Tento graf demonstruje akce, které je možné provést se řetězci.",
   "Name": "Core_Strings",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -18,7 +18,7 @@
         {
           "Id": "1070c1b173ab40ffb8dd18baaaf9a96d",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Hodnota výrazu na řádku 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -26,7 +26,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
       "Code": "\"Few things are harder to put up with than a good example.\";"
     },
     {
@@ -37,7 +37,7 @@
         {
           "Id": "3677997360f94c18b7436d8619d3fdea",
           "Name": "string",
-          "Description": "String to search in\n\nstring",
+          "Description": "Řetězec, ve kterém se hledá\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -46,7 +46,7 @@
         {
           "Id": "32eff5d6c4d2485da6ad2ffad0bb727d",
           "Name": "searchFor",
-          "Description": "Substring to search for\n\nstring",
+          "Description": "Hledaný podřetězec\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -55,7 +55,7 @@
         {
           "Id": "4a34ac8040de496fa9427663c0c3c0ba",
           "Name": "ignoreCase",
-          "Description": "Whether or not comparison takes case into account\n\nbool\nDefault value : false",
+          "Description": "Určuje, zda porovnání zohledňuje velikost písmen nebo ne\n\nbool\nVýchozí hodnota: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -66,7 +66,7 @@
         {
           "Id": "71a5f4146b8c4f2da0f1abfe135329eb",
           "Name": "bool",
-          "Description": "Whether the string contains the substring",
+          "Description": "Určuje, zda řetězec obsahuje podřetězec",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -75,7 +75,7 @@
       ],
       "FunctionSignature": "DSCore.String.Contains@string,string,bool",
       "Replication": "Auto",
-      "Description": "Determines if the given string contains the given substring.\n\nString.Contains (string: string, searchFor: string, ignoreCase: bool = false): bool"
+      "Description": "Určuje, zda zadaný řetězec obsahuje daný podřetězec.\n\nString.Contains (string: string, searchFor: string, ignoreCase: bool = false): bool"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -85,7 +85,7 @@
         {
           "Id": "703a106876c7493b8b238a485831c4e1",
           "Name": "string",
-          "Description": "String to search in\n\nstring",
+          "Description": "Řetězec, ve kterém se hledá\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -94,7 +94,7 @@
         {
           "Id": "5a84b2a19e2a42d6a615dc50337777de",
           "Name": "searchFor",
-          "Description": "Substring to search for\n\nstring",
+          "Description": "Hledaný podřetězec\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -103,7 +103,7 @@
         {
           "Id": "8e01024aee3d4d12b37267cfa524591f",
           "Name": "ignoreCase",
-          "Description": "Whether or not comparison takes case into account\n\nbool\nDefault value : false",
+          "Description": "Určuje, zda porovnání zohledňuje velikost písmen nebo ne\n\nbool\nVýchozí hodnota: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -114,7 +114,7 @@
         {
           "Id": "4b0af4b8fd7e4cca8751222dd93f3e7b",
           "Name": "int",
-          "Description": "Number of non-overlapping occurrences of the substring in the string",
+          "Description": "Počet nepřekrývajících se výskytů podřetězce v řetězci",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -123,7 +123,7 @@
       ],
       "FunctionSignature": "DSCore.String.CountOccurrences@string,string,bool",
       "Replication": "Auto",
-      "Description": "Counts the number of non-overlapping occurrences of a substring inside a given string.\n\nString.CountOccurrences (string: string, searchFor: string, ignoreCase: bool = false): int"
+      "Description": "Spočítá počet nepřekrývajících se výskytů podřetězce uvnitř daného řetězce.\n\nString.CountOccurrences (string: string, searchFor: string, ignoreCase: bool = false): int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -133,7 +133,7 @@
         {
           "Id": "db511ee72d2940d1b10ad26c47b3e14a",
           "Name": "string",
-          "Description": "String to replace substrings in.\n\nstring",
+          "Description": "Řetězec, ve kterém se nahrazují podřetězce.\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -142,7 +142,7 @@
         {
           "Id": "fe877bfdd76f43c98520f7453d0cd44f",
           "Name": "searchFor",
-          "Description": "Text to be replaced.\n\nstring",
+          "Description": "Text, který má být nahrazen.\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -151,7 +151,7 @@
         {
           "Id": "558b346a16f14e59843ae1b0c5d182de",
           "Name": "replaceWith",
-          "Description": "Text to replace with.\n\nstring",
+          "Description": "Text, který se použije k nahrazení.\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -162,7 +162,7 @@
         {
           "Id": "66c2e9a8d21e49eea0b7ab979f82bd5f",
           "Name": "string",
-          "Description": "String with replacements made.",
+          "Description": "Řetězec s provedených nahrazením",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -171,7 +171,7 @@
       ],
       "FunctionSignature": "DSCore.String.Replace@string,string,string",
       "Replication": "Auto",
-      "Description": "Replaces all occurrences of text in a string with other text.\n\nString.Replace (string: string, searchFor: string, replaceWith: string): string"
+      "Description": "Nahradí všechny výskyty textu v řetězci jiným textem.\n\nString.Replace (string: string, searchFor: string, replaceWith: string): string"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -181,7 +181,7 @@
         {
           "Id": "0d50bf27fc5446aaa1e002edeee8fb0d",
           "Name": "string",
-          "Description": "String to be made uppercase\n\nstring",
+          "Description": "Řetězec, který má být převeden na velká písmena\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -192,7 +192,7 @@
         {
           "Id": "4557e65bdebc4f6d8bbff64612b05008",
           "Name": "string",
-          "Description": "Uppercase string",
+          "Description": "Řetězec s velkými písmeny",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -201,7 +201,7 @@
       ],
       "FunctionSignature": "DSCore.String.ToUpper@string",
       "Replication": "Auto",
-      "Description": "Converts the given string to all uppercase characters.\n\nString.ToUpper (string: string): string"
+      "Description": "Převede všechna písmena zadaného textu na velká.\n\nString.ToUpper (string: string): string"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -211,7 +211,7 @@
         {
           "Id": "2cd34a44e46d4b968bff02a9972f4746",
           "Name": "centerPoint",
-          "Description": "Center point of circle\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0) (disabled)",
+          "Description": "Střed kružnice\n\nPoint\nVýchozí hodnota: Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0) (zakázáno)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -220,7 +220,7 @@
         {
           "Id": "306953a79bdc4f20868aa455cf91bffb",
           "Name": "radius",
-          "Description": "Radius\n\ndouble\nDefault value : 1",
+          "Description": "Poloměr\n\ndouble\nVýchozí hodnota: 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -231,7 +231,7 @@
         {
           "Id": "a343aab7e0f94dcba73db06ebbadde36",
           "Name": "Circle",
-          "Description": "Circle created with center point and radius",
+          "Description": "Kružnice vytvořená pomocí středu a poloměru",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -240,7 +240,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
       "Replication": "Auto",
-      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+      "Description": "Vytvoří kružnici se zadaným středem a poloměrem v globální rovině XY, s rovinou Z jako normálou.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -250,7 +250,7 @@
         {
           "Id": "94244cfa53ae42cba499738494240947",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice X\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -259,7 +259,7 @@
         {
           "Id": "8f29853ae06d44cdbf3a4a4c43132eaf",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Y\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -268,7 +268,7 @@
         {
           "Id": "c68ad4abf41740cf9070062da266875e",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Z\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -279,7 +279,7 @@
         {
           "Id": "7940f684f79e4cbeab45d2c02ba3d112",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Bod vytvořený pomocí souřadnic",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -288,7 +288,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Vytvoří bod podle zadaných 3 kartézských souřadnic\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -299,7 +299,7 @@
         {
           "Id": "7fa9962921af4e4f9f8912fd92d1b58e",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Hodnota výrazu na řádku 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -307,7 +307,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
       "Code": "5;"
     },
     {
@@ -320,7 +320,7 @@
         {
           "Id": "b83c63805e414e6c8a16e2485a3c0514",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Uzel k vyhodnocení.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -331,7 +331,7 @@
         {
           "Id": "e366bdaaf19e4eab8ff651678a564699",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Zobrazit obsah.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -339,7 +339,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Vizualizuje výstup uzlu"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -351,7 +351,7 @@
         {
           "Id": "619c1455541040d08ce41d66cc5978a4",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Uzel k vyhodnocení.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -362,7 +362,7 @@
         {
           "Id": "4a8a28ec3ec6404484ff61fc4b3eb970",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Zobrazit obsah.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -370,7 +370,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Vizualizuje výstup uzlu"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction, DynamoCore",
@@ -382,7 +382,7 @@
         {
           "Id": "3a9644c1981e4947a58ee56c9de175cc",
           "Name": "string",
-          "Description": "String to split up\n\nstring",
+          "Description": "Řetězec k rozdělení\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -391,7 +391,7 @@
         {
           "Id": "b98f30b3be3544c68f2271500ee841d3",
           "Name": "separator0",
-          "Description": "Strings that, if present, determine the end and start of a split.\n\nstring[]",
+          "Description": "Řetězce, které, pokud existují, určují konec a začátek rozdělení.\n\nstring[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -438,7 +438,7 @@
         {
           "Id": "43d1ad3e71584b258275efe8361f6309",
           "Name": "strings",
-          "Description": "List of strings made from the input string",
+          "Description": "Seznam řetězců vytvořený ze vstupního řetězce",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -446,7 +446,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Divides a single string into a list of strings, with divisions determined by the given separator strings.\n\nString.Split (string: string, separators: string[]): string[]"
+      "Description": "Rozdělí jeden řetězec do seznamu řetězců, přičemž dělení je určeno podle řetězců oddělovačů.\n\nString.Split (string: string, separators: string[]): string[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -457,7 +457,7 @@
         {
           "Id": "556aef6c7ae94fb9ad956e7f94d2e93d",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Hodnota výrazu na řádku 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -466,7 +466,7 @@
         {
           "Id": "124c0347206349c9833a801b90e56838",
           "Name": "",
-          "Description": "Value of expression at line 2",
+          "Description": "Hodnota výrazu na řádku 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -475,7 +475,7 @@
         {
           "Id": "8a82c0909fc74550ab44d10c484f3814",
           "Name": "",
-          "Description": "Value of expression at line 3",
+          "Description": "Hodnota výrazu na řádku 3",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -484,7 +484,7 @@
         {
           "Id": "e04cfa502f7540ecb511515215df6d10",
           "Name": "",
-          "Description": "Value of expression at line 4",
+          "Description": "Hodnota výrazu na řádku 4",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -493,7 +493,7 @@
         {
           "Id": "1a1e1eef7cc44851b98d64fad376d3ed",
           "Name": "",
-          "Description": "Value of expression at line 5",
+          "Description": "Hodnota výrazu na řádku 5",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -501,7 +501,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
       "Code": "\"(\";\n\")\";\n\" \";\n\"=\";\n\",\";"
     },
     {
@@ -514,7 +514,7 @@
         {
           "Id": "7de850fc158b455b9ed653c0c730b1d4",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Uzel k vyhodnocení.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -525,7 +525,7 @@
         {
           "Id": "012dcdfac51a466dba6f5ba49b41612f",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Zobrazit obsah.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -533,7 +533,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Vizualizuje výstup uzlu"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -544,7 +544,7 @@
         {
           "Id": "066a3b6ad51f4f2f88d0aee0b6e4c86c",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Hodnota výrazu na řádku 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -552,7 +552,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
       "Code": "\".\";"
     },
     {
@@ -564,7 +564,7 @@
         {
           "Id": "e77bf69c49854757bec19bcaf0b83edb",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Hodnota výrazu na řádku 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -572,7 +572,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
       "Code": "\"ar\";"
     },
     {
@@ -585,7 +585,7 @@
         {
           "Id": "5ab8ba46a8744d32960a12837daeac9a",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Uzel k vyhodnocení.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -596,7 +596,7 @@
         {
           "Id": "0bd2326fbacb484e9a51b879895a7437",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Zobrazit obsah.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -604,7 +604,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Vizualizuje výstup uzlu"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -614,7 +614,7 @@
         {
           "Id": "7ecf15b290fd465dbe2b07fcaa94775e",
           "Name": "string",
-          "Description": "String to search in\n\nstring",
+          "Description": "Řetězec, ve kterém se hledá\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -623,7 +623,7 @@
         {
           "Id": "5da64fd7fd59408882c91a9b52fa6b87",
           "Name": "searchFor",
-          "Description": "Substring to search for\n\nstring",
+          "Description": "Hledaný podřetězec\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -632,7 +632,7 @@
         {
           "Id": "3435f09edec7437e965a661a6f2ca485",
           "Name": "ignoreCase",
-          "Description": "Whether or not comparison takes case into account\n\nbool\nDefault value : false",
+          "Description": "Určuje, zda porovnání zohledňuje velikost písmen nebo ne\n\nbool\nVýchozí hodnota: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -643,7 +643,7 @@
         {
           "Id": "5c61c4104d6d4807a7da0c1cb127ee18",
           "Name": "int",
-          "Description": "Index of the first occurrence of the substring or -1 if not found",
+          "Description": "Index prvního výskytu podřetězce nebo -1, pokud nebyl nalezen",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -652,7 +652,7 @@
       ],
       "FunctionSignature": "DSCore.String.IndexOf@string,string,bool",
       "Replication": "Auto",
-      "Description": "Finds the zero-based index of the first occurrence of a sub-string inside a string. Returns -1 if no index could be found.\n\nString.IndexOf (string: string, searchFor: string, ignoreCase: bool = false): int"
+      "Description": "Najde index prvního výskytu podřetězce (počítaný od nuly) uvnitř řetězce. Vrátí hodnotu -1, pokud žádný index nebyl nalezen.\n\nString.IndexOf (string: string, searchFor: string, ignoreCase: bool = false): int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -663,7 +663,7 @@
         {
           "Id": "5b8431177dbd42ba9fa803bdcb8f4abb",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Hodnota výrazu na řádku 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -671,7 +671,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
       "Code": "\"put\";"
     },
     {
@@ -684,7 +684,7 @@
         {
           "Id": "1e95f9c34ea5493c823091c16c6839de",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Uzel k vyhodnocení.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -695,7 +695,7 @@
         {
           "Id": "c790b37cf0a84cac9aa984ec9055ba45",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Zobrazit obsah.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -703,7 +703,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Vizualizuje výstup uzlu"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -715,7 +715,7 @@
         {
           "Id": "857a4fb83163465db98df09acf6d201f",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Uzel k vyhodnocení.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -726,7 +726,7 @@
         {
           "Id": "6df5c144d52a4ac4816d17e061b22938",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Zobrazit obsah.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -734,7 +734,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Vizualizuje výstup uzlu"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -745,7 +745,7 @@
         {
           "Id": "e1ee2cdc7f9f42dfaa8370b44a68f0fb",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Hodnota výrazu na řádku 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -753,7 +753,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
       "Code": "\"come\";"
     },
     {
@@ -766,7 +766,7 @@
         {
           "Id": "91202db4fe8945a68f5a2c45a978ad7b",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Uzel k vyhodnocení.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -777,7 +777,7 @@
         {
           "Id": "a4806944a5814c26b354bf7d624fbe8e",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Zobrazit obsah.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -785,7 +785,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Vizualizuje výstup uzlu"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction, DynamoCore",
@@ -797,7 +797,7 @@
         {
           "Id": "180a366b3795436ab41c201eb9defbbd",
           "Name": "string0",
-          "Description": "List of strings to concatenate.\n\nstring[]",
+          "Description": "Seznam řetězců pro zřetězení\n\nstring[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -817,7 +817,7 @@
         {
           "Id": "b6ea4b89e7234871aecf554287203659",
           "Name": "string",
-          "Description": "String made from list of strings.",
+          "Description": "Řetězec vytvořený ze seznamu řetězců",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -825,7 +825,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Concatenates multiple strings into a single string.\n\nString.Concat (strings: string[]): string"
+      "Description": "Zřetězí více řetězců do jediného řetězce.\n\nString.Concat (strings: string[]): string"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -836,7 +836,7 @@
         {
           "Id": "4fc0929e7431493bbdf2af0626a35658",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Hodnota výrazu na řádku 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -844,7 +844,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
       "Code": "\" to\";"
     },
     {
@@ -855,7 +855,7 @@
         {
           "Id": "7edefc14f2c0481a8dfd4afa7cc71115",
           "Name": "string",
-          "Description": "String to remove characters from.\n\nstring",
+          "Description": "Řetězec, ze kterého se mají odebrat znaky.\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -864,7 +864,7 @@
         {
           "Id": "97cb17980d91413181deefe108e982f3",
           "Name": "startIndex",
-          "Description": "Index at which to start removal.\n\nint",
+          "Description": "Index, od kterého má začít odstraňování.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -873,7 +873,7 @@
         {
           "Id": "57bb16f1983948fc88019d18aa6f4e88",
           "Name": "count",
-          "Description": "Amount of characters to remove, Note: if the Count is negative, the removal process goes from right to left.\n\nint",
+          "Description": "Počet znaků k odebrání. Poznámka: Pokud je počet záporný, proces odebrání probíhá zprava doleva.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -884,7 +884,7 @@
         {
           "Id": "0214bac48bfb4aa1bdb898315eb406d5",
           "Name": "string",
-          "Description": "String with characters removed.",
+          "Description": "Řetězec s odstraněnými znaky",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -893,7 +893,7 @@
       ],
       "FunctionSignature": "DSCore.String.Remove@string,int,int",
       "Replication": "Auto",
-      "Description": "Removes characters from a string.\n\nString.Remove (string: string, startIndex: int, count: int): string"
+      "Description": "Odebere znaky z řetězce.\n\nString.Remove (string: string, startIndex: int, count: int): string"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -903,7 +903,7 @@
         {
           "Id": "86ff7b6fc2ce443689be82a05b920963",
           "Name": "string",
-          "Description": "String to find the length of\n\nstring",
+          "Description": "Řetězec, jehož délka se zjišťuje\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -914,7 +914,7 @@
         {
           "Id": "cd9e55a223954d118f8fafffe8b377f3",
           "Name": "int",
-          "Description": "Number of characters in the string",
+          "Description": "Počet znaků v řetězci",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -923,7 +923,7 @@
       ],
       "FunctionSignature": "DSCore.String.Length@string",
       "Replication": "Auto",
-      "Description": "Returns the number of characters contained in the given string.\n\nString.Length (string: string): int"
+      "Description": "Vrací počet znaků obsažených v daném řetězci.\n\nString.Length (string: string): int"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -935,7 +935,7 @@
         {
           "Id": "1f89f2bddbe6439c83123028451c1c10",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Uzel k vyhodnocení.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -946,7 +946,7 @@
         {
           "Id": "73ee086358e0426092ee0497e24112f8",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Zobrazit obsah.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -954,7 +954,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Vizualizuje výstup uzlu"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -964,7 +964,7 @@
         {
           "Id": "8416d6acbef74dedb825e93b7bb75a6d",
           "Name": "x",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "Hodnota integer nebo hodnota double\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -973,7 +973,7 @@
         {
           "Id": "f660476319474f5eb214ab44625229e0",
           "Name": "y",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "Hodnota integer nebo hodnota double\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -984,7 +984,7 @@
         {
           "Id": "d79a0c6f48ac4c588d6a06d55b886754",
           "Name": "number",
-          "Description": "Result of the y input subtracted from the x input",
+          "Description": "Výsledek vstupu Y odečtený od vstupu X",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -993,7 +993,7 @@
       ],
       "FunctionSignature": "-@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns subtraction of x minus y\n\n- (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Vrací rozdíl hodnot x mínus y\n\n- (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -1005,7 +1005,7 @@
         {
           "Id": "8f0d612094c94fcdb61213035144a507",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Uzel k vyhodnocení.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1016,7 +1016,7 @@
         {
           "Id": "84a71925347e460ca81247cf635c3523",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Zobrazit obsah.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1024,7 +1024,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Vizualizuje výstup uzlu"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
@@ -1043,7 +1043,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a string",
+      "Description": "Vytvoří řetězec.",
       "InputValue": " - Mark Twain"
     },
     {
@@ -1054,7 +1054,7 @@
         {
           "Id": "92ab58dc090f484e9a092ca409b0b797",
           "Name": "obj",
-          "Description": "Object to be serialized",
+          "Description": "Objekt, který má být serializován.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1065,7 +1065,7 @@
         {
           "Id": "2cbaf8123dd44991a109cf1436e6da35",
           "Name": "str",
-          "Description": "Result of math computation",
+          "Description": "Výsledek matematického výpočtu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1073,7 +1073,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Converts an object to a string representation"
+      "Description": "Převede objekt na řetězcovou reprezentaci."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1084,7 +1084,7 @@
         {
           "Id": "403815873dff448ab63db7cb067ea0cb",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Hodnota výrazu na řádku 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1092,7 +1092,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
       "Code": "\"There is no \\\"I\\\" in Team\";"
     },
     {
@@ -1105,7 +1105,7 @@
         {
           "Id": "7fa0d7568aa54440bfc69ebaf1eabb4f",
           "Name": "",
-          "Description": "Node to show output from",
+          "Description": "Uzel k zobrazení výstupu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1116,7 +1116,7 @@
         {
           "Id": "4735119d8668490695a1df0aebfdcb0d",
           "Name": "",
-          "Description": "Node output",
+          "Description": "Výstup uzlu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1124,7 +1124,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Vizualizuje výstup uzlu"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1135,7 +1135,7 @@
         {
           "Id": "376bcb056882417bbd76c4fe2b292ae8",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Hodnota výrazu na řádku 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1143,7 +1143,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
       "Code": "\"101 Dalmatians\";"
     },
     {
@@ -1154,7 +1154,7 @@
         {
           "Id": "481ae4b9336d4cf0b3d3b9345bbd6ecd",
           "Name": "string",
-          "Description": "String to be converted\n\nstring",
+          "Description": "Řetězec, který má být převeden\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1165,7 +1165,7 @@
         {
           "Id": "30d48e9ee14240459a2a563b9ede2041",
           "Name": "number",
-          "Description": "Integer or double-type number",
+          "Description": "Číslo typu integer nebo double",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1174,7 +1174,7 @@
       ],
       "FunctionSignature": "DSCore.String.ToNumber@string",
       "Replication": "Auto",
-      "Description": "Converts a string to an integer or a double.\n\nString.ToNumber (string: string): var[]..[]"
+      "Description": "Převede řetězec na hodnotu integer nebo hodnotu double.\n\nString.ToNumber (string: string): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSVarArgFunction, DynamoCore",
@@ -1186,7 +1186,7 @@
         {
           "Id": "13cc82055f2a42a9b294a32da5b1f852",
           "Name": "string",
-          "Description": "String to split up\n\nstring",
+          "Description": "Řetězec k rozdělení\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1195,7 +1195,7 @@
         {
           "Id": "65a0f619201c4dbaa70b4bb185f80d43",
           "Name": "separator0",
-          "Description": "Strings that, if present, determine the end and start of a split.\n\nstring[]",
+          "Description": "Řetězce, které, pokud existují, určují konec a začátek rozdělení.\n\nstring[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1206,7 +1206,7 @@
         {
           "Id": "801efffbed7b49a59e0695f5e10144ab",
           "Name": "strings",
-          "Description": "List of strings made from the input string",
+          "Description": "Seznam řetězců vytvořený ze vstupního řetězce",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1214,7 +1214,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Divides a single string into a list of strings, with divisions determined by the given separator strings.\n\nString.Split (string: string, separators: string[]): string[]"
+      "Description": "Rozdělí jeden řetězec do seznamu řetězců, přičemž dělení je určeno podle řetězců oddělovačů.\n\nString.Split (string: string, separators: string[]): string[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1225,7 +1225,7 @@
         {
           "Id": "1b7336b2502943caa74d8c2f3784cfaf",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Hodnota výrazu na řádku 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1233,7 +1233,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
       "Code": "\" \";"
     },
     {
@@ -1244,7 +1244,7 @@
         {
           "Id": "cec518bd6b7c47bba6adc0f58a00ab2c",
           "Name": "list",
-          "Description": "List to get the first item from.\n\nvar[]..[]",
+          "Description": "Seznam, ze kterého se načte první položka.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1255,7 +1255,7 @@
         {
           "Id": "0f7530e2b15e4d9b9c386d3432da51eb",
           "Name": "item",
-          "Description": "First item in the list.",
+          "Description": "První položka v seznamu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1264,7 +1264,7 @@
       ],
       "FunctionSignature": "DSCore.List.FirstItem@var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns the first item in a list.\n\nList.FirstItem (list: var[]..[]): var[]..[]"
+      "Description": "Vrátí první položku v seznamu.\n\nList.FirstItem (list: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1275,7 +1275,7 @@
         {
           "Id": "2f53e56cb09943da9013d764d2c60dca",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Hodnota výrazu na řádku 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1283,7 +1283,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
       "Code": "2..101;"
     },
     {
@@ -1296,7 +1296,7 @@
         {
           "Id": "854c336e025b47df8e7fee9f5bd8600d",
           "Name": "",
-          "Description": "Node to show output from",
+          "Description": "Uzel k zobrazení výstupu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1307,7 +1307,7 @@
         {
           "Id": "a0857417dd6e4423b559dc4b9e560174",
           "Name": "",
-          "Description": "Node output",
+          "Description": "Výstup uzlu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1315,7 +1315,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Vizualizuje výstup uzlu"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1325,7 +1325,7 @@
         {
           "Id": "1f14fa12dfe3436db7d0ed8b64593886",
           "Name": "x",
-          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "Description": "Hodnota integer, hodnota double nebo řetězec\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1334,7 +1334,7 @@
         {
           "Id": "5763cdfcc0f644229f4824f947ba4ad5",
           "Name": "y",
-          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "Description": "Hodnota integer, hodnota double nebo řetězec\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1345,7 +1345,7 @@
         {
           "Id": "2b37135146044443912a388d6fcd4830",
           "Name": "var",
-          "Description": "The sum of two input numbers, or the concatenation of two strings",
+          "Description": "Součet dvou vstupních čísel nebo zřetězení dvou řetězců",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1354,7 +1354,7 @@
       ],
       "FunctionSignature": "+@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns addition of x and y\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Vrací součet hodnot x a y\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1365,7 +1365,7 @@
         {
           "Id": "11caeb93406743a09b19018b5e256943",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Hodnota výrazu na řádku 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1373,7 +1373,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
       "Code": "\" Dalmatians\";"
     },
     {
@@ -1384,7 +1384,7 @@
         {
           "Id": "772181c27b3a4fdd8ebb1a3513487157",
           "Name": "object",
-          "Description": "Object to be serialized",
+          "Description": "Objekt, který má být serializován",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1395,7 +1395,7 @@
         {
           "Id": "2a2e861316fc4dff911809c2257c74fd",
           "Name": "string",
-          "Description": "String representation of the object",
+          "Description": "Řetězcová reprezentace objektu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1403,7 +1403,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Converts an object to a string representation"
+      "Description": "Převede objekt na řetězcovou reprezentaci."
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -1415,7 +1415,7 @@
         {
           "Id": "1e2aa8700c544769a9f4bbcad2c84c68",
           "Name": "",
-          "Description": "Node to show output from",
+          "Description": "Uzel k zobrazení výstupu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1426,7 +1426,7 @@
         {
           "Id": "62ed8a941f60477c935784212092650e",
           "Name": "",
-          "Description": "Node output",
+          "Description": "Výstup uzlu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1434,7 +1434,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Vizualizuje výstup uzlu"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1444,7 +1444,7 @@
         {
           "Id": "a27a6bd137b644df8238fdafe1347b24",
           "Name": "object",
-          "Description": "Object to query type\n\nvar",
+          "Description": "Typ dotazovaného objektu\n\nvar",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1455,7 +1455,7 @@
         {
           "Id": "a8e4143293774e6fae3fec4e2281f9bf",
           "Name": "string",
-          "Description": "Type of object.",
+          "Description": "Typ objektu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1464,7 +1464,7 @@
       ],
       "FunctionSignature": "DSCore.Object.Type@var",
       "Replication": "Auto",
-      "Description": "Returns the type of object represented as string.\n\nObject.Type (object: var): string"
+      "Description": "Vrací typ objektu v podobě řetězce.\n\nObject.Type (object: var): string"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -1476,7 +1476,7 @@
         {
           "Id": "e6809bc82c1846deb2492f218bf18824",
           "Name": "",
-          "Description": "Node to show output from",
+          "Description": "Uzel k zobrazení výstupu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1487,7 +1487,7 @@
         {
           "Id": "c7db6bbe15724d39b2e25f12c9e04002",
           "Name": "",
-          "Description": "Node output",
+          "Description": "Výstup uzlu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1495,7 +1495,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Vizualizuje výstup uzlu"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -1507,7 +1507,7 @@
         {
           "Id": "d3a3b66235774f39b3817f64f039204f",
           "Name": "",
-          "Description": "Node to show output from",
+          "Description": "Uzel k zobrazení výstupu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1518,7 +1518,7 @@
         {
           "Id": "0614ab32aa5845dea3df38eaa35a2028",
           "Name": "",
-          "Description": "Node output",
+          "Description": "Výstup uzlu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1526,7 +1526,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Vizualizuje výstup uzlu"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1536,7 +1536,7 @@
         {
           "Id": "6f16ba18f81d4eb1b6c116c0bc47a72f",
           "Name": "object",
-          "Description": "Object to query type\n\nvar",
+          "Description": "Typ dotazovaného objektu\n\nvar",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1547,7 +1547,7 @@
         {
           "Id": "1688eabbc36f4f9da278b2a76f58e334",
           "Name": "string",
-          "Description": "Type of object.",
+          "Description": "Typ objektu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1556,7 +1556,7 @@
       ],
       "FunctionSignature": "DSCore.Object.Type@var",
       "Replication": "Auto",
-      "Description": "Returns the type of object represented as string.\n\nObject.Type (object: var): string"
+      "Description": "Vrací typ objektu v podobě řetězce.\n\nObject.Type (object: var): string"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -1568,7 +1568,7 @@
         {
           "Id": "6a3c237ebd2f41f19ef746e3a20e0a72",
           "Name": "",
-          "Description": "Node to show output from",
+          "Description": "Uzel k zobrazení výstupu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1579,7 +1579,7 @@
         {
           "Id": "8647717d266d4169b9d238f4bccdc6f8",
           "Name": "",
-          "Description": "Node output",
+          "Description": "Výstup uzlu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1587,7 +1587,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Vizualizuje výstup uzlu"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1597,7 +1597,7 @@
         {
           "Id": "a889699a7cb14a08a6ca41480b55ec9c",
           "Name": "list",
-          "Description": "List to filter.\n\nvar[]..[]",
+          "Description": "Seznam k filtrování.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1606,7 +1606,7 @@
         {
           "Id": "7d6d23b91d7d41d28e1f94d0d16fa615",
           "Name": "mask",
-          "Description": "List of booleans representing a mask.\n\nvar[]..[]",
+          "Description": "Seznam booleovských hodnot představujících masku.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1617,7 +1617,7 @@
         {
           "Id": "c67330a49dd94b42a632778d5b20c66f",
           "Name": "in",
-          "Description": "Items whose mask index is true.",
+          "Description": "Položky, jejichž index masky je true (pravda)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1626,7 +1626,7 @@
         {
           "Id": "6577b124eb5349bdbe62d3ddb813d178",
           "Name": "out",
-          "Description": "Items whose mask index is false.",
+          "Description": "Položky, jejichž index masky je false (nepravda)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1635,7 +1635,7 @@
       ],
       "FunctionSignature": "DSCore.List.FilterByBoolMask@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Filters a sequence by looking up corresponding indices in a separate list of booleans.\n\nList.FilterByBoolMask (list: var[]..[], mask: var[]..[]): var[]..[]"
+      "Description": "Filtruje posloupnost hledáním příslušných indexů v samostatném seznamu booleovských hodnot.\n\nList.FilterByBoolMask (list: var[]..[], mask: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -1647,7 +1647,7 @@
         {
           "Id": "101e2584d6c6461393b001d9e6a6eeb0",
           "Name": "",
-          "Description": "Node to show output from",
+          "Description": "Uzel k zobrazení výstupu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1658,7 +1658,7 @@
         {
           "Id": "907a05dbbcaa4ede9d3f670c49a61e9f",
           "Name": "",
-          "Description": "Node output",
+          "Description": "Výstup uzlu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1666,7 +1666,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Vizualizuje výstup uzlu"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1676,7 +1676,7 @@
         {
           "Id": "1a6de6b16b664166ab1a8acd76a6f592",
           "Name": "string",
-          "Description": "String to be converted\n\nstring",
+          "Description": "Řetězec, který má být převeden\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1687,7 +1687,7 @@
         {
           "Id": "bfb604c6fe6844cba24da7697de09f16",
           "Name": "number",
-          "Description": "Integer or double-type number",
+          "Description": "Číslo typu integer nebo double",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1696,7 +1696,7 @@
       ],
       "FunctionSignature": "DSCore.String.ToNumber@string",
       "Replication": "Auto",
-      "Description": "Converts a string to an integer or a double.\n\nString.ToNumber (string: string): var[]..[]"
+      "Description": "Převede řetězec na hodnotu integer nebo hodnotu double.\n\nString.ToNumber (string: string): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -1708,7 +1708,7 @@
         {
           "Id": "8e8e086d1b9b4b05b433ccdee02afa95",
           "Name": "",
-          "Description": "Node to show output from",
+          "Description": "Uzel k zobrazení výstupu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1719,7 +1719,7 @@
         {
           "Id": "b7ad3b9725cb47c9b2e2ed25eafc00cc",
           "Name": "",
-          "Description": "Node output",
+          "Description": "Výstup uzlu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1727,7 +1727,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Vizualizuje výstup uzlu"
     }
   ],
   "Connectors": [
@@ -2076,7 +2076,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Vlastnosti",
       "Version": "2.13",
       "Data": {}
     },
@@ -2105,7 +2105,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Náhled pozadí",
       "EyeX": -17.0,
       "EyeY": 24.0,
       "EyeZ": 50.0,
@@ -2513,7 +2513,7 @@
       },
       {
         "Id": "f738a6bc77fe433d926bca538e53131f",
-        "Name": "Range of numbers",
+        "Name": "Rozsah čísel",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -2687,7 +2687,7 @@
       },
       {
         "Id": "bda1bca2686448a3999afc1c2811a1c7",
-        "Title": "Count occurencies",
+        "Title": "Spočítat výskyty",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2713,7 +2713,7 @@
       },
       {
         "Id": "785cacfb8e8e42e8911863642ad95314",
-        "Title": "Remove characters",
+        "Title": "Odebrat znaky",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2736,7 +2736,7 @@
       },
       {
         "Id": "ef550c1497874fcf982750728978c670",
-        "Title": "String length",
+        "Title": "Délka řetězce",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2760,7 +2760,7 @@
       },
       {
         "Id": "564b29f30ce84c378a8c909b6484f47f",
-        "Title": "Locate a substring in a string",
+        "Title": "Vyhledat podřetězec v řetězci",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2785,7 +2785,7 @@
       },
       {
         "Id": "69ffd58188e740ce923a86e684cfc1e6",
-        "Title": "Replace characters in a string",
+        "Title": "Nahradit znaky v řetězci",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2810,7 +2810,7 @@
       },
       {
         "Id": "f719244e8c8b46a09af431077c273110",
-        "Title": "Concatenate",
+        "Title": "Zřetězit",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2833,7 +2833,7 @@
       },
       {
         "Id": "eaa895fef6994b53a40ca4416179e27c",
-        "Title": "Create string",
+        "Title": "Vytvořit řetězec",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2856,7 +2856,7 @@
       },
       {
         "Id": "00cb28f68e334c3da91348c67ec25ed8",
-        "Title": "Change to UPPERCASE",
+        "Title": "Změnit na VELKÁ PÍSMENA",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2881,7 +2881,7 @@
       },
       {
         "Id": "f57c8cfb336442ff88aff51b311d2987",
-        "Title": "Create string",
+        "Title": "Vytvořit řetězec",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2905,7 +2905,7 @@
       },
       {
         "Id": "dc1f1637be09437da01118d82cfd00c7",
-        "Title": "Convert object into string",
+        "Title": "Převést objekt na řetězec",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2931,7 +2931,7 @@
       },
       {
         "Id": "c88a76ad95fe43f69aa67a89de4a3420",
-        "Title": "Concatenate strings using 'Add'",
+        "Title": "Zřetězit řetězce pomocí operace 'Součet'",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2956,7 +2956,7 @@
       },
       {
         "Id": "da4cacc1c04541ccbc4ff0e37c605fa5",
-        "Title": "Convert string into number",
+        "Title": "Převést řetězec na číslo",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2988,7 +2988,7 @@
       },
       {
         "Id": "b317cc70a2a34e93a2678fa6dfd3f895",
-        "Title": "Convert object into String",
+        "Title": "Převést objekt na řetězec",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3011,7 +3011,7 @@
       },
       {
         "Id": "80c34aa4b9e840f7872104b5fcbfaa6c",
-        "Title": "Split string using separators",
+        "Title": "Rozdělit řetězec pomocí oddělovačů",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3035,7 +3035,7 @@
       },
       {
         "Id": "7c0f58665ec2432da9e51cca288e8053",
-        "Title": "Check if String contains substring",
+        "Title": "Zkontrolovat, zda řetězec obsahuje podřetězec",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3059,7 +3059,7 @@
       },
       {
         "Id": "6a1d49790c5e401682034d20396076eb",
-        "Title": "Convert the strings to numbers",
+        "Title": "Převést řetězce na čísla",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3084,7 +3084,7 @@
       },
       {
         "Id": "905619712da2451fba2537c422509773",
-        "Title": "Convert an object to a string decription of itself.",
+        "Title": "Převeďte objekt na popis řetězce sebe samotného.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3105,7 +3105,7 @@
       },
       {
         "Id": "32a04f66445c40838b944d14dd28ab6c",
-        "Title": "Divide a string into pieces by specifying one or more separator characters. Each separator can be one or multiple characters. ",
+        "Title": "Rozdělte řetězec na části určením jednoho nebo více oddělovacích znaků. Každý oddělovač může mít jeden nebo více znaků. ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3126,7 +3126,7 @@
       },
       {
         "Id": "53c113e0f51f4e80836b6fbbb0bd6f9b",
-        "Title": "Find whether a string contains another string.",
+        "Title": "Zjistěte, zda řetězec obsahuje jiný řetězec.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3147,7 +3147,7 @@
       },
       {
         "Id": "f7ae707a4ceb41008c5d243b4269c1df",
-        "Title": "Substiture all occurences of a substring with a replacement string.",
+        "Title": "Nahraďte všechny výskyty podřetězce nahrazujícím řetězcem.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3168,7 +3168,7 @@
       },
       {
         "Id": "2f8505fbeeb4426584684f50f8f76f80",
-        "Title": "Change the case of a string",
+        "Title": "Změnit velikost písma řetězce",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3189,7 +3189,7 @@
       },
       {
         "Id": "06e5a7fe141d4c11834ea6952c79239a",
-        "Title": "Attaching two strings together to make one is called \"concatenating,\" or \"concat\" for short.",
+        "Title": "Propojení dvou řetězců dohromady za účelem vytvoření jednoho řetězce se nazývá „řetězení“ nebo zkráceně „řetěz“.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3210,7 +3210,7 @@
       },
       {
         "Id": "422cb4331e034639b96beb37a6a89262",
-        "Title": "Find the total number of characters in a string.",
+        "Title": "Najděte celkový počet znaků v řetězci.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3231,7 +3231,7 @@
       },
       {
         "Id": "253c41c92286414096c484147dbd3cff",
-        "Title": "Find where a particular substring occurs in a string. The result is the index where the substring begins.",
+        "Title": "Najděte, kde se v řetězci vyskytuje určitý podřetězec. Výsledkem je index, na kterém začíná podřetězec.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3252,7 +3252,7 @@
       },
       {
         "Id": "68fe225086224d11887d2279c98ddbb2",
-        "Title": "Remove a certain number of characters from a string.",
+        "Title": "Odstraňte určitý počet znaků z řetězce.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3273,7 +3273,7 @@
       },
       {
         "Id": "cbca1543fffe4186aebce00e749330e0",
-        "Title": "Count the occurences of a substring inside a string.",
+        "Title": "Spočítejte výskyty podřetězce uvnitř řetězce.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3294,7 +3294,7 @@
       },
       {
         "Id": "cd896211c6d243f39fc9aa9161be836b",
-        "Title": "Use a Code Block to create a string - \"\" marks delimit the string value. ",
+        "Title": "Pomocí uzlu Code Block vytvořte řetězec – značky \"\" označují hodnotu řetězce. ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3315,7 +3315,7 @@
       },
       {
         "Id": "8b06f29cff004b6bb2fb90dae96f8ca8",
-        "Title": "STRINGS\r\n\r\nThis set of examples demonstrates some actions that can be performed with Strings. More nodes for String operations can be found in the nodel Library under the 'String' category",
+        "Title": "ŘETĚZCE\r\n\r\nTato sada příkladů ukazuje některé akce, které je možné provést pomocí řetězců. Další uzly pro operace řetězců se nachází v knihovně uzlů v kategorii 'String'.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3335,7 +3335,7 @@
       },
       {
         "Id": "8ca82044b6ac4821a29686f5f764c8d7",
-        "Title": "If the string includes a \" character, use an escape character \\ before \" to treat it as a part of the string and not the ",
+        "Title": "Pokud řetězec obsahuje znak \", použijte znak escape \\ před znakem \", aby byl považován za součást řetězce, a nikoli za ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3356,7 +3356,7 @@
       },
       {
         "Id": "ac8de842d5bf4f80b79a6ae2f637d293",
-        "Title": "Subtract the first part of the string from the total length of the string",
+        "Title": "Odečte první část řetězce od celkové délky řetězce.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3377,7 +3377,7 @@
       },
       {
         "Id": "270012343b3c480786f099c28085d6a0",
-        "Title": "'Add' operation automatically converts numbers into strings and performs concatenation",
+        "Title": "Operace 'Součet' automaticky převede čísla na řetězce a provede zřetězení",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3398,7 +3398,7 @@
       },
       {
         "Id": "b6e9fa4b476f43dab16a386322232d2d",
-        "Title": "In some situation it's necessary to first convert an object into a string",
+        "Title": "V některých případech je nutné nejprve převést objekt na řetězec",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3419,7 +3419,7 @@
       },
       {
         "Id": "ae48b8490f3b49768c19e629471e72f8",
-        "Title": "Split the string into words using space as a separator",
+        "Title": "Rozdělit řetězec na slova pomocí mezery jako oddělovače",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3440,7 +3440,7 @@
       },
       {
         "Id": "9cecba24b7c541b7bb804a846694e2cb",
-        "Title": "Get the first item from a list",
+        "Title": "Získat první položku v seznamu",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3461,7 +3461,7 @@
       },
       {
         "Id": "c68ffae1a3d543f1b7ca9a91040f194c",
-        "Title": "Convert the string into a number",
+        "Title": "Převést řetězec na číslo",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3482,7 +3482,7 @@
       },
       {
         "Id": "e0fc9547a5694c50965f8f784bde56f4",
-        "Title": "Use the boolean list as a mask for a filter to get all numbers in a list",
+        "Title": "Použijte seznam booleovských hodnot jako masku pro filtr, abyste získali všechna čísla v seznamu",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3503,7 +3503,7 @@
       },
       {
         "Id": "77cb193c3d2044f6bfd004dca510e975",
-        "Title": "Convert the strings to numbers",
+        "Title": "Převést řetězce na čísla",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3524,7 +3524,7 @@
       },
       {
         "Id": "97fda685475746e4b0511063f2971690",
-        "Title": "Create an object - a circle",
+        "Title": "Tvorba objektu - kružnice",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "A Dynamo graph showcasing the primary ways of creating surfaces - Extrude, Loft and Sweep.",
+  "Description": "Un gráfico de Dynamo que muestra los principales métodos de creación de superficies: extrusión, solevación y barrido.",
   "Name": "Geometry_Surfaces",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -17,7 +17,7 @@
         {
           "Id": "38164badfeac4a00b37992ce48c9b94b",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada X\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -26,7 +26,7 @@
         {
           "Id": "234060568bab4ed18e6e785c5aed8dc2",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Y\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -35,7 +35,7 @@
         {
           "Id": "7721e50f27af4caaafa1f1f42b6e4ab3",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Z\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -46,7 +46,7 @@
         {
           "Id": "1bbd4aba24934948a95fb28a5919ebeb",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creado por coordenadas",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -55,7 +55,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Genera un punto con las tres coordenadas cartesianas especificadas.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -65,7 +65,7 @@
         {
           "Id": "08edf5a93bab4ff2a77e4c3ed861375a",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada X\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -74,7 +74,7 @@
         {
           "Id": "4719c97b1932494892dfefe03a7796cf",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Y\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -83,7 +83,7 @@
         {
           "Id": "42e70bfdd91246e4b57bccb85cf33de8",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Z\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -94,7 +94,7 @@
         {
           "Id": "aef6eaa7e1984fb98265607bf012615d",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creado por coordenadas",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -103,7 +103,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Genera un punto con las tres coordenadas cartesianas especificadas.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -113,7 +113,7 @@
         {
           "Id": "127428911b814f12b63682ab414c3e5e",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada X\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -122,7 +122,7 @@
         {
           "Id": "ea5c6ded0abd47fabdc57f0c8e114751",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Y\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -131,7 +131,7 @@
         {
           "Id": "0cb7c202a9ef43b3b53ecd487a267b88",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Z\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -142,7 +142,7 @@
         {
           "Id": "6467add41a094c519eb2e111815b68a6",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creado por coordenadas",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -151,7 +151,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Genera un punto con las tres coordenadas cartesianas especificadas.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -171,7 +171,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Crea un número.",
       "InputValue": 10.0
     },
     {
@@ -192,7 +192,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Crea un número.",
       "InputValue": 5.0
     },
     {
@@ -203,7 +203,7 @@
         {
           "Id": "c60c574ac65c49d2a9f00f2b539dad43",
           "Name": "firstPoint",
-          "Description": "1st point of arc\n\nPoint",
+          "Description": "Primer punto del arco\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -212,7 +212,7 @@
         {
           "Id": "3717b4e1226647efbde27ea7375f4254",
           "Name": "secondPoint",
-          "Description": "2nd point of arc\n\nPoint",
+          "Description": "Segundo punto del arco\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -221,7 +221,7 @@
         {
           "Id": "953fae8999294f12b7e2d5f41229e83d",
           "Name": "thirdPoint",
-          "Description": "3rd point of arc\n\nPoint",
+          "Description": "Tercer punto del arco\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -232,7 +232,7 @@
         {
           "Id": "f2195a6b254b4258803f2ddd7f8da0e0",
           "Name": "Arc",
-          "Description": "Arc created from three points",
+          "Description": "Arco creado a partir de tres puntos",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -241,7 +241,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Arc.ByThreePoints@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Create an arc by providing three sequential points along its circumference.\n\nArc.ByThreePoints (firstPoint: Point, secondPoint: Point, thirdPoint: Point): Arc"
+      "Description": "Crea un arco a partir de tres puntos secuenciales a lo largo de su circunferencia.\n\nArc.ByThreePoints (firstPoint: Point, secondPoint: Point, thirdPoint: Point): Arc"
     },
     {
       "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
@@ -252,7 +252,7 @@
         {
           "Id": "a431cdcf129c40798c6f987afbddc794",
           "Name": "item0",
-          "Description": "Item Index #0",
+          "Description": "Índice de elemento núm.0",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -261,7 +261,7 @@
         {
           "Id": "d24a4a5dd4554545b8dd5f8ba2ce831f",
           "Name": "item1",
-          "Description": "Item Index #1",
+          "Description": "Índice de elemento núm.1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -272,7 +272,7 @@
         {
           "Id": "b60dd6cbbf2a4d07a339d004cc4f0e99",
           "Name": "list",
-          "Description": "A list",
+          "Description": "Una lista",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -280,7 +280,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Makes a new list from the given inputs"
+      "Description": "Crea una nueva lista a partir de las entradas especificadas."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -310,7 +310,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.Area",
       "Replication": "Auto",
-      "Description": "Returns the total surface area.\n\nSurface.Area: double"
+      "Description": "Devuelve el área de superficie total.\n\nSurface.Area: double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -329,7 +329,7 @@
         {
           "Id": "7fe7bf608ec74e6489e8e8ddd854ffb8",
           "Name": "u",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -338,7 +338,7 @@
         {
           "Id": "ad7a7d94bfe04c0c94587e5ab8d33684",
           "Name": "v",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -349,7 +349,7 @@
         {
           "Id": "d7af59054b3b4676821e930af412857a",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Punto",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -358,7 +358,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.PointAtParameter@double,double",
       "Replication": "CrossProduct",
-      "Description": "Return the Point at specified U and V parameters.\n\nSurface.PointAtParameter (u: double = 0, v: double = 0): Point"
+      "Description": "Devuelve el punto en los parámetros U y V especificados.\n\nSurface.PointAtParameter (u: double = 0, v: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -369,7 +369,7 @@
         {
           "Id": "aef54487c8604f3796b4efcc699f7b8c",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valor de la expresión en la línea 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -377,7 +377,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Permite la creación directa de código de DesignScript.",
       "Code": "0..1..0.1;"
     },
     {
@@ -389,7 +389,7 @@
         {
           "Id": "bc5126f993324dfe84ecd74dee923cbc",
           "Name": "item0",
-          "Description": "Item Index #0",
+          "Description": "Índice de elemento núm.0",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -398,7 +398,7 @@
         {
           "Id": "7a761fa3ead848d2a3af43fee7cb2e3d",
           "Name": "item1",
-          "Description": "Item Index #1",
+          "Description": "Índice de elemento núm.1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -409,7 +409,7 @@
         {
           "Id": "92e5b85c501947fe92f40290aab4e04b",
           "Name": "list",
-          "Description": "A list",
+          "Description": "Una lista",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -417,7 +417,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Makes a new list from the given inputs"
+      "Description": "Crea una nueva lista a partir de las entradas especificadas."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -427,7 +427,7 @@
         {
           "Id": "fd07036c38b249ff9578258de4c59caf",
           "Name": "surfaces",
-          "Description": "Surfaces to join into polysurface\n\nSurface[]",
+          "Description": "Superficies que se unirán en la PolySurface.\n\nSurface[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -447,7 +447,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.PolySurface.ByJoinedSurfaces@Autodesk.DesignScript.Geometry.Surface[]",
       "Replication": "Auto",
-      "Description": "Make Polysurface by joining surfaces.\n\nPolySurface.ByJoinedSurfaces (surfaces: Surface[]): PolySurface"
+      "Description": "Crea una PolySurface mediante la unión de superficies.\n\nPolySurface.ByJoinedSurfaces (surfaces: Surface[]): PolySurface"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -477,7 +477,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.Area",
       "Replication": "Auto",
-      "Description": "Returns the total surface area.\n\nSurface.Area: double"
+      "Description": "Devuelve el área de superficie total.\n\nSurface.Area: double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -507,7 +507,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.Area",
       "Replication": "Auto",
-      "Description": "Returns the total surface area.\n\nSurface.Area: double"
+      "Description": "Devuelve el área de superficie total.\n\nSurface.Area: double"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -519,7 +519,7 @@
         {
           "Id": "a8be6a1cb3324444a15517a2c1135e3b",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo que se va a evaluar.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -530,7 +530,7 @@
         {
           "Id": "9b40435de116412ab17b86953b06d0f6",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Permite visualizar el contenido.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -538,7 +538,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Muestra la salida de un nodo."
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -550,7 +550,7 @@
         {
           "Id": "e09b814f871447f497b61bdbdcfbddd3",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo que se va a evaluar.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -561,7 +561,7 @@
         {
           "Id": "1ea3ab4165ad4fec945adab231f65e7c",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Permite visualizar el contenido.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -569,7 +569,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Muestra la salida de un nodo."
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -581,7 +581,7 @@
         {
           "Id": "fbc9a295d4ac48ea997fd5e935202205",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo que se va a evaluar.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -592,7 +592,7 @@
         {
           "Id": "42abea7cc585497b8d03cfc811f071ff",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Permite visualizar el contenido.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -600,7 +600,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Muestra la salida de un nodo."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -610,7 +610,7 @@
         {
           "Id": "7f2c5265741f463cacc1b825365e6725",
           "Name": "path",
-          "Description": "The input path to sweep along.\n\nCurve",
+          "Description": "Ruta de entrada de la cual se debe realizar el barrido.\n\nCurve",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -619,7 +619,7 @@
         {
           "Id": "2d9538bf09be498f92873f2c0dc5d391",
           "Name": "guideRail",
-          "Description": "A rail to guide the orientation of the sweep.\n\nCurve",
+          "Description": "Un carril para guiar la orientación del barrido.\n\nCurve",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -628,7 +628,7 @@
         {
           "Id": "8c9a4811fc7c4bba8c932def304ce5b9",
           "Name": "profile",
-          "Description": "The profile curve to sweep along the path.\n\nCurve",
+          "Description": "La curva del perfil de la cual se debe realizar el barrido a lo largo de la ruta.\n\nCurve",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -639,7 +639,7 @@
         {
           "Id": "aeb7d8a8392b41cc9a4eeefd7bb24a35",
           "Name": "Surface",
-          "Description": "Surface created by sweeping two rails",
+          "Description": "Superficie creada mediante barrido de dos raíles",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -648,7 +648,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.BySweep2Rails@Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve",
       "Replication": "Auto",
-      "Description": "Sweep the cross section curve along a path guided by a two rails\n\nSurface.BySweep2Rails (path: Curve, guideRail: Curve, profile: Curve): Surface"
+      "Description": "Barre la curva de sección transversal a lo largo de una trayectoria guiada por dos carriles.\n\nSurface.BySweep2Rails (path: Curve, guideRail: Curve, profile: Curve): Surface"
     },
     {
       "ConcreteType": "Watch3DNodeModels.Watch3D, Watch3DNodeModels",
@@ -656,7 +656,7 @@
       "WatchHeight": 200.0,
       "WasExecuted": true,
       "Camera": {
-        "Name": "a6ea80d1-292f-4754-af60-4f40882d0c98 Preview",
+        "Name": "a6ea80d1-292f-4754-af60-4f40882d0c98 Vista preliminar",
         "EyeX": -17.0,
         "EyeY": 24.0,
         "EyeZ": 50.0,
@@ -674,7 +674,7 @@
         {
           "Id": "7a6383d4b253403f8d7eb01b9cbece39",
           "Name": "",
-          "Description": "Incoming geometry objects.",
+          "Description": "Objetos de geometría entrantes.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -685,7 +685,7 @@
         {
           "Id": "da901a31c41c43fe83c047a288278521",
           "Name": "",
-          "Description": "Incoming geometry objects.",
+          "Description": "Objetos de geometría entrantes.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -693,7 +693,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Shows a dynamic preview of geometry"
+      "Description": "Muestra una vista preliminar dinámica de la geometría."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -703,7 +703,7 @@
         {
           "Id": "b87152331b34461eac5b8d248ff94a74",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada X\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -712,7 +712,7 @@
         {
           "Id": "3db0657e803f4c4b84f2da2365910bfe",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Y\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -721,7 +721,7 @@
         {
           "Id": "8eb1a6c6ccfc4213b88c38049d146cc3",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Z\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -732,7 +732,7 @@
         {
           "Id": "307ec73cc9934dcd971c6c027a9d13e2",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creado por coordenadas",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -741,7 +741,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Genera un punto con las tres coordenadas cartesianas especificadas.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -761,7 +761,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Crea un número.",
       "InputValue": -5.0
     },
     {
@@ -772,7 +772,7 @@
         {
           "Id": "16e97c4f38aa428690885d2067a33c46",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada X\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -781,7 +781,7 @@
         {
           "Id": "26cce09b9c1b42eeb991fb4e360a2e1b",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Y\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -790,7 +790,7 @@
         {
           "Id": "b8b28e33b4fc4eebb6bb8909c5aed117",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Z\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -801,7 +801,7 @@
         {
           "Id": "cc52357512f44917b36068d0ba36d357",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creado por coordenadas",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -810,7 +810,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Genera un punto con las tres coordenadas cartesianas especificadas.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -820,7 +820,7 @@
         {
           "Id": "c27809e51bae42d795645e45051d6159",
           "Name": "firstPoint",
-          "Description": "1st point of arc\n\nPoint",
+          "Description": "Primer punto del arco\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -829,7 +829,7 @@
         {
           "Id": "27cffbf1060c425381b1b2d0a8457214",
           "Name": "secondPoint",
-          "Description": "2nd point of arc\n\nPoint",
+          "Description": "Segundo punto del arco\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -838,7 +838,7 @@
         {
           "Id": "e83b57bdebee43218623525e8eac5007",
           "Name": "thirdPoint",
-          "Description": "3rd point of arc\n\nPoint",
+          "Description": "Tercer punto del arco\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -849,7 +849,7 @@
         {
           "Id": "83ea58b2af084ef3b22f8d77deb34c4d",
           "Name": "Arc",
-          "Description": "Arc created from three points",
+          "Description": "Arco creado a partir de tres puntos",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -858,7 +858,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Arc.ByThreePoints@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Create an arc by providing three sequential points along its circumference.\n\nArc.ByThreePoints (firstPoint: Point, secondPoint: Point, thirdPoint: Point): Arc"
+      "Description": "Crea un arco a partir de tres puntos secuenciales a lo largo de su circunferencia.\n\nArc.ByThreePoints (firstPoint: Point, secondPoint: Point, thirdPoint: Point): Arc"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -868,7 +868,7 @@
         {
           "Id": "b3a9ac379a59411380aab6353252edfc",
           "Name": "crossSections",
-          "Description": "Curves to loft through\n\nCurve[]",
+          "Description": "Curvas por las que se debe solevar\n\nCurve[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -879,7 +879,7 @@
         {
           "Id": "39b8f4ed15354750aa4d5e57c2e85f88",
           "Name": "Surface",
-          "Description": "Surface created by loft",
+          "Description": "Superficie creada por solevación",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -888,7 +888,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.ByLoft@Autodesk.DesignScript.Geometry.Curve[]",
       "Replication": "Auto",
-      "Description": "Create a Surface by lofting between input cross section Curves.\n\nSurface.ByLoft (crossSections: Curve[]): Surface"
+      "Description": "Crea una superficie mediante la solevación entre curvas cerradas de sección transversal de entrada.\n\nSurface.ByLoft (crossSections: Curve[]): Surface"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -908,7 +908,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Crea un número.",
       "InputValue": 5.0
     },
     {
@@ -928,7 +928,7 @@
         {
           "Id": "581bdb3f82e243728bd4db7a69991857",
           "Name": "distance",
-          "Description": "The distance to extrude the curve\n\ndouble\nDefault value : 1",
+          "Description": "La distancia de extrusión de la curva.\n\ndouble\nValor por defecto: 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -939,7 +939,7 @@
         {
           "Id": "949c3048dd204a9abdae15591d8ddaca",
           "Name": "Surface",
-          "Description": "The extruded Surface",
+          "Description": "La superficie extruida",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -948,7 +948,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.Extrude@double",
       "Replication": "Auto",
-      "Description": "Extrudes a Curve in the normal Vector direction\n\nCurve.Extrude (distance: double = 1): Surface"
+      "Description": "Extruye una curva en la dirección normal del vector.\n\nCurve.Extrude (distance: double = 1): Surface"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -959,7 +959,7 @@
         {
           "Id": "dad31bec021f4299bc925a8edc15930f",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valor de la expresión en la línea 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -967,7 +967,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Permite la creación directa de código de DesignScript.",
       "Code": "10;"
     },
     {
@@ -978,7 +978,7 @@
         {
           "Id": "8fe3040390dd42448feabd2d5c8dc824",
           "Name": "firstPoint",
-          "Description": "1st point of arc\n\nPoint",
+          "Description": "Primer punto del arco\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -987,7 +987,7 @@
         {
           "Id": "677c1ee4d34d4ee190f3e556c6188adc",
           "Name": "secondPoint",
-          "Description": "2nd point of arc\n\nPoint",
+          "Description": "Segundo punto del arco\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -996,7 +996,7 @@
         {
           "Id": "ae121b23a7cf493a8bbdc7653020e3fa",
           "Name": "thirdPoint",
-          "Description": "3rd point of arc\n\nPoint",
+          "Description": "Tercer punto del arco\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1007,7 +1007,7 @@
         {
           "Id": "4514e981418e4a3ab83ca452c609c1a0",
           "Name": "Arc",
-          "Description": "Arc created from three points",
+          "Description": "Arco creado a partir de tres puntos",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1016,7 +1016,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Arc.ByThreePoints@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Create an arc by providing three sequential points along its circumference.\n\nArc.ByThreePoints (firstPoint: Point, secondPoint: Point, thirdPoint: Point): Arc"
+      "Description": "Crea un arco a partir de tres puntos secuenciales a lo largo de su circunferencia.\n\nArc.ByThreePoints (firstPoint: Point, secondPoint: Point, thirdPoint: Point): Arc"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1026,7 +1026,7 @@
         {
           "Id": "a478007887f84e28bee64451396b556c",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada X\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1035,7 +1035,7 @@
         {
           "Id": "2f053e28c72948afb80dc44cf6cf8dc8",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Y\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1044,7 +1044,7 @@
         {
           "Id": "08874e2d23124fa5ab2e1665fcd1c3d7",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Z\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1055,7 +1055,7 @@
         {
           "Id": "690a600b03324f64bcb86fa5200f83bd",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creado por coordenadas",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1064,7 +1064,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Genera un punto con las tres coordenadas cartesianas especificadas.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -1084,7 +1084,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Crea un número.",
       "InputValue": 5.0
     },
     {
@@ -1105,7 +1105,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Crea un número.",
       "InputValue": 10.0
     },
     {
@@ -1126,7 +1126,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Crea un número.",
       "InputValue": 15.0
     },
     {
@@ -1137,7 +1137,7 @@
         {
           "Id": "bf4c3fb20b8b46668a1ef08739f14245",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada X\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1146,7 +1146,7 @@
         {
           "Id": "a52456212acc406485e7a402e830fa87",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Y\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1155,7 +1155,7 @@
         {
           "Id": "e6241f007a054d99ac456b618b383490",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Z\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1166,7 +1166,7 @@
         {
           "Id": "2757d1051f424e55bd52a507f30aea32",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creado por coordenadas",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1175,7 +1175,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Genera un punto con las tres coordenadas cartesianas especificadas.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1185,7 +1185,7 @@
         {
           "Id": "f40bf67c57c8439cbf60cf760a804c2e",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada X\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1194,7 +1194,7 @@
         {
           "Id": "6a1e9e2e40e8483ca0740f467f72ed83",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Y\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1203,7 +1203,7 @@
         {
           "Id": "3138bf93e1bd49e38e403b26300f36de",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Z\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1214,7 +1214,7 @@
         {
           "Id": "f6d1656097fa45aaaf45b2fcb128a1e9",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creado por coordenadas",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1223,7 +1223,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Genera un punto con las tres coordenadas cartesianas especificadas.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -1243,7 +1243,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Crea un número.",
       "InputValue": -10.0
     },
     {
@@ -1254,7 +1254,7 @@
         {
           "Id": "83a6cea386424af5ae5431c641ac6f98",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada X\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1263,7 +1263,7 @@
         {
           "Id": "768edc6e60d34cadaa901c498238f749",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Y\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1272,7 +1272,7 @@
         {
           "Id": "b297f5ce25fa44bda8b29a6aa99b8bdd",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Z\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1283,7 +1283,7 @@
         {
           "Id": "f8ac966bd3a140b08ce2fff56fa9c04c",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creado por coordenadas",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1292,7 +1292,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Genera un punto con las tres coordenadas cartesianas especificadas.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1302,7 +1302,7 @@
         {
           "Id": "c5ce7e45d8d449bb97b03d7d4693284d",
           "Name": "startPoint",
-          "Description": "Line start point\n\nPoint",
+          "Description": "Punto inicial de la línea\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1311,7 +1311,7 @@
         {
           "Id": "99b48f814630451bb8a61956a505367b",
           "Name": "endPoint",
-          "Description": "Line end point\n\nPoint",
+          "Description": "Punto final de la línea\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1322,7 +1322,7 @@
         {
           "Id": "b33e32b9e7434189a2c636a26f1b3df4",
           "Name": "Line",
-          "Description": "Line from start and end point",
+          "Description": "Línea desde punto inicial y final",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1331,7 +1331,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Creates a straight Line between two input Points.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
+      "Description": "Crea una línea recta entre dos puntos de entrada.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -1351,7 +1351,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Crea un número.",
       "InputValue": 10.0
     },
     {
@@ -1362,7 +1362,7 @@
         {
           "Id": "b4add189f75243b2b675ab32a9350a88",
           "Name": "controlVertices",
-          "Description": "Grid of control points for nurbs surface\n\nPoint[][]",
+          "Description": "Rejilla de puntos de control para la superficie NURBS\n\nPoint[][]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1371,7 +1371,7 @@
         {
           "Id": "deecb7fbf4d84cd5a96c49834fef766d",
           "Name": "uDegree",
-          "Description": "Degree in u direction\n\nint\nDefault value : 3",
+          "Description": "Grado en dirección U\n\nint\nValor por defecto: 3",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1380,7 +1380,7 @@
         {
           "Id": "80b0ad612e984897a0ca3d6b0d17687d",
           "Name": "vDegree",
-          "Description": "Degree in v direction\n\nint\nDefault value : 3",
+          "Description": "Grado en dirección V\n\nint\nValor por defecto: 3",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1391,7 +1391,7 @@
         {
           "Id": "685987bd90ad41139556770f8af6caf8",
           "Name": "NurbsSurface",
-          "Description": "Nurbs surface created by control points",
+          "Description": "Superficie NURBS creada por puntos de control",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1400,7 +1400,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsSurface.ByControlPoints@Autodesk.DesignScript.Geometry.Point[][],int,int",
       "Replication": "Auto",
-      "Description": "Create a NurbsSurface by using explicit control Points, with specified U and V degrees.\n\nNurbsSurface.ByControlPoints (controlVertices: Point[][], uDegree: int = 3, vDegree: int = 3): NurbsSurface"
+      "Description": "Crea una NurbsSurface mediante el uso explícito de puntos de control y los grados especificados para U y V.\n\nNurbsSurface.ByControlPoints (controlVertices: Point[][], uDegree: int = 3, vDegree: int = 3): NurbsSurface"
     }
   ],
   "Connectors": [
@@ -1689,7 +1689,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Propiedades",
       "Version": "2.13",
       "Data": {}
     }
@@ -1712,7 +1712,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Vista preliminar en segundo plano",
       "EyeX": -23.987747192382812,
       "EyeY": 19.28705406188965,
       "EyeZ": 14.237700462341309,
@@ -2119,7 +2119,7 @@
     "Annotations": [
       {
         "Id": "3e7ca0284ace44fcb67c6fcb74842999",
-        "Title": "Input",
+        "Title": "Entrada",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2142,7 +2142,7 @@
       },
       {
         "Id": "7cb9b60287ba488ca4aebfadc58082f1",
-        "Title": "Input",
+        "Title": "Entrada",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2166,7 +2166,7 @@
       },
       {
         "Id": "49695d0bfe5c473ab762688be0a93bf6",
-        "Title": "Input",
+        "Title": "Entrada",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2190,7 +2190,7 @@
       },
       {
         "Id": "20df77f56de74b6991ebad9bd071a6fa",
-        "Title": "Input",
+        "Title": "Entrada",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2214,7 +2214,7 @@
       },
       {
         "Id": "f9e1915c4ba4494ebe1bf6a9df88e66b",
-        "Title": "Input",
+        "Title": "Entrada",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2237,7 +2237,7 @@
       },
       {
         "Id": "8c631415033a48fa86f2376d1a192d7d",
-        "Title": "Input",
+        "Title": "Entrada",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2262,7 +2262,7 @@
       },
       {
         "Id": "c71cd9748c9c4ded8ea2f57106f2350d",
-        "Title": "Input",
+        "Title": "Entrada",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2284,7 +2284,7 @@
       },
       {
         "Id": "174f0d1ced594cd4aa7271825a3f4296",
-        "Title": "Line",
+        "Title": "Línea",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2306,7 +2306,7 @@
       },
       {
         "Id": "d9674e8a9a5546b692bb5410aad48a1d",
-        "Title": "Arc",
+        "Title": "Arco",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2328,7 +2328,7 @@
       },
       {
         "Id": "d6e3d0f562cf41cc8d53f971f4fe332f",
-        "Title": "Arc",
+        "Title": "Arco",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2350,7 +2350,7 @@
       },
       {
         "Id": "8c8c826134c2454e98d7def6b29ea397",
-        "Title": "Arc",
+        "Title": "Arco",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2372,7 +2372,7 @@
       },
       {
         "Id": "f351ed230a4d42e0a79c9cf7280c5a8b",
-        "Title": "Extrude",
+        "Title": "Extruir",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2396,7 +2396,7 @@
       },
       {
         "Id": "1a75aba874ab4bb5881a87e269e84fc4",
-        "Title": "Sweep",
+        "Title": "Barrido",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2419,7 +2419,7 @@
       },
       {
         "Id": "694097d1f02249dcbc84caa39bd9b837",
-        "Title": "Loft",
+        "Title": "Solevar",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2443,7 +2443,7 @@
       },
       {
         "Id": "65cf9102c26740478a4b4a0de221a83b",
-        "Title": "Info",
+        "Title": "Información",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2465,7 +2465,7 @@
       },
       {
         "Id": "21fd4f91196f4d918e4c2d4b2e5e9eae",
-        "Title": "Evaluate Loft Area",
+        "Title": "Evaluar área de solevación",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2488,7 +2488,7 @@
       },
       {
         "Id": "334732cc59f3474da219af5b4fca3cab",
-        "Title": "Evaluate the combined Loft + Sweep Area",
+        "Title": "Evaluar la combinación de solevación + área de barrido",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2511,7 +2511,7 @@
       },
       {
         "Id": "af268354932d46a898cbfa4b958c6361",
-        "Title": "Evaluate Sweep Area",
+        "Title": "Evaluar área de barrido",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2534,7 +2534,7 @@
       },
       {
         "Id": "27e6cb3713814050a64ce4589eec5235",
-        "Title": "Combine the Loft and the Sweep",
+        "Title": "Combinar la solevación y el barrido",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2558,7 +2558,7 @@
       },
       {
         "Id": "52926bc9d4974bee8d822df169ef9233",
-        "Title": "Extract and use points from surface",
+        "Title": "Extraer y utilizar puntos de la superficie",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2585,7 +2585,7 @@
       },
       {
         "Id": "295d1894ae1f4150a782003d9badc7d9",
-        "Title": "Multiple creation methods exist for most Surfaces.  Surfaces, Polysurfaces (collections of Surfaces), and Nurbs Surfaces can be create by Points, Curves, and derived from other surfaces and solids",
+        "Title": "La mayoría de las superficies se pueden crear de varias maneras. Las superficies, PolySurfaces (colecciones de superficies) y superficies NURB se pueden crear mediante puntos o curvas, y derivarse de otros sólidos y superficies.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2606,7 +2606,7 @@
       },
       {
         "Id": "cf263e4415014ac998550a75af5c7406",
-        "Title": "Surfaces Joined as Polysurfaces can be evalued as a single entity",
+        "Title": "Las superficies unidas como PolySurfaces se pueden evaluar como una sola entidad.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2627,7 +2627,7 @@
       },
       {
         "Id": "283a0dbdc0684cbdbcac0503752aca10",
-        "Title": "Edges, Points and other features can be derived from Surfaces using \"Actions\" appropriate to those geometries",
+        "Title": "Las aristas, los puntos y otros elementos se pueden derivar de superficies aplicando acciones adecuadas a esas geometrías.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2648,7 +2648,7 @@
       },
       {
         "Id": "8db3018629b945bba0e094e66a26e3e5",
-        "Title": "Using the 2 sets of curves, we can create a 'Loft' geometry between them",
+        "Title": "No se puede crear una geometría de \"solevación\" entre dos conjuntos de curvas",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2669,7 +2669,7 @@
       },
       {
         "Id": "15cc60651aa2446e92333fb4ccd5f9d6",
-        "Title": "A Dynamo graph showcasing the primary ways of creating surfaces - Extrude, Loft and Sweep",
+        "Title": "Un gráfico de Dynamo que muestra los principales métodos de creación de superficies: extrusión, solevación y barrido",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2689,7 +2689,7 @@
       },
       {
         "Id": "f6ecbb4d18d0484babe2345ae9d7b1e2",
-        "Title": "A basic extrudion from the provided curve",
+        "Title": "Una extrusión básica de la curva proporcionada",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2710,7 +2710,7 @@
       },
       {
         "Id": "efe2c474caa345e9adf6c81ac7096e32",
-        "Title": "Create a new Nurbs surface by the extracted parameters (points).\nHide the rest of the geometries to observe the result of the one below.",
+        "Title": "Cree una nueva superficie NURBS mediante los parámetros extraídos (puntos).\nOculte el resto de las geometrías para observar el resultado de la siguiente.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "We explore List@Level and how it can be used to achieve the same results as List.Map node. We create a series of panels to demonstrate how List@Level really works.",
+  "Description": "Se explora List@Level y cómo puede utilizarse para obtener los mismos resultados que con el nodo List.Map. Se crean una serie de paneles para mostrar cómo funciona realmente List@Level.",
   "Name": "Core_ListAtLevel",
   "ElementResolver": {
     "ResolutionMap": {
@@ -26,7 +26,7 @@
         {
           "Id": "6ecdb698dc834d9ba209e2c174d41286",
           "Name": "points",
-          "Description": "Grid of points for nurbs surface\n\nPoint[][]",
+          "Description": "Rejilla de puntos para la superficie NURBS\n\nPoint[][]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -35,7 +35,7 @@
         {
           "Id": "473097cfc3834a9fbdb72a0432ba63c2",
           "Name": "uDegree",
-          "Description": "Degree in u direction\n\nint\nDefault value : 3",
+          "Description": "Grado en dirección U\n\nint\nValor por defecto: 3",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -44,7 +44,7 @@
         {
           "Id": "927414163b604d36b8873715da24a60c",
           "Name": "vDegree",
-          "Description": "Degree in v direction\n\nint\nDefault value : 3",
+          "Description": "Grado en dirección V\n\nint\nValor por defecto: 3",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -55,7 +55,7 @@
         {
           "Id": "5ce162ccc880451a921f18504ec5a9c4",
           "Name": "NurbsSurface",
-          "Description": "Nurbs surface created by points",
+          "Description": "Superficie NURBS creada por puntos",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -64,7 +64,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsSurface.ByPoints@Autodesk.DesignScript.Geometry.Point[][],int,int",
       "Replication": "Auto",
-      "Description": "Creates a NurbsSurface with specified interpolated points and U and V degrees. The resultant surface will pass through all of the points.\n\nNurbsSurface.ByPoints (points: Point[][], uDegree: int = 3, vDegree: int = 3): NurbsSurface"
+      "Description": "Crea una NurbsSurface con los puntos interpolados y los grados U y V especificados. La superficie resultante pasará a través de todos los puntos.\n\nNurbsSurface.ByPoints (points: Point[][], uDegree: int = 3, vDegree: int = 3): NurbsSurface"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -74,7 +74,7 @@
         {
           "Id": "706a3c88e9f14fd3b29b8599397f0202",
           "Name": "bestFitPoints",
-          "Description": "List of points to best fit line\n\nPoint[]",
+          "Description": "Lista de puntos para la línea de ajuste óptimo\n\nPoint[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -85,7 +85,7 @@
         {
           "Id": "0339b2ef6c6941b2b0a48b05807444c7",
           "Name": "Line",
-          "Description": "Line from fit through points",
+          "Description": "Línea de ajuste a través de puntos",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -94,7 +94,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByBestFitThroughPoints@Autodesk.DesignScript.Geometry.Point[]",
       "Replication": "Auto",
-      "Description": "Creates a Line best approximating a scatter plot of Points.\n\nLine.ByBestFitThroughPoints (bestFitPoints: Point[]): Line"
+      "Description": "Crea una línea que se aproxima lo mejor posible a un diagrama de dispersión de puntos.\n\nLine.ByBestFitThroughPoints (bestFitPoints: Point[]): Line"
     },
     {
       "ConcreteType": "CoreNodeModels.HigherOrder.Map, CoreNodeModels",
@@ -104,7 +104,7 @@
         {
           "Id": "aae51590920f4aa7ad9168d6010e6195",
           "Name": "list",
-          "Description": "The list to map over.",
+          "Description": "Lista que asignar.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -113,7 +113,7 @@
         {
           "Id": "5e12570c2b7e461eb4e29041de650a6a",
           "Name": "f(x)",
-          "Description": "The procedure used to map element",
+          "Description": "El procedimiento utilizado para asignar el elemento.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -124,7 +124,7 @@
         {
           "Id": "b8740818259e43abbc0137405eaf7832",
           "Name": "mapped",
-          "Description": "Mapped list",
+          "Description": "Lista asignada",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -132,7 +132,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Applies a function over all elements of a list, generating a new list from the results"
+      "Description": "Aplica una función a todos los elementos de una lista, lo que genera una nueva lista a partir de los resultados."
     },
     {
       "ConcreteType": "CoreNodeModels.HigherOrder.Map, CoreNodeModels",
@@ -142,7 +142,7 @@
         {
           "Id": "b83ac60c4ff044958189f07b1fab6ec9",
           "Name": "list",
-          "Description": "The list to map over.",
+          "Description": "Lista que asignar.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -151,7 +151,7 @@
         {
           "Id": "a7ac983fdd324844a3cf5bc470127d90",
           "Name": "f(x)",
-          "Description": "The procedure used to map element",
+          "Description": "El procedimiento utilizado para asignar el elemento.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -162,7 +162,7 @@
         {
           "Id": "43dcd7eb0fef4c4bab93791896cfa24f",
           "Name": "mapped",
-          "Description": "Mapped list",
+          "Description": "Lista asignada",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -170,7 +170,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Applies a function over all elements of a list, generating a new list from the results"
+      "Description": "Aplica una función a todos los elementos de una lista, lo que genera una nueva lista a partir de los resultados"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -180,7 +180,7 @@
         {
           "Id": "58604e56b36b4b80a46c0a40e7c9eb44",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "Lista de la cual se debe recuperar un elemento.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": true,
@@ -189,7 +189,7 @@
         {
           "Id": "2dd3bee0136647eb840c846f4817bdfe",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "El índice del elemento que se debe recuperar.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -200,7 +200,7 @@
         {
           "Id": "3a7fa37281304240951782ac4aebf937",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "Elemento de la lista en el índice especificado.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -209,7 +209,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Devuelve un elemento de la lista especificada que se encuentra en el índice indicado.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -219,7 +219,7 @@
         {
           "Id": "d730184c13124dc6a9fa6552d3ae49b1",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "Lista de la cual se debe recuperar un elemento.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -228,7 +228,7 @@
         {
           "Id": "eb95679c3317416fa967bec39fd79825",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "El índice del elemento que se debe recuperar.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -239,7 +239,7 @@
         {
           "Id": "15561d59d6824d98b0a898c384f7f8f4",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "Elemento de la lista en el índice especificado.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -248,7 +248,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Devuelve un elemento de la lista especificada que se encuentra en el índice indicado.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -259,7 +259,7 @@
         {
           "Id": "d9ddac8471224587b2141e57bdfb54ed",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valor de la expresión en la línea 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -267,7 +267,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Permite creación directa de código de DesignScript",
       "Code": "[1,2];"
     },
     {
@@ -279,7 +279,7 @@
         {
           "Id": "ca8dd243e4924766b55249440deac976",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valor de la expresión en la línea 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -287,7 +287,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Permite creación directa de código de DesignScript",
       "Code": "[1,2];"
     },
     {
@@ -298,7 +298,7 @@
         {
           "Id": "1428df384ae54e31ab72e93e1344528e",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada X\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -307,7 +307,7 @@
         {
           "Id": "6936cba5a58f4526900ae6c7a1331313",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Y\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -316,7 +316,7 @@
         {
           "Id": "3c83696d53834299a00224a22761b4b3",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Z\n\ndouble\nValor por defecto: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -327,7 +327,7 @@
         {
           "Id": "ffb5771c2f4c4e50b47e374e5ece6cf9",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creado por coordenadas",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -336,7 +336,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "CrossProduct",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Genera un punto con las tres coordenadas cartesianas especificadas.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -347,7 +347,7 @@
         {
           "Id": "01fe2f20a7d74eecb6cd2a01018ec8ec",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valor de la expresión en la línea 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -356,7 +356,7 @@
         {
           "Id": "30ae98d87c724d02891bfe1faa5866e0",
           "Name": "",
-          "Description": "Value of expression at line 2",
+          "Description": "Valor de la expresión en la línea 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -364,7 +364,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Permite creación directa de código de DesignScript",
       "Code": "0..30..#8;\n12..0..#4;"
     },
     {
@@ -375,7 +375,7 @@
         {
           "Id": "0dcf9d732b714b569174be83839e564e",
           "Name": "list",
-          "Description": "List to get the item count of.\n\nvar[]..[]",
+          "Description": "Lista de la que se debe obtener el recuento de elementos.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 3,
           "UseLevels": true,
@@ -386,7 +386,7 @@
         {
           "Id": "9f4d155d1b704c86830eafcf6bd28784",
           "Name": "int",
-          "Description": "List length.",
+          "Description": "Longitud de la lista.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -395,7 +395,7 @@
       ],
       "FunctionSignature": "DSCore.List.Count@var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns the number of items stored in the given list.\n\nList.Count (list: var[]..[]): int"
+      "Description": "Devuelve el número de elementos almacenados en la lista especificada.\n\nList.Count (list: var[]..[]): int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -405,7 +405,7 @@
         {
           "Id": "659232f096bb4756ab30240c339aa0c6",
           "Name": "list",
-          "Description": "List to get the item count of.\n\nvar[]..[]",
+          "Description": "Lista de la que se debe obtener el recuento de elementos.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": true,
@@ -416,7 +416,7 @@
         {
           "Id": "578086c068d14cc8a80f2220657252e5",
           "Name": "int",
-          "Description": "List length.",
+          "Description": "Longitud de la lista.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -425,7 +425,7 @@
       ],
       "FunctionSignature": "DSCore.List.Count@var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns the number of items stored in the given list.\n\nList.Count (list: var[]..[]): int"
+      "Description": "Devuelve el número de elementos almacenados en la lista especificada.\n\nList.Count (list: var[]..[]): int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -435,7 +435,7 @@
         {
           "Id": "29d425608a854a4d9f0b8ee4077cd367",
           "Name": "list",
-          "Description": "List to get the item count of.\n\nvar[]..[]",
+          "Description": "Lista de la que se debe obtener el recuento de elementos.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": true,
@@ -446,7 +446,7 @@
         {
           "Id": "e6f42f796d054f0b8e3d49b7b96fb5eb",
           "Name": "int",
-          "Description": "List length.",
+          "Description": "Longitud de la lista.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -455,7 +455,7 @@
       ],
       "FunctionSignature": "DSCore.List.Count@var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns the number of items stored in the given list.\n\nList.Count (list: var[]..[]): int"
+      "Description": "Devuelve el número de elementos almacenados en la lista especificada.\n\nList.Count (list: var[]..[]): int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -465,7 +465,7 @@
         {
           "Id": "572167b6609242dfac8f42c428f41235",
           "Name": "list",
-          "Description": "List to flatten.\n\nvar[]..[]",
+          "Description": "Lista que se debe aplanar.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 3,
           "UseLevels": true,
@@ -474,7 +474,7 @@
         {
           "Id": "18d9db5c5740433fa3ff9b91e9b093ac",
           "Name": "amount",
-          "Description": "Layers of list nesting to remove (-1 will remove all list nestings)\n\nint\nDefault value : -1",
+          "Description": "Capas de anidación de lista que se van a eliminar (-1 eliminará todas las anidaciones de lista)\n\nint\nValor por defecto: -1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -485,7 +485,7 @@
         {
           "Id": "54dbee27e8a24ff1892812ef1523772d",
           "Name": "list",
-          "Description": "Flattened list by amount",
+          "Description": "Lista aplanada por cantidad.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -494,7 +494,7 @@
       ],
       "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+      "Description": "Aplana una lista anidada de listas por una cantidad determinada.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
     }
   ],
   "Connectors": [
@@ -597,7 +597,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Propiedades",
       "Version": "2.13",
       "Data": {}
     }
@@ -620,7 +620,7 @@
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Vista preliminar en segundo plano",
       "EyeX": -0.6891746520996094,
       "EyeY": 25.33542251586914,
       "EyeZ": 21.06568717956543,
@@ -777,7 +777,7 @@
     "Annotations": [
       {
         "Id": "1bed1efe74bb4a1ca06ff814226a8034",
-        "Title": "Replacing List.Map with List@Level",
+        "Title": "Sustitución de List.Map por List@Level",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -807,7 +807,7 @@
       },
       {
         "Id": "b94ccab312c940009338190a9c4d373f",
-        "Title": " Using \"Keep List Structure\"",
+        "Title": " Uso de \"Mantener la estructura de listas\"",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -832,7 +832,7 @@
       },
       {
         "Id": "71d074f3b55544bfadcadd78c591845a",
-        "Title": "Inspecting a List with List@Level and Count",
+        "Title": "Inspección de una lista con List@Level y Count",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -856,7 +856,7 @@
       },
       {
         "Id": "2430763962e347eb8a12eec7c513bbe9",
-        "Title": "Creating Geometry",
+        "Title": "Creación de geometría",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -880,7 +880,7 @@
       },
       {
         "Id": "77efdc5df117499cb0bfbfad13bf6223",
-        "Title": "Inspecting a List with List@Level and Flatten",
+        "Title": "Inspección de una lista con List@Level y Flatten",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -904,7 +904,7 @@
       },
       {
         "Id": "eb44fe22a0c74665a590b5c096b75ed7",
-        "Title": "Info",
+        "Title": "Información",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -926,8 +926,8 @@
       },
       {
         "Id": "edfeff1c4b7b4a7ebca8d23d2660bfa6",
-        "Title": "Info",
-        "DescriptionText": "General information for using List@Level",
+        "Title": "Información",
+        "DescriptionText": "Información general sobre el uso de List@Level",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -949,8 +949,8 @@
       },
       {
         "Id": "c585c1db8016400c81fd1e433cf124b3",
-        "Title": "Inputs",
-        "DescriptionText": "Description <Double click here to edit group description>",
+        "Title": "Entradas",
+        "DescriptionText": "Descripción <Haga doble clic aquí para editar la descripción del grupo>",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -973,8 +973,8 @@
       },
       {
         "Id": "960be371985a46c2a57a877d086d3568",
-        "Title": "Info",
-        "DescriptionText": "How this graph works",
+        "Title": "Información",
+        "DescriptionText": "Indica el funcionamiento de este gráfico.",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -995,7 +995,7 @@
       },
       {
         "Id": "5c3a7719de774ea4904d671f0abb0dca",
-        "Title": "The lists exist at different levels, with L1 being the lowest level. The total number of elements produced by this node is 64, as shown at the bottom right.",
+        "Title": "Las listas existen en diferentes niveles, siendo L1 el nivel más bajo. El número total de elementos producidos por este nodo es 64, como se muestra en la parte inferior derecha.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1016,7 +1016,7 @@
       },
       {
         "Id": "f680137a312c4de9881b54f7b9cf8aa2",
-        "Title": "In the previous version of Dynamo, List.Map is used to obtain the inner levels of lists. Even though the same result can be achieved using List.Map, it introduces more nodes into the workspace. Here we use List@Level to grab interior points of the grid in a more efficient way. We will use these points to create panels.\r\n\r\nWe also utilized the \"Keep List Structure\" option to maintain the groupings of the initial list and prevent flattening. If \"Keep List Structure\" is disabled, a single NurbsSurface will be created instead of eight.",
+        "Title": "En la versión anterior de Dynamo, List.Map se utilizaba para obtener los niveles internos de las listas. Aunque se puede lograr el mismo resultado mediante List.Map, introduce más nodos en el espacio de trabajo. Aquí usamos List@Level para capturar los puntos interiores de la rejilla de una forma más eficaz. Usaremos estos puntos para crear paneles.\r\n\r\nTambién utilizamos la opción \"Mantener la estructura de listas\" para mantener las agrupaciones de la lista inicial e impedir el aplanamiento. Si se ha desactivado esta opción, se creará una única NurbsSurface en lugar de ocho.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1037,7 +1037,7 @@
       },
       {
         "Id": "a9cd8e77dfc54359b6a145218b7ca761",
-        "Title": "We want to create panels in the interior of the grid. To do so, we will need to obtain the points at indexes 1 and 2 of each list in the innermost level. This can easily be done by using the List@Level feature. The grouping of the lists are kept by enabling the option \"Keep list structure\". But, first, let's inspect the list we created with Point.ByCoordinates a bit more to determine which level of the list we want to use.",
+        "Title": "Deseamos crear paneles en el interior de la rejilla. Para ello, necesitaremos obtener los puntos en los índices 1 y 2 de cada lista en el nivel más interno. Esto puede hacerse fácilmente mediante la función List@Level. La agrupación de las listas se conserva mediante la opción \"Mantener la estructura de listas\". Pero, primero, inspeccionemos la lista que hemos creado con Point.ByCoordinates un poco más para determinar el nivel de lista que deseamos utilizar.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1057,7 +1057,7 @@
       },
       {
         "Id": "0a361063945e455b8e3257cff2642be2",
-        "Title": "In this example, we create a 3D list containing a series of points. There are 8 lists at L3, and each list contains another 4 lists (L2). Each of the 4 lists contains 4 points (L1), resulting in a total of 128 points.",
+        "Title": "En este ejemplo, creamos una lista 3D que contiene una serie de puntos. Hay ocho listas en L3 y cada lista contiene otras cuatro listas (L2). Cada una de las cuatro listas contiene cuatro puntos (L1), lo que da un total de 128 puntos.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1078,7 +1078,7 @@
       },
       {
         "Id": "fa1915d2e9e44dad91659f7e24be4218",
-        "Title": "The List.Count node returns the number of elements that are present in each list. Depending on the selected level, different values are returned. Try changing the value of L3 by clicking on the arrows beside it.",
+        "Title": "El nodo List.Count devuelve la cantidad de elementos presentes en cada lista. En función del nivel seleccionado, se devuelven diferentes valores. Pruebe a cambiar el valor de L3. Para ello, haga clic en las flechas ubicadas al lado de este.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1098,7 +1098,7 @@
       },
       {
         "Id": "5a86a3b5794c42c8aa41e04f6b67a31b",
-        "Title": "There are eight lists at L3, each containing four lists. Hence, selecting L3 implements the List.Count function on the eight lists, giving eight '4' values.",
+        "Title": "Hay ocho listas en L3, cada una con cuatro listas. Por lo tanto, la selección de L3 implementa la función List.Count en las ocho listas, lo que da como resultado ocho valores \"4\".",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1118,7 +1118,7 @@
       },
       {
         "Id": "79cc8836a465418b94bcccfaf086b340",
-        "Title": "As an additional example, you can easily flatten the nested structure at inner levels of the lists by making use of the List@Level feature, together with the Flatten node. Try changing which level will be flattened by clicking on the arrows beside in the List@Level spinner.",
+        "Title": "Como ejemplo adicional, puede aplanar fácilmente la estructura anidada en los niveles internos de las listas mediante la función List@Level, junto con el nodo Flatten. Pruebe a cambiar el nivel que se aplanará. Para ello, haga clic en las flechas ubicadas al lado, en el control numérico List@Level.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1138,7 +1138,7 @@
       },
       {
         "Id": "ad757908626b43b9b0d820f1e37c8e53",
-        "Title": "Selecting L3 converts the eight lists at that level into a 1D array. As each of the eight lists contains four items (which are also lists), this will flatten all of the lists at L3 producing eight lists of 16 points.",
+        "Title": "La selección de L3 convierte las ocho listas de ese nivel en una matriz 1D. Como cada una de las ocho listas contiene cuatro elementos (que también son listas), esto aplanará todas las listas de L3, lo que genera ocho listas de 16 puntos.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1158,7 +1158,7 @@
       },
       {
         "Id": "c2a93eafafd843c38528cb8b83038b45",
-        "Title": "LIST@LEVEL\r\nList@Level replaces the functionality of List.Map, by allowing you to directly select the level of list you want to work with.",
+        "Title": "List@level\r\nList@level sustituye a la función List.Map, lo que le permite seleccionar directamente el nivel de detalle con el que desea trabajar en la lista.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1178,7 +1178,7 @@
       },
       {
         "Id": "d0db3c96e1bd44089ed5bf7b28d3b6ef",
-        "Title": "To change the list level you're working with, click the arrow beside the list input port and enable the \"Use levels\" option.\r\n\r\nWhen List@Level is first enabled on an input port, the list at the second innermost level (L2) is selected to be worked with. ",
+        "Title": "Para cambiar el nivel de lista con el que está trabajando, haga clic en la flecha junto al puerto de entrada de lista y active la opción \"Utilizar niveles\".\r\n\r\nCuando se activa por primera vez List@Level en un puerto de entrada, la lista en el segundo nivel más interno (L2) se selecciona para trabajar con ella. ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1198,7 +1198,7 @@
       },
       {
         "Id": "64bb560e25184efcb68ae42c72abfdbc",
-        "Title": "This node returns the number of elements that are present in each list in L2. By default, the results are flattened into a 1D list.",
+        "Title": "Este nodo devuelve la cantidad de elementos presentes en cada lista de L2. Por defecto, los resultados se aplanan en una lista 1D.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1218,7 +1218,7 @@
       },
       {
         "Id": "6e2ad0ec8d164d2f889ca49975a6b218",
-        "Title": "To preserve the nested structure of the lists, select the option \"Keep list structure\". \"@@\" indicates how to keep the list structure in Designscript.",
+        "Title": "Para conservar la estructura anidada de las listas, seleccione la opción \"Mantener la estructura de listas\". \"@@\" indica cómo mantener la estructura de listas en DesignScript.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1238,7 +1238,7 @@
       },
       {
         "Id": "aa8b961d72e34ee1b2797c161109af2c",
-        "Title": "Below is the List.Map equivalent to applying List@Level which requires additional nodes",
+        "Title": "A continuación se muestra la función List.Map equivalente a la aplicación List@Level que requiere nodos adicionales.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1259,7 +1259,7 @@
       },
       {
         "Id": "ac90dfe3800a487ab7ceb591a81b583c",
-        "Title": "With the sets of points selected, we can now create panels.",
+        "Title": "Con los conjuntos de puntos seleccionados, ahora se pueden crear paneles.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1280,7 +1280,7 @@
       },
       {
         "Id": "1f382490f13d4dabbcfbd57caa09ec7c",
-        "Title": "To determine which level of the list you want to work with, look at the bottom of the preview bubble or watch node and follow the lines from the List@Level notation up.",
+        "Title": "Para determinar el nivel de lista con el que desea trabajar, examine la parte inferior de la burbuja de vista preliminar, o bien observe y siga las líneas desde la notación de List@Level hacia arriba.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

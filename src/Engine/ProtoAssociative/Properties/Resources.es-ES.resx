@@ -118,21 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ClassCannotBeDefinedInsideLanguageBlock" xml:space="preserve">
-    <value>A class cannot be defined inside a language block.\n</value>
+    <value>Una clase no puede definirse dentro de un bloque de lenguaje.\n</value>
   </data>
   <data name="ClassNameAsVariableError" xml:space="preserve">
-    <value>{0} is a class name, can't be used as a variable.</value>
+    <value>{0} es un nombre de clase, no se puede utilizar como variable</value>
   </data>
   <data name="FunctionAsVariableError" xml:space="preserve">
-    <value>\"{0}\" is a function and not allowed as a variable name</value>
+    <value>\"{0}\" es una función y no se puede utilizar como nombre de variable</value>
   </data>
   <data name="FunctionPointerNotAllowedAtBinaryExpression" xml:space="preserve">
-    <value>Function pointer is not allowed at binary expression other than assignment!</value>
+    <value>El puntero de función no se permite en expresión binaria que no sea asignación</value>
   </data>
   <data name="InvalidNestedAssociativeBlock" xml:space="preserve">
-    <value>An associative language block is declared within an associative language block.</value>
+    <value>Un bloque de lenguaje asociativo se declara dentro de un bloque de lenguaje asociativo</value>
   </data>
   <data name="MemberVariableAlreadyDefined" xml:space="preserve">
-    <value>Member variable '{0}' is already defined in class {1}</value>
+    <value>Variable de elemento '{0}' ya definida en clase {1}</value>
   </data>
 </root>

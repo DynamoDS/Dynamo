@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,120 +118,120 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BitmapOverflowError" xml:space="preserve">
-    <value>The supplied color data is too large to fit in the image bounds.</value>
+    <value>指定されたカラー データは大きすぎるため、イメージの境界に収まりません。</value>
   </data>
   <data name="EnumDateOfWeekFriday" xml:space="preserve">
-    <value>Friday</value>
+    <value>金曜日</value>
   </data>
   <data name="EnumDateOfWeekMonday" xml:space="preserve">
-    <value>Monday</value>
+    <value>月曜日</value>
   </data>
   <data name="EnumDateOfWeekSaturday" xml:space="preserve">
-    <value>Saturday</value>
+    <value>土曜日</value>
   </data>
   <data name="EnumDateOfWeekSunday" xml:space="preserve">
-    <value>Sunday</value>
+    <value>日曜日</value>
   </data>
   <data name="EnumDateOfWeekThursday" xml:space="preserve">
-    <value>Thursday</value>
+    <value>木曜日</value>
   </data>
   <data name="EnumDateOfWeekTuesday" xml:space="preserve">
-    <value>Tuesday</value>
+    <value>火曜日</value>
   </data>
   <data name="EnumDateOfWeekWednesday" xml:space="preserve">
-    <value>Wednesday</value>
+    <value>水曜日</value>
   </data>
   <data name="Exception_Deserialize_Bad_Format" xml:space="preserve">
-    <value>The json for the type {0} was not formatted correctly</value>
+    <value>タイプ {0} の JSON が正しくフォーマットされませんでした</value>
   </data>
   <data name="Exception_Deserialize_Unsupported_Cache" xml:space="preserve">
-    <value>The stored data can not be loaded.</value>
+    <value>格納されたデータをロードできません。</value>
   </data>
   <data name="Exception_Serialize_Depth_Unsupported" xml:space="preserve">
-    <value>Depth {0} Exceeds MaxDepth {1} at path "{2}"</value>
+    <value>深さ {0} がパス "{2}" の MaxDepth {1} を超えています</value>
   </data>
   <data name="Exception_Serialize_DesignScript_Unsupported" xml:space="preserve">
-    <value>This type of Geometry is not able to be serialized.</value>
+    <value>このタイプのジオメトリはシリアル化できません。</value>
   </data>
   <data name="Exception_Serialize_Unsupported_Type" xml:space="preserve">
-    <value>Cannot store data of type {0}.</value>
+    <value>タイプ {0} のデータを格納できません。</value>
   </data>
   <data name="ExportToCSVObsolete" xml:space="preserve">
-    <value>Use Data.ExportCSV node instead</value>
+    <value>代わりに Data.ExportCSV ノードを使用</value>
   </data>
   <data name="FactorialNegativeInt" xml:space="preserve">
-    <value>The input value of Math.Factorial cannot be negative.</value>
+    <value>Math.Factorial に負の値を入力することはできません。</value>
   </data>
   <data name="FactorialOverflow" xml:space="preserve">
-    <value>The return value of Math.Factorial is out of range.</value>
+    <value>Math.Factorial の戻り値が範囲外です。</value>
   </data>
   <data name="FindPointsWithinRadiusNullPointMessage" xml:space="preserve">
-    <value>You must provide a center point.</value>
+    <value>中心点を指定する必要があります。</value>
   </data>
   <data name="FindPointsWithinRadiusSearchRadiusMessage" xml:space="preserve">
-    <value>The search radius cannot be zero.</value>
+    <value>半径検索の値をゼロにすることはできません。</value>
   </data>
   <data name="FromObjectObsolete" xml:space="preserve">
-    <value>This node is obsolete, please use "String from Object"</value>
+    <value>このノードは使用されなくなりました。"String from Object" を使用してください</value>
   </data>
   <data name="IntegerOverflow" xml:space="preserve">
-    <value>The operation resulted in an integer overflow. Its result may be unexpected.</value>
+    <value>演算の結果、整数オーバーフローが発生しました。予期しない結果になる可能性があります。</value>
   </data>
   <data name="InvalidDestinationPathErrorMessage" xml:space="preserve">
-    <value>Invalid destination file path used as copy path.</value>
+    <value>コピー パスとして使用されたコピー先のファイル パスが無効です。</value>
   </data>
   <data name="InvalidKeysErrorMessage" xml:space="preserve">
-    <value>One or more input types are not matching. Lists as keys are not supported.</value>
+    <value>1 つまたは複数の入力タイプが一致しません。リストをキーとして使用することはできません。</value>
   </data>
   <data name="InvalidKeysLenghtErrorMessage" xml:space="preserve">
-    <value>Number of items does not match the number of keys. href=InvalidKeysLenghtErrorMessage.html</value>
+    <value>項目数がキーの数に一致しません。href=InvalidKeysLenghtErrorMessage.html</value>
   </data>
   <data name="LoadImageFromPathObsolete" xml:space="preserve">
-    <value>Use File.FromPath -&gt;  Image.ReadFromFile nodes instead</value>
+    <value>代わりに File.FromPath -&gt;  Image.ReadFromFile ノードを使用します</value>
   </data>
   <data name="MissingPythonEngine" xml:space="preserve">
-    <value>The selected Python engine could not be found</value>
+    <value>選択した Python エンジンは見つかりませんでした</value>
   </data>
   <data name="ObjectArgumentExceptionMessage" xml:space="preserve">
-    <value>Object cannot be null, please provide appropriate value.</value>
+    <value>オブジェクトを NULL にできません。適切な値を指定してください。</value>
   </data>
   <data name="QuadtreeConstructionEmptyUVSetMessage" xml:space="preserve">
-    <value>You cannot construct a quadtree from an empty set of points.</value>
+    <value>空の点のセットからはクアッドツリーを作成できません。</value>
   </data>
   <data name="QuadtreeConstructionNullUVSetMessage" xml:space="preserve">
-    <value>A Quadtree cannot be constructed from a null set of UVs.</value>
+    <value>UV の NULL セットから Quadtree を作成することはできません。</value>
   </data>
   <data name="ReadImageObsolete" xml:space="preserve">
-    <value>Use File.FromPath -&gt; Image.ReadFromFile -&gt;  Image.Pixels nodes instead</value>
+    <value>代わりに File.FromPath -&gt;  Image.ReadFromFile -&gt;  Image.Pixels ノードを使用します</value>
   </data>
   <data name="ReadTextObsolete" xml:space="preserve">
-    <value>Use File.FromPath -&gt;  File.ReadText nodes instead.</value>
+    <value>代わりに File.FromPath -&gt;  File.ReadText ノードを使用します。</value>
   </data>
   <data name="StringRemoveCountOutOfRangeMessage" xml:space="preserve">
-    <value>Count is out of range!</value>
+    <value>Count が範囲外です。</value>
   </data>
   <data name="StringRemoveStartIndexOutOfRangeMessage" xml:space="preserve">
-    <value>StartIndex is out of range!</value>
+    <value>startIndex が範囲外です。</value>
   </data>
   <data name="StringToNumberInvalidNumberMessage" xml:space="preserve">
-    <value>Not a valid number.</value>
+    <value>有効な数値ではありません。</value>
   </data>
   <data name="WebRequestNullUrlMessage" xml:space="preserve">
-    <value>The url cannot be null.</value>
+    <value>URL を null にすることはできません。</value>
   </data>
   <data name="WriteImageObsolete" xml:space="preserve">
-    <value>Use Image.WriteToFile node instead</value>
+    <value>代わりに Image.WriteToFile ノードを使用します</value>
   </data>
   <data name="DefineDataUnexpectedInputExceptionMessage" xml:space="preserve">
-    <value>This node expected a {0} input but received a {1} input. Please provide the expected input, or pick a new type in the node’s drop-down menu.</value>
+    <value>このノードは {0} 入力を要求しましたが、{1} 入力を受け取りました。必要な入力を提供するか、ノードのドロップダウン メニューで新しい型を選択してくださ’い。</value>
   </data>
   <data name="DefineDataUnsupportedCombinationOfDataTypesExceptionMessage" xml:space="preserve">
-    <value>This node does not support the combination of data types in the current input list {0}. Ensure the input list contains items of the same data type, or a mix of types with a common parent type</value>
+    <value>このノードは、現在の入力リスト {0} 内のデータ タイプの組み合わせをサポートしていません。入力リストに同じデータ タイプの項目が含まれるようにするか、共通の親タイプを持つ型の組み合わせになるようにしてください</value>
   </data>
   <data name="DefineDataUnsupportedDataTypeExceptionMessage" xml:space="preserve">
-    <value>This node does not support the current input data type ({0}). View the supported data types in the drop-down menu.</value>
+    <value>このノードは現在の入力データ タイプ({0})をサポートしていません。ドロップダウン メニューでサポートされているデータ タイプを確認してください。</value>
   </data>
   <data name="DefineDataSupportedInputValueExceptionMessage" xml:space="preserve">
-    <value>Input must be a single value or a non-nested list.</value>
+    <value>入力は単一の値またはネストされていないリストである必要があります。</value>
   </data>
 </root>

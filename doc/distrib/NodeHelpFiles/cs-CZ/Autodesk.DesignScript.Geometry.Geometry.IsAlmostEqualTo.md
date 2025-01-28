@@ -1,7 +1,7 @@
 ## Podrobnosti
-Uzel `Geometry.IsAlmostEqualTo` vrátí booleovskou hodnotu podle toho, zda mají dvě dané geometrie stejné geometrické reprezentace nebo číselné hodnoty.
+`Geometry.IsAlmostEqualTo` returns a boolean value indication whether the two given geometries have the same geometrical representations or numerical values.
 
-V příkladu níže byl válec vytvořen dvěma způsoby. Dva válce jsou poté porovnány pomocí funkce `Geometry.IsAlmostEqualTo`.
+In the example below, a cylinder is created two ways. The two cylinders are then compared with `Geometry.IsAlmostEqualTo`.
 ___
 ## Vzorový soubor
 

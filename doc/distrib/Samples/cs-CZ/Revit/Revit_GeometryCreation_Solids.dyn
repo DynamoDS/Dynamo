@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "This graph presents several methods of creating Solid geometry in Dynamo and integrating it in Revit - some methods may be used in a project environment, others - only in certain Family environments (Conceptual Mass). ",
+  "Description": "Tento graf představuje několik metod tvorby geometrie těles v aplikaci Dynamo a jejich začlenění do aplikace Revit – některé metody je možné použít v prostředí projektu, jiné – pouze v určitých prostředích rodin (koncepční objem). ",
   "Name": "Revit_GeometryCreation_Solids",
   "ElementResolver": {
     "ResolutionMap": {
@@ -26,7 +26,7 @@
         {
           "Id": "58b983a89c044bb08eb3ba927a841793",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice X\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -35,7 +35,7 @@
         {
           "Id": "ef51ce2c7c354d55aac70e544d78327d",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Y\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -44,7 +44,7 @@
         {
           "Id": "99bb94539d5b4abfaadf02a304b5bfb7",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Z\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -55,7 +55,7 @@
         {
           "Id": "96e34ce33ad44e4b830708b638ae1027",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Bod vytvořený pomocí souřadnic",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -64,7 +64,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Vytvoří bod podle zadaných 3 kartézských souřadnic\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -74,7 +74,7 @@
         {
           "Id": "679f9df719004adc911199024cc13a79",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice X\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -83,7 +83,7 @@
         {
           "Id": "2bec1e057c9a4b9bbd6c2b19f2565c1b",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Y\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -92,7 +92,7 @@
         {
           "Id": "1b65e460e6f24da6b55afd2a7109c2f3",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Z\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -103,7 +103,7 @@
         {
           "Id": "3c4614b939c144cebe60b73c3b44de92",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Bod vytvořený pomocí souřadnic",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -112,7 +112,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Vytvoří bod podle zadaných 3 kartézských souřadnic\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -122,7 +122,7 @@
         {
           "Id": "ec3accb46b9f4dcdb921692d6873d179",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice X\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -131,7 +131,7 @@
         {
           "Id": "4550726cee3d4ceb8a528b9ea596c288",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Y\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -140,7 +140,7 @@
         {
           "Id": "95f0ab827cd24c23ae0abffb1d0b9fcd",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Z\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -151,7 +151,7 @@
         {
           "Id": "9734c5089fb641cc8507abb30c60812d",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Bod vytvořený pomocí souřadnic",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -160,7 +160,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Vytvoří bod podle zadaných 3 kartézských souřadnic\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -180,7 +180,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Vytvoří číslo.",
       "InputValue": 10.0
     },
     {
@@ -201,7 +201,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Vytvoří číslo.",
       "InputValue": 5.0
     },
     {
@@ -212,7 +212,7 @@
         {
           "Id": "d54d979467b645d0ba3ab946d3317370",
           "Name": "firstPoint",
-          "Description": "1st point of arc\n\nPoint",
+          "Description": "1. bod oblouku\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -221,7 +221,7 @@
         {
           "Id": "9fef95d9168342d585c0c4c0a6e31b63",
           "Name": "secondPoint",
-          "Description": "2nd point of arc\n\nPoint",
+          "Description": "2. bod oblouku\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -230,7 +230,7 @@
         {
           "Id": "3172b8d3f9da4a4b843a36f9011fd45b",
           "Name": "thirdPoint",
-          "Description": "3rd point of arc\n\nPoint",
+          "Description": "3. bod oblouku\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -241,7 +241,7 @@
         {
           "Id": "0deefd422c544aaa943911e7abbeb667",
           "Name": "Arc",
-          "Description": "Arc created from three points",
+          "Description": "Oblouk vytvořený pomocí tří bodů",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -250,7 +250,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Arc.ByThreePoints@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Create an arc by providing three sequential points along its circumference.\n\nArc.ByThreePoints (firstPoint: Point, secondPoint: Point, thirdPoint: Point): Arc"
+      "Description": "Vytvoří na obvodu oblouk podle zadaných tří postupných bodů.\n\nArc.ByThreePoints (firstPoint: Point, secondPoint: Point, thirdPoint: Point): Arc"
     },
     {
       "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
@@ -261,7 +261,7 @@
         {
           "Id": "f885bf8dfe644f03ac62e0596be39a98",
           "Name": "item0",
-          "Description": "Item Index #0",
+          "Description": "Index položky č. 0",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -270,7 +270,7 @@
         {
           "Id": "6a75e519fc8646d896f0095c4bbc24e9",
           "Name": "item1",
-          "Description": "Item Index #1",
+          "Description": "Index položky č. 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -281,7 +281,7 @@
         {
           "Id": "4ce0dac5e2ca42d4932c9313a386b2df",
           "Name": "list",
-          "Description": "A list",
+          "Description": "Seznam",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -289,7 +289,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Makes a new list from the given inputs"
+      "Description": "Vytvoří nový seznam z daných vstupů"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -299,7 +299,7 @@
         {
           "Id": "6b1d0e8f2dce4ceebec5a12ad6efccdb",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice X\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -308,7 +308,7 @@
         {
           "Id": "b710b9eb704c4df581f6001c16337152",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Y\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -317,7 +317,7 @@
         {
           "Id": "0c2c044eed5c48a79261bb4b84e351aa",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Z\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -328,7 +328,7 @@
         {
           "Id": "dd69dbba8ba542729bfe6eefa9950009",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Bod vytvořený pomocí souřadnic",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -337,7 +337,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Vytvoří bod podle zadaných 3 kartézských souřadnic\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -357,7 +357,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Vytvoří číslo.",
       "InputValue": -2.0
     },
     {
@@ -368,7 +368,7 @@
         {
           "Id": "991b18f91b2641c5adc1fe7f3d043c8b",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice X\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -377,7 +377,7 @@
         {
           "Id": "fa5543bd6ce24c8caa6e4d625de3d2e0",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Y\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -386,7 +386,7 @@
         {
           "Id": "b5f7009001d5454683e515697b03a4d1",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Z\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -397,7 +397,7 @@
         {
           "Id": "191c038e864041659636fefc97279963",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Bod vytvořený pomocí souřadnic",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -406,7 +406,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Vytvoří bod podle zadaných 3 kartézských souřadnic\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -426,7 +426,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Vytvoří číslo.",
       "InputValue": 5.0
     },
     {
@@ -437,7 +437,7 @@
         {
           "Id": "1e31cd8bd7914969a7bbdd7348453b11",
           "Name": "firstPoint",
-          "Description": "1st point of arc\n\nPoint",
+          "Description": "1. bod oblouku\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -446,7 +446,7 @@
         {
           "Id": "6e4d6e1fee9d40089801be861a1be2f7",
           "Name": "secondPoint",
-          "Description": "2nd point of arc\n\nPoint",
+          "Description": "2. bod oblouku\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -455,7 +455,7 @@
         {
           "Id": "8548057b05624aa9a87940431b65bd58",
           "Name": "thirdPoint",
-          "Description": "3rd point of arc\n\nPoint",
+          "Description": "3. bod oblouku\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -466,7 +466,7 @@
         {
           "Id": "1be2c20381f54da49d1ec7e66d711c02",
           "Name": "Arc",
-          "Description": "Arc created from three points",
+          "Description": "Oblouk vytvořený pomocí tří bodů",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -475,7 +475,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Arc.ByThreePoints@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Create an arc by providing three sequential points along its circumference.\n\nArc.ByThreePoints (firstPoint: Point, secondPoint: Point, thirdPoint: Point): Arc"
+      "Description": "Vytvoří na obvodu oblouk podle zadaných tří postupných bodů.\n\nArc.ByThreePoints (firstPoint: Point, secondPoint: Point, thirdPoint: Point): Arc"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -485,7 +485,7 @@
         {
           "Id": "50b0d0b153a847bc91795b5975fc9892",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice X\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -494,7 +494,7 @@
         {
           "Id": "a21f3fef08304bd183e5d4089d5db781",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Y\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -503,7 +503,7 @@
         {
           "Id": "47d7ae08cdad4bc2bfb19352666ccf17",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Z\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -514,7 +514,7 @@
         {
           "Id": "7733ea44eda04c13bc36b1bedc2ee47d",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Bod vytvořený pomocí souřadnic",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -523,7 +523,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Vytvoří bod podle zadaných 3 kartézských souřadnic\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -543,7 +543,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Vytvoří číslo.",
       "InputValue": 5.0
     },
     {
@@ -564,7 +564,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Vytvoří číslo.",
       "InputValue": 10.0
     },
     {
@@ -585,7 +585,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Vytvoří číslo.",
       "InputValue": 15.0
     },
     {
@@ -596,7 +596,7 @@
         {
           "Id": "c3615c063b4146a38e40df3a0c5bb905",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice X\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -605,7 +605,7 @@
         {
           "Id": "3fefc05cd8a44fbf8ea656eb0d3da87c",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Y\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -614,7 +614,7 @@
         {
           "Id": "406f6f96cd2842bc939390b7424c1e32",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Z\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -625,7 +625,7 @@
         {
           "Id": "c7e51c9ed2a145bbb32cece969052ea9",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Bod vytvořený pomocí souřadnic",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -634,7 +634,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Vytvoří bod podle zadaných 3 kartézských souřadnic\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -664,7 +664,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Solid.Volume",
       "Replication": "Auto",
-      "Description": "Returns the total volume of the Solid\n\nSolid.Volume: double"
+      "Description": "Vrací celkový objem tělesa\n\nSolid.Volume: double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -685,7 +685,7 @@
         {
           "Id": "aa9e36cbe5d244898b3a5e2fbff0570c",
           "Name": "Solid",
-          "Description": "Solid",
+          "Description": "Těleso",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -694,7 +694,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Solid.ByLoft@Autodesk.DesignScript.Geometry.Curve[]",
       "Replication": "Auto",
-      "Description": "Create a Solid by lofting between input cross section closed Curves.\n\nSolid.ByLoft (crossSections: Curve[]): Solid"
+      "Description": "Vytvoří těleso šablonováním mezi uzavřenými křivkami vstupního příčného řezu.\n\nSolid.ByLoft (crossSections: Curve[]): Solid"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -704,7 +704,7 @@
         {
           "Id": "e75c05679c924cc9a6c552bff87251ec",
           "Name": "startPoint",
-          "Description": "Line start point\n\nPoint",
+          "Description": "Počáteční bod čáry\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -713,7 +713,7 @@
         {
           "Id": "cd460704eafc4a8d89a5f1b64c3b87a0",
           "Name": "endPoint",
-          "Description": "Line end point\n\nPoint",
+          "Description": "Koncový bod čáry\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -724,7 +724,7 @@
         {
           "Id": "199ada7b8663427da4aaebef7b76bdb5",
           "Name": "Line",
-          "Description": "Line from start and end point",
+          "Description": "Čára od počátečního a koncového bodu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -733,7 +733,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Creates a straight Line between two input Points.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
+      "Description": "Vytvoří rovnou čáru mezi dvěma vstupními body.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
     },
     {
       "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
@@ -744,7 +744,7 @@
         {
           "Id": "a6486c1d8d34434a9530bde8f1ce7b7f",
           "Name": "item0",
-          "Description": "Item Index #0",
+          "Description": "Index položky č. 0",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -753,7 +753,7 @@
         {
           "Id": "aadcac4797c749d481417533330edb83",
           "Name": "item1",
-          "Description": "Item Index #1",
+          "Description": "Index položky č. 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -764,7 +764,7 @@
         {
           "Id": "8d8f9da5976a4a9b8237f90527cb17e4",
           "Name": "list",
-          "Description": "A list",
+          "Description": "Seznam",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -772,7 +772,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Makes a new list from the given inputs"
+      "Description": "Vytvoří nový seznam z daných vstupů"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -782,7 +782,7 @@
         {
           "Id": "160a95dbbff445cc9d96169440e3d17c",
           "Name": "startPoint",
-          "Description": "Line start point\n\nPoint",
+          "Description": "Počáteční bod čáry\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -791,7 +791,7 @@
         {
           "Id": "848100afa963406f8167339296a42322",
           "Name": "endPoint",
-          "Description": "Line end point\n\nPoint",
+          "Description": "Koncový bod čáry\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -802,7 +802,7 @@
         {
           "Id": "00a1cbe17b5f40758fea4a9ab5bba1ff",
           "Name": "Line",
-          "Description": "Line from start and end point",
+          "Description": "Čára od počátečního a koncového bodu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -811,7 +811,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Creates a straight Line between two input Points.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
+      "Description": "Vytvoří rovnou čáru mezi dvěma vstupními body.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
     },
     {
       "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
@@ -822,7 +822,7 @@
         {
           "Id": "562f71a4dda54cf8aee7044842573920",
           "Name": "item0",
-          "Description": "Item Index #0",
+          "Description": "Index položky č. 0",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -831,7 +831,7 @@
         {
           "Id": "f7820169635343849644de4305f0dc16",
           "Name": "item1",
-          "Description": "Item Index #1",
+          "Description": "Index položky č. 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -842,7 +842,7 @@
         {
           "Id": "ed7faf36e53f43b98ca57c77d3b9de09",
           "Name": "list",
-          "Description": "A list",
+          "Description": "Seznam",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -850,7 +850,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Makes a new list from the given inputs"
+      "Description": "Vytvoří nový seznam z daných vstupů"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -889,7 +889,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Solid.ByLoft@Autodesk.DesignScript.Geometry.Curve[],Autodesk.DesignScript.Geometry.Curve[]",
       "Replication": "Auto",
-      "Description": "Create a Solid by lofting between input cross section closed Curves.\n\nSolid.ByLoft (crossSections: Curve[], guideCurves: Curve[]): Solid"
+      "Description": "Vytvoří těleso šablonováním mezi uzavřenými křivkami vstupního příčného řezu.\n\nSolid.ByLoft (crossSections: Curve[], guideCurves: Curve[]): Solid"
     },
     {
       "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
@@ -900,7 +900,7 @@
         {
           "Id": "9ca8b6b2844b4c888d7e958262f1a5fa",
           "Name": "item0",
-          "Description": "Item Index #0",
+          "Description": "Index položky č. 0",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -909,7 +909,7 @@
         {
           "Id": "d783c8c60ac54f878ac8d017b0f94544",
           "Name": "item1",
-          "Description": "Item Index #1",
+          "Description": "Index položky č. 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -918,7 +918,7 @@
         {
           "Id": "9de1859ebc944597b3ee6217f7434555",
           "Name": "item2",
-          "Description": "Item Index #2",
+          "Description": "Index položky č. 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -929,7 +929,7 @@
         {
           "Id": "ea3c676659d84cce9b8c541ab0a18cad",
           "Name": "list",
-          "Description": "A list",
+          "Description": "Seznam",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -937,7 +937,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Makes a new list from the given inputs"
+      "Description": "Vytvoří nový seznam z daných vstupů"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -947,7 +947,7 @@
         {
           "Id": "534e280029984d2280a8b122b9bca3ed",
           "Name": "points",
-          "Description": "Points for nurbs curve\n\nPoint[]",
+          "Description": "Body pro křivku nurbs\n\nPoint[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -958,7 +958,7 @@
         {
           "Id": "1c8eb0e03cdc4f64874afd365a53e9a3",
           "Name": "NurbsCurve",
-          "Description": "Nurbscurve created from points",
+          "Description": "Křivka Nurbscurve vytvořená z bodů",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -967,7 +967,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[]",
       "Replication": "Auto",
-      "Description": "Create a BSplineCurve by interpolating between points.\n\nNurbsCurve.ByPoints (points: Point[]): NurbsCurve"
+      "Description": "Vytvoří objekt BSplineCurve interpolací mezi body.\n\nNurbsCurve.ByPoints (points: Point[]): NurbsCurve"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -986,7 +986,7 @@
         {
           "Id": "eb627b3005e54fc1ae20ccdb6d05f95d",
           "Name": "direction",
-          "Description": "Vector",
+          "Description": "Vektor",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -997,7 +997,7 @@
         {
           "Id": "e1d8e9828d804940af0b0f81bb7a3e58",
           "Name": "Geometry",
-          "Description": "Geometry",
+          "Description": "Geometrie",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1006,7 +1006,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@Autodesk.DesignScript.Geometry.Vector",
       "Replication": "Auto",
-      "Description": "Translate geometry in the given direction by the vector length\n\nGeometry.Translate (direction: Vector): Geometry"
+      "Description": "Posune geometrii o délku vektoru v zadaném směru\n\nGeometry.Translate (direction: Vector): Geometry"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1025,7 +1025,7 @@
         {
           "Id": "019ed2eb6a0f49f3bd57c6415cb62f2a",
           "Name": "internalFaceThickness",
-          "Description": "Distance to extend the shell inwards\n\ndouble\nDefault value : 1",
+          "Description": "Vzdálenost, o kterou se skořepina prodlouží směrem dovnitř\n\ndouble\nVýchozí hodnota: 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1034,7 +1034,7 @@
         {
           "Id": "963788878bad40eea728ca493ade143b",
           "Name": "externalFaceThickness",
-          "Description": "Distance to extend she shell outwards\n\ndouble\nDefault value : 1",
+          "Description": "Vzdálenost, o kterou se skořepina prodlouží směrem ven\n\ndouble\nVýchozí hodnota: 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1054,7 +1054,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Solid.ThinShell@double,double",
       "Replication": "Auto",
-      "Description": "Obtain a solid Shell from the Faces of this Solid\n\nSolid.ThinShell (internalFaceThickness: double = 1, externalFaceThickness: double = 1): Solid"
+      "Description": "Získá skořepinu tělesa ze stěn tohoto tělesa\n\nSolid.ThinShell (internalFaceThickness: double = 1, externalFaceThickness: double = 1): Solid"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1065,7 +1065,7 @@
         {
           "Id": "4106de4282b842cd94d37cdd0ad36e4b",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Hodnota výrazu na řádku 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1073,7 +1073,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
       "Code": "0;"
     },
     {
@@ -1093,7 +1093,7 @@
         {
           "Id": "5efb94a55f1a45a18fb9fdeecb0b856a",
           "Name": "direction",
-          "Description": "Vector",
+          "Description": "Vektor",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1104,7 +1104,7 @@
         {
           "Id": "4a25024d709442f189e49b34051220de",
           "Name": "Geometry",
-          "Description": "Geometry",
+          "Description": "Geometrie",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1113,7 +1113,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@Autodesk.DesignScript.Geometry.Vector",
       "Replication": "Auto",
-      "Description": "Translate geometry in the given direction by the vector length\n\nGeometry.Translate (direction: Vector): Geometry"
+      "Description": "Posune geometrii o délku vektoru v zadaném směru\n\nGeometry.Translate (direction: Vector): Geometry"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1132,7 +1132,7 @@
         {
           "Id": "9081544c2a66418fb2a736229ef8b456",
           "Name": "other",
-          "Description": "Geometry",
+          "Description": "Geometrie",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1141,7 +1141,7 @@
         {
           "Id": "236b495f3fc3410483361b78d32b2f1d",
           "Name": "pick",
-          "Description": "Point",
+          "Description": "Bod",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1161,7 +1161,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Trim@Autodesk.DesignScript.Geometry.Geometry,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Removes elements of the entity closest to the pick point\n\nGeometry.Trim (other: Geometry, pick: Point): Geometry[]"
+      "Description": "Odebere prvky entity nejblíže vybranému bodu\n\nGeometry.Trim (other: Geometry, pick: Point): Geometry[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1171,7 +1171,7 @@
         {
           "Id": "19673ebbaec4433eb48549d4a02876bc",
           "Name": "origin",
-          "Description": "Origin point of plane\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0) (disabled)",
+          "Description": "Bod počátku roviny\n\nPoint\nVýchozí hodnota: Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0) (zakázáno)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1180,7 +1180,7 @@
         {
           "Id": "873cde54e7e84db2adf559f3590a23fa",
           "Name": "normal",
-          "Description": "Normal direction vector of plane\n\nVector\nDefault value : Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1) (disabled)",
+          "Description": "Normálový směrový vektor roviny\n\nVector\nVýchozí hodnota: Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1) (disabled)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1191,7 +1191,7 @@
         {
           "Id": "a9ffbe24a2214ad0b208398f68651c7f",
           "Name": "Plane",
-          "Description": "Plane created by origin and normal",
+          "Description": "Rovina vytvořená pomocí počátku a normály",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1200,7 +1200,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Plane.ByOriginNormal@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector",
       "Replication": "Auto",
-      "Description": "Create a Plane centered at root Point, with input normal Vector.\n\nPlane.ByOriginNormal (origin: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), normal: Vector = Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1)): Plane"
+      "Description": "Vytvoří rovinu vystředěnou na kořenovém bodě se vstupním normálovým vektorem.\n\nPlane.ByOriginNormal (origin: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), normal: Vector = Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1)): Plane"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1211,7 +1211,7 @@
         {
           "Id": "9e37be8905064d3eaccfbdb7b390bb6f",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Hodnota výrazu na řádku 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1219,7 +1219,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
       "Code": "Vector.ByCoordinates(-20,0,0);"
     },
     {
@@ -1231,7 +1231,7 @@
         {
           "Id": "d54f6c03c6294e52b0d13c7de5c51b23",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Hodnota výrazu na řádku 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1239,7 +1239,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
       "Code": "Vector.ByCoordinates(20,0,0);"
     },
     {
@@ -1251,7 +1251,7 @@
         {
           "Id": "1438286989f444e8b189c1d8a3cfb08b",
           "Name": "Vector",
-          "Description": "Vector",
+          "Description": "Vektor",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1260,7 +1260,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ZAxis",
       "Replication": "Auto",
-      "Description": "Get the canonical Z axis Vector (0,0,1)\n\nVector.ZAxis ( ): Vector"
+      "Description": "Získá kanonický vektor osy Z (0,0,1)\n\nVector.ZAxis ( ): Vector"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1271,7 +1271,7 @@
         {
           "Id": "16ff85808a6e4259965f79c18b05eef3",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Hodnota výrazu na řádku 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1279,7 +1279,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umožňuje přímou tvorbu kódu DesignScript.",
       "Code": "Point.ByCoordinates(0,0,5);"
     },
     {
@@ -1290,7 +1290,7 @@
         {
           "Id": "1ba7a475d260415ca5983e80a282057e",
           "Name": "geometries",
-          "Description": "A collection of Geometry\n\nGeometry[]",
+          "Description": "Kolekce geometrií\n\nGeometry[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1310,7 +1310,7 @@
       ],
       "FunctionSignature": "Revit.Elements.ImportInstance.ByGeometries@Autodesk.DesignScript.Geometry.Geometry[]",
       "Replication": "Auto",
-      "Description": "Import a collection of Geometry (Solid, Curve, Surface, etc) into Revit as an ImportInstance. This variant is much faster than ImportInstance.ByGeometry as it uses a batch method.\n\nImportInstance.ByGeometries (geometries: Geometry[]): ImportInstance"
+      "Description": "Importuje kolekci geometrií (těles, křivek, povrchů atd) do aplikace Revit jako objekt ImportInstance. Tato varianta je daleko rychlejší než metoda ImportInstance.ByGeometry, protože používá dávkové zpracování.\n\nImportInstance.ByGeometries (geometries: Geometry[]): ImportInstance"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1320,7 +1320,7 @@
         {
           "Id": "0d45c18f15ef466ca48e124751ba33ca",
           "Name": "curve",
-          "Description": "Curve",
+          "Description": "Křivka",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1340,7 +1340,7 @@
       ],
       "FunctionSignature": "Revit.Elements.ModelCurve.ReferenceCurveByCurve@Autodesk.DesignScript.Geometry.Curve",
       "Replication": "Auto",
-      "Description": "Construct a Revit ModelCurve element from a Curve\n\nModelCurve.ReferenceCurveByCurve (curve: Curve): ModelCurve"
+      "Description": "Vytvoří objekt ModelCurve aplikace Revit z křivky\n\nModelCurve.ReferenceCurveByCurve (curve: Curve): ModelCurve"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1359,7 +1359,7 @@
         {
           "Id": "a4bb9bad1d8d471bb02a4ece4eb9ee00",
           "Name": "isSolid",
-          "Description": "bool\nDefault value : true",
+          "Description": "bool\nVýchozí hodnota : true",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1370,7 +1370,7 @@
         {
           "Id": "765aa475821c4384902e163da8dd8bb4",
           "Name": "Form",
-          "Description": "Form",
+          "Description": "Tvar",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1379,7 +1379,7 @@
       ],
       "FunctionSignature": "Revit.Elements.Form.ByLoftCrossSections@Revit.GeometryReferences.ElementCurveReference[][],bool",
       "Replication": "Auto",
-      "Description": "Creates a Form by lofting a nested list of curves\n\nForm.ByLoftCrossSections (curves: ElementCurveReference[][], isSolid: bool = true): Form"
+      "Description": "Vytvoří tvar šablonováním vnořeného seznamu křivek\n\nForm.ByLoftCrossSections (curves: ElementCurveReference[][], isSolid: bool = true): Form"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1409,7 +1409,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.Curves",
       "Replication": "Auto",
-      "Description": "Returns curves of the polycurve\n\nPolyCurve.Curves ( ): Curve[]"
+      "Description": "Vrátí křivky objektu PolyCurve\n\nPolyCurve.Curves ( ): Curve[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1419,7 +1419,7 @@
         {
           "Id": "396eee600f7a4ca5a25b9139086f6382",
           "Name": "curves",
-          "Description": "Curves to join into polycurve\n\nCurve[]",
+          "Description": "Křivky, které se spojí a vytvoří objekty PolyCurve\n\nCurve[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1428,7 +1428,7 @@
         {
           "Id": "6fd0e823f6c3426a910ecfe100d3f313",
           "Name": "joinTolerance",
-          "Description": "Tolerance to determine size of gap allowed between curves to be joined\n\ndouble\nDefault value : 0.001",
+          "Description": "Tolerance určující maximální povolenou velikost mezery mezi spojovanými křivkami\n\ndouble\nVýchozí hodnota : 0,001",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1437,7 +1437,7 @@
         {
           "Id": "9a73ee6b1d3f4ae084055667fb02eafb",
           "Name": "trimCurves",
-          "Description": "bool\nDefault value : false",
+          "Description": "bool\nVýchozí hodnota: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1446,7 +1446,7 @@
         {
           "Id": "9d438e068d1049fea36a64440a02cad1",
           "Name": "trimLength",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1457,7 +1457,7 @@
         {
           "Id": "d3608c7899a34f6e96de60f1cf7b52d5",
           "Name": "PolyCurve",
-          "Description": "Polycurve created by joined curves",
+          "Description": "Objekt Polycurve vytvořený podle spojených křivek",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1466,7 +1466,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves@Autodesk.DesignScript.Geometry.Curve[],double,bool,double",
       "Replication": "Auto",
-      "Description": "Make PolyCurve by joining curves. Flips curve as needed for connectivity. Choose a preferred join tolerance between 1e-6 and 1e-3 units.\n\nPolyCurve.ByJoinedCurves (curves: Curve[], joinTolerance: double = 0.001, trimCurves: bool = false, trimLength: double = 0): PolyCurve"
+      "Description": "Vytvoří objekt PolyCurve spojením křivek. Obrátí křivku podle potřeby připojení. Vyberte preferovanou toleranci spojení mezi jednotkami 1e-6 a 1e-3.\n\nPolyCurve.ByJoinedCurves (curves: Curve[], joinTolerance: double = 0.001, trimCurves: bool = false, trimLength: double = 0): PolyCurve"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1476,7 +1476,7 @@
         {
           "Id": "cd7bfb8ea8f248599a9a959d3a081e00",
           "Name": "curves",
-          "Description": "Curves to join into polycurve\n\nCurve[]",
+          "Description": "Křivky, které se spojí a vytvoří objekty PolyCurve\n\nCurve[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1485,7 +1485,7 @@
         {
           "Id": "dbd81bb50a094c48a084484fb7e4d8c4",
           "Name": "joinTolerance",
-          "Description": "Tolerance to determine size of gap allowed between curves to be joined\n\ndouble\nDefault value : 0.001",
+          "Description": "Tolerance určující maximální povolenou velikost mezery mezi spojovanými křivkami\n\ndouble\nVýchozí hodnota : 0,001",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1494,7 +1494,7 @@
         {
           "Id": "3bb246abc399483b8596ef209a9e61f8",
           "Name": "trimCurves",
-          "Description": "bool\nDefault value : false",
+          "Description": "bool\nVýchozí hodnota: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1503,7 +1503,7 @@
         {
           "Id": "50f0005043a54a8e850cae47baa28f8e",
           "Name": "trimLength",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1514,7 +1514,7 @@
         {
           "Id": "7796a6b5fc324c5a8d87e8c41929787a",
           "Name": "PolyCurve",
-          "Description": "Polycurve created by joined curves",
+          "Description": "Objekt Polycurve vytvořený podle spojených křivek",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1523,7 +1523,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves@Autodesk.DesignScript.Geometry.Curve[],double,bool,double",
       "Replication": "Auto",
-      "Description": "Make PolyCurve by joining curves. Flips curve as needed for connectivity. Choose a preferred join tolerance between 1e-6 and 1e-3 units.\n\nPolyCurve.ByJoinedCurves (curves: Curve[], joinTolerance: double = 0.001, trimCurves: bool = false, trimLength: double = 0): PolyCurve"
+      "Description": "Vytvoří objekt PolyCurve spojením křivek. Obrátí křivku podle potřeby připojení. Vyberte preferovanou toleranci spojení mezi jednotkami 1e-6 a 1e-3.\n\nPolyCurve.ByJoinedCurves (curves: Curve[], joinTolerance: double = 0.001, trimCurves: bool = false, trimLength: double = 0): PolyCurve"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -1543,7 +1543,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Vytvoří číslo.",
       "InputValue": 10.0
     },
     {
@@ -1554,7 +1554,7 @@
         {
           "Id": "5f292394f8bc4f4ea7e757cc641393d0",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice X\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1563,7 +1563,7 @@
         {
           "Id": "4e0abfd36fa54f74a86623206b4037e5",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Y\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1572,7 +1572,7 @@
         {
           "Id": "fc58850b99204a6dbf9eb518caea06e1",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Z\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1583,7 +1583,7 @@
         {
           "Id": "625b8b1e2e8b44a794d36bc376aab637",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Bod vytvořený pomocí souřadnic",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1592,7 +1592,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Vytvoří bod podle zadaných 3 kartézských souřadnic\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -1612,7 +1612,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Vytvoří číslo.",
       "InputValue": 10.0
     },
     {
@@ -1623,7 +1623,7 @@
         {
           "Id": "dae95f96a589423ab323cbc06699bd1f",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice X\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1632,7 +1632,7 @@
         {
           "Id": "bdd8fb4a1eac4c869162d2dce0cf3874",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Y\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1641,7 +1641,7 @@
         {
           "Id": "387edbc55f664218a8b160d7a555517e",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Z\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1652,7 +1652,7 @@
         {
           "Id": "70bf8ac5f4744823b4923124c561a05d",
           "Name": "Vector",
-          "Description": "Vector created by coordinates",
+          "Description": "Vektor vytvořený pomocí souřadnic",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1661,7 +1661,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Vector by 3 Euclidean coordinates\n\nVector.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Vector"
+      "Description": "Vytvoří vektor pomocí 3 euklidovských souřadnic.\n\nVector.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Vector"
     }
   ],
   "Connectors": [
@@ -1998,7 +1998,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Vlastnosti",
       "Version": "2.13",
       "Data": {}
     },
@@ -2046,7 +2046,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Náhled pozadí",
       "EyeX": -16.498859405517578,
       "EyeY": 58.609474182128906,
       "EyeZ": 58.886173248291016,
@@ -2523,8 +2523,8 @@
     "Annotations": [
       {
         "Id": "a88ae6caf7654bad8912424cde8705d9",
-        "Title": "Trim Solid",
-        "DescriptionText": "Use Trim operation to cut the shell solid with a Plane. ",
+        "Title": "Oříznout těleso",
+        "DescriptionText": "Pomocí operace Oříznout ořízněte těleso skořepiny rovinou. ",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2552,7 +2552,7 @@
       },
       {
         "Id": "7167d93682ea477da84e5d571ee0de9f",
-        "Title": "Translate geometry",
+        "Title": "Přesunout geometrii",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2576,7 +2576,7 @@
       },
       {
         "Id": "d77419597b5146d5ad098a4ccab7d0e6",
-        "Title": "Create Shell",
+        "Title": "Vytvořit skořepinu",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2600,8 +2600,8 @@
       },
       {
         "Id": "faef13c7803b46448d0f1573c4154f48",
-        "Title": "Create Form",
-        "DescriptionText": "Using two profile curve loops, create a Form element (in Conceptual Mass family environment)",
+        "Title": "Vytvořit tvar",
+        "DescriptionText": "Pomocí dvou smyček křivek profilu vytvořte prvek tvaru (v prostředí rodiny koncepčních objemů).",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2626,8 +2626,8 @@
       },
       {
         "Id": "cb090ced87ab4ea3bda1696390f311f5",
-        "Title": "Prepare Points",
-        "DescriptionText": "Generate a set of points to build geometry",
+        "Title": "Připravit body",
+        "DescriptionText": "Generovat sadu bodů k vytvoření geometrie",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2662,8 +2662,8 @@
       },
       {
         "Id": "168c94dad19c44249751e7a7dba8d1e6",
-        "Title": "First Profile",
-        "DescriptionText": "Create a first profile as a closed curve from an Arc and a Line",
+        "Title": "První profil",
+        "DescriptionText": "Vytvořit první profil jako uzavřenou křivku z oblouku a čáry",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2688,8 +2688,8 @@
       },
       {
         "Id": "9ed24b9bea954946bdd37aa80c34a723",
-        "Title": "Second Profile",
-        "DescriptionText": "Create a second profile as a closed curve from an Arc and a Line",
+        "Title": "Druhý profil",
+        "DescriptionText": "Vytvořit druhý profil jako uzavřenou křivku z oblouku a čáry",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2714,8 +2714,8 @@
       },
       {
         "Id": "151457e8deba46bc87f4ccbe0a1cbd2c",
-        "Title": "Guide Curve",
-        "DescriptionText": "Create a NURBS curve to be used as a guide curve for the Loft Solid shape",
+        "Title": "Vodicí křivka",
+        "DescriptionText": "Vytvořit křivku NURBS, která se použije jako vodicí křivka pro tvar šablonování tělesa",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2738,7 +2738,7 @@
       },
       {
         "Id": "b0e4fe854c934b3f8c769a5987f163c0",
-        "Title": "Create Import Instance",
+        "Title": "Vytvořit instanci importu",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2787,7 +2787,7 @@
       },
       {
         "Id": "654272e609ea4e438d502035fb5389a0",
-        "Title": "Solid Loft by Cross Sections and Guide Curves",
+        "Title": "Šablonování těles pomocí průřezů a vodicích křivek",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2810,8 +2810,8 @@
       },
       {
         "Id": "ca4b14662c5d4931bf1f45885d13643e",
-        "Title": "Solid Loft by Cross Sections",
-        "DescriptionText": "Description <Double click here to edit group description>",
+        "Title": "Šablonování těles pomocí průřezů",
+        "DescriptionText": "Popis <Dvojitým kliknutím sem upravte popis skupiny>",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2832,7 +2832,7 @@
       },
       {
         "Id": "9e22bfe5fa1f430da622671f92d965b1",
-        "Title": "Multiple creation methods exist for most Solids.  These examples show Closed Profiles as the base, but polysurfaces can be stitched, many primitives are available (Surfaces, Cuboid, Cone, etc).\nIn order to integrate geometry into the Revit environment, it first needs to be converted into a Revit Element. \r\nSolids can be transformed into an Import Instance that will be visible both Project and model Family environments. \r\nThe Solid geometry can also be converted into a Form element that is only available for Conceptual Mass and Adaptive Component Family environments. ",
+        "Title": "Pro většinu těles existuje více způsobů tvorby. Tyto příklady ukazují uzavřené profily jako základní, ale objekty PolySurface je možné sešít, k dispozici je mnoho primitivních objektů (povrchy, kvádry, kužely atd.).\nAby bylo možné integrovat geometrii do prostředí aplikace Revit, je nutné nejprve převést geometrii na Prvek aplikace Revit. \r\nTělesa je možné transformovat na instanci importu, která bude viditelná jak v prostředí projektu, tak v prostředí rodiny modelu. \r\nGeometrii tělesa je možné také převést na prvek tvaru, který je k dispozici pouze v prostředích rodin Koncepční objem a Adaptivní komponenta. ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2852,7 +2852,7 @@
       },
       {
         "Id": "e2183066af9f44368269b415ca9909f7",
-        "Title": "Geometric Boolean operations (Intersect, Difference, Union, Etc) are available in the Geometry Category.",
+        "Title": "Geometrické logické operace (sjednocení, rozdíl, průnik atd.) jsou k dispozici v kategorii geometrie.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2873,7 +2873,7 @@
       },
       {
         "Id": "d8476cea84d544ca90a313a833c5a6f4",
-        "Title": "Tip:  Turn off \"Preview\" in Node Right Click menus to exclude elements from Showing",
+        "Title": "Tip: Vypněte „Náhled“ v nabídce pravého tlačítka uzlu, pokud chcete vyloučit prvky ze zobrazení.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2894,7 +2894,7 @@
       },
       {
         "Id": "b72f32081e1b43c397beba15741070b0",
-        "Title": "Tip:  Turn off \"Preview\" in Node Right Click menus to exclude elements from Showing",
+        "Title": "Tip: Vypněte „Náhled“ v nabídce pravého tlačítka uzlu, pokud chcete vyloučit prvky ze zobrazení.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2915,7 +2915,7 @@
       },
       {
         "Id": "e67061b83dec44d1a7e39de6a08ac71e",
-        "Title": "Geometry is not the same as a Revit Element:\r\nUse ImportInstance To create Revit Imports from Surfaces and Solids in any Revit Environment, use Points and Curves to place Family Instances, or create Form in Mass and Generic Model By Point (Adaptive Component) Families",
+        "Title": "Geometrie není stejná jako prvek aplikace Revit:\r\nPoužijte objekt ImportInstance k vytvoření importů aplikace Revit z povrchů a těles v jakémkoli prostředí aplikace Revit, použijte body a křivky k umístění instancí rodin, nebo vytvořte rodiny Tvar v objemu a Obecný model podle bodu (adaptivní komponenta).",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2936,7 +2936,7 @@
       },
       {
         "Id": "7e7caf2b0b594f45a9e79e414bef8465",
-        "Title": "Translate the geometry to the side to preview both the original and the final result",
+        "Title": "Přesunutím geometrie na stranu zobrazíte náhled původního i konečného výsledku.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2957,7 +2957,7 @@
       },
       {
         "Id": "ba06cb3d0bb74b9cb32a04775f09f245",
-        "Title": "Investigate the volume of the solid",
+        "Title": "Prozkoumat objem tělesa",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2978,7 +2978,7 @@
       },
       {
         "Id": "4a70787c22a34226b9195037d44289a6",
-        "Title": "Guide Curve constructed as a NURBS curve",
+        "Title": "Vodicí křivka vytvořená jako křivka NURBS",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2999,7 +2999,7 @@
       },
       {
         "Id": "550112f83d0f4919b54063b3eb4ef28b",
-        "Title": "Second Profile for the Loft",
+        "Title": "Druhý profil pro šablonování",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3020,7 +3020,7 @@
       },
       {
         "Id": "77d6aede9bc94a349856fdb9a546d93c",
-        "Title": "First Profile for the Loft",
+        "Title": "První profil pro šablonování",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3041,7 +3041,7 @@
       },
       {
         "Id": "f3bbb69b593b4e3a9ca8f1a3ccb8efdb",
-        "Title": "Join two profiles in a list",
+        "Title": "Spojení dvou profilů v seznamu",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3062,7 +3062,7 @@
       },
       {
         "Id": "759e968ec84a47409167dcb650c402ed",
-        "Title": "Forms can only be created as part of a Conceptual Mass Family",
+        "Title": "Tvary je možné vytvořit pouze jako součást rodiny koncepčních objemů.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3083,7 +3083,7 @@
       },
       {
         "Id": "acb2032d02354965801c5959f411486f",
-        "Title": "Create Model Curves from curves",
+        "Title": "Vytvořit křivky modelu z křivek",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3104,7 +3104,7 @@
       },
       {
         "Id": "1dd9d86e68424bc7b79e5663f69284f1",
-        "Title": "Choose which side of the trim to keep (the side closest to the point will be discarded). ",
+        "Title": "Vyberte, kterou stranu oříznutí chcete zachovat (strana nejblíže k bodu bude odstraněna). ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -3125,7 +3125,7 @@
       },
       {
         "Id": "4bca3bd9b3064d0486ed499f45763a96",
-        "Title": "This graph uses several methods to create Solid geometry in Revit - some methods can be used in a Project environment, others - only in certain Family environments. \n\nUse a Conceptual Mass family template to view all methods. \n\nTo open a Conceptual Mass family by going to File > New > Family > and select the Mass.rft template\\Conceptual Mass\\Mass.rft",
+        "Title": "Tento graf používá několik metod tvorby geometrie tělesa v aplikaci Revit – některé metody je možné použít v prostředí projektu, jiné – pouze v určitých prostředích rodiny. \n\nPomocí šablony rodiny koncepčních objemů zobrazte všechny metody. \n\nOtevřete rodinu koncepčních objemů v nabídce Soubor > Nový > Rodina > a vyberte šablonu Mass.rft \\Conceptual Mass\\Mass.rft",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "This is an extensive exploration into the various Math functions and capabilities of Dynamo",
+  "Description": "Si tratta di un'esplorazione approfondita delle varie funzioni e capacità matematiche di Dynamo.",
   "Name": "Core_Math",
   "ElementResolver": {
     "ResolutionMap": {
@@ -46,7 +46,7 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Genera valori numerici."
     },
     {
       "Id": "efdc88ed0dda40f6af15f2e32d3920d8",
@@ -58,7 +58,7 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Genera valori numerici."
     },
     {
       "Id": "5a673e3d2de24e16a5bd2fddbd5664e9",
@@ -67,7 +67,7 @@
       "Type2": "number",
       "Value": "2",
       "NumberType": "Double",
-      "Description": "Creates a number"
+      "Description": "Crea un numero."
     },
     {
       "Id": "b698146d93a24faabd74e1873ea4261c",
@@ -76,7 +76,7 @@
       "Type2": "number",
       "Value": "2",
       "NumberType": "Double",
-      "Description": "Creates a number"
+      "Description": "Crea un numero."
     },
     {
       "Id": "799f65a09ca04b03bc37b9394a758a1d",
@@ -85,7 +85,7 @@
       "Type2": "number",
       "Value": "2",
       "NumberType": "Double",
-      "Description": "Creates a number"
+      "Description": "Crea un numero."
     },
     {
       "Id": "9078296ab05845db99036d6146007369",
@@ -97,7 +97,7 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Genera valori numerici."
     },
     {
       "Id": "f9eaa4c797864afba0e1f25efdd8bd9a",
@@ -109,7 +109,7 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Genera valori numerici."
     },
     {
       "Id": "e98d226f0c564c9197afad4414b2ffc2",
@@ -121,7 +121,7 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Genera valori numerici."
     },
     {
       "Id": "4f23694a35a14592a29d48c175971d06",
@@ -133,7 +133,7 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Genera valori numerici."
     },
     {
       "Id": "762f14ef1f544d679c169eda81283412",
@@ -145,7 +145,7 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Genera valori numerici."
     },
     {
       "Id": "6432debee52e446aac479a837845c5a9",
@@ -157,7 +157,7 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Genera valori numerici."
     },
     {
       "Id": "432f84187fa24e9a8e823c6fe1b1a48d",
@@ -169,7 +169,7 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Genera valori numerici."
     },
     {
       "Id": "87f83e698320413c9457c821423e94b8",
@@ -181,7 +181,7 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Genera valori numerici."
     },
     {
       "Id": "e523680d327148a9a24db9d840843b38",
@@ -193,7 +193,7 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Genera valori numerici."
     },
     {
       "Id": "506cc9e36dde4370b6129a8d1272bacf",
@@ -205,7 +205,7 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Genera valori numerici."
     },
     {
       "Id": "accda7bd6013450ba7c2d3bb6e768b24",
@@ -213,7 +213,7 @@
       "Type": "boolean",
       "Type2": "boolean",
       "Value": "false",
-      "Description": "Enables selection between True and False"
+      "Description": "Consente la selezione tra True e False."
     },
     {
       "Id": "1f4ffb9c7c7f401789f46c4d29a3e8e6",
@@ -221,7 +221,7 @@
       "Type": "boolean",
       "Type2": "boolean",
       "Value": "true",
-      "Description": "Enables selection between True and False"
+      "Description": "Consente la selezione tra True e False."
     },
     {
       "Id": "3e0d952b3fe8409fad1caedec4ed8e6b",
@@ -229,7 +229,7 @@
       "Type": "boolean",
       "Type2": "boolean",
       "Value": "true",
-      "Description": "Enables selection between True and False"
+      "Description": "Consente la selezione tra True e False."
     },
     {
       "Id": "43b14aac5ed2429996985319a14250ba",
@@ -237,7 +237,7 @@
       "Type": "boolean",
       "Type2": "boolean",
       "Value": "false",
-      "Description": "Enables selection between True and False"
+      "Description": "Consente la selezione tra True e False."
     },
     {
       "Id": "28f0795784ad4317b42e248c8feae058",
@@ -245,7 +245,7 @@
       "Type": "boolean",
       "Type2": "boolean",
       "Value": "true",
-      "Description": "Enables selection between True and False"
+      "Description": "Consente la selezione tra True e False."
     },
     {
       "Id": "d4639b35eabf4823a487ff87e59ed2e7",
@@ -253,7 +253,7 @@
       "Type": "boolean",
       "Type2": "boolean",
       "Value": "false",
-      "Description": "Enables selection between True and False"
+      "Description": "Consente la selezione tra True e False."
     },
     {
       "Id": "34e8ae0f6dc1450799e20a3d313ad37c",
@@ -261,7 +261,7 @@
       "Type": "boolean",
       "Type2": "boolean",
       "Value": "true",
-      "Description": "Enables selection between True and False"
+      "Description": "Consente la selezione tra True e False."
     }
   ],
   "Outputs": [],
@@ -274,7 +274,7 @@
         {
           "Id": "e03bc651bda347c4a60678ab4581ab21",
           "Name": "crossSections",
-          "Description": "Curves to loft through\n\nCurve[]",
+          "Description": "Curve in cui eseguire il loft Curve[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -285,7 +285,7 @@
         {
           "Id": "f69498dc85844d6588da0d245a3f7510",
           "Name": "Surface",
-          "Description": "Surface created by loft",
+          "Description": "Superficie creata mediante loft",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -294,7 +294,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.ByLoft@Autodesk.DesignScript.Geometry.Curve[]",
       "Replication": "Auto",
-      "Description": "Create a Surface by lofting between input cross section Curves.\n\nSurface.ByLoft (crossSections: Curve[]): Surface"
+      "Description": "Crea una superficie mediante loft tra curve di sezione trasversale di input.\n\nSurface.ByLoft (crossSections: Curve[]): Surface"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -304,7 +304,7 @@
         {
           "Id": "f2691e326efe4cd582cb1dbab23f60ac",
           "Name": "list",
-          "Description": "List to chop into sublists\n\nvar[]..[]",
+          "Description": "Elenco da suddividere in sottoelenchi\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -313,7 +313,7 @@
         {
           "Id": "95e03021a3104a1b9196ef3114d0c14a",
           "Name": "lengths",
-          "Description": "Lengths of consecutive sublists to be created from the input list\n\nint[]",
+          "Description": "Lunghezze dei sottoelenchi consecutivi creati a partire dall'elenco di input\n\nint[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -324,7 +324,7 @@
         {
           "Id": "f16fd0cb3dde41858f45c8db1ecfdf81",
           "Name": "lists",
-          "Description": "Sublists created from the list",
+          "Description": "Sottoelenchi creati a partire dall'elenco",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -333,7 +333,7 @@
       ],
       "FunctionSignature": "DSCore.List.Chop@var[]..[],int[]",
       "Replication": "Auto",
-      "Description": "Chop a list into a set of consecutive sublists with the specified lengths. List division begins at the top of the list.\n\nList.Chop (list: var[]..[], lengths: int[]): var[]..[]"
+      "Description": "Ritaglia un elenco in un gruppo di sottoelenchi consecutivi di lunghezze specificate, a partire dall'inizio dell'elenco.\n\nList.Chop (list: var[]..[], lengths: int[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -343,7 +343,7 @@
         {
           "Id": "01f1f59b74b54987ab71b4b9875da1ac",
           "Name": "points",
-          "Description": "Points for nurbs curve\n\nPoint[]",
+          "Description": "Punti per curva NURBS Point[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -354,7 +354,7 @@
         {
           "Id": "cbb3ac76f5a04d2d9d438894c9413369",
           "Name": "NurbsCurve",
-          "Description": "Nurbscurve created from points",
+          "Description": "NurbsCurve creata da punti",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -363,7 +363,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[]",
       "Replication": "Auto",
-      "Description": "Create a BSplineCurve by interpolating between points.\n\nNurbsCurve.ByPoints (points: Point[]): NurbsCurve"
+      "Description": "Creare un elemento BSplineCurve tramite interpolazione tra punti.\n\nNurbsCurve.ByPoints (points: Point[]): NurbsCurve"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -373,7 +373,7 @@
         {
           "Id": "6fa15694cbdf4947ad336b41af6003d8",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata X\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -382,7 +382,7 @@
         {
           "Id": "5a93456d8cf641499024a6f61e2f14ac",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Y\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -391,7 +391,7 @@
         {
           "Id": "182b26724319428f9b4106d3c359cbf5",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Z\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -402,7 +402,7 @@
         {
           "Id": "b4d844129ed54c6983dbece34d183120",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creato da coordinate",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -411,7 +411,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Definisce un punto da 3 coordinate cartesiane.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -421,7 +421,7 @@
         {
           "Id": "df7b1d393a4b4c28b3f03d56fe1bc5f9",
           "Name": "list",
-          "Description": "List to get the item count of.\n\nvar[]..[]",
+          "Description": "Elenco del quale ottenere il numero di voci.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -432,7 +432,7 @@
         {
           "Id": "e460dc84e5f74196a7c79910a5a64c6a",
           "Name": "int",
-          "Description": "List length.",
+          "Description": "Lunghezza dell'elenco.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -441,7 +441,7 @@
       ],
       "FunctionSignature": "DSCore.List.Count@var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns the number of items stored in the given list.\n\nList.Count (list: var[]..[]): int"
+      "Description": "Restituisce il numero di voci memorizzate nell'elenco dato.\n\nList.Count (list: var[]..[]): int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -471,7 +471,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.X",
       "Replication": "Auto",
-      "Description": "Get the X component of a Point\n\nPoint.X: double"
+      "Description": "Ottiene il componente X di un punto.\n\nPoint.X: double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -501,7 +501,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.Y",
       "Replication": "Auto",
-      "Description": "Get the Y component of a Point\n\nPoint.Y: double"
+      "Description": "Ottiene il componente Y di un punto.\n\nPoint.Y: double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -511,7 +511,7 @@
         {
           "Id": "d205fc03144d4e4487fb02beed55fba4",
           "Name": "list",
-          "Description": "List to flatten.\n\nvar[]..[]",
+          "Description": "Elenco del quale ridurre la nidificazione.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -520,7 +520,7 @@
         {
           "Id": "3a992cdf57c8453691551a11d20ed45f",
           "Name": "amount",
-          "Description": "Layers of list nesting to remove (-1 will remove all list nestings)\n\nint\nDefault value : -1",
+          "Description": "Livelli di nidificazione dell'elenco da rimuovere (-1 rimuoverà tutte le nidificazioni dell'elenco)\n\nint\nValore di default: -1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -531,7 +531,7 @@
         {
           "Id": "44f00458a51c43feb7d29c324c796b06",
           "Name": "list",
-          "Description": "Flattened list by amount",
+          "Description": "Elenco non nidificato per quantità",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -540,7 +540,7 @@
       ],
       "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+      "Description": "Riduce di un determinato numero di livelli la nidificazione di un elenco di elenchi. List.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -550,7 +550,7 @@
         {
           "Id": "2203a9dbbe604a039a0b0afb1988e55d",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata X\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -559,7 +559,7 @@
         {
           "Id": "1e5c43e9a85d4aefb1a8fdc069f43677",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Y\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -568,7 +568,7 @@
         {
           "Id": "6e5357dafb5b4b0ba57f37753bd8427a",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Z\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -579,7 +579,7 @@
         {
           "Id": "b03440eb9bcc4617844bc572357f0df1",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creato da coordinate",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -588,7 +588,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "CrossProduct",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Definisce un punto da 3 coordinate cartesiane.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
@@ -611,7 +611,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Genera valori numerici.",
       "InputValue": 5.51
     },
     {
@@ -635,7 +635,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Genera valori numerici.",
       "InputValue": 1.724
     },
     {
@@ -647,7 +647,7 @@
         {
           "Id": "42cceb0c1be048dab281b5fc6aa774ec",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -655,7 +655,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "-10..10..#20;"
     },
     {
@@ -666,7 +666,7 @@
         {
           "Id": "10439ff3f01b4385bf57a37e27165ead",
           "Name": "number",
-          "Description": "Number to be raised to a power.\n\ndouble",
+          "Description": "Numero elevato alla potenza.\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -675,7 +675,7 @@
         {
           "Id": "dbe750e470da456db40c90557f6db0cb",
           "Name": "power",
-          "Description": "Power to raise the number to.\n\ndouble",
+          "Description": "Potenza alla quale elevare il numero.\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -686,7 +686,7 @@
         {
           "Id": "b77efd7433e64af19f78f4b76a3ec90f",
           "Name": "result",
-          "Description": "Number raised to the power.",
+          "Description": "Numero elevato alla potenza.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -695,7 +695,7 @@
       ],
       "FunctionSignature": "DSCore.Math.Pow@double,double",
       "Replication": "Auto",
-      "Description": "Raises a number to the specified power.\n\nMath.Pow (number: double, power: double): double"
+      "Description": "Eleva un numero alla potenza specificata.\n\nMath.Pow (number: double, power: double): double"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -715,7 +715,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Crea un numero.",
       "InputValue": 2.0
     },
     {
@@ -726,7 +726,7 @@
         {
           "Id": "04ddd464a51d4219bc63164f0cf7e6ce",
           "Name": "number",
-          "Description": "Number to be raised to a power.\n\ndouble",
+          "Description": "Numero elevato alla potenza.\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -735,7 +735,7 @@
         {
           "Id": "d44f74afa44d474e993758be8a5da194",
           "Name": "power",
-          "Description": "Power to raise the number to.\n\ndouble",
+          "Description": "Potenza alla quale elevare il numero.\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -746,7 +746,7 @@
         {
           "Id": "dba70668ad46400f8fe933c9c414e399",
           "Name": "result",
-          "Description": "Number raised to the power.",
+          "Description": "Numero elevato alla potenza.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -755,7 +755,7 @@
       ],
       "FunctionSignature": "DSCore.Math.Pow@double,double",
       "Replication": "Auto",
-      "Description": "Raises a number to the specified power.\n\nMath.Pow (number: double, power: double): double"
+      "Description": "Eleva un numero alla potenza specificata.\n\nMath.Pow (number: double, power: double): double"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -775,7 +775,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Crea un numero.",
       "InputValue": 2.0
     },
     {
@@ -786,7 +786,7 @@
         {
           "Id": "608ff919e2dc4b04bf033b18337bad75",
           "Name": "number",
-          "Description": "Number to be raised to a power.\n\ndouble",
+          "Description": "Numero elevato alla potenza.\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -795,7 +795,7 @@
         {
           "Id": "91eec4435e4447a8a97c2f9d3f1070e3",
           "Name": "power",
-          "Description": "Power to raise the number to.\n\ndouble",
+          "Description": "Potenza alla quale elevare il numero.\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -806,7 +806,7 @@
         {
           "Id": "637c0ac2ad3945d69e92e4c5159c0165",
           "Name": "result",
-          "Description": "Number raised to the power.",
+          "Description": "Numero elevato alla potenza.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -815,7 +815,7 @@
       ],
       "FunctionSignature": "DSCore.Math.Pow@double,double",
       "Replication": "Auto",
-      "Description": "Raises a number to the specified power.\n\nMath.Pow (number: double, power: double): double"
+      "Description": "Eleva un numero alla potenza specificata.\n\nMath.Pow (number: double, power: double): double"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -835,7 +835,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Crea un numero.",
       "InputValue": 2.0
     },
     {
@@ -846,7 +846,7 @@
         {
           "Id": "f885a4220a1949eb89b767bc91919498",
           "Name": "angle",
-          "Description": "Angle in degrees to take the sine of.\n\ndouble",
+          "Description": "Angolo in gradi di cui calcolare il seno.\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -857,7 +857,7 @@
         {
           "Id": "474c0aaa296a45d6873c4bb9cd98bfd8",
           "Name": "double",
-          "Description": "Sine of the angle.",
+          "Description": "Seno dell'angolo.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -866,7 +866,7 @@
       ],
       "FunctionSignature": "DSCore.Math.Sin@double",
       "Replication": "Auto",
-      "Description": "Finds the sine of an angle.\n\nMath.Sin (angle: double): double"
+      "Description": "Trova il seno di un angolo.\n\nMath.Sin (angle: double): double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -876,7 +876,7 @@
         {
           "Id": "28db936c287e44ca956e42df72d9b5c4",
           "Name": "x",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "Valore intero o Double var[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -885,7 +885,7 @@
         {
           "Id": "75f63d00a0b64c2eadff019c03cfb088",
           "Name": "y",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "Valore intero o Double\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -896,7 +896,7 @@
         {
           "Id": "953dafc444de4037bdc1701635906415",
           "Name": "double",
-          "Description": "Result of division",
+          "Description": "Risultato della divisione",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -905,7 +905,7 @@
       ],
       "FunctionSignature": "/@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns division of x over y\n\n/ (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Restituisce la divisione di x per y / (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -915,7 +915,7 @@
         {
           "Id": "a1ab8b8771924a969816c1570036256e",
           "Name": "x",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "Valore intero o Double var[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -924,7 +924,7 @@
         {
           "Id": "44de08dfae8f4caf9fd4820c31b7b8dd",
           "Name": "y",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "Valore intero o Double var[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -935,7 +935,7 @@
         {
           "Id": "7c60d504eb5344269f2a6fbb50f49bfd",
           "Name": "number",
-          "Description": "The product of the two input numbers",
+          "Description": "Il prodotto dei due numeri di input",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -944,7 +944,7 @@
       ],
       "FunctionSignature": "*@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns multiplication of x times y\n\n* (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Restituisce la moltiplicazione di x per y * (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -954,7 +954,7 @@
         {
           "Id": "31fbef74d47b4476baa285d620226384",
           "Name": "x",
-          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "Description": "Valore intero, valore Double o stringa var[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -963,7 +963,7 @@
         {
           "Id": "045b42f6712b4bf6ba8c0cb0a6857c73",
           "Name": "y",
-          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "Description": "Valore intero, valore Double o stringa var[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -974,7 +974,7 @@
         {
           "Id": "dcd9e68cc4db4316a788424d25d5eba1",
           "Name": "var",
-          "Description": "The sum of two input numbers, or the concatenation of two strings",
+          "Description": "La somma di due numeri di input o la concatenazione di due stringhe",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -983,7 +983,7 @@
       ],
       "FunctionSignature": "+@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns addition of x and y\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Restituisce l'aggiunta di x e y + (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -993,7 +993,7 @@
         {
           "Id": "d495b40360df4847992b737bfb2fbae9",
           "Name": "x",
-          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "Description": "Valore intero, valore Double o stringa\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1002,7 +1002,7 @@
         {
           "Id": "316d874e877c433c8d8760cc77d51cc0",
           "Name": "y",
-          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "Description": "Valore intero, valore Double o stringa\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1013,7 +1013,7 @@
         {
           "Id": "6127ad1cb7d647e29fad117f92c77495",
           "Name": "var",
-          "Description": "The sum of two input numbers, or the concatenation of two strings",
+          "Description": "La somma di due numeri di input o la concatenazione di due stringhe",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1022,7 +1022,7 @@
       ],
       "FunctionSignature": "+@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns addition of x and y\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Restituisce l'aggiunta di x e y + (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1032,7 +1032,7 @@
         {
           "Id": "83acba6c6f2e47e39d71a67b3c13afa2",
           "Name": "radians",
-          "Description": "Angle in radians.\n\ndouble",
+          "Description": "Angolo in radianti.\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1043,7 +1043,7 @@
         {
           "Id": "1f8841ade7e24631b8c01b9603266229",
           "Name": "degrees",
-          "Description": "Angle in degrees.",
+          "Description": "Angolo in gradi.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1052,7 +1052,7 @@
       ],
       "FunctionSignature": "DSCore.Math.RadiansToDegrees@double",
       "Replication": "Auto",
-      "Description": "Converts an angle in radians to an angle in degrees.\n\nMath.RadiansToDegrees (radians: double): double"
+      "Description": "Converte un angolo in radianti in un angolo in gradi.\n\nMath.RadiansToDegrees (radians: double): double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1062,7 +1062,7 @@
         {
           "Id": "5513e6a3770d4c008c40793ffed5d36a",
           "Name": "number",
-          "Description": "A number in the range [0, ∞).\n\ndouble",
+          "Description": "Numero compreso nell'intervallo [0, ∞).\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1073,7 +1073,7 @@
         {
           "Id": "38aa263249a94936a0c45dc3bf9ca75c",
           "Name": "double",
-          "Description": "Positive square root of the number.",
+          "Description": "Radice quadrata positiva del numero.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1082,7 +1082,7 @@
       ],
       "FunctionSignature": "DSCore.Math.Sqrt@double",
       "Replication": "Auto",
-      "Description": "Finds the positive square root of a number in the range [0, ∞).\n\nMath.Sqrt (number: double): double"
+      "Description": "Determina la radice quadrata positiva di un numero compreso nell'intervallo [0, ∞).\n\nMath.Sqrt (number: double): double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1092,7 +1092,7 @@
         {
           "Id": "10848d1749544a40afd58fa026c6f72d",
           "Name": "list",
-          "Description": "List to get the item count of.\n\nvar[]..[]",
+          "Description": "Elenco del quale ottenere il numero di voci.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1103,7 +1103,7 @@
         {
           "Id": "340199041ed746a4a0f318e8e17de898",
           "Name": "int",
-          "Description": "List length.",
+          "Description": "Lunghezza dell'elenco.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1112,7 +1112,7 @@
       ],
       "FunctionSignature": "DSCore.List.Count@var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns the number of items stored in the given list.\n\nList.Count (list: var[]..[]): int"
+      "Description": "Restituisce il numero di voci memorizzate nell'elenco dato.\n\nList.Count (list: var[]..[]): int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1122,7 +1122,7 @@
         {
           "Id": "d65d8fa8c92a46da972a8124db07c386",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata X\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1131,7 +1131,7 @@
         {
           "Id": "460def3a365c4ab981d7a2ab3628d856",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Y\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1140,7 +1140,7 @@
         {
           "Id": "98ffaafed68349489085c10a3a72f768",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Z\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1151,7 +1151,7 @@
         {
           "Id": "672a98b8e5204b8197a778ef8691c62e",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creato da coordinate",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1160,7 +1160,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Definisce un punto da 3 coordinate cartesiane.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1170,7 +1170,7 @@
         {
           "Id": "dd2097f00f654b779f1e93c45c5669c2",
           "Name": "crossSections",
-          "Description": "Curves to loft through\n\nCurve[]",
+          "Description": "Curve in cui eseguire il loft Curve[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1181,7 +1181,7 @@
         {
           "Id": "d738f44074c143d1a56c4dd1dab6bc75",
           "Name": "Surface",
-          "Description": "Surface created by loft",
+          "Description": "Superficie creata mediante loft",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1190,7 +1190,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.ByLoft@Autodesk.DesignScript.Geometry.Curve[]",
       "Replication": "Auto",
-      "Description": "Create a Surface by lofting between input cross section Curves.\n\nSurface.ByLoft (crossSections: Curve[]): Surface"
+      "Description": "Crea una superficie mediante loft tra curve di sezione trasversale di input.\n\nSurface.ByLoft (crossSections: Curve[]): Surface"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1200,7 +1200,7 @@
         {
           "Id": "c6b6f6503a0b4ae7abd8ecd2d66a0403",
           "Name": "list",
-          "Description": "List to chop into sublists\n\nvar[]..[]",
+          "Description": "Elenco da suddividere in sottoelenchi\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1209,7 +1209,7 @@
         {
           "Id": "1d9beb5dbffe471482d4e89f6aeb098b",
           "Name": "lengths",
-          "Description": "Lengths of consecutive sublists to be created from the input list\n\nint[]",
+          "Description": "Lunghezze dei sottoelenchi consecutivi creati a partire dall'elenco di input\n\nint[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1220,7 +1220,7 @@
         {
           "Id": "db8b8c6538104a81b057a094937e213e",
           "Name": "lists",
-          "Description": "Sublists created from the list",
+          "Description": "Sottoelenchi creati a partire dall'elenco",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1229,7 +1229,7 @@
       ],
       "FunctionSignature": "DSCore.List.Chop@var[]..[],int[]",
       "Replication": "Auto",
-      "Description": "Chop a list into a set of consecutive sublists with the specified lengths. List division begins at the top of the list.\n\nList.Chop (list: var[]..[], lengths: int[]): var[]..[]"
+      "Description": "Ritaglia un elenco in un gruppo di sottoelenchi consecutivi di lunghezze specificate, a partire dall'inizio dell'elenco.\n\nList.Chop (list: var[]..[], lengths: int[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1239,7 +1239,7 @@
         {
           "Id": "0760f65318c64ea4b33a201a4dc2bc6c",
           "Name": "points",
-          "Description": "Points for nurbs curve\n\nPoint[]",
+          "Description": "Punti per curva NURBS Point[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1250,7 +1250,7 @@
         {
           "Id": "46028a6775534faeb1e11e90e8ff54a4",
           "Name": "NurbsCurve",
-          "Description": "Nurbscurve created from points",
+          "Description": "NurbsCurve creata da punti",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1259,7 +1259,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[]",
       "Replication": "Auto",
-      "Description": "Create a BSplineCurve by interpolating between points.\n\nNurbsCurve.ByPoints (points: Point[]): NurbsCurve"
+      "Description": "Creare un elemento BSplineCurve tramite interpolazione tra punti.\n\nNurbsCurve.ByPoints (points: Point[]): NurbsCurve"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1280,7 +1280,7 @@
         {
           "Id": "41bc986585a64123b8e6c3e90853e26d",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1288,7 +1288,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "x+60;"
     },
     {
@@ -1319,7 +1319,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.X",
       "Replication": "Auto",
-      "Description": "Get the X component of a Point\n\nPoint.X: double"
+      "Description": "Ottiene il componente X di un punto.\n\nPoint.X: double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1349,7 +1349,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.Y",
       "Replication": "Auto",
-      "Description": "Get the Y component of a Point\n\nPoint.Y: double"
+      "Description": "Ottiene il componente Y di un punto.\n\nPoint.Y: double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1359,7 +1359,7 @@
         {
           "Id": "345bc667b52f42afa9154ef5d20af5f6",
           "Name": "list",
-          "Description": "List to flatten.\n\nvar[]..[]",
+          "Description": "Elenco del quale ridurre la nidificazione.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1368,7 +1368,7 @@
         {
           "Id": "558de55322544087b0c7f19360f67db5",
           "Name": "amount",
-          "Description": "Layers of list nesting to remove (-1 will remove all list nestings)\n\nint\nDefault value : -1",
+          "Description": "Livelli di nidificazione dell'elenco da rimuovere (-1 rimuoverà tutte le nidificazioni dell'elenco) int Valore di default: -1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1379,7 +1379,7 @@
         {
           "Id": "a9e04d948c5c49a5bc4f85cf3a33f7ed",
           "Name": "list",
-          "Description": "Flattened list by amount",
+          "Description": "Elenco non nidificato per quantità",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1388,7 +1388,7 @@
       ],
       "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+      "Description": "Riduce di un determinato numero di livelli la nidificazione di un elenco di elenchi. List.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1398,7 +1398,7 @@
         {
           "Id": "a61d19e8ef2c4665b6bb95f4160dcc62",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata X\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1407,7 +1407,7 @@
         {
           "Id": "6839ec37fc664de89103f925e2d021e8",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Y\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1416,7 +1416,7 @@
         {
           "Id": "2f614b04ba6442e981fbd0aae1a6d95a",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Z\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1427,7 +1427,7 @@
         {
           "Id": "879cafdf71ac4931ad45b4c6c74ba8da",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creato da coordinate",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1436,7 +1436,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "CrossProduct",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Definisce un punto da 3 coordinate cartesiane.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
@@ -1459,7 +1459,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Genera valori numerici.",
       "InputValue": 5.51
     },
     {
@@ -1483,7 +1483,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Genera valori numerici.",
       "InputValue": 1.724
     },
     {
@@ -1495,7 +1495,7 @@
         {
           "Id": "51a8e68397504d7fa37f8767fe70ae57",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1503,7 +1503,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "-10..10..#20;"
     },
     {
@@ -1579,7 +1579,7 @@
         {
           "Id": "b04e5440fd1a44bf937292957aa42bac",
           "Name": "",
-          "Description": "Value of expression at line 6",
+          "Description": "Valore dell'espressione alla riga 6",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1587,7 +1587,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "sum = Math.Pow(x,2) + Math.Pow(y,2) + Math.Pow(c,2);\n\nnum1 = Math.Sqrt(sum);\nnum2 = Math.Sin( Math.RadiansToDegrees(num1) );\n\nA * num2 / num1;"
     },
     {
@@ -1599,7 +1599,7 @@
         {
           "Id": "2293b6e119cb45ab95ea554dc440d702",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1607,7 +1607,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "-10..10..#20;"
     },
     {
@@ -1618,7 +1618,7 @@
         {
           "Id": "b3cd7fb49fef48c48cc2fb8c826ca867",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata X\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1627,7 +1627,7 @@
         {
           "Id": "d81f44dac13941cba7fab810d40e20e4",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Y\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1636,7 +1636,7 @@
         {
           "Id": "5f8f0455ddf54b7a83d4227c468c0bfd",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Z\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1647,7 +1647,7 @@
         {
           "Id": "2a00ae3504f04824b194e90143f719cf",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creato da coordinate",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1656,7 +1656,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "CrossProduct",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Definisce un punto da 3 coordinate cartesiane.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1666,7 +1666,7 @@
         {
           "Id": "9bb5246fa0ee4ea3a3e879b94122321d",
           "Name": "list",
-          "Description": "List to flatten.\n\nvar[]..[]",
+          "Description": "Elenco del quale ridurre la nidificazione.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1675,7 +1675,7 @@
         {
           "Id": "f0ab58aad45b4d349e4ad695916916e7",
           "Name": "amount",
-          "Description": "Layers of list nesting to remove (-1 will remove all list nestings)\n\nint\nDefault value : -1",
+          "Description": "Livelli di nidificazione dell'elenco da rimuovere (-1 rimuoverà tutte le nidificazioni dell'elenco)\n\nint\nValore di default: -1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1686,7 +1686,7 @@
         {
           "Id": "01597e6cc34845e2ac80bee2a0540b81",
           "Name": "list",
-          "Description": "Flattened list by amount",
+          "Description": "Elenco non nidificato per quantità",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1695,7 +1695,7 @@
       ],
       "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+      "Description": "Riduce di un determinato numero di livelli la nidificazione di un elenco di elenchi. List.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1725,7 +1725,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.X",
       "Replication": "Auto",
-      "Description": "Get the X component of a Point\n\nPoint.X: double"
+      "Description": "Ottiene il componente X di un punto.\n\nPoint.X: double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1755,7 +1755,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.Y",
       "Replication": "Auto",
-      "Description": "Get the Y component of a Point\n\nPoint.Y: double"
+      "Description": "Ottiene il componente Y di un punto.\n\nPoint.Y: double"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
@@ -1778,7 +1778,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Genera valori numerici.",
       "InputValue": 5.51
     },
     {
@@ -1802,7 +1802,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Genera valori numerici.",
       "InputValue": 1.724
     },
     {
@@ -1824,7 +1824,7 @@
         {
           "Id": "7453f689fd4548869272010b04a05887",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1832,7 +1832,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "x+30;"
     },
     {
@@ -1843,7 +1843,7 @@
         {
           "Id": "fb281235287f4f27984484086ef92753",
           "Name": "list",
-          "Description": "List to get the item count of.\n\nvar[]..[]",
+          "Description": "Elenco del quale ottenere il numero di voci.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1854,7 +1854,7 @@
         {
           "Id": "5b10d0450ddc4fd68ea1ff420974ff60",
           "Name": "int",
-          "Description": "List length.",
+          "Description": "Lunghezza dell'elenco.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1863,7 +1863,7 @@
       ],
       "FunctionSignature": "DSCore.List.Count@var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns the number of items stored in the given list.\n\nList.Count (list: var[]..[]): int"
+      "Description": "Restituisce il numero di voci memorizzate nell'elenco dato.\n\nList.Count (list: var[]..[]): int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1873,7 +1873,7 @@
         {
           "Id": "c6f438681f2349c0adc03d762b7909c2",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata X\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1882,7 +1882,7 @@
         {
           "Id": "8cb15bb170c9403cab871fd55702dd6d",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Y\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1891,7 +1891,7 @@
         {
           "Id": "24ae1a3c87064238afcb91d24671ae34",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Z\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1902,7 +1902,7 @@
         {
           "Id": "d5ae4cdb00cc4a70bde9cc9789e26e4e",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creato da coordinate",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1911,7 +1911,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Definisce un punto da 3 coordinate cartesiane.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1921,7 +1921,7 @@
         {
           "Id": "3343cded727746a49e7119a3bb64ab89",
           "Name": "list",
-          "Description": "List to chop into sublists\n\nvar[]..[]",
+          "Description": "Elenco da suddividere in sottoelenchi\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1930,7 +1930,7 @@
         {
           "Id": "83e990422ced44379f7988936832af29",
           "Name": "lengths",
-          "Description": "Lengths of consecutive sublists to be created from the input list\n\nint[]",
+          "Description": "Lunghezze dei sottoelenchi consecutivi creati a partire dall'elenco di input\n\nint[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1941,7 +1941,7 @@
         {
           "Id": "eb1fb6e43ca844f5ae4a891aeb9805dc",
           "Name": "lists",
-          "Description": "Sublists created from the list",
+          "Description": "Sottoelenchi creati a partire dall'elenco",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1950,7 +1950,7 @@
       ],
       "FunctionSignature": "DSCore.List.Chop@var[]..[],int[]",
       "Replication": "Auto",
-      "Description": "Chop a list into a set of consecutive sublists with the specified lengths. List division begins at the top of the list.\n\nList.Chop (list: var[]..[], lengths: int[]): var[]..[]"
+      "Description": "Ritaglia un elenco in un gruppo di sottoelenchi consecutivi di lunghezze specificate, a partire dall'inizio dell'elenco.\n\nList.Chop (list: var[]..[], lengths: int[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1960,7 +1960,7 @@
         {
           "Id": "4b080086aaf0462cb45680ee4958dd80",
           "Name": "points",
-          "Description": "Points for nurbs curve\n\nPoint[]",
+          "Description": "Punti per curva NURBS\n\nPoint[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1971,7 +1971,7 @@
         {
           "Id": "6cac08efd0e04ccb94d557b54debba71",
           "Name": "NurbsCurve",
-          "Description": "Nurbscurve created from points",
+          "Description": "NurbsCurve creata da punti",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1980,7 +1980,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[]",
       "Replication": "Auto",
-      "Description": "Create a BSplineCurve by interpolating between points.\n\nNurbsCurve.ByPoints (points: Point[]): NurbsCurve"
+      "Description": "Creare un elemento BSplineCurve tramite interpolazione tra punti.\n\nNurbsCurve.ByPoints (points: Point[]): NurbsCurve"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1990,7 +1990,7 @@
         {
           "Id": "5889b4b5cc57412eaf99a729064bcabe",
           "Name": "crossSections",
-          "Description": "Curves to loft through\n\nCurve[]",
+          "Description": "Curve in cui eseguire il loft\n\nCurve[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2001,7 +2001,7 @@
         {
           "Id": "0e5cc1ea4abe46e78d20addd48b63315",
           "Name": "Surface",
-          "Description": "Surface created by loft",
+          "Description": "Superficie creata mediante loft",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2010,7 +2010,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.ByLoft@Autodesk.DesignScript.Geometry.Curve[]",
       "Replication": "Auto",
-      "Description": "Create a Surface by lofting between input cross section Curves.\n\nSurface.ByLoft (crossSections: Curve[]): Surface"
+      "Description": "Crea una superficie mediante loft tra curve di sezione trasversale di input.\n\nSurface.ByLoft (crossSections: Curve[]): Surface"
     },
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
@@ -2023,7 +2023,7 @@
         {
           "Id": "97a30cc1b5d7436b9af294a3347c3d83",
           "Name": "Amplitude",
-          "Description": "Input #0",
+          "Description": "Input n. 0",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2032,7 +2032,7 @@
         {
           "Id": "8e820c66b6c14d7fb0c0da45eeb965da",
           "Name": "X",
-          "Description": "Input #1",
+          "Description": "Input n. 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2041,7 +2041,7 @@
         {
           "Id": "5fba7d6f512c44a1876efe0a6c1cc8e3",
           "Name": "Y",
-          "Description": "Input #2",
+          "Description": "Input n. 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2050,7 +2050,7 @@
         {
           "Id": "33966bbfff3e4880aaaf4caa07d16b53",
           "Name": "Frequency",
-          "Description": "Input #3",
+          "Description": "Input n. 3",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2061,7 +2061,7 @@
         {
           "Id": "1946354dfb9b47b8b00241765d215528",
           "Name": "Points",
-          "Description": "Result of the python script",
+          "Description": "Risultato dello script Python",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2069,7 +2069,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Runs an embedded Python script."
+      "Description": "Esegue uno script Python incorporato."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -2079,7 +2079,7 @@
         {
           "Id": "0248b343769e4b989624a40915ba3f31",
           "Name": "angle",
-          "Description": "Angle in degrees to take the cosine of.\n\ndouble",
+          "Description": "Angolo in gradi di cui calcolare il coseno.\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2090,7 +2090,7 @@
         {
           "Id": "1787078da42049dba9b0b7d8274e08e8",
           "Name": "double",
-          "Description": "Cosine of the angle",
+          "Description": "Coseno dell'angolo",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2099,7 +2099,7 @@
       ],
       "FunctionSignature": "DSCore.Math.Cos@double",
       "Replication": "Auto",
-      "Description": "Finds the cosine of an angle.\n\nMath.Cos (angle: double): double"
+      "Description": "Trova il coseno di un angolo.\n\nMath.Cos (angle: double): double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -2138,7 +2138,7 @@
         {
           "Id": "0c723d1ae5e646aa855c2606b2a09b70",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2146,7 +2146,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "amplitude * Math.Cos(frequency * angle);"
     },
     {
@@ -2213,7 +2213,7 @@
         {
           "Id": "0e9d9dac41ed4d9a9f03906ddf734c3c",
           "Name": "",
-          "Description": "Value of expression at line 6",
+          "Description": "Valore dell'espressione alla riga 6",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2222,7 +2222,7 @@
         {
           "Id": "22a6a5d210594c229bb00865554527db",
           "Name": "",
-          "Description": "Value of expression at line 7",
+          "Description": "Valore dell'espressione alla riga 7",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2249,7 +2249,7 @@
         {
           "Id": "4c2ff817a2f649aa85637e7f4fb7b7ea",
           "Name": "",
-          "Description": "Value of expression at line 14",
+          "Description": "Valore dell'espressione alla riga 14",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2257,7 +2257,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "// Make axes from base point\ndimension = 10;\ntop = Point.ByCoordinates(base.X, base.Y + dimension/2);\nbottom = Point.ByCoordinates(base.X, base.Y - dimension/2);\nright = Point.ByCoordinates(base.X + 10, base.Y);\nLine.ByStartPointEndPoint(bottom, top);\nLine.ByStartPointEndPoint(base, right);\n\n// Move function results to base point\nvec = base.AsVector();\nnewPts = pts.Add(vec);\n\n// Draw a line through the points\nNurbsCurve.ByPoints(newPts);"
     },
     {
@@ -2268,7 +2268,7 @@
         {
           "Id": "43660b037b724923b081a5afb8ce828d",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata X\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2277,7 +2277,7 @@
         {
           "Id": "0ad5e48891dc49fa974fdac60f0a9c24",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Y\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2286,7 +2286,7 @@
         {
           "Id": "469bdbd1a10c4dc4a3b379ec64866764",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Z\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2297,7 +2297,7 @@
         {
           "Id": "a59c5e815a2a4c579f3b91f5601a53f7",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creato da coordinate",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2306,7 +2306,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Definisce un punto da 3 coordinate cartesiane.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -2317,7 +2317,7 @@
         {
           "Id": "d4b498d0d16e4c76a113a07631dd745a",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2326,7 +2326,7 @@
         {
           "Id": "74915c26f5dc4b71b8ef39ab731607b7",
           "Name": "",
-          "Description": "Value of expression at line 2",
+          "Description": "Valore dell'espressione alla riga 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2334,7 +2334,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "25;\n20;"
     },
     {
@@ -2345,7 +2345,7 @@
         {
           "Id": "81fbf89294204c85bc05138380326b16",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata X\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2354,7 +2354,7 @@
         {
           "Id": "a591cee596754a5bb9e5050c23d92cf8",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Y\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2365,7 +2365,7 @@
         {
           "Id": "e42f9de4f0b142bb8771ab53389531c3",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creato da coordinate",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2374,7 +2374,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double",
       "Replication": "Auto",
-      "Description": "Form a Point in the XY plane given two 2 cartesian coordinates. The Z component is 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
+      "Description": "Definisce un punto nel piano XY da 2 coordinate cartesiane. Il componente Z è 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -2440,7 +2440,7 @@
         {
           "Id": "15506a53ad1145f3ae27d4a08e2be578",
           "Name": "",
-          "Description": "Value of expression at line 6",
+          "Description": "Valore dell'espressione alla riga 6",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2449,7 +2449,7 @@
         {
           "Id": "0b953685cbad40e6b62a2cf8a5ed4201",
           "Name": "",
-          "Description": "Value of expression at line 7",
+          "Description": "Valore dell'espressione alla riga 7",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2476,7 +2476,7 @@
         {
           "Id": "794ed0c89774403cb11c027af3c81464",
           "Name": "",
-          "Description": "Value of expression at line 14",
+          "Description": "Valore dell'espressione alla riga 14",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2484,7 +2484,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "// Make axes from base point\ndimension = 10;\ntop = Point.ByCoordinates(base.X, base.Y + dimension/2);\nbottom = Point.ByCoordinates(base.X, base.Y - dimension/2);\nright = Point.ByCoordinates(base.X + 10, base.Y);\nLine.ByStartPointEndPoint(bottom, top);\nLine.ByStartPointEndPoint(base, right);\n\n// Move function results to base point\nvec = base.AsVector();\nnewPts = pts.Add(vec);\n\n// Draw a line through the points\nNurbsCurve.ByPoints(newPts);"
     },
     {
@@ -2495,7 +2495,7 @@
         {
           "Id": "d624f8ddf3de46a8be29ce7faaf4697f",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata X\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2504,7 +2504,7 @@
         {
           "Id": "12d3ccd3251a4f78be44aa469464456e",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Y\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2515,7 +2515,7 @@
         {
           "Id": "b441bf2f94e2450587d1590159c93d9d",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creato da coordinate",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2524,7 +2524,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double",
       "Replication": "Auto",
-      "Description": "Form a Point in the XY plane given two 2 cartesian coordinates. The Z component is 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
+      "Description": "Definisce un punto nel piano XY da 2 coordinate cartesiane. Il componente Z è 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -2534,7 +2534,7 @@
         {
           "Id": "55f3e6a7a76b4fd9a59e4a9021331df9",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata X\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2543,7 +2543,7 @@
         {
           "Id": "f79c2671d56f4788b38bafa83a673a95",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Y\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2552,7 +2552,7 @@
         {
           "Id": "3f1c2b54b8e641ce89aff2a86f60d3ab",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Z\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2563,7 +2563,7 @@
         {
           "Id": "c040192ee1414f339090e4747e42be5b",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creato da coordinate",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2572,7 +2572,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Definisce un punto da 3 coordinate cartesiane.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -2583,7 +2583,7 @@
         {
           "Id": "35ca7eb5f45145d983ccb0ba00fdfefb",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2592,7 +2592,7 @@
         {
           "Id": "a75b2c23a8e14ea8951e79146a8caa2c",
           "Name": "",
-          "Description": "Value of expression at line 2",
+          "Description": "Valore dell'espressione alla riga 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2600,7 +2600,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "-5;\n20;"
     },
     {
@@ -2611,7 +2611,7 @@
         {
           "Id": "4d783ad82ad54be5bc09b3d74187369e",
           "Name": "x",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "Valore intero o Double var[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2620,7 +2620,7 @@
         {
           "Id": "fd9908dfef994bbebc4fa1e1dbac1c1d",
           "Name": "y",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "Valore intero o Double var[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2631,7 +2631,7 @@
         {
           "Id": "9d5e257a980f463e8ae78af9e88789ef",
           "Name": "number",
-          "Description": "The product of the two input numbers",
+          "Description": "Il prodotto dei due numeri di input",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2640,7 +2640,7 @@
       ],
       "FunctionSignature": "*@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns multiplication of x times y\n\n* (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Restituisce la moltiplicazione di x per y * (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
@@ -2663,7 +2663,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Genera valori numerici.",
       "InputValue": 3.0
     },
     {
@@ -2687,7 +2687,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Genera valori numerici.",
       "InputValue": 36.0
     },
     {
@@ -2699,7 +2699,7 @@
         {
           "Id": "f64e8968929241c381f3e8195db59261",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2707,7 +2707,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "0..10..#20;"
     },
     {
@@ -2718,7 +2718,7 @@
         {
           "Id": "6235bb7adbd24fe4826d8075e3f81c06",
           "Name": "x",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "Valore intero o Double var[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2727,7 +2727,7 @@
         {
           "Id": "9eca31341e84471999f009d1898c6aad",
           "Name": "y",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "Valore intero o Double\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2738,7 +2738,7 @@
         {
           "Id": "196c7f0226a540ef91e3cfc12b00d44e",
           "Name": "number",
-          "Description": "The product of the two input numbers",
+          "Description": "Il prodotto dei due numeri di input",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2747,7 +2747,7 @@
       ],
       "FunctionSignature": "*@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns multiplication of x times y\n\n* (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Restituisce la moltiplicazione di x per y * (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
@@ -2770,7 +2770,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Genera valori numerici.",
       "InputValue": 3.0
     },
     {
@@ -2794,7 +2794,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Genera valori numerici.",
       "InputValue": 36.0
     },
     {
@@ -2806,7 +2806,7 @@
         {
           "Id": "38c4469aa1164741a46df2911bba532b",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2814,7 +2814,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "0..10..#20;"
     },
     {
@@ -2825,7 +2825,7 @@
         {
           "Id": "0ea2ad2b8f974cbcbdd965d0a448b658",
           "Name": "center",
-          "Description": "Center point of arc\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0) (disabled)",
+          "Description": "Punto centrale dell'arco\n\nPoint\nValore di default: Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0) (disattivato)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2834,7 +2834,7 @@
         {
           "Id": "c1fbb23a2067483e84c0b0b06d7d2cad",
           "Name": "radius",
-          "Description": "Radius of the arc\n\ndouble\nDefault value : 1 (disabled)",
+          "Description": "Raggio dell'arco\n\ndouble\nValore di default: 1 (disabled)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2843,7 +2843,7 @@
         {
           "Id": "f8c695c54b654fbfb814969038f41452",
           "Name": "startAngle",
-          "Description": "Start angle in degrees\n\ndouble\nDefault value : 0 (disabled)",
+          "Description": "Angolo iniziale in gradi\n\ndouble\nValore di default: 0 (disabled)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2852,7 +2852,7 @@
         {
           "Id": "1710588305564ee58c0820c8eeb491fa",
           "Name": "endAngle",
-          "Description": "End angle in degrees\n\ndouble\nDefault value : 90 (disabled)",
+          "Description": "Angolo finale in gradi\n\ndouble\nValore di default: 90 (disabled)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2861,7 +2861,7 @@
         {
           "Id": "d6ff984a60bd458bb5bac6a62a738076",
           "Name": "normal",
-          "Description": "A vector defining the normal of the arc\n\nVector\nDefault value : Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1) (disabled)",
+          "Description": "Vettore che definisce la normale dell'arco\n\nVector\nValore di default: Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1) (disabled)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2872,7 +2872,7 @@
         {
           "Id": "9add7d810e314f87b2fc30d0c1d1cfc1",
           "Name": "Arc",
-          "Description": "Arc created by center point, radius, and angle",
+          "Description": "Arco creato da punto centrale, raggio e angolo",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2881,7 +2881,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Arc.ByCenterPointRadiusAngle@Autodesk.DesignScript.Geometry.Point,double,double,double,Autodesk.DesignScript.Geometry.Vector",
       "Replication": "Auto",
-      "Description": "Create an arc by providing it's center point, radius, angle sweep, and normal vector\n\nArc.ByCenterPointRadiusAngle (center: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1, startAngle: double = 0, endAngle: double = 90, normal: Vector = Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1)): Arc"
+      "Description": "Crea un arco mediante punto centrale, raggio, estrusione su percorso angolare e vettore normale.\n\nArc.ByCenterPointRadiusAngle (center: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1, startAngle: double = 0, endAngle: double = 90, normal: Vector = Autodesk.DesignScript.Geometry.Vector.ByCoordinates(0, 0, 1)): Arc"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
@@ -2904,7 +2904,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Genera valori numerici.",
       "InputValue": 247.821
     },
     {
@@ -2915,7 +2915,7 @@
         {
           "Id": "f7e1cfcc960a4768ba768cac354ab057",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata X\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2924,7 +2924,7 @@
         {
           "Id": "761005603bba4e17a3e5a3e6de72fb03",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Y\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2933,7 +2933,7 @@
         {
           "Id": "40dd9cbb082b4968ab93e565e99f8500",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Z\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2944,7 +2944,7 @@
         {
           "Id": "0490e7bf7ab44141b157adbef52fa9c6",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creato da coordinate",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2953,7 +2953,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Definisce un punto da 3 coordinate cartesiane.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -2964,7 +2964,7 @@
         {
           "Id": "27b72fecead34297adf9806dcdcf6df9",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2973,7 +2973,7 @@
         {
           "Id": "50977df7b7af4cf59b5692ca4502448f",
           "Name": "",
-          "Description": "Value of expression at line 2",
+          "Description": "Valore dell'espressione alla riga 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2981,7 +2981,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "0;\n35;"
     },
     {
@@ -2993,7 +2993,7 @@
         {
           "Id": "b6281958aac2443f95731e4256012000",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3002,7 +3002,7 @@
         {
           "Id": "38a2850674ef4355aa31007731252c71",
           "Name": "",
-          "Description": "Value of expression at line 2",
+          "Description": "Valore dell'espressione alla riga 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3010,7 +3010,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "5;\n0;"
     },
     {
@@ -3022,7 +3022,7 @@
         {
           "Id": "49fff3224dcf4ec7a0e99c2bdcce3071",
           "Name": "Vector",
-          "Description": "Vector",
+          "Description": "Vettore",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3031,7 +3031,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ZAxis",
       "Replication": "Auto",
-      "Description": "Get the canonical Z axis Vector (0,0,1)\n\nVector.ZAxis ( ): Vector"
+      "Description": "Ottenere il vettore dell'asse Z canonico (0,0,1).\n\nVector.ZAxis ( ): Vector"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -3052,7 +3052,7 @@
         {
           "Id": "a7357b95e0e540948d6bce994bce3452",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Punto",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3061,7 +3061,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.EndPoint",
       "Replication": "Auto",
-      "Description": "Get the end Point along the Curve\n\nCurve.EndPoint: Point"
+      "Description": "Ottiene il punto finale lungo la curva.\n\nCurve.EndPoint: Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -3082,7 +3082,7 @@
         {
           "Id": "68812beb2c974922957309b635e30351",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Punto",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3091,7 +3091,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.StartPoint",
       "Replication": "Auto",
-      "Description": "Get the start Point along the Curve\n\nCurve.StartPoint: Point"
+      "Description": "Ottiene il punto iniziale lungo la curva.\n\nCurve.StartPoint: Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -3101,7 +3101,7 @@
         {
           "Id": "9c3f20c20f6e49218043ba889e12e47e",
           "Name": "startPoint",
-          "Description": "Line start point\n\nPoint",
+          "Description": "Punto iniziale linea\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3110,7 +3110,7 @@
         {
           "Id": "23d64e36f969413eb8d98c583a340668",
           "Name": "endPoint",
-          "Description": "Line end point\n\nPoint",
+          "Description": "Punto finale linea\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3121,7 +3121,7 @@
         {
           "Id": "5c68344ca024478ca88753e8311a71d3",
           "Name": "Line",
-          "Description": "Line from start and end point",
+          "Description": "Linea da punto iniziale e finale",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3130,7 +3130,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Creates a straight Line between two input Points.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
+      "Description": "Crea una linea retta tra due punti di input.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -3140,7 +3140,7 @@
         {
           "Id": "3ccc0000249f4e40a95ec31fec885fc9",
           "Name": "startPoint",
-          "Description": "Line start point\n\nPoint",
+          "Description": "Punto iniziale linea\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3149,7 +3149,7 @@
         {
           "Id": "2974620c19d24d7da8abb999d8305caa",
           "Name": "endPoint",
-          "Description": "Line end point\n\nPoint",
+          "Description": "Punto finale linea\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3160,7 +3160,7 @@
         {
           "Id": "47273873bf8a4d13a446adb9756e4a10",
           "Name": "Line",
-          "Description": "Line from start and end point",
+          "Description": "Linea da punto iniziale e finale",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3169,7 +3169,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Creates a straight Line between two input Points.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
+      "Description": "Crea una linea retta tra due punti di input.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -3179,7 +3179,7 @@
         {
           "Id": "b5ec6412413b43d5b2861be297fdfd75",
           "Name": "number",
-          "Description": "Number to round\n\ndouble",
+          "Description": "Numero da arrotondare double",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3188,7 +3188,7 @@
         {
           "Id": "ee347c4cb38a47638b528a2af1589ffd",
           "Name": "digits",
-          "Description": "Number of fractional digits in the return value\n\nint",
+          "Description": "Numero di cifre frazionarie nel valore restituito int",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3199,7 +3199,7 @@
         {
           "Id": "15b996f9ed364fbab78b0155d3860f85",
           "Name": "number",
-          "Description": "The number nearest to value that contains a number of fractional digits equal to digits",
+          "Description": "Il numero più vicino al valore che contiene un numero di cifre frazionarie pari alle cifre",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3208,7 +3208,7 @@
       ],
       "FunctionSignature": "DSCore.Math.Round@double,int",
       "Replication": "Auto",
-      "Description": "Rounds a number to a specified number of fractional digits.\n\nMath.Round (number: double, digits: int): double"
+      "Description": "Arrotonda un numero ad un numero specificato di cifre frazionarie.\n\nMath.Round (number: double, digits: int): double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -3218,7 +3218,7 @@
         {
           "Id": "cbc01de253654382ae887aa31ab86c8c",
           "Name": "number",
-          "Description": "Number to round.\n\ndouble",
+          "Description": "Numero da arrotondare.\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3229,7 +3229,7 @@
         {
           "Id": "3d4afad268894f05afd3acd01967715d",
           "Name": "number",
-          "Description": "Integral value closes to the number.",
+          "Description": "Valore integrale vicino al numero.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3238,7 +3238,7 @@
       ],
       "FunctionSignature": "DSCore.Math.Round@double",
       "Replication": "Auto",
-      "Description": "Rounds a number to the closest integral value. Note that this method returns a double-precision floating-point number instead of an integral type.\n\nMath.Round (number: double): double"
+      "Description": "Arrotonda un numero al valore intero più vicino. Tenere presente che questo metodo restituisce un numero a virgola mobile a precisione doppia anziché un integrale.\n\nMath.Round (number: double): double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -3248,7 +3248,7 @@
         {
           "Id": "1bc5da56f3f54e88b22233d4ede925ec",
           "Name": "x",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "Valore intero o Double\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3257,7 +3257,7 @@
         {
           "Id": "1073ffe7fe474a6a9486f19e73b1858e",
           "Name": "y",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "Valore intero o Double\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3268,7 +3268,7 @@
         {
           "Id": "4004d41eafdd43e0906a7dbacc9f99b8",
           "Name": "number",
-          "Description": "Result of the y input subtracted from the x input",
+          "Description": "Risultato dell'input y sottratto dall'input X",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3277,7 +3277,7 @@
       ],
       "FunctionSignature": "-@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns subtraction of x minus y\n\n- (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Restituisce la sottrazione di x meno y - (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -3287,7 +3287,7 @@
         {
           "Id": "9dea39bcf33e476e989074ec625a233d",
           "Name": "x",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "Valore intero o Double\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3296,7 +3296,7 @@
         {
           "Id": "37f22228f23644629f6e38c11cf1544f",
           "Name": "y",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "Valore intero o Double\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3307,7 +3307,7 @@
         {
           "Id": "f0439cb8459d46aba6d32f0e9417ad93",
           "Name": "bool",
-          "Description": "Result of check",
+          "Description": "Risultato del controllo",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3316,7 +3316,7 @@
       ],
       "FunctionSignature": "<=@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Compares if x is lower or equal to y\n\n<= (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Confronta se x è minore o uguale a y <= (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -3326,7 +3326,7 @@
         {
           "Id": "2f11f9356179456098da45ccf3a3b746",
           "Name": "x",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "Valore intero o Double var[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3335,7 +3335,7 @@
         {
           "Id": "ab122a54af5b4310a69b2f6566f0dd75",
           "Name": "y",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "Valore intero o Double var[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3346,7 +3346,7 @@
         {
           "Id": "0350fc5ec4f34470a0066248cb84ad19",
           "Name": "number",
-          "Description": "Remainder of the x input after being divided by the y input",
+          "Description": "Resto dell'input X dopo la divisione per l'input Y",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3355,7 +3355,7 @@
       ],
       "FunctionSignature": "%@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Modulo: Finds the remainder of x/y\n\n% (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Modulo: trova il resto di x/y % (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -3365,7 +3365,7 @@
         {
           "Id": "026dfbaaa22347ffb42b22b9cb3ec35c",
           "Name": "x",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "Valore intero o Double var[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3374,7 +3374,7 @@
         {
           "Id": "703edbf92ae243a3a4d407d5a826c97f",
           "Name": "y",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "Valore intero o Double var[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3385,7 +3385,7 @@
         {
           "Id": "e92883d176264f5795bdbfb95995bb06",
           "Name": "bool",
-          "Description": "True if x is greater than y, false if not",
+          "Description": "True se x è maggiore di y, false se non lo è",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3394,7 +3394,7 @@
       ],
       "FunctionSignature": ">@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Compares if x is greater than y\n\n> (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Confronta se x è maggiore di y > (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -3405,7 +3405,7 @@
         {
           "Id": "a7abaaa8a4844cd5aa813f1cbd8d1705",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3414,7 +3414,7 @@
         {
           "Id": "a6ad24eb79df4ab19f804f490903a43d",
           "Name": "",
-          "Description": "Value of expression at line 2",
+          "Description": "Valore dell'espressione alla riga 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3422,7 +3422,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "5;\n2;"
     },
     {
@@ -3435,7 +3435,7 @@
         {
           "Id": "b9788b7c6efc4d5aa6b03babe25bc517",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3446,7 +3446,7 @@
         {
           "Id": "7d36e0086a0a4a9abff01a4323ce97af",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3454,7 +3454,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -3465,7 +3465,7 @@
         {
           "Id": "f9f4644a58b741ffb789e1c31a71d411",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3473,7 +3473,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "5-2;"
     },
     {
@@ -3486,7 +3486,7 @@
         {
           "Id": "93307ecfc25640d3908fbe7c6d83d136",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3497,7 +3497,7 @@
         {
           "Id": "a4299477dc164bd5beec69eb148e1076",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3505,7 +3505,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -3517,7 +3517,7 @@
         {
           "Id": "26d5bec5fafd47469671b6c61fd51588",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3528,7 +3528,7 @@
         {
           "Id": "c19015d30fde46e9a3f808520367c522",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3536,7 +3536,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -3547,7 +3547,7 @@
         {
           "Id": "4944fd08baee429bb478b6c6b6f29779",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3555,7 +3555,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "5%2;"
     },
     {
@@ -3567,7 +3567,7 @@
         {
           "Id": "fb56ac376cdc4524bc3cf7ea11c28d61",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3576,7 +3576,7 @@
         {
           "Id": "b2cd18f2cf6040ad99d235fd5bee47d3",
           "Name": "",
-          "Description": "Value of expression at line 2",
+          "Description": "Valore dell'espressione alla riga 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3584,7 +3584,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "5;\n2;"
     },
     {
@@ -3597,7 +3597,7 @@
         {
           "Id": "70fd778f5d8040fbb7b6d45453093aae",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3608,7 +3608,7 @@
         {
           "Id": "b5d565a283594f08b691435c3b9c442d",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3616,7 +3616,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -3628,7 +3628,7 @@
         {
           "Id": "e9e2f30959254638a0ce9d91ebc66f00",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3639,7 +3639,7 @@
         {
           "Id": "f204c758e8f64891bdd5b36d8c3906af",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3647,7 +3647,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -3658,7 +3658,7 @@
         {
           "Id": "106b634f748543ad83857acb88219e04",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3666,7 +3666,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "5<=2;"
     },
     {
@@ -3679,7 +3679,7 @@
         {
           "Id": "6ecdcde803ea4a7b8266f4fe89f7ac35",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3690,7 +3690,7 @@
         {
           "Id": "a17f14cb4ccb401ba6ae31c3083386ff",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3698,7 +3698,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -3709,7 +3709,7 @@
         {
           "Id": "cf0c15702fc7432eb890b73aecde9cf2",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3718,7 +3718,7 @@
         {
           "Id": "aa4dc53944e64356bbc8ff260d761228",
           "Name": "",
-          "Description": "Value of expression at line 2",
+          "Description": "Valore dell'espressione alla riga 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3726,7 +3726,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "5;\n2;"
     },
     {
@@ -3738,7 +3738,7 @@
         {
           "Id": "0e6b7ba139134dfb9e0c974e91694c47",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3746,7 +3746,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "5>2;"
     },
     {
@@ -3759,7 +3759,7 @@
         {
           "Id": "fc7fea2b921b4dc697f50be78c2ee06e",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3770,7 +3770,7 @@
         {
           "Id": "2e02308504884169bfb994aa9536ecb7",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3778,7 +3778,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -3790,7 +3790,7 @@
         {
           "Id": "c005dd3dfa6a4283a7783980cd11b389",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3801,7 +3801,7 @@
         {
           "Id": "2945013dfd0c4b86b8996812269b71a4",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3809,7 +3809,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -3820,7 +3820,7 @@
         {
           "Id": "f5e9ff7f76af4b43b32ef244040f4bd8",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3829,7 +3829,7 @@
         {
           "Id": "0f0c6f7f0d154c69a521804bdce23a62",
           "Name": "",
-          "Description": "Value of expression at line 2",
+          "Description": "Valore dell'espressione alla riga 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3837,7 +3837,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "5;\n2;"
     },
     {
@@ -3848,7 +3848,7 @@
         {
           "Id": "18be81e9fd5544e9ba2652b668399b2d",
           "Name": "startPoint",
-          "Description": "Line start point\n\nPoint",
+          "Description": "Punto iniziale linea Point",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3857,7 +3857,7 @@
         {
           "Id": "d33b2573088e4df6911b6f82c957c46a",
           "Name": "endPoint",
-          "Description": "Line end point\n\nPoint",
+          "Description": "Punto finale linea Point",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3868,7 +3868,7 @@
         {
           "Id": "6d5243f6045842c5aa43795a6d043518",
           "Name": "Line",
-          "Description": "Line from start and end point",
+          "Description": "Linea da punto iniziale e finale",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3877,7 +3877,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Creates a straight Line between two input Points.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
+      "Description": "Crea una linea retta tra due punti di input.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -3887,7 +3887,7 @@
         {
           "Id": "1e206a126ffe4828baba85b56768d32e",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata X\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -3896,7 +3896,7 @@
         {
           "Id": "926e8e98ad424aae971c97aaa36749bd",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Y\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -3905,7 +3905,7 @@
         {
           "Id": "b1c8348f57eb4a00ac8740ef2e357bd2",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordinata Z\n\ndouble\nValore di default: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -3916,7 +3916,7 @@
         {
           "Id": "fd620fc5d3fc4ad49951700cb4b87e28",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punto creato da coordinate",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3925,7 +3925,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Definisce un punto da 3 coordinate cartesiane.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
@@ -3948,7 +3948,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Genera valori numerici.",
       "InputValue": 126.947
     },
     {
@@ -3960,7 +3960,7 @@
         {
           "Id": "f996c8c26311445e81be3f8036b91ce9",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3969,7 +3969,7 @@
         {
           "Id": "8f0c00c33a4a4ace9e0173be87f1f9ac",
           "Name": "",
-          "Description": "Value of expression at line 2",
+          "Description": "Valore dell'espressione alla riga 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3977,7 +3977,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "15;\n35;"
     },
     {
@@ -3999,7 +3999,7 @@
         {
           "Id": "4cdca00eb3494f70a926564844545bd1",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Punto",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4008,7 +4008,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.StartPoint",
       "Replication": "Auto",
-      "Description": "Get the start Point along the Curve\n\nCurve.StartPoint: Point"
+      "Description": "Ottiene il punto iniziale lungo la curva.\n\nCurve.StartPoint: Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -4018,7 +4018,7 @@
         {
           "Id": "5356aff0dc424e58a9d0ae897d28576b",
           "Name": "startPoint",
-          "Description": "Line start point\n\nPoint",
+          "Description": "Punto iniziale linea Point",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4027,7 +4027,7 @@
         {
           "Id": "23cf18d8d87e4472a2e55ebd188ebe34",
           "Name": "endPoint",
-          "Description": "Line end point\n\nPoint",
+          "Description": "Punto finale linea Point",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4038,7 +4038,7 @@
         {
           "Id": "a71f3b86721648f98d08f3c575cf01c9",
           "Name": "Line",
-          "Description": "Line from start and end point",
+          "Description": "Linea da punto iniziale e finale",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4047,7 +4047,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Creates a straight Line between two input Points.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
+      "Description": "Crea una linea retta tra due punti di input.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -4068,7 +4068,7 @@
         {
           "Id": "996941f80b9146949cdbfdc0b88e6a68",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Punto",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4077,7 +4077,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.EndPoint",
       "Replication": "Auto",
-      "Description": "Get the end Point along the Curve\n\nCurve.EndPoint: Point"
+      "Description": "Ottiene il punto finale lungo la curva.\n\nCurve.EndPoint: Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -4107,7 +4107,7 @@
         {
           "Id": "2964a71778384a95a359604d9be32086",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4115,7 +4115,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "Arc.ByCenterPointRadiusAngle(center,5,0,endAngle,Vector.ZAxis());"
     },
     {
@@ -4127,7 +4127,7 @@
         {
           "Id": "fb34bc1ef37c4ae1864692aac2ebb92a",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4135,7 +4135,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "3.14159;"
     },
     {
@@ -4146,7 +4146,7 @@
         {
           "Id": "94caee957534462380335d5d237ff501",
           "Name": "number",
-          "Description": "Number to round down\n\ndouble",
+          "Description": "Numero da arrotondare per difetto double",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4157,7 +4157,7 @@
         {
           "Id": "de4e38bcf22c4f1395ecb9432a52c84d",
           "Name": "int",
-          "Description": "First integer smaller than the number",
+          "Description": "Primo numero intero minore del numero",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4166,7 +4166,7 @@
       ],
       "FunctionSignature": "DSCore.Math.Floor@double",
       "Replication": "Auto",
-      "Description": "Returns the first integer smaller than the number.\n\nMath.Floor (number: double): int"
+      "Description": "Restituisce il primo numero intero minore del numero.\n\nMath.Floor (number: double): int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -4176,7 +4176,7 @@
         {
           "Id": "53121117db41471dabaae8e2fb59300d",
           "Name": "number",
-          "Description": "Number to round up.\n\ndouble",
+          "Description": "Numero da arrotondare.\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4187,7 +4187,7 @@
         {
           "Id": "006bab3270ce4ad0b9cfd89e6ded75c2",
           "Name": "int",
-          "Description": "First integer greater than the number",
+          "Description": "Primo numero intero maggiore del numero",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4196,7 +4196,7 @@
       ],
       "FunctionSignature": "DSCore.Math.Ceiling@double",
       "Replication": "Auto",
-      "Description": "Returns the first integer greater than the number\n\nMath.Ceiling (number: double): int"
+      "Description": "Restituisce il primo numero intero maggiore del numero.\n\nMath.Ceiling (number: double): int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -4207,7 +4207,7 @@
         {
           "Id": "a45f51e38177409887ab6be9147c2aed",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4215,7 +4215,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "3;"
     },
     {
@@ -4228,7 +4228,7 @@
         {
           "Id": "e11f660b0bd94eaab84bb2546d808ed0",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4239,7 +4239,7 @@
         {
           "Id": "f1964a05dd5e4ba0ade42f2929e37a6e",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4247,7 +4247,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -4259,7 +4259,7 @@
         {
           "Id": "8305966769954276ad2838df02c908bd",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4270,7 +4270,7 @@
         {
           "Id": "8233c5487504420898837e12bbb1aa50",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4278,7 +4278,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -4290,7 +4290,7 @@
         {
           "Id": "d219d4da01434a54b5cffd8c4ab47f64",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4301,7 +4301,7 @@
         {
           "Id": "c356a9c5a4964b97949d6b4b05ac38ee",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4309,7 +4309,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -4321,7 +4321,7 @@
         {
           "Id": "5972303da71f42a8868debe641461d63",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4332,7 +4332,7 @@
         {
           "Id": "a12534d11ae64931bfde644d5152a825",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4340,7 +4340,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -4361,7 +4361,7 @@
         {
           "Id": "2c4e2991f71d4f10a40d7461b12cf36b",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4369,7 +4369,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "Math.Floor(num);"
     },
     {
@@ -4391,7 +4391,7 @@
         {
           "Id": "e20c3522fbf449babe3e535b4f31b559",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4399,7 +4399,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "Math.Ceiling(num);"
     },
     {
@@ -4421,7 +4421,7 @@
         {
           "Id": "4f014d526f0549108878d49571b505a3",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4429,7 +4429,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "Math.Round(num);"
     },
     {
@@ -4451,7 +4451,7 @@
         {
           "Id": "e2cda39fb9974f7c8ff9bb18da52e44d",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4459,7 +4459,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "Math.Round(num,3);"
     },
     {
@@ -4472,7 +4472,7 @@
         {
           "Id": "9ce69c3570f14e69bc4798f3118b303f",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4483,7 +4483,7 @@
         {
           "Id": "9fd774a8eca8451f8b6872c3797cb962",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4491,7 +4491,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -4503,7 +4503,7 @@
         {
           "Id": "cc462f2e561a4513bfb876c46eb1e4db",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4514,7 +4514,7 @@
         {
           "Id": "982f9df1a03842e084a65d8727f4ff2c",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4522,7 +4522,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -4534,7 +4534,7 @@
         {
           "Id": "6aa29b8c40204191bd84194eb80805cb",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4545,7 +4545,7 @@
         {
           "Id": "cc6fc4b9192d42d5adc4e9eb3d303cbb",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4553,7 +4553,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -4565,7 +4565,7 @@
         {
           "Id": "6585d3b9f8bf46e78c8c5272bc0e1b7c",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4576,7 +4576,7 @@
         {
           "Id": "78407aaecbd74938ac1bb24e492d6215",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4584,7 +4584,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -4595,7 +4595,7 @@
         {
           "Id": "94371d45cf354c6ba8c258999fb5de3a",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4603,7 +4603,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "3.14159;"
     },
     {
@@ -4615,7 +4615,7 @@
         {
           "Id": "22c184830d0e4c8cbc41644b8db09420",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4623,7 +4623,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "true == false;"
     },
     {
@@ -4636,7 +4636,7 @@
         {
           "Id": "6bc69b1fc1e248e2a79d5b32c114f9a4",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4647,7 +4647,7 @@
         {
           "Id": "b8eaaf5d6a9c45ab804b59b5943305ce",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4655,7 +4655,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -4667,7 +4667,7 @@
         {
           "Id": "3824c0036b0e48cab4f4f741e0b28a34",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4678,7 +4678,7 @@
         {
           "Id": "e2284dbb59ca4675b17e1964febfd8ec",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4686,7 +4686,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -4698,7 +4698,7 @@
         {
           "Id": "64a019e06e4c42fd8ef9c09c16571fe9",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4709,7 +4709,7 @@
         {
           "Id": "01ec5fa484244be8ad8f86c57e347b38",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4717,7 +4717,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -4729,7 +4729,7 @@
         {
           "Id": "ca6f0bd8964e442bb8db3e6c6d67e706",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4740,7 +4740,7 @@
         {
           "Id": "5060a61071b740b3bcfde92e14a08e23",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4748,7 +4748,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -4759,7 +4759,7 @@
         {
           "Id": "150baf64ee244e4eb677952651fd9278",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4767,7 +4767,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "true || false;"
     },
     {
@@ -4779,7 +4779,7 @@
         {
           "Id": "68b0f15c58a54a76933d328411172e51",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4787,7 +4787,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "true && false;"
     },
     {
@@ -4799,7 +4799,7 @@
         {
           "Id": "3f1952c596284e7180d7e7dafb497476",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valore dell'espressione alla riga 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4807,7 +4807,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Consente la creazione diretta di codice DesignScript",
       "Code": "!true;"
     },
     {
@@ -4820,7 +4820,7 @@
         {
           "Id": "2fe637add5b54bf895f76f6983462fcf",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4831,7 +4831,7 @@
         {
           "Id": "e4b664e350ce4fcf95954fe3bb881015",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4839,7 +4839,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -4851,7 +4851,7 @@
         {
           "Id": "073e407b1bfb4cfd8f028d8c3e5f99b0",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4862,7 +4862,7 @@
         {
           "Id": "83a9c95a53fb434c86045d7f04c8e1c2",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4870,7 +4870,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -4900,7 +4900,7 @@
         {
           "Id": "81ca14718cdf4108b7db2a936ff1d165",
           "Name": "bool",
-          "Description": "True if any of the inputs are true",
+          "Description": "True se uno qualsiasi degli input è true",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4909,7 +4909,7 @@
       ],
       "FunctionSignature": "||@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Logical OR operator\n\n|| (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Operatore OR logico || (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -4919,7 +4919,7 @@
         {
           "Id": "322d031343734deca2320d078a762d69",
           "Name": "x",
-          "Description": "Basic type object to compare (e.g. bool, int, double, string, etc.)\n\nvar[]..[]",
+          "Description": "Oggetto di tipo di base da confrontare (ad esempio bool, int, double, string e così via) var[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4928,7 +4928,7 @@
         {
           "Id": "6d9c8893a03b459f82b7f9638c1f7615",
           "Name": "y",
-          "Description": "Basic type object to compare (e.g. bool, int, double, string, etc.)\n\nvar[]..[]",
+          "Description": "Oggetto di tipo di base da confrontare (ad esempio bool, int, double, string e così via) var[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4939,7 +4939,7 @@
         {
           "Id": "79d455f37cbc4916bdea4309a6f8c8da",
           "Name": "bool",
-          "Description": "Result of equality check",
+          "Description": "Risultato del controllo di uguaglianza",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4948,7 +4948,7 @@
       ],
       "FunctionSignature": "==@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Compares if x and y are equal\n\n== (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Confronta se x e y sono uguali == (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -4958,7 +4958,7 @@
         {
           "Id": "a08b8d91213a4c89b8529d6579eb3243",
           "Name": "x",
-          "Description": "A boolean to check if true\n\nvar[]..[]",
+          "Description": "Un valore booleano da controllare se true var[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4967,7 +4967,7 @@
         {
           "Id": "da932aed0b764ed3b06b3ccee65debdd",
           "Name": "y",
-          "Description": "Another boolean to check if true\n\nvar[]..[]",
+          "Description": "Un altro valore booleano da verificare se true\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4978,7 +4978,7 @@
         {
           "Id": "e65a97904e6b4dcb8d806185820c5abf",
           "Name": "bool",
-          "Description": "Result of check",
+          "Description": "Risultato del controllo",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -4987,7 +4987,7 @@
       ],
       "FunctionSignature": "&&@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Logical AND operator\n\n&& (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Operatore AND logico && (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -4999,7 +4999,7 @@
         {
           "Id": "fe980c5724c94dbb8e9e9fc64fb761f1",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -5010,7 +5010,7 @@
         {
           "Id": "8cd4b832cdc14036b0376653dfde4a03",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -5018,7 +5018,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -5030,7 +5030,7 @@
         {
           "Id": "4f2c4143a2ee48f8b122d32194d35681",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -5041,7 +5041,7 @@
         {
           "Id": "3c64661a5f424814b42818abfb0869a3",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -5049,7 +5049,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -5059,7 +5059,7 @@
         {
           "Id": "cd2ae1980dd944889cd00b2ef4b37e77",
           "Name": "x",
-          "Description": "boolean to reverse.\n\nvar[]..[]",
+          "Description": "Valore booleano da invertire. var[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -5070,7 +5070,7 @@
         {
           "Id": "ac3529f430c34672873b321d2292f0b3",
           "Name": "bool",
-          "Description": "type var[]..[] (reversed boolean)",
+          "Description": "tipo var[]..[] (valore booleano invertito)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -5079,7 +5079,7 @@
       ],
       "FunctionSignature": "Not@var[]..[]",
       "Replication": "Auto",
-      "Description": "Negates the input, e.g. returns false when the input is true.\n\nNot (x: var[]..[]): var[]..[]"
+      "Description": "Nega l'input, ad esempio restituisce false quando l'input è true. Not (x: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
@@ -5098,7 +5098,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Enables selection between True and False",
+      "Description": "Consente la selezione tra True e False.",
       "InputValue": false
     },
     {
@@ -5118,7 +5118,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Enables selection between True and False",
+      "Description": "Consente la selezione tra True e False.",
       "InputValue": true
     },
     {
@@ -5138,7 +5138,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Enables selection between True and False",
+      "Description": "Consente la selezione tra True e False.",
       "InputValue": true
     },
     {
@@ -5158,7 +5158,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Enables selection between True and False",
+      "Description": "Consente la selezione tra True e False.",
       "InputValue": false
     },
     {
@@ -5178,7 +5178,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Enables selection between True and False",
+      "Description": "Consente la selezione tra True e False.",
       "InputValue": true
     },
     {
@@ -5198,7 +5198,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Enables selection between True and False",
+      "Description": "Consente la selezione tra True e False.",
       "InputValue": false
     },
     {
@@ -5218,7 +5218,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Enables selection between True and False",
+      "Description": "Consente la selezione tra True e False.",
       "InputValue": true
     }
   ],
@@ -6174,7 +6174,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Proprietà",
       "Version": "2.13",
       "Data": {}
     }
@@ -6197,7 +6197,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Anteprima sfondo",
       "EyeX": -10.409515380859375,
       "EyeY": 31.652584075927734,
       "EyeZ": 22.095348358154297,
@@ -7724,7 +7724,7 @@
     "Annotations": [
       {
         "Id": "b76f75f7319a4ea998d3ee71da3aaaa5",
-        "Title": "Info",
+        "Title": "Informazioni",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -7840,7 +7840,7 @@
       },
       {
         "Id": "a096702e7bf84e779ab38173273e8603",
-        "Title": "Basic arithmetic operators",
+        "Title": "Operatori aritmetici di base",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -7956,7 +7956,7 @@
       },
       {
         "Id": "253b5798268b4089bbb06fbb174e58fd",
-        "Title": "==(equals)",
+        "Title": "==(uguale a)",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -7981,7 +7981,7 @@
       },
       {
         "Id": "66992c85eda74c90bef01cca2b59f5a6",
-        "Title": "|| (or)",
+        "Title": "|| (o)",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8006,7 +8006,7 @@
       },
       {
         "Id": "cb8b076f76084114bd275a80edbec92e",
-        "Title": "&& (and)",
+        "Title": "&& (e)",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8031,7 +8031,7 @@
       },
       {
         "Id": "bb3a69d6152b42d0affc5674f5b344ee",
-        "Title": "Not",
+        "Title": "Non",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8055,7 +8055,7 @@
       },
       {
         "Id": "abd29e986b254d258457daa853fc8d49",
-        "Title": "==(equals)",
+        "Title": "==(uguale a)",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8078,7 +8078,7 @@
       },
       {
         "Id": "748a4d4457db4a88b9ec307d9984acf7",
-        "Title": "|| (or)",
+        "Title": "|| (o)",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8101,7 +8101,7 @@
       },
       {
         "Id": "60dd7c8e858a44ac88407282d3b109e0",
-        "Title": "&& (and)",
+        "Title": "&& (e)",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8124,7 +8124,7 @@
       },
       {
         "Id": "666ff8bc8eee44dc9732036c98d0eddd",
-        "Title": "Not",
+        "Title": "Non",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8147,7 +8147,7 @@
       },
       {
         "Id": "0807a7383df4404da53a682ab3d6bcd2",
-        "Title": "Basic logical operators",
+        "Title": "Operatori logici di base",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8169,7 +8169,7 @@
       },
       {
         "Id": "9af0d02f674e40eca4eecacb01f7aadd",
-        "Title": "Boolean operators",
+        "Title": "Operatori booleani",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8191,7 +8191,7 @@
       },
       {
         "Id": "e211fc0515c44d64b786c90bc8e50c6d",
-        "Title": "Round to specified number of digits",
+        "Title": "Arrotonda al numero specificato di cifre",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8214,8 +8214,8 @@
       },
       {
         "Id": "8d16562047cd40f4b9082bb05f578aa7",
-        "Title": "Round up or down",
-        "DescriptionText": "Whicever is closest ",
+        "Title": "Arrotonda per eccesso o per difetto",
+        "DescriptionText": "Qualunque valore sia il più vicino ",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -8237,7 +8237,7 @@
       },
       {
         "Id": "09c91d4127a04884a449505304068225",
-        "Title": "Round up",
+        "Title": "Arrotonda per eccesso",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8260,7 +8260,7 @@
       },
       {
         "Id": "06cb9d659b914d4896d291a6b03f560a",
-        "Title": "Round down",
+        "Title": "Arrotonda per difetto",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8283,7 +8283,7 @@
       },
       {
         "Id": "47fe7b1e3af147ccbf7c8d6195ea4fdb",
-        "Title": "Inputs",
+        "Title": "Input",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8306,7 +8306,7 @@
       },
       {
         "Id": "ebe1dabc279e4828824bfea72c788a7c",
-        "Title": "Rounding",
+        "Title": "Arrotondamento",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8328,7 +8328,7 @@
       },
       {
         "Id": "1226ce34d27d4cdaa52ff9940dd6190a",
-        "Title": "Inputs",
+        "Title": "Input",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8350,7 +8350,7 @@
       },
       {
         "Id": "c5b918d831f14c2cb44f34a86fd5b058",
-        "Title": "Round down",
+        "Title": "Arrotonda per difetto",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8373,7 +8373,7 @@
       },
       {
         "Id": "f5f5c26c643b4e648ebacde7f98442e3",
-        "Title": "Round up",
+        "Title": "Arrotonda per eccesso",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8396,8 +8396,8 @@
       },
       {
         "Id": "f37d3ae1f29b44e69c4c38271dede614",
-        "Title": "Round up or down",
-        "DescriptionText": "Whicever is closest ",
+        "Title": "Arrotonda per eccesso o per difetto",
+        "DescriptionText": "Qualunque valore sia il più vicino ",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -8419,8 +8419,8 @@
       },
       {
         "Id": "ed5ad43f96f941869d12f52228cab5d7",
-        "Title": "Round to specified number of digits",
-        "DescriptionText": "Description <Double click here to edit group description>",
+        "Title": "Arrotonda al numero specificato di cifre",
+        "DescriptionText": "Descrizione <Fare doppio clic qui per modificare la descrizione del gruppo>",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -8442,8 +8442,8 @@
       },
       {
         "Id": "8667567d06e5402dad31a3d59d606a4a",
-        "Title": "Complex Math functions",
-        "DescriptionText": "4 examples of achieving the same end result using Nodes, Python, Fo",
+        "Title": "Funzioni matematiche complesse",
+        "DescriptionText": "4 esempi di come ottenere lo stesso risultato finale utilizzando nodi, Python, Fo",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -8465,8 +8465,8 @@
       },
       {
         "Id": "407bb155438c4f2c8157b593eb7d4726",
-        "Title": "Inputs",
-        "DescriptionText": "Create the necessary iputs:\r\n1. Center point\r\n2. Radius\r\n3. Start angle\r\n4. End angle\r\n5. The normal (ZAxsis)",
+        "Title": "Input",
+        "DescriptionText": "Crea gli input necessari:\r\n1. Punto centrale\r\n2. Raggio\r\n3. Angolo iniziale\r\n4. Angolo finale\r\n5. Normale (asse Z)",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -8492,7 +8492,7 @@
       },
       {
         "Id": "82f5182a769844609921719f09f6d3fa",
-        "Title": "Create Arc by Center point, Radius and Angle",
+        "Title": "Crea l'arco mediante punto centrale, raggio e angolo.",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8515,7 +8515,7 @@
       },
       {
         "Id": "9ad4038d17a948fa9c09a49972137eba",
-        "Title": "Visualize the outuputs",
+        "Title": "Visualizza gli output",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8540,7 +8540,7 @@
       },
       {
         "Id": "783add991eb1459f94904fa0a94c0b18",
-        "Title": "Visualize the outuputs",
+        "Title": "Visualizza gli output",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8565,7 +8565,7 @@
       },
       {
         "Id": "cac42a2a89de4b2dacd9d31aa9b5120c",
-        "Title": "Create Arc by Center point, Radius and Angle",
+        "Title": "Crea l'arco mediante punto centrale, raggio e angolo.",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8587,8 +8587,8 @@
       },
       {
         "Id": "0ea3872075f54874aa8d7488fd9c0202",
-        "Title": "Inputs",
-        "DescriptionText": "Create the necessary iputs:\r\n1. Center point\r\n2. End angle",
+        "Title": "Input",
+        "DescriptionText": "Crea gli input necessari:\r\n1. Punto centrale\r\n2. Angolo finale",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -8611,7 +8611,7 @@
       },
       {
         "Id": "3068d387b1634b1abdbaaaa5f4836e56",
-        "Title": "Arc",
+        "Title": "Arco",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8633,8 +8633,8 @@
       },
       {
         "Id": "26df5eb7dc854fda93bb4be079cf90ad",
-        "Title": "Tip",
-        "DescriptionText": "Highlighting geometry nodes",
+        "Title": "Suggerimento",
+        "DescriptionText": "Evidenzia i nodi della geometria.",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -8655,7 +8655,7 @@
       },
       {
         "Id": "2c46272eeaaa4299b7116ac8a09ea1ca",
-        "Title": "Create and visualize the Cosine curve",
+        "Title": "Crea e visualizza la curva coseno.",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8677,7 +8677,7 @@
       },
       {
         "Id": "ec39340d7d9d4f2996c998bfe1a73849",
-        "Title": "Inputs",
+        "Title": "Input",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8704,8 +8704,8 @@
       },
       {
         "Id": "c4bf21194cdd43a7b97c2b554d398dfb",
-        "Title": "Math.Cos function ",
-        "DescriptionText": "Get the cosine value for each initial number",
+        "Title": "Funzione Math.Cos ",
+        "DescriptionText": "Ottiene il valore coseno per ogni numero iniziale.",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -8726,7 +8726,7 @@
       },
       {
         "Id": "352c8fe451d04a7a96b2cb28bc1e1e9b",
-        "Title": "Intermediate operations",
+        "Title": "Operazioni intermedie",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8750,7 +8750,7 @@
       },
       {
         "Id": "e33463f0563e4ab48cd41d85b7bcf01c",
-        "Title": "Controls the Amplitude",
+        "Title": "Controlla l'ampiezza.",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8773,7 +8773,7 @@
       },
       {
         "Id": "cf106c506f8848938adbead4c639ba6e",
-        "Title": "Inputs",
+        "Title": "Input",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8802,8 +8802,8 @@
       },
       {
         "Id": "d3e4fbd6cc5444b5bc13b4ef19d28b89",
-        "Title": "Cos curve function ",
-        "DescriptionText": "Get the cosine value for the given frequency and angle multiply it by the amplitude",
+        "Title": "Funzione curva cos ",
+        "DescriptionText": "Ottiene il valore coseno per la frequenza e l'angolo specificati moltiplicandolo per l'ampiezza.",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -8824,7 +8824,7 @@
       },
       {
         "Id": "dbbd345b97214245b002b45507b84b56",
-        "Title": "Intermediate operations",
+        "Title": "Operazioni intermedie",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8847,7 +8847,7 @@
       },
       {
         "Id": "10951635fea8468094031dfa329190c4",
-        "Title": "Create and visualize the Cosine curve",
+        "Title": "Crea e visualizza la curva coseno.",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8869,7 +8869,7 @@
       },
       {
         "Id": "63d25030e7c4477aa512beab36a8ac0d",
-        "Title": "Cosine Curve",
+        "Title": "Curva coseno",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8891,7 +8891,7 @@
       },
       {
         "Id": "8b8e63683d7642e2b87adca06e090cce",
-        "Title": "The final surface",
+        "Title": "La superficie finale",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8914,7 +8914,7 @@
       },
       {
         "Id": "3b5ab97f890948f797a6cb6afe3a6108",
-        "Title": "The curve network",
+        "Title": "La rete di curve",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8937,7 +8937,7 @@
       },
       {
         "Id": "9901bdf27b7f41c19cf099d0dfe709d4",
-        "Title": "The collection of points",
+        "Title": "La raccolta di punti",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -8960,8 +8960,8 @@
       },
       {
         "Id": "145bc61eaf434be09e6db6478aba78eb",
-        "Title": "Tip",
-        "DescriptionText": "Redner precision",
+        "Title": "Suggerimento",
+        "DescriptionText": "Precisione di rendering",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -8982,7 +8982,7 @@
       },
       {
         "Id": "88de7d9ca0904f289f59d021f6b8c118",
-        "Title": "Square",
+        "Title": "Quadrato",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9005,7 +9005,7 @@
       },
       {
         "Id": "91659341c43d4323addf9edd2324958b",
-        "Title": "Square",
+        "Title": "Quadrato",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9028,7 +9028,7 @@
       },
       {
         "Id": "2fe08b28f5574308a8f38a256e433655",
-        "Title": "Square",
+        "Title": "Quadrato",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9051,7 +9051,7 @@
       },
       {
         "Id": "dcd7cf5a7b4d42ef8a5893974a274673",
-        "Title": "Frequency",
+        "Title": "Frequenza",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9074,7 +9074,7 @@
       },
       {
         "Id": "a51bb0fea08b464c903e92031a6fc0ff",
-        "Title": "Amplitude",
+        "Title": "Ampiezza",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9097,7 +9097,7 @@
       },
       {
         "Id": "a6df104092124dcf8f1b135bcadc98da",
-        "Title": "The series of mathematical calculations and manipulation to create the 'ripple' geometry using Nodes",
+        "Title": "La serie di manipolazioni e di calcoli matematici per creare la geometria \"a onde\" utilizzando i nodi",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9125,7 +9125,7 @@
       },
       {
         "Id": "bd67a30f7223435c89a25fee915803a9",
-        "Title": "Initial input for the list of points",
+        "Title": "Input iniziale per l'elenco di punti",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9147,7 +9147,7 @@
       },
       {
         "Id": "ea064eaadce34a05968efac1bb9b4fa6",
-        "Title": "Initial point list creation and manipulation",
+        "Title": "Creazione e manipolazione dell'elenco di punti iniziali",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9173,7 +9173,7 @@
       },
       {
         "Id": "0259ea72852c4b36880c99840bcc24ba",
-        "Title": "Initial input for the list of points",
+        "Title": "Input iniziale per l'elenco di punti",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9195,7 +9195,7 @@
       },
       {
         "Id": "132c67b6e88646f19e4a7678fd7b1956",
-        "Title": "Frequency",
+        "Title": "Frequenza",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9217,7 +9217,7 @@
       },
       {
         "Id": "c541781ec31a42c3bb7fe910a6c5e51f",
-        "Title": "Amplitude",
+        "Title": "Ampiezza",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9239,7 +9239,7 @@
       },
       {
         "Id": "fd44d9600dfe444b8465b96756200e8d",
-        "Title": "The collection of points",
+        "Title": "La raccolta di punti",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9261,7 +9261,7 @@
       },
       {
         "Id": "a99e5ea0b03849feaab6318fc072944a",
-        "Title": "The curve network",
+        "Title": "La rete di curve",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9283,7 +9283,7 @@
       },
       {
         "Id": "e59a4f5b34554b3b86a8e480be37b908",
-        "Title": "The final surface",
+        "Title": "La superficie finale",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9305,7 +9305,7 @@
       },
       {
         "Id": "8d1ea86eb5e2449f8dc89e23ddf845f9",
-        "Title": "The series of mathematical calculations and manipuations to create the 'ripple' geometry using Python",
+        "Title": "La serie di manipolazioni e di calcoli matematici per creare la geometria \"a onde\" utilizzando Python",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9327,7 +9327,7 @@
       },
       {
         "Id": "36bb3f56bf7c40c484e74c43cd060a42",
-        "Title": "Helper function to move the geometry ",
+        "Title": "Funzione helper per spostare la geometria ",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9350,7 +9350,7 @@
       },
       {
         "Id": "3c4ccec65ba544a98b09de48991b4de9",
-        "Title": "Initial point list creation and manipulation",
+        "Title": "Creazione e manipolazione dell'elenco di punti iniziali",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9375,7 +9375,7 @@
       },
       {
         "Id": "f753c7e03a61418dbbe37616083e9b16",
-        "Title": "Collect the resulting points and prepare for final render",
+        "Title": "Raccoglie i punti risultanti e prepara il rendering finale.",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9399,7 +9399,7 @@
       },
       {
         "Id": "0e0f70ae549548b28fbbb730a08795fa",
-        "Title": "Collect the resulting points and prepare for final render",
+        "Title": "Raccoglie i punti risultanti e prepara il rendering finale.",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9422,7 +9422,7 @@
       },
       {
         "Id": "6cf4b8254bda4e24abc7586669b64817",
-        "Title": "The final surface",
+        "Title": "La superficie finale",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9444,7 +9444,7 @@
       },
       {
         "Id": "aec4a14147a34430ad7a92b3e88d5aa2",
-        "Title": "The curve network",
+        "Title": "La rete di curve",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9466,7 +9466,7 @@
       },
       {
         "Id": "2dc8cfb57b2b4a598a2e30bba657fa76",
-        "Title": "The collection of points",
+        "Title": "La raccolta di punti",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9488,7 +9488,7 @@
       },
       {
         "Id": "6d9857f7f38b45c099626870fb9a4f09",
-        "Title": "Collect the resulting points and prepare for final render",
+        "Title": "Raccoglie i punti risultanti e prepara il rendering finale.",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9511,7 +9511,7 @@
       },
       {
         "Id": "71d8fff82e2c413e867c65bb9cbe5c8f",
-        "Title": "Initial point list creation and manipulation",
+        "Title": "Creazione e manipolazione dell'elenco di punti iniziali",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9536,7 +9536,7 @@
       },
       {
         "Id": "5694eb8190794c2a9c7248eb21d44f97",
-        "Title": "Initial input for the list of points",
+        "Title": "Input iniziale per l'elenco di punti",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9558,7 +9558,7 @@
       },
       {
         "Id": "52d8d6f3de3f4c308a9c9fbb6e289f0c",
-        "Title": "Frequency",
+        "Title": "Frequenza",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9580,7 +9580,7 @@
       },
       {
         "Id": "adcaaccccdae44f7857b7711997dcd9a",
-        "Title": "Amplitude",
+        "Title": "Ampiezza",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9602,7 +9602,7 @@
       },
       {
         "Id": "2a8674cf83594795b732cd7bfcdf169c",
-        "Title": "Helper function to move the geometry ",
+        "Title": "Funzione helper per spostare la geometria ",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9625,7 +9625,7 @@
       },
       {
         "Id": "c6494f7789bc4d4ba999b578e7942acf",
-        "Title": "The series of mathematical calculations and manipuations to create the 'ripple' geometry using Python",
+        "Title": "La serie di manipolazioni e di calcoli matematici per creare la geometria \"a onde\" utilizzando Python",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9648,7 +9648,7 @@
       },
       {
         "Id": "94feeb10c1e04a5a874bb13c968d11ed",
-        "Title": "Operations using Code Blocks",
+        "Title": "Operazioni mediante blocchi di codice",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9671,7 +9671,7 @@
       },
       {
         "Id": "19e42ec97b8248778e56f16f900c4260",
-        "Title": "Operations using Nodes",
+        "Title": "Operazioni mediante nodi",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9694,7 +9694,7 @@
       },
       {
         "Id": "28b69eed811c479c8b5cfec5d2af7d67",
-        "Title": "Operations using Code Blocks",
+        "Title": "Operazioni mediante blocchi di codice",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9719,7 +9719,7 @@
       },
       {
         "Id": "160e310e7b904c2ea616f7a91a6eb41f",
-        "Title": "Operations using Nodes",
+        "Title": "Operazioni mediante nodi",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9744,7 +9744,7 @@
       },
       {
         "Id": "262d76ffd7684fca881c7e0c13fd15ad",
-        "Title": "Operations using Nodes",
+        "Title": "Operazioni mediante nodi",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9767,7 +9767,7 @@
       },
       {
         "Id": "edaf96df3f3a4c3593e9a0b460174342",
-        "Title": "Operations using Code Blocks",
+        "Title": "Operazioni mediante blocchi di codice",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9790,7 +9790,7 @@
       },
       {
         "Id": "2e1009d13dd54a83860646684fd9e250",
-        "Title": "Rounding using Nodes",
+        "Title": "Arrotondamento mediante nodi",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9816,7 +9816,7 @@
       },
       {
         "Id": "748f547f3af240c79e503ba745b9f306",
-        "Title": "Rounding using Code Blocks",
+        "Title": "Arrotondamento mediante blocchi di codice",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9842,7 +9842,7 @@
       },
       {
         "Id": "9a8de66a825a4df88ff5be888d583d47",
-        "Title": "Arc using Nodes",
+        "Title": "Arco mediante nodi",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9866,7 +9866,7 @@
       },
       {
         "Id": "e1017f1a5a5d442287936f04eed51505",
-        "Title": "Arc using Code Blocks",
+        "Title": "Arco mediante blocchi di codice",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9890,7 +9890,7 @@
       },
       {
         "Id": "a751d39111a04e0bb8cae82f435c4ac6",
-        "Title": "Cosine Curve using Nodes",
+        "Title": "Coseno curva mediante nodi",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9918,7 +9918,7 @@
       },
       {
         "Id": "e7163f004bed4275b1f6fc488ce17967",
-        "Title": "Cosine Curve using Code Blocks",
+        "Title": "Curva coseno mediante blocchi di codice",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -9974,7 +9974,7 @@
       },
       {
         "Id": "de5e78dd42bb4f549efd55c9e0d1425f",
-        "Title": "Nodes",
+        "Title": "Nodi",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10008,7 +10008,7 @@
       },
       {
         "Id": "d2cbe6cd7ac2411aa0d3b3fbb62f9b69",
-        "Title": "Code Block",
+        "Title": "Blocco di codice",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10039,7 +10039,7 @@
       },
       {
         "Id": "38c803c07201404db69a2d000cfb7eac",
-        "Title": "Divides flat list into series\r\nof lists by row",
+        "Title": "Suddivide l'elenco non strutturato in una serie di elenchi per riga",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10060,7 +10060,7 @@
       },
       {
         "Id": "d92a06327d01499f8adc7c8beaa72e61",
-        "Title": "Creates NURBS curves\r\nthrough points",
+        "Title": "Crea curve NURBS mediante punti",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10081,7 +10081,7 @@
       },
       {
         "Id": "05a88313cd154fac955e087ad377c7ca",
-        "Title": "Creates a surface",
+        "Title": "Crea una superficie",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10102,7 +10102,7 @@
       },
       {
         "Id": "838c3eb32940467182272de3b34a53f2",
-        "Title": "Angles in Dynamo are in Degrees",
+        "Title": "Gli angoli in Dynamo sono espressi in gradi",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10123,7 +10123,7 @@
       },
       {
         "Id": "e1b842c75b2d4f45be3259a1c120b608",
-        "Title": "Moves the geometry over",
+        "Title": "Sposta la geometria",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10144,7 +10144,7 @@
       },
       {
         "Id": "4fb46321ca3c4d468485daf355377cae",
-        "Title": "Names for math methods match the names of the Dynamo nodes used in the first example.",
+        "Title": "I nomi dei metodi matematici corrispondono ai nomi dei nodi di Dynamo utilizzati nel primo esempio.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10165,7 +10165,7 @@
       },
       {
         "Id": "874d56ba9aa742b192caddcf33493456",
-        "Title": "Makes a grid of points.\r\nNote lacing behavior is\r\n\"cross product.\"",
+        "Title": "Crea una griglia di punti.\nLa modalità di collegamento è\nProdotto cartesiano.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10186,7 +10186,7 @@
       },
       {
         "Id": "355c40ca31c5437db2855da2afac623d",
-        "Title": "This example shows four different ways to approach dealing with Math functions.  Each of these examples starts with a grid of points, calculates z-coordinates for the points and then makes a surface.  Only the calculation method differs; these methods all solve the same.\r\n\r\n1. Nodes. Math nodes are in Core/Math/\r\n\r\n2. Python.\r\n\r\n3. Code Block Node.  Double-click anywhere in the canvas to create a code block node.  Syntax for each function matches the name of the node in Dynamo.\r\n\r\n** Note: You can adjust the resolution of the geometry preview through the Settings Menu.",
+        "Title": "Questo esempio mostra quattro diversi modi per utilizzare le funzioni matematiche. Ciascuno di questi esempi inizia con una griglia di punti, calcola le coordinate z per i punti e quindi crea una superficie. Solo il metodo di calcolo differisce; questi metodi funzionano tutti allo stesso modo.\r\n\r\n1. Nodi. I nodi Math sono in Core/Math/\r\n\r\n2. Python.\r\n\r\n3. Nodo Code Block. Fare doppio clic in un punto qualsiasi dell'area di disegno per creare un nodo Code Block. La sintassi di ogni funzione corrisponde al nome del nodo in Dynamo.\r\n\r\n** Nota: è possibile regolare la risoluzione dell'anteprima della geometria tramite il menu Impostazioni.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10206,7 +10206,7 @@
       },
       {
         "Id": "c42cc7d2d595431aa578e99e10093ade",
-        "Title": "Moves the geometry over",
+        "Title": "Sposta la geometria",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10227,7 +10227,7 @@
       },
       {
         "Id": "bc3ae400734f42cdbd57b2c53536b7d2",
-        "Title": "Amplitude",
+        "Title": "Ampiezza",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10248,7 +10248,7 @@
       },
       {
         "Id": "90245d5ffa3f49e9b8d9d017cde2be2d",
-        "Title": "Frequency",
+        "Title": "Frequenza",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10269,7 +10269,7 @@
       },
       {
         "Id": "1bd6b6df0ef1490d89d2fef3a9745330",
-        "Title": "Series of X-values",
+        "Title": "Serie di valori X",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10290,7 +10290,7 @@
       },
       {
         "Id": "2097d85c00e24e3385c7792f8977b474",
-        "Title": "Amplitude",
+        "Title": "Ampiezza",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10311,7 +10311,7 @@
       },
       {
         "Id": "564d62cfd11c40928d5e475a9477565c",
-        "Title": "Frequency",
+        "Title": "Frequenza",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10332,7 +10332,7 @@
       },
       {
         "Id": "6db2e39f68c74a52aca67c9d7d6eebb4",
-        "Title": "Series of X-values",
+        "Title": "Serie di valori X",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10353,7 +10353,7 @@
       },
       {
         "Id": "8dcf2e8ac2354280b741c5a8bcc123b2",
-        "Title": "Arithmetic operators such as\r\n+, -, *, /, %",
+        "Title": "Operatori aritmetici, ad esempio +, -, *, /, %",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10373,7 +10373,7 @@
       },
       {
         "Id": "e184e0b0028b420aa91da1ea612de288",
-        "Title": "Comparison operators such as\r\n<, >, <=, >=, !=, ==",
+        "Title": "Operatori di confronto, ad esempio\r\n<,>, <=,>=, !=, ==",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10393,7 +10393,7 @@
       },
       {
         "Id": "f52a5132641d49ee9178d7b24f92557d",
-        "Title": "Angles in nodes or Code Block are in radians.",
+        "Title": "Nei nodi e nei blocchi di codice gli angoli sono espressi in radianti.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10414,7 +10414,7 @@
       },
       {
         "Id": "456989108d0d4eb6a7877a2310a10234",
-        "Title": "Rounding",
+        "Title": "Arrotondamento",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10434,7 +10434,7 @@
       },
       {
         "Id": "9cb096e6842d496b9e6a3a871d06bfc4",
-        "Title": "Boolean operators\r\n(Find others in the library.)",
+        "Title": "Operatori booleani\r\n(altri operatori sono disponibili nella libreria)",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10454,7 +10454,7 @@
       },
       {
         "Id": "488aa4f143a34f18bc197a2677f80fb6",
-        "Title": "Tip: Adjust how precisely the geometry in the background preview is rendered.  In the settings menu, choose \"Render Precision.\"  A higher value will make curved surfaces look smoother, but it will take more processing power to draw.",
+        "Title": "Suggerimento: regolare la precisione di rendering della geometria nell'anteprima sfondo. Nel menu Impostazioni, scegliere Precisione di rendering. Un valore più elevato rende le superfici curve più uniformi, ma richiede una maggiore potenza di elaborazione per il disegno.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10474,7 +10474,7 @@
       },
       {
         "Id": "add548afee304b0b9b88b749caaee89c",
-        "Title": "For more on this example:\r\nhttp://dynamobim.org/math-transit/",
+        "Title": "Per ulteriori informazioni sull'esempio, visitare il sito\r\nhttp://dynamobim.org/math-transit/",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10494,7 +10494,7 @@
       },
       {
         "Id": "1c931f1d3bd74cdd87e325dda7135ce2",
-        "Title": "This set of examples shows how to graph a cosine function using nodes and a Code Block.\r\n\r\nEach example takes a series of numbers as the x-values for a series of points, calculates the y-values from the x-values, and then draws a line in the shape of a cosine curve.  The large code block at the end of each graph moves the drawn geometry to a different part of the screen so that they are not all overlapping.",
+        "Title": "Questo insieme di esempi mostra come eseguire il grafico di una funzione coseno utilizzando i nodi e un blocco di codice.\r\n\r\nOgni esempio utilizza una serie di numeri come valori x per una serie di punti, calcola i valori y dai valori x e quindi disegna una linea a forma di curva coseno. Il blocco di codice grande alla fine di ogni grafico sposta la geometria disegnata in una parte diversa della schermata, in modo che non si sovrappongano tutti gli elementi.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10514,7 +10514,7 @@
       },
       {
         "Id": "9eb3e1ec1e404ad9880a9e67bad26248",
-        "Title": "Tip: Selecting a node that draws geometry will turn the geometry it creates cyan.  This code block draws the axes of a graph, the points along the curve, and then the curve itself.  Select the code block to see in the background which curve it draws.",
+        "Title": "Suggerimento: se si seleziona un nodo che disegna geometria, la geometria viene disegnata in ciano. Il blocco di codice disegna gli assi di un grafico, i punti lungo la curva e la curva. Selezionare il blocco di codice per visualizzare sullo sfondo la curva disegnata.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10534,7 +10534,7 @@
       },
       {
         "Id": "49ab4c80c3ad4a30a120dfc162dca9af",
-        "Title": "Tip: You can turn on or off the preview functionality for any node that makes geometry.  Right click and check or uncheck \"Preview.\"",
+        "Title": "Suggerimento: è possibile attivare o disattivare la funzionalità di anteprima per qualsiasi nodo che crea geometria. Fare clic con il pulsante destro del mouse e selezionare o deselezionare Anteprima",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10555,7 +10555,7 @@
       },
       {
         "Id": "eb29917e2bca43948aec5f5a0213fcd1",
-        "Title": "MATH\r\n\r\nMath in Dynamo can be done with nodes from the Math library and the Operators library, or with a Code Block.  Below, see how to perform several basic math operations with each of these three methods.",
+        "Title": "MATEMATICA\n\nÈ possibile eseguire la funzione matematica in Dynamo con i nodi della libreria Math e della libreria Operators o con un Code Block. Di seguito è illustrato come eseguire diverse operazioni matematiche di base con ciascuno di questi tre metodi.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10575,7 +10575,7 @@
       },
       {
         "Id": "91cdaf2988134858a7c1cce6d57ea5ed",
-        "Title": "Move the slider to change the length of the arc.",
+        "Title": "Spostare il dispositivo di scorrimento per modificare la lunghezza dell'arco.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10596,7 +10596,7 @@
       },
       {
         "Id": "be62968fe62c4724bf01ce7a52fb1877",
-        "Title": "Create an Arc using 2 separate methods, once using Nodes, and once using Code Blocks. The results are visualized for clarity",
+        "Title": "Crea un arco utilizzando 2 metodi separati, una volta mediante i nodi e una volta mediante i blocchi di codice. I risultati vengono visualizzati per maggiore chiarezza.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10616,7 +10616,7 @@
       },
       {
         "Id": "ad951c8e38b24a5e80432b826cf48ba6",
-        "Title": "Base point x,y coordinates",
+        "Title": "Coordinate x, y del punto base",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10637,7 +10637,7 @@
       },
       {
         "Id": "1c2d85982ca34a1e8c1fb9aa4d043c93",
-        "Title": "Base coordinate point",
+        "Title": "Punto base coordinata",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10658,7 +10658,7 @@
       },
       {
         "Id": "ea8271cc7aa24791ba30299a95b4a9db",
-        "Title": "Amplitude",
+        "Title": "Ampiezza",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10679,7 +10679,7 @@
       },
       {
         "Id": "e4b5c7941ff7421f972e226b41825d2e",
-        "Title": "Frequency",
+        "Title": "Frequenza",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10700,7 +10700,7 @@
       },
       {
         "Id": "cfb408f2d31048fe994d485962126667",
-        "Title": "Counts the number of groups of points from the initial collection of points (20x20)",
+        "Title": "Conteggia il numero di gruppi di punti dalla raccolta iniziale di punti (20x20).",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

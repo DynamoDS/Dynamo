@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="MismatchedAssemblyList" xml:space="preserve">
-    <value>It is likely one of the following assemblies loaded the incompatible version:</value>
+    <value>È probabile che uno dei seguenti assiemi abbia caricato la versione non compatibile:</value>
   </data>
   <data name="MismatchedAssemblyVersion" xml:space="preserve">
-    <value>While loading assembly {0}, Dynamo detected that the dependency {1} was already loaded with an incompatible version. It is likely that another Revit Addin has loaded this assembly, please try uninstalling other Addins, and starting Dynamo again. Dynamo may be unstable in this state.</value>
+    <value>Durante il caricamento dell'assieme {0}, Dynamo ha rilevato che la dipendenza {1} è già stata caricata con una versione non compatibile. È probabile che un altro modulo aggiuntivo di Revit abbia caricato questo assieme; provare ad eseguire la disinstallazione di altri moduli aggiuntivi e avviare Dynamo nuovamente. Dynamo potrebbe risultare instabile in questo stato.</value>
   </data>
   <data name="MismatchedAssemblyVersionShortMessage" xml:space="preserve">
-    <value>Dynamo has detected a conflict with a dependency and may be unstable. If any issues are detected, please uninstall addins or packages and contact the provider.</value>
+    <value>Dynamo ha rilevato un conflitto con una dipendenza e potrebbe essere instabile. Se vengono rilevati problemi, disinstallare i moduli aggiuntivi o i pacchetti e contattare il fornitore.</value>
   </data>
   <data name="MismatchedAssemblyVersionTitle" xml:space="preserve">
-    <value>Error Loading A Dependency</value>
+    <value>Errore durante il caricamento di una dipendenza</value>
   </data>
   <data name="SplashScreenPreLoadingAsm" xml:space="preserve">
-    <value>Preloading Geometry library</value>
+    <value>Precaricamento della libreria della geometria in corso...</value>
   </data>
 </root>

@@ -1,7 +1,7 @@
 {
   "Uuid": "295cd1e9-661c-4652-b713-f36054722e53",
   "IsCustomNode": false,
-  "Description": "This graph explores varios uses and applications of Code Blocks",
+  "Description": "Этот график анализирует различные модели применения блоков кода",
   "Name": "Core_CodeBlocks",
   "ElementResolver": {
     "ResolutionMap": {
@@ -121,7 +121,7 @@
         {
           "Id": "df1194ffeb964f23884416686ae39144",
           "Name": "",
-          "Description": "Value of expression at line 16",
+          "Description": "Значение выражения в строке 16",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -129,7 +129,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Возможность непосредственной разработки кода DesignScript",
       "Code": "// Basic inputs\nbase = Point.ByCoordinates(3,3);\ncoils = 3;\nheight = 5;\nrad = 0.5;\n\n// Make a series of points\nnumPts = 8*coils + 1;\nseq = 0..(coils*360)..#numPts;\nx = rad * Math.Cos(seq);\ny = rad * Math.Sin(seq);\nz = 0..height..#numPts;\npts = Point.ByCoordinates(x + base.X, y + base.Y, z + base.Z);\n\n// Pass a curve through those points\nNurbsCurve.ByPoints(pts);"
     },
     {
@@ -139,7 +139,7 @@
       "Inputs": [],
       "Outputs": [],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "def MakeSpring(base,coils,height,rad)\n{\n// Make a series of points\nnumPts = 8*coils + 1;\nseq = 0..(coils*360)..#numPts;\nx = rad * Math.Cos(seq);\ny = rad * Math.Sin(seq);\nz = 0..height..#numPts;\npts = Point.ByCoordinates(x + base.X, y + base.Y, z + base.Z);\n\n// Return the curve that passes through those points\nreturn = NurbsCurve.ByPoints(pts);\n};"
     },
     {
@@ -151,7 +151,7 @@
         {
           "Id": "e777c444104f4aafa4c2765c883bfdd9",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -159,7 +159,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "10..20..2;"
     },
     {
@@ -171,7 +171,7 @@
         {
           "Id": "6259365e8b8942a0b30c0c8e94dd8815",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -179,7 +179,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "0..6..2;"
     },
     {
@@ -190,7 +190,7 @@
         {
           "Id": "8bf1eaed001a4e6ba3cd3a80fb670586",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Координата X\n\ndouble\nЗначение по умолчанию: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -199,7 +199,7 @@
         {
           "Id": "9c339e79cf3849a59df4297631d94fee",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Координата Y\n\ndouble\nЗначение по умолчанию: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -208,7 +208,7 @@
         {
           "Id": "7c93210bbe564e2d84dd0910d1a85ddd",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Координата Z\n\ndouble\nЗначение по умолчанию: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -219,7 +219,7 @@
         {
           "Id": "317f85df4cfc45c8aa502ff099b6e8ff",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Точка, созданная по координатам",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -228,7 +228,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "CrossProduct",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Построение точки на основе трех заданных декартовых координат.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -238,7 +238,7 @@
         {
           "Id": "b4ab6ae00d314ca2b44f5ee607c28deb",
           "Name": "list",
-          "Description": "List to flatten.\n\nvar[]..[]",
+          "Description": "Список для выравнивания.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -247,7 +247,7 @@
         {
           "Id": "0074918807fd4d689d317ed52891ca2e",
           "Name": "amount",
-          "Description": "Layers of list nesting to remove (-1 will remove all list nestings)\n\nint\nDefault value : -1",
+          "Description": "Слои в списке, которые требуется исключить (–1 приведет к удалению всех вложенных в список слоев)\n\nint\nЗначение по умолчанию: -1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -258,7 +258,7 @@
         {
           "Id": "0f51c7f151aa4c34b04f65714080d2f6",
           "Name": "list",
-          "Description": "Flattened list by amount",
+          "Description": "Список с выравниванием по объему",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -267,7 +267,7 @@
       ],
       "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+      "Description": "Выравнивание вложенного перечня списков по определенному количественному значению.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -277,7 +277,7 @@
         {
           "Id": "1296df6983ea4b28b5fbcdd3c44abfe5",
           "Name": "amount",
-          "Description": "Amount of random numbers the result list will contain.\n\nint",
+          "Description": "Количество случайных чисел списке результатов.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -288,7 +288,7 @@
         {
           "Id": "10b6f731cefa4acd83f8e26fb7432bab",
           "Name": "number",
-          "Description": "List of random numbers between 0 and 1.",
+          "Description": "Список случайных чисел от 0 до 1.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -297,7 +297,7 @@
       ],
       "FunctionSignature": "DSCore.Math.RandomList@int",
       "Replication": "Auto",
-      "Description": "Produces a list containing the given amount of random doubles in the range of [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
+      "Description": "Создание списка, содержащего заданное количество случайных чисел двойной точности в диапазоне [0, 1).\n\nMath.RandomList (amount: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -307,7 +307,7 @@
         {
           "Id": "617e006afe244ae4ba3d5017d6628f85",
           "Name": "list",
-          "Description": "List to get the item count of.\n\nvar[]..[]",
+          "Description": "Список, элементы которого требуется сосчитать.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -318,7 +318,7 @@
         {
           "Id": "9905e6e380ac4e99b3a35c8ac32d2e9b",
           "Name": "int",
-          "Description": "List length.",
+          "Description": "Длина списка.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -327,7 +327,7 @@
       ],
       "FunctionSignature": "DSCore.List.Count@var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns the number of items stored in the given list.\n\nList.Count (list: var[]..[]): int"
+      "Description": "Возврат количества элементов, хранящихся в данном списке.\n\nList.Count (list: var[]..[]): int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -348,7 +348,7 @@
         {
           "Id": "203121e007f749a2ad76a2c0d463bad2",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -356,7 +356,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "random * 5;"
     },
     {
@@ -396,7 +396,7 @@
         {
           "Id": "a45bf4bbb01b4361866f4f451d4e86e5",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -404,7 +404,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "MakeSpring(basePoints,numCoils,height,0.5);"
     },
     {
@@ -416,7 +416,7 @@
         {
           "Id": "575b2171ed84459895402b38e542a7dc",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -424,7 +424,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Возможность непосредственной разработки кода DesignScript",
       "Code": "5;"
     },
     {
@@ -434,7 +434,7 @@
       "Inputs": [],
       "Outputs": [],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "/* This is a multi-line comment,\n     which continues for mulitple\n     lines. */\n\ndef FunctionName(input1, input2)\n{\n// This is a comment\nsum = input1 + input2;\n\nreturn = sum;\n};"
     },
     {
@@ -446,7 +446,7 @@
         {
           "Id": "9d77e609db594a489321e6684c469fb3",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -454,7 +454,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "1;"
     },
     {
@@ -466,7 +466,7 @@
         {
           "Id": "61adf720584a4b2485dba8571a23ad7f",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -474,7 +474,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "2;"
     },
     {
@@ -505,7 +505,7 @@
         {
           "Id": "9c3003beea7f411ea5c2312a2c0ae2c1",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -513,7 +513,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "FunctionName(in1,in2);"
     },
     {
@@ -526,7 +526,7 @@
         {
           "Id": "bb6a2894078146a5b125b3d651d86bb8",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -537,7 +537,7 @@
         {
           "Id": "77640f3ae28942dcad8b3b093610d78a",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -545,7 +545,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -575,7 +575,7 @@
         {
           "Id": "bd89ed08a55548a9a21ec0cecf0216fa",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -583,7 +583,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "FunctionName(in1,in2);"
     },
     {
@@ -596,7 +596,7 @@
         {
           "Id": "efc31be364874428984d93860ed1bc41",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -607,7 +607,7 @@
         {
           "Id": "4f452e7fffb84d4cbd452fd1ea04cf2d",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -615,7 +615,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -626,7 +626,7 @@
         {
           "Id": "48451963de084790b6053f20e35c5bdb",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -634,7 +634,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "\"dog\";"
     },
     {
@@ -646,7 +646,7 @@
         {
           "Id": "5e970a7c71aa488fafde07ac859aedb7",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -654,7 +654,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "\"cat\";"
     },
     {
@@ -685,7 +685,7 @@
         {
           "Id": "cdc885863fe545829ae4505d2cd867b2",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -693,7 +693,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "FunctionName(in1,in2);"
     },
     {
@@ -706,7 +706,7 @@
         {
           "Id": "f59335403df141aba0a5f9093b88414a",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -717,7 +717,7 @@
         {
           "Id": "2ffa00227a494b5ea2352538c993e964",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -725,7 +725,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -736,7 +736,7 @@
         {
           "Id": "92913f8f5ddc4e808145bcf81049cd95",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -744,7 +744,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "16;"
     },
     {
@@ -756,7 +756,7 @@
         {
           "Id": "66798ba6844b412286d3f6b3b41d5715",
           "Name": "Point",
-          "Description": "Origin point",
+          "Description": "Исходная точка",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -765,7 +765,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.Origin",
       "Replication": "Auto",
-      "Description": "Get the Origin point (0,0,0)\n\nPoint.Origin ( ): Point"
+      "Description": "Получение исходной точки (0,0,0)\n\nPoint.Origin ( ): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -785,7 +785,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Создание числа",
       "InputValue": 3.14
     },
     {
@@ -798,7 +798,7 @@
         {
           "Id": "37050d62f7564a349df2e2d8b199e0ef",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -809,7 +809,7 @@
         {
           "Id": "1149f83218994a8f80707ac1b88508e6",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -817,7 +817,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -829,7 +829,7 @@
         {
           "Id": "2c61c47928c84d9993345e2c78047001",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -840,7 +840,7 @@
         {
           "Id": "53d9c23926a74835a245f59de6fcd32d",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -848,7 +848,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -860,7 +860,7 @@
         {
           "Id": "c1c80a6aaa4046a7aba04a7c9828fe86",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -871,7 +871,7 @@
         {
           "Id": "31388b7257bc4a00894b62da8b2d8379",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -879,7 +879,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -890,7 +890,7 @@
         {
           "Id": "c26419f38ba44beaa767a75c65afb018",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -898,7 +898,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "3.140;"
     },
     {
@@ -910,7 +910,7 @@
         {
           "Id": "155b6ce386ea4ca19520dc4aa45a6e90",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -918,7 +918,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "\"Less is more.\";"
     },
     {
@@ -930,7 +930,7 @@
         {
           "Id": "ed8c192e5596419382f0d185ba3ab024",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -938,7 +938,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "3*5;"
     },
     {
@@ -951,7 +951,7 @@
         {
           "Id": "3499b9ca53534b9d95697797424cda43",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -962,7 +962,7 @@
         {
           "Id": "afdcb9bb059046db95374395cc5ffcaa",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -970,7 +970,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -982,7 +982,7 @@
         {
           "Id": "1d0149aa09854b35ae68dac0ec469557",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -993,7 +993,7 @@
         {
           "Id": "669bba66e23e4ca1b7473c2e108c3066",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1001,7 +1001,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -1013,7 +1013,7 @@
         {
           "Id": "afc9daae870e4216b54381d6518ac683",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1024,7 +1024,7 @@
         {
           "Id": "a211d4a0aee1430da31023bddcdde982",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1032,7 +1032,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1042,7 +1042,7 @@
         {
           "Id": "514465f251384d7fa938061c20ed6fcc",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Координата X\n\ndouble\nЗначение по умолчанию: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1051,7 +1051,7 @@
         {
           "Id": "f45f35f216a64cc3b735f9ec90e56d0f",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Координата Y\n\ndouble\nЗначение по умолчанию: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1060,7 +1060,7 @@
         {
           "Id": "8d27da20170147a19dc8f81e6454604c",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Координата Z\n\ndouble\nЗначение по умолчанию: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1071,7 +1071,7 @@
         {
           "Id": "8660eefcf52b404aa9e06273dda44a1c",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Точка, созданная по координатам",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1080,7 +1080,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Построение точки на основе трех заданных декартовых координат.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1091,7 +1091,7 @@
         {
           "Id": "387ce635cbc24997952056b8bdd6ee65",
           "Name": "Point",
-          "Description": "Origin point",
+          "Description": "Исходная точка",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1100,7 +1100,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.Origin",
       "Replication": "Auto",
-      "Description": "Get the Origin point (0,0,0)\n\nPoint.Origin ( ): Point"
+      "Description": "Получение исходной точки (0,0,0)\n\nPoint.Origin ( ): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1111,7 +1111,7 @@
         {
           "Id": "c474a7bb652647909c0384c19d3a9b6c",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1119,7 +1119,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "10;"
     },
     {
@@ -1132,7 +1132,7 @@
         {
           "Id": "7bfe1afaf77348e795e8a98e223a4c1b",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1143,7 +1143,7 @@
         {
           "Id": "244124e010ff44859f02de3507cf7f54",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1151,7 +1151,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1190,7 +1190,7 @@
         {
           "Id": "54609af58e1847508a9c043f60692ed1",
           "Name": "",
-          "Description": "Value of expression at line 2",
+          "Description": "Значение выражения в строке 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1198,7 +1198,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "z = 0;\nPoint.ByCoordinates(x,y,z);"
     },
     {
@@ -1211,7 +1211,7 @@
         {
           "Id": "996e96e7e7b043129dc5c5d7e800a13a",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1222,7 +1222,7 @@
         {
           "Id": "c59b212fbe2f4a1ab535e3d3d011be8d",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1230,7 +1230,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -1242,7 +1242,7 @@
         {
           "Id": "7d11cf8fcbd34137bcf603b44a8549cb",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1253,7 +1253,7 @@
         {
           "Id": "c5823dc00e5748dc908a87c7129638c3",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1261,7 +1261,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1272,7 +1272,7 @@
         {
           "Id": "17e388ec5cb243cb9a6f07a7e0ec30d1",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1280,7 +1280,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "Point.Origin();"
     },
     {
@@ -1293,7 +1293,7 @@
         {
           "Id": "6a0450a55105466586d36359e1025f72",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1304,7 +1304,7 @@
         {
           "Id": "84e8607c514249d0b1c7eb9b2553d06d",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1312,7 +1312,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1323,7 +1323,7 @@
         {
           "Id": "640864335a56439ebcdfe4a3fc14d41f",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1331,7 +1331,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "Point.ByCoordinates(10,0,0);"
     },
     {
@@ -1362,7 +1362,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.X",
       "Replication": "Auto",
-      "Description": "Get the X component of a Point\n\nPoint.X: double"
+      "Description": "Получение координаты X точки.\n\nPoint.X: double"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -1374,7 +1374,7 @@
         {
           "Id": "55ad8d1986414bc48844394bd68634f9",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1385,7 +1385,7 @@
         {
           "Id": "1bbad1c797c74d738c626a3bd6e34c45",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1393,7 +1393,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -1405,7 +1405,7 @@
         {
           "Id": "7ba805523a64463caec3171fedfcd37f",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1416,7 +1416,7 @@
         {
           "Id": "c2ba3cfeff834adb9aee3cc015e3a4eb",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1424,7 +1424,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1445,7 +1445,7 @@
         {
           "Id": "bd983a8b76f44362b6a91a2b271bc0e2",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1453,7 +1453,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "pt.X;"
     },
     {
@@ -1475,7 +1475,7 @@
         {
           "Id": "eed9acdf660448d1b9087eac7588365d",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1483,7 +1483,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "Point.ByCoordinates(num,-num,0);"
     },
     {
@@ -1496,7 +1496,7 @@
         {
           "Id": "09eb5d32f0464aa1a303cc01251d23e0",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1507,7 +1507,7 @@
         {
           "Id": "c59d5a09f8484cceb67abeb9837323cb",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1515,7 +1515,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1526,7 +1526,7 @@
         {
           "Id": "e3a25603c34e4c53b73e1f2b436e39e0",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1534,7 +1534,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "Point.ByCoordinates(10,-10,0);"
     },
     {
@@ -1547,7 +1547,7 @@
         {
           "Id": "317553604182472eadbf35dffb8cc9d6",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1558,7 +1558,7 @@
         {
           "Id": "cddcc2d8ad6c4670895199f6e48d469b",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1566,7 +1566,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1576,7 +1576,7 @@
         {
           "Id": "7e1b8960e212439d9ff78955c56e9119",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Координата X\n\ndouble\nЗначение по умолчанию: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1585,7 +1585,7 @@
         {
           "Id": "adafaba8ca9942c8b016e4d9afaa8940",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Координата Y\n\ndouble\nЗначение по умолчанию: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1596,7 +1596,7 @@
         {
           "Id": "b2b86a161535457e8c906c8a82751834",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Точка, созданная по координатам",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1605,7 +1605,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double",
       "Replication": "Auto",
-      "Description": "Form a Point in the XY plane given two 2 cartesian coordinates. The Z component is 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
+      "Description": "Построение точки на плоскости XY по двум декартовым координатам. Координата Z равна 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1616,7 +1616,7 @@
         {
           "Id": "e9416ab8b84544d7b77c3228915b04bc",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1624,7 +1624,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "Point.ByCoordinates(0,-10);"
     },
     {
@@ -1636,7 +1636,7 @@
         {
           "Id": "9fec2ada824e4fca8b77df5bcbe80bbb",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1645,7 +1645,7 @@
         {
           "Id": "e40d9c9f8a3441f2a425430ebd9f8039",
           "Name": "",
-          "Description": "Value of expression at line 2",
+          "Description": "Значение выражения в строке 2",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1653,7 +1653,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "0;\n-10;"
     },
     {
@@ -1666,7 +1666,7 @@
         {
           "Id": "cf6a4085572043e6aa4ccc0988d4a068",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1677,7 +1677,7 @@
         {
           "Id": "c5a8d4030da64140981f395db5da972c",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1685,7 +1685,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -1697,7 +1697,7 @@
         {
           "Id": "92e26c826c1341f886a0c1854e3d0639",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1708,7 +1708,7 @@
         {
           "Id": "acc47bd0c7c44591854b5b8d04d5ed89",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1716,7 +1716,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1727,7 +1727,7 @@
         {
           "Id": "d364afe9bb7c486eb93316f6a4248cbe",
           "Name": "Vector",
-          "Description": "Vector",
+          "Description": "Вектор",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1736,7 +1736,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ZAxis",
       "Replication": "Auto",
-      "Description": "Get the canonical Z axis Vector (0,0,1)\n\nVector.ZAxis ( ): Vector"
+      "Description": "Получение канонического вектора оси Z (0,0,1)\n\nVector.ZAxis ( ): Vector"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1747,7 +1747,7 @@
         {
           "Id": "06fa68150cb1493db4bc4fa28318ddc0",
           "Name": "Point",
-          "Description": "Origin point",
+          "Description": "Исходная точка",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1756,7 +1756,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.Origin",
       "Replication": "Auto",
-      "Description": "Get the Origin point (0,0,0)\n\nPoint.Origin ( ): Point"
+      "Description": "Получение исходной точки (0,0,0)\n\nPoint.Origin ( ): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1786,7 +1786,7 @@
         {
           "Id": "01116ffa52af4d38b0025ea74bd6ec32",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Точка",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1795,7 +1795,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.Add@Autodesk.DesignScript.Geometry.Vector",
       "Replication": "Auto",
-      "Description": "Add a vector to a point. The same as Translate(Vector).\n\nPoint.Add (vectorToAdd: Vector): Point"
+      "Description": "Добавление вектора к точке. То же, что и Translate(Vector).\n\nPoint.Add (vectorToAdd: Vector): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -1807,7 +1807,7 @@
         {
           "Id": "ce35162e9eb54949835057469c3e34fd",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1818,7 +1818,7 @@
         {
           "Id": "1d38bfe5ca5346f5a7737d82521b372a",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1826,7 +1826,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1845,7 +1845,7 @@
         {
           "Id": "d37a00d7892349b0878f31c818c0e780",
           "Name": "vector",
-          "Description": "vector",
+          "Description": "вектор",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1856,7 +1856,7 @@
         {
           "Id": "112f4ce5320e4349b39adf6b87f6ef72",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1864,7 +1864,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "pt.Add(vector);"
     },
     {
@@ -1885,7 +1885,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ZAxis",
       "Replication": "Auto",
-      "Description": "Get the canonical Z axis Vector (0,0,1)\n\nVector.ZAxis ( ): Vector"
+      "Description": "Получение вектора канонической оси Z (0,0,1).\n\nVector.ZAxis ( ): Vector"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1896,7 +1896,7 @@
         {
           "Id": "fce9b424f29241e68c87a2f62011bd55",
           "Name": "Point",
-          "Description": "Origin point",
+          "Description": "Исходная точка",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1905,7 +1905,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.Origin",
       "Replication": "Auto",
-      "Description": "Get the Origin point (0,0,0)\n\nPoint.Origin ( ): Point"
+      "Description": "Получение исходной точки (0,0,0)\n\nPoint.Origin ( ): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -1917,7 +1917,7 @@
         {
           "Id": "67c18758c733431abc8e44d985f204e5",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1928,7 +1928,7 @@
         {
           "Id": "7e6953baf7a54e64ae04b79692b7aa8d",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1936,7 +1936,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1992,7 +1992,7 @@
         {
           "Id": "a185b219c341486e8e38a4c86b408af8",
           "Name": "",
-          "Description": "Value of expression at line 7",
+          "Description": "Значение выражения в строке 7",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2000,7 +2000,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "str0 = \"alpha\";\nstr1 = \"beta\";\nstr2 = \"charlie\";\nstr3 = \"delta\";\nstr4 = \"echo\";\n//\n[str0,str1,str2,str3,str4];"
     },
     {
@@ -2013,7 +2013,7 @@
         {
           "Id": "d95aef9effdc4e339626c6585953fee1",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2024,7 +2024,7 @@
         {
           "Id": "ea192e19aec64a24a750859b0ec44223",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2032,7 +2032,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -2043,7 +2043,7 @@
         {
           "Id": "f8587ce1cdea4f938fc02e41f9234905",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2051,7 +2051,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "[\"San Francisco\",\"New York\",\"Chicago\"];"
     },
     {
@@ -2064,7 +2064,7 @@
         {
           "Id": "26fd890d32764454b517f7407ce1ac9b",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2075,7 +2075,7 @@
         {
           "Id": "7f5962e88a7948ef98974947f2d0b2e0",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2083,7 +2083,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -2104,7 +2104,7 @@
         {
           "Id": "272ec49314a842fbb656477e52c2612c",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2112,7 +2112,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "cities[2];"
     },
     {
@@ -2125,7 +2125,7 @@
         {
           "Id": "521797cb69f34df4af58ef6dba82e5d4",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2136,7 +2136,7 @@
         {
           "Id": "ccafb6b3d2684b9cabc28b442723af4a",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2144,7 +2144,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -2165,7 +2165,7 @@
         {
           "Id": "98ad31a9656e498c9f712f2281fe362a",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2173,7 +2173,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "phonetic[2..3];"
     },
     {
@@ -2186,7 +2186,7 @@
         {
           "Id": "9b822111c6c74ecdb9061da971bdb860",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2197,7 +2197,7 @@
         {
           "Id": "e56ac9732e494d7593376b9d0230cfbc",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2205,7 +2205,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -2260,7 +2260,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "kitchen = [\"table\",\"stove\",\"sink\",\"refrigerator\"];\nlivingRoom = [\"sofa\",\"books\"];\nbedroom = [\"bed\",\"dirty clothes\"];\nbathroom = [\"tooth brush\"];\n//\nallMyStuff = [kitchen, livingRoom, bedroom, bathroom];"
     },
     {
@@ -2273,7 +2273,7 @@
         {
           "Id": "4cb0235184e1459291fb7cbe36632db3",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2284,7 +2284,7 @@
         {
           "Id": "659aace608f545d4b5e3da7b1ef5905a",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2292,7 +2292,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -2313,7 +2313,7 @@
         {
           "Id": "06158962012c47b48b0d4a4f6cf26e0a",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2321,7 +2321,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "list[2][1];"
     },
     {
@@ -2334,7 +2334,7 @@
         {
           "Id": "5c2a2945966345baa2cada6f4dd4918c",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2345,7 +2345,7 @@
         {
           "Id": "8ac838da17b445a9aba7b1128f95afb2",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2353,7 +2353,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -2383,7 +2383,7 @@
         {
           "Id": "3c02d53267524d21b0a6df27993c06f4",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2391,7 +2391,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "Point.ByCoordinates(x_vals, y_vals);"
     },
     {
@@ -2422,7 +2422,7 @@
         {
           "Id": "9942b5b761354afb899e194f88774b32",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2430,7 +2430,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "Point.ByCoordinates(x_vals<1>, y_vals<2>);"
     },
     {
@@ -2459,7 +2459,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "x_vals = 0..10;\ny_vals = -30..-40;"
     },
     {
@@ -2488,7 +2488,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "x_vals = 0..10;\ny_vals = -15..-25;"
     },
     {
@@ -2499,7 +2499,7 @@
         {
           "Id": "0a3d72b83d51458993390a707c8b0abe",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Координата X\n\ndouble\nЗначение по умолчанию: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2508,7 +2508,7 @@
         {
           "Id": "00233154534f4dcb97776ff09b23f690",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Координата Y\n\ndouble\nЗначение по умолчанию: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2519,7 +2519,7 @@
         {
           "Id": "8c50827ee69247f4a96471061a803776",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Точка, созданная по координатам",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2528,7 +2528,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double",
       "Replication": "Auto",
-      "Description": "Form a Point in the XY plane given two 2 cartesian coordinates. The Z component is 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
+      "Description": "Построение точки на плоскости XY по двум декартовым координатам. Координата Z равна 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -2538,7 +2538,7 @@
         {
           "Id": "592022e27e1b43fdaa25cde7ceecc99f",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Координата X\n\ndouble\nЗначение по умолчанию: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2547,7 +2547,7 @@
         {
           "Id": "afd4bc4ae653416cafa8fcaa250c90b9",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Координата Y\n\ndouble\nЗначение по умолчанию: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -2558,7 +2558,7 @@
         {
           "Id": "4d489e8ccb384cc899bb6077960a5503",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Точка, созданная по координатам",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2567,7 +2567,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double",
       "Replication": "CrossProduct",
-      "Description": "Form a Point in the XY plane given two 2 cartesian coordinates. The Z component is 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
+      "Description": "Построение точки на плоскости XY по двум декартовым координатам. Координата Z равна 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -2596,7 +2596,7 @@
         {
           "Id": "641299ec6e4e4ee3b3605ec0fd3e50a2",
           "Name": "",
-          "Description": "Value of expression at line 4",
+          "Description": "Значение выражения в строке 4",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2605,7 +2605,7 @@
         {
           "Id": "cd8975690d1442c4a1ee9998c4f180fd",
           "Name": "",
-          "Description": "Value of expression at line 5",
+          "Description": "Значение выражения в строке 5",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2613,7 +2613,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "x_vals = 0..1;\ny_vals = -3..-7;\n//\nPoint.ByCoordinates(x_vals<1>, y_vals<2>);\nPoint.ByCoordinates(x_vals<2>, y_vals<1>);"
     },
     {
@@ -2626,7 +2626,7 @@
         {
           "Id": "47c0865d18bb4325a77f7942dc303dff",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2637,7 +2637,7 @@
         {
           "Id": "3cecdc126d564de493fdeec7910e87c4",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2645,7 +2645,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -2657,7 +2657,7 @@
         {
           "Id": "8966429c8ddf4bd980e3400a054d9b2c",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Узел для оценки.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2668,7 +2668,7 @@
         {
           "Id": "49afa1dc9f414663971e745e7e540b36",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Просмотр содержимого.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2676,7 +2676,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -2687,7 +2687,7 @@
         {
           "Id": "9cd8691a2e8249cb8cd3f3873a0e08cc",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2695,7 +2695,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "-10;"
     },
     {
@@ -2715,7 +2715,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a string",
+      "Description": "Создание строки",
       "InputValue": "Less is more."
     },
     {
@@ -2726,7 +2726,7 @@
         {
           "Id": "257d1ea19d884b0b83802079a7adb2da",
           "Name": "x",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "Целое число или двойное значение\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2735,7 +2735,7 @@
         {
           "Id": "e47dc989da354ac79ca5c3f430714dac",
           "Name": "y",
-          "Description": "Integer or double value\n\nvar[]..[]",
+          "Description": "Целое число или двойное значение\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2746,7 +2746,7 @@
         {
           "Id": "ee1aa2fdddd6485a909c38e036e38ba0",
           "Name": "number",
-          "Description": "The product of the two input numbers",
+          "Description": "Произведение двух входных чисел",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2755,7 +2755,7 @@
       ],
       "FunctionSignature": "*@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns multiplication of x times y\n\n* (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Возврат результата умножения X на Y\n\n* (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -2775,7 +2775,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Создание числа",
       "InputValue": 3.0
     },
     {
@@ -2796,7 +2796,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Создание числа",
       "InputValue": 5.0
     },
     {
@@ -2807,7 +2807,7 @@
         {
           "Id": "ea5aae5b2d7245829c7ad48c0672903e",
           "Name": "object",
-          "Description": "Object to query type\n\nvar",
+          "Description": "Объект для запроса типа\n\nvar",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2818,7 +2818,7 @@
         {
           "Id": "59dfa25e049a4c9c85dc82e25841aa78",
           "Name": "string",
-          "Description": "Type of object.",
+          "Description": "Тип объекта.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2827,7 +2827,7 @@
       ],
       "FunctionSignature": "DSCore.Object.Type@var",
       "Replication": "Auto",
-      "Description": "Returns the type of object represented as string.\n\nObject.Type (object: var): string"
+      "Description": "Возврат типа объекта, представленного в виде строки.\n\nObject.Type (object: var): string"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -2839,7 +2839,7 @@
         {
           "Id": "7bec03cd67394fb1bcdaf27433f5a9cd",
           "Name": "",
-          "Description": "Node to show output from",
+          "Description": "Узел для отображения выходных данных",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2850,7 +2850,7 @@
         {
           "Id": "4213c85b279b49c58f8f654965de8c04",
           "Name": "",
-          "Description": "Node output",
+          "Description": "Выходные данные узла",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2858,7 +2858,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -2888,7 +2888,7 @@
         {
           "Id": "4c992c1512554623a864fcd41c06c53e",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2896,7 +2896,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "a*b;"
     },
     {
@@ -2908,7 +2908,7 @@
         {
           "Id": "aa350de509454866bee02a006a30162d",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2916,7 +2916,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "3;"
     },
     {
@@ -2928,7 +2928,7 @@
         {
           "Id": "840bfc7026d049f2bf1bd57652c9f987",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2936,7 +2936,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "5;"
     },
     {
@@ -2949,7 +2949,7 @@
         {
           "Id": "7d68e8c8739e401c93cabe9c97281685",
           "Name": "",
-          "Description": "Node to show output from",
+          "Description": "Узел для отображения выходных данных",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2960,7 +2960,7 @@
         {
           "Id": "dba270e0c663467ba6846fea12609c04",
           "Name": "",
-          "Description": "Node output",
+          "Description": "Выходные данные узла",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -2968,7 +2968,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
@@ -2987,7 +2987,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Enables selection between True and False",
+      "Description": "Возможность выбора между значениями True и False",
       "InputValue": true
     },
     {
@@ -3000,7 +3000,7 @@
         {
           "Id": "2f7d5f8efe094cd6b9b1508125b94143",
           "Name": "",
-          "Description": "Node to show output from",
+          "Description": "Узел для отображения выходных данных",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3011,7 +3011,7 @@
         {
           "Id": "32852da61b7f45f6b8c35768ac304407",
           "Name": "",
-          "Description": "Node output",
+          "Description": "Выходные данные узла",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3019,7 +3019,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -3031,7 +3031,7 @@
         {
           "Id": "b88575b5c2854d219338fa65a95477e0",
           "Name": "",
-          "Description": "Node to show output from",
+          "Description": "Узел для отображения выходных данных",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3042,7 +3042,7 @@
         {
           "Id": "f0fb5c73dda84aaea0b72534d633dcea",
           "Name": "",
-          "Description": "Node output",
+          "Description": "Выходные данные узла",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3050,7 +3050,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -3061,7 +3061,7 @@
         {
           "Id": "f1db0cacdeb14e0cb222161b575ff6f0",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3069,7 +3069,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Обеспечивает возможность непосредственного авторства кода DesignScript",
       "Code": "true;"
     },
     {
@@ -3080,7 +3080,7 @@
         {
           "Id": "d4d7dddf9dd44361a6a519addab02d00",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "Список, из которого требуется извлечь элемент.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3089,7 +3089,7 @@
         {
           "Id": "9aa76560dc0245dd8666f402dcca62c4",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "Индекс элемента для включения в выборку.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3100,7 +3100,7 @@
         {
           "Id": "4d4a4dcfa27846ef9cb2632db698c0c1",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "Элемент в списке по заданному индексу.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3109,7 +3109,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Получение элемента из данного списка, расположенного по указанному индексу.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -3121,7 +3121,7 @@
         {
           "Id": "efcf174928be414cba498c5fcb0d1ccc",
           "Name": "",
-          "Description": "Node to show output from",
+          "Description": "Узел для отображения выходных данных",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3132,7 +3132,7 @@
         {
           "Id": "17c3a389341d47f594f9ee256b4a5815",
           "Name": "",
-          "Description": "Node output",
+          "Description": "Выходные данные узла",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3140,7 +3140,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Визуализация выходных данных узла"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -3151,7 +3151,7 @@
         {
           "Id": "efc8cd5622344af1974aeaf79e3ad0de",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Значение выражения в строке 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -3159,7 +3159,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Возможность непосредственной разработки кода DesignScript",
       "Code": "2;"
     }
   ],
@@ -3653,7 +3653,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Свойства",
       "Version": "2.13",
       "Data": {}
     },
@@ -3682,7 +3682,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Фоновый просмотр",
       "EyeX": 11.601919174194336,
       "EyeY": 22.319250106811523,
       "EyeZ": -3.677706718444824,
@@ -4739,7 +4739,7 @@
     "Annotations": [
       {
         "Id": "80ed09ba6c2c474891e82fc114978704",
-        "Title": "Info",
+        "Title": "Сведения",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -4761,8 +4761,8 @@
       },
       {
         "Id": "e9e3eff77a1946beb9960709e449fe31",
-        "Title": "Numeric Values",
-        "DescriptionText": "Compare the purpose-built nodes with Code Block ",
+        "Title": "Числовые значения",
+        "DescriptionText": "Сравнение специализированных узлов с Code Block ",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -4788,8 +4788,8 @@
       },
       {
         "Id": "0b399f58146b43a6b30de0022a20ed35",
-        "Title": "String Values",
-        "DescriptionText": "Compare the purpose-built nodes with Code Block ",
+        "Title": "Строковые значения",
+        "DescriptionText": "Сравнение специализированных узлов с Code Block ",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -4818,8 +4818,8 @@
       },
       {
         "Id": "c528ec3552c047f09594d31b09a771dc",
-        "Title": "Expressions",
-        "DescriptionText": "Perform a multiplication operation using purpose-built * node and using Code Block",
+        "Title": "Выражения",
+        "DescriptionText": "Выполнение операции умножения с помощью специализированного узла * и Code Block",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -4852,8 +4852,8 @@
       },
       {
         "Id": "fe63ce43bd154685bbe23b22ae018c25",
-        "Title": "Boolean",
-        "DescriptionText": "Compare the purpose-built nodes with Code Block ",
+        "Title": "Логический",
+        "DescriptionText": "Сравнение специализированных узлов с Code Block ",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -4879,8 +4879,8 @@
       },
       {
         "Id": "ce6185d9164c426db9f1c66488279d1b",
-        "Title": "Action",
-        "DescriptionText": "Methods that execute an action on an object ",
+        "Title": "Действие",
+        "DescriptionText": "Методы, выполняющие действие в отношении объекта ",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -4910,8 +4910,8 @@
       },
       {
         "Id": "9ba0a0f1c325400aaeb8043b8c6c7618",
-        "Title": "Create",
-        "DescriptionText": "Methods that create geometry, lists, Revit elements or other objects",
+        "Title": "Создать",
+        "DescriptionText": "Методы создания геометрии, списков, элементов Revit или других объектов",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -4944,8 +4944,8 @@
       },
       {
         "Id": "057f5e13f286422fac7093170004bfe9",
-        "Title": "Query",
-        "DescriptionText": "Methods that query and return a property of an object",
+        "Title": "Запрос",
+        "DescriptionText": "Методы, которые запрашивают и возвращают свойство объекта",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -4987,7 +4987,7 @@
       },
       {
         "Id": "e43fa213a9b545c1b9e7d57ec909e42a",
-        "Title": "Create Lists",
+        "Title": "Создание списков",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5022,7 +5022,7 @@
       },
       {
         "Id": "57561345613e4b1d8721a8901bca5165",
-        "Title": "Replication",
+        "Title": "Репликация",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5055,7 +5055,7 @@
       },
       {
         "Id": "23251b88855f438d83ffc614bd24abb1",
-        "Title": "Functions",
+        "Title": "Функции",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5094,7 +5094,7 @@
       },
       {
         "Id": "9fe1d7d77cd24c76bf52a86d9052d0d6",
-        "Title": "Geometry creation",
+        "Title": "Создание геометрии",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5132,7 +5132,7 @@
       },
       {
         "Id": "629f73cc650f4caca8563f2d4ac79401",
-        "Title": "Nodes as Code Blocks",
+        "Title": "Узлы как блоки кода",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5154,8 +5154,8 @@
       },
       {
         "Id": "ed39c2f050384f8780ba1f5e89ff6abe",
-        "Title": "Combine lists and access list items",
-        "DescriptionText": "Description <Double click here to edit group description>",
+        "Title": "Объединение списков и доступ к элементам списка",
+        "DescriptionText": "Описание <Дважды нажмите здесь, чтобы изменить описание группы>",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -5179,7 +5179,7 @@
       },
       {
         "Id": "14414e33165849bab878e55a2a4d5c6a",
-        "Title": "Together, these statements form an algorithm that creates a helical curve at a base point.",
+        "Title": "Эти два выражения вместе образуют алгоритм, который создает спиральную кривую в базовой точке.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5200,7 +5200,7 @@
       },
       {
         "Id": "cb5c9b34ea294b97b8a3acdb38d1c92d",
-        "Title": "The helix algorithm is transformed to define a function with the arbitrary name \"MakeSpring\".  This function is called to make several springs, with random heights, arranged in a grid.",
+        "Title": "Спиральный алгоритм преобразуется, определяя функцию с произвольным именем «MakeSpring». Эта функция вызывается, чтобы сформировать сетку из нескольких пружин любой высоты.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5220,7 +5220,7 @@
       },
       {
         "Id": "57ae5de8d42049f190133b08cd24fd32",
-        "Title": "The helix algorithm is transformed into a function by giving it a name, specifying the inputs, and telling it what to return.",
+        "Title": "Спиральный алгоритм преобразуется в функцию путем присвоения ему имени, определения ввода и характера результатов.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5241,7 +5241,7 @@
       },
       {
         "Id": "926ecbb4d94a4cb2b31aa09ed1b862d8",
-        "Title": "makes a grid",
+        "Title": "создание сетки",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5261,7 +5261,7 @@
       },
       {
         "Id": "2aa64994fb4c4279b595efd8fb654345",
-        "Title": "makes a series of random numbers (scaled by 5) for the spring heights",
+        "Title": "создается последовательность случайных чисел (с масштабным коэффициентом 5) для значений высоты пружины",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5282,7 +5282,7 @@
       },
       {
         "Id": "ca8177a94f4546fb9fc0682993a3b00d",
-        "Title": "Inputs to function calls can be made with lists of things or single-value items. Data can be passed in through a port or declared directly, as in the case of \"0.5\" for the radii of all springs.",
+        "Title": "Входные данные для вызова функций можно создать с помощью списков элементов единого значения. Данные можно передать через порт или ввести непосредственно, как в случае значения 0,5 для радиуса всех пружин.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5303,7 +5303,7 @@
       },
       {
         "Id": "163711007f5f40288ba222cfef0fd2eb",
-        "Title": "Functions can be defined directly in a Code Block node to be called elsewhere in this definition.\r\n\r\nThe first line has the key word \"def\", then the function name, then the inputs in parentheses.\r\n\r\nCurly braces define the body of the function.  Each line must end in a semicolon.\r\n\r\nReturn a value with \"return = \".",
+        "Title": "Функции могут быть определены непосредственно в узле Code Block, вызываемом в другом месте для данного определения.\r\n\r\nПервая строка содержит последовательность из ключевого слова def, имени функции и входных значений в скобках.\r\n\r\nФигурные скобки определяют тело функции. Каждая строка должна заканчиваться точкой с запятой.\r\n\r\nВозвращаемое значение выглядит следующим образом: return = .",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5324,7 +5324,7 @@
       },
       {
         "Id": "5f802875f03d4ea19145b2fda603a3dc",
-        "Title": "Call the function with another Code Block node in the same file by giving the same name and the same number of arguments.",
+        "Title": "Вызовите функцию с помощью другого узла Code Block в том же файле, указав то же имя и число аргументов.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5345,7 +5345,7 @@
       },
       {
         "Id": "2eed8e97899444e1a89baf57e8c0403d",
-        "Title": "The type of the input arguments is not specified in the function definition, so it will operate on whatever it receives.",
+        "Title": "Тип входных аргументов не указан в определении функции, поэтому она будет работать со всеми типами.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5366,7 +5366,7 @@
       },
       {
         "Id": "18144785df504d65b705e726e49fa116",
-        "Title": "A function call with inputs that do not make sense for that function will give a null result.",
+        "Title": "Вызов функции с входными данными, не имеющими смысла для данной функции, даст в результате нулевое значение.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5387,7 +5387,7 @@
       },
       {
         "Id": "6a91f4a45ae34b409c0ceed627cc4241",
-        "Title": "Code Block nodes that define a function do not have input or output ports because they are called from other Code Block nodes.",
+        "Title": "В узлах Code Block, определяющих функцию, отсутствуют входные и выходные порты, так как они были вызваны из других узлов Code Block.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5407,7 +5407,7 @@
       },
       {
         "Id": "be2d03ad079a4bb8915dde80952090ef",
-        "Title": "Use quotes \"\" to make a string with a Code Block node",
+        "Title": "Используйте кавычки \"\" для создания строки с узлом Code Block",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5428,7 +5428,7 @@
       },
       {
         "Id": "9414211e76a442b7b13d4daefa5298ab",
-        "Title": "CODE BLOCKS\n\nCode Blocks can be created by double-clicking in the canvas. A Code Block can also be found in the node Library under Script > Editor category. \n\n\nCode Blocks can hold:\n•   Numeric values (integers and floating point numbers)\n•  Strings (text)\n•  Boolean values (True or False) \n•  Lists  [0,1,2]\n•  Expressions (a+3)\n•  Variables\n\nOther nodes can be transformed into a Code Block expression: select one or multiple nodes and right-click in the space between the nodes to select 'Node to code'. There is no reverse equivalent to this action - code blocks cannot be automatically transformed into nodes. \n",
+        "Title": "БЛОКИ КОДА\n\nБлоки кода можно создать двойным щелчком в активном окне. Блок кода также можно найти в библиотеке узлов в категории Script > Editor. \n\n\nБлоки кода могут содержать:\n• числовые значения (целые числа и числа с плавающей точкой);\n• строки (текст);\n• логические значения (True или False);\n• списки [0,1,2];\n• выражения (a+3);\n• переменные.\n\nДругие узлы можно преобразовать в выражение блока кода: выберите один или несколько узлов, щелкните правой кнопкой мыши в пространстве между узлами и выберите «Узел для кодировки». Обратного действия нет: блоки кода невозможно автоматически преобразовать в узлы. \n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5448,7 +5448,7 @@
       },
       {
         "Id": "3538b0813f56435e8f3e690fdd806641",
-        "Title": "With Code Blocks, a user has flexibility to decide how to specify inputs.  Here are several different ways, for example, to make the same point.",
+        "Title": "С помощью узлов Code Block вы можете определить, как указывать входные данные. В качестве примера ниже представлено несколько разных способов создания одной точки.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5468,7 +5468,7 @@
       },
       {
         "Id": "e1aa538675d04f67aa88f9711c91f43c",
-        "Title": "Use a Code Block to replicate the Point.ByCoordinates node behaviour. You'll find the method name if you hover your mouse over the original out-of-the-box node : the method is mentioned at the bottom of the tooltip window.\n\nThe inputs must be specified in the order found in the out-of-the-box node.",
+        "Title": "Используйте узел Code Block для реплицирования поведения узла Point.ByCoordinates. Чтобы найти имя метода, наведите указатель на исходный стандартный узел: метод указан в нижней части окна подсказки.\n\nВходные данные необходимо вводить в порядке, указанном в стандартном узле.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5489,7 +5489,7 @@
       },
       {
         "Id": "68e41793387f43a4b617b1f9da07e298",
-        "Title": "Code Blocks can be used to call any other node in the library. Nodes in the library generally come in three types:\r\n\r\n    Create:\tcreate something\r\n    Action:\tperform an action on something\r\n    Query:\t\tget a property of something\r\n\t\tthat already exists\r\n\r\nMethods, or nodes, of these three types are treated differently when invoked within a Code Block.",
+        "Title": "Узлы Code Block можно использовать для вызова любого другого узла из библиотеки. Узлы в библиотеке обычно бывают трех типов.\r\n\r\n    Создание:\tсоздание чего-либо.\r\n    Действие:\tвыполнение действия\r\n\t\tв отношении чего-либо.\r\n    Запрос:\t\tполучение свойства того,\r\n\t\tчто уже существует.\r\n\r\nМетоды, или узлы, этих трех типов обрабатываются по-разному при вызове с помощью узла Code Block.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5509,7 +5509,7 @@
       },
       {
         "Id": "d771ff82bfba496ea4998821458f03b4",
-        "Title": "Action methods are performed on an object. Use dot notation after the object itself and specify the method and all of the inputs found on the out-of-the-box node except for the first one (since the first input port is the object itself, which you already have!)",
+        "Title": "Методы действий выполняются в отношении объекта. Используйте запись через точку после самого объекта и укажите метод и все входные данные, найденные в стандартном узле, кроме первого (поскольку первый порт ввода является самим объектом, который у вас уже есть).",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5530,7 +5530,7 @@
       },
       {
         "Id": "606fb0346de7449c9105daaac6a33e7a",
-        "Title": "Create a lists using square brackets to define the list and commas to separate individual elements ",
+        "Title": "Создание списков с помощью квадратных скобок для определения списка и запятых для разделения элементов ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5551,7 +5551,7 @@
       },
       {
         "Id": "13d603e9f84e48578bf4ef7a1b72f854",
-        "Title": "Get items from a list using the following notation: list [ i ], where i is the index of the item. This method is identical to using the GetItemAtIndex node",
+        "Title": "Получение элементов из списка с помощью следующей записи: list [ i ], где i — индекс элемента. Этот метод идентичен использованию узла GetItemAtIndex",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5572,7 +5572,7 @@
       },
       {
         "Id": "a6a4912fba9d4d628b21100a5df327e8",
-        "Title": "Create nested lists and get items from nested lists.",
+        "Title": "Создание вложенных списков и получение из них элементов.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5593,7 +5593,7 @@
       },
       {
         "Id": "7ed3d957370e41cdba9e73b7126c5945",
-        "Title": "Replication guides, which use angle brackets, take two or three one-dimensional collections, and pair \r\nthe elements together to generate a one, two- or three-dimensional collection.",
+        "Title": "В руководствах по репликации, в которых используются угловые скобки, берутся две или три линейных коллекции, при этом элементы объединяются для создания одно-, дву- или трехмерной коллекции.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5614,7 +5614,7 @@
       },
       {
         "Id": "8384806544a54d699d89ab3621a2921a",
-        "Title": "Replication guides can be used to specify that lists be laced as a \"cross product.\"",
+        "Title": "Руководство по репликации можно использовать для указания того, что эти списки следует переплести с использованием режима «Векторное произведение».",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5634,7 +5634,7 @@
       },
       {
         "Id": "49ed2c0059fa4d3cb8ebb516aee077b6",
-        "Title": "In this example, there are 2 x-values and 5 y-values.  Replications guides can specify that the resultant combination is 2 lists of 5 points or 5 lists of 2 points.",
+        "Title": "В этом примере представлены 2 значения X и 5 значений Y. В руководствах по репликации можно указать, что результирующая комбинация состоит из двух списков из пяти точек или пяти списков из двух точек.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5654,7 +5654,7 @@
       },
       {
         "Id": "46e0ab36c4824259a3a2079581f86678",
-        "Title": "Purpose-built",
+        "Title": "Специализированный",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5675,7 +5675,7 @@
       },
       {
         "Id": "7fd12757956648b1a828ccf60f699a25",
-        "Title": "Code Block",
+        "Title": "Блок кода",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5696,7 +5696,7 @@
       },
       {
         "Id": "62590ddf296640a89ae00a233f192142",
-        "Title": "Purpose-built",
+        "Title": "Специализированный",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5717,7 +5717,7 @@
       },
       {
         "Id": "5bff91615084439dac2af6b0d5fed202",
-        "Title": "Use this node to view the ouput value type",
+        "Title": "Используйте этот узел для просмотра типа выходного значения",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5738,7 +5738,7 @@
       },
       {
         "Id": "8ced52ebb2a0424589fd58669c7e2b8c",
-        "Title": "Multiply two numbers using * node",
+        "Title": "Умножение двух чисел с помощью узла *",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5759,7 +5759,7 @@
       },
       {
         "Id": "d85c0b9627754f85a5c5a0139cbb9428",
-        "Title": "Perform multiplication using a Code Block",
+        "Title": "Выполнение умножения с помощью Code Block",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5780,7 +5780,7 @@
       },
       {
         "Id": "499d97e25a0543429aee05a35f18bb4b",
-        "Title": "Use variables as inputs for the multiplication operation.",
+        "Title": "Использование переменных в качестве входных данных для операции умножения.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5801,7 +5801,7 @@
       },
       {
         "Id": "95fcfee31b884039b647df41aced54ef",
-        "Title": "Boolean Toggle node",
+        "Title": "Узел переключения логических значений",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5822,7 +5822,7 @@
       },
       {
         "Id": "9f8774807fd748fc9a32a0017625ffee",
-        "Title": "use 'true' or 'false' values in a Code Block to achieve the same result",
+        "Title": "Используйте значение true или false в Code Block для достижения того же результата",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5843,7 +5843,7 @@
       },
       {
         "Id": "7df67c1f71e64ceca27a2496a74b5b74",
-        "Title": "Although this method needs no inputs, the parentheses are required",
+        "Title": "Хотя этот метод не требует ввода данных, скобки являются обязательными",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5864,7 +5864,7 @@
       },
       {
         "Id": "547d4e88cc0a446d9b1f749d45cf8d9a",
-        "Title": "Out-of-the-box method of creating a point by providing X and Y coordinates",
+        "Title": "Стандартный метод создания точки путем указания координат X и Y",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5885,7 +5885,7 @@
       },
       {
         "Id": "4b859da52cc641918cb18d1ae19717f3",
-        "Title": "Out-of-the-box method of creating a point at origin",
+        "Title": "Стандартный метод создания точки в начале координат",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5906,7 +5906,7 @@
       },
       {
         "Id": "115d39427a65491f802d21f337fc97ac",
-        "Title": "Out-of-the-box method of adding a vector to a point",
+        "Title": "Стандартный метод добавления вектора к точке",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5927,7 +5927,7 @@
       },
       {
         "Id": "605692098e584914b24f8c3e7d9b5c38",
-        "Title": "Out-of-the-box query method that returns the X coordinate of the point",
+        "Title": "Стандартный метод запроса, который возвращает координату X точки",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5948,7 +5948,7 @@
       },
       {
         "Id": "d2158aa45c6a4623b33d6a53d1d0298c",
-        "Title": "a Code Block equivalent of the same method. Query methods require no parentheses",
+        "Title": "Эквивалент узла Code Block того же метода. Методы запроса не требуют скобок",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5969,7 +5969,7 @@
       },
       {
         "Id": "78261846840d4e20bc92137857ae2c21",
-        "Title": "A formula of using a negative value of the same numeric value here is integrated into the notation for input variables",
+        "Title": "Формула использования отрицательного значения того же числового значения интегрирована в запись для входных переменных",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -5990,7 +5990,7 @@
       },
       {
         "Id": "706ebc6faaf24542b2425cb1302628f2",
-        "Title": "Out-of-the-box method using Point.ByCoordinates node",
+        "Title": "Стандартный метод с использованием узла Point.ByCoordinates",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6011,7 +6011,7 @@
       },
       {
         "Id": "06b5175ded284cb8b9093fd33c125ef6",
-        "Title": "Code Block uses a Point.ByCoordinates method with three variables for X, Y and Z, where Z is defined within the same Code Block and separated by a semicolon ';' symbol",
+        "Title": "В Code Block используется метод Point.ByCoordinates с тремя переменными для X, Y и Z, где Z определяется в том же узле Code Block и отделяется точкой с запятой (;)",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6032,7 +6032,7 @@
       },
       {
         "Id": "d83f4e5c938b495186f92e0033da893e",
-        "Title": "Code Block uses a Point.ByCoordinates method, all three variables are provided as input",
+        "Title": "В Code Block используется метод Point.ByCoordinates, все три переменные предоставляются в качестве входных данных",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6053,7 +6053,7 @@
       },
       {
         "Id": "48b10f5b91ed46d0b5dda59e32d479ea",
-        "Title": "Multiple variables are defined within the same code block and a list is ",
+        "Title": "Несколько переменных определяются в одном блоке кода, а список ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6074,7 +6074,7 @@
       },
       {
         "Id": "778a787c31a8452f8a5a90712a123f43",
-        "Title": "Access the second item inside the third list (or, in other words, access the item with index '1' inside the list with index '2') ",
+        "Title": "Доступ ко второму элементу в третьем списке (другими словами, доступ к элементу с индексом 1 внутри списка с индексом 2) ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
