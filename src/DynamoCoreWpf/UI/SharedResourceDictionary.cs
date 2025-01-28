@@ -82,11 +82,6 @@ namespace Dynamo.UI
             }
         }
 
-        //public static Uri DynamoModernDictionaryUri
-        //{
-        //    get {return new Uri(Path.Combine(ThemesDirectory, "Modern_Combined.xaml")); }
-        //}
-
         public static Uri DynamoModernDictionaryUri
         {
             get => new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Themes/Modern_Combined.xaml");
@@ -97,6 +92,20 @@ namespace Dynamo.UI
             get {
                 return _dynamoModernDictionary ??
                        (_dynamoModernDictionary = new ResourceDictionary() {Source = DynamoModernDictionaryUri});
+            }
+        }
+
+        public static Uri DataTemplatesDictionaryUri
+        {
+            get => new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Themes/DataTemplates.xaml");
+        }
+
+        public static ResourceDictionary DataTemplatesDictionary
+        {
+            get
+            {
+                return _dataTemplatesDictionary ??
+                       (_dataTemplatesDictionary = new ResourceDictionary() { Source = DataTemplatesDictionaryUri });
             }
         }
     }
