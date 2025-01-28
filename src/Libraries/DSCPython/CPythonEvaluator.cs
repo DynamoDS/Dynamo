@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using Autodesk.DesignScript.Runtime;
@@ -145,6 +146,8 @@ namespace DSCPython
 
         private static PyScope globalScope;
         private static DynamoLogger dynamoLogger;
+        private static string path;
+
         internal static DynamoLogger DynamoLogger {
             get
             { // Session is null when running unit tests.
@@ -261,60 +264,66 @@ for modname,mod in sys.modules.copy().items():
             {
                 PythonEngine.Initialize();
                 PythonEngine.BeginAllowThreads();
-                
-            }
+
                 using (Py.GIL())
+                using (PyScope scope = Py.CreateScope())
                 {
-                    if (globalScope == null)
+                    scope.Exec("import sys" + Environment.NewLine + "path = str(sys.path)");
+                    path = scope.Get<string>("path");
+                }
+            }
+
+            using (Py.GIL())
+            {
+                globalScope ??= CreateGlobalScope();
+                using (PyScope scope = Py.CreateScope())
+                {
+                    if (path is not null)
                     {
-                        globalScope = CreateGlobalScope();
+                        // Reset the 'sys.path' value to the default python paths on node evaluation. See https://github.com/DynamoDS/Dynamo/pull/10977. 
+                        var pythonNodeSetupCode = "import sys" + Environment.NewLine + $"sys.path = {path}";
+                        scope.Exec(pythonNodeSetupCode);
                     }
 
-                    using (PyScope scope = Py.CreateScope())
+                    ProcessAdditionalBindings(scope, bindingNames, bindingValues);
+
+                    int amt = Math.Min(bindingNames.Count, bindingValues.Count);
+
+                    for (int i = 0; i < amt; i++)
                     {
-                        // Reset the 'sys.path' value to the default python paths on node evaluation. 
-                        var pythonNodeSetupCode = "import sys" + Environment.NewLine + "sys.path = sys.path[0:3]";
-                        scope.Exec(pythonNodeSetupCode);
+                        scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
+                    }
 
-                        ProcessAdditionalBindings(scope, bindingNames, bindingValues);
+                    try
+                    {
+                        OnEvaluationBegin(scope, code, bindingValues);
+                        scope.Exec(code);
+                        var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
 
-                        int amt = Math.Min(bindingNames.Count, bindingValues.Count);
-
-                        for (int i = 0; i < amt; i++)
+                        return OutputMarshaler.Marshal(result);
+                    }
+                    catch (Exception e)
+                    {
+                        evaluationSuccess = false;
+                        var traceBack = GetTraceBack(e);
+                        if (!string.IsNullOrEmpty(traceBack))
                         {
-                            scope.Set((string)bindingNames[i], InputMarshaler.Marshal(bindingValues[i]).ToPython());
+                            // Throw a new error including trace back info added to the message
+                            throw new InvalidOperationException($"{e.Message} {traceBack}", e);
                         }
-
-                        try
+                        else
                         {
-                            OnEvaluationBegin(scope, code, bindingValues);
-                            scope.Exec(code);
-                            var result = scope.Contains("OUT") ? scope.Get("OUT") : null;
-
-                            return OutputMarshaler.Marshal(result);
-                        }
-                        catch (Exception e)
-                        {
-                            evaluationSuccess = false;
-                            var traceBack = GetTraceBack(e);
-                            if (!string.IsNullOrEmpty(traceBack))
-                            {
-                                // Throw a new error including trace back info added to the message
-                                throw new InvalidOperationException($"{e.Message} {traceBack}", e);
-                            }
-                            else
-                            {
 #pragma warning disable CA2200 // Rethrow to preserve stack details
-                                throw e;
+                            throw e;
 #pragma warning restore CA2200 // Rethrow to preserve stack details
-                            }
                         }
-                        finally
-                        {
-                            OnEvaluationEnd(evaluationSuccess, scope, code, bindingValues);
-                        }
+                    }
+                    finally
+                    {
+                        OnEvaluationEnd(evaluationSuccess, scope, code, bindingValues);
                     }
                 }
+            }
         }
 
         public static object EvaluatePythonScript(
@@ -476,6 +485,13 @@ sys.stdout = DynamoStdOut({0})
                             }
                         }
                         var unmarshalled = pyObj.AsManagedObject(typeof(object));
+
+                        // Avoid calling this marshaler infinitely.
+                        if (unmarshalled is PyObject)
+                        {
+                            return unmarshalled;
+                        }
+
                         return dataMarshalerToUse.Marshal(unmarshalled);
                     }
                 }

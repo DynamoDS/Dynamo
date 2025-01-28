@@ -49,7 +49,6 @@
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
-        <PackageReference Include="Microsoft.Diagnostics.Runtime" Version="2.0.226801" GeneratePathProperty="true" />
     </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
@@ -139,18 +138,10 @@
   <ItemGroup>
     <Folder Include="NodesJsonDatasets\" />
   </ItemGroup>
-<Target Name="CopyDisableADPTestDeps">
-    <!--ms diag runtime + deps -->
-    <Message Importance="High" Text="copying disable adp test deps to test dependencies folder" />
-    <Copy SourceFiles="$(PkgMicrosoft_Diagnostics_Runtime)\lib\netstandard2.0\Microsoft.Diagnostics.Runtime.dll" DestinationFolder="$(TestDependenciesPath)" />
-</Target>
-
-    <Target Name="MoveSomeTestDepsOutOfBin" AfterTargets="Build">
-        <Message Importance="High" Text="copying test dependencies to test dependencies folder" />
-        <CallTarget Targets="CopyDisableADPTestDeps"></CallTarget>
-        <!--moq + deps-->
-        <Copy SourceFiles="$(PkgCastle_Core)\lib\netstandard2.0\Castle.Core.dll" DestinationFolder="$(TestDependenciesPath)" />
-        <Copy SourceFiles="$(PkgMoq)\lib\netstandard2.0\Moq.dll" DestinationFolder="$(TestDependenciesPath)" />
-        <Copy SourceFiles="$(PkgMoq)\lib\netstandard2.0\Moq.dll" DestinationFolder="$(OutputPath)" />
-    </Target>
+  <Target Name="MoveSomeTestDepsOutOfBin" AfterTargets="Build">
+    <!--moq + deps-->
+    <Copy SourceFiles="$(PkgCastle_Core)\lib\netstandard2.0\Castle.Core.dll" DestinationFolder="$(TestDependenciesPath)" />
+    <Copy SourceFiles="$(PkgMoq)\lib\netstandard2.0\Moq.dll" DestinationFolder="$(TestDependenciesPath)" />
+    <Copy SourceFiles="$(PkgMoq)\lib\netstandard2.0\Moq.dll" DestinationFolder="$(OutputPath)" />
+  </Target>
 </Project>

@@ -7393,6 +7393,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The compatibility of this version with your setup has not been verified. It may or may not work as expected. .
+        /// </summary>
+        public static string PackageUnknownCompatibilityVersionDownloadMsg {
+            get {
+                return ResourceManager.GetString("PackageUnknownCompatibilityVersionDownloadMsg", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to None.
         /// </summary>
         public static string PackageUploadNoDependency {
