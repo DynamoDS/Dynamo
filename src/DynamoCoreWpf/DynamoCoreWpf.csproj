@@ -224,6 +224,7 @@
       <DependentUpon>InstalledPackagesControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="Commands\ConnectorPinCommands.cs" />
+    <Compile Include="Controls\IWorkspaceElement.cs" />
     <Compile Include="Controls\NodeAutoCompleteSearchControl.xaml.cs">
       <DependentUpon>NodeAutoCompleteSearchControl.xaml</DependentUpon>
     </Compile>
@@ -455,6 +456,7 @@
       <DependentUpon>AboutWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\CodeBlocks\CodeBlockEditor.cs" />
+    <Compile Include="Controls\DeferredContent.cs" />
     <Compile Include="Views\Core\ConnectorAnchorView.xaml.cs">
       <DependentUpon>ConnectorAnchorView.xaml</DependentUpon>
     </Compile>

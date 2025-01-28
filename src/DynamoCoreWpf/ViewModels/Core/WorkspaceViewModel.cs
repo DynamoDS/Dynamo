@@ -10,6 +10,7 @@ using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
 using Dynamo.Configuration;
+using Dynamo.Controls;
 using Dynamo.Engine;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
@@ -533,6 +534,8 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private bool FinishedLoading = false;
+
         #endregion
 
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
@@ -606,7 +609,9 @@ namespace Dynamo.ViewModels
             foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
             foreach (AnnotationModel annotation in Model.Annotations) Model_AnnotationAdded(annotation);
             foreach (ConnectorModel connector in Model.Connectors) Connectors_ConnectorAdded(connector);
-            
+
+            FinishedLoading = true;
+
             NodeAutoCompleteSearchViewModel = new NodeAutoCompleteSearchViewModel(DynamoViewModel)
             {
                 Visible = true
@@ -823,6 +828,11 @@ namespace Dynamo.ViewModels
         {
             var viewModel = new NoteViewModel(this, note);
             Notes.Add(viewModel);
+
+            if (FinishedLoading)
+            {
+                viewModel.IsVisibleInCanvas = true;
+            }
         }
 
         private void Model_NoteRemoved(NoteModel note)
@@ -845,6 +855,11 @@ namespace Dynamo.ViewModels
         {
             var viewModel = new AnnotationViewModel(this, annotation);
             Annotations.Add(viewModel);
+
+            if (FinishedLoading)
+            {
+                viewModel.IsVisibleInCanvas = true;
+            }
         }
 
         private void Model_AnnotationRemoved(AnnotationModel annotation)
@@ -908,12 +923,21 @@ namespace Dynamo.ViewModels
             var nodeViewModel = new NodeViewModel(this, node);
             nodeViewModel.SnapInputEvent += nodeViewModel_SnapInputEvent;
             nodeViewModel.NodeLogic.Modified += OnNodeModified;
+
             lock (Nodes)
             {
                 Nodes.Add(nodeViewModel);
             }
             if (nodeViewModel.ErrorBubble != null)
+            {
+                nodeViewModel.ErrorBubble.IsVisibleInCanvas = FinishedLoading;
                 Errors.Add(nodeViewModel.ErrorBubble);
+            }
+
+            if (FinishedLoading)
+            {
+                nodeViewModel.IsVisibleInCanvas = true;
+            }
 
             PostNodeChangeActions();
         }
@@ -1862,7 +1886,36 @@ namespace Dynamo.ViewModels
             return foundModels;
         }
 
-        
+        internal void UpdateWorkspaceElementVisibility(double visibleWidth, double visibleHeight)
+        {
+            var width = visibleWidth / Zoom;
+            var height = visibleHeight / Zoom;
+            var left = -X / Zoom;
+            var top = -Y / Zoom;
+
+            var visibleRect = new Rect2D(left, top, width, height);
+            var itemsToTest = Nodes.Cast<IWorkspaceElement>()
+                                   .Concat(Notes)
+                                   .Concat(Annotations);
+
+            foreach (var item in itemsToTest)
+            {
+                item.IsVisibleInCanvas = visibleRect.IntersectsWith(item.Rect);
+
+                if (item is NodeViewModel nvm && item.IsVisibleInCanvas && nvm.ErrorBubble != null)
+                {
+                    nvm.ErrorBubble.IsVisibleInCanvas = true;
+                }
+            }
+
+#if DEBUG
+            var total = Nodes.Count + Notes.Count + Annotations.Count;
+            var hidden = Nodes.Count(n => !n.IsVisibleInCanvas) +
+                         Notes.Count(n => !n.IsVisibleInCanvas) +
+                         Annotations.Count(a => !a.IsVisibleInCanvas);
+            Debug.WriteLine($"{hidden}/{total} workspace elements hidden");
+#endif
+        }
     }
 
     public class ViewModelEventArgs : EventArgs

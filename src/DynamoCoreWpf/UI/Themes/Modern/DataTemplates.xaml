@@ -10,9 +10,15 @@
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
-
     <DataTemplate DataType="{x:Type viewModels:NodeViewModel}">
-        <controls:NodeView></controls:NodeView>
+        <controls:DeferredContent
+            Content="{x:Null}">
+            <controls:DeferredContent.DeferredContentTemplate>
+                <DataTemplate>
+                    <controls:NodeView />
+                </DataTemplate>
+            </controls:DeferredContent.DeferredContentTemplate>
+        </controls:DeferredContent>
     </DataTemplate>
 
     <DataTemplate DataType="{x:Type viewModels:NoteViewModel}">
