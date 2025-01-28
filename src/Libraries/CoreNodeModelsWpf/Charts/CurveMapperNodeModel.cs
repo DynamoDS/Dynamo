@@ -233,6 +233,14 @@ namespace CoreNodeModelsWpf.Charts
         [JsonIgnore]
         public PowerCurve PowerCurve { get; set; }
 
+        // SquareRoot curve
+        [JsonIgnore]
+        public CurveMapperControlPoint ControlPointSquareRoot1 { get; set; }
+        [JsonIgnore]
+        public CurveMapperControlPoint ControlPointSquareRoot2 { get; set; }
+        [JsonIgnore]
+        public SquareRootCurve SquareRootCurve { get; set; }
+
         #endregion
 
         #region Constructors
@@ -294,7 +302,8 @@ namespace CoreNodeModelsWpf.Charts
                 (SelectedGraphType == GraphTypes.CosineWave && ControlPointCosine1.Point.X == ControlPointCosine2.Point.X) ||
                 (SelectedGraphType == GraphTypes.SineWave && ControlPointSine1.Point.X == ControlPointSine2.Point.X) ||
                 (SelectedGraphType == GraphTypes.ParabolicCurve && ControlPointParabolic1.Point.X == ControlPointParabolic2.Point.X) ||
-                (SelectedGraphType == GraphTypes.PowerCurve && (ControlPointPower.Point.X == MinLimitX || ControlPointPower.Point.Y == MinLimitY))
+                (SelectedGraphType == GraphTypes.PowerCurve && (ControlPointPower.Point.X == MinLimitX || ControlPointPower.Point.Y == MinLimitY)) ||
+                (SelectedGraphType == GraphTypes.SquareRootCurve && ControlPointSquareRoot1.Point.X == ControlPointSquareRoot2.Point.X)
             )
             {
                 ClearErrorsAndWarnings();
@@ -340,6 +349,11 @@ namespace CoreNodeModelsWpf.Charts
             {
                 OutputValuesY = PowerCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
                 OutputValuesX = PowerCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
+            }
+            else if (SquareRootCurve != null && SelectedGraphType == GraphTypes.SquareRootCurve)
+            {
+                OutputValuesY = SquareRootCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
+                OutputValuesX = SquareRootCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
             }
         }
 
@@ -557,7 +571,9 @@ namespace CoreNodeModelsWpf.Charts
         [Description("Perlin Noise")]
         PerlinNoiseCurve = 6,
         [Description("Power Curve")]
-        PowerCurve = 7
+        PowerCurve = 7,
+        [Description("Square Root Curve")]
+        SquareRootCurve = 8
     }
 
     #endregion

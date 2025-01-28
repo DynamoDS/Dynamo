@@ -265,6 +265,7 @@
     <Compile Include="Controls\SubControls\PerlinCurve.cs" />
     <Compile Include="Controls\SubControls\PowerCurve.cs" />
     <Compile Include="Controls\SubControls\SineCurve.cs" />
+    <Compile Include="Controls\SubControls\SquareRootCurve.cs" />
     <Compile Include="Controls\SubControls\TextBase.cs" />
     <Compile Include="Controls\SubControls\UVCoordText.cs" />
     <Compile Include="Controls\UseLevelPopup.cs" />

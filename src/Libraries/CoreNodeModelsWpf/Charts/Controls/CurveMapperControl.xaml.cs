@@ -16,7 +16,6 @@ namespace CoreNodeModelsWpf.Charts.Controls
     public partial class CurveMapperControl : UserControl, INotifyPropertyChanged
     {
         private readonly CurveMapperNodeModel model;
-        private LinearCurve linearCurve;
         public event PropertyChangedEventHandler PropertyChanged;
                 
         public double DynamicCanvasSize
@@ -177,6 +176,18 @@ namespace CoreNodeModelsWpf.Charts.Controls
                         Canvas.SetZIndex(model.PowerCurve.PathCurve, 10);
                     }
                 }
+                // Square Root curve
+                if (model.ControlPointSquareRoot1 != null && model.ControlPointSquareRoot2 != null)
+                {
+                    UpdateControlPoints(newCanvasSize, model.ControlPointSquareRoot1, model.ControlPointSquareRoot2);
+                    if (model.SquareRootCurve != null)
+                    {
+                        model.SquareRootCurve.MaxWidth = newCanvasSize;
+                        model.SquareRootCurve.MaxHeight = newCanvasSize;
+                        model.SquareRootCurve.Regenerate();
+                        Canvas.SetZIndex(model.SquareRootCurve.PathCurve, 10);
+                    }
+                }
 
                 previousCanvasSize = newCanvasSize;
 
@@ -330,6 +341,11 @@ namespace CoreNodeModelsWpf.Charts.Controls
                 case GraphTypes.PowerCurve:
                     model.ControlPointPower.Point = new Point(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
                     model.PowerCurve?.Regenerate();
+                    break;
+                case GraphTypes.SquareRootCurve:
+                    model.ControlPointSquareRoot1.Point = new Point(0, DynamicCanvasSize);
+                    model.ControlPointSquareRoot2.Point = new Point(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
+                    model.SquareRootCurve?.Regenerate();
                     break;
                     // Add mode curves here
             }

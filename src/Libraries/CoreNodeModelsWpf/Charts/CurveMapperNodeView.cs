@@ -308,6 +308,38 @@ namespace Dynamo.Wpf.Charts
 
                 ApplyBindingsToControlPoints(model.ControlPointPower, model, curveMapperControl);
 
+                // Square Root curve
+                model.ControlPointSquareRoot1 = new CurveMapperControlPoint(
+                    new Point(0, curveMapperControl.DynamicCanvasSize),
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                );
+                model.ControlPointSquareRoot2 = new CurveMapperControlPoint(
+                    new Point(curveMapperControl.DynamicCanvasSize * 0.5, curveMapperControl.DynamicCanvasSize * 0.5),
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                );
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointSquareRoot1);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointSquareRoot2);
+                Canvas.SetZIndex(model.ControlPointSquareRoot1, 20);
+                Canvas.SetZIndex(model.ControlPointSquareRoot2, 20);
+
+                model.SquareRootCurve = new SquareRootCurve(
+                    model.ControlPointSquareRoot1,
+                    model.ControlPointSquareRoot2,
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize);
+                Canvas.SetZIndex(model.SquareRootCurve, 10);
+                curveMapperControl.GraphCanvas.Children.Add(model.SquareRootCurve.PathCurve);
+
+                model.ControlPointSquareRoot1.SquareRootCurve = model.SquareRootCurve;
+                model.ControlPointSquareRoot2.SquareRootCurve = model.SquareRootCurve;
+
+                ApplyBindingsToControlPoints(model.ControlPointSquareRoot1, model, curveMapperControl);
+                ApplyBindingsToControlPoints(model.ControlPointSquareRoot2, model, curveMapperControl);
+
                 #endregion
 
                 BindVisibility(model);
@@ -323,6 +355,7 @@ namespace Dynamo.Wpf.Charts
                     model.ControlPointPerlin);
                 AttachMouseUpEvent(model.ControlPointParabolic1, model.ControlPointParabolic2);
                 AttachMouseUpEvent(model.ControlPointPower);
+                AttachMouseUpEvent(model.ControlPointSquareRoot1, model.ControlPointSquareRoot2);
             };
         }
 
@@ -348,12 +381,9 @@ namespace Dynamo.Wpf.Charts
                 ConverterParameter = GraphTypes.LinearCurve,
                 Mode = BindingMode.OneWay
             };
-            if (model.ControlPointLinear1 != null)
-                model.ControlPointLinear1.SetBinding(UIElement.VisibilityProperty, linearVisibilityBinding);
-            if (model.ControlPointLinear2 != null)
-                model.ControlPointLinear2.SetBinding(UIElement.VisibilityProperty, linearVisibilityBinding);
-            if (model.LinearCurve != null)
-                model.LinearCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, linearVisibilityBinding);
+            model.ControlPointLinear1?.SetBinding(UIElement.VisibilityProperty, linearVisibilityBinding);
+            model.ControlPointLinear2?.SetBinding(UIElement.VisibilityProperty, linearVisibilityBinding);
+            model.LinearCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, linearVisibilityBinding);
 
             // Bezier curve
             var bezierVisibilityBinding = new Binding("SelectedGraphType")
@@ -363,20 +393,13 @@ namespace Dynamo.Wpf.Charts
                 ConverterParameter = GraphTypes.BezierCurve,
                 Mode = BindingMode.OneWay
             };
-            if (model.ControlPointBezier1 != null)
-                model.ControlPointBezier1.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
-            if (model.ControlPointBezier2 != null)
-                model.ControlPointBezier2.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
-            if (model.OrthoControlPointBezier1 != null)
-                model.OrthoControlPointBezier1.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
-            if (model.OrthoControlPointBezier2 != null)
-                model.OrthoControlPointBezier2.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
-            if (model.ControlLineBezier1 != null)
-                model.ControlLineBezier1.PathCurve.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
-            if (model.ControlLineBezier2 != null)
-                model.ControlLineBezier2.PathCurve.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
-            if (model.BezierCurve != null)
-                model.BezierCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
+            model.ControlPointBezier1?.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
+            model.ControlPointBezier2?.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
+            model.OrthoControlPointBezier1?.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
+            model.OrthoControlPointBezier2?.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
+            model.ControlLineBezier1?.PathCurve?.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
+            model.ControlLineBezier2?.PathCurve?.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
+            model.BezierCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
 
             // Sine wave
             var sineVisibilityBinding = new Binding("SelectedGraphType")
@@ -386,12 +409,9 @@ namespace Dynamo.Wpf.Charts
                 ConverterParameter = GraphTypes.SineWave,
                 Mode = BindingMode.OneWay
             };
-            if (model.ControlPointSine1 != null)
-                model.ControlPointSine1.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
-            if (model.ControlPointSine2 != null)
-                model.ControlPointSine2.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
-            if (model.SineWave != null)
-                model.SineWave.PathCurve.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
+            model.ControlPointSine1?.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
+            model.ControlPointSine2?.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
+            model.SineWave?.PathCurve?.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
 
             // Cosine wave
             var cosineVisibilityBinding = new Binding("SelectedGraphType")
@@ -401,12 +421,9 @@ namespace Dynamo.Wpf.Charts
                 ConverterParameter = GraphTypes.CosineWave,
                 Mode = BindingMode.OneWay
             };
-            if (model.ControlPointCosine1 != null)
-                model.ControlPointCosine1.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
-            if (model.ControlPointCosine2 != null)
-                model.ControlPointCosine2.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
-            if (model.CosineWave != null)
-                model.CosineWave.PathCurve.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
+            model.ControlPointCosine1?.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
+            model.ControlPointCosine2?.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
+            model.CosineWave?.PathCurve?.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
 
             // Parabolic curve
             var parabolicVisibilityBinding = new Binding("SelectedGraphType")
@@ -416,12 +433,9 @@ namespace Dynamo.Wpf.Charts
                 ConverterParameter = GraphTypes.ParabolicCurve,
                 Mode = BindingMode.OneWay
             };
-            if (model.ControlPointParabolic1 != null)
-                model.ControlPointParabolic1.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
-            if (model.ControlPointParabolic2 != null)
-                model.ControlPointParabolic2.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
-            if (model.ParabolicCurve != null)
-                model.ParabolicCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
+            model.ControlPointParabolic1?.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
+            model.ControlPointParabolic2?.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
+            model.ParabolicCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
 
             // Perlin noise
             var perlinVisibilityBinding = new Binding("SelectedGraphType")
@@ -431,14 +445,10 @@ namespace Dynamo.Wpf.Charts
                 ConverterParameter = GraphTypes.PerlinNoiseCurve,
                 Mode = BindingMode.OneWay
             };
-            if (model.OrthoControlPointPerlin1 != null)
-                model.OrthoControlPointPerlin1.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
-            if (model.OrthoControlPointPerlin2 != null)
-                model.OrthoControlPointPerlin2.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
-            if (model.ControlPointPerlin != null)
-                model.ControlPointPerlin.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
-            if (model.PerlinNoiseCurve != null)
-                model.PerlinNoiseCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
+            model.OrthoControlPointPerlin1?.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
+            model.OrthoControlPointPerlin2?.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
+            model.ControlPointPerlin?.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
+            model.PerlinNoiseCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
 
             // Power curve
             var powerVisibilityBinding = new Binding("SelectedGraphType")
@@ -448,10 +458,20 @@ namespace Dynamo.Wpf.Charts
                 ConverterParameter = GraphTypes.PowerCurve,
                 Mode = BindingMode.OneWay
             };
-            if (model.ControlPointPower != null)
-                model.ControlPointPower.SetBinding(UIElement.VisibilityProperty, powerVisibilityBinding);
-            if (model.PowerCurve != null)
-                model.PowerCurve.PathCurve.SetBinding(UIElement.VisibilityProperty, powerVisibilityBinding);
+            model.ControlPointPower?.SetBinding(UIElement.VisibilityProperty, powerVisibilityBinding);
+            model.PowerCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, powerVisibilityBinding);
+
+            // Square Root curve
+            var squareRootVisibilityBinding = new Binding("SelectedGraphType")
+            {
+                Source = model,
+                Converter = new GraphTypeToVisibilityConverter(),
+                ConverterParameter = GraphTypes.SquareRootCurve,
+                Mode = BindingMode.OneWay
+            };
+            model.ControlPointSquareRoot1?.SetBinding(UIElement.VisibilityProperty, squareRootVisibilityBinding);
+            model.ControlPointSquareRoot2?.SetBinding(UIElement.VisibilityProperty, squareRootVisibilityBinding);
+            model.SquareRootCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, squareRootVisibilityBinding);
 
         }
 
@@ -490,6 +510,7 @@ namespace Dynamo.Wpf.Charts
                 curveMapperNodeModel.ControlPointPerlin);
             DetachMouseUpEvent(curveMapperNodeModel.ControlPointParabolic1, curveMapperNodeModel.ControlPointParabolic2);
             DetachMouseUpEvent(curveMapperNodeModel.ControlPointPower);
+            DetachMouseUpEvent(curveMapperNodeModel.ControlPointSquareRoot1, curveMapperNodeModel.ControlPointSquareRoot2);
         }
 
         private void AttachMouseUpEvent(params CurveMapperControlPoint[] controlPoints)
