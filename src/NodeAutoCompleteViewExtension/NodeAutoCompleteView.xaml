@@ -14,10 +14,6 @@
     <UserControl.Resources>
 
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary
-                    Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-            </ResourceDictionary.MergedDictionaries>
             <controls:ExpandersBindingConverter x:Key="ExpandersBindingConverter"/>
             <BooleanToVisibilityConverter x:Key="BoolToVis" />
             <!-- DataGrid style -->

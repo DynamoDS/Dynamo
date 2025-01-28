@@ -11,14 +11,6 @@
              d:DesignHeight="300" d:DesignWidth="500" 
              Height="300" Width="300"
              d:DataContext="{d:DesignInstance local:BasicLineChartControl}">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary
-                    Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
     <Grid>
 
         <lvc:CartesianChart Style="{StaticResource CartesianLiveChart}" x:Name="BasicLineChart"

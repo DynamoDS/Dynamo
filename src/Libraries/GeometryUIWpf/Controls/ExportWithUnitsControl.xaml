@@ -11,17 +11,6 @@
              xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore"
              mc:Ignorable="d" Width="250" Height="Auto">
 
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <controls:UnitToTextConverter x:Key="UnitToTextConverter" />
-            <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-                
-            </ResourceDictionary.MergedDictionaries>
-           
-        </ResourceDictionary>
-        
-    </UserControl.Resources>
     
 
     <Grid Width="Auto" Height="Auto">

@@ -10,14 +10,6 @@
              d:DesignHeight="300"
              d:DesignWidth="335"
              Background="Transparent">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary
-                    Source="../UI/Themes/Modern_Combined.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
     <Border CornerRadius="5"
             Opacity=".95"
             Background="{StaticResource LibraryCommonBackground}"
