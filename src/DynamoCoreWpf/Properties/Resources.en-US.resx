@@ -4103,7 +4103,7 @@ To make this file into a new template, save it to a different folder, then move 
     <value>Versions marked with .x include all versions in the specified major or minor release</value>
   </data>
   <data name="CannotAddNodeToWorkspace" xml:space="preserve">
-    <value>You cannot add a custom node to its own workspace.</value>
+    <value>You cannot place a custom node directly to its own workspace. You can use the scopeif node and correctly implement the recursive base case.</value>
   </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
     <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
