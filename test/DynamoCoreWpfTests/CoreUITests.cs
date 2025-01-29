@@ -1144,9 +1144,8 @@ namespace DynamoCoreWpfTests
             // test timeout expiration
             count = 0;
             searchControl.SearchTextBox.Text = "dsfdfdsfdf";
-            Thread.Sleep(sleepTime);
+            DispatcherUtil.DoEventsLoop(() => count == 1);
             searchControl.SearchTextBox.Text = "dsfdf";
-            Thread.Sleep(sleepTime);
             DispatcherUtil.DoEventsLoop(() => count == 2);
 
             Assert.IsTrue(currentWs.InCanvasSearchBar.IsOpen);
