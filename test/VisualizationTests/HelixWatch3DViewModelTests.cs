@@ -623,13 +623,13 @@ namespace WpfVisualizationTests
 
             var ws = ViewModel.Model.CurrentWorkspace as HomeWorkspaceModel;
 
-            var homeColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundHome"];
+            var homeColor = (Color)SharedDictionaryManager.DynamoModernDictionary["WorkspaceBackgroundHome"];
 
             Assert.AreEqual(BackgroundPreview.watch_view.BackgroundColor, homeColor);
 
             OpenVisualizationTest("Points.dyf");
 
-            var customColor = (Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WorkspaceBackgroundCustom"];
+            var customColor = (Color)SharedDictionaryManager.DynamoModernDictionary["WorkspaceBackgroundCustom"];
 
             Assert.AreEqual(BackgroundPreview.watch_view.BackgroundColor, customColor);
         }

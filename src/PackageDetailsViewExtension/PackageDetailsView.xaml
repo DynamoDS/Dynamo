@@ -14,10 +14,6 @@
              mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary
-                    Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-            </ResourceDictionary.MergedDictionaries>
             <controls:NegativeIntToZeroConverter x:Key="NegativeIntToZeroConverter" />
             <controls:InverseBooleanConverter x:Key="InverseBooleanConverter" />
             <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />

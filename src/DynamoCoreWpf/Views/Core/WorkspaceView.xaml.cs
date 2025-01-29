@@ -93,12 +93,12 @@ namespace Dynamo.Views
 
             DataContextChanged += OnWorkspaceViewDataContextChanged;
 
-            //// view of items to drag
-            //draggedSelectionTemplate = (DataTemplate)FindResource("DraggedSelectionTemplate");
-            //var dictionaries = draggedSelectionTemplate.Resources.MergedDictionaries;
+            // view of items to drag
+            draggedSelectionTemplate = (DataTemplate)FindResource("DraggedSelectionTemplate");
+            var dictionaries = draggedSelectionTemplate.Resources.MergedDictionaries;
 
-            //// let draggedSelectionTemplate know about views of node, note, annotation, connector
-            //dictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
+            // let draggedSelectionTemplate know about views of node, note, annotation, connector
+            dictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
         }
 
         void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)

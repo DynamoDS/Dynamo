@@ -29,6 +29,8 @@ namespace Dynamo.Nodes
         public static DependencyProperty SelectAllTextOnFocus;
         public AnnotationView()
         {
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
+
             InitializeComponent();
             Unloaded += AnnotationView_Unloaded;
             Loaded += AnnotationView_Loaded;

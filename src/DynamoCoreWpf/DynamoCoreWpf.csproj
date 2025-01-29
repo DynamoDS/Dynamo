@@ -23,7 +23,8 @@
 
     <Target Name="CombineXamlDictionaries" BeforeTargets="BeforeBuild">
         <ItemGroup>
-            <XAMLCombineItems Include="UI\Themes\Modern\*.xaml">
+            <XAMLCombineItems Include="UI\Themes\Modern\*.xaml"
+                         Exclude="UI\Themes\Modern\DataTemplates.xaml">
                 <TargetFile>UI\Themes\Modern_Combined.xaml</TargetFile>
                 <Visible>False</Visible>
             </XAMLCombineItems>
@@ -199,7 +200,7 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.3546"/>
+      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.3546" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="3.0.2.6533" />
@@ -1458,13 +1459,13 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <ItemGroup>
+  <!--<ItemGroup>
     <None Include="UI\Themes\Modern\DynamoColorsAndBrushes.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-  </ItemGroup>
+  </ItemGroup>-->
   <ItemGroup>
     <None Include="UI\Themes\Modern\DynamoConverters.xaml">
       <Generator>MSBuild:Compile</Generator>

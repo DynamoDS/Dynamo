@@ -29,32 +29,40 @@ namespace Dynamo.UI
         /// </summary>
         public new Uri Source
         {
-            get { return _sourceUri; }
+            get => _sourceUri;
             set
             {
+                if (_sourceUri == value) return;
+
                 _sourceUri = value;
 
-                if (!_sharedDictionaries.ContainsKey(value))
+                try
                 {
-                    // If the dictionary is not yet loaded, load it by setting
-                    // the source of the base class
-                    base.Source = value;
-
-                    // add it to the cache
-                    _sharedDictionaries.Add(value, this);
+                    if (!_sharedDictionaries.ContainsKey(value))
+                    {
+                        // Load and cache the dictionary
+                        base.Source = value;
+                        _sharedDictionaries[value] = this;
+                    }
+                    else
+                    {
+                        // Use the cached dictionary
+                        MergedDictionaries.Add(_sharedDictionaries[value]);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    // If the dictionary is already loaded, get it from the cache
-                    MergedDictionaries.Add(_sharedDictionaries[value]);
+                    throw new InvalidOperationException($"Failed to load ResourceDictionary from '{value}'.", ex);
                 }
             }
         }
+
     }
 
     public static class SharedDictionaryManager
     {
         private static ResourceDictionary _dynamoModernDictionary;
+        private static ResourceDictionary _dataTemplatesDictionary;
 
         public static string ThemesDirectory 
         {
@@ -65,9 +73,18 @@ namespace Dynamo.UI
             }
         }
 
+        public static string ModernDirectory
+        {
+            get
+            {
+                return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
+                    @"UI\Themes\Modern\");
+            }
+        }
+
         public static Uri DynamoModernDictionaryUri
         {
-            get {return new Uri(Path.Combine(ThemesDirectory, "Modern_Combined.xaml")); }
+            get => new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Themes/Modern_Combined.xaml");
         }
 
         public static ResourceDictionary DynamoModernDictionary
@@ -75,6 +92,20 @@ namespace Dynamo.UI
             get {
                 return _dynamoModernDictionary ??
                        (_dynamoModernDictionary = new ResourceDictionary() {Source = DynamoModernDictionaryUri});
+            }
+        }
+
+        public static Uri DataTemplatesDictionaryUri
+        {
+            get => new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Themes/DataTemplates.xaml");
+        }
+
+        public static ResourceDictionary DataTemplatesDictionary
+        {
+            get
+            {
+                return _dataTemplatesDictionary ??
+                       (_dataTemplatesDictionary = new ResourceDictionary() { Source = DataTemplatesDictionaryUri });
             }
         }
     }

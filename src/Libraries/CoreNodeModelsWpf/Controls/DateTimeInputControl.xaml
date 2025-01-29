@@ -8,14 +8,6 @@
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              Width="Auto"
              mc:Ignorable="d">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <converters:StringToDateTimeConverter x:Key="StringToDateTimeConverter" />
-            <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
     <Grid>
         <TextBox Height="29"
                  Margin="0,-5,0,0"
