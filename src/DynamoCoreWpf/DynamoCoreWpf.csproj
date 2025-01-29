@@ -23,7 +23,7 @@
 
     <Target Name="CombineXamlDictionaries" BeforeTargets="BeforeBuild">
         <ItemGroup>
-            <XAMLCombineItems Include="UI\Themes\Modern\*.xaml" Exclude="UI\Themes\Modern\DataTemplates.xaml">
+            <XAMLCombineItems Include="UI\Themes\Modern\*.xaml" Exclude="UI\Themes\Modern\DataTemplates.xaml;UI\Themes\Modern\InPorts.xaml;UI\Themes\Modern\OutPorts.xaml;">
                 <TargetFile>UI\Themes\Modern_Combined.xaml</TargetFile>
                 <Visible>False</Visible>
             </XAMLCombineItems>
@@ -1436,81 +1436,29 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
-  
-  <ItemGroup>
-      <Page Include="UI\Themes\Modern_Combined.xaml">
-          <Generator>MSBuild:Compile</Generator>
-          <SubType>Designer</SubType>
-          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <Page Include="UI\Themes\Modern\DataTemplates.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </Page>
-  </ItemGroup>
 
-    <!--<ItemGroup>
-        <None Include="UI\Themes\Modern\Modern_Combined.xaml">
+    <ItemGroup>
+        <Page Include="UI\Themes\Modern_Combined.xaml">
             <Generator>MSBuild:Compile</Generator>
             <SubType>Designer</SubType>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Include="UI\Themes\Modern\Connectors.xaml">
+        </Page>
+        <Page Include="UI\Themes\Modern\DataTemplates.xaml">
             <Generator>MSBuild:Compile</Generator>
             <SubType>Designer</SubType>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Include="UI\Themes\Modern\DynamoColorsAndBrushes.xaml">
+        </Page>
+        <Page Include="UI\Themes\Modern\InPorts.xaml">
             <Generator>MSBuild:Compile</Generator>
             <SubType>Designer</SubType>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Include="UI\Themes\Modern\DynamoConverters.xaml">
+        </Page>
+        <Page Include="UI\Themes\Modern\OutPorts.xaml">
             <Generator>MSBuild:Compile</Generator>
             <SubType>Designer</SubType>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Include="UI\Themes\Modern\LiveChartsStyle.xaml">
-            <Generator>MSBuild:Compile</Generator>
-            <SubType>Designer</SubType>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Include="UI\Themes\Modern\DynamoText.xaml">
-            <Generator>MSBuild:Compile</Generator>
-            <SubType>Designer</SubType>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Include="UI\Themes\Modern\MenuStyleDictionary.xaml">
-            <Generator>MSBuild:Compile</Generator>
-            <SubType>Designer</SubType>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Include="UI\Themes\Modern\Ports.xaml">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-            <SubType>Designer</SubType>
-        </None>
-        <None Include="UI\Themes\Modern\ToolbarStyleDictionary.xaml">
-            <Generator>MSBuild:Compile</Generator>
-            <SubType>Designer</SubType>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Include="UI\Themes\Modern\SidebarGridStyleDictionary.xaml">
-            <SubType>Designer</SubType>
-            <Generator>MSBuild:Compile</Generator>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Include="UI\Themes\Modern\InPorts.xaml">
-            <SubType>Designer</SubType>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Include="UI\Themes\Modern\OutPorts.xaml">
-            <SubType>Designer</SubType>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-    </ItemGroup>--> 
+        </Page>
+    </ItemGroup>
     
   <ItemGroup>
     <Page Include="UI\Prompts\PresetPrompt.xaml">
