@@ -61,15 +61,6 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string _052465 {
-            get {
-                return ResourceManager.GetString("052465", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Arrrrg, ok.
         /// </summary>
         public static string ArggOKButton {
