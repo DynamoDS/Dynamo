@@ -64,49 +64,14 @@ namespace Dynamo.UI
         private static ResourceDictionary _dynamoModernDictionary;
         private static ResourceDictionary _dataTemplatesDictionary;
 
-        public static string ThemesDirectory 
-        {
-            get
-            {
-                return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    @"UI\Themes\");
-            }
-        }
+        public static Uri DynamoModernDictionaryUri =>
+            new("pack://application:,,,/DynamoCoreWpf;component/UI/Themes/Modern_Combined.xaml");
+        public static Uri DataTemplatesDictionaryUri =>
+            new("pack://application:,,,/DynamoCoreWpf;component/UI/Themes/Modern/DataTemplates.xaml");
 
-        public static string ModernDirectory
-        {
-            get
-            {
-                return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    @"UI\Themes\Modern\");
-            }
-        }
-
-        public static Uri DynamoModernDictionaryUri
-        {
-            get => new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Themes/Modern_Combined.xaml");
-        }
-
-        public static ResourceDictionary DynamoModernDictionary
-        {
-            get {
-                return _dynamoModernDictionary ??
-                       (_dynamoModernDictionary = new ResourceDictionary() {Source = DynamoModernDictionaryUri});
-            }
-        }
-
-        public static Uri DataTemplatesDictionaryUri
-        {
-            get => new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Themes/DataTemplates.xaml");
-        }
-
-        public static ResourceDictionary DataTemplatesDictionary
-        {
-            get
-            {
-                return _dataTemplatesDictionary ??
-                       (_dataTemplatesDictionary = new ResourceDictionary() { Source = DataTemplatesDictionaryUri });
-            }
-        }
+        public static ResourceDictionary DynamoModernDictionary =>
+            _dynamoModernDictionary ??= new ResourceDictionary() { Source = DynamoModernDictionaryUri };
+        public static ResourceDictionary DataTemplatesDictionary =>
+            _dataTemplatesDictionary ??= new ResourceDictionary() { Source = DataTemplatesDictionaryUri };
     }
 }

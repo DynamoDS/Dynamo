@@ -23,8 +23,7 @@
 
     <Target Name="CombineXamlDictionaries" BeforeTargets="BeforeBuild">
         <ItemGroup>
-            <XAMLCombineItems Include="UI\Themes\Modern\*.xaml"
-                         Exclude="UI\Themes\Modern\DataTemplates.xaml">
+            <XAMLCombineItems Include="UI\Themes\Modern\*.xaml" Exclude="UI\Themes\Modern\DataTemplates.xaml">
                 <TargetFile>UI\Themes\Modern_Combined.xaml</TargetFile>
                 <Visible>False</Visible>
             </XAMLCombineItems>
@@ -311,6 +310,7 @@
       <DependentUpon>InPortContextMenu.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Prompts\PortPropertiesEditPrompt.xaml.cs" />
+    <Compile Include="UI\SharedResourceDictionary.cs" />
     <Compile Include="Utilities\CerDLL.cs" />
     <Compile Include="Utilities\CompactBubbleHandler.cs" />
     <Compile Include="Interfaces\IShellCom.cs" />
@@ -418,7 +418,6 @@
     <Compile Include="UI\Prompts\UsageReportingAgreementPrompt.xaml.cs">
       <DependentUpon>UsageReportingAgreementPrompt.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\SharedResourceDictionary.cs" />
     <Compile Include="Utilities\PreferencesPanelUtilities.cs" />
     <Compile Include="Utilities\WebView2Utilities.cs" />
     <Compile Include="ViewModels\Core\AnnotationExtension.cs" />
@@ -641,14 +640,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <None Include="UI\Themes\Modern\InPorts.xaml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="UI\Themes\Modern\OutPorts.xaml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <Page Include="Controls\OutPortContextMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1445,81 +1436,83 @@
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>
+  
   <ItemGroup>
-    <None Include="UI\Themes\Modern\Connectors.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+      <Page Include="UI\Themes\Modern_Combined.xaml">
+          <Generator>MSBuild:Compile</Generator>
+          <SubType>Designer</SubType>
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Page>
   </ItemGroup>
   <ItemGroup>
-    <None Include="UI\Themes\Modern\DataTemplates.xaml">
+    <Page Include="UI\Themes\Modern\DataTemplates.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Page>
   </ItemGroup>
-  <!--<ItemGroup>
-    <None Include="UI\Themes\Modern\DynamoColorsAndBrushes.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>-->
-  <ItemGroup>
-    <None Include="UI\Themes\Modern\DynamoConverters.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="UI\Themes\Modern\DynamoModern.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-    <ItemGroup>
+
+    <!--<ItemGroup>
+        <None Include="UI\Themes\Modern\Modern_Combined.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="UI\Themes\Modern\Connectors.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="UI\Themes\Modern\DynamoColorsAndBrushes.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="UI\Themes\Modern\DynamoConverters.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
         <None Include="UI\Themes\Modern\LiveChartsStyle.xaml">
             <Generator>MSBuild:Compile</Generator>
             <SubType>Designer</SubType>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
-    </ItemGroup>
+        <None Include="UI\Themes\Modern\DynamoText.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="UI\Themes\Modern\MenuStyleDictionary.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="UI\Themes\Modern\Ports.xaml">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <SubType>Designer</SubType>
+        </None>
+        <None Include="UI\Themes\Modern\ToolbarStyleDictionary.xaml">
+            <Generator>MSBuild:Compile</Generator>
+            <SubType>Designer</SubType>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="UI\Themes\Modern\SidebarGridStyleDictionary.xaml">
+            <SubType>Designer</SubType>
+            <Generator>MSBuild:Compile</Generator>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="UI\Themes\Modern\InPorts.xaml">
+            <SubType>Designer</SubType>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="UI\Themes\Modern\OutPorts.xaml">
+            <SubType>Designer</SubType>
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>--> 
+    
   <ItemGroup>
-    <None Include="UI\Themes\Modern\DynamoText.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="UI\Themes\Modern\MenuStyleDictionary.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="UI\Themes\Modern\Ports.xaml">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      <SubType>Designer</SubType>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="UI\Themes\Modern\ToolbarStyleDictionary.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="UI\Themes\Modern\SidebarGridStyleDictionary.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <Page Include="UI\Prompts\PresetPrompt.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1850,6 +1843,9 @@
     <Resource Include="UI\Images\not-authenticated.png" />
   </ItemGroup>
   <ItemGroup>
+    <None Update="UI\Themes\Modern\DynamoColorsAndBrushes.xaml">
+      <CustomToolNamespace>MSBuild:Compile</CustomToolNamespace>
+    </None>
     <None Update="Views\HomePage\HomePage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
@@ -1881,7 +1877,5 @@
     </ItemGroup>
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
     <Copy SourceFiles="@(ExternTuneUpPkg)" DestinationFolder="$(OutputPath)\Built-In Packages\packages\TuneUp\%(RecursiveDir)" />
-
-     <Copy SourceFiles="UI\Themes\Modern_Combined.xaml" DestinationFiles="$(OutputPath)\UI\Themes\Modern_Combined.xaml"/>
   </Target>
 </Project>

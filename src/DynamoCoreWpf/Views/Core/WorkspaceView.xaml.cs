@@ -93,6 +93,8 @@ namespace Dynamo.Views
 
             DataContextChanged += OnWorkspaceViewDataContextChanged;
 
+            Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
+
             // view of items to drag
             draggedSelectionTemplate = (DataTemplate)FindResource("DraggedSelectionTemplate");
             var dictionaries = draggedSelectionTemplate.Resources.MergedDictionaries;
