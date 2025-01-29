@@ -454,6 +454,10 @@ namespace Dynamo.Models
 
             AnalyticsService.ShutDown();
 
+            LuceneSearch.LuceneUtilityNodeSearch = null;
+            LuceneSearch.LuceneUtilityNodeAutocomplete = null;
+            LuceneSearch.LuceneUtilityPackageManager = null;
+
             State = DynamoModelState.NotStarted;
             OnShutdownCompleted(); // Notify possible event handlers.
         }
