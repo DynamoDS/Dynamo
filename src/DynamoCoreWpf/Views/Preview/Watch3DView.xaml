@@ -16,17 +16,11 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary
-                    Source="../../UI/Themes/Modern_Combined.xaml" />
-            </ResourceDictionary.MergedDictionaries>
-            <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-            <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
-            <Color x:Key="pointColor" R="0" B="255" G="0" A="255"></Color>
-            <Color x:Key="lineColor" R="0" B="255" G="0" A="255"></Color>
-            <controls:Watch3DBackgroundColorConverter x:Key="Watch3DBackgroundColorConverter"/>
-        </ResourceDictionary>
+        <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
+        <Color x:Key="pointColor" R="0" B="255" G="0" A="255"></Color>
+        <Color x:Key="lineColor" R="0" B="255" G="0" A="255"></Color>
+        <controls:Watch3DBackgroundColorConverter x:Key="Watch3DBackgroundColorConverter"/>
     </UserControl.Resources>
     
     <Grid Name="inputGrid"

@@ -26,478 +26,471 @@
              d:DataContext="{d:DesignInstance Type=viewModels:AnnotationViewModel}">
 
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary
-                    Source="../../UI/Themes/Modern_Combined.xaml" />
-            </ResourceDictionary.MergedDictionaries>
+        <utilities:GroupStyleItemSelector
+            x:Key="GroupStyleItemSelector" />
+        <controls:StringToBrushColorConverter
+            x:Key="StringToBrushColorConverter" />
+        <controls:TextForegroundSaturationColorConverter
+            x:Key="TextForegroundSaturationColorConverter" />
+        <controls:BackgroundConditionEvaluator
+            x:Key="BackgroundConditionEvaluator" />
+        <CornerRadius
+            x:Key="ExpanderCornerRadius"
+            TopLeft="10"
+            TopRight="10" />
+        <Style
+            x:Key="ColorSelectorListBox"
+            TargetType="ListBox">
+            <Setter
+                Property="SnapsToDevicePixels"
+                Value="true" />
+            <Setter
+                Property="OverridesDefaultStyle"
+                Value="true" />
+            <Setter
+                Property="ScrollViewer.HorizontalScrollBarVisibility"
+                Value="Disabled" />
+            <Setter
+                Property="ScrollViewer.VerticalScrollBarVisibility"
+                Value="Hidden" />
+            <Setter
+                Property="ScrollViewer.CanContentScroll"
+                Value="true" />
+            <Setter
+                Property="Width"
+                Value="150" />
+            <Setter
+                Property="Height"
+                Value="54" />
+            <Setter
+                Property="Template">
+                <Setter.Value>
+                    <ControlTemplate
+                        TargetType="ListBox">
+                        <Grid
+                            Margin="0,13,4,8">
+                            <ScrollViewer
+                                Margin="0"
+                                Focusable="false">
+                                <WrapPanel
+                                    IsItemsHost="True" />
+                            </ScrollViewer>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-            <utilities:GroupStyleItemSelector
-                x:Key="GroupStyleItemSelector" />
-            <controls:StringToBrushColorConverter
-                x:Key="StringToBrushColorConverter" />
-            <controls:TextForegroundSaturationColorConverter
-                x:Key="TextForegroundSaturationColorConverter" />
-            <controls:BackgroundConditionEvaluator
-                x:Key="BackgroundConditionEvaluator" />
-            <CornerRadius
-                x:Key="ExpanderCornerRadius"
-                TopLeft="10"
-                TopRight="10" />
-            <Style
-                x:Key="ColorSelectorListBox"
-                TargetType="ListBox">
-                <Setter
-                    Property="SnapsToDevicePixels"
-                    Value="true" />
-                <Setter
-                    Property="OverridesDefaultStyle"
-                    Value="true" />
-                <Setter
-                    Property="ScrollViewer.HorizontalScrollBarVisibility"
-                    Value="Disabled" />
-                <Setter
-                    Property="ScrollViewer.VerticalScrollBarVisibility"
-                    Value="Hidden" />
-                <Setter
-                    Property="ScrollViewer.CanContentScroll"
-                    Value="true" />
-                <Setter
-                    Property="Width"
-                    Value="150" />
-                <Setter
-                    Property="Height"
-                    Value="54" />
-                <Setter
-                    Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate
-                            TargetType="ListBox">
-                            <Grid
-                                Margin="0,13,4,8">
-                                <ScrollViewer
-                                    Margin="0"
-                                    Focusable="false">
-                                    <WrapPanel
-                                        IsItemsHost="True" />
-                                </ScrollViewer>
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
+        <Style
+            x:Key="ColorSelectorListBoxItem"
+            TargetType="ListBoxItem">
+            <Setter
+                Property="SnapsToDevicePixels"
+                Value="true" />
+            <Setter
+                Property="OverridesDefaultStyle"
+                Value="true" />
+            <Setter
+                Property="Width"
+                Value="18" />
+            <Setter
+                Property="Height"
+                Value="20" />
+            <Setter
+                Property="Template">
+                <Setter.Value>
+                    <ControlTemplate
+                        TargetType="ListBoxItem">
+                        <Grid
+                            Margin="0,0,4,5"
+                            SnapsToDevicePixels="true">
+                            <Grid.Background>
+                                <SolidColorBrush
+                                    Color="Transparent" />
+                            </Grid.Background>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup
+                                    x:Name="CommonStates">
+                                    <VisualState
+                                        x:Name="Normal" />
+                                    <VisualState
+                                        x:Name="MouseOver">
+                                        <Storyboard>
+                                            <DoubleAnimationUsingKeyFrames
+                                                Storyboard.TargetName="Border"
+                                                Storyboard.TargetProperty="Opacity">
+                                                <EasingDoubleKeyFrame
+                                                    KeyTime="0"
+                                                    Value="1.0" />
+                                            </DoubleAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <VisualStateGroup
+                                    x:Name="SelectionStates">
+                                    <VisualState
+                                        x:Name="Unselected" />
+                                    <VisualState
+                                        x:Name="Selected">
+                                        <Storyboard>
+                                            <DoubleAnimationUsingKeyFrames
+                                                Storyboard.TargetName="Border"
+                                                Storyboard.TargetProperty="Opacity">
+                                                <EasingDoubleKeyFrame
+                                                    KeyTime="0"
+                                                    Value="1.0" />
+                                            </DoubleAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState
+                                        x:Name="SelectedUnfocused" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentPresenter />
+                            <Border
+                                x:Name="Border"
+                                Opacity="0.25"
+                                BorderThickness="1"
+                                BorderBrush="Black"
+                                Background="Transparent" />
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
 
-            <Style
-                x:Key="ColorSelectorListBoxItem"
-                TargetType="ListBoxItem">
-                <Setter
-                    Property="SnapsToDevicePixels"
-                    Value="true" />
-                <Setter
-                    Property="OverridesDefaultStyle"
-                    Value="true" />
-                <Setter
-                    Property="Width"
-                    Value="18" />
-                <Setter
-                    Property="Height"
-                    Value="20" />
-                <Setter
-                    Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate
-                            TargetType="ListBoxItem">
-                            <Grid
-                                Margin="0,0,4,5"
-                                SnapsToDevicePixels="true">
-                                <Grid.Background>
+        <ControlTemplate
+            x:Key="GroupExpanderTemplate"
+            TargetType="{x:Type ToggleButton}">
+            <Border
+                x:Name="expanderBorder"
+                Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}"
+                Padding="{TemplateBinding Padding}">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition
+                            Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <Rectangle
+                        Fill="Transparent"
+                        Grid.ColumnSpan="1" />
+                    <Image
+                        x:Name="sign"
+                        Source="/DynamoCoreWpf;component/UI/Images/caret_down_grey_48px.png"
+                        Width="16"
+                        Height="16" />
+                </Grid>
+            </Border>
+            <ControlTemplate.Triggers>
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition
+                            Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
+                            Value="False" />
+                        <Condition
+                            Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}"
+                            Value="False" />
+                        <Condition
+                            Binding="{Binding Background, Converter={StaticResource BackgroundConditionEvaluator}}"
+                            Value="False" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter
+                        Property="Source"
+                        TargetName="sign"
+                        Value="/DynamoCoreWpf;component/UI/Images/caret_down_grey_48px.png" />
+                </MultiDataTrigger>
+
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition
+                            Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
+                            Value="False" />
+                        <Condition
+                            Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}"
+                            Value="False" />
+                        <Condition
+                            Binding="{Binding Background, Converter={StaticResource BackgroundConditionEvaluator}}"
+                            Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter
+                        Property="Source"
+                        TargetName="sign"
+                        Value="/DynamoCoreWpf;component/UI/Images/caret_down_white_48px.png" />
+                </MultiDataTrigger>
+
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition
+                            Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
+                            Value="True" />
+                        <Condition
+                            Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}"
+                            Value="False" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter
+                        Property="Source"
+                        TargetName="sign"
+                        Value="/DynamoCoreWpf;component/UI/Images/caret_down_hover_48px.png" />
+                </MultiDataTrigger>
+
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition
+                            Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
+                            Value="False" />
+                        <Condition
+                            Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}"
+                            Value="True" />
+                        <Condition
+                            Binding="{Binding Background, Converter={StaticResource BackgroundConditionEvaluator}}"
+                            Value="False" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter
+                        Property="Source"
+                        TargetName="sign"
+                        Value="/DynamoCoreWpf;component/UI/Images/caret_up_grey_48px.png" />
+                </MultiDataTrigger>
+
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition
+                            Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
+                            Value="False" />
+                        <Condition
+                            Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}"
+                            Value="True" />
+                        <Condition
+                            Binding="{Binding Background, Converter={StaticResource BackgroundConditionEvaluator}}"
+                            Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter
+                        Property="Source"
+                        TargetName="sign"
+                        Value="/DynamoCoreWpf;component/UI/Images/caret_up_white_48px.png" />
+                </MultiDataTrigger>
+
+                <MultiDataTrigger>
+                    <MultiDataTrigger.Conditions>
+                        <Condition
+                            Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
+                            Value="True" />
+                        <Condition
+                            Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}"
+                            Value="True" />
+                    </MultiDataTrigger.Conditions>
+                    <Setter
+                        Property="Source"
+                        TargetName="sign"
+                        Value="/DynamoCoreWpf;component/UI/Images/caret_up_hover_48px.png" />
+                </MultiDataTrigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <Style
+            TargetType="{x:Type Expander}">
+            <Setter
+                Property="Template">
+                <Setter.Value>
+                    <ControlTemplate
+                        TargetType="{x:Type Expander}">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition
+                                    Height="Auto" />
+                                <RowDefinition
+                                    x:Name="ContentRow"
+                                    Height="0" />
+                            </Grid.RowDefinitions>
+                            <Border
+                                x:Name="headerBorder"
+                                Grid.Row="0"
+                                CornerRadius="{StaticResource ExpanderCornerRadius}"
+                                Padding="0"
+                                Margin="0"
+                                ToolTipService.IsEnabled="{TemplateBinding IsExpanded, Converter={StaticResource InverseBooleanConverter}}">
+                                <Border.Background>
                                     <SolidColorBrush
-                                        Color="Transparent" />
-                                </Grid.Background>
-                                <VisualStateManager.VisualStateGroups>
-                                    <VisualStateGroup
-                                        x:Name="CommonStates">
-                                        <VisualState
-                                            x:Name="Normal" />
-                                        <VisualState
-                                            x:Name="MouseOver">
-                                            <Storyboard>
-                                                <DoubleAnimationUsingKeyFrames
-                                                    Storyboard.TargetName="Border"
-                                                    Storyboard.TargetProperty="Opacity">
-                                                    <EasingDoubleKeyFrame
-                                                        KeyTime="0"
-                                                        Value="1.0" />
-                                                </DoubleAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </VisualState>
-                                    </VisualStateGroup>
-                                    <VisualStateGroup
-                                        x:Name="SelectionStates">
-                                        <VisualState
-                                            x:Name="Unselected" />
-                                        <VisualState
-                                            x:Name="Selected">
-                                            <Storyboard>
-                                                <DoubleAnimationUsingKeyFrames
-                                                    Storyboard.TargetName="Border"
-                                                    Storyboard.TargetProperty="Opacity">
-                                                    <EasingDoubleKeyFrame
-                                                        KeyTime="0"
-                                                        Value="1.0" />
-                                                </DoubleAnimationUsingKeyFrames>
-                                            </Storyboard>
-                                        </VisualState>
-                                        <VisualState
-                                            x:Name="SelectedUnfocused" />
-                                    </VisualStateGroup>
-                                </VisualStateManager.VisualStateGroups>
+                                        Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.Background}"></SolidColorBrush>
+                                </Border.Background>
+                                <Border.ToolTip>
+                                    <dynui:DynamoToolTip
+                                        AttachmentSide="Top"
+                                        Style="{DynamicResource ResourceKey=SLightToolTip}"
+                                        Margin="5,0,0,0">
+                                        <StackPanel
+                                            Orientation="Vertical"
+                                            MaxWidth="320">
+                                            <TextBlock
+                                                Text="{Binding AnnotationText}"
+                                                Margin="0,0,0,10" />
+                                            <TextBlock
+                                                Text="{Binding AnnotationDescriptionText}"
+                                                TextWrapping="WrapWithOverflow" />
+                                        </StackPanel>
+                                    </dynui:DynamoToolTip>
+                                </Border.ToolTip>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition
+                                            Width="*" />
+                                        <ColumnDefinition
+                                            Width="Auto" />
+                                        <ColumnDefinition
+                                            Width="Auto" />
+                                    </Grid.ColumnDefinitions>
+                                    <ContentPresenter
+                                        Grid.ColumnSpan="3"
+                                        Margin="4"
+                                        ContentSource="Header"
+                                        RecognizesAccessKey="True"
+                                        HorizontalAlignment="Left">
+                                    </ContentPresenter>
+
+                                    <!--  Warning/Error Icon  -->
+                                    <Image
+                                        Grid.Column="0"
+                                        Width="16px"
+                                        Height="16px"
+                                        VerticalAlignment="Bottom"
+                                        HorizontalAlignment="Right"
+                                        Margin="0,0,2.5,2.5">
+                                        <Image.Style>
+                                            <Style
+                                                TargetType="Image">
+                                                <Style.Triggers>
+                                                    <DataTrigger
+                                                        Binding="{Binding AnnotationModel.GroupState}"
+                                                        Value="{x:Static nodes:ElementState.Warning}">
+                                                        <Setter
+                                                            Property="Source"
+                                                            Value="/DynamoCoreWpf;component/UI/Images/warning.png" />
+                                                    </DataTrigger>
+                                                    <DataTrigger
+                                                        Binding="{Binding AnnotationModel.GroupState}"
+                                                        Value="{x:Static nodes:ElementState.Error}">
+                                                        <Setter
+                                                            Property="Source"
+                                                            Value="/DynamoCoreWpf;component/UI/Images/error.png" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Image.Style>
+                                    </Image>
+
+                                    <!--Expander button-->
+                                    <ToggleButton
+                                        OverridesDefaultStyle="True"
+                                        Grid.Column="1"
+                                        Margin="0,0,0,2.5"
+                                        Template="{StaticResource GroupExpanderTemplate}"
+                                        IsChecked="{Binding IsExpanded, Mode=TwoWay, 
+                                    RelativeSource={RelativeSource TemplatedParent}}"
+                                        VerticalAlignment="Bottom" />
+
+                                    <!--Group context menu-->
+                                    <Button
+                                        x:Name="contextMenu"
+                                        Grid.Column="2"
+                                        Background="Transparent"
+                                        BorderBrush="Transparent"
+                                        BorderThickness="0"
+                                        Margin="0,2.5,0,2.5"
+                                        Height="16"
+                                        VerticalAlignment="Bottom"
+                                        Click="contextMenu_Click">
+                                        <Button.Style>
+                                            <Style
+                                                TargetType="{x:Type Button}">
+                                                <Setter
+                                                    Property="OverridesDefaultStyle"
+                                                    Value="True" />
+                                                <Setter
+                                                    Property="Template">
+                                                    <Setter.Value>
+                                                        <ControlTemplate
+                                                            TargetType="Button">
+                                                            <Border
+                                                                Name="border"
+                                                                BorderThickness="0"
+                                                                Background="{TemplateBinding Background}">
+                                                                <Image
+                                                                    x:Name="menuIcon"
+                                                                    Width="16"
+                                                                    Height="16" />
+                                                            </Border>
+                                                            <ControlTemplate.Triggers>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition
+                                                                            Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
+                                                                            Value="False" />
+                                                                        <Condition
+                                                                            Binding="{Binding Background, Converter={StaticResource BackgroundConditionEvaluator}}"
+                                                                            Value="False" />
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter
+                                                                        TargetName="menuIcon"
+                                                                        Property="Source"
+                                                                        Value="/DynamoCoreWpf;component/UI/Images/menu_grey_48px.png" />
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition
+                                                                            Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
+                                                                            Value="False" />
+                                                                        <Condition
+                                                                            Binding="{Binding Background, Converter={StaticResource BackgroundConditionEvaluator}}"
+                                                                            Value="True" />
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter
+                                                                        TargetName="menuIcon"
+                                                                        Property="Source"
+                                                                        Value="/DynamoCoreWpf;component/UI/Images/menu_white_48px.png" />
+                                                                </MultiDataTrigger>
+                                                                <MultiDataTrigger>
+                                                                    <MultiDataTrigger.Conditions>
+                                                                        <Condition
+                                                                            Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
+                                                                            Value="True" />
+                                                                    </MultiDataTrigger.Conditions>
+                                                                    <Setter
+                                                                        TargetName="menuIcon"
+                                                                        Property="Source"
+                                                                        Value="/DynamoCoreWpf;component/UI/Images/menu_hover_48px.png" />
+                                                                </MultiDataTrigger>
+                                                            </ControlTemplate.Triggers>
+                                                        </ControlTemplate>
+                                                    </Setter.Value>
+                                                </Setter>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
+                                </Grid>
+                            </Border>
+
+                            <Border
+                                x:Name="Content"
+                                Grid.Row="1">
                                 <ContentPresenter />
-                                <Border
-                                    x:Name="Border"
-                                    Opacity="0.25"
-                                    BorderThickness="1"
-                                    BorderBrush="Black"
-                                    Background="Transparent" />
-                            </Grid>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
+                            </Border>
+                        </Grid>
 
-            <ControlTemplate
-                x:Key="GroupExpanderTemplate"
-                TargetType="{x:Type ToggleButton}">
-                <Border
-                    x:Name="expanderBorder"
-                    Background="{TemplateBinding Background}"
-                    BorderBrush="{TemplateBinding BorderBrush}"
-                    BorderThickness="{TemplateBinding BorderThickness}"
-                    Padding="{TemplateBinding Padding}">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition
-                                Width="Auto" />
-                        </Grid.ColumnDefinitions>
-                        <Rectangle
-                            Fill="Transparent"
-                            Grid.ColumnSpan="1" />
-                        <Image
-                            x:Name="sign"
-                            Source="/DynamoCoreWpf;component/UI/Images/caret_down_grey_48px.png"
-                            Width="16"
-                            Height="16" />
-                    </Grid>
-                </Border>
-                <ControlTemplate.Triggers>
-                    <MultiDataTrigger>
-                        <MultiDataTrigger.Conditions>
-                            <Condition
-                                Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
-                                Value="False" />
-                            <Condition
-                                Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}"
-                                Value="False" />
-                            <Condition
-                                Binding="{Binding Background, Converter={StaticResource BackgroundConditionEvaluator}}"
-                                Value="False" />
-                        </MultiDataTrigger.Conditions>
-                        <Setter
-                            Property="Source"
-                            TargetName="sign"
-                            Value="/DynamoCoreWpf;component/UI/Images/caret_down_grey_48px.png" />
-                    </MultiDataTrigger>
-
-                    <MultiDataTrigger>
-                        <MultiDataTrigger.Conditions>
-                            <Condition
-                                Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
-                                Value="False" />
-                            <Condition
-                                Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}"
-                                Value="False" />
-                            <Condition
-                                Binding="{Binding Background, Converter={StaticResource BackgroundConditionEvaluator}}"
-                                Value="True" />
-                        </MultiDataTrigger.Conditions>
-                        <Setter
-                            Property="Source"
-                            TargetName="sign"
-                            Value="/DynamoCoreWpf;component/UI/Images/caret_down_white_48px.png" />
-                    </MultiDataTrigger>
-
-                    <MultiDataTrigger>
-                        <MultiDataTrigger.Conditions>
-                            <Condition
-                                Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
-                                Value="True" />
-                            <Condition
-                                Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}"
-                                Value="False" />
-                        </MultiDataTrigger.Conditions>
-                        <Setter
-                            Property="Source"
-                            TargetName="sign"
-                            Value="/DynamoCoreWpf;component/UI/Images/caret_down_hover_48px.png" />
-                    </MultiDataTrigger>
-
-                    <MultiDataTrigger>
-                        <MultiDataTrigger.Conditions>
-                            <Condition
-                                Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
-                                Value="False" />
-                            <Condition
-                                Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}"
-                                Value="True" />
-                            <Condition
-                                Binding="{Binding Background, Converter={StaticResource BackgroundConditionEvaluator}}"
-                                Value="False" />
-                        </MultiDataTrigger.Conditions>
-                        <Setter
-                            Property="Source"
-                            TargetName="sign"
-                            Value="/DynamoCoreWpf;component/UI/Images/caret_up_grey_48px.png" />
-                    </MultiDataTrigger>
-
-                    <MultiDataTrigger>
-                        <MultiDataTrigger.Conditions>
-                            <Condition
-                                Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
-                                Value="False" />
-                            <Condition
-                                Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}"
-                                Value="True" />
-                            <Condition
-                                Binding="{Binding Background, Converter={StaticResource BackgroundConditionEvaluator}}"
-                                Value="True" />
-                        </MultiDataTrigger.Conditions>
-                        <Setter
-                            Property="Source"
-                            TargetName="sign"
-                            Value="/DynamoCoreWpf;component/UI/Images/caret_up_white_48px.png" />
-                    </MultiDataTrigger>
-
-                    <MultiDataTrigger>
-                        <MultiDataTrigger.Conditions>
-                            <Condition
-                                Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
-                                Value="True" />
-                            <Condition
-                                Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}"
-                                Value="True" />
-                        </MultiDataTrigger.Conditions>
-                        <Setter
-                            Property="Source"
-                            TargetName="sign"
-                            Value="/DynamoCoreWpf;component/UI/Images/caret_up_hover_48px.png" />
-                    </MultiDataTrigger>
-                </ControlTemplate.Triggers>
-            </ControlTemplate>
-
-            <Style
-                TargetType="{x:Type Expander}">
-                <Setter
-                    Property="Template">
-                    <Setter.Value>
-                        <ControlTemplate
-                            TargetType="{x:Type Expander}">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition
-                                        Height="Auto" />
-                                    <RowDefinition
-                                        x:Name="ContentRow"
-                                        Height="0" />
-                                </Grid.RowDefinitions>
-                                <Border
-                                    x:Name="headerBorder"
-                                    Grid.Row="0"
-                                    CornerRadius="{StaticResource ExpanderCornerRadius}"
-                                    Padding="0"
-                                    Margin="0"
-                                    ToolTipService.IsEnabled="{TemplateBinding IsExpanded, Converter={StaticResource InverseBooleanConverter}}">
-                                    <Border.Background>
-                                        <SolidColorBrush
-                                            Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.Background}"></SolidColorBrush>
-                                    </Border.Background>
-                                    <Border.ToolTip>
-                                        <dynui:DynamoToolTip
-                                            AttachmentSide="Top"
-                                            Style="{DynamicResource ResourceKey=SLightToolTip}"
-                                            Margin="5,0,0,0">
-                                            <StackPanel
-                                                Orientation="Vertical"
-                                                MaxWidth="320">
-                                                <TextBlock
-                                                    Text="{Binding AnnotationText}"
-                                                    Margin="0,0,0,10" />
-                                                <TextBlock
-                                                    Text="{Binding AnnotationDescriptionText}"
-                                                    TextWrapping="WrapWithOverflow" />
-                                            </StackPanel>
-                                        </dynui:DynamoToolTip>
-                                    </Border.ToolTip>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition
-                                                Width="*" />
-                                            <ColumnDefinition
-                                                Width="Auto" />
-                                            <ColumnDefinition
-                                                Width="Auto" />
-                                        </Grid.ColumnDefinitions>
-                                        <ContentPresenter
-                                            Grid.ColumnSpan="3"
-                                            Margin="4"
-                                            ContentSource="Header"
-                                            RecognizesAccessKey="True"
-                                            HorizontalAlignment="Left">
-                                        </ContentPresenter>
-
-                                        <!--  Warning/Error Icon  -->
-                                        <Image
-                                            Grid.Column="0"
-                                            Width="16px"
-                                            Height="16px"
-                                            VerticalAlignment="Bottom"
-                                            HorizontalAlignment="Right"
-                                            Margin="0,0,2.5,2.5">
-                                            <Image.Style>
-                                                <Style
-                                                    TargetType="Image">
-                                                    <Style.Triggers>
-                                                        <DataTrigger
-                                                            Binding="{Binding AnnotationModel.GroupState}"
-                                                            Value="{x:Static nodes:ElementState.Warning}">
-                                                            <Setter
-                                                                Property="Source"
-                                                                Value="/DynamoCoreWpf;component/UI/Images/warning.png" />
-                                                        </DataTrigger>
-                                                        <DataTrigger
-                                                            Binding="{Binding AnnotationModel.GroupState}"
-                                                            Value="{x:Static nodes:ElementState.Error}">
-                                                            <Setter
-                                                                Property="Source"
-                                                                Value="/DynamoCoreWpf;component/UI/Images/error.png" />
-                                                        </DataTrigger>
-                                                    </Style.Triggers>
-                                                </Style>
-                                            </Image.Style>
-                                        </Image>
-
-                                        <!--Expander button-->
-                                        <ToggleButton
-                                            OverridesDefaultStyle="True"
-                                            Grid.Column="1"
-                                            Margin="0,0,0,2.5"
-                                            Template="{StaticResource GroupExpanderTemplate}"
-                                            IsChecked="{Binding IsExpanded, Mode=TwoWay, 
-                                                RelativeSource={RelativeSource TemplatedParent}}"
-                                            VerticalAlignment="Bottom" />
-
-                                        <!--Group context menu-->
-                                        <Button
-                                            x:Name="contextMenu"
-                                            Grid.Column="2"
-                                            Background="Transparent"
-                                            BorderBrush="Transparent"
-                                            BorderThickness="0"
-                                            Margin="0,2.5,0,2.5"
-                                            Height="16"
-                                            VerticalAlignment="Bottom"
-                                            Click="contextMenu_Click">
-                                            <Button.Style>
-                                                <Style
-                                                    TargetType="{x:Type Button}">
-                                                    <Setter
-                                                        Property="OverridesDefaultStyle"
-                                                        Value="True" />
-                                                    <Setter
-                                                        Property="Template">
-                                                        <Setter.Value>
-                                                            <ControlTemplate
-                                                                TargetType="Button">
-                                                                <Border
-                                                                    Name="border"
-                                                                    BorderThickness="0"
-                                                                    Background="{TemplateBinding Background}">
-                                                                    <Image
-                                                                        x:Name="menuIcon"
-                                                                        Width="16"
-                                                                        Height="16" />
-                                                                </Border>
-                                                                <ControlTemplate.Triggers>
-                                                                    <MultiDataTrigger>
-                                                                        <MultiDataTrigger.Conditions>
-                                                                            <Condition
-                                                                                Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
-                                                                                Value="False" />
-                                                                            <Condition
-                                                                                Binding="{Binding Background, Converter={StaticResource BackgroundConditionEvaluator}}"
-                                                                                Value="False" />
-                                                                        </MultiDataTrigger.Conditions>
-                                                                        <Setter
-                                                                            TargetName="menuIcon"
-                                                                            Property="Source"
-                                                                            Value="/DynamoCoreWpf;component/UI/Images/menu_grey_48px.png" />
-                                                                    </MultiDataTrigger>
-                                                                    <MultiDataTrigger>
-                                                                        <MultiDataTrigger.Conditions>
-                                                                            <Condition
-                                                                                Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
-                                                                                Value="False" />
-                                                                            <Condition
-                                                                                Binding="{Binding Background, Converter={StaticResource BackgroundConditionEvaluator}}"
-                                                                                Value="True" />
-                                                                        </MultiDataTrigger.Conditions>
-                                                                        <Setter
-                                                                            TargetName="menuIcon"
-                                                                            Property="Source"
-                                                                            Value="/DynamoCoreWpf;component/UI/Images/menu_white_48px.png" />
-                                                                    </MultiDataTrigger>
-                                                                    <MultiDataTrigger>
-                                                                        <MultiDataTrigger.Conditions>
-                                                                            <Condition
-                                                                                Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}"
-                                                                                Value="True" />
-                                                                        </MultiDataTrigger.Conditions>
-                                                                        <Setter
-                                                                            TargetName="menuIcon"
-                                                                            Property="Source"
-                                                                            Value="/DynamoCoreWpf;component/UI/Images/menu_hover_48px.png" />
-                                                                    </MultiDataTrigger>
-                                                                </ControlTemplate.Triggers>
-                                                            </ControlTemplate>
-                                                        </Setter.Value>
-                                                    </Setter>
-                                                </Style>
-                                            </Button.Style>
-                                        </Button>
-                                    </Grid>
-                                </Border>
-
-                                <Border
-                                    x:Name="Content"
-                                    Grid.Row="1">
-                                    <ContentPresenter />
-                                </Border>
-                            </Grid>
-
-                            <ControlTemplate.Triggers>
-                                <Trigger
-                                    Property="IsExpanded"
-                                    Value="True">
-                                    <Setter
-                                        TargetName="ContentRow"
-                                        Property="Height"
-                                        Value="{Binding Height, ElementName=Content}" />
-                                </Trigger>
-                            </ControlTemplate.Triggers>
-                        </ControlTemplate>
-                    </Setter.Value>
-                </Setter>
-            </Style>
-        </ResourceDictionary>
+                        <ControlTemplate.Triggers>
+                            <Trigger
+                                Property="IsExpanded"
+                                Value="True">
+                                <Setter
+                                    TargetName="ContentRow"
+                                    Property="Height"
+                                    Value="{Binding Height, ElementName=Content}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </UserControl.Resources>
 
     <Grid Name="AnnotationGrid"

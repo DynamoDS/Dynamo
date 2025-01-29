@@ -11,31 +11,32 @@
              Loaded="InfoBubbleWindowUserControl_Loaded"
              mc:Ignorable="d">
     <UserControl.Resources>
-        <ResourceDictionary>
-            <Storyboard x:Key="fadeInStoryBoard"
-                        Name="fadeInStoryBoard"
-                        TargetName="mainGrid"
-                        Storyboard.TargetProperty="Opacity">
-                <DoubleAnimation Name="countUpDoubleAnimation"
-                                 Completed="CountUpDoubleAnimation_Completed"
-                                 FillBehavior="HoldEnd"
-                                 From="0"
-                                 To="0.95"
-                                 Duration="0:0:.25" />
-            </Storyboard>
-            <Storyboard x:Key="fadeOutStoryBoard"
-                        Name="fadeOutStoryBoard"
-                        TargetName="mainGrid"
-                        Storyboard.TargetProperty="Opacity">
-                <DoubleAnimation Name="countDownDoubleAnimation"
-                                 Completed="CountDownDoubleAnimation_Completed"
-                                 FillBehavior="HoldEnd"
-                                 From="0.95"
-                                 To="0"
-                                 Duration="0:0:.25" />
-            </Storyboard>
-        </ResourceDictionary>
-
+        <Storyboard
+            x:Key="fadeInStoryBoard"
+            Name="fadeInStoryBoard"
+            TargetName="mainGrid"
+            Storyboard.TargetProperty="Opacity">
+            <DoubleAnimation
+                Name="countUpDoubleAnimation"
+                Completed="CountUpDoubleAnimation_Completed"
+                FillBehavior="HoldEnd"
+                From="0"
+                To="0.95"
+                Duration="0:0:.25" />
+        </Storyboard>
+        <Storyboard
+            x:Key="fadeOutStoryBoard"
+            Name="fadeOutStoryBoard"
+            TargetName="mainGrid"
+            Storyboard.TargetProperty="Opacity">
+            <DoubleAnimation
+                Name="countDownDoubleAnimation"
+                Completed="CountDownDoubleAnimation_Completed"
+                FillBehavior="HoldEnd"
+                From="0.95"
+                To="0"
+                Duration="0:0:.25" />
+        </Storyboard>
     </UserControl.Resources>
     <Canvas x:Name="mainCanvas">
         <Grid x:Name="mainGrid" Margin="10">
