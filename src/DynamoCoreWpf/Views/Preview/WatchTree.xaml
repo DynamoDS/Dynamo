@@ -352,19 +352,22 @@
                             </TextBlock.Style>
                         </TextBlock>
 
-                        <TextBlock Width="Auto"
+                        <TextBox Width="Auto"
                                    Margin="{Binding Path=IsTopLevel, Converter={StaticResource TopLevelLabelMarginConverter}}"
                                    VerticalAlignment="Center"                                                                      
                                    FontFamily="{StaticResource SourceCodePro}"
                                    Text="{Binding Path=NodeLabel}"
-                                   Visibility="{Binding Path=NodeLabel, Converter={StaticResource EmptyStringToCollapsedConverter}}" >
-                            <TextBlock.Foreground>
+                                   Visibility="{Binding Path=NodeLabel, Converter={StaticResource EmptyStringToCollapsedConverter}}"
+                                   BorderThickness="0"
+                                   Background="Transparent"
+                                   IsReadOnly="True">
+                            <TextBox.Foreground>
                                 <MultiBinding Converter="{StaticResource ObjectTypeConverter}">
                                     <Binding Path="ValueType" />
                                     <Binding Path="NodeLabel" />
                                 </MultiBinding>
-                            </TextBlock.Foreground>
-                        </TextBlock>
+                            </TextBox.Foreground>
+                        </TextBox>
 
                         <Button Margin="10,2,2,2"
                                 Padding="4,0,4,0"
