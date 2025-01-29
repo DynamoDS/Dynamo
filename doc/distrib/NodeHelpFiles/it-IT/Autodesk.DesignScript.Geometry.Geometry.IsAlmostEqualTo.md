@@ -1,7 +1,7 @@
 ## In profondità
-`Geometry.IsAlmostEqualTo` returns a boolean value indication whether the two given geometries have the same geometrical representations or numerical values.
+`Geometry.IsAlmostEqualTo` restituisce un valore booleano che indica se le due geometrie specificate hanno le stesse rappresentazioni geometriche o gli stessi valori numerici.
 
-In the example below, a cylinder is created two ways. The two cylinders are then compared with `Geometry.IsAlmostEqualTo`.
+Nell'esempio seguente, un cilindro viene creato in due modi. I due cilindri vengono poi confrontati con `Geometry.IsAlmostEqualTo`.
 ___
 ## File di esempio
 
