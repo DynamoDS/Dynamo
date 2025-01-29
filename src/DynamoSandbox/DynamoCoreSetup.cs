@@ -76,9 +76,6 @@ namespace DynamoSandbox
                 StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
 
                 app.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
-                app.Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
-                app.Resources.MergedDictionaries.Add(SharedDictionaryManager.InPortsDictionary);
-                app.Resources.MergedDictionaries.Add(SharedDictionaryManager.OutPortsDictionary);
 
                 splashScreen = new Dynamo.UI.Views.SplashScreen();
                 splashScreen.DynamicSplashScreenReady += LoadDynamoView;

@@ -62,28 +62,13 @@ namespace Dynamo.UI
     public static class SharedDictionaryManager
     {
         private static ResourceDictionary _dynamoModernDictionary;
-        private static ResourceDictionary _dataTemplatesDictionary;
-        private static ResourceDictionary _inPortsDictionary;
-        private static ResourceDictionary _outPortsDictionary;
 
         const string BaseUri = "pack://application:,,,/DynamoCoreWpf;component/";
 
         public static Uri DynamoModernDictionaryUri =>
             new(BaseUri + "UI/Themes/Modern_Combined.xaml");
-        public static Uri DataTemplatesDictionaryUri =>
-            new(BaseUri + "UI/Themes/Modern/DataTemplates.xaml");
-        public static Uri InPortsDictionaryUri =>
-            new(BaseUri + "UI/Themes/Modern/InPorts.xaml");
-        public static Uri OutPortsDictionaryUri =>
-            new(BaseUri + "UI/Themes/Modern/OutPorts.xaml");
 
         public static ResourceDictionary DynamoModernDictionary =>
             _dynamoModernDictionary ??= new ResourceDictionary() { Source = DynamoModernDictionaryUri };
-        public static ResourceDictionary DataTemplatesDictionary =>
-            _dataTemplatesDictionary ??= new ResourceDictionary() { Source = DataTemplatesDictionaryUri };
-        public static ResourceDictionary InPortsDictionary =>
-            _inPortsDictionary ??= new ResourceDictionary() { Source = InPortsDictionaryUri };
-        public static ResourceDictionary OutPortsDictionary =>
-            _outPortsDictionary ??= new ResourceDictionary() { Source = OutPortsDictionaryUri };
     }
 }

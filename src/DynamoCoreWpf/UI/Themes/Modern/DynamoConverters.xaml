@@ -3,6 +3,8 @@
                     xmlns:controls="clr-namespace:Dynamo.Controls"
                     xmlns:ui="clr-namespace:Dynamo.UI">
 
+    <controls:NullToVisibiltyConverter x:Key="nullToVisibiltyConverter" />
+    <controls:NullToPinWidthConverter x:Key="nullToPinWidthConverter" />
     <controls:ToolTipFirstLineOnly x:Key="ToolTipFirstLine" />
     <controls:ToolTipAllLinesButFirst x:Key="ToolTipFirstLineNot" />
     <controls:WorkspaceTypeConverter x:Key="WorkspaceTypeConverter" />

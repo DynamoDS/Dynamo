@@ -23,7 +23,7 @@
 
     <Target Name="CombineXamlDictionaries" BeforeTargets="BeforeBuild">
         <ItemGroup>
-            <XAMLCombineItems Include="UI\Themes\Modern\*.xaml" Exclude="UI\Themes\Modern\DataTemplates.xaml;UI\Themes\Modern\InPorts.xaml;UI\Themes\Modern\OutPorts.xaml;">
+            <XAMLCombineItems Include="UI\Themes\Modern\*.xaml">
                 <TargetFile>UI\Themes\Modern_Combined.xaml</TargetFile>
                 <Visible>False</Visible>
             </XAMLCombineItems>
@@ -1439,21 +1439,6 @@
 
     <ItemGroup>
         <Page Include="UI\Themes\Modern_Combined.xaml">
-            <Generator>MSBuild:Compile</Generator>
-            <SubType>Designer</SubType>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Page>
-        <Page Include="UI\Themes\Modern\DataTemplates.xaml">
-            <Generator>MSBuild:Compile</Generator>
-            <SubType>Designer</SubType>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Page>
-        <Page Include="UI\Themes\Modern\InPorts.xaml">
-            <Generator>MSBuild:Compile</Generator>
-            <SubType>Designer</SubType>
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Page>
-        <Page Include="UI\Themes\Modern\OutPorts.xaml">
             <Generator>MSBuild:Compile</Generator>
             <SubType>Designer</SubType>
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>

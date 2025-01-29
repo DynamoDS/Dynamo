@@ -114,8 +114,6 @@ namespace Dynamo.Controls
         {
             InitializeComponent();
 
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
-
             Loaded += OnNodeViewLoaded;
             Unloaded += OnNodeViewUnloaded;
             inputGrid.Loaded += NodeViewReady;
