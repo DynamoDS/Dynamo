@@ -223,35 +223,52 @@
                     </ComboBox.Style>
                 </ComboBox>
             </Grid>
-            <!--  Reset button  -->
-            <Button
-                Name="ResetButton"
-                Grid.Column="2"
-                Width="20"
-                Height="20"
-                Margin="0,0,0,15"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Click="ResetButton_Click"
-                SnapsToDevicePixels="True"
-                Style="{StaticResource SButtonWithShapeIcon}"
-                UseLayoutRounding="True">
-                <Button.ToolTip>
-                    <ToolTip Content="{x:Static p:CoreNodeModelWpfResources.CurveMapperResetButtonToolTip}" Style="{StaticResource GenericToolTipLight}" />
-                </Button.ToolTip>
-                <Button.Resources>
-                    <Image
-                        x:Key="Shape"
-                        Width="16"
-                        Height="16"
-                        Source="/DynamoCoreWpf;component/UI/Images/reset.png" />
-                    <Image
-                        x:Key="HighlightShape"
-                        Width="16"
-                        Height="16"
-                        Source="/DynamoCoreWpf;component/UI/Images/reset_hover.png" />
-                </Button.Resources>
-            </Button>
+            <StackPanel Orientation="Vertical" Grid.Column="2" VerticalAlignment="Bottom">
+                <!--  Lock button  -->
+                <!-- TODO: This is just a placeholder -->
+                <Button x:Name="LockButton"
+                        Width="15"
+                        Height="15"   Margin="5,0,0,5"
+                        SnapsToDevicePixels="True"
+                        UseLayoutRounding="True"
+                        Click="LockButton_Click"
+                        Background="Green">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Setter Property="Background" Value="Green"/>
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsLocked}" Value="True">
+                                    <Setter Property="Background" Value="Red"/>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+                <!--  Reset button  -->
+                <Button Width="20"
+                        Height="20"
+                        Margin="0,0,0,15"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Bottom"
+                        Click="ResetButton_Click"
+                        SnapsToDevicePixels="True"
+                        Style="{StaticResource SButtonWithShapeIcon}"
+                        UseLayoutRounding="True">
+                    <Button.ToolTip>
+                        <ToolTip Content="{x:Static p:CoreNodeModelWpfResources.CurveMapperResetButtonToolTip}" Style="{StaticResource GenericToolTipLight}" />
+                    </Button.ToolTip>
+                    <Button.Resources>
+                        <Image x:Key="Shape"
+                               Width="16"
+                               Height="16"
+                               Source="/DynamoCoreWpf;component/UI/Images/reset.png" />
+                        <Image x:Key="HighlightShape"
+                               Width="16"
+                               Height="16"
+                               Source="/DynamoCoreWpf;component/UI/Images/reset_hover.png" />
+                    </Button.Resources>
+                </Button>
+            </StackPanel>            
         </Grid>
         <Thumb
             Name="resizeThumb"

@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
+using System.Windows.Input;
 
 namespace Dynamo.Wpf.Controls
 {
@@ -17,6 +18,7 @@ namespace Dynamo.Wpf.Controls
     {
         private const double offsetValue = 6; // thumb size * 0.5
         private Point point;
+        private bool isEnabled = true;
 
         public bool IsOrthogonal { get; set; }
         public bool IsVertical { get; set; }
@@ -108,6 +110,21 @@ namespace Dynamo.Wpf.Controls
             }
         }
 
+        
+        [JsonIgnore]
+        public bool IsEnabled
+        {
+            get => isEnabled;
+            set
+            {
+                if (isEnabled != value)
+                {
+                    isEnabled = value;
+                    UpdateCursor();
+                }
+            }
+        }
+
         /// <summary>
         /// Gets or sets the associated linear curve for the control point.
         /// </summary>
@@ -135,19 +152,24 @@ namespace Dynamo.Wpf.Controls
         public ParabolicCurve CurveParabolic { get; set; }
 
         /// <summary>
-        /// Gets or sets the associated parabolic curve for the control point.
+        /// Gets or sets the associated perlin curve for the control point.
         /// </summary>
         public PerlinCurve CurvePerlin { get; set; }
 
         /// <summary>
-        /// Gets or sets the associated parabolic curve for the control point.
+        /// Gets or sets the associated power curve for the control point.
         /// </summary>
         public PowerCurve CurvePower { get; set; }
 
         /// <summary>
-        /// Gets or sets the associated parabolic curve for the control point.
+        /// Gets or sets the associated square root curve for the control point.
         /// </summary>
         public SquareRootCurve SquareRootCurve { get; set; }
+
+        /// <summary>
+        /// Gets or sets the associated gaussian curve for the control point.
+        /// </summary>
+        public GaussianCurve GaussianCurve { get; set; }
 
         /// <summary>
         /// Gets or sets the associated control curve for the control point.
@@ -177,6 +199,9 @@ namespace Dynamo.Wpf.Controls
             Canvas.SetLeft(this, position.X - offsetValue);
             Canvas.SetTop(this, position.Y - offsetValue);
             Canvas.SetZIndex(this, 25);
+
+
+            //UpdateCursor();
         }
 
         /// <summary>
@@ -209,6 +234,8 @@ namespace Dynamo.Wpf.Controls
 
         private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
+            if (!IsEnabled) return;
+
             // Calculate new positions for X and Y based on drag changes
             double newX = Canvas.GetLeft(this) + (IsOrthogonal && IsVertical ? 0.0 : e.HorizontalChange) + offsetValue;
             double newY = Canvas.GetTop(this) + (IsOrthogonal && !IsVertical ? 0.0 : e.VerticalChange) + offsetValue;
@@ -226,24 +253,23 @@ namespace Dynamo.Wpf.Controls
             Canvas.SetTop(this, newY - offsetValue);
 
             // Regenerate associated elements
-            if (CurveLinear != null)
-                CurveLinear.Regenerate();
-            if (ControlLineBezier != null)
-                ControlLineBezier.Regenerate(this); 
-            if (CurveBezier != null)
-                CurveBezier.Regenerate(this);
-            if (CurveSine != null)
-                CurveSine.Regenerate();
-            if (CurveCosine != null)
-                CurveCosine.Regenerate();
-            if (CurveParabolic != null)
-                CurveParabolic.Regenerate(this);
-            if (CurvePerlin != null)
-                CurvePerlin.Regenerate();
-            if (CurvePower != null)
-                CurvePower.Regenerate();
-            if (SquareRootCurve != null)
-                SquareRootCurve.Regenerate();
+            CurveLinear?.Regenerate();
+            ControlLineBezier?.Regenerate(this); 
+            CurveBezier?.Regenerate(this);
+            CurveSine?.Regenerate();
+            CurveCosine?.Regenerate();
+            CurveParabolic?.Regenerate(this);
+            CurvePerlin?.Regenerate();
+            CurvePower?.Regenerate();
+            SquareRootCurve?.Regenerate();
+            GaussianCurve?.Regenerate();
+
+            ////// Manually call OnControlPointMoved if the parent CurveMapperControl exists
+            ////if (this.Parent is CurveMapperControl parentControl)
+            ////{
+            ////    parentControl.OnControlPointMoved();
+            ////}
+
         }
 
         private void Thumb_DragStarted(object sender, DragStartedEventArgs e)
@@ -254,9 +280,14 @@ namespace Dynamo.Wpf.Controls
         {
         }
 
-        public override string ToString()
+        //public override string ToString()
+        //{
+        //    return Point.X.ToString() + "," + Point.Y.ToString();
+        //}
+
+        private void UpdateCursor()
         {
-            return Point.X.ToString() + "," + Point.Y.ToString();
+            this.Cursor = IsEnabled ? Cursors.Hand : Cursors.Arrow;
         }
     }
 

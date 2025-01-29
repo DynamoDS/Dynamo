@@ -241,6 +241,19 @@ namespace CoreNodeModelsWpf.Charts
         [JsonIgnore]
         public SquareRootCurve SquareRootCurve { get; set; }
 
+        // Gaussian curve
+        [JsonIgnore]
+        public CurveMapperControlPoint OrthoControlPointGaussian1 { get; set; }
+        [JsonIgnore]
+        public CurveMapperControlPoint OrthoControlPointGaussian2 { get; set; }
+        [JsonIgnore]
+        public CurveMapperControlPoint OrthoControlPointGaussian3 { get; set; }
+
+        [JsonIgnore]
+        public CurveMapperControlPoint OrthoControlPointGaussian4 { get; set; }
+        [JsonIgnore]
+        public GaussianCurve GaussianCurve { get; set; }
+
         #endregion
 
         #region Constructors
@@ -302,8 +315,10 @@ namespace CoreNodeModelsWpf.Charts
                 (SelectedGraphType == GraphTypes.CosineWave && ControlPointCosine1.Point.X == ControlPointCosine2.Point.X) ||
                 (SelectedGraphType == GraphTypes.SineWave && ControlPointSine1.Point.X == ControlPointSine2.Point.X) ||
                 (SelectedGraphType == GraphTypes.ParabolicCurve && ControlPointParabolic1.Point.X == ControlPointParabolic2.Point.X) ||
-                (SelectedGraphType == GraphTypes.PowerCurve && (ControlPointPower.Point.X == MinLimitX || ControlPointPower.Point.Y == MinLimitY)) ||
-                (SelectedGraphType == GraphTypes.SquareRootCurve && ControlPointSquareRoot1.Point.X == ControlPointSquareRoot2.Point.X)
+                (SelectedGraphType == GraphTypes.PowerCurve && (ControlPointPower.Point.X == MinLimitX || ControlPointPower.Point.Y == MinLimitY))
+                //// Review below
+                //(SelectedGraphType == GraphTypes.SquareRootCurve && ControlPointSquareRoot1.Point.X == ControlPointSquareRoot2.Point.X) ||
+                //(SelectedGraphType == GraphTypes.GaussianCurve && ControlPointGaussian1.Point.X == ControlPointGaussian2.Point.X)
             )
             {
                 ClearErrorsAndWarnings();
@@ -354,6 +369,11 @@ namespace CoreNodeModelsWpf.Charts
             {
                 OutputValuesY = SquareRootCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
                 OutputValuesX = SquareRootCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
+            }
+            else if (GaussianCurve != null && SelectedGraphType == GraphTypes.GaussianCurve)
+            {
+                OutputValuesY = GaussianCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
+                OutputValuesX = GaussianCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
             }
         }
 
@@ -573,7 +593,9 @@ namespace CoreNodeModelsWpf.Charts
         [Description("Power Curve")]
         PowerCurve = 7,
         [Description("Square Root Curve")]
-        SquareRootCurve = 8
+        SquareRootCurve = 8,
+        [Description("Gaussian Curve")]
+        GaussianCurve = 9
     }
 
     #endregion

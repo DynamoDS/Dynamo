@@ -1,5 +1,4 @@
 using Dynamo.Wpf.Controls;
-using Dynamo.Wpf.Controls.SubControls;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -18,6 +17,16 @@ namespace CoreNodeModelsWpf.Charts.Controls
         private readonly CurveMapperNodeModel model;
         public event PropertyChangedEventHandler PropertyChanged;
                 
+        
+        private double dynamicCanvasSize = 240;
+        private double previousCanvasSize = 240;
+
+        private readonly double canvasMinSize = 240; // also initial width and height
+        private readonly double mainGridMinWidth = 310;
+        private readonly double mainGridMinHeigth = 340;
+        private int gridSize = 10;
+        private bool isLocked = false;
+
         public double DynamicCanvasSize
         {
             get => dynamicCanvasSize;
@@ -30,13 +39,16 @@ namespace CoreNodeModelsWpf.Charts.Controls
                 }
             }
         }
-        private double dynamicCanvasSize = 240;
-        private double previousCanvasSize = 240;
 
-        private readonly double canvasMinSize = 240; // also initial width and height
-        private readonly double mainGridMinWidth = 310;
-        private readonly double mainGridMinHeigth = 340;
-        private int gridSize = 10;
+        public bool IsLocked
+        {
+            get => isLocked;
+            set
+            {
+                isLocked = value;
+                ToggleControlPointsMovability();
+            }
+        }
 
         private void OnPropertyChanged(string propertyName) // RaisePropertyChanged
         {
@@ -188,11 +200,28 @@ namespace CoreNodeModelsWpf.Charts.Controls
                         Canvas.SetZIndex(model.SquareRootCurve.PathCurve, 10);
                     }
                 }
+                // Gaussian curve
+                if (model.OrthoControlPointGaussian1 != null && model.OrthoControlPointGaussian2 != null && model.OrthoControlPointGaussian3 != null && model.OrthoControlPointGaussian4 != null)
+                {
+                    UpdateControlPoints(newCanvasSize, model.OrthoControlPointGaussian1, model.OrthoControlPointGaussian2,
+                        model.OrthoControlPointGaussian3, model.OrthoControlPointGaussian4);
+                    if (model.GaussianCurve != null)
+                    {
+                        model.GaussianCurve.MaxWidth = newCanvasSize;
+                        model.GaussianCurve.MaxHeight = newCanvasSize;
+                        model.GaussianCurve.Regenerate();
+                        Canvas.SetZIndex(model.GaussianCurve.PathCurve, 10);
+                    }
+                }
 
                 previousCanvasSize = newCanvasSize;
 
                 DrawGrid(model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY);
             };
+
+            // THIS IS GAUSSIAN CURVE RELATED
+            // Ensure the UI loads first before attaching events
+            this.Loaded += (s, e) => AttachEventHandlers();
 
             // Initial draw canvas
             DrawGrid(model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY);
@@ -347,6 +376,13 @@ namespace CoreNodeModelsWpf.Charts.Controls
                     model.ControlPointSquareRoot2.Point = new Point(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
                     model.SquareRootCurve?.Regenerate();
                     break;
+                case GraphTypes.GaussianCurve:
+                    model.OrthoControlPointGaussian1.Point = new Point(0, DynamicCanvasSize * 0.8);
+                    model.OrthoControlPointGaussian2.Point = new Point(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
+                    model.OrthoControlPointGaussian3.Point = new Point(DynamicCanvasSize * 0.4, DynamicCanvasSize);
+                    model.OrthoControlPointGaussian4.Point = new Point(DynamicCanvasSize * 0.6, DynamicCanvasSize);
+                    model.GaussianCurve?.Regenerate();
+                    break;
                     // Add mode curves here
             }
 
@@ -355,8 +391,70 @@ namespace CoreNodeModelsWpf.Charts.Controls
             model.OnNodeModified();
         }
 
+        private void LockButton_Click(object sender, RoutedEventArgs e)
+        {
+            IsLocked = !IsLocked;  // Toggle lock state
+
+            // Change button color dynamically
+            var button = sender as Button;
+            if (button != null)
+            {
+                button.Background = IsLocked ? Brushes.Red : Brushes.Green;
+            }
+        }
+
         private void GraphCanvas_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
+        }        
+
+        private void AttachEventHandlers()
+        {
+            if (model == null) return; // Ensure model is not null
+
+            if (model.OrthoControlPointGaussian2 != null)
+                model.OrthoControlPointGaussian2.PreviewMouseLeftButtonUp += (s, e) => OnControlPointMoved();
+
+            if (model.OrthoControlPointGaussian3 != null)
+                model.OrthoControlPointGaussian3.PreviewMouseLeftButtonUp += (s, e) => OnControlPointMoved();
+
+            if (model.OrthoControlPointGaussian4 != null)
+                model.OrthoControlPointGaussian4.PreviewMouseLeftButtonUp += (s, e) => OnControlPointMoved();
+        }
+
+        private void OnControlPointMoved()
+        {
+            if (model.OrthoControlPointGaussian2 == null ||
+                model.OrthoControlPointGaussian3 == null ||
+                model.OrthoControlPointGaussian4 == null
+            )
+                return;
+
+            var cp2 = model.OrthoControlPointGaussian2;
+            var cp3 = model.OrthoControlPointGaussian3;
+            var cp4 = model.OrthoControlPointGaussian4;
+
+            double mu =cp2.Point.X; // Center position (middle control point)
+            double spreadX = Math.Abs(cp4.Point.X - cp3.Point.X) / 2; // Half of the spread width
+
+            // Update controlPoint3 to maintain symmetry
+            cp3.Point = new Point(mu - spreadX, cp3.Point.Y);
+
+            // Update controlPoint4 symmetrically
+            cp4.Point = new Point(mu + spreadX, cp4.Point.Y);
+
+            // Refresh the Gaussian curve after adjustment
+            model.GaussianCurve.Regenerate();
+        }
+
+        private void ToggleControlPointsMovability()
+        {
+            foreach (var child in GraphCanvas.Children)
+            {
+                if (child is CurveMapperControlPoint controlPoint)
+                {
+                    controlPoint.IsEnabled = !isLocked;
+                }
+            }
         }
     }
 }

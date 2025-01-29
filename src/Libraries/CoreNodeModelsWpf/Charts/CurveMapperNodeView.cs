@@ -340,6 +340,64 @@ namespace Dynamo.Wpf.Charts
                 ApplyBindingsToControlPoints(model.ControlPointSquareRoot1, model, curveMapperControl);
                 ApplyBindingsToControlPoints(model.ControlPointSquareRoot2, model, curveMapperControl);
 
+                // Gaussian curve
+                model.OrthoControlPointGaussian1 = new CurveMapperControlPoint(
+                    new Point(0, curveMapperControl.DynamicCanvasSize * 0.8),
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
+                    true, true
+                );
+                model.OrthoControlPointGaussian2 = new CurveMapperControlPoint(
+                    new Point(curveMapperControl.DynamicCanvasSize * 0.5, curveMapperControl.DynamicCanvasSize * 0.5),
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
+                    true, false
+                );
+                model.OrthoControlPointGaussian3 = new CurveMapperControlPoint(
+                    new Point(curveMapperControl.DynamicCanvasSize * 0.4, curveMapperControl.DynamicCanvasSize),
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
+                    true, false
+                );
+                model.OrthoControlPointGaussian4 = new CurveMapperControlPoint(
+                    new Point(curveMapperControl.DynamicCanvasSize * 0.6, curveMapperControl.DynamicCanvasSize),
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
+                    true, false
+                );
+                curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointGaussian1);
+                curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointGaussian2);
+                curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointGaussian3);
+                curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointGaussian4);
+                Canvas.SetZIndex(model.OrthoControlPointGaussian1, 20);
+                Canvas.SetZIndex(model.OrthoControlPointGaussian2, 20);
+                Canvas.SetZIndex(model.OrthoControlPointGaussian3, 20);
+                Canvas.SetZIndex(model.OrthoControlPointGaussian4, 20);
+
+                model.GaussianCurve = new GaussianCurve(
+                    model.OrthoControlPointGaussian1,
+                    model.OrthoControlPointGaussian2,
+                    model.OrthoControlPointGaussian3,
+                    model.OrthoControlPointGaussian4,
+                    curveMapperControl.DynamicCanvasSize,
+                    curveMapperControl.DynamicCanvasSize);
+                Canvas.SetZIndex(model.GaussianCurve, 10);
+                curveMapperControl.GraphCanvas.Children.Add(model.GaussianCurve.PathCurve);
+
+                model.OrthoControlPointGaussian1.GaussianCurve = model.GaussianCurve;
+                model.OrthoControlPointGaussian2.GaussianCurve = model.GaussianCurve;
+                model.OrthoControlPointGaussian3.GaussianCurve = model.GaussianCurve;
+                model.OrthoControlPointGaussian4.GaussianCurve = model.GaussianCurve;
+
+                ApplyBindingsToControlPoints(model.OrthoControlPointGaussian1, model, curveMapperControl);
+                ApplyBindingsToControlPoints(model.OrthoControlPointGaussian2, model, curveMapperControl);
+                ApplyBindingsToControlPoints(model.OrthoControlPointGaussian3, model, curveMapperControl);
+                ApplyBindingsToControlPoints(model.OrthoControlPointGaussian4, model, curveMapperControl);
+
                 #endregion
 
                 BindVisibility(model);
@@ -356,6 +414,8 @@ namespace Dynamo.Wpf.Charts
                 AttachMouseUpEvent(model.ControlPointParabolic1, model.ControlPointParabolic2);
                 AttachMouseUpEvent(model.ControlPointPower);
                 AttachMouseUpEvent(model.ControlPointSquareRoot1, model.ControlPointSquareRoot2);
+                AttachMouseUpEvent(model.OrthoControlPointGaussian1, model.OrthoControlPointGaussian2,
+                    model.OrthoControlPointGaussian3, model.OrthoControlPointGaussian4);
             };
         }
 
@@ -473,6 +533,20 @@ namespace Dynamo.Wpf.Charts
             model.ControlPointSquareRoot2?.SetBinding(UIElement.VisibilityProperty, squareRootVisibilityBinding);
             model.SquareRootCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, squareRootVisibilityBinding);
 
+            // Gaussian curve
+            var gaussianVisibilityBinding = new Binding("SelectedGraphType")
+            {
+                Source = model,
+                Converter = new GraphTypeToVisibilityConverter(),
+                ConverterParameter = GraphTypes.GaussianCurve,
+                Mode = BindingMode.OneWay
+            };
+            model.OrthoControlPointGaussian1?.SetBinding(UIElement.VisibilityProperty, gaussianVisibilityBinding);
+            model.OrthoControlPointGaussian2?.SetBinding(UIElement.VisibilityProperty, gaussianVisibilityBinding);
+            model.OrthoControlPointGaussian3?.SetBinding(UIElement.VisibilityProperty, gaussianVisibilityBinding);
+            model.OrthoControlPointGaussian4?.SetBinding(UIElement.VisibilityProperty, gaussianVisibilityBinding);
+            model.GaussianCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, gaussianVisibilityBinding);
+
         }
 
         /// <summary>
@@ -511,6 +585,8 @@ namespace Dynamo.Wpf.Charts
             DetachMouseUpEvent(curveMapperNodeModel.ControlPointParabolic1, curveMapperNodeModel.ControlPointParabolic2);
             DetachMouseUpEvent(curveMapperNodeModel.ControlPointPower);
             DetachMouseUpEvent(curveMapperNodeModel.ControlPointSquareRoot1, curveMapperNodeModel.ControlPointSquareRoot2);
+            DetachMouseUpEvent(curveMapperNodeModel.OrthoControlPointGaussian1, curveMapperNodeModel.OrthoControlPointGaussian2,
+                curveMapperNodeModel.OrthoControlPointGaussian3, curveMapperNodeModel.OrthoControlPointGaussian4);
         }
 
         private void AttachMouseUpEvent(params CurveMapperControlPoint[] controlPoints)

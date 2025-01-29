@@ -8,7 +8,6 @@
     xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
     d:DesignHeight="12"
     d:DesignWidth="12"
-    Cursor="Hand"
     DragCompleted="Thumb_DragCompleted"
     DragDelta="Thumb_DragDelta"
     DragStarted="Thumb_DragStarted"
