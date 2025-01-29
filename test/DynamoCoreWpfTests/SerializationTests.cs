@@ -550,10 +550,10 @@ namespace DynamoCoreWpfTests
     {
         private static Dictionary<string, string> testFilesCache = [];
 
-        public static string jsonNonGuidFolderName = "jsonWithView_nonGuidIds";
-        public static string jsonFolderName = "jsonWithView";
+        public static string jsonNonGuidFolderName = $"jsonWithView_nonGuidIds_{Environment.ProcessId}";
+        public static string jsonFolderName = $"jsonWithView_{Environment.ProcessId}";
 
-        private const string jsonStructuredFolderName = "DynamoCoreWPFTests";
+        private static string jsonStructuredFolderName = $"DynamoCoreWPFTests_{Environment.ProcessId}";
 
         private TimeSpan lastExecutionDuration = new TimeSpan();
         private Dictionary<Guid, string> modelsGuidToIdMap = new Dictionary<Guid, string>();

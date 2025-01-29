@@ -603,9 +603,9 @@ namespace Dynamo.Tests
     public class SerializationTests : DynamoModelTestBase
     {
         private static Dictionary<string, string> testFilesCache = [];
-        public static string jsonNonGuidFolderName = "json_nonGuidIds";
-        public static string jsonFolderName = "json";
-        public static string jsonFolderNameDifferentCulture = "json_differentCulture";
+        public static string jsonNonGuidFolderName = $"json_nonGuidIds_{Environment.ProcessId}";
+        public static string jsonFolderName = $"json_{Environment.ProcessId}";
+        public static string jsonFolderNameDifferentCulture = $"json_differentCulture_{Environment.ProcessId}";
         private const int MAXNUM_SERIALIZATIONTESTS_TOEXECUTE = 300;
 
         // Filter out dyns that change during testing
