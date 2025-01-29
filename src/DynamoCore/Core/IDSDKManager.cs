@@ -240,8 +240,6 @@ namespace Dynamo.Core
 
         private bool Initialize()
         {
-            OnErrorInitializingIDSDK();
-            return false;
             try
             {
                 if (Client.IsInitialized())
