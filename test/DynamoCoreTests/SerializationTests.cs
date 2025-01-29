@@ -602,6 +602,7 @@ namespace Dynamo.Tests
     [TestFixture, Category("Serialization")]
     public class SerializationTests : DynamoModelTestBase
     {
+        private static Dictionary<string, string> testFilesCache = [];
         public static string jsonNonGuidFolderName = "json_nonGuidIds";
         public static string jsonFolderName = "json";
         public static string jsonFolderNameDifferentCulture = "json_differentCulture";
@@ -660,6 +661,7 @@ namespace Dynamo.Tests
                     Console.WriteLine(e.Message);
                 }
             }
+            CacheTestFiles();
         }
 
         [OneTimeTearDown]
@@ -938,11 +940,26 @@ namespace Dynamo.Tests
                 serializationTestUtils.SaveWorkspaceComparisonData);
         }
 
-        public static object[] FindWorkspaces()
+        private void CacheTestFiles()
         {
+            testFilesCache.Clear();
             var di = new DirectoryInfo(TestDirectory);
             var fis = di.GetFiles("*.dyn", SearchOption.AllDirectories);
-            return fis.Where(fi => !filterOutFromSerializationTests.Contains(fi.Name)).Select(fi => fi.FullName).Take(MAXNUM_SERIALIZATIONTESTS_TOEXECUTE).ToArray();
+            var testFiles = fis.Where(fi => !filterOutFromSerializationTests.Contains(fi.Name)).Select(fi => fi.FullName).Take(MAXNUM_SERIALIZATIONTESTS_TOEXECUTE).ToArray();
+
+            foreach (var testFile in testFiles) {
+                testFilesCache.Add(Guid.NewGuid().ToString(), testFile);
+            }
+        }
+
+        internal static string GetTestFileNameFromGuid(string guid)
+        {
+            return testFilesCache.GetValueOrDefault(guid);
+        }
+
+        public static object[] FindWorkspaces()
+        {
+            return [.. testFilesCache.Keys];
         }
 
         /// <summary>
@@ -950,11 +967,14 @@ namespace Dynamo.Tests
         /// the test directory, opens them and executes, then converts them to
         /// json and executes again, comparing the values from the two runs.
         /// </summary>
-        /// <param name="filePath">The path to a .dyn file. This parameter is supplied
-        /// by the test framework.</param>
+        /// <param name="fileId">A random guid assigned to a .dyn file. This parameter is supplied
+        /// by the test framework. You can get the file path by calling GetTestFileNameFromGuid(fileId).</param>
         [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude")]
-        public void SerializationTest(string filePath)
+        public void SerializationTest(string fileId)
         {
+            string filePath = GetTestFileNameFromGuid(fileId);
+            Console.WriteLine($"Running test {TestContext.CurrentContext.Test.ClassName}.{TestContext.CurrentContext.Test.MethodName} with file {filePath}");
+
             modelsGuidToIdMap.Clear();
             DoWorkspaceOpenAndCompare(filePath, jsonFolderName, ConvertCurrentWorkspaceToJsonAndSave,
                 serializationTestUtils.CompareWorkspaceModels,
@@ -967,11 +987,14 @@ namespace Dynamo.Tests
         /// json and executes again, comparing the values from the two runs
         /// while being in a different culture.
         /// </summary>
-        /// <param name="filePath">The path to a .dyn file. This parameter is supplied
-        /// by the test framework.</param>
+        /// <param name="fileId">A random guid assigned to a .dyn file. This parameter is supplied
+        /// by the test framework. You can get the file path by calling GetTestFileNameFromGuid(fileId).</param>
         [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude")]
-        public void SerializationInDifferentCultureTest(string filePath)
+        public void SerializationInDifferentCultureTest(string fileId)
         {
+            string filePath = GetTestFileNameFromGuid(fileId);
+            Console.WriteLine($"Running test {TestContext.CurrentContext.Test.ClassName}.{TestContext.CurrentContext.Test.MethodName} with file {filePath}");
+
             var frCulture = CultureInfo.CreateSpecificCulture("fr-FR");
 
             // Save current culture - usually "en-US"
@@ -998,11 +1021,14 @@ namespace Dynamo.Tests
         /// This set of tests has slightly modified json where the id properties
         /// are altered when serialized to test deserialization of non-guid ids.
         /// </summary>
-        /// <param name="filePath">The path to a .dyn file. This parameter is supplied
-        /// by the test framework.</param>
+        /// <param name="fileId">A random guid assigned to a .dyn file. This parameter is supplied
+        /// by the test framework. You can get the file path by calling GetTestFileNameFromGuid(fileId).</param>
         [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude")]
-        public void SerializationNonGuidIdsTest(string filePath)
+        public void SerializationNonGuidIdsTest(string fileId)
         {
+            string filePath = GetTestFileNameFromGuid(fileId);
+            Console.WriteLine($"Running test {TestContext.CurrentContext.Test.ClassName}.{TestContext.CurrentContext.Test.MethodName} with file {filePath}");
+
             modelsGuidToIdMap.Clear();
             DoWorkspaceOpenAndCompare(filePath, jsonNonGuidFolderName,
                 ConvertCurrentWorkspaceToNonGuidJsonAndSave,
