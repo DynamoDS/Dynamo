@@ -922,42 +922,62 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("IsAnySearchResult");
         }
 
+        internal Task SearchAndUpdateResultsTask(string query)
+        {
+            if (Visible != true)
+                return Task.CompletedTask;
+
+            // if the search query is empty, go back to the default treeview
+            if (string.IsNullOrEmpty(query))
+                return Task.CompletedTask;
+
+            // A new search should cancel any existing searches.
+            searchCancelTooken?.Cancel();
+            searchCancelTooken?.Dispose();
+
+            searchCancelTooken = new();
+
+            // The TaskScheduler.FromCurrentSynchronizationContext() exists only if there is a valid SyncronizationContex/
+            // Calling this method from a non UI thread could have a null SyncronizationContex.Current,
+            // so in that case we use the default TaskScheduler which uses the thread pool.
+            var taskScheduler = SynchronizationContext.Current != null ? TaskScheduler.FromCurrentSynchronizationContext() : TaskScheduler.Default;
+
+            // We run the searches on the thread pool to reduce the impact on the UI thread.
+            return Task.Run(() =>
+            {
+                return Search(query, searchCancelTooken.Token);
+
+            }, searchCancelTooken.Token).ContinueWith((t, o) =>
+            {
+                // This continuation will execute on the UI thread (forced by using FromCurrentSynchronizationContext())
+                searchResults = new List<NodeSearchElementViewModel>(t.Result);
+
+                FilteredResults = searchResults;
+                UpdateSearchCategories();
+            }, taskScheduler, TaskContinuationOptions.OnlyOnRanToCompletion);
+        }
+
         /// <summary>
         ///     Performs a search and updates searchResults.
         /// </summary>
         /// <param name="query"> The search query </param>
+        [Obsolete(@"This method will be removed in a future release. The internal search operation is done asyncronously, so when this method call exits, the search operation might not be done yet.
+                    Please use the task based method SearchAndUpdateResultsTask instead.")]
         public void SearchAndUpdateResults(string query)
         {
-            if (Visible != true)
-                return;
-
-            // if the search query is empty, go back to the default treeview
-            if (string.IsNullOrEmpty(query))
-                return;
-
             if (enableSeachThreading)
             {
-                // A new search should cancel any existing searches.
-                searchCancelTooken?.Cancel();
-                searchCancelTooken?.Dispose();
-                searchCancelTooken = new();
-
-                // We run the searches on the thread pool to reduce the impact on the UI thread.
-                Task.Run(() =>
-                {
-                    return Search(query, searchCancelTooken.Token);
-
-                }, searchCancelTooken.Token).ContinueWith((t, o) =>
-                {
-                    // This continuation will execute on the UI thread (forced by using FromCurrentSynchronizationContext())
-                    searchResults = new List<NodeSearchElementViewModel>(t.Result);
-
-                    FilteredResults = searchResults;
-                    UpdateSearchCategories();
-                }, TaskScheduler.FromCurrentSynchronizationContext(), TaskContinuationOptions.OnlyOnRanToCompletion);
+                SearchAndUpdateResultsTask(query);
             }
             else
             {
+                if (Visible != true)
+                    return;
+
+                // if the search query is empty, go back to the default treeview
+                if (string.IsNullOrEmpty(query))
+                    return;
+
                 //Passing the second parameter as true will search using Lucene.NET
                 var foundNodes = Search(query);
                 searchResults = new List<NodeSearchElementViewModel>(foundNodes);

@@ -29,10 +29,10 @@ namespace Dynamo.Tests
             Assert.IsAssignableFrom( typeof(HomeWorkspaceModel), ViewModel.Model.CurrentWorkspace );
 
             // search and results are correct
-            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Input");
+            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResultsTask("Input").Wait();
             Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count(x => x.Model.Name == "Input"));
 
-            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Output");
+            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResultsTask("Output").Wait();
             Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count(x => x.Model.Name == "Output"));
         }
 
@@ -53,10 +53,10 @@ namespace Dynamo.Tests
             Assert.AreEqual(model.CurrentWorkspace.Name, "Home");
 
             // search and results are correct
-            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Input");
+            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResultsTask("Input").Wait();
             Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count(x => x.Model.Name == "Input"));
 
-            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults("Output");
+            ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResultsTask("Output").Wait();
             Assert.AreEqual(1, ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults.Count(x => x.Model.Name == "Output"));
         }
 
@@ -72,11 +72,11 @@ namespace Dynamo.Tests
             Assert.AreEqual(model.CurrentWorkspace.Name, "Sequence2");
 
             // search and results are correct
-            ViewModel.SearchViewModel.SearchAndUpdateResults("Input");
+            ViewModel.SearchViewModel.SearchAndUpdateResultsTask("Input").Wait();
             Assert.AreEqual(1, ViewModel.SearchViewModel.FilteredResults.Count(x => x.Model.Name == "Input"));
             Assert.AreEqual("Input", ViewModel.SearchViewModel.FilteredResults.ElementAt(0).Model.Name);
 
-            ViewModel.SearchViewModel.SearchAndUpdateResults("Output");
+            ViewModel.SearchViewModel.SearchAndUpdateResultsTask("Output").Wait();
             Assert.AreEqual(1, ViewModel.SearchViewModel.FilteredResults.Count(x => x.Model.Name == "Output"));
             Assert.AreEqual("Output", ViewModel.SearchViewModel.FilteredResults.ElementAt(0).Model.Name);
 
@@ -96,7 +96,7 @@ namespace Dynamo.Tests
             foreach (var node in nodesList)
             {
                 // search and check that the results are correct based in the node name provided for the searchTerm
-                ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults(node);
+                ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResultsTask(node).Wait();
                 var filteredResults = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults;
                 Assert.AreEqual(1, filteredResults.Count(x => x.Model.Name == node), "Non matching results for " + node);
             }
@@ -113,7 +113,7 @@ namespace Dynamo.Tests
             foreach (var node in nodesList)
             {
                 // Search and check that the results are correct based in the node name provided for the searchTerm
-                ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResults(node);
+                ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.SearchAndUpdateResultsTask(node).Wait();
                 var filteredResults = ViewModel.CurrentSpaceViewModel.InCanvasSearchViewModel.FilteredResults;
 
                 //There are overloaded nodes
