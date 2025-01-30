@@ -19,6 +19,7 @@
              PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
              PreviewMouseMove="OnNodeViewMouseMove">
 
+
     <Grid Name="grid"
           HorizontalAlignment="Left"
           x:FieldModifier="public"
@@ -315,9 +316,10 @@
                    Panel.ZIndex="3"
                    FlowDirection="LeftToRight">
             <!--  The Icon for this Node  -->
-            <Rectangle Name="nodeIcon"
-                     Width="34"
-                     Height="34">
+            <Rectangle
+                Name="nodeIcon"
+                Width="34"
+                Height="34">
                 <Rectangle.Style>
                     <Style TargetType="Rectangle">
                         <Setter Property="Fill">
@@ -348,7 +350,7 @@
                        FontWeight="Medium"
                        Foreground="{StaticResource PrimaryCharcoal200Brush}"
                        IsHitTestVisible="False"
-                       Style="{StaticResource SZoomFadeText}"
+                       Style="{Binding Path=DataContext.StopNodeViewOpacityAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}"
                        Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"
                        Visibility="Visible"
                        TextAlignment="Center" />
@@ -448,7 +450,7 @@
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
                     Canvas.ZIndex="4"
-                    Style="{StaticResource SZoomFadeOutFrameworkElement}"
+                    Style="{Binding Path=DataContext.StopNodeViewOpacityAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}"
                     FlowDirection="LeftToRight"
                     Orientation="Horizontal">
             <Grid x:Name="ExperimentalGlyph" 
@@ -492,7 +494,7 @@
                    FontFamily="{StaticResource ArtifaktElementRegular}"
                    FontSize="10px"
                    Foreground="{StaticResource NodeLacingGlyphBackground}"
-                   Style="{StaticResource SZoomFadeLabel}"
+                   Style="{Binding Path=DataContext.StopNodeViewOpacityAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}"
                    ToolTipService.ShowDuration="30000"
                    Visibility="{Binding Path=ArgumentLacing, Converter={StaticResource LacingToVisibilityConverter}}">
                 <Label.ToolTip>
@@ -512,7 +514,7 @@
                            FontFamily="{StaticResource ArtifaktElementRegular}"
                            FontSize="10px"
                            Foreground="Black"
-                           Style="{StaticResource SZoomFadeLabel}" />
+                           Style="{Binding Path=DataContext.StopNodeViewOpacityAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}" />
                 </Border>
                 <Grid.Style>
                     <Style TargetType="Grid">
@@ -609,7 +611,7 @@
                                   RelativeSource={RelativeSource FindAncestor, 
                                   AncestorType={x:Type controls:WorkspaceView}}, 
                                   Converter={StaticResource ZoomToOpacityConverter}}"
-                Style="{StaticResource SZoomFadeOutPreview}"
+                Style="{Binding Path=DataContext.StopNodeViewOpacityAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeOutPreview}}"
                 Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <!--  Displays when the node is Frozen/Warning/Error state and Zoom is below 0.4 -->
@@ -623,42 +625,46 @@
                 CornerRadius="8,8,0,0"
                 IsHitTestVisible="False"
                 Opacity="0.5"
-                Style="{StaticResource SZoomFadeInPreview}"
+                Style="{Binding Path=DataContext.StopNodeViewOpacityAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeInPreview}}"
                 Visibility="{Binding Path=DataContext.Zoom, 
                                      RelativeSource={RelativeSource FindAncestor, 
                                      AncestorType={x:Type controls:WorkspaceView}}, 
                                      Converter={StaticResource ZoomToVisibilityCollapsedConverter}}" />
 
         <!-- Grid containing the State overlay Glyphs in Zoomed Out state -->
-        <Grid Name="zoomGlyphsGrid"
-                    Grid.Row="0"
-                    Grid.RowSpan="4"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="3"
-                    Canvas.ZIndex="7" 
-                    IsHitTestVisible="False"
-                    Margin="0 5 0 0"
-                    HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
-                    Style="{StaticResource SZoomFadeInFrameworkElement}"                    
-                    Visibility="{Binding Path=DataContext.Zoom, 
-                                         RelativeSource={RelativeSource FindAncestor, 
-                                         AncestorType={x:Type controls:WorkspaceView}}, 
-                                         Converter={StaticResource ZoomToVisibilityCollapsedConverter}}" 
-                    MinWidth="48">
+        <Grid
+            Name="zoomGlyphsGrid"
+            Grid.Row="0"
+            Grid.RowSpan="4"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Canvas.ZIndex="7"
+            IsHitTestVisible="False"
+            Margin="0 5 0 0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch"
+            Style="{Binding Path=DataContext.StopNodeViewOpacityAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeInControl}}"
+            Visibility="{Binding Path=DataContext.Zoom, 
+                                 RelativeSource={RelativeSource FindAncestor, 
+                                 AncestorType={x:Type controls:WorkspaceView}}, 
+                                 Converter={StaticResource ZoomToVisibilityCollapsedConverter}}"
+            MinWidth="48">
             <Grid.RowDefinitions>
-                <RowDefinition Height="{Binding ImgGlyphThreeSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                <RowDefinition
+                    Height="{Binding ImgGlyphThreeSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
                 <RowDefinition></RowDefinition>
             </Grid.RowDefinitions>
+
             <UniformGrid  Grid.Row="0"
-                          Margin="0 10 0 -10"
-                          Columns="1" Rows="1" Name="ZoomGlyphRowZero" 
+                Margin="0 10 0 -10"
+                             Columns="1" Rows="1" Name="ZoomGlyphRowZero" 
                           HorizontalAlignment="Center" VerticalAlignment="Bottom"
                           Visibility="{Binding ImgGlyphThreeSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}">
                 <Image Stretch="Uniform"  HorizontalAlignment="Center" VerticalAlignment="Bottom" 
-                       x:Name="ZoomStateImgOne"
-                       Width="64"
-                       Source="{Binding ImgGlyphThreeSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
-                       Visibility="{Binding ImgGlyphThreeSource,Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                x:Name="ZoomStateImgOne"
+                Width="64"
+                Source="{Binding ImgGlyphThreeSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
+                Visibility="{Binding ImgGlyphThreeSource,Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
             </UniformGrid>
             <Grid Grid.Row="1" 
                   Margin="0 0 0 0"
@@ -669,25 +675,28 @@
                     <ColumnDefinition Width="{Binding ImgGlyphTwoSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
                 </Grid.ColumnDefinitions>
                 <Image Grid.Column="0"
-                       x:Name="ZoomStateImgTwo"
-                       Stretch="Uniform" 
-                       HorizontalAlignment="Left" VerticalAlignment="Center"
-                       Margin="5 0 "
-                       Width="64"
-                       Source="{Binding ImgGlyphOneSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
-                       Visibility="{Binding ImgGlyphOneSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+          
+                    x:Name="ZoomStateImgTwo"
+                    Stretch="Uniform"
+                                              HorizontalAlignment="Left" VerticalAlignment="Center"
+
+
+                    Margin="5 0 "
+                    Width="64"
+                    Source="{Binding ImgGlyphOneSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
+                    Visibility="{Binding ImgGlyphOneSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
+
                 <Image Grid.Column="1"
                        x:Name="ZoomStateImgThree"
-                       Stretch="Uniform"  
-                       HorizontalAlignment="Right" VerticalAlignment="Center" 
-                       Margin="5 0"
-                       Width="64"
-                       Source="{Binding ImgGlyphTwoSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
-                       Visibility="{Binding ImgGlyphTwoSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}"/>
+                    Stretch="Uniform"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Center"
+                    Margin="5 0"
+                    Width="64"
+                    Source="{Binding ImgGlyphTwoSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
+                    Visibility="{Binding ImgGlyphTwoSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
             </Grid>
         </Grid>
-
-
         <!--  Displays when the node is selected  -->
         <Border Name="selectionBorder"
                 Grid.Row="1"
