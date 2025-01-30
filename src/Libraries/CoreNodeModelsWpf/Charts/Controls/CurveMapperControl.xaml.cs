@@ -219,10 +219,6 @@ namespace CoreNodeModelsWpf.Charts.Controls
                 DrawGrid(model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY);
             };
 
-            // THIS IS GAUSSIAN CURVE RELATED
-            // Ensure the UI loads first before attaching events
-            this.Loaded += (s, e) => AttachEventHandlers();
-
             // Initial draw canvas
             DrawGrid(model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY);
         }
@@ -405,45 +401,6 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
         private void GraphCanvas_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
-        }        
-
-        private void AttachEventHandlers()
-        {
-            if (model == null) return; // Ensure model is not null
-
-            if (model.OrthoControlPointGaussian2 != null)
-                model.OrthoControlPointGaussian2.PreviewMouseLeftButtonUp += (s, e) => OnControlPointMoved();
-
-            if (model.OrthoControlPointGaussian3 != null)
-                model.OrthoControlPointGaussian3.PreviewMouseLeftButtonUp += (s, e) => OnControlPointMoved();
-
-            if (model.OrthoControlPointGaussian4 != null)
-                model.OrthoControlPointGaussian4.PreviewMouseLeftButtonUp += (s, e) => OnControlPointMoved();
-        }
-
-        private void OnControlPointMoved()
-        {
-            if (model.OrthoControlPointGaussian2 == null ||
-                model.OrthoControlPointGaussian3 == null ||
-                model.OrthoControlPointGaussian4 == null
-            )
-                return;
-
-            var cp2 = model.OrthoControlPointGaussian2;
-            var cp3 = model.OrthoControlPointGaussian3;
-            var cp4 = model.OrthoControlPointGaussian4;
-
-            double mu =cp2.Point.X; // Center position (middle control point)
-            double spreadX = Math.Abs(cp4.Point.X - cp3.Point.X) / 2; // Half of the spread width
-
-            // Update controlPoint3 to maintain symmetry
-            cp3.Point = new Point(mu - spreadX, cp3.Point.Y);
-
-            // Update controlPoint4 symmetrically
-            cp4.Point = new Point(mu + spreadX, cp4.Point.Y);
-
-            // Refresh the Gaussian curve after adjustment
-            model.GaussianCurve.Regenerate();
         }
 
         private void ToggleControlPointsMovability()

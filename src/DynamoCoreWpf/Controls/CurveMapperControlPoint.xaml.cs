@@ -200,8 +200,7 @@ namespace Dynamo.Wpf.Controls
             Canvas.SetTop(this, position.Y - offsetValue);
             Canvas.SetZIndex(this, 25);
 
-
-            //UpdateCursor();
+            UpdateCursor();
         }
 
         /// <summary>
@@ -264,12 +263,6 @@ namespace Dynamo.Wpf.Controls
             SquareRootCurve?.Regenerate();
             GaussianCurve?.Regenerate();
 
-            ////// Manually call OnControlPointMoved if the parent CurveMapperControl exists
-            ////if (this.Parent is CurveMapperControl parentControl)
-            ////{
-            ////    parentControl.OnControlPointMoved();
-            ////}
-
         }
 
         private void Thumb_DragStarted(object sender, DragStartedEventArgs e)
@@ -279,11 +272,6 @@ namespace Dynamo.Wpf.Controls
         private void Thumb_DragCompleted(object sender, DragCompletedEventArgs e)
         {
         }
-
-        //public override string ToString()
-        //{
-        //    return Point.X.ToString() + "," + Point.Y.ToString();
-        //}
 
         private void UpdateCursor()
         {

@@ -46,9 +46,13 @@ namespace Dynamo.Wpf.Controls.SubControls
             double Gx = controlPoint2.Point.X / MaxWidth;
             double Gy = 1 - (controlPoint2.Point.Y / MaxHeight);
 
-            if (Gx == Ox) return double.NaN;
+            double deltaX = Gx - Ox;
+            if (deltaX == 0) return double.NaN;
 
-            return (Gy - Oy) / Math.Sqrt(Math.Abs(Gx - Ox));
+            double sqrtFactor = (Gy - Oy) / Math.Sqrt(Math.Abs(deltaX));
+
+            // If controlPoint1 is to the right of controlPoint2, flip the curve
+            return (Gx < Ox) ? -sqrtFactor : sqrtFactor;
         }
 
         private void GenerateSquareRootCurve()
