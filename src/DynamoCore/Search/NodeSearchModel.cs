@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
@@ -10,7 +11,6 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using DynamoUtilities;
 using Lucene.Net.Documents;
-using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 
@@ -231,17 +231,28 @@ namespace Dynamo.Search
             return category.Substring(0, index);
         }
 
-        internal IEnumerable<NodeSearchElement> Search(string search, LuceneSearchUtility luceneSearchUtility)
+        /// <summary>
+        /// Search for nodes by using a search key.
+        /// </summary>
+        /// <param name="search"></param>
+        /// <param name="luceneSearchUtility"></param>
+        /// <param name="ctk">Cancellation token to short circuit the search.</param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        internal IEnumerable<NodeSearchElement> Search(string search, LuceneSearchUtility luceneSearchUtility, CancellationToken ctk = default)
         {
-            
+            ctk.ThrowIfCancellationRequested();
+
             if (luceneSearchUtility != null)
             {
-                //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method, otherwise new indexed info won't be reflected
-                luceneSearchUtility.dirReader = luceneSearchUtility.writer != null ? luceneSearchUtility.writer.GetReader(applyAllDeletes: true) : DirectoryReader.Open(luceneSearchUtility.indexDir);
-                luceneSearchUtility.Searcher = new IndexSearcher(luceneSearchUtility.dirReader);
+                if (luceneSearchUtility.Searcher == null)
+                {
+                    throw new Exception("Invalid IndexSearcher found");
+                }
 
                 string searchTerm = search.Trim();
                 var candidates = new List<NodeSearchElement>();
+
                 var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.NodeIndexFields, luceneSearchUtility.Analyzer)
                 {
                     AllowLeadingWildcard = true,
@@ -249,11 +260,13 @@ namespace Dynamo.Search
                     FuzzyMinSim = LuceneConfig.MinimumSimilarity
                 };
 
-                Query query = parser.Parse(luceneSearchUtility.CreateSearchQuery(LuceneConfig.NodeIndexFields, searchTerm));
+                Query query = parser.Parse(luceneSearchUtility.CreateSearchQuery(LuceneConfig.NodeIndexFields, searchTerm, false, ctk));
                 TopDocs topDocs = luceneSearchUtility.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
 
                 for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
                 {
+                    ctk.ThrowIfCancellationRequested();
+
                     // read back a Lucene doc from results
                     Document resultDoc = luceneSearchUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
 
@@ -268,7 +281,7 @@ namespace Dynamo.Search
                     }
                     else
                     {
-                        var foundNode = FindModelForNodeNameAndCategory(name, cat, parameters);
+                        var foundNode = FindModelForNodeNameAndCategory(name, cat, parameters, ctk);
                         if (foundNode != null)
                         {
                             candidates.Add(foundNode);
@@ -280,8 +293,18 @@ namespace Dynamo.Search
             return null;
         }
 
-        internal NodeSearchElement FindModelForNodeNameAndCategory(string nodeName, string nodeCategory, string parameters)
+        /// <summary>
+        /// Finds the node model that corresponds to the input nodeName, nodeCategory and parameters.
+        /// </summary>
+        /// <param name="nodeName"></param>
+        /// <param name="nodeCategory"></param>
+        /// <param name="parameters"></param>
+        /// <param name="ctk">Cancellation token to short circuit the operation.</param>
+        /// <returns></returns>
+        internal NodeSearchElement FindModelForNodeNameAndCategory(string nodeName, string nodeCategory, string parameters, CancellationToken ctk = default)
         {
+            ctk.ThrowIfCancellationRequested();
+
             var result = Entries.Where(e => {
                 if (e.Name.Replace(" ", string.Empty).Equals(nodeName) && e.FullCategoryName.Equals(nodeCategory))
                 {
