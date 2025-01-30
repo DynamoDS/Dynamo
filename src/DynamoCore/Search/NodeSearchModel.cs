@@ -303,10 +303,12 @@ namespace Dynamo.Search
         /// <returns></returns>
         internal NodeSearchElement FindModelForNodeNameAndCategory(string nodeName, string nodeCategory, string parameters, CancellationToken ctk = default)
         {
+            ctk.ThrowIfCancellationRequested();
+
             var result = Entries.Where(e => {
+                ctk.ThrowIfCancellationRequested();
                 if (e.Name.Replace(" ", string.Empty).Equals(nodeName) && e.FullCategoryName.Equals(nodeCategory))
                 {
-                    ctk.ThrowIfCancellationRequested();
                     //When the node info was indexed if Parameters was null we added an empty space (null cannot be indexed)
                     //Then in this case when searching if e.Parameters is null we need to check against empty space
                     if (e.Parameters == null)

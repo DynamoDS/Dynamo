@@ -50,7 +50,7 @@ namespace Dynamo.Utilities
         internal Lucene.Net.Store.Directory indexDir;
 
         /// <summary>
-        /// Lucene Index write
+        /// Lucene Index write. Make sure to call InitializeIndexSearcher after every index change.
         /// </summary>
         internal IndexWriter writer;
 
@@ -190,6 +190,10 @@ namespace Dynamo.Utilities
             }
         }
 
+        /// <summary>
+        /// InitializeIndexSearcher initializes the dirReader and Searcher of this class.
+        /// This method should be called after every index change. 
+        /// </summary>
         private void InitializeIndexSearcher()
         {
             dirReader = writer != null ? writer.GetReader(applyAllDeletes: true) : DirectoryReader.Open(indexDir);

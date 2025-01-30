@@ -81,9 +81,9 @@ namespace Dynamo.ViewModels
         // Feature flags activated debouncer for the search UI.
         internal ActionDebouncer searchDebouncer = null;
         // Cancel token source used for the node search operations.
-        internal CancellationTokenSource searchCancelTooken;
+        internal CancellationTokenSource searchCancelToken;
         // Enable running Search on a thread pool thread.
-        private bool enableSeachThreading;
+        private bool enableSearchThreading;
 
         private string searchText = string.Empty;
         /// <summary>
@@ -416,9 +416,9 @@ namespace Dynamo.ViewModels
                 searchDebouncer ??= new ActionDebouncer(dynamoViewModel?.Model?.Logger);
             }
 
-            if (DynamoModel.FeatureFlags?.CheckFeatureFlag("searchbar_spearate_thread", false) ?? false)
+            if (DynamoModel.FeatureFlags?.CheckFeatureFlag("searchbar_separate_thread", false) ?? false)
             {
-                enableSeachThreading = true;
+                enableSearchThreading = true;
             }
         }
 
@@ -932,10 +932,10 @@ namespace Dynamo.ViewModels
                 return Task.CompletedTask;
 
             // A new search should cancel any existing searches.
-            searchCancelTooken?.Cancel();
-            searchCancelTooken?.Dispose();
+            searchCancelToken?.Cancel();
+            searchCancelToken?.Dispose();
 
-            searchCancelTooken = new();
+            searchCancelToken = new();
 
             // The TaskScheduler.FromCurrentSynchronizationContext() exists only if there is a valid SyncronizationContex/
             // Calling this method from a non UI thread could have a null SyncronizationContex.Current,
@@ -945,9 +945,9 @@ namespace Dynamo.ViewModels
             // We run the searches on the thread pool to reduce the impact on the UI thread.
             return Task.Run(() =>
             {
-                return Search(query, searchCancelTooken.Token);
+                return Search(query, searchCancelToken.Token);
 
-            }, searchCancelTooken.Token).ContinueWith((t, o) =>
+            }, searchCancelToken.Token).ContinueWith((t, o) =>
             {
                 // This continuation will execute on the UI thread (forced by using FromCurrentSynchronizationContext())
                 searchResults = new List<NodeSearchElementViewModel>(t.Result);
@@ -965,7 +965,7 @@ namespace Dynamo.ViewModels
                     Please use the task based method SearchAndUpdateResultsTask instead.")]
         public void SearchAndUpdateResults(string query)
         {
-            if (enableSeachThreading)
+            if (enableSearchThreading)
             {
                 SearchAndUpdateResultsTask(query);
             }
@@ -1024,6 +1024,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
+        /// <param name="ctk">A cancellation token for this operation.</param>
         internal IEnumerable<NodeSearchElementViewModel> Search(string search, CancellationToken ctk = default)
         {
             if (LuceneUtility != null)
