@@ -2,16 +2,17 @@ using Dynamo.Utilities;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace DynamoUtilities
 {
 
+    internal interface IFFlags
+    {
+        internal T CheckFeatureFlag<T>(DynamoFeatureFlagsManager mgr, string featureFlagKey, T defaultval);
+    }
 
     /// <summary>
     /// A wrapper around the DynamoFeatureFlags CLI tool.
@@ -20,9 +21,21 @@ namespace DynamoUtilities
     /// </summary>
     internal class DynamoFeatureFlagsManager : CLIWrapper
     {
+        // Utility class that supports mocking during tests
+        class FFlags : IFFlags
+        {
+            T IFFlags.CheckFeatureFlag<T>(DynamoFeatureFlagsManager mgr, string featureFlagKey, T defaultval)
+            {
+                return mgr.CheckFeatureFlagInternal(featureFlagKey, defaultval);
+            }
+        }
+
+        // Useful for mocking in tests
+        internal IFFlags flags { get; set; } = new FFlags();
         private string relativePath = Path.Combine("DynamoFeatureFlags", "DynamoFeatureFlags.exe");
         private Dictionary<string, object> AllFlagsCache { get; set; }//TODO lock is likely overkill.
         private SynchronizationContext syncContext;
+        private readonly bool testmode = false;
         internal static event Action FlagsRetrieved;
         
         //TODO(DYN-6464)- remove this field!.
@@ -43,8 +56,10 @@ namespace DynamoUtilities
         /// <param name="syncContext">context used for raising FlagRetrieved event.</param>
         /// <param name="testmode">will not contact feature flag service in testmode, will respond with defaults.</param>
         internal DynamoFeatureFlagsManager(string userkey, SynchronizationContext syncContext, bool testmode=false)
-        {  
+        {
             this.syncContext = syncContext;
+            this.testmode = testmode;
+
             //dont pass userkey arg if null/empty
             var userkeyarg = $"-u {userkey}";
             var testmodearg = string.Empty;
@@ -62,7 +77,6 @@ namespace DynamoUtilities
 
         internal void CacheAllFlags()
         {
-
             //wait for response
             var dataFromCLI = GetData(featureFlagTimeoutMs);    
             //convert from json string to dictionary.
@@ -91,6 +105,13 @@ namespace DynamoUtilities
         /// <param name="defaultval">Currently the flag and default val MUST be a bool or string.</param>
         /// <returns></returns>
         internal T CheckFeatureFlag<T>(string featureFlagKey, T defaultval)
+        {
+            // with testmode = true, the call goes through an interface so that we can intercept it with Mock
+            // with testmode = false, the call simply goes to the CheckFeatureFlagInternal
+            return testmode ? flags.CheckFeatureFlag(this, featureFlagKey, defaultval) : CheckFeatureFlagInternal(featureFlagKey, defaultval);
+        }
+
+        private T CheckFeatureFlagInternal<T>(string featureFlagKey, T defaultval)
         {
             if(!(defaultval is bool || defaultval is string)){
                 throw new ArgumentException("unsupported flag type", defaultval.GetType().ToString());

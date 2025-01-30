@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Loader;
 using Dynamo.Core;
 using Dynamo.Exceptions;
 using Dynamo.Extensions;
@@ -36,6 +36,52 @@ namespace Dynamo.PackageManager
         internal event Func<string, Graph.Workspaces.PackageInfo, IEnumerable<CustomNodeInfo>> RequestLoadCustomNodeDirectory;
         internal event Func<string, IExtension> RequestLoadExtension;
         internal event Action<IExtension> RequestAddExtension;
+
+        #region Package Isolation Feature Flags
+        // Remove when we fully enable package isolation
+        private HashSet<string> packagesToIsolate = null;
+        private HashSet<string> packagesToNotIsolate = null;
+
+        internal bool CanIsolatePackage(string package)
+        {
+            static void populateFlags(string fflagKey, ref HashSet<string> pkgs)
+            {
+                string flags = DynamoModel.FeatureFlags?.CheckFeatureFlag(fflagKey, string.Empty);
+                if (!string.IsNullOrEmpty(flags))
+                {
+                    foreach (var x in flags.Split(","))
+                    {
+                        pkgs.Add(x);
+                    }
+                }
+            }
+
+            if (packagesToIsolate == null)
+            {
+                packagesToIsolate = [];
+                populateFlags("IsolatePackages", ref packagesToIsolate);
+            }
+
+            if (packagesToNotIsolate == null)
+            {
+                packagesToNotIsolate = [];
+                populateFlags("DoNotIsolatePackages", ref packagesToNotIsolate);
+            }
+
+            // NotIsolate has the highest priority.
+            if (packagesToNotIsolate.Contains(package) || packagesToNotIsolate.Contains("All"))
+            {
+                return false;
+            }
+
+            if (packagesToIsolate.Contains(package) || packagesToIsolate.Contains("All"))
+            {
+                return true;
+            }
+
+            return false;
+        }
+        #endregion
 
         /// <summary>
         /// This event is raised when a package is first added to the list of packages this package loader is loading.
@@ -201,7 +247,12 @@ namespace Dynamo.PackageManager
             {
                 var dynamoVersion = VersionUtilities.PartialParse(DynamoModel.Version);
 
-                List<Assembly> blockedAssemblies = new List<Assembly>();
+                if (CanIsolatePackage(package.Name))
+                {
+                    package.AssemblyLoadContext = new PkgAssemblyLoadContext(package.Name + "@" + package.VersionName, package.RootDirectory);
+                }
+                
+                List<Assembly> blockedAssemblies = [];
                 // Try to load node libraries from all assemblies
                 foreach (var assem in package.EnumerateAndLoadAssembliesInBinDirectory())
                 {
@@ -742,14 +793,15 @@ namespace Dynamo.PackageManager
         /// <summary>
         ///     Attempt to load a managed assembly in to LoadFrom context. 
         /// </summary>
+        /// <param name="alc"></param>
         /// <param name="filename">The filename of a DLL</param>
         /// <param name="assem">out Assembly - the passed value does not matter and will only be set if loading succeeds</param>
         /// <returns>Returns true if success, false if BadImageFormatException (i.e. not a managed assembly)</returns>
-        internal static bool TryLoadFrom(string filename, out Assembly assem)
+        internal static bool TryLoadFrom(AssemblyLoadContext alc, string filename, out Assembly assem)
         {
             try
             {
-                assem = Assembly.LoadFrom(filename);
+                assem = alc.LoadFromAssemblyPath(filename);
                 return true;
             }
             catch (FileLoadException e)
