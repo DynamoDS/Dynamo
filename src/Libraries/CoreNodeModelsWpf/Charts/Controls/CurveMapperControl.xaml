@@ -225,29 +225,43 @@
             </Grid>
             <StackPanel Orientation="Vertical" Grid.Column="2" VerticalAlignment="Bottom">
                 <!--  Lock button  -->
-                <!-- TODO: This is just a placeholder -->
                 <Button x:Name="LockButton"
                         Width="20"
-                        Height="20"   Margin="0,0,0,5"
+                        Height="20"   Margin="0,0,0,0"
                         SnapsToDevicePixels="True"
                         UseLayoutRounding="True"
-                        Click="LockButton_Click"
-                        Background="Transparent"
-                        BorderThickness="1">
+                        Click="LockButton_Click">
+                    <Button.ToolTip>                        
+                        <ToolTip x:Name="lockToolTip"
+                                 Content="{x:Static p:CoreNodeModelWpfResources.CurveMapperLockButtonToolTip}"
+                                 Style="{StaticResource GenericToolTipLight}" />                        
+                    </Button.ToolTip>
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
-                            <Grid>
+                            <Grid HorizontalAlignment="Right">
                                 <Image x:Name="buttonImage"
                                        Width="16"
                                        Height="16"
-                                       Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/unlock_dafault_16px.png"/>
+                                       Source="/DynamoCoreWpf;component/UI/Images/unlock_dafault_16px.png"/>
                             </Grid>
-
                             <ControlTemplate.Triggers>
                                 <Trigger Property="Tag" Value="Locked">
-                                    <Setter TargetName="buttonImage" Property="Source"
-                                            Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/lock_dafault_16px.png"/>
+                                    <Setter TargetName="buttonImage" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/lock_dafault_16px.png"/>
                                 </Trigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="Tag" Value="Unlocked" />
+                                        <Condition Property="IsMouseOver" Value="True"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter TargetName="buttonImage" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/unlock_hover_16px.png"/>
+                                </MultiTrigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="Tag" Value="Locked" />
+                                        <Condition Property="IsMouseOver" Value="True"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter TargetName="buttonImage" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/lock_hover_16px.png"/>
+                                </MultiTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Button.Template>
@@ -264,7 +278,8 @@
                         UseLayoutRounding="True"
                         Style="{StaticResource SButtonWithShapeIcon}">
                     <Button.ToolTip>
-                        <ToolTip Content="{x:Static p:CoreNodeModelWpfResources.CurveMapperResetButtonToolTip}" Style="{StaticResource GenericToolTipLight}" />
+                        <ToolTip Content="{x:Static p:CoreNodeModelWpfResources.CurveMapperResetButtonToolTip}"
+                                 Style="{StaticResource GenericToolTipLight}" />
                     </Button.ToolTip>
                     <Button.Resources>
                         <Image x:Key="Shape"
@@ -289,7 +304,8 @@
             DragDelta="ThumbResizeThumbOnDragDeltaHandler"
             Style="{StaticResource ChartsThumb}">
             <Thumb.ToolTip>
-                <ToolTip Content="{x:Static p:CoreNodeModelWpfResources.ResizeThumbToolTip}" Style="{StaticResource GenericToolTipLight}" />
+                <ToolTip Content="{x:Static p:CoreNodeModelWpfResources.ResizeThumbToolTip}"
+                         Style="{StaticResource GenericToolTipLight}" />
             </Thumb.ToolTip>
         </Thumb>
     </Grid>

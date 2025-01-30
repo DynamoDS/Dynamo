@@ -363,4 +363,10 @@ double</value>
   <data name="CurveMapperInputWarning" xml:space="preserve">
     <value>The provided original values cannot be redistributed using the curve equation.</value>
   </data>
+  <data name="CurveMapperLockButtonToolTip" xml:space="preserve">
+    <value>Click to lock curve.</value>
+  </data>
+  <data name="CurveMapperUnlockButtonToolTip" xml:space="preserve">
+    <value>Curve cannot be modified. Click to unlock.</value>
+  </data>
 </root>

@@ -1,4 +1,5 @@
 using Dynamo.Wpf.Controls;
+using Dynamo.Wpf.Properties;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -392,11 +393,12 @@ namespace CoreNodeModelsWpf.Charts.Controls
             var button = sender as Button;
             if (button != null)
             {
-                // Toggle Lock State
                 IsLocked = !IsLocked;
-
-                // Update the button's Tag property (Triggers the image change in XAML)
                 button.Tag = IsLocked ? "Locked" : "Unlocked";
+                if (button.ToolTip is ToolTip toolTip)
+                {
+                    toolTip.Content = IsLocked ? CoreNodeModelWpfResources.CurveMapperUnlockButtonToolTip : CoreNodeModelWpfResources.CurveMapperLockButtonToolTip;
+                }
             }
         }
 

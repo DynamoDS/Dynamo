@@ -522,6 +522,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Click to lock curve..
+        /// </summary>
+        public static string CurveMapperLockButtonToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperLockButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Generates a list of values mapped from a curve..
         /// </summary>
         public static string CurveMapperNodeDescription {
@@ -556,6 +565,15 @@ namespace Dynamo.Wpf.Properties {
         public static string CurveMapperSearchTags {
             get {
                 return ResourceManager.GetString("CurveMapperSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Curve cannot be modified. Click to unlock..
+        /// </summary>
+        public static string CurveMapperUnlockButtonToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperUnlockButtonToolTip", resourceCulture);
             }
         }
         
