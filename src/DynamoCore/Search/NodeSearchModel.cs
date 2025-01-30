@@ -306,7 +306,6 @@ namespace Dynamo.Search
             ctk.ThrowIfCancellationRequested();
 
             var result = Entries.Where(e => {
-                ctk.ThrowIfCancellationRequested();
                 if (e.Name.Replace(" ", string.Empty).Equals(nodeName) && e.FullCategoryName.Equals(nodeCategory))
                 {
                     //When the node info was indexed if Parameters was null we added an empty space (null cannot be indexed)
