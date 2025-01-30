@@ -389,13 +389,14 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
         private void LockButton_Click(object sender, RoutedEventArgs e)
         {
-            IsLocked = !IsLocked;  // Toggle lock state
-
-            // Change button color dynamically
             var button = sender as Button;
             if (button != null)
             {
-                button.Background = IsLocked ? Brushes.Red : Brushes.Green;
+                // Toggle Lock State
+                IsLocked = !IsLocked;
+
+                // Update the button's Tag property (Triggers the image change in XAML)
+                button.Tag = IsLocked ? "Locked" : "Unlocked";
             }
         }
 

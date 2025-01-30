@@ -227,23 +227,32 @@
                 <!--  Lock button  -->
                 <!-- TODO: This is just a placeholder -->
                 <Button x:Name="LockButton"
-                        Width="15"
-                        Height="15"   Margin="5,0,0,5"
+                        Width="20"
+                        Height="20"   Margin="0,0,0,5"
                         SnapsToDevicePixels="True"
                         UseLayoutRounding="True"
                         Click="LockButton_Click"
-                        Background="Green">
-                    <Button.Style>
-                        <Style TargetType="Button">
-                            <Setter Property="Background" Value="Green"/>
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding IsLocked}" Value="True">
-                                    <Setter Property="Background" Value="Red"/>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button.Style>
+                        Background="Transparent"
+                        BorderThickness="1">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Image x:Name="buttonImage"
+                                       Width="16"
+                                       Height="16"
+                                       Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/unlock_dafault_16px.png"/>
+                            </Grid>
+
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="Tag" Value="Locked">
+                                    <Setter TargetName="buttonImage" Property="Source"
+                                            Value="pack://application:,,,/DynamoCoreWpf;component/UI/Images/lock_dafault_16px.png"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
                 </Button>
+                
                 <!--  Reset button  -->
                 <Button Width="20"
                         Height="20"
@@ -252,33 +261,21 @@
                         VerticalAlignment="Bottom"
                         Click="ResetButton_Click"
                         SnapsToDevicePixels="True"
-                        UseLayoutRounding="True">
-                    
+                        UseLayoutRounding="True"
+                        Style="{StaticResource SButtonWithShapeIcon}">
                     <Button.ToolTip>
                         <ToolTip Content="{x:Static p:CoreNodeModelWpfResources.CurveMapperResetButtonToolTip}" Style="{StaticResource GenericToolTipLight}" />
                     </Button.ToolTip>
-
                     <Button.Resources>
-                        <Image x:Key="DefaultShape"
-                               Width="24"
-                               Height="24"
+                        <Image x:Key="Shape"
+                               Width="16"
+                               Height="16"
                                Source="/DynamoCoreWpf;component/UI/Images/reset.png" />
-                        <Image x:Key="HoverShape"
-                               Width="24"
-                               Height="24"
+                        <Image x:Key="HighlightShape"
+                               Width="16"
+                               Height="16"
                                Source="/DynamoCoreWpf;component/UI/Images/reset_hover.png" />
-                        <Image x:Key="PressedShape"
-                               Width="24"
-                               Height="24"
-                               Source="/DynamoCoreWpf;component/UI/Images/reset_pressed.png" />
-                        <Image x:Key="PressedHoverShape"
-                               Width="24"
-                               Height="24"
-                               Source="/DynamoCoreWpf;component/UI/Images/reset_pressed_hover.png" />
                     </Button.Resources>
-
-
-
                 </Button>
             </StackPanel>            
         </Grid>
