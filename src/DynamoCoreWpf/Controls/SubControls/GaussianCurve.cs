@@ -29,7 +29,6 @@ namespace Dynamo.Wpf.Controls.SubControls
             MaxWidth = maxWidth;
             MaxHeight = maxHeight;
 
-            // Initialize last known X positions and set up event listeners to track movement updates
             lastControlPoint2X = controlPoint2.Point.X;
             previousHorizontalOffset = controlPoint2.Point.X - controlPoint3.Point.X;
 
@@ -37,16 +36,18 @@ namespace Dynamo.Wpf.Controls.SubControls
             controlPoint3.PropertyChanged += ControlPoint3_Changed;
             controlPoint4.PropertyChanged += ControlPoint4_Changed;
 
+            // Ensure PathFigures and Segments are initialized
             PathFigure = new PathFigure();
+            PathFigure2 = new PathFigure();
 
             GenerateGaussianCurve();
 
             PathFigure.Segments.Add(polySegmentLeft);
-            PathFigure.Segments.Add(polySegmentRight);
+            PathFigure2.Segments.Add(polySegmentRight);
 
             PathGeometry = new PathGeometry()
             {
-                Figures = { PathFigure }
+                Figures = { PathFigure, PathFigure2 }
             };
 
             PathCurve = new Path()
@@ -126,48 +127,28 @@ namespace Dynamo.Wpf.Controls.SubControls
             }
         }
 
-        private bool IsPointWithinBounds(double x)
-        {
-            return x >= 0 && x <= MaxWidth; // Assuming MaxWidth is the canvas width
-        }
+        private bool IsPointWithinBounds(double x) =>  x >= 0 && x <= MaxWidth;
 
         private void GenerateGaussianCurve()
         {
             bool peakX = false;
-            List<Point> left = new List<Point>();
+            double xLeft = double.NaN, yLeft = 0;
+            double xRight = double.NaN, yRight = 0;
 
-            // variable to hold the x for the most right point of the left segment
-            double xLeft = double.NegativeInfinity;
-            double yLeft = 0;
-            // variable to hold the x for the most left point of the right segment
-            double xRight = double.NegativeInfinity;
-            double yRight = 0;
+            polySegmentLeft ??= new PolyLineSegment { IsStroked = true };
+            polySegmentRight ??= new PolyLineSegment { IsStroked = true };
+            polySegmentLeft.Points.Clear();
+            polySegmentRight.Points.Clear();
 
-            if (polySegmentLeft == null)
-                polySegmentLeft = new PolyLineSegment { IsStroked = true };
-            else
-                polySegmentLeft.Points.Clear();
+            // Compute Gaussian parameters
+            double A = (MaxHeight - controlPoint1.Point.Y) * 4;
+            double mu = controlPoint2.Point.X;
+            double sigma = Math.Abs(controlPoint4.Point.X - controlPoint3.Point.X) / 4;
+            if (sigma < 1) sigma = 1;
 
-            if (polySegmentRight == null)
-                polySegmentRight = new PolyLineSegment { IsStroked = true };
-            else
-                polySegmentRight.Points.Clear();
-
-
-
-
-            // Compute parameters based on control points
-            double A = (MaxHeight - controlPoint1.Point.Y) * 4; // Peak height
-            double mu = controlPoint2.Point.X;            // Center shift
-            double sigma = Math.Abs(controlPoint4.Point.X - controlPoint3.Point.X) / 4; // Spread            
-
-            if (sigma < 1) sigma = 1; // Prevent division by zero
-
-            // LEFT
-            // Calculate the left segment of the curve
+            // Calculate Left Path
             if (controlPoint2.Point.X > 0)
             {
-                // if the peak point of the gaussian curve is within the canvas
                 if (A <= MaxHeight)
                 {
                     xLeft = controlPoint2.Point.X;
@@ -177,61 +158,51 @@ namespace Dynamo.Wpf.Controls.SubControls
                 {
                     xLeft = mu - Math.Sqrt(-2 * Math.Pow(sigma, 2) * Math.Log(MaxHeight / A));
                 }
-            }
 
-            //// Ensure xLeft and xRight are within bounds
-            //xLeft = Math.Max(0, xLeft); // do we need this?
+                PathFigure.StartPoint = new Point(0, ComputeGaussianY(0, A, mu, sigma));
 
-            PathFigure.StartPoint = new Point(0, ComputeGaussianY(0, A, mu, sigma));
-
-            for (double x = 0; x <= controlPoint2.Point.X; x += 2.0)
-            {
-                double y = ComputeGaussianY(x, A, mu, sigma);
-
-                if (y >= 0 && y <= MaxHeight) // Ensure it's within the visible canvas
+                for (double x = 0; x <= controlPoint2.Point.X; x += 2.0)
                 {
-                    if (!peakX) polySegmentLeft.Points.Add(new Point(x, y));
+                    double y = ComputeGaussianY(x, A, mu, sigma);
+
+                    if (y >= 0 && y <= MaxHeight)
+                    {
+                        if (!peakX) polySegmentLeft.Points.Add(new Point(x, y));
+                    }
+                    else
+                    {
+                        peakX = true;
+                    }
+                }
+                polySegmentLeft.Points.Add(new Point(xLeft, yLeft));
+            }            
+
+            // Calculate Right Path
+            if (controlPoint2.Point.X < MaxWidth)
+            {
+                if (A <= MaxHeight)
+                {
+                    xRight = controlPoint2.Point.X;
+                    yRight = ComputeGaussianY(controlPoint2.Point.X, A, mu, sigma);
                 }
                 else
                 {
-                    peakX = true;
+                    xRight = mu + Math.Sqrt(-2 * Math.Pow(sigma, 2) * Math.Log(MaxHeight / A));
                 }
-            }
 
-            polySegmentLeft.Points.Add(new Point(xLeft, yLeft));
+                PathFigure2.StartPoint = new Point(xRight, yRight);
 
+                for (double x = controlPoint2.Point.X; x <= MaxWidth; x += 2.0)
+                {
+                    double y = ComputeGaussianY(x, A, mu, sigma);
 
-            //// RIGHT
-            //// Calculate the right segment of the curve
-            //if (controlPoint2.Point.X < MaxWidth)
-            //{
-            //    // if the peak point of the gaussian curve is within the canvas
-            //    if (A <= MaxHeight)
-            //    {
-            //        xRight = controlPoint2.Point.X;
-            //        yRight = ComputeGaussianY(controlPoint2.Point.X, A, mu, sigma);
-            //    }
-            //    else
-            //    {
-            //        xRight = mu + Math.Sqrt(-2 * Math.Pow(sigma, 2) * Math.Log(MaxHeight / A));
-            //    }
-            //}
-
-            ////PathFigure.StartPoint = new Point(0, ComputeGaussianY(0, A, mu, sigma));
-            //PathFigure.StartPoint = new Point(xRight, yRight);
-
-            //for (double x = controlPoint2.Point.X; x <= MaxWidth; x += 2.0)
-            //{
-            //    double y = ComputeGaussianY(x, A, mu, sigma);
-
-            //    if (y >= 0 && y <= MaxHeight) // Ensure it's within the visible canvas
-            //    {
-            //        polySegmentRight.Points.Add(new Point(x, y));
-            //    }
-            //}
-
-            //polySegmentRight.Points.Add(new Point(MaxWidth, ComputeGaussianY(MaxWidth, A, mu, sigma)));
-
+                    if (y >= 0 && y <= MaxHeight)
+                    {
+                        polySegmentRight.Points.Add(new Point(x, y));
+                    }
+                }
+                polySegmentRight.Points.Add(new Point(MaxWidth, ComputeGaussianY(MaxWidth, A, mu, sigma)));
+            }            
         }
 
         private double ComputeGaussianY(double x, double A, double mu, double sigma)
@@ -258,8 +229,10 @@ namespace Dynamo.Wpf.Controls.SubControls
             if (count < 1) return null;
 
             var values = new List<double>();
+
             double step = MaxWidth / (count - 1);
             double A = MaxHeight - controlPoint1.Point.Y;
+
             double mu = controlPoint2.Point.X;
             double sigma = Math.Abs(controlPoint4.Point.X - controlPoint3.Point.X) / 4;
 
@@ -269,8 +242,9 @@ namespace Dynamo.Wpf.Controls.SubControls
             {
                 double x = i * step;
                 double normalizedY = ComputeGaussianY(x, A, mu, sigma);
-                double scaledY = minY + ((maxY - minY) * normalizedY / MaxHeight);
-                values.Add(Math.Round(scaledY, rounding));
+                double scaledY = minY + ((maxY - minY) * (1 - (normalizedY / MaxHeight)));
+
+                values.Add(Math.Round(scaledY * 4, rounding));
             }
 
             return values;

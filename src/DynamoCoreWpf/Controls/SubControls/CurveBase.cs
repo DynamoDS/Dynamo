@@ -9,11 +9,10 @@ namespace Dynamo.Wpf.Controls.SubControls
 {
     public class CurveBase : UIElement
     {
-        // private backing fields
-        // TODO: declare in API
         private Path pathCurve;
         private PathGeometry pathGeometry;
         private PathFigure pathFigure;
+        private PathFigure pathFigure2;
         private double maxWidth;
         private double maxHeight;
         protected CurveMapperControlPoint controlPoint1;
@@ -38,10 +37,17 @@ namespace Dynamo.Wpf.Controls.SubControls
             set => pathFigure = value;
         }
 
+        public PathFigure PathFigure2
+        {
+            get => pathFigure2;
+            set => pathFigure2 = value;
+        }
+
         public CurveBase()
         {
             pathGeometry = new PathGeometry();
             pathFigure = new PathFigure();
+            pathFigure2 = new PathFigure();
         }
 
         public double MaxWidth
