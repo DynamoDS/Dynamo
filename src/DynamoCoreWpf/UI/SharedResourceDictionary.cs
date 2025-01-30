@@ -67,7 +67,6 @@ namespace Dynamo.UI
         private static ResourceDictionary outPortsDictionary;
         private static ResourceDictionary inPortsDictionary;
         private static ResourceDictionary _liveChartDictionary;
-        
 
         public static string ThemesDirectory 
         {
