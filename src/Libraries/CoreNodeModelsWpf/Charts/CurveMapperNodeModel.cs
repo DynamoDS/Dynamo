@@ -9,11 +9,9 @@ using Dynamo.Wpf.Properties;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using ProtoCore.AST.AssociativeAST;
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 
 namespace CoreNodeModelsWpf.Charts
