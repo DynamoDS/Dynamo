@@ -279,6 +279,19 @@ namespace DSCoreNodesTests
 
         [Test]
         [Category("UnitTests")]
+        public static void ReplaceItemAtIndices()
+        {
+            Assert.AreEqual(List.ReplaceItemAtIndices(new ArrayList { 5, 4, 3, 2, 1 }, new List<int> { 0 }, 20), new ArrayList { 20, 4, 3, 2, 1 });
+            Assert.AreEqual(List.ReplaceItemAtIndices(new ArrayList { 5, 4, 3, 2, 1 }, new List<int> { 1, 4}, 20), new ArrayList { 5, 20, 3, 2, 20 });
+            Assert.AreEqual(List.ReplaceItemAtIndices(new ArrayList { 5, 4, 3, 2, 1 }, new List<int> { 0, -2 }, 20), new ArrayList { 20, 4, 3, 20, 1 });
+
+            Assert.Throws<IndexOutOfRangeException>(() => List.ReplaceItemAtIndices(new ArrayList { 5, 4, 3, 2, 1 }, new List<int> { 0, 2, 9 }, 20));
+            Assert.Throws<ArgumentException>(() => List.ReplaceItemAtIndices(new ArrayList {  }, new List<int> { 0 }, 20));
+            Assert.Throws<ArgumentException>(() => List.ReplaceItemAtIndices(new ArrayList { 5, 4, 3, 2, 1 }, new List<int> { }, 20));
+        }
+
+        [Test]
+        [Category("UnitTests")]
         public static void ReverseList()
         {
             Assert.AreEqual(new ArrayList { 5, 4, 3, 2, 1 }, List.Reverse(new List<int> { 1, 2, 3, 4, 5 }));

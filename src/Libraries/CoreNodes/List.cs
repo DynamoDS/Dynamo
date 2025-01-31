@@ -703,7 +703,7 @@ namespace DSCore
                 }
                 else
                 {
-                    throw new ArgumentOutOfRangeException(nameof(indices), $"Index {idx} is out of range.");
+                    throw new IndexOutOfRangeException($"Index {idx} is out of range. (Parameter: '{nameof(indices)}')");
                 }
             }
             return newList;
