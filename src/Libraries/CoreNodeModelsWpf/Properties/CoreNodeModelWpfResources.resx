@@ -369,4 +369,7 @@ double</value>
   <data name="CurveMapperUnlockButtonToolTip" xml:space="preserve">
     <value>Curve cannot be modified. Click to unlock.</value>
   </data>
+  <data name="CurveMapperCurveTypeLabel" xml:space="preserve">
+    <value>Curve Type</value>
+  </data>
 </root>

@@ -226,10 +226,10 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
         private void NodeModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "DataUpdated")
-            {
-                var nodeModel = sender as CurveMapperNodeModel;             
-            }
+            //if (e.PropertyName == "DataUpdated")
+            //{
+            //    var nodeModel = sender as CurveMapperNodeModel;
+            //}
         }
 
         /// <summary>
@@ -246,9 +246,6 @@ namespace CoreNodeModelsWpf.Charts.Controls
             }
         }
 
-        /// <summary>
-        /// Redraws the grid on the canvas by removing old grid lines and drawing new ones based.
-        /// </summary>
         private void DrawGrid(double xMin, double xMax, double yMin, double yMax)
         {
             // Remove current grid lines
@@ -279,9 +276,6 @@ namespace CoreNodeModelsWpf.Charts.Controls
             }
         }
 
-        /// <summary>
-        /// Helper function to draw lines on the canvas
-        /// </summary>
         private void DrawLine(double x1, double y1, double x2, double y2)
         {
             var line = new System.Windows.Shapes.Line
@@ -315,9 +309,6 @@ namespace CoreNodeModelsWpf.Charts.Controls
             DynamicCanvasSize = Math.Max(xAdjust - 70, canvasMinSize);
         }
 
-        /// <summary>
-        /// Unsubscribes from ViewModel events
-        /// </summary>
         private void Unload(object sender, RoutedEventArgs e)
         {
             this.model.PropertyChanged -= NodeModel_PropertyChanged;
@@ -397,7 +388,9 @@ namespace CoreNodeModelsWpf.Charts.Controls
                 button.Tag = IsLocked ? "Locked" : "Unlocked";
                 if (button.ToolTip is ToolTip toolTip)
                 {
-                    toolTip.Content = IsLocked ? CoreNodeModelWpfResources.CurveMapperUnlockButtonToolTip : CoreNodeModelWpfResources.CurveMapperLockButtonToolTip;
+                    toolTip.Content = IsLocked
+                        ? CoreNodeModelWpfResources.CurveMapperUnlockButtonToolTip
+                        : CoreNodeModelWpfResources.CurveMapperLockButtonToolTip;
                 }
             }
         }

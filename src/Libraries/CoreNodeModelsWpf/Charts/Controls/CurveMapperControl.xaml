@@ -18,6 +18,7 @@
     MinHeight="340"
     d:DataContext="{d:DesignInstance local:CurveMapperControl}"
     mc:Ignorable="d">
+    
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -25,45 +26,48 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.LiveChartsDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
+            <!--  Style for X and Y Axis Labels -->
+            <Style x:Key="AxisLabelStyle" TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="FontSize" Value="11" />
+                <Setter Property="Foreground" Value="#979797" />
+            </Style>
+            <!--Style for Axis Titles ("x" and "y") -->
+            <Style x:Key="AxisTitleStyle" TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="Foreground" Value="#979797" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+            </Style>
         </ResourceDictionary>
     </UserControl.Resources>
+    
     <Grid>
-        <!--  Main content of CurveMapper  -->
-        <Grid
-            x:Name="MainGrid"
-            MinWidth="300"
-            MinHeight="340">
+        <Grid x:Name="MainGrid"
+              MinWidth="300"
+              MinHeight="340">
             <Grid.RowDefinitions>
-                <RowDefinition Height="*" />                
-                <!--  graph canvas  -->
-                <RowDefinition Height="35" />               
-                <!--  x values & x label  -->
-                <RowDefinition Height="55" />               
-                <!--  graph types dropdown  -->
+                <RowDefinition Height="*" />
+                <RowDefinition Height="35" />
+                <RowDefinition Height="55" />  
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="40" />             
-                <!--  y values & y label  -->
-                <ColumnDefinition Width="*" />              
-                <!--  graph canvas  -->
-                <ColumnDefinition Width="20" />             
-                <!--  reset button  -->
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="20" />
             </Grid.ColumnDefinitions>
-
-            <!--  Graph canvas  -->
-            <Canvas
-                x:Name="GraphCanvas"
-                Grid.Row="0"
-                Grid.Column="1"
-                Width="{Binding DynamicCanvasSize, Mode=TwoWay}"
-                Height="{Binding DynamicCanvasSize, Mode=TwoWay}"
-                MinWidth="240"
-                MinHeight="240"
-                Margin="10,0,0,0"
-                Background="Transparent" PreviewMouseLeftButtonUp="GraphCanvas_PreviewMouseLeftButtonUp" />
-
-            <!--  X values  -->
-            <!--  TODO: Create TextBlock styles  -->
+            <!--  Curve canvas  -->
+            <Canvas x:Name="GraphCanvas"
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Width="{Binding DynamicCanvasSize, Mode=TwoWay}"
+                    Height="{Binding DynamicCanvasSize, Mode=TwoWay}"
+                    MinWidth="240"
+                    MinHeight="240"
+                    Margin="10,0,0,0"
+                    Background="Transparent"
+                    PreviewMouseLeftButtonUp="GraphCanvas_PreviewMouseLeftButtonUp" />
+            <!--  X labels  -->
             <Grid Grid.Row="1" Grid.Column="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*" />
@@ -74,55 +78,34 @@
                     <RowDefinition Height="20" />
                     <RowDefinition Height="15" />
                 </Grid.RowDefinitions>
+                <TextBlock x:Name="minLimitXLabel"
+                           Grid.Row="0" Grid.Column="0"
+                           Margin="10,0,0,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Top"
+                           Style="{StaticResource AxisLabelStyle}"
+                           Text="{Binding MinLimitX}" />
 
-                <TextBlock
-                    x:Name="minLimitXLabel"
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    Margin="10,0,0,0"
-                    HorizontalAlignment="Left"
-                    VerticalAlignment="Top"
-                    FontFamily="{StaticResource ArtifaktElementRegular}"
-                    FontSize="11"
-                    Foreground="#979797"
-                    Text="{Binding MinLimitX}" />
+                <TextBlock x:Name="midXLabel"
+                           Grid.Row="0" Grid.Column="1"
+                           Margin="5,0,0,0"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Top"
+                           Style="{StaticResource AxisLabelStyle}"
+                           Text="{Binding MidValueX}" />
 
-                <TextBlock
-                    x:Name="midXLabel"
-                    Grid.Row="0"
-                    Grid.Column="1"
-                    Margin="5,0,0,0"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Top"
-                    FontFamily="{StaticResource ArtifaktElementRegular}"
-                    FontSize="11"
-                    Foreground="#979797"
-                    Text="{Binding MidValueX}" />
+                <TextBlock x:Name="maxLimitXLabel"
+                           Grid.Row="0" Grid.Column="2"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Top"
+                           Style="{StaticResource AxisLabelStyle}"
+                           Text="{Binding MaxLimitX}" />
 
-                <TextBlock
-                    x:Name="maxLimitXLabel"
-                    Grid.Row="0"
-                    Grid.Column="2"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    FontFamily="{StaticResource ArtifaktElementRegular}"
-                    FontSize="11"
-                    Foreground="#979797"
-                    Text="{Binding MaxLimitX}" />
-
-                <TextBlock
-                    Grid.Row="1"
-                    Grid.Column="1"
-                    HorizontalAlignment="Center"
-                    FontFamily="{StaticResource ArtifaktElementRegular}"
-                    FontSize="12"
-                    Foreground="#979797"
-                    Text="x" />
+                <TextBlock Grid.Row="1" Grid.Column="1"
+                           Style="{StaticResource AxisTitleStyle}"
+                           Text="x" />
             </Grid>
-
-            <!--  Y values  -->
-            <!--  column width when the values are high?  -->
-            <!--  TODO: Create TextBlock styles  -->
+            <!--  Y labels  -->
             <Grid Grid.Row="0" Grid.Column="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="15" />
@@ -133,88 +116,54 @@
                     <RowDefinition Height="*" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-
-                <TextBlock
-                    x:Name="minLimitYLabel"
-                    Grid.Row="2"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="2"
-                    Margin="0,0,0,5"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Bottom"
-                    FontFamily="{StaticResource ArtifaktElementRegular}"
-                    FontSize="11"
-                    Foreground="#979797"
-                    Text="{Binding MinLimitY}" />
-
-                <TextBlock
-                    x:Name="midYLabel"
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="2"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    FontFamily="{StaticResource ArtifaktElementRegular}"
-                    FontSize="11"
-                    Foreground="#979797"
-                    Text="{Binding MidValueY}" />
-
-                <TextBlock
-                    x:Name="maxLimitYLabel"
-                    Grid.Row="0"
-                    Grid.Column="0"
-                    Grid.ColumnSpan="2"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Top"
-                    FontFamily="{StaticResource ArtifaktElementRegular}"
-                    FontSize="11"
-                    Foreground="#979797"
-                    Text="{Binding MaxLimitY}" />
-
-                <TextBlock
-                    Grid.Row="1"
-                    Grid.Column="0"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontFamily="{StaticResource ArtifaktElementRegular}"
-                    FontSize="12"
-                    Foreground="#979797"
-                    Text="y">
+                <TextBlock x:Name="minLimitYLabel"
+                           Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                           Margin="0,0,0,5"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Bottom"
+                           Style="{StaticResource AxisLabelStyle}"
+                           Text="{Binding MinLimitY}" />
+                <TextBlock x:Name="midYLabel"
+                           Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           Style="{StaticResource AxisLabelStyle}"
+                           Text="{Binding MidValueY}" />
+                <TextBlock x:Name="maxLimitYLabel"
+                           Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Top"
+                           Style="{StaticResource AxisLabelStyle}"
+                           Text="{Binding MaxLimitY}" />
+                <TextBlock Grid.Row="1" Grid.Column="0"
+                           Style="{StaticResource AxisTitleStyle}"
+                           Text="y">
                     <TextBlock.RenderTransform>
                         <RotateTransform Angle="-90" />
                     </TextBlock.RenderTransform>
                 </TextBlock>
             </Grid>
-            <!--  Graph type dropdown  -->
-            <!--  TODO: Text for localization  -->
-            <Grid
-                Grid.Row="2"
-                Grid.Column="1"
-                HorizontalAlignment="Stretch">
+            <!--  Curve type dropdown  -->
+            <Grid Grid.Row="2" Grid.Column="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
-                </Grid.ColumnDefinitions>
-                <TextBlock
-                    Grid.Column="0"
-                    VerticalAlignment="Center"
-                    FontFamily="{StaticResource ArtifaktElementRegular}"
-                    FontSize="14px"
-                    Foreground="{StaticResource DefaultFontColorBrush}"
-                    Text="Curve Type" />
-                <ComboBox
-                    Grid.Column="1"
-                    MinWidth="160"
-                    Margin="10,0,0,0"
-                    HorizontalAlignment="Stretch"
-                    VerticalAlignment="Center"
-                    ItemsSource="{converters:EnumBindingSource charts:GraphTypes}"
-                    SelectedItem="{Binding SelectedGraphType}">
-                    <!--  Custom Style with DataTrigger  -->
+                </Grid.ColumnDefinitions>                
+                <TextBlock Grid.Column="0"
+                           VerticalAlignment="Center"
+                           FontSize="14px"
+                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                           Foreground="{StaticResource DefaultFontColorBrush}"
+                           Text="{x:Static p:CoreNodeModelWpfResources.CurveMapperCurveTypeLabel}" />
+                <ComboBox Grid.Column="1"
+                          MinWidth="160"
+                          Margin="10,0,0,0"
+                          VerticalAlignment="Center"
+                          ItemsSource="{converters:EnumBindingSource charts:GraphTypes}"
+                          SelectedItem="{Binding SelectedGraphType}">                    
                     <ComboBox.Style>
                         <Style BasedOn="{StaticResource RefreshComboBox}" TargetType="ComboBox">
                             <Style.Triggers>
-                                <!--  Trigger to check if SelectedItem is 'Empty'  -->
                                 <DataTrigger Binding="{Binding SelectedItem, RelativeSource={RelativeSource Self}}" Value="Empty">
                                     <Setter Property="Foreground" Value="#AFAFAF" />
                                 </DataTrigger>
@@ -223,11 +172,11 @@
                     </ComboBox.Style>
                 </ComboBox>
             </Grid>
+            <!-- Buttons -->
             <StackPanel Orientation="Vertical" Grid.Column="2" VerticalAlignment="Bottom">
-                <!--  Lock button  -->
                 <Button x:Name="LockButton"
-                        Width="20"
-                        Height="20"   Margin="0,0,0,0"
+                        Width="20" Height="20"
+                        Margin="1,0,0,0"
                         SnapsToDevicePixels="True"
                         UseLayoutRounding="True"
                         Click="LockButton_Click">
@@ -266,9 +215,8 @@
                         </ControlTemplate>
                     </Button.Template>
                 </Button>
-                
-                <!--  Reset button  -->
-                <Button Width="20"
+                <Button Name="ResetButton"
+                        Width="20"
                         Height="20"
                         Margin="0,0,0,15"
                         HorizontalAlignment="Right"
@@ -293,16 +241,15 @@
                     </Button.Resources>
                 </Button>
             </StackPanel>            
-        </Grid>
-        <Thumb
-            Name="resizeThumb"
-            Grid.Row="1"
-            Margin="0,0,-60,-25"
-            HorizontalAlignment="Right"
-            VerticalAlignment="Bottom"
-            Cursor="SizeNWSE"
-            DragDelta="ThumbResizeThumbOnDragDeltaHandler"
-            Style="{StaticResource ChartsThumb}">
+        </Grid>        
+        <Thumb Name="resizeThumb"
+               Grid.Row="1"
+               Margin="0,0,-60,-25"
+               HorizontalAlignment="Right"
+               VerticalAlignment="Bottom"
+               Cursor="SizeNWSE"
+               DragDelta="ThumbResizeThumbOnDragDeltaHandler"
+               Style="{StaticResource ChartsThumb}">
             <Thumb.ToolTip>
                 <ToolTip Content="{x:Static p:CoreNodeModelWpfResources.ResizeThumbToolTip}"
                          Style="{StaticResource GenericToolTipLight}" />
