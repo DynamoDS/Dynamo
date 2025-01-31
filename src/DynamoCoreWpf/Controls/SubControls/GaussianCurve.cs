@@ -16,6 +16,11 @@ namespace Dynamo.Wpf.Controls.SubControls
         private double lastControlPoint2X;
         private double previousHorizontalOffset;
 
+        /// <summary>
+        /// Indicates whether the node is currently being resized, preventing unintended control point updates.
+        /// </summary>
+        public bool IsResizing { get; set; } = false;
+
         public GaussianCurve(CurveMapperControlPoint orthoControlPoint1,
             CurveMapperControlPoint orthoControlPoint2,
             CurveMapperControlPoint orthoControlPoint3,
@@ -60,6 +65,8 @@ namespace Dynamo.Wpf.Controls.SubControls
 
         private void ControlPoint2_Changed(object sender, PropertyChangedEventArgs e)
         {
+            if (IsResizing) return;
+
             if (e.PropertyName == nameof(CurveMapperControlPoint.Point))
             {
                 double deltaX = controlPoint2.Point.X - lastControlPoint2X;
@@ -74,10 +81,6 @@ namespace Dynamo.Wpf.Controls.SubControls
                 controlPoint4.Point = new Point(controlPoint4.Point.X + deltaX, controlPoint4.Point.Y);
                 lastControlPoint2X = controlPoint2.Point.X;
 
-                // Hide controlPoint3 if outside canvas bounds
-                controlPoint3.Visibility = IsPointWithinBounds(controlPoint3.Point.X) ? Visibility.Visible : Visibility.Collapsed;
-                controlPoint4.Visibility = IsPointWithinBounds(controlPoint4.Point.X) ? Visibility.Visible : Visibility.Collapsed;
-
                 // Re-subscribe events
                 controlPoint3.PropertyChanged += ControlPoint3_Changed;
                 controlPoint4.PropertyChanged += ControlPoint4_Changed;
@@ -86,6 +89,7 @@ namespace Dynamo.Wpf.Controls.SubControls
 
         private void ControlPoint3_Changed(object sender, PropertyChangedEventArgs e)
         {
+            if (IsResizing) return;
             if (e.PropertyName == nameof(CurveMapperControlPoint.Point))
             {
                 var horizontalOffset = controlPoint2.Point.X - controlPoint3.Point.X;
@@ -98,8 +102,6 @@ namespace Dynamo.Wpf.Controls.SubControls
                 controlPoint4.Point = new Point(controlPoint2.Point.X + horizontalOffset, controlPoint4.Point.Y);
                 previousHorizontalOffset = horizontalOffset;
 
-                controlPoint4.Visibility = IsPointWithinBounds(controlPoint4.Point.X) ? Visibility.Visible : Visibility.Collapsed;
-
                 // Re-subscribe events
                 controlPoint2.PropertyChanged += ControlPoint2_Changed;
                 controlPoint4.PropertyChanged += ControlPoint4_Changed;
@@ -107,6 +109,8 @@ namespace Dynamo.Wpf.Controls.SubControls
         }
         private void ControlPoint4_Changed(object sender, PropertyChangedEventArgs e)
         {
+            if (IsResizing) return;
+
             if (e.PropertyName == nameof(CurveMapperControlPoint.Point))
             {
                 var horizontalOffset = controlPoint2.Point.X - controlPoint4.Point.X;
@@ -119,15 +123,11 @@ namespace Dynamo.Wpf.Controls.SubControls
                 controlPoint3.Point = new Point(controlPoint2.Point.X + horizontalOffset, controlPoint3.Point.Y);
                 previousHorizontalOffset = horizontalOffset;
 
-                controlPoint3.Visibility = IsPointWithinBounds(controlPoint3.Point.X) ? Visibility.Visible : Visibility.Collapsed;
-
                 // Re-subscribe events
                 controlPoint2.PropertyChanged += ControlPoint2_Changed;
                 controlPoint3.PropertyChanged += ControlPoint3_Changed;
             }
         }
-
-        private bool IsPointWithinBounds(double x) =>  x >= 0 && x <= MaxWidth;
 
         private void GenerateGaussianCurve()
         {
@@ -145,19 +145,16 @@ namespace Dynamo.Wpf.Controls.SubControls
             double mu = controlPoint2.Point.X;
             double sigma = Math.Abs(controlPoint4.Point.X - controlPoint3.Point.X) / 4;
             if (sigma < 1) sigma = 1;
-
-            // Calculate Left Path
+            
             if (controlPoint2.Point.X > 0)
             {
-                if (A <= MaxHeight)
-                {
-                    xLeft = controlPoint2.Point.X;
-                    yLeft = ComputeGaussianY(controlPoint2.Point.X, A, mu, sigma);
-                }
-                else
-                {
-                    xLeft = mu - Math.Sqrt(-2 * Math.Pow(sigma, 2) * Math.Log(MaxHeight / A));
-                }
+                xLeft = (A <= MaxHeight)
+                    ? controlPoint2.Point.X
+                    : mu - Math.Sqrt(-2 * Math.Pow(sigma, 2) * Math.Log(MaxHeight / A));
+
+                // Ensure xLeft stays within canvas bounds
+                xLeft = Math.Max(xLeft, 0);
+                yLeft = ComputeGaussianY(xLeft, A, mu, sigma);
 
                 PathFigure.StartPoint = new Point(0, ComputeGaussianY(0, A, mu, sigma));
 
@@ -174,21 +171,20 @@ namespace Dynamo.Wpf.Controls.SubControls
                         peakX = true;
                     }
                 }
+
                 polySegmentLeft.Points.Add(new Point(xLeft, yLeft));
-            }            
+            }
 
             // Calculate Right Path
             if (controlPoint2.Point.X < MaxWidth)
             {
-                if (A <= MaxHeight)
-                {
-                    xRight = controlPoint2.Point.X;
-                    yRight = ComputeGaussianY(controlPoint2.Point.X, A, mu, sigma);
-                }
-                else
-                {
-                    xRight = mu + Math.Sqrt(-2 * Math.Pow(sigma, 2) * Math.Log(MaxHeight / A));
-                }
+                xRight = (A <= MaxHeight)
+                    ? controlPoint2.Point.X
+                    : mu + Math.Sqrt(-2 * Math.Pow(sigma, 2) * Math.Log(MaxHeight / A));
+
+                // Ensure xRight stays within canvas bounds
+                xRight = Math.Min(xRight, MaxWidth);
+                yRight = ComputeGaussianY(xRight, A, mu, sigma);
 
                 PathFigure2.StartPoint = new Point(xRight, yRight);
 
@@ -202,7 +198,7 @@ namespace Dynamo.Wpf.Controls.SubControls
                     }
                 }
                 polySegmentRight.Points.Add(new Point(MaxWidth, ComputeGaussianY(MaxWidth, A, mu, sigma)));
-            }            
+            }
         }
 
         private double ComputeGaussianY(double x, double A, double mu, double sigma)

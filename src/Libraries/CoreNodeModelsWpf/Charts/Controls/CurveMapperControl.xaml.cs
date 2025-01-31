@@ -204,6 +204,8 @@ namespace CoreNodeModelsWpf.Charts.Controls
                 // Gaussian curve
                 if (model.OrthoControlPointGaussian1 != null && model.OrthoControlPointGaussian2 != null && model.OrthoControlPointGaussian3 != null && model.OrthoControlPointGaussian4 != null)
                 {
+                    model.GaussianCurve.IsResizing = true;
+
                     UpdateControlPoints(newCanvasSize, model.OrthoControlPointGaussian1, model.OrthoControlPointGaussian2,
                         model.OrthoControlPointGaussian3, model.OrthoControlPointGaussian4);
                     if (model.GaussianCurve != null)
@@ -213,6 +215,8 @@ namespace CoreNodeModelsWpf.Charts.Controls
                         model.GaussianCurve.Regenerate();
                         Canvas.SetZIndex(model.GaussianCurve.PathCurve, 10);
                     }
+
+                    model.GaussianCurve.IsResizing = false;
                 }
 
                 previousCanvasSize = newCanvasSize;
@@ -225,11 +229,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
         }
 
         private void NodeModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            //if (e.PropertyName == "DataUpdated")
-            //{
-            //    var nodeModel = sender as CurveMapperNodeModel;
-            //}
+        {            
         }
 
         /// <summary>

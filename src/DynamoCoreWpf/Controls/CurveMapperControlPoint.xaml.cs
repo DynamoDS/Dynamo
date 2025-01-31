@@ -26,7 +26,6 @@ namespace Dynamo.Wpf.Controls
         public double LimitWidth { get; set; }
         public double LimitHeight { get; set; }
 
-
         // Define dependency properties for control point limits (Min/Max X, Y) and canvas size,
         // with a common change handler for dynamic updates.
         public static readonly DependencyProperty MinLimitXProperty = RegisterProperty(nameof(MinLimitX), 0.0);
@@ -106,10 +105,10 @@ namespace Dynamo.Wpf.Controls
 
                     RaisePropertyChanged(nameof(Point));
                     RaisePropertyChanged(nameof(ScaledCoordinates));
+                    UpdateBounds(); // Call to update visibility
                 }
             }
         }
-
         
         [JsonIgnore]
         public bool IsEnabled
@@ -123,6 +122,23 @@ namespace Dynamo.Wpf.Controls
                     UpdateCursor();
                 }
             }
+        }
+
+        /// <summary>
+        /// Dependency property that indicates whether the control point is within the canvas bounds.
+        /// </summary>
+        public static readonly DependencyProperty IsWithinBoundsProperty =
+            DependencyProperty.Register(
+                nameof(IsWithinBounds), typeof(bool), typeof(CurveMapperControlPoint), new PropertyMetadata(true)
+            );
+
+        /// <summary>
+        /// Gets or sets a value indicating whether the control point is within the canvas bounds.
+        /// </summary>
+        public bool IsWithinBounds
+        {
+            get => (bool)GetValue(IsWithinBoundsProperty);
+            set => SetValue(IsWithinBoundsProperty, value);
         }
 
         /// <summary>
@@ -276,6 +292,12 @@ namespace Dynamo.Wpf.Controls
         private void UpdateCursor()
         {
             this.Cursor = IsEnabled ? Cursors.Hand : Cursors.Arrow;
+        }
+
+        private void UpdateBounds()
+        {
+            IsWithinBounds = Point.X >= 0 && Point.X <= LimitWidth;
+            RaisePropertyChanged(nameof(IsWithinBounds));
         }
     }
 

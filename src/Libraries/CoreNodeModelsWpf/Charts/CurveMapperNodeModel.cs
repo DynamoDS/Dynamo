@@ -139,6 +139,7 @@ namespace CoreNodeModelsWpf.Charts
                 GenerateOutputValues();
                 RaisePropertyChanged(nameof(SelectedGraphType));
                 OnNodeModified();
+                UpdateGaussianControlPointsVisibility();
             }
         }
 
@@ -483,6 +484,21 @@ namespace CoreNodeModelsWpf.Charts
         }
 
         #endregion
+
+        private void UpdateGaussianControlPointsVisibility()
+        {
+            if (selectedGraphType == GraphTypes.GaussianCurve)
+            {
+                OrthoControlPointGaussian3.IsWithinBounds = OrthoControlPointGaussian3.Point.X >= 0 &&
+                                                            OrthoControlPointGaussian3.Point.X <= OrthoControlPointGaussian3.LimitWidth;
+
+                OrthoControlPointGaussian4.IsWithinBounds = OrthoControlPointGaussian4.Point.X >= 0 &&
+                                                            OrthoControlPointGaussian4.Point.X <= OrthoControlPointGaussian4.LimitWidth;
+
+                RaisePropertyChanged(nameof(OrthoControlPointGaussian3.IsWithinBounds));
+                RaisePropertyChanged(nameof(OrthoControlPointGaussian4.IsWithinBounds));
+            }
+        }
 
 
         private double GetInputValueOrDefault(int portIndex, double defaultValue)

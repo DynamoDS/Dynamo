@@ -434,118 +434,135 @@ namespace Dynamo.Wpf.Charts
         private void BindVisibility(CurveMapperNodeModel model)
         {
             // Linear curve
-            var linearVisibilityBinding = new Binding("SelectedGraphType")
+            var linearVisBinding = new Binding("SelectedGraphType")
             {
                 Source = model,
                 Converter = new GraphTypeToVisibilityConverter(),
                 ConverterParameter = GraphTypes.LinearCurve,
                 Mode = BindingMode.OneWay
             };
-            model.ControlPointLinear1?.SetBinding(UIElement.VisibilityProperty, linearVisibilityBinding);
-            model.ControlPointLinear2?.SetBinding(UIElement.VisibilityProperty, linearVisibilityBinding);
-            model.LinearCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, linearVisibilityBinding);
+            model.ControlPointLinear1?.SetBinding(UIElement.VisibilityProperty, linearVisBinding);
+            model.ControlPointLinear2?.SetBinding(UIElement.VisibilityProperty, linearVisBinding);
+            model.LinearCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, linearVisBinding);
 
             // Bezier curve
-            var bezierVisibilityBinding = new Binding("SelectedGraphType")
+            var bezierVisBinding = new Binding("SelectedGraphType")
             {
                 Source = model,
                 Converter = new GraphTypeToVisibilityConverter(),
                 ConverterParameter = GraphTypes.BezierCurve,
                 Mode = BindingMode.OneWay
             };
-            model.ControlPointBezier1?.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
-            model.ControlPointBezier2?.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
-            model.OrthoControlPointBezier1?.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
-            model.OrthoControlPointBezier2?.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
-            model.ControlLineBezier1?.PathCurve?.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
-            model.ControlLineBezier2?.PathCurve?.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
-            model.BezierCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, bezierVisibilityBinding);
+            model.ControlPointBezier1?.SetBinding(UIElement.VisibilityProperty, bezierVisBinding);
+            model.ControlPointBezier2?.SetBinding(UIElement.VisibilityProperty, bezierVisBinding);
+            model.OrthoControlPointBezier1?.SetBinding(UIElement.VisibilityProperty, bezierVisBinding);
+            model.OrthoControlPointBezier2?.SetBinding(UIElement.VisibilityProperty, bezierVisBinding);
+            model.ControlLineBezier1?.PathCurve?.SetBinding(UIElement.VisibilityProperty, bezierVisBinding);
+            model.ControlLineBezier2?.PathCurve?.SetBinding(UIElement.VisibilityProperty, bezierVisBinding);
+            model.BezierCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, bezierVisBinding);
 
             // Sine wave
-            var sineVisibilityBinding = new Binding("SelectedGraphType")
+            var sineVisBinding = new Binding("SelectedGraphType")
             {
                 Source = model,
                 Converter = new GraphTypeToVisibilityConverter(),
                 ConverterParameter = GraphTypes.SineWave,
                 Mode = BindingMode.OneWay
             };
-            model.ControlPointSine1?.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
-            model.ControlPointSine2?.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
-            model.SineWave?.PathCurve?.SetBinding(UIElement.VisibilityProperty, sineVisibilityBinding);
+            model.ControlPointSine1?.SetBinding(UIElement.VisibilityProperty, sineVisBinding);
+            model.ControlPointSine2?.SetBinding(UIElement.VisibilityProperty, sineVisBinding);
+            model.SineWave?.PathCurve?.SetBinding(UIElement.VisibilityProperty, sineVisBinding);
 
             // Cosine wave
-            var cosineVisibilityBinding = new Binding("SelectedGraphType")
+            var cosineVisBinding = new Binding("SelectedGraphType")
             {
                 Source = model,
                 Converter = new GraphTypeToVisibilityConverter(),
                 ConverterParameter = GraphTypes.CosineWave,
                 Mode = BindingMode.OneWay
             };
-            model.ControlPointCosine1?.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
-            model.ControlPointCosine2?.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
-            model.CosineWave?.PathCurve?.SetBinding(UIElement.VisibilityProperty, cosineVisibilityBinding);
+            model.ControlPointCosine1?.SetBinding(UIElement.VisibilityProperty, cosineVisBinding);
+            model.ControlPointCosine2?.SetBinding(UIElement.VisibilityProperty, cosineVisBinding);
+            model.CosineWave?.PathCurve?.SetBinding(UIElement.VisibilityProperty, cosineVisBinding);
 
             // Parabolic curve
-            var parabolicVisibilityBinding = new Binding("SelectedGraphType")
+            var parabolicVisBinding = new Binding("SelectedGraphType")
             {
                 Source = model,
                 Converter = new GraphTypeToVisibilityConverter(),
                 ConverterParameter = GraphTypes.ParabolicCurve,
                 Mode = BindingMode.OneWay
             };
-            model.ControlPointParabolic1?.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
-            model.ControlPointParabolic2?.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
-            model.ParabolicCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, parabolicVisibilityBinding);
+            model.ControlPointParabolic1?.SetBinding(UIElement.VisibilityProperty, parabolicVisBinding);
+            model.ControlPointParabolic2?.SetBinding(UIElement.VisibilityProperty, parabolicVisBinding);
+            model.ParabolicCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, parabolicVisBinding);
 
             // Perlin noise
-            var perlinVisibilityBinding = new Binding("SelectedGraphType")
+            var perlinVisBinding = new Binding("SelectedGraphType")
             {
                 Source = model,
                 Converter = new GraphTypeToVisibilityConverter(),
                 ConverterParameter = GraphTypes.PerlinNoiseCurve,
                 Mode = BindingMode.OneWay
             };
-            model.OrthoControlPointPerlin1?.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
-            model.OrthoControlPointPerlin2?.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
-            model.ControlPointPerlin?.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
-            model.PerlinNoiseCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, perlinVisibilityBinding);
+            model.OrthoControlPointPerlin1?.SetBinding(UIElement.VisibilityProperty, perlinVisBinding);
+            model.OrthoControlPointPerlin2?.SetBinding(UIElement.VisibilityProperty, perlinVisBinding);
+            model.ControlPointPerlin?.SetBinding(UIElement.VisibilityProperty, perlinVisBinding);
+            model.PerlinNoiseCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, perlinVisBinding);
 
             // Power curve
-            var powerVisibilityBinding = new Binding("SelectedGraphType")
+            var powerVisBinding = new Binding("SelectedGraphType")
             {
                 Source = model,
                 Converter = new GraphTypeToVisibilityConverter(),
                 ConverterParameter = GraphTypes.PowerCurve,
                 Mode = BindingMode.OneWay
             };
-            model.ControlPointPower?.SetBinding(UIElement.VisibilityProperty, powerVisibilityBinding);
-            model.PowerCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, powerVisibilityBinding);
+            model.ControlPointPower?.SetBinding(UIElement.VisibilityProperty, powerVisBinding);
+            model.PowerCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, powerVisBinding);
 
             // Square Root curve
-            var squareRootVisibilityBinding = new Binding("SelectedGraphType")
+            var squareRootVisBinding = new Binding("SelectedGraphType")
             {
                 Source = model,
                 Converter = new GraphTypeToVisibilityConverter(),
                 ConverterParameter = GraphTypes.SquareRootCurve,
                 Mode = BindingMode.OneWay
             };
-            model.ControlPointSquareRoot1?.SetBinding(UIElement.VisibilityProperty, squareRootVisibilityBinding);
-            model.ControlPointSquareRoot2?.SetBinding(UIElement.VisibilityProperty, squareRootVisibilityBinding);
-            model.SquareRootCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, squareRootVisibilityBinding);
+            model.ControlPointSquareRoot1?.SetBinding(UIElement.VisibilityProperty, squareRootVisBinding);
+            model.ControlPointSquareRoot2?.SetBinding(UIElement.VisibilityProperty, squareRootVisBinding);
+            model.SquareRootCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, squareRootVisBinding);
 
             // Gaussian curve
-            var gaussianVisibilityBinding = new Binding("SelectedGraphType")
+            var gaussianVisBinding = new Binding("SelectedGraphType")
             {
                 Source = model,
                 Converter = new GraphTypeToVisibilityConverter(),
                 ConverterParameter = GraphTypes.GaussianCurve,
                 Mode = BindingMode.OneWay
             };
-            model.OrthoControlPointGaussian1?.SetBinding(UIElement.VisibilityProperty, gaussianVisibilityBinding);
-            model.OrthoControlPointGaussian2?.SetBinding(UIElement.VisibilityProperty, gaussianVisibilityBinding);
-            model.OrthoControlPointGaussian3?.SetBinding(UIElement.VisibilityProperty, gaussianVisibilityBinding);
-            model.OrthoControlPointGaussian4?.SetBinding(UIElement.VisibilityProperty, gaussianVisibilityBinding);
-            model.GaussianCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, gaussianVisibilityBinding);
+            model.OrthoControlPointGaussian1?.SetBinding(UIElement.VisibilityProperty, gaussianVisBinding);
+            model.OrthoControlPointGaussian2?.SetBinding(UIElement.VisibilityProperty, gaussianVisBinding);
+            model.GaussianCurve?.PathCurve?.SetBinding(UIElement.VisibilityProperty, gaussianVisBinding);
+
+            var gaussianMultiBinding = new MultiBinding()
+            {
+                Converter = new GraphTypeAndBoundsToVisibilityConverter(),
+                Mode = BindingMode.OneWay
+            };
+            gaussianMultiBinding.Bindings.Add(new Binding("SelectedGraphType") { Source = model });
+            gaussianMultiBinding.Bindings.Add(new Binding("IsWithinBounds") { Source = model.OrthoControlPointGaussian3 });
+            model.OrthoControlPointGaussian3?.SetBinding(UIElement.VisibilityProperty, gaussianMultiBinding);
+
+            gaussianMultiBinding = new MultiBinding()
+            {
+                Converter = new GraphTypeAndBoundsToVisibilityConverter(),
+                Mode = BindingMode.OneWay
+            };
+            gaussianMultiBinding.Bindings.Add(new Binding("SelectedGraphType") { Source = model });
+            gaussianMultiBinding.Bindings.Add(new Binding("IsWithinBounds") { Source = model.OrthoControlPointGaussian4 });
+            model.OrthoControlPointGaussian4?.SetBinding(UIElement.VisibilityProperty, gaussianMultiBinding);
+
 
         }
 
@@ -624,6 +641,24 @@ namespace Dynamo.Wpf.Charts
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class GraphTypeAndBoundsToVisibilityConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values.Length < 2) return Visibility.Collapsed;
+
+            bool isSelectedGraphType = values[0] is GraphTypes type && type == GraphTypes.GaussianCurve;
+            bool isWithinBounds = values[1] is bool withinBounds && withinBounds;
+
+            return (isSelectedGraphType && isWithinBounds) ? Visibility.Visible : Visibility.Collapsed;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
