@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.Controls.Watch3DView"
+<UserControl x:Class="Dynamo.Controls.Watch3DView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -16,20 +16,11 @@
              d:DesignHeight="300" d:DesignWidth="300">
 
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.MenuStyleDictionaryUri}" />
-            </ResourceDictionary.MergedDictionaries>
-            <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
-            <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
-            <Color x:Key="pointColor" R="0" B="255" G="0" A="255"></Color>
-            <Color x:Key="lineColor" R="0" B="255" G="0" A="255"></Color>
-            <controls:Watch3DBackgroundColorConverter x:Key="Watch3DBackgroundColorConverter"/>
-        </ResourceDictionary>
+        <controls:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <controls:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
+        <Color x:Key="pointColor" R="0" B="255" G="0" A="255"></Color>
+        <Color x:Key="lineColor" R="0" B="255" G="0" A="255"></Color>
+        <controls:Watch3DBackgroundColorConverter x:Key="Watch3DBackgroundColorConverter"/>
     </UserControl.Resources>
     
     <Grid Name="inputGrid"

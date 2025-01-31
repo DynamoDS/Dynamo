@@ -1,4 +1,4 @@
-﻿<Window x:Class="Dynamo.Nodes.dynEditWindow"
+<Window x:Class="Dynamo.Nodes.dynEditWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
@@ -43,7 +43,8 @@
     <Window.Resources>        
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/DynamoCore;component/UI/Themes/DynamoModern.xaml" />
+                <ResourceDictionary
+                    Source="../Themes/Modern_Combined.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>

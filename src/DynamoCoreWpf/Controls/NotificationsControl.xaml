@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.Wpf.Controls.NotificationsControl"
+<UserControl x:Class="Dynamo.Wpf.Controls.NotificationsControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -36,10 +36,6 @@
             <core:ZeroToVisibilityCollapsedConverter x:Key="ZeroToVisibilityCollapsedConverter" />
             <converters:EmptyStringToHiddenConverter x:Key="EmptyStringToHiddenConverter" />
             <converters:LinterIssueCountToVisibilityConverter x:Key="LinterIssueCountToVisibilityConverter" />
-            <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-            </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
 

@@ -11,8 +11,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ResourceDictionary
+                    Source="../../../UI/Themes/Modern_Combined.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <local:BooleanToBorderColorConverter x:Key="BooleanToBorderColorConverter"
                                                  ToggleBrush="{StaticResource Blue400Brush}" />

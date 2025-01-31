@@ -12,6 +12,8 @@ using Dynamo.Models;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Watch3D;
+using Dynamo.Wpf.UI;
+using Dynamo.UI;
 
 namespace DynamoSandbox
 {
@@ -72,6 +74,8 @@ namespace DynamoSandbox
                 if (!WebView2Utilities.ValidateWebView2RuntimeInstalled())
                     return;
                 StartupUtils.ASMPreloadFailure += ASMPreloadFailureHandler;
+
+                app.Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
 
                 splashScreen = new Dynamo.UI.Views.SplashScreen();
                 splashScreen.DynamicSplashScreenReady += LoadDynamoView;

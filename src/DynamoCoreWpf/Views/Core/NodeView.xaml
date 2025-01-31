@@ -18,7 +18,6 @@
              MouseRightButtonDown="DisplayNodeContextMenu"
              PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
              PreviewMouseMove="OnNodeViewMouseMove">
-
     <Grid Name="grid"
           HorizontalAlignment="Left"
           x:FieldModifier="public"
@@ -46,161 +45,226 @@
                          Closed="MainContextMenu_OnClosed"
                          Style="{StaticResource ContextMenuStyle}">
                 <ContextMenu.Resources>
-                    <ResourceDictionary>
-                        <ResourceDictionary.MergedDictionaries>
-                            <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
-                            <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-                            <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
-                        </ResourceDictionary.MergedDictionaries>
-                        <Style TargetType="{x:Type MenuItem}">
-                            <Setter Property="IsChecked" Value="{DynamicResource IsChecked}" />
-                            <Setter Property="Height" Value="30" />
-                            <Setter Property="Width" Value="240" />
-                            <Setter Property="Padding" Value="20,0,20,0" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type MenuItem}">
-                                        <DockPanel x:Name="dockPanel"
-                                                   HorizontalAlignment="Stretch"
-                                                   Background="Transparent"
-                                                   SnapsToDevicePixels="true">
-                                            <Label x:Name="checkBox"
-                                                   Margin="2,0,-20,0"
-                                                   HorizontalAlignment="Left"
-                                                   VerticalAlignment="Center"
-                                                   HorizontalContentAlignment="Center"
-                                                   VerticalContentAlignment="Center"
-                                                   Content="✓"
-                                                   DockPanel.Dock="Left"
-                                                   FontSize="9px"
-                                                   Foreground="White"
-                                                   Visibility="Collapsed" />
-                                            <ContentPresenter x:Name="ContentPresenter"
-                                                              Margin="{TemplateBinding Padding}"
-                                                              VerticalAlignment="Center"
-                                                              ContentSource="Header"
-                                                              DockPanel.Dock="Left"
-                                                              RecognizesAccessKey="True"
-                                                              SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
-                                                              TextBlock.Foreground="{StaticResource NodeContextMenuForeground}">
-                                                <ContentPresenter.Resources>
-                                                    <Style TargetType="TextBlock">
-                                                        <Setter Property="MaxWidth" Value="200"></Setter>
-                                                        <Setter Property="TextTrimming" Value="CharacterEllipsis"></Setter>
-                                                    </Style>
-                                                </ContentPresenter.Resources>
-                                            </ContentPresenter>
-                                            <Border x:Name="dismissedAlertsBadge"
-                                                    Height="15"
-                                                    MinWidth="15"
-                                                    Margin="-15,0,0,1"
-                                                    HorizontalAlignment="Left"
-                                                    VerticalAlignment="Center"
-                                                    Background="{StaticResource NodeDismissedWarningsGlyphBackground}"
-                                                    CornerRadius="7.5"
-                                                    DockPanel.Dock="Left"
-                                                    Visibility="Hidden">
-                                                <Label Padding="2,2,2,0"
-                                                       HorizontalAlignment="Center"
-                                                       VerticalAlignment="Center"
-                                                       HorizontalContentAlignment="Center"
-                                                       VerticalContentAlignment="Center"
-                                                       Content="{Binding NumberOfDismissedAlerts, UpdateSourceTrigger=PropertyChanged}"
-                                                       FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                       FontSize="9px"
-                                                       Foreground="{StaticResource NodeDismissedWarningsGlyphForeground}" />
+                    <Style
+                        TargetType="{x:Type MenuItem}">
+                        <Setter
+                            Property="IsChecked"
+                            Value="{DynamicResource IsChecked}" />
+                        <Setter
+                            Property="Height"
+                            Value="30" />
+                        <Setter
+                            Property="Width"
+                            Value="240" />
+                        <Setter
+                            Property="Padding"
+                            Value="20,0,20,0" />
+                        <Setter
+                            Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate
+                                    TargetType="{x:Type MenuItem}">
+                                    <DockPanel
+                                        x:Name="dockPanel"
+                                        HorizontalAlignment="Stretch"
+                                        Background="Transparent"
+                                        SnapsToDevicePixels="true">
+                                        <Label
+                                            x:Name="checkBox"
+                                            Margin="2,0,-20,0"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            Content="✓"
+                                            DockPanel.Dock="Left"
+                                            FontSize="9px"
+                                            Foreground="White"
+                                            Visibility="Collapsed" />
+                                        <ContentPresenter
+                                            x:Name="ContentPresenter"
+                                            Margin="{TemplateBinding Padding}"
+                                            VerticalAlignment="Center"
+                                            ContentSource="Header"
+                                            DockPanel.Dock="Left"
+                                            RecognizesAccessKey="True"
+                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                            TextBlock.Foreground="{StaticResource NodeContextMenuForeground}">
+                                            <ContentPresenter.Resources>
+                                                <Style
+                                                    TargetType="TextBlock">
+                                                    <Setter
+                                                        Property="MaxWidth"
+                                                        Value="200"></Setter>
+                                                    <Setter
+                                                        Property="TextTrimming"
+                                                        Value="CharacterEllipsis"></Setter>
+                                                </Style>
+                                            </ContentPresenter.Resources>
+                                        </ContentPresenter>
+                                        <Border
+                                            x:Name="dismissedAlertsBadge"
+                                            Height="15"
+                                            MinWidth="15"
+                                            Margin="-15,0,0,1"
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            Background="{StaticResource NodeDismissedWarningsGlyphBackground}"
+                                            CornerRadius="7.5"
+                                            DockPanel.Dock="Left"
+                                            Visibility="Hidden">
+                                            <Label
+                                                Padding="2,2,2,0"
+                                                HorizontalAlignment="Center"
+                                                VerticalAlignment="Center"
+                                                HorizontalContentAlignment="Center"
+                                                VerticalContentAlignment="Center"
+                                                Content="{Binding NumberOfDismissedAlerts, UpdateSourceTrigger=PropertyChanged}"
+                                                FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                FontSize="9px"
+                                                Foreground="{StaticResource NodeDismissedWarningsGlyphForeground}" />
+                                        </Border>
+                                        <Label
+                                            x:Name="subMenuArrow"
+                                            Margin="0,0,20,7"
+                                            Padding="0"
+                                            VerticalAlignment="Center"
+                                            Content="&gt;"
+                                            DockPanel.Dock="Right"
+                                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                                            FontSize="13px"
+                                            Foreground="{StaticResource Blue300Brush}">
+                                            <Label.RenderTransform>
+                                                <ScaleTransform
+                                                    ScaleX="1"
+                                                    ScaleY="1.5" />
+                                            </Label.RenderTransform>
+                                            <Label.Style>
+                                                <Style
+                                                    TargetType="{x:Type Label}">
+                                                    <Setter
+                                                        Property="Visibility"
+                                                        Value="Hidden" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger
+                                                            Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type MenuItem}}, Path=HasItems}"
+                                                            Value="True">
+                                                            <Setter
+                                                                Property="Visibility"
+                                                                Value="Visible" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Label.Style>
+                                        </Label>
+                                        <TextBlock
+                                            x:Name="InputGestureText"
+                                            Margin="0,2,2,2"
+                                            DockPanel.Dock="Right"
+                                            HorizontalAlignment="Right"
+                                            VerticalAlignment="Center"
+                                            Text="{TemplateBinding InputGestureText}"
+                                            TextBlock.FontFamily="{StaticResource ArtifaktElementRegular}"
+                                            TextBlock.FontSize="13px" />
+                                        <Popup
+                                            x:Name="PART_Popup"
+                                            AllowsTransparency="true"
+                                            Focusable="false"
+                                            HorizontalOffset="0"
+                                            IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                                            Placement="Right"
+                                            VerticalOffset="-2">
+                                            <Border
+                                                Background="{TemplateBinding Background}"
+                                                BorderBrush="Transparent"
+                                                BorderThickness="0">
+                                                <ScrollViewer
+                                                    x:Name="SubMenuScrollViewer"
+                                                    CanContentScroll="true"
+                                                    Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,
+                                                                                        TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                                                    <Grid
+                                                        RenderOptions.ClearTypeHint="Enabled">
+                                                        <ItemsPresenter
+                                                            x:Name="ItemsPresenter"
+                                                            Grid.IsSharedSizeScope="true"
+                                                            KeyboardNavigation.DirectionalNavigation="Cycle"
+                                                            KeyboardNavigation.TabNavigation="Cycle"
+                                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                                    </Grid>
+                                                </ScrollViewer>
                                             </Border>
-                                            <Label x:Name="subMenuArrow"
-                                                   Margin="0,0,20,7"
-                                                   Padding="0"
-                                                   VerticalAlignment="Center"
-                                                   Content="&gt;"
-                                                   DockPanel.Dock="Right"
-                                                   FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                   FontSize="13px"
-                                                   Foreground="{StaticResource Blue300Brush}">
-                                                <Label.RenderTransform>
-                                                    <ScaleTransform ScaleX="1" ScaleY="1.5" />
-                                                </Label.RenderTransform>
-                                                <Label.Style>
-                                                    <Style TargetType="{x:Type Label}">
-                                                        <Setter Property="Visibility" Value="Hidden" />
-                                                        <Style.Triggers>
-                                                            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type MenuItem}}, Path=HasItems}" Value="True">
-                                                                <Setter Property="Visibility" Value="Visible" />
-                                                            </DataTrigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </Label.Style>
-                                            </Label>
-                                            <TextBlock x:Name="InputGestureText"
-                                               Margin="0,2,2,2"
-                                               DockPanel.Dock="Right"
-                                               HorizontalAlignment="Right"
-                                               VerticalAlignment="Center"
-                                               Text="{TemplateBinding InputGestureText}"
-                                               TextBlock.FontFamily="{StaticResource ArtifaktElementRegular}"
-                                               TextBlock.FontSize="13px" />
-                                            <Popup x:Name="PART_Popup"
-                                                   AllowsTransparency="true"
-                                                   Focusable="false"
-                                                   HorizontalOffset="0"
-                                                   IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
-                                                   Placement="Right"
-                                                   VerticalOffset="-2">
-                                                <Border Background="{TemplateBinding Background}"
-                                                        BorderBrush="Transparent"
-                                                        BorderThickness="0">
-                                                    <ScrollViewer x:Name="SubMenuScrollViewer"
-                                                                  CanContentScroll="true"
-                                                                  Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,
-                                                                                                                TypeInTargetAssembly={x:Type FrameworkElement}}}">
-                                                        <Grid RenderOptions.ClearTypeHint="Enabled">
-                                                            <ItemsPresenter x:Name="ItemsPresenter"
-                                                                            Grid.IsSharedSizeScope="true"
-                                                                            KeyboardNavigation.DirectionalNavigation="Cycle"
-                                                                            KeyboardNavigation.TabNavigation="Cycle"
-                                                                            SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
-                                                        </Grid>
-                                                    </ScrollViewer>
-                                                </Border>
-                                            </Popup>
-                                        </DockPanel>
-                                        <ControlTemplate.Triggers>
-                                            <Trigger Property="IsEnabled" Value="False">
-                                                <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.5" />
-                                            </Trigger>
-                                            <Trigger Property="IsMouseOver" Value="True">
-                                                <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
-                                                <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
-                                            </Trigger>
-                                            <Trigger Property="IsMouseOver" Value="False">
-                                                <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
-                                            </Trigger>
-                                            <DataTrigger Binding="{Binding ElementName=ContentPresenter, Path=Content}" Value="{x:Static p:Resources.NodeInformationalStateDismissedAlerts}">
-                                                <Setter TargetName="dismissedAlertsBadge" Property="Visibility" Value="Visible" />
-                                            </DataTrigger>
-                                            <Trigger Property="IsChecked" Value="True">
-                                                <Setter TargetName="checkBox" Property="Visibility" Value="Visible" />
-                                            </Trigger>
-                                        </ControlTemplate.Triggers>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                        <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}" TargetType="Separator">
-                            <Setter Property="OverridesDefaultStyle" Value="true" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type Separator}">
-                                        <Border Height="1"
-                                                Margin="20,8,20,8"
-                                                Background="{StaticResource NodeContextMenuSeparatorColor}" />
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ResourceDictionary>
+                                        </Popup>
+                                    </DockPanel>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger
+                                            Property="IsEnabled"
+                                            Value="False">
+                                            <Setter
+                                                TargetName="ContentPresenter"
+                                                Property="TextBlock.Opacity"
+                                                Value="0.5" />
+                                        </Trigger>
+                                        <Trigger
+                                            Property="IsMouseOver"
+                                            Value="True">
+                                            <Setter
+                                                TargetName="ContentPresenter"
+                                                Property="TextBlock.Foreground"
+                                                Value="White" />
+                                            <Setter
+                                                TargetName="dockPanel"
+                                                Property="Background"
+                                                Value="{StaticResource NodeContextMenuBackgroundHighlight}" />
+                                        </Trigger>
+                                        <Trigger
+                                            Property="IsMouseOver"
+                                            Value="False">
+                                            <Setter
+                                                TargetName="dockPanel"
+                                                Property="Background"
+                                                Value="{StaticResource NodeContextMenuBackground}" />
+                                        </Trigger>
+                                        <DataTrigger
+                                            Binding="{Binding ElementName=ContentPresenter, Path=Content}"
+                                            Value="{x:Static p:Resources.NodeInformationalStateDismissedAlerts}">
+                                            <Setter
+                                                TargetName="dismissedAlertsBadge"
+                                                Property="Visibility"
+                                                Value="Visible" />
+                                        </DataTrigger>
+                                        <Trigger
+                                            Property="IsChecked"
+                                            Value="True">
+                                            <Setter
+                                                TargetName="checkBox"
+                                                Property="Visibility"
+                                                Value="Visible" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                    <Style
+                        x:Key="{x:Static MenuItem.SeparatorStyleKey}"
+                        TargetType="Separator">
+                        <Setter
+                            Property="OverridesDefaultStyle"
+                            Value="true" />
+                        <Setter
+                            Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate
+                                    TargetType="{x:Type Separator}">
+                                    <Border
+                                        Height="1"
+                                        Margin="20,8,20,8"
+                                        Background="{StaticResource NodeContextMenuSeparatorColor}" />
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
                 </ContextMenu.Resources>
             </ContextMenu>
         </Grid.ContextMenu>

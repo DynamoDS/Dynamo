@@ -86,7 +86,7 @@ namespace DynamoCoreWpfTests
             var portViewModel = inputItemsControl.ItemsSource.OfType<PortViewModel>().FirstOrDefault();
             Assert.NotNull(portViewModel);
             
-            var trueColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortKeepListStructureBackground"] as SolidColorBrush;
+            var trueColor = SharedDictionaryManager.DynamoModernDictionary["PortKeepListStructureBackground"] as SolidColorBrush;
 
             Assert.AreEqual(trueColor.Color, portViewModel.PortBackgroundColor.Color);
 

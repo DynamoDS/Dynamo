@@ -14,9 +14,6 @@
 
     <UserControl.Resources>
         <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-            </ResourceDictionary.MergedDictionaries>
 
             <Style x:Key="EnumItemsListItemStyle"  TargetType="{x:Type ListBoxItem}">
                 <Setter Property="Padding" Value="0" />

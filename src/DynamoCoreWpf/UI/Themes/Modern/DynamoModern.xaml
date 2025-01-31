@@ -2,18 +2,14 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:avalonedit="clr-namespace:ICSharpCode.AvalonEdit;assembly=ICSharpCode.AvalonEdit"
                     xmlns:clr="clr-namespace:System;assembly=mscorlib"
-                    xmlns:controls="clr-namespace:Dynamo.Views;assembly=DynamoCoreWpf"
-                    xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
+                    xmlns:views="clr-namespace:Dynamo.Views"
+                    xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
                     xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net"
-                    xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
-                    xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-                    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf">
+                    xmlns:nodes="clr-namespace:Dynamo.Nodes"
+                    xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+                    xmlns:ui="clr-namespace:Dynamo.UI">
 
-    <ResourceDictionary.MergedDictionaries>
-        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
-        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
-    </ResourceDictionary.MergedDictionaries>
-
+    
     <!--  Control colors.  -->
     <Color x:Key="WindowColor">#FFE8EDF9</Color>
     <Color x:Key="ContentAreaColorLight">#FFC5CBF9</Color>
@@ -869,7 +865,7 @@
     <!--  Zoom fade text  -->
     <Style x:Key="SZoomFadeText" TargetType="{x:Type TextBlock}">
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
+            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type views:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
                 <DataTrigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
@@ -895,7 +891,7 @@
     <!--  Zoom fade label  -->
     <Style x:Key="SZoomFadeLabel" TargetType="{x:Type Label}">
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
+            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type views:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
                 <DataTrigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
@@ -921,7 +917,7 @@
     <!--  Zoom fade preview  -->
     <Style x:Key="SZoomFadePreview" TargetType="{x:Type Border}">
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
+            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type views:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
                 <DataTrigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
@@ -947,7 +943,7 @@
     <!--  Zoom fade-in preview  -->
     <Style x:Key="SZoomFadeInPreview" TargetType="{x:Type Border}">
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
+            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type views:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
                 <DataTrigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
@@ -973,7 +969,7 @@
     <!--  Zoom fade-in preview  -->
     <Style x:Key="SZoomFadeOutPreview" TargetType="{x:Type Border}">
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
+            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type views:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
                 <DataTrigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
@@ -999,7 +995,7 @@
     <!--  Zoom fade-out framework element  -->
     <Style x:Key="SZoomFadeOutFrameworkElement" TargetType="{x:Type FrameworkElement}">
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
+            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type views:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
                 <DataTrigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
@@ -1025,7 +1021,7 @@
     <!--  Zoom fade-in framework element  -->
     <Style x:Key="SZoomFadeInFrameworkElement" TargetType="{x:Type FrameworkElement}">
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
+            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type views:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
                 <DataTrigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>
@@ -1253,7 +1249,7 @@
 
     <Style x:Key="SZoomFadeTextBox" TargetType="{x:Type TextBox}">
         <Style.Triggers>
-            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
+            <DataTrigger Binding="{Binding Path=DataContext.Zoom, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type views:WorkspaceView}}, Converter={StaticResource ZoomToBooleanConverter}}" Value="true">
                 <DataTrigger.EnterActions>
                     <BeginStoryboard>
                         <Storyboard>

@@ -117,3 +117,4 @@ dynamods-splash-screen-*.tgz
 /src/DynamoCoreWpf/.npmrc
 /src/Notifications/.npmrc
 src/LibraryViewExtensionWebView2/.npmrc
+src/DynamoCoreWpf/UI/Themes/Modern_Combined.xaml

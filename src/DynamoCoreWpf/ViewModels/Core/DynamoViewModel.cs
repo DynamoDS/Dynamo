@@ -2159,6 +2159,15 @@ namespace Dynamo.ViewModels
                 return;
             }
             this.ShowStartPage = false; // Hide start page if there's one.
+
+#if DEBUG
+            Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() => DebugViewRenderedComplete()), DispatcherPriority.ContextIdle, null);
+#endif
+        }
+
+        private void DebugViewRenderedComplete()
+        {
+
         }
 
         /// <summary>

@@ -1,23 +1,20 @@
-﻿<ResourceDictionary   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
-                      xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
-                      xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+                      xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
+                      xmlns:ui="clr-namespace:Dynamo.UI"
                       xmlns:i="clr-namespace:Dynamo.Microsoft.Xaml.Behaviors;assembly=Dynamo.Microsoft.Xaml.Behaviors"
-                      xmlns:views="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
-                      xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
-                      xmlns:mouse="clr-namespace:Dynamo.Wpf.UI;assembly=DynamoCoreWpf"
+                      xmlns:controls="clr-namespace:Dynamo.Controls"
+                      xmlns:nodes="clr-namespace:Dynamo.Nodes"
+                      xmlns:mouse="clr-namespace:Dynamo.Wpf.UI"
                       xmlns:configuration="clr-namespace:Dynamo.Configuration;assembly=DynamoCore">
 
-    <ResourceDictionary.MergedDictionaries>
-        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
-    </ResourceDictionary.MergedDictionaries>
-    <DataTemplate DataType="{x:Type viewModels:ConnectorContextMenuViewModel}">
-        <views:ConnectorContextMenuView DataContext="{Binding}" />
+    <DataTemplate DataType="{x:Type viewModels:ConnectorContextMenuViewModel}"  x:Name="connectorContextMenuViewModel" >
+        <controls:ConnectorContextMenuView DataContext="{Binding}" />
     </DataTemplate>
-    <DataTemplate DataType="{x:Type viewModels:ConnectorAnchorViewModel}">
-        <views:ConnectorAnchorView DataContext="{Binding}" />
+    <DataTemplate DataType="{x:Type viewModels:ConnectorAnchorViewModel}" x:Name="connectorAnchorViewModel" >
+        <controls:ConnectorAnchorView DataContext="{Binding}" />
     </DataTemplate>
-    <DataTemplate DataType="{x:Type viewModels:ConnectorPinViewModel}">
+    <DataTemplate DataType="{x:Type viewModels:ConnectorPinViewModel}"  x:Name="connectorPinViewModel" >
         <nodes:ConnectorPinView DataContext="{Binding}" />
     </DataTemplate>
     <!--Template used for displaying connectorPins on canvas-->
@@ -103,7 +100,7 @@
         </Style.Triggers>
     </Style>
 
-    <DataTemplate DataType="{x:Type viewModels:ConnectorViewModel}">
+    <DataTemplate DataType="{x:Type viewModels:ConnectorViewModel}" x:Name="connectorViewModel" >
         <Grid x:Name="MainGrid"
               Visibility="Visible">
             <i:Interaction.Triggers>
