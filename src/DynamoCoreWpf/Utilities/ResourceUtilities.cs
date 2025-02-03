@@ -1,11 +1,12 @@
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
+using DynamoUtilities;
 using Microsoft.Web.WebView2.Wpf;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -598,7 +599,7 @@ namespace Dynamo.Utilities
                     //This indicates in which location will be created the WebView2 cache folder
                     webBrowserComponent.CreationProperties = new CoreWebView2CreationProperties()
                     {
-                        UserDataFolder = userDataFolder
+                        UserDataFolder = DynamoModel.IsTestMode ? TestUtilities.UserDataFolderDuringTests(nameof(ResourceUtilities)) : userDataFolder
                     };
                 }
 

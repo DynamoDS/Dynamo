@@ -174,6 +174,7 @@ namespace Dynamo.Engine
 
             liveRunnerServices.Dispose();
             codeCompletionServices = null;
+            CompilationServices = null;
         }
 
         /// <summary>
