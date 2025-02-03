@@ -31,6 +31,12 @@ namespace Dynamo.Wpf.Charts
             model.CurveMapperControl = curveMapperControl;
             model.EngineController = nodeView.ViewModel.DynamoViewModel.EngineController;
 
+            // Bind MainGrid Width and Height to model properties
+            curveMapperControl.SetBinding(CurveMapperControl.WidthProperty,
+                new Binding(nameof(model.MainGridWidth)) { Source = model, Mode = BindingMode.TwoWay });
+            curveMapperControl.SetBinding(CurveMapperControl.HeightProperty,
+                new Binding(nameof(model.MainGridHeight)) { Source = model, Mode = BindingMode.TwoWay });
+
             // Add the control to the NodeView's inputGrid
             nodeView.inputGrid.Children.Add(curveMapperControl);
 
@@ -42,16 +48,16 @@ namespace Dynamo.Wpf.Charts
                 // Linear curve
                 // Create the control points based on DynamicCanvasSize and add to canvas
                 model.ControlPointLinear1  = new CurveMapperControlPoint(
-                    new Point(0, curveMapperControl.DynamicCanvasSize),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                    new Point(0, model.DynamicCanvasSize),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
                 );
                 model.ControlPointLinear2 = new CurveMapperControlPoint(
-                    new Point(curveMapperControl.DynamicCanvasSize, 0),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                    new Point(model.DynamicCanvasSize, 0),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
                 );
                 // Bind properties for startControlPoint and endControlPoint
                 ApplyBindingsToControlPoints(model.ControlPointLinear1, model, curveMapperControl);
@@ -65,8 +71,8 @@ namespace Dynamo.Wpf.Charts
                 model.LinearCurve = new LinearCurve(
                     model.ControlPointLinear1,
                     model.ControlPointLinear2,
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize
                 );
                 Canvas.SetZIndex(model.LinearCurve, 10);
                 curveMapperControl.GraphCanvas.Children.Add(model.LinearCurve.PathCurve);
@@ -76,29 +82,29 @@ namespace Dynamo.Wpf.Charts
 
                 // Bezier curve
                 model.ControlPointBezier1 = new CurveMapperControlPoint(
-                    new Point(curveMapperControl.DynamicCanvasSize * 0.2, curveMapperControl.DynamicCanvasSize * 0.2),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                    new Point(model.DynamicCanvasSize * 0.2, model.DynamicCanvasSize * 0.2),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
                 );
                 model.ControlPointBezier2 = new CurveMapperControlPoint(
-                    new Point(curveMapperControl.DynamicCanvasSize * 0.8, curveMapperControl.DynamicCanvasSize * 0.2),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                    new Point(model.DynamicCanvasSize * 0.8, model.DynamicCanvasSize * 0.2),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
                 );
                 model.OrthoControlPointBezier1 = new CurveMapperControlPoint(
-                    new Point(0, curveMapperControl.DynamicCanvasSize),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
+                    new Point(0, model.DynamicCanvasSize),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize,
                     true, true
                 );
                 model.OrthoControlPointBezier2 = new CurveMapperControlPoint(
-                    new Point(curveMapperControl.DynamicCanvasSize, curveMapperControl.DynamicCanvasSize),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
+                    new Point(model.DynamicCanvasSize, model.DynamicCanvasSize),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize,
                     true, true
                 );
                 curveMapperControl.GraphCanvas.Children.Add(model.ControlPointBezier1);
@@ -128,8 +134,8 @@ namespace Dynamo.Wpf.Charts
                     model.OrthoControlPointBezier2,
                     model.ControlPointBezier1,
                     model.ControlPointBezier2,
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize);
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize);
                 Canvas.SetZIndex(model.BezierCurve, 10);
                 curveMapperControl.GraphCanvas.Children.Add(model.BezierCurve.PathCurve);
 
@@ -147,16 +153,16 @@ namespace Dynamo.Wpf.Charts
 
                 // Sine wave
                 model.ControlPointSine1 = new CurveMapperControlPoint(
-                    new Point(curveMapperControl.DynamicCanvasSize * 0.25, 0),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                    new Point(model.DynamicCanvasSize * 0.25, 0),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
                 );
                 model.ControlPointSine2 = new CurveMapperControlPoint(
-                    new Point(curveMapperControl.DynamicCanvasSize * 0.75, curveMapperControl.DynamicCanvasSize),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                    new Point(model.DynamicCanvasSize * 0.75, model.DynamicCanvasSize),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
                 );
                 curveMapperControl.GraphCanvas.Children.Add(model.ControlPointSine1);
                 curveMapperControl.GraphCanvas.Children.Add(model.ControlPointSine2);
@@ -166,8 +172,8 @@ namespace Dynamo.Wpf.Charts
                 model.SineWave = new SineCurve(
                     model.ControlPointSine1,
                     model.ControlPointSine2,
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize);
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize);
                 Canvas.SetZIndex(model.SineWave, 10);
                 curveMapperControl.GraphCanvas.Children.Add(model.SineWave.PathCurve);
 
@@ -181,15 +187,15 @@ namespace Dynamo.Wpf.Charts
                 // TODO: check if we should have separate Cosine Curve class
                 model.ControlPointCosine1 = new CurveMapperControlPoint(
                     new Point(0, 0),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
                 );
                 model.ControlPointCosine2 = new CurveMapperControlPoint(
-                    new Point(curveMapperControl.DynamicCanvasSize * 0.5, curveMapperControl.DynamicCanvasSize),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                    new Point(model.DynamicCanvasSize * 0.5, model.DynamicCanvasSize),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
                 );
                 curveMapperControl.GraphCanvas.Children.Add(model.ControlPointCosine1);
                 curveMapperControl.GraphCanvas.Children.Add(model.ControlPointCosine2);
@@ -199,8 +205,8 @@ namespace Dynamo.Wpf.Charts
                 model.CosineWave = new SineCurve(
                     model.ControlPointCosine1,
                     model.ControlPointCosine2,
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize);
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize);
                 Canvas.SetZIndex(model.CosineWave, 10);
                 curveMapperControl.GraphCanvas.Children.Add(model.CosineWave.PathCurve);
 
@@ -212,16 +218,16 @@ namespace Dynamo.Wpf.Charts
 
                 // Parabolic curve
                 model.ControlPointParabolic1 = new CurveMapperControlPoint(
-                    new Point(curveMapperControl.DynamicCanvasSize * 0.5, curveMapperControl.DynamicCanvasSize * 0.1),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                    new Point(model.DynamicCanvasSize * 0.5, model.DynamicCanvasSize * 0.1),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
                 );
                 model.ControlPointParabolic2 = new CurveMapperControlPoint(
-                    new Point(curveMapperControl.DynamicCanvasSize, curveMapperControl.DynamicCanvasSize),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                    new Point(model.DynamicCanvasSize, model.DynamicCanvasSize),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
                 );
                 curveMapperControl.GraphCanvas.Children.Add(model.ControlPointParabolic1);
                 curveMapperControl.GraphCanvas.Children.Add(model.ControlPointParabolic2);
@@ -231,8 +237,8 @@ namespace Dynamo.Wpf.Charts
                 model.ParabolicCurve = new ParabolicCurve(
                     model.ControlPointParabolic1,
                     model.ControlPointParabolic2,
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize);
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize);
                 Canvas.SetZIndex(model.ParabolicCurve, 10);
                 curveMapperControl.GraphCanvas.Children.Add(model.ParabolicCurve.PathCurve);
 
@@ -244,24 +250,24 @@ namespace Dynamo.Wpf.Charts
 
                 // Perlin noise
                 model.OrthoControlPointPerlin1 = new CurveMapperControlPoint(
-                    new Point(curveMapperControl.DynamicCanvasSize * 0.5, 0),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
+                    new Point(model.DynamicCanvasSize * 0.5, 0),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize,
                     true, false
                 );
                 model.OrthoControlPointPerlin2 = new CurveMapperControlPoint(
-                    new Point(0, curveMapperControl.DynamicCanvasSize),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
+                    new Point(0, model.DynamicCanvasSize),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize,
                     true, true
                 );                
                 model.ControlPointPerlin = new CurveMapperControlPoint(
-                    new Point(curveMapperControl.DynamicCanvasSize * 0.5, curveMapperControl.DynamicCanvasSize * 0.5),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                    new Point(model.DynamicCanvasSize * 0.5, model.DynamicCanvasSize * 0.5),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
                 );
                 curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointPerlin1);
                 curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointPerlin2);
@@ -274,8 +280,8 @@ namespace Dynamo.Wpf.Charts
                     model.OrthoControlPointPerlin1,
                     model.OrthoControlPointPerlin2,
                     model.ControlPointPerlin, 1,
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize);
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize);
                 Canvas.SetZIndex(model.PerlinNoiseCurve, 10);
                 curveMapperControl.GraphCanvas.Children.Add(model.PerlinNoiseCurve.PathCurve);
 
@@ -289,18 +295,18 @@ namespace Dynamo.Wpf.Charts
 
                 // Power curve
                 model.ControlPointPower = new CurveMapperControlPoint(
-                    new Point(curveMapperControl.DynamicCanvasSize * 0.5, curveMapperControl.DynamicCanvasSize * 0.5),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                    new Point(model.DynamicCanvasSize * 0.5, model.DynamicCanvasSize * 0.5),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
                 );
                 curveMapperControl.GraphCanvas.Children.Add(model.ControlPointPower);
                 Canvas.SetZIndex(model.ControlPointPower, 20);
 
                 model.PowerCurve = new  PowerCurve(
                     model.ControlPointPower,
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize);
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize);
                 Canvas.SetZIndex(model.PowerCurve, 10);
                 curveMapperControl.GraphCanvas.Children.Add(model.PowerCurve.PathCurve);
 
@@ -310,16 +316,16 @@ namespace Dynamo.Wpf.Charts
 
                 // Square Root curve
                 model.ControlPointSquareRoot1 = new CurveMapperControlPoint(
-                    new Point(0, curveMapperControl.DynamicCanvasSize),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                    new Point(0, model.DynamicCanvasSize),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
                 );
                 model.ControlPointSquareRoot2 = new CurveMapperControlPoint(
-                    new Point(curveMapperControl.DynamicCanvasSize * 0.5, curveMapperControl.DynamicCanvasSize * 0.5),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize
+                    new Point(model.DynamicCanvasSize * 0.5, model.DynamicCanvasSize * 0.5),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
                 );
                 curveMapperControl.GraphCanvas.Children.Add(model.ControlPointSquareRoot1);
                 curveMapperControl.GraphCanvas.Children.Add(model.ControlPointSquareRoot2);
@@ -329,8 +335,8 @@ namespace Dynamo.Wpf.Charts
                 model.SquareRootCurve = new SquareRootCurve(
                     model.ControlPointSquareRoot1,
                     model.ControlPointSquareRoot2,
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize);
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize);
                 Canvas.SetZIndex(model.SquareRootCurve, 10);
                 curveMapperControl.GraphCanvas.Children.Add(model.SquareRootCurve.PathCurve);
 
@@ -342,31 +348,31 @@ namespace Dynamo.Wpf.Charts
 
                 // Gaussian curve
                 model.OrthoControlPointGaussian1 = new CurveMapperControlPoint(
-                    new Point(0, curveMapperControl.DynamicCanvasSize * 0.8),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
+                    new Point(0, model.DynamicCanvasSize * 0.8),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize,
                     true, true
                 );
                 model.OrthoControlPointGaussian2 = new CurveMapperControlPoint(
-                    new Point(curveMapperControl.DynamicCanvasSize * 0.5, curveMapperControl.DynamicCanvasSize * 0.5),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
+                    new Point(model.DynamicCanvasSize * 0.5, model.DynamicCanvasSize * 0.5),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize,
                     true, false
                 );
                 model.OrthoControlPointGaussian3 = new CurveMapperControlPoint(
-                    new Point(curveMapperControl.DynamicCanvasSize * 0.4, curveMapperControl.DynamicCanvasSize),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
+                    new Point(model.DynamicCanvasSize * 0.4, model.DynamicCanvasSize),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize,
                     true, false
                 );
                 model.OrthoControlPointGaussian4 = new CurveMapperControlPoint(
-                    new Point(curveMapperControl.DynamicCanvasSize * 0.6, curveMapperControl.DynamicCanvasSize),
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, curveMapperControl.DynamicCanvasSize,
+                    new Point(model.DynamicCanvasSize * 0.6, model.DynamicCanvasSize),
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize,
+                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize,
                     true, false
                 );
                 curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointGaussian1);
@@ -383,8 +389,8 @@ namespace Dynamo.Wpf.Charts
                     model.OrthoControlPointGaussian2,
                     model.OrthoControlPointGaussian3,
                     model.OrthoControlPointGaussian4,
-                    curveMapperControl.DynamicCanvasSize,
-                    curveMapperControl.DynamicCanvasSize);
+                    model.DynamicCanvasSize,
+                    model.DynamicCanvasSize);
                 Canvas.SetZIndex(model.GaussianCurve, 10);
                 curveMapperControl.GraphCanvas.Children.Add(model.GaussianCurve.PathCurve);
 
@@ -587,7 +593,7 @@ namespace Dynamo.Wpf.Charts
             BindControlPoint(controlPoint, CurveMapperControlPoint.MaxLimitXProperty, model, nameof(model.MaxLimitX));
             BindControlPoint(controlPoint, CurveMapperControlPoint.MinLimitYProperty, model, nameof(model.MinLimitY));
             BindControlPoint(controlPoint, CurveMapperControlPoint.MaxLimitYProperty, model, nameof(model.MaxLimitY));
-            BindControlPoint(controlPoint, CurveMapperControlPoint.DynamicCanvasSizeProperty, curveMapperControl, nameof(curveMapperControl.DynamicCanvasSize));
+            BindControlPoint(controlPoint, CurveMapperControlPoint.DynamicCanvasSizeProperty, curveMapperControl, nameof(model.DynamicCanvasSize));
         }
 
         public void Dispose()

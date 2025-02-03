@@ -9,6 +9,7 @@ using Dynamo.Wpf.Properties;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using ProtoCore.AST.AssociativeAST;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -24,7 +25,8 @@ namespace CoreNodeModelsWpf.Charts
     public class CurveMapperNodeModel : NodeModel
     {
         [JsonIgnore]
-        public CurveMapperControl CurveMapperControl { get; set; }
+        public CurveMapperControl CurveMapperControl { get; set; } // TODO: try to remove
+        [JsonIgnore]
         public EngineController EngineController { get; set; }
 
 
@@ -43,6 +45,61 @@ namespace CoreNodeModelsWpf.Charts
         private readonly IntNode maxLimitYDefaultValue = new IntNode(1);
         private readonly IntNode pointsCountDefaultValue = new IntNode(10);
         private GraphTypes selectedGraphType;
+        private const double defaultCanvasSize = 240;
+        private const double defaultMinGridWidth = 310;
+        private const double defaultMinGridHeight = 340;
+        private double dynamicCanvasSize = defaultCanvasSize;
+        private double mainGridWidth = 310;
+        private double mainGridHeight = 340;
+
+        [JsonProperty]
+        public double DynamicCanvasSize
+        {
+            get => dynamicCanvasSize;
+            set
+            {
+                if (dynamicCanvasSize != value)
+                {
+                    dynamicCanvasSize = Math.Max(value, defaultCanvasSize);
+                    MainGridWidth = dynamicCanvasSize + 70;
+                    MainGridHeight = dynamicCanvasSize + 100;
+                    RaisePropertyChanged(nameof(DynamicCanvasSize));
+                    OnNodeModified();
+                }
+            }
+        }        
+
+        [JsonProperty]
+        public double MainGridWidth
+        {
+            get => mainGridWidth;
+            set
+            {
+                if (mainGridWidth != value)
+                {
+                    mainGridWidth = Math.Max(value, defaultMinGridWidth);
+                    RaisePropertyChanged(nameof(MainGridWidth));
+                    OnNodeModified();
+                }
+            }
+        }
+
+        [JsonProperty]
+        public double MainGridHeight
+        {
+            get => mainGridHeight;
+            set
+            {
+                if (mainGridHeight != value)
+                {
+                    mainGridHeight = Math.Max(value, defaultMinGridHeight);
+                    RaisePropertyChanged(nameof(MainGridHeight));
+                    OnNodeModified();
+                }
+            }
+        }
+        public double MinGridWidth => defaultMinGridWidth;
+        public double MinGridHeight => defaultMinGridHeight;
 
         // TODO: Should those properties be serialized?
         [JsonIgnore]  
@@ -128,8 +185,9 @@ namespace CoreNodeModelsWpf.Charts
                 }
             }
         }
-        
+
         [JsonConverter(typeof(StringEnumConverter))]
+        //[JsonIgnore]
         public GraphTypes SelectedGraphType
         {
             get => selectedGraphType;
@@ -487,7 +545,7 @@ namespace CoreNodeModelsWpf.Charts
 
         private void UpdateGaussianControlPointsVisibility()
         {
-            if (selectedGraphType == GraphTypes.GaussianCurve)
+            if (selectedGraphType == GraphTypes.GaussianCurve && OrthoControlPointGaussian3 != null && OrthoControlPointGaussian4 != null)
             {
                 OrthoControlPointGaussian3.IsWithinBounds = OrthoControlPointGaussian3.Point.X >= 0 &&
                                                             OrthoControlPointGaussian3.Point.X <= OrthoControlPointGaussian3.LimitWidth;

@@ -1,4 +1,3 @@
-    
 <UserControl
     x:Class="CoreNodeModelsWpf.Charts.Controls.CurveMapperControl"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
@@ -44,8 +43,10 @@
     
     <Grid>
         <Grid x:Name="MainGrid"
-              MinWidth="300"
-              MinHeight="340">
+              MinWidth="{Binding MinGridWidth}"
+              MinHeight="{Binding MinGridHeight}"
+              Width="{Binding MainGridWidth, Mode=TwoWay}"
+              Height="{Binding MainGridHeight, Mode=TwoWay}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="35" />

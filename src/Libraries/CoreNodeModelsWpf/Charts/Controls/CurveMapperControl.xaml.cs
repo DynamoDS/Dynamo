@@ -24,18 +24,18 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
         private readonly double canvasMinSize = 240; // also initial width and height
         private readonly double mainGridMinWidth = 310;
-        private readonly double mainGridMinHeigth = 340;
+        private readonly double mainGridMinHeight = 340;
         private int gridSize = 10;
         private bool isLocked = false;
 
         public double DynamicCanvasSize
         {
-            get => dynamicCanvasSize;
+            get => model.DynamicCanvasSize;
             set
             {
-                if (dynamicCanvasSize != value)
+                if (model.DynamicCanvasSize != value)
                 {
-                    dynamicCanvasSize = Math.Max(value, canvasMinSize);
+                    model.DynamicCanvasSize = value;
                     OnPropertyChanged(nameof(DynamicCanvasSize));
                 }
             }
@@ -300,7 +300,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
             // Ensure the node doesn't resize below its minimum size
             if (xAdjust < mainGridMinWidth) xAdjust = mainGridMinWidth;
-            if (yAdjust < mainGridMinHeigth) yAdjust = mainGridMinHeigth;
+            if (yAdjust < mainGridMinHeight) yAdjust = mainGridMinHeight;
 
             Width = xAdjust;
             Height = yAdjust;
@@ -317,6 +317,8 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
+            if (isLocked) return;
+
             // Reset the control points to their original positions and regenerate curves
             switch (model.SelectedGraphType)
             {
