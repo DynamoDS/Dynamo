@@ -9,8 +9,10 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Xml.Linq;
 using CoreNodeModels.Properties;
 using Dynamo.Extensions;
+using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.LibraryViewExtensionWebView2.Handlers;
 using Dynamo.LibraryViewExtensionWebView2.ViewModels;
@@ -189,16 +191,29 @@ namespace Dynamo.LibraryViewExtensionWebView2
                     this.disableObserver = true;
                 }
 
-                // check to make sure a custom node cannot be added to its own workspace.
-                if (dynamoViewModel.CurrentSpace is CustomNodeWorkspaceModel customNodeWorkspaceModel)
+                try
                 {
                     var nodeGuid = Guid.Parse(nodeName);
 
-                    if (nodeGuid.Equals(customNodeWorkspaceModel.CustomNodeId))
+                    var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
+                    customNodeManager.TryGetNodeInfo(nodeGuid, out CustomNodeInfo info);
+
+                    // check to make sure a custom node cannot be added to its own workspace
+                    if (info != null && dynamoViewModel.CurrentSpace is CustomNodeWorkspaceModel customNodeWorkspaceModel)
                     {
-                        dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.CannotAddNodeToWorkspace);
-                        return;
+                        if (!customNodeWorkspaceModel.Nodes.Any(n => n.GetOriginalName().Contains("ScopeIf")))
+                        {
+                            if (nodeGuid.Equals(customNodeWorkspaceModel.CustomNodeId))
+                            {
+                                dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.CannotAddNodeToWorkspace);
+                                return;
+                            }
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    // do nothing as it is just a check when placing a custom node in its own workspace.
                 }
 
                 //Create the node of given item name

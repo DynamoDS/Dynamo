@@ -61,20 +61,11 @@ namespace Dynamo.LibraryViewExtensionWebView2.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to You cannot add a custom node to its own workspace..
+        ///   Looks up a localized string similar to You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node..
         /// </summary>
         public static string CannotAddNodeToWorkspace {
             get {
                 return ResourceManager.GetString("CannotAddNodeToWorkspace", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string test {
-            get {
-                return ResourceManager.GetString("test", resourceCulture);
             }
         }
     }
