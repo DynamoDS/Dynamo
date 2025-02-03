@@ -733,11 +733,9 @@ namespace Dynamo.ViewModels
                     LuceneSearch.LuceneUtilityNodeAutocomplete = new LuceneSearchUtility(dynamoViewModel.Model, LuceneSearchUtility.DefaultStartConfig);
 
                     //Memory indexing process for Node Autocomplete (indexing just the nodes returned by the NodeAutocomplete service so we limit the scope of the query search)
-                    foreach (var node in searchElementsCache.Select(x => x.Model))
-                    {
-                        var doc = LuceneUtility.InitializeIndexDocumentForNodes();
-                        LuceneUtility.AddNodeTypeToSearchIndex(node, doc);
-                    }
+                    var doc = LuceneUtility.InitializeIndexDocumentForNodes();
+                    List<NodeSearchElement> nodeSearchElements = [.. searchElementsCache.Select(x => x.Model)];
+                    LuceneUtility.AddNodeTypeToSearchIndexBulk(nodeSearchElements, doc);
 
                     //Write the Lucene documents to memory
                     LuceneUtility.CommitWriterChanges();
