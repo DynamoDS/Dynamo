@@ -1592,7 +1592,6 @@ namespace Dynamo.Models
 
             var cnbNode = new CodeBlockNodeSearchElement(cbnData, LibraryServices);
             SearchModel?.Add(cnbNode);
-            LuceneUtility.AddNodeTypeToSearchIndex(cnbNode, iDoc);
 
             var symbolSearchElement = new NodeModelSearchElement(symbolData)
             {
@@ -1611,10 +1610,8 @@ namespace Dynamo.Models
             };
 
             SearchModel?.Add(symbolSearchElement);
-            LuceneUtility.AddNodeTypeToSearchIndex(symbolSearchElement, iDoc);
-
             SearchModel?.Add(outputSearchElement);
-            LuceneUtility.AddNodeTypeToSearchIndex(outputSearchElement, iDoc);
+            LuceneUtility.AddNodeTypeToSearchIndexBulk([cnbNode, symbolSearchElement, outputSearchElement], iDoc);
 
         }
 
@@ -1755,6 +1752,7 @@ namespace Dynamo.Models
         private void LoadNodeModels(List<TypeLoadData> nodes, bool isPackageMember)
         {
             var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
+            List<NodeSearchElement> nodeSearchElements = [];
             foreach (var type in nodes)
             {
                 // Protect ourselves from exceptions thrown by malformed third party nodes.
@@ -1769,7 +1767,7 @@ namespace Dynamo.Models
                     // TODO: get search element some other way
                     if (ele != null)
                     {
-                        LuceneUtility.AddNodeTypeToSearchIndex(ele, iDoc);
+                        nodeSearchElements.Add(ele);
                     }
                 }
                 catch (Exception e)
@@ -1777,6 +1775,7 @@ namespace Dynamo.Models
                     Logger.Log(e);
                 }
             }
+            LuceneUtility.AddNodeTypeToSearchIndexBulk(nodeSearchElements, iDoc);
         }
 
         private void InitializePreferences()
@@ -3478,26 +3477,20 @@ namespace Dynamo.Models
         internal void AddZeroTouchNodesToSearch(IEnumerable<FunctionGroup> functionGroups)
         {
             var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
+            List<NodeSearchElement> nodes = new();
             foreach (var funcGroup in functionGroups)
-                AddZeroTouchNodeToSearch(funcGroup, iDoc);
-        }
-
-        private void AddZeroTouchNodeToSearch(FunctionGroup funcGroup, Document iDoc)
-        {
-            foreach (var functionDescriptor in funcGroup.Functions)
             {
-                AddZeroTouchNodeToSearch(functionDescriptor, iDoc);
+                foreach (var functionDescriptor in funcGroup.Functions)
+                {
+                    if (functionDescriptor.IsVisibleInLibrary)
+                    {
+                        var ele = new ZeroTouchSearchElement(functionDescriptor);
+                        SearchModel?.Add(ele);
+                        nodes.Add(ele);
+                    }
+                }
             }
-        }
-
-        private void AddZeroTouchNodeToSearch(FunctionDescriptor functionDescriptor, Document iDoc)
-        {
-            if (functionDescriptor.IsVisibleInLibrary)
-            {
-                var ele = new ZeroTouchSearchElement(functionDescriptor);
-                SearchModel?.Add(ele);
-                LuceneUtility.AddNodeTypeToSearchIndex(ele, iDoc);
-            }
+            LuceneUtility.AddNodeTypeToSearchIndexBulk(nodes, iDoc);
         }
 
         /// <summary>
