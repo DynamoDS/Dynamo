@@ -262,12 +262,8 @@ namespace Dynamo.Utilities
             if(nodeList.Any())
             {
                 writer.DeleteAll();
-                foreach(var node in nodeList)
-                {
-                    var iDoc = InitializeIndexDocumentForNodes();
-                    AddNodeTypeToSearchIndex(node, iDoc);
-                }
-                InitializeIndexSearcher();
+                var iDoc = InitializeIndexDocumentForNodes();
+                AddNodeTypeToSearchIndexBulk(nodeList, iDoc);
             }         
         }
 
@@ -607,7 +603,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="node">node info that will be indexed</param>
         /// <param name="doc">Lucene document in which the node info will be indexed</param>
-        internal void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
+        internal void AddNodeTypeToSearchIndex_uninitialized(NodeSearchElement node, Document doc)
         {
             if (addedFields == null) return;
             // During DynamoModel initialization, the index writer should still be valid here
@@ -645,6 +641,18 @@ namespace Dynamo.Utilities
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
 
             writer?.AddDocument(doc);
+        }
+        internal void AddNodeTypeToSearchIndex(NodeSearchElement node, Document doc)
+        {
+            AddNodeTypeToSearchIndex_uninitialized(node,doc);
+            InitializeIndexSearcher();
+        }
+        internal void AddNodeTypeToSearchIndexBulk(List<NodeSearchElement> nodes, Document doc)
+        {
+            foreach(var node in nodes)
+            {
+                AddNodeTypeToSearchIndex_uninitialized(node, doc);
+            }
             InitializeIndexSearcher();
         }
     }
