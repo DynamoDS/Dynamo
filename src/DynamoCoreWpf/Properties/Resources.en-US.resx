@@ -4105,4 +4105,11 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
     <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
   </data>
+  <data name="IDSDKErrorMessage" xml:space="preserve">
+    <value>It seems like Autodesk Identity Manager is not set up on your system. To ensure full access to all features, please sign in to your Autodesk account using Autodesk Identity Manager.
+#Download and install=https://manage.autodesk.com/products/updates it here or through Autodesk Access, then sign in.</value>
+  </data>
+  <data name="IDSDKErrorMessageTitle" xml:space="preserve">
+    <value>Download Autodesk Identity Manager</value>
+  </data>
 </root>
