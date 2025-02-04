@@ -1,5 +1,4 @@
 using Autodesk.DesignScript.Runtime;
-using CoreNodeModelsWpf.Charts.Controls;
 using CoreNodeModelsWpf.Converters;
 using Dynamo.Engine;
 using Dynamo.Graph.Nodes;
@@ -30,19 +29,6 @@ namespace CoreNodeModelsWpf.Charts
         [JsonIgnore]
         public EngineController EngineController { get; set; }
 
-        private bool isLocked = false;
-        [JsonProperty]
-        public bool IsLocked
-        {
-            get => isLocked;
-            set
-            {
-                isLocked = value;
-                RaisePropertyChanged(nameof(IsLocked));
-            }
-
-        }
-
         #region Input | Output
 
         private double minLimitX;
@@ -64,6 +50,19 @@ namespace CoreNodeModelsWpf.Charts
         private double dynamicCanvasSize = defaultCanvasSize;
         private double mainGridWidth = 310;
         private double mainGridHeight = 340;
+        private bool isLocked = false;
+
+        [JsonProperty]
+        public bool IsLocked
+        {
+            get => isLocked;
+            set
+            {
+                isLocked = value;
+                RaisePropertyChanged(nameof(IsLocked));
+            }
+
+        }
 
         [JsonProperty]
         public double DynamicCanvasSize
@@ -113,7 +112,6 @@ namespace CoreNodeModelsWpf.Charts
         }
 
         public double MinGridWidth => defaultMinGridWidth;
-
         public double MinGridHeight => defaultMinGridHeight;
 
         [JsonIgnore]
@@ -181,10 +179,6 @@ namespace CoreNodeModelsWpf.Charts
             }
         }
         [JsonIgnore]
-        public double MidValueX => (MaxLimitX + MinLimitX) * 0.5;
-        [JsonIgnore]
-        public double MidValueY => (MaxLimitY + MinLimitY) * 0.5;
-        [JsonIgnore]
         public int PointsCount
         {
             get => pointsCount;
@@ -199,9 +193,12 @@ namespace CoreNodeModelsWpf.Charts
                 }
             }
         }
+        [JsonIgnore]
+        public double MidValueX => (MaxLimitX + MinLimitX) * 0.5;
+        [JsonIgnore]
+        public double MidValueY => (MaxLimitY + MinLimitY) * 0.5;
 
         [JsonConverter(typeof(StringEnumConverter))]
-        //[JsonIgnore]
         public GraphTypes SelectedGraphType
         {
             get => selectedGraphType;
@@ -390,8 +387,154 @@ namespace CoreNodeModelsWpf.Charts
             SelectedGraphType = GraphTypes.Empty;
             ArgumentLacing = LacingStrategy.Disabled;
 
-            #region Create Curves/Points
+            // Setup control points and instantiate corresponding curves
+            InitializeControlPointsAndCurves();
+        }
 
+        [JsonConstructor]
+        public CurveMapperNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        {
+            foreach (var port in InPorts)
+            {
+                port.Connectors.CollectionChanged += Connectors_CollectionChanged;
+            }
+
+            ArgumentLacing = LacingStrategy.Disabled;
+        }
+
+        #endregion
+
+        [OnDeserialized]
+        internal void OnDeserializedMethod(StreamingContext context) //
+        {
+            CreateLinearCurve();
+            CreateBezierCurve();
+            CreateSineWave();
+            CreateCosineWave();
+            CreateParabolicCurve();
+            CreatePerlinNoiseCurve();
+            CreatePowerCurve();
+            CreateSquareRootCurve();
+            CreateGaussianCurve();
+
+            RestoreCurveConnections();
+            UpdateGaussianControlPointsVisibility();
+        }
+
+        private void RestoreCurveConnections() // 
+        {
+            if (ControlPointLinear1 != null && LinearCurve != null)
+                ControlPointLinear1.CurveLinear = LinearCurve;
+            if (ControlPointLinear2 != null && LinearCurve != null)
+                ControlPointLinear2.CurveLinear = LinearCurve;
+
+            if (ControlPointBezier1 != null && BezierCurve != null)
+                ControlPointBezier1.CurveBezier = BezierCurve;
+            if (ControlPointBezier2 != null && BezierCurve != null)
+                ControlPointBezier2.CurveBezier = BezierCurve;
+
+            if (ControlPointSine1 != null && SineWave != null)
+                ControlPointSine1.CurveSine = SineWave;
+            if (ControlPointSine2 != null && SineWave != null)
+                ControlPointSine2.CurveSine = SineWave;
+
+            if (ControlPointCosine1 != null && CosineWave != null)
+                ControlPointCosine1.CurveCosine = CosineWave;
+            if (ControlPointCosine2 != null && CosineWave != null)
+                ControlPointCosine2.CurveCosine = CosineWave;
+
+            if (ControlPointParabolic1 != null && ParabolicCurve != null)
+                ControlPointParabolic1.CurveParabolic = ParabolicCurve;
+            if (ControlPointParabolic2 != null && ParabolicCurve != null)
+                ControlPointParabolic2.CurveParabolic = ParabolicCurve;
+
+            if (PerlinNoiseCurve != null && OrthoControlPointPerlin1 != null)
+                OrthoControlPointPerlin1.CurvePerlin = PerlinNoiseCurve;
+            if (PerlinNoiseCurve != null && OrthoControlPointPerlin2 != null)
+                OrthoControlPointPerlin2.CurvePerlin = PerlinNoiseCurve;
+            if (PerlinNoiseCurve != null && ControlPointPerlin != null)
+                ControlPointPerlin.CurvePerlin = PerlinNoiseCurve;
+
+            if (ControlPointPower != null && PowerCurve != null)
+                ControlPointPower.CurvePower = PowerCurve;
+            if (ControlPointSquareRoot1 != null && SquareRootCurve != null)
+                ControlPointSquareRoot1.SquareRootCurve = SquareRootCurve;
+            if (ControlPointSquareRoot2 != null && SquareRootCurve != null)
+                ControlPointSquareRoot2.SquareRootCurve = SquareRootCurve;
+
+            if (GaussianCurve != null && OrthoControlPointGaussian1 != null)
+                OrthoControlPointGaussian1.GaussianCurve = GaussianCurve;
+            if (GaussianCurve != null && OrthoControlPointGaussian2 != null)
+                OrthoControlPointGaussian2.GaussianCurve = GaussianCurve;
+            if (GaussianCurve != null && OrthoControlPointGaussian3 != null)
+                OrthoControlPointGaussian3.GaussianCurve = GaussianCurve;
+            if (GaussianCurve != null && OrthoControlPointGaussian4 != null)
+                OrthoControlPointGaussian4.GaussianCurve = GaussianCurve;
+        }
+
+        internal void GenerateOutputValues() //
+        {
+            if (!IsValidCurve())
+            {
+                ClearErrorsAndWarnings();
+                Warning(CoreNodeModelWpfResources.CurveMapperInputWarning, isPersistent: true);
+
+                OutputValuesY = null;
+                OutputValuesX = null;
+                return;
+            }
+
+            ClearErrorsAndWarnings();
+
+            switch (SelectedGraphType)
+            {
+                case GraphTypes.LinearCurve when LinearCurve != null:
+                    OutputValuesY = LinearCurve.GetCurveYValues(MinLimitY, MaxLimitY, PointsCount);
+                    OutputValuesX = LinearCurve.GetCurveXValues(MinLimitX, MaxLimitX, PointsCount);
+                    break;
+                case GraphTypes.BezierCurve when BezierCurve != null:
+                    OutputValuesY = BezierCurve.GetBezierCurveYValues(MinLimitY, MaxLimitY, PointsCount, DynamicCanvasSize);
+                    OutputValuesX = BezierCurve.GetCurveXValues(MinLimitX, MaxLimitX, PointsCount);
+                    break;
+                case GraphTypes.SineWave when SineWave != null:
+                    OutputValuesY = SineWave.GetCurveYValues(MinLimitY, MaxLimitY, PointsCount);
+                    OutputValuesX = SineWave.GetCurveXValues(MinLimitX, MaxLimitX, PointsCount);
+                    break;
+                case GraphTypes.CosineWave when CosineWave != null:
+                    OutputValuesY = CosineWave.GetCurveYValues(MinLimitY, MaxLimitY, PointsCount);
+                    OutputValuesX = CosineWave.GetCurveXValues(MinLimitX, MaxLimitX, PointsCount);
+                    break;
+                case GraphTypes.ParabolicCurve when ParabolicCurve != null:
+                    OutputValuesY = ParabolicCurve.GetCurveYValues(MinLimitY, MaxLimitY, PointsCount);
+                    OutputValuesX = ParabolicCurve.GetCurveXValues(MinLimitX, MaxLimitX, PointsCount);
+                    break;
+                case GraphTypes.PerlinNoiseCurve when PerlinNoiseCurve != null:
+                    OutputValuesY = PerlinNoiseCurve.GetCurveYValues(MinLimitY, MaxLimitY, PointsCount);
+                    OutputValuesX = PerlinNoiseCurve.GetCurveXValues(MinLimitX, MaxLimitX, PointsCount);
+                    break;
+                case GraphTypes.PowerCurve when PowerCurve != null:
+                    OutputValuesY = PowerCurve.GetCurveYValues(MinLimitY, MaxLimitY, PointsCount);
+                    OutputValuesX = PowerCurve.GetCurveXValues(MinLimitX, MaxLimitX, PointsCount);
+                    break;
+                case GraphTypes.SquareRootCurve when SquareRootCurve != null:
+                    OutputValuesY = SquareRootCurve.GetCurveYValues(MinLimitY, MaxLimitY, PointsCount);
+                    OutputValuesX = SquareRootCurve.GetCurveXValues(MinLimitX, MaxLimitX, PointsCount);
+                    break;
+                case GraphTypes.GaussianCurve when GaussianCurve != null:
+                    OutputValuesY = GaussianCurve.GetCurveYValues(MinLimitY, MaxLimitY, PointsCount);
+                    OutputValuesX = GaussianCurve.GetCurveXValues(MinLimitX, MaxLimitX, PointsCount);
+                    break;
+                default:
+                    OutputValuesY = null;
+                    OutputValuesX = null;
+                    break;
+            }
+        }
+
+        #region Helpers
+
+        private void InitializeControlPointsAndCurves() //
+        {
             // Linear curve
             ControlPointLinear1 = new CurveMapperControlPoint(
                    new Point(0, DynamicCanvasSize),
@@ -403,12 +546,7 @@ namespace CoreNodeModelsWpf.Charts
                 DynamicCanvasSize, DynamicCanvasSize,
                 MinLimitX, MaxLimitX, MinLimitY, MaxLimitY, DynamicCanvasSize
             );
-            LinearCurve = new LinearCurve(
-                ControlPointLinear1, ControlPointLinear2,
-                DynamicCanvasSize, DynamicCanvasSize
-            );
-            ControlPointLinear1.CurveLinear = LinearCurve;
-            ControlPointLinear2.CurveLinear = LinearCurve;
+            CreateLinearCurve();
 
             // Bezier curve
             ControlPointBezier1 = new CurveMapperControlPoint(
@@ -433,30 +571,7 @@ namespace CoreNodeModelsWpf.Charts
                 MinLimitX, MaxLimitX, MinLimitY, MaxLimitY, DynamicCanvasSize,
                 true, true
             );
-            ControlLineBezier1 = new ControlLine(
-                    ControlPointBezier1.Point,
-                    OrthoControlPointBezier1.Point
-            );
-            ControlLineBezier2 = new ControlLine(
-                ControlPointBezier2.Point,
-                OrthoControlPointBezier2.Point
-            );
-            BezierCurve = new BezierCurve(
-                    OrthoControlPointBezier1,
-                    OrthoControlPointBezier2,
-                    ControlPointBezier1,
-                    ControlPointBezier2,
-                    DynamicCanvasSize,
-                    DynamicCanvasSize
-            );
-            OrthoControlPointBezier1.CurveBezier = BezierCurve;
-            OrthoControlPointBezier2.CurveBezier = BezierCurve;
-            OrthoControlPointBezier1.ControlLineBezier = ControlLineBezier1;
-            OrthoControlPointBezier2.ControlLineBezier = ControlLineBezier2;
-            ControlPointBezier1.CurveBezier = BezierCurve;
-            ControlPointBezier2.CurveBezier = BezierCurve;
-            ControlPointBezier1.ControlLineBezier = ControlLineBezier1;
-            ControlPointBezier2.ControlLineBezier = ControlLineBezier2;
+            CreateBezierCurve();
 
             // Sine wave
             ControlPointSine1 = new CurveMapperControlPoint(
@@ -469,14 +584,7 @@ namespace CoreNodeModelsWpf.Charts
                 DynamicCanvasSize, DynamicCanvasSize,
                 MinLimitX, MaxLimitX, MinLimitY, MaxLimitY, DynamicCanvasSize
             );
-            SineWave = new SineCurve(
-                ControlPointSine1,
-                ControlPointSine2,
-                DynamicCanvasSize,
-                DynamicCanvasSize
-            );
-            ControlPointSine1.CurveSine = SineWave;
-            ControlPointSine2.CurveSine = SineWave;
+            CreateSineWave();
 
             // Cosine wave
             ControlPointCosine1 = new CurveMapperControlPoint(
@@ -489,14 +597,7 @@ namespace CoreNodeModelsWpf.Charts
                 DynamicCanvasSize, DynamicCanvasSize,
                 MinLimitX, MaxLimitX, MinLimitY, MaxLimitY, DynamicCanvasSize
             );
-            CosineWave = new SineCurve(
-                ControlPointCosine1,
-                ControlPointCosine2,
-                DynamicCanvasSize,
-                DynamicCanvasSize
-            );
-            ControlPointCosine1.CurveCosine = CosineWave;
-            ControlPointCosine2.CurveCosine = CosineWave;
+            CreateCosineWave();
 
             // Parabolic curve
             ControlPointParabolic1 = new CurveMapperControlPoint(
@@ -509,14 +610,7 @@ namespace CoreNodeModelsWpf.Charts
                 DynamicCanvasSize, DynamicCanvasSize,
                 MinLimitX, MaxLimitX, MinLimitY, MaxLimitY, DynamicCanvasSize
             );
-            ParabolicCurve = new ParabolicCurve(
-                ControlPointParabolic1,
-                ControlPointParabolic2,
-                DynamicCanvasSize,
-                DynamicCanvasSize
-            );
-            ControlPointParabolic1.CurveParabolic = ParabolicCurve;
-            ControlPointParabolic2.CurveParabolic = ParabolicCurve;
+            CreateParabolicCurve();
 
             // Perlin noise
             OrthoControlPointPerlin1 = new CurveMapperControlPoint(
@@ -536,16 +630,7 @@ namespace CoreNodeModelsWpf.Charts
                 DynamicCanvasSize, DynamicCanvasSize,
                 MinLimitX, MaxLimitX, MinLimitY, MaxLimitY, DynamicCanvasSize
             );
-            PerlinNoiseCurve = new PerlinCurve(
-                OrthoControlPointPerlin1,
-                OrthoControlPointPerlin2,
-                ControlPointPerlin, 1,
-                DynamicCanvasSize,
-                DynamicCanvasSize
-            );
-            OrthoControlPointPerlin1.CurvePerlin = PerlinNoiseCurve;
-            OrthoControlPointPerlin2.CurvePerlin = PerlinNoiseCurve;
-            ControlPointPerlin.CurvePerlin = PerlinNoiseCurve;
+            CreatePerlinNoiseCurve();
 
             // Power curve
             ControlPointPower = new CurveMapperControlPoint(
@@ -553,12 +638,7 @@ namespace CoreNodeModelsWpf.Charts
                     DynamicCanvasSize, DynamicCanvasSize,
                     MinLimitX, MaxLimitX, MinLimitY, MaxLimitY, DynamicCanvasSize
             );
-            PowerCurve = new PowerCurve(
-                   ControlPointPower,
-                   DynamicCanvasSize,
-                   DynamicCanvasSize
-            );
-            ControlPointPower.CurvePower = PowerCurve;
+            CreatePowerCurve();
 
             // Square Root curve
             ControlPointSquareRoot1 = new CurveMapperControlPoint(
@@ -571,14 +651,7 @@ namespace CoreNodeModelsWpf.Charts
                 DynamicCanvasSize, DynamicCanvasSize,
                 MinLimitX, MaxLimitX, MinLimitY, MaxLimitY, DynamicCanvasSize
             );
-            SquareRootCurve = new SquareRootCurve(
-                ControlPointSquareRoot1,
-                ControlPointSquareRoot2,
-                DynamicCanvasSize,
-                DynamicCanvasSize
-            );
-            ControlPointSquareRoot1.SquareRootCurve = SquareRootCurve;
-            ControlPointSquareRoot2.SquareRootCurve = SquareRootCurve;
+            CreateSquareRootCurve();
 
             // Gaussian curve
             OrthoControlPointGaussian1 = new CurveMapperControlPoint(
@@ -605,71 +678,60 @@ namespace CoreNodeModelsWpf.Charts
                 MinLimitX, MaxLimitX, MinLimitY, MaxLimitY, DynamicCanvasSize,
                 true, false
             );
-            GaussianCurve = new GaussianCurve(
-                OrthoControlPointGaussian1,
-                OrthoControlPointGaussian2,
-                OrthoControlPointGaussian3,
-                OrthoControlPointGaussian4,
-                DynamicCanvasSize,
-                DynamicCanvasSize
-            );
-            OrthoControlPointGaussian1.GaussianCurve = GaussianCurve;
-            OrthoControlPointGaussian2.GaussianCurve = GaussianCurve;
-            OrthoControlPointGaussian3.GaussianCurve = GaussianCurve;
-            OrthoControlPointGaussian4.GaussianCurve = GaussianCurve;
-
-            #endregion
+            CreateGaussianCurve();
         }
 
-        [JsonConstructor]
-        public CurveMapperNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        private bool IsValidCurve() //
         {
-            foreach (var port in InPorts)
+            // Ensure the curve has at least two points and is not a vertical or degenerate curve.
+            if (PointsCount < 2 || MinLimitX == MaxLimitX || MinLimitY == MaxLimitY)
+                return false;
+
+            // Check if selected graph type has overlapping control points on the X-axis.
+            var controlPointPairs = new Dictionary<GraphTypes, (CurveMapperControlPoint p1, CurveMapperControlPoint p2)>
             {
-                port.Connectors.CollectionChanged += Connectors_CollectionChanged;
+                { GraphTypes.LinearCurve, (ControlPointLinear1, ControlPointLinear2) },
+                { GraphTypes.SineWave, (ControlPointSine1, ControlPointSine2) },
+                { GraphTypes.CosineWave, (ControlPointCosine1, ControlPointCosine2) },
+                { GraphTypes.ParabolicCurve, (ControlPointParabolic1, ControlPointParabolic2) }
+            };
+
+            if (controlPointPairs.TryGetValue(SelectedGraphType, out var points) &&
+                points.p1 != null && points.p2 != null &&
+                points.p1.Point.X == points.p2.Point.X)
+            {
+                return false;
             }
 
-            ArgumentLacing = LacingStrategy.Disabled;
+            // Validate PowerCurve: Ensure the control point does not coincide with the minimum limits
+            if (SelectedGraphType == GraphTypes.PowerCurve && ControlPointPower != null &&
+                (ControlPointPower.Point.X == MinLimitX || ControlPointPower.Point.Y == MinLimitY))
+            {
+                return false;
+            }
+
+            return true;
         }
 
-        #endregion
-
-
-        [OnDeserialized]
-        internal void OnDeserializedMethod(StreamingContext context)
+        private void CreateLinearCurve() //
         {
-            // Linear Curve
             if (LinearCurve == null && ControlPointLinear1 != null && ControlPointLinear2 != null)
             {
-                LinearCurve = new LinearCurve(
-                    ControlPointLinear1,
-                    ControlPointLinear2,
-                    DynamicCanvasSize,
-                    DynamicCanvasSize
-                );
+                LinearCurve = new LinearCurve(ControlPointLinear1, ControlPointLinear2, DynamicCanvasSize, DynamicCanvasSize);
+
                 ControlPointLinear1.CurveLinear = LinearCurve;
                 ControlPointLinear2.CurveLinear = LinearCurve;
             }
+        }
 
-            // Bezier Curve
+        private void CreateBezierCurve() //
+        {
             if (BezierCurve == null && ControlPointBezier1 != null && ControlPointBezier2 != null)
             {
-                BezierCurve = new BezierCurve(
-                    OrthoControlPointBezier1,
-                    OrthoControlPointBezier2,
-                    ControlPointBezier1,
-                    ControlPointBezier2,
-                    DynamicCanvasSize,
-                    DynamicCanvasSize
-                );
-                ControlLineBezier1 = new ControlLine(
-                    ControlPointBezier1.Point,
-                    OrthoControlPointBezier1.Point
-                    );
-                ControlLineBezier2 = new ControlLine(
-                    ControlPointBezier1.Point,
-                    OrthoControlPointBezier1.Point
-                    );
+                BezierCurve = new BezierCurve(OrthoControlPointBezier1, OrthoControlPointBezier2, ControlPointBezier1, ControlPointBezier2, DynamicCanvasSize, DynamicCanvasSize);
+                ControlLineBezier1 = new ControlLine(ControlPointBezier1.Point, OrthoControlPointBezier1.Point);
+                ControlLineBezier2 = new ControlLine(ControlPointBezier1.Point, OrthoControlPointBezier1.Point);
+                
                 OrthoControlPointBezier1.CurveBezier = BezierCurve;
                 OrthoControlPointBezier2.CurveBezier = BezierCurve;
                 OrthoControlPointBezier1.ControlLineBezier = ControlLineBezier1;
@@ -679,151 +741,79 @@ namespace CoreNodeModelsWpf.Charts
                 ControlPointBezier1.ControlLineBezier = ControlLineBezier1;
                 ControlPointBezier2.ControlLineBezier = ControlLineBezier2;
             }
+        }
 
-            // Ensure SineWave exists
+        private void CreateSineWave() //
+        {
             if (SineWave == null && ControlPointSine1 != null && ControlPointSine2 != null)
             {
-                SineWave = new SineCurve(
-                    ControlPointSine1,
-                    ControlPointSine2,
-                    DynamicCanvasSize,
-                    DynamicCanvasSize
-                );
+                SineWave = new SineCurve(ControlPointSine1, ControlPointSine2, DynamicCanvasSize, DynamicCanvasSize);
+
                 ControlPointSine1.CurveSine = SineWave;
                 ControlPointSine2.CurveSine = SineWave;
             }
+        }
 
-            // Ensure CosineWave exists
+        private void CreateCosineWave() //
+        {
             if (CosineWave == null && ControlPointCosine1 != null && ControlPointCosine2 != null)
             {
-                CosineWave = new SineCurve(
-                    ControlPointCosine1,
-                    ControlPointCosine2,
-                    DynamicCanvasSize,
-                    DynamicCanvasSize
-                );
+                CosineWave = new SineCurve(ControlPointCosine1, ControlPointCosine2, DynamicCanvasSize, DynamicCanvasSize);
+
                 ControlPointCosine1.CurveCosine = CosineWave;
                 ControlPointCosine2.CurveCosine = CosineWave;
             }
+        }
 
-            // Ensure ParabolicCurve exists
+        private void CreateParabolicCurve() //
+        {
             if (ParabolicCurve == null && ControlPointParabolic1 != null && ControlPointParabolic2 != null)
             {
-                ParabolicCurve = new ParabolicCurve(
-                    ControlPointParabolic1,
-                    ControlPointParabolic2,
-                    DynamicCanvasSize,
-                    DynamicCanvasSize
-                );
+                ParabolicCurve = new ParabolicCurve(ControlPointParabolic1, ControlPointParabolic2, DynamicCanvasSize, DynamicCanvasSize);
+
                 ControlPointParabolic1.CurveParabolic = ParabolicCurve;
                 ControlPointParabolic2.CurveParabolic = ParabolicCurve;
             }
+        }
 
-            // Ensure PerlinNoiseCurve exists
+        private void CreatePerlinNoiseCurve() //
+        {
             if (PerlinNoiseCurve == null && OrthoControlPointPerlin1 != null && OrthoControlPointPerlin2 != null && ControlPointPerlin != null)
             {
-                PerlinNoiseCurve = new PerlinCurve(
-                    OrthoControlPointPerlin1,
-                    OrthoControlPointPerlin2,
-                    ControlPointPerlin,
-                    1,
-                    DynamicCanvasSize,
-                    DynamicCanvasSize
-                );
+                PerlinNoiseCurve = new PerlinCurve(OrthoControlPointPerlin1, OrthoControlPointPerlin2, ControlPointPerlin, 1, DynamicCanvasSize, DynamicCanvasSize);
+
                 OrthoControlPointPerlin1.CurvePerlin = PerlinNoiseCurve;
                 OrthoControlPointPerlin2.CurvePerlin = PerlinNoiseCurve;
                 ControlPointPerlin.CurvePerlin = PerlinNoiseCurve;
             }
+        }
 
-            // Ensure PowerCurve exists
+        private void CreatePowerCurve() //
+        {
             if (PowerCurve == null && ControlPointPower != null)
             {
-                PowerCurve = new PowerCurve(
-                    ControlPointPower,
-                    DynamicCanvasSize,
-                    DynamicCanvasSize
-                );
+                PowerCurve = new PowerCurve(ControlPointPower, DynamicCanvasSize, DynamicCanvasSize);
                 ControlPointPower.CurvePower = PowerCurve;
             }
+        }
 
-            // Ensure SquareRootCurve exists
+        private void CreateSquareRootCurve() //
+        {
             if (SquareRootCurve == null && ControlPointSquareRoot1 != null && ControlPointSquareRoot2 != null)
             {
-                SquareRootCurve = new SquareRootCurve(
-                    ControlPointSquareRoot1,
-                    ControlPointSquareRoot2,
-                    DynamicCanvasSize,
-                    DynamicCanvasSize
-                );
+                SquareRootCurve = new SquareRootCurve(ControlPointSquareRoot1, ControlPointSquareRoot2, DynamicCanvasSize, DynamicCanvasSize);
+
                 ControlPointSquareRoot1.SquareRootCurve = SquareRootCurve;
                 ControlPointSquareRoot2.SquareRootCurve = SquareRootCurve;
             }
+        }
 
-            // Ensure GaussianCurve exists
+        private void CreateGaussianCurve() //
+        {
             if (GaussianCurve == null && OrthoControlPointGaussian1 != null && OrthoControlPointGaussian2 != null && OrthoControlPointGaussian3 != null && OrthoControlPointGaussian4 != null)
             {
-                GaussianCurve = new GaussianCurve(
-                    OrthoControlPointGaussian1,
-                    OrthoControlPointGaussian2,
-                    OrthoControlPointGaussian3,
-                    OrthoControlPointGaussian4,
-                    DynamicCanvasSize,
-                    DynamicCanvasSize
-                );
-                OrthoControlPointGaussian1.GaussianCurve = GaussianCurve;
-                OrthoControlPointGaussian2.GaussianCurve = GaussianCurve;
-                OrthoControlPointGaussian3.GaussianCurve = GaussianCurve;
-                OrthoControlPointGaussian4.GaussianCurve = GaussianCurve;
-            }
+                GaussianCurve = new GaussianCurve(OrthoControlPointGaussian1, OrthoControlPointGaussian2, OrthoControlPointGaussian3, OrthoControlPointGaussian4, DynamicCanvasSize, DynamicCanvasSize);
 
-            RestoreCurveConnections();
-            UpdateGaussianControlPointsVisibility();
-        }
-
-        private void RestoreCurveConnections()
-        {
-            if (ControlPointLinear1 != null && ControlPointLinear2 != null && LinearCurve != null)
-            {
-                ControlPointLinear1.CurveLinear = LinearCurve;
-                ControlPointLinear2.CurveLinear = LinearCurve;
-            }
-            if (BezierCurve != null && ControlPointBezier1 != null && ControlPointBezier2 != null)
-            {
-                ControlPointBezier1.CurveBezier = BezierCurve;
-                ControlPointBezier2.CurveBezier = BezierCurve;
-            }
-            if (SineWave != null && ControlPointSine1 != null && ControlPointSine2 != null)
-            {
-                ControlPointSine1.CurveSine = SineWave;
-                ControlPointSine2.CurveSine = SineWave;
-            }
-            if (CosineWave != null && ControlPointCosine1 != null && ControlPointCosine2 != null)
-            {
-                ControlPointCosine1.CurveCosine = CosineWave;
-                ControlPointCosine2.CurveCosine = CosineWave;
-            }
-            if (ParabolicCurve != null && ControlPointParabolic1 != null && ControlPointParabolic2 != null)
-            {
-                ControlPointParabolic1.CurveParabolic = ParabolicCurve;
-                ControlPointParabolic2.CurveParabolic = ParabolicCurve;
-            }
-            if (PerlinNoiseCurve != null && OrthoControlPointPerlin1 != null && OrthoControlPointPerlin2 != null && ControlPointPerlin != null)
-            {
-                OrthoControlPointPerlin1.CurvePerlin = PerlinNoiseCurve;
-                OrthoControlPointPerlin2.CurvePerlin = PerlinNoiseCurve;
-                ControlPointPerlin.CurvePerlin = PerlinNoiseCurve;
-            }
-            if (PowerCurve != null && ControlPointPower != null)
-            {
-                ControlPointPower.CurvePower = PowerCurve;
-            }
-            if (SquareRootCurve != null && ControlPointSquareRoot1 != null && ControlPointSquareRoot2 != null)
-            {
-                ControlPointSquareRoot1.SquareRootCurve = SquareRootCurve;
-                ControlPointSquareRoot2.SquareRootCurve = SquareRootCurve;
-            }
-            if (GaussianCurve != null && OrthoControlPointGaussian1 != null && OrthoControlPointGaussian2 != null && OrthoControlPointGaussian3 != null && OrthoControlPointGaussian4 != null)
-            {
                 OrthoControlPointGaussian1.GaussianCurve = GaussianCurve;
                 OrthoControlPointGaussian2.GaussianCurve = GaussianCurve;
                 OrthoControlPointGaussian3.GaussianCurve = GaussianCurve;
@@ -831,93 +821,7 @@ namespace CoreNodeModelsWpf.Charts
             }
         }
 
-        internal void GenerateOutputValues()
-        {
-            // Ensure at least 2 points and a non-vertical curve; otherwise, display a warning.
-            if (PointsCount < 2
-                || (MinLimitX == MaxLimitX || MinLimitY == MaxLimitY)
-                || (SelectedGraphType == GraphTypes.LinearCurve
-                    && ControlPointLinear1 != null
-                    && ControlPointLinear2 != null
-                    && ControlPointLinear1.Point.X == ControlPointLinear2.Point.X)
-                || (SelectedGraphType == GraphTypes.CosineWave
-                    && ControlPointCosine1 != null
-                    && ControlPointCosine2 != null
-                    && ControlPointCosine1.Point.X == ControlPointCosine2.Point.X)
-                || (SelectedGraphType == GraphTypes.SineWave
-                    && ControlPointSine1 != null
-                    && ControlPointSine2 != null
-                    && ControlPointSine1.Point.X == ControlPointSine2.Point.X)
-                || (SelectedGraphType == GraphTypes.ParabolicCurve
-                    && ControlPointParabolic1 != null
-                    && ControlPointParabolic2 != null
-                    && ControlPointParabolic1.Point.X == ControlPointParabolic2.Point.X)
-                || (SelectedGraphType == GraphTypes.PowerCurve
-                    && ControlPointPower != null
-                    && (ControlPointPower.Point.X == MinLimitX || ControlPointPower.Point.Y == MinLimitY))
-            //// Review below
-            //(SelectedGraphType == GraphTypes.SquareRootCurve && ControlPointSquareRoot1.Point.X == ControlPointSquareRoot2.Point.X) ||
-            //(SelectedGraphType == GraphTypes.GaussianCurve && ControlPointGaussian1.Point.X == ControlPointGaussian2.Point.X)
-            )
-            {
-                ClearErrorsAndWarnings();
-                Warning(CoreNodeModelWpfResources.CurveMapperInputWarning, isPersistent: true);
-
-                OutputValuesY = null;
-                OutputValuesX = null;
-            }
-            else
-            {
-                ClearErrorsAndWarnings();
-
-                if (LinearCurve != null && SelectedGraphType == GraphTypes.LinearCurve)
-                {
-                    OutputValuesY = LinearCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
-                    OutputValuesX = LinearCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
-                }
-                else if (BezierCurve != null && SelectedGraphType == GraphTypes.BezierCurve)
-                {
-                    OutputValuesY = BezierCurve.GetBezierCurveYValues(minLimitY, maxLimitY,
-                        pointsCount, DynamicCanvasSize);
-                    OutputValuesX = BezierCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
-                }
-                else if (SineWave != null && SelectedGraphType == GraphTypes.SineWave)
-                {
-                    OutputValuesY = SineWave.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
-                    OutputValuesX = SineWave.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
-                }
-                else if (CosineWave != null && SelectedGraphType == GraphTypes.CosineWave)
-                {
-                    OutputValuesY = CosineWave.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
-                    OutputValuesX = CosineWave.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
-                }
-                else if (ParabolicCurve != null && SelectedGraphType == GraphTypes.ParabolicCurve)
-                {
-                    OutputValuesY = ParabolicCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
-                    OutputValuesX = ParabolicCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
-                }
-                else if (PerlinNoiseCurve != null && SelectedGraphType == GraphTypes.PerlinNoiseCurve)
-                {
-                    OutputValuesY = PerlinNoiseCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
-                    OutputValuesX = PerlinNoiseCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
-                }
-                else if (PowerCurve != null && SelectedGraphType == GraphTypes.PowerCurve)
-                {
-                    OutputValuesY = PowerCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
-                    OutputValuesX = PowerCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
-                }
-                else if (SquareRootCurve != null && SelectedGraphType == GraphTypes.SquareRootCurve)
-                {
-                    OutputValuesY = SquareRootCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
-                    OutputValuesX = SquareRootCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
-                }
-                else if (GaussianCurve != null && SelectedGraphType == GraphTypes.GaussianCurve)
-                {
-                    OutputValuesY = GaussianCurve.GetCurveYValues(minLimitY, maxLimitY, pointsCount);
-                    OutputValuesX = GaussianCurve.GetCurveXValues(minLimitX, maxLimitX, pointsCount);
-                }
-            }
-        }
+        #endregion
 
         #region DataBridge
 
@@ -1017,33 +921,6 @@ namespace CoreNodeModelsWpf.Charts
             };
         }
 
-        #endregion
-
-        #region Events
-
-        private void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            OnNodeModified();
-        }
-
-        #endregion
-
-        private void UpdateGaussianControlPointsVisibility()
-        {
-            if (selectedGraphType == GraphTypes.GaussianCurve && OrthoControlPointGaussian3 != null && OrthoControlPointGaussian4 != null)
-            {
-                OrthoControlPointGaussian3.IsWithinBounds = OrthoControlPointGaussian3.Point.X >= 0 &&
-                                                            OrthoControlPointGaussian3.Point.X <= OrthoControlPointGaussian3.LimitWidth;
-
-                OrthoControlPointGaussian4.IsWithinBounds = OrthoControlPointGaussian4.Point.X >= 0 &&
-                                                            OrthoControlPointGaussian4.Point.X <= OrthoControlPointGaussian4.LimitWidth;
-
-                RaisePropertyChanged(nameof(OrthoControlPointGaussian3.IsWithinBounds));
-                RaisePropertyChanged(nameof(OrthoControlPointGaussian4.IsWithinBounds));
-            }
-        }
-
-
         private double GetInputValueOrDefault(int portIndex, double defaultValue)
         {
             // Ensure the port index is valid
@@ -1125,9 +1002,37 @@ namespace CoreNodeModelsWpf.Charts
             return defaultValue;
         }
 
+        #endregion
 
+        #region Events
 
-        public void ResetCurves()
+        private void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            OnNodeModified();
+        }
+
+        #endregion
+
+        private void UpdateGaussianControlPointsVisibility() //
+        {
+            if (selectedGraphType == GraphTypes.GaussianCurve && OrthoControlPointGaussian3 != null && OrthoControlPointGaussian4 != null)
+            {
+                OrthoControlPointGaussian3.IsWithinBounds = OrthoControlPointGaussian3.Point.X >= 0 &&
+                                                            OrthoControlPointGaussian3.Point.X <= OrthoControlPointGaussian3.LimitWidth;
+
+                OrthoControlPointGaussian4.IsWithinBounds = OrthoControlPointGaussian4.Point.X >= 0 &&
+                                                            OrthoControlPointGaussian4.Point.X <= OrthoControlPointGaussian4.LimitWidth;
+
+                RaisePropertyChanged(nameof(OrthoControlPointGaussian3.IsWithinBounds));
+                RaisePropertyChanged(nameof(OrthoControlPointGaussian4.IsWithinBounds));
+            }
+        }
+
+        /// <summary>
+        /// Resets the control points of the selected curve type to their default positions 
+        /// and regenerates the corresponding curve.
+        /// </summary>
+        public void ResetCurves() //
         {
             if (isLocked) return;
 
@@ -1185,7 +1090,6 @@ namespace CoreNodeModelsWpf.Charts
                     OrthoControlPointGaussian4.Point = new Point(DynamicCanvasSize * 0.6, DynamicCanvasSize);
                     GaussianCurve?.Regenerate();
                     break;
-                    // Add mode curves here
             }
 
             GenerateOutputValues();
