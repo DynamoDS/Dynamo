@@ -670,7 +670,9 @@ namespace Dynamo.Views
                 var nodes = this.ChildrenOfType<NodeView>();
                 foreach (var node in nodes)
                 {
-                    node.CacheMode = new BitmapCache() { EnableClearType = false, RenderAtScale = 0.3, SnapsToDevicePixels = false };
+                    var cache = new BitmapCache() { EnableClearType = false, RenderAtScale = 0.3, SnapsToDevicePixels = false };
+                    cache.Freeze();
+                    node.CacheMode = cache;
                 }
             }
 
@@ -680,6 +682,7 @@ namespace Dynamo.Views
                 foreach (var node in nodes)
                 {
                     node.CacheMode = null;
+                    node.InvalidateVisual();
                 }
             }
 
