@@ -4815,6 +4815,8 @@ static Dynamo.Wpf.Properties.Resources.GroupStylesCancelButtonText.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupStylesSaveButtonText.get -> string
 static Dynamo.Wpf.Properties.Resources.HideClassicNodeLibrary.get -> string
 static Dynamo.Wpf.Properties.Resources.HideWiresPopupMenuItem.get -> string
+static Dynamo.Wpf.Properties.Resources.IDSDKErrorMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.IDSDKErrorMessageTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.ImportLibraryDialogTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.ImportPreferencesInfo.get -> string
 static Dynamo.Wpf.Properties.Resources.ImportPreferencesText.get -> string

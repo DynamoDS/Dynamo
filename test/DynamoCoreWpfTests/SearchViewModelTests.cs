@@ -39,13 +39,13 @@ namespace Dynamo.Tests
             model.Add(new CustomNodeSearchElement(null, new CustomNodeInfo(Guid.NewGuid(), "frog", catName, descr, path)));
             model.Add(new CustomNodeSearchElement(null, new CustomNodeInfo(Guid.NewGuid(), "Noodle", catName, descr, path)));
 
-            viewModel.SearchAndUpdateResults("xy");
+            viewModel.SearchAndUpdateResultsTask("xy").Wait();
             Assert.AreEqual("xyz", viewModel.SearchText);
 
-            viewModel.SearchAndUpdateResults("ood");
+            viewModel.SearchAndUpdateResultsTask("ood").Wait();
             Assert.AreEqual("Noodle", viewModel.SearchText);
 
-            viewModel.SearchAndUpdateResults("do");
+            viewModel.SearchAndUpdateResultsTask("do").Wait();
             Assert.AreEqual("dog", viewModel.SearchText);
         }
 
@@ -660,7 +660,7 @@ namespace Dynamo.Tests
             model.Add(element);
 
             viewModel.Visible = true;
-            viewModel.SearchAndUpdateResults("member");
+            viewModel.SearchAndUpdateResultsTask("member").Wait();
 
             Assert.AreEqual(2, viewModel.FilteredResults.Count());
             Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
@@ -671,7 +671,7 @@ namespace Dynamo.Tests
         public void NoItemsIsSelectedAfterSearch()
         {
             viewModel.Visible = true;
-            viewModel.SearchAndUpdateResults("member");
+            viewModel.SearchAndUpdateResultsTask("member").Wait();
 
             Assert.DoesNotThrow(() => viewModel.MoveSelection(SearchViewModel.Direction.Down));
             Assert.IsFalse(viewModel.FilteredResults.Any());
@@ -688,7 +688,7 @@ namespace Dynamo.Tests
             model.Add(element);
 
             viewModel.Visible = true;
-            viewModel.SearchAndUpdateResults("member");
+            viewModel.SearchAndUpdateResultsTask("member").Wait();
 
             Assert.AreEqual(2, viewModel.FilteredResults.Count());
             Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
@@ -711,7 +711,7 @@ namespace Dynamo.Tests
             model.Add(element);
 
             viewModel.Visible = true;
-            viewModel.SearchAndUpdateResults("member");
+            viewModel.SearchAndUpdateResultsTask("member").Wait();
 
             Assert.AreEqual(2, viewModel.FilteredResults.Count());
             Assert.IsTrue(viewModel.FilteredResults.ElementAt(0).IsSelected);
@@ -741,7 +741,7 @@ namespace Dynamo.Tests
             model.Add(element);
 
             viewModel.Visible = true;
-            viewModel.SearchAndUpdateResults("member");
+            viewModel.SearchAndUpdateResultsTask("member").Wait();
             Assert.AreEqual(2, viewModel.FilteredResults.Count());
 
             Assert.IsTrue(viewModel.SearchCategories.All(c => c.IsSelected));
