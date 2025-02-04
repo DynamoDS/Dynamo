@@ -238,7 +238,6 @@ namespace Dynamo.Core
 
         private bool Initialize()
         {
-            return false;
             try
             {
                 if (Client.IsInitialized())
