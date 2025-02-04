@@ -126,6 +126,7 @@ namespace Dynamo.UI.Controls
 
         private void LoginButton_OnClick(object sender, RoutedEventArgs e)
         {
+            if(!DynamoViewModel.IsIDSDKInitialized()) return;
             if (authManager.LoginState == LoginState.LoggedIn)
             {
                 var button = (Button)sender;
@@ -149,6 +150,7 @@ namespace Dynamo.UI.Controls
 
         private void LogoutOption_Click(object sender, RoutedEventArgs e)
         {
+            if (!DynamoViewModel.IsIDSDKInitialized()) return;
             if (authManager.LoginState == LoginState.LoggedIn)
             {
                 var result = Wpf.Utilities.MessageBoxService.Show(Application.Current?.MainWindow, Wpf.Properties.Resources.SignOutConfirmationDialogText, Wpf.Properties.Resources.SignOutConfirmationDialogTitle,MessageBoxButton.OKCancel, new List<string>() { "Sign Out", "Cancel"}, MessageBoxImage.Information);

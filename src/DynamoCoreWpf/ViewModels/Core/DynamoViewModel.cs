@@ -863,10 +863,7 @@ namespace Dynamo.ViewModels
 
             FileTrustViewModel = new FileTrustWarningViewModel();
             MLDataPipelineExtension = model.ExtensionManager.Extensions.OfType<DynamoMLDataPipelineExtension>().FirstOrDefault();
-            if (Model.AuthenticationManager?.AuthProvider is IDSDKManager idsdkProvider)
-            {
-                idsdkProvider.ErrorInitializingIDSDK += OnErrorInitializingIDSDK;
-            }
+            IsIDSDKInitialized();
         }
 
         private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
@@ -1088,18 +1085,22 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// The event handler for cases when IDSDK fails to initialize, probably because of missing Adsk Identity Manager.
-        /// A flag is used to show the error message only once per session.
+        /// Returns whether the IDSDK is initialized or not for Dynamo Sandbox, in host environment defaults to true.
+        /// If showWarning is true, a warning message will be shown to the user if the IDSDK is not initialized.
+        /// If owner is not null, the warning message will be shown as a dialog with the owner as the parent.
         /// </summary>
-        private void OnErrorInitializingIDSDK(object sender, EventArgs e)
+        internal bool IsIDSDKInitialized(bool showWarning = true, Window owner = null)
         {
-            if (Model.AuthenticationManager?.AuthProvider is IDSDKManager idsdkProvider)
+            if (!Model.AuthenticationManager.IsIDSDKInitialized())
             {
-                if (idsdkProvider.isErrorInitializingMsgShown) return;
-
-                DynamoMessageBox.Show(Owner, WpfResources.IDSDKErrorMessage, WpfResources.IDSDKErrorMessageTitle, true, MessageBoxButton.OK, MessageBoxImage.Information);
-                idsdkProvider.isErrorInitializingMsgShown = true;
+                if (showWarning)
+                {
+                    var ownerWindow = owner ?? Owner ?? System.Windows.Application.Current.MainWindow;
+                    DynamoMessageBox.Show(ownerWindow, WpfResources.IDSDKErrorMessage, WpfResources.IDSDKErrorMessageTitle, true, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                return false;
             }
+            return true;
         }
 
         #region Event handler destroy/create
@@ -1123,10 +1124,6 @@ namespace Dynamo.ViewModels
 
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             UsageReportingManager.Instance.PropertyChanged -= CollectInfoManager_PropertyChanged;
-            if (Model.AuthenticationManager?.AuthProvider is IDSDKManager idsdkProvider)
-            {
-                idsdkProvider.ErrorInitializingIDSDK -= OnErrorInitializingIDSDK;
-            }
         }
 
         private void InitializeRecentFiles()
