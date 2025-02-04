@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.GraphNodeManager.Controls.FilterItemControl"
+<UserControl x:Class="Dynamo.GraphNodeManager.Controls.FilterItemControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -11,8 +11,6 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="ControlColorsAndBrushes.xaml"/>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
             <local:BooleanToBorderColorConverter x:Key="BooleanToBorderColorConverter" ToggleBrush="{StaticResource Blue400Brush}"/>
             <local:BooleanToColorConverter x:Key="BooleanToColorConverter" 

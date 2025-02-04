@@ -17,12 +17,12 @@ namespace Dynamo.GraphNodeManager.Converters
             {
                 case ElementState.Info:
                 case ElementState.PersistentInfo:
-                    return SharedDictionaryManager.DynamoColorsAndBrushesDictionary["Blue400Brush"];
+                    return SharedDictionaryManager.DynamoModernDictionary["Blue400Brush"];
                 case ElementState.Warning:
                 case ElementState.PersistentWarning:
-                    return SharedDictionaryManager.DynamoColorsAndBrushesDictionary["YellowOrange500Brush"];
+                    return SharedDictionaryManager.DynamoModernDictionary["YellowOrange500Brush"];
                 case ElementState.Error:
-                    return SharedDictionaryManager.DynamoColorsAndBrushesDictionary["Red500Brush"];
+                    return SharedDictionaryManager.DynamoModernDictionary["Red500Brush"];
                 default:
                     return new SolidColorBrush(Colors.Transparent);
             }

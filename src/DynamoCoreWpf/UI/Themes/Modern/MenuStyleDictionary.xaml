@@ -1,11 +1,6 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf">
-    <ResourceDictionary.MergedDictionaries>
-       <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
-       <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-    </ResourceDictionary.MergedDictionaries>
-
+                    xmlns:ui="clr-namespace:Dynamo.UI">
     <!--  Separator  -->
     <Style x:Key="MenuItemSeperatorStyle" TargetType="Separator">
         <Setter Property="Height" Value="1" />

@@ -13,7 +13,7 @@ namespace CoreNodeModelsWpf.Charts.Utilities
     {
         private static int current = 0;
 
-        private static IEnumerable<Color> _colors => SharedDictionaryManager.LiveChartDictionary["ColorsCollection"] as IEnumerable<Color>;
+        private static IEnumerable<Color> _colors => SharedDictionaryManager.DynamoModernDictionary["ColorsCollection"] as IEnumerable<Color>;
 
         /// <summary>
         /// Cycles through all the colors inside the palette returning the next color

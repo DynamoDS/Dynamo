@@ -1282,6 +1282,7 @@ namespace Dynamo.Controls
             {
                 try
                 {
+                    // Extensions referencing the old shared dictionaries are going to fail and will need to be updated
                     ext.Loaded(loadedParams);
                     ReOpenSavedExtensionOnDynamoStartup(ext);
                 }

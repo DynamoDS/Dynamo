@@ -15,16 +15,6 @@
             BorderBrush="#FF3F4040"
             BorderThickness="0,0,0,0">
 
-        <Border.Resources>
-            <ResourceDictionary>
-                <ResourceDictionary.MergedDictionaries>
-                    <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.ToolbarStyleDictionaryUri}" />
-                    <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}"/>
-                    <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.MenuStyleDictionaryUri}" />
-                    <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-                </ResourceDictionary.MergedDictionaries>
-            </ResourceDictionary>
-        </Border.Resources>
 
         <Border Margin="11 4 0 0"
                     HorizontalAlignment="Stretch"

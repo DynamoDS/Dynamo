@@ -11,13 +11,6 @@
              d:DesignWidth="640"
              d:DesignHeight="480"
              Margin="0,-1,0,0">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
 
     <Grid Name="startPageGrid"
           Background="White"

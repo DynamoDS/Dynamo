@@ -17,21 +17,16 @@
              MouseLeave="PreviewControl_MouseLeave">
 
     <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
-                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-                <ResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
-            </ResourceDictionary.MergedDictionaries>
+        <clr:Double
+            x:Key="MinPreviewControlWidth">33.0</clr:Double>
+        <clr:Double
+            x:Key="MinPreviewControlHeight">28.0</clr:Double>
 
-            <clr:Double x:Key="MinPreviewControlWidth">33.0</clr:Double>
-            <clr:Double x:Key="MinPreviewControlHeight">28.0</clr:Double>
-
-            <!-- MaxContentGrid = (MaxPreviewControl - (2 * Margin)) -->
-            <fwk:Thickness x:Key="PreviewContentMargin">12,5,5,5</fwk:Thickness>
-            <clr:Double x:Key="MaxContentGridHeight">288</clr:Double>
-            
-        </ResourceDictionary>
+        <!-- MaxContentGrid = (MaxPreviewControl - (2 * Margin)) -->
+        <fwk:Thickness
+            x:Key="PreviewContentMargin">12,5,5,5</fwk:Thickness>
+        <clr:Double
+            x:Key="MaxContentGridHeight">288</clr:Double>
 
     </UserControl.Resources>
     <Grid Name="outerContainer"

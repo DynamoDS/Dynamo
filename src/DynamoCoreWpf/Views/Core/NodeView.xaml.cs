@@ -112,13 +112,6 @@ namespace Dynamo.Controls
 
         public NodeView()
         {
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.InPortsDictionary);
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.OutPortsDictionary);
-
             InitializeComponent();
 
             Loaded += OnNodeViewLoaded;

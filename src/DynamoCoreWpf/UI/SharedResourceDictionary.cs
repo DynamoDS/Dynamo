@@ -29,214 +29,46 @@ namespace Dynamo.UI
         /// </summary>
         public new Uri Source
         {
-            get { return _sourceUri; }
+            get => _sourceUri;
             set
             {
+                if (_sourceUri == value) return;
+
                 _sourceUri = value;
 
-                if (!_sharedDictionaries.ContainsKey(value))
+                try
                 {
-                    // If the dictionary is not yet loaded, load it by setting
-                    // the source of the base class
-                    base.Source = value;
-
-                    // add it to the cache
-                    _sharedDictionaries.Add(value, this);
+                    if (!_sharedDictionaries.ContainsKey(value))
+                    {
+                        // Load and cache the dictionary
+                        base.Source = value;
+                        _sharedDictionaries[value] = this;
+                    }
+                    else
+                    {
+                        // Use the cached dictionary
+                        MergedDictionaries.Add(_sharedDictionaries[value]);
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    // If the dictionary is already loaded, get it from the cache
-                    MergedDictionaries.Add(_sharedDictionaries[value]);
+                    throw new InvalidOperationException($"Failed to load ResourceDictionary from '{value}'.", ex);
                 }
             }
         }
+
     }
 
     public static class SharedDictionaryManager
     {
         private static ResourceDictionary _dynamoModernDictionary;
-        private static ResourceDictionary _dataTemplatesDictionary;
-        private static ResourceDictionary _dynamoColorsAndBrushesDictionary;
-        private static ResourceDictionary _dynamoConvertersDictionary;
-        private static ResourceDictionary _dynamoTextDictionary;
-        private static ResourceDictionary _menuStyleDictionary;
-        private static ResourceDictionary _toolbarStyleDictionary;
-        private static ResourceDictionary _connectorsDictionary;
-        private static ResourceDictionary _portsDictionary;
-        private static ResourceDictionary _sidebarGridDictionary;
-        private static ResourceDictionary outPortsDictionary;
-        private static ResourceDictionary inPortsDictionary;
-        private static ResourceDictionary _liveChartDictionary;
 
-        public static string ThemesDirectory 
-        {
-            get
-            {
-                return Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location),
-                    @"UI\Themes\Modern\");
-            }
-        }
+        const string BaseUri = "pack://application:,,,/DynamoCoreWpf;component/";
 
-        public static Uri DynamoModernDictionaryUri
-        {
-            get {return new Uri(Path.Combine(ThemesDirectory, "DynamoModern.xaml")); }
-        }
+        public static Uri DynamoModernDictionaryUri =>
+            new(BaseUri + "UI/Themes/Modern_Combined.xaml");
 
-        public static Uri DataTemplatesDictionaryUri
-        {
-            get { return new Uri(Path.Combine(ThemesDirectory, "DataTemplates.xaml")); }
-        }
-
-        public static Uri DynamoColorsAndBrushesDictionaryUri
-        {
-            get { return new Uri(Path.Combine(ThemesDirectory, "DynamoColorsAndBrushes.xaml")); }
-        }
-
-        public static Uri DynamoConvertersDictionaryUri
-        {
-            get { return new Uri(Path.Combine(ThemesDirectory, "DynamoConverters.xaml")); }
-        }
-
-        public static Uri DynamoTextDictionaryUri
-        {
-            get { return new Uri(Path.Combine(ThemesDirectory, "DynamoText.xaml")); }
-        }
-
-        public static Uri MenuStyleDictionaryUri
-        {
-            get { return new Uri(Path.Combine(ThemesDirectory, "MenuStyleDictionary.xaml")); }
-        }
-
-        public static Uri ToolbarStyleDictionaryUri
-        {
-            get { return new Uri(Path.Combine(ThemesDirectory, "ToolbarStyleDictionary.xaml")); }
-        }
-
-        public static Uri ConnectorsDictionaryUri
-        {
-            get { return new Uri(Path.Combine(ThemesDirectory, "Connectors.xaml")); }
-        }
-
-        public static Uri PortsDictionaryUri
-        {
-            get { return new Uri(Path.Combine(ThemesDirectory, "Ports.xaml")); }
-        }
-
-        public static Uri OutPortsDictionaryUri
-        {
-            get { return new Uri(Path.Combine(ThemesDirectory, "OutPorts.xaml")); }
-        }
-
-        public static Uri InPortsDictionaryUri
-        {
-            get { return new Uri(Path.Combine(ThemesDirectory, "InPorts.xaml")); }
-        }
-
-        public static Uri SidebarGridDictionaryUri
-        {
-            get { return new Uri(Path.Combine(ThemesDirectory, "SidebarGridStyleDictionary.xaml")); }
-        }
-
-        public static Uri LiveChartsDictionaryUri
-        {
-            get { return new Uri(Path.Combine(ThemesDirectory, "LiveChartsStyle.xaml")); }
-        }
-
-        public static ResourceDictionary LiveChartDictionary
-        {
-            get
-            {
-                return _liveChartDictionary ??
-                       (_liveChartDictionary = new ResourceDictionary() { Source = LiveChartsDictionaryUri });
-            }
-        }
-
-        public static ResourceDictionary DynamoModernDictionary
-        {
-            get {
-                return _dynamoModernDictionary ??
-                       (_dynamoModernDictionary = new ResourceDictionary() {Source = DynamoModernDictionaryUri});
-            }
-        }
-
-        public static ResourceDictionary DataTemplatesDictionary
-        {
-            get {
-                return _dataTemplatesDictionary ??
-                       (_dataTemplatesDictionary = new ResourceDictionary() {Source = DataTemplatesDictionaryUri});
-            }
-        }
-
-        public static ResourceDictionary DynamoColorsAndBrushesDictionary
-        {
-            get {
-                return _dynamoColorsAndBrushesDictionary ??
-                       (_dynamoColorsAndBrushesDictionary = new ResourceDictionary() { Source = DynamoColorsAndBrushesDictionaryUri });
-            }
-        }
-
-        public static ResourceDictionary DynamoConvertersDictionary
-        {
-            get {
-                return _dynamoConvertersDictionary ??
-                       (_dynamoConvertersDictionary = new ResourceDictionary() {Source = DynamoConvertersDictionaryUri});
-            }
-        }
-
-        public static ResourceDictionary DynamoTextDictionary
-        {
-            get {
-                return _dynamoTextDictionary ??
-                       (_dynamoTextDictionary = new ResourceDictionary() {Source = DynamoTextDictionaryUri});
-            }
-        }
-
-        public static ResourceDictionary MenuStyleDictionary
-        {
-            get {
-                return _menuStyleDictionary ??
-                       (_menuStyleDictionary = new ResourceDictionary() {Source = MenuStyleDictionaryUri});
-            }
-        }
-
-        public static ResourceDictionary ToolbarStyleDictionary
-        {
-            get {
-                return _toolbarStyleDictionary ??
-                       (_toolbarStyleDictionary = new ResourceDictionary() { Source = ToolbarStyleDictionaryUri });
-            }
-        }
-
-        public static ResourceDictionary ConnectorsDictionary
-        {
-            get {
-                return _connectorsDictionary ??
-                       (_connectorsDictionary = new ResourceDictionary() {Source = ConnectorsDictionaryUri});            
-            }
-        }
-
-        public static ResourceDictionary OutPortsDictionary
-        {
-            get
-            {
-                return outPortsDictionary ?? (outPortsDictionary = new ResourceDictionary() { Source = OutPortsDictionaryUri });
-            }
-        }
-
-        public static ResourceDictionary InPortsDictionary
-        {
-            get
-            {
-                return inPortsDictionary ?? (inPortsDictionary = new ResourceDictionary() { Source = InPortsDictionaryUri });
-            }
-        }
-
-        public static ResourceDictionary SidebarGrid
-        {
-            get
-            {
-                return _sidebarGridDictionary ?? (_sidebarGridDictionary = new ResourceDictionary() { Source = SidebarGridDictionaryUri });
-            }
-        }
+        public static ResourceDictionary DynamoModernDictionary =>
+            _dynamoModernDictionary ??= new ResourceDictionary() { Source = DynamoModernDictionaryUri };
     }
 }

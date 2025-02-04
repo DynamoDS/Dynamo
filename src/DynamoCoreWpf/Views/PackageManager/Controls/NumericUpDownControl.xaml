@@ -11,9 +11,8 @@
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ResourceDictionary
+                    Source="../../../UI/Themes/Modern_Combined.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <SolidColorBrush x:Key="backgroundColorBrush" Color="#343434" />
             <Geometry x:Key="UpArrowGeometry">M 4.5 2 L 7.5 5 C 7.8 5.1 8.1 5.1 8.4 4.9 C 8.6 4.6 8.6 4.3 8.5 4 L 5 0.5 C 4.7 0.2 4.2 0.2 3.9 0.5 L 0.5 4 C 0.4 4.3 0.4 4.6 0.6 4.9 C 0.9 5.1 1.2 5.1 1.5 5 L 4.5 2 Z</Geometry>

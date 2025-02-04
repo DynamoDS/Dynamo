@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.Nodes.NoteView"
+<UserControl x:Class="Dynamo.Nodes.NoteView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -15,18 +15,6 @@
              Canvas.Left="{Binding Left, Mode=TwoWay}" 
              Canvas.Top="{Binding Top, Mode=TwoWay}" 
              MouseDown="OnNoteMouseDown" >
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-                <ResourceDictionary>
-                    <controls:NullToVisibiltyConverter x:Key="nullToVisibiltyConverter"  />
-                    <controls:NullToPinWidthConverter x:Key="nullToPinWidthConverter"  />
-                </ResourceDictionary>
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
-
     <UserControl.Style>
         <Style TargetType="UserControl" BasedOn="{StaticResource NoteUserControlStyle}">
             <Style.Triggers>

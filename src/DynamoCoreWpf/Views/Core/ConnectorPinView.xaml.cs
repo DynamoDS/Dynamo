@@ -1,4 +1,4 @@
-﻿using System.Windows;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Dynamo.Configuration;
@@ -18,10 +18,6 @@ namespace Dynamo.Nodes
 
         public ConnectorPinView()
         {
-            // Add DynamoConverters - currently using the InverseBoolToVisibilityCollapsedConverter
-            // to be able to collapse pins
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
-
             InitializeComponent();
             ViewModel = null;
 

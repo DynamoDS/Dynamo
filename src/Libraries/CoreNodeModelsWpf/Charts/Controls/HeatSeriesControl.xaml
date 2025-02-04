@@ -11,14 +11,6 @@
              d:DesignHeight="500" d:DesignWidth="500" 
              Height="500" Width="500"
              d:DataContext="{d:DesignInstance local:HeatSeriesControl}">
-    <UserControl.Resources>
-        <ResourceDictionary>
-            <ResourceDictionary.MergedDictionaries>
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.LiveChartsDictionaryUri}" />
-            </ResourceDictionary.MergedDictionaries>
-        </ResourceDictionary>
-    </UserControl.Resources>
     <Grid>
 
         <lvc:CartesianChart Style="{StaticResource CartesianLiveChart}" Name="HeatSeriesUI" Grid.Row="1"

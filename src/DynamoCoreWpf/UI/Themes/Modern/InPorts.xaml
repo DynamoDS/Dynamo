@@ -1,17 +1,13 @@
 <ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
+                    xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
                     xmlns:interactivity="clr-namespace:Dynamo.Microsoft.Xaml.Behaviors;assembly=Dynamo.Microsoft.Xaml.Behaviors"
-                    xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
-                    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-                    xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
-                    xmlns:views="clr-namespace:Dynamo.UI.Views;assembly=DynamoCoreWpf">
-    <ResourceDictionary.MergedDictionaries>
-        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
-        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
-        <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
-    </ResourceDictionary.MergedDictionaries>
-    <DataTemplate DataType="{x:Type viewModels:InPortViewModel}">
+                    xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+                    xmlns:ui="clr-namespace:Dynamo.UI"
+                    xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
+                    xmlns:uiViews="clr-namespace:Dynamo.UI.Views">
+
+    <DataTemplate DataType="{x:Type viewModels:InPortViewModel}" x:Name="inPortViewModel">
 
         <!--  Grid that contains the entire port  -->
         <Grid Name="MainGrid"
@@ -30,12 +26,12 @@
 
             <interactivity:Interaction.Triggers>
                 <!--  Bind Connect command to left click  -->
-                <views:HandlingEventTrigger EventName="MouseLeftButtonDown">
+                <uiViews:HandlingEventTrigger EventName="MouseLeftButtonDown">
                     <interactivity:InvokeCommandAction Command="{Binding Path=ConnectCommand}" />
-                </views:HandlingEventTrigger>
-                <views:HandlingEventTrigger EventName="MouseRightButtonDown">
+                </uiViews:HandlingEventTrigger>
+                <uiViews:HandlingEventTrigger EventName="MouseRightButtonDown">
                     <interactivity:InvokeCommandAction Command="{Binding Path=NodePortContextMenuCommand}" CommandParameter="{Binding}" />
-                </views:HandlingEventTrigger>
+                </uiViews:HandlingEventTrigger>
             </interactivity:Interaction.Triggers>
 
             <!--  Bind NodeAutoComplete to double left click  -->
@@ -52,12 +48,12 @@
                        IsHitTestVisible="{Binding IsHitTestVisible}"
                        SnapsToDevicePixels="True">
                 <interactivity:Interaction.Triggers>
-                    <views:HandlingEventTrigger EventName="MouseEnter">
+                    <uiViews:HandlingEventTrigger EventName="MouseEnter">
                         <interactivity:InvokeCommandAction Command="{Binding Path=MouseEnterCommand}" CommandParameter="{Binding}" />
-                    </views:HandlingEventTrigger>
-                    <views:HandlingEventTrigger EventName="MouseLeave">
+                    </uiViews:HandlingEventTrigger>
+                    <uiViews:HandlingEventTrigger EventName="MouseLeave">
                         <interactivity:InvokeCommandAction Command="{Binding Path=MouseLeaveCommand}" CommandParameter="{Binding}" />
-                    </views:HandlingEventTrigger>
+                    </uiViews:HandlingEventTrigger>
                 </interactivity:Interaction.Triggers>
             </Rectangle>
 
