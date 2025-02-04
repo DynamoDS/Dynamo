@@ -237,10 +237,10 @@ namespace Dynamo.Wpf.Controls.SubControls
             for (int i = 0; i < count; i++)
             {
                 double x = i * step;
-                double normalizedY = ComputeGaussianY(x, A, mu, sigma);
+                double normalizedY = ComputeGaussianY(x, A * 4, mu, sigma);
                 double scaledY = minY + ((maxY - minY) * (1 - (normalizedY / MaxHeight)));
 
-                values.Add(Math.Round(scaledY * 4, rounding));
+                values.Add(Math.Round(scaledY, rounding));
             }
 
             return values;

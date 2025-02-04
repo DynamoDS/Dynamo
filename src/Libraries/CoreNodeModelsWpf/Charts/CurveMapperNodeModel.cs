@@ -777,9 +777,7 @@ namespace CoreNodeModelsWpf.Charts
             }
 
             RestoreCurveConnections();
-
-            // Update UI for inLocked after deserialization
-            RaisePropertyChanged(nameof(IsLocked));
+            UpdateGaussianControlPointsVisibility();
         }
 
         private void RestoreCurveConnections()

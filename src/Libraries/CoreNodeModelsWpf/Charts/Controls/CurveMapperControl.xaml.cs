@@ -25,10 +25,10 @@ namespace CoreNodeModelsWpf.Charts.Controls
         private readonly double mainGridMinHeight = 340;
         private int gridSize = 10;
 
-        private void OnPropertyChanged(string propertyName) // RaisePropertyChanged
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
+        //private void OnPropertyChanged(string propertyName) // RaisePropertyChanged
+        //{
+        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        //}
 
         public CurveMapperControl(CurveMapperNodeModel model)
         {
