@@ -1,0 +1,469 @@
+{
+  "Uuid": "867a94cc-c780-446a-917e-2c7011eb05b5",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "graph",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "c0f6d39010f04f8eba7223e80df4cc5d",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "3006c4e2f4224ecd978b191dd903c784",
+          "Name": "obj",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b2fc6133a83f4655915345fe9304e9b9",
+          "Name": "string",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "TestAssemblyIsolationNamespace1.TestAssemblyIsolationClass1.SerializeSomething@var",
+      "Replication": "Auto",
+      "Description": "TestAssemblyIsolationClass1.SerializeSomething (obj: var): string"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "14db13f89687489db1d328836400ec9f",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "82d6b7375c2943fbaa709c1fbe6679d7",
+          "Name": "input",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4b672fdb8082498d8be8c1978c1ea3a6",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "TestAssemblyIsolationNamespace1.TestAssemblyIsolationClass1.DeserializeSomething@string",
+      "Replication": "Auto",
+      "Description": "TestAssemblyIsolationClass1.DeserializeSomething (input: string): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "8c387b58add74a70b0e9dc701fa48182",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "09b1fb8e6ce247849d8ea7ef440f0007",
+          "Name": "obj",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "feeec2a041cc4652b1b744b2d5381efc",
+          "Name": "string",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "TestAssemblyIsolationNamespace2.TestAssemblyIsolationClass2.SerializeSomething@var",
+      "Replication": "Auto",
+      "Description": "TestAssemblyIsolationClass2.SerializeSomething (obj: var): string"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "0ce6ab144a2a438bba57e974ca04ce2e",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "8c87519187024d52860864ce5175ca45",
+          "Name": "input",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "20ebd6181eea416ba666af37779fa4d1",
+          "Name": "var[]..[]",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "TestAssemblyIsolationNamespace2.TestAssemblyIsolationClass2.DeserializeSomething@string",
+      "Replication": "Auto",
+      "Description": "TestAssemblyIsolationClass2.DeserializeSomething (input: string): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
+      "VariableInputPorts": true,
+      "Id": "348a041f700d441a9b12f7ca95c29a45",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "33155df314384403bbb3e8143ccb22ef",
+          "Name": "item0",
+          "Description": "Item Index #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "51bb733788404d9b84338fb0407f9eab",
+          "Name": "item1",
+          "Description": "Item Index #1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c760cce5952c4a12a2fbc501684488c2",
+          "Name": "item2",
+          "Description": "Item Index #2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "7b76cd5a13cb4286806c5e4610a35fdc",
+          "Name": "list",
+          "Description": "A list (type: var[]..[])",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Makes a new list from the given inputs"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "821680cb39e14ad7ae8f9f91ccdd091f",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "8eea449f7a464469a1185db3fc02c06a",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number",
+      "InputValue": 29.0
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 200.0,
+      "WatchHeight": 200.0,
+      "Id": "80d468af5d8f40aeb0d7bedec96752f7",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "4c71bbd9186848b1b35ec260261ed2bd",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "681adab7ea3d489396895ab85a571efc",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 200.0,
+      "WatchHeight": 200.0,
+      "Id": "d1c56ca9b01a4451b50d2af194668f93",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "4852b8f1a9354579a1f8abd8d45d5f04",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0814d78b06ef43519f9f893a5faf29b1",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "b2fc6133a83f4655915345fe9304e9b9",
+      "End": "82d6b7375c2943fbaa709c1fbe6679d7",
+      "Id": "774a20d100dd47f3a2d111567290d896",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4b672fdb8082498d8be8c1978c1ea3a6",
+      "End": "4852b8f1a9354579a1f8abd8d45d5f04",
+      "Id": "fd440802ea8840728031698dcc3a45a1",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "feeec2a041cc4652b1b744b2d5381efc",
+      "End": "8c87519187024d52860864ce5175ca45",
+      "Id": "eae10e1c5bd94a99a3df97c7e2138723",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "20ebd6181eea416ba666af37779fa4d1",
+      "End": "4c71bbd9186848b1b35ec260261ed2bd",
+      "Id": "e9dae4cf7dd54f028a576b0a4a71cf27",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "7b76cd5a13cb4286806c5e4610a35fdc",
+      "End": "3006c4e2f4224ecd978b191dd903c784",
+      "Id": "15079b24952648a682444760e83b6ff8",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "7b76cd5a13cb4286806c5e4610a35fdc",
+      "End": "09b1fb8e6ce247849d8ea7ef440f0007",
+      "Id": "f8aec11498c04f74a7336b478a9bd415",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8eea449f7a464469a1185db3fc02c06a",
+      "End": "33155df314384403bbb3e8143ccb22ef",
+      "Id": "69bce44f2a594b1a90743bbc87b78de2",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8eea449f7a464469a1185db3fc02c06a",
+      "End": "51bb733788404d9b84338fb0407f9eab",
+      "Id": "3dc8a37395274626af8368f87228db80",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "8eea449f7a464469a1185db3fc02c06a",
+      "End": "c760cce5952c4a12a2fbc501684488c2",
+      "Id": "248a1d534ca945b0b1d4e0af4d9c29fb",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "Package1",
+      "Version": "1.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "c0f6d39010f04f8eba7223e80df4cc5d",
+        "14db13f89687489db1d328836400ec9f"
+      ]
+    },
+    {
+      "Name": "Package2",
+      "Version": "1.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "8c387b58add74a70b0e9dc701fa48182",
+        "0ce6ab144a2a438bba57e974ca04ce2e"
+      ]
+    }
+  ],
+  "EnableLegacyPolyCurveBehavior": null,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.4",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.4.0.6124",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "c0f6d39010f04f8eba7223e80df4cc5d",
+        "Name": "TestAssemblyIsolationClass1.SerializeSomething",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 193.40717948717952,
+        "Y": 56.36307692307696
+      },
+      {
+        "Id": "14db13f89687489db1d328836400ec9f",
+        "Name": "TestAssemblyIsolationClass1.DeserializeSomething",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 674.6461538461538,
+        "Y": 42.49641025641026
+      },
+      {
+        "Id": "8c387b58add74a70b0e9dc701fa48182",
+        "Name": "TestAssemblyIsolationClass2.SerializeSomething",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 166.52717948717947,
+        "Y": 298.471794871795
+      },
+      {
+        "Id": "0ce6ab144a2a438bba57e974ca04ce2e",
+        "Name": "TestAssemblyIsolationClass2.DeserializeSomething",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 652.4430769230771,
+        "Y": 304.6666666666667
+      },
+      {
+        "Id": "348a041f700d441a9b12f7ca95c29a45",
+        "Name": "List Create",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -20.908717948718106,
+        "Y": 98.81743589743596
+      },
+      {
+        "Id": "821680cb39e14ad7ae8f9f91ccdd091f",
+        "Name": "Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -291.40102564102597,
+        "Y": 80.14051282051284
+      },
+      {
+        "Id": "80d468af5d8f40aeb0d7bedec96752f7",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1251.031794871795,
+        "Y": 319.2379487179488
+      },
+      {
+        "Id": "d1c56ca9b01a4451b50d2af194668f93",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1254.75282051282,
+        "Y": 18.74564102564102
+      }
+    ],
+    "Annotations": [],
+    "X": -0.07419354838680192,
+    "Y": 41.38629032258066,
+    "Zoom": 0.786290322580645
+  }
+}

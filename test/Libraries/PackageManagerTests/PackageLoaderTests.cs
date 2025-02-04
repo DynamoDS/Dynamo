@@ -2,8 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.IO.Packaging;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Threading;
 using Dynamo.Configuration;
 using Dynamo.Core;
@@ -12,7 +14,10 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
+using Dynamo.Models;
+using Dynamo.Scheduler;
 using Dynamo.Search.SearchElements;
+using DynamoUtilities;
 using Moq;
 using NUnit.Framework;
 
@@ -644,7 +649,74 @@ namespace Dynamo.PackageManager.Tests
             loader.RequestLoadNodeLibrary -= libraryLoader.LoadLibraryAndSuppressZTSearchImport;
         }
 
- 
+        [Test]
+        public void LoadPackagesInAssemblyIsolation()
+        {
+            var ff = new Mock<DynamoUtilities.IFFlags>();
+            DynamoModel.FeatureFlags.flags = ff.Object;
+            ff.Setup(x => x.CheckFeatureFlag<string>(DynamoModel.FeatureFlags, "IsolatePackages", "")).Returns(() => "Package1,Package2,Package");
+            ff.Setup(x => x.CheckFeatureFlag<string>(DynamoModel.FeatureFlags, "DoNotIsolatePackages", "")).Returns(() => "Package");
+
+            // Needed for FeatureFlags
+            Assert.IsTrue(DynamoModel.IsTestMode);
+            Assert.AreEqual("Package1,Package2,Package", DynamoModel.FeatureFlags.CheckFeatureFlag<string>("IsolatePackages", ""));
+            Assert.AreEqual("Package", DynamoModel.FeatureFlags.CheckFeatureFlag<string>("DoNotIsolatePackages", ""));
+
+            var pathManager = new Mock<Dynamo.Interfaces.IPathManager>();
+            pathManager.SetupGet(x => x.PackagesDirectories).Returns(
+                () => new List<string> { PackagesDirectory });
+
+            var loader = new PackageLoader(pathManager.Object);
+            var libraryLoader = new ExtensionLibraryLoader(CurrentDynamoModel);
+
+            loader.PackagesLoaded += libraryLoader.LoadPackages;
+     
+            var packageDirectory = Path.Combine(TestDirectory, "testAssemblyIsolation", "Package1");
+            var packageDirectory2 = Path.Combine(TestDirectory, "testAssemblyIsolation", "Package2");
+            var packageDirectory3 = Path.Combine(TestDirectory, "pkgs", "Package");
+            var package1 = Package.FromDirectory(packageDirectory, CurrentDynamoModel.Logger);
+            var package2 = Package.FromDirectory(packageDirectory2, CurrentDynamoModel.Logger);
+            var package3 = Package.FromDirectory(packageDirectory3, CurrentDynamoModel.Logger);
+            loader.LoadPackages([package1, package2, package3]);
+
+            loader.PackagesLoaded -= libraryLoader.LoadPackages;
+
+            // 2 packages loaded as expected
+            var expectedLoadedPackageNum = 0;
+            foreach (var pkg in loader.LocalPackages)
+            {
+                if (pkg.Name == "Package1" || pkg.Name == "Package2" || pkg.Name == "Package")
+                {
+                    expectedLoadedPackageNum++;
+                }
+            }
+            Assert.AreEqual(3, expectedLoadedPackageNum);
+
+            string openPath = Path.Combine(TestDirectory, @"testAssemblyIsolation\graph.dyn");
+            RunModel(openPath);
+
+            var expectedVersions = 0;
+            var pkgLoadContexts = AssemblyLoadContext.All.Where(x => x.Name.Equals("Package1@1.0.0") || x.Name.Equals("Package2@1.0.0")).ToList();
+            foreach (var pkg in pkgLoadContexts)
+            {
+                var dep = pkg.Assemblies.FirstOrDefault(x => x.GetName().Name == "Newtonsoft.Json");
+                Assert.IsNotNull(dep);
+
+                var ver = dep.GetName().Version.ToString();
+                // Expected both versions of Newtonsoft to be loaded
+                if (ver == "13.0.0.0" || ver == "8.0.0.0")
+                {
+                    expectedVersions++;
+                }
+            }
+            Assert.AreEqual(2, expectedVersions);
+
+            // Make sure the "DoNotIsolatePackages" fflag puts the pacakge in the default load context(i.e does not isolate it)
+            var contexts = AssemblyLoadContext.All.Where(l => l.Assemblies.FirstOrDefault(x => x.GetName().Name == "Package") != null).ToList();
+            Assert.AreEqual(1, contexts.Count);
+            Assert.True(contexts[0] == AssemblyLoadContext.Default);
+        }
+
         [Test]
         public void LoadingConflictingCustomNodePackageDoesNotGetLoaded()
         {
