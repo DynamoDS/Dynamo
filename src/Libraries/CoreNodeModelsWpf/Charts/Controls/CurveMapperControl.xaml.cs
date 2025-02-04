@@ -17,39 +17,13 @@ namespace CoreNodeModelsWpf.Charts.Controls
     {
         private readonly CurveMapperNodeModel model;
         public event PropertyChangedEventHandler PropertyChanged;
-                
-        
-        private double dynamicCanvasSize = 240;
+
         private double previousCanvasSize = 240;
 
         private readonly double canvasMinSize = 240; // also initial width and height
         private readonly double mainGridMinWidth = 310;
         private readonly double mainGridMinHeight = 340;
         private int gridSize = 10;
-        private bool isLocked = false;
-
-        public double DynamicCanvasSize
-        {
-            get => model.DynamicCanvasSize;
-            set
-            {
-                if (model.DynamicCanvasSize != value)
-                {
-                    model.DynamicCanvasSize = value;
-                    OnPropertyChanged(nameof(DynamicCanvasSize));
-                }
-            }
-        }
-
-        public bool IsLocked
-        {
-            get => isLocked;
-            set
-            {
-                isLocked = value;
-                ToggleControlPointsMovability();
-            }
-        }
 
         private void OnPropertyChanged(string propertyName) // RaisePropertyChanged
         {
@@ -65,8 +39,6 @@ namespace CoreNodeModelsWpf.Charts.Controls
             this.model = model;
             DataContext = model;
 
-            // ip comment : build this
-            //this.model.PropertyChanged += NodeModel_PropertyChanged;
             this.Unloaded += Unload;
 
             // Redraw canvas when the input changes
@@ -83,7 +55,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
                 if (allPortsConnected)
                 {
                     if (e.PropertyName == nameof(model.MinLimitX) ||
-                    e.PropertyName == nameof(model.MaxLimitX) ||
+                     e.PropertyName == nameof(model.MaxLimitX) ||
                     e.PropertyName == nameof(model.MinLimitY) ||
                     e.PropertyName == nameof(model.MaxLimitY))
                     {
@@ -99,7 +71,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
             // Redraw canvas when the node is resized
             GraphCanvas.SizeChanged += (s, e) =>
             {
-                double newCanvasSize = DynamicCanvasSize;
+                double newCanvasSize = model.DynamicCanvasSize;
 
                 // Linear curve
                 if (model.ControlPointLinear1 != null && model.ControlPointLinear2 != null)
@@ -221,15 +193,24 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
                 previousCanvasSize = newCanvasSize;
 
-                DrawGrid(model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY);
+                DrawGrid();
             };
 
             // Initial draw canvas
-            DrawGrid(model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY);
+            DrawGrid();
+            UpdateLockButton();
         }
 
         private void NodeModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {            
+        {
+            if (e.PropertyName == nameof(model.IsLocked))
+            {
+                Dispatcher.Invoke(() =>
+                {
+                    ToggleControlPointsMovability();
+                    UpdateLockButton();
+                });
+            }
         }
 
         /// <summary>
@@ -239,14 +220,17 @@ namespace CoreNodeModelsWpf.Charts.Controls
         {
             foreach (var point in points.Where(p => p != null))
             {
-                point.LimitWidth = newCanvasSize;
-                point.LimitHeight = newCanvasSize;
-                point.Point = new Point((point.Point.X / previousCanvasSize) * newCanvasSize,
-                                        (point.Point.Y / previousCanvasSize) * newCanvasSize);
+                if (point.LimitWidth != newCanvasSize || point.LimitHeight != newCanvasSize)
+                {
+                    point.LimitWidth = newCanvasSize;
+                    point.LimitHeight = newCanvasSize;
+                    point.Point = new Point((point.Point.X / previousCanvasSize) * newCanvasSize,
+                                            (point.Point.Y / previousCanvasSize) * newCanvasSize);
+                }
             }
         }
 
-        private void DrawGrid(double xMin, double xMax, double yMin, double yMax)
+        private void DrawGrid()
         {
             // Remove current grid lines
             var gridLines = GraphCanvas.Children
@@ -260,19 +244,19 @@ namespace CoreNodeModelsWpf.Charts.Controls
             }
 
             // Draw grid lines
-            double xPixelsPerStep = DynamicCanvasSize / gridSize;
-            double yPixelsPerStep = DynamicCanvasSize / gridSize;
+            double xPixelsPerStep = model.DynamicCanvasSize / gridSize;
+            double yPixelsPerStep = model.DynamicCanvasSize / gridSize;
 
             for (int i = 0; i <= gridSize; i++)
             {
                 double xPos = i * xPixelsPerStep;
-                DrawLine(xPos, 0, xPos, DynamicCanvasSize);
+                DrawLine(xPos, 0, xPos, model.DynamicCanvasSize);
             }
 
             for (int i = 0; i <= gridSize; i++)
             {
                 double yPos = i * yPixelsPerStep;
-                DrawLine(0, yPos, DynamicCanvasSize, yPos);
+                DrawLine(0, yPos, model.DynamicCanvasSize, yPos);
             }
         }
 
@@ -306,7 +290,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
             Height = yAdjust;
 
             // Adjust the size of the GraphCanvas dynamically
-            DynamicCanvasSize = Math.Max(xAdjust - 70, canvasMinSize);
+            model.DynamicCanvasSize = Math.Max(xAdjust - 70, canvasMinSize);
         }
 
         private void Unload(object sender, RoutedEventArgs e)
@@ -317,68 +301,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
-            if (isLocked) return;
-
-            // Reset the control points to their original positions and regenerate curves
-            switch (model.SelectedGraphType)
-            {
-                case GraphTypes.LinearCurve:
-                    model.ControlPointLinear1.Point = new Point(0, DynamicCanvasSize);
-                    model.ControlPointLinear2.Point = new Point(DynamicCanvasSize, 0);
-                    model.LinearCurve?.Regenerate();
-                    break;
-                case GraphTypes.BezierCurve:
-                    model.ControlPointBezier1.Point = new Point(DynamicCanvasSize * 0.2, DynamicCanvasSize * 0.2);
-                    model.ControlPointBezier2.Point = new Point(DynamicCanvasSize * 0.8, DynamicCanvasSize * 0.2);
-                    model.OrthoControlPointBezier1.Point = new Point(0, DynamicCanvasSize);
-                    model.OrthoControlPointBezier2.Point = new Point(DynamicCanvasSize, DynamicCanvasSize);
-                    model.ControlLineBezier1?.Regenerate(model.ControlPointBezier1, model.OrthoControlPointBezier1);
-                    model.ControlLineBezier2?.Regenerate(model.ControlPointBezier2, model.OrthoControlPointBezier2);
-                    model.BezierCurve?.Regenerate();
-                    break;
-                case GraphTypes.SineWave:
-                    model.ControlPointSine1.Point = new Point(DynamicCanvasSize * 0.25, 0);
-                    model.ControlPointSine2.Point = new Point(DynamicCanvasSize * 0.75, DynamicCanvasSize);
-                    model.SineWave?.Regenerate();
-                    break;
-                case GraphTypes.CosineWave:
-                    model.ControlPointCosine1.Point = new Point(0, 0);
-                    model.ControlPointCosine2.Point = new Point(DynamicCanvasSize * 0.5, DynamicCanvasSize);
-                    model.CosineWave?.Regenerate();
-                    break;
-                case GraphTypes.ParabolicCurve:
-                    model.ControlPointParabolic1.Point = new Point(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.1);
-                    model.ControlPointParabolic2.Point = new Point(DynamicCanvasSize, DynamicCanvasSize);
-                    model.ParabolicCurve?.Regenerate();
-                    break;
-                case GraphTypes.PerlinNoiseCurve:
-                    model.OrthoControlPointPerlin1.Point = new Point(DynamicCanvasSize * 0.5, 0);
-                    model.OrthoControlPointPerlin2.Point = new Point(0, DynamicCanvasSize);
-                    model.ControlPointPerlin.Point = new Point(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
-                    model.PerlinNoiseCurve?.Regenerate();
-                    break;
-                case GraphTypes.PowerCurve:
-                    model.ControlPointPower.Point = new Point(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
-                    model.PowerCurve?.Regenerate();
-                    break;
-                case GraphTypes.SquareRootCurve:
-                    model.ControlPointSquareRoot1.Point = new Point(0, DynamicCanvasSize);
-                    model.ControlPointSquareRoot2.Point = new Point(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
-                    model.SquareRootCurve?.Regenerate();
-                    break;
-                case GraphTypes.GaussianCurve:
-                    model.OrthoControlPointGaussian1.Point = new Point(0, DynamicCanvasSize * 0.8);
-                    model.OrthoControlPointGaussian2.Point = new Point(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
-                    model.OrthoControlPointGaussian3.Point = new Point(DynamicCanvasSize * 0.4, DynamicCanvasSize);
-                    model.OrthoControlPointGaussian4.Point = new Point(DynamicCanvasSize * 0.6, DynamicCanvasSize);
-                    model.GaussianCurve?.Regenerate();
-                    break;
-                    // Add mode curves here
-            }
-
-            // Force Output Recalculation
-            model.GenerateOutputValues();
-            model.OnNodeModified();
+            model.ResetCurves();
         }
 
         private void LockButton_Click(object sender, RoutedEventArgs e)
@@ -386,29 +309,37 @@ namespace CoreNodeModelsWpf.Charts.Controls
             var button = sender as Button;
             if (button != null)
             {
-                IsLocked = !IsLocked;
-                button.Tag = IsLocked ? "Locked" : "Unlocked";
+                model.IsLocked = !model.IsLocked;
+                UpdateLockButton();
                 if (button.ToolTip is ToolTip toolTip)
                 {
-                    toolTip.Content = IsLocked
+                    toolTip.Content = model.IsLocked
                         ? CoreNodeModelWpfResources.CurveMapperUnlockButtonToolTip
                         : CoreNodeModelWpfResources.CurveMapperLockButtonToolTip;
                 }
             }
-        }
+        }        
 
         private void GraphCanvas_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
         {
         }
 
-        private void ToggleControlPointsMovability()
+        public void ToggleControlPointsMovability()
         {
             foreach (var child in GraphCanvas.Children)
             {
                 if (child is CurveMapperControlPoint controlPoint)
                 {
-                    controlPoint.IsEnabled = !isLocked;
+                    controlPoint.IsEnabled = !model.IsLocked;
                 }
+            }
+        }
+
+        private void UpdateLockButton()
+        {
+            if (LockButton != null)
+            {
+                LockButton.Tag = model.IsLocked ? "Locked" : "Unlocked";
             }
         }
     }

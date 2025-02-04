@@ -149,7 +149,7 @@ namespace Dynamo.Wpf.Controls.SubControls
                 controlPoint1 == null || controlPoint2 == null ||
                 freeControlPoint1 == null || freeControlPoint2 == null)
             {
-                return; // Exit if dependencies are not ready
+                return;
             }
 
             PathFigure.StartPoint = controlPoint1.Point;

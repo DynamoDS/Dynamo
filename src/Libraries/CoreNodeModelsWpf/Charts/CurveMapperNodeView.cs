@@ -28,7 +28,6 @@ namespace Dynamo.Wpf.Charts
             curveMapperControl = new CurveMapperControl(model);
             curveMapperControl.DataContext = model;
             curveMapperNodeModel = model;
-            model.CurveMapperControl = curveMapperControl;
             model.EngineController = nodeView.ViewModel.DynamoViewModel.EngineController;
 
             // Bind MainGrid Width and Height to model properties
@@ -43,368 +42,99 @@ namespace Dynamo.Wpf.Charts
             // Defer adding elements until the canvas is loaded
             curveMapperControl.GraphCanvas.Loaded += (s, e) =>
             {
-                #region Create curves and points and add to canvas
+                #region Add curves / points to canvas
 
                 // Linear curve
-                // Create the control points based on DynamicCanvasSize and add to canvas
-                model.ControlPointLinear1  = new CurveMapperControlPoint(
-                    new Point(0, model.DynamicCanvasSize),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
-                );
-                model.ControlPointLinear2 = new CurveMapperControlPoint(
-                    new Point(model.DynamicCanvasSize, 0),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
-                );
-                // Bind properties for startControlPoint and endControlPoint
                 ApplyBindingsToControlPoints(model.ControlPointLinear1, model, curveMapperControl);
                 ApplyBindingsToControlPoints(model.ControlPointLinear2, model, curveMapperControl);
-                // Add the control points to the canvas
                 curveMapperControl.GraphCanvas.Children.Add(model.ControlPointLinear1);
                 curveMapperControl.GraphCanvas.Children.Add(model.ControlPointLinear2);
-                Canvas.SetZIndex(model.ControlPointLinear1, 20);
-                Canvas.SetZIndex(model.ControlPointLinear2, 20);
-                // Add the linear curve
-                model.LinearCurve = new LinearCurve(
-                    model.ControlPointLinear1,
-                    model.ControlPointLinear2,
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize
-                );
-                Canvas.SetZIndex(model.LinearCurve, 10);
                 curveMapperControl.GraphCanvas.Children.Add(model.LinearCurve.PathCurve);
-                // Assign curves to control points
-                model.ControlPointLinear1.CurveLinear = model.LinearCurve;
-                model.ControlPointLinear2.CurveLinear = model.LinearCurve;
 
                 // Bezier curve
-                model.ControlPointBezier1 = new CurveMapperControlPoint(
-                    new Point(model.DynamicCanvasSize * 0.2, model.DynamicCanvasSize * 0.2),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
-                );
-                model.ControlPointBezier2 = new CurveMapperControlPoint(
-                    new Point(model.DynamicCanvasSize * 0.8, model.DynamicCanvasSize * 0.2),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
-                );
-                model.OrthoControlPointBezier1 = new CurveMapperControlPoint(
-                    new Point(0, model.DynamicCanvasSize),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize,
-                    true, true
-                );
-                model.OrthoControlPointBezier2 = new CurveMapperControlPoint(
-                    new Point(model.DynamicCanvasSize, model.DynamicCanvasSize),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize,
-                    true, true
-                );
+                ApplyBindingsToControlPoints(model.OrthoControlPointBezier1, model, curveMapperControl);
+                ApplyBindingsToControlPoints(model.OrthoControlPointBezier2, model, curveMapperControl);
                 curveMapperControl.GraphCanvas.Children.Add(model.ControlPointBezier1);
                 curveMapperControl.GraphCanvas.Children.Add(model.ControlPointBezier2);
                 curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointBezier1);
                 curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointBezier2);
-                Canvas.SetZIndex(model.ControlPointBezier1, 10);
-                Canvas.SetZIndex(model.ControlPointBezier2, 10);
-                Canvas.SetZIndex(model.OrthoControlPointBezier1, 20);
-                Canvas.SetZIndex(model.OrthoControlPointBezier2, 20);
-
-                model.ControlLineBezier1 = new ControlLine(
-                    model.ControlPointBezier1.Point,
-                    model.OrthoControlPointBezier1.Point
-                );
-                model.ControlLineBezier2 = new ControlLine(
-                    model.ControlPointBezier2.Point,
-                    model.OrthoControlPointBezier2.Point
-                );
                 curveMapperControl.GraphCanvas.Children.Add(model.ControlLineBezier1.PathCurve);
                 curveMapperControl.GraphCanvas.Children.Add(model.ControlLineBezier2.PathCurve);
-                Canvas.SetZIndex(model.ControlLineBezier1.PathCurve, 9);
-                Canvas.SetZIndex(model.ControlLineBezier2.PathCurve, 9);
-
-                model.BezierCurve = new BezierCurve(
-                    model.OrthoControlPointBezier1,
-                    model.OrthoControlPointBezier2,
-                    model.ControlPointBezier1,
-                    model.ControlPointBezier2,
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize);
-                Canvas.SetZIndex(model.BezierCurve, 10);
                 curveMapperControl.GraphCanvas.Children.Add(model.BezierCurve.PathCurve);
 
-                model.OrthoControlPointBezier1.CurveBezier = model.BezierCurve;
-                model.OrthoControlPointBezier2.CurveBezier = model.BezierCurve;
-                model.OrthoControlPointBezier1.ControlLineBezier = model.ControlLineBezier1;
-                model.OrthoControlPointBezier2.ControlLineBezier = model.ControlLineBezier2;
-                model.ControlPointBezier1.CurveBezier = model.BezierCurve;
-                model.ControlPointBezier2.CurveBezier = model.BezierCurve;
-                model.ControlPointBezier1.ControlLineBezier = model.ControlLineBezier1;
-                model.ControlPointBezier2.ControlLineBezier = model.ControlLineBezier2;
-
-                ApplyBindingsToControlPoints(model.OrthoControlPointBezier1, model, curveMapperControl);
-                ApplyBindingsToControlPoints(model.OrthoControlPointBezier2, model, curveMapperControl);
-
                 // Sine wave
-                model.ControlPointSine1 = new CurveMapperControlPoint(
-                    new Point(model.DynamicCanvasSize * 0.25, 0),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
-                );
-                model.ControlPointSine2 = new CurveMapperControlPoint(
-                    new Point(model.DynamicCanvasSize * 0.75, model.DynamicCanvasSize),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
-                );
-                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointSine1);
-                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointSine2);
-                Canvas.SetZIndex(model.ControlPointSine1, 20);
-                Canvas.SetZIndex(model.ControlPointSine2, 20);
-
-                model.SineWave = new SineCurve(
-                    model.ControlPointSine1,
-                    model.ControlPointSine2,
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize);
-                Canvas.SetZIndex(model.SineWave, 10);
-                curveMapperControl.GraphCanvas.Children.Add(model.SineWave.PathCurve);
-
-                model.ControlPointSine1.CurveSine = model.SineWave;
-                model.ControlPointSine2.CurveSine = model.SineWave;
-
                 ApplyBindingsToControlPoints(model.ControlPointSine1, model, curveMapperControl);
                 ApplyBindingsToControlPoints(model.ControlPointSine2, model, curveMapperControl);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointSine1);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointSine2);
+                curveMapperControl.GraphCanvas.Children.Add(model.SineWave.PathCurve);
 
                 // Cosine wave
-                // TODO: check if we should have separate Cosine Curve class
-                model.ControlPointCosine1 = new CurveMapperControlPoint(
-                    new Point(0, 0),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
-                );
-                model.ControlPointCosine2 = new CurveMapperControlPoint(
-                    new Point(model.DynamicCanvasSize * 0.5, model.DynamicCanvasSize),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
-                );
-                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointCosine1);
-                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointCosine2);
-                Canvas.SetZIndex(model.ControlPointCosine1, 20);
-                Canvas.SetZIndex(model.ControlPointCosine2, 20);
-
-                model.CosineWave = new SineCurve(
-                    model.ControlPointCosine1,
-                    model.ControlPointCosine2,
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize);
-                Canvas.SetZIndex(model.CosineWave, 10);
-                curveMapperControl.GraphCanvas.Children.Add(model.CosineWave.PathCurve);
-
-                model.ControlPointCosine1.CurveCosine = model.CosineWave;
-                model.ControlPointCosine2.CurveCosine = model.CosineWave;
-
                 ApplyBindingsToControlPoints(model.ControlPointCosine1, model, curveMapperControl);
                 ApplyBindingsToControlPoints(model.ControlPointCosine2, model, curveMapperControl);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointCosine1);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointCosine2);
+                curveMapperControl.GraphCanvas.Children.Add(model.CosineWave.PathCurve);
 
                 // Parabolic curve
-                model.ControlPointParabolic1 = new CurveMapperControlPoint(
-                    new Point(model.DynamicCanvasSize * 0.5, model.DynamicCanvasSize * 0.1),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
-                );
-                model.ControlPointParabolic2 = new CurveMapperControlPoint(
-                    new Point(model.DynamicCanvasSize, model.DynamicCanvasSize),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
-                );
-                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointParabolic1);
-                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointParabolic2);
-                Canvas.SetZIndex(model.ControlPointParabolic1, 20);
-                Canvas.SetZIndex(model.ControlPointParabolic2, 20);
-
-                model.ParabolicCurve = new ParabolicCurve(
-                    model.ControlPointParabolic1,
-                    model.ControlPointParabolic2,
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize);
-                Canvas.SetZIndex(model.ParabolicCurve, 10);
-                curveMapperControl.GraphCanvas.Children.Add(model.ParabolicCurve.PathCurve);
-
-                model.ControlPointParabolic1.CurveParabolic = model.ParabolicCurve;
-                model.ControlPointParabolic2.CurveParabolic = model.ParabolicCurve;
-
                 ApplyBindingsToControlPoints(model.ControlPointParabolic1, model, curveMapperControl);
                 ApplyBindingsToControlPoints(model.ControlPointParabolic2, model, curveMapperControl);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointParabolic1);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointParabolic2);
+                curveMapperControl.GraphCanvas.Children.Add(model.ParabolicCurve.PathCurve);
 
                 // Perlin noise
-                model.OrthoControlPointPerlin1 = new CurveMapperControlPoint(
-                    new Point(model.DynamicCanvasSize * 0.5, 0),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize,
-                    true, false
-                );
-                model.OrthoControlPointPerlin2 = new CurveMapperControlPoint(
-                    new Point(0, model.DynamicCanvasSize),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize,
-                    true, true
-                );                
-                model.ControlPointPerlin = new CurveMapperControlPoint(
-                    new Point(model.DynamicCanvasSize * 0.5, model.DynamicCanvasSize * 0.5),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
-                );
-                curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointPerlin1);
-                curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointPerlin2);
-                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointPerlin);
-                Canvas.SetZIndex(model.OrthoControlPointPerlin1, 20);
-                Canvas.SetZIndex(model.OrthoControlPointPerlin2, 20);
-                Canvas.SetZIndex(model.ControlPointPerlin, 20);
-
-                model.PerlinNoiseCurve = new PerlinCurve(
-                    model.OrthoControlPointPerlin1,
-                    model.OrthoControlPointPerlin2,
-                    model.ControlPointPerlin, 1,
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize);
-                Canvas.SetZIndex(model.PerlinNoiseCurve, 10);
-                curveMapperControl.GraphCanvas.Children.Add(model.PerlinNoiseCurve.PathCurve);
-
-                model.OrthoControlPointPerlin1.CurvePerlin = model.PerlinNoiseCurve;
-                model.OrthoControlPointPerlin2.CurvePerlin = model.PerlinNoiseCurve;
-                model.ControlPointPerlin.CurvePerlin = model.PerlinNoiseCurve;
-
                 ApplyBindingsToControlPoints(model.OrthoControlPointPerlin1, model, curveMapperControl);
                 ApplyBindingsToControlPoints(model.OrthoControlPointPerlin2, model, curveMapperControl);
                 ApplyBindingsToControlPoints(model.ControlPointPerlin, model, curveMapperControl);
+                curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointPerlin1);
+                curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointPerlin2);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointPerlin);
+                curveMapperControl.GraphCanvas.Children.Add(model.PerlinNoiseCurve.PathCurve);
 
                 // Power curve
-                model.ControlPointPower = new CurveMapperControlPoint(
-                    new Point(model.DynamicCanvasSize * 0.5, model.DynamicCanvasSize * 0.5),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
-                );
+                ApplyBindingsToControlPoints(model.ControlPointPower, model, curveMapperControl);
                 curveMapperControl.GraphCanvas.Children.Add(model.ControlPointPower);
-                Canvas.SetZIndex(model.ControlPointPower, 20);
-
-                model.PowerCurve = new  PowerCurve(
-                    model.ControlPointPower,
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize);
-                Canvas.SetZIndex(model.PowerCurve, 10);
                 curveMapperControl.GraphCanvas.Children.Add(model.PowerCurve.PathCurve);
 
-                model.ControlPointPower.CurvePower = model.PowerCurve;
-
-                ApplyBindingsToControlPoints(model.ControlPointPower, model, curveMapperControl);
-
                 // Square Root curve
-                model.ControlPointSquareRoot1 = new CurveMapperControlPoint(
-                    new Point(0, model.DynamicCanvasSize),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
-                );
-                model.ControlPointSquareRoot2 = new CurveMapperControlPoint(
-                    new Point(model.DynamicCanvasSize * 0.5, model.DynamicCanvasSize * 0.5),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize
-                );
-                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointSquareRoot1);
-                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointSquareRoot2);
-                Canvas.SetZIndex(model.ControlPointSquareRoot1, 20);
-                Canvas.SetZIndex(model.ControlPointSquareRoot2, 20);
-
-                model.SquareRootCurve = new SquareRootCurve(
-                    model.ControlPointSquareRoot1,
-                    model.ControlPointSquareRoot2,
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize);
-                Canvas.SetZIndex(model.SquareRootCurve, 10);
-                curveMapperControl.GraphCanvas.Children.Add(model.SquareRootCurve.PathCurve);
-
-                model.ControlPointSquareRoot1.SquareRootCurve = model.SquareRootCurve;
-                model.ControlPointSquareRoot2.SquareRootCurve = model.SquareRootCurve;
-
                 ApplyBindingsToControlPoints(model.ControlPointSquareRoot1, model, curveMapperControl);
                 ApplyBindingsToControlPoints(model.ControlPointSquareRoot2, model, curveMapperControl);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointSquareRoot1);
+                curveMapperControl.GraphCanvas.Children.Add(model.ControlPointSquareRoot2);
+                curveMapperControl.GraphCanvas.Children.Add(model.SquareRootCurve.PathCurve);
 
                 // Gaussian curve
-                model.OrthoControlPointGaussian1 = new CurveMapperControlPoint(
-                    new Point(0, model.DynamicCanvasSize * 0.8),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize,
-                    true, true
-                );
-                model.OrthoControlPointGaussian2 = new CurveMapperControlPoint(
-                    new Point(model.DynamicCanvasSize * 0.5, model.DynamicCanvasSize * 0.5),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize,
-                    true, false
-                );
-                model.OrthoControlPointGaussian3 = new CurveMapperControlPoint(
-                    new Point(model.DynamicCanvasSize * 0.4, model.DynamicCanvasSize),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize,
-                    true, false
-                );
-                model.OrthoControlPointGaussian4 = new CurveMapperControlPoint(
-                    new Point(model.DynamicCanvasSize * 0.6, model.DynamicCanvasSize),
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize,
-                    model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY, model.DynamicCanvasSize,
-                    true, false
-                );
-                curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointGaussian1);
-                curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointGaussian2);
-                curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointGaussian3);
-                curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointGaussian4);
-                Canvas.SetZIndex(model.OrthoControlPointGaussian1, 20);
-                Canvas.SetZIndex(model.OrthoControlPointGaussian2, 20);
-                Canvas.SetZIndex(model.OrthoControlPointGaussian3, 20);
-                Canvas.SetZIndex(model.OrthoControlPointGaussian4, 20);
-
-                model.GaussianCurve = new GaussianCurve(
-                    model.OrthoControlPointGaussian1,
-                    model.OrthoControlPointGaussian2,
-                    model.OrthoControlPointGaussian3,
-                    model.OrthoControlPointGaussian4,
-                    model.DynamicCanvasSize,
-                    model.DynamicCanvasSize);
-                Canvas.SetZIndex(model.GaussianCurve, 10);
-                curveMapperControl.GraphCanvas.Children.Add(model.GaussianCurve.PathCurve);
-
-                model.OrthoControlPointGaussian1.GaussianCurve = model.GaussianCurve;
-                model.OrthoControlPointGaussian2.GaussianCurve = model.GaussianCurve;
-                model.OrthoControlPointGaussian3.GaussianCurve = model.GaussianCurve;
-                model.OrthoControlPointGaussian4.GaussianCurve = model.GaussianCurve;
-
                 ApplyBindingsToControlPoints(model.OrthoControlPointGaussian1, model, curveMapperControl);
                 ApplyBindingsToControlPoints(model.OrthoControlPointGaussian2, model, curveMapperControl);
                 ApplyBindingsToControlPoints(model.OrthoControlPointGaussian3, model, curveMapperControl);
                 ApplyBindingsToControlPoints(model.OrthoControlPointGaussian4, model, curveMapperControl);
+                curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointGaussian1);
+                curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointGaussian2);
+                curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointGaussian3);
+                curveMapperControl.GraphCanvas.Children.Add(model.OrthoControlPointGaussian4);
+                curveMapperControl.GraphCanvas.Children.Add(model.GaussianCurve.PathCurve);
+
+                // Set a Z-index for control points and paths.
+                foreach (var child in curveMapperControl.GraphCanvas.Children)
+                {
+                    if (child is CurveMapperControlPoint controlPoint)
+                    {
+                        Canvas.SetZIndex(controlPoint, 20);
+                    }
+                    else if (child is System.Windows.Shapes.Path path)
+                    {
+                        Canvas.SetZIndex(path, 10);
+                    }
+                }
+
+                // Ensure Bezier control lines have the correct Z-index
+                Canvas.SetZIndex(model.ControlLineBezier1.PathCurve, 9);
+                Canvas.SetZIndex(model.ControlLineBezier2.PathCurve, 9);
 
                 #endregion
+
+                curveMapperControl.ToggleControlPointsMovability();
 
                 BindVisibility(model);
 
@@ -640,7 +370,6 @@ namespace Dynamo.Wpf.Charts
         {
             if (value is GraphTypes graphType && parameter is GraphTypes expectedType)
             {
-                var c1 = graphType == expectedType ? Visibility.Visible : Visibility.Collapsed;
                 return graphType == expectedType ? Visibility.Visible : Visibility.Collapsed;
             }
             return Visibility.Collapsed;
