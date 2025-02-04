@@ -182,6 +182,8 @@ namespace Dynamo.Views
             infiniteGridView.AttachToZoomBorder(zoomBorder);
 
             zoomBorder.ViewSettingsChanged += CallUpdateWorkspaceElementVisibility;
+            // load the initially visible nodes as soon as the context is loaded
+            Dispatcher.BeginInvoke(UpdateWorkspaceElementVisibility, System.Windows.Threading.DispatcherPriority.ContextIdle);
         }
 
         private void CallUpdateWorkspaceElementVisibility(ViewSettingsChangedEventArgs _) => UpdateWorkspaceElementVisibility();
