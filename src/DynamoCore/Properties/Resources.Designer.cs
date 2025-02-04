@@ -1029,7 +1029,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Insert Dynamo Definition....
+        ///   Looks up a localized string similar to Insert Dynamo Graph....
         /// </summary>
         public static string InsertDialogBoxText {
             get {

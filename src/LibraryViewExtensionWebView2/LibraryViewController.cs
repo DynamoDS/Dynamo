@@ -331,7 +331,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
                     //This indicates in which location will be created the WebView2 cache folder
                     this.browser.CreationProperties = new CoreWebView2CreationProperties()
                     {
-                        UserDataFolder = WebBrowserUserDataFolder
+                        UserDataFolder = DynamoModel.IsTestMode ? TestUtilities.UserDataFolderDuringTests(nameof(LibraryViewController)) : WebBrowserUserDataFolder
                     };
                 }
 

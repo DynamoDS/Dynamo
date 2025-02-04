@@ -1633,12 +1633,9 @@ Dynamo.UI.Views.ScriptHomeObject.ShowSampleDatasetsInFolder() -> void
 Dynamo.UI.Views.ScriptHomeObject.ShowTempalte() -> void
 Dynamo.UI.Views.ScriptHomeObject.StartGuidedTour(string path) -> void
 Dynamo.UI.Views.ScriptObject
-Dynamo.UI.Views.ScriptObject.CloseWindow() -> void
-Dynamo.UI.Views.ScriptObject.CloseWindowPreserve(bool isCheckboxChecked) -> void
 Dynamo.UI.Views.ScriptObject.ImportSettings(string file) -> void
 Dynamo.UI.Views.ScriptObject.LaunchDynamo(bool showScreenAgain) -> void
-Dynamo.UI.Views.ScriptObject.ScriptObject(System.Action<bool> requestLaunchDynamo, System.Action<string> requestImportSettings, System.Func<bool> requestSignIn, System.Func<bool> requestSignOut, System.Action requestCloseWindow) -> void
-Dynamo.UI.Views.ScriptObject.ScriptObject(System.Action<bool> requestLaunchDynamo, System.Action<string> requestImportSettings, System.Func<bool> requestSignIn, System.Func<bool> requestSignOut, System.Action<bool> requestCloseWindow) -> void
+Dynamo.UI.Views.ScriptObject.ScriptObject(System.Action<bool> requestLaunchDynamo, System.Action<string> requestImportSettings, System.Func<bool> requestSignIn, System.Func<bool> requestSignOut) -> void
 Dynamo.UI.Views.ScriptObject.SignIn() -> bool
 Dynamo.UI.Views.ScriptObject.SignOut() -> bool
 Dynamo.UI.Views.SplashScreen
@@ -4818,6 +4815,8 @@ static Dynamo.Wpf.Properties.Resources.GroupStylesCancelButtonText.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupStylesSaveButtonText.get -> string
 static Dynamo.Wpf.Properties.Resources.HideClassicNodeLibrary.get -> string
 static Dynamo.Wpf.Properties.Resources.HideWiresPopupMenuItem.get -> string
+static Dynamo.Wpf.Properties.Resources.IDSDKErrorMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.IDSDKErrorMessageTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.ImportLibraryDialogTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.ImportPreferencesInfo.get -> string
 static Dynamo.Wpf.Properties.Resources.ImportPreferencesText.get -> string
@@ -5224,6 +5223,7 @@ static Dynamo.Wpf.Properties.Resources.PackageUploadStateError.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageUploadStateReady.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageUploadStateUploaded.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageUploadStateUploading.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageUnknownCompatibilityVersionDownloadMsg.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageUseNewerDynamoMessageBoxTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageUseOlderDynamoMessageBoxTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageViewContextMenuLoadText.get -> string

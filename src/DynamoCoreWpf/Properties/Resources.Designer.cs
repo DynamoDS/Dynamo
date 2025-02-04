@@ -3732,6 +3732,25 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to It seems like Autodesk Identity Manager is not set up on your system. To ensure full access to all features, please sign in to your Autodesk account using Autodesk Identity Manager.
+        ///#Download and install=https://manage.autodesk.com/products/updates it here or through Autodesk Access, then sign in..
+        /// </summary>
+        public static string IDSDKErrorMessage {
+            get {
+                return ResourceManager.GetString("IDSDKErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download Autodesk Identity Manager.
+        /// </summary>
+        public static string IDSDKErrorMessageTitle {
+            get {
+                return ResourceManager.GetString("IDSDKErrorMessageTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Import Library.
         /// </summary>
         public static string ImportLibraryDialogTitle {
@@ -7380,6 +7399,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageUnknownCompatibilityFilterTooltip {
             get {
                 return ResourceManager.GetString("PackageUnknownCompatibilityFilterTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The compatibility of this version with your setup has not been verified. It may or may not work as expected. .
+        /// </summary>
+        public static string PackageUnknownCompatibilityVersionDownloadMsg {
+            get {
+                return ResourceManager.GetString("PackageUnknownCompatibilityVersionDownloadMsg", resourceCulture);
             }
         }
         

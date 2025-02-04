@@ -863,6 +863,10 @@ namespace Dynamo.ViewModels
 
             FileTrustViewModel = new FileTrustWarningViewModel();
             MLDataPipelineExtension = model.ExtensionManager.Extensions.OfType<DynamoMLDataPipelineExtension>().FirstOrDefault();
+            if (Model.AuthenticationManager?.AuthProvider is IDSDKManager idsdkProvider)
+            {
+                idsdkProvider.ErrorInitializingIDSDK += OnErrorInitializingIDSDK;
+            }
         }
 
         private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
@@ -1083,6 +1087,21 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// The event handler for cases when IDSDK fails to initialize, probably because of missing Adsk Identity Manager.
+        /// A flag is used to show the error message only once per session.
+        /// </summary>
+        private void OnErrorInitializingIDSDK(object sender, EventArgs e)
+        {
+            if (Model.AuthenticationManager?.AuthProvider is IDSDKManager idsdkProvider)
+            {
+                if (idsdkProvider.isErrorInitializingMsgShown) return;
+
+                DynamoMessageBox.Show(Owner, WpfResources.IDSDKErrorMessage, WpfResources.IDSDKErrorMessageTitle, true, MessageBoxButton.OK, MessageBoxImage.Information);
+                idsdkProvider.isErrorInitializingMsgShown = true;
+            }
+        }
+
         #region Event handler destroy/create
 
         protected virtual void UnsubscribeAllEvents()
@@ -1104,6 +1123,10 @@ namespace Dynamo.ViewModels
 
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
             UsageReportingManager.Instance.PropertyChanged -= CollectInfoManager_PropertyChanged;
+            if (Model.AuthenticationManager?.AuthProvider is IDSDKManager idsdkProvider)
+            {
+                idsdkProvider.ErrorInitializingIDSDK -= OnErrorInitializingIDSDK;
+            }
         }
 
         private void InitializeRecentFiles()
@@ -1264,7 +1287,7 @@ namespace Dynamo.ViewModels
         /// <param name="bodyContent">Crash details body. If null, nothing will be filled-in.</param>
         public static void ReportABug(object bodyContent)
         {
-            var urlWithParameters = Wpf.Utilities.CrashUtilities.GithubNewIssueUrlFromCrashContent(bodyContent);
+            var urlWithParameters = Wpf.Utilities.CrashUtilities.GithubNewIssueUrlFromCrashContent(bodyContent, CrashUtilities.ReportType.Bug);
 
             // launching the process using explorer.exe will format the URL incorrectly
             // and Github will not recognise the query parameters in the URL
