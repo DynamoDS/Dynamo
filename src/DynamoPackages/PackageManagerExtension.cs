@@ -267,9 +267,9 @@ namespace Dynamo.PackageManager
             }
         }
         
-        private PackageInfo GetNodePackageFromAssemblyName(string assemblyName)
+        private PackageInfo GetNodePackageFromAssemblyName(AssemblyName assemblyName)
         {
-            if (NodePackageDictionary?.TryGetValue(assemblyName, out var packages) == true)
+            if (NodePackageDictionary?.TryGetValue(assemblyName.FullName, out var packages) == true)
             {
                 return packages.Last();
             }
