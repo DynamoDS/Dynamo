@@ -667,7 +667,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Replace items from the given list that are located at the specified indices with the provided item.
+        ///     Replaces items from the given list that are located at the specified indices.
         /// </summary>
         /// <param name="list">List to replace an item in.</param>
         /// <param name="indices">Indices of the item(s) to be replaced.</param>
