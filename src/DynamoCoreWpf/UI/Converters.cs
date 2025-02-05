@@ -34,6 +34,33 @@ using Thickness = System.Windows.Thickness;
 
 namespace Dynamo.Controls
 {
+    /// <summary>
+    /// selects from one of two styles based on a boolean value.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("ApiDesign",
+        "RS0016:Add public types and members to the declared API",
+        Justification = "Converters are not part of the API")]
+    public class BooleanToStyleConverter : IValueConverter
+    {
+        public Style TrueStyle { get; set; }
+        public Style FalseStyle { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter,CultureInfo culture)
+        {
+            if (value is bool v && v)
+            {
+                return TrueStyle;
+            }
+
+            return FalseStyle;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class ToolTipFirstLineOnly : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -45,7 +72,7 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 
@@ -60,7 +87,7 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 
