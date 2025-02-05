@@ -111,8 +111,20 @@ namespace CoreNodeModelsWpf.Charts
             }
         }
 
+        /// <summary>
+        /// Gets the minimum allowed width for the grid in the view.
+        /// </summary>
         public double MinGridWidth => defaultMinGridWidth;
+
+        /// <summary>
+        /// Gets the minimum allowed height for the grid in the view.
+        /// </summary>
         public double MinGridHeight => defaultMinGridHeight;
+
+        /// <summary>
+        /// Gets the minimum allowed width/height for the canvas in the view.
+        /// </summary>
+        public double MinCanvasSize => defaultCanvasSize;
 
         [JsonIgnore]
         public double MinLimitX

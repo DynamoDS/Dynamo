@@ -22,29 +22,23 @@ namespace Dynamo.Wpf.Charts
             curveMapperControl = new CurveMapperControl(model);
             curveMapperControl.DataContext = model;
             curveMapperNodeModel = model;
-            model.EngineController = nodeView.ViewModel.DynamoViewModel.EngineController; // will this be required for execution?
+            model.EngineController = nodeView.ViewModel.DynamoViewModel.EngineController; // TODO: Remove if not required
 
-            // Bind MainGrid Width and Height to model properties
-            curveMapperControl.SetBinding(CurveMapperControl.WidthProperty,
-                new Binding(nameof(model.MainGridWidth)) { Source = model, Mode = BindingMode.TwoWay });
-            curveMapperControl.SetBinding(CurveMapperControl.HeightProperty,
-                new Binding(nameof(model.MainGridHeight)) { Source = model, Mode = BindingMode.TwoWay });
-
-            // Add the control to the NodeView's inputGrid
+            // Add the control to inputGrid and bind its grid size to the model properties
             nodeView.inputGrid.Children.Add(curveMapperControl);
+            BindGridSize(curveMapperNodeModel);
 
             // Defer adding elements until the canvas is loaded
             curveMapperControl.GraphCanvas.Loaded += (s, e) =>
             {
-                AddPointsAndCurvesToCanvas(model);
-
-                // If graph is locked 
-                curveMapperControl.ToggleControlPointsMovability();
-
+                // Add control points and curves to the canvas and bind visibility properties
+                AddPointsAndCurvesToCanvas(curveMapperNodeModel);
                 BindVisibility(model);
 
-                // Attach event handlers to detect when control points are released,
-                // to trigger curve updates and re-computation.
+                // Lock or unlock control points based on graph state
+                curveMapperControl.ToggleControlPointsLock();
+
+                // Attach event handlers to update curves when control points are moved
                 AttachMouseUpEvent(model.ControlPointLinear1, model.ControlPointLinear2);
                 AttachMouseUpEvent(model.ControlPointBezier1, model.ControlPointBezier2,
                     model.OrthoControlPointBezier1, model.OrthoControlPointBezier2);
@@ -188,6 +182,17 @@ namespace Dynamo.Wpf.Charts
             BindControlPoint(controlPoint, CurveMapperControlPoint.MinLimitYProperty, model, nameof(model.MinLimitY));
             BindControlPoint(controlPoint, CurveMapperControlPoint.MaxLimitYProperty, model, nameof(model.MaxLimitY));
             BindControlPoint(controlPoint, CurveMapperControlPoint.DynamicCanvasSizeProperty, curveMapperControl, nameof(model.DynamicCanvasSize));
+        }
+
+        private void BindGridSize(CurveMapperNodeModel model) //
+        {
+            curveMapperControl.SetBinding(CurveMapperControl.WidthProperty,
+                new Binding(nameof(model.MainGridWidth))
+                { Source = model, Mode = BindingMode.TwoWay });
+
+            curveMapperControl.SetBinding(CurveMapperControl.HeightProperty,
+                new Binding(nameof(model.MainGridHeight))
+                { Source = model, Mode = BindingMode.TwoWay });
         }
 
         public void Dispose()

@@ -1,6 +1,8 @@
 using Dynamo.Wpf.Controls;
+using Dynamo.Wpf.Controls.SubControls;
 using Dynamo.Wpf.Properties;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Windows;
@@ -15,20 +17,11 @@ namespace CoreNodeModelsWpf.Charts.Controls
     /// </summary>
     public partial class CurveMapperControl : UserControl, INotifyPropertyChanged
     {
-        private readonly CurveMapperNodeModel model;
-        public event PropertyChangedEventHandler PropertyChanged;
-
+        private readonly CurveMapperNodeModel curveMapperNodeModel;
         private double previousCanvasSize = 240;
+        private const int gridSize = 10;
 
-        private readonly double canvasMinSize = 240; // also initial width and height
-        private readonly double mainGridMinWidth = 310;
-        private readonly double mainGridMinHeight = 340;
-        private int gridSize = 10;
-
-        //private void OnPropertyChanged(string propertyName) // RaisePropertyChanged
-        //{
-        //    PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        //}
+        public event PropertyChangedEventHandler PropertyChanged;
 
         public CurveMapperControl(CurveMapperNodeModel model)
         {
@@ -36,161 +29,16 @@ namespace CoreNodeModelsWpf.Charts.Controls
 
             model.PropertyChanged += NodeModel_PropertyChanged;
 
-            this.model = model;
+            this.curveMapperNodeModel = model;
             DataContext = model;
 
             this.Unloaded += Unload;
-
-            // Redraw canvas when the input changes
-            model.PropertyChanged += (s, e) =>
-            {
-                // Ensure all ports are connected
-                // ip : do we need this anymore?
-                var inPorts = model.InPorts;
-                var allPortsConnected = inPorts[0].IsConnected &&
-                    inPorts[1].IsConnected &&
-                    inPorts[2].IsConnected &&
-                    inPorts[3].IsConnected;
-
-                if (allPortsConnected)
-                {
-                    if (e.PropertyName == nameof(model.MinLimitX) ||
-                     e.PropertyName == nameof(model.MaxLimitX) ||
-                    e.PropertyName == nameof(model.MinLimitY) ||
-                    e.PropertyName == nameof(model.MaxLimitY))
-                    {
-                        Dispatcher.BeginInvoke(new Action(() =>
-                        {
-                            //DrawGrid(model.MinLimitX, model.MaxLimitX, model.MinLimitY, model.MaxLimitY);
-                            //UpdateLabels();
-                        }), System.Windows.Threading.DispatcherPriority.Background);
-                    }
-                }
-            };
 
             // Redraw canvas when the node is resized
             GraphCanvas.SizeChanged += (s, e) =>
             {
                 double newCanvasSize = model.DynamicCanvasSize;
-
-                // Linear curve
-                if (model.ControlPointLinear1 != null && model.ControlPointLinear2 != null)
-                {
-                    UpdateControlPoints(newCanvasSize, model.ControlPointLinear1, model.ControlPointLinear2);
-                    if (model.LinearCurve != null)
-                    {
-                        model.LinearCurve.MaxWidth = newCanvasSize;
-                        model.LinearCurve.MaxHeight = newCanvasSize;
-                        model.LinearCurve.Regenerate();
-                        Canvas.SetZIndex(model.LinearCurve.PathCurve, 10);
-                    }
-                }
-                // Bezier curve
-                if (model.BezierCurve != null)
-                {
-                    UpdateControlPoints(newCanvasSize, model.ControlPointBezier1, model.ControlPointBezier2,
-                        model.OrthoControlPointBezier1, model.OrthoControlPointBezier2);
-
-                    model.ControlLineBezier1?.Regenerate(model.ControlPointBezier1, model.OrthoControlPointBezier1);
-                    model.ControlLineBezier2?.Regenerate(model.ControlPointBezier2, model.OrthoControlPointBezier2);
-
-                    model.BezierCurve.MaxWidth = newCanvasSize;
-                    model.BezierCurve.MaxHeight = newCanvasSize;
-                    model.BezierCurve.Regenerate();
-                    Canvas.SetZIndex(model.BezierCurve.PathCurve, 10);
-                }
-                // Sine wave
-                if (model.ControlPointSine1 != null && model.ControlPointSine2 != null)
-                {
-                    UpdateControlPoints(newCanvasSize, model.ControlPointSine1, model.ControlPointSine2);
-                    if (model.SineWave != null)
-                    {
-                        model.SineWave.MaxWidth = newCanvasSize;
-                        model.SineWave.MaxHeight = newCanvasSize;
-                        model.SineWave.Regenerate();
-                        Canvas.SetZIndex(model.SineWave.PathCurve, 10);
-                    }
-                }
-                // Cosine wave
-                if (model.ControlPointSine1 != null && model.ControlPointSine2 != null)
-                {
-                    UpdateControlPoints(newCanvasSize, model.ControlPointCosine1, model.ControlPointCosine2);
-                    if (model.CosineWave != null)
-                    {
-                        model.CosineWave.MaxWidth = newCanvasSize;
-                        model.CosineWave.MaxHeight = newCanvasSize;
-                        model.CosineWave.Regenerate();
-                        Canvas.SetZIndex(model.CosineWave.PathCurve, 10);
-                    }
-                }
-                // Parabolic curve
-                if (model.ControlPointParabolic1 != null && model.ControlPointParabolic2 != null)
-                {
-                    UpdateControlPoints(newCanvasSize, model.ControlPointParabolic1, model.ControlPointParabolic2);
-                    if (model.ParabolicCurve != null)
-                    {
-                        model.ParabolicCurve.MaxWidth = newCanvasSize;
-                        model.ParabolicCurve.MaxHeight = newCanvasSize;
-                        model.ParabolicCurve.Regenerate(model.ControlPointParabolic1);
-                        model.ParabolicCurve.Regenerate(model.ControlPointParabolic2);
-                        Canvas.SetZIndex(model.ParabolicCurve.PathCurve, 10);
-                    }
-                }
-                // Pelin noise curve
-                if (model.OrthoControlPointPerlin1 != null && model.OrthoControlPointPerlin2 != null && model.ControlPointPerlin != null)
-                {
-                    UpdateControlPoints(newCanvasSize, model.ControlPointPerlin,
-                        model.OrthoControlPointPerlin1, model.OrthoControlPointPerlin2);
-                    if (model.ParabolicCurve != null)
-                    {
-                        model.PerlinNoiseCurve.MaxWidth = newCanvasSize;
-                        model.PerlinNoiseCurve.MaxHeight = newCanvasSize;
-                        model.PerlinNoiseCurve.Regenerate();
-                        Canvas.SetZIndex(model.PerlinNoiseCurve.PathCurve, 10);
-                    }
-                }
-                // Power curve
-                if (model.ControlPointPower != null)
-                {
-                    UpdateControlPoints(newCanvasSize, model.ControlPointPower);
-                    if (model.PowerCurve != null)
-                    {
-                        model.PowerCurve.MaxWidth = newCanvasSize;
-                        model.PowerCurve.MaxHeight = newCanvasSize;
-                        model.PowerCurve.Regenerate();
-                        Canvas.SetZIndex(model.PowerCurve.PathCurve, 10);
-                    }
-                }
-                // Square Root curve
-                if (model.ControlPointSquareRoot1 != null && model.ControlPointSquareRoot2 != null)
-                {
-                    UpdateControlPoints(newCanvasSize, model.ControlPointSquareRoot1, model.ControlPointSquareRoot2);
-                    if (model.SquareRootCurve != null)
-                    {
-                        model.SquareRootCurve.MaxWidth = newCanvasSize;
-                        model.SquareRootCurve.MaxHeight = newCanvasSize;
-                        model.SquareRootCurve.Regenerate();
-                        Canvas.SetZIndex(model.SquareRootCurve.PathCurve, 10);
-                    }
-                }
-                // Gaussian curve
-                if (model.OrthoControlPointGaussian1 != null && model.OrthoControlPointGaussian2 != null && model.OrthoControlPointGaussian3 != null && model.OrthoControlPointGaussian4 != null)
-                {
-                    model.GaussianCurve.IsResizing = true;
-
-                    UpdateControlPoints(newCanvasSize, model.OrthoControlPointGaussian1, model.OrthoControlPointGaussian2,
-                        model.OrthoControlPointGaussian3, model.OrthoControlPointGaussian4);
-                    if (model.GaussianCurve != null)
-                    {
-                        model.GaussianCurve.MaxWidth = newCanvasSize;
-                        model.GaussianCurve.MaxHeight = newCanvasSize;
-                        model.GaussianCurve.Regenerate();
-                        Canvas.SetZIndex(model.GaussianCurve.PathCurve, 10);
-                    }
-
-                    model.GaussianCurve.IsResizing = false;
-                }
-
+                UpdateCurvesOnResize(model ,newCanvasSize);
                 previousCanvasSize = newCanvasSize;
 
                 DrawGrid();
@@ -201,13 +49,13 @@ namespace CoreNodeModelsWpf.Charts.Controls
             UpdateLockButton();
         }
 
-        private void NodeModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void NodeModel_PropertyChanged(object sender, PropertyChangedEventArgs e) //
         {
-            if (e.PropertyName == nameof(model.IsLocked))
+            if (e.PropertyName == nameof(curveMapperNodeModel.IsLocked))
             {
                 Dispatcher.Invoke(() =>
                 {
-                    ToggleControlPointsMovability();
+                    ToggleControlPointsLock();
                     UpdateLockButton();
                 });
             }
@@ -216,7 +64,7 @@ namespace CoreNodeModelsWpf.Charts.Controls
         /// <summary>
         /// Updates control points limits and resizes them proportionally based on the new canvas size.
         /// </summary>
-        private void UpdateControlPoints(double newCanvasSize, params CurveMapperControlPoint[] points)
+        private void UpdateControlPoints(double newCanvasSize, params CurveMapperControlPoint[] points) //
         {
             foreach (var point in points.Where(p => p != null))
             {
@@ -244,23 +92,23 @@ namespace CoreNodeModelsWpf.Charts.Controls
             }
 
             // Draw grid lines
-            double xPixelsPerStep = model.DynamicCanvasSize / gridSize;
-            double yPixelsPerStep = model.DynamicCanvasSize / gridSize;
+            double xPixelsPerStep = curveMapperNodeModel.DynamicCanvasSize / gridSize;
+            double yPixelsPerStep = curveMapperNodeModel.DynamicCanvasSize / gridSize;
 
             for (int i = 0; i <= gridSize; i++)
             {
                 double xPos = i * xPixelsPerStep;
-                DrawLine(xPos, 0, xPos, model.DynamicCanvasSize);
+                DrawLine(xPos, 0, xPos, curveMapperNodeModel.DynamicCanvasSize);
             }
 
             for (int i = 0; i <= gridSize; i++)
             {
                 double yPos = i * yPixelsPerStep;
-                DrawLine(0, yPos, model.DynamicCanvasSize, yPos);
+                DrawLine(0, yPos, curveMapperNodeModel.DynamicCanvasSize, yPos);
             }
         }
 
-        private void DrawLine(double x1, double y1, double x2, double y2)
+        private void DrawLine(double x1, double y1, double x2, double y2) //
         {
             var line = new System.Windows.Shapes.Line
             {
@@ -276,44 +124,104 @@ namespace CoreNodeModelsWpf.Charts.Controls
             GraphCanvas.Children.Add(line);
         }
 
-        private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e)
+        private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e) //
         {
             var sizeChange = Math.Min(e.VerticalChange, e.HorizontalChange);
             var yAdjust = ActualHeight + sizeChange;
             var xAdjust = ActualWidth + sizeChange;
 
-            // Ensure the node doesn't resize below its minimum size
-            if (xAdjust < mainGridMinWidth) xAdjust = mainGridMinWidth;
-            if (yAdjust < mainGridMinHeight) yAdjust = mainGridMinHeight;
+            // Ensure the mainGrid doesn't resize below its minimum size
+            yAdjust = Math.Max(yAdjust, curveMapperNodeModel.MinGridHeight);
+            xAdjust = Math.Max(xAdjust, curveMapperNodeModel.MinGridWidth);
 
             Width = xAdjust;
             Height = yAdjust;
 
             // Adjust the size of the GraphCanvas dynamically
-            model.DynamicCanvasSize = Math.Max(xAdjust - 70, canvasMinSize);
+            curveMapperNodeModel.DynamicCanvasSize = Math.Max(xAdjust - 70, curveMapperNodeModel.MinCanvasSize);
+        }
+
+        private void UpdateCurvesOnResize(CurveMapperNodeModel model ,double newCanvasSize) //
+        {
+            // Define a list of curves and their control points
+            var curves = new List<(Type CurveType, object Curve, CurveMapperControlPoint[] ControlPoints)>
+                {
+                    (typeof(LinearCurve), model.LinearCurve, new[] { model.ControlPointLinear1, model.ControlPointLinear2 }),
+                    (typeof(BezierCurve), model.BezierCurve, new[] { model.ControlPointBezier1, model.ControlPointBezier2,
+                        model.OrthoControlPointBezier1, model.OrthoControlPointBezier2 }),
+                    (typeof(SineCurve), model.SineWave, new[] { model.ControlPointSine1, model.ControlPointSine2 }),
+                    (typeof(SineCurve), model.CosineWave, new[] { model.ControlPointCosine1, model.ControlPointCosine2 }),
+                    (typeof(ParabolicCurve), model.ParabolicCurve, new[] { model.ControlPointParabolic1, model.ControlPointParabolic2 }),
+                    (typeof(PerlinCurve), model.PerlinNoiseCurve, new[] { model.ControlPointPerlin, model.OrthoControlPointPerlin1,
+                        model.OrthoControlPointPerlin2 }),
+                    (typeof(PowerCurve), model.PowerCurve, new[] { model.ControlPointPower }),
+                    (typeof(SquareRootCurve), model.SquareRootCurve, new[] { model.ControlPointSquareRoot1, model.ControlPointSquareRoot2 }),
+                    (typeof(GaussianCurve), model.GaussianCurve, new[] { model.OrthoControlPointGaussian1, model.OrthoControlPointGaussian2,
+                        model.OrthoControlPointGaussian3, model.OrthoControlPointGaussian4 })
+                };
+
+            // Loop through each curve and update control points
+            foreach (var (curveType, curve, controlPoints) in curves)
+            {
+                if (curve == null || controlPoints.Any(cp => cp == null)) continue;
+
+                dynamic dynCurve = curve;
+
+                // Disable gaussian curve point updates
+                if (curveType == typeof(GaussianCurve))
+                {
+                    dynCurve.IsResizing = true;
+                }
+
+                // Update control points
+                UpdateControlPoints(newCanvasSize, controlPoints);
+
+
+                dynCurve.MaxWidth = newCanvasSize;
+                dynCurve.MaxHeight = newCanvasSize;
+                dynCurve.Regenerate();
+                Canvas.SetZIndex(dynCurve.PathCurve, 10);
+
+                // Handle special cases based on curve type
+                if (curveType == typeof(BezierCurve))
+                {
+                    model.ControlLineBezier1?.Regenerate(model.ControlPointBezier1, model.OrthoControlPointBezier1);
+                    model.ControlLineBezier2?.Regenerate(model.ControlPointBezier2, model.OrthoControlPointBezier2);
+                }
+                else if (curveType == typeof(ParabolicCurve))
+                {
+                    dynCurve.Regenerate(model.ControlPointParabolic1);
+                    dynCurve.Regenerate(model.ControlPointParabolic2);
+                }
+                else if (curveType == typeof(GaussianCurve))
+                {
+                    dynCurve.IsResizing = false;
+                }
+            }
         }
 
         private void Unload(object sender, RoutedEventArgs e)
         {
-            this.model.PropertyChanged -= NodeModel_PropertyChanged;
+            this.curveMapperNodeModel.PropertyChanged -= NodeModel_PropertyChanged;
             Unloaded -= Unload;
         }
 
-        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        private void ResetButton_Click(object sender, RoutedEventArgs e) //
         {
-            model.ResetCurves();
+            curveMapperNodeModel.ResetCurves();
         }
 
-        private void LockButton_Click(object sender, RoutedEventArgs e)
+        private void LockButton_Click(object sender, RoutedEventArgs e) //
         {
             var button = sender as Button;
             if (button != null)
             {
-                model.IsLocked = !model.IsLocked;
+                curveMapperNodeModel.IsLocked = !curveMapperNodeModel.IsLocked;
                 UpdateLockButton();
+
                 if (button.ToolTip is ToolTip toolTip)
                 {
-                    toolTip.Content = model.IsLocked
+                    toolTip.Content = curveMapperNodeModel.IsLocked
                         ? CoreNodeModelWpfResources.CurveMapperUnlockButtonToolTip
                         : CoreNodeModelWpfResources.CurveMapperLockButtonToolTip;
                 }
@@ -324,22 +232,25 @@ namespace CoreNodeModelsWpf.Charts.Controls
         {
         }
 
-        public void ToggleControlPointsMovability()
+        /// <summary>
+        /// Enables or disables control points based on the graph's lock state.
+        /// </summary>
+        public void ToggleControlPointsLock() //
         {
             foreach (var child in GraphCanvas.Children)
             {
                 if (child is CurveMapperControlPoint controlPoint)
                 {
-                    controlPoint.IsEnabled = !model.IsLocked;
+                    controlPoint.IsEnabled = !curveMapperNodeModel.IsLocked;
                 }
             }
         }
 
-        private void UpdateLockButton()
+        private void UpdateLockButton() //
         {
             if (LockButton != null)
             {
-                LockButton.Tag = model.IsLocked ? "Locked" : "Unlocked";
+                LockButton.Tag = curveMapperNodeModel.IsLocked ? "Locked" : "Unlocked";
             }
         }
     }
