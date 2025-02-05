@@ -195,18 +195,23 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 {
                     var nodeGuid = Guid.Parse(nodeName);
 
+                    var homeworkspace = dynamoViewModel.HomeSpaceViewModel;
                     var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
                     customNodeManager.TryGetNodeInfo(nodeGuid, out CustomNodeInfo info);
 
                     // check to make sure a custom node cannot be added to its own workspace
                     if (info != null && dynamoViewModel.CurrentSpace is CustomNodeWorkspaceModel customNodeWorkspaceModel)
                     {
-                        if (!customNodeWorkspaceModel.Nodes.Any(n => n.GetOriginalName().Contains("ScopeIf")))
+                        if (nodeGuid.Equals(customNodeWorkspaceModel.CustomNodeId))
                         {
-                            if (nodeGuid.Equals(customNodeWorkspaceModel.CustomNodeId))
+                            if (!customNodeWorkspaceModel.Nodes.Any(n => n.GetOriginalName().Contains("ScopeIf")))
                             {
                                 dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.CannotAddNodeToWorkspace);
                                 return;
+                            }
+                            else
+                            {
+                                homeworkspace.RunSettingsViewModel.Model.RunType = RunType.Manual;
                             }
                         }
                     }
