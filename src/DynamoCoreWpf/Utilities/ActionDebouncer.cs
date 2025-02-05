@@ -2,7 +2,6 @@ using Dynamo.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Threading;
 
 namespace Dynamo.Wpf.Utilities
 {
@@ -46,8 +45,10 @@ namespace Dynamo.Wpf.Utilities
                 taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
             }
             else
-            {// This might happen when running tests in non UI threads.
-                if (Dispatcher.CurrentDispatcher != null)
+            {
+                // This might happen when running tests in non UI threads.
+                // But if we are in a UI thread, then log this as a potential error.
+                if (System.Windows.Application.Current?.Dispatcher?.Thread == Thread.CurrentThread)
                 {// UI thread.
                     logger?.LogError("The UI thread does not seem to have a SyncronizationContext.");
                 }
