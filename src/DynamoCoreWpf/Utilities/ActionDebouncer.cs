@@ -2,6 +2,7 @@ using Dynamo.Logging;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Threading;
 
 namespace Dynamo.Wpf.Utilities
 {
@@ -39,7 +40,19 @@ namespace Dynamo.Wpf.Utilities
             // The TaskScheduler.FromCurrentSynchronizationContext() exists only if there is a valid SyncronizationContex.
             // Calling this method from a non UI thread could have a null SyncronizationContex.Current,
             // so in that case we use the default TaskScheduler which uses the thread pool.
-            var taskScheduler = SynchronizationContext.Current != null ? TaskScheduler.FromCurrentSynchronizationContext() : TaskScheduler.Default;
+            TaskScheduler taskScheduler = null;
+            if (SynchronizationContext.Current != null)
+            {// This should always be the case in UI threads.
+                taskScheduler = TaskScheduler.FromCurrentSynchronizationContext();
+            }
+            else
+            {// This might happen when running tests in non UI threads.
+                if (Dispatcher.CurrentDispatcher != null)
+                {// UI thread.
+                    logger?.LogError("The UI thread does not seem to have a SyncronizationContext.");
+                }
+                taskScheduler = TaskScheduler.Default;
+            }
 
             Task.Delay(timeout, cts.Token).ContinueWith((t) =>
             {
