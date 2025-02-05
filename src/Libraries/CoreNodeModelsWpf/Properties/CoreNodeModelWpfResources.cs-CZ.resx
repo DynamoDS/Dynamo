@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,207 +118,207 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ChartsBarChartDescription" xml:space="preserve">
-    <value>Create a new Bar Chart</value>
+    <value>Vytvořit nový pruhový graf</value>
   </data>
   <data name="ChartsBarChartSearchTags" xml:space="preserve">
     <value>bar;barchart</value>
   </data>
   <data name="ChartsBarChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of labels for the bar chart categories.
+    <value>Seznam popisků pro kategorie pruhového grafu.
 
 List&lt;string&gt;</value>
   </data>
   <data name="ChartsBarChartValuesDataPortToolTip" xml:space="preserve">
-    <value>A list (of lists) to supply values for the bars in each category.
+    <value>Seznam (seznamů), který slouží k předání hodnot pro pruh každé kategorie.
 
 List&lt;var&gt;</value>
   </data>
   <data name="ChartsBarChartColorsDataPortToolTip" xml:space="preserve">
-    <value>A list of colors for each bar chart category.
+    <value>Seznam barev pro každou kategorii pruhového grafu.
 
 List&lt;color&gt;</value>
   </data>
   <data name="ChartsBarChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>Dictionary containing label:value key-pairs
+    <value>Slovník obsahující dvojice klíčů a hodnot popisek:hodnota
 
 Dictionary&lt;string, double&gt;</value>
   </data>
   <data name="ChartsBasicLineChartDescription" xml:space="preserve">
-    <value>Create a new Basic Line Chart</value>
+    <value>Vytvořit nový základní spojnicový graf</value>
   </data>
   <data name="ChartsBasicLineChartSearchTags" xml:space="preserve">
     <value>index;indexvalue;indexvaluelineplot</value>
   </data>
   <data name="ChartsBasicLineChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of string labels for each line to be plotted.
+    <value>Seznam řetězcových popisků pro každou čáru, která má být vykreslena.
 
 List&lt;string&gt;</value>
   </data>
   <data name="ChartsBasicLineChartValuesDataPortToolTip" xml:space="preserve">
-    <value>List of lists each containing double values to be plotted against X-Axis values.
+    <value>Seznam seznamů, z nichž každý obsahuje hodnoty typu double, které mají být vykresleny vzhledem k hodnotám na ose X.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
   <data name="ChartsBasicLineChartColorsDataPortToolTip" xml:space="preserve">
-    <value>A list of colors for each line.
+    <value>Seznam barev pro každou čáru.
 
 List&lt;color&gt;</value>
   </data>
   <data name="ChartsBasicLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>Dictionary containing label:value key-pairs
+    <value>Slovník obsahující dvojice klíčů a hodnot popisek:hodnota
 
 Dictionary&lt;string, List&lt;double&gt;&gt;</value>
   </data>
   <data name="ChartsHeatSeriesDescription" xml:space="preserve">
-    <value>Create a heat series plot</value>
+    <value>Vytvořit graf tepelné řady</value>
   </data>
   <data name="ChartsHeatSeriesSearchTags" xml:space="preserve">
     <value>heat;heatseries;heatseriesplot</value>
   </data>
   <data name="ChartsHeatSeriesXLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of string labels for the x-axis.
+    <value>Seznam řetězcových popisků pro osu x.
 
 List&lt;string&gt;</value>
   </data>
   <data name="ChartsHeatSeriesYLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of string labels for the y-axis.
+    <value>Seznam řetězcových popisků pro osu y.
 
 List&lt;string&gt;</value>
   </data>
   <data name="ChartsHeatSeriesValuesDataPortToolTip" xml:space="preserve">
-    <value>A list of lists each containing double values representing items in a column. 
+    <value>Seznam seznamů, z nichž každý obsahuje hodnoty typu double představující položky ve sloupci. 
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-    <data name="ChartsHeatSeriesColorsDataPortToolTip" xml:space="preserve">
-    <value>A list of colors for each bar chart category.
+  <data name="ChartsHeatSeriesColorsDataPortToolTip" xml:space="preserve">
+    <value>Seznam barev pro každou kategorii pruhového grafu.
 
 List&lt;color&gt;</value>
   </data>
-    <data name="ChartsHeatSeriesLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>Dictionary containing label:value key-pairs
+  <data name="ChartsHeatSeriesLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Slovník obsahující dvojice klíčů a hodnot popisek:hodnota
 
 Dictionary&lt;string, Dictionary&lt;string, double&gt;&gt;</value>
   </data>
-    <data name="ChartsPieChartDescription" xml:space="preserve">
-    <value>Create a new Pie Chart</value>
+  <data name="ChartsPieChartDescription" xml:space="preserve">
+    <value>Vytvořit nový výsečový graf</value>
   </data>
-    <data name="ChartsPieChartSearchTags" xml:space="preserve">
+  <data name="ChartsPieChartSearchTags" xml:space="preserve">
     <value>pie;piechart</value>
   </data>
-    <data name="ChartsPieChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of string labels for each segment in the pie chart.
+  <data name="ChartsPieChartLabelsDataPortToolTip" xml:space="preserve">
+    <value>Seznam řetězcových popisků pro každý segment výsečového grafu.
 
 List&lt;string&gt;</value>
   </data>
-    <data name="ChartsPieChartValuesDataPortToolTip" xml:space="preserve">
-    <value>A list of double values to supply a value for each segment of the pie chart.
+  <data name="ChartsPieChartValuesDataPortToolTip" xml:space="preserve">
+    <value>Seznam hodnot typu double k předání hodnot pro každý segment výsečového grafu.
 
 List&lt;double&gt;</value>
   </data>
-    <data name="ChartsPieChartColorsDataPortToolTip" xml:space="preserve">
-    <value>A list of colors for each segment of the pie chart.
+  <data name="ChartsPieChartColorsDataPortToolTip" xml:space="preserve">
+    <value>Seznam barev pro každý segment výsečového grafu.
 
 List&lt;color&gt;</value>
   </data>
-    <data name="ChartsPieChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>Dictionary containing label:value key-pairs
+  <data name="ChartsPieChartLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Slovník obsahující dvojice klíčů a hodnot popisek:hodnota
 
 Dictionary&lt;string, double&gt;</value>
   </data>
-    <data name="ChartsScatterPlotDescription" xml:space="preserve">
-    <value>Create a scatter plot</value>
+  <data name="ChartsScatterPlotDescription" xml:space="preserve">
+    <value>Vytvořit bodový graf</value>
   </data>
-    <data name="ChartsScatterPlotSearchTags" xml:space="preserve">
+  <data name="ChartsScatterPlotSearchTags" xml:space="preserve">
     <value>scatter;scatterplot</value>
   </data>
-    <data name="ChartsScatterPlotLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of string labels for each group of points to be plotted.
+  <data name="ChartsScatterPlotLabelsDataPortToolTip" xml:space="preserve">
+    <value>Seznam řetězcových popisků pro každou skupinu bodů, která má být vykreslena.
 
 List&lt;string&gt;</value>
   </data>
-    <data name="ChartsScatterPlotXLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of lists each containing double values representing x-coordinates.
+  <data name="ChartsScatterPlotXLabelsDataPortToolTip" xml:space="preserve">
+    <value>Seznam seznamů, z nichž každý obsahuje hodnoty typu double představující souřadnice x.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-    <data name="ChartsScatterPlotYLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of lists each containing double values representing y-coordinates.
+  <data name="ChartsScatterPlotYLabelsDataPortToolTip" xml:space="preserve">
+    <value>Seznam seznamů, z nichž každý obsahuje hodnoty typu double představující souřadnice y.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-    <data name="ChartsScatterPlotColorsDataPortToolTip" xml:space="preserve">
-    <value>A list of colors for each group of points.
+  <data name="ChartsScatterPlotColorsDataPortToolTip" xml:space="preserve">
+    <value>Seznam barev pro každou skupinu bodů.
 
 List&lt;color&gt;</value>
   </data>
-    <data name="ChartsScatterPlotLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>Dictionary containing label:value key-pairs
+  <data name="ChartsScatterPlotLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Slovník obsahující dvojice klíčů a hodnot popisek:hodnota
 
 Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   </data>
-    <data name="ChartsXYLineChartDescription" xml:space="preserve">
-    <value>Create a new XY line plot</value>
+  <data name="ChartsXYLineChartDescription" xml:space="preserve">
+    <value>Vytvořit nový graf XY čar</value>
   </data>
-    <data name="ChartsXYLineChartSearchTags" xml:space="preserve">
+  <data name="ChartsXYLineChartSearchTags" xml:space="preserve">
     <value>lineplot;xylineplot</value>
   </data>
-    <data name="ChartsXYLineChartLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of string labels for each line to be plotted
+  <data name="ChartsXYLineChartLabelsDataPortToolTip" xml:space="preserve">
+    <value>Seznam řetězcových popisků pro každou čáru, která má být vykreslena
 
 List&lt;string&gt;</value>
   </data>
-    <data name="ChartsXYLineChartXLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of lists each containing double values representing x-coordinates for each point in a line.
+  <data name="ChartsXYLineChartXLabelsDataPortToolTip" xml:space="preserve">
+    <value>Seznam seznamů, z nichž každý obsahuje hodnoty typu double představující souřadnice x pro každý bod na čáře.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-    <data name="ChartsXYLineChartYLabelsDataPortToolTip" xml:space="preserve">
-    <value>A list of lists each containing double values representing x-coordinates for each point in a line.
+  <data name="ChartsXYLineChartYLabelsDataPortToolTip" xml:space="preserve">
+    <value>Seznam seznamů, z nichž každý obsahuje hodnoty typu double představující souřadnice x pro každý bod na čáře.
 
 List&lt;List&lt;double&gt;&gt;</value>
   </data>
-    <data name="ChartsXYLineChartColorsDataPortToolTip" xml:space="preserve">
-    <value>A list of colors for each line in the line plot.
+  <data name="ChartsXYLineChartColorsDataPortToolTip" xml:space="preserve">
+    <value>Seznam barev pro každou čáru ve vykreslení čar.
 
 List&lt;color&gt;</value>
   </data>
-    <data name="ChartsXYLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
-    <value>Dictionary containing label:value key-pairs
+  <data name="ChartsXYLineChartLabelsValuesDataPortToolTip" xml:space="preserve">
+    <value>Slovník obsahující dvojice klíčů a hodnot popisek:hodnota
 
 Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   </data>
-    <data name="ColorPaletteUIAdvancedButtonHeader" xml:space="preserve">
-    <value>Advanced</value>
+  <data name="ColorPaletteUIAdvancedButtonHeader" xml:space="preserve">
+    <value>Rozšířená</value>
   </data>
-    <data name="ColorPaletteUIRecentColors" xml:space="preserve">
-    <value>Recent Colors</value>
+  <data name="ColorPaletteUIRecentColors" xml:space="preserve">
+    <value>Poslední barvy</value>
   </data>
-    <data name="ColorPaletteUIStandardButtonHeader" xml:space="preserve">
-    <value>Standard</value>
+  <data name="ColorPaletteUIStandardButtonHeader" xml:space="preserve">
+    <value>Standardní</value>
   </data>
-    <data name="ColorPaletteUIStandardColors" xml:space="preserve">
-    <value>Standard Colors</value>
+  <data name="ColorPaletteUIStandardColors" xml:space="preserve">
+    <value>Standardní barvy</value>
   </data>
-    <data name="DateTimeInputToolTip" xml:space="preserve">
-    <value>Enter time and date in the format 'MMMM dd, yyyy h:mm tt'</value>
+  <data name="DateTimeInputToolTip" xml:space="preserve">
+    <value>Zadejte datum a čas ve formátu dd. MMMM rrrr, h:mm.</value>
   </data>
-    <data name="LblDisplay" xml:space="preserve">
-    <value>Display</value>
+  <data name="LblDisplay" xml:space="preserve">
+    <value>Zobrazení</value>
   </data>
-    <data name="LblValue" xml:space="preserve">
-    <value>Value</value>
+  <data name="LblValue" xml:space="preserve">
+    <value>Hodnota</value>
   </data>
-    <data name="ProvideDefaultColorsWarningMessage" xml:space="preserve">
-    <value>Default colors are used. To define custom colors, provide an equal number of colors and labels inputs.</value>
+  <data name="ProvideDefaultColorsWarningMessage" xml:space="preserve">
+    <value>Jsou použity výchozí barvy. Chcete-li definovat vlastní barvy, zadejte stejný počet barev a popisků.</value>
   </data>
-    <data name="ResizeThumbToolTip" xml:space="preserve">
-    <value>Drag to modify the size of the chart</value>
+  <data name="ResizeThumbToolTip" xml:space="preserve">
+    <value>Přetažením změňte velikost grafu.</value>
   </data>
   <data name="GateClose" xml:space="preserve">
-    <value>Close</value>
+    <value>Zavřít</value>
   </data>
   <data name="GateOpen" xml:space="preserve">
-    <value>Open</value>
+    <value>Otevřít</value>
   </data>
 </root>

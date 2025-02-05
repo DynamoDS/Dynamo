@@ -1,7 +1,7 @@
 {
   "Uuid": "adfb96bf-c673-4a19-8026-70e80871a954",
   "IsCustomNode": false,
-  "Description": "This graph creates a Model Line and a Reference Point when in Conceptual Mass Family environment.",
+  "Description": "Ten wykres tworzy linię modelu i punkt odniesienia w środowisku rodziny brył koncepcyjnych.",
   "Name": "Revit_GeometryCreation_Points",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -9,7 +9,7 @@
   "Inputs": [
     {
       "Id": "434e51b97d504ad485ec8873844cb5b9",
-      "Name": "Point Z value",
+      "Name": "Wartość Z punktu",
       "Type": "number",
       "Type2": "number",
       "Value": "25",
@@ -17,11 +17,11 @@
       "MinimumValue": 5.0,
       "StepValue": 5.0,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Tworzy wartości liczbowe"
     },
     {
       "Id": "5ac6a2ecccc04bdbb240d93d993aec7b",
-      "Name": "Point Y value",
+      "Name": "Wartość punktu Y",
       "Type": "number",
       "Type2": "number",
       "Value": "25",
@@ -29,11 +29,11 @@
       "MinimumValue": 5.0,
       "StepValue": 5.0,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Tworzy wartości liczbowe"
     },
     {
       "Id": "77a8a99bf71c47e2a984fc1d4f97e4c7",
-      "Name": "Point X value",
+      "Name": "Wartość punktu X",
       "Type": "number",
       "Type2": "number",
       "Value": "50",
@@ -41,7 +41,7 @@
       "MinimumValue": 5.0,
       "StepValue": 5.0,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Tworzy wartości liczbowe"
     }
   ],
   "Outputs": [],
@@ -54,7 +54,7 @@
         {
           "Id": "88e426d68c2a49f6ad18b7385bd79215",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna X\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -63,7 +63,7 @@
         {
           "Id": "988f10e7269a495a8475000981883a75",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Y\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -72,7 +72,7 @@
         {
           "Id": "bc05db6a0acf4e2bba2d0ed19582dfa4",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Z\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -83,7 +83,7 @@
         {
           "Id": "114ef9fe83fd44cfb1e89faa0a154fbf",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punkt utworzony na podstawie współrzędnych",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -92,7 +92,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Utwórz punkt (Point) o podanych trzech współrzędnych kartezjańskich\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
@@ -115,7 +115,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Tworzy wartości liczbowe",
       "InputValue": 25.0
     },
     {
@@ -128,7 +128,7 @@
         {
           "Id": "ca7eddc03860468686247430e560ec91",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Węzeł do oceny.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -139,7 +139,7 @@
         {
           "Id": "d03694df96a447d582cd65922b3a7d3d",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Obejrzyj zawartość.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -147,7 +147,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Wizualizuje dane wyjściowe węzła"
     },
     {
       "ConcreteType": "Watch3DNodeModels.Watch3D, Watch3DNodeModels",
@@ -173,7 +173,7 @@
         {
           "Id": "7ec7bc2685db46bd9c9eb7329a674646",
           "Name": "",
-          "Description": "Incoming geometry objects.",
+          "Description": "Przychodzące obiekty geometrii.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -184,7 +184,7 @@
         {
           "Id": "93f0d3d49e80440988c9189f8ae3fcb5",
           "Name": "",
-          "Description": "Incoming geometry objects.",
+          "Description": "Przychodzące obiekty geometrii.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -192,7 +192,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Shows a dynamic preview of geometry"
+      "Description": "Wyświetla podgląd dynamiczny geometrii"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -202,7 +202,7 @@
         {
           "Id": "0a25001c46b9438494ef74a10d8d8cea",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna X\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -211,7 +211,7 @@
         {
           "Id": "8daf688bb7034ee9bb2d321142607334",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Y\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -220,7 +220,7 @@
         {
           "Id": "611cc3ae597242e7851bab7a112ae8b4",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Z\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -231,7 +231,7 @@
         {
           "Id": "84218ad31df04a5ebb804072db41f04c",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punkt utworzony na podstawie współrzędnych",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -240,7 +240,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Utwórz punkt (Point) o podanych trzech współrzędnych kartezjańskich\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -250,7 +250,7 @@
         {
           "Id": "4d601a5f1b1b47fea6958522e7be9531",
           "Name": "startPoint",
-          "Description": "Line start point\n\nPoint",
+          "Description": "Punkt początkowy linii\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -259,7 +259,7 @@
         {
           "Id": "790a32ec609d4a26bc22c80c8130a2db",
           "Name": "endPoint",
-          "Description": "Line end point\n\nPoint",
+          "Description": "Punkt końcowy linii\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -270,7 +270,7 @@
         {
           "Id": "2359b00a6a2841a08d665a02d28c477f",
           "Name": "Line",
-          "Description": "Line from start and end point",
+          "Description": "Linia utworzona z punktu początkowego i końcowego",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -279,7 +279,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Creates a straight Line between two input Points.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
+      "Description": "Tworzy linię prostą (Line) między dwoma punktami wejściowymi.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -289,7 +289,7 @@
         {
           "Id": "14203baacb874bc19f8e922b2b164b47",
           "Name": "curve",
-          "Description": "Curve",
+          "Description": "Krzywa",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -309,7 +309,7 @@
       ],
       "FunctionSignature": "Revit.Elements.ModelCurve.ByCurve@Autodesk.DesignScript.Geometry.Curve",
       "Replication": "Auto",
-      "Description": "Construct a Revit ModelCurve element from a Curve\n\nModelCurve.ByCurve (curve: Curve): ModelCurve"
+      "Description": "Utwórz element ModelCurve programu Revit z krzywej\n\nModelCurve.ByCurve (krzywa: Curve): ModelCurve"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -319,7 +319,7 @@
         {
           "Id": "c08cd794c2ee4c279311637ac89b1cf6",
           "Name": "pt",
-          "Description": "Point",
+          "Description": "Punkt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -339,7 +339,7 @@
       ],
       "FunctionSignature": "Revit.Elements.ReferencePoint.ByPoint@Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Create a Reference Point from a point.\n\nReferencePoint.ByPoint (pt: Point): ReferencePoint"
+      "Description": "Utwórz punkt odniesienia z punktu.\n\nReferencePoint.ByPoint (punkt: Point): ReferencePoint"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
@@ -362,7 +362,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Tworzy wartości liczbowe",
       "InputValue": 25.0
     },
     {
@@ -386,7 +386,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Tworzy wartości liczbowe",
       "InputValue": 50.0
     }
   ],
@@ -454,7 +454,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Właściwości",
       "Version": "2.13",
       "Data": {}
     },
@@ -496,7 +496,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Podgląd tła",
       "EyeX": -34.617584228515625,
       "EyeY": 15.351829528808594,
       "EyeZ": 45.2993049621582,
@@ -521,7 +521,7 @@
       },
       {
         "Id": "434e51b97d504ad485ec8873844cb5b9",
-        "Name": "Point Z value",
+        "Name": "Wartość Z punktu",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -591,7 +591,7 @@
       },
       {
         "Id": "5ac6a2ecccc04bdbb240d93d993aec7b",
-        "Name": "Point Y value",
+        "Name": "Wartość punktu Y",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -601,7 +601,7 @@
       },
       {
         "Id": "77a8a99bf71c47e2a984fc1d4f97e4c7",
-        "Name": "Point X value",
+        "Name": "Wartość punktu X",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -613,7 +613,7 @@
     "Annotations": [
       {
         "Id": "a96c9510bf074c609a16622f984b07de",
-        "Title": "Info",
+        "Title": "Informacje",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -637,7 +637,7 @@
       },
       {
         "Id": "aaa8e3691c1e45e19ec7e1d950a69849",
-        "Title": "Point coordinates",
+        "Title": "Współrzędne punktu",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -661,7 +661,7 @@
       },
       {
         "Id": "d1b73e4922504caba997fd43ac6fdbbe",
-        "Title": "Geometric Data can be visualized as either textual information or in 3d space",
+        "Title": "Dane geometryczne można wyświetlać jako informacje tekstowe lub w przestrzeni 3D",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -682,7 +682,7 @@
       },
       {
         "Id": "467cffc5116f411f84fcd2e970ef1b87",
-        "Title": "You can toggle between 3D Background navigation and Graph View navigation with the butttons in the upper right corner of the screen (Ctrl + B shortcut). Background Preview can also be turned on and off in the View Menu, for Dynamo and Revit. ",
+        "Title": "Za pomocą przycisków w prawym górnym rogu ekranu (skrót Ctrl + B) można przełączać między nawigacją w tle 3D a nawigacją w widoku wykresu. Podgląd tła można też włączać i wyłączać w menu Widok w dodatku Dynamo i w programie Revit. ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -702,7 +702,7 @@
       },
       {
         "Id": "d4a7602dd9aa49bc8f2ecc88f885a1eb",
-        "Title": "Dynamo can only create and modify elements that are appropriate to the file that Dynamo is associated with.  For instance, Reference Points can only be made in certain Family environments (such as Generic Model Adaptive), while Model Lines can be created almost anywhere.",
+        "Title": "Dodatek Dynamo może tworzyć i modyfikować tylko elementy odpowiednie dla pliku, z którym jest skojarzony wykres Dynamo. Na przykład punkty odniesienia można tworzyć tylko w niektórych środowiskach rodziny (takich jak model ogólny adaptacyjny), natomiast linie modelu można tworzyć w niemal dowolnym miejscu.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -723,7 +723,7 @@
       },
       {
         "Id": "d0f6481a303e4728a927331432a70bed",
-        "Title": "Run this graph in a Conceptual Mass or Generic Model Adaptive family environment. \n\nTo create a new family, go to File > New Family > and select the template located in the folder: \n\nC:\\ProgramData\\Autodesk\\RVT 2026\\Family Templates\\English-Imperial\\Generic Model Adaptive.rft ",
+        "Title": "Uruchom ten wykres w środowisku rodziny Bryła koncepcyjna lub Model ogólny adaptacyjny. \n\nAby utworzyć nową rodzinę, przejdź do menu Plik > Nowa rodzina > i wybierz szablon znajdujący się w folderze: \n\nC:\\ProgramData\\Autodesk\\RVT 2026\\Family Templates\\English-Imperial\\Generic Model Adaptive.rft ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -743,7 +743,7 @@
       },
       {
         "Id": "d2ca38c2dcee4ec98891dd6c9da939de",
-        "Title": "This graph creates a Model Line and a Reference Point in Family environment",
+        "Title": "Ten wykres tworzy linię modelu i punkt odniesienia w środowisku rodziny",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -763,7 +763,7 @@
       },
       {
         "Id": "5063c42eb34b44eba6bff276a3425a89",
-        "Title": "Create a model curve by connecting two points",
+        "Title": "Utwórz krzywą modelu przez połączenie dwóch punktów",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -784,7 +784,7 @@
       },
       {
         "Id": "73b7676b54c946efbdf41d825fb27821",
-        "Title": "Preview the geometry ",
+        "Title": "Podgląd geometrii ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -805,7 +805,7 @@
       },
       {
         "Id": "679dc2339ead4144863f0d6b03849301",
-        "Title": "Manipulate the position of the point in the Dynamo environment : Select the Point.ByCoordinates node and swicth to Background preview to pull the point along its three axes.",
+        "Title": "Manipuluj położeniem punktu w środowisku Dynamo: wybierz węzeł Point.ByCoordinates i przełącz na podgląd tła, aby przeciągnąć punkt wzdłuż jego trzech osi.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

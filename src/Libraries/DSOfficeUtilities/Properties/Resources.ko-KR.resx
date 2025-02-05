@@ -118,22 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExcelCommunicationError" xml:space="preserve">
-    <value>Error setting up communication with Excel.  Try closing any open Excel instances.</value>
+    <value>Excel과 통신을 설정하는 중에 오류가 발생했습니다. 열려 있는 Excel 인스턴스(instance)를 모두 닫아 보십시오.</value>
   </data>
   <data name="ExcelNotInstalled" xml:space="preserve">
-    <value>Excel is not installed. href=ExcelNotInstalled.html</value>
+    <value>Excel이 설치되어 있지 않습니다. href=ExcelNotInstalled.html</value>
   </data>
   <data name="kMethodResolutionFailureWithTypes" xml:space="preserve">
-    <value>One or more of the input types are not matching. Couldn't find a version of {0} that takes arguments of type {1}</value>
+    <value>하나 이상의 입력 유형이 일치하지 않습니다. 인수 유형이 {1}인 {0} 버전을 찾을 수 없습니다.</value>
   </data>
   <data name="ReadObsolete" xml:space="preserve">
-    <value>Use File.FromPath -&gt; Excel.ReadFromFile node instead.</value>
+    <value>대신 File.FromPath -&gt; Excel.ReadFromFile 노드를 사용하십시오.</value>
   </data>
   <data name="WorkbookNotFound" xml:space="preserve">
-    <value>A workbook was not found in the provided path.</value>
+    <value>제공된 경로에서 통합 문서를 찾을 수 없습니다.</value>
   </data>
   <data name="WorksheetNotFound" xml:space="preserve">
-    <value>A worksheet with the provided name '{0}' was not found in the workbook.</value>
-    <comment>{0} = name of the worksheet, for example 'Sheet1'.</comment>
+    <value>통합 문서에서 제공된 이름 '{0}'의 워크시트를 찾을 수 없습니다.</value>
   </data>
 </root>

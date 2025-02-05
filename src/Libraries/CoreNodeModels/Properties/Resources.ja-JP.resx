@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,426 +118,373 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AndDescription" xml:space="preserve">
-    <value>Boolean AND: Returns True only if all of the inputs are true. If any is false, returns False.</value>
-    <comment>Description for And</comment>
+    <value>ブール演算 AND: すべての入力が True の場合にのみ True を返します。いずれかが False の場合は、False を返します。</value>
   </data>
   <data name="ApplyPortDataFuncArgToolTip" xml:space="preserve">
-    <value>Result of application.</value>
+    <value>アプリケーションの結果。</value>
   </data>
   <data name="ApplyPortDataFuncToolTip" xml:space="preserve">
-    <value>Function to apply.</value>
+    <value>適用する関数。</value>
   </data>
   <data name="BooleanDescription" xml:space="preserve">
-    <value>Enables selection between True and False</value>
-    <comment>Description for Boolean</comment>
+    <value>True/False の選択を有効にします</value>
   </data>
   <data name="BooleanSelectorSearchTags" xml:space="preserve">
     <value>true;truth;false</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="ColorRangeDescription" xml:space="preserve">
-    <value>Returns a color given a color range</value>
-    <comment>Description for Color Range</comment>
+    <value>特定の色域の色を返します</value>
   </data>
   <data name="ColorRangePortDataIndicesToolTip" xml:space="preserve">
-    <value>List of values between 0.0 and 1.0 which position the input colors along the range</value>
+    <value>0.0 から 1.0 の間の値のリスト。入力色を範囲に沿って配置します</value>
   </data>
   <data name="ColorRangePortDataResultToolTip" xml:space="preserve">
-    <value>Selected colors</value>
+    <value>選択した色</value>
   </data>
   <data name="ColorRangePortDataColorsToolTip" xml:space="preserve">
-    <value>List of colors to include in the range</value>
+    <value>範囲に含める色のリスト</value>
   </data>
   <data name="ColorRangePortDataValueToolTip" xml:space="preserve">
-    <value>List of values between 0.0 and 1.0. These values define the colors that are picked along the color range to create the color list.</value>
+    <value>0.0 から 1.0 の間の値のリスト。これらの値で、色の範囲に沿って選択される色を定義して、色のリストを作成します。</value>
   </data>
   <data name="CombinatorPortDataCombToolTip" xml:space="preserve">
-    <value>Function to use as combinator</value>
+    <value>コンビネータとして使用する関数</value>
   </data>
   <data name="CombinatorPortDataResultToolTip" xml:space="preserve">
-    <value>Combined lists</value>
+    <value>結合されたリスト</value>
   </data>
   <data name="ComposePortDataFunc0ToolTip" xml:space="preserve">
-    <value>Function #0</value>
+    <value>関数 #0</value>
   </data>
   <data name="ComposePortDataFunc1ToolTip" xml:space="preserve">
-    <value>Function #1</value>
+    <value>関数 #1</value>
   </data>
   <data name="ComposePortDataResultToolTip" xml:space="preserve">
-    <value>Composed function.</value>
+    <value>構成された関数。</value>
   </data>
   <data name="CreateListPortDataIndex0ToolTip" xml:space="preserve">
-    <value>Item Index #0</value>
+    <value>項目インデックス番号 0</value>
   </data>
   <data name="CreateListPortDataResultToolTip" xml:space="preserve">
-    <value>A list (type: var[]..[])</value>
+    <value>リスト(タイプ: var[]..[])</value>
   </data>
   <data name="DirectoryFromPathDescription" xml:space="preserve">
-    <value>Creates a directory object from the given path</value>
-    <comment>Description for Directory.FromPath</comment>
+    <value>特定のパスからフォルダ オブジェクトを作成します</value>
   </data>
   <data name="DirectoryNodeDescription" xml:space="preserve">
-    <value>Allows you to select a directory on the system and returns its path</value>
+    <value>システム上の任意のフォルダを選択して、そのパスを返すことができます</value>
   </data>
   <data name="DirectoryObjectNodeDescription" xml:space="preserve">
-    <value>Creates a directory object from the given path</value>
+    <value>特定のパスからフォルダ オブジェクトを作成します</value>
   </data>
   <data name="DirectoryObjectPortDataPathToolTip" xml:space="preserve">
-    <value>Path to the directory (type: string)</value>
+    <value>フォルダへのパス(タイプ: 文字列)</value>
   </data>
   <data name="DirectoryObjectPortDataResultToolTip" xml:space="preserve">
-    <value>Directory object.</value>
+    <value>フォルダ オブジェクト。</value>
   </data>
   <data name="DirectoryPathDescription" xml:space="preserve">
-    <value>Allows you to select a directory on the system and returns its path</value>
-    <comment>Description for Directory Path</comment>
+    <value>システム上の任意のフォルダを選択して、そのパスを返すことができます</value>
   </data>
   <data name="DoubleInputNodeDescription" xml:space="preserve">
-    <value>Creates a number</value>
+    <value>数値を作成します</value>
   </data>
   <data name="DoubleSliderDescription" xml:space="preserve">
-    <value>Produces numeric values</value>
-    <comment>Description for Double Slider</comment>
+    <value>数値を生成します</value>
   </data>
   <data name="DoubleSliderNodeDescription" xml:space="preserve">
-    <value>Produces numeric values</value>
+    <value>数値を生成します</value>
   </data>
   <data name="DropDownPortDataResultToolTip" xml:space="preserve">
-    <value>The selected {0}</value>
+    <value>選択した {0}</value>
   </data>
   <data name="FileFromPathDescription" xml:space="preserve">
-    <value>Creates a file object from the given path</value>
-    <comment>Description for File.FromPath</comment>
+    <value>特定のパスからファイル オブジェクトを作成します</value>
   </data>
   <data name="FilenameNodeDescription" xml:space="preserve">
-    <value>Allows you to select a file on the system to get its filename</value>
+    <value>システム上の任意のファイルを選択して、そのファイル名を取得することができます。</value>
   </data>
   <data name="FileObjectNodeDescription" xml:space="preserve">
-    <value>Creates a file object from the given path</value>
+    <value>特定のパスからファイル オブジェクトを作成します</value>
   </data>
   <data name="FileObjectPortDataPathToolTip" xml:space="preserve">
-    <value>Path to the file.</value>
+    <value>ファイルへのパス。</value>
   </data>
   <data name="FileObjectPortDataResultToolTip" xml:space="preserve">
-    <value>File object</value>
+    <value>ファイル オブジェクト</value>
   </data>
   <data name="FilePathDescription" xml:space="preserve">
-    <value>Allows you to select a file on the system and returns its file path</value>
-    <comment>Description for File Path</comment>
+    <value>システム上の任意のファイルを選択して、そのファイル パスを返すことができます</value>
   </data>
   <data name="FilterPortDataConditionToolTip" xml:space="preserve">
-    <value>Filter function used to determine if an element is filtered in or out</value>
+    <value>要素をフィルタで含めるか除外するかを判断するために使用するフィルタ関数</value>
   </data>
   <data name="FilterPortDataListToolTip" xml:space="preserve">
-    <value>List to filter</value>
+    <value>フィルタするリスト</value>
   </data>
   <data name="FilterPortDataResultInToolTip" xml:space="preserve">
-    <value>List containing all elements "x" where condition(x) = True</value>
+    <value>条件(x)が True となる、すべての要素 "x" を含むリスト</value>
   </data>
   <data name="FilterPortDataResultOutToolTip" xml:space="preserve">
-    <value>List containing all elements "x" where condition(x) = False</value>
+    <value>条件(x)が False となる、すべての要素 "x" を含むリスト</value>
   </data>
   <data name="FormulaDescription" xml:space="preserve">
-    <value>Evaluates mathematical formulas using NCalc</value>
-    <comment>Description for Formula</comment>
+    <value>NCalc を使用して数学式を評価します</value>
   </data>
   <data name="FormulaPortDataResultToolTip" xml:space="preserve">
-    <value>Result from formula</value>
+    <value>計算式の結果</value>
   </data>
   <data name="FromArrayPortDataArrayToolTip" xml:space="preserve">
-    <value>The array of object to be serialized</value>
+    <value>シリアル化するオブジェクトの配列</value>
   </data>
   <data name="FromArrayPortDataResultToolTip" xml:space="preserve">
-    <value>String representation of the array</value>
+    <value>配列の文字列表現</value>
   </data>
   <data name="FromArraySearchTags" xml:space="preserve">
     <value>string.fromarray;tostring;2string;list2string;listtostring;array2string;arraytostring</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="FromObjectPortDataObjToolTip" xml:space="preserve">
-    <value>Object to be serialized</value>
+    <value>シリアル化するオブジェクト</value>
   </data>
   <data name="FromObjectPortDataResultToolTip" xml:space="preserve">
-    <value>String representation of the object</value>
+    <value>オブジェクトの文字列表現</value>
   </data>
   <data name="FromObjectSearchTags" xml:space="preserve">
     <value>string.fromobject;tostring;2string;number2string;numbertostring</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="FunctionApplyDescription" xml:space="preserve">
-    <value>Returns the result of a function with given arguments</value>
-    <comment>Description for Function.Apply</comment>
+    <value>指定した引数での関数の結果を返します</value>
   </data>
   <data name="FunctionComposeDescription" xml:space="preserve">
-    <value>Returns a single function from multiple functions</value>
-    <comment>Description for Function.Compose</comment>
+    <value>複数の関数から単一の関数を返します</value>
   </data>
   <data name="IfDescription" xml:space="preserve">
-    <value>Conditional statement</value>
-    <comment>Description for If</comment>
+    <value>条件ステートメント</value>
   </data>
   <data name="IntegerSliderDescription" xml:space="preserve">
-    <value>Produces integer values</value>
-    <comment>Description for Integer Slider</comment>
+    <value>整数値を生成します</value>
   </data>
   <data name="IntegerSliderNodeDescription" xml:space="preserve">
-    <value>Produces integer values</value>
+    <value>整数値を生成します</value>
   </data>
   <data name="LegacyNodeDescription" xml:space="preserve">
-    <value>This is an obsolete node</value>
-    <comment>Description for Legacy Node</comment>
+    <value>これは廃止されたノードです</value>
   </data>
   <data name="ListCartesianProductDescription" xml:space="preserve">
-    <value>Applies a combinator to each pair in the Cartesian product of two sequences</value>
-    <comment>Description for List.CartesianProduct</comment>
+    <value>2 つのシーケンスのデカルト積の各ペアにコンビネータを適用します</value>
   </data>
   <data name="ListCartesianProductSearchTags" xml:space="preserve">
     <value>cross product;crossreference;cross ref;</value>
-    <comment>search tags List.CartesianProcut</comment>
   </data>
   <data name="ListCombineDescription" xml:space="preserve">
-    <value>Applies a combinator to each element in two sequences</value>
-    <comment>Description for List.Combine</comment>
+    <value>2 つのシーケンスの各要素にコンビネータを適用します</value>
   </data>
   <data name="ListCombineSearchTags" xml:space="preserve">
     <value>map multiple;apply over lists;multiple inputs</value>
-    <comment>List.Combine search tags</comment>
   </data>
   <data name="ListCreateDescription" xml:space="preserve">
-    <value>Makes a new list from the given inputs</value>
-    <comment>Description for List.Create</comment>
+    <value>特定の入力から新しいリストを作成します</value>
   </data>
   <data name="ListFilterDescription" xml:space="preserve">
-    <value>Filters items on a list in or out based on the given condition. If the condition is true, items are filtered in, and if the condition is false, items are filtered out.</value>
-    <comment>Description for List.Filter</comment>
+    <value>特定の条件に基づいてリストの項目をフィルタあるいはフィルタ解除します。条件が True の場合、項目はフィルタされ、False の場合はフィルタが外されます。</value>
   </data>
   <data name="ListFilterSearchTags" xml:space="preserve">
     <value>screen;dispatch;</value>
-    <comment>List.Filter search tags</comment>
   </data>
   <data name="ListForEachDescription" xml:space="preserve">
-    <value>Performs a computation on each element of a list. Does not accumulate results.</value>
-    <comment>Description for List.ForEach</comment>
+    <value>リストの各要素に対して計算を実行します。結果は累積しません。</value>
   </data>
   <data name="ListForEachSearchTags" xml:space="preserve">
     <value>apply function;void;</value>
-    <comment>List.ForEach search tags</comment>
   </data>
   <data name="ListLaceLongestDescription" xml:space="preserve">
-    <value>Applies a combinator to each pair resulting from a longest lacing of the input lists. All lists have their last element repeated to match the length of the longest input.</value>
-    <comment>Description for List.LaceLongest</comment>
+    <value>入力リストの最も長いレーシングから発生する各ペアにコンビネータを適用します。最も長い入力の長さに合わせて、すべてのリストの最後の要素が繰り返されます。</value>
   </data>
   <data name="ListLaceLongestSearchTags" xml:space="preserve">
     <value>repeat last;</value>
-    <comment>search tags List.LaceLongest</comment>
   </data>
   <data name="ListLaceShortestDescription" xml:space="preserve">
-    <value>Applies a combinator to each pair resulting from a shortest lacing of the input lists. All lists are truncated to the length of the shortest input.</value>
-    <comment>Description for List.LaceShortest</comment>
+    <value>入力リストの最も短いレーシングから発生する各ペアにコンビネータを適用します。最も短い入力の長さに合わせて、すべてのリストが切り詰められます。</value>
   </data>
   <data name="ListLaceShortestSearchTags" xml:space="preserve">
     <value>mix;trim end</value>
-    <comment>search tags List.LaceShortest</comment>
   </data>
   <data name="ListMapDescription" xml:space="preserve">
-    <value>Applies a function over all elements of a list, generating a new list from the results</value>
-    <comment>Description for List.Map</comment>
+    <value>リストのすべての要素に関数を適用し、その結果から新しいリストを生成します。</value>
   </data>
   <data name="ListMapSearchTags" xml:space="preserve">
     <value>function;applied;over list;do to each</value>
-    <comment>search tags for List.Map</comment>
   </data>
   <data name="ListReduceDescription" xml:space="preserve">
-    <value>Reduces a list into a new value by combining each element with an accumulated result</value>
-    <comment>Description for List.Reduce</comment>
+    <value>各要素を累積した結果に組み合わせることで、リストを新しい値に削減します</value>
   </data>
   <data name="ListReduceSearchTags" xml:space="preserve">
     <value>accumulate;aggregate;fold</value>
-    <comment>search tags List.Reduce</comment>
   </data>
   <data name="ListScanDescription" xml:space="preserve">
-    <value>Reduces a list into a new value by combining each element with an accumulated result, produces a list of successive reduced values.</value>
-    <comment>Description for List.Scan</comment>
+    <value>各要素を累積した結果に組み合わせることでリストを新しい値に削減し、削減した値が連続するリストを作成します。</value>
   </data>
   <data name="ListScanSearchTags" xml:space="preserve">
     <value>intermediate;maps;folds</value>
-    <comment>List.Scan search tags</comment>
   </data>
   <data name="MapPortDataFxToolTip" xml:space="preserve">
-    <value>The procedure used to map element</value>
+    <value>要素のマッピングに使用するプロシージャ</value>
   </data>
   <data name="MapPortDataListToolTip" xml:space="preserve">
-    <value>The list to map over.</value>
+    <value>マッピングするリスト。</value>
   </data>
   <data name="MapPortDataResultToolTip" xml:space="preserve">
-    <value>Mapped list of type: var[]..[]</value>
+    <value>マッピングされたリスト(タイプ: var[]..[])</value>
   </data>
   <data name="RangeDescription" xml:space="preserve">
-    <value>Creates a sequence of numbers or letters in the given range</value>
-    <comment>Description for Number Range</comment>
+    <value>特定の範囲内で数値または文字のシーケンスを作成します</value>
   </data>
   <data name="SequenceDescription" xml:space="preserve">
-    <value>Creates a sequence of numbers</value>
-    <comment>Description for Number Sequence</comment>
+    <value>数値のシーケンスを作成します</value>
   </data>
   <data name="OrDescription" xml:space="preserve">
-    <value>Boolean OR: Returns True if any of the inputs are true. If none are true, returns False.</value>
-    <comment>Description for Or</comment>
+    <value>ブール演算 OR: 入力のいずれかが True の場合に True を返します。いずれも True ではない場合は、False を返します。</value>
   </data>
   <data name="PortDataFalseBlockToolTip" xml:space="preserve">
-    <value>Returned if test is false</value>
+    <value>テストが false の場合に返されます</value>
   </data>
   <data name="PortDataImageToolTip" xml:space="preserve">
-    <value>Image for visualization</value>
+    <value>視覚化用のイメージ</value>
   </data>
   <data name="PortDataListToolTip" xml:space="preserve">
-    <value>List</value>
+    <value>リスト</value>
   </data>
   <data name="PortDataOperandToolTip" xml:space="preserve">
     <value>Boolean #</value>
   </data>
   <data name="PortDataResultToolTip" xml:space="preserve">
-    <value>Result block produced</value>
+    <value>生成された結果ブロック</value>
   </data>
   <data name="PortDataTestBlockToolTip" xml:space="preserve">
-    <value>Boolean test</value>
+    <value>ブール値テスト</value>
   </data>
   <data name="PortDataTrueBlockToolTip" xml:space="preserve">
-    <value>Returned if test is true</value>
+    <value>テストが true の場合に返されます</value>
   </data>
   <data name="PortDataVariableToolTip" xml:space="preserve">
-    <value>variable</value>
+    <value>変数</value>
   </data>
   <data name="ReducePortDataReductorToolTip" xml:space="preserve">
-    <value>Reductor Function: accepts one item from each list being reduced, and the current accumulated value, result is the new accumulated value.</value>
+    <value>Reductor 関数: 削減する各リストから項目を 1 つ受け取り、現在の累積値を使用して、新しい累積値を算出します。</value>
   </data>
   <data name="ReducePortDataResultToolTip" xml:space="preserve">
-    <value>Reduced lists (type: var[]..[])</value>
+    <value>削減されたリスト(タイプ: var[]..[])</value>
   </data>
   <data name="ReducePortDataSeedToolTip" xml:space="preserve">
-    <value>Starting accumulated value, to be passed into the first call to the Reductor function.</value>
+    <value>開始累積値。Reductor 関数の最初の呼び出しに渡されます。</value>
   </data>
   <data name="ReplaceByConditionDescription" xml:space="preserve">
-    <value>Replaces an item with the given substitute if the original item satisfies the given condition</value>
-    <comment>Description for ReplaceByCondition</comment>
+    <value>元の項目が特定の条件を満たす場合に、項目を特定の別項目に置き換えます。</value>
   </data>
   <data name="ReplaceByConditionSearchTags" xml:space="preserve">
     <value>predicate;override;replace if,</value>
-    <comment>ReplaceByCondition search tags</comment>
   </data>
   <data name="ReplacePortDataConditionToolTip" xml:space="preserve">
-    <value>Replacement function used to determine if an object should be replaced</value>
+    <value>オブジェクトを置換するかどうかを判断するために使用する置換関数</value>
   </data>
   <data name="ReplacePortDataItemToolTip" xml:space="preserve">
-    <value>Item to potentially be replaced</value>
+    <value>置き換えられる可能性のある項目</value>
   </data>
   <data name="ReplacePortDataReplaceWithToolTip" xml:space="preserve">
-    <value>Object to replace with</value>
+    <value>置き換えるオブジェクト</value>
   </data>
   <data name="ReplacePortDataResultToolTip" xml:space="preserve">
-    <value>Item, or list of items where condition was used to replace with item given in "replaceWith"</value>
+    <value>条件を使用して "replaceWith" で指定された項目で置き換えた項目または項目のリスト</value>
   </data>
   <data name="ScanPortDataReductorToolTip" xml:space="preserve">
-    <value>Reductor Function: accepts one item from each list being reduced, and the current accumulated value, result is the new accumulated value.</value>
+    <value>Reductor 関数: 削減する各リストから項目を 1 つ受け取り、現在の累積値を使用して、新しい累積値を算出します。</value>
   </data>
   <data name="ScanPortDataResultToolTip" xml:space="preserve">
-    <value>Scanned lists (type: var[]..[])</value>
+    <value>スキャンされたリスト(タイプ: var[]..[])</value>
   </data>
   <data name="ScanPortDataSeedToolTip" xml:space="preserve">
-    <value>Starting accumulated value, to be passed into the first call to the Reductor function.</value>
+    <value>開始累積値。Reductor 関数の最初の呼び出しに渡されます。</value>
   </data>
   <data name="ScopeIfDescription" xml:space="preserve">
-    <value>Returns the result of either True or False input depending on what boolean value is toggled in the test input. Supports recursion which requires that only a single branch be executed. It's critical that that both True and False branches are isolated and do not interact with each other!</value>
-    <comment>Description for Scope If</comment>
+    <value>テスト入力でどのブール値を切り替えるかに応じて、True または False のいずれかの入力の結果を返します。単一の分岐のみの実行を必要とする反復処理をサポートします。True の分岐と False の分岐が分離されており、相互に作用しないことが重要です。</value>
   </data>
   <data name="SelectionPortDataResultToolTip" xml:space="preserve">
-    <value>The selected elements.</value>
+    <value>選択した要素。</value>
   </data>
   <data name="StringfromArrayDescription" xml:space="preserve">
     <value>Converts an array to a string representation</value>
-    <comment>Description for String from Array</comment>
   </data>
   <data name="StringfromObjectDescription" xml:space="preserve">
-    <value>Converts an object to a string representation</value>
-    <comment>Description for String from Object</comment>
+    <value>オブジェクトを文字列表現に変換します</value>
   </data>
   <data name="StringInputNodeDescription" xml:space="preserve">
-    <value>Creates a string</value>
+    <value>文字列を作成します</value>
   </data>
   <data name="WatchDescription" xml:space="preserve">
-    <value>Visualizes a node's output</value>
-    <comment>Description for Watch</comment>
+    <value>ノードの出力を可視化します</value>
   </data>
   <data name="WatchImageDescription" xml:space="preserve">
-    <value>Previews an image</value>
-    <comment>Description for Watch Image</comment>
+    <value>イメージをプレビューします</value>
   </data>
   <data name="WatchImageSearchTags" xml:space="preserve">
     <value>image;inspect image;pixels;display;panel;watchimage;</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="WatchNodeDescription" xml:space="preserve">
-    <value>Visualizes a node's output</value>
+    <value>ノードの出力を可視化します</value>
   </data>
   <data name="WatchPortDataInputToolTip" xml:space="preserve">
-    <value>Node to show output from</value>
+    <value>出力を表示するノード</value>
   </data>
   <data name="WatchPortDataResultToolTip" xml:space="preserve">
-    <value>Node output</value>
+    <value>ノードの出力</value>
   </data>
   <data name="WatchSearchTags" xml:space="preserve">
     <value>print;output;display</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="WebRequestDescription" xml:space="preserve">
     <value>Returns the contents of a webpage from the given URL as a string</value>
-    <comment>Description for Web Request</comment>
   </data>
   <data name="WebRequestPortDataResultToolTip" xml:space="preserve">
-    <value>Content of a web request as a string.</value>
+    <value>Web リクエストのコンテンツ(文字列)。</value>
   </data>
   <data name="WebRequestPortDataUrlToolTip" xml:space="preserve">
-    <value>The url for the web request as a string.</value>
+    <value>Web リクエストの URL (文字列)。</value>
   </data>
   <data name="WatchNodeSearchTags" xml:space="preserve">
     <value>print;output;disply;panel;inspect;debug</value>
-    <comment>Search Tags for WatchNode</comment>
   </data>
   <data name="ConversionNodeDescription" xml:space="preserve">
-    <value>Convert between units of measure.</value>
+    <value>計測単位を変換します。</value>
   </data>
   <data name="SelectFromComboBoxToolTip" xml:space="preserve">
-    <value>This is your Revit display unit settings</value>
+    <value>これは Revit の表示単位の設定です</value>
   </data>
   <data name="ListCreateSearchTags" xml:space="preserve">
     <value>entwine;listcreate,newlist;makelist;list;</value>
-    <comment>search tags for list.create</comment>
   </data>
   <data name="DoubleSliderSearchTags" xml:space="preserve">
     <value>double;number;float;integer;slider;numberslider;</value>
-    <comment>Search tags for DoubleSlider node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
   <data name="DynamoConvertSearchTags" xml:space="preserve">
     <value>Convert;Units;Length;Area;Volume;convertbetweenunits;</value>
-    <comment>Search tags for DynamoConvert node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
   <data name="ListCreateInPortToolTip" xml:space="preserve">
-    <value>Item Index #{0}</value>
+    <value>項目インデックス番号 #{0}</value>
   </data>
   <data name="SelectionNodeNothingSelected" xml:space="preserve">
-    <value>Nothing selected.</value>
+    <value>何も選択されていません。</value>
   </data>
   <data name="SelectionNodeSugestion" xml:space="preserve">
-    <value>Select something in the model.</value>
+    <value>モデル内の項目を選択します。</value>
   </data>
   <data name="UnitNodeFromPortTooltip" xml:space="preserve">
-    <value>A numeric value for conversion.</value>
+    <value>変換する数値。</value>
   </data>
   <data name="UnitNodeToPortToolTip" xml:space="preserve">
-    <value>A converted numeric value.</value>
+    <value>変換した数値。</value>
   </data>
   <data name="DateTimeDescription" xml:space="preserve">
-    <value>Creates a dateTime object from a formatted date and time string. Date and time must be in the default DateTime format "MMMM dd, yyyy h:mm tt", e.g. "April 02, 1977 12:00 PM"</value>
+    <value>書式化された日付と時刻の文字列から dateTime オブジェクトを作成します。日付と時刻は「April 12, 1977 12:00 PM」の書式で指定する必要があります</value>
   </data>
   <data name="ColorRangeSearchTags" xml:space="preserve">
     <value>colorrange;</value>
@@ -558,126 +505,124 @@
     <value>numbersequence;</value>
   </data>
   <data name="SelectionEdgeOutputPortName" xml:space="preserve">
-    <value>Curve</value>
+    <value>曲線</value>
   </data>
   <data name="SelectionEdgesOutputPortName" xml:space="preserve">
-    <value>Curves</value>
+    <value>曲線</value>
   </data>
   <data name="SelectionElementOutputPortName" xml:space="preserve">
-    <value>Element</value>
+    <value>要素</value>
   </data>
   <data name="SelectionElementsOutputPortName" xml:space="preserve">
-    <value>Elements</value>
+    <value>要素</value>
   </data>
   <data name="SelectionFaceOutputPortName" xml:space="preserve">
-    <value>Surface</value>
+    <value>サーフェス</value>
   </data>
   <data name="SelectionFacesOutputPortName" xml:space="preserve">
-    <value>Surfaces</value>
+    <value>サーフェス</value>
   </data>
   <data name="SelectionPointOutputPortName" xml:space="preserve">
-    <value>Point</value>
+    <value>点</value>
   </data>
   <data name="SelectionPointsOutputPortName" xml:space="preserve">
-    <value>Points</value>
+    <value>点</value>
   </data>
   <data name="NumberNodeInputMustBeNumeric" xml:space="preserve">
-    <value>The input must be numeric.</value>
+    <value>数値を入力する必要があります。</value>
   </data>
   <data name="ColorPaletteDescription" xml:space="preserve">
-    <value>Select a Color from the palette</value>
+    <value>パレットから色を選択します</value>
   </data>
   <data name="ColorPaletteSearchTags" xml:space="preserve">
     <value>color</value>
   </data>
   <data name="EqualsWithToleranceDescription" xml:space="preserve">
-    <value>Returns True if x and y are equal given a certain tolerance</value>
-    <comment>Description for Equals with tolerance node</comment>
+    <value>特定の許容範囲で x と y が等しい場合に True を返します</value>
   </data>
   <data name="EqualsWithToleranceLhsRhsTooltip" xml:space="preserve">
-    <value>Integer or double value</value>
-    <comment>Equals with tolerance node input port tooltip</comment>
+    <value>整数値または倍精度値</value>
   </data>
   <data name="EqualsWithToleranceOutportTooltip" xml:space="preserve">
-    <value>Result of equality check</value>
+    <value>等価チェックの結果</value>
   </data>
   <data name="EqualsWithToleranceSearchTags" xml:space="preserve">
     <value>equals;tolerance</value>
   </data>
   <data name="EqualsWithToleranceTooltip" xml:space="preserve">
-    <value>Tolerance permitted for equality check
-Default value: {0}</value>
+    <value>等価チェックで使用可能な許容差
+既定値: {0}</value>
   </data>
   <data name="DirectoryPathOutputDescription" xml:space="preserve">
-    <value>Directory path</value>
+    <value>フォルダ パス</value>
   </data>
   <data name="FilePathOutputDescription" xml:space="preserve">
-    <value>File Path</value>
+    <value>ファイル パス</value>
   </data>
   <data name="IFNodeWarningMessage" xml:space="preserve">
-    <value>This node has been updated and will be removed in a future version of Dynamo. Existing behavior is retained, but a new version now supports Empty Lists, Null values and inputs of varying length. Please replace this node if you wish to use this improved behavior.</value>
+    <value>このノードは更新され、Dynamo の今後のバージョンで削除されます。既存の動作は保持されますが、新しいバージョンでは空のリスト、NULL 値、および長さの異なる入力がサポートされるようになりました。この改善された動作を使用する場合は、このノードを置き換えてください。</value>
   </data>
   <data name="CustomSelectionSearchTags" xml:space="preserve">
     <value>dropdown;custom;custom dropdown;enum;custom enum</value>
   </data>
   <data name="CustomSelectionNodeDescription" xml:space="preserve">
-    <value>A dropdown menu with customizable values.</value>
+    <value>カスタマイズ可能な値を含むドロップダウン メニュー。</value>
   </data>
   <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
-    <value>is obsolete, please use the new Convert Units node.</value>
+    <value>は使用されなくなりました。新しい Convert Units ノードを使用してください。</value>
   </data>
   <data name="IntegerSliderInfoMessage" xml:space="preserve">
-    <value>The value entered is not in the int64 range.</value>
+    <value>入力された値は int64 の範囲にありません。</value>
   </data>
   <data name="CustomSelectionOutputDescription" xml:space="preserve">
-    <value>Selected value</value>
+    <value>選択した値</value>
   </data>
   <data name="TooltipTextAction" xml:space="preserve">
-    <value>Nodes that execute an action</value>
+    <value>アクションを実行するノード</value>
   </data>
   <data name="TooltipTextCreate" xml:space="preserve">
-    <value>Nodes that create data</value>
+    <value>データを作成するノード</value>
   </data>
   <data name="TooltipTextQuery" xml:space="preserve">
-    <value>Nodes that query data</value>
+    <value>データをクエリーするノード</value>
   </data>
   <data name="RememberDescription" xml:space="preserve">
-    <value>Store data passing through this node to the Dynamo file. Return the stored data if the input is null.</value>
+    <value>このノードを通過するデータを Dynamo ファイルに保存します。入力が null の場合は、保存されたデータを返します。</value>
   </data>
   <data name="RememberInputToolTip" xml:space="preserve">
-    <value>Data to sample and store in the file.</value>
+    <value>サンプリングしてファイルに保存するデータ。</value>
   </data>
   <data name="RememberOuputToolTip" xml:space="preserve">
-    <value>Data</value>
+    <value>データ</value>
   </data>
   <data name="GateDescription" xml:space="preserve">
-    <value>Block data passing through this node to downstream nodes. Node returns the input data only if the node value is set to Open.
+    <value>このノードを通過して下流ノードにデータが渡されるのをブロックします。ノードは、ノード値が Open に設定されている場合にのみ入力データを返します。
 
-In Generative Design workflows, this node should be used to control and block the behavior of nodes that will place elements in Revit</value>
+ジェネレーティブ デザイン ワークフローでは、このノードを使用して、Revit に要素を配置するノードの動作をコントロールおよびブロックする必要があります。</value>
   </data>
   <data name="GateInPortToolTip" xml:space="preserve">
-    <value>Data to pass to a downstream node with gated controls.</value>
+    <value>ゲート付きコントロールを使用して下流ノードに渡すデータです。</value>
   </data>
   <data name="GateOutPortToolTip" xml:space="preserve">
-    <value>Data</value>
+    <value>データ</value>
   </data>
   <data name="GateSearchTags" xml:space="preserve">
     <value>gate;stop;data</value>
   </data>
   <data name="DefineDataDescription" xml:space="preserve">
-    <value>Validates the data type of an input and returns it</value>
+    <value>入力のデータ タイプを検証し、返します</value>
   </data>
   <data name="DefineDataInputTooltip" xml:space="preserve">
-    <value>Input data to be validated. Refer to drop-down for list of allowed types</value>
+    <value>検証する入力データです。許可される型のリストについては、ドロップダウンを参照してください</value>
   </data>
   <data name="DefineDataOutputTooltip" xml:space="preserve">
-    <value>Validated data</value>
+    <value>検証されたデータ</value>
   </data>
   <data name="DefineDataDisplayValueMessage" xml:space="preserve">
-    <value>Select Types</value>
+    <value>型を選択</value>
   </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
-    <value>Format specifier for numeric values, see extended node help for more info.
-default value: G</value>
+    <value>数値の書式指定子の詳細については、拡張ノードのヘルプを参照してください。
+既定値: G</value>
   </data>
 </root>

@@ -118,24 +118,24 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="JaggedListExceptionMessage" xml:space="preserve">
-    <value>The list of colors must not be a jagged list.</value>
+    <value>Seznam barev nesmí být vícenásobný seznam.</value>
   </data>
   <data name="NoColorsExceptionMessage" xml:space="preserve">
-    <value>You must provide some colors.</value>
+    <value>Je nutné zadat určité barvy.</value>
   </data>
   <data name="NoVertexExceptionMessage" xml:space="preserve">
-    <value>You must provide some vertices.</value>
+    <value>Je nutné zadat nějaké vrcholy.</value>
   </data>
   <data name="TwoDimensionalListExceptionMessage" xml:space="preserve">
-    <value>You must supply a two dimensional list of Colors.</value>
+    <value>Je nutné zadat dvojrozměrný seznam barev.</value>
   </data>
   <data name="VertexColorCountMismatchExceptionMessage" xml:space="preserve">
-    <value>The number of colors supplied must match the number of vertices.</value>
+    <value>Počet zadaných barev musí odpovídat počtu vrcholů.</value>
   </data>
   <data name="VerticesDivisibleByThreeExceptionMessage" xml:space="preserve">
-    <value>The number of vertices supplied must be divisible by three.</value>
+    <value>Zadaný počet vrcholů musí být dělitelný třemi.</value>
   </data>
   <data name="ByMeshColorsInvalidColorCountMessage" xml:space="preserve">
-      <value>The color count is invalid. It must equal 1 (single color), or equal the face count (per-face color), or equal the vertex count (per-vertex color), or equal the triangle count multiplied by three (per-triangle-vertex color). If you want to color multiple meshes, you may need to use List Levels.</value>
+    <value>Počet barev není platný. Musí se rovnat 1 (jedna barva) nebo se rovnat počtu ploch (barva na plochu) nebo se rovnat počtu vrcholů (barva na vrchol) nebo se rovnat počtu trojúhelníků vynásobenému třemi (barva na vrchol trojúhelníku). Chcete-li obarvit více sítí, možná budete muset použít seznam úrovní.</value>
   </data>
 </root>

@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "This graph provides several ways to generate series of equally spaced numbers or characters.",
+  "Description": "此图形提供了几种用于生成等间距数字或字符序列的方法。",
   "Name": "Core_RangeSyntax",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -18,7 +18,7 @@
         {
           "Id": "3d04aad01ef643cab54fa4f5d58aafb6",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "第 1 行的表达式值",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -26,7 +26,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "允许直接编写 DesignScript 代码",
       "Code": "0..10..2;"
     },
     {
@@ -39,7 +39,7 @@
         {
           "Id": "101ab3ae131c4a929e828d013344abf8",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "要计算的节点。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -50,7 +50,7 @@
         {
           "Id": "c08e291e34d04bce84ad36f5b9db1ccb",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "查看内容。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -58,7 +58,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "显示节点的输出内容"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -70,7 +70,7 @@
         {
           "Id": "7be55a07a30f41cb9ed0e0ecd70f3162",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "要计算的节点。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -81,7 +81,7 @@
         {
           "Id": "b6aac4f52fe44738aa77e0b5225bd566",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "查看内容。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -89,7 +89,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "显示节点的输出内容"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -100,7 +100,7 @@
         {
           "Id": "626511bb927741ccac92a08ebb73da98",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "第 1 行的表达式值",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -108,7 +108,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "允许直接编写 DesignScript 代码",
       "Code": "0..10;"
     },
     {
@@ -120,7 +120,7 @@
         {
           "Id": "ac330522235d415ba3ad19280152502a",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "第 1 行的表达式值",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -128,7 +128,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "允许直接编写 DesignScript 代码",
       "Code": "0..10..#3;"
     },
     {
@@ -141,7 +141,7 @@
         {
           "Id": "d7e8ff1bfddc4ab6880567dde301b8a5",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "要计算的节点。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -152,7 +152,7 @@
         {
           "Id": "1dd0ebc9235e4d32b67798c1796929bd",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "查看内容。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -160,7 +160,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "显示节点的输出内容"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -171,7 +171,7 @@
         {
           "Id": "c37d41680711431ab78912f6338237f1",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "第 1 行的表达式值",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -179,7 +179,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "允许直接编写 DesignScript 代码",
       "Code": "0..#10..3;"
     },
     {
@@ -192,7 +192,7 @@
         {
           "Id": "d4a638e8f1f3480bbdc32d2db0ea5fef",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "要计算的节点。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -203,7 +203,7 @@
         {
           "Id": "bbb9d2cf268144188864923c97d4be43",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "查看内容。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -211,7 +211,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "显示节点的输出内容"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -223,7 +223,7 @@
         {
           "Id": "db21e74e9aeb49ec88ccc769c5389719",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "要计算的节点。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -234,7 +234,7 @@
         {
           "Id": "f64b8273a9d44843ac105491d930c70b",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "查看内容。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -242,7 +242,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "显示节点的输出内容"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -263,7 +263,7 @@
         {
           "Id": "e9510b78da7b40189cd414a00733b3fa",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "第 1 行的表达式值",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -271,7 +271,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "允许直接编写 DesignScript 代码",
       "Code": "0..#howMany..3;"
     },
     {
@@ -295,7 +295,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces integer values",
+      "Description": "生成整数值",
       "InputValue": 7
     },
     {
@@ -308,7 +308,7 @@
         {
           "Id": "9ef83c564e3a4895ac7d34e3a543bf30",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "要计算的节点。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -319,7 +319,7 @@
         {
           "Id": "b3d2fa948f3a462abf0d98e51964798e",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "查看内容。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -327,7 +327,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "显示节点的输出内容"
     },
     {
       "ConcreteType": "CoreNodeModels.Sequence, CoreNodeModels",
@@ -337,7 +337,7 @@
         {
           "Id": "2a5dbd96854b4382a71cf99576b1baf0",
           "Name": "start",
-          "Description": "Number or letter to start the sequence at\r\nDefault value: 0 (disabled)",
+          "Description": "序列开头的数字或字母\n默认值: 0 (已禁用)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -346,7 +346,7 @@
         {
           "Id": "035155a837cf4f538dc56debb18d50e7",
           "Name": "amount",
-          "Description": "Amount of numbers in the sequence\r\nDefault value: 10 (disabled)",
+          "Description": "序列中数的数量\n默认值: 10 (已禁用)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -355,7 +355,7 @@
         {
           "Id": "069cf6448bce450196b39298b630095c",
           "Name": "step",
-          "Description": "Space between numbers or letters\r\nDefault value: 1 (disabled)",
+          "Description": "数字或字母之间的空格\n默认值: 1 (已禁用)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -366,7 +366,7 @@
         {
           "Id": "7c1484ea258f47be8e856800f6c35e82",
           "Name": "seq",
-          "Description": "New sequence",
+          "Description": "新建序列",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -374,7 +374,7 @@
         }
       ],
       "Replication": "Longest",
-      "Description": "Creates a sequence of numbers"
+      "Description": "创建数字序列"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -394,7 +394,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "创建一个数字",
       "InputValue": 0.0
     },
     {
@@ -415,7 +415,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "创建一个数字",
       "InputValue": 2.0
     },
     {
@@ -428,7 +428,7 @@
         {
           "Id": "640703aa23f3421587b2e475540a2499",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "要计算的节点。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -439,7 +439,7 @@
         {
           "Id": "f19bb5d7da9644b883edf78f9551878a",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "查看内容。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -447,7 +447,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "显示节点的输出内容"
     },
     {
       "ConcreteType": "CoreNodeModels.Range, CoreNodeModels",
@@ -457,7 +457,7 @@
         {
           "Id": "c1fdecac9afb46128632d426f40061f6",
           "Name": "start",
-          "Description": "Number or letter to start the sequence at\r\nDefault value: 0 (disabled)",
+          "Description": "序列开头的数字或字母\n默认值: 0 (已禁用)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -466,7 +466,7 @@
         {
           "Id": "2f0324b023ad4a5782fd357804f7da6a",
           "Name": "end",
-          "Description": "Number or letter to end the sequence at\r\nDefault value: 9 (disabled)",
+          "Description": "序列结尾的数字或字母\n默认值: 9 (已禁用)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -475,7 +475,7 @@
         {
           "Id": "8aec2be2a6ed4a14899aa7f3c803e87f",
           "Name": "step",
-          "Description": "Space between numbers or letters\r\nDefault value: 1 (disabled)",
+          "Description": "数字或字母之间的空格\n默认值: 1 (已禁用)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -486,7 +486,7 @@
         {
           "Id": "1efae8a9e8cd498b9df4ec94f054ca0c",
           "Name": "seq",
-          "Description": "New sequence",
+          "Description": "新建序列",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -494,7 +494,7 @@
         }
       ],
       "Replication": "Longest",
-      "Description": "Creates a sequence of numbers or letters in the given range"
+      "Description": "按给定范围创建一系列数字或字母"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -514,7 +514,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "创建一个数字",
       "InputValue": 10.0
     },
     {
@@ -535,7 +535,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "创建一个数字",
       "InputValue": 0.0
     },
     {
@@ -559,7 +559,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "生成数值",
       "InputValue": 1.75
     },
     {
@@ -583,7 +583,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "生成数值",
       "InputValue": 8.0
     },
     {
@@ -596,7 +596,7 @@
         {
           "Id": "a98340212b82421892660ad66da67993",
           "Name": "",
-          "Description": "Node to show output from",
+          "Description": "要显示其输出的节点",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -607,7 +607,7 @@
         {
           "Id": "0f89398fdc894693b81553562b5974dc",
           "Name": "",
-          "Description": "Node output",
+          "Description": "节点输出",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -615,7 +615,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "显示节点的输出内容"
     },
     {
       "ConcreteType": "CoreNodeModels.Range, CoreNodeModels",
@@ -625,7 +625,7 @@
         {
           "Id": "8e4b310e33884f198718bfbaf5cfff02",
           "Name": "start",
-          "Description": "Number or letter to start the sequence at\r\nDefault value: 0 (disabled)",
+          "Description": "序列开头的数字或字母\n默认值: 0 (已禁用)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -634,7 +634,7 @@
         {
           "Id": "f2e51247853b4f4d82a97741b0f6adfa",
           "Name": "end",
-          "Description": "Number or letter to end the sequence at\r\nDefault value: 9 (disabled)",
+          "Description": "序列结尾的数字或字母\n默认值: 9 (已禁用)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -643,7 +643,7 @@
         {
           "Id": "c7995e6dfcab42a6a9509d93f5a68532",
           "Name": "step",
-          "Description": "Space between numbers or letters\r\nDefault value: 1 (disabled)",
+          "Description": "数字或字母之间的空格\n默认值: 1 (已禁用)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -662,7 +662,7 @@
         }
       ],
       "Replication": "Longest",
-      "Description": "Creates a sequence of numbers or letters in the given range"
+      "Description": "按给定范围创建一系列数字或字母"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
@@ -681,7 +681,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a string",
+      "Description": "创建字符串",
       "InputValue": "A"
     },
     {
@@ -701,7 +701,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a string",
+      "Description": "创建字符串",
       "InputValue": "P"
     },
     {
@@ -713,7 +713,7 @@
         {
           "Id": "42701623cf7f4ab8a40e492ec71b98c5",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "第 1 行的表达式值",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -721,7 +721,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "允许直接编写 DesignScript 代码",
       "Code": "1;"
     },
     {
@@ -734,7 +734,7 @@
         {
           "Id": "b42cb13b523046f28d6150ef1195543c",
           "Name": "",
-          "Description": "Node to show output from",
+          "Description": "要显示其输出的节点",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -745,7 +745,7 @@
         {
           "Id": "1fe4ef22eca84f76bb69862c4d88feab",
           "Name": "",
-          "Description": "Node output",
+          "Description": "节点输出",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -753,7 +753,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "显示节点的输出内容"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
@@ -772,7 +772,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a string",
+      "Description": "创建字符串",
       "InputValue": "A"
     },
     {
@@ -783,7 +783,7 @@
         {
           "Id": "86590c9b0c7c44f29aaf2feeda1e51bb",
           "Name": "start",
-          "Description": "Number or letter to start the sequence at\r\nDefault value: 0",
+          "Description": "序列开始的数字或字母\r\n默认值: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -792,7 +792,7 @@
         {
           "Id": "29612b5f738d43b2853a7edcb9b3e9df",
           "Name": "amount",
-          "Description": "Amount of numbers or letters in the sequence\r\nDefault value: 10",
+          "Description": "序列中数字或字母的数量\r\n默认值: 10",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -801,7 +801,7 @@
         {
           "Id": "40eec93b319c41dd851faab821dca49d",
           "Name": "step",
-          "Description": "Space between numbers or letters\r\nDefault value: 1",
+          "Description": "数字或字母之间的间隔\r\n默认值: 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -820,7 +820,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Creates a sequence of numbers"
+      "Description": "创建数字序列"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -831,7 +831,7 @@
         {
           "Id": "5e251b5633484f318bf8a35a8a7719bf",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "第 1 行的表达式值",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -839,7 +839,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "允许直接编写 DesignScript 代码",
       "Code": "20;"
     },
     {
@@ -850,7 +850,7 @@
         {
           "Id": "0fe12c2a1bc9487c82265cf3c6f019fe",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "X 坐标\n\ndouble\n默认值 : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -859,7 +859,7 @@
         {
           "Id": "aa468ab02c664c2e82a7dbe8f8b5bf97",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Y 坐标\n\ndouble\n默认值 : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -870,7 +870,7 @@
         {
           "Id": "06680fd2e18a41e891dd0951c443d2a6",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "由坐标创建的点",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -879,7 +879,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double",
       "Replication": "Auto",
-      "Description": "Form a Point in the XY plane given two 2 cartesian coordinates. The Z component is 0.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
+      "Description": "根据给定的两(2)个笛卡尔坐标在平面内形成一个点。Z 分量为 0。\n\nPoint.ByCoordinates (x: double = 0, y: double = 0): Point"
     }
   ],
   "Connectors": [
@@ -1024,7 +1024,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "特性",
       "Version": "2.13",
       "Data": {}
     },
@@ -1053,7 +1053,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "背景预览(_B)",
       "EyeX": -17.0,
       "EyeY": 24.0,
       "EyeZ": 50.0,
@@ -1380,7 +1380,7 @@
     "Annotations": [
       {
         "Id": "85818dbb67bc4acbae89395f34a91661",
-        "Title": "Info",
+        "Title": "信息",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1402,7 +1402,7 @@
       },
       {
         "Id": "fbda5ed855cd4a1e8757563f23240605",
-        "Title": "Using Range",
+        "Title": "使用 Range",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1429,7 +1429,7 @@
       },
       {
         "Id": "bb3f4617872144be921bf6165d3f3746",
-        "Title": "Using Sequence",
+        "Title": "使用 Sequence",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1456,7 +1456,7 @@
       },
       {
         "Id": "89206228f7f940eb88645c3fce727068",
-        "Title": "Use Code Block with dynamic input",
+        "Title": "将代码块与动态输入一起使用",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1481,7 +1481,7 @@
       },
       {
         "Id": "99ef90e0211e4a0fa3e804c8e5edc4cd",
-        "Title": "Using Code Block",
+        "Title": "使用代码块",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1515,7 +1515,7 @@
       },
       {
         "Id": "5c0219b6062e43b6b193f8d787318a96",
-        "Title": "Using Range - with Strings",
+        "Title": "使用 Range - 字符串",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1542,7 +1542,7 @@
       },
       {
         "Id": "70587a5dfc3a40d2a397d3c15673192a",
-        "Title": "Using Sequence - with Strings",
+        "Title": "使用 Sequence - 字符串",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1568,7 +1568,7 @@
       },
       {
         "Id": "b8f51fcb82534468865c2d01f4d256bc",
-        "Title": "start..end..#amount\nFrom 0 to 10 in 3 steps",
+        "Title": "start..end..#amount\n从 0 到 10，步长为 3",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1589,7 +1589,7 @@
       },
       {
         "Id": "72f3b067fb174ef493aaa3beea949940",
-        "Title": "start..#amount..interval\n10 steps starting from 0, each step equal to 3\n\nThis method is equivalent to using the Sequence node",
+        "Title": "start..#amount..interval\n从 0 开始的 10 步，每个步长等于 3\n\n此方法等同于使用“Sequence”节点",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1610,7 +1610,7 @@
       },
       {
         "Id": "4987688db50c44a78c1d9bf3cbfc3572",
-        "Title": "start..end..step\nFrom 0 to 10 with a step of 2\n\nThis method is equivalent to using the Range node",
+        "Title": "start..end..step\n从 0 到 10，步长为 2\n\n此方法等同于使用“Range”节点",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1631,7 +1631,7 @@
       },
       {
         "Id": "3bfa54c8ec4c4a91846a8fff72ceef24",
-        "Title": "start..end\n\nWhen the step value is not specified, it is assumed to be 1. \n\nThis method is identical to using the Range node",
+        "Title": "start..end\n\n当步长值未指定时，假定步长值为 1。\n\n此方法等同于使用“Range”节点",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1652,7 +1652,7 @@
       },
       {
         "Id": "b2790026855a45c3860626ae20c435b9",
-        "Title": "Substitute a value with a variable and use a slider to dynamically control the length of the list. ",
+        "Title": "将值替换为变量，并使用滑块动态控制列表的长度。 ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1673,7 +1673,7 @@
       },
       {
         "Id": "f30063c1c91e4471b688bba5433c06e8",
-        "Title": "Use range syntax in a Code Block node. There are several And you have several methods to generate series of numbers (or characters): \r\n        start..end..step\r\n        start..end..#amount\r\n        start..#amount..interval\r\n\r\nstart = number/character starting the series\r\nend = number/character ending the series\r\nstep = difference between two consecutive numbers/characters\r\namount = how many numbers/characters are in the series",
+        "Title": "在“Code Block”节点中使用范围语法。有几种方法可以生成一系列数字(或字符): \r\n        start..end..step\r\n        start..end..#amount\r\n        start..#amount..interval\r\n\r\nstart = 序列开头的数字/字符\r\nend = 序列结尾的数字/字符\r\nstep = 两个连续数字/字符之间的差值\r\namount = 序列中数字/字符的个数",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1693,7 +1693,7 @@
       },
       {
         "Id": "7a84bb032f874147af77f2d8c1fb77de",
-        "Title": "Range Syntax\r\n\nThere are several way to create lists as sequences of numbers or characters. \n\nSequences can come in handy when creating arrays of elements, iterations, and as preparation for various functions and equasions. ",
+        "Title": "范围语法\r\n\n有多种方法可以创建列表作为数字或字符序列。\n\n在创建元素数组、迭代以及为各种函数和等式做准备时，序列会非常有用。 ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1713,7 +1713,7 @@
       },
       {
         "Id": "7a65a08e92ab4b0c9dfe910302b2621f",
-        "Title": "Use a Range node if the start and end of the sequence are known. The number of items in the resulting list is not pre-defined, but calculated, based on other inputs. \n\nIt's worth noting that the last item in the list might not match the 'end' input if the step value extends beyond the 'end' when surpassing it by an additional step. \n\nIncreasing the step value between set 'start' and 'end' may result in fewer items, and viceversa, reducing the step will increase the length of the list. ",
+        "Title": "如果序列的开始和结束已知，请使用“Range”节点。结果列表中的项数未预定义，而是根据其他输入进行计算。\n\n值得注意的是，如果 step 值在超过“end”一个额外步长时超出了“end”，则列表中的最后一项可能与“end”输入不匹配。\n\n增加“start”和“end”设置之间的 step 值可能会减少项数；反之亦然，减少 step 会增加列表的长度。 ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1734,7 +1734,7 @@
       },
       {
         "Id": "a06c17c975734ea99b4cf157a5d8d47b",
-        "Title": "Use a Sequence node if the number of items in the list and the length of each step are known.  The last result in the list is not pre-defined, but calculated based on other inputs.\n\nExample: designing a parking lot with spaces for 8 cars and a know width of each parking space. The overall width of all parking spaces is dependant on the individual widths and number of spaces. ",
+        "Title": "如果列表中的项数和每个步长已知，请使用“Sequence”节点。列表中的最后一个结果未预定义，而是根据其他输入进行计算。\n\n示例: 设计一个可容纳 8 辆车的停车场，每个停车位的宽度都是已知的。所有停车位的总宽度取决于各个停车位的宽度和数量。 ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1755,7 +1755,7 @@
       },
       {
         "Id": "3fcbf316321346d39f2b3805f6f6130d",
-        "Title": "Range can be used to generate sequences of characters too!",
+        "Title": "“Range”也可用于生成字符序列！",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1776,7 +1776,7 @@
       },
       {
         "Id": "c2369812c7214bafb0f50db02a277445",
-        "Title": "Use a Sequence node to generate a series of letters in alphabetic order",
+        "Title": "使用“Sequence”节点按字母顺序生成一系列字母",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1797,7 +1797,7 @@
       },
       {
         "Id": "307200be50414af593f719560c1f9c83",
-        "Title": "Use the  sequence of values to create a series of points",
+        "Title": "使用值序列创建一系列点",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

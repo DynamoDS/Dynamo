@@ -118,21 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ClassCannotBeDefinedInsideLanguageBlock" xml:space="preserve">
-    <value>A class cannot be defined inside a language block.\n</value>
+    <value>無法在語言區塊內定義類別。\n</value>
   </data>
   <data name="ClassNameAsVariableError" xml:space="preserve">
-    <value>{0} is a class name, can't be used as a variable.</value>
+    <value>{0} 是類別名稱，無法做為變數。</value>
   </data>
   <data name="FunctionAsVariableError" xml:space="preserve">
-    <value>\"{0}\" is a function and not allowed as a variable name</value>
+    <value>\"{0}\" 是函數，不允許做為變數名稱</value>
   </data>
   <data name="FunctionPointerNotAllowedAtBinaryExpression" xml:space="preserve">
-    <value>Function pointer is not allowed at binary expression other than assignment!</value>
+    <value>二進位表示式中不允許函數指標，但指定除外！</value>
   </data>
   <data name="InvalidNestedAssociativeBlock" xml:space="preserve">
-    <value>An associative language block is declared within an associative language block.</value>
+    <value>已在關聯語言區塊內宣告關聯語言區塊。</value>
   </data>
   <data name="MemberVariableAlreadyDefined" xml:space="preserve">
-    <value>Member variable '{0}' is already defined in class {1}</value>
+    <value>成員變數 '{0}' 已定義在類別 {1} 中</value>
   </data>
 </root>

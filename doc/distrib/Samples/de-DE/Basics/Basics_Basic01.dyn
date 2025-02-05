@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "Connect nodes to add two numbers",
+  "Description": "Blöcke verbinden, um zwei Zahlen hinzuzufügen",
   "Name": "Basics_Basic01",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -14,7 +14,7 @@
       "Type2": "number",
       "Value": "2",
       "NumberType": "Double",
-      "Description": "Creates a number",
+      "Description": "Erstellt eine Zahl",
       "SelectedIndex": 0
     },
     {
@@ -24,7 +24,7 @@
       "Type2": "number",
       "Value": "6",
       "NumberType": "Double",
-      "Description": "Creates a number",
+      "Description": "Erstellt eine Zahl",
       "SelectedIndex": 0
     }
   ],
@@ -48,7 +48,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Erstellt eine Zahl",
       "InputValue": 2.0
     },
     {
@@ -59,7 +59,7 @@
         {
           "Id": "c0d7f6cc642d478bb12abfe5f56511b3",
           "Name": "x",
-          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "Description": "Ganzzahlwert, double-Wert oder string\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -68,7 +68,7 @@
         {
           "Id": "fb7fa087ab954539b0675d83c4bccf13",
           "Name": "y",
-          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "Description": "Ganzzahlwert, double-Wert oder string\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -79,7 +79,7 @@
         {
           "Id": "389b70a9ba80459e9958f594230c86b6",
           "Name": "var",
-          "Description": "The sum of two input numbers, or the concatenation of two strings",
+          "Description": "Die Summe zweier Eingabezahlen oder die Verkettung von zwei Zeichenfolgen",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -88,7 +88,7 @@
       ],
       "FunctionSignature": "+@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns addition of x and y\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Gibt die Addition von x und y zurück\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -100,7 +100,7 @@
         {
           "Id": "9bacd0cbbe68470d8deb2f0dfc31155f",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Auszuwertender Block.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -111,7 +111,7 @@
         {
           "Id": "23f3b9f8740a47bcaee0a48699e61066",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Inhalt beobachten.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -119,7 +119,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualisiert die Ausgabe eines Blocks"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -139,7 +139,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Erstellt eine Zahl",
       "InputValue": 6.0
     }
   ],
@@ -164,7 +164,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Eigenschaften",
       "Version": "2.13",
       "Data": {}
     }
@@ -187,7 +187,7 @@
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Hintergrundvorschau",
       "EyeX": -16.965513229370117,
       "EyeY": 24.341577529907227,
       "EyeZ": 50.649433135986328,
@@ -244,7 +244,7 @@
     "Annotations": [
       {
         "Id": "1d089d46305e464b8714d8f6d762775a",
-        "Title": "Basic functional inputs, like Numbers and Strings can be selected by either browsing or searching from the library on the left of the canvas.\r\n\r\nOperations to execute on data, like math or geometric transformations, are also found in the library",
+        "Title": "Grundlegende funktionale Eingaben wie Zahlen und Textzeichenfolgen können durch Navigieren oder durch Suchen in der Bibliothek auf der linken Seite des Ansichtsbereichs ausgewählt werden.\r\n\r\nOperationen, die für Daten ausgeführt werden können, z. B. mathematische und geometrische Transformationen, befinden sich ebenfalls in der Bibliothek.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -264,7 +264,7 @@
       },
       {
         "Id": "07d8f330cb434fcea050bf864d5ebc10",
-        "Title": "Dynamo is a Visual Programming language.  Like other languages it works by linking simple elements together to form more complex ideas",
+        "Title": "Dynamo ist eine visuelle Programmiersprache. Wie bei anderen Sprachen können Sie auch hier einfache Elemente zu komplexeren Ideen verbinden.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -284,7 +284,7 @@
       },
       {
         "Id": "a0293ecc963343219704a7c84f4749c8",
-        "Title": "Pull a connector out of the \">\" port on the Number node and connect it to the \"y\" port on the + node, then push the \"Run\" button in the lower left corner of the application.",
+        "Title": "Ziehen Sie einen Verbinder aus dem >-Anschluss des Blocks Number, und verbinden Sie ihn mit dem y-Anschluss des +-Blocks, und klicken Sie dann auf die Schaltfläche Ausführen in der linken unteren Ecke der Anwendung.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -305,7 +305,7 @@
       },
       {
         "Id": "5cefc1038b544158bd2bae09ec296510",
-        "Title": "Data Can be visualized by clicking on the Run button in the lower right of the application.  If you enable \"Automatic\" Run mode, the application will constantly update.\r\n\r\nYou can see the data either by using a Watch node or clicking on the small square at the bottom of most nodes.",
+        "Title": "Daten können durch Klicken auf die Schaltfläche Ausführen rechts unten in der Anwendung visualisiert werden. Wenn Sie den Ausführungsmodus Automatisch aktivieren, wird die Anwendung laufend aktualisiert.\r\n\r\nSie können die Daten entweder mithilfe eines Watch-Blocks oder durch Klicken auf das kleine Quadrat unten in den meisten Blöcken anzeigen.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -326,7 +326,7 @@
       },
       {
         "Id": "d053df48c7af4d8c80c1b151bf2fc884",
-        "Title": "More Sample files can be found in the Help menu, or close this file by clicking the \"X\" on the tab to return to the welcome page",
+        "Title": "Weitere Beispiele finden Sie im Menü Hilfe. Sie können auch diese Datei über das X auf der Registerkarte schließen, um zur Begrüßungsseite zurückzukehren.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

@@ -118,9 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="FailedToUnmarshalOutput" xml:space="preserve">
-    <value>Output could not be converted to a .NET value</value>
+    <value>Nie można przekształcić wyjścia na wartość .NET</value>
   </data>
   <data name="InternalErrorTraceBackInfo" xml:space="preserve">
-    <value>Internal error, please report: Trace back information could not be extracted</value>
+    <value>Błąd wewnętrzny, zgłoś: nie można wyodrębnić informacji śledzenia wstecznego</value>
   </data>
 </root>

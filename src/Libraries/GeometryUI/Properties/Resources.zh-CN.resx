@@ -118,40 +118,39 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExportToSATDescripiton" xml:space="preserve">
-    <value>Exports the given geometry to the given SAT file path</value>
+    <value>将给定几何图形导出到给定的 SAT 文件路径。</value>
   </data>
   <data name="ExportToSatFilePathDescription" xml:space="preserve">
-    <value>File to export the geometry to.</value>
+    <value>接收导出几何图形的文件。</value>
   </data>
   <data name="ExportToSatFilePathOutputDescription" xml:space="preserve">
-    <value>The file path of the exported file. Note this may change from the input in it contains non-ASCII characters.</value>
+    <value>导出文件的文件路径。请注意，这可能会根据包含非 ASCII 字符的输入内容而改变。</value>
   </data>
   <data name="ExportToSatGeometryInputDescription" xml:space="preserve">
-    <value>Geometry to export into a SAT file.</value>
+    <value>要导出为 SAT 文件的几何图形。</value>
   </data>
   <data name="ExportWithUnitsSearchTags" xml:space="preserve">
     <value>Export;SAT</value>
-    <comment>Search tags for ExportWithUnits node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
   <data name="ImportSABByteArrayDesc" xml:space="preserve">
-    <value>SAB byte array.</value>
+    <value>SAB 字节数组。</value>
   </data>
   <data name="ImportSATDynamoUnitDesc" xml:space="preserve">
-    <value>A forge unit length, if left null, geometry will be imported as unitless.</value>
+    <value>Forge 单位长度；如果保留为空，则几何图形将以无单位形式输入。</value>
   </data>
   <data name="ImportSATFilePathDesc" xml:space="preserve">
-    <value>Filepath or File object to import .SAT from.</value>
+    <value>要输入其中 .SAT 的文件路径或文件对象。</value>
   </data>
   <data name="ImportToSABUnitsDesc" xml:space="preserve">
-    <value>Imports geometry from SAB byte array. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file.</value>
+    <value>从 SAB 字节数组输入几何图形。设置 dynamoUnit 输入以匹配您解释 Dynamo 文件中其他数字的方式。</value>
   </data>
   <data name="ImportToSATUnitsDesc" xml:space="preserve">
-    <value>Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file.</value>
+    <value>从 SAT 文件路径输入几何图形。设置 dynamoUnit 输入以匹配您解释 Dynamo 文件中其他数字的方式。</value>
   </data>
   <data name="PanelSurfaceBoundaryConditionDropDownDesc" xml:space="preserve">
-    <value>A drop down node that allow easy access to PanelSurface BoundaryCondition possible values</value>
+    <value>一个允许轻松访问 PanelSurface BoundaryCondition 可能值的下拉节点</value>
   </data>
   <data name="SABSATGeoDesc" xml:space="preserve">
-    <value>Loaded geometry</value>
+    <value>载入的几何图形</value>
   </data>
 </root>

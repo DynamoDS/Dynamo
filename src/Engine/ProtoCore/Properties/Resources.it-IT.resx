@@ -118,830 +118,830 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AttributeArgMustBeConstant" xml:space="preserve">
-    <value>An attribute argument must be a constant expression</value>
+    <value>Un argomento attributo deve essere un'espressione costante</value>
   </data>
   <data name="BaseIsExpectedToCallBaseConstructor" xml:space="preserve">
-    <value>The keyword 'base' is expected here to call the base class constructor</value>
+    <value>Parola chiave 'base' prevista in questo contesto per chiamare il costruttore della classe di base</value>
   </data>
   <data name="CheckIfTheElementsInListAreSameType" xml:space="preserve">
-    <value>Checks if all the elements in the specified list are of the same type</value>
+    <value>Verifica se tutti gli elementi dell'elenco specificato sono dello stesso tipo</value>
   </data>
   <data name="ChecksIfLengthsAreSameInMultiDimentionalList" xml:space="preserve">
-    <value>Checks if each of rows in multidimensional list has the same number of elements </value>
+    <value>Verifica se ogni riga dell'elenco multidimensionale presenta lo stesso numero di elementi </value>
   </data>
   <data name="ChecksIfListContainsTheElement" xml:space="preserve">
-    <value>Checks if the specified element is present in the specified list</value>
+    <value>Verifica se l'elemento specificato è presente nell'elenco specificato</value>
   </data>
   <data name="ChecksIfTheListIsAllFalse" xml:space="preserve">
-    <value>Checks if all elements in the specified list are false</value>
+    <value>Verifica se tutti gli elementi nell'elenco specificato sono false</value>
   </data>
   <data name="ChecksIfTheListIsAllTrue" xml:space="preserve">
-    <value>Checks if all elements in the specified list are true</value>
+    <value>Verifica se tutti gli elementi nell'elenco specificato sono true</value>
   </data>
   <data name="ChecksListWithUniformDepth" xml:space="preserve">
-    <value>Checks if the list has a uniform depth</value>
+    <value>Verifica se l'elenco presenta una profondità uniforme</value>
   </data>
   <data name="CloseBracketExpected" xml:space="preserve">
-    <value>')' expected - Incomplete Closure</value>
+    <value>')' previsto - Chiusura incompleta</value>
   </data>
   <data name="ContainsKeys" xml:space="preserve">
-    <value>Checks if the specified key is present in the specified key-value pair list</value>
+    <value>Verifica se la chiave specificata è presente nell'elenco di coppie chiave-valore specificato</value>
   </data>
   <data name="DeterminesObjectsAreEqual" xml:space="preserve">
-    <value>Determines whether two object instances are equal</value>
+    <value>Determina se due istanze di oggetto sono uguali</value>
   </data>
   <data name="EmptyCharacterLiteral" xml:space="preserve">
-    <value>Empty character literal</value>
+    <value>Carattere di tipo letterale vuoto</value>
   </data>
   <data name="FailedToImport" xml:space="preserve">
-    <value>Failed to import {0}</value>
+    <value>Impossibile importare {0}</value>
   </data>
   <data name="FunctionCallCannotBeAtLeftSide" xml:space="preserve">
-    <value>A function call is not allowed on the left hand side of an assignment</value>
+    <value>Le chiamate di funzione non sono consentite sul lato sinistro di un'assegnazione</value>
   </data>
   <data name="GetKeys" xml:space="preserve">
-    <value>Gets all keys from the specified key-value pair list</value>
+    <value>Ottiene tutte le chiavi dall'elenco di coppie chiave-valore specificato</value>
   </data>
   <data name="Gettypes" xml:space="preserve">
-    <value>Gets the Type of the current instance</value>
+    <value>Ottiene il tipo dell'istanza corrente</value>
   </data>
   <data name="GetValues" xml:space="preserve">
-    <value>Gets all values stored in the specified key-value pair list and for a simple list it returns all elements in the list</value>
+    <value>Ottiene tutti i valori memorizzati nell'elenco di coppie chiave-valore specificato. Per un elenco semplice, restituisce tutte le voci dell'elenco</value>
   </data>
   <data name="ImportFileByGivenFilePath" xml:space="preserve">
-    <value>Imports data from a text file containing comma separated values into two-dimensional list</value>
+    <value>Importa dati da un file di testo contenente valori delimitati da virgole in un elenco bidimensionale</value>
   </data>
   <data name="ImportFileByGivenFilePathWithMode" xml:space="preserve">
-    <value>Imports data from a text file containing comma separated values into two-dimensional list and also transpose the output list if specified</value>
+    <value>Importa dati da un file di testo contenente valori delimitati da virgole in un elenco bidimensionale e traspone l'elenco di output se specificato</value>
   </data>
   <data name="ImportStatementNotSupported" xml:space="preserve">
-    <value>Imports statements are not supported in CodeBlock Nodes, please use the Library UI instead</value>
+    <value>Le istruzioni di importazione non sono supportate nei nodi del blocco di codice. Utilizzare la libreria dell'interfaccia utente</value>
   </data>
   <data name="ClassDeclarationNotSupported" xml:space="preserve">
-    <value>Class declarations are not supported in CodeBlock Nodes, only function definitions and assignment statements</value>
+    <value>Le dichiarazioni della classe non sono supportate nei nodi del blocco di codice, solo le istruzioni di assegnazione e le definizioni della funzione lo sono</value>
   </data>
   <data name="InsertsAnElementIntoList" xml:space="preserve">
-    <value>Inserts an element into a list at specified index</value>
+    <value>Inserisce un elemento in un elenco in corrispondenza dell'indice specificato</value>
   </data>
   <data name="InvalidLanguageBlockIdentifier" xml:space="preserve">
-    <value>\"{0}\" is not a valid language block identifier, do you mean \"Associative\" or \"Imperative\"?</value>
+    <value>\"{0}\" non è un identificatore del blocco di linguaggio valido. Specificare \" Associative\" o \"Imperative\"?</value>
   </data>
   <data name="InvalidSymbol" xml:space="preserve">
-    <value>Syntax Error: invalid symbol '{0}'. (Did you mean to use Modifier Stack \" =&gt; \")</value>
+    <value>Errore di sintassi: simbolo '{0}' non valido. Si intendeva utilizzare lo stack di modifica \" =&gt; \"</value>
   </data>
   <data name="kAlreadyImported" xml:space="preserve">
-    <value>File : '{0}' is already imported</value>
+    <value>File: '{0}' già importato</value>
   </data>
   <data name="kAmbigousMethodDispatch" xml:space="preserve">
-    <value>Internal error, please report: Function could not be found on final dispatch.</value>
+    <value>Errore interno, segnalare: impossibile trovare la funzione nell'invio finale.</value>
   </data>
   <data name="kArgumentTypeUndefined" xml:space="preserve">
-    <value>Type '{0}' of argument '{1}' is not defined</value>
+    <value>Il tipo '{0}' dell'argomento '{1}' non è definito</value>
   </data>
   <data name="kArrayOverIndexed" xml:space="preserve">
-    <value>The index is outside the given range href=kArrayOverIndexed.html</value>
+    <value>L'indice non rientra nell'intervallo specificato href=kArrayOverIndexed.html</value>
   </data>
   <data name="kArrayRankReduction" xml:space="preserve">
-    <value>Type conversion would cause array rank reduction. This is not permitted outside of replication. {511ED65F-FB66-4709-BDDA-DCD5E053B87F}</value>
+    <value>La conversione del tipo provocherebbe la riduzione dell'ordine della matrice. L'operazione non è consentita al di fuori della replica. {511ED65F-FB66-4709-BDDA-DCD5E053B87F}</value>
   </data>
   <data name="kAssignNonCharacterToString" xml:space="preserve">
-    <value>A string must be made up of characters</value>
+    <value>Le stringhe devono essere composte da caratteri</value>
   </data>
   <data name="kAssingToThis" xml:space="preserve">
-    <value>'this' is readonly and cannot be assigned to</value>
+    <value>'this' è di sola lettura e non può essere assegnato a</value>
   </data>
   <data name="kCallingConstructorInConstructor" xml:space="preserve">
-    <value>Cannot call the constructor '{0}()' inside itself</value>
+    <value>Impossibile chiamare il costruttore '{0}()' all'interno di se stesso</value>
   </data>
   <data name="KCallingConstructorOnInstance" xml:space="preserve">
-    <value>Cannot call the constructor '{0}()' on an existing object</value>
+    <value>Impossibile chiamare il costruttore '{0}()' per un oggetto esistente</value>
   </data>
   <data name="kCallingNonStaticMethod" xml:space="preserve">
-    <value>'{0}.{1}()' is not a static method</value>
+    <value>'{0}.{1}()' non è un metodo statico</value>
   </data>
   <data name="kCallingNonStaticProperty" xml:space="preserve">
-    <value>'{0}.{1}' is not a static property</value>
+    <value>'{0}.{1}' non è una proprietà statica</value>
   </data>
   <data name="kConsoleWarningMessage" xml:space="preserve">
-    <value>&gt; Runtime warning: {0}\n - \"{1}\" &lt;line: {2}, col: {3}&gt;</value>
+    <value>&gt; Avviso di runtime: {0}\n - \"{1}\" &lt;riga: {2}, col: {3}&gt;</value>
   </data>
   <data name="kConvertArrayToNonArray" xml:space="preserve">
-    <value>Converting an array to {0} would cause array rank reduction and is not permitted href=kConvertArrayToNonArray.html</value>
+    <value>La conversione di una matrice in {0} provocherebbe la riduzione dell'ordine della matrice e non è consentita href=kConvertArrayToNonArray.html</value>
   </data>
   <data name="kConvertDoubleToInt" xml:space="preserve">
-    <value>Converting a double to an int may lose information.</value>
+    <value>La conversione di un valore Double in un numero intero potrebbe provocare la perdita di informazioni.</value>
   </data>
   <data name="kConvertNonConvertibleTypes" xml:space="preserve">
-    <value>Asked to convert non-convertible types</value>
+    <value>È stato richiesto di convertire tipi non convertibili</value>
   </data>
   <data name="kCyclicDependency" xml:space="preserve">
-    <value>A cyclic dependency exists between two variables href=kCyclicDependency.html</value>
+    <value>È presente una dipendenza ciclica tra due variabili href=kCyclicDependency.html</value>
   </data>
   <data name="kDereferencingNonPointer" xml:space="preserve">
-    <value>Internal error, please report: Dereferencing a non-pointer. href=DereferencingNonPointer.html</value>
+    <value>Errore interno. Segnalare: annullamento del riferimento ad un non puntatore. href=DereferencingNonPointer.html</value>
   </data>
   <data name="kExceptionTypeUndefined" xml:space="preserve">
-    <value>The exception type '{0}' is not defined</value>
+    <value>Il tipo di eccezione '{0}' non è definito</value>
   </data>
   <data name="keywordCannotBeUsedAsConstructorName" xml:space="preserve">
-    <value>\"{0}\" is a keyword, it can't be used as constructor name</value>
+    <value>\"{0}\" è una parola chiave, non può essere utilizzata come nome per il costruttore</value>
   </data>
   <data name="keywordCantBeUsedAsIdentifier" xml:space="preserve">
-    <value>\"{0}\" is a keyword, but an identifier was expected</value>
+    <value>\"{0}\" è una parola chiave, ma era previsto un identificatore</value>
   </data>
   <data name="kFailToConverToFunction" xml:space="preserve">
-    <value>Converting objects to a function pointer is not allowed</value>
+    <value>La conversione di oggetti in puntatori funzione non è consentita</value>
   </data>
   <data name="kFailToConverToNull" xml:space="preserve">
-    <value>Converting other things to null is not allowed</value>
+    <value>La conversione di altri elementi in valori null non è consentita</value>
   </data>
   <data name="kFailToConverToPointer" xml:space="preserve">
-    <value>Cannot convert objects to function pointers</value>
+    <value>Impossibile convertire oggetti in puntatori funzione</value>
   </data>
   <data name="kFFIFailedToObtainObject" xml:space="preserve">
-    <value>Failed to obtain object '{0}' for '{1}.{2}'</value>
+    <value>Impossibile ottenere l'oggetto '{0}' per '{1}.{2}'</value>
   </data>
   <data name="kFFIFailedToObtainThisObject" xml:space="preserve">
-    <value>Failed to obtain this object for '{0}.{1}'</value>
+    <value>Impossibile ottenere l'oggetto per '{0}.{1}'</value>
   </data>
   <data name="kFFIInvalidCast" xml:space="preserve">
-    <value>'{0}' is being cast to '{1}', but the allowed range is [{2}..{3}]</value>
+    <value>'{0}' viene proiettato su '{1}', ma l'intervallo consentito è [{2}..{3}]</value>
   </data>
   <data name="kFileNotFound" xml:space="preserve">
-    <value>File : '{0}' not found</value>
+    <value>File: '{0}' non trovato</value>
   </data>
   <data name="kFunctionNotFound" xml:space="preserve">
-    <value>No candidate function could be found</value>
+    <value>Impossibile trovare funzioni compatibili</value>
   </data>
   <data name="kFunctionNotReturnAtAllCodePaths" xml:space="preserve">
-    <value>All paths through the method '{0}()' must return a value</value>
+    <value>Tutti i percorsi del metodo '{0}()' devono restituire un valore</value>
   </data>
   <data name="kIndexOutOfRange" xml:space="preserve">
-    <value>Index is out of range href=kIndexOutOfRange.html</value>
+    <value>L'indice non rientra nell'intervallo href=kIndexOutOfRange.html</value>
   </data>
   <data name="kInvalidAmountInRangeExpression" xml:space="preserve">
-    <value>The amount in range expression should be an positive integer</value>
+    <value>La quantità nell'espressione di intervallo deve essere un numero intero positivo</value>
   </data>
   <data name="kInvalidArguments" xml:space="preserve">
-    <value>Argument is invalid</value>
+    <value>L'argomento non è valido</value>
   </data>
   <data name="kInvalidArgumentsInRangeExpression" xml:space="preserve">
-    <value>The value used in a range expression must be a number or a letter</value>
+    <value>Il valore utilizzato in un'espressione di intervallo deve essere un numero o una lettera</value>
   </data>
   <data name="kInvalidBreakForFunction" xml:space="preserve">
-    <value>Internal error, please report: Statement break causes function to abnormally return null.</value>
+    <value>Errore interno, segnalare: a causa dell'interruzione dell'istruzione, la funzione restituisce in maniera anomala un valore nullo.</value>
   </data>
   <data name="kInvalidContinueForFunction" xml:space="preserve">
-    <value>Internal error, please report: Statement continue cause function to abnormally return null.</value>
+    <value>Errore interno, segnalare: a causa dell'istruzione, la funzione continua a restituire in maniera anomala un valore nullo.</value>
   </data>
   <data name="kInvalidStaticCyclicDependency" xml:space="preserve">
-    <value>A cyclic dependency exists between two variables</value>
+    <value>È presente una dipendenza ciclica tra due variabili</value>
   </data>
   <data name="kInvalidThis" xml:space="preserve">
-    <value>'this' can only be used in methods that are members of a class</value>
+    <value>'this' può essere utilizzato solo nei metodi che appartengono ad una classe</value>
   </data>
   <data name="kInvokeMethodOnInvalidObject" xml:space="preserve">
-    <value>Method '{0}()' is invoked on an invalid object.</value>
+    <value>Il metodo '{0}()' è richiamato per un oggetto non valido.</value>
   </data>
   <data name="kMethodAlreadyDefined" xml:space="preserve">
-    <value>Method '{0}()' is already defined</value>
+    <value>Il metodo '{0}()' è già definito</value>
   </data>
   <data name="kMethodHasInvalidArguments" xml:space="preserve">
     <value>'{0}()' has some invalid arguments href=kMethodHasInvalidArguments</value>
   </data>
   <data name="kMethodIsInaccessible" xml:space="preserve">
-    <value>Method '{0}()' can't be reached from here</value>
+    <value>Impossibile accedere al metodo '{0}()' da questo punto</value>
   </data>
   <data name="kMethodNotFound" xml:space="preserve">
-    <value>Method '{0}()' not found href=kMethodNotFound.html</value>
+    <value>Metodo '{0}()' non trovato href=kMethodNotFound.html</value>
   </data>
   <data name="kMethodResolutionFailure" xml:space="preserve">
     <value>Internal error, please report: Method resolution failure on: {0}().</value>
   </data>
   <data name="kMethodResolutionFailureForOperator" xml:space="preserve">
-    <value>Operator '{0}' cannot be applied to operands of type '{1}' and '{2}'</value>
+    <value>L'operatore '{0}' non può essere applicato agli operandi di tipo '{1}' e '{2}'</value>
   </data>
   <data name="kMethodResolutionFailureWithTypes" xml:space="preserve">
-    <value>There is no version of {0} that accepts argument type(s) ({1}). href=NonOverloadMethodResolutionError.html</value>
+    <value>Nessuna versione di {0} che accetta tipi di argomento ({1}). href=NonOverloadMethodResolutionError.html</value>
   </data>
   <data name="kMethodStackOverflow" xml:space="preserve">
-    <value>'{0}()' recursed until Dynamo ran out of memory, please add a base case.</value>
+    <value>'{0}()' è stato ripetuto fino a determinare un errore di memoria insufficiente in Dynamo.</value>
   </data>
   <data name="kMultipleSymbolFound" xml:space="preserve">
-    <value>Multiple definitions for '{0}' are found as {1} href=kMultipleSymbolFound.html</value>
+    <value>Più definizioni di '{0}' trovate come {1} href=kMultipleSymbolFound.html</value>
   </data>
   <data name="kMultipleSymbolFoundFromName" xml:space="preserve">
-    <value>Multiple definitions for '{0}' are found as {1}</value>
+    <value>Più definizioni di '{0}' trovate come {1}</value>
   </data>
   <data name="kMethodDeprecated" xml:space="preserve">
     <value>Method '{0}' has been deprecated, please use method '{1}' instead. href=Deprecated.html</value>
   </data>
   <data name="kNoStepSizeInAmountRangeExpression" xml:space="preserve">
-    <value>No step size is specified in amount range expression</value>
+    <value>Nessuna dimensione incrementale specificata nella quantità dell'espressione di intervallo</value>
   </data>
   <data name="kPropertyInaccessible" xml:space="preserve">
-    <value>Property '{0}' is inaccessible</value>
+    <value>La proprietà '{0}' è inaccessibile</value>
   </data>
   <data name="kPropertyIsInaccessible" xml:space="preserve">
-    <value>Property '{0}' is inaccessible</value>
+    <value>La proprietà '{0}' è inaccessibile</value>
   </data>
   <data name="kPropertyNotFound" xml:space="preserve">
-    <value>Property '{0}' not found</value>
+    <value>Impossibile trovare la proprietà '{0}'</value>
   </data>
   <data name="kPropertyOfClassNotFound" xml:space="preserve">
     <value>No property called {0} on {1} could be found href=kPropertyOfClassNotFound</value>
   </data>
   <data name="kRangeExpressionConflictOperator" xml:space="preserve">
-    <value>An amount operator cannot be used together with a step operator</value>
+    <value>Impossibile utilizzare un operatore di quantità con un operatore di incremento</value>
   </data>
   <data name="kRangeExpressionWithInvalidAmount" xml:space="preserve">
-    <value>The amount of step is invalid.</value>
+    <value>La quantità incrementale non è valida.</value>
   </data>
   <data name="kRangeExpressionWithInvalidStepSize" xml:space="preserve">
-    <value>The step size of range expression is invalid.</value>
+    <value>L'incremento dell'espressione di intervallo non è valido.</value>
   </data>
   <data name="kRangeExpressionWithNegativeStepNumber" xml:space="preserve">
-    <value>The step number of range expression should be greater than 0</value>
+    <value>Il numero di incremento dell'espressione di intervallo deve essere maggiore di 0</value>
   </data>
   <data name="kRangeExpressionWithNonIntegerStepNumber" xml:space="preserve">
-    <value>The step number of range expression should be integer</value>
+    <value>Il numero di incremento dell'espressione di intervallo deve essere un numero intero</value>
   </data>
   <data name="kRangeExpressionWithStepSizeZero" xml:space="preserve">
-    <value>The step size of range expression should not be 0</value>
+    <value>La dimensione di incremento dell'espressione di intervallo non può essere 0</value>
   </data>
   <data name="kReturnTypeUndefined" xml:space="preserve">
-    <value>Return type '{0}' of method '{1}()' is not defined</value>
+    <value>Tipo di restituzione '{0}' del metodo '{1}()' non definito</value>
   </data>
   <data name="kStaticMethodNotFound" xml:space="preserve">
-    <value>Cannot find static method or constructor {0}.{1}()</value>
+    <value>Impossibile trovare il metodo statico o il costruttore {0}.{1}()</value>
   </data>
   <data name="kStringIndexingCannotBeAssigned" xml:space="preserve">
-    <value>String indexing cannot be assigned to, it is read only</value>
+    <value>L'indicizzazione della stringa non può essere assegnata poiché è di sola lettura</value>
   </data>
   <data name="kStringIndexOutOfRange" xml:space="preserve">
-    <value>The index to string is out of range</value>
+    <value>L'indice per la stringa non rientra nell'intervallo</value>
   </data>
   <data name="kStringOverIndexed" xml:space="preserve">
-    <value>String is over indexed</value>
+    <value>La stringa è eccessivamente indicizzata</value>
   </data>
   <data name="kTypeUndefined" xml:space="preserve">
-    <value>Type '{0}' is not defined</value>
+    <value>Tipo '{0}' non definito</value>
   </data>
   <data name="kUnboundIdentifierMsg" xml:space="preserve">
-    <value>Variable '{0}' hasn't been defined yet</value>
+    <value>La variabile '{0}' non è definita</value>
   </data>
   <data name="kUsingNonStaticMemberInStaticContext" xml:space="preserve">
-    <value>'{0}' is not a static property, so cannot be assigned to static properties or used in static methods.</value>
+    <value>'{0}' non è una proprietà statica, pertanto non può essere assegnata a proprietà statiche o utilizzata in metodi statici.</value>
   </data>
   <data name="kUsingThisInStaticFunction" xml:space="preserve">
-    <value>'this' cannot be used in static method</value>
+    <value>'this' non può essere utilizzato nel metodo statico</value>
   </data>
   <data name="MapsValueFromOneRangeToAnotherRange" xml:space="preserve">
-    <value>Maps a vlaue from one range to another range</value>
+    <value>Mappa un valore di un intervallo su un altro intervallo</value>
   </data>
   <data name="MapsValueIntoInputRange" xml:space="preserve">
-    <value>Maps a value into an input range</value>
+    <value>Mappa un valore in un intervallo di input</value>
   </data>
   <data name="NoConstructorForAttribute" xml:space="preserve">
-    <value>No constructors for Attribute '{0}' takes {1} arguments</value>
+    <value>Nessun costruttore per l'attributo '{0}' accetta argomenti {1}</value>
   </data>
   <data name="NoSuchFileOrDirectoryToImport" xml:space="preserve">
-    <value>Cannot import file: '{0}': No such file or directory</value>
+    <value>Impossibile importare il file '{0}': file o directory non trovati</value>
   </data>
   <data name="ObjectsContainsInList1NotInList2" xml:space="preserve">
-    <value>Returns objects that are included in List1 but excluded in List2</value>
+    <value>Restituisce gli oggetti inclusi in List1 ma esclusi da List2</value>
   </data>
   <data name="ProducesTheSetIntersection" xml:space="preserve">
-    <value>Produces the set intersection of two sequences</value>
+    <value>Produce l'intersezione impostata di due sequenze</value>
   </data>
   <data name="ProducesTheSetUnion" xml:space="preserve">
-    <value>Produces the set union of two sequences by using the default equality comparer</value>
+    <value>Produce l'unione impostata di due sequenze tramite l'operatore di uguaglianza di default</value>
   </data>
   <data name="RemoveKeys" xml:space="preserve">
-    <value>Removes key from list</value>
+    <value>Rimuove la chiave dall'elenco</value>
   </data>
   <data name="RemovesTheMembersofTheList" xml:space="preserve">
-    <value>Removes the members of the list which are not members of the specified type</value>
+    <value>Rimuove le voci dell'elenco che non appartengono al tipo specificato</value>
   </data>
   <data name="ReordersList" xml:space="preserve">
-    <value>Reorders the list using the specified indices</value>
+    <value>Riordina l'elenco in base agli indici specificati</value>
   </data>
   <data name="ReturnsConcatenatingList" xml:space="preserve">
-    <value>Joins two lists into a single list</value>
+    <value>Unisce due elenchi in un unico elenco</value>
   </data>
   <data name="ReturnsListWithRankDepth" xml:space="preserve">
-    <value>Returns multidimentional list according the rank given</value>
+    <value>Restituisce un elenco multidimensionale in base all'ordine specificato</value>
   </data>
   <data name="ReturnsListWithUniformDepth" xml:space="preserve">
-    <value>Returns a list with uniform depth as specified by the input depth</value>
+    <value>Restituisce un elenco con profondità uniforme in base alla profondità di input</value>
   </data>
   <data name="ReturnsNumberOfItems" xml:space="preserve">
-    <value>Returns number of items in the specified list</value>
+    <value>Restituisce il numero di voci dell'elenco specificato</value>
   </data>
   <data name="ReturnStatementIsNotAllowedInConstructor" xml:space="preserve">
-    <value>return statement is not allowed in constructor</value>
+    <value>Istruzione return non consentita nel costruttore</value>
   </data>
   <data name="ReturnsTheDeepestDepthOfTheList" xml:space="preserve">
-    <value>Returns the deepest depth of the list</value>
+    <value>Restituisce la profondità maggiore dell'elenco</value>
   </data>
   <data name="ReturnsTheFlattened1DList" xml:space="preserve">
-    <value>Returns the flattened 1D list of the multi-dimensional input list. If the input is a single value, returns that value.</value>
+    <value>Restituisce la versione 1D dell'elenco di input multidimensionale. Se l'input è un valore singolo, restituisce tale valore.</value>
   </data>
   <data name="ReturnsTheIndex" xml:space="preserve">
-    <value>Returns the index of the member in the list</value>
+    <value>Restituisce l'indice della voce nell'elenco</value>
   </data>
   <data name="ReturnsTheNumberOfFalseValueInList" xml:space="preserve">
-    <value>Returns the number of  false values in the list</value>
+    <value>Restituisce il numero di valori false nell'elenco</value>
   </data>
   <data name="ReturnsTheNumberOfTrueValue" xml:space="preserve">
-    <value>Returns the number of true values in the list</value>
+    <value>Restituisce il numero di valori true nell'elenco</value>
   </data>
   <data name="SemiColonExpected" xml:space="preserve">
-    <value>';' is expected</value>
+    <value>';' previsto</value>
   </data>
   <data name="SortsListByValue" xml:space="preserve">
-    <value>Sorts a specified list by the values of its members in either ascending or descending order</value>
+    <value>Dispone l'elenco specificato in ordine crescente o decrescente in base ai valori delle relative voci</value>
   </data>
   <data name="SortsListByValueInAscending" xml:space="preserve">
-    <value>Sorts a specified list by values of its members in ascending order</value>
+    <value>Dispone l'elenco specificato in ordine crescente in base ai valori delle relative voci</value>
   </data>
   <data name="TooManyCharacters" xml:space="preserve">
-    <value>Too many characters in character literal</value>
+    <value>Troppi caratteri nel valore letterale di carattere</value>
   </data>
   <data name="UnknownAttribute" xml:space="preserve">
-    <value>Unknown attribute {0}</value>
+    <value>Attributo sconosciuto {0}</value>
   </data>
   <data name="UseInlineConditional" xml:space="preserve">
-    <value>'{0}' statement can only be used in imperative language block, consider using an inline conditional instead?</value>
+    <value>L'istruzione '{0}' può essere utilizzata solo in un blocco di linguaggio imperativo. Utilizzare un'istruzione condizionale?</value>
   </data>
   <data name="UseListJoinNode" xml:space="preserve">
-    <value>Use List.Join node instead</value>
+    <value>Utilizzare il nodo List.Join</value>
   </data>
   <data name="ValidForImperativeBlockOnly" xml:space="preserve">
-    <value>'{0}' statement can only be used in imperative language block</value>
+    <value>L'istruzione '{0}' può essere utilizzata solo in un blocco di linguaggio imperativo</value>
   </data>
   <data name="ModuloByZero" xml:space="preserve">
-    <value>Integer modulo by zero</value>
+    <value>Modulo numero intero in base a zero</value>
   </data>
   <data name="addadd_expected" xml:space="preserve">
-    <value>"++" expected</value>
+    <value>"++" previsto</value>
   </data>
   <data name="add_expected" xml:space="preserve">
-    <value>"+" expected</value>
+    <value>"+" previsto</value>
   </data>
   <data name="andand_expected" xml:space="preserve">
-    <value>"&amp;&amp;" expected</value>
+    <value>"&amp;&amp;" previsto</value>
   </data>
   <data name="and_expected" xml:space="preserve">
-    <value>"&amp;" expected</value>
+    <value>"&amp;" previsto</value>
   </data>
   <data name="asterisk_expected" xml:space="preserve">
-    <value>"*" expected</value>
+    <value>"*" previsto</value>
   </data>
   <data name="catch_expected" xml:space="preserve">
-    <value>"catch" expected</value>
+    <value>"catch" previsto</value>
   </data>
   <data name="char_expected" xml:space="preserve">
-    <value>char expected</value>
+    <value>char previsto</value>
   </data>
   <data name="closebrace_expected" xml:space="preserve">
-    <value>"}" expected</value>
+    <value>"}" previsto</value>
   </data>
   <data name="closebracket_expected" xml:space="preserve">
-    <value>closebracket expected</value>
+    <value>closebracket previsto</value>
   </data>
   <data name="closeparen_expected" xml:space="preserve">
-    <value>closeparen expected</value>
+    <value>closeparen previsto</value>
   </data>
   <data name="comma_expected" xml:space="preserve">
-    <value>"," expected</value>
+    <value>"," previsto</value>
   </data>
   <data name="curvedash_expected" xml:space="preserve">
-    <value>"~\" expected</value>
+    <value>"~\" previsto</value>
   </data>
   <data name="dashdash_expected" xml:space="preserve">
-    <value>"--" expected</value>
+    <value>"--" previsto</value>
   </data>
   <data name="divider_expected" xml:space="preserve">
-    <value>"/" expected</value>
+    <value>"/" previsto</value>
   </data>
   <data name="doublecolumn_expected" xml:space="preserve">
-    <value>":" expected</value>
+    <value>":" previsto</value>
   </data>
   <data name="endline_expected" xml:space="preserve">
-    <value>endline expected</value>
+    <value>endline previsto</value>
   </data>
   <data name="EOF_expected" xml:space="preserve">
-    <value>EOF expected</value>
+    <value>EOF previsto</value>
   </data>
   <data name="equalmark_expected" xml:space="preserve">
-    <value>"=" expected</value>
+    <value>"=" previsto</value>
   </data>
   <data name="equalright_expected" xml:space="preserve">
-    <value>"=&gt;" expected</value>
+    <value>"=&gt;" previsto</value>
   </data>
   <data name="equal_expected" xml:space="preserve">
-    <value>equal expected</value>
+    <value>equal previsto</value>
   </data>
   <data name="error" xml:space="preserve">
-    <value>error</value>
+    <value>Errore</value>
   </data>
   <data name="float_expected" xml:space="preserve">
-    <value>float expected</value>
+    <value>float previsto</value>
   </data>
   <data name="greaterequal_expected" xml:space="preserve">
-    <value>greaterequal expected</value>
+    <value>greaterequal previsto</value>
   </data>
   <data name="greaterthan_expected" xml:space="preserve">
-    <value>greaterthan expected</value>
+    <value>greaterthan previsto</value>
   </data>
   <data name="hax_expected" xml:space="preserve">
-    <value>"#" expected</value>
+    <value>"#" previsto</value>
   </data>
   <data name="ident_expected" xml:space="preserve">
-    <value>ident expected</value>
+    <value>ident previsto</value>
   </data>
   <data name="invalid_Associative_AccessSpecifier" xml:space="preserve">
-    <value>invalid Associative_AccessSpecifier</value>
+    <value>Associative_AccessSpecifier non valido</value>
   </data>
   <data name="invalid_Associative_AddOp" xml:space="preserve">
-    <value>invalid_Associative_AddOp</value>
+    <value>Associative_AddOp non valido</value>
   </data>
   <data name="invalid_Associative_BinaryOps" xml:space="preserve">
-    <value>invalid Associative_BinaryOps</value>
+    <value>Associative_BinaryOps non valido</value>
   </data>
   <data name="invalid_Associative_BitOp" xml:space="preserve">
-    <value>invalid Associative_BitOp</value>
+    <value>Associative_BitOp non valido</value>
   </data>
   <data name="invalid_Associative_classdecl" xml:space="preserve">
-    <value>invalid Associative_classdecl</value>
+    <value>Associative_classdecl non valido</value>
   </data>
   <data name="invalid_Associative_ComparisonOp" xml:space="preserve">
-    <value>invalid Associative_ComparisonOp</value>
+    <value>Associative_ComparisonOp non valido</value>
   </data>
   <data name="invalid_Associative_DecoratedIdentifier" xml:space="preserve">
-    <value>invalid Associative_DecoratedIdentifier</value>
+    <value>Associative_DecoratedIdentifier non valido</value>
   </data>
   <data name="invalid_Associative_Factor" xml:space="preserve">
-    <value>invalid Associative_Factor</value>
+    <value>Associative_Factor non valido</value>
   </data>
   <data name="invalid_Associative_FunctionalStatement" xml:space="preserve">
-    <value>invalid Associative_FunctionalStatement</value>
+    <value>Associative_FunctionalStatement non valido</value>
   </data>
   <data name="invalid_Associative_functiondecl" xml:space="preserve">
-    <value>invalid Associative_functiondecl</value>
+    <value>Associative_functiondecl non valido</value>
   </data>
   <data name="invalid_Associative_LanguageBlock" xml:space="preserve">
-    <value>invalid Associative_LanguageBlock</value>
+    <value>Associative_LanguageBlock non valido</value>
   </data>
   <data name="invalid_Associative_LogicalOp" xml:space="preserve">
-    <value>invalid Associative_LogicalOp</value>
+    <value>Associative_LogicalOp non valido</value>
   </data>
   <data name="invalid_Associative_MulOp" xml:space="preserve">
-    <value>invalid Associative_MulOp</value>
+    <value>Associative_MulOp non valido</value>
   </data>
   <data name="invalid_Associative_NameReference" xml:space="preserve">
-    <value>invalid Associative_NameReference</value>
+    <value>Associative_NameReference non valido</value>
   </data>
   <data name="invalid_Associative_negop" xml:space="preserve">
-    <value>invalid Associative_negop</value>
+    <value>Associative_negop non valido</value>
   </data>
   <data name="invalid_Associative_Number" xml:space="preserve">
-    <value>invalid Associative_Number</value>
+    <value>Associative_Number non valido</value>
   </data>
   <data name="invalid_Associative_PostFixOp" xml:space="preserve">
-    <value>invalid Associative_PostFixOp</value>
+    <value>Associative_PostFixOp non valido</value>
   </data>
   <data name="invalid_Associative_Statement" xml:space="preserve">
-    <value>invalid Associative_Statement</value>
+    <value>Associative_Statement non valido</value>
   </data>
   <data name="invalid_Associative_UnaryExpression" xml:space="preserve">
-    <value>invalid Associative_UnaryExpression</value>
+    <value>Associative_UnaryExpression non valido</value>
   </data>
   <data name="invalid_Associative_unaryop" xml:space="preserve">
-    <value>invalid Associative_unaryop</value>
+    <value>Associative_unaryop non valido</value>
   </data>
   <data name="invalid_Hydrogen" xml:space="preserve">
-    <value>invalid Hydrogen</value>
+    <value>Hydrogen non valido</value>
   </data>
   <data name="invalid_Imperative_addop" xml:space="preserve">
-    <value>invalid Imperative_addop</value>
+    <value>Imperative_addop non valido</value>
   </data>
   <data name="invalid_Imperative_assignstmt" xml:space="preserve">
-    <value>invalid Imperative_assignstmt</value>
+    <value>Imperative_assignstmt non valido</value>
   </data>
   <data name="invalid_Imperative_bitop" xml:space="preserve">
-    <value>invalid Imperative_bitop</value>
+    <value>Imperative_bitop non valido</value>
   </data>
   <data name="invalid_Imperative_decoratedIdentifier" xml:space="preserve">
-    <value>invalid Imperative_decoratedIdentifier</value>
+    <value>Imperative_decoratedIdentifier non valido</value>
   </data>
   <data name="invalid_Imperative_factor" xml:space="preserve">
-    <value>invalid Imperative_factor</value>
+    <value>Imperative_factor non valido</value>
   </data>
   <data name="invalid_Imperative_forloop" xml:space="preserve">
-    <value>invalid Imperative_forloop</value>
+    <value>Imperative_forloop non valido</value>
   </data>
   <data name="invalid_Imperative_functiondecl" xml:space="preserve">
-    <value>invalid Imperative_functiondecl</value>
+    <value>Imperative_functiondecl non valido</value>
   </data>
   <data name="invalid_Imperative_ifstmt" xml:space="preserve">
-    <value>invalid Imperative_ifstmt</value>
+    <value>Imperative_ifstmt non valido</value>
   </data>
   <data name="invalid_Imperative_languageblock" xml:space="preserve">
-    <value>invalid Imperative_languageblock</value>
+    <value>Imperative_languageblock non valido</value>
   </data>
   <data name="invalid_Imperative_logicalop" xml:space="preserve">
-    <value>invalid Imperative_logicalop</value>
+    <value>Imperative_logicalop non valido</value>
   </data>
   <data name="invalid_Imperative_mulop" xml:space="preserve">
-    <value>invalid Imperative_mulop</value>
+    <value>Imperative_mulop non valido</value>
   </data>
   <data name="invalid_Imperative_NameReference" xml:space="preserve">
-    <value>invalid Imperative_NameReference</value>
+    <value>Imperative_NameReference non valido</value>
   </data>
   <data name="invalid_Imperative_num" xml:space="preserve">
-    <value>invalid Imperative_num</value>
+    <value>Imperative_num non valido</value>
   </data>
   <data name="invalid_Imperative_PostFixOp" xml:space="preserve">
-    <value>invalid Imperative_PostFixOp</value>
+    <value>Imperative_PostFixOp non valido</value>
   </data>
   <data name="invalid_Imperative_relop" xml:space="preserve">
-    <value>invalid Imperative_relop</value>
+    <value>Imperative_relop non valido</value>
   </data>
   <data name="invalid_Imperative_stmt" xml:space="preserve">
-    <value>invalid Imperative_stmt</value>
+    <value>Imperative_stmt non valido</value>
   </data>
   <data name="invalid_Imperative_unaryexpr" xml:space="preserve">
-    <value>invalid Imperative_unaryexpr</value>
+    <value>Imperative_unaryexpr non valido</value>
   </data>
   <data name="invalid_Imperative_unaryop" xml:space="preserve">
-    <value>invalid Imperative_unaryop</value>
+    <value>Imperative_unaryop non valido</value>
   </data>
   <data name="invalid_Import_Statement" xml:space="preserve">
-    <value>invalid Import_Statement</value>
+    <value>Import_Statement non valido</value>
   </data>
   <data name="in_expected" xml:space="preserve">
-    <value>"in" expected</value>
+    <value>"in" previsto</value>
   </data>
   <data name="kw_break_expected" xml:space="preserve">
-    <value>kw_break expected</value>
+    <value>kw_break previsto</value>
   </data>
   <data name="kw_class_expected" xml:space="preserve">
-    <value>kw_class expected</value>
+    <value>kw_class previsto</value>
   </data>
   <data name="kw_constructor_expected" xml:space="preserve">
-    <value>kw_constructor expected</value>
+    <value>kw_constructor previsto</value>
   </data>
   <data name="kw_continue_expected" xml:space="preserve">
-    <value>kw_continue expected</value>
+    <value>kw_continue previsto</value>
   </data>
   <data name="kw_def_expected" xml:space="preserve">
-    <value>kw_def expected</value>
+    <value>kw_def previsto</value>
   </data>
   <data name="kw_elseif_expected" xml:space="preserve">
-    <value>kw_elseif expected</value>
+    <value>kw_elseif previsto</value>
   </data>
   <data name="kw_else_expected" xml:space="preserve">
-    <value>kw_else expected</value>
+    <value>kw_else previsto</value>
   </data>
   <data name="kw_extend_expected" xml:space="preserve">
-    <value>kw_extend expected</value>
+    <value>kw_extend previsto</value>
   </data>
   <data name="kw_external_expected" xml:space="preserve">
-    <value>kw_external expected</value>
+    <value>kw_external previsto</value>
   </data>
   <data name="kw_for_expected" xml:space="preserve">
-    <value>kw_for expected</value>
+    <value>kw_for previsto</value>
   </data>
   <data name="kw_from_expected" xml:space="preserve">
-    <value>kw_from expected</value>
+    <value>kw_from previsto</value>
   </data>
   <data name="kw_heap_expected" xml:space="preserve">
-    <value>kw_heap expected</value>
+    <value>kw_heap previsto</value>
   </data>
   <data name="kw_if_expected" xml:space="preserve">
-    <value>kw_if expected</value>
+    <value>kw_if previsto</value>
   </data>
   <data name="kw_import_expected" xml:space="preserve">
-    <value>kw_import expected</value>
+    <value>kw_import previsto</value>
   </data>
   <data name="kw_local_expected" xml:space="preserve">
-    <value>kw_local expected</value>
+    <value>kw_local previsto</value>
   </data>
   <data name="kw_native_expected" xml:space="preserve">
-    <value>kw_native expected</value>
+    <value>kw_native previsto</value>
   </data>
   <data name="kw_prefix_expected" xml:space="preserve">
-    <value>kw_prefix expected</value>
+    <value>kw_prefix previsto</value>
   </data>
   <data name="kw_static_expected" xml:space="preserve">
-    <value>kw_static expected</value>
+    <value>kw_static previsto</value>
   </data>
   <data name="kw_while_expected" xml:space="preserve">
-    <value>kw_while expected</value>
+    <value>kw_while previsto</value>
   </data>
   <data name="lessequal_expected" xml:space="preserve">
-    <value>lessequal expected</value>
+    <value>lessequal previsto</value>
   </data>
   <data name="lessthan_expected" xml:space="preserve">
-    <value>lessthan expected</value>
+    <value>lessthan previsto</value>
   </data>
   <data name="literal_false_expected" xml:space="preserve">
-    <value>literal_false expected</value>
+    <value>literal_false previsto</value>
   </data>
   <data name="literal_null_expected" xml:space="preserve">
-    <value>literal_null expected</value>
+    <value>literal_null previsto</value>
   </data>
   <data name="literal_true_expected" xml:space="preserve">
-    <value>literal_true expected</value>
+    <value>literal_true previsto</value>
   </data>
   <data name="neg_expected" xml:space="preserve">
-    <value>neg expected</value>
+    <value>neg previsto</value>
   </data>
   <data name="notequal_expected" xml:space="preserve">
-    <value>notequal expected</value>
+    <value>notequal previsto</value>
   </data>
   <data name="not_expected" xml:space="preserve">
-    <value>not expected</value>
+    <value>not previsto</value>
   </data>
   <data name="number_expected" xml:space="preserve">
-    <value>number expected</value>
+    <value>number previsto</value>
   </data>
   <data name="openbrace_expected" xml:space="preserve">
-    <value>"{" expected</value>
+    <value>"{" previsto</value>
   </data>
   <data name="openbracket_expected" xml:space="preserve">
-    <value>openbracket expected</value>
+    <value>openbracket previsto</value>
   </data>
   <data name="openparen_expected" xml:space="preserve">
-    <value>openparen expected</value>
+    <value>openparen previsto</value>
   </data>
   <data name="oror_expected" xml:space="preserve">
-    <value>"||" expected</value>
+    <value>"||" previsto</value>
   </data>
   <data name="period_expected" xml:space="preserve">
-    <value>period expected</value>
+    <value>period previsto</value>
   </data>
   <data name="pipe_expected" xml:space="preserve">
-    <value>pipe expected</value>
+    <value>pipe previsto</value>
   </data>
   <data name="postfixed_replicationguide_expected" xml:space="preserve">
-    <value>postfixed replicationguide expected</value>
+    <value>postfixed replicationguide previsto</value>
   </data>
   <data name="power_expected" xml:space="preserve">
-    <value>"^" expected</value>
+    <value>"^" previsto</value>
   </data>
   <data name="private_expected" xml:space="preserve">
-    <value>"private" expected</value>
+    <value>"private" previsto</value>
   </data>
   <data name="protected_expected" xml:space="preserve">
-    <value>"protected" expected</value>
+    <value>"protected" previsto</value>
   </data>
   <data name="public_expected" xml:space="preserve">
-    <value>"public" expected</value>
+    <value>"public" previsto</value>
   </data>
   <data name="question_expected" xml:space="preserve">
-    <value>"?" expected</value>
+    <value>"?" previsto</value>
   </data>
   <data name="rangeop_expected" xml:space="preserve">
-    <value>rangeop expected</value>
+    <value>rangeop previsto</value>
   </data>
   <data name="reminder_expected" xml:space="preserve">
-    <value>"%" expected</value>
+    <value>"%" previsto</value>
   </data>
   <data name="replicationguide_postfix_expected" xml:space="preserve">
-    <value>replicationguide_postfix expected</value>
+    <value>replicationguide_postfix previsto</value>
   </data>
   <data name="textstring_expected" xml:space="preserve">
-    <value>textstring expected</value>
+    <value>textstring previsto</value>
   </data>
   <data name="this_symbol_not_expected_in_Associative_FunctionalStatement" xml:space="preserve">
-    <value>this symbol not expected in Associative_FunctionalStatement</value>
+    <value>simbolo non previsto in Associative_FunctionalStatement</value>
   </data>
   <data name="this_symbol_not_expected_in_Associative_FunctionCallStatement" xml:space="preserve">
-    <value>this symbol not expected in Associative_FunctionCallStatement</value>
+    <value>simbolo non previsto in Associative_FunctionCallStatement</value>
   </data>
   <data name="this_symbol_not_expected_in_Associative_Statement" xml:space="preserve">
-    <value>this symbol not expected in Associative_Statement</value>
+    <value>simbolo non previsto in Associative_Statement</value>
   </data>
   <data name="this_symbol_not_expected_in_Import_Statement" xml:space="preserve">
-    <value>this symbol not expected in Import_Statement</value>
+    <value>simbolo non previsto in Import_Statement</value>
   </data>
   <data name="this_symbol_no_expected_in_Associative_FunctionalStatement" xml:space="preserve">
-    <value>this symbol not expected in Associative_FunctionalStatement</value>
+    <value>simbolo non previsto in Associative_FunctionalStatement</value>
   </data>
   <data name="this_symbo_no_expected_in_Associative_NonAssignmentStatement" xml:space="preserve">
-    <value>this symbol not expected in Associative_NonAssignmentStatement</value>
+    <value>simbolo non previsto in Associative_NonAssignmentStatement</value>
   </data>
   <data name="throw_expected" xml:space="preserve">
-    <value>throw expected</value>
+    <value>throw previsto</value>
   </data>
   <data name="triquestionmark_expected" xml:space="preserve">
-    <value>??? expected</value>
+    <value>??? previsto</value>
   </data>
   <data name="try_expected" xml:space="preserve">
-    <value>"try" expected</value>
+    <value>"try" previsto</value>
   </data>
   <data name="kInvalidType" xml:space="preserve">
-    <value>The type is invalid</value>
+    <value>Tipo non valido</value>
   </data>
   <data name="AlgorithmNotSupported" xml:space="preserve">
-    <value>Selected algorithm not supported</value>
+    <value>L'algoritmo selezionato non è supportato.</value>
   </data>
   <data name="ArrayWithNotSupported" xml:space="preserve">
-    <value>Array with no common superclass not yet supported: {0}</value>
+    <value>La matrice senza superclasse comune non è ancora supportata: {0}</value>
   </data>
   <data name="FailedToResolveSortingFunction" xml:space="preserve">
-    <value>Failed to resolve the comparison function for sorting, expected def sorter : int(x,y)</value>
+    <value>Impossibile risolvere la funzione di confronto per l'ordinamento, gestore def previsto : int(x,y)</value>
   </data>
   <data name="FunctionDispatchFailed" xml:space="preserve">
-    <value>Function dispatch could not be completed {0}</value>
+    <value>Impossibile completare l'invio della funzione {0}</value>
   </data>
   <data name="MaxDimensionExceeded" xml:space="preserve">
-    <value>Replication requested exceeds the available dimensions of the array. This case is not yet supported {0}</value>
+    <value>La replica richiesta supera le dimensioni disponibili della matrice. Questo caso non è ancora supportato {0}</value>
   </data>
   <data name="MultipleFunctionsFound" xml:space="preserve">
-    <value>Couldn't decide which function to execute. Please provide more specific type information. Possible functions were: </value>
+    <value>Impossibile stabilire quale funzione eseguire. Fornire informazioni più specifiche sul tipo. Le funzioni possibili sono: </value>
   </data>
   <data name="MultipleGuidesNotSupported" xml:space="preserve">
-    <value>Sorry, multiple guides on a single argument that are not in increasing order are not yet supported, please use a for loop instead. </value>
+    <value>L'utilizzo di più guide per un singolo argomento in ordine non crescente non è ancora supportato. In alternativa, utilizzare un ciclo for. </value>
   </data>
   <data name="OneDArrayExpected" xml:space="preserve">
-    <value>Both arguments were expected to be one-dimensional array type!</value>
+    <value>Per entrambi gli argomenti era previsto il tipo matrice unidimensionale.</value>
   </data>
   <data name="OperationFailType1" xml:space="preserve">
-    <value>{0}.{1} operation failed.</value>
+    <value>Operazione {0}.{1} non riuscita.</value>
   </data>
   <data name="OperationFailType2" xml:space="preserve">
-    <value>{0}.{1} operation failed. 
+    <value>Operazione {0}.{1} non riuscita. 
 {2}</value>
   </data>
   <data name="ZipAlgorithmError" xml:space="preserve">
-    <value>Cannot support Longest and shortest zipped collections</value>
+    <value>Impossibile supportare le raccolte compresse più lunga e più corta</value>
   </data>
   <data name="FailedToCastFromNull" xml:space="preserve">
-    <value>Null value cannot be cast to {0} href=FailedToCastFromNull.html</value>
+    <value>Impossibile proiettare un valore null in {0} href=FailedToCastFromNull.html</value>
   </data>
   <data name="ArgumentNullException" xml:space="preserve">
     <value>Value cannot be null.
 Parameter name: {0}. href=ArgumentNullException.html</value>
   </data>
   <data name="FunctionGroupNotFound" xml:space="preserve">
-    <value>No function called {0} on a {1} could be found</value>
+    <value>Nessuna funzione trovata denominata {0} su {1}</value>
   </data>
   <data name="FunctionGroupWithParameterNotFound" xml:space="preserve">
-    <value>No function called {0} on a {1} that takes {2} could be found</value>
+    <value>Nessuna funzione trovata denominata {0} su {1} che accetta {2}</value>
   </data>
   <data name="kInvalidStringArgumentInRangeExpression" xml:space="preserve">
-    <value>Start value can be just number or single letter</value>
+    <value>Il valore iniziale può essere solo un numero o una lettera</value>
   </data>
   <data name="kInvalidUnicodeArgumentInRangeExpression" xml:space="preserve">
-    <value>Range and Sequence expressions support only ASCII characters</value>
+    <value>Le espressioni di intervallo e sequenza supportano solo caratteri ASCII.</value>
   </data>
   <data name="MoreThanOneDominantList" xml:space="preserve">
-    <value>Only one dominant list is allowed</value>
+    <value>È consentito solo un elenco dominante</value>
   </data>
   <data name="RangeExpressionOutOfMemory" xml:space="preserve">
-    <value>The number of items in range expression is over limit</value>
+    <value>Il numero di elementi nell'espressione di intervallo supera il limite</value>
   </data>
   <data name="IndexIntoNonArrayObject" xml:space="preserve">
-    <value>No item exists at specified index address</value>
+    <value>Nessun elemento presente in corrispondenza dell'indirizzo indice specificato</value>
   </data>
   <data name="RunOutOfMemory" xml:space="preserve">
-    <value>There is not enough memory to finish the operation.</value>
+    <value>Memoria insufficiente per completare l'operazione.</value>
   </data>
   <data name="InvalidFunction" xml:space="preserve">
-    <value>Not an valid function.</value>
+    <value>Funzione non valida.</value>
   </data>
   <data name="kInvalidListLevelName" xml:space="preserve">
-    <value>'{0}' cannot be used as list level name, consider using L1 for level 1.</value>
+    <value>'{0}' non può essere utilizzato come nome del livello elenco, prendere in considerazione l'utilizzo di L1 per il livello 1.</value>
   </data>
   <data name="invalid_Associative_Level" xml:space="preserve">
-    <value>Invalid list@level syntax, consider using @L1 for level 1.</value>
+    <value>Sintassi list@level non valida, prendere in considerazione l'utilizzo di @L1 per il livello 1.</value>
   </data>
   <data name="VariableRedifinitionError" xml:space="preserve">
-    <value>Variable {0} has been defined in this code block node. You cannot define a variable more than once.</value>
+    <value>La variabile {0} è stata definita in questo nodo del blocco di codice. Impossibile definire una variabile più di una volta.</value>
   </data>
   <data name="VariableRecursiveReference" xml:space="preserve">
-    <value>Variable {0} is used in the same statement that you defined it. Recursive dependency is not allowed.</value>
+    <value>La variabile {0} viene utilizzata nella stessa istruzione che è stata definita. Non è consentita la dipendenza ricorsiva.</value>
   </data>
   <data name="InvalidArrayIndexType" xml:space="preserve">
-    <value>List indices must be numeric. href=InvalidArrayIndexType.html</value>
+    <value>Gli indici dell'elenco devono essere numerici. href=InvalidArrayIndexType.html</value>
   </data>
   <data name="FailedToConvertArrayToDictionary" xml:space="preserve">
-    <value>Cannot convert List to Dictionary type.</value>
+    <value>Impossibile convertire l'elenco nel tipo Dizionario.</value>
   </data>
   <data name="NonOverloadMethodResolutionError" xml:space="preserve">
-    <value>{0} expects argument type(s) ({1}), but was called with ({2}). href=NonOverloadMethodResolutionError.html</value>
+    <value>{0} prevede tipi di argomento ({1}), ma è stato chiamato con ({2}). href=NonOverloadMethodResolutionError.html</value>
   </data>
   <data name="DeprecatedListInitializationSyntax" xml:space="preserve">
-    <value>Curly braces are no longer used for list creation. Use square brackets instead, like [] or [1,2,3].</value>
+    <value>Le parentesi graffe non vengono più utilizzate per la creazione dell'elenco. Utilizzare le parentesi quadre, come [] o [1,2,3].</value>
   </data>
   <data name="ListMethodDeprecated" xml:space="preserve">
-    <value>Method '{0}' has been deprecated, please use method '{1}' instead with Dictionary type</value>
+    <value>Il metodo '{0}' è obsoleto. Utilizzare invece il metodo '{1}' con tipo di dizionario</value>
   </data>
   <data name="IntegerOverflow" xml:space="preserve">
-    <value>The operation resulted in an integer overflow. Its result may be unexpected.</value>
+    <value>L'operazione ha generato un overflow dei numeri interi. Il risultato potrebbe essere imprevisto.</value>
   </data>
 </root>

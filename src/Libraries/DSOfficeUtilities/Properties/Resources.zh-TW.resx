@@ -118,22 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExcelCommunicationError" xml:space="preserve">
-    <value>Error setting up communication with Excel.  Try closing any open Excel instances.</value>
+    <value>設定與 Excel 的通訊時發生錯誤。請嘗試關閉所有開啟的 Excel 例證。</value>
   </data>
   <data name="ExcelNotInstalled" xml:space="preserve">
-    <value>Excel is not installed. href=ExcelNotInstalled.html</value>
+    <value>未安裝 Excel。href=ExcelNotInstalled.html</value>
   </data>
   <data name="kMethodResolutionFailureWithTypes" xml:space="preserve">
-    <value>One or more of the input types are not matching. Couldn't find a version of {0} that takes arguments of type {1}</value>
+    <value>一個或多個輸入類型不相符。找不到採用類型 {1} 引數的 {0} 版本</value>
   </data>
   <data name="ReadObsolete" xml:space="preserve">
-    <value>Use File.FromPath -&gt; Excel.ReadFromFile node instead.</value>
+    <value>改為使用 File.FromPath -&gt; Excel.ReadFromFile 節點。</value>
   </data>
   <data name="WorkbookNotFound" xml:space="preserve">
-    <value>A workbook was not found in the provided path.</value>
+    <value>在提供的路徑找不到活頁簿。</value>
   </data>
   <data name="WorksheetNotFound" xml:space="preserve">
-    <value>A worksheet with the provided name '{0}' was not found in the workbook.</value>
-    <comment>{0} = name of the worksheet, for example 'Sheet1'.</comment>
+    <value>在活頁簿中找不到具有提供名稱「{0}」的工作表。</value>
   </data>
 </root>

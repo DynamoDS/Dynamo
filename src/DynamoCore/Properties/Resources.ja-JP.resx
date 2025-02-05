@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,627 +118,599 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BuildSublistsDescription" xml:space="preserve">
-    <value>Build sublists from a list using DesignScript range syntax.</value>
-    <comment>Description for code block node</comment>
+    <value>DesignScript 範囲構文を使用してリストからサブリストを作成します。</value>
   </data>
   <data name="CodeBlockNodeDescription" xml:space="preserve">
-    <value>Allows for DesignScript code to be authored directly</value>
+    <value>DesignScript のコードを直接作成することができます。</value>
   </data>
   <data name="NumberNodeDescription" xml:space="preserve">
-    <value>Creates a number.</value>
-    <comment>Description for number node</comment>
+    <value>数値を作成します。</value>
   </data>
   <data name="StringNodeDescription" xml:space="preserve">
-    <value>Creates a string.</value>
-    <comment>Description for string node</comment>
+    <value>文字列を作成します。</value>
   </data>
   <data name="FunctionNodeDescription" xml:space="preserve">
-    <value>DesignScript Builtin Functions</value>
-    <comment>Description for function node</comment>
+    <value>DesignScript 組み込み関数</value>
   </data>
   <data name="CustomNodeDesciption" xml:space="preserve">
-    <value>Instance of a Custom Node</value>
-    <comment>Description for custom node</comment>
+    <value>カスタム ノードのインスタンス</value>
   </data>
   <data name="ComposeFunctionNodeDescription" xml:space="preserve">
-    <value>Composes two single parameter functions into one function.</value>
-    <comment>Description for compose function node</comment>
+    <value>2 つの単一パラメータ関数を 1 つの関数に構成します。</value>
   </data>
   <data name="OutputNodeDescription" xml:space="preserve">
-    <value>A function output, use with custom nodes</value>
-    <comment>Description for output node</comment>
+    <value>関数の出力、カスタム ノードで使用</value>
   </data>
   <data name="InputNodeDescription" xml:space="preserve">
-    <value>A function parameter, use with custom nodes</value>
-    <comment>Description for input node</comment>
+    <value>関数のパラメータ、カスタムノードで使用</value>
   </data>
   <data name="InputNodeSearchTags" xml:space="preserve">
     <value>variable;argument;parameter</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="ComposeFunctionPortDataFunctionToolTip" xml:space="preserve">
-    <value>A Function</value>
+    <value>Function</value>
   </data>
   <data name="ComposeFunctionPortDataResultToolTip" xml:space="preserve">
-    <value>Composed function: g(f(x))</value>
+    <value>構成された関数: g(f(x))</value>
   </data>
   <data name="RangePortDataAmountToolTip" xml:space="preserve">
-    <value>Amount of numbers or letters in the sequence
-Default value: 10</value>
+    <value>シーケンス内の数字または文字の数
+既定値: 10</value>
   </data>
   <data name="RangePortDataEndToolTip" xml:space="preserve">
-    <value>Number or letter to end the sequence at
-Default value: 9</value>
+    <value>シーケンスが終了する数字または文字
+既定値: 9</value>
   </data>
   <data name="RangePortDataSeqToolTip" xml:space="preserve">
-    <value>New list of type: var[]..[]</value>
+    <value>新しいリスト(タイプ: var[]..[])</value>
   </data>
   <data name="RangePortDataStartToolTip" xml:space="preserve">
-    <value>Number or letter to start the sequence at
-Default value: 0</value>
+    <value>シーケンスを開始する数字または文字
+既定値: 0</value>
   </data>
   <data name="RangePortDataStepToolTip" xml:space="preserve">
-    <value>Space between numbers or letters
-Default value: 1</value>
+    <value>数字や文字間のスペース
+既定値: 1</value>
   </data>
   <data name="PortDataParameterToolTip" xml:space="preserve">
-    <value>parameter</value>
+    <value>パラメータ</value>
   </data>
   <data name="PortDataVariableToolTip" xml:space="preserve">
-    <value>variable</value>
-    <comment>Tooltip to indidate it is a variable</comment>
+    <value>変数</value>
   </data>
   <data name="SublistPortDataResultToolTip" xml:space="preserve">
-    <value>The sublists.</value>
-    <comment>Tooltip</comment>
+    <value>サブリスト。</value>
   </data>
   <data name="SublistsPortDataListToolTip" xml:space="preserve">
-    <value>The list from which to create sublists.</value>
-    <comment>Tooltip for inport data</comment>
+    <value>サブリストの作成元となるリスト。</value>
   </data>
   <data name="SublistsPortDataOffsetToolTip" xml:space="preserve">
-    <value>The offset to apply to the sub-list. Ex. The range "0..2" with an offset of 1 will yield sublists {0,1,2}{1,2,3}{2,3,4}...</value>
-    <comment>Tooltip</comment>
+    <value>サブリストに適用するオフセット。例: 範囲 "0..2"、オフセットが 1 の場合、生成されるサブリストは {0,1,2}{1,2,3}{2,3,4}... となります</value>
   </data>
   <data name="PortDataFunctionOutputToolTip" xml:space="preserve">
-    <value>function output</value>
+    <value>関数の出力</value>
   </data>
   <data name="PortDataInputToolTip" xml:space="preserve">
-    <value>Input #{0}</value>
+    <value>入力番号{0}</value>
   </data>
   <data name="PortDataOutputToolTip" xml:space="preserve">
-    <value>Output #{0}</value>
+    <value>出力番号 {0}</value>
   </data>
   <data name="PortDataPathToFileToolTip" xml:space="preserve">
-    <value>Path to the file</value>
+    <value>ファイルへのパス</value>
   </data>
   <data name="PortDataReturnValueToolTip" xml:space="preserve">
-    <value>return value</value>
+    <value>戻り値</value>
   </data>
   <data name="PortDataSymbolToolTip" xml:space="preserve">
-    <value>Symbol</value>
+    <value>記号</value>
   </data>
   <data name="ButtonDownloadLastest" xml:space="preserve">
-    <value>Download latest version</value>
-    <comment>Button Download Lastest</comment>
+    <value>最新バージョンをダウンロード</value>
   </data>
   <data name="052465" xml:space="preserve">
     <value>Arrrrg, ok</value>
-    <comment>Button OK</comment>
   </data>
   <data name="ButtonProcess" xml:space="preserve">
-    <value>Proceed anyway</value>
-    <comment>Button Process</comment>
+    <value>続行</value>
   </data>
   <data name="CancelButton" xml:space="preserve">
-    <value>Cancel</value>
-    <comment>Button Cancel</comment>
+    <value>キャンセル</value>
   </data>
   <data name="CannotOpenFile" xml:space="preserve">
-    <value>Your file cannot be opened</value>
+    <value>ファイルを開くことができません</value>
   </data>
   <data name="DisplayEngineFailureMessageDescription" xml:space="preserve">
-    <value>The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely having great difficulties pulling itself together. It is recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better. 
+    <value>Dynamo を使用するための仮想マシンの内部で予期しないエラーが発生し、回復が困難な状況になっていると考えられます。作業を今すぐに保存し、ファイルを再ロードすることをお勧めします。Dynamo VM を再起動することで、状況が改善される可能性があります。 
 
-If you don't mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed.</value>
+お手数をおかけしますが、問題を早期に解決できるようにファイルをお送りください。</value>
   </data>
   <data name="FileNotOpenedCorrectly" xml:space="preserve">
-    <value>Your file may not open correctly</value>
+    <value>ファイルを正しく開くことができない場合があります</value>
   </data>
   <data name="IncompatibleOfFileAndDynamo" xml:space="preserve">
-    <value>Your file '{0}' of version '{1}' cannot be opened by this version of Dynamo ({2})</value>
+    <value>このバージョンの Dynamo ({2})では、バージョン '{1}' の ファイル '{0}' を開くことができません</value>
   </data>
   <data name="IncorrectVersionToOpenFile" xml:space="preserve">
-    <value>Your file '{0}' was created in future version '{1}' and may not open correctly in your installed version of Dynamo '{2}'</value>
+    <value>ファイル '{0}' は新しいバージョン '{1}' で作成されており、インストールされているバージョンの Dynamo '{2}' では正しく開くことができない場合があります</value>
   </data>
   <data name="SubmitBugToGithub" xml:space="preserve">
-    <value>Submit Bug To Github</value>
-    <comment>Button submit</comment>
+    <value>バグを Github に送信</value>
   </data>
   <data name="UnhandledExceptionInDynamoEngine" xml:space="preserve">
-    <value>Unhandled exception in Dynamo engine</value>
+    <value>Dynamo エンジンで未処理の例外が発生しました</value>
   </data>
   <data name="UsageReportingErrorMessage" xml:space="preserve">
-    <value>Uh oh...
- We're sorry - we tried to save your decisions, but something went wrong. The decision probably hasn't been saved. This really shouldn't have happened. Please get in touch via GitHub and send us this information.
-You can also try deleting [FILEPATH] and trying again.
-Depending on your previous choice, analytics may still be running, if you're worried about this, please consider not using Dynamo until we've got back to you to solve the problem.
-Sorry about that.</value>
+    <value>問題が発生しました
+操作を保存しようとしたところ問題が発生しました。操作は保存されなかった可能性が高いです。これは非常に深刻な問題であるため、GitHub にご連絡いただき情報をお寄せください。
+また、[FILEPATH]を削除してから、操作をもう一度実行してみてください。
+直前の操作によっては、解析が引き続き実行中となっている場合があります。ご心配な場合は、問題が解決するまで Dynamo の使用をお控えください。
+ご迷惑をおかけしており、大変申し訳ありません。</value>
   </data>
   <data name="CouldNotLoadTypes" xml:space="preserve">
-    <value>Could not load types.</value>
+    <value>タイプをロードできませんでした。</value>
   </data>
   <data name="CreatingConnectorError" xml:space="preserve">
-    <value>ERROR : Could not create connector between {0} and {1}.</value>
+    <value>エラー: {0} と {1} との間にコネクタを作成できませんでした。</value>
   </data>
   <data name="DllLoadException" xml:space="preserve">
-    <value>Dll Load Exception:</value>
+    <value>Dll ロードの例外:</value>
   </data>
   <data name="ElapsedWhenLoadingXml" xml:space="preserve">
-    <value>{0} elapsed for loading xml.</value>
+    <value>xml のロードに {0} が経過しました。</value>
   </data>
   <data name="EvaluationCompleted" xml:space="preserve">
-    <value>Evaluation completed in {0}</value>
+    <value>{0} で評価が完了しました。</value>
   </data>
   <data name="FailedToLoadHeader" xml:space="preserve">
-    <value>ERROR: The header for the custom node at {0} failed to load.  It will be left out of search.</value>
+    <value>エラー: {0} のカスタム ノードのヘッダのロードに失敗しました。検索外のままとなります。</value>
   </data>
   <data name="FileBackUpLocation" xml:space="preserve">
-    <value>Original file '{0}' gets backed up at '{1}'</value>
+    <value>元のファイル '{0}' を '{1}' にバックアップします</value>
   </data>
   <data name="LoadingNodeDefinition" xml:space="preserve">
-    <value>Loading node definition for "{0}" from: {1}</value>
+    <value>"{0}" のノード設定を {1} からロードしています</value>
   </data>
   <data name="NodeProblemEncountered" xml:space="preserve">
-    <value>Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:</value>
+    <value>実行の準備中に、このノードで問題が発生しました。 ノードの作成者に問い合わせ、次のメッセージを伝えてください。</value>
   </data>
   <data name="OpeningHomeWorkspace" xml:space="preserve">
-    <value>Opening home workspace {0}...</value>
+    <value>ホーム ワークスペース {0} を開く...</value>
   </data>
   <data name="OpenWorkbenchError" xml:space="preserve">
-    <value>There was an error opening the workbench.</value>
+    <value>ワークベンチを開くときにエラーが発生しました。</value>
   </data>
   <data name="BadIdentifierSyntax" xml:space="preserve">
-    <value>Bad identifier syntax: "{0}"</value>
+    <value>識別子の構文が間違っています: "{0}"</value>
   </data>
   <data name="BadRangeSyntax" xml:space="preserve">
-    <value>Bad range syntax: not of format \"start..end[..(increment|#count)]\"</value>
+    <value>範囲の構文が間違っています: \"start..end[..(increment|#count)]\" の形式になっていません</value>
   </data>
   <data name="CannotHave0Step" xml:space="preserve">
-    <value>Can't have 0 step.</value>
+    <value>0 ステップは設定できません。</value>
   </data>
   <data name="ClearingWorkflow" xml:space="preserve">
-    <value>Clearing workflow...</value>
+    <value>ワークフローをクリア中...</value>
   </data>
   <data name="CouldNotCompressFile" xml:space="preserve">
-    <value>Could not compress file.  Is the file in use?</value>
+    <value>ファイルを圧縮できませんでした。ファイルが使用中であると考えられます</value>
   </data>
   <data name="CouldNotGetLatestBuild" xml:space="preserve">
-    <value>Couldn't get the latest build from S3</value>
+    <value>S3 から最新ビルドを取得できませんでした</value>
   </data>
   <data name="CouldNotGetUpdateData" xml:space="preserve">
-    <value>Couldn't get update data from {0}</value>
+    <value>{0} から更新データを取得できませんでした</value>
   </data>
   <data name="DulicatedPackage" xml:space="preserve">
-    <value>A duplicate of the package called {0} was found at {1}.  Ignoring it.</value>
+    <value>{0} と言う名前のパッケージが {1} で重複しています。無視します。</value>
   </data>
   <data name="DynamoUpToDate" xml:space="preserve">
-    <value>Dynamo is up to date.</value>
+    <value>Dynamo は最新です。</value>
   </data>
   <data name="ExceptionEncountered" xml:space="preserve">
-    <value>Exception encountered scanning the package directory at {0}</value>
+    <value>{0} のパッケージ フォルダのスキャン中に例外が発生しました</value>
   </data>
   <data name="FailedToLoad" xml:space="preserve">
-    <value>Failed to load {0}\n, Exception: {1}</value>
+    <value>{0} をロードできませんでした。\n例外: {1}</value>
   </data>
   <data name="FailedToLoadCustomNode" xml:space="preserve">
-    <value>Failed to load custom node: {0}.  Replacing with proxy custom node.</value>
+    <value>カスタム ノード: {0} をロードできませんでした。プロキシのカスタム ノードで置き換えています。</value>
   </data>
   <data name="FailedToSave" xml:space="preserve">
-    <value>Failed to save {0}\n, Exception: {1}</value>
+    <value>{0} を保存できませんでした。\n例外: {1}</value>
   </data>
   <data name="IdentifiersNotFound" xml:space="preserve">
-    <value>No identifiers found.</value>
+    <value>識別子が見つかりませんでした。</value>
   </data>
   <data name="InvalidStartOrEndOfRange" xml:space="preserve">
-    <value>The start or end of a range is greater than the number of available elements in the list.</value>
+    <value>範囲の開始または終了がリストで利用できる要素数よりも大きくなっています。</value>
   </data>
   <data name="MalformedHeaderPackage" xml:space="preserve">
-    <value>{0} contains a package with a malformed header.  Ignoring it.</value>
+    <value>{0} に不正なヘッダのパッケージが含まれています。これは無視されます。</value>
   </data>
   <data name="NoHeaderPackage" xml:space="preserve">
-    <value>{0} contains a package without a header.  Ignoring it.</value>
+    <value>{0} にヘッダがないパッケージが含まれています。これは無視されます。</value>
   </data>
   <data name="PackageEmpty" xml:space="preserve">
-    <value>The package was found to be empty and was not installed.</value>
+    <value>パッケージが空であったため、インストールされませんでした。</value>
   </data>
   <data name="PackageTooLarge" xml:space="preserve">
-    <value>The package is too large!  The package must be less than 15 MB!</value>
+    <value>パッケージが大きすぎます! パッケージは 15 MB 未満にする必要があります。</value>
   </data>
   <data name="PathNotRegconizableAsStableOrDailyBuild" xml:space="preserve">
-    <value>The specified file path is not recognizable as a stable or a daily build</value>
+    <value>指定したファイル パスは、安定または毎日のビルドとして認識できません</value>
   </data>
   <data name="RangeEndCouldNotBeParsed" xml:space="preserve">
-    <value>Range end could not be parsed.</value>
+    <value>範囲の終了を解析できませんでした。</value>
   </data>
   <data name="RangeOrApprIdentifierAlrUsed" xml:space="preserve">
-    <value>Cannot use range or approx. identifier on increment field when one has already been used to specify a count.</value>
+    <value>範囲や近似識別子を既に使用して数を指定している場合は、増分フィールドに範囲や近似識別子を使用できません。</value>
   </data>
   <data name="RangeStepCouldNotBeParsed" xml:space="preserve">
-    <value>Range step could not be parsed.</value>
+    <value>範囲のステップを解析できませんでした。</value>
   </data>
   <data name="RangeValuesGreaterThanZero" xml:space="preserve">
-    <value>Range values must be greater than zero.</value>
+    <value>範囲の値は 0 より大きくする必要があります。</value>
   </data>
   <data name="RequestingVersionUpdate" xml:space="preserve">
-    <value>Requesting version update info...</value>
+    <value>バージョン更新情報を要求中...</value>
   </data>
   <data name="UpdateAvailable" xml:space="preserve">
-    <value>Update available: {0}</value>
+    <value>更新プログラムが利用可能です: {0}</value>
   </data>
   <data name="UpdateDownloadComplete" xml:space="preserve">
-    <value>Update download complete.</value>
+    <value>更新プログラムのダウンロードが完了しました。</value>
   </data>
   <data name="UpdateDownloadProgress" xml:space="preserve">
-    <value>Update download progress: {0}%</value>
+    <value>更新プログラムをダウンロード中: {0}%</value>
   </data>
   <data name="UpdateDownloadStarted" xml:space="preserve">
-    <value>Update download started...</value>
+    <value>更新プログラムのダウンロードを開始しました...</value>
   </data>
   <data name="WorkbenchNotOpen" xml:space="preserve">
-    <value>Workbench could not be opened.</value>
+    <value>ワークベンチを開くことができませんでした。</value>
   </data>
   <data name="CouldNotRepairOneNodeHoles" xml:space="preserve">
-    <value>Could not repair 1-node holes</value>
+    <value>1 ノードの穴を修復できませんでした</value>
   </data>
   <data name="CustomNodeCouldNotBeInitialized" xml:space="preserve">
-    <value>Custom node \"{0}\" could not be initialized.</value>
+    <value>カスタム ノード \"{0}\" を初期化できませんでした。</value>
   </data>
   <data name="FailedToGetMirrorVariable" xml:space="preserve">
-    <value>Failed to get mirror for variable:  {0}; reason: {1}.</value>
+    <value>変数: {0} の鏡像を取得できませんでした。理由: {1}。</value>
   </data>
   <data name="FailedToLoadType" xml:space="preserve">
-    <value>Failed to load type from {0}. The type was {1}.</value>
+    <value>{0} からタイプをロードできませんでした。タイプは {1} でした。</value>
   </data>
   <data name="OpenWorkspaceError" xml:space="preserve">
-    <value>There was an error opening the workspace.</value>
+    <value>ワークスペースを開くときにエラーが発生しました。</value>
   </data>
   <data name="UnableToCreateCustomNodeID" xml:space="preserve">
-    <value>Unable to create instance of custom node with id: \"</value>
+    <value>次の ID を持つカスタム ノードのインスタンスを作成できません。</value>
   </data>
   <data name="BackUpOriginalFileMessage" xml:space="preserve">
-    <value>Original file '{0}' gets backed up at '{1}'</value>
+    <value>元のファイル '{0}' を '{1}' にバックアップします</value>
   </data>
   <data name="ClearingWorkSpace" xml:space="preserve">
-    <value>Clearing workspace...</value>
+    <value>ワークスペースをクリア中...</value>
   </data>
   <data name="CodeBlockDescription" xml:space="preserve">
-    <value>Allows for DesignScript code to be authored directly</value>
+    <value>DesignScript のコードを直接作成することができます。</value>
   </data>
   <data name="DownloadLatestButton" xml:space="preserve">
-    <value>Download latest version</value>
+    <value>最新バージョンをダウンロード</value>
   </data>
   <data name="DuplicateMigrationTypeRegistered" xml:space="preserve">
-    <value>Duplicate migration type registered for {0}</value>
+    <value>{0} に登録されている移行タイプを複製</value>
   </data>
   <data name="FileCannotBeOpened" xml:space="preserve">
-    <value>Your file cannot be opened.</value>
+    <value>ファイルを開くことができません。</value>
   </data>
   <data name="FutureFileDescription" xml:space="preserve">
-    <value>Your file '{0}' was created in future version '{1}' and may not open correctly in your installed version of Dynamo '{2}'</value>
+    <value>ファイル '{0}' は新しいバージョン '{1}' で作成されており、インストールされているバージョンの Dynamo '{2}' では正しく開くことができない場合があります</value>
   </data>
   <data name="FutureFileSummary" xml:space="preserve">
-    <value>Your file may not open correctly</value>
+    <value>ファイルを正しく開くことができない場合があります</value>
   </data>
   <data name="FutureFileTitle" xml:space="preserve">
-    <value>Future File</value>
+    <value>今後のファイル</value>
   </data>
   <data name="GoodByeLog" xml:space="preserve">
-    <value>Goodbye</value>
+    <value>終了</value>
   </data>
   <data name="InvalidLibraryFormat" xml:space="preserve">
-    <value>Invalid library format.</value>
+    <value>ライブラリ形式が無効です。</value>
   </data>
   <data name="LibraryBuildError" xml:space="preserve">
-    <value>Build error for library: {0}</value>
+    <value>ライブラリの作成エラー: {0}</value>
   </data>
   <data name="LibraryHasBeenLoaded" xml:space="preserve">
-    <value>Library {0} has been loaded.</value>
+    <value>ライブラリ {0} をロードしました。</value>
   </data>
   <data name="LibraryIsDumped" xml:space="preserve">
-    <value>Library is dumped to \"{0}\".</value>
+    <value>ライブラリは \"{0}\" にダンプされます。</value>
   </data>
   <data name="LibraryPathCannotBeFound" xml:space="preserve">
-    <value>Cannot find library path: {0}.</value>
+    <value>ライブラリ パス: {0} が見つかりません。</value>
   </data>
   <data name="NewNoteString" xml:space="preserve">
-    <value>New Note</value>
+    <value>新規注記</value>
   </data>
   <data name="ObsoleteFileDescription" xml:space="preserve">
-    <value>Your file '{0}' of version '{1}' cannot be opened by this version of Dynamo ({2})</value>
+    <value>このバージョンの Dynamo ({2})では、バージョン '{1}' の ファイル '{0}' を開くことができません</value>
   </data>
   <data name="ObsoleteFileTitle" xml:space="preserve">
-    <value>Obsolete File</value>
+    <value>ファイルを廃止</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>OK</value>
   </data>
   <data name="ProceedButton" xml:space="preserve">
-    <value>Proceed anyway</value>
+    <value>続行</value>
   </data>
   <data name="SavingInProgress" xml:space="preserve">
-    <value>Saving {0} ...</value>
+    <value>{0}を保存中...</value>
   </data>
   <data name="SubmitBugButton" xml:space="preserve">
-    <value>Submit Bug To Github</value>
+    <value>バグを Github に送信</value>
   </data>
   <data name="ToolTipForTempVar" xml:space="preserve">
-    <value>Statement Output</value>
+    <value>ステートメントの出力</value>
   </data>
   <data name="ToolTipReturnValue" xml:space="preserve">
-    <value>return value</value>
+    <value>戻り値</value>
   </data>
   <data name="UnhandledExceptionSummary" xml:space="preserve">
-    <value>Unhandled exception in Dynamo engine</value>
+    <value>Dynamo エンジンで未処理の例外が発生しました</value>
   </data>
   <data name="UnhandledExceptionTitle" xml:space="preserve">
-    <value>Unhandled Exception</value>
+    <value>未処理の例外</value>
   </data>
   <data name="UnknownVersion" xml:space="preserve">
-    <value>Unknown</value>
+    <value>不明</value>
   </data>
   <data name="WelcomeMessage" xml:space="preserve">
-    <value>Welcome to Dynamo!</value>
+    <value>Dynamo へようこそ!</value>
   </data>
   <data name="ToolTipFunctionOutput" xml:space="preserve">
-    <value>function output</value>
+    <value>関数の出力</value>
   </data>
   <data name="ToolTipInput" xml:space="preserve">
-    <value>Input #</value>
+    <value>入力番号</value>
   </data>
   <data name="ToolTipOutput" xml:space="preserve">
-    <value>Output #</value>
+    <value>出力番号</value>
   </data>
   <data name="ToolTipOutputData" xml:space="preserve">
-    <value>Output Data</value>
+    <value>出力データ</value>
   </data>
   <data name="WarningCannotFindType" xml:space="preserve">
-    <value>Cannot find type '{0}'</value>
+    <value>タイプ '{0}' が見つかりません</value>
   </data>
   <data name="WarningInvalidInput" xml:space="preserve">
-    <value>Invalid input.
+    <value>入力が無効です。
 
-The name of parameter should start with alphabetic character. You can specify its type and default value. E.g., 
+パラメータの名前は英文字で始まる必要があります。タイプと既定値は次のように指定できます。
 
 input : var[]..[]
 value: bool = false</value>
   </data>
   <data name="DSFunctionNodeDescription" xml:space="preserve">
-    <value>DesignScript Builtin Functions</value>
+    <value>DesignScript 組み込み関数</value>
   </data>
   <data name="DummyNodeDescription" xml:space="preserve">
-    <value>This is an obsolete node</value>
+    <value>これは廃止されたノードです</value>
   </data>
   <data name="FunctionDescription" xml:space="preserve">
-    <value>Instance of a Custom Node</value>
+    <value>カスタム ノードのインスタンス</value>
   </data>
   <data name="SymbolNodeDescription" xml:space="preserve">
-    <value>A function parameter, use with custom nodes.
+    <value>関数パラメータ: カスタムノードで使用。
 
-You can specify the type and default value for parameter. E.g.,
+パラメータのタイプと既定値を指定できます。例:
 
 input : var[]..[]
 value : bool = false</value>
   </data>
   <data name="CustomNodeNotLoaded" xml:space="preserve">
-    <value>Custom node definition is not loaded! href=CustomNodeNotLoaded.html</value>
+    <value>カスタム ノードの設定がロードされていません。href=CustomNodeNotLoaded.html</value>
   </data>
   <data name="RunTypeToolTipAutomatically" xml:space="preserve">
-    <value>Run whenever an input to the graph is updated.</value>
+    <value>グラフへの入力が更新されるたびに実行します。</value>
   </data>
   <data name="RunTypeToolTipManually" xml:space="preserve">
-    <value>Run when you click the Run button.</value>
+    <value>[実行]ボタンをクリックすると実行します。</value>
   </data>
   <data name="RunTypeToolTipPeriodicallyDisabled" xml:space="preserve">
-    <value>Run Periodic is only available when there are nodes in the graph that support periodic update.</value>
+    <value>定期的な実行は、定期的な更新をサポートするグラフにノードがある場合にのみ使用できます。</value>
   </data>
   <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
-    <value>Run at the specified interval.</value>
+    <value>指定した間隔で実行します。</value>
   </data>
   <data name="HeaderAction" xml:space="preserve">
-    <value>ACTIONS</value>
+    <value>アクション</value>
   </data>
   <data name="HeaderCreate" xml:space="preserve">
-    <value>CREATE</value>
+    <value>作成</value>
   </data>
   <data name="HeaderQuery" xml:space="preserve">
-    <value>QUERY</value>
+    <value>クエリー</value>
   </data>
   <data name="InputLabel" xml:space="preserve">
-    <value>INPUT</value>
+    <value>入力</value>
   </data>
   <data name="MoreButtonTextFormat" xml:space="preserve">
-    <value>SHOW MORE ({0})</value>
+    <value>詳細を表示({0})</value>
   </data>
   <data name="NoDescriptionAvailable" xml:space="preserve">
-    <value>No description available</value>
+    <value>説明は使用できません</value>
   </data>
   <data name="OutputLabel" xml:space="preserve">
-    <value>OUTPUT</value>
+    <value>出力</value>
   </data>
   <data name="TopResult" xml:space="preserve">
-    <value>Top Result</value>
+    <value>上位の結果</value>
   </data>
   <data name="LocateInDisk" xml:space="preserve">
-    <value>Locate in Disk..</value>
+    <value>ディスク内を検索..</value>
   </data>
   <data name="MoveLabel" xml:space="preserve">
-    <value>Move</value>
+    <value>移動</value>
   </data>
   <data name="NoMatchesFound" xml:space="preserve">
-    <value>No matches found</value>
+    <value>一致するものが見つかりませんでした</value>
   </data>
   <data name="RemoveLabel" xml:space="preserve">
-    <value>Remove</value>
+    <value>削除</value>
   </data>
   <data name="IncorrectlyFormattedNodeLibraryDisplay" xml:space="preserve">
-    <value>This is the incorrectly formatted library name:</value>
+    <value>次のライブラリ名の形式が正しくありません。</value>
   </data>
   <data name="IncorrectlyFormattedNodeLibraryWarning" xml:space="preserve">
-    <value>Incorrectly formatted package node library encountered, this may result in a package assembly not being loaded!</value>
+    <value>不正にフォーマットされたパッケージ ノード ライブラリが検出されました。これが原因でパッケージ アセンブリがロードされないことがあります!</value>
   </data>
   <data name="NothingIsSelectedWarning" xml:space="preserve">
-    <value>Nothing is selected. href=NothingIsSelectedWarning.html</value>
+    <value>何も選択されていません。href=NothingIsSelectedWarning.html</value>
   </data>
   <data name="SearchTextBlockText" xml:space="preserve">
-    <value>Search</value>
+    <value>検索</value>
   </data>
   <data name="AutocompleteSearchTextBlockText" xml:space="preserve">
-    <value>Search Autocomplete Results</value>
+    <value>オートコンプリートの結果を検索</value>
   </data>
   <data name="Autocomplete" xml:space="preserve">
-    <value>Autocomplete</value>
+    <value>オートコンプリート</value>
   </data>
   <data name="WatermarkLabelText" xml:space="preserve">
-    <value>Enter code here</value>
+    <value>ここにコードを入力</value>
   </data>
   <data name="DefaultValue" xml:space="preserve">
-    <value>Default value</value>
-    <comment>Default value</comment>
+    <value>既定値</value>
   </data>
   <data name="DefaultValueDisabled" xml:space="preserve">
-    <value>(disabled)</value>
-    <comment>Default value is disabled</comment>
+    <value>(無効)</value>
   </data>
   <data name="SymbolSearchTags" xml:space="preserve">
     <value>variable;argument;parameter</value>
-    <comment>Search tags for Symbol/Input node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
   <data name="DefaultCustomNodeCategory" xml:space="preserve">
-    <value>Custom nodes</value>
-    <comment>Used for uncategorised custom nodes.</comment>
+    <value>カスタム ノード</value>
   </data>
   <data name="InvalidCustomNodeFolderWarning" xml:space="preserve">
-    <value>The folder '{0}' does not exist</value>
-    <comment>This warning message is shown (during start up) when user specifies additional folders in DynamoSettings.xml file but the folders do not exist.</comment>
+    <value>フォルダ '{0}' は存在しません</value>
   </data>
   <data name="CodeBlockSearchTags" xml:space="preserve">
     <value>codeblock;</value>
   </data>
   <data name="DirectoryNotFound" xml:space="preserve">
-    <value>Directory not found : {0}</value>
+    <value>フォルダが見つかりません: {0}</value>
   </data>
   <data name="CustomNodeFolderLoadFailure" xml:space="preserve">
-    <value>Failed to load custom node directory. Do you have permission to access {0}?</value>
+    <value>カスタム ノード フォルダのロードに失敗しました。{0} へのアクセス権限を確認してください。</value>
   </data>
   <data name="PortsNameDescriptionDoNotEqualWarningMessage" xml:space="preserve">
-    <value>Number of port names does not equal number of port descriptions.</value>
+    <value>ポート名の数とポートの説明の数が等しくありません。</value>
   </data>
   <data name="DescriptionResource1" xml:space="preserve">
-    <value>some description</value>
+    <value>説明</value>
   </data>
   <data name="ResourcePropertyIsNotStringTypeMessage" xml:space="preserve">
-    <value>Resource Property is not String Type</value>
+    <value>Resource Property は String Type ではありません</value>
   </data>
   <data name="ResourceTypeDoesNotHavePropertyMessage" xml:space="preserve">
-    <value>Resource Type does not have Property</value>
+    <value>Resource Type に Property がありません</value>
   </data>
   <data name="WarningInvalidOutput" xml:space="preserve">
-    <value>Only comments and single variable are allowed in output node.</value>
+    <value>出力ノード中で使用できるのはコメントと単一の変数のみです。</value>
   </data>
   <data name="FailedToLoadLibrary" xml:space="preserve">
-    <value>Failed to load library: {0}</value>
+    <value>次のライブラリをロードできませんでした: {0}</value>
   </data>
   <data name="NoneString" xml:space="preserve">
-    <value>none</value>
+    <value>なし</value>
   </data>
   <data name="DefaultHomeWorkspaceName" xml:space="preserve">
-    <value>Home</value>
-    <comment>The default name of home workspace</comment>
+    <value>ホーム</value>
   </data>
   <data name="UnresolvedNodesWarningShortMessage" xml:space="preserve">
-    <value>The graph has unresolved nodes and cannot be saved.</value>
+    <value>グラフに未解決のノードがあるため、保存できません。</value>
   </data>
   <data name="UnresolvedNodesWarningTitle" xml:space="preserve">
-    <value>Unable to save graph</value>
+    <value>グラフを保存できません</value>
   </data>
   <data name="UnresolvedNodesWarningMessage" xml:space="preserve">
-    <value>This may be caused by a missing package, incompatible package version, or missing host program. If you Save As, the unresolved nodes will be removed.
+    <value>これは、パッケージの欠落、互換性のないパッケージ バージョン、あるいはホスト プログラムの欠落が原因である可能性があります。[名前を付けて保存]を使用してグラフを保存すると、未解決のノードは削除されます。
 
-Resolve or remove the unresolved nodes and try again.</value>
+未解決のノードを解決または削除してから再度お試しください。</value>
   </data>
   <data name="CodeBlockTempIdentifierOutputLabel" xml:space="preserve">
-    <value>Value of expression at line {0}</value>
+    <value>行 {0} の式の値</value>
   </data>
   <data name="InvalidInputSymbolCustomNodeWarning" xml:space="preserve">
-    <value>This custom node contains an invalid input. Please fix the input before saving the custom node.</value>
+    <value>このカスタム ノードには無効な入力が含まれています。入力を修正してから、カスタム ノードを保存してください。</value>
   </data>
   <data name="InvalidInputSymbolErrorMessage" xml:space="preserve">
-    <value>This input symbol is not currently valid, and cannot be saved until it is fixed. Valid inputs take the form:
+    <value>この入力シンボルは現在有効でないため、修正されるまで保存できません。有効な入力は次の形式です: 
 
-name : type = defaultValue
+名前 : タイプ = 既定値
 
-The input name should be a valid variable name, without spaces. An input type and default value are optional.</value>
+入力名は、スペースを含まない有効な変数名にする必要があります。入力タイプと既定値は省略可能です。</value>
   </data>
   <data name="InvalidInputSymbolWarningMessage" xml:space="preserve">
-    <value>This custom node currently contains some invalid inputs, and cannot be saved until the inputs are fixed. If the custom node is saved using SaveAs, the invalid inputs will revert to generic inputs. Valid inputs take the form:
+    <value>このカスタム ノードには、一部の無効な入力が現在含まれているため、入力が修正されるまで保存できません。[名前を付けて保存]を使用してカスタム ノードを保存した場合、無効な入力は一般的な入力値に戻ります。有効な入力は次の形式になります: 
 
-name : type = defaultValue
+名前 : タイプ = 既定値
 
-The input name should be a valid variable name, without spaces. An input type and default value are optional.</value>
+入力名は、スペースを含まない有効な変数名にする必要があります。入力タイプと既定値は省略可能です。</value>
   </data>
   <data name="InvalidInputSymbolWarningShortMessage" xml:space="preserve">
-    <value>This custom node cannot be saved until invalid inputs are removed or fixed.</value>
+    <value>このカスタム ノードは無効な入力が削除または修正されるまで保存できません。</value>
   </data>
   <data name="InvalidInputSymbolWarningTitle" xml:space="preserve">
-    <value>Custom Node Contains Invalid Inputs and Cannot Be Saved.</value>
+    <value>カスタム ノードに無効な入力が含まれているため、保存できません。</value>
   </data>
   <data name="PythonTemplateAppData" xml:space="preserve">
-    <value>Python template loaded from AppData</value>
+    <value>AppData からロードされた Python テンプレート</value>
   </data>
   <data name="PythonTemplateDefaultFile" xml:space="preserve">
-    <value>Python template set to default.</value>
+    <value>既定に設定されている Python テンプレート。</value>
   </data>
   <data name="PythonTemplateDefinedByHost" xml:space="preserve">
-    <value>Python template set by host integrator</value>
+    <value>ホスト インテグレータによって設定された Python テンプレート</value>
   </data>
   <data name="PythonTemplateUserFile" xml:space="preserve">
-    <value>Python template loaded from DynamoSettings.xml path</value>
+    <value>DynamoSettings.xml パスからロードされた Python テンプレート</value>
   </data>
   <data name="MessageCustomNodePackageFailedToLoad" xml:space="preserve">
-    <value>{1} cannot be loaded. 
-Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
-To install {1}, Dynamo needs to first uninstall {0}. 
-Restart Dynamo to complete the uninstall.</value>
+    <value>{1} をロードできません。これをインストールすると、現在ロードされている {0} に既に存在する 1 つまたは複数のノードの定義と競合します。{1} をインストールするには、事前に Dynamo で {0} をアンインストールする必要があります。Dynamo を再起動してアンインストールを完了します。</value>
   </data>
   <data name="FunctionDefinitionOverwrittenMessage" xml:space="preserve">
-    <value>Attempting to load customNode {0} loaded by package {1}, but a previous definition named {2} exists with no associated package. The new customNode definition has been loaded, but Dynamo may be in an unstable state, please avoid loading multiple custom nodes with the id.</value>
+    <value>パッケージ {1} によってロードされた customNode {0} をロードしようとしましたが、関連付けられたパッケージを持たない以前の定義 {2} が存在します。新しい customNode 定義はロードされましたが、Dynamo が不安定な状態になる可能性があるため、その ID で複数のカスタム ノードをロードしないようにしてください。</value>
   </data>
   <data name="Preview3DOutageTitle" xml:space="preserve">
-    <value>3D preview has been deactivated</value>
+    <value>3D プレビューは無効になりました</value>
   </data>
   <data name="MissingXmlTagConsoleMessage" xml:space="preserve">
-    <value>{0} is missing some XML documentation tags.</value>
+    <value>{0} は、いくつかの XML ドキュメントのタグが抜けています。</value>
   </data>
   <data name="FailedToHandleReadyEvent" xml:space="preserve">
-    <value>Failed to call Ready() in extension: </value>
+    <value>拡張子で Ready() の呼び出しに失敗しました: </value>
   </data>
   <data name="DuplicatedModelGuidError" xml:space="preserve">
-    <value>The map already contains a model with this id, the id must be unique for the workspace that is currently being deserialized: {0}</value>
+    <value>マップにはこの ID を持つモデルが既に含まれています。ID は現在デシリアライズされているワークスペースに対して一意である必要があります: {0}</value>
   </data>
   <data name="ArgumentNullException" xml:space="preserve">
-    <value>Value cannot be null.
-Parameter name: {0}</value>
+    <value>値を NULL にすることはできません。
+パラメータ名: {0}</value>
   </data>
   <data name="ModelNotFoundError" xml:space="preserve">
-    <value>UpdateModelValue: Model not found</value>
+    <value>UpdateModelValue: モデルが見つかりません</value>
   </data>
   <data name="PackageManagerPackageAlreadyExists" xml:space="preserve">
-    <value>A package with the given name already exists.</value>
+    <value>指定した名前のパッケージは既に存在します。</value>
   </data>
   <data name="PackageManagerUserIsNotAMaintainer" xml:space="preserve">
-    <value>The current user, '{0}', is not a maintainer of the package '{1}'.</value>
-    <comment>{0} = user name (i.e. 'DynamoTeam'), {1} = package name (i.e. 'Clockwork for Dynamo 1.x')</comment>
+    <value>現在のユーザ '{0}' は、パッケージ '{1}' を保持しているユーザではありません。</value>
   </data>
   <data name="PackageManagerPackagePreviewCounter" xml:space="preserve">
     <value>{0} files and {1} folders will be created.</value>
@@ -747,180 +719,178 @@ Parameter name: {0}</value>
     <value>{0} files and {1} folders loaded.</value>
   </data>
   <data name="DuplicatedOlderPackage" xml:space="preserve">
-    <value>An older version of the package called {0} version {2} was found at {1} with version {3}. The older version has been ignored.</value>
+    <value>{0} バージョン {2} というパッケージの古いバージョンが {1} のバージョン {3} で見つかりました。古いバージョンは無視されました。</value>
   </data>
   <data name="InvalidPackageVersion" xml:space="preserve">
-    <value>The version of the package called {0} found at {1} is invalid (version: "{2}"). Ignoring it.</value>
+    <value>{1} で見つかった {0} というパッケージのバージョンは無効です(バージョン: "{2}")。無視します。</value>
   </data>
   <data name="DuplicatedNewerPackage" xml:space="preserve">
-    <value>A newer version of the package called {0} version {2} was found at {1} with version {3}. The newer version has been ignored.</value>
+    <value>{0} バージョン {2} というパッケージの新しいバージョンが {1} のバージョン {3} で見つかりました。新しいバージョンは無視されました。</value>
   </data>
   <data name="NoneLinterDescriptorName" xml:space="preserve">
-    <value>None</value>
+    <value>なし</value>
   </data>
   <data name="PackageStatePendingUnload" xml:space="preserve">
-    <value>Scheduled to be unloaded</value>
+    <value>ロード解除をスケジュール済み</value>
   </data>
   <data name="PackageStateError" xml:space="preserve">
-    <value>Error</value>
+    <value>エラー</value>
   </data>
   <data name="PackageStateLoaded" xml:space="preserve">
-    <value>Loaded</value>
+    <value>ロード済み</value>
   </data>
   <data name="PackageStateUnloaded" xml:space="preserve">
-    <value>Unloaded</value>
+    <value>ロード解除済み</value>
   </data>
   <data name="PackageStatePendingUnloadTooltip" xml:space="preserve">
-    <value>Scheduled to be unloaded.
-This package will be unloaded after the next Dynamo restart.</value>
+    <value>ロード解除をスケジュール済み。
+このパッケージは、次回 Dynamo を再起動した後にロード解除されます。</value>
   </data>
   <data name="PackageStateErrorTooltip" xml:space="preserve">
-    <value>Unloaded.
-This package has not been loaded due to an unexpected error.</value>
+    <value>エラー。
+予期しないエラーにより、このパッケージはロードされませんでした。</value>
   </data>
   <data name="PackageStateLoadedTooltip" xml:space="preserve">
-    <value>Loaded.
-This package is loaded and ready to be used.</value>
+    <value>ロード済み。
+このパッケージはロードされており、準備が完了しています。</value>
   </data>
   <data name="PackageStateUnloadedTooltip" xml:space="preserve">
-    <value>Unloaded.
-This package has not been loaded because another conflicting package was loaded before it.</value>
+    <value>ロード解除済み。
+競合する別のパッケージが先にロードされたため、このパッケージはロードされませんでした。</value>
   </data>
   <data name="GroupDefaultText" xml:space="preserve">
-    <value>Description &lt;Double click here to edit group description&gt;</value>
+    <value>説明&lt;グループの説明を編集するにはここをダブル クリック&gt;</value>
   </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>Title &lt;Double click here to edit group title&gt;</value>
+    <value>タイトル&lt;グループのタイトルを編集するにはここをダブル クリック&gt;</value>
   </data>
   <data name="OutputPortAlternativeName" xml:space="preserve">
-    <value>output</value>
-    <comment>Used when an output port displays its context menu chevron and the port has no name to avoid displaying a double chevron.</comment>
+    <value>出力</value>
   </data>
   <data name="InputPortAlternativeName" xml:space="preserve">
-    <value>input</value>
-    <comment>Used when an input port displays its context menu chevron and the port has no name to avoid displaying a double chevron.</comment>
+    <value>入力</value>
   </data>
   <data name="BackupSavedMsg" xml:space="preserve">
-    <value>Backup file is saved</value>
+    <value>バックアップファイルが保存されました</value>
   </data>
   <data name="NodeDeprecatedMsg" xml:space="preserve">
-    <value>Node '{0}' is now deprecated.</value>
+    <value>ノード '{0}' は廃止されました。</value>
   </data>
   <data name="NodeNotResolvedMsg" xml:space="preserve">
-    <value>Node '{0}' cannot be resolved.</value>
+    <value>ノード '{0}' を解決できません。</value>
   </data>
   <data name="NodeOfTypeDeprecatedMsg" xml:space="preserve">
-    <value>Node of type '{0}',from assembly '{1}', is now deprecated.</value>
+    <value>タイプ '{0}' のノード(アセンブリ '{1}')は廃止されました。</value>
   </data>
   <data name="NodeOfTypeNotResolvedMsg" xml:space="preserve">
-    <value>Node of type '{0}', from assembly '{1}', cannot be resolved.</value>
+    <value>タイプ '{0}' のノード(アセンブリ '{1}')を解決できません。</value>
   </data>
   <data name="NodeUnhandledMsg" xml:space="preserve">
-    <value>Unhandled 'DummyNode.NodeNature' value: {0}</value>
+    <value>未処理の 'DummyNode.NodeNature' 値: {0}</value>
   </data>
   <data name="CoreLibraryLoadFailureForBlockedAssembly" xml:space="preserve">
     <value>{0}
 
-This assembly is likely blocked. Try restarting Dynamo after unblocking this assembly and all other core assemblies that might be blocked. If you are running a downloaded DynamoSandbox build that is extracted from a .zip file, try using 7zip to extract the Dynamo binaries and try again.</value>
+このアセンブリはブロックされている可能性があります。このアセンブリおよびブロックされている可能性のあるその他すべてのコア アセンブリのブロックを解除した後で、Dynamo を再起動してください。ダウンロードした .zip ファイルから抽出した DynamoSandbox ビルドを実行している場合は、7zip を使用して Dynamo バイナリを抽出し、もう一度実行してください。</value>
   </data>
   <data name="LibraryLoadFailureForBlockedAssembly" xml:space="preserve">
     <value>{0}
 
-This assembly is likely blocked. Try importing it again after unblocking the assembly.</value>
+このアセンブリはブロックされている可能性があります。アセンブリのブロックを解除した後に再度読み込んでください。</value>
   </data>
   <data name="PackageLoadFailureForBlockedAssembly" xml:space="preserve">
     <value>{0}
 
-This package likely contains an assembly that is blocked. You will need to load the package again after unblocking the assembly. Restart Dynamo to reload the package.</value>
+このパッケージにはブロックされたアセンブリが含まれている可能性があります。アセンブリのブロックを解除した後で、パッケージを再ロードする必要があります。パッケージを再ロードするには、Dynamo を再起動してください。</value>
   </data>
   <data name="CoreLibraryLoadFailureMessageBoxTitle" xml:space="preserve">
-    <value>Core library load failure</value>
+    <value>コア ライブラリのロードに失敗しました</value>
   </data>
   <data name="LibraryLoadFailureMessageBoxTitle" xml:space="preserve">
-    <value>Library load failure</value>
+    <value>ライブラリのロードに失敗しました</value>
   </data>
   <data name="FileLoadFailureMessageBoxTitle" xml:space="preserve">
-    <value>File load failure</value>
+    <value>ファイルのロードに失敗しました</value>
   </data>
   <data name="GroupStyleDefaultActions" xml:space="preserve">
-    <value>Actions</value>
+    <value>アクション</value>
   </data>
   <data name="GroupStyleDefaultActionsColor" xml:space="preserve">
     <value>B9F9E1</value>
   </data>
   <data name="GroupStyleDefaultInputs" xml:space="preserve">
-    <value>Inputs</value>
+    <value>入力</value>
   </data>
   <data name="GroupStyleDefaultInputsColor" xml:space="preserve">
     <value>FFB8D8</value>
   </data>
   <data name="GroupStyleDefaultOutputs" xml:space="preserve">
-    <value>Outputs</value>
+    <value>出力</value>
   </data>
   <data name="GroupStyleDefaultOutputsColor" xml:space="preserve">
     <value>FFC999</value>
   </data>
   <data name="GroupStyleDefaultReview" xml:space="preserve">
-    <value>Review</value>
+    <value>確認</value>
   </data>
   <data name="GroupStyleDefaultReviewColor" xml:space="preserve">
     <value>A4E1FF</value>
   </data>
   <data name="ToolTipInputData" xml:space="preserve">
-    <value>Input Data</value>
+    <value>入力データ</value>
   </data>
   <data name="SplashScreenInitPreferencesSettings" xml:space="preserve">
-    <value>Initializing preferences...</value>
+    <value>基本設定を初期化中...</value>
   </data>
   <data name="SplashScreenLoadNodeLibrary" xml:space="preserve">
-    <value>Loading Node Library...</value>
+    <value>ノード ライブラリをロードしています...</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>No recommendations</value>
+    <value>推奨事項なし</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
-    <value>Low confidence</value>
+    <value>低信頼度</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>There are no recommendations yet. You can try switching to node type match autocomplete.</value>
+    <value>推奨事項がまだありません。ノード タイプ一致のオートコンプリートに切り替えてみてください。</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
-    <value>All recommendations are below the specified confidence level. You can try them or adjust the confidence settings in Preferences.</value>
+    <value>すべての推奨事項は、信頼度が指定されたレベルより低い推奨事項です。試してみるか、[基本設定]で信頼度の設定を調整できます。</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
-    <value>Show Recommendations that are below the confidence level.</value>
+    <value>信頼度がそのレベルより低い推奨事項を表示します。</value>
   </data>
   <data name="LoginNeededTitle" xml:space="preserve">
-    <value>Not authenticated</value>
+    <value>未認証</value>
   </data>
   <data name="LoginNeededMessage" xml:space="preserve">
-    <value>You need to login to your account to get recommendations. Please log in or switch to node type match autocomplete.</value>
+    <value>推奨事項を取得するには、アカウントにログインする必要があります。ログインするか、ノード タイプ一致のオートコンプリートに切り替えてください。</value>
   </data>
   <data name="FailedInsertFileNodeExistNotification" xml:space="preserve">
-    <value>Failed to insert the file as some of the nodes already exist in the current worspace.</value>
+    <value>現在のワークスペースに既にノードが存在するため、ファイルの挿入に失敗しました。</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Insert Dynamo Definition...</value>
+    <value>Dynamo 定義を挿入...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
-    <value>Example file added to workspace. Run mode changed to Manual.</value>
+    <value>サンプル ファイルがワークスペースに追加されました。実行モードが手動に変更されました。</value>
   </data>
   <data name="DynamoLanguages_noxlate" xml:space="preserve">
     <value>Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
   </data>
   <data name="FormulaDSConversionFailure" xml:space="preserve">
-    <value>Formula failed to convert to DesignScript code. Please edit the formula manually to use it in a CodeBlock node.</value>
+    <value>式を DesignScript コードに変換できませんでした。CodeBlock ノードで使用するには、手動で式を編集してください。</value>
   </data>
   <data name="FormulaMigrated" xml:space="preserve">
-    <value>Formula node has been deprecated. It has been automatically migrated to a CodeBlock node. Note that results may vary after the migration depending on lacing options selected on the original Formula node. Appropriate replication guides might need to be applied to the CodeBlock node script.</value>
+    <value>Formula ノードは廃止されました。CodeBlock ノードに自動的に移行されました。移行後の結果は、元の Formula ノードで選択したレーシング オプションによって異なることに注意してください。CodeBlock ノード スクリプトに適切な複製ガイドの適用が必要となる場合があります。</value>
   </data>
   <data name="LegacyTraceDataWarning" xml:space="preserve">
-    <value>This workspace contains element binding data in a legacy format that is no longer supported in Dynamo 3.0 and higher versions. Element binding data will be saved in the new format the next time you run and save this workspace.</value>
+    <value>このワークスペースには、Dynamo 3.0 以降のバージョンでサポートされなくなった以前の形式の要素バインド データが含まれています。要素バインド データは、次回このワークスペースを実行して保存するときは新しい形式で保存されます。</value>
   </data>
   <data name="InputNodeRenameHint" xml:space="preserve">
-    <value>default input name, rename me!</value>
+    <value>既定の入力名です。名前を変更してください。</value>
   </data>
   <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
-    <value>This node is currently experimental. Its behavior, name, and signature are subject to change.</value>
+    <value>このノードは現在実験段階です。その動作、名前、および署名は変更される可能性があります。</value>
   </data>
 </root>

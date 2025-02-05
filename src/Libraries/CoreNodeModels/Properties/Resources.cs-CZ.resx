@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,426 +118,373 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AndDescription" xml:space="preserve">
-    <value>Boolean AND: Returns True only if all of the inputs are true. If any is false, returns False.</value>
-    <comment>Description for And</comment>
+    <value>Booleovské AND: vrací hodnotu true, pouze pokud oba vstupy mají hodnotu true. Pokud má kterýkoli z nich hodnotu false, vrací false.</value>
   </data>
   <data name="ApplyPortDataFuncArgToolTip" xml:space="preserve">
-    <value>Result of application.</value>
+    <value>Výsledek aplikace</value>
   </data>
   <data name="ApplyPortDataFuncToolTip" xml:space="preserve">
-    <value>Function to apply.</value>
+    <value>Funkce, kterou chcete použít.</value>
   </data>
   <data name="BooleanDescription" xml:space="preserve">
-    <value>Enables selection between True and False</value>
-    <comment>Description for Boolean</comment>
+    <value>Umožňuje výběr mezi hodnotami true a false.</value>
   </data>
   <data name="BooleanSelectorSearchTags" xml:space="preserve">
     <value>true;truth;false</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="ColorRangeDescription" xml:space="preserve">
-    <value>Returns a color given a color range</value>
-    <comment>Description for Color Range</comment>
+    <value>Vrací barvu z daného barevného rozsahu.</value>
   </data>
   <data name="ColorRangePortDataIndicesToolTip" xml:space="preserve">
-    <value>List of values between 0.0 and 1.0 which position the input colors along the range</value>
+    <value>Seznam hodnot v rozsahu 0,0 až 1,0, což umístí vstupní barvy podél rozsahu</value>
   </data>
   <data name="ColorRangePortDataResultToolTip" xml:space="preserve">
-    <value>Selected colors</value>
+    <value>Vybrané barvy</value>
   </data>
   <data name="ColorRangePortDataColorsToolTip" xml:space="preserve">
-    <value>List of colors to include in the range</value>
+    <value>Seznam barev, které mají být zahrnuty do rozsahu</value>
   </data>
   <data name="ColorRangePortDataValueToolTip" xml:space="preserve">
-    <value>List of values between 0.0 and 1.0. These values define the colors that are picked along the color range to create the color list.</value>
+    <value>Seznam hodnot v rozmezí 0,0 až 1,0. Tyto hodnoty definují barvy, které jsou vybrány podél rozsahu barev k vytvoření seznamu barev.</value>
   </data>
   <data name="CombinatorPortDataCombToolTip" xml:space="preserve">
-    <value>Function to use as combinator</value>
+    <value>Funkce, která se má použít jako kombinátor</value>
   </data>
   <data name="CombinatorPortDataResultToolTip" xml:space="preserve">
-    <value>Combined lists</value>
+    <value>Kombinované seznamy</value>
   </data>
   <data name="ComposePortDataFunc0ToolTip" xml:space="preserve">
-    <value>Function #0</value>
+    <value>Funkce č. 0</value>
   </data>
   <data name="ComposePortDataFunc1ToolTip" xml:space="preserve">
-    <value>Function #1</value>
+    <value>Funkce č. 1</value>
   </data>
   <data name="ComposePortDataResultToolTip" xml:space="preserve">
-    <value>Composed function.</value>
+    <value>Vytvořená funkce</value>
   </data>
   <data name="CreateListPortDataIndex0ToolTip" xml:space="preserve">
-    <value>Item Index #0</value>
+    <value>Index položky č. 0</value>
   </data>
   <data name="CreateListPortDataResultToolTip" xml:space="preserve">
-    <value>A list (type: var[]..[])</value>
+    <value>Seznam (typ: var[]..[])</value>
   </data>
   <data name="DirectoryFromPathDescription" xml:space="preserve">
-    <value>Creates a directory object from the given path</value>
-    <comment>Description for Directory.FromPath</comment>
+    <value>Vytvoří objekt adresáře z dané cesty.</value>
   </data>
   <data name="DirectoryNodeDescription" xml:space="preserve">
-    <value>Allows you to select a directory on the system and returns its path</value>
+    <value>Umožňuje vybrat adresář v systému a vrací jeho cestu.</value>
   </data>
   <data name="DirectoryObjectNodeDescription" xml:space="preserve">
-    <value>Creates a directory object from the given path</value>
+    <value>Vytvoří objekt adresáře z dané cesty.</value>
   </data>
   <data name="DirectoryObjectPortDataPathToolTip" xml:space="preserve">
-    <value>Path to the directory (type: string)</value>
+    <value>Cesta k adresáři (typ: řetězec)</value>
   </data>
   <data name="DirectoryObjectPortDataResultToolTip" xml:space="preserve">
-    <value>Directory object.</value>
+    <value>Objekt adresáře</value>
   </data>
   <data name="DirectoryPathDescription" xml:space="preserve">
-    <value>Allows you to select a directory on the system and returns its path</value>
-    <comment>Description for Directory Path</comment>
+    <value>Umožňuje vybrat adresář v systému a vrací jeho cestu.</value>
   </data>
   <data name="DoubleInputNodeDescription" xml:space="preserve">
-    <value>Creates a number</value>
+    <value>Vytvoří číslo.</value>
   </data>
   <data name="DoubleSliderDescription" xml:space="preserve">
-    <value>Produces numeric values</value>
-    <comment>Description for Double Slider</comment>
+    <value>Vytváří číselné hodnoty.</value>
   </data>
   <data name="DoubleSliderNodeDescription" xml:space="preserve">
-    <value>Produces numeric values</value>
+    <value>Vytváří číselné hodnoty.</value>
   </data>
   <data name="DropDownPortDataResultToolTip" xml:space="preserve">
-    <value>The selected {0}</value>
+    <value>Vybrané {0}</value>
   </data>
   <data name="FileFromPathDescription" xml:space="preserve">
-    <value>Creates a file object from the given path</value>
-    <comment>Description for File.FromPath</comment>
+    <value>Vytvoří objekt souboru z dané cesty.</value>
   </data>
   <data name="FilenameNodeDescription" xml:space="preserve">
-    <value>Allows you to select a file on the system to get its filename</value>
+    <value>Umožňuje vybrat soubor v systému, jehož název chcete získat.</value>
   </data>
   <data name="FileObjectNodeDescription" xml:space="preserve">
-    <value>Creates a file object from the given path</value>
+    <value>Vytvoří objekt souboru z dané cesty.</value>
   </data>
   <data name="FileObjectPortDataPathToolTip" xml:space="preserve">
-    <value>Path to the file.</value>
+    <value>Cesta k souboru.</value>
   </data>
   <data name="FileObjectPortDataResultToolTip" xml:space="preserve">
-    <value>File object</value>
+    <value>Souborový objekt</value>
   </data>
   <data name="FilePathDescription" xml:space="preserve">
-    <value>Allows you to select a file on the system and returns its file path</value>
-    <comment>Description for File Path</comment>
+    <value>Umožňuje vybrat soubor v systému a vrací cestu k tomuto souboru.</value>
   </data>
   <data name="FilterPortDataConditionToolTip" xml:space="preserve">
-    <value>Filter function used to determine if an element is filtered in or out</value>
+    <value>Funkce Filtrovat, která se používá k určení, zda je prvek filtrován dovnitř nebo ven</value>
   </data>
   <data name="FilterPortDataListToolTip" xml:space="preserve">
-    <value>List to filter</value>
+    <value>Seznam k filtrování</value>
   </data>
   <data name="FilterPortDataResultInToolTip" xml:space="preserve">
-    <value>List containing all elements "x" where condition(x) = True</value>
+    <value>Seznam, který obsahuje všechny prvky „x “, kde podmínka(x) = True</value>
   </data>
   <data name="FilterPortDataResultOutToolTip" xml:space="preserve">
-    <value>List containing all elements "x" where condition(x) = False</value>
+    <value>Seznam, který obsahuje všechny prvky „x “, kde podmínka(x) = False</value>
   </data>
   <data name="FormulaDescription" xml:space="preserve">
-    <value>Evaluates mathematical formulas using NCalc</value>
-    <comment>Description for Formula</comment>
+    <value>Vyhodnocuje matematické vzorce pomocí nástroje NCalc</value>
   </data>
   <data name="FormulaPortDataResultToolTip" xml:space="preserve">
-    <value>Result from formula</value>
+    <value>Výsledek ze vzorce</value>
   </data>
   <data name="FromArrayPortDataArrayToolTip" xml:space="preserve">
-    <value>The array of object to be serialized</value>
+    <value>Pole objektů, které mají být serializovány</value>
   </data>
   <data name="FromArrayPortDataResultToolTip" xml:space="preserve">
-    <value>String representation of the array</value>
+    <value>Řetězcová reprezentace pole</value>
   </data>
   <data name="FromArraySearchTags" xml:space="preserve">
     <value>string.fromarray;tostring;2string;list2string;listtostring;array2string;arraytostring</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="FromObjectPortDataObjToolTip" xml:space="preserve">
-    <value>Object to be serialized</value>
+    <value>Objekt, který má být serializován</value>
   </data>
   <data name="FromObjectPortDataResultToolTip" xml:space="preserve">
-    <value>String representation of the object</value>
+    <value>Řetězcová reprezentace objektu</value>
   </data>
   <data name="FromObjectSearchTags" xml:space="preserve">
     <value>string.fromobject;tostring;2string;number2string;numbertostring</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="FunctionApplyDescription" xml:space="preserve">
-    <value>Returns the result of a function with given arguments</value>
-    <comment>Description for Function.Apply</comment>
+    <value>Vrací výsledek funkce se zadanými argumenty.</value>
   </data>
   <data name="FunctionComposeDescription" xml:space="preserve">
-    <value>Returns a single function from multiple functions</value>
-    <comment>Description for Function.Compose</comment>
+    <value>Vrací jednu funkci z více funkcí</value>
   </data>
   <data name="IfDescription" xml:space="preserve">
-    <value>Conditional statement</value>
-    <comment>Description for If</comment>
+    <value>Podmíněný výraz</value>
   </data>
   <data name="IntegerSliderDescription" xml:space="preserve">
-    <value>Produces integer values</value>
-    <comment>Description for Integer Slider</comment>
+    <value>Vytváří celočíselné hodnoty.</value>
   </data>
   <data name="IntegerSliderNodeDescription" xml:space="preserve">
-    <value>Produces integer values</value>
+    <value>Vytváří celočíselné hodnoty.</value>
   </data>
   <data name="LegacyNodeDescription" xml:space="preserve">
-    <value>This is an obsolete node</value>
-    <comment>Description for Legacy Node</comment>
+    <value>Toto je zastaralý uzel.</value>
   </data>
   <data name="ListCartesianProductDescription" xml:space="preserve">
-    <value>Applies a combinator to each pair in the Cartesian product of two sequences</value>
-    <comment>Description for List.CartesianProduct</comment>
+    <value>Použije kombinátor na každý pár v kartézském součinu dvou posloupností.</value>
   </data>
   <data name="ListCartesianProductSearchTags" xml:space="preserve">
     <value>cross product;crossreference;cross ref;</value>
-    <comment>search tags List.CartesianProcut</comment>
   </data>
   <data name="ListCombineDescription" xml:space="preserve">
-    <value>Applies a combinator to each element in two sequences</value>
-    <comment>Description for List.Combine</comment>
+    <value>Použije kombinátor pro každý prvek ve dvou posloupnostech.</value>
   </data>
   <data name="ListCombineSearchTags" xml:space="preserve">
     <value>map multiple;apply over lists;multiple inputs</value>
-    <comment>List.Combine search tags</comment>
   </data>
   <data name="ListCreateDescription" xml:space="preserve">
-    <value>Makes a new list from the given inputs</value>
-    <comment>Description for List.Create</comment>
+    <value>Vytvoří nový seznam z daných vstupů</value>
   </data>
   <data name="ListFilterDescription" xml:space="preserve">
-    <value>Filters items on a list in or out based on the given condition. If the condition is true, items are filtered in, and if the condition is false, items are filtered out.</value>
-    <comment>Description for List.Filter</comment>
+    <value>Filtruje posloupnost podle dané podmínky. Pokud je podmínka true, jsou položky filtrovány do datové množiny. Když je false, položky jsou filtrovány z datové množiny.</value>
   </data>
   <data name="ListFilterSearchTags" xml:space="preserve">
     <value>screen;dispatch;</value>
-    <comment>List.Filter search tags</comment>
   </data>
   <data name="ListForEachDescription" xml:space="preserve">
-    <value>Performs a computation on each element of a list. Does not accumulate results.</value>
-    <comment>Description for List.ForEach</comment>
+    <value>Provede výpočet na každém prvku ze seznamu. Nehromadí výsledky.</value>
   </data>
   <data name="ListForEachSearchTags" xml:space="preserve">
     <value>apply function;void;</value>
-    <comment>List.ForEach search tags</comment>
   </data>
   <data name="ListLaceLongestDescription" xml:space="preserve">
-    <value>Applies a combinator to each pair resulting from a longest lacing of the input lists. All lists have their last element repeated to match the length of the longest input.</value>
-    <comment>Description for List.LaceLongest</comment>
+    <value>Použije kombinátor na každý pár vzniklý z nejdelšího vázání seznamů vstupů. U všech seznamů je poslední prvek opakován tak, aby délkou odpovídaly nejdelšímu vstupu.</value>
   </data>
   <data name="ListLaceLongestSearchTags" xml:space="preserve">
     <value>repeat last;</value>
-    <comment>search tags List.LaceLongest</comment>
   </data>
   <data name="ListLaceShortestDescription" xml:space="preserve">
-    <value>Applies a combinator to each pair resulting from a shortest lacing of the input lists. All lists are truncated to the length of the shortest input.</value>
-    <comment>Description for List.LaceShortest</comment>
+    <value>Použije kombinátor na každý pár vzniklý z nejkratšího vázání seznamů vstupů. Všechny seznamy jsou zkráceny na délku nejkratšího vstupu.</value>
   </data>
   <data name="ListLaceShortestSearchTags" xml:space="preserve">
     <value>mix;trim end</value>
-    <comment>search tags List.LaceShortest</comment>
   </data>
   <data name="ListMapDescription" xml:space="preserve">
-    <value>Applies a function over all elements of a list, generating a new list from the results</value>
-    <comment>Description for List.Map</comment>
+    <value>Používá funkci na všechny prvky v seznamu, čím z výsledků vytvoří nový seznam.</value>
   </data>
   <data name="ListMapSearchTags" xml:space="preserve">
     <value>function;applied;over list;do to each</value>
-    <comment>search tags for List.Map</comment>
   </data>
   <data name="ListReduceDescription" xml:space="preserve">
-    <value>Reduces a list into a new value by combining each element with an accumulated result</value>
-    <comment>Description for List.Reduce</comment>
+    <value>Snižuje seznam na novou hodnotu kombinací každého prvku s nahromaděným výsledkem.</value>
   </data>
   <data name="ListReduceSearchTags" xml:space="preserve">
     <value>accumulate;aggregate;fold</value>
-    <comment>search tags List.Reduce</comment>
   </data>
   <data name="ListScanDescription" xml:space="preserve">
-    <value>Reduces a list into a new value by combining each element with an accumulated result, produces a list of successive reduced values.</value>
-    <comment>Description for List.Scan</comment>
+    <value>Redukuje seznam na novou hodnotu pomocí kombinace všech prvků s narůstajícím výsledkem, čím dojde k vytvoření seznamu po sobě jdoucích redukovaných hodnot.</value>
   </data>
   <data name="ListScanSearchTags" xml:space="preserve">
     <value>intermediate;maps;folds</value>
-    <comment>List.Scan search tags</comment>
   </data>
   <data name="MapPortDataFxToolTip" xml:space="preserve">
-    <value>The procedure used to map element</value>
+    <value>Postup použitý na prvek mapy</value>
   </data>
   <data name="MapPortDataListToolTip" xml:space="preserve">
-    <value>The list to map over.</value>
+    <value>Seznam, který se má mapovat</value>
   </data>
   <data name="MapPortDataResultToolTip" xml:space="preserve">
-    <value>Mapped list of type: var[]..[]</value>
+    <value>Mapovaný seznam typu: var[]..[]</value>
   </data>
   <data name="RangeDescription" xml:space="preserve">
-    <value>Creates a sequence of numbers or letters in the given range</value>
-    <comment>Description for Number Range</comment>
+    <value>Vytvoří posloupnost čísel nebo písmen v zadaném rozsahu.</value>
   </data>
   <data name="SequenceDescription" xml:space="preserve">
-    <value>Creates a sequence of numbers</value>
-    <comment>Description for Number Sequence</comment>
+    <value>Vytvoří posloupnost čísel.</value>
   </data>
   <data name="OrDescription" xml:space="preserve">
-    <value>Boolean OR: Returns True if any of the inputs are true. If none are true, returns False.</value>
-    <comment>Description for Or</comment>
+    <value>Booleovské OR: vrací hodnotu true, pokud má hodnotu true kterýkoli ze vstupů. Pokud nemá ani jeden vstup hodnotu true, vrací hodnotu false.</value>
   </data>
   <data name="PortDataFalseBlockToolTip" xml:space="preserve">
-    <value>Returned if test is false</value>
+    <value>Vráceno, pokud je test nepravdivý</value>
   </data>
   <data name="PortDataImageToolTip" xml:space="preserve">
-    <value>Image for visualization</value>
+    <value>Obrázek pro vizualizaci</value>
   </data>
   <data name="PortDataListToolTip" xml:space="preserve">
-    <value>List</value>
+    <value>Seznam</value>
   </data>
   <data name="PortDataOperandToolTip" xml:space="preserve">
     <value>Boolean #</value>
   </data>
   <data name="PortDataResultToolTip" xml:space="preserve">
-    <value>Result block produced</value>
+    <value>Vytvořený blok výsledku</value>
   </data>
   <data name="PortDataTestBlockToolTip" xml:space="preserve">
-    <value>Boolean test</value>
+    <value>Test booleovské hodnoty</value>
   </data>
   <data name="PortDataTrueBlockToolTip" xml:space="preserve">
-    <value>Returned if test is true</value>
+    <value>Vráceno, pokud je test pravdivý.</value>
   </data>
   <data name="PortDataVariableToolTip" xml:space="preserve">
-    <value>variable</value>
+    <value>proměnná</value>
   </data>
   <data name="ReducePortDataReductorToolTip" xml:space="preserve">
-    <value>Reductor Function: accepts one item from each list being reduced, and the current accumulated value, result is the new accumulated value.</value>
+    <value>Funkce reduktoru: přijímá jednu položku z každého seznamu, který je redukován, a aktuální nahromaděnou hodnotu. Výsledkem je nová nahromaděná hodnota.</value>
   </data>
   <data name="ReducePortDataResultToolTip" xml:space="preserve">
-    <value>Reduced lists (type: var[]..[])</value>
+    <value>Redukované seznamy (typ: var[]..[])</value>
   </data>
   <data name="ReducePortDataSeedToolTip" xml:space="preserve">
-    <value>Starting accumulated value, to be passed into the first call to the Reductor function.</value>
+    <value>Počáteční nahromaděná hodnota, která má být předána do prvního volání funkce reduktoru.</value>
   </data>
   <data name="ReplaceByConditionDescription" xml:space="preserve">
-    <value>Replaces an item with the given substitute if the original item satisfies the given condition</value>
-    <comment>Description for ReplaceByCondition</comment>
+    <value>Nahradí objekt daným náhradním objektem, pokud původní objekt vyhovuje dané podmínce.</value>
   </data>
   <data name="ReplaceByConditionSearchTags" xml:space="preserve">
     <value>predicate;override;replace if,</value>
-    <comment>ReplaceByCondition search tags</comment>
   </data>
   <data name="ReplacePortDataConditionToolTip" xml:space="preserve">
-    <value>Replacement function used to determine if an object should be replaced</value>
+    <value>Funkce Nahradit, která se používá k určení, zda by měl být objekt nahrazen</value>
   </data>
   <data name="ReplacePortDataItemToolTip" xml:space="preserve">
-    <value>Item to potentially be replaced</value>
+    <value>Položka, které může být nahrazena.</value>
   </data>
   <data name="ReplacePortDataReplaceWithToolTip" xml:space="preserve">
-    <value>Object to replace with</value>
+    <value>Objekt, který chcete nahradit</value>
   </data>
   <data name="ReplacePortDataResultToolTip" xml:space="preserve">
-    <value>Item, or list of items where condition was used to replace with item given in "replaceWith"</value>
+    <value>Položka nebo seznam položek, kde byla podmínka použita k nahrazení danou položkou v objektu replaceWith</value>
   </data>
   <data name="ScanPortDataReductorToolTip" xml:space="preserve">
-    <value>Reductor Function: accepts one item from each list being reduced, and the current accumulated value, result is the new accumulated value.</value>
+    <value>Funkce reduktoru: přijímá jednu položku z každého seznamu, který je redukován, a aktuální nahromaděnou hodnotu. Výsledkem je nová nahromaděná hodnota.</value>
   </data>
   <data name="ScanPortDataResultToolTip" xml:space="preserve">
-    <value>Scanned lists (type: var[]..[])</value>
+    <value>Naskenované seznamy (typ: var[]..[])</value>
   </data>
   <data name="ScanPortDataSeedToolTip" xml:space="preserve">
-    <value>Starting accumulated value, to be passed into the first call to the Reductor function.</value>
+    <value>Počáteční nahromaděná hodnota, která má být předána do prvního volání funkce reduktoru.</value>
   </data>
   <data name="ScopeIfDescription" xml:space="preserve">
-    <value>Returns the result of either True or False input depending on what boolean value is toggled in the test input. Supports recursion which requires that only a single branch be executed. It's critical that that both True and False branches are isolated and do not interact with each other!</value>
-    <comment>Description for Scope If</comment>
+    <value>Vrátí hodnotu výsledku vstupu True nebo False podle toho, na co je booleovská hodnota u testovacího vstupu přepnuta. Podporuje rekurzi, která vyžaduje, aby byla spuštěna pouze jedna větev. Je velmi důležité, aby byly větve vzájemně izolované a nemohly mezi sebou interagovat.</value>
   </data>
   <data name="SelectionPortDataResultToolTip" xml:space="preserve">
-    <value>The selected elements.</value>
+    <value>Vybrané prvky.</value>
   </data>
   <data name="StringfromArrayDescription" xml:space="preserve">
     <value>Converts an array to a string representation</value>
-    <comment>Description for String from Array</comment>
   </data>
   <data name="StringfromObjectDescription" xml:space="preserve">
-    <value>Converts an object to a string representation</value>
-    <comment>Description for String from Object</comment>
+    <value>Převede objekt na řetězcovou reprezentaci.</value>
   </data>
   <data name="StringInputNodeDescription" xml:space="preserve">
-    <value>Creates a string</value>
+    <value>Vytvoří řetězec.</value>
   </data>
   <data name="WatchDescription" xml:space="preserve">
-    <value>Visualizes a node's output</value>
-    <comment>Description for Watch</comment>
+    <value>Vizualizuje výstup uzlu</value>
   </data>
   <data name="WatchImageDescription" xml:space="preserve">
-    <value>Previews an image</value>
-    <comment>Description for Watch Image</comment>
+    <value>Zobrazí náhled obrázku</value>
   </data>
   <data name="WatchImageSearchTags" xml:space="preserve">
     <value>image;inspect image;pixels;display;panel;watchimage;</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="WatchNodeDescription" xml:space="preserve">
-    <value>Visualizes a node's output</value>
+    <value>Vizualizuje výstup uzlu</value>
   </data>
   <data name="WatchPortDataInputToolTip" xml:space="preserve">
-    <value>Node to show output from</value>
+    <value>Uzel k zobrazení výstupu</value>
   </data>
   <data name="WatchPortDataResultToolTip" xml:space="preserve">
-    <value>Node output</value>
+    <value>Výstup uzlu</value>
   </data>
   <data name="WatchSearchTags" xml:space="preserve">
     <value>print;output;display</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="WebRequestDescription" xml:space="preserve">
     <value>Returns the contents of a webpage from the given URL as a string</value>
-    <comment>Description for Web Request</comment>
   </data>
   <data name="WebRequestPortDataResultToolTip" xml:space="preserve">
-    <value>Content of a web request as a string.</value>
+    <value>Obsah webového požadavku jako řetězec.</value>
   </data>
   <data name="WebRequestPortDataUrlToolTip" xml:space="preserve">
-    <value>The url for the web request as a string.</value>
+    <value>Adresa URL pro webový požadavek jako řetězec.</value>
   </data>
   <data name="WatchNodeSearchTags" xml:space="preserve">
     <value>print;output;disply;panel;inspect;debug</value>
-    <comment>Search Tags for WatchNode</comment>
   </data>
   <data name="ConversionNodeDescription" xml:space="preserve">
-    <value>Convert between units of measure.</value>
+    <value>Převod mezi měrnými jednotkami</value>
   </data>
   <data name="SelectFromComboBoxToolTip" xml:space="preserve">
-    <value>This is your Revit display unit settings</value>
+    <value>Toto je nastavení zobrazení jednotek vaší aplikace Revit.</value>
   </data>
   <data name="ListCreateSearchTags" xml:space="preserve">
     <value>entwine;listcreate,newlist;makelist;list;</value>
-    <comment>search tags for list.create</comment>
   </data>
   <data name="DoubleSliderSearchTags" xml:space="preserve">
     <value>double;number;float;integer;slider;numberslider;</value>
-    <comment>Search tags for DoubleSlider node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
   <data name="DynamoConvertSearchTags" xml:space="preserve">
     <value>Convert;Units;Length;Area;Volume;convertbetweenunits;</value>
-    <comment>Search tags for DynamoConvert node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
   <data name="ListCreateInPortToolTip" xml:space="preserve">
-    <value>Item Index #{0}</value>
+    <value>Index položky č. {0}</value>
   </data>
   <data name="SelectionNodeNothingSelected" xml:space="preserve">
-    <value>Nothing selected.</value>
+    <value>Není nic vybráno.</value>
   </data>
   <data name="SelectionNodeSugestion" xml:space="preserve">
-    <value>Select something in the model.</value>
+    <value>Vyberte v modelu nějakou položku.</value>
   </data>
   <data name="UnitNodeFromPortTooltip" xml:space="preserve">
-    <value>A numeric value for conversion.</value>
+    <value>Číselná hodnota k převodu</value>
   </data>
   <data name="UnitNodeToPortToolTip" xml:space="preserve">
-    <value>A converted numeric value.</value>
+    <value>Převedená číselná hodnota</value>
   </data>
   <data name="DateTimeDescription" xml:space="preserve">
-    <value>Creates a dateTime object from a formatted date and time string. Date and time must be in the default DateTime format "MMMM dd, yyyy h:mm tt", e.g. "April 02, 1977 12:00 PM"</value>
+    <value>Vytvoří objekt dateTime z formátovaného řetězce data a času. Datum a čas musí být ve výchozím formátu DateTime "MMMM dd, rrrr h:mm tt", tedy například "Duben 02, 1977 12:00 PM".</value>
   </data>
   <data name="ColorRangeSearchTags" xml:space="preserve">
     <value>colorrange;</value>
@@ -558,105 +505,103 @@
     <value>numbersequence;</value>
   </data>
   <data name="SelectionEdgeOutputPortName" xml:space="preserve">
-    <value>Curve</value>
+    <value>Křivka</value>
   </data>
   <data name="SelectionEdgesOutputPortName" xml:space="preserve">
-    <value>Curves</value>
+    <value>Křivky</value>
   </data>
   <data name="SelectionElementOutputPortName" xml:space="preserve">
-    <value>Element</value>
+    <value>Prvek</value>
   </data>
   <data name="SelectionElementsOutputPortName" xml:space="preserve">
-    <value>Elements</value>
+    <value>Prvky</value>
   </data>
   <data name="SelectionFaceOutputPortName" xml:space="preserve">
-    <value>Surface</value>
+    <value>Povrch</value>
   </data>
   <data name="SelectionFacesOutputPortName" xml:space="preserve">
-    <value>Surfaces</value>
+    <value>Povrchy</value>
   </data>
   <data name="SelectionPointOutputPortName" xml:space="preserve">
-    <value>Point</value>
+    <value>Bod</value>
   </data>
   <data name="SelectionPointsOutputPortName" xml:space="preserve">
-    <value>Points</value>
+    <value>Body</value>
   </data>
   <data name="NumberNodeInputMustBeNumeric" xml:space="preserve">
-    <value>The input must be numeric.</value>
+    <value>Vstup musí být číslo.</value>
   </data>
   <data name="ColorPaletteDescription" xml:space="preserve">
-    <value>Select a Color from the palette</value>
+    <value>Vyberte barvu z palety.</value>
   </data>
   <data name="ColorPaletteSearchTags" xml:space="preserve">
     <value>color</value>
   </data>
   <data name="EqualsWithToleranceDescription" xml:space="preserve">
-    <value>Returns True if x and y are equal given a certain tolerance</value>
-    <comment>Description for Equals with tolerance node</comment>
+    <value>Vrací hodnotu true v případě, že x a y jsou stejné s danou tolerancí.</value>
   </data>
   <data name="EqualsWithToleranceLhsRhsTooltip" xml:space="preserve">
-    <value>Integer or double value</value>
-    <comment>Equals with tolerance node input port tooltip</comment>
+    <value>Celočíselná nebo s dvojitou přesností</value>
   </data>
   <data name="EqualsWithToleranceOutportTooltip" xml:space="preserve">
-    <value>Result of equality check</value>
+    <value>Výsledek kontroly rovnosti</value>
   </data>
   <data name="EqualsWithToleranceSearchTags" xml:space="preserve">
     <value>equals;tolerance</value>
   </data>
   <data name="EqualsWithToleranceTooltip" xml:space="preserve">
-    <value>Tolerance permitted for equality check
-Default value: {0}</value>
+    <value>Tolerance povolená pro kontrolu rovnosti
+Výchozí hodnota: {0}</value>
   </data>
   <data name="DirectoryPathOutputDescription" xml:space="preserve">
-    <value>Directory path</value>
+    <value>Cesta k adresáři</value>
   </data>
   <data name="FilePathOutputDescription" xml:space="preserve">
-    <value>File Path</value>
+    <value>Cesta k souboru</value>
   </data>
   <data name="IFNodeWarningMessage" xml:space="preserve">
-    <value>This node has been updated and will be removed in a future version of Dynamo. Existing behavior is retained, but a new version now supports Empty Lists, Null values and inputs of varying length. Please replace this node if you wish to use this improved behavior.</value>
+    <value>Tento uzel byl aktualizován a bude v budoucí verzi aplikace Dynamo odebrán. Existující chování bude zachováno, nová verze však nyní podporuje prázdné seznamy, hodnoty Null a vstupy s proměnlivou délkou. Pokud chcete použít toto vylepšené chování, nahraďte tento uzel.</value>
   </data>
   <data name="CustomSelectionSearchTags" xml:space="preserve">
     <value>dropdown;custom;custom dropdown;enum;custom enum</value>
   </data>
   <data name="CustomSelectionNodeDescription" xml:space="preserve">
-    <value>A dropdown menu with customizable values.</value>
+    <value>Rozevírací nabídka s přizpůsobitelnými hodnotami.</value>
   </data>
   <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
-    <value>is obsolete, please use the new Convert Units node.</value>
+    <value>je zastaralý, použijte nový uzel Převést jednotky.</value>
   </data>
   <data name="IntegerSliderInfoMessage" xml:space="preserve">
-    <value>The value entered is not in the int64 range.</value>
+    <value>Zadaná hodnota není v rozsahu int64.</value>
   </data>
   <data name="CustomSelectionOutputDescription" xml:space="preserve">
-    <value>Selected value</value>
+    <value>Vybraná hodnota</value>
   </data>
   <data name="TooltipTextAction" xml:space="preserve">
-    <value>Nodes that execute an action</value>
+    <value>Uzly, které provádějí akci</value>
   </data>
   <data name="TooltipTextCreate" xml:space="preserve">
-    <value>Nodes that create data</value>
+    <value>Uzly, které tvoří data</value>
   </data>
   <data name="TooltipTextQuery" xml:space="preserve">
-    <value>Nodes that query data</value>
+    <value>Uzly, které dotazují data</value>
   </data>
   <data name="RememberDescription" xml:space="preserve">
-    <value>Store data passing through this node to the Dynamo file. Return the stored data if the input is null.</value>
+    <value>Uloží data procházející tímto uzlem do souboru aplikace Dynamo. Pokud je vstup null, vrátí uložená data.</value>
   </data>
   <data name="RememberInputToolTip" xml:space="preserve">
-    <value>Data to sample and store in the file.</value>
+    <value>Data ke zpracování a uložení do souboru.</value>
   </data>
   <data name="RememberOuputToolTip" xml:space="preserve">
     <value>Data</value>
   </data>
   <data name="GateDescription" xml:space="preserve">
-    <value>Block data passing through this node to downstream nodes. Node returns the input data only if the node value is set to Open.
+    <value>Blokovat data procházející tímto uzlem k následným uzlům. Uzel vrací vstupní data pouze v případě, že je hodnota uzlu nastavena na možnost Otevřít.
 
-In Generative Design workflows, this node should be used to control and block the behavior of nodes that will place elements in Revit</value>
+V pracovních postupech generativního návrhu by tento uzel měl být použit k řízení a blokování chování uzlů, které umísťují prvky do aplikace Revit.</value>
   </data>
   <data name="GateInPortToolTip" xml:space="preserve">
-    <value>Data to pass to a downstream node with gated controls.</value>
+    <value>Data pro předání do podřazeného uzlu s řízenými prvky.</value>
   </data>
   <data name="GateOutPortToolTip" xml:space="preserve">
     <value>Data</value>
@@ -665,19 +610,19 @@ In Generative Design workflows, this node should be used to control and block th
     <value>gate;stop;data</value>
   </data>
   <data name="DefineDataDescription" xml:space="preserve">
-    <value>Validates the data type of an input and returns it</value>
+    <value>Ověří datový typ vstupu a vrátí jej.</value>
   </data>
   <data name="DefineDataInputTooltip" xml:space="preserve">
-    <value>Input data to be validated. Refer to drop-down for list of allowed types</value>
+    <value>Vstupní data k ověření. Seznam povolených typů naleznete v rozevíracím seznamu.</value>
   </data>
   <data name="DefineDataOutputTooltip" xml:space="preserve">
-    <value>Validated data</value>
+    <value>Ověřená data</value>
   </data>
   <data name="DefineDataDisplayValueMessage" xml:space="preserve">
-    <value>Select Types</value>
+    <value>Vybrat typy</value>
   </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
-    <value>Format specifier for numeric values, see extended node help for more info.
-default value: G</value>
+    <value>Specifikátor formátu pro číselné hodnoty, další informace najdete v nápovědě k rozšířenému uzlu.
+výchozí hodnota: G</value>
   </data>
 </root>

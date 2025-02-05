@@ -118,24 +118,24 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="JaggedListExceptionMessage" xml:space="preserve">
-    <value>The list of colors must not be a jagged list.</value>
+    <value>颜色列表不能是交错列表。</value>
   </data>
   <data name="NoColorsExceptionMessage" xml:space="preserve">
-    <value>You must provide some colors.</value>
+    <value>必须提供一些颜色。</value>
   </data>
   <data name="NoVertexExceptionMessage" xml:space="preserve">
-    <value>You must provide some vertices.</value>
+    <value>必须提供一些顶点。</value>
   </data>
   <data name="TwoDimensionalListExceptionMessage" xml:space="preserve">
-    <value>You must supply a two dimensional list of Colors.</value>
+    <value>必须提供颜色的二维列表。</value>
   </data>
   <data name="VertexColorCountMismatchExceptionMessage" xml:space="preserve">
-    <value>The number of colors supplied must match the number of vertices.</value>
+    <value>提供的颜色数必须与顶点数匹配。</value>
   </data>
   <data name="VerticesDivisibleByThreeExceptionMessage" xml:space="preserve">
-    <value>The number of vertices supplied must be divisible by three.</value>
+    <value>提供的顶点数必须是 3 的倍数。</value>
   </data>
   <data name="ByMeshColorsInvalidColorCountMessage" xml:space="preserve">
-      <value>The color count is invalid. It must equal 1 (single color), or equal the face count (per-face color), or equal the vertex count (per-vertex color), or equal the triangle count multiplied by three (per-triangle-vertex color). If you want to color multiple meshes, you may need to use List Levels.</value>
+    <value>颜色计数无效。它必须等于 1 (单色)，或等于面数(逐面颜色)，或等于顶点计数(逐顶点颜色)，或等于三角形计数乘以 3 (逐三角形顶点颜色)。如果要为多个网格着色，可能需要使用“列表级别”。</value>
   </data>
 </root>

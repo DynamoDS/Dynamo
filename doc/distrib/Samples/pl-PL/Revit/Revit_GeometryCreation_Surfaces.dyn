@@ -1,7 +1,7 @@
 {
   "Uuid": "c9e9c242-5ada-4606-9641-a5424410938d",
   "IsCustomNode": false,
-  "Description": "This graph presents several methods of creating Surfaces in Dynamo and two methods of converting geometry into Revit Geometry. ",
+  "Description": "W tym wykresie przedstawiono kilka metod tworzenia powierzchni w dodatku Dynamo i dwie metody przekształcania geometrii w geometrię programu Revit. ",
   "Name": "Revit_GeometryCreation_Surfaces",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -17,7 +17,7 @@
         {
           "Id": "7a7457b9ac8044019a4f2634ae546676",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna X\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -26,7 +26,7 @@
         {
           "Id": "ff8e7c51811e4b0d8b8e1742d7a1da84",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Y\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -35,7 +35,7 @@
         {
           "Id": "b6de99d524f54f9a8580632c29ec62d1",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Z\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -46,7 +46,7 @@
         {
           "Id": "07aa884531034c2d8788c008742874ad",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punkt utworzony na podstawie współrzędnych",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -55,7 +55,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Utwórz punkt o podanych trzech współrzędnych kartezyjskich.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -65,7 +65,7 @@
         {
           "Id": "da7bc7b80b474c978d9cb8dbef37a03e",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna X\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -74,7 +74,7 @@
         {
           "Id": "9e01375fb68a46a8a2075bdfe7963c08",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Y\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -83,7 +83,7 @@
         {
           "Id": "84fa891f57bd464896272794b7545dbe",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Z\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -94,7 +94,7 @@
         {
           "Id": "41b6d8d238254f25b0dc81a67abe523c",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punkt utworzony na podstawie współrzędnych",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -103,7 +103,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Utwórz punkt o podanych trzech współrzędnych kartezyjskich.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -113,7 +113,7 @@
         {
           "Id": "1f8383ba1d6c45c89fd6f58a6fdcdfd6",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna X\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -122,7 +122,7 @@
         {
           "Id": "a17abcbefed84e86baa7f91bc3572ada",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Y\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -131,7 +131,7 @@
         {
           "Id": "e4ff666defe043fd8739c73b3555a3e2",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Z\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -142,7 +142,7 @@
         {
           "Id": "47a9ce76f7b4425badfdfb31cfbb471a",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punkt utworzony na podstawie współrzędnych",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -151,7 +151,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Utwórz punkt o podanych trzech współrzędnych kartezyjskich.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -171,7 +171,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Tworzy liczbę",
       "InputValue": 10.0
     },
     {
@@ -192,7 +192,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Tworzy liczbę",
       "InputValue": 5.0
     },
     {
@@ -203,7 +203,7 @@
         {
           "Id": "fc4916fbac6947bdb083acf55cadf6ab",
           "Name": "firstPoint",
-          "Description": "1st point of arc\n\nPoint",
+          "Description": "1. punkt łuku\n\nPunkt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -212,7 +212,7 @@
         {
           "Id": "e75f91f3187f493f8e47a40c1faad4e5",
           "Name": "secondPoint",
-          "Description": "2nd point of arc\n\nPoint",
+          "Description": "2. punkt łuku\n\nPunkt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -221,7 +221,7 @@
         {
           "Id": "4f649926de3941f2a557c52149302375",
           "Name": "thirdPoint",
-          "Description": "3rd point of arc\n\nPoint",
+          "Description": "3. punkt łuku\n\nPunkt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -232,7 +232,7 @@
         {
           "Id": "406c000c44264f80973169cdac284ddb",
           "Name": "Arc",
-          "Description": "Arc created from three points",
+          "Description": "Łuk utworzony z trzech punktów",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -241,7 +241,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Arc.ByThreePoints@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Create an arc by providing three sequential points along its circumference.\n\nArc.ByThreePoints (firstPoint: Point, secondPoint: Point, thirdPoint: Point): Arc"
+      "Description": "Utwórz łuk na podstawie trzech kolejnych punktów na jego obwodzie.\n\nArc.ByThreePoints (pierwszyPunkt: Point, drugiPunkt: Point, trzeciPunkt: Point): Arc"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -251,7 +251,7 @@
         {
           "Id": "1a200ea7d7a54c1eba7339153cd270ea",
           "Name": "controlVertices",
-          "Description": "Grid of control points for nurbs surface\n\nPoint[][]",
+          "Description": "Siatka punktów kontrolnych dla powierzchni nurbs\n\nPoint[][]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -260,7 +260,7 @@
         {
           "Id": "70afbc8d75064f579421c5f41283331a",
           "Name": "uDegree",
-          "Description": "Degree in u direction\n\nint\nDefault value : 3",
+          "Description": "Stopnie w kierunku U\n\nint\nWartość domyślna: 3",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -269,7 +269,7 @@
         {
           "Id": "2b197c1961554e47b9e26233219b5ce3",
           "Name": "vDegree",
-          "Description": "Degree in v direction\n\nint\nDefault value : 3",
+          "Description": "Stopnie w kierunku V\n\nint\nWartość domyślna: 3",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -280,7 +280,7 @@
         {
           "Id": "8469da5fedbe4d97a40e6362afd2f681",
           "Name": "NurbsSurface",
-          "Description": "Nurbs surface created by control points",
+          "Description": "Powierzchnia nurbs utworzona na podstawie punktów kontrolnych",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -289,7 +289,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsSurface.ByControlPoints@Autodesk.DesignScript.Geometry.Point[][],int,int",
       "Replication": "Auto",
-      "Description": "Create a NurbsSurface by using explicit control Points, with specified U and V degrees.\n\nNurbsSurface.ByControlPoints (controlVertices: Point[][], uDegree: int = 3, vDegree: int = 3): NurbsSurface"
+      "Description": "Tworzy obiekt NurbsSurface z jawnie podanych punktów sterujących, z określonymi stopniami U i V.\n\nNurbsSurface.ByControlPoints (wierzchołkiKontrolne: Point[][], stopieńU: int = 3, stopieńV: int = 3): NurbsSurface"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -299,7 +299,7 @@
         {
           "Id": "dcf1d34577784017a17f86ff2b03585e",
           "Name": "geometries",
-          "Description": "A collection of Geometry\n\nGeometry[]",
+          "Description": "Kolekcja obiektów Geometry\n\nGeometry[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -319,7 +319,7 @@
       ],
       "FunctionSignature": "Revit.Elements.ImportInstance.ByGeometries@Autodesk.DesignScript.Geometry.Geometry[]",
       "Replication": "Auto",
-      "Description": "Import a collection of Geometry (Solid, Curve, Surface, etc) into Revit as an ImportInstance. This variant is much faster than ImportInstance.ByGeometry as it uses a batch method.\n\nImportInstance.ByGeometries (geometries: Geometry[]): ImportInstance"
+      "Description": "Importuj kolekcję obiektów Geometry (obiektów Solid, Curve, Surface itd.) do programu Revit jako obiekt ImportInstance. Ten sposób jest o wiele szybszy niż użycie metody ImportInstance.ByGeometry, ponieważ korzysta z operacji wsadowej.\n\nImportInstance.ByGeometries (geometrie: Geometry[]): ImportInstance"
     },
     {
       "ConcreteType": "CoreNodeModels.CreateList, CoreNodeModels",
@@ -330,7 +330,7 @@
         {
           "Id": "a6217be4e3b4405a941165fe79b27132",
           "Name": "item0",
-          "Description": "Item Index #0",
+          "Description": "Indeks elementu 0",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -339,7 +339,7 @@
         {
           "Id": "d936c0df79d54e3f9bedbe79fbf74fdb",
           "Name": "item1",
-          "Description": "Item Index #1",
+          "Description": "Indeks elementu 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -350,7 +350,7 @@
         {
           "Id": "c3c16412fd0b4b8889d5fbf7c2b0b31c",
           "Name": "list",
-          "Description": "A list",
+          "Description": "Lista",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -358,7 +358,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Makes a new list from the given inputs"
+      "Description": "Tworzy nową listę z określonych danych wejściowych"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -388,7 +388,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.Area",
       "Replication": "Auto",
-      "Description": "Returns the total surface area.\n\nSurface.Area: double"
+      "Description": "Zwraca całkowity obszar powierzchni.\n\nSurface.Area: double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -407,7 +407,7 @@
         {
           "Id": "16edbe30dc444ee2abc41d1efdc6605a",
           "Name": "u",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -416,7 +416,7 @@
         {
           "Id": "5c44b7e8c65c4c08947717ba518cfb34",
           "Name": "v",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -427,7 +427,7 @@
         {
           "Id": "073c001f365a4bb7992fd4fb5d428565",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Punkt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -436,7 +436,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.PointAtParameter@double,double",
       "Replication": "CrossProduct",
-      "Description": "Return the Point at specified U and V parameters.\n\nSurface.PointAtParameter (u: double = 0, v: double = 0): Point"
+      "Description": "Zwróć punkt o określonych parametrach U i V.\n\nSurface.PointAtParameter (u: double = 0, v: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -447,7 +447,7 @@
         {
           "Id": "569a58df91f5487ead80e1d84f8c7ec6",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wartość wyrażenia w wierszu 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -455,7 +455,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umożliwia bezpośrednie utworzenie kodu DesignScript",
       "Code": "0..1..0.1;"
     },
     {
@@ -467,7 +467,7 @@
         {
           "Id": "f5ee2995c3924d38a8cc08f68d4ba015",
           "Name": "item0",
-          "Description": "Item Index #0",
+          "Description": "Indeks elementu 0",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -476,7 +476,7 @@
         {
           "Id": "874def3c1f574c0d81aed1266f14b46d",
           "Name": "item1",
-          "Description": "Item Index #1",
+          "Description": "Indeks elementu 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -487,7 +487,7 @@
         {
           "Id": "4efe9fd6f44a4c60a5f805d9024235e8",
           "Name": "list",
-          "Description": "A list",
+          "Description": "Lista",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -495,7 +495,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Makes a new list from the given inputs"
+      "Description": "Tworzy nową listę z określonych danych wejściowych"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -505,7 +505,7 @@
         {
           "Id": "eb68582fd8d542de8edb838f5a336db6",
           "Name": "surfaces",
-          "Description": "Surfaces to join into polysurface\n\nSurface[]",
+          "Description": "Powierzchnie do połączenia w powierzchnię złożoną\n\nSurface[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -525,7 +525,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.PolySurface.ByJoinedSurfaces@Autodesk.DesignScript.Geometry.Surface[]",
       "Replication": "Auto",
-      "Description": "Make Polysurface by joining surfaces.\n\nPolySurface.ByJoinedSurfaces (surfaces: Surface[]): PolySurface"
+      "Description": "Utwórz powierzchnię złożoną przez połączenie powierzchni.\n\nPolySurface.ByJoinedSurfaces (powierzchnie: Surface[]): PolySurface"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -555,7 +555,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.Area",
       "Replication": "Auto",
-      "Description": "Returns the total surface area.\n\nSurface.Area: double"
+      "Description": "Zwraca całkowity obszar powierzchni.\n\nSurface.Area: double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -585,7 +585,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.Area",
       "Replication": "Auto",
-      "Description": "Returns the total surface area.\n\nSurface.Area: double"
+      "Description": "Zwraca całkowity obszar powierzchni.\n\nSurface.Area: double"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -597,7 +597,7 @@
         {
           "Id": "24d83f34454e4318a4fd2b4314e259e0",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Węzeł do oceny.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -608,7 +608,7 @@
         {
           "Id": "f05c31af779e430a865774a4f50809fc",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Obejrzyj zawartość.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -616,7 +616,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Wizualizuje dane wyjściowe węzła"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -628,7 +628,7 @@
         {
           "Id": "3839954b56b34ab683b6591073dd71bd",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Węzeł do oceny.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -639,7 +639,7 @@
         {
           "Id": "c8defe6f53c34c3482c4ecea0b33ff65",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Obejrzyj zawartość.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -647,7 +647,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Wizualizuje dane wyjściowe węzła"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -659,7 +659,7 @@
         {
           "Id": "9a68805d44b64baf9a90650bab59315b",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Węzeł do oceny.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -670,7 +670,7 @@
         {
           "Id": "8220c93f88e74e20a8fa5cf011525adf",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Obejrzyj zawartość.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -678,7 +678,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Wizualizuje dane wyjściowe węzła"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -688,7 +688,7 @@
         {
           "Id": "530c072cf1a44f19aef3381e5a84f6a3",
           "Name": "path",
-          "Description": "The input path to sweep along.\n\nCurve",
+          "Description": "Ścieżka wejściowa stosowana podczas ukosowania.\n\nCurve",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -697,7 +697,7 @@
         {
           "Id": "88f5a2b8cd654b6bb63ba4c25f061bc5",
           "Name": "guideRail",
-          "Description": "A rail to guide the orientation of the sweep.\n\nCurve",
+          "Description": "Tor wskazujący orientację ukosowania.\n\nCurve",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -706,7 +706,7 @@
         {
           "Id": "0fe1c2b54ba1414bbaea618b9a30297f",
           "Name": "profile",
-          "Description": "The profile curve to sweep along the path.\n\nCurve",
+          "Description": "Krzywa profilu ukosowana wzdłuż ścieżki.\n\nCurve",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -717,7 +717,7 @@
         {
           "Id": "fdff9ad255ed4c14a8462dee197ec03c",
           "Name": "Surface",
-          "Description": "Surface created by sweeping two rails",
+          "Description": "Powierzchnia utworzona przez przeciągnięcie dwóch prowadnic",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -726,7 +726,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.BySweep2Rails@Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve,Autodesk.DesignScript.Geometry.Curve",
       "Replication": "Auto",
-      "Description": "Sweep the cross section curve along a path guided by a two rails\n\nSurface.BySweep2Rails (path: Curve, guideRail: Curve, profile: Curve): Surface"
+      "Description": "Ukosuj krzywą przekroju wzdłuż ścieżki sterowanej dwoma torami\n\nSurface.BySweep2Rails (ścieżka: Curve, torProwadzący: Curve, profil: Curve): Surface"
     },
     {
       "ConcreteType": "Watch3DNodeModels.Watch3D, Watch3DNodeModels",
@@ -752,7 +752,7 @@
         {
           "Id": "7ce216b719f4476fbefc4ec4d69a4ae9",
           "Name": "",
-          "Description": "Incoming geometry objects.",
+          "Description": "Przychodzące obiekty geometrii.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -763,7 +763,7 @@
         {
           "Id": "d727b77c741e4760bc8ed411c5d241f5",
           "Name": "",
-          "Description": "Incoming geometry objects.",
+          "Description": "Przychodzące obiekty geometrii.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -771,7 +771,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Shows a dynamic preview of geometry"
+      "Description": "Wyświetla podgląd dynamiczny geometrii"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -781,7 +781,7 @@
         {
           "Id": "7ce25611ba8b4e66a5ba7a82aaa461ab",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna X\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -790,7 +790,7 @@
         {
           "Id": "ce957d3ec3804c279019ae8950288882",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Y\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -799,7 +799,7 @@
         {
           "Id": "4ab303dcc17640e59f75f3191fed4448",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Z\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -810,7 +810,7 @@
         {
           "Id": "c59ffcdd5f7649a6b1dd6527452ba929",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punkt utworzony na podstawie współrzędnych",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -819,7 +819,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Utwórz punkt o podanych trzech współrzędnych kartezyjskich.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -839,7 +839,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Tworzy liczbę",
       "InputValue": -5.0
     },
     {
@@ -850,7 +850,7 @@
         {
           "Id": "8f371e4e4ba54f4ea07ccb5aa0c6bed5",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna X\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -859,7 +859,7 @@
         {
           "Id": "36d8cd14f55e473db42fd2ff04c6a61f",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Y\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -868,7 +868,7 @@
         {
           "Id": "82126067dc8c4cbbae9c0bcaa566a287",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Z\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -879,7 +879,7 @@
         {
           "Id": "4201ffcf4a674337880e00dd0f90afe6",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punkt utworzony na podstawie współrzędnych",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -888,7 +888,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Utwórz punkt o podanych trzech współrzędnych kartezyjskich.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -898,7 +898,7 @@
         {
           "Id": "18e8b57fb0874cdcadf34a3c587e0469",
           "Name": "firstPoint",
-          "Description": "1st point of arc\n\nPoint",
+          "Description": "1. punkt łuku\n\nPunkt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -907,7 +907,7 @@
         {
           "Id": "b7a4ab33b2274309a856ab1c5bef4a09",
           "Name": "secondPoint",
-          "Description": "2nd point of arc\n\nPoint",
+          "Description": "2. punkt łuku\n\nPunkt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -916,7 +916,7 @@
         {
           "Id": "a7ff924adcab41d283e77eee2af157fb",
           "Name": "thirdPoint",
-          "Description": "3rd point of arc\n\nPoint",
+          "Description": "3. punkt łuku\n\nPunkt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -927,7 +927,7 @@
         {
           "Id": "c43ed472697e4aaaabf728570802b24e",
           "Name": "Arc",
-          "Description": "Arc created from three points",
+          "Description": "Łuk utworzony z trzech punktów",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -936,7 +936,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Arc.ByThreePoints@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Create an arc by providing three sequential points along its circumference.\n\nArc.ByThreePoints (firstPoint: Point, secondPoint: Point, thirdPoint: Point): Arc"
+      "Description": "Utwórz łuk na podstawie trzech kolejnych punktów na jego obwodzie.\n\nArc.ByThreePoints (pierwszyPunkt: Point, drugiPunkt: Point, trzeciPunkt: Point): Arc"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -946,7 +946,7 @@
         {
           "Id": "42950ee0f9b94c5983d71fc2fd9a284f",
           "Name": "crossSections",
-          "Description": "Curves to loft through\n\nCurve[]",
+          "Description": "Krzywe do wyciągnięcia złożonego\n\nCurve[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -957,7 +957,7 @@
         {
           "Id": "0fe5ba479cf240f798da6a3532ca99a6",
           "Name": "Surface",
-          "Description": "Surface created by loft",
+          "Description": "Powierzchnia utworzona przez wyciągnięcie złożone",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -966,7 +966,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.ByLoft@Autodesk.DesignScript.Geometry.Curve[]",
       "Replication": "Auto",
-      "Description": "Create a Surface by lofting between input cross section Curves.\n\nSurface.ByLoft (crossSections: Curve[]): Surface"
+      "Description": "Utwórz powierzchnię przez wyciągnięcie między krzywymi przekrojów wejściowych.\n\nSurface.ByLoft (przekroje: Curve[]): Surface"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -986,7 +986,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Tworzy liczbę",
       "InputValue": 5.0
     },
     {
@@ -1006,7 +1006,7 @@
         {
           "Id": "f3f6882e68c144a6986f4ecc88bfe865",
           "Name": "distance",
-          "Description": "The distance to extrude the curve\n\ndouble\nDefault value : 1",
+          "Description": "Odległość wciągnięcia krzywej\n\ndouble\nWartość domyślna: 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1017,7 +1017,7 @@
         {
           "Id": "508f40d1251547c5a1a38a4eb6b0d783",
           "Name": "Surface",
-          "Description": "The extruded Surface",
+          "Description": "Powierzchnia wyciągnięta",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1026,7 +1026,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.Extrude@double",
       "Replication": "Auto",
-      "Description": "Extrudes a Curve in the normal Vector direction\n\nCurve.Extrude (distance: double = 1): Surface"
+      "Description": "Wyciąga krzywą w kierunku wektora normalnego\n\nCurve.Extrude (odległość: double = 1): Surface"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -1037,7 +1037,7 @@
         {
           "Id": "4655c62188fd4b7a9f41b5069e35494b",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wartość wyrażenia w wierszu 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1045,7 +1045,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umożliwia bezpośrednie utworzenie kodu DesignScript",
       "Code": "10;"
     },
     {
@@ -1056,7 +1056,7 @@
         {
           "Id": "66599e28cd4b4bf39402259e9d6cbf23",
           "Name": "firstPoint",
-          "Description": "1st point of arc\n\nPoint",
+          "Description": "1. punkt łuku\n\nPunkt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1065,7 +1065,7 @@
         {
           "Id": "9d68568f6fbf44be86297698e2ab5352",
           "Name": "secondPoint",
-          "Description": "2nd point of arc\n\nPoint",
+          "Description": "2. punkt łuku\n\nPunkt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1074,7 +1074,7 @@
         {
           "Id": "caf8055a83b24a9d90f51b5a4bda2767",
           "Name": "thirdPoint",
-          "Description": "3rd point of arc\n\nPoint",
+          "Description": "3. punkt łuku\n\nPunkt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1085,7 +1085,7 @@
         {
           "Id": "19803302a9194f7ba0d19bba12397774",
           "Name": "Arc",
-          "Description": "Arc created from three points",
+          "Description": "Łuk utworzony z trzech punktów",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1094,7 +1094,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Arc.ByThreePoints@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Create an arc by providing three sequential points along its circumference.\n\nArc.ByThreePoints (firstPoint: Point, secondPoint: Point, thirdPoint: Point): Arc"
+      "Description": "Utwórz łuk na podstawie trzech kolejnych punktów na jego obwodzie.\n\nArc.ByThreePoints (pierwszyPunkt: Point, drugiPunkt: Point, trzeciPunkt: Point): Arc"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1104,7 +1104,7 @@
         {
           "Id": "3c23c4e8db6b42d7bc70b956c60b55a2",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna X\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1113,7 +1113,7 @@
         {
           "Id": "27f1d638fcbb4054a7ed06192a948adf",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Y\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1122,7 +1122,7 @@
         {
           "Id": "d1cd41d15ae943a4a51550c4917ac2a0",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Z\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1133,7 +1133,7 @@
         {
           "Id": "ae18d2c411894112a17cf1cc0ef43b42",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punkt utworzony na podstawie współrzędnych",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1142,7 +1142,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Utwórz punkt o podanych trzech współrzędnych kartezyjskich.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -1162,7 +1162,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Tworzy liczbę",
       "InputValue": 5.0
     },
     {
@@ -1183,7 +1183,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Tworzy liczbę",
       "InputValue": 10.0
     },
     {
@@ -1204,7 +1204,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Tworzy liczbę",
       "InputValue": 15.0
     },
     {
@@ -1215,7 +1215,7 @@
         {
           "Id": "5e893cf4595042598b0493ae8285252e",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna X\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1224,7 +1224,7 @@
         {
           "Id": "9f5db69aeafb40cb80b338f0d2840ed2",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Y\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1233,7 +1233,7 @@
         {
           "Id": "f42f293325f24e108f2161f7a3dae285",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Z\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1244,7 +1244,7 @@
         {
           "Id": "141a7cc2a6a240cdb2aec1c305c751b8",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punkt utworzony na podstawie współrzędnych",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1253,7 +1253,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Utwórz punkt o podanych trzech współrzędnych kartezyjskich.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1263,7 +1263,7 @@
         {
           "Id": "c991c7cb156844f681e7700e770f3f92",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna X\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1272,7 +1272,7 @@
         {
           "Id": "3e8feb1d58334b8e8d8c5e8141903ca4",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Y\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1281,7 +1281,7 @@
         {
           "Id": "efedb3d957fe46638d502f60a9a47ebc",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Z\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1292,7 +1292,7 @@
         {
           "Id": "a048d4c970d649b493aab1d7910ad809",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punkt utworzony na podstawie współrzędnych",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1301,7 +1301,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Utwórz punkt o podanych trzech współrzędnych kartezyjskich.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -1321,7 +1321,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Tworzy liczbę",
       "InputValue": -10.0
     },
     {
@@ -1332,7 +1332,7 @@
         {
           "Id": "5204ccdf265a4ddb9f0c7b095fbc1b0f",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna X\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1341,7 +1341,7 @@
         {
           "Id": "0f9ea3c643c34adc8abccea2701942af",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Y\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1350,7 +1350,7 @@
         {
           "Id": "b790f2c9368c4e358bd89fb2e756a574",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Współrzędna Z\n\ndouble\nWartość domyślna: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1361,7 +1361,7 @@
         {
           "Id": "4b03da9ab93a4d4081e77eb557638c14",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Punkt utworzony na podstawie współrzędnych",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1370,7 +1370,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Utwórz punkt o podanych trzech współrzędnych kartezyjskich.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1380,7 +1380,7 @@
         {
           "Id": "b854a8c31b1a401db0bd0bb71c821428",
           "Name": "startPoint",
-          "Description": "Line start point\n\nPoint",
+          "Description": "Punkt początkowy linii\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1389,7 +1389,7 @@
         {
           "Id": "49aef8b334514ddf8d79d1e183ede75a",
           "Name": "endPoint",
-          "Description": "Line end point\n\nPoint",
+          "Description": "Punkt końcowy linii\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1400,7 +1400,7 @@
         {
           "Id": "7a7dba5a5b4b4344b293744f1d0b3ced",
           "Name": "Line",
-          "Description": "Line from start and end point",
+          "Description": "Linia utworzona z punktu początkowego i końcowego",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1409,7 +1409,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Creates a straight Line between two input Points.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
+      "Description": "Tworzy linię prostą między dwoma punktami wejściowymi.\n\nLine.ByStartPointEndPoint (punktPoczątkowy: Point, punktKońcowy: Point): Line"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -1429,7 +1429,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Tworzy liczbę",
       "InputValue": 10.0
     },
     {
@@ -1449,7 +1449,7 @@
         {
           "Id": "b4bcfdcc79474c838073a6860f4a83e1",
           "Name": "isSolid",
-          "Description": "bool\nDefault value : true",
+          "Description": "bool\nWartość domyślna: true",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1469,7 +1469,7 @@
       ],
       "FunctionSignature": "Revit.Elements.Form.ByLoftCrossSections@Revit.GeometryReferences.ElementCurveReference[][],bool",
       "Replication": "Auto",
-      "Description": "Creates a Form by lofting a nested list of curves\n\nForm.ByLoftCrossSections (curves: ElementCurveReference[][], isSolid: bool = true): Form"
+      "Description": "Tworzy formę przez wyciągnięcie listy krzywych\n\nForm.ByLoftCrossSections (curves: ElementCurveReference[][], isSolid: bool = true): Form"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1479,7 +1479,7 @@
         {
           "Id": "a682ee1ed0634b6c8dd05d4d9e2e9777",
           "Name": "curve",
-          "Description": "Curve",
+          "Description": "Krzywa",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1499,7 +1499,7 @@
       ],
       "FunctionSignature": "Revit.Elements.ModelCurve.ReferenceCurveByCurve@Autodesk.DesignScript.Geometry.Curve",
       "Replication": "Auto",
-      "Description": "Construct a Revit ModelCurve element from a Curve\n\nModelCurve.ReferenceCurveByCurve (curve: Curve): ModelCurve"
+      "Description": "Utwórz element ModelCurve programu Revit z krzywej\n\nModelCurve.ReferenceCurveByCurve (krzywa: Curve): ModelCurve"
     }
   ],
   "Connectors": [
@@ -1805,7 +1805,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Właściwości",
       "Version": "2.13",
       "Data": {}
     },
@@ -1853,7 +1853,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Podgląd tła",
       "EyeX": -40.34466552734375,
       "EyeY": 37.664634704589844,
       "EyeZ": 30.985715866088867,
@@ -2290,7 +2290,7 @@
     "Annotations": [
       {
         "Id": "4fae38bea8fe41e2b5a9e4fdab704f2f",
-        "Title": "Info",
+        "Title": "Informacje",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2314,8 +2314,8 @@
       },
       {
         "Id": "099d20bced4749a986fa167bf29eb7fa",
-        "Title": "Prepare Points",
-        "DescriptionText": "Generate a set of points to build geometry",
+        "Title": "Przygotuj punkty",
+        "DescriptionText": "Wygeneruj zestaw punktów, aby utworzyć geometrię",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2353,8 +2353,8 @@
       },
       {
         "Id": "4ecfcac1c4064605ac87056f4db361cf",
-        "Title": "Create Form",
-        "DescriptionText": "Create a Loft shape from two curves",
+        "Title": "Utwórz formę",
+        "DescriptionText": "Utwórz kształt wyciągnięcia złożonego na podstawie dwóch krzywych",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2376,7 +2376,7 @@
       },
       {
         "Id": "a76db941d64a4d278670f76327bb2210",
-        "Title": "Create Import",
+        "Title": "Utwórz import",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2399,7 +2399,7 @@
       },
       {
         "Id": "4e36eef3bfc344ea85b25fec3d67d1cc",
-        "Title": "Evaluate Surface Area",
+        "Title": "Oblicz pole powierzchni",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2429,7 +2429,7 @@
       },
       {
         "Id": "3b698c3d39c247df973b051013561617",
-        "Title": "Create Profiles",
+        "Title": "Utwórz profile",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2454,8 +2454,8 @@
       },
       {
         "Id": "b2177da4860e48208f3d32f71a4dd2f3",
-        "Title": "Surface by Extrude Curve",
-        "DescriptionText": "Use a Curve to create an Extrusion with a given distance",
+        "Title": "Powierzchnia przez wyciągnięcie krzywej",
+        "DescriptionText": "Utwórz wyciągnięcie o określonej odległości za pomocą krzywej",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2477,8 +2477,8 @@
       },
       {
         "Id": "b6e153f03633456a930c25f482178d24",
-        "Title": "Create Surface by Loft ",
-        "DescriptionText": "Join Cross Sections to create a Loft surface",
+        "Title": "Utwórz powierzchnię za pomocą wyciągnięcia złożonego ",
+        "DescriptionText": "Połącz przekroje poprzeczne, aby utworzyć powierzchnię wyciągnięcia złożonego",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2499,8 +2499,8 @@
       },
       {
         "Id": "32b8f9839db84214adc49356a1a09208",
-        "Title": "Surface by Sweep",
-        "DescriptionText": "Use a profile, a path curve and a guide rail to create a sweep surface",
+        "Title": "Powierzchnia przez przeciągnięcie",
+        "DescriptionText": "Utwórz powierzchnię przeciągnięcia za pomocą profilu, krzywej definiującej i toru prowadnicy",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2521,8 +2521,8 @@
       },
       {
         "Id": "982c9fb374174dbc9a97441231e40be1",
-        "Title": "NURBS Surface from Control Points",
-        "DescriptionText": "Convert a sweep into a NURBS surface from Control Points",
+        "Title": "Powierzchnia NURBS na podstawie punktów kontrolnych",
+        "DescriptionText": "Przekształć przeciągnięcie w powierzchnię NURBS na podstawie punktów kontrolnych",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2549,7 +2549,7 @@
       },
       {
         "Id": "6e43a562cfd740dcab1809b463382574",
-        "Title": "Surfaces Joined as Polysurfaces can be evalued as a single entity",
+        "Title": "Powierzchnie połączone jako polipowierzchnie mogą być oceniane jako pojedynczy element.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2570,7 +2570,7 @@
       },
       {
         "Id": "998ce71788634d3f88ef99c38e5130d9",
-        "Title": "Use Import Instance to create Revit Imports from Surfaces and Solids - these will be visible in any Revit Environment.",
+        "Title": "Utwórz za pomocą wystąpienia importu importy programu Revit z powierzchni i brył — będą one widoczne w dowolnym środowisku programu Revit.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2591,7 +2591,7 @@
       },
       {
         "Id": "d5a6b8f114fc44cd9130f6bb2a37945e",
-        "Title": "Edges, Points and other features can be derived from Surfaces using \"Actions\" appropriate to those geometries. \n",
+        "Title": "Krawędzie, punkty i inne elementy można wyprowadzać z powierzchni za pomocą „operacji” odpowiednich dla tych geometrii. \n",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2612,7 +2612,7 @@
       },
       {
         "Id": "265dcfa170924c6fa1c9303de316cddf",
-        "Title": "This graph uses several methods to create Surface geometry in Revit - some methods can be used in a project environment, others - only in certain Family environments. \n\nUse a Conceptual Mass family template to view all methods. \n\nCreate a Conceptual Mass family by going to File > New > Family  and select the Mass.rft template in the Conceptual Mass folder.",
+        "Title": "Ten wykres używa kilku metod tworzenia geometrii powierzchni w programie Revit — niektórych metod można używać w środowisku projektu, innych — tylko w niektórych środowiskach rodziny. \n\nUżyj szablonu rodziny brył koncepcyjnych, aby wyświetlić wszystkie metody. \n\nUtwórz rodzinę brył koncepcyjnych, przechodząc do menu Plik > Nowy > Rodzina i wybierając szablon Mass.rft w folderze Conceptual Mass.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2632,7 +2632,7 @@
       },
       {
         "Id": "853fb1de3eb7419b8fec25fee791a10b",
-        "Title": "Multiple creation methods exist for most Surfaces.  Surfaces, Polysurfaces (collections of Surfaces), and NURBS Surfaces can be created by Points, Curves, and derived from other surfaces and solids by various operations. ",
+        "Title": "Większość powierzchni można tworzyć wieloma metodami. Powierzchnie, powierzchnie PolySurface (kolekcje powierzchni) i powierzchnie NURBS można tworzyć za pomocą punktów i krzywych oraz wyprowadzać z innych powierzchni i brył za pomocą różnych operacji. ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2652,7 +2652,7 @@
       },
       {
         "Id": "3b9c025b4c064461b802a90e5d684c2f",
-        "Title": "Use Watch 3D node to preview the geometry in isolation",
+        "Title": "Wyświetlaj podgląd geometrii w izolacji za pomocą węzła Watch 3D",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2673,7 +2673,7 @@
       },
       {
         "Id": "c461c76094ec416e8bea59167c2cf169",
-        "Title": "In order to integrate geometry into the Revit environment, it first needs to be converted into a Revit Element. \r\nSurfaces and Solids can be transformed into an Import Instance that will be visible both Project and model Family environments. \r\nThe Surface geometry can also be converted into a Form element that is only available for Conceptual Mass and Adaptive Component Family environments. ",
+        "Title": "Aby zintegrować geometrię ze środowiskiem programu Revit, najpierw należy ją przekształcić w element programu Revit. Powierzchnie i bryły można przekształcić w wystąpienie importu, które będzie widoczny w środowisku zarówno projektów, jak i rodzin. \nGeometrię powierzchni można też przekształcić w element formy dostępny tylko w środowiskach bryły koncepcyjnej i rodziny komponentów adaptacyjnych. ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2693,7 +2693,7 @@
       },
       {
         "Id": "ed3a363412f64f7da7b891b30c4a5ecb",
-        "Title": "Reconstruct the surface as a NURBS surface from Control Points",
+        "Title": "Odtwórz powierzchnię jako powierzchnię NURBS na podstawie punktów kontrolnych",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

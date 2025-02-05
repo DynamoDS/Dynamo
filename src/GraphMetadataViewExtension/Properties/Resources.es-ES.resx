@@ -118,49 +118,48 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CustomPropertyControl_CustomPropertyDefault" xml:space="preserve">
-    <value>Custom Property</value>
+    <value>Propiedad personalizada</value>
   </data>
   <data name="ExtensionName" xml:space="preserve">
-    <value>Properties</value>
+    <value>Propiedades</value>
   </data>
   <data name="GraphMetaData_AuthorName" xml:space="preserve">
-    <value>Author Name</value>
+    <value>Nombre del autor</value>
   </data>
   <data name="GraphMetaData_CustomProperties" xml:space="preserve">
-    <value>Custom Properties</value>
+    <value>Propiedades personalizadas</value>
   </data>
   <data name="GraphMetaData_Description" xml:space="preserve">
-    <value>Description</value>
+    <value>Descripción</value>
   </data>
   <data name="GraphMetaData_GraphType" xml:space="preserve">
-    <value>Graph Type</value>
-    <comment>Same label as found in LintingViewExtension</comment>
+    <value>Tipo de gráfico</value>
   </data>
   <data name="GraphMetaData_Image" xml:space="preserve">
-    <value>Image</value>
+    <value>Imagen</value>
   </data>
   <data name="GraphMetaData_LearnMoreURL" xml:space="preserve">
-    <value>Learn More URL</value>
+    <value>URL de Más información</value>
   </data>
   <data name="ImageSelector_Message_DefaultFeedback" xml:space="preserve">
-    <value>Drag and Drop or Select image</value>
+    <value>Arrastre y suelte o seleccione una imagen.</value>
   </data>
   <data name="ImageSelector_Message_DropImage" xml:space="preserve">
-    <value>Drop your image</value>
+    <value>Suelte la imagen.</value>
   </data>
   <data name="ImageSelector_Message_InvalidExtension" xml:space="preserve">
-    <value>Only image files are allowed</value>
+    <value>Solo se admiten archivos de imagen.</value>
   </data>
   <data name="ImageSelector_Message_NoImageSelected" xml:space="preserve">
-    <value>No image selected</value>
+    <value>No se ha seleccionado ninguna imagen.</value>
   </data>
   <data name="ImageSelector_Title_SelectImage" xml:space="preserve">
-    <value>Select Image</value>
+    <value>Seleccionar imagen</value>
   </data>
   <data name="MenuItemText" xml:space="preserve">
-    <value>Show Graph _Properties</value>
+    <value>Mostrar _propiedades de gráfico</value>
   </data>
   <data name="URIValidationRule_Fail_Message" xml:space="preserve">
-    <value>String is not a valid URI</value>
+    <value>La cadena no es un URI válido.</value>
   </data>
 </root>

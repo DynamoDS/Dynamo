@@ -118,22 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExcelCommunicationError" xml:space="preserve">
-    <value>Error setting up communication with Excel.  Try closing any open Excel instances.</value>
+    <value>Erro ao configurar a comunicação com o Excel.  Tente fechar quaisquer instâncias do Excel abertas.</value>
   </data>
   <data name="ExcelNotInstalled" xml:space="preserve">
-    <value>Excel is not installed. href=ExcelNotInstalled.html</value>
+    <value>O Excel não está instalado. href=ExcelNotInstalled.html</value>
   </data>
   <data name="kMethodResolutionFailureWithTypes" xml:space="preserve">
-    <value>One or more of the input types are not matching. Couldn't find a version of {0} that takes arguments of type {1}</value>
+    <value>Um ou mais dos tipos de entrada não são coincidentes. Não foi possível localizar uma versão de {0} que obtém os argumentos do tipo {1}</value>
   </data>
   <data name="ReadObsolete" xml:space="preserve">
-    <value>Use File.FromPath -&gt; Excel.ReadFromFile node instead.</value>
+    <value>Utilize o nó File.FromPath -&gt; Excel.ReadFromFile</value>
   </data>
   <data name="WorkbookNotFound" xml:space="preserve">
-    <value>A workbook was not found in the provided path.</value>
+    <value>Não foi encontrada nenhuma pasta de trabalho no caminho fornecido.</value>
   </data>
   <data name="WorksheetNotFound" xml:space="preserve">
-    <value>A worksheet with the provided name '{0}' was not found in the workbook.</value>
-    <comment>{0} = name of the worksheet, for example 'Sheet1'.</comment>
+    <value>Não foi encontrada nenhuma planilha com o nome “{0}” fornecido na pasta de trabalho.</value>
   </data>
 </root>

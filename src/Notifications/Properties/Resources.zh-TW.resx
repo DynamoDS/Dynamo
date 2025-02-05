@@ -118,36 +118,36 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ButtonDetails" xml:space="preserve">
-    <value>Show Details</value>
+    <value>展示詳細資料</value>
   </data>
   <data name="ButtonHideDetails" xml:space="preserve">
-    <value>Hide Details</value>
+    <value>隱藏詳細資料</value>
   </data>
   <data name="ButtonOK" xml:space="preserve">
-    <value>OK</value>
+    <value>確定</value>
   </data>
   <data name="Dismiss" xml:space="preserve">
-    <value>Dismiss All Notifications</value>
+    <value>關閉所有通知</value>
   </data>
   <data name="Display" xml:space="preserve">
-    <value>Display All Notifications</value>
+    <value>顯示所有通知</value>
   </data>
   <data name="ExtensionName" xml:space="preserve">
-    <value>Notifications</value>
+    <value>通知</value>
   </data>
   <data name="NoNotificationsMsg" xml:space="preserve">
     <value>You currently have no notifications. New notifications will appear above</value>
   </data>
   <data name="NoNotificationsTitle" xml:space="preserve">
-    <value>No notifications</value>
+    <value>無通知</value>
   </data>
   <data name="NotificationCenterDisabledMsg" xml:space="preserve">
-    <value>Notification Center feature is disabled. Enable it in preference panel to see latest news.</value>
+    <value>通知中心功能已停用。請在「偏好」面板中啟用以查看最新新聞。</value>
   </data>
   <data name="NotificationsCenterBottomButtonText" xml:space="preserve">
-    <value>Mark all as read</value>
+    <value>全部標記為已讀</value>
   </data>
   <data name="NotificationsCenterTitle" xml:space="preserve">
-    <value>Notifications</value>
+    <value>通知</value>
   </data>
 </root>
