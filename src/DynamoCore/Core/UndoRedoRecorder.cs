@@ -6,6 +6,7 @@ using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 
 namespace Dynamo.Core
 {
@@ -56,7 +57,7 @@ namespace Dynamo.Core
         ModelBase GetModelForElement(XmlElement modelData);
     }
 
-    internal class UndoRedoRecorder
+    internal class UndoRedoRecorder : LogSourceBase
     {
         #region Private Class Data Members
 
@@ -241,7 +242,15 @@ namespace Dynamo.Core
                     "UndoStack cannot be popped with non-empty RedoStack");
             }
 
-            return PopActionGroupFromUndoStack();
+            try
+            {
+                return PopActionGroupFromUndoStack();
+            }
+            catch (InvalidOperationException ex)
+            {
+                Log(ex);
+                return null;
+            }
         }
         #endregion
 
@@ -310,7 +319,7 @@ namespace Dynamo.Core
             childNode.Attributes.Append(actionAttribute);
         }
 
-        private XmlElement PopActionGroupFromUndoStack()
+        internal XmlElement PopActionGroupFromUndoStack()
         {
             if (CanUndo == false)
             {
