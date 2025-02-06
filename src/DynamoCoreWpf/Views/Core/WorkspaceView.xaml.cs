@@ -149,6 +149,8 @@ namespace Dynamo.Views
             ViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
             DynamoSelection.Instance.Selection.CollectionChanged -= OnSelectionCollectionChanged;
             infiniteGridView.DetachFromZoomBorder(zoomBorder);
+
+            currentRenderScale = -1;
         }
 
         /// <summary>
@@ -640,9 +642,75 @@ namespace Dynamo.Views
 
         void vm_ZoomChanged(object sender, EventArgs e)
         {
-            zoomBorder.SetZoom((e as ZoomEventArgs).Zoom);
-            if (PortContextMenu.IsOpen) DestroyPortContextMenu();
+            var newZoomScale = (e as ZoomEventArgs).Zoom;
+            zoomBorder.SetZoom(newZoomScale);
+            if (PortContextMenu.IsOpen)
+            {
+                DestroyPortContextMenu();
+            }
+
+            CheckZoomScaleAndApplyNodeViewCache(newZoomScale);
         }
+
+        #region NodeView_BitmapCache
+        private void ClearNodeViewCache()
+        {
+            var nodes = this.ChildrenOfType<NodeView>();
+            foreach (var node in nodes)
+            {
+                node.CacheMode = null;
+            }
+        }
+
+        /// <summary>
+        /// The current scale at which the cache is rendered
+        /// </summary>
+        private double currentRenderScale = -1;
+        const double maxCacheZoomScale = .8;
+        const double minCacheZoomScale = .2;
+        private void CheckZoomScaleAndApplyNodeViewCache(double newZoomScale)
+        {
+            if (!ViewModel.StopNodeViewOpacityAnimations)
+            {
+                if (currentRenderScale > 0) // number of nodes reduced below max threshold
+                {
+                    ClearNodeViewCache();
+                }
+
+                return;
+            }
+
+            if (newZoomScale >= maxCacheZoomScale)
+            {
+                ClearNodeViewCache();
+                return;
+            }
+
+            var zoomOutRatio = 1 - (maxCacheZoomScale - WorkspaceViewModel.ZOOM_MINIMUM) * (maxCacheZoomScale - newZoomScale);
+            var newRenderScale = Math.Floor(zoomOutRatio / minCacheZoomScale) * minCacheZoomScale;
+            newRenderScale = Math.Min(Math.Max(newRenderScale, minCacheZoomScale), 1);
+            if (Math.Abs(newRenderScale - currentRenderScale) <= 0.01)
+            {
+                return;
+            }
+
+            currentRenderScale = newRenderScale;
+            var nodes = this.ChildrenOfType<NodeView>();
+            foreach (var node in nodes)
+            {
+                var cache = node.CacheMode as BitmapCache;
+                if (cache == null)
+                {
+                    cache = new BitmapCache(newRenderScale);
+                    node.CacheMode = cache;
+                }
+                else
+                {
+                    cache.RenderAtScale = newRenderScale;
+                }
+            }
+        }
+        #endregion
 
         void vm_ZoomAtViewportCenter(object sender, EventArgs e)
         {
