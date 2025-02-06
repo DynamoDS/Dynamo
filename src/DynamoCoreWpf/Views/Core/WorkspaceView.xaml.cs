@@ -135,7 +135,7 @@ namespace Dynamo.Views
             ViewModel.RequestPortContextMenu -= ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged -= ViewModel_PropertyChanged;
 
-            ViewModel.ZoomChanged -= vm_ZoomChanged;
+            ViewModel.ZoomChanged -= Vm_ZoomChanged;
             ViewModel.RequestZoomToViewportCenter -= vm_ZoomAtViewportCenter;
             ViewModel.RequestZoomToViewportPoint -= vm_ZoomAtViewportPoint;
             ViewModel.RequestZoomToFitView -= vm_ZoomToFitView;
@@ -166,7 +166,7 @@ namespace Dynamo.Views
             ViewModel.RequestPortContextMenu += ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
-            ViewModel.ZoomChanged += vm_ZoomChanged;
+            ViewModel.ZoomChanged += Vm_ZoomChanged;
             ViewModel.RequestZoomToViewportCenter += vm_ZoomAtViewportCenter;
             ViewModel.RequestZoomToViewportPoint += vm_ZoomAtViewportPoint;
             ViewModel.RequestZoomToFitView += vm_ZoomToFitView;
@@ -641,7 +641,7 @@ namespace Dynamo.Views
             zoomBorder.SetTranslateTransformOrigin((e as PointEventArgs).Point);
         }
 
-        void vm_ZoomChanged(object sender, EventArgs e)
+        void Vm_ZoomChanged(object sender, EventArgs e)
         {
             var newZoomScale = (e as ZoomEventArgs).Zoom;
             zoomBorder.SetZoom(newZoomScale);
@@ -654,44 +654,32 @@ namespace Dynamo.Views
         }
 
         #region NodeView_BitmapCache
-        private DispatcherTimer cacheTimer = null;
         private double currentRenderScale = -1;
-        private Action currentCacheAction = null;
-        private void cacheTimerEnqueue(Action a) { currentCacheAction = a; cacheTimer.Start(); }
+        const double maxZoomScaleForCache = .8;
 
         private void CheckZoomScaleAndApplyNodeViewCache(double newZoomScale)
         {
-            if (cacheTimer == null)
-            {
-                // schedule the cache update before the render starts
-                cacheTimer = new DispatcherTimer(DispatcherPriority.Send, Dispatcher);
-                cacheTimer.Interval = TimeSpan.FromMilliseconds(100);
-                cacheTimer.Tick += (s, e) => { currentCacheAction?.Invoke(); cacheTimer.Stop(); };
-            }
-
             if (!ViewModel.StopNodeViewOpacityAnimations)
             {
                 if (currentRenderScale > 0) // number of nodes reduced below max threshold
                 {
-                    cacheTimerEnqueue(ClearNodeViewCache);
+                    Dispatcher.BeginInvoke(ClearNodeViewCache, DispatcherPriority.Normal);
                 }
 
                 return;
             }
 
-            if (newZoomScale > .8)
+            if (newZoomScale > maxZoomScaleForCache)
             {
                 if (currentRenderScale > 0)
                 {
-                    cacheTimerEnqueue(ClearNodeViewCache);
+                    Dispatcher.BeginInvoke(ClearNodeViewCache, DispatcherPriority.Normal);
                 }
                 
                 return;
             }
 
-            var newRenderScale = newZoomScale < .1 ? .2 :
-                                 newZoomScale < .4 ? .4 :
-                                 newZoomScale < .6 ? .7 : 1;
+            var newRenderScale = newZoomScale < .2 ? .2 : newZoomScale < .5 ? .5 : 1;
 
             if (Math.Abs(newRenderScale - currentRenderScale) <= 0.01)
             {
@@ -699,7 +687,7 @@ namespace Dynamo.Views
             }
 
             currentRenderScale = newRenderScale;
-            cacheTimerEnqueue(UpdateNodeViewCacheScale);
+            Dispatcher.BeginInvoke(UpdateNodeViewCacheScale, DispatcherPriority.Normal);
         }
 
         private void ClearNodeViewCache()
@@ -799,7 +787,7 @@ namespace Dynamo.Views
             ViewModel.Model.Y = resultOffset.Y;
 
             vm_CurrentOffsetChanged(this, new PointEventArgs(resultOffset));
-            vm_ZoomChanged(this, new ZoomEventArgs(resultZoom));
+            Vm_ZoomChanged(this, new ZoomEventArgs(resultZoom));
         }
 
         void vm_ZoomToFitView(object sender, EventArgs e)
@@ -841,7 +829,7 @@ namespace Dynamo.Views
             ViewModel.Model.Y = resultOffset.Y;
 
             vm_CurrentOffsetChanged(this, new PointEventArgs(resultOffset));
-            vm_ZoomChanged(this, new ZoomEventArgs(scaleRequired));
+            Vm_ZoomChanged(this, new ZoomEventArgs(scaleRequired));
         }
 
         private void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
