@@ -679,7 +679,7 @@ namespace Dynamo.Views
                 return;
             }
 
-            var newRenderScale = newZoomScale < .2 ? .2 : newZoomScale < .5 ? .5 : 1;
+            var newRenderScale = newZoomScale <= .2 ? .2 : newZoomScale <= .5 ? .5 : 1;
 
             if (Math.Abs(newRenderScale - currentRenderScale) <= 0.01)
             {
