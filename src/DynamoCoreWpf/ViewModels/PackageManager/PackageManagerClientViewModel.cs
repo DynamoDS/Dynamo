@@ -284,6 +284,7 @@ namespace Dynamo.ViewModels
 
         private void ToggleLoginState()
         {
+            if(!this.DynamoViewModel.IsIDSDKInitialized()) return;
             if (AuthenticationManager.LoginState == LoginState.LoggedIn)
             {
                 AuthenticationManager.Logout();
@@ -301,6 +302,7 @@ namespace Dynamo.ViewModels
 
         public void PublishCurrentWorkspace(object m)
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             var ws = (CustomNodeWorkspaceModel)DynamoViewModel.CurrentSpace;
 
             CustomNodeDefinition currentFunDef;
@@ -346,6 +348,7 @@ namespace Dynamo.ViewModels
 
         public void PublishNewPackage(object m)
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             var termsOfUseCheck = new TermsOfUseHelper(new TermsOfUseHelperParams
             {
                 PackageManagerClient = Model,
@@ -365,6 +368,7 @@ namespace Dynamo.ViewModels
 
         public void PublishCustomNode(Function m)
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             CustomNodeInfo currentFunInfo;
             if (DynamoViewModel.Model.CustomNodeManager.TryGetNodeInfo(
                 m.Definition.FunctionId,
@@ -394,6 +398,7 @@ namespace Dynamo.ViewModels
 
         public void PublishSelectedNodes(object m)
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             var nodeList = DynamoSelection.Instance.Selection
                                 .Where(x => x is Function)
                                 .Cast<Function>()
@@ -453,12 +458,14 @@ namespace Dynamo.ViewModels
 
         private void ShowNodePublishInfo()
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             var newPkgVm = new PublishPackageViewModel(DynamoViewModel);
             DynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
         }
 
         private void ShowNodePublishInfo(ICollection<Tuple<CustomNodeInfo, CustomNodeDefinition>> funcDefs)
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             foreach (var f in funcDefs)
             {
                 var pkg = PackageManagerExtension.PackageLoader.GetOwnerPackage(f.Item1);
@@ -513,6 +520,7 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         public List<PackageManagerSearchElement> GetInfectedPackages()
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return null;
             InfectedPackageList = new List<PackageManagerSearchElement>();
             var latestPkgs = Model.GetUsersLatestPackages();
             if (latestPkgs != null && latestPkgs.maintains?.Count > 0)
@@ -537,6 +545,7 @@ namespace Dynamo.ViewModels
         public void DownloadAndInstallPackage(IPackageInfo packageInfo, string downloadPath = null)
         {
             // User needs to accept terms of use before any packages can be downloaded from package manager
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             var prefSettings = DynamoViewModel.Model.PreferenceSettings;
             var touAccepted = prefSettings.PackageDownloadTouAccepted;
             if (!touAccepted)
