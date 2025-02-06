@@ -135,7 +135,7 @@ namespace Dynamo.Views
             ViewModel.RequestPortContextMenu -= ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged -= ViewModel_PropertyChanged;
 
-            ViewModel.ZoomChanged -= Vm_ZoomChanged;
+            ViewModel.ZoomChanged -= vm_ZoomChanged;
             ViewModel.RequestZoomToViewportCenter -= vm_ZoomAtViewportCenter;
             ViewModel.RequestZoomToViewportPoint -= vm_ZoomAtViewportPoint;
             ViewModel.RequestZoomToFitView -= vm_ZoomToFitView;
@@ -166,7 +166,7 @@ namespace Dynamo.Views
             ViewModel.RequestPortContextMenu += ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
-            ViewModel.ZoomChanged += Vm_ZoomChanged;
+            ViewModel.ZoomChanged += vm_ZoomChanged;
             ViewModel.RequestZoomToViewportCenter += vm_ZoomAtViewportCenter;
             ViewModel.RequestZoomToViewportPoint += vm_ZoomAtViewportPoint;
             ViewModel.RequestZoomToFitView += vm_ZoomToFitView;
@@ -641,7 +641,7 @@ namespace Dynamo.Views
             zoomBorder.SetTranslateTransformOrigin((e as PointEventArgs).Point);
         }
 
-        void Vm_ZoomChanged(object sender, EventArgs e)
+        void vm_ZoomChanged(object sender, EventArgs e)
         {
             var newZoomScale = (e as ZoomEventArgs).Zoom;
             zoomBorder.SetZoom(newZoomScale);
@@ -787,7 +787,7 @@ namespace Dynamo.Views
             ViewModel.Model.Y = resultOffset.Y;
 
             vm_CurrentOffsetChanged(this, new PointEventArgs(resultOffset));
-            Vm_ZoomChanged(this, new ZoomEventArgs(resultZoom));
+            vm_ZoomChanged(this, new ZoomEventArgs(resultZoom));
         }
 
         void vm_ZoomToFitView(object sender, EventArgs e)
@@ -829,7 +829,7 @@ namespace Dynamo.Views
             ViewModel.Model.Y = resultOffset.Y;
 
             vm_CurrentOffsetChanged(this, new PointEventArgs(resultOffset));
-            Vm_ZoomChanged(this, new ZoomEventArgs(scaleRequired));
+            vm_ZoomChanged(this, new ZoomEventArgs(scaleRequired));
         }
 
         private void OnPreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
