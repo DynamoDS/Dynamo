@@ -251,7 +251,6 @@ namespace Dynamo.Core
                 Log(ex);
                 return null;
             }
-
         }
         #endregion
 
@@ -320,7 +319,7 @@ namespace Dynamo.Core
             childNode.Attributes.Append(actionAttribute);
         }
 
-        private XmlElement PopActionGroupFromUndoStack()
+        internal XmlElement PopActionGroupFromUndoStack()
         {
             if (CanUndo == false)
             {
