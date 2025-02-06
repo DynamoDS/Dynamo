@@ -57,8 +57,6 @@ namespace Dynamo.PackageManager
             this.uploadBuilder = builder;
             this.client = client;
             this.packageMaintainers = new Dictionary<string, bool>();
-
-            this.LoadCompatibilityMap();  // Load the compatibility map
         }
 
         internal bool Upvote(string packageId)
@@ -370,7 +368,7 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Method to load the map once, making it accessible to all elements
         /// </summary>
-        private void LoadCompatibilityMap()
+        internal void LoadCompatibilityMap()
         {
             if (compatibilityMap == null)  // Load only if not already loaded
             {
