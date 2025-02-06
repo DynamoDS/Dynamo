@@ -658,32 +658,10 @@ namespace Dynamo.Views
             zoomBorder.SetTranslateTransformOrigin((e as PointEventArgs).Point);
         }
 
-        private double oldZoomScale = 1;
         void vm_ZoomChanged(object sender, EventArgs e)
         {
-            var newZoomScale = (e as ZoomEventArgs).Zoom;
-            zoomBorder.SetZoom(newZoomScale);
+            zoomBorder.SetZoom((e as ZoomEventArgs).Zoom);
             if (PortContextMenu.IsOpen) DestroyPortContextMenu();
-
-            if (newZoomScale <= 0.2 && oldZoomScale > 0.2)
-            {
-                var nodes = this.ChildrenOfType<NodeView>();
-                foreach (var node in nodes)
-                {
-                    node.CacheMode = new BitmapCache() { EnableClearType = false, RenderAtScale = 0.3, SnapsToDevicePixels = false };
-                }
-            }
-
-            if (newZoomScale > 0.2 && oldZoomScale <= 0.2)
-            {
-                var nodes = this.ChildrenOfType<NodeView>();
-                foreach (var node in nodes)
-                {
-                    node.CacheMode = null;
-                }
-            }
-
-            oldZoomScale = newZoomScale;
         }
 
         void vm_ZoomAtViewportCenter(object sender, EventArgs e)
