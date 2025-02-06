@@ -11,6 +11,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
@@ -653,6 +654,54 @@ namespace Dynamo.Views
         }
 
         #region NodeView_BitmapCache
+        private DispatcherTimer cacheTimer = null;
+        private double currentRenderScale = -1;
+        private Action currentCacheAction = null;
+        private void cacheTimerEnqueue(Action a) { currentCacheAction = a; cacheTimer.Start(); }
+
+        private void CheckZoomScaleAndApplyNodeViewCache(double newZoomScale)
+        {
+            if (cacheTimer == null)
+            {
+                // schedule the cache update before the render starts
+                cacheTimer = new DispatcherTimer(DispatcherPriority.Send, Dispatcher);
+                cacheTimer.Interval = TimeSpan.FromMilliseconds(100);
+                cacheTimer.Tick += (s, e) => { currentCacheAction?.Invoke(); cacheTimer.Stop(); };
+            }
+
+            if (!ViewModel.StopNodeViewOpacityAnimations)
+            {
+                if (currentRenderScale > 0) // number of nodes reduced below max threshold
+                {
+                    cacheTimerEnqueue(ClearNodeViewCache);
+                }
+
+                return;
+            }
+
+            if (newZoomScale > .8)
+            {
+                if (currentRenderScale > 0)
+                {
+                    cacheTimerEnqueue(ClearNodeViewCache);
+                }
+                
+                return;
+            }
+
+            var newRenderScale = newZoomScale < .1 ? .2 :
+                                 newZoomScale < .4 ? .4 :
+                                 newZoomScale < .6 ? .7 : 1;
+
+            if (Math.Abs(newRenderScale - currentRenderScale) <= 0.01)
+            {
+                return;
+            }
+
+            currentRenderScale = newRenderScale;
+            cacheTimerEnqueue(UpdateNodeViewCacheScale);
+        }
+
         private void ClearNodeViewCache()
         {
             var nodes = this.ChildrenOfType<NodeView>();
@@ -660,53 +709,24 @@ namespace Dynamo.Views
             {
                 node.CacheMode = null;
             }
+
+            currentRenderScale = -1;
         }
 
-        /// <summary>
-        /// The current scale at which the cache is rendered
-        /// </summary>
-        private double currentRenderScale = -1;
-        const double maxCacheZoomScale = .8;
-        const double minCacheZoomScale = .2;
-        private void CheckZoomScaleAndApplyNodeViewCache(double newZoomScale)
+        private void UpdateNodeViewCacheScale()
         {
-            if (!ViewModel.StopNodeViewOpacityAnimations)
-            {
-                if (currentRenderScale > 0) // number of nodes reduced below max threshold
-                {
-                    ClearNodeViewCache();
-                }
-
-                return;
-            }
-
-            if (newZoomScale >= maxCacheZoomScale)
-            {
-                ClearNodeViewCache();
-                return;
-            }
-
-            var zoomOutRatio = 1 - (maxCacheZoomScale - WorkspaceViewModel.ZOOM_MINIMUM) * (maxCacheZoomScale - newZoomScale);
-            var newRenderScale = Math.Floor(zoomOutRatio / minCacheZoomScale) * minCacheZoomScale;
-            newRenderScale = Math.Min(Math.Max(newRenderScale, minCacheZoomScale), 1);
-            if (Math.Abs(newRenderScale - currentRenderScale) <= 0.01)
-            {
-                return;
-            }
-
-            currentRenderScale = newRenderScale;
             var nodes = this.ChildrenOfType<NodeView>();
             foreach (var node in nodes)
             {
                 var cache = node.CacheMode as BitmapCache;
                 if (cache == null)
                 {
-                    cache = new BitmapCache(newRenderScale);
+                    cache = new BitmapCache(currentRenderScale);
                     node.CacheMode = cache;
                 }
                 else
                 {
-                    cache.RenderAtScale = newRenderScale;
+                    cache.RenderAtScale = currentRenderScale;
                 }
             }
         }
