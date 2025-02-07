@@ -41,6 +41,10 @@ namespace Dynamo.UI.Views
         // Used to ensure that OnClosing is called only once.
         private bool IsClosing = false;
 
+        internal enum CloseMode { ByStartingDynamo, ByCloseButton, ByOther };
+
+        internal CloseMode currentCloseMode = CloseMode.ByOther;
+
         // Timer used for Splash Screen loading
         internal Stopwatch loadingTimer;
 
@@ -86,8 +90,6 @@ namespace Dynamo.UI.Views
                     return;
                 }
                 viewModel = value.DataContext as DynamoViewModel;
-                // When view model is closed, we need to close the splash screen if it is displayed.
-                viewModel.RequestClose += SplashScreenRequestClose;
                 authManager = viewModel.Model.AuthenticationManager;
             }
         }
@@ -162,6 +164,7 @@ namespace Dynamo.UI.Views
             RequestSignIn = SignIn;
             RequestSignOut = SignOut;
             this.enableSignInButton = enableSignInButton;
+            currentCloseMode = CloseMode.ByOther;
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -172,6 +175,11 @@ namespace Dynamo.UI.Views
             // webview2.Dispose => webview2.Visible.Set receives windows message => crash because object got disposed. 
             if (!IsClosing)
             {
+                //Means that the SplashScreen was closed by other way for example by using the Windows Task Bar
+                if(currentCloseMode == CloseMode.ByOther)
+                {
+                    CloseWasExplicit = true;
+                }
                 // First call to OnClosing
                 IsClosing = true;
             }
@@ -217,18 +225,6 @@ namespace Dynamo.UI.Views
                     Close();// Close the SpashScreen
                 }
             }
-        }
-
-        /// <summary>
-        /// Request to close SplashScreen.
-        /// </summary>
-        private void SplashScreenRequestClose(object sender, EventArgs e)
-        {
-            //This is only called when shutdownparams.closeDynamoView = true
-            //which is during tests or an exit command
-            //which is used rarely, but it is used when the Revit document is lost and Dynamo is open.
-            CloseWindow();
-            viewModel.RequestClose -= SplashScreenRequestClose;
         }
 
         /// <summary>
@@ -283,6 +279,7 @@ namespace Dynamo.UI.Views
             {
                 viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
             }
+            currentCloseMode = CloseMode.ByStartingDynamo;
             Close();
             dynamoView?.Show();
             dynamoView?.Activate();
@@ -350,7 +347,7 @@ namespace Dynamo.UI.Views
 
             webView.CreationProperties = new CoreWebView2CreationProperties
             {
-                UserDataFolder = webBrowserUserDataFolder.FullName
+                UserDataFolder = DynamoModel.IsTestMode ? TestUtilities.UserDataFolderDuringTests(nameof(SplashScreen)) : webBrowserUserDataFolder.FullName
             };
 
             //ContentRendered ensures that the webview2 component is visible.
@@ -388,7 +385,7 @@ namespace Dynamo.UI.Views
 
                 webView.NavigateToString(htmlString);
                 webView.CoreWebView2.AddHostObjectToScript("scriptObject",
-                   new ScriptObject(RequestLaunchDynamo, RequestImportSettings, RequestSignIn, RequestSignOut, CloseWindow));
+                   new ScriptObject(RequestLaunchDynamo, RequestImportSettings, RequestSignIn, RequestSignOut));
             }
             catch (ObjectDisposedException ex)
             {
@@ -567,39 +564,6 @@ namespace Dynamo.UI.Views
             }
         }
 
-        /// <summary>
-        /// If the user wants to close the window, we shutdown the application and don't launch Dynamo
-        /// </summary>
-        /// <param name="isCheckboxChecked">If true, the user has chosen to not show splash screen on next run.</param>
-        internal void CloseWindow(bool isCheckboxChecked = false)
-        {
-            CloseWasExplicit = true;
-            if (viewModel != null && isCheckboxChecked)
-            {
-                viewModel.PreferenceSettings.EnableStaticSplashScreen = !isCheckboxChecked;
-            }
-
-            if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName))
-            {
-                Application.Current?.Shutdown();
-                Analytics.TrackEvent(Actions.Close, Categories.SplashScreenOperations);
-            }
-            // If Dynamo is launched from an integrator host, user should be able to close the splash screen window.
-            // Additionally, we will have to shutdown the ViewModel which will close all the services and dispose the events.
-            // RequestUpdateLoadBarStatus event needs to be unsubscribed when the splash screen window is closed, to avoid populating the info on splash screen.
-            else
-            {
-                Close();
-                if (viewModel != null)
-                {
-                    viewModel.RequestClose -= SplashScreenRequestClose;
-                }
-
-                DynamoView?.Close();
-                DynamoView = null;
-            }
-        }
-
         protected override void OnClosed(EventArgs e)
         {
             base.OnClosed(e);
@@ -640,31 +604,17 @@ namespace Dynamo.UI.Views
         readonly Action<string> RequestImportSettings;
         readonly Func<bool> RequestSignIn;
         readonly Func<bool> RequestSignOut;
-        readonly Action RequestCloseWindow;
-        readonly Action<bool> RequestCloseWindowPreserve;
 
         /// <summary>
         /// [Obsolete] Constructor for ScriptObject
         /// </summary>
         [Obsolete]
-        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func< bool> requestSignIn, Func<bool> requestSignOut, Action requestCloseWindow)
+        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func< bool> requestSignIn, Func<bool> requestSignOut)
         {
             RequestLaunchDynamo = requestLaunchDynamo;
             RequestImportSettings = requestImportSettings;
             RequestSignIn = requestSignIn;
             RequestSignOut = requestSignOut;
-            RequestCloseWindow = requestCloseWindow;
-        }
-        /// <summary>
-        /// Constructor for ScriptObject with an overload for close window method, to preserve "Don't show again" setting on splash screen on explicit close event.
-        /// </summary>
-        public ScriptObject(Action<bool> requestLaunchDynamo, Action<string> requestImportSettings, Func<bool> requestSignIn, Func<bool> requestSignOut, Action<bool> requestCloseWindow)
-        {
-            RequestLaunchDynamo = requestLaunchDynamo;
-            RequestImportSettings = requestImportSettings;
-            RequestSignIn = requestSignIn;
-            RequestSignOut = requestSignOut;
-            RequestCloseWindowPreserve = requestCloseWindow;
         }
         [DynamoJSInvokable]
         public void LaunchDynamo(bool showScreenAgain)
@@ -686,17 +636,6 @@ namespace Dynamo.UI.Views
         public bool SignOut()
         {
             return RequestSignOut();
-        }
-        [Obsolete]
-        [DynamoJSInvokable]
-        public void CloseWindow()
-        {
-            RequestCloseWindow();
-        }
-        [DynamoJSInvokable]
-        public void CloseWindowPreserve(bool isCheckboxChecked)
-        {
-            RequestCloseWindowPreserve(isCheckboxChecked);
         }
     }
 }

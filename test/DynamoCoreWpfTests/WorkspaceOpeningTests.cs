@@ -47,7 +47,9 @@ namespace Dynamo.Tests
             ViewModel.Model.EvaluationCompleted -= testXmlEvent;
 
             // Save to json in temp location
-            string tempPath = Path.Combine(Dynamo.UnitTestBase.TestDirectory, @"core\serialization\serialization_temp.dyn");
+            string tempPath = Path.Combine(TempFolder, @"core\serialization\serialization_temp.dyn");
+            Directory.CreateDirectory(Path.GetDirectoryName(tempPath));
+            
             ViewModel.SaveAsCommand.Execute(tempPath);
             
             // Close workspace

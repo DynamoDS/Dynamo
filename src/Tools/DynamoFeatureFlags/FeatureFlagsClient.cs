@@ -81,12 +81,15 @@ namespace DynamoFeatureFlags
             if (testMode)
             {
                 MessageLogged?.Invoke($"LD startup: testmode true, no LD connection. ");
-                MessageLogged?.Invoke($"LD startup time: {sw.ElapsedMilliseconds} ");
-                MessageLogged?.Invoke("<<<<<InitDone>>>>>");
+                MessageLogged?.Invoke($"LD startup time: {sw.ElapsedMilliseconds} ms ");
                 AllFlags = LdValue.ObjectFrom(new Dictionary<string,LdValue> { { "TestFlag1",LdValue.Of(true) },
                     { "TestFlag2", LdValue.Of("I am a string") },
                     //in tests we want instancing on so we can test it.
-                    { "graphics-primitive-instancing", LdValue.Of(true) } });
+                    { "graphics-primitive-instancing", LdValue.Of(true) },
+                    //in tests we want search debouncing on so we can test it.
+                    { "searchbar_debounce", LdValue.Of(true) },
+                    //in tests we want to run search on non UI thread so we can test it.
+                    { "searchbar_separate_thread", LdValue.Of(true) }});
                 return;
             }
 
@@ -95,8 +98,7 @@ namespace DynamoFeatureFlags
 
             Init(mobileKey);
             sw.Stop();
-            MessageLogged?.Invoke($"LD startup time: {sw.ElapsedMilliseconds} ");
-            MessageLogged?.Invoke("<<<<<InitDone>>>>>");
+            MessageLogged?.Invoke($"Launch Darkly startup time: {sw.ElapsedMilliseconds} ms");
             //gather all the user's flags and create a top level ldvalue object containing all of them.
             if (ldClient.Initialized)
             {
@@ -110,11 +112,11 @@ namespace DynamoFeatureFlags
             ldClient =  LaunchDarkly.Sdk.Client.LdClient.Init(mobileKey, LaunchDarkly.Sdk.Client.ConfigurationBuilder.AutoEnvAttributes.Disabled, user, TimeSpan.FromSeconds(5));
             if (ldClient.Initialized)
             {
-                MessageLogged?.Invoke($"launch darkly initalized");
+                MessageLogged?.Invoke($"Launch Darkly initalized");
             }
             else
             {
-                MessageLogged?.Invoke($"launch darkly failed to initalize");
+                MessageLogged?.Invoke($"Launch Darkly failed to initalize");
             }
         }
 

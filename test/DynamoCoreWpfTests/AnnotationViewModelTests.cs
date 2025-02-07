@@ -1274,6 +1274,27 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void ConnectorPinsCanBeRemovedFromGroup()
+        {
+            // Arrange
+            OpenModel(@"core\annotationViewModelTests\groupWithConnectorPin.dyn");
+            var groupModel = ViewModel.CurrentSpace.Annotations.FirstOrDefault();
+            var connectorModel = ViewModel.CurrentSpace.Connectors.FirstOrDefault();
+            var pinModel = connectorModel.ConnectorPinModels.FirstOrDefault();
+
+            // Assert - Ensure that the pin is part of the group
+            Assert.That(groupModel.Nodes.OfType<ConnectorPinModel>().Contains(pinModel), "Pin should be in the group");
+
+            // Act - Select the pin and execute UngroupModelCommand
+            DynamoSelection.Instance.ClearSelection();
+            DynamoSelection.Instance.Selection.Add(pinModel);
+            ViewModel.UngroupModelCommand.Execute(null);
+
+            // Assert - Ensure the pin is no longer part of the group's nodes
+            Assert.That(!groupModel.Nodes.OfType<ConnectorPinModel>().Contains(pinModel), "Pin should be removed from the group");
+        }
+
+        [Test]
         public void NodesCantBeAddedToCollapsedGroups()
         {
             // Arrange

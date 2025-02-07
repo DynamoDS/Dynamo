@@ -6,7 +6,6 @@ using Dynamo.PythonServices;
 using Greg.Responses;
 using Moq;
 using NUnit.Framework;
-using PythonNodeModels;
 using SystemTestServices;
 
 namespace DynamoCoreWpfTests
@@ -36,6 +35,23 @@ namespace DynamoCoreWpfTests
             new Dependency {_id = string.Empty, name = "Dependency"},
             new Dependency {_id = string.Empty, name = "Dependency"}
         };
+        private static List<Greg.Responses.Compatibility> CompatibilityList { get; } = new List<Greg.Responses.Compatibility>
+        {
+            new Greg.Responses.Compatibility
+            {
+                name = "Dynamo",
+                versions = new List<string> { "2.19", "3.0" },
+                min = "3.2",
+                max = "3.4"
+            },
+            new Greg.Responses.Compatibility
+            {
+                name = "Revit",
+                versions = null,
+                min = "2022",
+                max = string.Empty
+            }
+        };
         private static List<PackageVersion> PackageVersions = new List<PackageVersion>
         {
             new PackageVersion
@@ -50,6 +66,7 @@ namespace DynamoCoreWpfTests
                 version = "0.0.1",
                 name = "test",
                 size = "2.19 MiB",
+                compatibility_matrix = CompatibilityList,
             },
             new PackageVersion
             {
@@ -63,6 +80,7 @@ namespace DynamoCoreWpfTests
                 version = "0.0.2",
                 name = "test",
                 size = "4.19 MiB",
+                compatibility_matrix = CompatibilityList,
             },
             new PackageVersion
             {
@@ -76,13 +94,14 @@ namespace DynamoCoreWpfTests
                 version = "0.0.3",
                 name = "test",
                 size = "5.19 MiB",
+                compatibility_matrix = CompatibilityList,
             },
         };
         private static List<string> DependencyVersions { get; } = new List<string> {"1", "2", "3"};
         
         /// <summary>
         /// Tests whether a PackageDetailItem detects its dependencies and sets correponding values properly.
-        /// These display in the PackageDetailsView versions DataGrid as the 'Host' and 'Python' columns.
+        /// These display in the PackageDetailsView dynamoVersions DataGrid as the 'Host' and 'Python' columns.
         /// </summary>
         [Test]
         public void TestDependencyDetection()
@@ -173,7 +192,7 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
-        /// Tests whether the PackageDetailsViewModel receives the package versions properly.
+        /// Tests whether the PackageDetailsViewModel receives the package dynamoVersions properly.
         /// </summary>
         [Test]
         public void TestVersionsDisplayedInView()
@@ -211,7 +230,7 @@ namespace DynamoCoreWpfTests
             PackageDetailsView packageDetailsView = PackageDetailsViewExtension.PackageDetailsView;
 
             // Assert
-            Assert.IsNotNull(packageDetailsView.VersionsDataGrid);
+            Assert.IsNotNull(packageDetailsView.VersionsListView);
             Assert.IsInstanceOf<PackageDetailsViewModel>(packageDetailsView.DataContext);
 
             PackageDetailsViewModel packageDetailsViewModel = packageDetailsView.DataContext as PackageDetailsViewModel;
@@ -368,7 +387,7 @@ namespace DynamoCoreWpfTests
 
         /// <summary>
         /// Tests whether the extension opens and display package details when a user
-        /// clicks on the 'View Details' button in the package manager searh view.
+        /// clicks on the 'View Details' button in the package manager search view.
         /// </summary>
         [Test]
         public void TestViewPackageDetailsCommand()
@@ -422,6 +441,119 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(packageAuthor.First().username, packageDetailsViewModel.PackageAuthorName);
             Assert.AreEqual(packageDescription, packageDetailsViewModel.PackageDescription);
             Assert.AreEqual(false, string.IsNullOrEmpty(packageDetailsViewModel.PackageDetailItems.FirstOrDefault().PackageSize));
+        }
+
+        /// <summary>
+        /// Verifies that the package's compatibility info (name and version details) is correctly flattened 
+        /// and displayed in the package details view based on the CompatibilityList response.
+        /// </summary>
+        [Test]
+        public void TestFlattenedVersionCompatibility()
+        {
+            // Arrange
+            string packageToOpen = "Sample View Extension";
+            List<User> packageAuthor = new List<User> { new User { _id = "1", username = "DynamoTeam" } };
+            string packageDescription = "Dynamo sample view extension.";
+
+            PackageDetailsViewExtension.PackageManagerClientViewModel = ViewModel.PackageManagerClientViewModel;
+
+            PackageHeader packageHeader = new PackageHeader
+            {
+                _id = null,
+                name = packageToOpen,
+                versions = PackageVersions,
+                latest_version_update = System.DateTime.Now,
+                num_versions = PackageVersions.Count,
+                comments = null,
+                num_comments = 0,
+                latest_comment = null,
+                votes = 0,
+                downloads = 0,
+                repository_url = null,
+                site_url = null,
+                banned = false,
+                deprecated = false,
+                @group = null,
+                engine = null,
+                license = null,
+                used_by = null,
+                host_dependencies = Hosts,
+                num_dependents = 0,
+                description = packageDescription,
+                maintainers = packageAuthor,
+                keywords = null
+            };
+            PackageManagerSearchElement packageManagerSearchElement = new PackageManagerSearchElement(packageHeader);
+            PackageDetailsViewExtension.OpenPackageDetails(packageManagerSearchElement);
+            PackageDetailsView packageDetailsView = PackageDetailsViewExtension.PackageDetailsView;
+            Assert.IsInstanceOf<PackageDetailsViewModel>(packageDetailsView.DataContext);
+            PackageDetailsViewModel packageDetailsViewModel = packageDetailsView.DataContext as PackageDetailsViewModel;
+
+            var item = packageDetailsViewModel.PackageDetailItems.FirstOrDefault();
+            var dynamoVersions = $"{CompatibilityList.FirstOrDefault().min} - {CompatibilityList.FirstOrDefault().max}," +
+                $" {string.Join(", ", CompatibilityList.FirstOrDefault().versions)}";
+
+            // Assert
+            Assert.IsNotNull(item.VersionInformation);
+            Assert.AreEqual(2, item.VersionInformation.Count);
+
+            // Complete
+            Assert.AreEqual(CompatibilityList[0].name, item.VersionInformation[0].CompatibilityName);
+            Assert.AreEqual(dynamoVersions, item.VersionInformation[0].Versions);
+            // Missing or incomplete compatibility information
+            Assert.AreEqual(CompatibilityList[1].name, item.VersionInformation[1].CompatibilityName);
+            Assert.AreEqual(string.Empty, item.VersionInformation[1].Versions);
+        }
+
+        /// <summary>
+        /// Asserts that the last version in a list of equally compatible versions is the latestCompatibilityVersion assigned in the vm
+        /// </summary>
+        [Test]
+        public void TestCorrectLatestCompatibleVersionIsFound()
+        {
+            // Arrange
+            string packageToOpen = "Sample View Extension";
+            List<User> packageAuthor = new List<User> { new User { _id = "1", username = "DynamoTeam" } };
+            string packageDescription = "Dynamo sample view extension.";
+
+            PackageDetailsViewExtension.PackageManagerClientViewModel = ViewModel.PackageManagerClientViewModel;
+
+            PackageHeader packageHeader = new PackageHeader
+            {
+                _id = null,
+                name = packageToOpen,
+                versions = PackageVersions,
+                latest_version_update = System.DateTime.Now,
+                num_versions = PackageVersions.Count,
+                comments = null,
+                num_comments = 0,
+                latest_comment = null,
+                votes = 0,
+                downloads = 0,
+                repository_url = null,
+                site_url = null,
+                banned = false,
+                deprecated = false,
+                @group = null,
+                engine = null,
+                license = null,
+                used_by = null,
+                host_dependencies = Hosts,
+                num_dependents = 0,
+                description = packageDescription,
+                maintainers = packageAuthor,
+                keywords = null
+            };
+            PackageManagerSearchElement packageManagerSearchElement = new PackageManagerSearchElement(packageHeader);
+            PackageDetailsViewExtension.OpenPackageDetails(packageManagerSearchElement);
+            PackageDetailsView packageDetailsView = PackageDetailsViewExtension.PackageDetailsView;
+            Assert.IsInstanceOf<PackageDetailsViewModel>(packageDetailsView.DataContext);
+            PackageDetailsViewModel packageDetailsViewModel = packageDetailsView.DataContext as PackageDetailsViewModel;
+
+            var latestCompatibleVersion = packageManagerSearchElement.LatestCompatibleVersion;
+
+            // Assert
+            Assert.AreEqual(PackageVersions[2].version, latestCompatibleVersion.Version);
         }
     }
 }

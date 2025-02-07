@@ -467,6 +467,7 @@ namespace Dynamo.ViewModels
 
         private void ExecuteWithTou(Action acceptanceCallback)
         {
+            if (!dynamoViewModel.IsIDSDKInitialized(true, packageManagerClientViewModel.ViewModelOwner)) return;
             // create TermsOfUseHelper object to check asynchronously whether the Terms of Use has 
             // been accepted, and if so, continue to execute the provided Action.
             var termsOfUseCheck = new TermsOfUseHelper(new TermsOfUseHelperParams
@@ -474,7 +475,8 @@ namespace Dynamo.ViewModels
                 PackageManagerClient = dynamoModel.GetPackageManagerExtension().PackageManagerClient,
                 AuthenticationManager = dynamoModel.AuthenticationManager,
                 ResourceProvider = dynamoViewModel.BrandingResourceProvider,
-                AcceptanceCallback = acceptanceCallback
+                AcceptanceCallback = acceptanceCallback,
+                Parent = packageManagerClientViewModel.ViewModelOwner ?? dynamoViewModel.Owner,
             });
 
             termsOfUseCheck.Execute(false);

@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.Loader;
 using System.Text;
 using System.Threading;
 using CommandLine;
@@ -157,6 +158,7 @@ namespace Dynamo.Applications
 
             var versions = new[]
             {
+                new Version(231,0,0),
                 new Version(230,0,0),
             };
 
@@ -184,6 +186,40 @@ namespace Dynamo.Applications
             return model;
         }
 
+        private static DynamoModel PrepareModel(
+            string cliLocale,
+            string asmPath,
+            bool noNetworkMode,
+            HostAnalyticsInfo analyticsInfo,
+            bool cliMode = true,
+            string userDataFolder = "",
+            string commonDataFolder = "",
+            bool serviceMode = false)
+        {
+            var normalizedCLILocale = string.IsNullOrEmpty(cliLocale) ? null : cliLocale;
+            IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
+            PathManager.Instance.AssignHostPathAndIPathResolver(string.Empty, pathResolver);
+            DynamoModel.SetUICulture(normalizedCLILocale ?? PreferenceSettings.Instance.Locale);
+            DynamoModel.OnDetectLanguage();
+
+            // Preload ASM and display corresponding message on splash screen
+            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
+            var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
+            var model = StartDynamoWithDefaultConfig(
+                CLImode: cliMode,
+                userDataFolder: userDataFolder,
+                commonDataFolder: commonDataFolder,
+                geometryFactoryPath: geometryFactoryPath,
+                preloaderLocation: preloaderLocation,
+                noNetworkMode: noNetworkMode,
+                info: analyticsInfo,
+                isServiceMode: serviceMode,
+                cliLocale: normalizedCLILocale
+            );
+            model.IsASMLoaded = isASMloaded;
+            return model;
+        }
+
         /// <summary>
         /// Use this overload to construct a DynamoModel in CLI context when the location of ASM to use is known, host analytics info is known and you want to set data paths.
         /// </summary>
@@ -191,18 +227,15 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeCLIModel(CommandLineArguments cmdLineArgs)
         {
-            var asmPath = String.IsNullOrEmpty(cmdLineArgs.ASMPath) ? string.Empty : cmdLineArgs.ASMPath;
-            IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
-            PathManager.Instance.AssignHostPathAndIPathResolver(string.Empty, pathResolver);
-            DynamoModel.SetUICulture(PreferenceSettings.Instance.Locale);
-            DynamoModel.OnDetectLanguage();
-
-            // Preload ASM and display corresponding message on splash screen
-            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
-            var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            var model = StartDynamoWithDefaultConfig(true, cmdLineArgs.UserDataFolder, cmdLineArgs.CommonDataFolder,
-                geometryFactoryPath, preloaderLocation, cmdLineArgs.NoNetworkMode, cmdLineArgs.AnalyticsInfo, cmdLineArgs.ServiceMode);
-            model.IsASMLoaded = isASMloaded;
+            var asmPath = string.IsNullOrEmpty(cmdLineArgs.ASMPath) ? string.Empty : cmdLineArgs.ASMPath;
+            var model = PrepareModel(
+                cliLocale: cmdLineArgs.Locale,
+                asmPath: asmPath,
+                noNetworkMode: cmdLineArgs.NoNetworkMode,
+                analyticsInfo: cmdLineArgs.AnalyticsInfo,
+                userDataFolder: cmdLineArgs.UserDataFolder,
+                commonDataFolder: cmdLineArgs.CommonDataFolder,
+                serviceMode: cmdLineArgs.ServiceMode);
             return model;
         }
 
@@ -215,10 +248,12 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeModel(bool CLImode, string asmPath = "", string hostName ="")
         {
-            var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            var model = StartDynamoWithDefaultConfig(CLImode, string.Empty, string.Empty,
-                geometryFactoryPath, preloaderLocation, false, new HostAnalyticsInfo() { HostName = hostName });
-            model.IsASMLoaded = isASMloaded;
+            var model = PrepareModel(
+                cliLocale: string.Empty,
+                asmPath: asmPath,
+                noNetworkMode: false,
+                analyticsInfo: new HostAnalyticsInfo() { HostName = hostName },
+                cliMode: CLImode);
             return model;
         }
 
@@ -232,17 +267,32 @@ namespace Dynamo.Applications
         /// <returns></returns>
         public static DynamoModel MakeModel(bool CLImode, bool noNetworkMode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
         {
-            IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
-            PathManager.Instance.AssignHostPathAndIPathResolver(string.Empty, pathResolver);
-            DynamoModel.SetUICulture(PreferenceSettings.Instance.Locale);
-            DynamoModel.OnDetectLanguage();
+            var model = PrepareModel(
+                cliLocale: string.Empty,
+                asmPath: asmPath,
+                noNetworkMode: noNetworkMode,
+                analyticsInfo: info,
+                cliMode: CLImode);
+            return model;
+        }
 
-            // Preload ASM and display corresponding message on splash screen
-            DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenPreLoadingAsm, 10));
-            var isASMloaded = PreloadASM(asmPath, out string geometryFactoryPath, out string preloaderLocation);
-            var model = StartDynamoWithDefaultConfig(CLImode, string.Empty, string.Empty, geometryFactoryPath,
-                preloaderLocation, noNetworkMode, info);
-            model.IsASMLoaded = isASMloaded;
+        /// <summary>
+        /// Use this overload to construct a DynamoModel when the location of ASM to use is known and host analytics info is known.
+        /// </summary>
+        /// <param name="CLImode">CLI mode starts the model in test mode and uses a separate path resolver.</param>
+        /// <param name="CLIlocale">CLI argument to force dynamo locale</param>
+        /// <param name="noNetworkMode">Option to initialize Dynamo in no-network mode</param>
+        /// <param name="asmPath">Path to directory containing geometry library binaries</param>
+        /// <param name="info">Host analytics info specifying Dynamo launching host related information.</param>
+        /// <returns></returns>
+        public static DynamoModel MakeModel(bool CLImode, string CLIlocale, bool noNetworkMode, string asmPath = "", HostAnalyticsInfo info = new HostAnalyticsInfo())
+        {
+            var model = PrepareModel(
+                cliLocale: CLIlocale,
+                asmPath: asmPath,
+                noNetworkMode: noNetworkMode,
+                analyticsInfo: info,
+                cliMode: CLImode);
             return model;
         }
 
@@ -320,7 +370,8 @@ namespace Dynamo.Applications
             string preloaderLocation,
             bool noNetworkMode,
             HostAnalyticsInfo info = new HostAnalyticsInfo(),
-            bool isServiceMode = false)
+            bool isServiceMode = false,
+            string cliLocale = null)
         {
 
             var config = new DynamoModel.DefaultStartConfiguration
@@ -335,6 +386,7 @@ namespace Dynamo.Applications
                 IsServiceMode = isServiceMode,
                 Preferences = PreferenceSettings.Instance,
                 NoNetworkMode = noNetworkMode,
+                CLILocale = cliLocale,
                 //Breaks all Lucene calls. TI enable this would require a lot of refactoring around Lucene usage in Dynamo.
                 //IsHeadless = CLImode
             };
@@ -396,36 +448,34 @@ namespace Dynamo.Applications
         /// </summary>
         private static List<Exception> GetVersionMismatchedReferencesInAppDomain(Assembly assembly, String[] assemblyNamesToIgnore)
         {
-            // Get all assemblies that are currently loaded into the appdomain.
-            var loadedAssemblies = AppDomain.CurrentDomain.GetAssemblies().ToList();
+            // We will only investigate the ALC of the input assembly. It is a valid use case to have a different
+            // version of the input assembly or one of its references loaded in a different ALC.
+            // While we don't know in which ALC the referenced assemblies will be loaded, it's fair to make an
+            // educated guess and assume they will be loaded in the same ALC as the main input assembly.
             // Ignore some assemblies(Revit assemblies) that we know work and have changed their version number format or do not align
             // with semantic versioning.
-
-            var loadedAssemblyNames = loadedAssemblies.Select(assem => assem.GetName()).ToList();
-            loadedAssemblyNames.RemoveAll(assemblyName =>assemblyNamesToIgnore.Contains(assemblyName.Name));
-
-            //build dict- ignore those with duplicate names.
-            var loadedAssemblyDict = loadedAssemblyNames.GroupBy(assm => assm.Name).ToDictionary(g => g.Key, g => g.First());
+            var loadedAssemblies = AssemblyLoadContext.GetLoadContext(assembly).Assemblies
+                .Where(a => !assemblyNamesToIgnore.Contains(a.GetName().Name))
+                .ToList();
 
             var output = new List<Exception>();
+            var loadedAssemblyDict = loadedAssemblies.GroupBy(a => a.GetName().Name).ToDictionary(g => g.Key, g => g.FirstOrDefault());
 
-            foreach (var currentReferencedAssembly in assembly.GetReferencedAssemblies().Concat(new AssemblyName[] { assembly.GetName() }))
+            foreach (var currentReferencedAssembly in assembly.GetReferencedAssemblies())
             {
-                if (loadedAssemblyDict.ContainsKey(currentReferencedAssembly.Name))
+                if (loadedAssemblyDict.TryGetValue(currentReferencedAssembly.Name, out Assembly loadedAssembly))
                 {
-                    //if the dll is already loaded, then check that our required version is not greater than the currently loaded one.
-                    var loadedAssembly = loadedAssemblyDict[currentReferencedAssembly.Name];
-                    if (currentReferencedAssembly.Version.Major > loadedAssembly.Version.Major)
+                    //if the dll is already loaded, then check lthat our required version is not greater than the currently loaded one.
+                    if (currentReferencedAssembly.Version.Major > loadedAssembly.GetName().Version.Major)
                     {
                         //there must exist a loaded assembly which references the newer version of the assembly which we require - lets find it:
-
                         var referencingNewerVersions = new List<AssemblyName>();
-                        foreach(var originalLoadedAssembly in loadedAssemblies )
+                        foreach (var originalLoadedAssembly in loadedAssemblies)
                         {
-                            foreach(var refedAssembly in originalLoadedAssembly.GetReferencedAssemblies())
+                            foreach (var refedAssembly in originalLoadedAssembly.GetReferencedAssemblies())
                             {
                                 //if the version matches then this is one our guys
-                                if(refedAssembly.Version == loadedAssembly.Version)
+                                if (refedAssembly.Version == loadedAssembly.GetName().Version)
                                 {
                                     referencingNewerVersions.Add(originalLoadedAssembly.GetName());
                                 }
@@ -435,7 +485,7 @@ namespace Dynamo.Applications
                         output.Add(new FileLoadException(
                             string.Format(Resources.MismatchedAssemblyVersion, assembly.FullName, currentReferencedAssembly.FullName)
                             + Environment.NewLine + Resources.MismatchedAssemblyList + Environment.NewLine +
-                            String.Join(", ", referencingNewerVersions.Select(x => x.Name).Distinct().ToArray())));
+                            string.Join(", ", referencingNewerVersions.Select(x => x.Name).Distinct())));
                     }
                 }
             }

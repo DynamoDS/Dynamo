@@ -402,6 +402,10 @@
     <value>Dynamo _Website</value>
     <comment>Help menu | Go Dynamo website</comment>
   </data>
+  <data name="DynamoViewHelpMenuGotoRepo" xml:space="preserve">
+    <value>Dynamo _Repository</value>
+    <comment>Help menu | Go go Dynamo repository</comment>
+  </data>
   <data name="DynamoViewHelpMenuGotoWiki" xml:space="preserve">
     <value>Dynamo _Project Wiki</value>
     <comment>Help menu | Go to wiki</comment>
@@ -930,6 +934,14 @@ Would you like to save your changes?</value>
     <value>You have unsaved changes to the Home workspace.
 
 Would you like to save your changes?</value>
+  </data>
+  <data name="MessageFileInUseByApplication" xml:space="preserve">
+    <value>The file is currently in use by another application.
+	
+Please close the file before trying to overwrite it.</value>
+  </data>
+  <data name="TitleFileInUse" xml:space="preserve">
+    <value>File in use</value>
   </data>
   <data name="MessageConfirmToSaveNamedHomeWorkSpace" xml:space="preserve">
     <value>You have unsaved changes to {0}.
@@ -1500,7 +1512,7 @@ If the toggle is off custom packages that are not already loaded will load once 
     <value>Sort by</value>
   </data>
   <data name="PackageSearchResultViewDetails" xml:space="preserve">
-    <value>View Details</value>
+    <value>Info</value>
     <comment>In package search result card.</comment>
   </data>
   <data name="PackageSearchResultRequirements" xml:space="preserve">
@@ -1911,6 +1923,9 @@ Do you want to install the latest Dynamo update?</value>
   </data>
   <data name="MessageFailedToFindNodeById" xml:space="preserve">
     <value>No node could be found with that Id.</value>
+  </data>
+  <data name="MessageFailedToFindGroupById" xml:space="preserve">
+    <value>No group could be found with that Id.</value>
   </data>
   <data name="MessageFailedToOpenCorruptedFile" xml:space="preserve">
     <value>Error opening corrupted file: {0}</value>
@@ -3996,5 +4011,95 @@ To make this file into a new template, save it to a different folder, then move 
   </data>
   <data name="PartialRenderFailureTitle" xml:space="preserve">
     <value>Background Preview had an issue</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpData" xml:space="preserve">
+    <value>_Dump Data</value>
+    <comment>Debug menu | Dump data options</comment>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeHelpData" xml:space="preserve">
+    <value>_Dump Node Help Data</value>
+    <comment>Debug menu | Dump all node help data like hash mapping</comment>
+  </data>
+  <data name="NodeHelpIsDumped" xml:space="preserve">
+    <value>Node Help Data is dumped to \"{0}\".</value>
+  </data>
+  <data name="UpdateAllPythonEngineWarning" xml:space="preserve">
+    <value>Update all {0} python nodes in the current workspace to use {1} engine?</value>
+  </data>
+  <data name="UpdateAllPythonEngineWarningTitle" xml:space="preserve">
+    <value>Update All Python Nodes</value>
+  </data>
+  <data name="UpdateAllPythonEngineMainMenuHeader" xml:space="preserve">
+    <value>Set Python Engine</value>
+  </data>
+  <data name="PackageDetailsReleaseNotes" xml:space="preserve">
+    <value>Release notes</value>
+  </data>
+  <data name="PackageDetailsDependsOn" xml:space="preserve">
+    <value>Depends on</value>
+  </data>
+  <data name="PackageDetailsCompatibility" xml:space="preserve">
+    <value>COMPATIBILITY</value>
+  </data>
+  <data name="PackageDetailsCompatibilityWithSetup" xml:space="preserve">
+    <value>Compatible with your current setup</value>
+  </data>
+  <data name="PackageDetailsIncompatibilityWithSetup" xml:space="preserve">
+    <value>Incompatible with your current setup</value>
+  </data>
+  <data name="PackageDetailsXCompatibilityWithSetup" xml:space="preserve">
+    <value>Unknown compatibility with your current setup</value>
+  </data>
+  <data name="PackageDetailsCompatibleVersionTooltip" xml:space="preserve">
+    <value>This version should be compatible with your current setup</value>
+  </data>
+  <data name="PackageDetailsUnknownCompatibilityVersionTooltip" xml:space="preserve">
+    <value>The compatibility of this version has not been verified. It may or may not be compatible with your current setup</value>
+  </data>
+  <data name="PackageDetailsIncompatibileVersionTooltip" xml:space="preserve">
+    <value>This version may be incompatible with your current setup</value>
+  </data>
+  <data name="PackageManagerIncompatibleVersionDownloadMsg" xml:space="preserve">
+    <value>This version is incompatible with your current setup (Dynamo and host version, if applicable). It may not work properly. Do you want to install it anyway?</value>
+  </data>
+  <data name="PackageManagerIncompatibleVersionDownloadTitle" xml:space="preserve">
+    <value>Incompatible version</value>
+  </data>
+  <data name="PackageFilterByCompatibility" xml:space="preserve">
+    <value>VERSION COMPATIBILITY</value>
+  </data>
+  <data name="PackageCompatible" xml:space="preserve">
+    <value>Compatible</value>
+  </data>
+  <data name="PackageCompatibleFilterTooltip" xml:space="preserve">
+    <value>Versions compatible with the current setup</value>
+  </data>
+  <data name="PackageUnknownCompatibility" xml:space="preserve">
+    <value>Unknown compatibility</value>
+  </data>
+  <data name="PackageUnknownCompatibilityFilterTooltip" xml:space="preserve">
+    <value>Compatibility of package version cannot be verified</value>
+  </data>
+  <data name="PackageIncompatible" xml:space="preserve">
+    <value>Incompatible</value>
+  </data>
+  <data name="PackageIncompatibleFilterTooltip" xml:space="preserve">
+    <value>Versions maybe incompatible with the current setup</value>
+  </data>
+  <data name="PackageVersionTooltip" xml:space="preserve">
+    <value>Versions marked with .x include all versions in the specified major or minor release</value>
+  </data>
+  <data name="CannotAddNodeToWorkspace" xml:space="preserve">
+    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
+  </data>
+  <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
+    <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected. </value>
+  </data>
+  <data name="IDSDKErrorMessage" xml:space="preserve">
+    <value>It seems like Autodesk Identity Manager is not set up on your system. To ensure full access to all features, please sign in to your Autodesk account using Autodesk Identity Manager.
+#Download and install=https://manage.autodesk.com/products/updates it here or through Autodesk Access, then sign in.</value>
+  </data>
+  <data name="IDSDKErrorMessageTitle" xml:space="preserve">
+    <value>Download Autodesk Identity Manager</value>
   </data>
 </root>

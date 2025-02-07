@@ -548,10 +548,12 @@ namespace DynamoCoreWpfTests
 
     class JSONSerializationTests : DynamoViewModelUnitTest
     {
-        public static string jsonNonGuidFolderName = "jsonWithView_nonGuidIds";
-        public static string jsonFolderName = "jsonWithView";
+        private static Dictionary<string, string> testFilesCache = [];
 
-        private const string jsonStructuredFolderName = "DynamoCoreWPFTests";
+        public static string jsonNonGuidFolderName = $"jsonWithView_nonGuidIds_{Environment.ProcessId}";
+        public static string jsonFolderName = $"jsonWithView_{Environment.ProcessId}";
+
+        private static string jsonStructuredFolderName = $"DynamoCoreWPFTests_{Environment.ProcessId}";
 
         private TimeSpan lastExecutionDuration = new TimeSpan();
         private Dictionary<Guid, string> modelsGuidToIdMap = new Dictionary<Guid, string>();
@@ -943,6 +945,7 @@ namespace DynamoCoreWpfTests
                     Console.WriteLine(e.Message);
                 }
             }
+            CacheTestFiles();
         }
 
         [OneTimeTearDown]
@@ -961,11 +964,14 @@ namespace DynamoCoreWpfTests
         /// the test directory, opens them and executes, then converts them to
         /// json and executes again, comparing the values from the two runs.
         /// </summary>
-        /// <param name="filePath">The path to a .dyn file. This parameter is supplied
-        /// by the test framework.</param>
+        /// <param name="fileId">A random guid assigned to a .dyn file. This parameter is supplied
+        /// by the test framework. You can get the file path by calling GetTestFileNameFromGuid(fileId).</param>
         [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude")]
-        public void SerializationTest(string filePath)
+        public void SerializationTest(string fileId)
         {
+            string filePath = GetTestFileNameFromGuid(fileId);
+            Console.WriteLine($"Running test {TestContext.CurrentContext.Test.ClassName}.{TestContext.CurrentContext.Test.MethodName} with file {filePath}");
+
             DoWorkspaceOpenAndCompareView(filePath,
                jsonFolderName,
                 ConvertCurrentWorkspaceViewToJsonAndSave,
@@ -980,11 +986,14 @@ namespace DynamoCoreWpfTests
         /// This set of tests has slightly modified json where the id properties
         /// are altered when serialized to test deserialization of non-guid ids.
         /// </summary>
-        /// <param name="filePath">The path to a .dyn file. This parameter is supplied
-        /// by the test framework.</param>
+        /// <param name="fileId">A random guid assigned to a .dyn file. This parameter is supplied
+        /// by the test framework. You can get the file path by calling GetTestFileNameFromGuid(fileId).</param>
         [Test, TestCaseSource(nameof(FindWorkspaces)), Category("JsonTestExclude")]
-        public void SerializationNonGuidIdsTest(string filePath)
+        public void SerializationNonGuidIdsTest(string fileId)
         {
+            string filePath = GetTestFileNameFromGuid(fileId);
+            Console.WriteLine($"Running test {TestContext.CurrentContext.Test.ClassName}.{TestContext.CurrentContext.Test.MethodName} with file {filePath}");
+
             modelsGuidToIdMap.Clear();
             DoWorkspaceOpenAndCompareView(filePath,
                jsonNonGuidFolderName,
@@ -1142,12 +1151,28 @@ namespace DynamoCoreWpfTests
                 serializationTestUtils.SaveWorkspaceComparisonData);
         }
 
-        public static object[] FindWorkspaces()
+        private void CacheTestFiles()
         {
+            testFilesCache.Clear();
             var di = new DirectoryInfo(TestDirectory);
             var fis = new string[] { "*.dyn", "*.dyf" }
             .SelectMany(i => di.GetFiles(i, SearchOption.AllDirectories));
-            return fis.Select(fi => fi.FullName).Take(MAXNUM_SERIALIZATIONTESTS_TOEXECUTE).ToArray();
+            var testFiles = fis.Select(fi => fi.FullName).Take(MAXNUM_SERIALIZATIONTESTS_TOEXECUTE).ToArray();
+
+            foreach (var testFile in testFiles)
+            {
+                testFilesCache.Add(Guid.NewGuid().ToString(), testFile);
+            }
+        }
+
+        internal static string GetTestFileNameFromGuid(string guid)
+        {
+            return testFilesCache.GetValueOrDefault(guid);
+        }
+
+        public static object[] FindWorkspaces()
+        {
+            return [.. testFilesCache.Keys];
         }
 
 
@@ -1200,7 +1225,7 @@ namespace DynamoCoreWpfTests
                     {
                         Background = annotation.Background.ToString(),
                         FontSize = annotation.FontSize,
-                        Nodes = annotation.Nodes.Select(x => x.GUID.ToString()),
+                        Nodes = annotation.Nodes.Where(x => !(x is ConnectorPinModel)).Select(x => x.GUID.ToString()),
                         Title = annotation.AnnotationText,
                         Id = annotation.AnnotationModel.GUID.ToString(),
                         Left = annotation.Left,

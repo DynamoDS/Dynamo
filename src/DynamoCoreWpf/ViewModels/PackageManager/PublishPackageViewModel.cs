@@ -1229,9 +1229,16 @@ namespace Dynamo.PackageManager
         private List<HostComboboxEntry> initializeHostSelections()
         {
             var hostSelections = new List<HostComboboxEntry>();
-            foreach (var host in dynamoViewModel.PackageManagerClientViewModel.Model.GetKnownHosts())
+            try
             {
-                hostSelections.Add(new HostComboboxEntry(host));
+                foreach (var host in dynamoViewModel.PackageManagerClientViewModel.Model?.GetKnownHosts())
+                {
+                    hostSelections.Add(new HostComboboxEntry(host));
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamoViewModel.Model.Logger.Log("Could not fetch hosts: " + ex.Message);
             }
             return hostSelections;
         }
@@ -1512,7 +1519,16 @@ namespace Dynamo.PackageManager
                     out def))
                 {
                     defs.Add(def);
-                    defPreviews[x.Name] = x.Path;
+
+                    // Check if the dictionary already contains the key
+                    if (defPreviews.ContainsKey(x.Name))
+                    {
+                        defPreviews[$"{x.Category}.{x.Name}"] = x.Path;
+                    }
+                    else
+                    {
+                        defPreviews[x.Name] = x.Path;
+                    }
                 }
             }
 
@@ -2085,7 +2101,7 @@ namespace Dynamo.PackageManager
             }
         }
 
-        private void RemoveSingleItem(PackageItemRootViewModel vm, DependencyType fileType)
+        internal void RemoveSingleItem(PackageItemRootViewModel vm, DependencyType fileType)
         {
             var fileName = vm.DisplayName;
 
@@ -2104,9 +2120,26 @@ namespace Dynamo.PackageManager
             else if (fileType.Equals(DependencyType.CustomNode) || fileType.Equals(DependencyType.CustomNodePreview))
             {
                 fileName = Path.GetFileNameWithoutExtension(fileName);
-                CustomNodeDefinitions.Remove(CustomNodeDefinitions
-                    .First(x => x.DisplayName == fileName));
 
+                // We allow multiple .dyf files with identical node names to be loaded at once
+                // We use the node Namespace as a prefix ([Namespace].[Node Name]) to allow for that
+                string[] nameVariations = {
+                    fileName,
+                    fileName.Replace(".", ""), // Edge case where the actual Display Name as the '.' removed
+                    fileName.Contains('.') ? fileName.Split('.')[1] : fileName // Edge case for the .dyf files that were added first
+                };
+
+                foreach (var variation in nameVariations)
+                {
+                    var customNode = CustomNodeDefinitions.FirstOrDefault(x => x.DisplayName == variation);
+                    if (customNode != null)
+                    {
+                        CustomNodeDefinitions.Remove(customNode);
+                        break; // Exit loop once found and removed
+                    }
+                }
+
+                // Find and remove the corresponding key in CustomDyfFilepaths
                 var keyToRemove = CustomDyfFilepaths.Keys
                                     .FirstOrDefault(k => Path.GetFileNameWithoutExtension(k) == fileName);
 
@@ -2244,6 +2277,7 @@ namespace Dynamo.PackageManager
         /// Delegate used to submit the publish online request</summary>
         private void Submit()
         {
+            if (!dynamoViewModel.IsIDSDKInitialized(true, Owner)) return;
             MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK : MessageBoxService.Show(Owner, Resources.PrePackagePublishMessage, Resources.PrePackagePublishTitle, MessageBoxButton.OKCancel, MessageBoxImage.Information);
             if (response == MessageBoxResult.Cancel)
             {

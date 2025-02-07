@@ -26,7 +26,7 @@ jobs:
         uses: microsoft/setup-msbuild@v2
       - name: Install dependencies for windows runtime
         run: |
-          dotnet restore ${{ github.workspace }}\Dynamo\src\DynamoCore.sln /p:Configuration=Release --runtime=win-x64
+          dotnet restore ${{ github.workspace }}\Dynamo\src\DynamoCore.sln -p:Configuration=Release --runtime=win-x64
       - name: Build DynamoCore with MSBuild for Windows
         run: |
           msbuild ${{ github.workspace }}\Dynamo\src\DynamoCore.sln /p:Configuration=Release
@@ -56,7 +56,7 @@ jobs:
       - name: Setup msbuild
         uses: microsoft/setup-msbuild@v2
       - name: Install dependencies for linux runtime
-        run: dotnet restore ${{ github.workspace }}\Dynamo\src\DynamoCore.sln -p:Platform=NET_Linux --runtime=linux-x64
+        run: dotnet restore ${{ github.workspace }}\Dynamo\src\DynamoCore.sln -p:Configuration=Release -p:Platform=NET_Linux --runtime=linux-x64
       - name: Build DynamoCore with MSBuild for Linux
         run: msbuild ${{ github.workspace }}\Dynamo\src\DynamoCore.sln /p:Configuration=Release /p:Platform=NET_Linux
       - name: Look for DynamoCLI
@@ -82,7 +82,7 @@ jobs:
       - name: Disable problem matcher
         run: echo "::remove-matcher owner=csc::"
       - name: Install dependencies for linux runtime
-        run: dotnet restore ${{ github.workspace }}/Dynamo/src/DynamoCore.sln -p:Platform=NET_Linux --runtime=linux-x64
+        run: dotnet restore ${{ github.workspace }}/Dynamo/src/DynamoCore.sln -p:Configuration=Release -p:Platform=NET_Linux --runtime=linux-x64
       - name: Build DynamoCore with dotnet for Linux
         run: dotnet build ${{ github.workspace }}/Dynamo/src/DynamoCore.sln -c Release /p:Platform=NET_Linux
       - name: Look for DynamoCLI.exe

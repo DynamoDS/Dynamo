@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -33,9 +33,9 @@ namespace Dynamo.UI.Prompts
             InitializeComponent();
             this.dynamoViewModel = dynamoViewModel;
 
-            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;          
-            this.editText.Focus();
-            
+            Owner = dynamoViewModel.Owner;
+            this.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+
             // do not accept value if user closes 
             this.Closing += (sender, args) => this.DialogResult = false;
             if (false != updateSourceOnTextChange)
@@ -49,8 +49,28 @@ namespace Dynamo.UI.Prompts
             }
             this.editText.PreviewKeyDown += EditText_PreviewKeyDown;
             this.Closed += EditWindow_Closed;
+            this.ContentRendered += OnContentRendered;
         }
 
+        // Centralize the window correctly after it is rendered
+        private void OnContentRendered(object sender, EventArgs e)
+        {
+            // Unsubscribe immediately, we only call this once on initialization
+            this.ContentRendered -= OnContentRendered;
+
+            CenterWindowRelativeToOwner(); 
+            editText.Focus(); 
+        }
+
+        // Centralize the window relative to another Window
+        private void CenterWindowRelativeToOwner()
+        {
+            if (Owner != null)
+            {
+                this.Left = Owner.Left + (Owner.Width - this.ActualWidth) / 2;
+                this.Top = Owner.Top + (Owner.Height - this.ActualHeight) / 2;
+            }
+        }
 
         private void CloseButton_OnClick(object sender, RoutedEventArgs e)
         {

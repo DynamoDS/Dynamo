@@ -16,16 +16,16 @@
 
     <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
         <PropertyGroup>
-            <PackageVersion>0.0.29</PackageVersion>
+            <PackageVersion>0.0.31</PackageVersion>
             <PackageName>NotificationCenter</PackageName>
         </PropertyGroup>
-        <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command echo ($(SolutionDir)\pkgexist.ps1 $(PackageName) $(PackageVersion))" ConsoleToMSBuild="true">
+        <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)pkgexist.ps1&quot; &quot;$(PackageName)&quot; &quot;$(PackageVersion)&quot;" ConsoleToMSBuild="true">
             <Output TaskParameter="ConsoleOutput" PropertyName="ShouldInstall" />
         </Exec>
         <Message Text="Skipping Install for $(PackageName) $(PackageVersion), package up to date." Condition="!$(ShouldInstall)" Importance="high"></Message>
         
         <!--This command updates the npm registry configuration if necessary-->
-        <Exec Command="$(PowerShellCommand) -ExecutionPolicy ByPass -Command $(SolutionDir)\setnpmreg.ps1"  Condition="$(ShouldInstall)"/>
+        <Exec Command="&quot;$(PowerShellCommand)&quot; -ExecutionPolicy ByPass -Command &quot;&amp; '$(SolutionDir)setnpmreg.ps1'&quot;" Condition="$(ShouldInstall)" />
         <!--This command gets a specific build of the notifcation center from npm-->
         <Exec Command="npm pack @dynamods/notifications-center@$(PackageVersion)"  Condition="$(ShouldInstall)"/>
     </Target>
@@ -45,7 +45,7 @@
         <MakeDir Directories="Packages/NotificationCenter" />
 
         <!--Extracts the file to /package-->
-        <Exec Command="tar -xzf $(MSBuildProjectDirectory)\$(Last).tgz --strip-components=1 --directory=Packages/NotificationCenter"></Exec>
+        <Exec Command="tar -xzf &quot;$(MSBuildProjectDirectory)\$(Last).tgz&quot; --strip-components=1 --directory=&quot;Packages/NotificationCenter&quot;" />
 
         <!--Deletes the tgz file-->
         <Delete Files=" $(MSBuildProjectDirectory)\$(Last).tgz" />
@@ -63,7 +63,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="FontAwesome5" Version="2.1.11" />
-		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2045.28" />
+		<PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2478.35" />
 	</ItemGroup>
 	<ItemGroup>
 		<ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">

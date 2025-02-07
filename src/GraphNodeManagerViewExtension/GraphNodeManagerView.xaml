@@ -124,7 +124,8 @@
                      Header="{x:Static p:Resources.HeaderNameName}"
                      HeaderStyle="{StaticResource FirstColumnHeaderStyle1}" 
                      IsReadOnly="True"
-                     Width="6*">
+                     Width="6*"
+                    SortMemberPath="Name">
 
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
@@ -158,7 +159,8 @@
                 <DataGridTemplateColumn
                     Header="{x:Static p:Resources.HeaderNameType}" 
                     Width="3*"
-                    IsReadOnly="True">
+                    IsReadOnly="True"
+                    SortMemberPath="TypeSortKey">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -186,7 +188,8 @@
                 <DataGridTemplateColumn
                     Header="{x:Static p:Resources.HeaderNameState}" 
                     Width="3*"
-                    IsReadOnly="True">
+                    IsReadOnly="True"
+                    SortMemberPath="StateSortKey">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -213,7 +216,8 @@
                 <DataGridTemplateColumn
                     Header="{x:Static p:Resources.HeaderNameIssues}" 
                     Width="3*"
-                    IsReadOnly="True">
+                    IsReadOnly="True"
+                    SortMemberPath="IssueSortKey">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
@@ -247,7 +251,8 @@
                 <DataGridTemplateColumn
                     Header="{x:Static p:Resources.HeaderNameOutputs}" 
                     Width="3*"
-                    IsReadOnly="True">
+                    IsReadOnly="True"
+                    SortMemberPath="OutputSortKey">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">

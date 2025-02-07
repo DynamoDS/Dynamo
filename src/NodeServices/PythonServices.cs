@@ -64,6 +64,13 @@ namespace Dynamo.PythonServices
         }
 
         /// <summary>
+        /// Data marshaler for host data used during the execution of a Python node.
+        /// This can be implemented differently across various Python engines due to
+        /// factors such as differing PythonNet APIs or other specific requirements.
+        /// </summary>
+        internal object HostDataMarshaler { get; set; }
+
+        /// <summary>
         /// Name of the Python engine
         /// </summary>
         public abstract string Name
@@ -93,6 +100,14 @@ namespace Dynamo.PythonServices
         public abstract object Evaluate(string code,
                         IList bindingNames,
                         [ArbitraryDimensionArrayImport] IList bindingValues);
+
+        /// <summary>
+        /// Add additional data marshalers to handle host data.
+        /// While some data marshalers are specific to the host application,
+        /// they must be implemented at the Dynamo Core level in order to
+        /// avoid host dependencies on the Python runtime.
+        /// </summary>
+        internal virtual void RegisterHostDataMarshalers() { }
     }
 
     /// <summary>
@@ -366,11 +381,11 @@ namespace Dynamo.PythonServices
         internal static readonly Regex MATCH_FROM_IMPORT_STATEMENTS = new Regex(@"from\s+?([\w.]+)\s+?import\s+?([\w, *]+)", RegexOptions.Compiled | RegexOptions.Multiline);
         internal static readonly Regex MATCH_VARIABLE_ASSIGNMENTS = new Regex(@"^[ \t]*?(\w+(\s*?,\s*?\w+)*)\s*?=\s*(.+)", RegexOptions.Compiled | RegexOptions.Multiline);
 
-        internal static readonly Regex STRING_VARIABLE = new Regex("[\"']([^\"']*)[\"']", RegexOptions.Compiled);
-        internal static readonly Regex DOUBLE_VARIABLE = new Regex("^-?\\d+\\.\\d+", RegexOptions.Compiled);
-        internal static readonly Regex INT_VARIABLE = new Regex("^-?\\d+", RegexOptions.Compiled);
-        internal static readonly Regex LIST_VARIABLE = new Regex("\\[.*\\]", RegexOptions.Compiled);
-        internal static readonly Regex DICT_VARIABLE = new Regex("{.*}", RegexOptions.Compiled);
+        internal static readonly Regex STRING_VARIABLE = new Regex("^[\"']([^\"']*)[\"']$", RegexOptions.Compiled);
+        internal static readonly Regex DOUBLE_VARIABLE = new Regex("^-?\\d+\\.\\d+$", RegexOptions.Compiled);
+        internal static readonly Regex INT_VARIABLE = new Regex("^-?\\d+$", RegexOptions.Compiled);
+        internal static readonly Regex LIST_VARIABLE = new Regex("^\\[.*\\]$", RegexOptions.Compiled);
+        internal static readonly Regex DICT_VARIABLE = new Regex("^{.*}$", RegexOptions.Compiled);
 
         internal static readonly string BAD_ASSIGNEMNT_ENDS = ",([{";
 

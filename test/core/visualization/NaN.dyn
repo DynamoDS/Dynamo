@@ -11,9 +11,8 @@
   "Nodes": [
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "FFITarget.CustomLabel.ByCoordinatesAndString@double,double,double,string",
       "Id": "67f883f8278d4dd7a3dfde19cdee1139",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
           "Id": "cad6716a6f2d4b3b8b337c386de18846",
@@ -63,28 +62,17 @@
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "FFITarget.CustomLabel.ByCoordinatesAndString@double,double,double,string",
       "Replication": "Auto",
       "Description": "CustomLabel.ByCoordinatesAndString (x: double = 0, y: double = 0, z: double = 0, label: string = \"EMPTY_LABEL\"): CustomLabel"
     },
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
-      "NodeType": "PythonScriptNode",
       "Code": "from System import Double\r\nOUT = Double.NaN",
       "Engine": "CPython3",
-      "AvailableEngines": [
-        1,
-        2,
-        1,
-        2,
-        1,
-        2,
-        1,
-        2,
-        1,
-        2
-      ],
       "VariableInputPorts": true,
       "Id": "68b4f121d26e4d8aac6d92b6b95f38d4",
+      "NodeType": "PythonScriptNode",
       "Inputs": [
         {
           "Id": "b463a208c34d4751a2904b363faf984b",
@@ -112,19 +100,11 @@
     },
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
-      "NodeType": "PythonScriptNode",
       "Code": "from System import Double\r\nOUT = Double.NegativeInfinity",
       "Engine": "CPython3",
-      "AvailableEngines": [
-        1,
-        2,
-        1,
-        2,
-        1,
-        2
-      ],
       "VariableInputPorts": true,
       "Id": "6def54107e8e4fb98bedb9dd20e01f57",
+      "NodeType": "PythonScriptNode",
       "Inputs": [
         {
           "Id": "57800d97a7aa4803a9f9e3786fc7e0b4",
@@ -152,19 +132,11 @@
     },
     {
       "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
-      "NodeType": "PythonScriptNode",
       "Code": "from System import Double\r\nOUT = Double.PositiveInfinity",
       "Engine": "CPython3",
-      "AvailableEngines": [
-        1,
-        2,
-        1,
-        2,
-        1,
-        2
-      ],
       "VariableInputPorts": true,
       "Id": "e2991acae599405cb924058119feb769",
+      "NodeType": "PythonScriptNode",
       "Inputs": [
         {
           "Id": "bcc74eb5a4a146568f843a05489fdd9a",
@@ -192,9 +164,8 @@
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "FFITarget.CustomLabel.ByCoordinatesAndString@double,double,double,string",
       "Id": "eb3747fac9cd496c9418112f3b2976cc",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
           "Id": "6e05f6fec466451ba8291efc6f50ff9a",
@@ -244,14 +215,14 @@
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "FFITarget.CustomLabel.ByCoordinatesAndString@double,double,double,string",
       "Replication": "Auto",
       "Description": "CustomLabel.ByCoordinatesAndString (x: double = 0, y: double = 0, z: double = 0, label: string = \"EMPTY_LABEL\"): CustomLabel"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
-      "NodeType": "FunctionNode",
-      "FunctionSignature": "FFITarget.CustomLabel.ByCoordinatesAndString@double,double,double,string",
       "Id": "62cdc0421ef14b1cb78e56b2d1560422",
+      "NodeType": "FunctionNode",
       "Inputs": [
         {
           "Id": "f2404f56420641f0b4d7a5da0c1c1c3c",
@@ -301,41 +272,109 @@
           "KeepListStructure": false
         }
       ],
+      "FunctionSignature": "FFITarget.CustomLabel.ByCoordinatesAndString@double,double,double,string",
       "Replication": "Auto",
       "Description": "CustomLabel.ByCoordinatesAndString (x: double = 0, y: double = 0, z: double = 0, label: string = \"EMPTY_LABEL\"): CustomLabel"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "243b31d9b3f14cc49768689864a57986",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "c1907c417f9e4d2589c4b6112472a1dd",
+          "Name": "object",
+          "Description": "Object to query type\n\nvar",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "62ae115769264439a6b042858910e38a",
+          "Name": "string",
+          "Description": "Type of object.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.Object.Type@var",
+      "Replication": "Auto",
+      "Description": "Returns the type of object represented as string.\n\nObject.Type (object: var): string"
     }
   ],
   "Connectors": [
     {
       "Start": "fc27cb68e4834a769b75d50610ff8c8d",
       "End": "cad6716a6f2d4b3b8b337c386de18846",
-      "Id": "b96d5d34a5074ef78721579aa0131804"
+      "Id": "b96d5d34a5074ef78721579aa0131804",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "fc27cb68e4834a769b75d50610ff8c8d",
+      "End": "c1907c417f9e4d2589c4b6112472a1dd",
+      "Id": "0ac153443aab4fde80e84ccde15ae543",
+      "IsHidden": "False"
     },
     {
       "Start": "cd66bbb3eaa14a66ba1f4a58d7157e2c",
       "End": "4b2c5d7095d54d588ca102ddb846b5c1",
-      "Id": "2f952cfb36ef4e18810d51774a966b19"
+      "Id": "2f952cfb36ef4e18810d51774a966b19",
+      "IsHidden": "False"
     },
     {
       "Start": "e49405c84619415e82f4b39f29dd6ac3",
       "End": "00b3dd38af4c450bb58f7aa1bebbf2f3",
-      "Id": "0772369f78ac4872bffa27d545571e5f"
+      "Id": "0772369f78ac4872bffa27d545571e5f",
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
-  "NodeLibraryDependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "FFITarget.dll",
+      "ReferenceType": "ZeroTouch",
+      "Nodes": [
+        "67f883f8278d4dd7a3dfde19cdee1139",
+        "eb3747fac9cd496c9418112f3b2976cc",
+        "62cdc0421ef14b1cb78e56b2d1560422"
+      ]
+    }
+  ],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": null,
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.4",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
   "Bindings": [],
   "View": {
     "Dynamo": {
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.9.0.2326",
+      "Version": "3.4.0.6635",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "Background Preview",
+      "Name": "_Background Preview",
       "EyeX": -17.0,
       "EyeY": 24.0,
       "EyeZ": 50.0,
@@ -346,71 +385,82 @@
       "UpY": 1.0,
       "UpZ": 0.0
     },
+    "ConnectorPins": [],
     "NodeViews": [
       {
-        "ShowGeometry": true,
-        "Name": "NaN",
         "Id": "67f883f8278d4dd7a3dfde19cdee1139",
+        "Name": "NaN",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 287.66485765699588,
-        "Y": 23.713574720976112
+        "ShowGeometry": true,
+        "X": 322.40234798256404,
+        "Y": 19.371388430280092
       },
       {
-        "ShowGeometry": true,
-        "Name": "Python Script",
         "Id": "68b4f121d26e4d8aac6d92b6b95f38d4",
+        "Name": "Python Script",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
+        "ShowGeometry": true,
         "X": 13.290390180267991,
         "Y": 24.134411279120116
       },
       {
-        "ShowGeometry": true,
-        "Name": "Python Script",
         "Id": "6def54107e8e4fb98bedb9dd20e01f57",
+        "Name": "Python Script",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
+        "ShowGeometry": true,
         "X": 18.016731162880234,
         "Y": 286.57314584297984
       },
       {
-        "ShowGeometry": true,
-        "Name": "Python Script",
         "Id": "e2991acae599405cb924058119feb769",
+        "Name": "Python Script",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
+        "ShowGeometry": true,
         "X": 18.608660866372162,
-        "Y": 551.31474156381137
+        "Y": 551.3147415638114
       },
       {
-        "ShowGeometry": true,
-        "Name": "NegativeInfinity",
         "Id": "eb3747fac9cd496c9418112f3b2976cc",
+        "Name": "NegativeInfinity",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 287.59618988966849,
-        "Y": 261.28305094764374
+        "ShowGeometry": true,
+        "X": 324.5047733605845,
+        "Y": 275.0333075348478
       },
       {
-        "ShowGeometry": true,
-        "Name": "PositiveInfinity",
         "Id": "62cdc0421ef14b1cb78e56b2d1560422",
+        "Name": "PositiveInfinity",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
-        "X": 285.94835868048472,
-        "Y": 497.99706144757135
+        "ShowGeometry": true,
+        "X": 333.71240787814054,
+        "Y": 543.5900174998793
+      },
+      {
+        "Id": "243b31d9b3f14cc49768689864a57986",
+        "Name": "Object.Type",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 887.1117529533608,
+        "Y": 122.61951002956384
       }
     ],
     "Annotations": [],
-    "X": 64.734629178866214,
-    "Y": 64.682278435914981,
-    "Zoom": 0.55271695853825575
+    "X": 68.4985065229838,
+    "Y": 16.648540356838396,
+    "Zoom": 0.8493873415254267
   }
 }
