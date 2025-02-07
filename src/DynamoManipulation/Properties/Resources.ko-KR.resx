@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DirectManipulationError" xml:space="preserve">
-    <value>Failed to create manipulator for Direct Manipulation of geometry</value>
+    <value>형상을 직접 조작하는 조작기를 작성하지 못했습니다.</value>
   </data>
 </root>

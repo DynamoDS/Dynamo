@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "We explore List@Level and how it can be used to achieve the same results as List.Map node. We create a series of panels to demonstrate how List@Level really works.",
+  "Description": "List@Level と、それを使用して List.Map ノードと同じ結果を得る方法について説明します。List@Level が実際にどのように機能するかを示すために、一連のパネルを作成します。",
   "Name": "Core_ListAtLevel",
   "ElementResolver": {
     "ResolutionMap": {
@@ -26,7 +26,7 @@
         {
           "Id": "6ecdb698dc834d9ba209e2c174d41286",
           "Name": "points",
-          "Description": "Grid of points for nurbs surface\n\nPoint[][]",
+          "Description": "NURBS サーフェスのグリッド点\n\nPoint[][]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -35,7 +35,7 @@
         {
           "Id": "473097cfc3834a9fbdb72a0432ba63c2",
           "Name": "uDegree",
-          "Description": "Degree in u direction\n\nint\nDefault value : 3",
+          "Description": "u 方向の次数\n\nint\n既定値: 3",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -44,7 +44,7 @@
         {
           "Id": "927414163b604d36b8873715da24a60c",
           "Name": "vDegree",
-          "Description": "Degree in v direction\n\nint\nDefault value : 3",
+          "Description": "v 方向の次数\n\nint\n既定値: 3",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -55,7 +55,7 @@
         {
           "Id": "5ce162ccc880451a921f18504ec5a9c4",
           "Name": "NurbsSurface",
-          "Description": "Nurbs surface created by points",
+          "Description": "点群で作成した NURBS サーフェス",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -64,7 +64,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsSurface.ByPoints@Autodesk.DesignScript.Geometry.Point[][],int,int",
       "Replication": "Auto",
-      "Description": "Creates a NurbsSurface with specified interpolated points and U and V degrees. The resultant surface will pass through all of the points.\n\nNurbsSurface.ByPoints (points: Point[][], uDegree: int = 3, vDegree: int = 3): NurbsSurface"
+      "Description": "補間した点、U 次数、V 次数を指定して NurbsSurface を作成します。作成されるサーフェスはすべての点を通過します。\n\nNurbsSurface.ByPoints (points: Point[][], uDegree: int = 3, vDegree: int = 3): NurbsSurface"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -74,7 +74,7 @@
         {
           "Id": "706a3c88e9f14fd3b29b8599397f0202",
           "Name": "bestFitPoints",
-          "Description": "List of points to best fit line\n\nPoint[]",
+          "Description": "最適フィット線分への点群のリスト\n\nPoint[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -85,7 +85,7 @@
         {
           "Id": "0339b2ef6c6941b2b0a48b05807444c7",
           "Name": "Line",
-          "Description": "Line from fit through points",
+          "Description": "点群を通過するフィットからの線分",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -94,7 +94,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByBestFitThroughPoints@Autodesk.DesignScript.Geometry.Point[]",
       "Replication": "Auto",
-      "Description": "Creates a Line best approximating a scatter plot of Points.\n\nLine.ByBestFitThroughPoints (bestFitPoints: Point[]): Line"
+      "Description": "点群の散布図に最も近似する線分を作成します。\n\nLine.ByBestFitThroughPoints (bestFitPoints: Point[]): Line"
     },
     {
       "ConcreteType": "CoreNodeModels.HigherOrder.Map, CoreNodeModels",
@@ -104,7 +104,7 @@
         {
           "Id": "aae51590920f4aa7ad9168d6010e6195",
           "Name": "list",
-          "Description": "The list to map over.",
+          "Description": "マッピングするリスト。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -113,7 +113,7 @@
         {
           "Id": "5e12570c2b7e461eb4e29041de650a6a",
           "Name": "f(x)",
-          "Description": "The procedure used to map element",
+          "Description": "要素のマッピングに使用するプロシージャ",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -124,7 +124,7 @@
         {
           "Id": "b8740818259e43abbc0137405eaf7832",
           "Name": "mapped",
-          "Description": "Mapped list",
+          "Description": "マッピングされたリスト",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -132,7 +132,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Applies a function over all elements of a list, generating a new list from the results"
+      "Description": "リストのすべての要素に関数を適用し、その結果から新しいリストを生成します。"
     },
     {
       "ConcreteType": "CoreNodeModels.HigherOrder.Map, CoreNodeModels",
@@ -142,7 +142,7 @@
         {
           "Id": "b83ac60c4ff044958189f07b1fab6ec9",
           "Name": "list",
-          "Description": "The list to map over.",
+          "Description": "マッピングするリスト。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -151,7 +151,7 @@
         {
           "Id": "a7ac983fdd324844a3cf5bc470127d90",
           "Name": "f(x)",
-          "Description": "The procedure used to map element",
+          "Description": "要素のマッピングに使用するプロシージャ",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -162,7 +162,7 @@
         {
           "Id": "43dcd7eb0fef4c4bab93791896cfa24f",
           "Name": "mapped",
-          "Description": "Mapped list",
+          "Description": "マッピングされたリスト",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -170,7 +170,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Applies a function over all elements of a list, generating a new list from the results"
+      "Description": "リストのすべての要素に関数を適用し、その結果から新しいリストを生成します。"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -180,7 +180,7 @@
         {
           "Id": "58604e56b36b4b80a46c0a40e7c9eb44",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "項目の取得元リスト。\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": true,
@@ -189,7 +189,7 @@
         {
           "Id": "2dd3bee0136647eb840c846f4817bdfe",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "取得する項目のインデックス。\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -200,7 +200,7 @@
         {
           "Id": "3a7fa37281304240951782ac4aebf937",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "リスト内の特定のインデックスの項目。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -209,7 +209,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "指定されたインデックスにある特定のリストから項目を返します。\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -219,7 +219,7 @@
         {
           "Id": "d730184c13124dc6a9fa6552d3ae49b1",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "項目の取得元リスト。\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -228,7 +228,7 @@
         {
           "Id": "eb95679c3317416fa967bec39fd79825",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "取得する項目のインデックス。\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -239,7 +239,7 @@
         {
           "Id": "15561d59d6824d98b0a898c384f7f8f4",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "リスト内の特定のインデックスの項目。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -248,7 +248,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "指定されたインデックスにある特定のリストから項目を返します。\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -259,7 +259,7 @@
         {
           "Id": "d9ddac8471224587b2141e57bdfb54ed",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "1 行目の式の値",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -267,7 +267,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "DesignScript のコードを直接作成することができます。",
       "Code": "[1,2];"
     },
     {
@@ -279,7 +279,7 @@
         {
           "Id": "ca8dd243e4924766b55249440deac976",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "1 行目の式の値",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -287,7 +287,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "DesignScript のコードを直接作成することができます。",
       "Code": "[1,2];"
     },
     {
@@ -298,7 +298,7 @@
         {
           "Id": "1428df384ae54e31ab72e93e1344528e",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "X 座標\n\ndouble\n既定値: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -307,7 +307,7 @@
         {
           "Id": "6936cba5a58f4526900ae6c7a1331313",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Y 座標\n\ndouble\n既定値: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -316,7 +316,7 @@
         {
           "Id": "3c83696d53834299a00224a22761b4b3",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Z 座標\n\ndouble\n既定値: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -327,7 +327,7 @@
         {
           "Id": "ffb5771c2f4c4e50b47e374e5ece6cf9",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "座標で作成した点",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -336,7 +336,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "CrossProduct",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "指定された 3 つのデカルト座標を使用して、点を作成します。\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -347,7 +347,7 @@
         {
           "Id": "01fe2f20a7d74eecb6cd2a01018ec8ec",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "1 行目の式の値",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -356,7 +356,7 @@
         {
           "Id": "30ae98d87c724d02891bfe1faa5866e0",
           "Name": "",
-          "Description": "Value of expression at line 2",
+          "Description": "2 行目の式の値",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -364,7 +364,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "DesignScript のコードを直接作成することができます。",
       "Code": "0..30..#8;\n12..0..#4;"
     },
     {
@@ -375,7 +375,7 @@
         {
           "Id": "0dcf9d732b714b569174be83839e564e",
           "Name": "list",
-          "Description": "List to get the item count of.\n\nvar[]..[]",
+          "Description": "項目の数を取得するリスト。\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 3,
           "UseLevels": true,
@@ -386,7 +386,7 @@
         {
           "Id": "9f4d155d1b704c86830eafcf6bd28784",
           "Name": "int",
-          "Description": "List length.",
+          "Description": "リストの長さ。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -395,7 +395,7 @@
       ],
       "FunctionSignature": "DSCore.List.Count@var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns the number of items stored in the given list.\n\nList.Count (list: var[]..[]): int"
+      "Description": "特定されたリストに格納されている項目の数を返します。\n\nList.Count (list: var[]..[]): int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -405,7 +405,7 @@
         {
           "Id": "659232f096bb4756ab30240c339aa0c6",
           "Name": "list",
-          "Description": "List to get the item count of.\n\nvar[]..[]",
+          "Description": "項目の数を取得するリスト。\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": true,
@@ -416,7 +416,7 @@
         {
           "Id": "578086c068d14cc8a80f2220657252e5",
           "Name": "int",
-          "Description": "List length.",
+          "Description": "リストの長さ。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -425,7 +425,7 @@
       ],
       "FunctionSignature": "DSCore.List.Count@var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns the number of items stored in the given list.\n\nList.Count (list: var[]..[]): int"
+      "Description": "特定されたリストに格納されている項目の数を返します。\n\nList.Count (list: var[]..[]): int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -435,7 +435,7 @@
         {
           "Id": "29d425608a854a4d9f0b8ee4077cd367",
           "Name": "list",
-          "Description": "List to get the item count of.\n\nvar[]..[]",
+          "Description": "項目の数を取得するリスト。\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": true,
@@ -446,7 +446,7 @@
         {
           "Id": "e6f42f796d054f0b8e3d49b7b96fb5eb",
           "Name": "int",
-          "Description": "List length.",
+          "Description": "リストの長さ。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -455,7 +455,7 @@
       ],
       "FunctionSignature": "DSCore.List.Count@var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns the number of items stored in the given list.\n\nList.Count (list: var[]..[]): int"
+      "Description": "特定されたリストに格納されている項目の数を返します。\n\nList.Count (list: var[]..[]): int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -465,7 +465,7 @@
         {
           "Id": "572167b6609242dfac8f42c428f41235",
           "Name": "list",
-          "Description": "List to flatten.\n\nvar[]..[]",
+          "Description": "フラットにするリスト。\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 3,
           "UseLevels": true,
@@ -474,7 +474,7 @@
         {
           "Id": "18d9db5c5740433fa3ff9b91e9b093ac",
           "Name": "amount",
-          "Description": "Layers of list nesting to remove (-1 will remove all list nestings)\n\nint\nDefault value : -1",
+          "Description": "除去するリストのネストの画層(-1 はすべてのリストのネストを除去する)\n\nint\n既定値: -1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -485,7 +485,7 @@
         {
           "Id": "54dbee27e8a24ff1892812ef1523772d",
           "Name": "list",
-          "Description": "Flattened list by amount",
+          "Description": "量を指定してフラットにされたリスト",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -494,7 +494,7 @@
       ],
       "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+      "Description": "ネストされたリストを特定の量でフラット化します。\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
     }
   ],
   "Connectors": [
@@ -597,7 +597,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "プロパティ",
       "Version": "2.13",
       "Data": {}
     }
@@ -620,7 +620,7 @@
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "背景プレビュー(_B)",
       "EyeX": -0.6891746520996094,
       "EyeY": 25.33542251586914,
       "EyeZ": 21.06568717956543,
@@ -777,7 +777,7 @@
     "Annotations": [
       {
         "Id": "1bed1efe74bb4a1ca06ff814226a8034",
-        "Title": "Replacing List.Map with List@Level",
+        "Title": "List.Map を List@Level に置き換える",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -807,7 +807,7 @@
       },
       {
         "Id": "b94ccab312c940009338190a9c4d373f",
-        "Title": " Using \"Keep List Structure\"",
+        "Title": " \"リスト構造を保持\" を使用する",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -832,7 +832,7 @@
       },
       {
         "Id": "71d074f3b55544bfadcadd78c591845a",
-        "Title": "Inspecting a List with List@Level and Count",
+        "Title": "List@Level と Count でリストを検査する",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -856,7 +856,7 @@
       },
       {
         "Id": "2430763962e347eb8a12eec7c513bbe9",
-        "Title": "Creating Geometry",
+        "Title": "ジオメトリを作成する",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -880,7 +880,7 @@
       },
       {
         "Id": "77efdc5df117499cb0bfbfad13bf6223",
-        "Title": "Inspecting a List with List@Level and Flatten",
+        "Title": "List@Level と Flatten でリストを検査する",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -904,7 +904,7 @@
       },
       {
         "Id": "eb44fe22a0c74665a590b5c096b75ed7",
-        "Title": "Info",
+        "Title": "情報",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -926,8 +926,8 @@
       },
       {
         "Id": "edfeff1c4b7b4a7ebca8d23d2660bfa6",
-        "Title": "Info",
-        "DescriptionText": "General information for using List@Level",
+        "Title": "情報",
+        "DescriptionText": "List@Level の使用に関する一般情報",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -949,8 +949,8 @@
       },
       {
         "Id": "c585c1db8016400c81fd1e433cf124b3",
-        "Title": "Inputs",
-        "DescriptionText": "Description <Double click here to edit group description>",
+        "Title": "入力",
+        "DescriptionText": "説明<グループの説明を編集するにはここをダブル クリック>",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -973,8 +973,8 @@
       },
       {
         "Id": "960be371985a46c2a57a877d086d3568",
-        "Title": "Info",
-        "DescriptionText": "How this graph works",
+        "Title": "情報",
+        "DescriptionText": "このグラフの動作",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -995,7 +995,7 @@
       },
       {
         "Id": "5c3a7719de774ea4904d671f0abb0dca",
-        "Title": "The lists exist at different levels, with L1 being the lowest level. The total number of elements produced by this node is 64, as shown at the bottom right.",
+        "Title": "リストは各種レベルに存在し、L1 が最も低いレベルです。このノードによって生成される要素の総数は、右下に示すように 64 です。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1016,7 +1016,7 @@
       },
       {
         "Id": "f680137a312c4de9881b54f7b9cf8aa2",
-        "Title": "In the previous version of Dynamo, List.Map is used to obtain the inner levels of lists. Even though the same result can be achieved using List.Map, it introduces more nodes into the workspace. Here we use List@Level to grab interior points of the grid in a more efficient way. We will use these points to create panels.\r\n\r\nWe also utilized the \"Keep List Structure\" option to maintain the groupings of the initial list and prevent flattening. If \"Keep List Structure\" is disabled, a single NurbsSurface will be created instead of eight.",
+        "Title": "Dynamo の旧バージョンでは、List.Map を使用してリストの内部レベルを取得していました。List.Map を使用して同じ結果が得られても、ワークスペースにはより多くのノードが導入されます。ここでは List@Level を使用してグリッドの内部の点をより効率的に取得します。これらの点を使用してパネルを作成します。\r\n\r\nまた、[リスト構造を保持]オプションを利用して、初期リストのグループ化を維持するとともに、平坦化を防止します。[リスト構造を保持]を無効にすると、8 つではなく 1 つの NURBS サーフェスが作成されます。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1037,7 +1037,7 @@
       },
       {
         "Id": "a9cd8e77dfc54359b6a145218b7ca761",
-        "Title": "We want to create panels in the interior of the grid. To do so, we will need to obtain the points at indexes 1 and 2 of each list in the innermost level. This can easily be done by using the List@Level feature. The grouping of the lists are kept by enabling the option \"Keep list structure\". But, first, let's inspect the list we created with Point.ByCoordinates a bit more to determine which level of the list we want to use.",
+        "Title": "グリッドの内部にパネルを作成したいと思います。これを行うには、最も内側のレベルの各リストのインデックス 1 と 2 の点を取得する必要があります。これは、List@Level 機能を使用して簡単に行うことができます。リストのグループ化は、[リスト構造を保持]オプションを有効にすることによって保持されます。しかし、使用するリストのレベルを決定するために、まず Point.ByCoordinates で作成したリストをもう少し調べてみましょう。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1057,7 +1057,7 @@
       },
       {
         "Id": "0a361063945e455b8e3257cff2642be2",
-        "Title": "In this example, we create a 3D list containing a series of points. There are 8 lists at L3, and each list contains another 4 lists (L2). Each of the 4 lists contains 4 points (L1), resulting in a total of 128 points.",
+        "Title": "この例では、一連の点を含む 3D リストを作成します。L3 には 8 つのリストがあり、各リストには他の 4 つのリスト(L2)が含まれます。4 つのリストのそれぞれに 4 つの点(L1)が含まれ、点の数は合計 128 個になります。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1078,7 +1078,7 @@
       },
       {
         "Id": "fa1915d2e9e44dad91659f7e24be4218",
-        "Title": "The List.Count node returns the number of elements that are present in each list. Depending on the selected level, different values are returned. Try changing the value of L3 by clicking on the arrows beside it.",
+        "Title": "List.Count ノードは、各リストに存在する要素の数を返します。選択したレベルに応じて、異なる値が返されます。L3 の横の矢印をクリックして値を変更してみてください。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1098,7 +1098,7 @@
       },
       {
         "Id": "5a86a3b5794c42c8aa41e04f6b67a31b",
-        "Title": "There are eight lists at L3, each containing four lists. Hence, selecting L3 implements the List.Count function on the eight lists, giving eight '4' values.",
+        "Title": "L3 には 8 つのリストがあり、それぞれに 4 つのリストが含まれています。したがって、L3 を選択すると List.Count 関数が 8 つのリストに実装され、8 つの値 '4' を与えます。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1118,7 +1118,7 @@
       },
       {
         "Id": "79cc8836a465418b94bcccfaf086b340",
-        "Title": "As an additional example, you can easily flatten the nested structure at inner levels of the lists by making use of the List@Level feature, together with the Flatten node. Try changing which level will be flattened by clicking on the arrows beside in the List@Level spinner.",
+        "Title": "追加の例として、List@Level 機能を Flatten ノードと一緒に使用することによって、リストの内部レベルでネストされた構造を簡単に平坦化することができます。List@Level スピナーの横にある矢印をクリックして、平坦化されるレベルを変更してみてください。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1138,7 +1138,7 @@
       },
       {
         "Id": "ad757908626b43b9b0d820f1e37c8e53",
-        "Title": "Selecting L3 converts the eight lists at that level into a 1D array. As each of the eight lists contains four items (which are also lists), this will flatten all of the lists at L3 producing eight lists of 16 points.",
+        "Title": "L3 を選択すると、そのレベルの 8 つのリストが 1 次元配列に変換されます。8 つのリストのそれぞれが 4 つの項目(リストでもある)を含んでいるため、L3 のすべてのリストが平坦化され、16 個の点の  8 つのリストが生成されます。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1158,7 +1158,7 @@
       },
       {
         "Id": "c2a93eafafd843c38528cb8b83038b45",
-        "Title": "LIST@LEVEL\r\nList@Level replaces the functionality of List.Map, by allowing you to directly select the level of list you want to work with.",
+        "Title": "LIST@LEVEL\r\n作業するリストのレベルを直接選択できるようにすることによって、List.Map の機能を List@Level  に置き換えます。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1178,7 +1178,7 @@
       },
       {
         "Id": "d0db3c96e1bd44089ed5bf7b28d3b6ef",
-        "Title": "To change the list level you're working with, click the arrow beside the list input port and enable the \"Use levels\" option.\r\n\r\nWhen List@Level is first enabled on an input port, the list at the second innermost level (L2) is selected to be worked with. ",
+        "Title": "作業中のリスト レベルを変更するには、リスト入力ポートの横にある矢印をクリックし、[レベルを使用]オプションを有効にします。\r\n\r\n入力ポートで List@Level  が最初に有効になったときに、2 番目に内側のレベル(L2)のリストが選択されて処理されます。 ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1198,7 +1198,7 @@
       },
       {
         "Id": "64bb560e25184efcb68ae42c72abfdbc",
-        "Title": "This node returns the number of elements that are present in each list in L2. By default, the results are flattened into a 1D list.",
+        "Title": "このノードは、L2 の各リストに存在する要素の数を返します。既定では、結果は 1次元リストに平坦化されます。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1218,7 +1218,7 @@
       },
       {
         "Id": "6e2ad0ec8d164d2f889ca49975a6b218",
-        "Title": "To preserve the nested structure of the lists, select the option \"Keep list structure\". \"@@\" indicates how to keep the list structure in Designscript.",
+        "Title": "リストのネスト構造を保持するには、オプション[リスト構造を保持]を選択します。\"@@\" は Designscript でリスト構造を保持する方法を示します。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1238,7 +1238,7 @@
       },
       {
         "Id": "aa8b961d72e34ee1b2797c161109af2c",
-        "Title": "Below is the List.Map equivalent to applying List@Level which requires additional nodes",
+        "Title": "以下は、追加のノードが必要な List@Level の適用に相当する List.Map です",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1259,7 +1259,7 @@
       },
       {
         "Id": "ac90dfe3800a487ab7ceb591a81b583c",
-        "Title": "With the sets of points selected, we can now create panels.",
+        "Title": "選択した点のセットを使用して、パネルを作成できるようになりました。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1280,7 +1280,7 @@
       },
       {
         "Id": "1f382490f13d4dabbcfbd57caa09ec7c",
-        "Title": "To determine which level of the list you want to work with, look at the bottom of the preview bubble or watch node and follow the lines from the List@Level notation up.",
+        "Title": "操作するリストのレベルを決定するには、プレビュー バブルまたは watch ノードの下部を見て、List@Level 表記から上に行を追います。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

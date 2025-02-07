@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,426 +118,373 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AndDescription" xml:space="preserve">
-    <value>Boolean AND: Returns True only if all of the inputs are true. If any is false, returns False.</value>
-    <comment>Description for And</comment>
+    <value>Valor booleano AND: devuelve "True" (verdadera) solo si todas las entradas son verdaderas. Si cualquiera de ellas es falsa, devuelve "False" (falsa).</value>
   </data>
   <data name="ApplyPortDataFuncArgToolTip" xml:space="preserve">
-    <value>Result of application.</value>
+    <value>Resultado de aplicación</value>
   </data>
   <data name="ApplyPortDataFuncToolTip" xml:space="preserve">
-    <value>Function to apply.</value>
+    <value>Función que aplicar</value>
   </data>
   <data name="BooleanDescription" xml:space="preserve">
-    <value>Enables selection between True and False</value>
-    <comment>Description for Boolean</comment>
+    <value>Permite la selección entre "True" (verdadero) y "False" (falso).</value>
   </data>
   <data name="BooleanSelectorSearchTags" xml:space="preserve">
     <value>true;truth;false</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="ColorRangeDescription" xml:space="preserve">
-    <value>Returns a color given a color range</value>
-    <comment>Description for Color Range</comment>
+    <value>Devuelve un color según un rango de colores.</value>
   </data>
   <data name="ColorRangePortDataIndicesToolTip" xml:space="preserve">
-    <value>List of values between 0.0 and 1.0 which position the input colors along the range</value>
+    <value>Lista de valores entre 0,0 y 1,0 que coloca los colores de entrada a lo largo del rango.</value>
   </data>
   <data name="ColorRangePortDataResultToolTip" xml:space="preserve">
-    <value>Selected colors</value>
+    <value>Colores seleccionados</value>
   </data>
   <data name="ColorRangePortDataColorsToolTip" xml:space="preserve">
-    <value>List of colors to include in the range</value>
+    <value>Lista de colores que incluir en el rango.</value>
   </data>
   <data name="ColorRangePortDataValueToolTip" xml:space="preserve">
-    <value>List of values between 0.0 and 1.0. These values define the colors that are picked along the color range to create the color list.</value>
+    <value>Una lista de valores entre 0,0 y 1,0. Estos valores definen los colores seleccionados a lo largo de la gama de colores para crear la lista de colores.</value>
   </data>
   <data name="CombinatorPortDataCombToolTip" xml:space="preserve">
-    <value>Function to use as combinator</value>
+    <value>Función que se utilizará como combinador</value>
   </data>
   <data name="CombinatorPortDataResultToolTip" xml:space="preserve">
-    <value>Combined lists</value>
+    <value>Listas combinadas</value>
   </data>
   <data name="ComposePortDataFunc0ToolTip" xml:space="preserve">
-    <value>Function #0</value>
+    <value>Función núm.0</value>
   </data>
   <data name="ComposePortDataFunc1ToolTip" xml:space="preserve">
-    <value>Function #1</value>
+    <value>Función núm.1</value>
   </data>
   <data name="ComposePortDataResultToolTip" xml:space="preserve">
-    <value>Composed function.</value>
+    <value>Función compuesta</value>
   </data>
   <data name="CreateListPortDataIndex0ToolTip" xml:space="preserve">
-    <value>Item Index #0</value>
+    <value>Índice de elemento núm.0</value>
   </data>
   <data name="CreateListPortDataResultToolTip" xml:space="preserve">
-    <value>A list (type: var[]..[])</value>
+    <value>Una lista (tipo: var[]..[])</value>
   </data>
   <data name="DirectoryFromPathDescription" xml:space="preserve">
-    <value>Creates a directory object from the given path</value>
-    <comment>Description for Directory.FromPath</comment>
+    <value>Crea un objeto de directorio a partir de la ruta especificada.</value>
   </data>
   <data name="DirectoryNodeDescription" xml:space="preserve">
-    <value>Allows you to select a directory on the system and returns its path</value>
+    <value>Permite seleccionar un directorio del sistema y devuelve su ruta.</value>
   </data>
   <data name="DirectoryObjectNodeDescription" xml:space="preserve">
-    <value>Creates a directory object from the given path</value>
+    <value>Crea un objeto de directorio a partir de la ruta especificada.</value>
   </data>
   <data name="DirectoryObjectPortDataPathToolTip" xml:space="preserve">
-    <value>Path to the directory (type: string)</value>
+    <value>Ruta al directorio (tipo: cadena)</value>
   </data>
   <data name="DirectoryObjectPortDataResultToolTip" xml:space="preserve">
-    <value>Directory object.</value>
+    <value>Objeto de directorio</value>
   </data>
   <data name="DirectoryPathDescription" xml:space="preserve">
-    <value>Allows you to select a directory on the system and returns its path</value>
-    <comment>Description for Directory Path</comment>
+    <value>Permite seleccionar un directorio del sistema y devuelve su ruta.</value>
   </data>
   <data name="DoubleInputNodeDescription" xml:space="preserve">
-    <value>Creates a number</value>
+    <value>Crea un número.</value>
   </data>
   <data name="DoubleSliderDescription" xml:space="preserve">
-    <value>Produces numeric values</value>
-    <comment>Description for Double Slider</comment>
+    <value>Genera valores numéricos.</value>
   </data>
   <data name="DoubleSliderNodeDescription" xml:space="preserve">
-    <value>Produces numeric values</value>
+    <value>Genera valores numéricos.</value>
   </data>
   <data name="DropDownPortDataResultToolTip" xml:space="preserve">
-    <value>The selected {0}</value>
+    <value>{0} seleccionado</value>
   </data>
   <data name="FileFromPathDescription" xml:space="preserve">
-    <value>Creates a file object from the given path</value>
-    <comment>Description for File.FromPath</comment>
+    <value>Crea un objeto de archivo a partir de la ruta especificada.</value>
   </data>
   <data name="FilenameNodeDescription" xml:space="preserve">
-    <value>Allows you to select a file on the system to get its filename</value>
+    <value>Permite seleccionar un archivo del sistema para obtener su nombre de archivo</value>
   </data>
   <data name="FileObjectNodeDescription" xml:space="preserve">
-    <value>Creates a file object from the given path</value>
+    <value>Crea un objeto de archivo a partir de la ruta especificada.</value>
   </data>
   <data name="FileObjectPortDataPathToolTip" xml:space="preserve">
-    <value>Path to the file.</value>
+    <value>Ruta al archivo.</value>
   </data>
   <data name="FileObjectPortDataResultToolTip" xml:space="preserve">
-    <value>File object</value>
+    <value>Objeto de archivo</value>
   </data>
   <data name="FilePathDescription" xml:space="preserve">
-    <value>Allows you to select a file on the system and returns its file path</value>
-    <comment>Description for File Path</comment>
+    <value>Permite seleccionar un archivo del sistema y devuelve su ruta de archivo.</value>
   </data>
   <data name="FilterPortDataConditionToolTip" xml:space="preserve">
-    <value>Filter function used to determine if an element is filtered in or out</value>
+    <value>La función de filtro se utiliza para determinar si un elemento se filtra o no</value>
   </data>
   <data name="FilterPortDataListToolTip" xml:space="preserve">
-    <value>List to filter</value>
+    <value>Lista que filtrar</value>
   </data>
   <data name="FilterPortDataResultInToolTip" xml:space="preserve">
-    <value>List containing all elements "x" where condition(x) = True</value>
+    <value>Lista que contiene todos los elementos "x" donde condition(x) = True</value>
   </data>
   <data name="FilterPortDataResultOutToolTip" xml:space="preserve">
-    <value>List containing all elements "x" where condition(x) = False</value>
+    <value>Lista que contiene todos los elementos "x" donde condition(x) = False</value>
   </data>
   <data name="FormulaDescription" xml:space="preserve">
-    <value>Evaluates mathematical formulas using NCalc</value>
-    <comment>Description for Formula</comment>
+    <value>Evalúa fórmulas matemáticas mediante NCalc.</value>
   </data>
   <data name="FormulaPortDataResultToolTip" xml:space="preserve">
-    <value>Result from formula</value>
+    <value>Resultado de la fórmula</value>
   </data>
   <data name="FromArrayPortDataArrayToolTip" xml:space="preserve">
-    <value>The array of object to be serialized</value>
+    <value>Matriz de objeto que serializar</value>
   </data>
   <data name="FromArrayPortDataResultToolTip" xml:space="preserve">
-    <value>String representation of the array</value>
+    <value>Representación de cadena de la matriz</value>
   </data>
   <data name="FromArraySearchTags" xml:space="preserve">
     <value>string.fromarray;tostring;2string;list2string;listtostring;array2string;arraytostring</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="FromObjectPortDataObjToolTip" xml:space="preserve">
-    <value>Object to be serialized</value>
+    <value>Objeto que serializar</value>
   </data>
   <data name="FromObjectPortDataResultToolTip" xml:space="preserve">
-    <value>String representation of the object</value>
+    <value>Representación de cadena del objeto</value>
   </data>
   <data name="FromObjectSearchTags" xml:space="preserve">
     <value>string.fromobject;tostring;2string;number2string;numbertostring</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="FunctionApplyDescription" xml:space="preserve">
-    <value>Returns the result of a function with given arguments</value>
-    <comment>Description for Function.Apply</comment>
+    <value>Devuelve el resultado de una función con los argumentos especificados.</value>
   </data>
   <data name="FunctionComposeDescription" xml:space="preserve">
-    <value>Returns a single function from multiple functions</value>
-    <comment>Description for Function.Compose</comment>
+    <value>Devuelve una única función a partir de varias funciones.</value>
   </data>
   <data name="IfDescription" xml:space="preserve">
-    <value>Conditional statement</value>
-    <comment>Description for If</comment>
+    <value>Sentencia condicional</value>
   </data>
   <data name="IntegerSliderDescription" xml:space="preserve">
-    <value>Produces integer values</value>
-    <comment>Description for Integer Slider</comment>
+    <value>Genera valores de enteros.</value>
   </data>
   <data name="IntegerSliderNodeDescription" xml:space="preserve">
-    <value>Produces integer values</value>
+    <value>Genera valores de enteros.</value>
   </data>
   <data name="LegacyNodeDescription" xml:space="preserve">
-    <value>This is an obsolete node</value>
-    <comment>Description for Legacy Node</comment>
+    <value>Este es un nodo obsoleto</value>
   </data>
   <data name="ListCartesianProductDescription" xml:space="preserve">
-    <value>Applies a combinator to each pair in the Cartesian product of two sequences</value>
-    <comment>Description for List.CartesianProduct</comment>
+    <value>Aplica un combinador a cada par del producto cartesiano de dos secuencias.</value>
   </data>
   <data name="ListCartesianProductSearchTags" xml:space="preserve">
     <value>cross product;crossreference;cross ref;</value>
-    <comment>search tags List.CartesianProcut</comment>
   </data>
   <data name="ListCombineDescription" xml:space="preserve">
-    <value>Applies a combinator to each element in two sequences</value>
-    <comment>Description for List.Combine</comment>
+    <value>Aplica un combinador a cada elemento en dos secuencias</value>
   </data>
   <data name="ListCombineSearchTags" xml:space="preserve">
     <value>map multiple;apply over lists;multiple inputs</value>
-    <comment>List.Combine search tags</comment>
   </data>
   <data name="ListCreateDescription" xml:space="preserve">
-    <value>Makes a new list from the given inputs</value>
-    <comment>Description for List.Create</comment>
+    <value>Crea una nueva lista a partir de las entradas especificadas.</value>
   </data>
   <data name="ListFilterDescription" xml:space="preserve">
-    <value>Filters items on a list in or out based on the given condition. If the condition is true, items are filtered in, and if the condition is false, items are filtered out.</value>
-    <comment>Description for List.Filter</comment>
+    <value>Filtra los elementos de una lista para incluirlos o excluirlos en función de la condición especificada. Si la condición es "true" (verdadera), los elementos se incluyen y, si es "false" (falsa), estos se excluyen.</value>
   </data>
   <data name="ListFilterSearchTags" xml:space="preserve">
     <value>screen;dispatch;</value>
-    <comment>List.Filter search tags</comment>
   </data>
   <data name="ListForEachDescription" xml:space="preserve">
-    <value>Performs a computation on each element of a list. Does not accumulate results.</value>
-    <comment>Description for List.ForEach</comment>
+    <value>Realiza un cálculo en cada elemento de una lista. No acumula resultados</value>
   </data>
   <data name="ListForEachSearchTags" xml:space="preserve">
     <value>apply function;void;</value>
-    <comment>List.ForEach search tags</comment>
   </data>
   <data name="ListLaceLongestDescription" xml:space="preserve">
-    <value>Applies a combinator to each pair resulting from a longest lacing of the input lists. All lists have their last element repeated to match the length of the longest input.</value>
-    <comment>Description for List.LaceLongest</comment>
+    <value>Aplica un combinador a cada par resultante del encaje más largo de las listas de entrada. Todas las listas tienen repetido su último elemento para que coincida con la longitud de la entrada más larga</value>
   </data>
   <data name="ListLaceLongestSearchTags" xml:space="preserve">
     <value>repeat last;</value>
-    <comment>search tags List.LaceLongest</comment>
   </data>
   <data name="ListLaceShortestDescription" xml:space="preserve">
-    <value>Applies a combinator to each pair resulting from a shortest lacing of the input lists. All lists are truncated to the length of the shortest input.</value>
-    <comment>Description for List.LaceShortest</comment>
+    <value>Aplica un combinador a cada par resultante del encaje más corto de las listas de entrada. Todas las listas se truncan conforme a la longitud de la entrada más corta</value>
   </data>
   <data name="ListLaceShortestSearchTags" xml:space="preserve">
     <value>mix;trim end</value>
-    <comment>search tags List.LaceShortest</comment>
   </data>
   <data name="ListMapDescription" xml:space="preserve">
-    <value>Applies a function over all elements of a list, generating a new list from the results</value>
-    <comment>Description for List.Map</comment>
+    <value>Aplica una función a todos los elementos de una lista, lo que genera una nueva lista a partir de los resultados.</value>
   </data>
   <data name="ListMapSearchTags" xml:space="preserve">
     <value>function;applied;over list;do to each</value>
-    <comment>search tags for List.Map</comment>
   </data>
   <data name="ListReduceDescription" xml:space="preserve">
-    <value>Reduces a list into a new value by combining each element with an accumulated result</value>
-    <comment>Description for List.Reduce</comment>
+    <value>Reduce una lista a un valor nuevo mediante la combinación de cada elemento con un resultado acumulado.</value>
   </data>
   <data name="ListReduceSearchTags" xml:space="preserve">
     <value>accumulate;aggregate;fold</value>
-    <comment>search tags List.Reduce</comment>
   </data>
   <data name="ListScanDescription" xml:space="preserve">
-    <value>Reduces a list into a new value by combining each element with an accumulated result, produces a list of successive reduced values.</value>
-    <comment>Description for List.Scan</comment>
+    <value>Reduce una lista a un valor nuevo mediante la combinación de cada elemento con un resultado acumulado, genera una lista de valores reducidos sucesivos</value>
   </data>
   <data name="ListScanSearchTags" xml:space="preserve">
     <value>intermediate;maps;folds</value>
-    <comment>List.Scan search tags</comment>
   </data>
   <data name="MapPortDataFxToolTip" xml:space="preserve">
-    <value>The procedure used to map element</value>
+    <value>El procedimiento utilizado para elemento de mapa</value>
   </data>
   <data name="MapPortDataListToolTip" xml:space="preserve">
-    <value>The list to map over.</value>
+    <value>Lista que asignar</value>
   </data>
   <data name="MapPortDataResultToolTip" xml:space="preserve">
-    <value>Mapped list of type: var[]..[]</value>
+    <value>Lista asignada de tipo: var[]..[]</value>
   </data>
   <data name="RangeDescription" xml:space="preserve">
-    <value>Creates a sequence of numbers or letters in the given range</value>
-    <comment>Description for Number Range</comment>
+    <value>Crea una secuencia de números o letras en el rango especificado.</value>
   </data>
   <data name="SequenceDescription" xml:space="preserve">
-    <value>Creates a sequence of numbers</value>
-    <comment>Description for Number Sequence</comment>
+    <value>Crea una secuencia de números.</value>
   </data>
   <data name="OrDescription" xml:space="preserve">
-    <value>Boolean OR: Returns True if any of the inputs are true. If none are true, returns False.</value>
-    <comment>Description for Or</comment>
+    <value>Valor booleano OR: devuelve ·"True" (verdadera) si cualquiera de las entradas es verdadera. Si ninguna de ellas es verdadera, devuelve "False" (falsa).</value>
   </data>
   <data name="PortDataFalseBlockToolTip" xml:space="preserve">
-    <value>Returned if test is false</value>
+    <value>Se devuelve si la prueba es "false" (falsa).</value>
   </data>
   <data name="PortDataImageToolTip" xml:space="preserve">
-    <value>Image for visualization</value>
+    <value>Imagen para visualización</value>
   </data>
   <data name="PortDataListToolTip" xml:space="preserve">
-    <value>List</value>
+    <value>Lista</value>
   </data>
   <data name="PortDataOperandToolTip" xml:space="preserve">
     <value>Boolean #</value>
   </data>
   <data name="PortDataResultToolTip" xml:space="preserve">
-    <value>Result block produced</value>
+    <value>Bloque de resultados generado</value>
   </data>
   <data name="PortDataTestBlockToolTip" xml:space="preserve">
-    <value>Boolean test</value>
+    <value>Prueba de valores booleanos</value>
   </data>
   <data name="PortDataTrueBlockToolTip" xml:space="preserve">
-    <value>Returned if test is true</value>
+    <value>Se devuelve si la prueba es "true" (verdadera).</value>
   </data>
   <data name="PortDataVariableToolTip" xml:space="preserve">
     <value>variable</value>
   </data>
   <data name="ReducePortDataReductorToolTip" xml:space="preserve">
-    <value>Reductor Function: accepts one item from each list being reduced, and the current accumulated value, result is the new accumulated value.</value>
+    <value>Función de reductor: acepta un elemento en cada lista que se reduce y el valor actual acumulado, el resultado es el nuevo valor acumulado</value>
   </data>
   <data name="ReducePortDataResultToolTip" xml:space="preserve">
-    <value>Reduced lists (type: var[]..[])</value>
+    <value>Listas reducidas (tipo: var[]..[])</value>
   </data>
   <data name="ReducePortDataSeedToolTip" xml:space="preserve">
-    <value>Starting accumulated value, to be passed into the first call to the Reductor function.</value>
+    <value>Iniciando valor acumulado, se transferirá a la primera llamada de la función Reductor</value>
   </data>
   <data name="ReplaceByConditionDescription" xml:space="preserve">
-    <value>Replaces an item with the given substitute if the original item satisfies the given condition</value>
-    <comment>Description for ReplaceByCondition</comment>
+    <value>Reemplaza un elemento por un determinado sustituto si el elemento original cumple la condición especificada.</value>
   </data>
   <data name="ReplaceByConditionSearchTags" xml:space="preserve">
     <value>predicate;override;replace if,</value>
-    <comment>ReplaceByCondition search tags</comment>
   </data>
   <data name="ReplacePortDataConditionToolTip" xml:space="preserve">
-    <value>Replacement function used to determine if an object should be replaced</value>
+    <value>Función de sustitución utilizada para determinar si un objeto debe reemplazarse.</value>
   </data>
   <data name="ReplacePortDataItemToolTip" xml:space="preserve">
-    <value>Item to potentially be replaced</value>
+    <value>Elemento que potencialmente se puede reemplazar</value>
   </data>
   <data name="ReplacePortDataReplaceWithToolTip" xml:space="preserve">
-    <value>Object to replace with</value>
+    <value>Objeto por el que reemplazar</value>
   </data>
   <data name="ReplacePortDataResultToolTip" xml:space="preserve">
-    <value>Item, or list of items where condition was used to replace with item given in "replaceWith"</value>
+    <value>Elemento o lista de elementos en los que se ha utilizado la condición para reemplazar por el elemento especificado en "replaceWith".</value>
   </data>
   <data name="ScanPortDataReductorToolTip" xml:space="preserve">
-    <value>Reductor Function: accepts one item from each list being reduced, and the current accumulated value, result is the new accumulated value.</value>
+    <value>Función de reductor: acepta un elemento en cada lista que se reduce y el valor actual acumulado, el resultado es el nuevo valor acumulado</value>
   </data>
   <data name="ScanPortDataResultToolTip" xml:space="preserve">
-    <value>Scanned lists (type: var[]..[])</value>
+    <value>Listas examinadas (tipo: var[]..[])</value>
   </data>
   <data name="ScanPortDataSeedToolTip" xml:space="preserve">
-    <value>Starting accumulated value, to be passed into the first call to the Reductor function.</value>
+    <value>Iniciando valor acumulado, se transferirá a la primera llamada de la función Reductor</value>
   </data>
   <data name="ScopeIfDescription" xml:space="preserve">
-    <value>Returns the result of either True or False input depending on what boolean value is toggled in the test input. Supports recursion which requires that only a single branch be executed. It's critical that that both True and False branches are isolated and do not interact with each other!</value>
-    <comment>Description for Scope If</comment>
+    <value>Devuelve el resultado de la entrada "True" (verdadero) o "False" (falso) según el valor booleano que se alterne en la entrada de prueba. Admite la recursividad que requiere que solo se ejecute una ramificación. Es fundamental que las ramificaciones "True" (verdadero) y "False" (false) estén aisladas y no interactúen entre sí.</value>
   </data>
   <data name="SelectionPortDataResultToolTip" xml:space="preserve">
-    <value>The selected elements.</value>
+    <value>Los elementos seleccionados</value>
   </data>
   <data name="StringfromArrayDescription" xml:space="preserve">
     <value>Converts an array to a string representation</value>
-    <comment>Description for String from Array</comment>
   </data>
   <data name="StringfromObjectDescription" xml:space="preserve">
-    <value>Converts an object to a string representation</value>
-    <comment>Description for String from Object</comment>
+    <value>Convierte un objeto en una representación de cadena.</value>
   </data>
   <data name="StringInputNodeDescription" xml:space="preserve">
-    <value>Creates a string</value>
+    <value>Crea una cadena.</value>
   </data>
   <data name="WatchDescription" xml:space="preserve">
-    <value>Visualizes a node's output</value>
-    <comment>Description for Watch</comment>
+    <value>Muestra la salida de un nodo.</value>
   </data>
   <data name="WatchImageDescription" xml:space="preserve">
-    <value>Previews an image</value>
-    <comment>Description for Watch Image</comment>
+    <value>Muestra una vista preliminar de una imagen</value>
   </data>
   <data name="WatchImageSearchTags" xml:space="preserve">
     <value>image;inspect image;pixels;display;panel;watchimage;</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="WatchNodeDescription" xml:space="preserve">
-    <value>Visualizes a node's output</value>
+    <value>Muestra la salida de un nodo.</value>
   </data>
   <data name="WatchPortDataInputToolTip" xml:space="preserve">
-    <value>Node to show output from</value>
+    <value>Nodo desde el que se mostrará la salida</value>
   </data>
   <data name="WatchPortDataResultToolTip" xml:space="preserve">
-    <value>Node output</value>
+    <value>Salida del nodo</value>
   </data>
   <data name="WatchSearchTags" xml:space="preserve">
     <value>print;output;display</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="WebRequestDescription" xml:space="preserve">
     <value>Returns the contents of a webpage from the given URL as a string</value>
-    <comment>Description for Web Request</comment>
   </data>
   <data name="WebRequestPortDataResultToolTip" xml:space="preserve">
-    <value>Content of a web request as a string.</value>
+    <value>El contenido de una solicitud web como cadena.</value>
   </data>
   <data name="WebRequestPortDataUrlToolTip" xml:space="preserve">
-    <value>The url for the web request as a string.</value>
+    <value>La dirección URL de la solicitud web como cadena.</value>
   </data>
   <data name="WatchNodeSearchTags" xml:space="preserve">
     <value>print;output;disply;panel;inspect;debug</value>
-    <comment>Search Tags for WatchNode</comment>
   </data>
   <data name="ConversionNodeDescription" xml:space="preserve">
-    <value>Convert between units of measure.</value>
+    <value>Convierte entre unidades de medida</value>
   </data>
   <data name="SelectFromComboBoxToolTip" xml:space="preserve">
-    <value>This is your Revit display unit settings</value>
+    <value>Esta es la configuración de unidades de visualización de Revit</value>
   </data>
   <data name="ListCreateSearchTags" xml:space="preserve">
     <value>entwine;listcreate,newlist;makelist;list;</value>
-    <comment>search tags for list.create</comment>
   </data>
   <data name="DoubleSliderSearchTags" xml:space="preserve">
     <value>double;number;float;integer;slider;numberslider;</value>
-    <comment>Search tags for DoubleSlider node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
   <data name="DynamoConvertSearchTags" xml:space="preserve">
     <value>Convert;Units;Length;Area;Volume;convertbetweenunits;</value>
-    <comment>Search tags for DynamoConvert node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
   <data name="ListCreateInPortToolTip" xml:space="preserve">
-    <value>Item Index #{0}</value>
+    <value>Índice de elemento núm.{0}</value>
   </data>
   <data name="SelectionNodeNothingSelected" xml:space="preserve">
-    <value>Nothing selected.</value>
+    <value>No hay nada seleccionado.</value>
   </data>
   <data name="SelectionNodeSugestion" xml:space="preserve">
-    <value>Select something in the model.</value>
+    <value>Seleccione algo en el modelo.</value>
   </data>
   <data name="UnitNodeFromPortTooltip" xml:space="preserve">
-    <value>A numeric value for conversion.</value>
+    <value>Un valor numérico para conversión.</value>
   </data>
   <data name="UnitNodeToPortToolTip" xml:space="preserve">
-    <value>A converted numeric value.</value>
+    <value>Un valor numérico convertido.</value>
   </data>
   <data name="DateTimeDescription" xml:space="preserve">
-    <value>Creates a dateTime object from a formatted date and time string. Date and time must be in the default DateTime format "MMMM dd, yyyy h:mm tt", e.g. "April 02, 1977 12:00 PM"</value>
+    <value>Crea un objeto dateTime a partir de una cadena de fecha y hora con formato. La fecha y la hora deben seguir el formato por defecto de DateTime "MMMM dd, aaaa h:mm tt", por ejemplo, "April 02, 1977 12:00 PM".</value>
   </data>
   <data name="ColorRangeSearchTags" xml:space="preserve">
     <value>colorrange;</value>
@@ -558,126 +505,124 @@
     <value>numbersequence;</value>
   </data>
   <data name="SelectionEdgeOutputPortName" xml:space="preserve">
-    <value>Curve</value>
+    <value>Curva</value>
   </data>
   <data name="SelectionEdgesOutputPortName" xml:space="preserve">
     <value>Curves</value>
   </data>
   <data name="SelectionElementOutputPortName" xml:space="preserve">
-    <value>Element</value>
+    <value>Elemento</value>
   </data>
   <data name="SelectionElementsOutputPortName" xml:space="preserve">
-    <value>Elements</value>
+    <value>Elementos</value>
   </data>
   <data name="SelectionFaceOutputPortName" xml:space="preserve">
-    <value>Surface</value>
+    <value>Superficie</value>
   </data>
   <data name="SelectionFacesOutputPortName" xml:space="preserve">
-    <value>Surfaces</value>
+    <value>Superficies</value>
   </data>
   <data name="SelectionPointOutputPortName" xml:space="preserve">
-    <value>Point</value>
+    <value>Punto</value>
   </data>
   <data name="SelectionPointsOutputPortName" xml:space="preserve">
-    <value>Points</value>
+    <value>Puntos</value>
   </data>
   <data name="NumberNodeInputMustBeNumeric" xml:space="preserve">
-    <value>The input must be numeric.</value>
+    <value>La entrada debe ser numérica.</value>
   </data>
   <data name="ColorPaletteDescription" xml:space="preserve">
-    <value>Select a Color from the palette</value>
+    <value>Seleccionar un color de la paleta</value>
   </data>
   <data name="ColorPaletteSearchTags" xml:space="preserve">
     <value>color</value>
   </data>
   <data name="EqualsWithToleranceDescription" xml:space="preserve">
-    <value>Returns True if x and y are equal given a certain tolerance</value>
-    <comment>Description for Equals with tolerance node</comment>
+    <value>Devuelve "True" (verdadero) si x e y son iguales en función de una determinada tolerancia.</value>
   </data>
   <data name="EqualsWithToleranceLhsRhsTooltip" xml:space="preserve">
-    <value>Integer or double value</value>
-    <comment>Equals with tolerance node input port tooltip</comment>
+    <value>Valor entero o doble</value>
   </data>
   <data name="EqualsWithToleranceOutportTooltip" xml:space="preserve">
-    <value>Result of equality check</value>
+    <value>Resultado de la comprobación de igualdad</value>
   </data>
   <data name="EqualsWithToleranceSearchTags" xml:space="preserve">
     <value>equals;tolerance</value>
   </data>
   <data name="EqualsWithToleranceTooltip" xml:space="preserve">
-    <value>Tolerance permitted for equality check
-Default value: {0}</value>
+    <value>Tolerancia permitida para la comprobación de igualdad
+Valor por defecto: {0}</value>
   </data>
   <data name="DirectoryPathOutputDescription" xml:space="preserve">
-    <value>Directory path</value>
+    <value>Ruta de directorio</value>
   </data>
   <data name="FilePathOutputDescription" xml:space="preserve">
-    <value>File Path</value>
+    <value>Ruta de archivo</value>
   </data>
   <data name="IFNodeWarningMessage" xml:space="preserve">
-    <value>This node has been updated and will be removed in a future version of Dynamo. Existing behavior is retained, but a new version now supports Empty Lists, Null values and inputs of varying length. Please replace this node if you wish to use this improved behavior.</value>
+    <value>Este nodo se ha actualizado y se eliminará en una versión futura de Dynamo. Se conservará el comportamiento existente, pero una nueva versión ahora admite listas vacías, valores nulos y entradas de longitud variable. Sustituya este nodo si desea utilizar este comportamiento mejorado.</value>
   </data>
   <data name="CustomSelectionSearchTags" xml:space="preserve">
     <value>dropdown;custom;custom dropdown;enum;custom enum</value>
   </data>
   <data name="CustomSelectionNodeDescription" xml:space="preserve">
-    <value>A dropdown menu with customizable values.</value>
+    <value>Un menú desplegable con valores personalizables.</value>
   </data>
   <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
-    <value>is obsolete, please use the new Convert Units node.</value>
+    <value>está obsoleto; utilice el nuevo nodo para convertir unidades.</value>
   </data>
   <data name="IntegerSliderInfoMessage" xml:space="preserve">
-    <value>The value entered is not in the int64 range.</value>
+    <value>El valor introducido no está en el rango int64.</value>
   </data>
   <data name="CustomSelectionOutputDescription" xml:space="preserve">
-    <value>Selected value</value>
+    <value>Valor seleccionado</value>
   </data>
   <data name="TooltipTextAction" xml:space="preserve">
-    <value>Nodes that execute an action</value>
+    <value>Nodos que ejecutan una acción</value>
   </data>
   <data name="TooltipTextCreate" xml:space="preserve">
-    <value>Nodes that create data</value>
+    <value>Nodos que crean datos</value>
   </data>
   <data name="TooltipTextQuery" xml:space="preserve">
-    <value>Nodes that query data</value>
+    <value>Nodos que consultan datos</value>
   </data>
   <data name="RememberDescription" xml:space="preserve">
-    <value>Store data passing through this node to the Dynamo file. Return the stored data if the input is null.</value>
+    <value>Almacena los datos que se transfieren a través de este nodo en el archivo de Dynamo. Devuelve los datos almacenados si la entrada es nula.</value>
   </data>
   <data name="RememberInputToolTip" xml:space="preserve">
-    <value>Data to sample and store in the file.</value>
+    <value>Los datos que se usarán como ejemplo y se almacenarán en el archivo.</value>
   </data>
   <data name="RememberOuputToolTip" xml:space="preserve">
-    <value>Data</value>
+    <value>Datos</value>
   </data>
   <data name="GateDescription" xml:space="preserve">
-    <value>Block data passing through this node to downstream nodes. Node returns the input data only if the node value is set to Open.
+    <value>Bloquea los datos que se transfieren a través de este nodo a nodos descendentes. El nodo devuelve los datos de entrada solo si el valor del nodo se establece en "Abrir".
 
-In Generative Design workflows, this node should be used to control and block the behavior of nodes that will place elements in Revit</value>
+En los flujos de trabajo de diseño generativo, este nodo se debe utilizar para controlar y bloquear el comportamiento de los nodos que colocarán elementos en Revit.</value>
   </data>
   <data name="GateInPortToolTip" xml:space="preserve">
-    <value>Data to pass to a downstream node with gated controls.</value>
+    <value>Los datos que se transferirán a un nodo descendente con controles de entrada.</value>
   </data>
   <data name="GateOutPortToolTip" xml:space="preserve">
-    <value>Data</value>
+    <value>Datos</value>
   </data>
   <data name="GateSearchTags" xml:space="preserve">
     <value>gate;stop;data</value>
   </data>
   <data name="DefineDataDescription" xml:space="preserve">
-    <value>Validates the data type of an input and returns it</value>
+    <value>Valida el tipo de datos de una entrada y lo devuelve.</value>
   </data>
   <data name="DefineDataInputTooltip" xml:space="preserve">
-    <value>Input data to be validated. Refer to drop-down for list of allowed types</value>
+    <value>Datos de entrada que se van a validar. Consulte en el menú desplegable la lista de tipos permitidos.</value>
   </data>
   <data name="DefineDataOutputTooltip" xml:space="preserve">
-    <value>Validated data</value>
+    <value>Datos validados</value>
   </data>
   <data name="DefineDataDisplayValueMessage" xml:space="preserve">
-    <value>Select Types</value>
+    <value>Seleccionar tipos</value>
   </data>
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
-    <value>Format specifier for numeric values, see extended node help for more info.
-default value: G</value>
+    <value>Especificador de formato para valores numéricos; consulte la ayuda ampliada del nodo para obtener más información.
+Valor por defecto: G</value>
   </data>
 </root>

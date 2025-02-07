@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,105 +118,90 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BrowserViewCannotBeAddedToSidebar" xml:space="preserve">
-    <value>Browser view has not been initialised and cannot be added to the sidebar.</value>
+    <value>탐색기 뷰가 초기화되지 않았으며 사이드바에 추가될 수 없습니다.</value>
   </data>
   <data name="ExtensionName" xml:space="preserve">
-    <value>Documentation Browser</value>
+    <value>문서 브라우저</value>
   </data>
   <data name="FileNotFoundFailureMessage" xml:space="preserve">
-    <value>File not found</value>
+    <value>파일을 찾을 수 없음</value>
   </data>
   <data name="ImageFitToolTip" xml:space="preserve">
-    <value>Zoom to fit</value>
-    <comment>Image Control ToolTip</comment>
+    <value>창에 맞게 줌</value>
   </data>
   <data name="ImageInsertToolTip" xml:space="preserve">
-    <value>Add to workspace\n\nAdds the example file to the workspace as a group. To avoid potential issues, run mode will be changed to Manual.</value>
-    <comment>Image Control ToolTip</comment>
+    <value>작업공간에 추가\n\n예시 파일을 작업공간에 그룹으로 추가합니다. 잠재적인 문제를 방지하기 위해 실행 모드가 수동으로 변경됩니다.</value>
   </data>
   <data name="ImageZoomInToolTip" xml:space="preserve">
-    <value>Zoom in</value>
-    <comment>Image Control ToolTip</comment>
+    <value>줌 확대</value>
   </data>
   <data name="ImageZoomOutToolTip" xml:space="preserve">
-    <value>Zoom out</value>
-    <comment>Image Control ToolTip</comment>
+    <value>줌 축소</value>
   </data>
   <data name="InputDefaultValue" xml:space="preserve">
-    <value>default value</value>
+    <value>기본값</value>
   </data>
   <data name="InsertedGroupSubTitle" xml:space="preserve">
-    <value>Inserted Dynamo graph</value>
+    <value>삽입된 Dynamo 그래프</value>
   </data>
   <data name="InsertGraphContainsNodesAlertMessage" xml:space="preserve">
-    <value>The graph already contains the nodes to be inserted.</value>
+    <value>그래프에 삽입할 노드가 이미 포함되어 있습니다.</value>
   </data>
   <data name="InternalErrorNoDetailsAvailable" xml:space="preserve">
-    <value>No further details available for this error.</value>
+    <value>이 오류에 대해 사용할 수 있는 추가 상세 정보가 없습니다.</value>
   </data>
   <data name="InvalidDocumentationLink" xml:space="preserve">
-    <value>Documentation link is not a valid URI.</value>
+    <value>문서 링크가 유효한 URI가 아닙니다.</value>
   </data>
   <data name="MenuItemText" xml:space="preserve">
-    <value>Show _Documentation Browser</value>
+    <value>문서 탐색기 표시(_D)</value>
   </data>
   <data name="NodeDocumentationCategory" xml:space="preserve">
-    <value>Category</value>
-    <comment>Header in Node Info table</comment>
+    <value>카테고리</value>
   </data>
   <data name="NodeDocumentationDescription" xml:space="preserve">
-    <value>Description</value>
-    <comment>Header in Node Info table</comment>
+    <value>설명</value>
   </data>
   <data name="NodeDocumentationInputs" xml:space="preserve">
-    <value>Inputs</value>
-    <comment>Header in Node Info table</comment>
+    <value>입력</value>
   </data>
   <data name="NodeDocumentationInputsAndOutputs" xml:space="preserve">
-    <value>Inputs and Outputs</value>
+    <value>입력 및 출력</value>
   </data>
   <data name="NodeDocumentationIssueHelp" xml:space="preserve">
-    <value>Node Issue Help</value>
+    <value>노드 문제 도움말</value>
   </data>
   <data name="NodeDocumentationNodeInfo" xml:space="preserve">
-    <value>Node Information</value>
-    <comment>Header in Node Info table</comment>
+    <value>노드 정보</value>
   </data>
   <data name="NodeDocumentationOriginalNodeName" xml:space="preserve">
-    <value>Node Type</value>
-    <comment>Header in Node Info table</comment>
+    <value>노드 유형</value>
   </data>
   <data name="NodeDocumentationOutputs" xml:space="preserve">
-    <value>Outputs</value>
-    <comment>Header in Node Info table</comment>
+    <value>출력</value>
   </data>
   <data name="NodeInputsDataType" xml:space="preserve">
-    <value>Data type</value>
-    <comment>Input Header</comment>
+    <value>데이터 유형</value>
   </data>
   <data name="NodeInputsDescription" xml:space="preserve">
-    <value>Description</value>
-    <comment>Input Header</comment>
+    <value>설명</value>
   </data>
   <data name="NodeInputsName" xml:space="preserve">
-    <value>Name</value>
-    <comment>Input Header</comment>
+    <value>이름</value>
   </data>
   <data name="NodeInputsType" xml:space="preserve">
-    <value>Type</value>
-    <comment>Input Header</comment>
+    <value>유형</value>
   </data>
   <data name="NodeInputsValue" xml:space="preserve">
-    <value>Default value</value>
-    <comment>Input Header</comment>
+    <value>기본값</value>
   </data>
   <data name="ScriptTagsRemovalWarning" xml:space="preserve">
-    <value>Script tags detected in the help document have been removed.</value>
+    <value>도움말 문서에서 탐지된 스크립트 태그가 제거되었습니다.</value>
   </data>
   <data name="ToastFileNotFoundLocationNotificationText" xml:space="preserve">
-    <value>Example file from {0} could not be found</value>
+    <value>{0}의 예제 파일을 찾을 수 없습니다.</value>
   </data>
   <data name="ToastInsertGraphNotificationText" xml:space="preserve">
-    <value>Example file added to workspace. Run mode changed to Manual.</value>
+    <value>예시 파일이 작업공간에 추가되었습니다. 실행 모드가 수동으로 변경되었습니다.</value>
   </data>
 </root>

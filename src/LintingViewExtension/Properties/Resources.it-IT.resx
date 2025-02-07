@@ -118,24 +118,24 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExtensionName" xml:space="preserve">
-    <value>Graph Status</value>
+    <value>Stato grafico</value>
   </data>
   <data name="GraphIssues" xml:space="preserve">
-    <value>Graph Issues</value>
+    <value>Problemi del grafico</value>
   </data>
   <data name="GraphType" xml:space="preserve">
-    <value>Graph Type</value>
+    <value>Tipo di grafico</value>
   </data>
   <data name="GraphTypeHelpTooltip" xml:space="preserve">
-    <value>What is a Graph Type?</value>
+    <value>Definizione di un tipo di grafico</value>
   </data>
   <data name="MenuItemText" xml:space="preserve">
-    <value>Show Graph _Status</value>
+    <value>Mostra _stato grafico</value>
   </data>
   <data name="NodeIssues" xml:space="preserve">
-    <value>Node Issues</value>
+    <value>Problemi del nodo</value>
   </data>
   <data name="NoneLinterDescriptorName" xml:space="preserve">
-    <value>None</value>
+    <value>Nessuno</value>
   </data>
 </root>

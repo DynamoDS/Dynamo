@@ -1,7 +1,7 @@
 {
   "Uuid": "edde076a-9bfc-4186-a966-cf4d379c32ae",
   "IsCustomNode": false,
-  "Description": "This graph demonstrates how to place Revit elements by point. Place rows of chairs in a selected room and write unique numbers to their Mark Parameter",
+  "Description": "이 그래프는 점별로 Revit 요소를 배치하는 방법을 보여줍니다. 선택한 룸에 의자 행을 배치하고 해당 마크 매개변수에 고유한 번호를 씁니다.",
   "Name": "Revit_PlaceFamiliesByLevel_Set Parameters",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -13,7 +13,7 @@
       "Type": "selection",
       "Type2": "dropdownSelection",
       "Value": "Chair-Breuer:Chair-Breuer",
-      "Description": "All family types available in the document.",
+      "Description": "문서에서 사용할 수 있는 모든 패밀리 유형입니다.",
       "SelectedIndex": 74
     },
     {
@@ -22,20 +22,20 @@
       "Type": "selection",
       "Type2": "dropdownSelection",
       "Value": "L3",
-      "Description": "Select a level in the active document",
+      "Description": "활성 문서에서 레벨 선택",
       "SelectedIndex": 8
     },
     {
       "Id": "bbe5b7456c2d40d09db98b415a9cc0ac",
-      "Name": "Select Room",
+      "Name": "룸 선택",
       "Type": "selection",
       "Type2": "hostSelection",
       "Value": "bbb19349-04db-4d1e-886a-6de27dc8e3fa-000ca979",
-      "Description": "Select a model element from the document."
+      "Description": "문서에서 모델 요소를 선택합니다."
     },
     {
       "Id": "d3441f79a99b4fe09ecef222a8c6ba65",
-      "Name": "First Row position",
+      "Name": "첫 번째 행 위치",
       "Type": "number",
       "Type2": "number",
       "Value": "0.2",
@@ -43,11 +43,11 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "숫자 값을 생성합니다"
     },
     {
       "Id": "cc6716ec7b704e0c95a7bff10d97e5b6",
-      "Name": "Last Row Position",
+      "Name": "마지막 행 위치",
       "Type": "number",
       "Type2": "number",
       "Value": "1.4",
@@ -55,11 +55,11 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "숫자 값을 생성합니다"
     },
     {
       "Id": "5527db3e6b724864b32100ccf1353256",
-      "Name": "Row Spacing",
+      "Name": "행 간격",
       "Type": "number",
       "Type2": "number",
       "Value": "0.35",
@@ -67,11 +67,11 @@
       "MinimumValue": 0.15,
       "StepValue": 0.05,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "숫자 값을 생성합니다"
     },
     {
       "Id": "8d17d354eaab43759d24770b2293e2d0",
-      "Name": "Row Start",
+      "Name": "행 시작",
       "Type": "number",
       "Type2": "number",
       "Value": "0.3",
@@ -79,11 +79,11 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "숫자 값을 생성합니다"
     },
     {
       "Id": "a2077841f60e4083a10b44827beb0b58",
-      "Name": "Row End",
+      "Name": "행 끝",
       "Type": "number",
       "Type2": "number",
       "Value": "2.2",
@@ -91,11 +91,11 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "숫자 값을 생성합니다"
     },
     {
       "Id": "932b2e6acbae49f487f23427f13fe3ed",
-      "Name": "Nr Chairs in a Row",
+      "Name": "행의 의자 수",
       "Type": "number",
       "Type2": "number",
       "Value": "8",
@@ -103,11 +103,11 @@
       "MinimumValue": 2.0,
       "StepValue": 1.0,
       "NumberType": "Integer",
-      "Description": "Produces integer values"
+      "Description": "정수 값을 생성합니다"
     },
     {
       "Id": "cdb069216756498ea0654656dc96f302",
-      "Name": "Circle Radius",
+      "Name": "원 반지름",
       "Type": "number",
       "Type2": "number",
       "Value": "6.4",
@@ -115,15 +115,15 @@
       "MinimumValue": 5.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "숫자 값을 생성합니다"
     },
     {
       "Id": "54440452ae1144ce893c49e59c5b4c14",
-      "Name": "Mark Prefix",
+      "Name": "마크 접두어",
       "Type": "string",
       "Type2": "string",
       "Value": "C-",
-      "Description": "Creates a string"
+      "Description": "문자열 작성"
     }
   ],
   "Outputs": [
@@ -132,7 +132,7 @@
       "Name": "Watch",
       "Type": "unknown",
       "InitialValue": "",
-      "Description": "Visualizes a node's output"
+      "Description": "노드의 출력을 시각화합니다."
     }
   ],
   "Nodes": [
@@ -147,7 +147,7 @@
         {
           "Id": "3e305a38f4ca4cf48da556542a95fec3",
           "Name": "Family Type",
-          "Description": "The selected Family Type",
+          "Description": "선택한 패밀리 유형",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -155,7 +155,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "All family types available in the document."
+      "Description": "문서에서 사용할 수 있는 모든 패밀리 유형입니다."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -165,7 +165,7 @@
         {
           "Id": "c8badfa45fb64176b69f3f629624b0fb",
           "Name": "familyType",
-          "Description": "Family Type. Also called Family Symbol.\n\nFamilyType",
+          "Description": "패밀리 유형이며, 패밀리 기호라고도 합니다.\n\nFamilyType",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -174,7 +174,7 @@
         {
           "Id": "c9d538db0c434dbd99c0144eccf1bdfb",
           "Name": "point",
-          "Description": "Point in meters.\n\nPoint",
+          "Description": "점(미터)입니다.\n\nPoint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -183,7 +183,7 @@
         {
           "Id": "7620f27cdf81435db1649df3e71c79ff",
           "Name": "level",
-          "Description": "Level to host Family Instance.\n\nLevel",
+          "Description": "패밀리 인스턴스를 호스팅할 레벨입니다.\n\nLevel",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -203,7 +203,7 @@
       ],
       "FunctionSignature": "Revit.Elements.FamilyInstance.ByPointAndLevel@Revit.Elements.FamilyType,Autodesk.DesignScript.Geometry.Point,Revit.Elements.Level",
       "Replication": "Auto",
-      "Description": "Place a Revit FamilyInstance given the FamilyType (also known as the FamilySymbol in the Revit API), it's coordinates in world space, and the Level\n\nFamilyInstance.ByPointAndLevel (familyType: FamilyType, point: Point, level: Level): FamilyInstance"
+      "Description": "FamilyType(Revit API에서는 FamilySymbol이라고도 함), 월드 스페이스의 해당 좌표 및 레벨을 고려하여 Revit FamilyInstance를 배치합니다.\n\nFamilyInstance.ByPointAndLevel (familyType: FamilyType, point: Point, level: Level): FamilyInstance"
     },
     {
       "ConcreteType": "DSRevitNodesUI.Levels, DSRevitNodesUI",
@@ -216,7 +216,7 @@
         {
           "Id": "269b7bf67a984a0a9b142714558d3f09",
           "Name": "Levels",
-          "Description": "The selected Levels",
+          "Description": "선택한 레벨",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -224,7 +224,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Select a level in the active document"
+      "Description": "활성 문서에서 레벨 선택"
     },
     {
       "ConcreteType": "CoreNodeModels.Range, CoreNodeModels",
@@ -234,7 +234,7 @@
         {
           "Id": "d9ec9ae28d714413bac308aa78979c25",
           "Name": "start",
-          "Description": "Number or letter to start the sequence at\r\nDefault value: 0 (disabled)",
+          "Description": "시퀀스를 시작할 숫자 또는 문자\r\n기본값: 0(비활성화됨)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -243,7 +243,7 @@
         {
           "Id": "896e0760a9b1406782f92685875e172c",
           "Name": "end",
-          "Description": "Number or letter to end the sequence at\r\nDefault value: 9 (disabled)",
+          "Description": "시퀀스를 종료할 숫자 또는 문자\r\n기본값: 9(비활성화됨)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -252,7 +252,7 @@
         {
           "Id": "ad0f580deb884f59be13c3cd3d03e787",
           "Name": "step",
-          "Description": "Space between numbers or letters\r\nDefault value: 1 (disabled)",
+          "Description": "숫자 또는 문자 사이 공백\r\n기본값: 1(비활성화됨)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -263,7 +263,7 @@
         {
           "Id": "13a91a1ed1734aa980f18585449a49ca",
           "Name": "seq",
-          "Description": "New sequence",
+          "Description": "새 시퀀스",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -271,7 +271,7 @@
         }
       ],
       "Replication": "Auto",
-      "Description": "Creates a sequence of numbers or letters in the given range"
+      "Description": "지정된 범위에서 숫자 또는 문자의 시퀀스를 작성합니다"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -290,7 +290,7 @@
         {
           "Id": "c0497f4a24b84af38ed4036ac07825d4",
           "Name": "parameterName",
-          "Description": "The name of the parameter to set.\n\nstring",
+          "Description": "설정할 매개변수의 이름입니다.\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -299,7 +299,7 @@
         {
           "Id": "eeec384ca0094a48acb85fedd9aa45b6",
           "Name": "value",
-          "Description": "The value.\n\nvar",
+          "Description": "값입니다.\n\nvar",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -319,7 +319,7 @@
       ],
       "FunctionSignature": "Revit.Elements.Element.SetParameterByName@string,var",
       "Replication": "Auto",
-      "Description": "Set one of the element's parameters.\n\nElement.SetParameterByName (parameterName: string, value: var): Element"
+      "Description": "요소의 매개변수 중 하나를 설정합니다.\n\nElement.SetParameterByName (parameterName: string, value: var): Element"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
@@ -338,8 +338,8 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a string",
-      "InputValue": "Mark"
+      "Description": "문자열 작성",
+      "InputValue": "마크"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -349,7 +349,7 @@
         {
           "Id": "d3f9830b10bb46e2b1aefed96a45e0e9",
           "Name": "list",
-          "Description": "List to get the item count of.\n\nvar[]..[]",
+          "Description": "항목 수를 가져올 리스트입니다.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -360,7 +360,7 @@
         {
           "Id": "deb9df735ab84cef92175480660f7bc7",
           "Name": "int",
-          "Description": "List length.",
+          "Description": "리스트 길이.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -369,7 +369,7 @@
       ],
       "FunctionSignature": "DSCore.List.Count@var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns the number of items stored in the given list.\n\nList.Count (list: var[]..[]): int"
+      "Description": "지정된 리스트에 저장된 항목의 개수를 반환합니다.\n\nList.Count (list: var[]..[]): int"
     },
     {
       "ConcreteType": "CoreNodeModels.Sequence, CoreNodeModels",
@@ -379,7 +379,7 @@
         {
           "Id": "7ed7436057b94394864f378135123ee9",
           "Name": "start",
-          "Description": "Number or letter to start the sequence at\r\nDefault value: 0 (disabled)",
+          "Description": "시퀀스를 시작할 숫자 또는 문자\r\n기본값: 0(비활성화됨)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -388,7 +388,7 @@
         {
           "Id": "97c296a1c63f42879cf146b6800811a7",
           "Name": "amount",
-          "Description": "Amount of numbers in the sequence\r\nDefault value: 10 (disabled)",
+          "Description": "시퀀스의 숫자 수\r\n기본값: 10(비활성화됨)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -397,7 +397,7 @@
         {
           "Id": "9ccdf87ab37445a98d0568597a4fe97d",
           "Name": "step",
-          "Description": "Space between numbers or letters\r\nDefault value: 1 (disabled)",
+          "Description": "숫자 또는 문자 사이 공백\r\n기본값: 1(비활성화됨)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -408,7 +408,7 @@
         {
           "Id": "1e9183d3ec51437a96be38b9c29985c3",
           "Name": "seq",
-          "Description": "New sequence",
+          "Description": "새 시퀀스",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -416,7 +416,7 @@
         }
       ],
       "Replication": "Longest",
-      "Description": "Creates a sequence of numbers"
+      "Description": "숫자 시퀀스를 작성합니다."
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -436,7 +436,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "숫자를 만듭니다",
       "InputValue": 1.0
     },
     {
@@ -447,7 +447,7 @@
         {
           "Id": "13430473c84e433990fdb832e8e03d21",
           "Name": "obj",
-          "Description": "Object to be serialized",
+          "Description": "직렬화할 객체",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -458,7 +458,7 @@
         {
           "Id": "84b9ee8aaca94550bd0ccd5acfe2045b",
           "Name": "str",
-          "Description": "Result of math computation",
+          "Description": "수학 계산의 결과",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -466,7 +466,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Converts an object to a string representation"
+      "Description": "객체를 문자열 표현으로 변환합니다."
     },
     {
       "ConcreteType": "Dynamo.Nodes.DSModelElementSelection, DSRevitNodesUI",
@@ -480,7 +480,7 @@
         {
           "Id": "609d656ddff94c4481af5fb60f941167",
           "Name": "Element",
-          "Description": "The selected elements.",
+          "Description": "선택한 요소입니다.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -488,7 +488,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Select a model element from the document."
+      "Description": "문서에서 모델 요소를 선택합니다."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -509,7 +509,7 @@
         {
           "Id": "c33dd8009a424435a2a7db62cf92cb1a",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "점",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -518,7 +518,7 @@
       ],
       "FunctionSignature": "Revit.Elements.Room.Location",
       "Replication": "Auto",
-      "Description": "Get Room Location\n\nRoom.Location: Point"
+      "Description": "룸 위치를 가져옵니다.\n\nRoom.Location: 점"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -528,7 +528,7 @@
         {
           "Id": "0de2a67b74c9432aaaaad3584407b1e8",
           "Name": "centerPoint",
-          "Description": "Center point of circle\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "Description": "원의 중심점\n\n점\n기본값: Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -537,7 +537,7 @@
         {
           "Id": "5557f5b3d9c24c24ac69cdb4aa458aa5",
           "Name": "radius",
-          "Description": "Radius\n\ndouble\nDefault value : 1",
+          "Description": "반지름\n\ndouble\n기본값: 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -548,7 +548,7 @@
         {
           "Id": "592a91410b814ef59fa5cadf39321628",
           "Name": "Circle",
-          "Description": "Circle created with center point and radius",
+          "Description": "중심점 및 반지름으로 작성된 원",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -557,7 +557,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
       "Replication": "Auto",
-      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+      "Description": "표준 XY 평면의 입력 중심점과 반지름을 사용하고 표준 Z를 법선으로 사용하여 원을 만듭니다.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -578,7 +578,7 @@
         {
           "Id": "aeb57d06728248308e842d1b117a98da",
           "Name": "Surface",
-          "Description": "A Surface on the interior of the curve",
+          "Description": "곡선 내부 표면",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -587,7 +587,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.Patch",
       "Replication": "Auto",
-      "Description": "Patch a closed Curve\n\nCurve.Patch ( ): Surface"
+      "Description": "닫힌 곡선을 패치합니다.\n\nCurve.Patch ( ): Surface"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -606,7 +606,7 @@
         {
           "Id": "4a615e0065d047a2a6bb7861d5136591",
           "Name": "u",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -615,7 +615,7 @@
         {
           "Id": "b745658962f24e9cba20111b73d1540b",
           "Name": "v",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -626,7 +626,7 @@
         {
           "Id": "a1a34660451d4e7d91a7ad9abd39a574",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "점",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -635,7 +635,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Surface.PointAtParameter@double,double",
       "Replication": "CrossProduct",
-      "Description": "Return the Point at specified U and V parameters.\n\nSurface.PointAtParameter (u: double = 0, v: double = 0): Point"
+      "Description": "지정된 U 및 V 매개변수의 점을 반환합니다.\n\nSurface.PointAtParameter (u: double = 0, v: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -674,7 +674,7 @@
         {
           "Id": "27015a66580a4c67be4b227172c675b4",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "선 1의 표현식 값",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -682,7 +682,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "DesignScript 코드를 직접 작성할 수 있습니다",
       "Code": "start..finish..#steps;"
     },
     {
@@ -693,7 +693,7 @@
         {
           "Id": "e2c5b6d8138040a0b47b2de85972719e",
           "Name": "list",
-          "Description": "List to flatten.\n\nvar[]..[]",
+          "Description": "단순화할 리스트입니다.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -702,7 +702,7 @@
         {
           "Id": "0674ea7afe2449b19fc0449dd2d9e4d9",
           "Name": "amount",
-          "Description": "Layers of list nesting to remove (-1 will remove all list nestings)\n\nint\nDefault value : -1",
+          "Description": "제거할 리스트 내포 레이어(-1은 모든 리스트 내포 제거)\n\nint\n기본값: -1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -713,7 +713,7 @@
         {
           "Id": "4f091c84e88f4a9099daf9cccb6e6c37",
           "Name": "list",
-          "Description": "Flattened list by amount",
+          "Description": "양 기준으로 단순화한 리스트",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -722,7 +722,7 @@
       ],
       "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+      "Description": "리스트의 내포된 리스트를 특정한 크기만큼 단순화합니다.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
@@ -745,7 +745,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "숫자 값을 생성합니다",
       "InputValue": 0.2
     },
     {
@@ -769,7 +769,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "숫자 값을 생성합니다",
       "InputValue": 1.4
     },
     {
@@ -793,7 +793,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "숫자 값을 생성합니다",
       "InputValue": 0.35
     },
     {
@@ -817,7 +817,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "숫자 값을 생성합니다",
       "InputValue": 0.3
     },
     {
@@ -841,7 +841,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "숫자 값을 생성합니다",
       "InputValue": 2.2
     },
     {
@@ -865,7 +865,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces integer values",
+      "Description": "정수 값을 생성합니다",
       "InputValue": 8
     },
     {
@@ -889,7 +889,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "숫자 값을 생성합니다",
       "InputValue": 6.4
     },
     {
@@ -909,7 +909,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a string",
+      "Description": "문자열 작성",
       "InputValue": "C-"
     },
     {
@@ -920,7 +920,7 @@
         {
           "Id": "ce6a6932b61a423c98955dead6e7be43",
           "Name": "string",
-          "Description": "String to insert into.\n\nstring",
+          "Description": "삽입할 문자열입니다.\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -929,7 +929,7 @@
         {
           "Id": "730e86f6ee934508bb660145e668eb89",
           "Name": "index",
-          "Description": "Index to insert at.\n\nint",
+          "Description": "삽입할 색인입니다.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -938,7 +938,7 @@
         {
           "Id": "bb238793083d4b1e80294b203eede1e9",
           "Name": "toInsert",
-          "Description": "String to be inserted.\n\nstring",
+          "Description": "삽입할 문자열입니다.\n\nstring",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -949,7 +949,7 @@
         {
           "Id": "fd4dda6ddf7140b4b69eee24599f5aa3",
           "Name": "string",
-          "Description": "String with inserted substring.",
+          "Description": "하위 문자열이 삽입된 문자열.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -958,7 +958,7 @@
       ],
       "FunctionSignature": "DSCore.String.Insert@string,int,string",
       "Replication": "Auto",
-      "Description": "Inserts a string into another string at a given index.\n\nString.Insert (string: string, index: int, toInsert: string): string"
+      "Description": "지정된 색인에서 문자열을 다른 문자열에 삽입합니다.\n\nString.Insert (string: string, index: int, toInsert: string): string"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -969,7 +969,7 @@
         {
           "Id": "5e7dc9531ad9401080c7004dce40ddcf",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "행 1의 표현식 값",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -977,7 +977,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "DesignScript 코드를 직접 작성할 수 있습니다",
       "Code": "0;"
     },
     {
@@ -990,7 +990,7 @@
         {
           "Id": "d46d61202258486a913846ae4a34bf1f",
           "Name": "",
-          "Description": "Node to show output from",
+          "Description": "출력을 표시할 노드",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1001,7 +1001,7 @@
         {
           "Id": "7dd3cf7d000e492aa3f1b1138c4707b1",
           "Name": "",
-          "Description": "Node output",
+          "Description": "노드 출력",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1009,7 +1009,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "노드의 출력을 시각화합니다."
     }
   ],
   "Connectors": [
@@ -1196,7 +1196,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "특성",
       "Version": "2.13",
       "Data": {}
     },
@@ -1232,7 +1232,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "배경 미리보기(_B)",
       "EyeX": -98.95553588867188,
       "EyeY": 114.75212860107422,
       "EyeZ": 63.7170295715332,
@@ -1347,7 +1347,7 @@
       },
       {
         "Id": "bbe5b7456c2d40d09db98b415a9cc0ac",
-        "Name": "Select Room",
+        "Name": "룸 선택",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1397,7 +1397,7 @@
       },
       {
         "Id": "ca8bbc3762c8451085ca897036139035",
-        "Name": "Rows offset sequence",
+        "Name": "행 간격띄우기 시퀀스",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1417,7 +1417,7 @@
       },
       {
         "Id": "d3441f79a99b4fe09ecef222a8c6ba65",
-        "Name": "First Row position",
+        "Name": "첫 번째 행 위치",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1427,7 +1427,7 @@
       },
       {
         "Id": "cc6716ec7b704e0c95a7bff10d97e5b6",
-        "Name": "Last Row Position",
+        "Name": "마지막 행 위치",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1437,7 +1437,7 @@
       },
       {
         "Id": "5527db3e6b724864b32100ccf1353256",
-        "Name": "Row Spacing",
+        "Name": "행 간격",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1447,7 +1447,7 @@
       },
       {
         "Id": "8d17d354eaab43759d24770b2293e2d0",
-        "Name": "Row Start",
+        "Name": "행 시작",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1457,7 +1457,7 @@
       },
       {
         "Id": "a2077841f60e4083a10b44827beb0b58",
-        "Name": "Row End",
+        "Name": "행 끝",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1467,7 +1467,7 @@
       },
       {
         "Id": "932b2e6acbae49f487f23427f13fe3ed",
-        "Name": "Nr Chairs in a Row",
+        "Name": "행의 의자 수",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1477,7 +1477,7 @@
       },
       {
         "Id": "cdb069216756498ea0654656dc96f302",
-        "Name": "Circle Radius",
+        "Name": "원 반지름",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1487,7 +1487,7 @@
       },
       {
         "Id": "54440452ae1144ce893c49e59c5b4c14",
-        "Name": "Mark Prefix",
+        "Name": "마크 접두어",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1507,7 +1507,7 @@
       },
       {
         "Id": "bc899ae58aca4dbd9df8300ea50e6229",
-        "Name": "Index",
+        "Name": "색인",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1529,8 +1529,8 @@
     "Annotations": [
       {
         "Id": "7db1bbd418b944029dbed8fc9c103ef1",
-        "Title": "Set row offsets",
-        "DescriptionText": "The values for row offsets are not distance but the U and V values",
+        "Title": "행 간격띄우기 설정",
+        "DescriptionText": "행 간격띄우기의 값은 거리가 아니라 U 및 V 값입니다.",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -1556,7 +1556,7 @@
       },
       {
         "Id": "e87db2925d944d9c8c84de3f812701b2",
-        "Title": "Select Revit Elements",
+        "Title": "Revit 요소 선택",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1584,8 +1584,8 @@
       },
       {
         "Id": "f7b606e8ae0247e193aae62c9c87ffe8",
-        "Title": "Generate offsets for rows",
-        "DescriptionText": "Series of numbers corresponding to the U and V positions on the surface. Values can exceed the 0 to 1 domain",
+        "Title": "행의 간격띄우기 생성",
+        "DescriptionText": "표면의 U 및 V 위치에 해당하는 일련의 숫자입니다. 값은 0~1 영역을 초과할 수 있습니다.",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -1609,8 +1609,8 @@
       },
       {
         "Id": "baa0af20ae3c4f2fb458d257f1d57b82",
-        "Title": "Prepare location points",
-        "DescriptionText": "Description <Double click here to edit group description>",
+        "Title": "위치 점 준비",
+        "DescriptionText": "설명 <그룹 설명을 편집하려면 여기를 두 번 클릭하십시오.>",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -1638,7 +1638,7 @@
       },
       {
         "Id": "b50982599b2c40f2b0d702296e7d24e1",
-        "Title": "To Revit: Place Family Instances",
+        "Title": "Revit에: 패밀리 인스턴스 배치",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1661,7 +1661,7 @@
       },
       {
         "Id": "2ed9876b430e438f93df4fc5fbd3ad9f",
-        "Title": "To Revit: Set Parameter Values",
+        "Title": "Revit에: 매개변수 값 설정",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1685,7 +1685,7 @@
       },
       {
         "Id": "190eb7fca4594411b2b77e336ba16848",
-        "Title": "Generate Mark Numbers",
+        "Title": "마크 번호 생성",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1716,7 +1716,7 @@
       },
       {
         "Id": "664430b5d08a43c1b9e3b4f43e8f8981",
-        "Title": "Info",
+        "Title": "정보",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1739,8 +1739,8 @@
       },
       {
         "Id": "26c5d640c57c4c50a06411976d12d8c4",
-        "Title": "Mark Prefix",
-        "DescriptionText": "Use a custom prefix for placed elements Mark number",
+        "Title": "마크 접두어",
+        "DescriptionText": "배치된 요소 마크 번호에 사용자 지정 접두어를 사용합니다",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -1761,7 +1761,7 @@
       },
       {
         "Id": "6b07578143e1447584663102df24ece7",
-        "Title": "Check Results",
+        "Title": "결과 확인",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1784,7 +1784,7 @@
       },
       {
         "Id": "6d1482eca8e44064a8b21d10327f959a",
-        "Title": "Run this graph the Snowdon Towers Sample Architectural.rvt file in the Samples folder located with your Revit installation\n\r\nC:\\Program Files\\Autodesk\\Revit 2026\\Samples",
+        "Title": "Revit 설치 시 함께 생성되는 샘플 폴더의 Snowdon Towers Sample Architectural.rvt 파일에서 이 그래프를 실행합니다\n\r\nC:\\Program Files\\Autodesk\\Revit 2026\\Samples",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1804,7 +1804,7 @@
       },
       {
         "Id": "ec9421fca490466e9bf29f3084b09f9a",
-        "Title": "Place Family Instances\r\nMost Families Can also be placed by Point location.  Adaptive Components can be placed with multiple points, Structural Framing is placed with Curves",
+        "Title": "패밀리 인스턴스(instance) 배치\r\n대부분의 패밀리는 점 위치를 사용하여 배치할 수도 있습니다. 가변 구성요소는 여러 개의 점을 사용하여 배치할 수 있으며 구조 프레임은 곡선을 사용하여 배치됩니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1825,7 +1825,7 @@
       },
       {
         "Id": "88280111f80f47339312137e1e809eb8",
-        "Title": "Set the Mark parameter with a list of values. The list structure of elements and values inputs must match, or just one value can be used. Parameters can also be read using an Element.GetParameterByName node",
+        "Title": "값 리스트가 있는 마크 매개변수를 설정합니다. 요소 및 값 입력의 리스트 구조가 일치해야 합니다. 그렇지 않으면 1개 값만 사용할 수 있습니다. 매개변수는 Element.GetParameterByName 노드를 사용하여 읽을 수도 있습니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1846,7 +1846,7 @@
       },
       {
         "Id": "fa0eb09689914dd9a0c611d2cde622bb",
-        "Title": "Place rows of chairs in a selected room and write unique numbers to their Mark Parameter",
+        "Title": "선택한 룸에 의자 행을 배치하고 해당 마크 매개변수에 고유한 번호를 씁니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1866,7 +1866,7 @@
       },
       {
         "Id": "527a1fd4113047fca131ee5150269835",
-        "Title": "Generate a series of numbers within a range, with a given step",
+        "Title": "지정된 단계에 따라 범위 내에서 일련의 숫자를 생성합니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1887,7 +1887,7 @@
       },
       {
         "Id": "7199d7c8c9864472b67cb714f9c14819",
-        "Title": "An alternative to creating a sequence by defining the sequence start, finish and the number of steps",
+        "Title": "시퀀스 시작, 종료 및 단계 수를 정의하여 시퀀스를 작성하는 것에 대한 대안",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1908,7 +1908,7 @@
       },
       {
         "Id": "e64f57e2e3ea45269608dd97aa70eaae",
-        "Title": "Select Family Type for the instances being placed from the Family Types in the Project",
+        "Title": "프로젝트의 패밀리 유형에서 배치되는 인스턴스에 대한 패밀리 유형을 선택합니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1929,7 +1929,7 @@
       },
       {
         "Id": "8dd296c92ace485b978a41eab7a08b98",
-        "Title": "Select the Level on which to place elements ",
+        "Title": "요소를 배치할 레벨을 선택합니다 ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1950,7 +1950,7 @@
       },
       {
         "Id": "9ff59d9e0e974becafbd986c23b62cc4",
-        "Title": "Select a Room in which to place the elements. You will need to navigate to a view where rooms are visible (Floor Plan)",
+        "Title": "요소를 배치할 룸을 선택합니다. 룸이 표시되는 뷰로 이동해야 합니다(평면도)",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1971,7 +1971,7 @@
       },
       {
         "Id": "29565e7d370141548b1544c946babf4c",
-        "Title": "Using sequences of U and V values, create a matrix of points. Set the lacing of the node to Cross-Product by right-clicking and selecting Lacing.",
+        "Title": "U 및 V 값의 시퀀스를 사용하여 점의 매트릭스를 작성합니다. 마우스 오른쪽 버튼을 클릭하고 레이싱을 선택하여 노드의 레이싱을 외적으로 설정합니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1992,7 +1992,7 @@
       },
       {
         "Id": "42804f43e87141ddb78c5232759b370b",
-        "Title": "Convert the circle into a surface in order to use it for positioning points",
+        "Title": "점 위치를 지정하는데 사용하기 위해 원을 표면으로 변환합니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2013,7 +2013,7 @@
       },
       {
         "Id": "0a403a4cf73a4829b43c4e618dde72e0",
-        "Title": "The placement point of the selected room",
+        "Title": "선택한 룸의 배치 점",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2034,7 +2034,7 @@
       },
       {
         "Id": "8c352062360444f4ab8354003ba71179",
-        "Title": "Circle defining an initial area of placement. The shape of the circle does not matter in this case, but it is the quickest way to define a closed surface ",
+        "Title": "초기 배치 영역을 정의하는 원입니다. 이 경우 원의 모양은 중요하지 않지만 원은 닫힌 표면을 정의하는 가장 빠른 방법입니다. ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2055,7 +2055,7 @@
       },
       {
         "Id": "f19cb7119cd04a10974a4c52f6809517",
-        "Title": "Dispose of list structure - get one list containing all items",
+        "Title": "리스트 구조 제거 - 모든 항목이 포함된 한 개의 리스트 가져오기",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2076,7 +2076,7 @@
       },
       {
         "Id": "4370b24df9134c4d88da7043efba5591",
-        "Title": "Count the number of items in the list",
+        "Title": "리스트의 항목 수를 계산합니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2097,7 +2097,7 @@
       },
       {
         "Id": "635af5d0063e4ca4b29e9cb3ff8881fe",
-        "Title": "Generate the numbers from 1 to n",
+        "Title": "1에서 n까지의 숫자를 생성합니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2118,7 +2118,7 @@
       },
       {
         "Id": "e8fae999df1241e7be37cbef9aeb7656",
-        "Title": "To participate in string operations, the number must be first converted into a string",
+        "Title": "문자열 작업에 참여하려면 먼저 숫자를 문자열로 변환해야 합니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2139,7 +2139,7 @@
       },
       {
         "Id": "43c720ac60944674956a060285935ad0",
-        "Title": "Insert a custom prefix to the item number",
+        "Title": "항목 번호에 사용자 지정 접두어를 삽입합니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2160,7 +2160,7 @@
       },
       {
         "Id": "e78c45a565044ccdb83bfd9e5709311c",
-        "Title": "Watch node can be used to check if the results are as expected",
+        "Title": "결과가 예상과 같은지 확인하는 데 Watch 노드를 사용할 수 있습니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

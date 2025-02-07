@@ -118,22 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExcelCommunicationError" xml:space="preserve">
-    <value>Error setting up communication with Excel.  Try closing any open Excel instances.</value>
+    <value>Errore di impostazione della comunicazione con Excel. Chiudere eventuali istanze di Excel aperte.</value>
   </data>
   <data name="ExcelNotInstalled" xml:space="preserve">
-    <value>Excel is not installed. href=ExcelNotInstalled.html</value>
+    <value>Excel non è installato. href=ExcelNotInstalled.html</value>
   </data>
   <data name="kMethodResolutionFailureWithTypes" xml:space="preserve">
-    <value>One or more of the input types are not matching. Couldn't find a version of {0} that takes arguments of type {1}</value>
+    <value>Uno o più tipi di input non corrispondenti. Impossibile trovare una versione di {0} in grado di accettare argomenti di tipo {1}</value>
   </data>
   <data name="ReadObsolete" xml:space="preserve">
-    <value>Use File.FromPath -&gt; Excel.ReadFromFile node instead.</value>
+    <value>In sostituzione, utilizzare il nodo File.FromPath -&gt; Excel.ReadFromFile.</value>
   </data>
   <data name="WorkbookNotFound" xml:space="preserve">
-    <value>A workbook was not found in the provided path.</value>
+    <value>Nel percorso specificato non è stata trovata una cartella di lavoro.</value>
   </data>
   <data name="WorksheetNotFound" xml:space="preserve">
-    <value>A worksheet with the provided name '{0}' was not found in the workbook.</value>
-    <comment>{0} = name of the worksheet, for example 'Sheet1'.</comment>
+    <value>Nella cartella di lavoro non è stato trovato un foglio di lavoro con il nome specificato '{0}'.</value>
   </data>
 </root>

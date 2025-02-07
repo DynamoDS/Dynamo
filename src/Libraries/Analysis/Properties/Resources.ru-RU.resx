@@ -118,30 +118,30 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ByPointsAndValueObsolete" xml:space="preserve">
-    <value>Use Point nodes and Number nodes as direct inputs to nodes which previously used PointData nodes</value>
+    <value>Используйте узлы "Точка" и "Число" как прямые входные данные для узлов, для которых ранее использовались узлы "PointData"</value>
   </data>
   <data name="BySurfacePointObsolete" xml:space="preserve">
-    <value>Use Surface and UV nodes as direct inputs to nodes which previously used SurfaceData nodes</value>
+    <value>Используйте узлы "Поверхность" и "UV" как прямые входные данные для узлов, для которых ранее использовались узлы SurfaceData</value>
   </data>
   <data name="BySurfacePointsAndValues" xml:space="preserve">
-    <value>Use Surface, UV, and Number nodes as direct inputs to nodes which previously used SurfaceData nodes</value>
+    <value>Используйте узлы "Поверхность", "UV" и "Число" как прямые входные данные для узлов, для которых ранее использовались узлы "SurfaceData"</value>
   </data>
   <data name="SurfaceObsolete" xml:space="preserve">
-    <value>Use the Surface available elsewhere in your graph</value>
+    <value>Используйте поверхность, доступную в любом другом месте графика</value>
   </data>
   <data name="ValueLocationObsolete" xml:space="preserve">
-    <value>Use the Points available elsewhere in your graph</value>
+    <value>Используйте точки, доступные в любом другом месте графика</value>
   </data>
   <data name="ValueLocationsObsolete" xml:space="preserve">
-    <value>Use the UV locations available elsewhere in your graph.</value>
+    <value>Используйте местоположения UV, доступные в любом другом месте графика.</value>
   </data>
   <data name="ValuesObsolete" xml:space="preserve">
-    <value>Use the values provided by the node conducting the analysis.</value>
+    <value>Используйте значения, полученные от узла, который проводит анализ.</value>
   </data>
   <data name="ValueSurfaceObsolete" xml:space="preserve">
-    <value>Use the values provided by the node conducting the analysis</value>
+    <value>Используйте значения, полученные от узла, который проводит анализ</value>
   </data>
   <data name="VectorValueObsolete" xml:space="preserve">
-    <value>Use Vector nodes and Number nodes as direct inputs to nodes which previously used VectorData nodes</value>
+    <value>Используйте узлы "Вектор" и узлы "Число" как прямые входные данные для узлов, для которых ранее использовались узлы "VectorData"</value>
   </data>
 </root>

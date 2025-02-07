@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EmptyColorsMessage" xml:space="preserve">
-    <value>There are no colors specified.</value>
+    <value>Brak określonych kolorów.</value>
   </data>
   <data name="EmptyPointsMessage" xml:space="preserve">
-    <value>There are no points specified.</value>
+    <value>Brak określonych punktów.</value>
   </data>
   <data name="EmptyUVsMessage" xml:space="preserve">
-    <value>There are no UVs specified.</value>
+    <value>Brak określonych wartości UV.</value>
   </data>
   <data name="EmptyValuesMessage" xml:space="preserve">
-    <value>There are no values specified.</value>
+    <value>Brak określonych wartości.</value>
   </data>
   <data name="InputsNotEquivalentMessage" xml:space="preserve">
-    <value>You must supply an equivalent number of points and values.</value>
+    <value>Należy podać zastępczą liczbę punktów i wartości.</value>
   </data>
 </root>

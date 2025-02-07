@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,627 +118,602 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BuildSublistsDescription" xml:space="preserve">
-    <value>Build sublists from a list using DesignScript range syntax.</value>
-    <comment>Description for code block node</comment>
+    <value>Создание подсписков на основе списка с помощью синтаксиса диапазона DesignScript.</value>
   </data>
   <data name="CodeBlockNodeDescription" xml:space="preserve">
-    <value>Allows for DesignScript code to be authored directly</value>
+    <value>Обеспечивает возможность непосредственного авторства кода DesignScript</value>
   </data>
   <data name="NumberNodeDescription" xml:space="preserve">
-    <value>Creates a number.</value>
-    <comment>Description for number node</comment>
+    <value>Создание числа.</value>
   </data>
   <data name="StringNodeDescription" xml:space="preserve">
-    <value>Creates a string.</value>
-    <comment>Description for string node</comment>
+    <value>Создание строки.</value>
   </data>
   <data name="FunctionNodeDescription" xml:space="preserve">
-    <value>DesignScript Builtin Functions</value>
-    <comment>Description for function node</comment>
+    <value>Встроенные функции DesignScript</value>
   </data>
   <data name="CustomNodeDesciption" xml:space="preserve">
-    <value>Instance of a Custom Node</value>
-    <comment>Description for custom node</comment>
+    <value>Экземпляр пользовательского узла</value>
   </data>
   <data name="ComposeFunctionNodeDescription" xml:space="preserve">
-    <value>Composes two single parameter functions into one function.</value>
-    <comment>Description for compose function node</comment>
+    <value>Создаются две однопараметрические функции в одной.</value>
   </data>
   <data name="OutputNodeDescription" xml:space="preserve">
-    <value>A function output, use with custom nodes</value>
-    <comment>Description for output node</comment>
+    <value>Результат функции, применять с пользовательскими узлами</value>
   </data>
   <data name="InputNodeDescription" xml:space="preserve">
-    <value>A function parameter, use with custom nodes</value>
-    <comment>Description for input node</comment>
+    <value>Параметр функции, использовать с пользовательскими узлами</value>
   </data>
   <data name="InputNodeSearchTags" xml:space="preserve">
     <value>variable;argument;parameter</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="ComposeFunctionPortDataFunctionToolTip" xml:space="preserve">
-    <value>A Function</value>
+    <value>Функция</value>
   </data>
   <data name="ComposeFunctionPortDataResultToolTip" xml:space="preserve">
-    <value>Composed function: g(f(x))</value>
+    <value>Создана функция: g(f(x))</value>
   </data>
   <data name="RangePortDataAmountToolTip" xml:space="preserve">
-    <value>Amount of numbers or letters in the sequence
-Default value: 10</value>
+    <value>Количество цифр или букв в последовательности
+Значение по умолчанию: 10</value>
   </data>
   <data name="RangePortDataEndToolTip" xml:space="preserve">
-    <value>Number or letter to end the sequence at
-Default value: 9</value>
+    <value>Число или буква, которой завершится последовательность
+Значение по умолчанию: 9</value>
   </data>
   <data name="RangePortDataSeqToolTip" xml:space="preserve">
-    <value>New list of type: var[]..[]</value>
+    <value>Новый список с типом var[]..[]</value>
   </data>
   <data name="RangePortDataStartToolTip" xml:space="preserve">
-    <value>Number or letter to start the sequence at
-Default value: 0</value>
+    <value>Число или буква, с которой начнется последовательность
+Значение по умолчанию: 0</value>
   </data>
   <data name="RangePortDataStepToolTip" xml:space="preserve">
-    <value>Space between numbers or letters
-Default value: 1</value>
+    <value>Пространство между цифрами или буквами
+Значение по умолчанию: 1</value>
   </data>
   <data name="PortDataParameterToolTip" xml:space="preserve">
-    <value>parameter</value>
+    <value>параметр</value>
   </data>
   <data name="PortDataVariableToolTip" xml:space="preserve">
-    <value>variable</value>
-    <comment>Tooltip to indidate it is a variable</comment>
+    <value>переменная</value>
   </data>
   <data name="SublistPortDataResultToolTip" xml:space="preserve">
-    <value>The sublists.</value>
-    <comment>Tooltip</comment>
+    <value>Вложенные списки.</value>
   </data>
   <data name="SublistsPortDataListToolTip" xml:space="preserve">
-    <value>The list from which to create sublists.</value>
-    <comment>Tooltip for inport data</comment>
+    <value>Список, в котором требуется создать вложенные списки.</value>
   </data>
   <data name="SublistsPortDataOffsetToolTip" xml:space="preserve">
-    <value>The offset to apply to the sub-list. Ex. The range "0..2" with an offset of 1 will yield sublists {0,1,2}{1,2,3}{2,3,4}...</value>
-    <comment>Tooltip</comment>
+    <value>Значение смещения, которое требуется применить вложенному списку. Например, при использовании диапазона «0..2» со смещением 1 в результате получатся вложенные списки со значениями {0,1,2}{1,2,3}{2,3,4}...</value>
   </data>
   <data name="PortDataFunctionOutputToolTip" xml:space="preserve">
-    <value>function output</value>
+    <value>вывод функции</value>
   </data>
   <data name="PortDataInputToolTip" xml:space="preserve">
-    <value>Input #{0}</value>
+    <value>Ввод #{0}</value>
   </data>
   <data name="PortDataOutputToolTip" xml:space="preserve">
-    <value>Output #{0}</value>
+    <value>Вывод #{0}</value>
   </data>
   <data name="PortDataPathToFileToolTip" xml:space="preserve">
-    <value>Path to the file</value>
+    <value>Путь к файлу</value>
   </data>
   <data name="PortDataReturnValueToolTip" xml:space="preserve">
-    <value>return value</value>
+    <value>возвращаемое значение</value>
   </data>
   <data name="PortDataSymbolToolTip" xml:space="preserve">
-    <value>Symbol</value>
+    <value>Обозначение</value>
   </data>
   <data name="ButtonDownloadLastest" xml:space="preserve">
-    <value>Download latest version</value>
-    <comment>Button Download Lastest</comment>
+    <value>Загрузить последнюю версию</value>
   </data>
   <data name="052465" xml:space="preserve">
-    <value>Arrrrg, ok</value>
-    <comment>Button OK</comment>
+    <value>Ох, ну ладно</value>
   </data>
   <data name="ButtonProcess" xml:space="preserve">
-    <value>Proceed anyway</value>
-    <comment>Button Process</comment>
+    <value>Все равно продолжить</value>
   </data>
   <data name="CancelButton" xml:space="preserve">
-    <value>Cancel</value>
-    <comment>Button Cancel</comment>
+    <value>Отмена</value>
   </data>
   <data name="CannotOpenFile" xml:space="preserve">
-    <value>Your file cannot be opened</value>
+    <value>Не удается открыть файл</value>
   </data>
   <data name="DisplayEngineFailureMessageDescription" xml:space="preserve">
-    <value>The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely having great difficulties pulling itself together. It is recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better. 
+    <value>На виртуальной машине, от которой зависит работа Dynamo, в данный момент возникли некоторые внутренние неполадки, так что, скорее всего, имеются сложности в возвращении к нормальному режиму работы. Рекомендуется сохранить работу и перезагрузить файл прямо сейчас. Если виртуальной машине Dynamo дать немного отдохнуть, она восстановится и заработает как раньше. 
 
-If you don't mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed.</value>
+Если вам не сложно, отправьте текущий файл нам — это будет полезно для вас и позволит нам ускорить решение возникших проблем.</value>
   </data>
   <data name="FileNotOpenedCorrectly" xml:space="preserve">
-    <value>Your file may not open correctly</value>
+    <value>Возможно, файл откроется с ошибками</value>
   </data>
   <data name="IncompatibleOfFileAndDynamo" xml:space="preserve">
-    <value>Your file '{0}' of version '{1}' cannot be opened by this version of Dynamo ({2})</value>
+    <value>Файл '{0}' версии '{1}' не может быть открыт в данной версии Dynamo ({2})</value>
   </data>
   <data name="IncorrectVersionToOpenFile" xml:space="preserve">
-    <value>Your file '{0}' was created in future version '{1}' and may not open correctly in your installed version of Dynamo '{2}'</value>
+    <value>Файл '{0}' был создан в более поздней версии '{1}', и в установленной версии Dynamo '{2}' он может открываться с ошибками</value>
   </data>
   <data name="SubmitBugToGithub" xml:space="preserve">
-    <value>Submit Bug To Github</value>
-    <comment>Button submit</comment>
+    <value>Отправить ошибку в Github</value>
   </data>
   <data name="UnhandledExceptionInDynamoEngine" xml:space="preserve">
-    <value>Unhandled exception in Dynamo engine</value>
+    <value>Необрабатываемое исключение в движке Dynamo</value>
   </data>
   <data name="UsageReportingErrorMessage" xml:space="preserve">
-    <value>Uh oh...
- We're sorry - we tried to save your decisions, but something went wrong. The decision probably hasn't been saved. This really shouldn't have happened. Please get in touch via GitHub and send us this information.
-You can also try deleting [FILEPATH] and trying again.
-Depending on your previous choice, analytics may still be running, if you're worried about this, please consider not using Dynamo until we've got back to you to solve the problem.
-Sorry about that.</value>
+    <value>Ох...
+Вот незадача — мы пытались сохранить ваши решения, но что-то пошло не так. Решение, скорее всего, не сохранилось. Это не должно было случиться. Свяжитесь с нами через GitHub и пришлите информацию об этом.
+Вы также можете попробовать удалить [FILEPATH] и попытаться снова.
+В зависимости от предыдущего выбора, аналитика, возможно, все еще работает. Если вас это беспокоит, постарайтесь не использовать Dynamo, пока мы не свяжемся с вами и не предложим решение проблемы.
+Нам очень жаль, что вам пришлось столкнуться с данной проблемой.</value>
   </data>
   <data name="CouldNotLoadTypes" xml:space="preserve">
-    <value>Could not load types.</value>
+    <value>Не удалось загрузить типы.</value>
   </data>
   <data name="CreatingConnectorError" xml:space="preserve">
-    <value>ERROR : Could not create connector between {0} and {1}.</value>
+    <value>Ошибка: не удалось создать соединение между {0} и {1}.</value>
   </data>
   <data name="DllLoadException" xml:space="preserve">
-    <value>Dll Load Exception:</value>
+    <value>Исключение при загрузке dll:</value>
   </data>
   <data name="ElapsedWhenLoadingXml" xml:space="preserve">
-    <value>{0} elapsed for loading xml.</value>
+    <value>Затрачено {0} на загрузку xml.</value>
   </data>
   <data name="EvaluationCompleted" xml:space="preserve">
-    <value>Evaluation completed in {0}</value>
+    <value>Оценка завершена в {0}</value>
   </data>
   <data name="FailedToLoadHeader" xml:space="preserve">
-    <value>ERROR: The header for the custom node at {0} failed to load.  It will be left out of search.</value>
+    <value>Ошибка: не удалось загрузить заголовок для пользовательского узла в {0}. Он не будет учитываться при поиске.</value>
   </data>
   <data name="FileBackUpLocation" xml:space="preserve">
-    <value>Original file '{0}' gets backed up at '{1}'</value>
+    <value>Для исходного файла '{0}' создается резервная копия в '{1}'</value>
   </data>
   <data name="LoadingNodeDefinition" xml:space="preserve">
-    <value>Loading node definition for "{0}" from: {1}</value>
+    <value>Загрузка определения узла для «{0}» из: {1}</value>
   </data>
   <data name="NodeProblemEncountered" xml:space="preserve">
-    <value>Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:</value>
+    <value>Во время подготовки к выполнению, в этом узле произошла ошибка. Пожалуйста, обратитесь к разработчикам узла и передайте им следующее сообщение:</value>
   </data>
   <data name="OpeningHomeWorkspace" xml:space="preserve">
-    <value>Opening home workspace {0}...</value>
+    <value>Открытие исходного рабочего пространства {0}...</value>
   </data>
   <data name="OpenWorkbenchError" xml:space="preserve">
-    <value>There was an error opening the workbench.</value>
+    <value>Ошибка при открытии Workbench.</value>
   </data>
   <data name="BadIdentifierSyntax" xml:space="preserve">
-    <value>Bad identifier syntax: "{0}"</value>
+    <value>Недопустимый синтаксис идентификатора: «{0}»</value>
   </data>
   <data name="BadRangeSyntax" xml:space="preserve">
-    <value>Bad range syntax: not of format \"start..end[..(increment|#count)]\"</value>
+    <value>Неверный синтаксис диапазона: не соответствует формату \"start..end[..(increment|#count)]\"</value>
   </data>
   <data name="CannotHave0Step" xml:space="preserve">
-    <value>Can't have 0 step.</value>
+    <value>Шаг не может быть с нулевым значением.</value>
   </data>
   <data name="ClearingWorkflow" xml:space="preserve">
-    <value>Clearing workflow...</value>
+    <value>Очистка рабочего процесса...</value>
   </data>
   <data name="CouldNotCompressFile" xml:space="preserve">
-    <value>Could not compress file.  Is the file in use?</value>
+    <value>Не удалось сжать файл. Файл используется?</value>
   </data>
   <data name="CouldNotGetLatestBuild" xml:space="preserve">
-    <value>Couldn't get the latest build from S3</value>
+    <value>Не удалось получить последнюю сборку из S3</value>
   </data>
   <data name="CouldNotGetUpdateData" xml:space="preserve">
-    <value>Couldn't get update data from {0}</value>
+    <value>Не удалось получить данные обновлений из {0}</value>
   </data>
   <data name="DulicatedPackage" xml:space="preserve">
-    <value>A duplicate of the package called {0} was found at {1}.  Ignoring it.</value>
+    <value>Копия пакета под названием {0} найдена в {1}.  Игнорируется.</value>
   </data>
   <data name="DynamoUpToDate" xml:space="preserve">
-    <value>Dynamo is up to date.</value>
+    <value>Dynamo не нуждается в обновлении.</value>
   </data>
   <data name="ExceptionEncountered" xml:space="preserve">
-    <value>Exception encountered scanning the package directory at {0}</value>
+    <value>Обнаружено исключение при сканировании пакета папку в {0}</value>
   </data>
   <data name="FailedToLoad" xml:space="preserve">
-    <value>Failed to load {0}\n, Exception: {1}</value>
+    <value>Не удалось загрузить {0}\n, исключение: {1}</value>
   </data>
   <data name="FailedToLoadCustomNode" xml:space="preserve">
-    <value>Failed to load custom node: {0}.  Replacing with proxy custom node.</value>
+    <value>Не удалось загрузить пользовательский узел: {0}. Замена пользовательским прокси-узлом.</value>
   </data>
   <data name="FailedToSave" xml:space="preserve">
-    <value>Failed to save {0}\n, Exception: {1}</value>
+    <value>Не удалось сохранить {0}\n, исключение: {1}</value>
   </data>
   <data name="IdentifiersNotFound" xml:space="preserve">
-    <value>No identifiers found.</value>
+    <value>Не найдены идентификаторы.</value>
   </data>
   <data name="InvalidStartOrEndOfRange" xml:space="preserve">
-    <value>The start or end of a range is greater than the number of available elements in the list.</value>
+    <value>Начальное или конечное значение диапазона превышает число доступных элементов в списке.</value>
   </data>
   <data name="MalformedHeaderPackage" xml:space="preserve">
-    <value>{0} contains a package with a malformed header.  Ignoring it.</value>
+    <value>{0} содержит пакет с неправильно сформированным заголовком. Игнорируется.</value>
   </data>
   <data name="NoHeaderPackage" xml:space="preserve">
-    <value>{0} contains a package without a header.  Ignoring it.</value>
+    <value>{0} содержит пакет без заголовка. Игнорируется.</value>
   </data>
   <data name="PackageEmpty" xml:space="preserve">
-    <value>The package was found to be empty and was not installed.</value>
+    <value>Пакет оказался пустым и не был установлен.</value>
   </data>
   <data name="PackageTooLarge" xml:space="preserve">
-    <value>The package is too large!  The package must be less than 15 MB!</value>
+    <value>Пакет слишком велик! Размер данного пакета не должен превышать 15 МБ.</value>
   </data>
   <data name="PathNotRegconizableAsStableOrDailyBuild" xml:space="preserve">
-    <value>The specified file path is not recognizable as a stable or a daily build</value>
+    <value>Указанный путь к файлу не удается распознать как стабильный или повседневно создаваемый</value>
   </data>
   <data name="RangeEndCouldNotBeParsed" xml:space="preserve">
-    <value>Range end could not be parsed.</value>
+    <value>Не удалось разобрать конец диапазона.</value>
   </data>
   <data name="RangeOrApprIdentifierAlrUsed" xml:space="preserve">
-    <value>Cannot use range or approx. identifier on increment field when one has already been used to specify a count.</value>
+    <value>Невозможно использовать диапазон или приблизительный идентификатор в поле «Приращение», если он уже используется для указания количества.</value>
   </data>
   <data name="RangeStepCouldNotBeParsed" xml:space="preserve">
-    <value>Range step could not be parsed.</value>
+    <value>Не удалось разобрать шаг диапазона.</value>
   </data>
   <data name="RangeValuesGreaterThanZero" xml:space="preserve">
-    <value>Range values must be greater than zero.</value>
+    <value>Значения в диапазоне должны быть больше нуля.</value>
   </data>
   <data name="RequestingVersionUpdate" xml:space="preserve">
-    <value>Requesting version update info...</value>
+    <value>Запрос данных об обновлении версии...</value>
   </data>
   <data name="UpdateAvailable" xml:space="preserve">
-    <value>Update available: {0}</value>
+    <value>Доступно обновление: {0}</value>
   </data>
   <data name="UpdateDownloadComplete" xml:space="preserve">
-    <value>Update download complete.</value>
+    <value>Загрузка обновлений завершена.</value>
   </data>
   <data name="UpdateDownloadProgress" xml:space="preserve">
-    <value>Update download progress: {0}%</value>
+    <value>Ход загрузки обновлений: {0} %</value>
   </data>
   <data name="UpdateDownloadStarted" xml:space="preserve">
-    <value>Update download started...</value>
+    <value>Загрузка обновлений началась...</value>
   </data>
   <data name="WorkbenchNotOpen" xml:space="preserve">
-    <value>Workbench could not be opened.</value>
+    <value>Не удалось открыть инструментарий.</value>
   </data>
   <data name="CouldNotRepairOneNodeHoles" xml:space="preserve">
-    <value>Could not repair 1-node holes</value>
+    <value>Не удалось восстановить 1-узловые отверстия</value>
   </data>
   <data name="CustomNodeCouldNotBeInitialized" xml:space="preserve">
-    <value>Custom node \"{0}\" could not be initialized.</value>
+    <value>Не удалось инициализировать пользовательский узел \"{0}\".</value>
   </data>
   <data name="FailedToGetMirrorVariable" xml:space="preserve">
-    <value>Failed to get mirror for variable:  {0}; reason: {1}.</value>
+    <value>Не удалось получить зеркальное отражение для переменной: {0}; причина: {1}.</value>
   </data>
   <data name="FailedToLoadType" xml:space="preserve">
-    <value>Failed to load type from {0}. The type was {1}.</value>
+    <value>Не удалось загрузить тип из {0}. Тип был {1}.</value>
   </data>
   <data name="OpenWorkspaceError" xml:space="preserve">
-    <value>There was an error opening the workspace.</value>
+    <value>Ошибка при открытии рабочего пространства.</value>
   </data>
   <data name="UnableToCreateCustomNodeID" xml:space="preserve">
-    <value>Unable to create instance of custom node with id: \"</value>
+    <value>Не удалось создать экземпляр пользовательского узла с идентификатором: \"</value>
   </data>
   <data name="BackUpOriginalFileMessage" xml:space="preserve">
-    <value>Original file '{0}' gets backed up at '{1}'</value>
+    <value>Для исходного файла '{0}' создается резервная копия в '{1}'</value>
   </data>
   <data name="ClearingWorkSpace" xml:space="preserve">
-    <value>Clearing workspace...</value>
+    <value>Очистка рабочего пространства...</value>
   </data>
   <data name="CodeBlockDescription" xml:space="preserve">
-    <value>Allows for DesignScript code to be authored directly</value>
+    <value>Обеспечивает возможность непосредственного авторства кода DesignScript</value>
   </data>
   <data name="DownloadLatestButton" xml:space="preserve">
-    <value>Download latest version</value>
+    <value>Загрузить последнюю версию</value>
   </data>
   <data name="DuplicateMigrationTypeRegistered" xml:space="preserve">
-    <value>Duplicate migration type registered for {0}</value>
+    <value>Зарегистрирован повторяющийся тип переноса для {0}</value>
   </data>
   <data name="FileCannotBeOpened" xml:space="preserve">
-    <value>Your file cannot be opened.</value>
+    <value>Не удается открыть файл.</value>
   </data>
   <data name="FutureFileDescription" xml:space="preserve">
-    <value>Your file '{0}' was created in future version '{1}' and may not open correctly in your installed version of Dynamo '{2}'</value>
+    <value>Файл '{0}' был создан в более поздней версии '{1}', и в установленной версии Dynamo '{2}' он может открываться с ошибками</value>
   </data>
   <data name="FutureFileSummary" xml:space="preserve">
-    <value>Your file may not open correctly</value>
+    <value>Возможно, файл откроется с ошибками</value>
   </data>
   <data name="FutureFileTitle" xml:space="preserve">
-    <value>Future File</value>
+    <value>Будущий файл</value>
   </data>
   <data name="GoodByeLog" xml:space="preserve">
-    <value>Goodbye</value>
+    <value>Пока!</value>
   </data>
   <data name="InvalidLibraryFormat" xml:space="preserve">
-    <value>Invalid library format.</value>
+    <value>Недопустимый формат библиотеки.</value>
   </data>
   <data name="LibraryBuildError" xml:space="preserve">
-    <value>Build error for library: {0}</value>
+    <value>Ошибка сборки в библиотеке: {0}</value>
   </data>
   <data name="LibraryHasBeenLoaded" xml:space="preserve">
-    <value>Library {0} has been loaded.</value>
+    <value>Библиотека {0} загружена.</value>
   </data>
   <data name="LibraryIsDumped" xml:space="preserve">
-    <value>Library is dumped to \"{0}\".</value>
+    <value>Библиотека доступна в \"{0}\".</value>
   </data>
   <data name="LibraryPathCannotBeFound" xml:space="preserve">
-    <value>Cannot find library path: {0}.</value>
+    <value>Не удалось найти путь к библиотеке: {0}.</value>
   </data>
   <data name="NewNoteString" xml:space="preserve">
-    <value>New Note</value>
+    <value>Создать примечание</value>
   </data>
   <data name="ObsoleteFileDescription" xml:space="preserve">
-    <value>Your file '{0}' of version '{1}' cannot be opened by this version of Dynamo ({2})</value>
+    <value>Файл '{0}' версии '{1}' не может быть открыт в данной версии Dynamo ({2})</value>
   </data>
   <data name="ObsoleteFileTitle" xml:space="preserve">
-    <value>Obsolete File</value>
+    <value>Файл устарел</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>OK</value>
   </data>
   <data name="ProceedButton" xml:space="preserve">
-    <value>Proceed anyway</value>
+    <value>Все равно продолжить</value>
   </data>
   <data name="SavingInProgress" xml:space="preserve">
-    <value>Saving {0} ...</value>
+    <value>Сохранение {0} ...</value>
   </data>
   <data name="SubmitBugButton" xml:space="preserve">
-    <value>Submit Bug To Github</value>
+    <value>Отправить ошибку в Github</value>
   </data>
   <data name="ToolTipForTempVar" xml:space="preserve">
-    <value>Statement Output</value>
+    <value>Вывод выражения</value>
   </data>
   <data name="ToolTipReturnValue" xml:space="preserve">
-    <value>return value</value>
+    <value>возвращаемое значение</value>
   </data>
   <data name="UnhandledExceptionSummary" xml:space="preserve">
-    <value>Unhandled exception in Dynamo engine</value>
+    <value>Необрабатываемое исключение в движке Dynamo</value>
   </data>
   <data name="UnhandledExceptionTitle" xml:space="preserve">
-    <value>Unhandled Exception</value>
+    <value>Необрабатываемое исключение</value>
   </data>
   <data name="UnknownVersion" xml:space="preserve">
-    <value>Unknown</value>
+    <value>Неизвестно</value>
   </data>
   <data name="WelcomeMessage" xml:space="preserve">
-    <value>Welcome to Dynamo!</value>
+    <value>Добро пожаловать в Dynamo!</value>
   </data>
   <data name="ToolTipFunctionOutput" xml:space="preserve">
-    <value>function output</value>
+    <value>вывод функции</value>
   </data>
   <data name="ToolTipInput" xml:space="preserve">
-    <value>Input #</value>
+    <value>Ввод #</value>
   </data>
   <data name="ToolTipOutput" xml:space="preserve">
-    <value>Output #</value>
+    <value>Вывод #</value>
   </data>
   <data name="ToolTipOutputData" xml:space="preserve">
-    <value>Output Data</value>
+    <value>Выходные данные</value>
   </data>
   <data name="WarningCannotFindType" xml:space="preserve">
-    <value>Cannot find type '{0}'</value>
+    <value>Не удалось найти тип '{0}'</value>
   </data>
   <data name="WarningInvalidInput" xml:space="preserve">
-    <value>Invalid input.
+    <value>Неверный ввод.
 
-The name of parameter should start with alphabetic character. You can specify its type and default value. E.g., 
+Имя параметра должно начинаться с буквы. Можно указать его тип и значение по умолчанию. Например,
 
-input : var[]..[]
-value: bool = false</value>
+ввод: var[]..[]
+значение: bool = false</value>
   </data>
   <data name="DSFunctionNodeDescription" xml:space="preserve">
-    <value>DesignScript Builtin Functions</value>
+    <value>Встроенные функции DesignScript</value>
   </data>
   <data name="DummyNodeDescription" xml:space="preserve">
-    <value>This is an obsolete node</value>
+    <value>Это устаревший узел</value>
   </data>
   <data name="FunctionDescription" xml:space="preserve">
-    <value>Instance of a Custom Node</value>
+    <value>Экземпляр пользовательского узла</value>
   </data>
   <data name="SymbolNodeDescription" xml:space="preserve">
-    <value>A function parameter, use with custom nodes.
+    <value>Параметр функции, использовать с пользовательскими узлами.
 
-You can specify the type and default value for parameter. E.g.,
+Можно указать тип и значение параметра по умолчанию. Например,
 
-input : var[]..[]
-value : bool = false</value>
+ввод: var [], [].
+значение: bool = false</value>
   </data>
   <data name="CustomNodeNotLoaded" xml:space="preserve">
-    <value>Custom node definition is not loaded! href=CustomNodeNotLoaded.html</value>
+    <value>Определение пользовательского узла не загружено! href=CustomNodeNotLoaded.html</value>
   </data>
   <data name="RunTypeToolTipAutomatically" xml:space="preserve">
-    <value>Run whenever an input to the graph is updated.</value>
+    <value>Запуск при обновлении входного элемента графика.</value>
   </data>
   <data name="RunTypeToolTipManually" xml:space="preserve">
-    <value>Run when you click the Run button.</value>
+    <value>Запуск при нажатии на кнопку «Запуск».</value>
   </data>
   <data name="RunTypeToolTipPeriodicallyDisabled" xml:space="preserve">
-    <value>Run Periodic is only available when there are nodes in the graph that support periodic update.</value>
+    <value>Периодическое выполнение процесса доступно только при наличии на графике узлов, поддерживающих периодические обновления.</value>
   </data>
   <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
-    <value>Run at the specified interval.</value>
+    <value>Выполнение процесса с указанным интервалом.</value>
   </data>
   <data name="HeaderAction" xml:space="preserve">
-    <value>ACTIONS</value>
+    <value>ДЕЙСТВИЯ</value>
   </data>
   <data name="HeaderCreate" xml:space="preserve">
-    <value>CREATE</value>
+    <value>СОЗДАТЬ</value>
   </data>
   <data name="HeaderQuery" xml:space="preserve">
-    <value>QUERY</value>
+    <value>ЗАПРОС</value>
   </data>
   <data name="InputLabel" xml:space="preserve">
-    <value>INPUT</value>
+    <value>ВВОД</value>
   </data>
   <data name="MoreButtonTextFormat" xml:space="preserve">
-    <value>SHOW MORE ({0})</value>
+    <value>ПОКАЗАТЬ БОЛЬШЕ ({0})</value>
   </data>
   <data name="NoDescriptionAvailable" xml:space="preserve">
-    <value>No description available</value>
+    <value>Описание отсутствует</value>
   </data>
   <data name="OutputLabel" xml:space="preserve">
-    <value>OUTPUT</value>
+    <value>ВЫВОД</value>
   </data>
   <data name="TopResult" xml:space="preserve">
-    <value>Top Result</value>
+    <value>Верхний результат</value>
   </data>
   <data name="LocateInDisk" xml:space="preserve">
-    <value>Locate in Disk..</value>
+    <value>Найти на диске...</value>
   </data>
   <data name="MoveLabel" xml:space="preserve">
-    <value>Move</value>
+    <value>Переместить</value>
   </data>
   <data name="NoMatchesFound" xml:space="preserve">
-    <value>No matches found</value>
+    <value>Совпадений не найдено</value>
   </data>
   <data name="RemoveLabel" xml:space="preserve">
-    <value>Remove</value>
+    <value>Удалить</value>
   </data>
   <data name="IncorrectlyFormattedNodeLibraryDisplay" xml:space="preserve">
-    <value>This is the incorrectly formatted library name:</value>
+    <value>Это некорректно отформатированное имя библиотеки:</value>
   </data>
   <data name="IncorrectlyFormattedNodeLibraryWarning" xml:space="preserve">
-    <value>Incorrectly formatted package node library encountered, this may result in a package assembly not being loaded!</value>
+    <value>Обнаружена некорректно отформатированная библиотека пакетных узлов, из-за которой сборка пакета может быть не загружена!</value>
   </data>
   <data name="NothingIsSelectedWarning" xml:space="preserve">
-    <value>Nothing is selected. href=NothingIsSelectedWarning.html</value>
+    <value>Ничего не выбрано. href=NothingIsSelectedWarning.html</value>
   </data>
   <data name="SearchTextBlockText" xml:space="preserve">
-    <value>Search</value>
+    <value>Поиск</value>
   </data>
   <data name="AutocompleteSearchTextBlockText" xml:space="preserve">
-    <value>Search Autocomplete Results</value>
+    <value>Поиск в результатах автозаполнения</value>
   </data>
   <data name="Autocomplete" xml:space="preserve">
-    <value>Autocomplete</value>
+    <value>Автозавершение</value>
   </data>
   <data name="WatermarkLabelText" xml:space="preserve">
-    <value>Enter code here</value>
+    <value>Введите здесь код</value>
   </data>
   <data name="DefaultValue" xml:space="preserve">
-    <value>Default value</value>
-    <comment>Default value</comment>
+    <value>Значение по умолчанию</value>
   </data>
   <data name="DefaultValueDisabled" xml:space="preserve">
-    <value>(disabled)</value>
-    <comment>Default value is disabled</comment>
+    <value>(откл.)</value>
   </data>
   <data name="SymbolSearchTags" xml:space="preserve">
     <value>variable;argument;parameter</value>
-    <comment>Search tags for Symbol/Input node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
   <data name="DefaultCustomNodeCategory" xml:space="preserve">
-    <value>Custom nodes</value>
-    <comment>Used for uncategorised custom nodes.</comment>
+    <value>Пользовательские узлы</value>
   </data>
   <data name="InvalidCustomNodeFolderWarning" xml:space="preserve">
-    <value>The folder '{0}' does not exist</value>
-    <comment>This warning message is shown (during start up) when user specifies additional folders in DynamoSettings.xml file but the folders do not exist.</comment>
+    <value>Папка '{0}' не существует</value>
   </data>
   <data name="CodeBlockSearchTags" xml:space="preserve">
     <value>codeblock;</value>
   </data>
   <data name="DirectoryNotFound" xml:space="preserve">
-    <value>Directory not found : {0}</value>
+    <value>Папка не найдена: {0}</value>
   </data>
   <data name="CustomNodeFolderLoadFailure" xml:space="preserve">
-    <value>Failed to load custom node directory. Do you have permission to access {0}?</value>
+    <value>Не удалось загрузить папку пользовательского узла. У вас есть права доступа к {0}?</value>
   </data>
   <data name="PortsNameDescriptionDoNotEqualWarningMessage" xml:space="preserve">
-    <value>Number of port names does not equal number of port descriptions.</value>
+    <value>Количество названий портов отличается от количества их описаний.</value>
   </data>
   <data name="DescriptionResource1" xml:space="preserve">
-    <value>some description</value>
+    <value>описание</value>
   </data>
   <data name="ResourcePropertyIsNotStringTypeMessage" xml:space="preserve">
-    <value>Resource Property is not String Type</value>
+    <value>Свойство ресурса не является свойством «Тип строки»</value>
   </data>
   <data name="ResourceTypeDoesNotHavePropertyMessage" xml:space="preserve">
-    <value>Resource Type does not have Property</value>
+    <value>У типа ресурса отсутствует свойство</value>
   </data>
   <data name="WarningInvalidOutput" xml:space="preserve">
-    <value>Only comments and single variable are allowed in output node.</value>
+    <value>В узле вывода разрешены только комментарии и одна переменная.</value>
   </data>
   <data name="FailedToLoadLibrary" xml:space="preserve">
-    <value>Failed to load library: {0}</value>
+    <value>Не удалось загрузить библиотеку: {0}</value>
   </data>
   <data name="NoneString" xml:space="preserve">
-    <value>none</value>
+    <value>нет</value>
   </data>
   <data name="DefaultHomeWorkspaceName" xml:space="preserve">
-    <value>Home</value>
-    <comment>The default name of home workspace</comment>
+    <value>Главная</value>
   </data>
   <data name="UnresolvedNodesWarningShortMessage" xml:space="preserve">
-    <value>The graph has unresolved nodes and cannot be saved.</value>
+    <value>График имеет необработанные узлы и не может быть сохранен.</value>
   </data>
   <data name="UnresolvedNodesWarningTitle" xml:space="preserve">
-    <value>Unable to save graph</value>
+    <value>Невозможно сохранить график</value>
   </data>
   <data name="UnresolvedNodesWarningMessage" xml:space="preserve">
-    <value>This may be caused by a missing package, incompatible package version, or missing host program. If you Save As, the unresolved nodes will be removed.
+    <value>Причиной может быть отсутствующий пакет, несовместимая версия пакета или отсутствие управляющей программы. Если использовать команду «Сохранить как», необработанные узлы будут удалены.
 
-Resolve or remove the unresolved nodes and try again.</value>
+Обработайте или удалите необработанные узлы и повторите попытку.</value>
   </data>
   <data name="CodeBlockTempIdentifierOutputLabel" xml:space="preserve">
-    <value>Value of expression at line {0}</value>
+    <value>Значение выражения в строке {0}</value>
   </data>
   <data name="InvalidInputSymbolCustomNodeWarning" xml:space="preserve">
-    <value>This custom node contains an invalid input. Please fix the input before saving the custom node.</value>
+    <value>Этот пользовательский узел содержит недопустимый параметр ввода. Исправьте его перед сохранением пользовательского узла.</value>
   </data>
   <data name="InvalidInputSymbolErrorMessage" xml:space="preserve">
-    <value>This input symbol is not currently valid, and cannot be saved until it is fixed. Valid inputs take the form:
+    <value>В настоящее время этот символ ввода является недопустимым и не может быть сохранен без исправления. Действительный параметр ввода должен иметь следующий формат:
 
-name : type = defaultValue
+имя : тип = стандартноеЗначение
 
-The input name should be a valid variable name, without spaces. An input type and default value are optional.</value>
+Имя ввода должно быть действительным именем переменной без пробелов. Указывать тип ввода и стандартное значение необязательно.</value>
   </data>
   <data name="InvalidInputSymbolWarningMessage" xml:space="preserve">
-    <value>This custom node currently contains some invalid inputs, and cannot be saved until the inputs are fixed. If the custom node is saved using SaveAs, the invalid inputs will revert to generic inputs. Valid inputs take the form:
+    <value>В настоящее время этот пользовательский узел содержит несколько недопустимых параметров ввода и не может быть сохранен, пока они не будут исправлены. Если пользовательский узел сохраняется с помощью функции «Сохранить как», недопустимые параметры ввода будут преобразованы в родовые параметры. Действительный параметр ввода должен иметь следующий формат:
 
-name : type = defaultValue
+имя : тип = стандартноеЗначение
 
-The input name should be a valid variable name, without spaces. An input type and default value are optional.</value>
+Имя ввода должно быть действительным именем переменной без пробелов. Указывать тип ввода и стандартное значение необязательно.</value>
   </data>
   <data name="InvalidInputSymbolWarningShortMessage" xml:space="preserve">
-    <value>This custom node cannot be saved until invalid inputs are removed or fixed.</value>
+    <value>Этот пользовательский узел не может быть сохранен, пока недопустимые параметры ввода не будут удалены или исправлены.</value>
   </data>
   <data name="InvalidInputSymbolWarningTitle" xml:space="preserve">
-    <value>Custom Node Contains Invalid Inputs and Cannot Be Saved.</value>
+    <value>Пользовательский узел содержит недопустимые параметры ввода и не может быть сохранен.</value>
   </data>
   <data name="PythonTemplateAppData" xml:space="preserve">
-    <value>Python template loaded from AppData</value>
+    <value>Шаблон Python загружен из AppData</value>
   </data>
   <data name="PythonTemplateDefaultFile" xml:space="preserve">
-    <value>Python template set to default.</value>
+    <value>В качестве шаблона Python задан файл по умолчанию.</value>
   </data>
   <data name="PythonTemplateDefinedByHost" xml:space="preserve">
-    <value>Python template set by host integrator</value>
+    <value>Шаблон Python задан основным интегратором</value>
   </data>
   <data name="PythonTemplateUserFile" xml:space="preserve">
-    <value>Python template loaded from DynamoSettings.xml path</value>
+    <value>Шаблон Python загружен из пути DynamoSettings.xml</value>
   </data>
   <data name="MessageCustomNodePackageFailedToLoad" xml:space="preserve">
-    <value>{1} cannot be loaded. 
-Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
-To install {1}, Dynamo needs to first uninstall {0}. 
-Restart Dynamo to complete the uninstall.</value>
+    <value>Невозможно загрузить {1}. 
+Установка приведет к конфликту с одним или несколькими определениями узлов, которые уже существуют в загруженном в данный момент пакете {0}.
+Для установки {1} Dynamo требуется сначала удалить {0}. 
+Для завершения удаления перезапустите Dynamo.</value>
   </data>
   <data name="FunctionDefinitionOverwrittenMessage" xml:space="preserve">
-    <value>Attempting to load customNode {0} loaded by package {1}, but a previous definition named {2} exists with no associated package. The new customNode definition has been loaded, but Dynamo may be in an unstable state, please avoid loading multiple custom nodes with the id.</value>
+    <value>Выполняется попытка загрузить узел customNode {0}, загруженный пакетом {1}, однако предыдущее определение с именем {2} не имеет связанного пакета. Новое определение customNode загружено, но Dynamo может работать нестабильно. Избегайте загрузки нескольких пользовательских узлов с данным идентификатором.</value>
   </data>
   <data name="Preview3DOutageTitle" xml:space="preserve">
-    <value>3D preview has been deactivated</value>
+    <value>3D-просмотр отключен</value>
   </data>
   <data name="MissingXmlTagConsoleMessage" xml:space="preserve">
-    <value>{0} is missing some XML documentation tags.</value>
+    <value>В {0} отсутствуют некоторые марки документации XML.</value>
   </data>
   <data name="FailedToHandleReadyEvent" xml:space="preserve">
-    <value>Failed to call Ready() in extension: </value>
+    <value>Не удалось вызвать событие Ready() в расширении: </value>
   </data>
   <data name="DuplicatedModelGuidError" xml:space="preserve">
-    <value>The map already contains a model with this id, the id must be unique for the workspace that is currently being deserialized: {0}</value>
+    <value>Карта уже содержит модель с таким идентификатором. Идентификатор должен быть уникальным для рабочего пространства, которое в настоящий момент десериализуется: {0}</value>
   </data>
   <data name="ArgumentNullException" xml:space="preserve">
-    <value>Value cannot be null.
-Parameter name: {0}</value>
+    <value>Значение не может быть пустым.
+Имя параметра: {0}</value>
   </data>
   <data name="ModelNotFoundError" xml:space="preserve">
-    <value>UpdateModelValue: Model not found</value>
+    <value>UpdateModelValue: модель не найдена</value>
   </data>
   <data name="PackageManagerPackageAlreadyExists" xml:space="preserve">
-    <value>A package with the given name already exists.</value>
+    <value>Пакет с таким именем уже существует.</value>
   </data>
   <data name="PackageManagerUserIsNotAMaintainer" xml:space="preserve">
-    <value>The current user, '{0}', is not a maintainer of the package '{1}'.</value>
-    <comment>{0} = user name (i.e. 'DynamoTeam'), {1} = package name (i.e. 'Clockwork for Dynamo 1.x')</comment>
+    <value>Текущий пользователь «{0}» не является сопроводителем пакета «{1}».</value>
   </data>
   <data name="PackageManagerPackagePreviewCounter" xml:space="preserve">
     <value>{0} files and {1} folders will be created.</value>
@@ -747,180 +722,178 @@ Parameter name: {0}</value>
     <value>{0} files and {1} folders loaded.</value>
   </data>
   <data name="DuplicatedOlderPackage" xml:space="preserve">
-    <value>An older version of the package called {0} version {2} was found at {1} with version {3}. The older version has been ignored.</value>
+    <value>Более ранняя версия пакета с именем {0} ({2}) обнаружена в {1} с версией {3}. Более ранняя версия проигнорирована.</value>
   </data>
   <data name="InvalidPackageVersion" xml:space="preserve">
-    <value>The version of the package called {0} found at {1} is invalid (version: "{2}"). Ignoring it.</value>
+    <value>Версия пакета с именем {0}, обнаруженная в {1}, является недопустимой (версия: «{2}»). Она игнорируется.</value>
   </data>
   <data name="DuplicatedNewerPackage" xml:space="preserve">
-    <value>A newer version of the package called {0} version {2} was found at {1} with version {3}. The newer version has been ignored.</value>
+    <value>Более поздняя версия пакета с именем {0} ({2}) обнаружена в {1} с версией {3}. Более поздняя версия проигнорирована.</value>
   </data>
   <data name="NoneLinterDescriptorName" xml:space="preserve">
-    <value>None</value>
+    <value>Нет</value>
   </data>
   <data name="PackageStatePendingUnload" xml:space="preserve">
-    <value>Scheduled to be unloaded</value>
+    <value>Запланировано к выгрузке</value>
   </data>
   <data name="PackageStateError" xml:space="preserve">
-    <value>Error</value>
+    <value>Ошибка</value>
   </data>
   <data name="PackageStateLoaded" xml:space="preserve">
-    <value>Loaded</value>
+    <value>Загружено</value>
   </data>
   <data name="PackageStateUnloaded" xml:space="preserve">
-    <value>Unloaded</value>
+    <value>Выгружено</value>
   </data>
   <data name="PackageStatePendingUnloadTooltip" xml:space="preserve">
-    <value>Scheduled to be unloaded.
-This package will be unloaded after the next Dynamo restart.</value>
+    <value>Запланировано к выгрузке.
+Этот пакет будет выгружен после перезапуска Dynamo.</value>
   </data>
   <data name="PackageStateErrorTooltip" xml:space="preserve">
-    <value>Unloaded.
-This package has not been loaded due to an unexpected error.</value>
+    <value>Выгружено.
+Этот пакет не был загружен из-за непредвиденной ошибки.</value>
   </data>
   <data name="PackageStateLoadedTooltip" xml:space="preserve">
-    <value>Loaded.
-This package is loaded and ready to be used.</value>
+    <value>Загружено.
+Этот пакет загружен и готов к использованию.</value>
   </data>
   <data name="PackageStateUnloadedTooltip" xml:space="preserve">
-    <value>Unloaded.
-This package has not been loaded because another conflicting package was loaded before it.</value>
+    <value>Выгружено.
+Этот пакет не загружен, поскольку перед ним был загружен другой конфликтующий пакет.</value>
   </data>
   <data name="GroupDefaultText" xml:space="preserve">
-    <value>Description &lt;Double click here to edit group description&gt;</value>
+    <value>Описание &lt;Дважды нажмите здесь, чтобы изменить описание группы&gt;</value>
   </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>Title &lt;Double click here to edit group title&gt;</value>
+    <value>Заголовок &lt;Дважды нажмите здесь, чтобы изменить заголовок группы&gt;</value>
   </data>
   <data name="OutputPortAlternativeName" xml:space="preserve">
-    <value>output</value>
-    <comment>Used when an output port displays its context menu chevron and the port has no name to avoid displaying a double chevron.</comment>
+    <value>вывод</value>
   </data>
   <data name="InputPortAlternativeName" xml:space="preserve">
-    <value>input</value>
-    <comment>Used when an input port displays its context menu chevron and the port has no name to avoid displaying a double chevron.</comment>
+    <value>ввод</value>
   </data>
   <data name="BackupSavedMsg" xml:space="preserve">
-    <value>Backup file is saved</value>
+    <value>Резервная копия файла сохранена</value>
   </data>
   <data name="NodeDeprecatedMsg" xml:space="preserve">
-    <value>Node '{0}' is now deprecated.</value>
+    <value>Узел «{0}» теперь исключен.</value>
   </data>
   <data name="NodeNotResolvedMsg" xml:space="preserve">
-    <value>Node '{0}' cannot be resolved.</value>
+    <value>Невозможно разрешить узел «{0}».</value>
   </data>
   <data name="NodeOfTypeDeprecatedMsg" xml:space="preserve">
-    <value>Node of type '{0}',from assembly '{1}', is now deprecated.</value>
+    <value>Узел типа «{0}» из сборки «{1}» теперь исключен.</value>
   </data>
   <data name="NodeOfTypeNotResolvedMsg" xml:space="preserve">
-    <value>Node of type '{0}', from assembly '{1}', cannot be resolved.</value>
+    <value>Невозможно обработать узел типа «{0}» из сборки «{1}».</value>
   </data>
   <data name="NodeUnhandledMsg" xml:space="preserve">
-    <value>Unhandled 'DummyNode.NodeNature' value: {0}</value>
+    <value>Необработанное значение DummyNode.NodeNature: {0}</value>
   </data>
   <data name="CoreLibraryLoadFailureForBlockedAssembly" xml:space="preserve">
     <value>{0}
 
-This assembly is likely blocked. Try restarting Dynamo after unblocking this assembly and all other core assemblies that might be blocked. If you are running a downloaded DynamoSandbox build that is extracted from a .zip file, try using 7zip to extract the Dynamo binaries and try again.</value>
+Вероятно, эта сборка заблокирована. Попробуйте перезапустить Dynamo после разблокирования этой сборки и всех других основных сборок, которые могут быть заблокированы. Если запущена скачанная сборка DynamoSandbox, которая распакована из ZIP-файла, попробуйте использовать 7-Zip для извлечения двоичных файлов Dynamo и повторите попытку.</value>
   </data>
   <data name="LibraryLoadFailureForBlockedAssembly" xml:space="preserve">
     <value>{0}
 
-This assembly is likely blocked. Try importing it again after unblocking the assembly.</value>
+Вероятно, эта сборка заблокирована. После разблокирования сборки попробуйте импортировать ее повторно.</value>
   </data>
   <data name="PackageLoadFailureForBlockedAssembly" xml:space="preserve">
     <value>{0}
 
-This package likely contains an assembly that is blocked. You will need to load the package again after unblocking the assembly. Restart Dynamo to reload the package.</value>
+Вероятно, этот пакет содержит сборку, которая заблокирована. После разблокирования сборки потребуется загрузить пакет повторно. Перезапустите Dynamo, чтобы перезагрузить пакет.</value>
   </data>
   <data name="CoreLibraryLoadFailureMessageBoxTitle" xml:space="preserve">
-    <value>Core library load failure</value>
+    <value>Сбой загрузки библиотеки Core</value>
   </data>
   <data name="LibraryLoadFailureMessageBoxTitle" xml:space="preserve">
-    <value>Library load failure</value>
+    <value>Сбой загрузки библиотеки</value>
   </data>
   <data name="FileLoadFailureMessageBoxTitle" xml:space="preserve">
-    <value>File load failure</value>
+    <value>Сбой при загрузке файла</value>
   </data>
   <data name="GroupStyleDefaultActions" xml:space="preserve">
-    <value>Actions</value>
+    <value>Действия</value>
   </data>
   <data name="GroupStyleDefaultActionsColor" xml:space="preserve">
     <value>B9F9E1</value>
   </data>
   <data name="GroupStyleDefaultInputs" xml:space="preserve">
-    <value>Inputs</value>
+    <value>Входные данные</value>
   </data>
   <data name="GroupStyleDefaultInputsColor" xml:space="preserve">
     <value>FFB8D8</value>
   </data>
   <data name="GroupStyleDefaultOutputs" xml:space="preserve">
-    <value>Outputs</value>
+    <value>Выходные данные</value>
   </data>
   <data name="GroupStyleDefaultOutputsColor" xml:space="preserve">
     <value>FFC999</value>
   </data>
   <data name="GroupStyleDefaultReview" xml:space="preserve">
-    <value>Review</value>
+    <value>Просмотр</value>
   </data>
   <data name="GroupStyleDefaultReviewColor" xml:space="preserve">
     <value>A4E1FF</value>
   </data>
   <data name="ToolTipInputData" xml:space="preserve">
-    <value>Input Data</value>
+    <value>Входные данные</value>
   </data>
   <data name="SplashScreenInitPreferencesSettings" xml:space="preserve">
-    <value>Initializing preferences...</value>
+    <value>Инициализация настроек...</value>
   </data>
   <data name="SplashScreenLoadNodeLibrary" xml:space="preserve">
-    <value>Loading Node Library...</value>
+    <value>Загрузка библиотеки узлов...</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>No recommendations</value>
+    <value>Нет рекомендаций</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
-    <value>Low confidence</value>
+    <value>Низкая надежность</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>There are no recommendations yet. You can try switching to node type match autocomplete.</value>
+    <value>Рекомендации пока отсутствуют. Попробуйте использовать метод автозаполнения «Соответствие типа узла».</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
-    <value>All recommendations are below the specified confidence level. You can try them or adjust the confidence settings in Preferences.</value>
+    <value>Все рекомендации находятся за пределами указанного уровня надежности. Можно использовать их или скорректировать настройки конфиденциальности в разделе «Настройки».</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
-    <value>Show Recommendations that are below the confidence level.</value>
+    <value>Показывать рекомендации за пределами уровня надежности.</value>
   </data>
   <data name="LoginNeededTitle" xml:space="preserve">
-    <value>Not authenticated</value>
+    <value>Проверка подлинности не выполнена</value>
   </data>
   <data name="LoginNeededMessage" xml:space="preserve">
-    <value>You need to login to your account to get recommendations. Please log in or switch to node type match autocomplete.</value>
+    <value>Для получения рекомендаций необходимо войти в учетную запись. Войдите в систему или выберите метод автозаполнения «Соответствие типа узла».</value>
   </data>
   <data name="FailedInsertFileNodeExistNotification" xml:space="preserve">
-    <value>Failed to insert the file as some of the nodes already exist in the current worspace.</value>
+    <value>Не удалось вставить файл, так как некоторые узлы уже существуют в текущем рабочем пространстве.</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Insert Dynamo Definition...</value>
+    <value>Вставить определение Dynamo...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
-    <value>Example file added to workspace. Run mode changed to Manual.</value>
+    <value>Файл примера добавлен в рабочее пространство. Режим выполнения изменен на «Вручную».</value>
   </data>
   <data name="DynamoLanguages_noxlate" xml:space="preserve">
     <value>Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
   </data>
   <data name="FormulaDSConversionFailure" xml:space="preserve">
-    <value>Formula failed to convert to DesignScript code. Please edit the formula manually to use it in a CodeBlock node.</value>
+    <value>Сбой при преобразовании формулы в код DesignScript. Отредактируйте формулу вручную, чтобы использовать ее в узле CodeBlock.</value>
   </data>
   <data name="FormulaMigrated" xml:space="preserve">
-    <value>Formula node has been deprecated. It has been automatically migrated to a CodeBlock node. Note that results may vary after the migration depending on lacing options selected on the original Formula node. Appropriate replication guides might need to be applied to the CodeBlock node script.</value>
+    <value>Узел Formula был исключен. Он был автоматически перенесен в узел CodeBlock. Обратите внимание, что после переноса результаты могут отличаться в зависимости от параметров переплетения, выбранных в исходном узле Formula. Возможно, потребуется применить соответствующие руководства по репликации к сценарию узла CodeBlock.</value>
   </data>
   <data name="LegacyTraceDataWarning" xml:space="preserve">
-    <value>This workspace contains element binding data in a legacy format that is no longer supported in Dynamo 3.0 and higher versions. Element binding data will be saved in the new format the next time you run and save this workspace.</value>
+    <value>Это рабочее пространство содержит данные привязки элементов в устаревшем формате, который больше не поддерживается в Dynamo 3.0 или более поздней версии. Данные привязки элементов будут сохранены в новом формате при следующем запуске и сохранении этого рабочего пространства.</value>
   </data>
   <data name="InputNodeRenameHint" xml:space="preserve">
-    <value>default input name, rename me!</value>
+    <value>Имя ввода по умолчанию, переименуйте.</value>
   </data>
   <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
-    <value>This node is currently experimental. Its behavior, name, and signature are subject to change.</value>
+    <value>Этот узел в настоящее время экспериментальный. Его поведение, имя и подпись могут быть изменены.</value>
   </data>
 </root>

@@ -1,8 +1,8 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "A sample graph showing how to import data from Excel file.",
-  "Name": "OpenXMLImport_Data From Excel",
+  "Description": "Vzorový graf znázorňuje způsob importu dat ze souboru aplikace Excel.",
+  "Name": "OpenXMLImport_Data z aplikace Excel",
   "ElementResolver": {
     "ResolutionMap": {}
   },
@@ -18,7 +18,7 @@
         {
           "Id": "f6831a21aa524df9b56522bcfcd80ccc",
           "Name": "",
-          "Description": "Filename",
+          "Description": "Název souboru",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -26,7 +26,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows you to select a file on the system and returns its file path",
+      "Description": "Umožňuje vybrat soubor v systému a vrací cestu k tomuto souboru.",
       "HintPath": "C:\\Users\\DeyanNenov\\Documents\\GitHub\\Dynamo\\doc\\distrib\\Samples\\Data\\helix.xlsx",
       "InputValue": "..\\..\\Data\\helix.xlsx"
     },
@@ -47,7 +47,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a string",
+      "Description": "Vytvoří řetězec.",
       "InputValue": "helix"
     },
     {
@@ -58,7 +58,7 @@
         {
           "Id": "3d1fb082c054495e9d518efd9c6c5827",
           "Name": "lists",
-          "Description": "List of lists to be transposed\n\nvar[]..[]",
+          "Description": "Seznam seznamů k transponování\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -69,7 +69,7 @@
         {
           "Id": "31d2fa9981a744e3adc281d230bc4abe",
           "Name": "lists",
-          "Description": "List of transposed lists",
+          "Description": "Seznam transponovaných seznamů",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -78,7 +78,7 @@
       ],
       "FunctionSignature": "DSCore.List.Transpose@var[]..[]",
       "Replication": "Disabled",
-      "Description": "Swaps rows and columns in a list of lists. If there are some rows that are shorter than others, null values are inserted as place holders in the resultant array such that it is always rectangular.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
+      "Description": "Vymění řádky a sloupce v seznamu seznamů. Pokud jsou v seznamu řádky kratší než jiné řádky, jsou vloženy na zbývající volná místa ve výsledném poli nulové hodnoty, aby bylo pole vždy obdélníkové.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -88,7 +88,7 @@
         {
           "Id": "c3096efc6bcc455b904c13fb10fa57fd",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "Seznam k načtení položky.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -97,7 +97,7 @@
         {
           "Id": "ee9690cf3f3c4ed3a05cc8708d6e318e",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "Index položky, která má být načtena.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -108,7 +108,7 @@
         {
           "Id": "56c1a0fcb4de4e9095505dc9e2df8525",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "Položka v seznamu v daném indexu.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -117,7 +117,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Disabled",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Vrátí položku z daného seznamu, která se nachází v zadaném indexu.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -137,7 +137,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Vytvoří číslo.",
       "InputValue": 0.0
     },
     {
@@ -148,7 +148,7 @@
         {
           "Id": "0af2a3d0dcd94597b53612b86da0db54",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "Seznam k načtení položky.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -157,7 +157,7 @@
         {
           "Id": "17a79d5d19794c5ba2c006c491ddd69c",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "Index položky, která má být načtena.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -168,7 +168,7 @@
         {
           "Id": "92f76c4a37ce43de8749bed32551ac5f",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "Položka v seznamu v daném indexu",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -177,7 +177,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Disabled",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Vrátí položku z daného seznamu, která se nachází v zadaném indexu.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -197,7 +197,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Vytvoří číslo.",
       "InputValue": 1.0
     },
     {
@@ -208,7 +208,7 @@
         {
           "Id": "d52a2eef75ac4df487435d9e053cd1b4",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "Seznam k načtení položky.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -217,7 +217,7 @@
         {
           "Id": "6da85db551d94415b91531d179a0f24f",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "Index položky, která má být načtena.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -228,7 +228,7 @@
         {
           "Id": "8cff2672789e4400903ab9fc91950914",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "Položka v seznamu v daném indexu.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -237,7 +237,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Disabled",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Vrátí položku z daného seznamu, která se nachází v zadaném indexu.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -257,7 +257,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Vytvoří číslo.",
       "InputValue": 2.0
     },
     {
@@ -268,7 +268,7 @@
         {
           "Id": "69606cb8bff74f21af52f3e6696da0af",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0 (disabled)",
+          "Description": "Souřadnice X\n\ndouble\nVýchozí hodnota: 0 (zakázáno)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -277,7 +277,7 @@
         {
           "Id": "501e476361c841e3930549e9037c57eb",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0 (disabled)",
+          "Description": "Souřadnice Y\n\ndouble\nVýchozí hodnota: 0 (zakázáno)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -286,7 +286,7 @@
         {
           "Id": "7928475eb9a04bdcb0394bf4adf4e315",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0 (disabled)",
+          "Description": "Souřadnice Z\n\ndouble\nVýchozí hodnota: 0 (zakázáno)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -297,7 +297,7 @@
         {
           "Id": "301fa527e5df441cb33f8edec458b568",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Bod vytvořený pomocí souřadnic",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -306,7 +306,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Longest",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Vytvoří bod podle zadaných 3 kartézských souřadnic\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -334,7 +334,7 @@
         {
           "Id": "0d2e0d8fb5c8408eb05d237581490928",
           "Name": "startRow",
-          "Description": "int\nDefault value : 0",
+          "Description": "int\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -343,7 +343,7 @@
         {
           "Id": "75e6e33597814ae082defb1c7f69440f",
           "Name": "startColumn",
-          "Description": "int\nDefault value : 0",
+          "Description": "int\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -352,7 +352,7 @@
         {
           "Id": "78b51572eaf8413f8ef659b5c7c15c2f",
           "Name": "readAsString",
-          "Description": "bool\nDefault value : false",
+          "Description": "bool\nVýchozí hodnota: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -465,7 +465,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Vlastnosti",
       "Version": "2.13",
       "Data": {}
     }
@@ -488,7 +488,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Náhled pozadí",
       "EyeX": -1.4130069017410278,
       "EyeY": 1.411405086517334,
       "EyeZ": 8.078012466430664,
@@ -615,8 +615,8 @@
     "Annotations": [
       {
         "Id": "b9572efcd8fc434397ca499d8da7ceb2",
-        "Title": "Initial inputs",
-        "DescriptionText": "1. The filepath to the Excel file.\r\n2. The name of the Worksheet",
+        "Title": "Počáteční vstupy",
+        "DescriptionText": "1. Cesta k souboru aplikace Excel.\r\n2. Název listu",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -638,7 +638,7 @@
       },
       {
         "Id": "0dbde490f2f947feafc6f4306a73c4ac",
-        "Title": "Create the helix",
+        "Title": "Tvorba šroubovice",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -666,8 +666,8 @@
       },
       {
         "Id": "59df5173a717440da7712081e4a7c938",
-        "Title": "Parse the data from Excel",
-        "DescriptionText": "'Parsing' data is the process of manipulating a data sourse in such a way as to make it native to the evnironment before using it.",
+        "Title": "Analýza dat z aplikace Excel",
+        "DescriptionText": "'Analýza' dat je proces manipulace se zdrojem dat tak, aby data byla před jejich použitím nativní k používanému prostředí.",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -695,7 +695,7 @@
       },
       {
         "Id": "36815c85ae2b4e74beb9fd07d97aca54",
-        "Title": "Extracts data from Excel",
+        "Title": "Extrahuje data z aplikace Excel",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -718,7 +718,7 @@
       },
       {
         "Id": "a4f044ba6ca44a968cc1a576d059121d",
-        "Title": "Read data from Excel",
+        "Title": "Čtení dat z aplikace Excel",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -739,7 +739,7 @@
       },
       {
         "Id": "a2e7820a11554ad4ad69bfafc0ab9c26",
-        "Title": "Transpose the list (flip the matrix). Columns will become row, and rows - columns.",
+        "Title": "Transponovat seznam (převrátit matici). Sloupce se stanou řádky a řádky se stanou sloupci.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -760,7 +760,7 @@
       },
       {
         "Id": "21927387a35d477781958ee6e3dbba51",
-        "Title": "first list",
+        "Title": "první seznam",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -781,7 +781,7 @@
       },
       {
         "Id": "e23341ab4a4740dbb4e1b0d359e63add",
-        "Title": "second list",
+        "Title": "druhý seznam",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -802,7 +802,7 @@
       },
       {
         "Id": "7826f3e27c5a42638b26d69d2b31130d",
-        "Title": "third list",
+        "Title": "třetí seznam",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -823,7 +823,7 @@
       },
       {
         "Id": "bed233167c69448ca1b565ec4ba10deb",
-        "Title": "X coordinate",
+        "Title": "Souřadnice X",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -844,7 +844,7 @@
       },
       {
         "Id": "63eaf8b50a824fec9a78492d211fcc1c",
-        "Title": "Y coordinate",
+        "Title": "Souřadnice Y",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -865,7 +865,7 @@
       },
       {
         "Id": "d6a9ede84f0c45299d4003b46f511730",
-        "Title": "Z coordinate",
+        "Title": "Souřadnice Z",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

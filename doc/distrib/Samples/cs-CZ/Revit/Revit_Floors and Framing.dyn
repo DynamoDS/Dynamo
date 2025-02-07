@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "This graph creates an architectural folly by using a series of lines and their displacement to position Structural Framing and Floor elements in Revit.",
+  "Description": "Tento graf vytvoří architektonickou stavbu pomocí řady čar a jejich posunutí a umístí prvky konstrukčních rámových konstrukcí a podlaží v aplikaci Revit.",
   "Name": "Revit_Floors and Framing",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -13,7 +13,7 @@
       "Type": "selection",
       "Type2": "dropdownSelection",
       "Value": "Concrete Slab 6\"",
-      "Description": "All floor types available in the document.",
+      "Description": "Všechny typy podlaží dostupné v dokumentu.",
       "SelectedIndex": 3
     },
     {
@@ -22,7 +22,7 @@
       "Type": "selection",
       "Type2": "dropdownSelection",
       "Value": "Green Roof Hardscape",
-      "Description": "Select a level in the active document",
+      "Description": "Vybere podlaží v aktivním dokumentu.",
       "SelectedIndex": 3
     },
     {
@@ -31,7 +31,7 @@
       "Type": "selection",
       "Type2": "dropdownSelection",
       "Value": "Green Roof Hardscape",
-      "Description": "Select a level in the active document",
+      "Description": "Vybere podlaží v aktivním dokumentu.",
       "SelectedIndex": 3
     },
     {
@@ -40,12 +40,12 @@
       "Type": "selection",
       "Type2": "dropdownSelection",
       "Value": "W12X26",
-      "Description": "Select a structural framing type in the active document",
+      "Description": "Vybere typ rámové konstrukce v aktivním dokumentu.",
       "SelectedIndex": 0
     },
     {
       "Id": "1752f89750fa4653b5de1d2e252cd4a4",
-      "Name": "Top Floor Height",
+      "Name": "Výška horního podlaží",
       "Type": "number",
       "Type2": "number",
       "Value": "38.4",
@@ -53,11 +53,11 @@
       "MinimumValue": 15.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Vytváří číselné hodnoty."
     },
     {
       "Id": "19104b39941f484bb766e2b7be870b10",
-      "Name": "Maximum rotation (degrees)",
+      "Name": "Maximální otočení (stupně)",
       "Type": "number",
       "Type2": "number",
       "Value": "130",
@@ -65,11 +65,11 @@
       "MinimumValue": 10.0,
       "StepValue": 5.0,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Vytváří číselné hodnoty."
     },
     {
       "Id": "8f870a593a5c4322b78428570d2b7c87",
-      "Name": "X position",
+      "Name": "Poloha X",
       "Type": "number",
       "Type2": "number",
       "Value": "30",
@@ -77,11 +77,11 @@
       "MinimumValue": 25.0,
       "StepValue": 1.0,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Vytváří číselné hodnoty."
     },
     {
       "Id": "8fb5c2574a744b599c59268f1e6ed375",
-      "Name": "Y position",
+      "Name": "Poloha Y",
       "Type": "number",
       "Type2": "number",
       "Value": "30",
@@ -89,11 +89,11 @@
       "MinimumValue": 25.0,
       "StepValue": 1.0,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Vytváří číselné hodnoty."
     },
     {
       "Id": "8604018a7ab841d0851e457e1ff4591a",
-      "Name": "Z position",
+      "Name": "Poloha Z",
       "Type": "number",
       "Type2": "number",
       "Value": "62",
@@ -101,11 +101,11 @@
       "MinimumValue": 60.0,
       "StepValue": 1.0,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Vytváří číselné hodnoty."
     },
     {
       "Id": "edb0ed3a63104163b2fd0459158ed8a3",
-      "Name": "Lower Floor Radius",
+      "Name": "Poloměr dolního podlaží",
       "Type": "number",
       "Type2": "number",
       "Value": "10",
@@ -113,11 +113,11 @@
       "MinimumValue": 8.0,
       "StepValue": 1.0,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Vytváří číselné hodnoty."
     },
     {
       "Id": "41385d9e7c9b4abc8a68c76178f55493",
-      "Name": "Nr Floors",
+      "Name": "Počet podlaží",
       "Type": "number",
       "Type2": "number",
       "Value": "7",
@@ -125,11 +125,11 @@
       "MinimumValue": 3.0,
       "StepValue": 1.0,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Vytváří číselné hodnoty."
     },
     {
       "Id": "dd7ee32fa83d43469dd8ad221cb292e7",
-      "Name": "Radius Decrease",
+      "Name": "Zmenšení poloměru",
       "Type": "number",
       "Type2": "number",
       "Value": "-1.25",
@@ -137,11 +137,11 @@
       "MinimumValue": -2.0,
       "StepValue": 0.25,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "Vytváří číselné hodnoty."
     },
     {
       "Id": "bffc90e5d05f4bcba04094fc76e80709",
-      "Name": "Number of Polygon Sides",
+      "Name": "Počet stran polygonu",
       "Type": "number",
       "Type2": "number",
       "Value": "5",
@@ -149,7 +149,7 @@
       "MinimumValue": 3.0,
       "StepValue": 1.0,
       "NumberType": "Integer",
-      "Description": "Produces integer values"
+      "Description": "Vytváří celočíselné hodnoty."
     }
   ],
   "Outputs": [],
@@ -165,7 +165,7 @@
         {
           "Id": "bd47fdf675fc4629a012784d3fdaf497",
           "Name": "Floor Type",
-          "Description": "The selected Floor Type",
+          "Description": "Vybraný typ podlaží",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -173,7 +173,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "All floor types available in the document."
+      "Description": "Všechny typy podlaží dostupné v dokumentu."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -183,7 +183,7 @@
         {
           "Id": "0ee04d437035463681c5705d64fa7f63",
           "Name": "outline",
-          "Description": "PolyCurve",
+          "Description": "Objekt PolyCurve",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -201,7 +201,7 @@
         {
           "Id": "93c51aec4813441e9b433261161d7e00",
           "Name": "level",
-          "Description": "Level",
+          "Description": "Podlaží",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -212,7 +212,7 @@
         {
           "Id": "1b24cf4eab6e41e4b789d5e1178942af",
           "Name": "Floor",
-          "Description": "The floor",
+          "Description": "Podlaha",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -221,7 +221,7 @@
       ],
       "FunctionSignature": "Revit.Elements.Floor.ByOutlineTypeAndLevel@Autodesk.DesignScript.Geometry.PolyCurve,Revit.Elements.FloorType,Revit.Elements.Level",
       "Replication": "Auto",
-      "Description": "Create a Revit Floor given its curve outline and Level\n\nFloor.ByOutlineTypeAndLevel (outline: PolyCurve, floorType: FloorType, level: Level): Floor"
+      "Description": "Vytvoří podlahu aplikace Revit na základě křivky obrysu a podlaží.\n\nFloor.ByOutlineTypeAndLevel (outline: PolyCurve, floorType: FloorType, level: Level): Floor"
     },
     {
       "ConcreteType": "DSRevitNodesUI.Levels, DSRevitNodesUI",
@@ -234,7 +234,7 @@
         {
           "Id": "bed11bc74abf49a983444515c98a2dfd",
           "Name": "Levels",
-          "Description": "The selected Levels",
+          "Description": "Vybraná podlaží",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -242,7 +242,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Select a level in the active document"
+      "Description": "Vybere podlaží v aktivním dokumentu."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -261,7 +261,7 @@
         {
           "Id": "cfb5a66911b44a8a869bf4c6eb743112",
           "Name": "direction",
-          "Description": "Vector",
+          "Description": "Vektor",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -272,7 +272,7 @@
         {
           "Id": "baf5512ea7b340b496bc7a12141cd178",
           "Name": "Geometry",
-          "Description": "Geometry",
+          "Description": "Geometrie",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -281,7 +281,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Translate@Autodesk.DesignScript.Geometry.Vector",
       "Replication": "Auto",
-      "Description": "Translate geometry in the given direction by the vector length\n\nGeometry.Translate (direction: Vector): Geometry"
+      "Description": "Posune geometrii o délku vektoru v zadaném směru.\n\nGeometry.Translate (direction: Vector): Geometry"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -300,7 +300,7 @@
         {
           "Id": "ec9f4b483cd942b489b8857d59396ac3",
           "Name": "origin",
-          "Description": "Point",
+          "Description": "Bod",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -309,7 +309,7 @@
         {
           "Id": "dea23b2cf0694ce8bc6fdba12b945f67",
           "Name": "axis",
-          "Description": "Vector",
+          "Description": "Vektor",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -318,7 +318,7 @@
         {
           "Id": "9fe3144218d94826a999bd44c10c75a8",
           "Name": "degrees",
-          "Description": "double\nDefault value : 0",
+          "Description": "double\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -329,7 +329,7 @@
         {
           "Id": "c22fae85813142b4a93d474188477ed2",
           "Name": "Geometry",
-          "Description": "Geometry",
+          "Description": "Geometrie",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -338,7 +338,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.Rotate@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Vector,double",
       "Replication": "Auto",
-      "Description": "Rotates an object around an origin and an axis by a specified degree\n\nGeometry.Rotate (origin: Point, axis: Vector, degrees: double = 0): Geometry"
+      "Description": "Otočí objekt kolem počátku a osy o zadaný stupeň.\n\nGeometry.Rotate (origin: Point, axis: Vector, degrees: double = 0): Geometry"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -348,7 +348,7 @@
         {
           "Id": "88bd940372c64295bd07ea0cac7b279f",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice X\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -357,7 +357,7 @@
         {
           "Id": "105f04a920d94cab8de9f50793b5bfc6",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Y\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -366,7 +366,7 @@
         {
           "Id": "27713d377f624d70b9095dbdfc44dc79",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Z\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -377,7 +377,7 @@
         {
           "Id": "533c1bf94f1f49e9aac57b3eb1da9d69",
           "Name": "Vector",
-          "Description": "Vector created by coordinates",
+          "Description": "Vektor vytvořený pomocí souřadnic",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -386,7 +386,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Vector by 3 Euclidean coordinates\n\nVector.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Vector"
+      "Description": "Vytvoří vektor pomocí 3 euklidovských souřadnic.\n\nVector.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Vector"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -416,7 +416,7 @@
         {
           "Id": "182977a36b45442f8697b940ca8ef4d3",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Hodnota výrazu na řádku 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -424,7 +424,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
       "Code": "0..top_floor..#count;"
     },
     {
@@ -435,7 +435,7 @@
         {
           "Id": "484f0b080a8444a2a027f850bbc8ae5a",
           "Name": "circle",
-          "Description": "Circle",
+          "Description": "Kružnice",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -444,7 +444,7 @@
         {
           "Id": "93a261022853417f814637c7a6c25c95",
           "Name": "numberSides",
-          "Description": "int\nDefault value : 5",
+          "Description": "int\nVýchozí hodnota: 5",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -464,7 +464,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Polygon.RegularPolygon@Autodesk.DesignScript.Geometry.Circle,int",
       "Replication": "Auto",
-      "Description": "Construct an inscribed Polygon Curve within a circle.\n\nPolygon.RegularPolygon (circle: Circle, numberSides: int = 5): Polygon"
+      "Description": "Sestaví křivku vepsaného mnohoúhelníku v kružnici.\n\nPolygon.RegularPolygon (circle: Circle, numberSides: int = 5): Polygon"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -474,7 +474,7 @@
         {
           "Id": "933f0756431049bf8a21f178525b4d0a",
           "Name": "centerPoint",
-          "Description": "Center point of circle\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0) (disabled)",
+          "Description": "Střed kružnice\n\nPoint\nVýchozí hodnota: Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0) (zakázáno)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -483,7 +483,7 @@
         {
           "Id": "df40e3423ff34b028c518e6ff5df4405",
           "Name": "radius",
-          "Description": "Radius\n\ndouble\nDefault value : 1",
+          "Description": "Poloměr\n\ndouble\nVýchozí hodnota: 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -494,7 +494,7 @@
         {
           "Id": "be76f5f132f6492ca0dc2fdfdf640ab8",
           "Name": "Circle",
-          "Description": "Circle created with center point and radius",
+          "Description": "Kružnice vytvořená pomocí středu a poloměru",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -503,7 +503,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
       "Replication": "Auto",
-      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+      "Description": "Vytvoří kružnici se zadaným středem a poloměrem v globální rovině XY, s rovinou Z jako normálou.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -514,7 +514,7 @@
         {
           "Id": "57b0505cf742429e8b618930136080bf",
           "Name": "Vector",
-          "Description": "Vector",
+          "Description": "Vektor",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -523,7 +523,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ZAxis",
       "Replication": "Auto",
-      "Description": "Get the canonical Z axis Vector (0,0,1)\n\nVector.ZAxis ( ): Vector"
+      "Description": "Získá kanonický vektor osy Z (0,0,1)\n\nVector.ZAxis ( ): Vector"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -553,7 +553,7 @@
         {
           "Id": "6688bc683bc842729d2269656769c9f3",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Hodnota výrazu na řádku 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -561,7 +561,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Umožňuje přímé vytváření kódu DesignScript.",
       "Code": "0..max_degrees..#count;"
     },
     {
@@ -592,7 +592,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.Curves",
       "Replication": "Auto",
-      "Description": "Returns curves of the polycurve\n\nPolyCurve.Curves ( ): Curve[]"
+      "Description": "Vrátí křivky objektu PolyCurve.\n\nPolyCurve.Curves ( ): Curve[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -613,7 +613,7 @@
         {
           "Id": "419a5b7cf9104913ae4d9605fac9e34c",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "Bod",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -622,7 +622,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.EndPoint",
       "Replication": "Auto",
-      "Description": "Get the end Point along the Curve\n\nCurve.EndPoint: Point"
+      "Description": "Získá koncový bod podél křivky.\n\nCurve.EndPoint: Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -632,7 +632,7 @@
         {
           "Id": "9fb711acdb674fb789f285ebe46dcfd1",
           "Name": "lists",
-          "Description": "List of lists to be transposed\n\nvar[]..[]",
+          "Description": "Seznam seznamů k transponování\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -643,7 +643,7 @@
         {
           "Id": "ac917a508688498ea5f9ec7039775c51",
           "Name": "lists",
-          "Description": "List of transposed lists",
+          "Description": "Seznam transponovaných seznamů",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -652,7 +652,7 @@
       ],
       "FunctionSignature": "DSCore.List.Transpose@var[]..[]",
       "Replication": "Auto",
-      "Description": "Swaps rows and columns in a list of lists. If there are some rows that are shorter than others, null values are inserted as place holders in the resultant array such that it is always rectangular.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
+      "Description": "Vymění řádky a sloupce v seznamu seznamů. Pokud jsou v seznamu řádky, které jsou kratší než jiné řádky, jsou na zbývající volná místa ve výsledném poli vloženy nulové hodnoty, aby bylo pole vždy obdélníkové.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -662,7 +662,7 @@
         {
           "Id": "5d19cbad5fd74a248d9b48af894b0a19",
           "Name": "points",
-          "Description": "Points to make polycurve\n\nPoint[]",
+          "Description": "Body, pomocí kterých mají být vytvořeny body objektu PolyCurve\n\nPoint[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -671,7 +671,7 @@
         {
           "Id": "371871ff6350495c99d28bf476955a6f",
           "Name": "connectLastToFirst",
-          "Description": "True to connect last point to first point, false to leave open\n\nbool\nDefault value : false",
+          "Description": "Hodnota true k připojení posledního bodu k prvnímu bodu, hodnota false k ponechání otevřeného prostoru\n\nbool\nVýchozí hodnota: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -682,7 +682,7 @@
         {
           "Id": "af46bbcfdb2b4055a11e71be2e9fd256",
           "Name": "PolyCurve",
-          "Description": "Polycurve created by points",
+          "Description": "Objekt PolyCurve vytvořený pomocí bodů",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -691,7 +691,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.ByPoints@Autodesk.DesignScript.Geometry.Point[],bool",
       "Replication": "Auto",
-      "Description": "Make PolyCurve by connecting points. Set the 'connectLastToFirst' input to true to close the PolyCurve.\n\nPolyCurve.ByPoints (points: Point[], connectLastToFirst: bool = false): PolyCurve"
+      "Description": "Vytvoří objekt PolyCurve spojením bodů. Nastavením parametru 'connectLastToFirst' na true bude objekt PolyCurve uzavřen.\n\nPolyCurve.ByPoints (points: Point[], connectLastToFirst: bool = false): PolyCurve"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -721,7 +721,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.PolyCurve.Curves",
       "Replication": "Auto",
-      "Description": "Returns curves of the polycurve\n\nPolyCurve.Curves ( ): Curve[]"
+      "Description": "Vrátí křivky objektu PolyCurve.\n\nPolyCurve.Curves ( ): Curve[]"
     },
     {
       "ConcreteType": "DSRevitNodesUI.Levels, DSRevitNodesUI",
@@ -734,7 +734,7 @@
         {
           "Id": "d651d86bc1cb4dc483acab2dbb3d470c",
           "Name": "Levels",
-          "Description": "The selected Levels",
+          "Description": "Vybraná podlaží",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -742,7 +742,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Select a level in the active document"
+      "Description": "Vybere podlaží v aktivním dokumentu."
     },
     {
       "ConcreteType": "DSRevitNodesUI.StructuralFramingTypes, DSRevitNodesUI",
@@ -755,7 +755,7 @@
         {
           "Id": "81da3f5d665f40cb963ffe535a60d804",
           "Name": "Framing Types",
-          "Description": "The selected Framing Types",
+          "Description": "Vybrané typy rámových konstrukcí",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -763,7 +763,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Select a structural framing type in the active document"
+      "Description": "Vybere typ rámové konstrukce v aktivním dokumentu."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -773,7 +773,7 @@
         {
           "Id": "2d394d329afe4fc5b60da769563a51a4",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice X\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -782,7 +782,7 @@
         {
           "Id": "6bb5ab3517ba4f49a60218150b8b3044",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Y\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -791,7 +791,7 @@
         {
           "Id": "61bb17a2c779431ab6a5f34e80f8b1fd",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Souřadnice Z\n\ndouble\nVýchozí hodnota: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -802,7 +802,7 @@
         {
           "Id": "e1f7c7db1a834409a92dad820577c744",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Bod vytvořený pomocí souřadnic",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -811,7 +811,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Vytvoří bod podle zadaných 3 kartézských souřadnic\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Sequence, CoreNodeModels",
@@ -821,7 +821,7 @@
         {
           "Id": "ba158c88f8a84bc197f68ddc82881246",
           "Name": "start",
-          "Description": "Number or letter to start the sequence at\r\nDefault value: 0 (disabled)",
+          "Description": "Číslo nebo písmeno, od kterého má posloupnost začít.\r\nVýchozí hodnota: 0 (zakázáno)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -830,7 +830,7 @@
         {
           "Id": "8d4fff913572459c87105b134d3cc91c",
           "Name": "amount",
-          "Description": "Amount of numbers in the sequence\r\nDefault value: 10 (disabled)",
+          "Description": "Počet čísel v posloupnosti\r\nVýchozí hodnota: 10 (zakázáno)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -839,7 +839,7 @@
         {
           "Id": "ce02cbc9fcf146e4b088d9f4a3aa519c",
           "Name": "step",
-          "Description": "Space between numbers or letters\r\nDefault value: 1 (disabled)",
+          "Description": "Mezera mezi čísly nebo písmeny.\r\nVýchozí hodnota: 1 (zakázáno)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -850,7 +850,7 @@
         {
           "Id": "9bc09be2f05a4c889abac4a3edbd0177",
           "Name": "seq",
-          "Description": "New sequence",
+          "Description": "Nová posloupnost",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -858,7 +858,7 @@
         }
       ],
       "Replication": "Longest",
-      "Description": "Creates a sequence of numbers"
+      "Description": "Vytvoří posloupnost čísel."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -868,7 +868,7 @@
         {
           "Id": "894ad9d69aa84593bf5b702f22f004c3",
           "Name": "curve",
-          "Description": "The curve which defines the center line of the beam.\n\nCurve",
+          "Description": "Křivka, která definuje osu nosníku.\n\nCurve",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -877,7 +877,7 @@
         {
           "Id": "bacdd12070104f5da215fa3b613dfeef",
           "Name": "level",
-          "Description": "The level with which you'd like the beam to be associated.\n\nLevel",
+          "Description": "Podlaží, se kterým chcete nosník asociovat.\n\nLevel",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -886,7 +886,7 @@
         {
           "Id": "677d8c497f834f25afba7602ab479e7e",
           "Name": "structuralFramingType",
-          "Description": "The structural framing type representing the beam.\n\nFamilyType",
+          "Description": "Typ rámové konstrukce představující nosník.\n\nFamilyType",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -906,7 +906,7 @@
       ],
       "FunctionSignature": "Revit.Elements.StructuralFraming.BeamByCurve@Autodesk.DesignScript.Geometry.Curve,Revit.Elements.Level,Revit.Elements.FamilyType",
       "Replication": "Auto",
-      "Description": "Create a beam.\n\nStructuralFraming.BeamByCurve (curve: Curve, level: Level, structuralFramingType: FamilyType): StructuralFraming"
+      "Description": "Vytvoří nosník.\n\nStructuralFraming.BeamByCurve (curve: Curve, level: Level, structuralFramingType: FamilyType): StructuralFraming"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
@@ -929,7 +929,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Vytváří číselné hodnoty.",
       "InputValue": 38.4
     },
     {
@@ -953,7 +953,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Vytváří číselné hodnoty.",
       "InputValue": 130.0
     },
     {
@@ -977,7 +977,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Vytváří číselné hodnoty.",
       "InputValue": 30.0
     },
     {
@@ -1001,7 +1001,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Vytváří číselné hodnoty.",
       "InputValue": 30.0
     },
     {
@@ -1025,7 +1025,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Vytváří číselné hodnoty.",
       "InputValue": 62.0
     },
     {
@@ -1049,7 +1049,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Vytváří číselné hodnoty.",
       "InputValue": 10.0
     },
     {
@@ -1073,7 +1073,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Vytváří číselné hodnoty.",
       "InputValue": 7.0
     },
     {
@@ -1097,7 +1097,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Vytváří číselné hodnoty.",
       "InputValue": -1.25
     },
     {
@@ -1121,7 +1121,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces integer values",
+      "Description": "Vytváří celočíselné hodnoty.",
       "InputValue": 5
     },
     {
@@ -1135,7 +1135,7 @@
         {
           "Id": "ef8ffdf9a6af42a3bee8bcbb02df5166",
           "Name": "structuralFraming",
-          "Description": "Structural Framing Family Instance elements",
+          "Description": "Prvky instance rodiny konstrukčních rámových konstrukcí",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1146,7 +1146,7 @@
         {
           "Id": "db1b39c43f0b4af4bdf342c1b5ce8d0a",
           "Name": "unjoinedElements",
-          "Description": "Result of the python script",
+          "Description": "Výsledek skriptu jazyka Python",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1154,7 +1154,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Runs an embedded Python script."
+      "Description": "Spustí vložený skript jazyka Python."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -1164,7 +1164,7 @@
         {
           "Id": "f8e003fc8ddc475db6615773d8509410",
           "Name": "list",
-          "Description": "List to flatten.\n\nvar[]..[]",
+          "Description": "Seznam k vyrovnání\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1173,7 +1173,7 @@
         {
           "Id": "b59cb061c3ae4dcfb2718d1172d94d5f",
           "Name": "amount",
-          "Description": "Layers of list nesting to remove (-1 will remove all list nestings)\n\nint\nDefault value : -1",
+          "Description": "Hladiny vnoření seznamu k odebrání (-1 odebere všechna vnoření seznamu)\n\nint\nVýchozí hodnota: -1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -1184,7 +1184,7 @@
         {
           "Id": "aee0f8250db34fd5b9aa7b21e3a73439",
           "Name": "list",
-          "Description": "Flattened list by amount",
+          "Description": "Vyrovnaný seznam o určité množství",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -1193,7 +1193,7 @@
       ],
       "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+      "Description": "Vyrovná vnořený seznam seznamů o určité množství.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
     }
   ],
   "Connectors": [
@@ -1410,7 +1410,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Vlastnosti",
       "Version": "2.13",
       "Data": {}
     },
@@ -1452,7 +1452,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Náhled pozadí",
       "EyeX": -34.22979736328125,
       "EyeY": 99.68623352050781,
       "EyeZ": -31.630661010742188,
@@ -1534,7 +1534,7 @@
       },
       {
         "Id": "353fbc7d58114dfeb7d2862850c5bdf6",
-        "Name": "Floor Heigts Sequence",
+        "Name": "Posloupnost výšek podlaží",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1574,7 +1574,7 @@
       },
       {
         "Id": "e6c8b1e7f3d34b27b68bf8ff7014148a",
-        "Name": "Rotation angles Sequence",
+        "Name": "Posloupnost úhlů otočení",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1684,7 +1684,7 @@
       },
       {
         "Id": "1752f89750fa4653b5de1d2e252cd4a4",
-        "Name": "Top Floor Height",
+        "Name": "Výška horního podlaží",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1694,7 +1694,7 @@
       },
       {
         "Id": "19104b39941f484bb766e2b7be870b10",
-        "Name": "Maximum rotation (degrees)",
+        "Name": "Maximální otočení (stupně)",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1704,7 +1704,7 @@
       },
       {
         "Id": "8f870a593a5c4322b78428570d2b7c87",
-        "Name": "X position",
+        "Name": "Poloha X",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1714,7 +1714,7 @@
       },
       {
         "Id": "8fb5c2574a744b599c59268f1e6ed375",
-        "Name": "Y position",
+        "Name": "Poloha Y",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1724,7 +1724,7 @@
       },
       {
         "Id": "8604018a7ab841d0851e457e1ff4591a",
-        "Name": "Z position",
+        "Name": "Poloha Z",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1734,7 +1734,7 @@
       },
       {
         "Id": "edb0ed3a63104163b2fd0459158ed8a3",
-        "Name": "Lower Floor Radius",
+        "Name": "Poloměr dolního podlaží",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1744,7 +1744,7 @@
       },
       {
         "Id": "41385d9e7c9b4abc8a68c76178f55493",
-        "Name": "Nr Floors",
+        "Name": "Počet podlaží",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1754,7 +1754,7 @@
       },
       {
         "Id": "dd7ee32fa83d43469dd8ad221cb292e7",
-        "Name": "Radius Decrease",
+        "Name": "Zmenšení poloměru",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1764,7 +1764,7 @@
       },
       {
         "Id": "bffc90e5d05f4bcba04094fc76e80709",
-        "Name": "Number of Polygon Sides",
+        "Name": "Počet stran polygonu",
         "IsSetAsInput": true,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1774,7 +1774,7 @@
       },
       {
         "Id": "227b062531f24fb58a6e1590d8c2f44d",
-        "Name": "Disallow Joins on Structural Framing",
+        "Name": "Zakázat spoje na konstrukční rámové konstrukci",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -1796,7 +1796,7 @@
     "Annotations": [
       {
         "Id": "d72e0ac4145a45f0ab52ce53afe9f28e",
-        "Title": "Center of Folly position",
+        "Title": "Poloha středu podlaží",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1820,8 +1820,8 @@
       },
       {
         "Id": "82f5fea47ee14c01b70183e6ce3fb210",
-        "Title": "Folly configuration",
-        "DescriptionText": "Description <Double click here to edit group description>",
+        "Title": "Konfigurace stavby",
+        "DescriptionText": "Popis <Dvojitým kliknutím sem upravte popis skupiny>",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -1847,7 +1847,7 @@
       },
       {
         "Id": "142dec085c7d43ac96f7bde7b40a1a9a",
-        "Title": "Structural Framing Type & Level",
+        "Title": "Typ a úroveň konstrukční rámové konstrukce",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1871,7 +1871,7 @@
       },
       {
         "Id": "9c99cf8a44b04e90b76585399f1393c9",
-        "Title": "Floor Type & Level",
+        "Title": "Typ a úroveň podlaží",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1895,8 +1895,8 @@
       },
       {
         "Id": "e6161054bda142e7bc26cae9c83072f5",
-        "Title": "To Revit: Create Floors",
-        "DescriptionText": "Use the series of closed curve loops as input for Floor creation",
+        "Title": "Do aplikace Revit: Vytvořit podlaží",
+        "DescriptionText": "Použijte řadu uzavřených smyček křivek jako vstup pro tvorbu podlaží",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -1918,8 +1918,8 @@
       },
       {
         "Id": "117011463b8b4e7ab526411f57969107",
-        "Title": "To Revit: Create Structural Framing",
-        "DescriptionText": "Use curves to create Structural Framing elements and use a Python node to Disallow join between individual beams",
+        "Title": "Do aplikace Revit: Vytvořit konstrukční rámovou konstrukci",
+        "DescriptionText": "Pomocí křivek vytvořte prvky konstrukčních rámových konstrukcí a pomocí uzlu jazyka Python zakažte spoj mezi jednotlivými nosníky.",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -1945,8 +1945,8 @@
       },
       {
         "Id": "a7009f1b195e4fef958098eacc71b034",
-        "Title": "Vertical connections",
-        "DescriptionText": "Connect polygon corners between folly levels",
+        "Title": "Vertikální propojení",
+        "DescriptionText": "Spojit rohy polygonu mezi úrovněmi stavby",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -1974,8 +1974,8 @@
       },
       {
         "Id": "1d8cc2ce55344b0c90c61ae346109692",
-        "Title": "Construct Polygons",
-        "DescriptionText": "Create a series of polygons of a decreasing radius, offset vertically, sequentially rotated",
+        "Title": "Vytvořit polygony",
+        "DescriptionText": "Vytvoří řadu polygonů se zmenšujícími se poloměry, které jsou vertikálně odsazovány a postupně otáčeny.",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -2039,7 +2039,7 @@
       },
       {
         "Id": "b94417a14e334e519a4c639040a89604",
-        "Title": "Sequence of circle radii",
+        "Title": "Posloupnost poloměrů kružnic",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2060,7 +2060,7 @@
       },
       {
         "Id": "90196af1bc07485b858de8125df8ccbb",
-        "Title": "Center Of Folly",
+        "Title": "Střed stavby",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2081,7 +2081,7 @@
       },
       {
         "Id": "46ad9b1922c3410b959a07d5f81d8d8b",
-        "Title": "Run this graph the Snowdon Towers Sample Architectural.rvt file in the Samples folder located with your Revit installation\r\nC:\\Program Files\\Autodesk\\Revit 2026\\Samples",
+        "Title": "Spusťte tento graf v souboru Snowdon Tower Sample Architectural.rvt ve složce Samples, která se nachází ve složce instalace aplikace Revit \r\nC:\\Program Files\\Autodesk\\Revit 2026\\Samples",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2101,7 +2101,7 @@
       },
       {
         "Id": "e596e89bf69f47f0b3456a6a4f67d265",
-        "Title": "This graph creates an architectural folly, using a series of lines and uses them to drive the placement of Structural Framing and Floors.",
+        "Title": "Tento graf vytvoří architektonickou stavbu pomocí řady čar a použije je k řízení umístění konstrukčních rámových konstrukcí a podlaží.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2121,7 +2121,7 @@
       },
       {
         "Id": "4a593d07ca4c4d498f5800e1d0ec9928",
-        "Title": "Make a series of polygons",
+        "Title": "Vytvořit řadu polygonů",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2142,7 +2142,7 @@
       },
       {
         "Id": "ef1a598c0a5349e3a1453fa3b31bfc93",
-        "Title": "Move the Polygons up by given heights",
+        "Title": "Přesunout polygony nahoru o zadané výšky",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2163,7 +2163,7 @@
       },
       {
         "Id": "9b4b916c3c1a4b60b69f97402cfc0d95",
-        "Title": "Extract individual curves from the polygons",
+        "Title": "Extrahovat jednotlivé křivky z mnohoúhelníků",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2184,7 +2184,7 @@
       },
       {
         "Id": "52bc116c25ff4a1998fcfcf7da558044",
-        "Title": "Connect up matching corners of polygons from lowest to highext folly level, joining them as Polycurves",
+        "Title": "Spojte odpovídající rohy polygonů od nejnižší po nejvyšší podlaží stavby a propojte je jako objekty PolyCurve.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2205,7 +2205,7 @@
       },
       {
         "Id": "63728a65ab6048129f2766124a79e527",
-        "Title": "Pass Groups of Curves to create Floors",
+        "Title": "Předat skupiny křivek za účelem vytvoření podlaží",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2226,7 +2226,7 @@
       },
       {
         "Id": "b1964ca9f6ae439eb9f0f4cf44a27d81",
-        "Title": "Pass individual curves for each structural element",
+        "Title": "Předat jednotlivé křivky pro každý konstrukční prvek",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2247,7 +2247,7 @@
       },
       {
         "Id": "a153d2f03e9f4d36b47c7093582f15a4",
-        "Title": "Create a series of circles",
+        "Title": "Vytvořit řadu kružnic",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2268,7 +2268,7 @@
       },
       {
         "Id": "3d565146685446479617885a01768bf2",
-        "Title": "A sequence of floor elevations",
+        "Title": "Posloupnost výšek podlaží",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2289,7 +2289,7 @@
       },
       {
         "Id": "3c337fcb1f474c148d7ab126ca117cc4",
-        "Title": "Rotate the polygons with a series of angles",
+        "Title": "Otočení polygonů pomocí řady úhlů",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2310,7 +2310,7 @@
       },
       {
         "Id": "48c981868e2642a3afef96ec0d5dbc7f",
-        "Title": "A sequence of rotations for each floor",
+        "Title": "Posloupnost otočení pro každé podlaží",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2331,7 +2331,7 @@
       },
       {
         "Id": "ec0c2ad33b1e4ebb93b5b88ac4970757",
-        "Title": "This is a renamed Python node that references the Revit API to extend what Dynamo can do beyond the out-of-the-box nodes. To read the Python code, right-click on the node and click Edit…",
+        "Title": "Jedná se o přejmenovaný uzel jazyka Python, který odkazuje na rozhraní API aplikace Revit a umožňuje rozšířit možnosti uzlů aplikace Dynamo oproti předem připraveným uzlům. Chcete-li si přečíst kód jazyka Python, klikněte pravým tlačítkem na uzel a vyberte možnost Upravit...",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2352,7 +2352,7 @@
       },
       {
         "Id": "dd7cea9b785e42e1a1ef0d21ff5465ad",
-        "Title": "Flip the matrix and get lists of End Points aligned vertically",
+        "Title": "Převrátit matici a získat seznamy koncových bodů zarovnaných vertikálně",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2373,7 +2373,7 @@
       },
       {
         "Id": "44596e08da534887baf0543a2acce31c",
-        "Title": "Get End Points of each Polygon curve",
+        "Title": "Získat koncové body každé křivky polygonu",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2394,7 +2394,7 @@
       },
       {
         "Id": "5e5594e2a7254afa946d33a466641801",
-        "Title": "Deconstruct polycurves and obtain lists of curves to serve as input for Structural Framing elements",
+        "Title": "Dekonstruovat objekty PolyCurve a získat seznamy křivek, které budou sloužit jako vstup pro prvky konstrukčních rámových konstrukcí.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2415,7 +2415,7 @@
       },
       {
         "Id": "08dfd3ff8b6b4fa88b6dba0594d708cb",
-        "Title": "Prepare the list",
+        "Title": "Příprava seznamu",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2436,7 +2436,7 @@
       },
       {
         "Id": "caf1cb689a8544c2b394b707c7f66cf8",
-        "Title": "Select the Floor Type for created Floors from the types existing in the project using the dropdown",
+        "Title": "Vyberte typ podlaží pro vytvořená podlaží z typů existujících v projektu pomocí rozevíracího seznamu.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -2457,7 +2457,7 @@
       },
       {
         "Id": "4e9e7ecb287b449d8261310cfe389de2",
-        "Title": "Select the Structural Framing Type from the types loaded in the project using the dropdown",
+        "Title": "Vyberte typ konstrukční rámové konstrukce z typů načtených do projektu pomocí rozevíracího seznamu.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

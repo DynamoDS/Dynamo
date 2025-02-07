@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,105 +118,90 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BrowserViewCannotBeAddedToSidebar" xml:space="preserve">
-    <value>Browser view has not been initialised and cannot be added to the sidebar.</value>
+    <value>浏览器视图尚未初始化，无法添加到侧栏。</value>
   </data>
   <data name="ExtensionName" xml:space="preserve">
-    <value>Documentation Browser</value>
+    <value>文档浏览器</value>
   </data>
   <data name="FileNotFoundFailureMessage" xml:space="preserve">
-    <value>File not found</value>
+    <value>文件未找到</value>
   </data>
   <data name="ImageFitToolTip" xml:space="preserve">
-    <value>Zoom to fit</value>
-    <comment>Image Control ToolTip</comment>
+    <value>缩放匹配</value>
   </data>
   <data name="ImageInsertToolTip" xml:space="preserve">
-    <value>Add to workspace\n\nAdds the example file to the workspace as a group. To avoid potential issues, run mode will be changed to Manual.</value>
-    <comment>Image Control ToolTip</comment>
+    <value>添加到工作空间\n\n将示例文件作为组添加到工作空间。为了避免可能出现问题，运行模式将更改为“手动”。</value>
   </data>
   <data name="ImageZoomInToolTip" xml:space="preserve">
-    <value>Zoom in</value>
-    <comment>Image Control ToolTip</comment>
+    <value>放大</value>
   </data>
   <data name="ImageZoomOutToolTip" xml:space="preserve">
-    <value>Zoom out</value>
-    <comment>Image Control ToolTip</comment>
+    <value>缩小</value>
   </data>
   <data name="InputDefaultValue" xml:space="preserve">
-    <value>default value</value>
+    <value>默认值</value>
   </data>
   <data name="InsertedGroupSubTitle" xml:space="preserve">
-    <value>Inserted Dynamo graph</value>
+    <value>插入的 Dynamo 图形</value>
   </data>
   <data name="InsertGraphContainsNodesAlertMessage" xml:space="preserve">
-    <value>The graph already contains the nodes to be inserted.</value>
+    <value>图形已包含要插入的节点。</value>
   </data>
   <data name="InternalErrorNoDetailsAvailable" xml:space="preserve">
-    <value>No further details available for this error.</value>
+    <value>此错误没有可用的更多详细信息。</value>
   </data>
   <data name="InvalidDocumentationLink" xml:space="preserve">
-    <value>Documentation link is not a valid URI.</value>
+    <value>文档链接不是有效的 URI。</value>
   </data>
   <data name="MenuItemText" xml:space="preserve">
-    <value>Show _Documentation Browser</value>
+    <value>显示文档浏览器(_D)</value>
   </data>
   <data name="NodeDocumentationCategory" xml:space="preserve">
-    <value>Category</value>
-    <comment>Header in Node Info table</comment>
+    <value>类别</value>
   </data>
   <data name="NodeDocumentationDescription" xml:space="preserve">
-    <value>Description</value>
-    <comment>Header in Node Info table</comment>
+    <value>说明</value>
   </data>
   <data name="NodeDocumentationInputs" xml:space="preserve">
-    <value>Inputs</value>
-    <comment>Header in Node Info table</comment>
+    <value>输入</value>
   </data>
   <data name="NodeDocumentationInputsAndOutputs" xml:space="preserve">
-    <value>Inputs and Outputs</value>
+    <value>输入和输出</value>
   </data>
   <data name="NodeDocumentationIssueHelp" xml:space="preserve">
-    <value>Node Issue Help</value>
+    <value>节点问题帮助</value>
   </data>
   <data name="NodeDocumentationNodeInfo" xml:space="preserve">
-    <value>Node Information</value>
-    <comment>Header in Node Info table</comment>
+    <value>节点信息</value>
   </data>
   <data name="NodeDocumentationOriginalNodeName" xml:space="preserve">
-    <value>Node Type</value>
-    <comment>Header in Node Info table</comment>
+    <value>节点类型</value>
   </data>
   <data name="NodeDocumentationOutputs" xml:space="preserve">
-    <value>Outputs</value>
-    <comment>Header in Node Info table</comment>
+    <value>输出</value>
   </data>
   <data name="NodeInputsDataType" xml:space="preserve">
-    <value>Data type</value>
-    <comment>Input Header</comment>
+    <value>数据类型</value>
   </data>
   <data name="NodeInputsDescription" xml:space="preserve">
-    <value>Description</value>
-    <comment>Input Header</comment>
+    <value>说明</value>
   </data>
   <data name="NodeInputsName" xml:space="preserve">
-    <value>Name</value>
-    <comment>Input Header</comment>
+    <value>名称</value>
   </data>
   <data name="NodeInputsType" xml:space="preserve">
-    <value>Type</value>
-    <comment>Input Header</comment>
+    <value>类型</value>
   </data>
   <data name="NodeInputsValue" xml:space="preserve">
-    <value>Default value</value>
-    <comment>Input Header</comment>
+    <value>默认值</value>
   </data>
   <data name="ScriptTagsRemovalWarning" xml:space="preserve">
-    <value>Script tags detected in the help document have been removed.</value>
+    <value>在帮助文档中检测到的脚本标记已被删除。</value>
   </data>
   <data name="ToastFileNotFoundLocationNotificationText" xml:space="preserve">
-    <value>Example file from {0} could not be found</value>
+    <value>找不到 {0} 中的样例文件</value>
   </data>
   <data name="ToastInsertGraphNotificationText" xml:space="preserve">
-    <value>Example file added to workspace. Run mode changed to Manual.</value>
+    <value>示例文件已添加到工作空间。运行模式已更改为“手动”。</value>
   </data>
 </root>

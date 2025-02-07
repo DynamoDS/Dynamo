@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EmptyColorsMessage" xml:space="preserve">
-    <value>There are no colors specified.</value>
+    <value>Nejsou určeny žádné barvy.</value>
   </data>
   <data name="EmptyPointsMessage" xml:space="preserve">
-    <value>There are no points specified.</value>
+    <value>Nejsou určeny žádné body.</value>
   </data>
   <data name="EmptyUVsMessage" xml:space="preserve">
-    <value>There are no UVs specified.</value>
+    <value>Nejsou určeny žádné UV.</value>
   </data>
   <data name="EmptyValuesMessage" xml:space="preserve">
-    <value>There are no values specified.</value>
+    <value>Nejsou určeny žádné hodnoty.</value>
   </data>
   <data name="InputsNotEquivalentMessage" xml:space="preserve">
-    <value>You must supply an equivalent number of points and values.</value>
+    <value>Je nutné zadat ekvivalentní počet bodů a hodnot.</value>
   </data>
 </root>

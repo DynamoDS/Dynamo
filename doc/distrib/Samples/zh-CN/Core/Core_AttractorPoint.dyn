@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "This graph creates a grid of cylinders, where sizes are determined by the position of an attractor point. ",
+  "Description": "此图形创建圆柱体栅格，其中大小由吸引器点的位置确定。 ",
   "Name": "Core_AttractorPoint",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -17,7 +17,7 @@
       "MinimumValue": -10.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "生成数值"
     },
     {
       "Id": "84fb372afa224d3b8888e794becddcc2",
@@ -29,7 +29,7 @@
       "MinimumValue": -10.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values"
+      "Description": "生成数值"
     }
   ],
   "Outputs": [],
@@ -43,7 +43,7 @@
         {
           "Id": "99ddeaf3fc2f436297b281bb211e3309",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "第 1 行的表达式值",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -51,7 +51,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "允许直接编写 DesignScript 代码",
       "Code": "1..50..5;"
     },
     {
@@ -75,7 +75,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "生成数值",
       "InputValue": 24.6
     },
     {
@@ -99,7 +99,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "生成数值",
       "InputValue": 11.5011100116203
     },
     {
@@ -119,7 +119,7 @@
         {
           "Id": "c78044fd1e8b4cd9b5fc6adb0f3f1eba",
           "Name": "other",
-          "Description": "The other Geometry\n\nGeometry",
+          "Description": "另一个几何图形\n\n几何图形",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -130,7 +130,7 @@
         {
           "Id": "296024bd17d9490e873bb2f70b83fb03",
           "Name": "double",
-          "Description": "The distance",
+          "Description": "距离",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -139,7 +139,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Geometry.DistanceTo@Autodesk.DesignScript.Geometry.Geometry",
       "Replication": "Auto",
-      "Description": "Obtain the distance from this Geometry to another\n\nGeometry.DistanceTo (other: Geometry): double"
+      "Description": "获取从此几何图形到另一个几何图形的距离\n\nGeometry.DistanceTo (other: Geometry): double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -160,7 +160,7 @@
         {
           "Id": "c3307eab957a4e8682832464abc0d490",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "第 1 行的表达式值",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -168,7 +168,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "允许直接编写 DesignScript 代码",
       "Code": "x/15;"
     },
     {
@@ -179,7 +179,7 @@
         {
           "Id": "360bea6af96d41fcb8a1429a3c5b7d13",
           "Name": "startPoint",
-          "Description": "Start point of cylinder\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0) (disabled)",
+          "Description": "圆柱体起点\n\nPoint\n默认值 : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0) (已禁用)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -188,7 +188,7 @@
         {
           "Id": "bab3798020b8452a8e9d32d67eeb1963",
           "Name": "endPoint",
-          "Description": "End point of cylinder\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 1) (disabled)",
+          "Description": "圆柱体终点\n\nPoint\n默认值 : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 1) (已禁用)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -197,7 +197,7 @@
         {
           "Id": "96641193e66b4c5a96bd9af88a2619ac",
           "Name": "radius",
-          "Description": "Radius of cylinder\n\ndouble\nDefault value : 1",
+          "Description": "圆柱体半径\n\ndouble\n默认值 : 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -208,7 +208,7 @@
         {
           "Id": "6478b0d1e71b494ba1641345430edaf2",
           "Name": "Cylinder",
-          "Description": "Cylinder created by points and radius",
+          "Description": "由点和半径创建的圆柱体",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -217,7 +217,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Cylinder.ByPointsRadius@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point,double",
       "Replication": "Auto",
-      "Description": "Construct a Solid Cylinder given the bottom and top center point of the Cylinder.\n\nCylinder.ByPointsRadius (startPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), endPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 1), radius: double = 1): Cylinder"
+      "Description": "根据给定的圆柱体的底部和顶部中心点构造一个实心圆柱体。\n\nCylinder.ByPointsRadius (startPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), endPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 1), radius: double = 1): Cylinder"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -238,7 +238,7 @@
         {
           "Id": "a30a7a5317bc4e388b8c53fef37a540e",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "第 1 行的表达式值",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -246,7 +246,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "允许直接编写 DesignScript 代码",
       "Code": "x/2;"
     },
     {
@@ -257,7 +257,7 @@
         {
           "Id": "b7ad3534b86b401d8606de4562c246fb",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "X 坐标\n\ndouble\n默认值 : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -266,7 +266,7 @@
         {
           "Id": "cfebb0de7eea44c386481d62df2d5d53",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Y 坐标\n\ndouble\n默认值 : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -275,7 +275,7 @@
         {
           "Id": "e70be9bacf4743f6bf7e9d8fd5885a69",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Z 坐标\n\ndouble\n默认值 : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -286,7 +286,7 @@
         {
           "Id": "d991a0aad79b4a31add0d287b5fd14bc",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "由坐标创建的点",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -295,7 +295,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "CrossProduct",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "根据给定的 3 个笛卡尔坐标形成一个点\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -305,7 +305,7 @@
         {
           "Id": "74fe5be701b048ec8214652c2ef8d5e4",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "X 坐标\n\ndouble\n默认值 : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -314,7 +314,7 @@
         {
           "Id": "0957266ecba34f10a2691f471bf71bc9",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Y 坐标\n\ndouble\n默认值 : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -323,7 +323,7 @@
         {
           "Id": "bc9046306b164bd4a3506509d8e95712",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Z 坐标\n\ndouble\n默认值 : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -334,7 +334,7 @@
         {
           "Id": "e6c3b2d61e2d4a5294a265efea8f40f4",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "由坐标创建的点",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -343,7 +343,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "根据给定的 3 个笛卡尔坐标形成一个点\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -353,7 +353,7 @@
         {
           "Id": "a55cd520878b405f8c948c5ef1c479f5",
           "Name": "list",
-          "Description": "List to flatten.\n\nvar[]..[]",
+          "Description": "要展开的列表。\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -362,7 +362,7 @@
         {
           "Id": "8b58f6cf3a344a16a85c39a585e007ad",
           "Name": "amount",
-          "Description": "Layers of list nesting to remove (-1 will remove all list nestings)\n\nint\nDefault value : -1",
+          "Description": "要删除的列表嵌套的层(-1 将删除所有列表嵌套)\n\nint\n默认值 : -1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -373,7 +373,7 @@
         {
           "Id": "fabfd1c4b6bc4179812aff842eb2dcd2",
           "Name": "list",
-          "Description": "Flattened list by amount",
+          "Description": "按数量展开的列表",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -382,7 +382,7 @@
       ],
       "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
       "Replication": "Disabled",
-      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+      "Description": "按一定数量展开列表的嵌套列表。\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -401,7 +401,7 @@
         {
           "Id": "9dd32f907e674cc4be48dfe3d66fde78",
           "Name": "vectorToAdd",
-          "Description": "Vector",
+          "Description": "向量",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -412,7 +412,7 @@
         {
           "Id": "911707da773040d1bf99ba5ef1a0eb27",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "点",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -421,7 +421,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.Add@Autodesk.DesignScript.Geometry.Vector",
       "Replication": "Auto",
-      "Description": "Add a vector to a point. The same as Translate(Vector).\n\nPoint.Add (vectorToAdd: Vector): Point"
+      "Description": "为点添加向量。与 Translate(Vector) 的功能相同。\n\nPoint.Add (vectorToAdd: Vector): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -431,7 +431,7 @@
         {
           "Id": "a585e4588bd44070890c663e4946555e",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "X 坐标\n\ndouble\n默认值 : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -440,7 +440,7 @@
         {
           "Id": "8aaf4408e6104c00be0e2b03737ace96",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Y 坐标\n\ndouble\n默认值 : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -449,7 +449,7 @@
         {
           "Id": "e12f0d89e2e04a0c9011e8ce3cc53ed2",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Z 坐标\n\ndouble\n默认值 : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -460,7 +460,7 @@
         {
           "Id": "db695a2c68bb4d78a2cd13bab0412c51",
           "Name": "Vector",
-          "Description": "Vector created by coordinates",
+          "Description": "由坐标创建的向量",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -469,7 +469,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Vector by 3 Euclidean coordinates\n\nVector.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Vector"
+      "Description": "通过 3 个欧几里得坐标形成向量\n\nVector.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Vector"
     }
   ],
   "Connectors": [
@@ -572,7 +572,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "特性",
       "Version": "2.13",
       "Data": {}
     },
@@ -601,7 +601,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "背景预览(_B)",
       "EyeX": -9.446480751037598,
       "EyeY": 64.02357482910156,
       "EyeZ": 21.386981964111328,
@@ -629,7 +629,7 @@
     "NodeViews": [
       {
         "Id": "d0036752d64445119937c17b4f152313",
-        "Name": "Numbers Range",
+        "Name": "数字范围",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -669,7 +669,7 @@
       },
       {
         "Id": "89a6dea19e7f45c6bd41ab9599418d4f",
-        "Name": "Cylinder Radius",
+        "Name": "圆柱体半径",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -689,7 +689,7 @@
       },
       {
         "Id": "14f9df697ef34e31808b016d3bc301bb",
-        "Name": "Cylinder Height",
+        "Name": "圆柱体高度",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
@@ -751,7 +751,7 @@
     "Annotations": [
       {
         "Id": "8ced74ec7e9b46738b071a66c810a9c2",
-        "Title": "Create a grid of points",
+        "Title": "创建点栅格",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -775,7 +775,7 @@
       },
       {
         "Id": "1ae1e3afcbb2414289bb689b97d31c77",
-        "Title": "Points Grid Size",
+        "Title": "点栅格大小",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -798,7 +798,7 @@
       },
       {
         "Id": "1ab49bd9cc9f4a69beec75f8ced5fe23",
-        "Title": "Info",
+        "Title": "信息",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -820,8 +820,8 @@
       },
       {
         "Id": "8f8edc6215ab4ea690ba3bcec37ed114",
-        "Title": "Flatten list structure",
-        "DescriptionText": "Complex list structure is not required for further actions with the points. Flatten to generate just one list. ",
+        "Title": "展平列表结构",
+        "DescriptionText": "对点执行进一步操作不需要复杂的列表结构。Flatten 仅生成一个列表。 ",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -843,7 +843,7 @@
       },
       {
         "Id": "a40319ef0ba24d658b54d64c94f2cc96",
-        "Title": "Attractor point position",
+        "Title": "吸引器点位置",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -868,7 +868,7 @@
       },
       {
         "Id": "384e0192ce4d47eeb0b351bfbc2e4f95",
-        "Title": "Distance to Attractor",
+        "Title": "到吸引器的距离",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -891,7 +891,7 @@
       },
       {
         "Id": "d8757e4216554a3e92303ff9e84f1e56",
-        "Title": "Create Cylinders",
+        "Title": "创建圆柱体",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -914,7 +914,7 @@
       },
       {
         "Id": "0d89f28617b84f969dafdabdd593b919",
-        "Title": "Generate Radii and Heights",
+        "Title": "生成半径和高度",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -939,8 +939,8 @@
       },
       {
         "Id": "82484472d4b747dfba5daac12ababa82",
-        "Title": "End Points",
-        "DescriptionText": "Translate Start (original) point of each cylinder with a given height, defined by the formula",
+        "Title": "终点",
+        "DescriptionText": "按给定高度(由公式定义)平移每个圆柱体的起点(原始)",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -964,7 +964,7 @@
       },
       {
         "Id": "1eb1d7edc7434b71a4f36f8d66546588",
-        "Title": "Attractor Point.  Move the input sliders to adjust the location of this point.",
+        "Title": "吸引器点。移动输入滑块以调整该点的位置。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -985,7 +985,7 @@
       },
       {
         "Id": "e3548b26a97e403188c6f7db718ab671",
-        "Title": "Grid of points.\nTo make, pass a series of numbers into two ports - X and Y coordinates. Right-click on the node and change the Lacing to \"Cross Product\"",
+        "Title": "点栅格。\n要生成点栅格。请将一系列数字传递到 X 和 Y 坐标这两个端口。在该节点上单击鼠标右键，然后将“连缀”更改为“叉积”",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1006,7 +1006,7 @@
       },
       {
         "Id": "4c0c97961c39401eb7f8d7f9a5bf7927",
-        "Title": "Flatten the list because the hierarchy of rows and columns is not needed.  Compare the input to this node with the output - the structure of N lists changed into just one list. ",
+        "Title": "由于不需要行和列的层次结构，因此展平列表。将此节点的输入与输出比较 - N 个列表的结构变成了一个列表。 ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1027,7 +1027,7 @@
       },
       {
         "Id": "c79861822a114a16ab89634c987ae322",
-        "Title": "A formula returns a value to be used as a radius of the cylinder. The greater the distance - the larger the radius of each cylinder. Try using a different formula.",
+        "Title": "公式返回一个值，以用作圆柱体的半径。距离越远 - 每个圆柱体的半径越大。请尝试使用其他公式。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1048,7 +1048,7 @@
       },
       {
         "Id": "2ba419ce99d74a6da36c08342267c77f",
-        "Title": "Finds the distance between the attractor point and each base point of the cylinders",
+        "Title": "查找吸引器点与圆柱体的每个基点之间的距离",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1069,7 +1069,7 @@
       },
       {
         "Id": "32822c06629f4bb9ab2c5fce632a2a48",
-        "Title": "Formula to make the height of the cylinders react to the location of the attractor point.  In this example, the height of each cylinder is half of the distance to the attractor point. Try a different formula.",
+        "Title": "使圆柱体的高度能够对吸引器点的位置作出反应的公式。在本例中，每个圆柱体的高度是到吸引器点距离的一半。请尝试使用其他公式。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1090,7 +1090,7 @@
       },
       {
         "Id": "d8efd16ccf5d48cdbdd240857da8aa2b",
-        "Title": "Add this new Z-value (height) to the original grid points to get the top points for the cylinders.",
+        "Title": "将此新的 Z 值(高度)添加到原始栅格点，以获取圆柱体的顶点。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1111,7 +1111,7 @@
       },
       {
         "Id": "2ef1ab4280ba48d49ab7e979709474b2",
-        "Title": "Use a Code Block to create a sequence of numbers. In this case, a sequence is created with numbers from 1 to 50, with n steps, where every step is 5",
+        "Title": "使用“Code Block”创建一系列数字。在本例中，将创建一个数字介于 1 到 50 (其中 n 个步长，每个步长为 5)的序列。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1132,7 +1132,7 @@
       },
       {
         "Id": "a2483042d8c0405eb25c7e09b897f170",
-        "Title": "ATTRACTOR POINT\n\nAn attractor point is a reference point(or element)that influences the characteristics of other elements in a system. An attractor point often works like a magnet - the closer the element is to the attractor - the more it is affected by the attractor's influence. \n\nIn this example, the height and diameter of cylinders is determined by the distance between each cylinder and the attractor point that moves around. Cylinders around the attractor point are smaller than the ones further away. \n\nTo visualize this behaviour, move the two number sliders of the Attractor point input. \n\nAttractor points are a way to introduce a level of responsiveness and dynamoc behaviour into the design process. ",
+        "Title": "吸引器点\n\n吸引器点是影响系统中其他图元的特征的参照点(或图元)。吸引器点通常像一块磁铁 - 图元离吸引器越近 - 它就越受吸引器影响。\n\n在本例中，圆柱体的高度和直径由每个圆柱体与绕其移动的吸引器点之间的距离确定。吸引器点周围的圆柱体小于更远的圆柱体。\n\n要可视化此行为，请移动吸引器点输入的两个数字滑块。\n\n吸引器点是一种在设计过程中引入一定程度的响应性和动态行为的方式。 ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1152,7 +1152,7 @@
       },
       {
         "Id": "faf7d035a0c048a1aefea6d059b2a6cb",
-        "Title": "Cross product lacing of a node combines each item from one list with each item in every other list, resulting in a grid-like structure of lists. \nWhen used with X and Y inputs of the 'Point.ByCoordinates' node, the result is a flat grid of points. If the third, Z coordinate is used, the result is a cube-shaped grid of points. ",
+        "Title": "节点的叉积连缀将一个列表中的每一项与其他每个列表中的每一项组合在一起，从而生成类似栅格的列表结构。\n当与“Point.ByCoordinates”节点的 X 和 Y 输入结合使用时，结果是一个平面的点栅格。如果使用第三个 Z 坐标，则结果是一个立方体形状的点栅格。 ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1172,7 +1172,7 @@
       },
       {
         "Id": "a4fd8f7243ae4f7c89445483e12f0aa4",
-        "Title": "Use a method that creates a cylinder with a given start and end point and a given radius",
+        "Title": "使用创建圆柱体(通过给定的起点和终点以及给定半径)的方法",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1193,7 +1193,7 @@
       },
       {
         "Id": "21385e58a45447e3b4984736b02fce2a",
-        "Title": "Vector to move the base (original) point up by a given value ",
+        "Title": "要将基点(原始)上移给定值的向量 ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

@@ -118,30 +118,30 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ByPointsAndValueObsolete" xml:space="preserve">
-    <value>Use Point nodes and Number nodes as direct inputs to nodes which previously used PointData nodes</value>
+    <value>Utilizzare i nodi Point e Number come input diretti per i nodi che in precedenza utilizzavano nodi PointData</value>
   </data>
   <data name="BySurfacePointObsolete" xml:space="preserve">
-    <value>Use Surface and UV nodes as direct inputs to nodes which previously used SurfaceData nodes</value>
+    <value>Utilizzare i nodi Surface e UV come input diretti per i nodi che in precedenza utilizzavano nodi SurfaceData</value>
   </data>
   <data name="BySurfacePointsAndValues" xml:space="preserve">
-    <value>Use Surface, UV, and Number nodes as direct inputs to nodes which previously used SurfaceData nodes</value>
+    <value>Utilizzare i nodi Surface, UV e Number come input diretti per i nodi che in precedenza utilizzavano nodi SurfaceData</value>
   </data>
   <data name="SurfaceObsolete" xml:space="preserve">
-    <value>Use the Surface available elsewhere in your graph</value>
+    <value>Utilizzare il nodo Surface disponibile altrove nel grafico</value>
   </data>
   <data name="ValueLocationObsolete" xml:space="preserve">
-    <value>Use the Points available elsewhere in your graph</value>
+    <value>Utilizzare i nodi Point disponibili altrove nel grafico</value>
   </data>
   <data name="ValueLocationsObsolete" xml:space="preserve">
-    <value>Use the UV locations available elsewhere in your graph.</value>
+    <value>Utilizzare le posizioni UV disponibili altrove nel grafico.</value>
   </data>
   <data name="ValuesObsolete" xml:space="preserve">
-    <value>Use the values provided by the node conducting the analysis.</value>
+    <value>Utilizzare i valori forniti dal nodo che gestisce l'analisi.</value>
   </data>
   <data name="ValueSurfaceObsolete" xml:space="preserve">
-    <value>Use the values provided by the node conducting the analysis</value>
+    <value>Utilizzare i valori forniti dal nodo che gestisce l'analisi</value>
   </data>
   <data name="VectorValueObsolete" xml:space="preserve">
-    <value>Use Vector nodes and Number nodes as direct inputs to nodes which previously used VectorData nodes</value>
+    <value>Utilizzare i nodi Vector e Number come input diretti per i nodi che in precedenza utilizzavano nodi VectorData</value>
   </data>
 </root>

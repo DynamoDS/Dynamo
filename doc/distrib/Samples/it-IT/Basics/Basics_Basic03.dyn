@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "Create a simple list",
+  "Description": "Crea un elenco semplice.",
   "Name": "Basics_Basic03",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -14,7 +14,7 @@
       "Type2": "number",
       "Value": "0",
       "NumberType": "Double",
-      "Description": "Creates a number",
+      "Description": "Crea un numero.",
       "SelectedIndex": 0
     },
     {
@@ -24,7 +24,7 @@
       "Type2": "number",
       "Value": "9",
       "NumberType": "Double",
-      "Description": "Creates a number",
+      "Description": "Crea un numero.",
       "SelectedIndex": 0
     },
     {
@@ -34,7 +34,7 @@
       "Type2": "number",
       "Value": "1",
       "NumberType": "Double",
-      "Description": "Creates a number",
+      "Description": "Crea un numero.",
       "SelectedIndex": 0
     },
     {
@@ -44,7 +44,7 @@
       "Type2": "number",
       "Value": "3",
       "NumberType": "Double",
-      "Description": "Creates a number",
+      "Description": "Crea un numero.",
       "SelectedIndex": 0
     }
   ],
@@ -68,7 +68,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Crea un numero.",
       "InputValue": 0.0
     },
     {
@@ -89,7 +89,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Crea un numero.",
       "InputValue": 9.0
     },
     {
@@ -100,7 +100,7 @@
         {
           "Id": "5d7c47a3b87244f0b7dd4a71ea74bede",
           "Name": "start",
-          "Description": "Number or letter to start the sequence at\r\nDefault value: 0 (disabled)",
+          "Description": "Numero o lettera iniziale della sequenza\nValore di default: 0 (disabled)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -109,7 +109,7 @@
         {
           "Id": "5aaeafaeeeda4845bf0f822a9101ea5c",
           "Name": "end",
-          "Description": "Number or letter to end the sequence at\r\nDefault value: 9 (disabled)",
+          "Description": "Lettera o numero finale della sequenza\nValore di default: 9 (disabled)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -118,7 +118,7 @@
         {
           "Id": "5cb35a794f4f4540b4e45b078215e487",
           "Name": "step",
-          "Description": "Space between numbers or letters\r\nDefault value: 1 (disabled)",
+          "Description": "Spazio tra numeri o lettere\nValore di default: 1 (disabled)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -129,7 +129,7 @@
         {
           "Id": "f3c0e2a813c54dbd8ec936f442a35513",
           "Name": "seq",
-          "Description": "New sequence",
+          "Description": "Nuova sequenza",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -137,7 +137,7 @@
         }
       ],
       "Replication": "Longest",
-      "Description": "Creates a sequence of numbers or letters in the given range"
+      "Description": "Crea una sequenza di numeri o lettere nell'intervallo dato."
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -157,7 +157,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Crea un numero.",
       "InputValue": 1.0
     },
     {
@@ -170,7 +170,7 @@
         {
           "Id": "0fd39ec4caf64e1298052c71d2b639f6",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -181,7 +181,7 @@
         {
           "Id": "a28feed3b3d84b24afda6336096e1963",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -189,7 +189,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -199,7 +199,7 @@
         {
           "Id": "e5312c8a601d4bab8f283f7a7f34aadf",
           "Name": "list",
-          "Description": "List to get the last item of\n\nvar[]..[]",
+          "Description": "Elenco del quale ottenere l'ultimo elemento var[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -210,7 +210,7 @@
         {
           "Id": "35d4f5285da648a58b910b484285cfc9",
           "Name": "item",
-          "Description": "Last item in the list",
+          "Description": "Ultimo elemento dell'elenco",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -219,7 +219,7 @@
       ],
       "FunctionSignature": "DSCore.List.LastItem@var[]..[]",
       "Replication": "Auto",
-      "Description": "Retrieves the last item in a list.\n\nList.LastItem (list: var[]..[]): var[]..[]"
+      "Description": "Recupera l'ultima voce di un elenco.\n\nList.LastItem (list: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -231,7 +231,7 @@
         {
           "Id": "ee3d384fe01a4f0dbf107ad6f61763cd",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -242,7 +242,7 @@
         {
           "Id": "79057a15213446be81ce5ebbd4394386",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -250,7 +250,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -262,7 +262,7 @@
         {
           "Id": "b04fd9704f6941dd9937ae6f7ea7de10",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo da valutare.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -273,7 +273,7 @@
         {
           "Id": "1ffb2264b5914776ab9aed6eb9259b0a",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Controlla il contenuto.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -281,7 +281,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualizza l'output di un nodo."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -291,7 +291,7 @@
         {
           "Id": "769672acc009464c8f96a2e5c88488a0",
           "Name": "list",
-          "Description": "List to chop into sublists\n\nvar[]..[]",
+          "Description": "Elenco da suddividere in sottoelenchi\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -300,7 +300,7 @@
         {
           "Id": "212c46b039b64d318b4508ff12e1e79f",
           "Name": "lengths",
-          "Description": "Lengths of consecutive sublists to be created from the input list\n\nint[]",
+          "Description": "Lunghezze dei sottoelenchi consecutivi creati a partire dall'elenco di input\n\nint[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -311,7 +311,7 @@
         {
           "Id": "c2db79e1e836420ab5db50673ddbe308",
           "Name": "lists",
-          "Description": "Sublists created from the list",
+          "Description": "Sottoelenchi creati a partire dall'elenco",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -320,7 +320,7 @@
       ],
       "FunctionSignature": "DSCore.List.Chop@var[]..[],int[]",
       "Replication": "Auto",
-      "Description": "Chop a list into a set of consecutive sublists with the specified lengths. List division begins at the top of the list.\n\nList.Chop (list: var[]..[], lengths: int[]): var[]..[]"
+      "Description": "Ritaglia un elenco in un gruppo di sottoelenchi consecutivi di lunghezze specificate, a partire dall'inizio dell'elenco.\n\nList.Chop (list: var[]..[], lengths: int[]): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -340,7 +340,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Crea un numero.",
       "InputValue": 3.0
     }
   ],
@@ -407,7 +407,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Proprietà",
       "Version": "2.13",
       "Data": {}
     }
@@ -430,7 +430,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Anteprima sfondo",
       "EyeX": -16.965513229370117,
       "EyeY": 24.341577529907227,
       "EyeZ": 50.649433135986328,
@@ -547,7 +547,7 @@
     "Annotations": [
       {
         "Id": "255b739edc4d475cb672faa53fbeb397",
-        "Title": "Inputs",
+        "Title": "Input",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -571,7 +571,7 @@
       },
       {
         "Id": "26b06ec46c7341c0867abcf02849ac39",
-        "Title": "Lists of Data can be generated with sequences and ranges. These lists can be reorganized with many other nodes for specific purposes",
+        "Title": "Gli elenchi di dati possono essere generati con sequenze e intervalli. Questi elenchi possono essere riorganizzati con molti altri nodi per scopi specifici.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -591,7 +591,7 @@
       },
       {
         "Id": "92a8dd7e679249ff9dfe47ab8c36d70c",
-        "Title": "Create a sequence of numbers, starting from Start to End, with a given Step",
+        "Title": "Creare una sequenza di numeri, partendo da Start fino a End, con un determinato Step.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -612,7 +612,7 @@
       },
       {
         "Id": "ceb344e825a345d7acd0660a54cb3ed7",
-        "Title": "Get the last item in a list",
+        "Title": "Ottiene l'ultima voce in un elenco.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -633,7 +633,7 @@
       },
       {
         "Id": "83b0fde585e146bbb8887f3fd07b4797",
-        "Title": "Slice the list in lengths of 3",
+        "Title": "Taglia l'elenco in lunghezze di 3.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -654,7 +654,7 @@
       },
       {
         "Id": "8339d8bf8bc94541b6dc43306ae8c724",
-        "Title": "Preview the result and observe the list structure with the help of a Watch node",
+        "Title": "Visualizza l'anteprima del risultato e osserva la struttura dell'elenco con l'aiuto di un nodo Watch.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

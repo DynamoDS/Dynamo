@@ -117,6 +117,78 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="DependencyViewExtensionErrorTemplate" xml:space="preserve">
+    <value>來自 WorkspaceDependencyViewExtension 的錯誤: {0}</value>
+  </data>
+  <data name="DetailsMessageIncorrectVersion" xml:space="preserve">
+    <value>此圖表中的某些節點最初是使用您未安裝的 {0} v{1} 建立。您安裝的是不同版本的 {0}，您想要保留安裝的版本嗎？</value>
+  </data>
+  <data name="DetailsMessageLoaded" xml:space="preserve">
+    <value>{0} {1} 已安裝並載入。</value>
+  </data>
+  <data name="DetailsMessageMissing" xml:space="preserve">
+    <value>此圖表是依據 {0} {1}。您是否要下載並安裝此套件？</value>
+  </data>
+  <data name="DetailsMessageRequireRestart" xml:space="preserve">
+    <value>您必須先解除安裝套件，才能安裝其他版本。請重新啟動 Dynamo，然後安裝指定的版本。</value>
+  </data>
+  <data name="DetailsMessageWarning" xml:space="preserve">
+    <value>此圖表中的某些節點最初是使用您未安裝的 {0} v{1} 建立。您安裝的可能是不同版本的 {0}，或者您可能有其他可解決這些節點的套件。</value>
+  </data>
+  <data name="ExtensionName" xml:space="preserve">
+    <value>工作區參考</value>
+  </data>
+  <data name="ExternalFilesHeaderText" xml:space="preserve">
+    <value>外部檔案</value>
+  </data>
+  <data name="ExternalFilesToolTip" xml:space="preserve">
+    <value>外部檔案是圖表空間中的外部文件，例如影像或文字檔。這些檔案是在執行圖表時，或在圖表已執行時按一下重新整理圖示計算而得。</value>
+  </data>
+  <data name="InstallButtonText" xml:space="preserve">
+    <value>安裝指定的版本</value>
+  </data>
+  <data name="KeepLocalButtonText" xml:space="preserve">
+    <value>保留安裝的版本</value>
+  </data>
+  <data name="LocalDefinitionsHeaderText" xml:space="preserve">
+    <value>本端定義</value>
+  </data>
+  <data name="LocalDefinitionsToolTip" xml:space="preserve">
+    <value>本端定義是對應到本端自訂節點和本端套件的 Dynamo 特定檔案。這些定義是在儲存圖表時，或按一下重新整理圖示計算而得。</value>
+  </data>
+  <data name="MenuItemString" xml:space="preserve">
+    <value>展示工作區參考(_W)</value>
+  </data>
+  <data name="NameHeader" xml:space="preserve">
+    <value>名稱</value>
+  </data>
+  <data name="PackageHeaderText" xml:space="preserve">
+    <value>套件</value>
+  </data>
+  <data name="PackagesToolTip" xml:space="preserve">
+    <value>套件擴充 Dynamo 的核心功能，可從 Package Manager 中取得。這些套件是在儲存圖表時，或按一下重新整理圖示計算而得。</value>
+  </data>
+  <data name="PathHeader" xml:space="preserve">
+    <value>路徑</value>
+  </data>
+  <data name="ProvideFeedbackButton" xml:space="preserve">
+    <value>提供回饋</value>
+  </data>
+  <data name="ProvideFeedbackError" xml:space="preserve">
+    <value>無法重新導向至 Dynamo 論壇頁面提供回饋:</value>
+  </data>
+  <data name="RefreshButtonTooltipText" xml:space="preserve">
+    <value>按一下以重新計算工作區參考。</value>
+  </data>
+  <data name="RestartBannerMessage" xml:space="preserve">
+    <value>安裝的套件已標記要解除安裝。若要完成解除安裝，請重新啟動 Dynamo。</value>
+  </data>
+  <data name="SizeHeader" xml:space="preserve">
+    <value>大小</value>
+  </data>
+  <data name="VersionHeader" xml:space="preserve">
+    <value>版本</value>
+  </data>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
   <data name="CSVIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -156,24 +228,6 @@
         AAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="DependencyViewExtensionErrorTemplate" xml:space="preserve">
-    <value>Error from WorkspaceDependencyViewExtension: {0}</value>
-  </data>
-  <data name="DetailsMessageIncorrectVersion" xml:space="preserve">
-    <value>Some nodes in this graph were originally created with {0} v{1}, which you do not have installed. Instead you have a different version of {0} installed, would you keep the installed version?</value>
-  </data>
-  <data name="DetailsMessageLoaded" xml:space="preserve">
-    <value>{0} {1} is installed and loaded.</value>
-  </data>
-  <data name="DetailsMessageMissing" xml:space="preserve">
-    <value>This graph depends on {0} {1}. Would you like to download and install this package?</value>
-  </data>
-  <data name="DetailsMessageRequireRestart" xml:space="preserve">
-    <value>The package needs to be uninstalled before you can install a different version of it. Please restart Dynamo and then install the specified version.</value>
-  </data>
-  <data name="DetailsMessageWarning" xml:space="preserve">
-    <value>Some nodes in this graph were originally created with {0} v{1}, which you do not have installed. You may have a different version of {0} installed, or you may have a different package which resolves these nodes.</value>
-  </data>
   <data name="DWGIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
@@ -195,9 +249,6 @@
         BUewj+ptN7DSRfBD30EK/yPoO+RWwRDwV/Rh+OjpshtvyqH6Lkv6lQAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="ExtensionName" xml:space="preserve">
-    <value>Workspace References</value>
-  </data>
   <data name="ExternalFileIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
@@ -205,12 +256,6 @@
         AybG+CkihBAcsALLQzbA8xkaEaAYBSM/y0ESn5OI0CKgNSkRoVVA+1uJCC0C6jnB95t5jW6oFQxYz5gA
         x2t0Q5VAQ5IuSNMFRbqgSBcU+Y8AfyZcWzh6+UwtsADe4g32mhnNDlF2oU3McFpBAAAAAElFTkSuQmCC
 </value>
-  </data>
-  <data name="ExternalFilesHeaderText" xml:space="preserve">
-    <value>External Files</value>
-  </data>
-  <data name="ExternalFilesToolTip" xml:space="preserve">
-    <value>External files are external documents in the graph space, such as images or text files. These are computed when the graph is run or by clicking the refresh icon incase the graph is already executed.</value>
   </data>
   <data name="ImageIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -222,9 +267,6 @@
         XQQ/+B+E8D+CvofsFaSAd9GH9NHTJHeX5KMAbU+iJwAAAABJRU5ErkJggg==
 </value>
   </data>
-  <data name="InstallButtonText" xml:space="preserve">
-    <value>Install Specified Version</value>
-  </data>
   <data name="JsonIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
@@ -235,21 +277,6 @@
         yJUnYNPyquoLwBEcwAacOJf8DFwB86xLZX0O9rJW7wQ+1BH80Hfgw/8Imj5ypaAN+Cua0H70VMEdoU2m
         NuEAcaQAAAAASUVORK5CYII=
 </value>
-  </data>
-  <data name="KeepLocalButtonText" xml:space="preserve">
-    <value>Keep Installed Version</value>
-  </data>
-  <data name="LocalDefinitionsHeaderText" xml:space="preserve">
-    <value>Local Definitions</value>
-  </data>
-  <data name="LocalDefinitionsToolTip" xml:space="preserve">
-    <value>Local definitions are Dynamo-specific files corresponding to local custom nodes and local packages. These are computed when the graph is saved or by clicking the refresh icon.</value>
-  </data>
-  <data name="MenuItemString" xml:space="preserve">
-    <value>Show _Workspace References</value>
-  </data>
-  <data name="NameHeader" xml:space="preserve">
-    <value>Name</value>
   </data>
   <data name="NodeLibraryDependency_Loaded" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
@@ -465,15 +492,6 @@
         jDoyqebiAAAAAElFTkSuQmCC
 </value>
   </data>
-  <data name="PackageHeaderText" xml:space="preserve">
-    <value>Packages</value>
-  </data>
-  <data name="PackagesToolTip" xml:space="preserve">
-    <value>Packages extend Dynamo's core functionality and are available in the Package Manager. These are computed when the graph is saved or by clicking the refresh icon.</value>
-  </data>
-  <data name="PathHeader" xml:space="preserve">
-    <value>Path</value>
-  </data>
   <data name="PDFIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
@@ -483,24 +501,6 @@
         6xPIpSZIwAYsXgB+flxncsbG7blXHyVYg42sraBdA/sEM9kPFrDBHvB7t01H4GVPcFRnnAEbcw5L4JxL
         Tn9BDH0EP/QfxPA/gqFD7hSkgHcxhPTe0yQ3hv2gyR8J8jYAAAAASUVORK5CYII=
 </value>
-  </data>
-  <data name="ProvideFeedbackButton" xml:space="preserve">
-    <value>Provide Feedback</value>
-  </data>
-  <data name="ProvideFeedbackError" xml:space="preserve">
-    <value>Could not redirect to the Dynamo forum page for feedback:</value>
-  </data>
-  <data name="RefreshButtonTooltipText" xml:space="preserve">
-    <value>Click to recalculate workspace references.</value>
-  </data>
-  <data name="RestartBannerMessage" xml:space="preserve">
-    <value>An installed package is marked for uninstall. To complete the uninstall, please restart Dynamo.</value>
-  </data>
-  <data name="SizeHeader" xml:space="preserve">
-    <value>Size</value>
-  </data>
-  <data name="VersionHeader" xml:space="preserve">
-    <value>Version</value>
   </data>
   <data name="ZeroTouchNodeReferenceIcon" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>

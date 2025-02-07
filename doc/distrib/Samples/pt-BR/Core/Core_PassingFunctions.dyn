@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "Demonstrates how to pass a function in Dynamo",
+  "Description": "Demonstra como passar uma função no Dynamo",
   "Name": "Core_PassingFunctions",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -17,7 +17,7 @@
         {
           "Id": "be69d661778e4c1d84d339692dfbcbde",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada X\n\ndouble\nValor padrão: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -26,7 +26,7 @@
         {
           "Id": "7a43a26abd594c6093f4b00bfa7c7543",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Y\n\ndouble\nValor padrão: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -35,7 +35,7 @@
         {
           "Id": "15f303388372444aa67d3960b6c2033c",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Coordenada Z\n\ndouble\nValor padrão: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -46,7 +46,7 @@
         {
           "Id": "01d0926dfc6a4fd2991b7ff2f07f91a9",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Ponto criado usando as coordenadas",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -55,7 +55,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "CrossProduct",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Forme um ponto com três coordenadas cartesianas\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Ponto"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -66,7 +66,7 @@
         {
           "Id": "a3afac47e03c4f2f92a35b5f4cbea94d",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valor da expressão na linha 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -74,7 +74,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Permite que o código DesignScript seja criado diretamente",
       "Code": "0..#8..4;"
     },
     {
@@ -85,7 +85,7 @@
         {
           "Id": "5eadd9bbefc34795b56a27e728549180",
           "Name": "centerPoint",
-          "Description": "Center point of circle\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0) (disabled)",
+          "Description": "Ponto central do círculo\n\nPoint\nValor padrão: Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0) (desativado)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -94,7 +94,7 @@
         {
           "Id": "421bcb15b8df4f02bd376fb80a804a73",
           "Name": "radius",
-          "Description": "Radius\n\ndouble\nDefault value : 1",
+          "Description": "Raio\n\ndouble\nValor padrão: 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -105,7 +105,7 @@
         {
           "Id": "59d25654ab5848778f8bc1bcc7c55411",
           "Name": "Circle",
-          "Description": "Circle created with center point and radius",
+          "Description": "Círculo criado com ponto central e raio",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -114,7 +114,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
       "Replication": "Auto",
-      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+      "Description": "Cria um círculo com ponto central de entrada e raio no plano XY universal, com o Z universal como normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Círculo"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -125,7 +125,7 @@
         {
           "Id": "a423d771c20046a7857a0c4eec27afc1",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valor da expressão na linha 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -133,7 +133,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Permite que o código DesignScript seja criado diretamente",
       "Code": "1.5;"
     },
     {
@@ -146,7 +146,7 @@
         {
           "Id": "c5bb5cdfbb5145afb702b0f0f7619072",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nó a ser avaliado.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -157,7 +157,7 @@
         {
           "Id": "41db25070e7f441090ff83bbd0a156c7",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Observar conteúdo.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -165,7 +165,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualiza a saída de um nó"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -175,7 +175,7 @@
         {
           "Id": "98e77cd75f0d49648bf4f07876db2826",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "Lista da qual obter um item.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -184,7 +184,7 @@
         {
           "Id": "6613c40a0b2140e6b77ae55a7b8aee02",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "Índice do item a ser obtido.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -195,7 +195,7 @@
         {
           "Id": "ecba4073e59e4f4fb331fa8ef61116f0",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "Item na lista no determinado índice.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -204,7 +204,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Retorna um item da lista fornecida que está localizado no índice especificado.\n\nList.GetItemAtIndex (lista: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -215,7 +215,7 @@
         {
           "Id": "0aa2eaff181046c4af8e3417c47beb5f",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valor da expressão na linha 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -223,7 +223,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Permite que o código DesignScript seja criado diretamente",
       "Code": "1..2;"
     },
     {
@@ -243,7 +243,7 @@
         {
           "Id": "2feea261acd24dd9981df50000af5b86",
           "Name": "distance",
-          "Description": "The distance to extrude the curve\n\ndouble\nDefault value : 1",
+          "Description": "A distância para fazer a extrusão da curva\n\ndouble\nValor padrão: 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -254,7 +254,7 @@
         {
           "Id": "3bab5e59f6cd4a30a5f499648a62ad6f",
           "Name": "Surface",
-          "Description": "The extruded Surface",
+          "Description": "A superfície com extrusão",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -263,7 +263,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.Extrude@double",
       "Replication": "Auto",
-      "Description": "Extrudes a Curve in the normal Vector direction\n\nCurve.Extrude (distance: double = 1): Surface"
+      "Description": "Efetuar a extrusão de uma curva na direção do vetor normal\n\nCurve.Extrude (distance: double = 1): Superfície"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -274,7 +274,7 @@
         {
           "Id": "bb1419d9aea848febf15f66460d1d619",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valor da expressão na linha 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -282,7 +282,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Permite que o código DesignScript seja criado diretamente",
       "Code": "3;"
     },
     {
@@ -294,7 +294,7 @@
         {
           "Id": "d914cf4778f641c89bb1386499ad8af2",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valor da expressão na linha 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -302,7 +302,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Permite que o código DesignScript seja criado diretamente",
       "Code": "-3;"
     },
     {
@@ -322,7 +322,7 @@
         {
           "Id": "97e626ec0e2643bfb7d47a8a59667d75",
           "Name": "distance",
-          "Description": "The distance to extrude the curve\n\ndouble\nDefault value : 1",
+          "Description": "A distância para fazer a extrusão da curva\n\ndouble\nValor padrão: 1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -333,7 +333,7 @@
         {
           "Id": "2518878a03e043ae9f955810411a9205",
           "Name": "Surface",
-          "Description": "The extruded Surface",
+          "Description": "A superfície com extrusão",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -342,7 +342,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Curve.Extrude@double",
       "Replication": "Auto",
-      "Description": "Extrudes a Curve in the normal Vector direction\n\nCurve.Extrude (distance: double = 1): Surface"
+      "Description": "Efetuar a extrusão de uma curva na direção do vetor normal\n\nCurve.Extrude (distance: double = 1): Superfície"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -353,7 +353,7 @@
         {
           "Id": "16b138a948b442e4a550be025748a05a",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valor da expressão na linha 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -361,7 +361,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Permite que o código DesignScript seja criado diretamente",
       "Code": "1..2;"
     },
     {
@@ -373,7 +373,7 @@
         {
           "Id": "18482f8d2450447e99fefbb20f5fb4e5",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Valor da expressão na linha 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -381,7 +381,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Permite que o código DesignScript seja criado diretamente",
       "Code": "0..#5..4;"
     },
     {
@@ -394,7 +394,7 @@
         {
           "Id": "daee6fcffa0d4c9b812c395683805e65",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nó a ser avaliado.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -405,7 +405,7 @@
         {
           "Id": "cb7a6461ecef4223b6fa786edb4a5176",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Observar conteúdo.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -413,7 +413,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualiza a saída de um nó"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -425,7 +425,7 @@
         {
           "Id": "71ffe50cede9462b847ff9dfd277ecab",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nó a ser avaliado.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -436,7 +436,7 @@
         {
           "Id": "c9b161bd7f8e44a0baff7a914c6078e5",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Observar conteúdo.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -444,7 +444,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Visualiza a saída de um nó"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -454,7 +454,7 @@
         {
           "Id": "d8103928f0224c6692b45f7759c6c6c3",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "Lista da qual obter um item.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": true,
@@ -463,7 +463,7 @@
         {
           "Id": "5f172c652c6a4ed79e1d70c4390e2e33",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "Índice do item a ser obtido.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -474,7 +474,7 @@
         {
           "Id": "f077a59d2ba7456dabbe7d8050bae9ec",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "Item na lista no determinado índice.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -483,7 +483,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "Retorna um item da lista fornecida que está localizado no índice especificado.\n\nList.GetItemAtIndex (lista: var[]..[], index: int): var[]..[]"
     }
   ],
   "Connectors": [
@@ -586,7 +586,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Propriedades",
       "Version": "2.13",
       "Data": {}
     }
@@ -609,7 +609,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Visualização do plano de fundo",
       "EyeX": 43.76154708862305,
       "EyeY": 27.393884658813477,
       "EyeZ": 26.704696655273438,
@@ -786,7 +786,7 @@
     "Annotations": [
       {
         "Id": "bb3b8ab29c6d4df99699ba464065f5a7",
-        "Title": "Info",
+        "Title": "Informações",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -808,8 +808,8 @@
       },
       {
         "Id": "ecb50f32135444a29dc5022fa4be4e98",
-        "Title": "Initial inputs",
-        "DescriptionText": "Create a 5x8 matrix of points",
+        "Title": "Entradas iniciais",
+        "DescriptionText": "Criar uma matriz de pontos 5x8",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -832,8 +832,8 @@
       },
       {
         "Id": "fd13d23b8d034b4cb06fadf43f507f01",
-        "Title": "Select the second and the third ITEM from EACH LIST",
-        "DescriptionText": "Passing the function",
+        "Title": "Selecionar o segundo e o terceiro ITEM de CADA LISTA",
+        "DescriptionText": "Passando a função",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -856,8 +856,8 @@
       },
       {
         "Id": "0efd522b4472403e9e8a381a595da1ff",
-        "Title": "Select the second and the third LIST",
-        "DescriptionText": "Passing the function",
+        "Title": "Selecionar a segunda e a terceira LISTA",
+        "DescriptionText": "Passando a função",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -880,8 +880,8 @@
       },
       {
         "Id": "5f96fcb544f442a7aca3bdf5f34d9b29",
-        "Title": "Extrude DOWN",
-        "DescriptionText": "Resulting cylinders",
+        "Title": "Efetuar extrusão ABAIXO",
+        "DescriptionText": "Cilindros resultantes",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -905,8 +905,8 @@
       },
       {
         "Id": "f8d1a4a770cc46868928ab8faa33718a",
-        "Title": "Extrude UP",
-        "DescriptionText": "Resulting cylinders",
+        "Title": "Efetuar extrusão ACIMA",
+        "DescriptionText": "Cilindros resultantes",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -931,7 +931,7 @@
       },
       {
         "Id": "03d83ff520f843359e81b94ec6698a19",
-        "Title": "Draw matrix of circles",
+        "Title": "Desenhar matriz de círculos",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -957,7 +957,7 @@
       },
       {
         "Id": "47dbdf18de6349289289c36b8f6c7642",
-        "Title": "This list of points is organized in a hierarchical structure--it's a list of lists.  The grid was made with 8 points in the X-direction and 5 in the Y-direction.  This list represents 8 lists of 5 things, or lists of columns of points.",
+        "Title": "Esta lista de pontos está organizada em uma estrutura hierárquica -- ela é uma lista das listas.  A malha foi composta de 8 pontos na direção X e 5 na direção Y.  Esta lista representa 8 listas de 5 coisas ou listas de colunas de pontos.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -978,7 +978,7 @@
       },
       {
         "Id": "3fe4d0f6585f4d9fbdb37c3d956d805d",
-        "Title": "Draw a circle around each point.",
+        "Title": "Desenhe um círculo ao redor de cada ponto.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -999,7 +999,7 @@
       },
       {
         "Id": "a73f9174f32148a798915a2f54c6fb6a",
-        "Title": "From the nested list of circles, items {1,2} are chosen.  Dynamo nodes will always act on a list \"from the outside in,\" or from the highest level to the lowest level.\r\n\r\nSelecting items 1 and 2 from the list will return list #1 and list #2 from the original nested list structure.",
+        "Title": "Na lista aninhada de círculos, os itens {1,2} estão selecionados.  Os nós do Dynamo sempre agirão em uma lista \"de fora para dentro\" ou do nível mais alto para o nível mais baixo.\r\n\r\nSelecionar os itens 1 e 2 na lista irá retornar a lista nº 1 e a lista nº 2 da estrutura original da lista aninhada.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1020,7 +1020,7 @@
       },
       {
         "Id": "f43283699ca24aa69623b15e019f7672",
-        "Title": "Rather than taking the first two lists from the node's output, the List@Level feature allows the #1 and #2 item from EACH list to be taken, by selecting L2 at the input port of List.GetItemAtIndex.\r\n\r\nNote that this feature resolves the functionality of List.Map, a method used to access the inner levels of input lists in the previous versions of Dynamo.",
+        "Title": "Em vez de tomar as duas primeiras listas da saída do nó, o recurso List@Level permite que o item nº 1 e o item nº 2 de CADA lista sejam tomados selecionando L2 na porta de entrada de List.GetItemAtIndex.\r\nObserve que este recurso corrige a funcionalidade de List.Map, um método usado para acessar os níveis internos das listas de entrada nas versões anteriores do Dynamo.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1041,7 +1041,7 @@
       },
       {
         "Id": "53e0aab7870a4afb84a16229adb40b57",
-        "Title": "The selected data still exists in the same structure it did before I selected it by mapping.",
+        "Title": "Os dados selecionados ainda existem na mesma estrutura que estavam antes que eu os selecionasse pelo mapeamento.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1062,7 +1062,7 @@
       },
       {
         "Id": "ddfbbe5196964150a648974b3759653b",
-        "Title": "This list of circles is extruded up.",
+        "Title": "Esta lista de círculos tem sua extrusão para cima aplicada.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1083,7 +1083,7 @@
       },
       {
         "Id": "cd5d3035911c496698419148363be864",
-        "Title": "This list of circles is extruded down.",
+        "Title": "Esta lista de círculos tem sua extrusão para baixo aplicada.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1104,7 +1104,7 @@
       },
       {
         "Id": "64a021eb7d024f83af81e726b1172932",
-        "Title": "PASSING FUNCTIONS\r\n\r\nDynamo is a functional language, which means that ACTIONS can be treated in the same way that OBJECTS are.  Most nodes in Dynamo can be turned into a function and used in a very precise way on a set of data.  \r\n\r\nMaking a function and passing a function is like speaking the command \"Run for 20 minutes!\" but specifying later on who you are talking to.\r\n\r\nIn this example, a grid of circles is represented in a complex structure.  The command to select a set of circles is used directly, and then the command is passed instead as a function to lower levels of data for a different result.",
+        "Title": "FUNÇÕES DE PASSAGEM\r\n\r\nO Dynamo é uma linguagem funcional, o que significa que as AÇÕES podem ser tratadas da mesma forma que são tratados os OBJETOS.  A maioria dos nós no Dynamo podem ser convertidos em função e usados de uma maneira muito precisa em um conjunto de dados.  \r\n\r\nCriar uma função e passar uma função é como dar a ordem \"Corra durante 20 minutos!\", mas só mais tarde especificar a quem você estava dando a ordem.\r\n\r\nNeste exemplo, um eixo de círculos é representado em uma estrutura complexa.  O comando para selecionar um conjunto de círculos é utilizado diretamente e, depois, o comando é passado como uma função para níveis inferiores de dados para um resultado diferente.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

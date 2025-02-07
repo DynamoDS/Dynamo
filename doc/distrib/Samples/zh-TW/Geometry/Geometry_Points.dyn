@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "Create Points array",
+  "Description": "建立點陣列",
   "Name": "Geometry_Points",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -17,7 +17,7 @@
         {
           "Id": "26b70b8ac9e545d8ad487fd432f00100",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "X 座標\n\ndouble\n預設值 : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -26,7 +26,7 @@
         {
           "Id": "7835459af7c642bda84fb06ff760b569",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Y 座標\n\ndouble\n預設值 : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -35,7 +35,7 @@
         {
           "Id": "704fe2d8004c4734972f7534c32b6cff",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Z 座標\n\ndouble\n預設值 : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -46,7 +46,7 @@
         {
           "Id": "521d036bc8aa4819a637542c93eb0af7",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "透過座標建立的點",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -55,7 +55,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "給與 3 個直角座標構成一個點\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -65,7 +65,7 @@
         {
           "Id": "f9d9da6219f34b6aa15abc1ad0fea28b",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "X 座標\n\ndouble\n預設值 : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -74,7 +74,7 @@
         {
           "Id": "e0ba072f2609431288f4e14469c5744b",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Y 座標\n\ndouble\n預設值 : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -83,7 +83,7 @@
         {
           "Id": "f25fce624cc54aaab4bd22155c9cd371",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Z 座標\n\ndouble\n預設值 : 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -94,7 +94,7 @@
         {
           "Id": "7964e7cae0ae49ba8f89a4420ce2c1fa",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "透過座標建立的點",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -103,7 +103,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "CrossProduct",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "給與 3 個直角座標構成一個點\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Range, CoreNodeModels",
@@ -113,7 +113,7 @@
         {
           "Id": "960ac7e87b2a40ddac10d3f8ca34e33c",
           "Name": "start",
-          "Description": "Number or letter to start the sequence at\r\nDefault value: 0 (disabled)",
+          "Description": "序列開始的數字或字母\n預設值 : 0 (停用)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -122,7 +122,7 @@
         {
           "Id": "f7c07b57d9e146128a3fb595e703068e",
           "Name": "end",
-          "Description": "Number or letter to end the sequence at\r\nDefault value: 9 (disabled)",
+          "Description": "序列結束的數字或字母\n預設值 : 9 (停用)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -131,7 +131,7 @@
         {
           "Id": "5129143afc3045deb52cbc84bcac3a13",
           "Name": "step",
-          "Description": "Space between numbers or letters\r\nDefault value: 1 (disabled)",
+          "Description": "數字或字母之間的空格\n預設值 : 1 (停用)",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -142,7 +142,7 @@
         {
           "Id": "082fbef8d8b148b6b83859e7d3f8edf9",
           "Name": "seq",
-          "Description": "New sequence",
+          "Description": "新序列",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -150,7 +150,7 @@
         }
       ],
       "Replication": "Longest",
-      "Description": "Creates a sequence of numbers or letters in the given range"
+      "Description": "建立給定範圍內的一系列數字或字母"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -170,7 +170,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "建立數字",
       "InputValue": 0.0
     },
     {
@@ -191,7 +191,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "建立數字",
       "InputValue": 10.0
     },
     {
@@ -204,7 +204,7 @@
         {
           "Id": "329a754afae64710b64441d8e411f9b2",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "要演算的節點。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -215,7 +215,7 @@
         {
           "Id": "e4fbc3bfd0984d5788c3645e38aa2cf3",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "觀看內容。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -223,7 +223,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "視覺化節點的輸出"
     },
     {
       "ConcreteType": "Watch3DNodeModels.Watch3D, Watch3DNodeModels",
@@ -231,7 +231,7 @@
       "WatchHeight": 200.0,
       "WasExecuted": true,
       "Camera": {
-        "Name": "0e500d65-fbc3-406a-9aef-67574bc1f2a5 Preview",
+        "Name": "0e500d65-fbc3-406a-9aef-67574bc1f2a5 預覽",
         "EyeX": -18.420581817626953,
         "EyeY": 23.999961853027344,
         "EyeZ": 49.70609664916992,
@@ -249,7 +249,7 @@
         {
           "Id": "37ede02780104521ab5d2706f36ace1d",
           "Name": "",
-          "Description": "Incoming geometry objects.",
+          "Description": "進入的幾何圖形物件。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -260,7 +260,7 @@
         {
           "Id": "f826cf25885446df986a61e59f6f991d",
           "Name": "",
-          "Description": "Incoming geometry objects.",
+          "Description": "進入的幾何圖形物件。",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -268,7 +268,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Shows a dynamic preview of geometry"
+      "Description": "展示幾何圖形的動態預覽"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -287,7 +287,7 @@
         {
           "Id": "c982d730ba5f4c86a8c4757165838211",
           "Name": "vectorToAdd",
-          "Description": "Vector",
+          "Description": "向量",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -298,7 +298,7 @@
         {
           "Id": "b1447c8eba3145aab2d5ac63bdb53081",
           "Name": "Point",
-          "Description": "Point",
+          "Description": "點",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -307,7 +307,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.Add@Autodesk.DesignScript.Geometry.Vector",
       "Replication": "Auto",
-      "Description": "Add a vector to a point. The same as Translate(Vector).\n\nPoint.Add (vectorToAdd: Vector): Point"
+      "Description": "對點加入向量。與 Translate(Vector) 相同。\n\nPoint.Add (vectorToAdd: Vector): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
@@ -330,7 +330,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "產生數值",
       "InputValue": 6.4
     },
     {
@@ -361,7 +361,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.Z",
       "Replication": "Auto",
-      "Description": "Get the Z component of a Point\n\nPoint.Z: double"
+      "Description": "取得點的 Z 分量\n\nPoint.Z: double"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -381,7 +381,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "建立數字",
       "InputValue": 1.0
     },
     {
@@ -403,7 +403,7 @@
         {
           "Id": "0caed96f91934b4d8f989e96c128ea7c",
           "Name": "Vector",
-          "Description": "Vector",
+          "Description": "向量",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -412,7 +412,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.AsVector",
       "Replication": "Auto",
-      "Description": "Get the Vector with the same X, Y, and Z component\n\nPoint.AsVector ( ): Vector"
+      "Description": "取得有相同 X、Y 和 Z 分量的向量\n\nPoint.AsVector ( ): Vector"
     }
   ],
   "Connectors": [
@@ -497,7 +497,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "性質",
       "Version": "2.13",
       "Data": {}
     }
@@ -520,7 +520,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "背景預覽(_B)",
       "EyeX": -3.826293468475342,
       "EyeY": 15.002310276031494,
       "EyeZ": 11.229312896728516,
@@ -657,7 +657,7 @@
     "Annotations": [
       {
         "Id": "cf8cb23ed0514f8bae54d0da92c158c1",
-        "Title": "Initial inputs",
+        "Title": "初始輸入",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -679,7 +679,7 @@
       },
       {
         "Id": "3992a25215824c03a7bdb12774ed1272",
-        "Title": "Initial inputs",
+        "Title": "初始輸入",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -703,7 +703,7 @@
       },
       {
         "Id": "52cbfcd618de4c25997e46478dbe9864",
-        "Title": "Range of numbers",
+        "Title": "數字範圍",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -726,7 +726,7 @@
       },
       {
         "Id": "e5e6197d7c2a46d0a64fc3ea5d462408",
-        "Title": "Matrix of points",
+        "Title": "點矩陣",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -749,7 +749,7 @@
       },
       {
         "Id": "9a4aaa96ecdc40a986082c820cfb301a",
-        "Title": "Single point",
+        "Title": "單一點",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -772,7 +772,7 @@
       },
       {
         "Id": "3f3a972c1326432588ee8d7bff3b0ecd",
-        "Title": "Move matrix by the point as a vector",
+        "Title": "透過點移動矩陣成為向量",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -795,8 +795,8 @@
       },
       {
         "Id": "ed6175cafbcf4ed39d710eb24411f50e",
-        "Title": "Turn point into Vector",
-        "DescriptionText": "Description <Double click here to edit group description>",
+        "Title": "將點變成向量",
+        "DescriptionText": "描述 <按兩下這裡以編輯群組描述>",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -818,7 +818,7 @@
       },
       {
         "Id": "9dd9b444c70246e99cdc4a24f62e9f33",
-        "Title": "Preview point 'Z' coordinate",
+        "Title": "預覽點「Z」座標",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -841,7 +841,7 @@
       },
       {
         "Id": "3a4633c4dafe47ecac93ab641834470b",
-        "Title": "Preview results",
+        "Title": "預覽結果",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -864,7 +864,7 @@
       },
       {
         "Id": "ad3945ee5bd749a6bc9a876ca3acaa2a",
-        "Title": "Basic Geometric Elements have default values for numerical inputs. Check the default values by hovering over the node input port",
+        "Title": "基本幾何元素的數值輸入有預設值。請將游標懸停在節點輸入埠上查看預設值",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -885,7 +885,7 @@
       },
       {
         "Id": "af4d2a95f2da4a3f828329089eefa229",
-        "Title": "After hitting \"Run\" or with Run Automatically enabled, see the geometric entity either in the Background Peview, in Watch 3D, or as data in a Watch node.  Elements will highlight in Background when the node is selected",
+        "Title": "在按「執行」或啟用「自動執行」後，請在「背景預覽」或 Watch 3D 中查看幾何圖元，或在 Watch 節點中查看資料。選取節點後，元素將在背景中亮顯",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -906,7 +906,7 @@
       },
       {
         "Id": "877cc2b8dff5481d9a7cf30738b0b96e",
-        "Title": "Arrays of Geometry can be created using Sequences, Ranges, and Lists ",
+        "Title": "可以使用順序、範圍和清單，建立幾何圖形的陣列 ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -927,7 +927,7 @@
       },
       {
         "Id": "4741129b8b5849c1999307042d54795a",
-        "Title": "Information can be extracted from Geometry using nodes in the Query subcategory of each node grouping (next to the questionmark symbol)",
+        "Title": "使用每個節點群組的 Query 子品類 (問號旁邊) 中的節點，可以從 Geometry 中萃取資訊",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -948,7 +948,7 @@
       },
       {
         "Id": "03f561a9a88e4323bc332353f2776382",
-        "Title": "Derivative elements can be created by using tools in the Actions subcategory of the entity",
+        "Title": "可在圖元的動作子品類中使用工具，來建立衍生元素",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -969,7 +969,7 @@
       },
       {
         "Id": "d55cd027705a41c9b364ba3f46b7dd08",
-        "Title": "Make 1, 2, and 3 dimensional arrays by passing Ranges into the points x, y, and z ports, then changing the Lacing properties in the right click menu for the node. Observe the result when choosing the Cross Product Lacing option",
+        "Title": "將範圍傳入點的 x、y、z 埠，然後在節點右鍵功能表中變更「交織」性質，來建立 1 維、2 維和 3 維陣列。在選擇「笛卡兒積交織」選項時觀察結果",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -990,7 +990,7 @@
       },
       {
         "Id": "e9c5f87402f048808179e4d4f3cd2fa9",
-        "Title": "Some elements can be easily converted into others",
+        "Title": "某些元素可以輕鬆轉換為其他元素",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

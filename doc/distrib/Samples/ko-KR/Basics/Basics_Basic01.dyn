@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "Connect nodes to add two numbers",
+  "Description": "노드를 연결하여 두 개의 번호를 추가합니다.",
   "Name": "Basics_Basic01",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -14,7 +14,7 @@
       "Type2": "number",
       "Value": "2",
       "NumberType": "Double",
-      "Description": "Creates a number",
+      "Description": "숫자를 만듭니다",
       "SelectedIndex": 0
     },
     {
@@ -24,7 +24,7 @@
       "Type2": "number",
       "Value": "6",
       "NumberType": "Double",
-      "Description": "Creates a number",
+      "Description": "숫자를 만듭니다",
       "SelectedIndex": 0
     }
   ],
@@ -48,7 +48,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "숫자를 만듭니다",
       "InputValue": 2.0
     },
     {
@@ -59,7 +59,7 @@
         {
           "Id": "c0d7f6cc642d478bb12abfe5f56511b3",
           "Name": "x",
-          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "Description": "정수 값, double 값 또는 문자열\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -68,7 +68,7 @@
         {
           "Id": "fb7fa087ab954539b0675d83c4bccf13",
           "Name": "y",
-          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "Description": "정수 값, double 값 또는 문자열\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -79,7 +79,7 @@
         {
           "Id": "389b70a9ba80459e9958f594230c86b6",
           "Name": "var",
-          "Description": "The sum of two input numbers, or the concatenation of two strings",
+          "Description": "두 입력 숫자의 합계 또는 두 문자열의 연결",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -88,7 +88,7 @@
       ],
       "FunctionSignature": "+@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns addition of x and y\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "x와 y를 더하여 반환\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -100,7 +100,7 @@
         {
           "Id": "9bacd0cbbe68470d8deb2f0dfc31155f",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "평가할 노드입니다.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -111,7 +111,7 @@
         {
           "Id": "23f3b9f8740a47bcaee0a48699e61066",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Watch 내용입니다.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -119,7 +119,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "노드의 출력을 시각화합니다."
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -139,7 +139,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "숫자를 만듭니다",
       "InputValue": 6.0
     }
   ],
@@ -164,7 +164,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "특성",
       "Version": "2.13",
       "Data": {}
     }
@@ -187,7 +187,7 @@
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "배경 미리보기(_B)",
       "EyeX": -16.965513229370117,
       "EyeY": 24.341577529907227,
       "EyeZ": 50.649433135986328,
@@ -244,7 +244,7 @@
     "Annotations": [
       {
         "Id": "1d089d46305e464b8714d8f6d762775a",
-        "Title": "Basic functional inputs, like Numbers and Strings can be selected by either browsing or searching from the library on the left of the canvas.\r\n\r\nOperations to execute on data, like math or geometric transformations, are also found in the library",
+        "Title": "숫자 및 문자열과 같은 기본 함수 입력은 캔버스 왼쪽의 라이브러리에서 탐색하거나 검색하여 선택할 수 있습니다.\r\n\r\n수학 또는 기하학적 변환 등 데이터에 실행되는 연산도 라이브러리에서 찾을 수 있습니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -264,7 +264,7 @@
       },
       {
         "Id": "07d8f330cb434fcea050bf864d5ebc10",
-        "Title": "Dynamo is a Visual Programming language.  Like other languages it works by linking simple elements together to form more complex ideas",
+        "Title": "Dynamo는 시각적 프로그래밍 언어로, 다른 언어와 같이 간단한 요소를 연결하여 더 복잡한 아이디어를 형성하는 방식으로 사용됩니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -284,7 +284,7 @@
       },
       {
         "Id": "a0293ecc963343219704a7c84f4749c8",
-        "Title": "Pull a connector out of the \">\" port on the Number node and connect it to the \"y\" port on the + node, then push the \"Run\" button in the lower left corner of the application.",
+        "Title": "Number 노드의 \">\" 포트 밖으로 커넥터를 꺼내 + 노드의 \"y\" 포트에 연결한 다음, 응용프로그램 왼쪽 하단의 \"실행\" 버튼을 누르십시오.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -305,7 +305,7 @@
       },
       {
         "Id": "5cefc1038b544158bd2bae09ec296510",
-        "Title": "Data Can be visualized by clicking on the Run button in the lower right of the application.  If you enable \"Automatic\" Run mode, the application will constantly update.\r\n\r\nYou can see the data either by using a Watch node or clicking on the small square at the bottom of most nodes.",
+        "Title": "데이터는 응용프로그램 오른쪽 하단에 있는 실행 버튼을 클릭하여 시각화할 수 있습니다. \"자동\" 실행 모드를 활성화하면 응용프로그램이 지속적으로 업데이트됩니다.\r\n\r\nWatch 노드를 사용하거나 대부분의 노드 하단에 있는 작은 정사각형을 클릭하면 데이터를 볼 수 있습니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -326,7 +326,7 @@
       },
       {
         "Id": "d053df48c7af4d8c80c1b151bf2fc884",
-        "Title": "More Sample files can be found in the Help menu, or close this file by clicking the \"X\" on the tab to return to the welcome page",
+        "Title": "도움말 메뉴에서 다른 샘플 파일을 확인하거나 탭의 \"X\"를 클릭하여 이 파일을 닫고 시작 페이지로 돌아가십시오",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

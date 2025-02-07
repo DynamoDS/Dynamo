@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,627 +118,602 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BuildSublistsDescription" xml:space="preserve">
-    <value>Build sublists from a list using DesignScript range syntax.</value>
-    <comment>Description for code block node</comment>
+    <value>Erstellt unter Verwendung von DesignScript-Bereichssyntax Unterlisten aus einer Liste.</value>
   </data>
   <data name="CodeBlockNodeDescription" xml:space="preserve">
-    <value>Allows for DesignScript code to be authored directly</value>
+    <value>Ermöglicht die direkte Erstellung von DesignScript-Code.</value>
   </data>
   <data name="NumberNodeDescription" xml:space="preserve">
-    <value>Creates a number.</value>
-    <comment>Description for number node</comment>
+    <value>Erstellt eine Zahl.</value>
   </data>
   <data name="StringNodeDescription" xml:space="preserve">
-    <value>Creates a string.</value>
-    <comment>Description for string node</comment>
+    <value>Erstellt eine Zeichenfolge.</value>
   </data>
   <data name="FunctionNodeDescription" xml:space="preserve">
-    <value>DesignScript Builtin Functions</value>
-    <comment>Description for function node</comment>
+    <value>DesignScript Builtin-Funktionen</value>
   </data>
   <data name="CustomNodeDesciption" xml:space="preserve">
-    <value>Instance of a Custom Node</value>
-    <comment>Description for custom node</comment>
+    <value>Instanz eines benutzerdefinierten Blocks</value>
   </data>
   <data name="ComposeFunctionNodeDescription" xml:space="preserve">
-    <value>Composes two single parameter functions into one function.</value>
-    <comment>Description for compose function node</comment>
+    <value>Verbindet zwei Einzelparameterfunktionen zu einer Funktion.</value>
   </data>
   <data name="OutputNodeDescription" xml:space="preserve">
-    <value>A function output, use with custom nodes</value>
-    <comment>Description for output node</comment>
+    <value>Eine Funktionsausgabe zur Verwendung mit benutzerdefinierten Blöcken</value>
   </data>
   <data name="InputNodeDescription" xml:space="preserve">
-    <value>A function parameter, use with custom nodes</value>
-    <comment>Description for input node</comment>
+    <value>Ein Funktionsparameter zur Verwendung mit benutzerdefinierten Blöcken</value>
   </data>
   <data name="InputNodeSearchTags" xml:space="preserve">
     <value>variable;argument;parameter</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="ComposeFunctionPortDataFunctionToolTip" xml:space="preserve">
-    <value>A Function</value>
+    <value>Eine Funktion</value>
   </data>
   <data name="ComposeFunctionPortDataResultToolTip" xml:space="preserve">
-    <value>Composed function: g(f(x))</value>
+    <value>Zusammengesetzte Funktion: g(f(x))</value>
   </data>
   <data name="RangePortDataAmountToolTip" xml:space="preserve">
-    <value>Amount of numbers or letters in the sequence
-Default value: 10</value>
+    <value>Anzahl der Zahlen oder Buchstaben in der Folge
+Vorgabewert: 10</value>
   </data>
   <data name="RangePortDataEndToolTip" xml:space="preserve">
-    <value>Number or letter to end the sequence at
-Default value: 9</value>
+    <value>Endzahl oder -buchstabe für die Folge
+Vorgabewert: 9</value>
   </data>
   <data name="RangePortDataSeqToolTip" xml:space="preserve">
-    <value>New list of type: var[]..[]</value>
+    <value>Neue Liste von type: var[]..[]</value>
   </data>
   <data name="RangePortDataStartToolTip" xml:space="preserve">
-    <value>Number or letter to start the sequence at
-Default value: 0</value>
+    <value>Startzahl oder -buchstabe für die Folge
+Vorgabewert: 0</value>
   </data>
   <data name="RangePortDataStepToolTip" xml:space="preserve">
-    <value>Space between numbers or letters
-Default value: 1</value>
+    <value>Abstand zwischen Zahlen oder Buchstaben
+Vorgabewert: 1</value>
   </data>
   <data name="PortDataParameterToolTip" xml:space="preserve">
-    <value>parameter</value>
+    <value>Parameter</value>
   </data>
   <data name="PortDataVariableToolTip" xml:space="preserve">
-    <value>variable</value>
-    <comment>Tooltip to indidate it is a variable</comment>
+    <value>Variable</value>
   </data>
   <data name="SublistPortDataResultToolTip" xml:space="preserve">
-    <value>The sublists.</value>
-    <comment>Tooltip</comment>
+    <value>Die Unterlisten.</value>
   </data>
   <data name="SublistsPortDataListToolTip" xml:space="preserve">
-    <value>The list from which to create sublists.</value>
-    <comment>Tooltip for inport data</comment>
+    <value>Die Liste, aus der die Unterlisten erstellt werden sollen</value>
   </data>
   <data name="SublistsPortDataOffsetToolTip" xml:space="preserve">
-    <value>The offset to apply to the sub-list. Ex. The range "0..2" with an offset of 1 will yield sublists {0,1,2}{1,2,3}{2,3,4}...</value>
-    <comment>Tooltip</comment>
+    <value>Der auf die Unterliste anzuwendende Versatz. Beispiel: Mit dem Bereich "0..2" und dem Versatz 1 erhalten Sie die Unterlisten {0,1,2}{1,2,3}{2,3,4}...</value>
   </data>
   <data name="PortDataFunctionOutputToolTip" xml:space="preserve">
-    <value>function output</value>
+    <value>Funktionsausgabe</value>
   </data>
   <data name="PortDataInputToolTip" xml:space="preserve">
-    <value>Input #{0}</value>
+    <value>Eingabe #{0}</value>
   </data>
   <data name="PortDataOutputToolTip" xml:space="preserve">
-    <value>Output #{0}</value>
+    <value>Ausgabe #{0}</value>
   </data>
   <data name="PortDataPathToFileToolTip" xml:space="preserve">
-    <value>Path to the file</value>
+    <value>Pfad zur Datei</value>
   </data>
   <data name="PortDataReturnValueToolTip" xml:space="preserve">
-    <value>return value</value>
+    <value>Rückgabewert</value>
   </data>
   <data name="PortDataSymbolToolTip" xml:space="preserve">
     <value>Symbol</value>
   </data>
   <data name="ButtonDownloadLastest" xml:space="preserve">
-    <value>Download latest version</value>
-    <comment>Button Download Lastest</comment>
+    <value>Aktuelle Version herunterladen</value>
   </data>
   <data name="052465" xml:space="preserve">
-    <value>Arrrrg, ok</value>
-    <comment>Button OK</comment>
+    <value>OK</value>
   </data>
   <data name="ButtonProcess" xml:space="preserve">
-    <value>Proceed anyway</value>
-    <comment>Button Process</comment>
+    <value>Trotzdem fortfahren</value>
   </data>
   <data name="CancelButton" xml:space="preserve">
-    <value>Cancel</value>
-    <comment>Button Cancel</comment>
+    <value>Abbrechen</value>
   </data>
   <data name="CannotOpenFile" xml:space="preserve">
-    <value>Your file cannot be opened</value>
+    <value>Die Datei kann nicht geöffnet werden.</value>
   </data>
   <data name="DisplayEngineFailureMessageDescription" xml:space="preserve">
-    <value>The virtual machine that powers Dynamo is experiencing some unexpected errors internally and is likely having great difficulties pulling itself together. It is recommended that you save your work now and reload the file. Giving the Dynamo VM a new lease of life can potentially make it feel happier and behave better. 
+    <value>Bei der virtuellen Maschine, auf der Dynamo ausgeführt wird, sind unerwartete interne Fehler aufgetreten, die möglicherweise die Funktion erheblich beeinträchtigen. Es wird empfohlen, dass Sie Ihre Arbeit speichern und die Datei erneut laden. Wenn Sie die Dynamo-VM neu starten, können die Fehler möglicherweise behoben.
 
-If you don't mind, it would be helpful for you to send us your file. That will make it quicker for us to get these issues fixed.</value>
+Sie können uns Ihre Datei auch zusenden. Damit können wir diese Probleme schneller beheben.</value>
   </data>
   <data name="FileNotOpenedCorrectly" xml:space="preserve">
-    <value>Your file may not open correctly</value>
+    <value>Die Datei wird möglicherweise nicht ordnungsgemäß geöffnet.</value>
   </data>
   <data name="IncompatibleOfFileAndDynamo" xml:space="preserve">
-    <value>Your file '{0}' of version '{1}' cannot be opened by this version of Dynamo ({2})</value>
+    <value>Die Datei '{0}' aus Version '{1}' kann in dieser Version von Dynamo ({2}) nicht geöffnet werden.</value>
   </data>
   <data name="IncorrectVersionToOpenFile" xml:space="preserve">
-    <value>Your file '{0}' was created in future version '{1}' and may not open correctly in your installed version of Dynamo '{2}'</value>
+    <value>Die Datei '{0}' wurde in der späteren Version '{1}' erstellt und kann eventuell in der bei Ihnen installierten Version Dynamo '{2}' nicht ordnungsgemäß geöffnet werden.</value>
   </data>
   <data name="SubmitBugToGithub" xml:space="preserve">
-    <value>Submit Bug To Github</value>
-    <comment>Button submit</comment>
+    <value>Fehler an Github senden</value>
   </data>
   <data name="UnhandledExceptionInDynamoEngine" xml:space="preserve">
-    <value>Unhandled exception in Dynamo engine</value>
+    <value>Nicht behandelter Ausnahmefehler in Dynamo-Engine</value>
   </data>
   <data name="UsageReportingErrorMessage" xml:space="preserve">
-    <value>Uh oh...
- We're sorry - we tried to save your decisions, but something went wrong. The decision probably hasn't been saved. This really shouldn't have happened. Please get in touch via GitHub and send us this information.
-You can also try deleting [FILEPATH] and trying again.
-Depending on your previous choice, analytics may still be running, if you're worried about this, please consider not using Dynamo until we've got back to you to solve the problem.
-Sorry about that.</value>
+    <value>Entschuldigung.
+ Wir haben versucht, Ihre Entscheidungen zu speichern, dabei ist jedoch ein Fehler aufgetreten. Die Entscheidung wurde wahrscheinlich nicht gespeichert. Zu einem solchen Fehler sollte es nicht kommen. Bitte nehmen Sie über GitHub mit uns Kontakt auf, und senden Sie uns diese Informationen.
+Sie können auch [DATEIPFAD] löschen und den Vorgang wiederholen.
+Die Analyse könnte nach wie vor aktiv sein, falls Sie zuvor eine entsprechende Auswahl getroffen haben. Falls Sie diesbezüglich Bedenken haben, sollten Sie Dynamo eventuell zunächst nicht mehr verwenden, bis wir uns mit Ihnen in Verbindung setzen, um das Problem zu beheben.
+Wir bitten nochmals um Entschuldigung.</value>
   </data>
   <data name="CouldNotLoadTypes" xml:space="preserve">
-    <value>Could not load types.</value>
+    <value>Typen konnten nicht geladen werden.</value>
   </data>
   <data name="CreatingConnectorError" xml:space="preserve">
-    <value>ERROR : Could not create connector between {0} and {1}.</value>
+    <value>Fehler: Es konnte kein Connector zwischen {0} und {1} erstellt werden.</value>
   </data>
   <data name="DllLoadException" xml:space="preserve">
-    <value>Dll Load Exception:</value>
+    <value>Ausnahme beim Laden von DLL:</value>
   </data>
   <data name="ElapsedWhenLoadingXml" xml:space="preserve">
-    <value>{0} elapsed for loading xml.</value>
+    <value>{0} verstrichen zum Laden von XML</value>
   </data>
   <data name="EvaluationCompleted" xml:space="preserve">
-    <value>Evaluation completed in {0}</value>
+    <value>Auswertung abgeschlossen in {0}</value>
   </data>
   <data name="FailedToLoadHeader" xml:space="preserve">
-    <value>ERROR: The header for the custom node at {0} failed to load.  It will be left out of search.</value>
+    <value>Fehler: Die Kopfzeile für den benutzerdefinierten Block an {0} konnte nicht geladen werden. Kann nicht für die Suche berücksichtigt werden.</value>
   </data>
   <data name="FileBackUpLocation" xml:space="preserve">
-    <value>Original file '{0}' gets backed up at '{1}'</value>
+    <value>Ursprüngliche Datei '{0}' wird gesichert unter '{1}'.</value>
   </data>
   <data name="LoadingNodeDefinition" xml:space="preserve">
-    <value>Loading node definition for "{0}" from: {1}</value>
+    <value>Blockdefinition wird geladen für  "{0}" aus: {1}</value>
   </data>
   <data name="NodeProblemEncountered" xml:space="preserve">
-    <value>Whilst preparing to run, this node encountered a problem. Please talk to the creators of the node, and give them this message:</value>
+    <value>Während der Vorbereitung zur Ausführung ist an diesem Block ein Problem aufgetreten. Wenden Sie sich an die Ersteller des Blocks, und übermitteln Sie ihnen die folgende Nachricht:</value>
   </data>
   <data name="OpeningHomeWorkspace" xml:space="preserve">
-    <value>Opening home workspace {0}...</value>
+    <value>Start-Arbeitsbereich {0} wird geöffnet...</value>
   </data>
   <data name="OpenWorkbenchError" xml:space="preserve">
-    <value>There was an error opening the workbench.</value>
+    <value>Beim Öffnen der Workbench ist ein Fehler aufgetreten.</value>
   </data>
   <data name="BadIdentifierSyntax" xml:space="preserve">
-    <value>Bad identifier syntax: "{0}"</value>
+    <value>Ungültige ID-Syntax: "{0}"</value>
   </data>
   <data name="BadRangeSyntax" xml:space="preserve">
-    <value>Bad range syntax: not of format \"start..end[..(increment|#count)]\"</value>
+    <value>Ungültige Bereichssyntax: nicht im Format \"start..end[..(increment|#count)]\"</value>
   </data>
   <data name="CannotHave0Step" xml:space="preserve">
-    <value>Can't have 0 step.</value>
+    <value>Schritt kann nicht 0 sein.</value>
   </data>
   <data name="ClearingWorkflow" xml:space="preserve">
-    <value>Clearing workflow...</value>
+    <value>Arbeitsablauf wird gelöscht...</value>
   </data>
   <data name="CouldNotCompressFile" xml:space="preserve">
-    <value>Could not compress file.  Is the file in use?</value>
+    <value>Datei konnte nicht komprimiert werden. Wird die Datei verwendet?</value>
   </data>
   <data name="CouldNotGetLatestBuild" xml:space="preserve">
-    <value>Couldn't get the latest build from S3</value>
+    <value>Der neueste Build konnte nicht von S3 abgerufen werden.</value>
   </data>
   <data name="CouldNotGetUpdateData" xml:space="preserve">
-    <value>Couldn't get update data from {0}</value>
+    <value>Aktualisierungsdaten konnten nicht abgerufen werden aus {0}.</value>
   </data>
   <data name="DulicatedPackage" xml:space="preserve">
-    <value>A duplicate of the package called {0} was found at {1}.  Ignoring it.</value>
+    <value>Ein Duplikat des Pakets mit dem Namen {0} wurde gefunden unter {1}. Dies wird ignoriert.</value>
   </data>
   <data name="DynamoUpToDate" xml:space="preserve">
-    <value>Dynamo is up to date.</value>
+    <value>Dynamo ist auf dem neuesten Stand.</value>
   </data>
   <data name="ExceptionEncountered" xml:space="preserve">
-    <value>Exception encountered scanning the package directory at {0}</value>
+    <value>Ausnahme beim Scannen des Paketverzeichnisses unter {0}</value>
   </data>
   <data name="FailedToLoad" xml:space="preserve">
-    <value>Failed to load {0}\n, Exception: {1}</value>
+    <value>Fehler beim Laden von {0}\n, Ausnahme: {1}</value>
   </data>
   <data name="FailedToLoadCustomNode" xml:space="preserve">
-    <value>Failed to load custom node: {0}.  Replacing with proxy custom node.</value>
+    <value>Benutzerdefinierter Block konnte nicht geladen werden: {0}. Wird durch Proxy für benutzerdefinierten Block ersetzt.</value>
   </data>
   <data name="FailedToSave" xml:space="preserve">
-    <value>Failed to save {0}\n, Exception: {1}</value>
+    <value>Fehler beim Speichern von {0}\n, Ausnahme: {1}</value>
   </data>
   <data name="IdentifiersNotFound" xml:space="preserve">
-    <value>No identifiers found.</value>
+    <value>Keine Kennungen gefunden</value>
   </data>
   <data name="InvalidStartOrEndOfRange" xml:space="preserve">
-    <value>The start or end of a range is greater than the number of available elements in the list.</value>
+    <value>Der Anfang oder das Ende eines Bereichs ist größer ist als die Anzahl der verfügbaren Elemente in der Liste.</value>
   </data>
   <data name="MalformedHeaderPackage" xml:space="preserve">
-    <value>{0} contains a package with a malformed header.  Ignoring it.</value>
+    <value>{0} enthält ein Paket mit einem fehlerhaften Header. Es wird ignoriert.</value>
   </data>
   <data name="NoHeaderPackage" xml:space="preserve">
-    <value>{0} contains a package without a header.  Ignoring it.</value>
+    <value>{0} enthält ein Paket ohne Header. Es wird ignoriert.</value>
   </data>
   <data name="PackageEmpty" xml:space="preserve">
-    <value>The package was found to be empty and was not installed.</value>
+    <value>Das Paket ist leer und wurde nicht installiert.</value>
   </data>
   <data name="PackageTooLarge" xml:space="preserve">
-    <value>The package is too large!  The package must be less than 15 MB!</value>
+    <value>Das Paket ist zu groß. Es muss kleiner als 15 MB sein.</value>
   </data>
   <data name="PathNotRegconizableAsStableOrDailyBuild" xml:space="preserve">
-    <value>The specified file path is not recognizable as a stable or a daily build</value>
+    <value>Der angegebene Dateipfad ist nicht als stabiler oder täglicher Build erkennbar.</value>
   </data>
   <data name="RangeEndCouldNotBeParsed" xml:space="preserve">
-    <value>Range end could not be parsed.</value>
+    <value>Bereichsende konnte nicht analysiert werden.</value>
   </data>
   <data name="RangeOrApprIdentifierAlrUsed" xml:space="preserve">
-    <value>Cannot use range or approx. identifier on increment field when one has already been used to specify a count.</value>
+    <value>Bereich oder ungefähre ID kann nicht für Inkrementfeld verwendet werden, wenn dies bereits für die Angabe der Anzahl verwendet wurde.</value>
   </data>
   <data name="RangeStepCouldNotBeParsed" xml:space="preserve">
-    <value>Range step could not be parsed.</value>
+    <value>Schritt für Bereich konnte nicht analysiert werden.</value>
   </data>
   <data name="RangeValuesGreaterThanZero" xml:space="preserve">
-    <value>Range values must be greater than zero.</value>
+    <value>Werte des Bereichs müssen größer als Null sein.</value>
   </data>
   <data name="RequestingVersionUpdate" xml:space="preserve">
-    <value>Requesting version update info...</value>
+    <value>Info zu Versionsaktualisierung wird angefordert...</value>
   </data>
   <data name="UpdateAvailable" xml:space="preserve">
-    <value>Update available: {0}</value>
+    <value>Aktualisierung verfügbar: {0}</value>
   </data>
   <data name="UpdateDownloadComplete" xml:space="preserve">
-    <value>Update download complete.</value>
+    <value>Download des Update abgeschlossen.</value>
   </data>
   <data name="UpdateDownloadProgress" xml:space="preserve">
-    <value>Update download progress: {0}%</value>
+    <value>Fortschritt von Download des Updates: {0}%</value>
   </data>
   <data name="UpdateDownloadStarted" xml:space="preserve">
-    <value>Update download started...</value>
+    <value>Download des Update gestartet...</value>
   </data>
   <data name="WorkbenchNotOpen" xml:space="preserve">
-    <value>Workbench could not be opened.</value>
+    <value>Workbench konnte nicht geöffnet werden.</value>
   </data>
   <data name="CouldNotRepairOneNodeHoles" xml:space="preserve">
-    <value>Could not repair 1-node holes</value>
+    <value>Öffnungen mit 1 Block konnten nicht repariert werden.</value>
   </data>
   <data name="CustomNodeCouldNotBeInitialized" xml:space="preserve">
-    <value>Custom node \"{0}\" could not be initialized.</value>
+    <value>Benutzerdefinierter Block \"{0}\" konnte nicht initialisiert werden.</value>
   </data>
   <data name="FailedToGetMirrorVariable" xml:space="preserve">
-    <value>Failed to get mirror for variable:  {0}; reason: {1}.</value>
+    <value>Fehler beim Abrufen der Spiegelung für die Variable: {0}; Grund: {1}.</value>
   </data>
   <data name="FailedToLoadType" xml:space="preserve">
-    <value>Failed to load type from {0}. The type was {1}.</value>
+    <value>Typ konnte nicht geladen werden aus {0}. Der Typ war {1}.</value>
   </data>
   <data name="OpenWorkspaceError" xml:space="preserve">
-    <value>There was an error opening the workspace.</value>
+    <value>Beim Öffnen des Arbeitsbereichs ist ein Fehler aufgetreten.</value>
   </data>
   <data name="UnableToCreateCustomNodeID" xml:space="preserve">
-    <value>Unable to create instance of custom node with id: \"</value>
+    <value>Instanz des benutzerdefinierten Blocks mit ID \" kann nicht erstellt werden.</value>
   </data>
   <data name="BackUpOriginalFileMessage" xml:space="preserve">
-    <value>Original file '{0}' gets backed up at '{1}'</value>
+    <value>Ursprüngliche Datei '{0}' wird gesichert unter '{1}'.</value>
   </data>
   <data name="ClearingWorkSpace" xml:space="preserve">
-    <value>Clearing workspace...</value>
+    <value>Arbeitsbereich wird geleert...</value>
   </data>
   <data name="CodeBlockDescription" xml:space="preserve">
-    <value>Allows for DesignScript code to be authored directly</value>
+    <value>Ermöglicht die direkte Erstellung von DesignScript-Code.</value>
   </data>
   <data name="DownloadLatestButton" xml:space="preserve">
-    <value>Download latest version</value>
+    <value>Aktuelle Version herunterladen</value>
   </data>
   <data name="DuplicateMigrationTypeRegistered" xml:space="preserve">
-    <value>Duplicate migration type registered for {0}</value>
+    <value>Doppelter Migrationstyp registriert für {0}</value>
   </data>
   <data name="FileCannotBeOpened" xml:space="preserve">
-    <value>Your file cannot be opened.</value>
+    <value>Die Datei kann nicht geöffnet werden.</value>
   </data>
   <data name="FutureFileDescription" xml:space="preserve">
-    <value>Your file '{0}' was created in future version '{1}' and may not open correctly in your installed version of Dynamo '{2}'</value>
+    <value>Die Datei '{0}' wurde in der späteren Version '{1}' erstellt und kann eventuell in der bei Ihnen installierten Version Dynamo '{2}' nicht ordnungsgemäß geöffnet werden.</value>
   </data>
   <data name="FutureFileSummary" xml:space="preserve">
-    <value>Your file may not open correctly</value>
+    <value>Die Datei wird möglicherweise nicht ordnungsgemäß geöffnet.</value>
   </data>
   <data name="FutureFileTitle" xml:space="preserve">
-    <value>Future File</value>
+    <value>Zukünftige Datei</value>
   </data>
   <data name="GoodByeLog" xml:space="preserve">
-    <value>Goodbye</value>
+    <value>Auf Wiedersehen</value>
   </data>
   <data name="InvalidLibraryFormat" xml:space="preserve">
-    <value>Invalid library format.</value>
+    <value>Ungültiges Bibliotheksformat</value>
   </data>
   <data name="LibraryBuildError" xml:space="preserve">
-    <value>Build error for library: {0}</value>
+    <value>Build-Fehler für Bibliothek: {0}</value>
   </data>
   <data name="LibraryHasBeenLoaded" xml:space="preserve">
-    <value>Library {0} has been loaded.</value>
+    <value>Bibliothek {0} wurde geladen.</value>
   </data>
   <data name="LibraryIsDumped" xml:space="preserve">
-    <value>Library is dumped to \"{0}\".</value>
+    <value>Bibliothek wird ausgegeben unter \"{0}\".</value>
   </data>
   <data name="LibraryPathCannotBeFound" xml:space="preserve">
-    <value>Cannot find library path: {0}.</value>
+    <value>Bibliothekspfad nicht gefunden: {0}.</value>
   </data>
   <data name="NewNoteString" xml:space="preserve">
-    <value>New Note</value>
+    <value>Neue Anmerkung</value>
   </data>
   <data name="ObsoleteFileDescription" xml:space="preserve">
-    <value>Your file '{0}' of version '{1}' cannot be opened by this version of Dynamo ({2})</value>
+    <value>Die Datei '{0}' aus Version '{1}' kann in dieser Version von Dynamo ({2}) nicht geöffnet werden.</value>
   </data>
   <data name="ObsoleteFileTitle" xml:space="preserve">
-    <value>Obsolete File</value>
+    <value>Veraltete Datei</value>
   </data>
   <data name="OKButton" xml:space="preserve">
     <value>OK</value>
   </data>
   <data name="ProceedButton" xml:space="preserve">
-    <value>Proceed anyway</value>
+    <value>Trotzdem fortfahren</value>
   </data>
   <data name="SavingInProgress" xml:space="preserve">
-    <value>Saving {0} ...</value>
+    <value>{0} wird gespeichert...</value>
   </data>
   <data name="SubmitBugButton" xml:space="preserve">
-    <value>Submit Bug To Github</value>
+    <value>Fehler an Github senden</value>
   </data>
   <data name="ToolTipForTempVar" xml:space="preserve">
-    <value>Statement Output</value>
+    <value>Anweisungsausgabe</value>
   </data>
   <data name="ToolTipReturnValue" xml:space="preserve">
-    <value>return value</value>
+    <value>Rückgabewert</value>
   </data>
   <data name="UnhandledExceptionSummary" xml:space="preserve">
-    <value>Unhandled exception in Dynamo engine</value>
+    <value>Nicht behandelter Ausnahmefehler in Dynamo-Engine</value>
   </data>
   <data name="UnhandledExceptionTitle" xml:space="preserve">
-    <value>Unhandled Exception</value>
+    <value>Nicht behandelter Ausnahmefehler</value>
   </data>
   <data name="UnknownVersion" xml:space="preserve">
-    <value>Unknown</value>
+    <value>Unbekannt</value>
   </data>
   <data name="WelcomeMessage" xml:space="preserve">
-    <value>Welcome to Dynamo!</value>
+    <value>Willkommen bei Dynamo!</value>
   </data>
   <data name="ToolTipFunctionOutput" xml:space="preserve">
-    <value>function output</value>
+    <value>Funktionsausgabe</value>
   </data>
   <data name="ToolTipInput" xml:space="preserve">
-    <value>Input #</value>
+    <value>Eingabe #</value>
   </data>
   <data name="ToolTipOutput" xml:space="preserve">
-    <value>Output #</value>
+    <value>Ausgabe #</value>
   </data>
   <data name="ToolTipOutputData" xml:space="preserve">
-    <value>Output Data</value>
+    <value>Ausgabedaten</value>
   </data>
   <data name="WarningCannotFindType" xml:space="preserve">
-    <value>Cannot find type '{0}'</value>
+    <value>Typ '{0}' nicht gefunden</value>
   </data>
   <data name="WarningInvalidInput" xml:space="preserve">
-    <value>Invalid input.
+    <value>Ungültige Eingabe.
 
-The name of parameter should start with alphabetic character. You can specify its type and default value. E.g., 
+Der Name des Parameters muss mit einem Buchstaben beginnen. Sie können seinen Typ und Vorgabewert angeben, z. B.
 
 input : var[]..[]
 value: bool = false</value>
   </data>
   <data name="DSFunctionNodeDescription" xml:space="preserve">
-    <value>DesignScript Builtin Functions</value>
+    <value>DesignScript Builtin-Funktionen</value>
   </data>
   <data name="DummyNodeDescription" xml:space="preserve">
-    <value>This is an obsolete node</value>
+    <value>Dies ist ein veralteter Block</value>
   </data>
   <data name="FunctionDescription" xml:space="preserve">
-    <value>Instance of a Custom Node</value>
+    <value>Instanz eines benutzerdefinierten Blocks</value>
   </data>
   <data name="SymbolNodeDescription" xml:space="preserve">
-    <value>A function parameter, use with custom nodes.
+    <value>Ein Funktionsparameter zur Verwendung mit benutzerdefinierten Blöcken.
 
-You can specify the type and default value for parameter. E.g.,
+Sie können den Typ und den Vorgabewert für den Parameter angeben, z. B.
 
 input : var[]..[]
 value : bool = false</value>
   </data>
   <data name="CustomNodeNotLoaded" xml:space="preserve">
-    <value>Custom node definition is not loaded! href=CustomNodeNotLoaded.html</value>
+    <value>Definition für benutzerdefinierten Block ist nicht geladen. href=CustomNodeNotLoaded.html</value>
   </data>
   <data name="RunTypeToolTipAutomatically" xml:space="preserve">
-    <value>Run whenever an input to the graph is updated.</value>
+    <value>Wird ausgeführt, wenn eine Eingabe im Diagramm aktualisiert wird.</value>
   </data>
   <data name="RunTypeToolTipManually" xml:space="preserve">
-    <value>Run when you click the Run button.</value>
+    <value>Ausführung nach Klicken auf die Schaltfläche Ausführen</value>
   </data>
   <data name="RunTypeToolTipPeriodicallyDisabled" xml:space="preserve">
-    <value>Run Periodic is only available when there are nodes in the graph that support periodic update.</value>
+    <value>Die periodische Ausführung ist nur verfügbar, wenn das Diagramm Blöcke enthält, für die eine periodische Aktualisierung unterstützt wird.</value>
   </data>
   <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
-    <value>Run at the specified interval.</value>
+    <value>In angegebenen Abständen ausführen</value>
   </data>
   <data name="HeaderAction" xml:space="preserve">
-    <value>ACTIONS</value>
+    <value>Aktionen</value>
   </data>
   <data name="HeaderCreate" xml:space="preserve">
-    <value>CREATE</value>
+    <value>Erstellen</value>
   </data>
   <data name="HeaderQuery" xml:space="preserve">
-    <value>QUERY</value>
+    <value>Abfrage</value>
   </data>
   <data name="InputLabel" xml:space="preserve">
-    <value>INPUT</value>
+    <value>Eingabe</value>
   </data>
   <data name="MoreButtonTextFormat" xml:space="preserve">
-    <value>SHOW MORE ({0})</value>
+    <value>Mehr anzeigen ({0})</value>
   </data>
   <data name="NoDescriptionAvailable" xml:space="preserve">
-    <value>No description available</value>
+    <value>Keine Beschreibung verfügbar</value>
   </data>
   <data name="OutputLabel" xml:space="preserve">
-    <value>OUTPUT</value>
+    <value>Ausgabe</value>
   </data>
   <data name="TopResult" xml:space="preserve">
-    <value>Top Result</value>
+    <value>Oberes Ergebnis</value>
   </data>
   <data name="LocateInDisk" xml:space="preserve">
-    <value>Locate in Disk..</value>
+    <value>Suchen auf Datenträger...</value>
   </data>
   <data name="MoveLabel" xml:space="preserve">
-    <value>Move</value>
+    <value>Verschieben</value>
   </data>
   <data name="NoMatchesFound" xml:space="preserve">
-    <value>No matches found</value>
+    <value>Keine Übereinstimmungen gefunden</value>
   </data>
   <data name="RemoveLabel" xml:space="preserve">
-    <value>Remove</value>
+    <value>Entfernen</value>
   </data>
   <data name="IncorrectlyFormattedNodeLibraryDisplay" xml:space="preserve">
-    <value>This is the incorrectly formatted library name:</value>
+    <value>Der falsch formatierte Bibliotheksname:</value>
   </data>
   <data name="IncorrectlyFormattedNodeLibraryWarning" xml:space="preserve">
-    <value>Incorrectly formatted package node library encountered, this may result in a package assembly not being loaded!</value>
+    <value>Falsch formatierte Paketblockbibliothek gefunden. Paket-Assembly kann eventuell nicht geladen werden.</value>
   </data>
   <data name="NothingIsSelectedWarning" xml:space="preserve">
-    <value>Nothing is selected. href=NothingIsSelectedWarning.html</value>
+    <value>Es ist nichts ausgewählt. href=NothingIsSelectedWarning.html</value>
   </data>
   <data name="SearchTextBlockText" xml:space="preserve">
-    <value>Search</value>
+    <value>Suchen</value>
   </data>
   <data name="AutocompleteSearchTextBlockText" xml:space="preserve">
-    <value>Search Autocomplete Results</value>
+    <value>Nach Ergebnissen der automatischen Vervollständigung suchen</value>
   </data>
   <data name="Autocomplete" xml:space="preserve">
-    <value>Autocomplete</value>
+    <value>Automatische Vervollständigung</value>
   </data>
   <data name="WatermarkLabelText" xml:space="preserve">
-    <value>Enter code here</value>
+    <value>Code hier eingeben</value>
   </data>
   <data name="DefaultValue" xml:space="preserve">
-    <value>Default value</value>
-    <comment>Default value</comment>
+    <value>Vorgabewert</value>
   </data>
   <data name="DefaultValueDisabled" xml:space="preserve">
-    <value>(disabled)</value>
-    <comment>Default value is disabled</comment>
+    <value>(deaktiviert)</value>
   </data>
   <data name="SymbolSearchTags" xml:space="preserve">
     <value>variable;argument;parameter</value>
-    <comment>Search tags for Symbol/Input node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
   <data name="DefaultCustomNodeCategory" xml:space="preserve">
-    <value>Custom nodes</value>
-    <comment>Used for uncategorised custom nodes.</comment>
+    <value>Benutzerdefinierte Blöcke</value>
   </data>
   <data name="InvalidCustomNodeFolderWarning" xml:space="preserve">
-    <value>The folder '{0}' does not exist</value>
-    <comment>This warning message is shown (during start up) when user specifies additional folders in DynamoSettings.xml file but the folders do not exist.</comment>
+    <value>Der Ordner '{0}' ist nicht vorhanden</value>
   </data>
   <data name="CodeBlockSearchTags" xml:space="preserve">
     <value>codeblock;</value>
   </data>
   <data name="DirectoryNotFound" xml:space="preserve">
-    <value>Directory not found : {0}</value>
+    <value>Verzeichnis wurde nicht gefunden: {0}</value>
   </data>
   <data name="CustomNodeFolderLoadFailure" xml:space="preserve">
-    <value>Failed to load custom node directory. Do you have permission to access {0}?</value>
+    <value>Fehler beim Laden des Verzeichnisses für benutzerdefinierte Blöcke. Sind Sie zum Zugriff auf {0} berechtigt?</value>
   </data>
   <data name="PortsNameDescriptionDoNotEqualWarningMessage" xml:space="preserve">
-    <value>Number of port names does not equal number of port descriptions.</value>
+    <value>Anzahl der Anschlussnamen stimmt nicht mit der Anzahl der Anschlussbeschreibungen überein.</value>
   </data>
   <data name="DescriptionResource1" xml:space="preserve">
-    <value>some description</value>
+    <value>Eine Beschreibung</value>
   </data>
   <data name="ResourcePropertyIsNotStringTypeMessage" xml:space="preserve">
-    <value>Resource Property is not String Type</value>
+    <value>Ressourceneigenschaft ist nicht vom Typ Zeichenfolge</value>
   </data>
   <data name="ResourceTypeDoesNotHavePropertyMessage" xml:space="preserve">
-    <value>Resource Type does not have Property</value>
+    <value>Ressourcentyp verfügt nicht über Eigenschaft</value>
   </data>
   <data name="WarningInvalidOutput" xml:space="preserve">
-    <value>Only comments and single variable are allowed in output node.</value>
+    <value>Im Ausgabeblock sind nur Kommentare und einzelne Variablen erlaubt.</value>
   </data>
   <data name="FailedToLoadLibrary" xml:space="preserve">
-    <value>Failed to load library: {0}</value>
+    <value>Laden der Bibliothek fehlgeschlagen: {0}</value>
   </data>
   <data name="NoneString" xml:space="preserve">
-    <value>none</value>
+    <value>Keine</value>
   </data>
   <data name="DefaultHomeWorkspaceName" xml:space="preserve">
-    <value>Home</value>
-    <comment>The default name of home workspace</comment>
+    <value>Start</value>
   </data>
   <data name="UnresolvedNodesWarningShortMessage" xml:space="preserve">
-    <value>The graph has unresolved nodes and cannot be saved.</value>
+    <value>Dieses Diagramm hat ungelöste Blöcke und kann nicht gespeichert werden.</value>
   </data>
   <data name="UnresolvedNodesWarningTitle" xml:space="preserve">
-    <value>Unable to save graph</value>
+    <value>Diagramm kann nicht gespeichert werden</value>
   </data>
   <data name="UnresolvedNodesWarningMessage" xml:space="preserve">
-    <value>This may be caused by a missing package, incompatible package version, or missing host program. If you Save As, the unresolved nodes will be removed.
+    <value>Der Grund hierfür können ein fehlendes Paket, inkompatible Paketversionen oder ein fehlendes Host-Programm sein. Wenn Sie Speichern unter verwenden, werden die ungelösten Blöcke entfernt.
 
-Resolve or remove the unresolved nodes and try again.</value>
+Lösen oder entfernen Sie die ungelösten Blöcke, oder versuchen Sie es erneut.</value>
   </data>
   <data name="CodeBlockTempIdentifierOutputLabel" xml:space="preserve">
-    <value>Value of expression at line {0}</value>
+    <value>Wert des Ausdrucks in Zeile {0}</value>
   </data>
   <data name="InvalidInputSymbolCustomNodeWarning" xml:space="preserve">
-    <value>This custom node contains an invalid input. Please fix the input before saving the custom node.</value>
+    <value>Dieser benutzerdefinierte Block enthält eine ungültige Eingabe. Korrigieren Sie die Eingabe vor dem Speichern des benutzerdefinierten Blocks.</value>
   </data>
   <data name="InvalidInputSymbolErrorMessage" xml:space="preserve">
-    <value>This input symbol is not currently valid, and cannot be saved until it is fixed. Valid inputs take the form:
+    <value>Dieses Eingabesymbol ist derzeit nicht gültig und kann nicht gespeichert werden, bis es korrigiert wurde. Gültige Eingaben haben folgende Form:
 
-name : type = defaultValue
+Name : Typ = Vorgabewert
 
-The input name should be a valid variable name, without spaces. An input type and default value are optional.</value>
+Der Eingabename muss ein gültiger Variablenname ohne Leerzeichen sein. Eingabetyp und Vorgabewert sind optional.</value>
   </data>
   <data name="InvalidInputSymbolWarningMessage" xml:space="preserve">
-    <value>This custom node currently contains some invalid inputs, and cannot be saved until the inputs are fixed. If the custom node is saved using SaveAs, the invalid inputs will revert to generic inputs. Valid inputs take the form:
+    <value>Dieser benutzerdefinierte Block beinhaltet derzeit ungültige Eingaben und kann erst gespeichert werden, wenn die Eingaben korrigiert wurden. Beim Speichern des benutzerdefinierten Blocks mit Speichern unter werden ungültige Eingaben in allgemeine Eingaben umgewandelt. Gültige Eingaben haben folgende Form:
 
-name : type = defaultValue
+Name : Typ = Vorgabewert
 
-The input name should be a valid variable name, without spaces. An input type and default value are optional.</value>
+Der Eingabename muss ein gültiger Variablenname ohne Leerzeichen sein. Eingabetyp und Vorgabewert sind optional.</value>
   </data>
   <data name="InvalidInputSymbolWarningShortMessage" xml:space="preserve">
-    <value>This custom node cannot be saved until invalid inputs are removed or fixed.</value>
+    <value>Dieser benutzerdefinierte Block kann erst gespeichert werden, wenn die ungültigen Eingaben entfernt oder korrigiert wurden.</value>
   </data>
   <data name="InvalidInputSymbolWarningTitle" xml:space="preserve">
-    <value>Custom Node Contains Invalid Inputs and Cannot Be Saved.</value>
+    <value>Benutzerdefinierter Block enthält ungültige Eingaben und kann nicht gespeichert werden.</value>
   </data>
   <data name="PythonTemplateAppData" xml:space="preserve">
-    <value>Python template loaded from AppData</value>
+    <value>Python-Vorlage aus AppData geladen</value>
   </data>
   <data name="PythonTemplateDefaultFile" xml:space="preserve">
-    <value>Python template set to default.</value>
+    <value>Python-Vorlage als Vorgabe festgelegt.</value>
   </data>
   <data name="PythonTemplateDefinedByHost" xml:space="preserve">
-    <value>Python template set by host integrator</value>
+    <value>Python-Vorlage durch Basisbauteil-Integrator festgelegt</value>
   </data>
   <data name="PythonTemplateUserFile" xml:space="preserve">
-    <value>Python template loaded from DynamoSettings.xml path</value>
+    <value>Python-Vorlage aus dem Pfad von DynamoSettings.xml geladen</value>
   </data>
   <data name="MessageCustomNodePackageFailedToLoad" xml:space="preserve">
-    <value>{1} cannot be loaded. 
-Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
-To install {1}, Dynamo needs to first uninstall {0}. 
-Restart Dynamo to complete the uninstall.</value>
+    <value>{1} kann nicht geladen werden. 
+Die Installation führt zu Konflikten mit mindestens einer Blockdefinition, die bereits in {0} (aktuell geladen) vorhanden ist. 
+Um {1} zu installieren, muss Dynamo zunächst {0} deinstallieren. 
+Starten Sie Dynamo neu, um die Deinstallation abzuschließen.</value>
   </data>
   <data name="FunctionDefinitionOverwrittenMessage" xml:space="preserve">
-    <value>Attempting to load customNode {0} loaded by package {1}, but a previous definition named {2} exists with no associated package. The new customNode definition has been loaded, but Dynamo may be in an unstable state, please avoid loading multiple custom nodes with the id.</value>
+    <value>Es wird versucht, customNode {0} (von Paket {1} geladen) zu laden, doch es ist eine zuvor erstellte Definition mit dem Namen {2} vorhanden, die keine Paketverknüpfung hat. Die neue customNode-Definition wurde geladen, doch der Dynamo-Status kann instabil sein. Vermeiden Sie es, mehrere benutzerdefinierte Blöcke für die ID zu laden.</value>
   </data>
   <data name="Preview3DOutageTitle" xml:space="preserve">
-    <value>3D preview has been deactivated</value>
+    <value>3D-Vorschau wurde deaktiviert</value>
   </data>
   <data name="MissingXmlTagConsoleMessage" xml:space="preserve">
-    <value>{0} is missing some XML documentation tags.</value>
+    <value>In {0} fehlen einige XML-Dokumentations-Tags.</value>
   </data>
   <data name="FailedToHandleReadyEvent" xml:space="preserve">
-    <value>Failed to call Ready() in extension: </value>
+    <value>Fehler beim Aufrufen von Ready() in Erweiterung: </value>
   </data>
   <data name="DuplicatedModelGuidError" xml:space="preserve">
-    <value>The map already contains a model with this id, the id must be unique for the workspace that is currently being deserialized: {0}</value>
+    <value>Die Karte enthält bereits ein Modell mit dieser ID. Die ID muss für den Arbeitsbereich, der derzeit deserialisiert wird, eindeutig sein: {0}</value>
   </data>
   <data name="ArgumentNullException" xml:space="preserve">
-    <value>Value cannot be null.
-Parameter name: {0}</value>
+    <value>Wert darf nicht Null sein.
+Parametername: {0}</value>
   </data>
   <data name="ModelNotFoundError" xml:space="preserve">
-    <value>UpdateModelValue: Model not found</value>
+    <value>UpdateModelValue: Modell nicht gefunden</value>
   </data>
   <data name="PackageManagerPackageAlreadyExists" xml:space="preserve">
-    <value>A package with the given name already exists.</value>
+    <value>Ein Paket mit diesem Namen ist bereits vorhanden.</value>
   </data>
   <data name="PackageManagerUserIsNotAMaintainer" xml:space="preserve">
-    <value>The current user, '{0}', is not a maintainer of the package '{1}'.</value>
-    <comment>{0} = user name (i.e. 'DynamoTeam'), {1} = package name (i.e. 'Clockwork for Dynamo 1.x')</comment>
+    <value>Der aktuelle Benutzer '{0}' ist kein Maintainer von Paket '{1}'.</value>
   </data>
   <data name="PackageManagerPackagePreviewCounter" xml:space="preserve">
     <value>{0} files and {1} folders will be created.</value>
@@ -747,180 +722,178 @@ Parameter name: {0}</value>
     <value>{0} files and {1} folders loaded.</value>
   </data>
   <data name="DuplicatedOlderPackage" xml:space="preserve">
-    <value>An older version of the package called {0} version {2} was found at {1} with version {3}. The older version has been ignored.</value>
+    <value>Eine ältere Version des Pakets mit dem Namen {0} Version {2} wurde unter {1} mit Version {3} gefunden. Die ältere Version wurde ignoriert.</value>
   </data>
   <data name="InvalidPackageVersion" xml:space="preserve">
-    <value>The version of the package called {0} found at {1} is invalid (version: "{2}"). Ignoring it.</value>
+    <value>Die Version des Pakets mit dem Namen {0} unter {1} ist ungültig (Version: "{2}"). Diese wird ignoriert.</value>
   </data>
   <data name="DuplicatedNewerPackage" xml:space="preserve">
-    <value>A newer version of the package called {0} version {2} was found at {1} with version {3}. The newer version has been ignored.</value>
+    <value>Eine neuere Version des Pakets mit dem Namen {0} Version {2} wurde unter {1} mit Version {3} gefunden. Die neuere Version wurde ignoriert.</value>
   </data>
   <data name="NoneLinterDescriptorName" xml:space="preserve">
-    <value>None</value>
+    <value>Keine</value>
   </data>
   <data name="PackageStatePendingUnload" xml:space="preserve">
-    <value>Scheduled to be unloaded</value>
+    <value>Geplant: Laden aufheben</value>
   </data>
   <data name="PackageStateError" xml:space="preserve">
-    <value>Error</value>
+    <value>Fehler</value>
   </data>
   <data name="PackageStateLoaded" xml:space="preserve">
-    <value>Loaded</value>
+    <value>Geladen</value>
   </data>
   <data name="PackageStateUnloaded" xml:space="preserve">
-    <value>Unloaded</value>
+    <value>Nicht geladen</value>
   </data>
   <data name="PackageStatePendingUnloadTooltip" xml:space="preserve">
-    <value>Scheduled to be unloaded.
-This package will be unloaded after the next Dynamo restart.</value>
+    <value>Geplant: Laden aufheben.
+Dieses Paket wird nach dem nächsten Neustart von Dynamo nicht mehr geladen.</value>
   </data>
   <data name="PackageStateErrorTooltip" xml:space="preserve">
-    <value>Unloaded.
-This package has not been loaded due to an unexpected error.</value>
+    <value>Nicht geladen.
+Dieses Paket wurde aufgrund eines unerwarteten Fehlers nicht geladen.</value>
   </data>
   <data name="PackageStateLoadedTooltip" xml:space="preserve">
-    <value>Loaded.
-This package is loaded and ready to be used.</value>
+    <value>Geladen.
+Dieses Paket ist geladen und kann verwendet werden.</value>
   </data>
   <data name="PackageStateUnloadedTooltip" xml:space="preserve">
-    <value>Unloaded.
-This package has not been loaded because another conflicting package was loaded before it.</value>
+    <value>Nicht geladen.
+Dieses Paket wurde nicht geladen, da zuvor ein anderes Paket geladen wurde, das einen Konflikt verursacht.</value>
   </data>
   <data name="GroupDefaultText" xml:space="preserve">
-    <value>Description &lt;Double click here to edit group description&gt;</value>
+    <value>Beschreibung &lt;Hier doppelklicken, um die Gruppenbeschreibung zu bearbeiten&gt;</value>
   </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>Title &lt;Double click here to edit group title&gt;</value>
+    <value>Titel &lt;Hier doppelklicken, um den Gruppentitel zu bearbeiten&gt;</value>
   </data>
   <data name="OutputPortAlternativeName" xml:space="preserve">
-    <value>output</value>
-    <comment>Used when an output port displays its context menu chevron and the port has no name to avoid displaying a double chevron.</comment>
+    <value>Ausgabe</value>
   </data>
   <data name="InputPortAlternativeName" xml:space="preserve">
-    <value>input</value>
-    <comment>Used when an input port displays its context menu chevron and the port has no name to avoid displaying a double chevron.</comment>
+    <value>Eingabe</value>
   </data>
   <data name="BackupSavedMsg" xml:space="preserve">
-    <value>Backup file is saved</value>
+    <value>Sicherungsdatei wird gespeichert</value>
   </data>
   <data name="NodeDeprecatedMsg" xml:space="preserve">
-    <value>Node '{0}' is now deprecated.</value>
+    <value>Block '{0}' wird nicht mehr unterstützt.</value>
   </data>
   <data name="NodeNotResolvedMsg" xml:space="preserve">
-    <value>Node '{0}' cannot be resolved.</value>
+    <value>Block '{0}' kann nicht aufgelöst werden.</value>
   </data>
   <data name="NodeOfTypeDeprecatedMsg" xml:space="preserve">
-    <value>Node of type '{0}',from assembly '{1}', is now deprecated.</value>
+    <value>Block des Typs '{0}', aus Assembly '{1}', wird nicht mehr unterstützt.</value>
   </data>
   <data name="NodeOfTypeNotResolvedMsg" xml:space="preserve">
-    <value>Node of type '{0}', from assembly '{1}', cannot be resolved.</value>
+    <value>Block des Typs '{0}', aus Assembly '{1}', kann nicht aufgelöst werden.</value>
   </data>
   <data name="NodeUnhandledMsg" xml:space="preserve">
-    <value>Unhandled 'DummyNode.NodeNature' value: {0}</value>
+    <value>Nicht behandelter 'DummyNode.NodeNature'-Wert: {0}</value>
   </data>
   <data name="CoreLibraryLoadFailureForBlockedAssembly" xml:space="preserve">
     <value>{0}
 
-This assembly is likely blocked. Try restarting Dynamo after unblocking this assembly and all other core assemblies that might be blocked. If you are running a downloaded DynamoSandbox build that is extracted from a .zip file, try using 7zip to extract the Dynamo binaries and try again.</value>
+Diese Assembly ist wahrscheinlich blockiert. Starten Sie Dynamo neu, nachdem Sie die Blockierung dieser Assembly und aller anderen möglicherweise blockierten Kern-Assemblys aufgehoben haben. Wenn Sie einen heruntergeladenen DynamoSandbox-Build ausführen, der aus einer ZIP-Datei extrahiert wurde, verwenden Sie 7zip, um die Dynamo-Binärdateien zu extrahieren, und versuchen Sie es erneut.</value>
   </data>
   <data name="LibraryLoadFailureForBlockedAssembly" xml:space="preserve">
     <value>{0}
 
-This assembly is likely blocked. Try importing it again after unblocking the assembly.</value>
+Diese Assembly ist wahrscheinlich blockiert. Versuchen Sie, sie erneut zu importieren, nachdem Sie die Blockierung der Assembly aufgehoben haben.</value>
   </data>
   <data name="PackageLoadFailureForBlockedAssembly" xml:space="preserve">
     <value>{0}
 
-This package likely contains an assembly that is blocked. You will need to load the package again after unblocking the assembly. Restart Dynamo to reload the package.</value>
+Dieses Paket enthält wahrscheinlich eine blockierte Assembly. Sie müssen das Paket erneut laden, nachdem Sie die Blockierung der Assembly aufgehoben haben. Starten Sie Dynamo neu, um das Paket erneut zu laden.</value>
   </data>
   <data name="CoreLibraryLoadFailureMessageBoxTitle" xml:space="preserve">
-    <value>Core library load failure</value>
+    <value>Fehler beim Laden der Hauptbibliothek</value>
   </data>
   <data name="LibraryLoadFailureMessageBoxTitle" xml:space="preserve">
-    <value>Library load failure</value>
+    <value>Fehler beim Laden der Bibliothek</value>
   </data>
   <data name="FileLoadFailureMessageBoxTitle" xml:space="preserve">
-    <value>File load failure</value>
+    <value>Fehler beim Laden der Datei</value>
   </data>
   <data name="GroupStyleDefaultActions" xml:space="preserve">
-    <value>Actions</value>
+    <value>Aktionen</value>
   </data>
   <data name="GroupStyleDefaultActionsColor" xml:space="preserve">
     <value>B9F9E1</value>
   </data>
   <data name="GroupStyleDefaultInputs" xml:space="preserve">
-    <value>Inputs</value>
+    <value>Eingaben</value>
   </data>
   <data name="GroupStyleDefaultInputsColor" xml:space="preserve">
     <value>FFB8D8</value>
   </data>
   <data name="GroupStyleDefaultOutputs" xml:space="preserve">
-    <value>Outputs</value>
+    <value>Ausgaben</value>
   </data>
   <data name="GroupStyleDefaultOutputsColor" xml:space="preserve">
     <value>FFC999</value>
   </data>
   <data name="GroupStyleDefaultReview" xml:space="preserve">
-    <value>Review</value>
+    <value>Überprüfung</value>
   </data>
   <data name="GroupStyleDefaultReviewColor" xml:space="preserve">
     <value>A4E1FF</value>
   </data>
   <data name="ToolTipInputData" xml:space="preserve">
-    <value>Input Data</value>
+    <value>Eingabedaten</value>
   </data>
   <data name="SplashScreenInitPreferencesSettings" xml:space="preserve">
-    <value>Initializing preferences...</value>
+    <value>Einstellungen werden initialisiert...</value>
   </data>
   <data name="SplashScreenLoadNodeLibrary" xml:space="preserve">
-    <value>Loading Node Library...</value>
+    <value>Blockbibliothek wird geladen...</value>
   </data>
   <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
-    <value>No recommendations</value>
+    <value>Keine Empfehlungen</value>
   </data>
   <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
-    <value>Low confidence</value>
+    <value>Geringe Zuverlässigkeit</value>
   </data>
   <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
-    <value>There are no recommendations yet. You can try switching to node type match autocomplete.</value>
+    <value>Es gibt noch keine Empfehlungen. Wechseln Sie ggf. zur Blockttyp-Autovervollständigung.</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
-    <value>All recommendations are below the specified confidence level. You can try them or adjust the confidence settings in Preferences.</value>
+    <value>Alle Empfehlungen liegen unterhalb der definierten Zuverlässigkeit. Sie können sie ausprobieren oder die Zuverlässigkeitseinstellungen in den Voreinstellungen anpassen.</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
-    <value>Show Recommendations that are below the confidence level.</value>
+    <value>Empfehlungen anzeigen, die als nicht zuverlässig gelten.</value>
   </data>
   <data name="LoginNeededTitle" xml:space="preserve">
-    <value>Not authenticated</value>
+    <value>Nicht authentifiziert</value>
   </data>
   <data name="LoginNeededMessage" xml:space="preserve">
-    <value>You need to login to your account to get recommendations. Please log in or switch to node type match autocomplete.</value>
+    <value>Sie müssen sich bei Ihrem Konto anmelden, um Empfehlungen zu erhalten. Melden Sie sich an, oder wechseln Sie zur Blocktyp-Autovervollständigung.</value>
   </data>
   <data name="FailedInsertFileNodeExistNotification" xml:space="preserve">
-    <value>Failed to insert the file as some of the nodes already exist in the current worspace.</value>
+    <value>Einfügen der Datei fehlgeschlagen, da einige Blöcke bereits im aktuellen Arbeitsbereich vorhanden sind.</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Insert Dynamo Definition...</value>
+    <value>Dynamo-Definition einfügen...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
-    <value>Example file added to workspace. Run mode changed to Manual.</value>
+    <value>Beispieldatei wurde zum Arbeitsbereich hinzugefügt. Ausführungsmodus in Manuell geändert.</value>
   </data>
   <data name="DynamoLanguages_noxlate" xml:space="preserve">
     <value>Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
   </data>
   <data name="FormulaDSConversionFailure" xml:space="preserve">
-    <value>Formula failed to convert to DesignScript code. Please edit the formula manually to use it in a CodeBlock node.</value>
+    <value>Formel konnte nicht in DesignScript-Code konvertiert werden. Bearbeiten Sie die Formel manuell, um sie in einem CodeBlock-Block zu verwenden.</value>
   </data>
   <data name="FormulaMigrated" xml:space="preserve">
-    <value>Formula node has been deprecated. It has been automatically migrated to a CodeBlock node. Note that results may vary after the migration depending on lacing options selected on the original Formula node. Appropriate replication guides might need to be applied to the CodeBlock node script.</value>
+    <value>Formelblock wird nicht mehr unterstützt. Er wurde automatisch in einen CodeBlock-Block migriert. Beachten Sie, dass die Ergebnisse nach der Migration je nach den im ursprünglichen Formelblock ausgewählten Vergitterungsoptionen variieren können. Auf das CodeBlock-Blockskript müssen ggf. entsprechende Replikationsanleitungen angewendet werden.</value>
   </data>
   <data name="LegacyTraceDataWarning" xml:space="preserve">
-    <value>This workspace contains element binding data in a legacy format that is no longer supported in Dynamo 3.0 and higher versions. Element binding data will be saved in the new format the next time you run and save this workspace.</value>
+    <value>Dieser Arbeitsbereich enthält elementgebundene Daten in einem älteren Format, das in Dynamo 3.0 und höheren Versionen nicht mehr unterstützt wird. Elementgebundene Daten werden beim nächsten Ausführen und Speichern dieses Arbeitsbereichs im neuen Format gespeichert.</value>
   </data>
   <data name="InputNodeRenameHint" xml:space="preserve">
-    <value>default input name, rename me!</value>
+    <value>Vorgabe-Eingabename, bitte umbenennen!</value>
   </data>
   <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
-    <value>This node is currently experimental. Its behavior, name, and signature are subject to change.</value>
+    <value>Dieser Block ist derzeit noch experimentell. Das Verhalten, der Name und die Signatur können geändert werden.</value>
   </data>
 </root>

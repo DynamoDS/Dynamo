@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "Create a line by connecting two points",
+  "Description": "두 점을 연결하여 선을 만듭니다.",
   "Name": "Basics_Basic02",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -14,7 +14,7 @@
       "Type2": "number",
       "Value": "2",
       "NumberType": "Double",
-      "Description": "Creates a number",
+      "Description": "숫자를 만듭니다",
       "SelectedIndex": 0
     },
     {
@@ -27,7 +27,7 @@
       "MinimumValue": 0.0,
       "StepValue": 0.1,
       "NumberType": "Double",
-      "Description": "Produces numeric values",
+      "Description": "숫자 값을 생성합니다",
       "SelectedIndex": 0
     }
   ],
@@ -51,7 +51,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "숫자를 만듭니다",
       "InputValue": 2.0
     },
     {
@@ -62,7 +62,7 @@
         {
           "Id": "41c1b67f4cae42c1870e8067222198ec",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "X 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -71,7 +71,7 @@
         {
           "Id": "6cbfc4f53c594e3198398a1eacc2c904",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Y 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -80,7 +80,7 @@
         {
           "Id": "2838b00ffa0e463bbe0eacaf548f6687",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Z 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -91,7 +91,7 @@
         {
           "Id": "c28c4e4b0ff14ea6875ab92a2c5a7430",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "좌표로 작성된 점",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -100,7 +100,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "지정된 3개의 직교 좌표를 사용하여 점을 형성합니다.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
@@ -123,7 +123,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "숫자 값을 생성합니다",
       "InputValue": 4.43
     },
     {
@@ -136,7 +136,7 @@
         {
           "Id": "debf79aebc1e4347bb91586ea619e5fd",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "평가할 노드입니다.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -147,7 +147,7 @@
         {
           "Id": "0f723b58ceb04f309f2237a3ee62ecf5",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Watch 내용입니다.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -155,7 +155,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "노드의 출력을 시각화합니다."
     },
     {
       "ConcreteType": "Watch3DNodeModels.Watch3D, Watch3DNodeModels",
@@ -181,7 +181,7 @@
         {
           "Id": "0562171b3ea441739fd8bcbb8b1ce264",
           "Name": "",
-          "Description": "Incoming geometry objects.",
+          "Description": "수신 형상 객체입니다.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -192,7 +192,7 @@
         {
           "Id": "995b3cc9453a46cd9c1f2415df95d8a2",
           "Name": "",
-          "Description": "Incoming geometry objects.",
+          "Description": "수신 형상 객체입니다.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -200,7 +200,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Shows a dynamic preview of geometry"
+      "Description": "형상의 동적 미리보기를 표시합니다"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -210,7 +210,7 @@
         {
           "Id": "b20a4566cb77456b99433ca54bdee33e",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "X 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -219,7 +219,7 @@
         {
           "Id": "651a5cb660d0480d8adbaaabeb2fb137",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Y 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -228,7 +228,7 @@
         {
           "Id": "e148b06564cd45eba7b392e7d044e9e7",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Z 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -239,7 +239,7 @@
         {
           "Id": "801cc949e08f47abb8050552a053d445",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "좌표로 작성된 점",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -248,7 +248,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Auto",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "지정된 3개의 직교 좌표를 사용하여 점을 형성합니다.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -258,7 +258,7 @@
         {
           "Id": "ca7dcb578ad642088e0b5b4c383f9d46",
           "Name": "startPoint",
-          "Description": "Line start point\n\nPoint",
+          "Description": "선 시작점\n\n점",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -267,7 +267,7 @@
         {
           "Id": "b587d6b05d3a41e28ebc7e7ec92f91cc",
           "Name": "endPoint",
-          "Description": "Line end point\n\nPoint",
+          "Description": "선 끝점\n\n점",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -278,7 +278,7 @@
         {
           "Id": "e7dd2b37cda04f239b3dcd22561316e1",
           "Name": "Line",
-          "Description": "Line from start and end point",
+          "Description": "시작점과 끝점에서의 선",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -287,7 +287,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByStartPointEndPoint@Autodesk.DesignScript.Geometry.Point,Autodesk.DesignScript.Geometry.Point",
       "Replication": "Auto",
-      "Description": "Creates a straight Line between two input Points.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
+      "Description": "두 입력 점 사이에 직선을 만듭니다.\n\nLine.ByStartPointEndPoint (startPoint: Point, endPoint: Point): Line"
     }
   ],
   "Connectors": [
@@ -335,7 +335,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "특성",
       "Version": "2.13",
       "Data": {}
     }
@@ -358,7 +358,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "배경 미리보기(_B)",
       "EyeX": 3.3328166007995605,
       "EyeY": 7.523900032043457,
       "EyeZ": 6.0789551734924316,
@@ -445,7 +445,7 @@
     "Annotations": [
       {
         "Id": "cf9b8b8561ac4de3b503117cefdbe6d4",
-        "Title": "Geometric Data can be visualized as either textual information or in 3d space",
+        "Title": "기하학적 데이터는 텍스트 정보로 또는 3D 공간에서 시각화할 수 있습니다",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -466,7 +466,7 @@
       },
       {
         "Id": "0509d30fc04240b590de0da5b395bb04",
-        "Title": "You can toggle between 3D Background navigation and Graph View navigation with the butttons in the upper right corner of the screen (Ctrl + B shortcut). Background Preview can also be turned on and off in the View Menu, for Dynamo and Revit.",
+        "Title": "화면 오른쪽 상단에 있는 버튼을 사용하면 3D 배경 탐색과 그래프 뷰 탐색 간에 전환할 수 있습니다(바로 가기: Ctrl + B). Dynamo 및 Revit의 경우 뷰 메뉴에서 배경 미리보기를 켜고 끌 수도 있습니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -487,7 +487,7 @@
       },
       {
         "Id": "93e20e77387a4ebd82e07f149ec9b3b3",
-        "Title": "Use Watch 3D node to visualise the 3D element in isolation",
+        "Title": "Watch 3D 노드를 사용하여 개별적으로 3D 요소 시각화",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -508,7 +508,7 @@
       },
       {
         "Id": "ef4fa7ff06444acb85225b99b9205e51",
-        "Title": "Manipulate the position of the point in the Dynamo environment : Select the Point.ByCoordinates node and swicth to Background preview to pull the point along its three axes.",
+        "Title": "Dynamo 환경에서 점의 위치 조작: Point.ByCoordinates 노드를 선택하고 배경 미리보기로 전환하여 3개의 축을 따라 점을 당깁니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -529,7 +529,7 @@
       },
       {
         "Id": "3c577d42b1334e37a7a3a383774b1152",
-        "Title": "Use a Number Slider or Integer Slider nodes to dynamically input a value within a specified range. Click on the blue dropdown arrow to open the numeric range settings",
+        "Title": "Number Slider 또는 Integer Slider 노드를 사용하여 지정된 범위 내에서 값을 동적으로 입력합니다. 파란색 드롭다운 화살표를 클릭하여 숫자 범위 설정을 엽니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

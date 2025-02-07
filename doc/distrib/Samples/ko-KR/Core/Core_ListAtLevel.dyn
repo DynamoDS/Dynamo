@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "We explore List@Level and how it can be used to achieve the same results as List.Map node. We create a series of panels to demonstrate how List@Level really works.",
+  "Description": "List@Level과 이를 사용하여 List.Map 노드와 동일한 결과를 얻을 수 있는 방법에 대해 살펴봅니다. 일련의 패널을 만들어 List@Level의 실제 작동 방식을 보여줍니다.",
   "Name": "Core_ListAtLevel",
   "ElementResolver": {
     "ResolutionMap": {
@@ -26,7 +26,7 @@
         {
           "Id": "6ecdb698dc834d9ba209e2c174d41286",
           "Name": "points",
-          "Description": "Grid of points for nurbs surface\n\nPoint[][]",
+          "Description": "NURBS 표면의 점 그리드\n\n점[][]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -35,7 +35,7 @@
         {
           "Id": "473097cfc3834a9fbdb72a0432ba63c2",
           "Name": "uDegree",
-          "Description": "Degree in u direction\n\nint\nDefault value : 3",
+          "Description": "u 방향의 각도\n\nint\n기본값: 3",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -44,7 +44,7 @@
         {
           "Id": "927414163b604d36b8873715da24a60c",
           "Name": "vDegree",
-          "Description": "Degree in v direction\n\nint\nDefault value : 3",
+          "Description": "v 방향의 각도\n\nint\n기본값: 3",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -55,7 +55,7 @@
         {
           "Id": "5ce162ccc880451a921f18504ec5a9c4",
           "Name": "NurbsSurface",
-          "Description": "Nurbs surface created by points",
+          "Description": "점으로 작성된 Nurbs 표면",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -64,7 +64,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.NurbsSurface.ByPoints@Autodesk.DesignScript.Geometry.Point[][],int,int",
       "Replication": "Auto",
-      "Description": "Creates a NurbsSurface with specified interpolated points and U and V degrees. The resultant surface will pass through all of the points.\n\nNurbsSurface.ByPoints (points: Point[][], uDegree: int = 3, vDegree: int = 3): NurbsSurface"
+      "Description": "지정된 보간 점과 U 및 V 각도를 사용하여 NurbsSurface를 만듭니다. 결과 표면은 모든 점을 통과합니다.\n\nNurbsSurface.ByPoints (points: Point[][], uDegree: int = 3, vDegree: int = 3): NurbsSurface"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -74,7 +74,7 @@
         {
           "Id": "706a3c88e9f14fd3b29b8599397f0202",
           "Name": "bestFitPoints",
-          "Description": "List of points to best fit line\n\nPoint[]",
+          "Description": "최적 맞춤 선에 대한 점 리스트\n\n점[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -85,7 +85,7 @@
         {
           "Id": "0339b2ef6c6941b2b0a48b05807444c7",
           "Name": "Line",
-          "Description": "Line from fit through points",
+          "Description": "점을 통과하는 맞춤 선",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -94,7 +94,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Line.ByBestFitThroughPoints@Autodesk.DesignScript.Geometry.Point[]",
       "Replication": "Auto",
-      "Description": "Creates a Line best approximating a scatter plot of Points.\n\nLine.ByBestFitThroughPoints (bestFitPoints: Point[]): Line"
+      "Description": "점의 산점도에 가장 가까운 선을 만듭니다.\n\nLine.ByBestFitThroughPoints (bestFitPoints: Point[]): Line"
     },
     {
       "ConcreteType": "CoreNodeModels.HigherOrder.Map, CoreNodeModels",
@@ -104,7 +104,7 @@
         {
           "Id": "aae51590920f4aa7ad9168d6010e6195",
           "Name": "list",
-          "Description": "The list to map over.",
+          "Description": "매핑할 리스트입니다.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -113,7 +113,7 @@
         {
           "Id": "5e12570c2b7e461eb4e29041de650a6a",
           "Name": "f(x)",
-          "Description": "The procedure used to map element",
+          "Description": "요소를 매핑하기 위해 사용되는 절차",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -124,7 +124,7 @@
         {
           "Id": "b8740818259e43abbc0137405eaf7832",
           "Name": "mapped",
-          "Description": "Mapped list",
+          "Description": "매핑된 리스트",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -132,7 +132,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Applies a function over all elements of a list, generating a new list from the results"
+      "Description": "리스트의 모든 요소에 함수를 적용하여 결과에서 새 리스트를 생성합니다."
     },
     {
       "ConcreteType": "CoreNodeModels.HigherOrder.Map, CoreNodeModels",
@@ -142,7 +142,7 @@
         {
           "Id": "b83ac60c4ff044958189f07b1fab6ec9",
           "Name": "list",
-          "Description": "The list to map over.",
+          "Description": "매핑할 리스트입니다.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -151,7 +151,7 @@
         {
           "Id": "a7ac983fdd324844a3cf5bc470127d90",
           "Name": "f(x)",
-          "Description": "The procedure used to map element",
+          "Description": "요소를 매핑하기 위해 사용되는 절차",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -162,7 +162,7 @@
         {
           "Id": "43dcd7eb0fef4c4bab93791896cfa24f",
           "Name": "mapped",
-          "Description": "Mapped list",
+          "Description": "매핑된 리스트",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -170,7 +170,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Applies a function over all elements of a list, generating a new list from the results"
+      "Description": "리스트의 모든 요소에 함수를 적용하여 결과에서 새 리스트를 생성합니다."
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -180,7 +180,7 @@
         {
           "Id": "58604e56b36b4b80a46c0a40e7c9eb44",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "항목을 가져올 리스트입니다.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": true,
@@ -189,7 +189,7 @@
         {
           "Id": "2dd3bee0136647eb840c846f4817bdfe",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "가져올 항목의 인덱스입니다.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -200,7 +200,7 @@
         {
           "Id": "3a7fa37281304240951782ac4aebf937",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "지정된 인덱스의 리스트에 있는 항목입니다.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -209,7 +209,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "지정된 인덱스에 위치한 지정된 리스트에서 항목을 반환합니다.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -219,7 +219,7 @@
         {
           "Id": "d730184c13124dc6a9fa6552d3ae49b1",
           "Name": "list",
-          "Description": "List to fetch an item from.\n\nvar[]..[]",
+          "Description": "항목을 가져올 리스트입니다.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -228,7 +228,7 @@
         {
           "Id": "eb95679c3317416fa967bec39fd79825",
           "Name": "index",
-          "Description": "Index of the item to be fetched.\n\nint",
+          "Description": "가져올 항목의 인덱스입니다.\n\nint",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -239,7 +239,7 @@
         {
           "Id": "15561d59d6824d98b0a898c384f7f8f4",
           "Name": "item",
-          "Description": "Item in the list at the given index.",
+          "Description": "지정된 인덱스의 리스트에 있는 항목입니다.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -248,7 +248,7 @@
       ],
       "FunctionSignature": "DSCore.List.GetItemAtIndex@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Returns an item from the given list that's located at the specified index.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
+      "Description": "지정된 인덱스에 위치한 지정된 리스트에서 항목을 반환합니다.\n\nList.GetItemAtIndex (list: var[]..[], index: int): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -259,7 +259,7 @@
         {
           "Id": "d9ddac8471224587b2141e57bdfb54ed",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "행 1의 표현식 값",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -267,7 +267,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "DesignScript 코드를 직접 작성할 수 있습니다",
       "Code": "[1,2];"
     },
     {
@@ -279,7 +279,7 @@
         {
           "Id": "ca8dd243e4924766b55249440deac976",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "행 1의 표현식 값",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -287,7 +287,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "DesignScript 코드를 직접 작성할 수 있습니다",
       "Code": "[1,2];"
     },
     {
@@ -298,7 +298,7 @@
         {
           "Id": "1428df384ae54e31ab72e93e1344528e",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "X 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -307,7 +307,7 @@
         {
           "Id": "6936cba5a58f4526900ae6c7a1331313",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Y 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -316,7 +316,7 @@
         {
           "Id": "3c83696d53834299a00224a22761b4b3",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Z 좌표\n\ndouble\n기본값: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -327,7 +327,7 @@
         {
           "Id": "ffb5771c2f4c4e50b47e374e5ece6cf9",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "좌표로 작성된 점",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -336,7 +336,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "CrossProduct",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "지정된 3개의 직교 좌표를 사용하여 점을 형성합니다.\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -347,7 +347,7 @@
         {
           "Id": "01fe2f20a7d74eecb6cd2a01018ec8ec",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "행 1의 표현식 값",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -356,7 +356,7 @@
         {
           "Id": "30ae98d87c724d02891bfe1faa5866e0",
           "Name": "",
-          "Description": "Value of expression at line 2",
+          "Description": "행 2의 표현식 값",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -364,7 +364,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "DesignScript 코드를 직접 작성할 수 있습니다",
       "Code": "0..30..#8;\n12..0..#4;"
     },
     {
@@ -375,7 +375,7 @@
         {
           "Id": "0dcf9d732b714b569174be83839e564e",
           "Name": "list",
-          "Description": "List to get the item count of.\n\nvar[]..[]",
+          "Description": "항목 수를 가져올 리스트입니다.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 3,
           "UseLevels": true,
@@ -386,7 +386,7 @@
         {
           "Id": "9f4d155d1b704c86830eafcf6bd28784",
           "Name": "int",
-          "Description": "List length.",
+          "Description": "리스트 길이.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -395,7 +395,7 @@
       ],
       "FunctionSignature": "DSCore.List.Count@var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns the number of items stored in the given list.\n\nList.Count (list: var[]..[]): int"
+      "Description": "지정된 리스트에 저장된 항목의 개수를 반환합니다.\n\nList.Count (list: var[]..[]): int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -405,7 +405,7 @@
         {
           "Id": "659232f096bb4756ab30240c339aa0c6",
           "Name": "list",
-          "Description": "List to get the item count of.\n\nvar[]..[]",
+          "Description": "항목 수를 가져올 리스트입니다.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": true,
@@ -416,7 +416,7 @@
         {
           "Id": "578086c068d14cc8a80f2220657252e5",
           "Name": "int",
-          "Description": "List length.",
+          "Description": "리스트 길이.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -425,7 +425,7 @@
       ],
       "FunctionSignature": "DSCore.List.Count@var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns the number of items stored in the given list.\n\nList.Count (list: var[]..[]): int"
+      "Description": "지정된 리스트에 저장된 항목의 개수를 반환합니다.\n\nList.Count (list: var[]..[]): int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -435,7 +435,7 @@
         {
           "Id": "29d425608a854a4d9f0b8ee4077cd367",
           "Name": "list",
-          "Description": "List to get the item count of.\n\nvar[]..[]",
+          "Description": "항목 수를 가져올 리스트입니다.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": true,
@@ -446,7 +446,7 @@
         {
           "Id": "e6f42f796d054f0b8e3d49b7b96fb5eb",
           "Name": "int",
-          "Description": "List length.",
+          "Description": "리스트 길이.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -455,7 +455,7 @@
       ],
       "FunctionSignature": "DSCore.List.Count@var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns the number of items stored in the given list.\n\nList.Count (list: var[]..[]): int"
+      "Description": "지정된 리스트에 저장된 항목의 개수를 반환합니다.\n\nList.Count (list: var[]..[]): int"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -465,7 +465,7 @@
         {
           "Id": "572167b6609242dfac8f42c428f41235",
           "Name": "list",
-          "Description": "List to flatten.\n\nvar[]..[]",
+          "Description": "단순화할 리스트입니다.\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 3,
           "UseLevels": true,
@@ -474,7 +474,7 @@
         {
           "Id": "18d9db5c5740433fa3ff9b91e9b093ac",
           "Name": "amount",
-          "Description": "Layers of list nesting to remove (-1 will remove all list nestings)\n\nint\nDefault value : -1",
+          "Description": "제거할 리스트 내포 레이어(-1은 모든 리스트 내포 제거)\n\nint\n기본값: -1",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -485,7 +485,7 @@
         {
           "Id": "54dbee27e8a24ff1892812ef1523772d",
           "Name": "list",
-          "Description": "Flattened list by amount",
+          "Description": "양 기준으로 단순화한 리스트",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -494,7 +494,7 @@
       ],
       "FunctionSignature": "DSCore.List.Flatten@var[]..[],int",
       "Replication": "Auto",
-      "Description": "Flattens a nested list of lists by a certain amount.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
+      "Description": "리스트의 내포된 리스트를 특정한 크기만큼 단순화합니다.\n\nList.Flatten (list: var[]..[], amount: int = -1): var[]..[]"
     }
   ],
   "Connectors": [
@@ -597,7 +597,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "특성",
       "Version": "2.13",
       "Data": {}
     }
@@ -620,7 +620,7 @@
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "배경 미리보기(_B)",
       "EyeX": -0.6891746520996094,
       "EyeY": 25.33542251586914,
       "EyeZ": 21.06568717956543,
@@ -777,7 +777,7 @@
     "Annotations": [
       {
         "Id": "1bed1efe74bb4a1ca06ff814226a8034",
-        "Title": "Replacing List.Map with List@Level",
+        "Title": "List@Level을 포함하는 List.Map 대치",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -807,7 +807,7 @@
       },
       {
         "Id": "b94ccab312c940009338190a9c4d373f",
-        "Title": " Using \"Keep List Structure\"",
+        "Title": " \"리스트 구조 유지\" 사용",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -832,7 +832,7 @@
       },
       {
         "Id": "71d074f3b55544bfadcadd78c591845a",
-        "Title": "Inspecting a List with List@Level and Count",
+        "Title": "List@Level 및 Count를 포함하는 리스트 검사",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -856,7 +856,7 @@
       },
       {
         "Id": "2430763962e347eb8a12eec7c513bbe9",
-        "Title": "Creating Geometry",
+        "Title": "형상 작성",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -880,7 +880,7 @@
       },
       {
         "Id": "77efdc5df117499cb0bfbfad13bf6223",
-        "Title": "Inspecting a List with List@Level and Flatten",
+        "Title": "List@Level 및 Flatten을 포함하는 리스트 검사",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -904,7 +904,7 @@
       },
       {
         "Id": "eb44fe22a0c74665a590b5c096b75ed7",
-        "Title": "Info",
+        "Title": "정보",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -926,8 +926,8 @@
       },
       {
         "Id": "edfeff1c4b7b4a7ebca8d23d2660bfa6",
-        "Title": "Info",
-        "DescriptionText": "General information for using List@Level",
+        "Title": "정보",
+        "DescriptionText": "List@Level 사용에 대한 일반 정보",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -949,8 +949,8 @@
       },
       {
         "Id": "c585c1db8016400c81fd1e433cf124b3",
-        "Title": "Inputs",
-        "DescriptionText": "Description <Double click here to edit group description>",
+        "Title": "입력",
+        "DescriptionText": "설명 <그룹 설명을 편집하려면 여기를 두 번 클릭하십시오.>",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -973,8 +973,8 @@
       },
       {
         "Id": "960be371985a46c2a57a877d086d3568",
-        "Title": "Info",
-        "DescriptionText": "How this graph works",
+        "Title": "정보",
+        "DescriptionText": "그래프 작동 방식",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -995,7 +995,7 @@
       },
       {
         "Id": "5c3a7719de774ea4904d671f0abb0dca",
-        "Title": "The lists exist at different levels, with L1 being the lowest level. The total number of elements produced by this node is 64, as shown at the bottom right.",
+        "Title": "리스트에는 여러 레벨에 있으며, L1이 가장 낮은 레벨입니다. 이 노드에서 생성한 총 요소 수는 오른쪽 하단에 표시된 것처럼 64입니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1016,7 +1016,7 @@
       },
       {
         "Id": "f680137a312c4de9881b54f7b9cf8aa2",
-        "Title": "In the previous version of Dynamo, List.Map is used to obtain the inner levels of lists. Even though the same result can be achieved using List.Map, it introduces more nodes into the workspace. Here we use List@Level to grab interior points of the grid in a more efficient way. We will use these points to create panels.\r\n\r\nWe also utilized the \"Keep List Structure\" option to maintain the groupings of the initial list and prevent flattening. If \"Keep List Structure\" is disabled, a single NurbsSurface will be created instead of eight.",
+        "Title": "이전 버전의 Dynamo에서는 List.Map을 사용하여 리스트의 내부 레벨을 얻었습니다. List.Map을 사용해도 같은 결과를 얻을 수 있지만, 그러면 작업공간에 더 많은 노드가 생성됩니다. 여기서는 그리드 내부 점을 더 효율적으로 사용할 수 있도록 List@Level을 사용합니다. 이러한 점을 사용하여 패널을 작성하겠습니다.\r\n\r\n또한 원래 리스트의 그룹을 유지하고 단순화되는 것을 방지하기 위해 \"리스트 구조 유지\" 옵션을 사용했습니다. \"리스트 구조 유지\"를 비활성화하면 8개가 아니라 단일 NurbsSurface가 작성됩니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1037,7 +1037,7 @@
       },
       {
         "Id": "a9cd8e77dfc54359b6a145218b7ca761",
-        "Title": "We want to create panels in the interior of the grid. To do so, we will need to obtain the points at indexes 1 and 2 of each list in the innermost level. This can easily be done by using the List@Level feature. The grouping of the lists are kept by enabling the option \"Keep list structure\". But, first, let's inspect the list we created with Point.ByCoordinates a bit more to determine which level of the list we want to use.",
+        "Title": "그리드 내부에 패널을 작성하려고 합니다. 그렇게 하려면, 가장 안쪽 레벨에 있는 각 리스트의 색인 1과 2에서 점을 얻어야 합니다. List@Level 기능을 사용하면 이를 쉽게 할 수 있습니다. \"리스트 구조 유지\" 옵션을 활성화하면 리스트의 그룹이 유지됩니다. 그러나 우선, Point.ByCoordinates로 작성한 리스트를 좀 더 검사하여 어떤 레벨의 리스트를 사용할지 결정하겠습니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1057,7 +1057,7 @@
       },
       {
         "Id": "0a361063945e455b8e3257cff2642be2",
-        "Title": "In this example, we create a 3D list containing a series of points. There are 8 lists at L3, and each list contains another 4 lists (L2). Each of the 4 lists contains 4 points (L1), resulting in a total of 128 points.",
+        "Title": "이 예에서는 일련의 점이 포함된 3D 리스트를 작성했습니다. L3에 8개의 리스트가 있고, 각 리스트에는 다른 4개의 리스트(L2)가 포함되어 있습니다. 4개의 리스트 각각에는 4점(L1)이 포함되어 있으므로, 총 128개의 점이 작성되었습니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1078,7 +1078,7 @@
       },
       {
         "Id": "fa1915d2e9e44dad91659f7e24be4218",
-        "Title": "The List.Count node returns the number of elements that are present in each list. Depending on the selected level, different values are returned. Try changing the value of L3 by clicking on the arrows beside it.",
+        "Title": "List.Count 노드는 각 리스트에 존재하는 요소의 번호를 반환합니다. 선택한 레벨에 따라 서로 다른 값이 반환됩니다. L3 옆에 있는 화살표를 클릭하여 L3의 값을 변경해 보십시오.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1098,7 +1098,7 @@
       },
       {
         "Id": "5a86a3b5794c42c8aa41e04f6b67a31b",
-        "Title": "There are eight lists at L3, each containing four lists. Hence, selecting L3 implements the List.Count function on the eight lists, giving eight '4' values.",
+        "Title": "L3에는 각각 4개의 리스트가 포함된 8개의 리스트가 있습니다. 따라서, L3를 선택하면 8개의 리스트에서 List.Count 기능이 구현되어 '4' 값이 8개 나열됩니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1118,7 +1118,7 @@
       },
       {
         "Id": "79cc8836a465418b94bcccfaf086b340",
-        "Title": "As an additional example, you can easily flatten the nested structure at inner levels of the lists by making use of the List@Level feature, together with the Flatten node. Try changing which level will be flattened by clicking on the arrows beside in the List@Level spinner.",
+        "Title": "또 다른 예로, List@Level 기능을 Flatten 노드와 함께 사용하면 리스트의 안쪽 레벨에 내포된 구조를 쉽게 단순화할 수 있습니다. List@Level 스피너 옆에 있는 화살표를 클릭하여 어떤 레벨이 단순화될지 변경해 보십시오.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1138,7 +1138,7 @@
       },
       {
         "Id": "ad757908626b43b9b0d820f1e37c8e53",
-        "Title": "Selecting L3 converts the eight lists at that level into a 1D array. As each of the eight lists contains four items (which are also lists), this will flatten all of the lists at L3 producing eight lists of 16 points.",
+        "Title": "L3을 선택하면 해당 레벨의 리스트 8개가 1D 배열로 변환됩니다. 그러면, 8개의 리스트 각각에 4개의 항목(이 항목도 나열됨)이 포함되어 있으므로 L3의 리스트가 모두 단순화되어 16개의 점이 있는 8개의 리스트가 생성됩니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1158,7 +1158,7 @@
       },
       {
         "Id": "c2a93eafafd843c38528cb8b83038b45",
-        "Title": "LIST@LEVEL\r\nList@Level replaces the functionality of List.Map, by allowing you to directly select the level of list you want to work with.",
+        "Title": "LIST@LEVEL\r\nList@Level은 작업할 리스트 레벨을 직접 선택할 수 있어 List.Map의 기능을 대치합니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1178,7 +1178,7 @@
       },
       {
         "Id": "d0db3c96e1bd44089ed5bf7b28d3b6ef",
-        "Title": "To change the list level you're working with, click the arrow beside the list input port and enable the \"Use levels\" option.\r\n\r\nWhen List@Level is first enabled on an input port, the list at the second innermost level (L2) is selected to be worked with. ",
+        "Title": "작업하려는 리스트 레벨을 변경하려면 리스트 입력 포트 옆에 있는 화살표를 클릭하고 \"레벨 사용\" 옵션을 활성화합니다.\r\n\r\n입력 포트에서 List@Level을 먼저 활성화하면, 안쪽에서 두 번째 레벨(L2)의 리스트가 작업용으로 선택됩니다. ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1198,7 +1198,7 @@
       },
       {
         "Id": "64bb560e25184efcb68ae42c72abfdbc",
-        "Title": "This node returns the number of elements that are present in each list in L2. By default, the results are flattened into a 1D list.",
+        "Title": "이 노드는 L2의 각 리스트에 존재하는 요소의 번호를 반환합니다. 기본적으로 결과는 1D 리스트로 단순화됩니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1218,7 +1218,7 @@
       },
       {
         "Id": "6e2ad0ec8d164d2f889ca49975a6b218",
-        "Title": "To preserve the nested structure of the lists, select the option \"Keep list structure\". \"@@\" indicates how to keep the list structure in Designscript.",
+        "Title": "리스트의 내포된 구조를 유지하려면 \"리스트 구조 유지\" 옵션을 선택합니다. \"@@\"는 DesignScript에서 리스트 구조를 유지하는 방법을 나타냅니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1238,7 +1238,7 @@
       },
       {
         "Id": "aa8b961d72e34ee1b2797c161109af2c",
-        "Title": "Below is the List.Map equivalent to applying List@Level which requires additional nodes",
+        "Title": "다음은 추가 노드가 필요한 List@Level을 적용하는 것과 동일한 List.Map입니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1259,7 +1259,7 @@
       },
       {
         "Id": "ac90dfe3800a487ab7ceb591a81b583c",
-        "Title": "With the sets of points selected, we can now create panels.",
+        "Title": "이제 선택된 점 세트로 패널을 작성할 수 있습니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1280,7 +1280,7 @@
       },
       {
         "Id": "1f382490f13d4dabbcfbd57caa09ec7c",
-        "Title": "To determine which level of the list you want to work with, look at the bottom of the preview bubble or watch node and follow the lines from the List@Level notation up.",
+        "Title": "작업할 리스트 레벨을 결정하려면 미리보기 풍선 또는 Watch 노드 아래를 보고 List@Level 표기법의 행을 확인합니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

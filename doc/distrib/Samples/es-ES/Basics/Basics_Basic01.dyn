@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "Connect nodes to add two numbers",
+  "Description": "Conectar nodos para sumar dos números",
   "Name": "Basics_Basic01",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -14,7 +14,7 @@
       "Type2": "number",
       "Value": "2",
       "NumberType": "Double",
-      "Description": "Creates a number",
+      "Description": "Crea un número.",
       "SelectedIndex": 0
     },
     {
@@ -24,7 +24,7 @@
       "Type2": "number",
       "Value": "6",
       "NumberType": "Double",
-      "Description": "Creates a number",
+      "Description": "Crea un número.",
       "SelectedIndex": 0
     }
   ],
@@ -48,7 +48,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Crea un número.",
       "InputValue": 2.0
     },
     {
@@ -59,7 +59,7 @@
         {
           "Id": "c0d7f6cc642d478bb12abfe5f56511b3",
           "Name": "x",
-          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "Description": "Valor entero o doble o de cadena\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -68,7 +68,7 @@
         {
           "Id": "fb7fa087ab954539b0675d83c4bccf13",
           "Name": "y",
-          "Description": "Integer value, double value or string\n\nvar[]..[]",
+          "Description": "Valor entero o doble o de cadena\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -79,7 +79,7 @@
         {
           "Id": "389b70a9ba80459e9958f594230c86b6",
           "Name": "var",
-          "Description": "The sum of two input numbers, or the concatenation of two strings",
+          "Description": "La suma de dos números de entrada o la concatenación de dos cadenas.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -88,7 +88,7 @@
       ],
       "FunctionSignature": "+@var[]..[],var[]..[]",
       "Replication": "Auto",
-      "Description": "Returns addition of x and y\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
+      "Description": "Devuelve la suma de X e Y.\n\n+ (x: var[]..[], y: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
@@ -100,7 +100,7 @@
         {
           "Id": "9bacd0cbbe68470d8deb2f0dfc31155f",
           "Name": "",
-          "Description": "Node to evaluate.",
+          "Description": "Nodo que se va a evaluar.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -111,7 +111,7 @@
         {
           "Id": "23f3b9f8740a47bcaee0a48699e61066",
           "Name": "",
-          "Description": "Watch contents.",
+          "Description": "Permite visualizar el contenido.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -119,7 +119,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Visualizes a node's output"
+      "Description": "Muestra la salida de un nodo."
     },
     {
       "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
@@ -139,7 +139,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Crea un número.",
       "InputValue": 6.0
     }
   ],
@@ -164,7 +164,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Propiedades",
       "Version": "2.13",
       "Data": {}
     }
@@ -187,7 +187,7 @@
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Vista preliminar en segundo plano",
       "EyeX": -16.965513229370117,
       "EyeY": 24.341577529907227,
       "EyeZ": 50.649433135986328,
@@ -244,7 +244,7 @@
     "Annotations": [
       {
         "Id": "1d089d46305e464b8714d8f6d762775a",
-        "Title": "Basic functional inputs, like Numbers and Strings can be selected by either browsing or searching from the library on the left of the canvas.\r\n\r\nOperations to execute on data, like math or geometric transformations, are also found in the library",
+        "Title": "Las entradas funcionales básicas como números y cadenas se pueden seleccionar navegando o buscando en la biblioteca a la izquierda del lienzo.\r\n\r\nLas operaciones que se ejecutan en datos, por ejemplo transformaciones matemáticas o geométricas, también están en la biblioteca.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -264,7 +264,7 @@
       },
       {
         "Id": "07d8f330cb434fcea050bf864d5ebc10",
-        "Title": "Dynamo is a Visual Programming language.  Like other languages it works by linking simple elements together to form more complex ideas",
+        "Title": "Dynamo es un lenguaje de programación visual. Al igual que otros lenguajes, funciona vinculando entre sí elementos sencillos para configurar conceptos más complejos.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -284,7 +284,7 @@
       },
       {
         "Id": "a0293ecc963343219704a7c84f4749c8",
-        "Title": "Pull a connector out of the \">\" port on the Number node and connect it to the \"y\" port on the + node, then push the \"Run\" button in the lower left corner of the application.",
+        "Title": "Extraiga un conector del puerto \">\" del nodo Number y conéctelo al puerto \"y\" en el nodo +; a continuación, haga clic en el botón \"Ejecutar\" en la esquina inferior izquierda de la aplicación.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -305,7 +305,7 @@
       },
       {
         "Id": "5cefc1038b544158bd2bae09ec296510",
-        "Title": "Data Can be visualized by clicking on the Run button in the lower right of the application.  If you enable \"Automatic\" Run mode, the application will constantly update.\r\n\r\nYou can see the data either by using a Watch node or clicking on the small square at the bottom of most nodes.",
+        "Title": "Se pueden visualizar los datos. Para ello, haga clic en el botón Ejecutar en la esquina inferior izquierda de la aplicación. Si activa el modo de ejecución \"Automático\", la aplicación se actualizará constantemente.\r\n\r\nPuede ver los datos mediante un nodo Watch o haciendo clic en el pequeño cuadrado que aparece en la parte inferior de la mayoría de los nodos.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -326,7 +326,7 @@
       },
       {
         "Id": "d053df48c7af4d8c80c1b151bf2fc884",
-        "Title": "More Sample files can be found in the Help menu, or close this file by clicking the \"X\" on the tab to return to the welcome page",
+        "Title": "En el menú Ayuda, puede encontrar más archivos de muestra. Cierre este archivo haciendo clic en la \"X\" de la ficha para volver a la página de bienvenida.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

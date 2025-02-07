@@ -1,7 +1,7 @@
 {
   "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
   "IsCustomNode": false,
-  "Description": "A Dynamo sample graph showing how to export data to Excel.",
+  "Description": "Dynamo-Beispieldiagramm, das zeigt, wie Daten nach Excel exportiert werden.",
   "Name": "OpenXMLExport_Data To Excel",
   "ElementResolver": {
     "ResolutionMap": {}
@@ -17,7 +17,7 @@
         {
           "Id": "b63dc8493243498eb0d6ad1837aa7fc1",
           "Name": "x",
-          "Description": "X coordinate\n\ndouble\nDefault value : 0",
+          "Description": "X-Koordinate\n\ndouble\nVorgabewert: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -26,7 +26,7 @@
         {
           "Id": "22ddd00923814f0ea103c705ae4472a7",
           "Name": "y",
-          "Description": "Y coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Y-Koordinate\n\ndouble\nVorgabewert: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -35,7 +35,7 @@
         {
           "Id": "89d7c0b116d5488082ce2c15ebaef847",
           "Name": "z",
-          "Description": "Z coordinate\n\ndouble\nDefault value : 0",
+          "Description": "Z-Koordinate\n\ndouble\nVorgabewert: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -46,7 +46,7 @@
         {
           "Id": "43c7009cdf1742e49eabe32a2a54fa02",
           "Name": "Point",
-          "Description": "Point created by coordinates",
+          "Description": "Durch Koordinaten erstellter Punkt",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -55,7 +55,7 @@
       ],
       "FunctionSignature": "Autodesk.DesignScript.Geometry.Point.ByCoordinates@double,double,double",
       "Replication": "Longest",
-      "Description": "Form a Point given 3 cartesian coordinates\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
+      "Description": "Legt einen Punkt nach Angabe dreier kartesischer Koordinaten fest\n\nPoint.ByCoordinates (x: double = 0, y: double = 0, z: double = 0): Point"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -65,7 +65,7 @@
         {
           "Id": "258478d24ffa4fcdb76ab9f386b4a92a",
           "Name": "angle",
-          "Description": "Angle in degrees to take the cosine of.\n\ndouble",
+          "Description": "Winkel in Grad, dessen Kosinus ermittelt wird.\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -76,7 +76,7 @@
         {
           "Id": "16f164b8510f4aa098765f039b5f8013",
           "Name": "double",
-          "Description": "Cosine of the angle",
+          "Description": "Kosinus des Winkels",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -85,7 +85,7 @@
       ],
       "FunctionSignature": "DSCore.Math.Cos@double",
       "Replication": "Longest",
-      "Description": "Finds the cosine of an angle.\n\nMath.Cos (angle: double): double"
+      "Description": "Ermittelt den Kosinus eines Winkels.\r\n\r\nMath.Cos (Winkel: double): double"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -95,7 +95,7 @@
         {
           "Id": "7e3f6e59d2ca4d19ba5f68cf156e1eb3",
           "Name": "angle",
-          "Description": "Angle in degrees to take the sine of.\n\ndouble",
+          "Description": "Winkel in Grad, dessen Sinus ermittelt wird.\n\ndouble",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -106,7 +106,7 @@
         {
           "Id": "ae92e4fa54624deb804db94b52b70be3",
           "Name": "double",
-          "Description": "Sine of the angle.",
+          "Description": "Sinus des Winkels.",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -115,7 +115,7 @@
       ],
       "FunctionSignature": "DSCore.Math.Sin@double",
       "Replication": "Longest",
-      "Description": "Finds the sine of an angle.\n\nMath.Sin (angle: double): double"
+      "Description": "Ermittelt den Sinus eines Winkels.\n\nMath.Sin (Winkel: double): double"
     },
     {
       "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
@@ -134,7 +134,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a string",
+      "Description": "Erstellt eine Zeichenfolge",
       "InputValue": "helix"
     },
     {
@@ -155,7 +155,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Creates a number",
+      "Description": "Erstellt eine Zahl",
       "InputValue": 0.0
     },
     {
@@ -167,7 +167,7 @@
         {
           "Id": "9622a78e84a2462081837244b3b269b4",
           "Name": "",
-          "Description": "Filename",
+          "Description": "Dateiname",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -175,7 +175,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows you to select a file on the system and returns its file path",
+      "Description": "Ermöglicht die Auswahl einer Datei auf dem System und gibt ihren Dateipfad zurück",
       "HintPath": "C:\\Users\\tanga\\Documents\\GitHub\\Dynamo\\doc\\distrib\\Samples\\Data\\icosohedron_points.xlsx",
       "InputValue": "..\\..\\Data\\icosohedron_points.xlsx"
     },
@@ -187,7 +187,7 @@
         {
           "Id": "4e676ec6cef6404997844bc773425b91",
           "Name": "lists",
-          "Description": "List of lists to be transposed\n\nvar[]..[]",
+          "Description": "Liste der umzustellenden Listen\n\nvar[]..[]",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -198,7 +198,7 @@
         {
           "Id": "038119b9a0dd42fe930edb4b16e09a18",
           "Name": "lists",
-          "Description": "List of transposed lists",
+          "Description": "Liste der umgestellten Listen",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -207,7 +207,7 @@
       ],
       "FunctionSignature": "DSCore.List.Transpose@var[]..[]",
       "Replication": "Disabled",
-      "Description": "Swaps rows and columns in a list of lists. If there are some rows that are shorter than others, null values are inserted as place holders in the resultant array such that it is always rectangular.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
+      "Description": "Vertauscht Zeilen und Spalten in einer Liste von Listen. Wenn einige Zeilen kürzer als die übrigen sind, werden Nullwerte als Platzhalter in das resultierende Array eingefügt, sodass dieses immer rechteckig ist.\n\nList.Transpose (lists: var[]..[]): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
@@ -228,7 +228,7 @@
         {
           "Id": "bbd7d720d8ce439d8d976c6aadd1ca79",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wert des Ausdrucks in Zeile 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -236,7 +236,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code.",
       "Code": "[pt.X,pt.Y,pt.Z];"
     },
     {
@@ -258,7 +258,7 @@
         {
           "Id": "ef4b5d4a7e784d42815b8a0f40809f8e",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wert des Ausdrucks in Zeile 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -266,7 +266,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code.",
       "Code": "0..(360*numCircles)..10;"
     },
     {
@@ -288,7 +288,7 @@
         {
           "Id": "d7a876fd057c4e639ecbbb398d6e3ca8",
           "Name": "",
-          "Description": "Value of expression at line 1",
+          "Description": "Wert des Ausdrucks in Zeile 1",
           "UsingDefaultValue": false,
           "Level": 2,
           "UseLevels": false,
@@ -296,7 +296,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly",
+      "Description": "Ermöglicht die direkte Erstellung von DesignScript-Code.",
       "Code": "x/100;"
     },
     {
@@ -320,7 +320,7 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Produces numeric values",
+      "Description": "Erzeugt numerische Werte",
       "InputValue": 1.7
     },
     {
@@ -358,7 +358,7 @@
         {
           "Id": "14feeeb4cd04454fa4fd107894d53272",
           "Name": "startRow",
-          "Description": "int\nDefault value : 0",
+          "Description": "int\nVorgabewert: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -367,7 +367,7 @@
         {
           "Id": "f1ca80d37f534c5b915dd0d98c508158",
           "Name": "startColumn",
-          "Description": "int\nDefault value : 0",
+          "Description": "int\nVorgabewert: 0",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -376,7 +376,7 @@
         {
           "Id": "6d1119bf9cca4d35871eb9be46944f48",
           "Name": "overWrite",
-          "Description": "bool\nDefault value : false",
+          "Description": "bool\nVorgabewert: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -385,7 +385,7 @@
         {
           "Id": "ba6583a781204372b63b031e1b162075",
           "Name": "writeAsString",
-          "Description": "bool\nDefault value : false",
+          "Description": "bool\nVorgabewert: false",
           "UsingDefaultValue": true,
           "Level": 2,
           "UseLevels": false,
@@ -510,7 +510,7 @@
   "ExtensionWorkspaceData": [
     {
       "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
-      "Name": "Properties",
+      "Name": "Eigenschaften",
       "Version": "2.13",
       "Data": {}
     }
@@ -533,7 +533,7 @@
       "RunPeriod": "100"
     },
     "Camera": {
-      "Name": "_Background Preview",
+      "Name": "_Hintergrundvorschau",
       "EyeX": -1.9280953407287598,
       "EyeY": 5.29693078994751,
       "EyeZ": 9.094109535217285,
@@ -670,8 +670,8 @@
     "Annotations": [
       {
         "Id": "7dbe07e8b1da4a12b1f0a7367f66f96a",
-        "Title": "Create the inputs for the export ",
-        "DescriptionText": "1. The file path to the csv file.\r\n2. The name of the worksheet.\r\n3. The transposed list of points.\r\n4. The starting index for the row and column in Excel.",
+        "Title": "Eingaben für den Export erstellen ",
+        "DescriptionText": "1. Dateipfad zur CSV-Datei.\r\n2. Name des Arbeitsblatts.\r\n3. Umgestellte Liste mit Punkten.\r\n4. Startindex für die Zeile und Spalte in Excel.",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
@@ -699,7 +699,7 @@
       },
       {
         "Id": "dbab4bbeeabf4d07a56010543b17dd1f",
-        "Title": "Create the helix",
+        "Title": "Helix erstellen",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -732,7 +732,7 @@
       },
       {
         "Id": "e8e5b2070f5d41af8e1f539f1e4af831",
-        "Title": "Initial inputs",
+        "Title": "Anfängliche Eingaben",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -755,7 +755,7 @@
       },
       {
         "Id": "c789527fde7a4c90825005d15b7d9e9e",
-        "Title": "Export data to Excel file",
+        "Title": "Daten in Excel-Datei exportieren",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -778,7 +778,7 @@
       },
       {
         "Id": "a96310e91d724d828d4dbaa2971494a0",
-        "Title": "The number of column/row to start recording the data in Excel",
+        "Title": "Anzahl der Spalten/Zeilen, mit denen die Aufzeichnung der Daten in Excel begonnen werden soll",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -799,7 +799,7 @@
       },
       {
         "Id": "ea2ca044d80e46e48c9fde912ffbc9cd",
-        "Title": "Flip the mastrix (transpose the list). Columns will become row, and rows - columns.",
+        "Title": "Kehren Sie die Matrix um (Liste umstellen). Spalten werden zu Zeilen und Zeilen zu Spalten.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -820,7 +820,7 @@
       },
       {
         "Id": "d5dd77928c904afe873f8d5bb5cf45f9",
-        "Title": "The name of the Worksheet in excel.",
+        "Title": "Name des Arbeitsblatts in Excel.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -841,7 +841,7 @@
       },
       {
         "Id": "8af3cb853bbb46d3966f061d62f92646",
-        "Title": "The file path to the xlsx file.",
+        "Title": "Dateipfad zur XLSX-Datei.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -862,7 +862,7 @@
       },
       {
         "Id": "d817e025d1e74ba782957839ecd4f50d",
-        "Title": "Create a list structure from the list of points - the result is a list containing 3 lists ([][] - dobule array), each containing the X, Y and Z point coordinate respectively. ",
+        "Title": "Erstellen Sie eine Listenstruktur aus der Liste mit Punkten. Das Ergebnis ist eine Liste mit 3 Listen ([][] - doppeltes Array), die jeweils die X-, Y- und Z-Punktkoordinaten enthalten. ",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -883,7 +883,7 @@
       },
       {
         "Id": "70043083139d4b1aa1ef0d8333269231",
-        "Title": "Create a list of points, the X component is the Cosine, the Y - the Sine, and the Z is the initial value divided by 100.",
+        "Title": "Erstellen Sie eine Liste mit Punkten. Die X-Komponente ist der Kosinus, die Y-Komponente ist der Sinus und die Z-Komponente ist der anfängliche Wert, geteilt durch 100.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -904,7 +904,7 @@
       },
       {
         "Id": "a9fea7cb95414828987682aced8fa740",
-        "Title": "cosine function",
+        "Title": "Kosinusfunktion",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -925,7 +925,7 @@
       },
       {
         "Id": "ed9e26448c574d58afd094a61ff080b7",
-        "Title": "sine function",
+        "Title": "Sinusfunktion",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -946,7 +946,7 @@
       },
       {
         "Id": "b3d1fd13e4e64546b96bc873a4cd17fb",
-        "Title": "divide by 100",
+        "Title": "Division durch 100",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -967,7 +967,7 @@
       },
       {
         "Id": "0970e2fb1b514451b78e0e6a77381666",
-        "Title": "Create a series of numbers, starting from 0. The increment is 10. The number of points is multiplied by 360, so if the 'numCircles' input is 1 - the result is 37 numbers (0 to 360) and we will get a full revolution of the helix.",
+        "Title": "Erstellen Sie eine Reihe von Zahlen, beginnend bei 0. Das Inkrement ist 10. Die Anzahl der Punkte wird mit 360 multipliziert. Wenn also die Eingabe 'numCircles' den Wert 1 hat, umfasst das Ergebnis 37 Zahlen (0 bis 360), und die Helix wird vollständig gedreht.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -988,7 +988,7 @@
       },
       {
         "Id": "465ed658742142568e4414b0c2b78c17",
-        "Title": "Drives the number of points. Think of it as the 'height' of the helix.",
+        "Title": "Steuert die Anzahl der Punkte. Stellen Sie sich dies als die Höhe der Helix vor.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -1009,7 +1009,7 @@
       },
       {
         "Id": "ba1b8a7a4e8f4ec4a480e9c65fd518cd",
-        "Title": "Exports data to Excel",
+        "Title": "Exportiert Daten nach Excel",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
