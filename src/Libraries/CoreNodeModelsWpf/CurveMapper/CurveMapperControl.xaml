@@ -1,0 +1,249 @@
+<UserControl x:Class="Dynamo.Wpf.CurveMapper.CurveMapperControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Dynamo.Wpf.CurveMapper"
+             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             Width="300"
+             Height="340"
+             MinWidth="310"
+             MinHeight="340"
+             mc:Ignorable="d">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
+                <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.LiveChartsDictionaryUri}" />
+            </ResourceDictionary.MergedDictionaries>
+            <!--  Style for X and Y Axis Labels -->
+            <Style x:Key="AxisLabelStyle" TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="FontSize" Value="11" />
+                <Setter Property="Foreground" Value="#979797" />
+            </Style>
+            <!--Style for Axis Titles ("x" and "y") -->
+            <Style x:Key="AxisTitleStyle" TargetType="TextBlock">
+                <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
+                <Setter Property="FontSize" Value="12" />
+                <Setter Property="Foreground" Value="#979797" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+            </Style>
+        </ResourceDictionary>
+    </UserControl.Resources>
+
+    <Grid>
+        <Grid x:Name="MainGrid"
+          MinWidth="310"
+          MinHeight="340"
+          Width="310"
+          Height="340">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*" />
+                <RowDefinition Height="35" />
+                <RowDefinition Height="55" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="20" />
+            </Grid.ColumnDefinitions>
+            <!--  Curve canvas  -->
+            <Canvas x:Name="GraphCanvas"
+                Grid.Row="0"
+                Grid.Column="1"
+                Width="240"
+                Height="240"
+                MinWidth="240"
+                MinHeight="240"
+                Margin="10,0,0,0"
+                Background="Transparent"
+                PreviewMouseLeftButtonUp="GraphCanvas_PreviewMouseLeftButtonUp" />
+            <!--  X labels  -->
+            <Grid Grid.Row="1" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="20" />
+                    <RowDefinition Height="15" />
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="minLimitXLabel"
+                       Grid.Row="0" Grid.Column="0"
+                       Margin="10,0,0,0"
+                       HorizontalAlignment="Left"
+                       VerticalAlignment="Top"
+                       Style="{StaticResource AxisLabelStyle}"
+                       Text="{Binding MinLimitX}" />
+
+                <TextBlock x:Name="midXLabel"
+                       Grid.Row="0" Grid.Column="1"
+                       Margin="5,0,0,0"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Top"
+                       Style="{StaticResource AxisLabelStyle}"
+                       Text="{Binding MidValueX}" />
+
+                <TextBlock x:Name="maxLimitXLabel"
+                       Grid.Row="0" Grid.Column="2"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Top"
+                       Style="{StaticResource AxisLabelStyle}"
+                       Text="{Binding MaxLimitX}" />
+
+                <TextBlock Grid.Row="1" Grid.Column="1"
+                       Style="{StaticResource AxisTitleStyle}"
+                       Text="x" />
+            </Grid>
+            <!--  Y labels  -->
+            <Grid Grid.Row="0" Grid.Column="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="15" />
+                    <ColumnDefinition Width="25" />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock x:Name="minLimitYLabel"
+                       Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2"
+                       Margin="0,0,0,5"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Bottom"
+                       Style="{StaticResource AxisLabelStyle}"
+                       Text="{Binding MinLimitY}" />
+                <TextBlock x:Name="midYLabel"
+                       Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Center"
+                       Style="{StaticResource AxisLabelStyle}"
+                       Text="{Binding MidValueY}" />
+                <TextBlock x:Name="maxLimitYLabel"
+                       Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Top"
+                       Style="{StaticResource AxisLabelStyle}"
+                       Text="{Binding MaxLimitY}" />
+                <TextBlock Grid.Row="1" Grid.Column="0"
+                       Style="{StaticResource AxisTitleStyle}"
+                       Text="y">
+                    <TextBlock.RenderTransform>
+                        <RotateTransform Angle="-90" />
+                    </TextBlock.RenderTransform>
+                </TextBlock>
+            </Grid>
+            <!--  Curve type dropdown  -->
+            <Grid Grid.Row="2" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0"
+                       VerticalAlignment="Center"
+                       FontSize="14px"
+                       FontFamily="{StaticResource ArtifaktElementRegular}"
+                       Foreground="{StaticResource DefaultFontColorBrush}"
+                       Text="x:Static p:CoreNodeModelWpfResources.CurveMapperCurveTypeLabel" />
+                <ComboBox Grid.Column="1"
+                      MinWidth="160"
+                      Margin="10,0,0,0"
+                      VerticalAlignment="Center">
+                    <ComboBox.Style>
+                        <Style BasedOn="{StaticResource RefreshComboBox}" TargetType="ComboBox">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SelectedItem, RelativeSource={RelativeSource Self}}" Value="Empty">
+                                    <Setter Property="Foreground" Value="#AFAFAF" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ComboBox.Style>
+                </ComboBox>
+            </Grid>
+            <!-- Buttons --><!--
+            <StackPanel Orientation="Vertical" Grid.Column="2" VerticalAlignment="Bottom">
+                <Button x:Name="LockButton"
+                    Width="20" Height="20"
+                    Margin="1,0,0,0"
+                    SnapsToDevicePixels="True"
+                    UseLayoutRounding="True"
+                    Click="LockButton_Click">
+                    <Button.ToolTip>
+                        <ToolTip x:Name="lockToolTip"
+                             Content="x:Static p:CoreNodeModelWpfResources.CurveMapperLockButtonToolTip"
+                             Style="{StaticResource GenericToolTipLight}" />
+                    </Button.ToolTip>
+                    --><!--<Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Grid HorizontalAlignment="Right">
+                                <Image x:Name="buttonImage"
+                                   Width="16"
+                                   Height="16"
+                                   Source="/DynamoCoreWpf;component/UI/Images/unlock_dafault_16px.png"/>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="Tag" Value="Locked">
+                                    <Setter TargetName="buttonImage" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/lock_dafault_16px.png"/>
+                                </Trigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="Tag" Value="Unlocked" />
+                                        <Condition Property="IsMouseOver" Value="True"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter TargetName="buttonImage" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/unlock_hover_16px.png"/>
+                                </MultiTrigger>
+                                <MultiTrigger>
+                                    <MultiTrigger.Conditions>
+                                        <Condition Property="Tag" Value="Locked" />
+                                        <Condition Property="IsMouseOver" Value="True"/>
+                                    </MultiTrigger.Conditions>
+                                    <Setter TargetName="buttonImage" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/lock_hover_16px.png"/>
+                                </MultiTrigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>--><!--
+                </Button>
+                <Button Name="ResetButton"
+                    Width="20"
+                    Height="20"
+                    Margin="0,0,0,15"
+                    HorizontalAlignment="Right"
+                    VerticalAlignment="Bottom"
+                    Click="ResetButton_Click"
+                    SnapsToDevicePixels="True"
+                    UseLayoutRounding="True"
+                    Style="{StaticResource SButtonWithShapeIcon}">
+                    <Button.ToolTip>
+                        <ToolTip Content="x:Static p:CoreNodeModelWpfResources.CurveMapperResetButtonToolTip"
+                             Style="{StaticResource GenericToolTipLight}" />
+                    </Button.ToolTip>
+                    <Button.Resources>
+                        <Image x:Key="Shape"
+                           Width="16"
+                           Height="16"
+                           Source="/DynamoCoreWpf;component/UI/Images/reset.png" />
+                        <Image x:Key="HighlightShape"
+                           Width="16"
+                           Height="16"
+                           Source="/DynamoCoreWpf;component/UI/Images/reset_hover.png" />
+                    </Button.Resources>
+                </Button>
+            </StackPanel>-->
+        </Grid>
+        <Thumb Name="resizeThumb"
+           Grid.Row="1"
+           Margin="0,0,-60,-25"
+           HorizontalAlignment="Right"
+           VerticalAlignment="Bottom"
+           Cursor="SizeNWSE"
+           DragDelta="ThumbResizeThumbOnDragDeltaHandler"
+           Style="{StaticResource ChartsThumb}">
+            <Thumb.ToolTip>
+                <ToolTip Content="x:Static p:CoreNodeModelWpfResources.ResizeThumbToolTip" Style="{StaticResource GenericToolTipLight}" />
+            </Thumb.ToolTip>
+        </Thumb>
+    </Grid>
+</UserControl>

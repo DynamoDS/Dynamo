@@ -85,6 +85,8 @@
     <None Remove="Charts\Controls\ScatterPlotControl.xaml" />
     <None Remove="Charts\Controls\XYLineChartControl.xaml" />
     <None Remove="Controls\DefineDataControl.xaml" />
+    <None Remove="CurveMapper\CurveMapperControl.xaml" />
+    <None Remove="CurveMapper\CurveMapperControlPoint.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\CoreNodeModelWpfResources.Designer.cs">

@@ -1,0 +1,82 @@
+<Thumb x:Class="Dynamo.Wpf.CurveMapper.CurveMapperControlPoint"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Dynamo.Wpf.CurveMapper"
+             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+       d:DesignHeight="12"
+       d:DesignWidth="12"
+       DragCompleted="Thumb_DragCompleted"
+       DragDelta="Thumb_DragDelta"
+       DragStarted="Thumb_DragStarted"
+       mc:Ignorable="d">
+    <Thumb.Resources>
+        <Style x:Key="GenericToolTipLight" TargetType="ToolTip">
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="MaxWidth" Value="300" />
+            <Setter Property="HorizontalOffset" Value="6" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ToolTip">
+                        <Grid x:Name="PopupGrid">
+                            <Grid x:Name="ShadowBackground" Background="Transparent">
+                                <Path
+                                Width="20"
+                                Height="6"
+                                Margin="5,0,0,0"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Top"
+                                Data="M0,6 L6,0 12,6Z"
+                                Fill="White"
+                                Stretch="None"
+                                Stroke="Gray" />
+                                <Border
+                                Margin="16,5,9,0"
+                                Padding="10,8"
+                                Background="white"
+                                BorderBrush="#999999"
+                                BorderThickness="1,0,1,1"
+                                CornerRadius="3">
+                                    <ContentPresenter />
+                                </Border>
+                            </Grid>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Style.Resources>
+                <Style TargetType="ContentPresenter">
+                    <Style.Resources>
+                        <Style TargetType="TextBlock">
+                            <Setter Property="TextWrapping" Value="Wrap" />
+                            <!--<Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />-->
+                            <Setter Property="FontSize" Value="12px" />
+                            <Setter Property="Foreground" Value="#232323" />
+                        </Style>
+                    </Style.Resources>
+                </Style>
+            </Style.Resources>
+        </Style>
+    </Thumb.Resources>
+
+    <Thumb.Template>
+        <ControlTemplate>
+            <Ellipse
+            Width="12"
+            Height="12"
+            Fill="#ffffff"
+            Stroke="#B385F2"
+            StrokeThickness="3">
+                <Ellipse.ToolTip>
+                    <ToolTip Style="{StaticResource GenericToolTipLight}">
+                        <StackPanel>
+                            <TextBlock FontWeight="Bold" Text="{Binding ScaledCoordinates}" />
+                            <TextBlock>Drag to modify the curve.</TextBlock>
+                        </StackPanel>
+                    </ToolTip>
+                </Ellipse.ToolTip>
+            </Ellipse>
+        </ControlTemplate>
+    </Thumb.Template>
+</Thumb>
