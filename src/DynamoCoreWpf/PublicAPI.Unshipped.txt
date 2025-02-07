@@ -5596,6 +5596,7 @@ static Dynamo.Wpf.Properties.Resources.WorkspaceTabSavingUnnecessary.get -> stri
 static Dynamo.Wpf.Properties.Resources.WorkspaceTabTooltipHeaderUnsaved.get -> string
 static Dynamo.Wpf.Properties.Resources.ZeroTouchTypeShortString.get -> string
 static Dynamo.Wpf.Properties.Resources.ZoomLevel.get -> string
+static Dynamo.Wpf.Properties.Resources.CannotAddNodeToWorkspace.get -> string
 static Dynamo.Wpf.Rendering.RenderPackageExtensions.AllLineStripVerticesHaveColor(this Autodesk.DesignScript.Interfaces.IRenderPackage package, System.Windows.Media.Color color) -> bool
 static Dynamo.Wpf.UI.GuidedTour.GuideFlowEvents.GuidedTourExited -> Dynamo.Wpf.UI.GuidedTour.GuidedTourExitedEventHandler
 static Dynamo.Wpf.UI.GuidedTour.GuideFlowEvents.GuidedTourFinish -> Dynamo.Wpf.UI.GuidedTour.GuidedTourFinishEventHandler

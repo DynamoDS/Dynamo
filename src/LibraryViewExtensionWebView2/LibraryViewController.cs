@@ -9,8 +9,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Xml.Linq;
 using CoreNodeModels.Properties;
 using Dynamo.Extensions;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.LibraryViewExtensionWebView2.Handlers;
 using Dynamo.LibraryViewExtensionWebView2.ViewModels;
 using Dynamo.LibraryViewExtensionWebView2.Views;
@@ -187,6 +190,37 @@ namespace Dynamo.LibraryViewExtensionWebView2
                 {
                     this.disableObserver = true;
                 }
+
+                try
+                {
+                    var nodeGuid = Guid.Parse(nodeName);
+
+                    var homeworkspace = dynamoViewModel.HomeSpaceViewModel;
+                    var customNodeManager = dynamoViewModel.Model.CustomNodeManager;
+                    customNodeManager.TryGetNodeInfo(nodeGuid, out CustomNodeInfo info);
+
+                    // check to make sure a custom node cannot be added to its own workspace
+                    if (info != null && dynamoViewModel.CurrentSpace is CustomNodeWorkspaceModel customNodeWorkspaceModel)
+                    {
+                        if (nodeGuid.Equals(customNodeWorkspaceModel.CustomNodeId))
+                        {
+                            if (!customNodeWorkspaceModel.Nodes.Any(n => n.GetOriginalName().Contains("ScopeIf")))
+                            {
+                                dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.CannotAddNodeToWorkspace);
+                                return;
+                            }
+                            else
+                            {
+                                homeworkspace.RunSettingsViewModel.Model.RunType = RunType.Manual;
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // do nothing as it is just a check when placing a custom node in its own workspace.
+                }
+
                 //Create the node of given item name
                 var cmd = new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), nodeName, -1, -1, true, false);
                 commandExecutive.ExecuteCommand(cmd, Guid.NewGuid().ToString(), LibraryViewExtensionWebView2.ExtensionName);
