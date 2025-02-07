@@ -863,6 +863,7 @@ namespace Dynamo.ViewModels
 
             FileTrustViewModel = new FileTrustWarningViewModel();
             MLDataPipelineExtension = model.ExtensionManager.Extensions.OfType<DynamoMLDataPipelineExtension>().FirstOrDefault();
+            IsIDSDKInitialized();
         }
 
         private void TaskScheduler_UnobservedTaskException(object sender, UnobservedTaskExceptionEventArgs e)
@@ -1083,6 +1084,25 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Returns whether the IDSDK is initialized or not for Dynamo Sandbox, in host environment defaults to true.
+        /// If showWarning is true, a warning message will be shown to the user if the IDSDK is not initialized.
+        /// If owner is not null, the warning message will be shown as a dialog with the owner as the parent.
+        /// </summary>
+        internal bool IsIDSDKInitialized(bool showWarning = true, Window owner = null)
+        {
+            if (!Model.AuthenticationManager.IsIDSDKInitialized())
+            {
+                if (showWarning)
+                {
+                    var ownerWindow = owner ?? Owner ?? System.Windows.Application.Current.MainWindow;
+                    DynamoMessageBox.Show(ownerWindow, WpfResources.IDSDKErrorMessage, WpfResources.IDSDKErrorMessageTitle, true, MessageBoxButton.OK, MessageBoxImage.Information);
+                }
+                return false;
+            }
+            return true;
+        }
+
         #region Event handler destroy/create
 
         protected virtual void UnsubscribeAllEvents()
@@ -1264,7 +1284,7 @@ namespace Dynamo.ViewModels
         /// <param name="bodyContent">Crash details body. If null, nothing will be filled-in.</param>
         public static void ReportABug(object bodyContent)
         {
-            var urlWithParameters = Wpf.Utilities.CrashUtilities.GithubNewIssueUrlFromCrashContent(bodyContent);
+            var urlWithParameters = Wpf.Utilities.CrashUtilities.GithubNewIssueUrlFromCrashContent(bodyContent, CrashUtilities.ReportType.Bug);
 
             // launching the process using explorer.exe will format the URL incorrectly
             // and Github will not recognise the query parameters in the URL

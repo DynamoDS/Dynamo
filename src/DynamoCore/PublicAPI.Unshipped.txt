@@ -364,6 +364,7 @@ Dynamo.Core.IDSDKManager
 Dynamo.Core.IDSDKManager.Dispose() -> void
 Dynamo.Core.IDSDKManager.GetAccessToken() -> string
 Dynamo.Core.IDSDKManager.IDSDKManager() -> void
+Dynamo.Core.IDSDKManager.IsIDSDKInitialized.get -> bool
 Dynamo.Core.IDSDKManager.IsLoggedIn() -> bool
 Dynamo.Core.IDSDKManager.Login() -> bool
 Dynamo.Core.IDSDKManager.LoginState.get -> Greg.AuthProviders.LoginState

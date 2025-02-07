@@ -429,11 +429,15 @@ namespace Dynamo.ViewModels
         private MLNodeAutoCompletionResponse GetMLNodeAutocompleteResults(string requestJSON)
         {
             MLNodeAutoCompletionResponse results = null;
-            var authProvider = dynamoViewModel.Model.AuthenticationManager.AuthProvider;
-
-            if (authProvider is IOAuth2AuthProvider oauth2AuthProvider && authProvider is IOAuth2AccessTokenProvider tokenprovider)
+            try
             {
-                try
+                var authProvider = dynamoViewModel.Model.AuthenticationManager.AuthProvider;
+                if (!dynamoViewModel.IsIDSDKInitialized())
+                {
+                    throw new Exception("IDSDK missing or failed initialization.");
+                }
+
+                if (authProvider is IOAuth2AuthProvider oauth2AuthProvider && authProvider is IOAuth2AccessTokenProvider tokenprovider)
                 {
                     var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
                     var client = new RestClient(uri);
@@ -450,11 +454,11 @@ namespace Dynamo.ViewModels
                     //TODO maybe worth moving to system.text json in phases?
                     results = JsonConvert.DeserializeObject<MLNodeAutoCompletionResponse>(response.Content);
                 }
-                catch (Exception ex)
-                {
-                    dynamoViewModel.Model.Logger.Log(ex.Message);
-                    throw new Exception("Authentication failed.");
-                }
+            }
+            catch (Exception ex)
+            {
+                dynamoViewModel.Model.Logger.Log(ex.Message);
+                throw new Exception("Authentication failed.");
             }
 
             return results;
@@ -464,36 +468,47 @@ namespace Dynamo.ViewModels
         internal MLNodeClusterAutoCompletionResponse GetMLNodeClusterAutocompleteResults()
         {
             MLNodeClusterAutoCompletionResponse results = null;
-
-            var MLRequest = GenerateRequestForMLAutocomplete();
-            string jsonRequest = JsonConvert.SerializeObject(MLRequest);
-
-            var authProvider = dynamoViewModel.Model.AuthenticationManager.AuthProvider;
-
-            if (authProvider is IOAuth2AuthProvider oauth2AuthProvider && authProvider is IOAuth2AccessTokenProvider tokenprovider)
+            try
             {
-                try
-                {
-                    var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, nodeClusterAutocompleteMLEndpoint);
-                    var client = new RestClient(uri);
-                    var request = new RestRequest(string.Empty, Method.Post);
-                    var tkn = tokenprovider?.GetAccessToken();
-                    if (string.IsNullOrEmpty(tkn))
-                    {
-                        throw new Exception("Authentication required.");
-                    }
-                    request.AddHeader("Authorization", $"Bearer {tkn}");
-                    request = request.AddJsonBody(jsonRequest);
-                    request.RequestFormat = DataFormat.Json;
-                    RestResponse response = client.Execute(request);
+                var MLRequest = GenerateRequestForMLAutocomplete();
+                string jsonRequest = JsonConvert.SerializeObject(MLRequest);
 
-                    results = JsonConvert.DeserializeObject<MLNodeClusterAutoCompletionResponse>(response.Content);
-                }
-                catch (Exception ex)
+                var authProvider = dynamoViewModel.Model.AuthenticationManager.AuthProvider;
+                if (!dynamoViewModel.IsIDSDKInitialized())
                 {
-                    dynamoViewModel.Model.Logger.Log(ex.Message);
-                    throw new Exception("Authentication failed.");
+                    throw new Exception("IDSDK missing or failed initialization.");
                 }
+
+                if (authProvider is IOAuth2AuthProvider oauth2AuthProvider && authProvider is IOAuth2AccessTokenProvider tokenprovider)
+                {
+                    try
+                    {
+                        var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, nodeClusterAutocompleteMLEndpoint);
+                        var client = new RestClient(uri);
+                        var request = new RestRequest(string.Empty, Method.Post);
+                        var tkn = tokenprovider?.GetAccessToken();
+                        if (string.IsNullOrEmpty(tkn))
+                        {
+                            throw new Exception("Authentication required.");
+                        }
+                        request.AddHeader("Authorization", $"Bearer {tkn}");
+                        request = request.AddJsonBody(jsonRequest);
+                        request.RequestFormat = DataFormat.Json;
+                        RestResponse response = client.Execute(request);
+
+                        results = JsonConvert.DeserializeObject<MLNodeClusterAutoCompletionResponse>(response.Content);
+                    }
+                    catch (Exception ex)
+                    {
+                        dynamoViewModel.Model.Logger.Log(ex.Message);
+                        throw new Exception("Authentication failed.");
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamoViewModel.Model.Logger.Log(ex.Message);
+                throw new Exception("Authentication failed.");
             }
 
             return results;
@@ -733,11 +748,9 @@ namespace Dynamo.ViewModels
                     LuceneSearch.LuceneUtilityNodeAutocomplete = new LuceneSearchUtility(dynamoViewModel.Model, LuceneSearchUtility.DefaultStartConfig);
 
                     //Memory indexing process for Node Autocomplete (indexing just the nodes returned by the NodeAutocomplete service so we limit the scope of the query search)
-                    foreach (var node in searchElementsCache.Select(x => x.Model))
-                    {
-                        var doc = LuceneUtility.InitializeIndexDocumentForNodes();
-                        LuceneUtility.AddNodeTypeToSearchIndex(node, doc);
-                    }
+                    var doc = LuceneUtility.InitializeIndexDocumentForNodes();
+                    List<NodeSearchElement> nodeSearchElements = [.. searchElementsCache.Select(x => x.Model)];
+                    LuceneUtility.AddNodeTypeToSearchIndexBulk(nodeSearchElements, doc);
 
                     //Write the Lucene documents to memory
                     LuceneUtility.CommitWriterChanges();

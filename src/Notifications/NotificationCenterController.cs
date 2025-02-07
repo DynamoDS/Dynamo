@@ -114,7 +114,7 @@ namespace Dynamo.Notifications
                 //This indicates in which location will be created the WebView2 cache folder
                 notificationUIPopup.webView.CreationProperties = new CoreWebView2CreationProperties()
                 {
-                    UserDataFolder = webBrowserUserDataFolder.FullName
+                    UserDataFolder = DynamoModel.IsTestMode ? TestUtilities.UserDataFolderDuringTests(nameof(NotificationCenterController)) : webBrowserUserDataFolder.FullName
                 };
             }               
             notificationUIPopup.webView.CoreWebView2InitializationCompleted += WebView_CoreWebView2InitializationCompleted;
