@@ -873,7 +873,7 @@ Dieses Paket enthält wahrscheinlich eine blockierte Assembly. Sie müssen das P
     <value>Einfügen der Datei fehlgeschlagen, da einige Blöcke bereits im aktuellen Arbeitsbereich vorhanden sind.</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Dynamo-Definition einfügen...</value>
+    <value>Insert Dynamo Graph...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>Beispieldatei wurde zum Arbeitsbereich hinzugefügt. Ausführungsmodus in Manuell geändert.</value>

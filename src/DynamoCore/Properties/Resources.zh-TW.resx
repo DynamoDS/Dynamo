@@ -873,7 +873,7 @@ value : bool = false</value>
     <value>無法插入檔案，因為某些節點已存在於目前工作區中。</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>插入 Dynamo 定義...</value>
+    <value>Insert Dynamo Graph...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>範例檔已加入工作區。執行模式已變更為「手動」。</value>

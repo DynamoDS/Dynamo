@@ -873,7 +873,7 @@ Es probable que este paquete contenga un montaje bloqueado. Deberá cargar de nu
     <value>No se ha podido insertar el archivo porque algunos de los nodos ya existen en el espacio de trabajo actual.</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Insertar definición de Dynamo...</value>
+    <value>Insert Dynamo Graph...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>Archivo de ejemplo añadido al espacio de trabajo. El modo de ejecución se ha cambiado a Manual.</value>
