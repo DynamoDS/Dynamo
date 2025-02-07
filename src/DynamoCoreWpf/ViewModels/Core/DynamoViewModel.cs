@@ -518,9 +518,9 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private ObservableCollection<string> recentFiles =
-            new ObservableCollection<string>();
-        public ObservableCollection<string> RecentFiles
+        private SmartObservableCollection<string> recentFiles =
+            new SmartObservableCollection<string>();
+        public SmartObservableCollection<string> RecentFiles
         {
             get { return recentFiles; }
             set
@@ -1128,7 +1128,7 @@ namespace Dynamo.ViewModels
 
         private void InitializeRecentFiles()
         {
-            this.RecentFiles = new ObservableCollection<string>(model.PreferenceSettings.RecentFiles);
+            this.RecentFiles = new SmartObservableCollection<string>(model.PreferenceSettings.RecentFiles);
             this.RecentFiles.CollectionChanged += (sender, args) =>
             {
                 model.PreferenceSettings.RecentFiles = this.RecentFiles.ToList();
@@ -1834,18 +1834,8 @@ namespace Dynamo.ViewModels
         {
             if (path == null) return;
 
-            if (RecentFiles.Contains(path))
-            {
-                RecentFiles.Remove(path);
-            }
-
-            RecentFiles.Insert(0, path);
-
             int maxNumRecentFiles = Model.PreferenceSettings.MaxNumRecentFiles;
-            if (RecentFiles.Count > maxNumRecentFiles)
-            {
-                RecentFiles.RemoveRange(maxNumRecentFiles, RecentFiles.Count - maxNumRecentFiles);
-            }
+            RecentFiles.PushToFrontAndTrimExcess(path, maxNumRecentFiles);
         }
 
         // Get the nodemodel if a node is present in any open workspace.
