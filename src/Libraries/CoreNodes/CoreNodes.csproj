@@ -74,6 +74,9 @@
       <LastGenOutput>Resources.en-US.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Resources\" />
+  </ItemGroup>
   <Target Name="CopyFiles" BeforeTargets="ResolveSateliteResDeps">
     <Copy SourceFiles="$(ProjectDir)DSCoreNodes_DynamoCustomization.xml" DestinationFolder="$(OutputPath)" />
   </Target>

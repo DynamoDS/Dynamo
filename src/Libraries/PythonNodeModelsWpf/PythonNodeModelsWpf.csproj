@@ -24,6 +24,8 @@
     <None Remove="Resources\alert.png" />
     <None Remove="Resources\convert.png" />
     <None Remove="Resources\convert_hover.png" />
+    <None Remove="Resources\lock_dafault_16px.png" />
+    <None Remove="Resources\lock_hover_16px.png" />
     <None Remove="Resources\question-filled.png" />
     <None Remove="Resources\question-filled_hover.png" />
     <None Remove="Resources\redo.png" />
@@ -36,6 +38,8 @@
     <None Remove="Resources\tabs_hover.png" />
     <None Remove="Resources\undo.png" />
     <None Remove="Resources\undo_hover.png" />
+    <None Remove="Resources\unlock_dafault_16px.png" />
+    <None Remove="Resources\unlock_hover_16px.png" />
     <None Remove="Resources\zoom-in.png" />
     <None Remove="Resources\zoom-in_hover.png" />
     <None Remove="Resources\zoom-out.png" />
@@ -79,6 +83,8 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <Resource Include="Resources\convert_hover.png" />
+    <Resource Include="Resources\lock_dafault_16px.png" />
+    <Resource Include="Resources\lock_hover_16px.png" />
     <Resource Include="Resources\question-filled.png" />
     <Resource Include="Resources\question-filled_hover.png" />
     <Resource Include="Resources\redo.png" />
@@ -91,6 +97,8 @@
     <Resource Include="Resources\tabs_hover.png" />
     <Resource Include="Resources\undo.png" />
     <Resource Include="Resources\undo_hover.png" />
+    <Resource Include="Resources\unlock_dafault_16px.png" />
+    <Resource Include="Resources\unlock_hover_16px.png" />
     <Resource Include="Resources\zoom-in.png" />
     <Resource Include="Resources\zoom-in_hover.png" />
     <Resource Include="Resources\zoom-out.png" />
