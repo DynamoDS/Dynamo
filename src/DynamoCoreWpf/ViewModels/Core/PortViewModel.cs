@@ -502,8 +502,15 @@ namespace Dynamo.ViewModels
 
             if (wsViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled)
             {
-               MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
-               wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
+                try
+                {
+                    MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
+                    wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
+                }
+                catch (Exception e)
+                {
+                    // Log the exception and show a notification to the user
+                }
             }
         }
 
