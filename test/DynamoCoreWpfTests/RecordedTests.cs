@@ -54,7 +54,7 @@ namespace DynamoCoreWpfTests
 
         public override void Setup()
         {
-            testDiagnostics.SetupStartupDiagnostics();
+            testDiagnostics.StartupDiagnostics();
 
             base.Setup();
             // Fixed seed randomizer for predictability.
@@ -63,10 +63,10 @@ namespace DynamoCoreWpfTests
 
         public override void Cleanup()
         {
-            testDiagnostics.SetupBeforeCleanupDiagnostics();
+            testDiagnostics.BeforeCleanupDiagnostics();
             commandCallback = null;
             base.Cleanup();
-            testDiagnostics.SetupAfterCleanupDiagnostics();
+            testDiagnostics.AfterCleanupDiagnostics();
         }
 
         #endregion
