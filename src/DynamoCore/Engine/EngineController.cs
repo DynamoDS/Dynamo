@@ -534,14 +534,14 @@ namespace Dynamo.Engine
             var callsiteToOrphanMap = new Dictionary<Guid, List<string>>();
             foreach (var cs in liveRunnerServices.RuntimeCore.RuntimeData.CallsiteCache.Values)
             {
-                var orphanedSerializables = cs.GetOrphanedSerializables().ToList();
-                if (callsiteToOrphanMap.ContainsKey(cs.CallSiteID))
+                var orphanedSerializables = cs.GetOrphanedSerializables();
+                if (callsiteToOrphanMap.TryGetValue(cs.CallSiteID, out var serializablesForCallsite))
                 {
-                    callsiteToOrphanMap[cs.CallSiteID].AddRange(orphanedSerializables);
+                    serializablesForCallsite.AddRange(orphanedSerializables);
                 }
                 else
                 {
-                    callsiteToOrphanMap.Add(cs.CallSiteID, orphanedSerializables);
+                    callsiteToOrphanMap.Add(cs.CallSiteID, orphanedSerializables.ToList());
                 }
             }
 
