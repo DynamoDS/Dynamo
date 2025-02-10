@@ -1004,7 +1004,6 @@ Dynamo.Graph.Nodes.NodeModel.MarkNodeAsModified(bool forceExecute = false) -> vo
 Dynamo.Graph.Nodes.NodeModel.Modified -> System.Action<Dynamo.Graph.Nodes.NodeModel>
 Dynamo.Graph.Nodes.NodeModel.Name.get -> string
 Dynamo.Graph.Nodes.NodeModel.Name.set -> void
-Dynamo.Graph.Nodes.NodeModel.NameOfAssemblyReferencedByNode -> System.Reflection.AssemblyName
 Dynamo.Graph.Nodes.NodeModel.NeedsForceExecution.get -> bool
 Dynamo.Graph.Nodes.NodeModel.NodeExecutionBegin -> System.Action<Dynamo.Graph.Nodes.NodeModel>
 Dynamo.Graph.Nodes.NodeModel.NodeExecutionEnd -> System.Action<Dynamo.Graph.Nodes.NodeModel>
