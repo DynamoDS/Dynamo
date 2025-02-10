@@ -71,11 +71,11 @@ namespace DynamoCoreWpfTests
 
         internal void BeforeCleanupDiagnostics()
         {
+            Dispatcher.CurrentDispatcher.Hooks.OperationPosted -= Hooks_OperationPosted;
             if (!SkipDispatcherFlush)
             {
                 DispatcherUtil.DoEventsLoop(() => DispatcherOpsCounter == 0);
             }
-            Dispatcher.CurrentDispatcher.Hooks.OperationPosted -= Hooks_OperationPosted;
         }
 
         internal void AfterCleanupDiagnostics()
