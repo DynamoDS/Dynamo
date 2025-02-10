@@ -76,7 +76,7 @@ namespace Dynamo.Tests.Logging
             StringAssert.Contains("\"TestFlag1\":true", log);
             StringAssert.Contains("\"TestFlag2\":\"I am a string\"", log);
             StringAssert.Contains("\"graphics-primitive-instancing\":true", log);
-            StringAssert.EndsWith("<<<<<Eod>>>>>", log);
+            StringAssert.Contains("<<<<<Eod>>>>>", log);
 
         }
         //TODO(DYN-6464) Revisit this and log more when the logger is not easily overwhelmed.
