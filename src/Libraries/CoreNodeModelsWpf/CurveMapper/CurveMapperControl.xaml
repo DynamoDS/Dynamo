@@ -167,7 +167,7 @@
             </Grid>
             <!-- Buttons -->
             <StackPanel Orientation="Vertical" Grid.Column="2" VerticalAlignment="Bottom">
-                <!--<Button x:Name="LockButton"
+                <Button x:Name="LockButton"
                     Width="20" Height="20"
                     Margin="1,0,0,0"
                     SnapsToDevicePixels="True"
@@ -184,30 +184,30 @@
                                 <Image x:Name="buttonImage"
                                    Width="16"
                                    Height="16"
-                                   Source="/DynamoCoreWpf;component/UI/Images/unlock_dafault_16px.png"/>
+                                   Source="/DynamoCoreWpf;component/UI/Images/reset_default_16px.png"/>
                             </Grid>
                             <ControlTemplate.Triggers>
                                 <Trigger Property="Tag" Value="Locked">
-                                    <Setter TargetName="buttonImage" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/lock_dafault_16px.png"/>
+                                    <Setter TargetName="buttonImage" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/reset_hover_16px.png"/>
                                 </Trigger>
                                 <MultiTrigger>
                                     <MultiTrigger.Conditions>
                                         <Condition Property="Tag" Value="Unlocked" />
                                         <Condition Property="IsMouseOver" Value="True"/>
                                     </MultiTrigger.Conditions>
-                                    <Setter TargetName="buttonImage" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/unlock_hover_16px.png"/>
+                                    <Setter TargetName="buttonImage" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/reset_default_16px.png"/>
                                 </MultiTrigger>
                                 <MultiTrigger>
                                     <MultiTrigger.Conditions>
                                         <Condition Property="Tag" Value="Locked" />
                                         <Condition Property="IsMouseOver" Value="True"/>
                                     </MultiTrigger.Conditions>
-                                    <Setter TargetName="buttonImage" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/lock_hover_16px.png"/>
+                                    <Setter TargetName="buttonImage" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/reset_hover_16px.png"/>
                                 </MultiTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Button.Template>
-                </Button>-->
+                </Button>
                 <Button Name="ResetButton"
                     Width="20"
                     Height="20"

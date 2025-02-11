@@ -52,7 +52,7 @@ namespace Dynamo.Wpf.CurveMapper
                     curveMapperNodeModel.DynamicCanvasSize,
                     curveMapperNodeModel,
                     RenderGraph
-            );
+                );
                 linearCurveControlPoint2 = new CurveMapperControlPoint(
                     curveMapperNodeModel.LinearCurveControlPointData2,
                     curveMapperNodeModel.DynamicCanvasSize,
@@ -121,16 +121,16 @@ namespace Dynamo.Wpf.CurveMapper
                 if (linearCurveControlPoint1 != null)
                 {
                     double newX1 = (curveMapperNodeModel.LinearCurveControlPointData1.X / newSize) * newSize;
-                    double newY1 = (curveMapperNodeModel.LinearCurveControlPointData1.Y / newSize) * newSize;
+                    double newY1 = ((curveMapperNodeModel.DynamicCanvasSize - curveMapperNodeModel.LinearCurveControlPointData1.Y) / newSize) * newSize;
 
                     Canvas.SetLeft(linearCurveControlPoint1, newX1 - offsetValue);
-                    Canvas.SetTop(linearCurveControlPoint1, newSize - newY1 - offsetValue); // Review this 
+                    Canvas.SetTop(linearCurveControlPoint1, newSize - newY1 - offsetValue);
                 }
 
                 if (linearCurveControlPoint2 != null)
                 {
                     double newX2 = (curveMapperNodeModel.LinearCurveControlPointData2.X / newSize) * newSize;
-                    double newY2 = (curveMapperNodeModel.LinearCurveControlPointData2.Y / newSize) * newSize;
+                    double newY2 = ((curveMapperNodeModel.DynamicCanvasSize - curveMapperNodeModel.LinearCurveControlPointData2.Y) / newSize) * newSize;
 
                     Canvas.SetLeft(linearCurveControlPoint2, newX2 - offsetValue);
                     Canvas.SetTop(linearCurveControlPoint2, newSize - newY2 - offsetValue);
@@ -174,7 +174,7 @@ namespace Dynamo.Wpf.CurveMapper
 
                 curveMapperNodeModel.GenerateOutputValues();
                 RenderGraph();
-                // Dispatcher.Invoke(() => RenderGraph());
+                ToggleControlPointsLock();
             }
 
             if (e.PropertyName == nameof(curveMapperNodeModel.OutputValuesX) ||
@@ -319,26 +319,68 @@ namespace Dynamo.Wpf.CurveMapper
             }
         }
 
-        private void ResetButton_Click(object sender, RoutedEventArgs e) //
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
-            //curveMapperNodeModel.ResetCurves();
+            curveMapperNodeModel.ResetCurves();
+
+            // Remove existing control points before recreating them
+            if (linearCurveControlPoint1 != null)
+            {
+                GraphCanvas.Children.Remove(linearCurveControlPoint1);
+                linearCurveControlPoint1 = null;
+            }
+            if (linearCurveControlPoint2 != null)
+            {
+                GraphCanvas.Children.Remove(linearCurveControlPoint2);
+                linearCurveControlPoint2 = null;
+            }
+
+            // Recreate and rebind control points
+            linearCurveControlPoint1 = new CurveMapperControlPoint(
+                curveMapperNodeModel.LinearCurveControlPointData1,
+                curveMapperNodeModel.DynamicCanvasSize,
+                curveMapperNodeModel,
+                RenderGraph
+            );
+            linearCurveControlPoint2 = new CurveMapperControlPoint(
+                curveMapperNodeModel.LinearCurveControlPointData2,
+                curveMapperNodeModel.DynamicCanvasSize,
+                curveMapperNodeModel,
+                RenderGraph
+            );
+            GraphCanvas.Children.Add(linearCurveControlPoint1);
+            GraphCanvas.Children.Add(linearCurveControlPoint2);
+
+            // Ensure the UI moves the control points to the correct positions
+            Dispatcher.Invoke(() =>
+            {
+                Canvas.SetLeft(linearCurveControlPoint1, curveMapperNodeModel.LinearCurveControlPointData1.X - offsetValue);
+                Canvas.SetTop(linearCurveControlPoint1, curveMapperNodeModel.LinearCurveControlPointData1.Y - offsetValue);
+
+                Canvas.SetLeft(linearCurveControlPoint2, curveMapperNodeModel.LinearCurveControlPointData2.X - offsetValue);
+                Canvas.SetTop(linearCurveControlPoint2, curveMapperNodeModel.LinearCurveControlPointData2.Y - offsetValue);
+            });
+
+            curveMapperNodeModel.GenerateOutputValues();
+            RenderGraph();
         }
 
         private void LockButton_Click(object sender, RoutedEventArgs e) //
         {
-            //var button = sender as Button;
-            //if (button != null)
-            //{
-            //    curveMapperNodeModel.IsLocked = !curveMapperNodeModel.IsLocked;
-            //    UpdateLockButton();
+            var button = sender as Button;
+            if (button != null)
+            {
+                curveMapperNodeModel.IsLocked = !curveMapperNodeModel.IsLocked;
+                UpdateLockButton();
+                ToggleControlPointsLock();
 
-            //    if (button.ToolTip is ToolTip toolTip)
-            //    {
-            //        toolTip.Content = curveMapperNodeModel.IsLocked
-            //            ? CoreNodeModelWpfResources.CurveMapperUnlockButtonToolTip
-            //            : CoreNodeModelWpfResources.CurveMapperLockButtonToolTip;
-            //    }
-            //}
+                if (button.ToolTip is ToolTip toolTip)
+                {
+                    toolTip.Content = curveMapperNodeModel.IsLocked
+                        ? "CoreNodeModelWpfResources.CurveMapperUnlockButtonToolTip"
+                        : "CoreNodeModelWpfResources.CurveMapperLockButtonToolTip";
+                }
+            }
         }
 
         private void GraphCanvas_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
@@ -350,21 +392,21 @@ namespace Dynamo.Wpf.CurveMapper
         /// </summary>
         public void ToggleControlPointsLock() //
         {
-            //foreach (var child in GraphCanvas.Children)
-            //{
-            //    if (child is CurveMapperControlPoint controlPoint)
-            //    {
-            //        controlPoint.IsEnabled = !curveMapperNodeModel.IsLocked;
-            //    }
-            //}
+            foreach (var child in GraphCanvas.Children)
+            {
+                if (child is CurveMapperControlPoint controlPoint)
+                {
+                    controlPoint.IsEnabled = !curveMapperNodeModel.IsLocked;
+                }
+            }
         }
 
-        private void UpdateLockButton() //
+        private void UpdateLockButton()
         {
-            //if (LockButton != null)
-            //{
-            //    LockButton.Tag = curveMapperNodeModel.IsLocked ? "Locked" : "Unlocked";
-            //}
+            if (LockButton != null)
+            {
+                LockButton.Tag = curveMapperNodeModel.IsLocked ? "Locked" : "Unlocked";
+            }
         }
     }
 }

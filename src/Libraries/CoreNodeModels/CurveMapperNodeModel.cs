@@ -47,7 +47,7 @@ namespace CoreNodeModels
         private double dynamicCanvasSize = defaultCanvasSize;
         private double mainGridWidth = 310;
         private double mainGridHeight = 340;
-        private bool isLocked = false;
+        private bool isLocked;
 
 
 
@@ -242,6 +242,20 @@ namespace CoreNodeModels
         /// </summary>
         public double MinCanvasSize => defaultCanvasSize;
 
+        [JsonIgnore]
+        public bool IsLocked
+        {
+            get => isLocked;
+            set
+            {
+                if (isLocked != value)
+                {
+                    isLocked = value;
+                    RaisePropertyChanged(nameof(IsLocked));
+                }
+            }
+        }
+
         public CurveMapperNodeModel()
         {
             if (InPorts.Count == 0)
@@ -349,6 +363,20 @@ namespace CoreNodeModels
                 mappedValues.Add(minLimit + value / DynamicCanvasSize * (maxLimit - minLimit));
             }
             return mappedValues;
+        }
+
+        public void ResetCurves()
+        {
+            if (SelectedGraphType == GraphTypes.LinearCurve)
+            {
+                LinearCurveControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.1, DynamicCanvasSize * 0.9);
+                LinearCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.9, DynamicCanvasSize * 0.1);
+            }
+
+            GenerateOutputValues();
+
+            RaisePropertyChanged(nameof(LinearCurveControlPointData1));
+            RaisePropertyChanged(nameof(LinearCurveControlPointData2));
         }
 
         #region BuildAst
@@ -489,7 +517,7 @@ namespace CoreNodeModels
         public void ScaleToNewCanvasSize(double oldCanvasSize, double newCanvasSize)
         {
             X = (X / oldCanvasSize) * newCanvasSize;
-            Y = (Y / oldCanvasSize) * newCanvasSize;
+            Y = newCanvasSize - ((oldCanvasSize - Y) / oldCanvasSize) * newCanvasSize;
         }
     }
 }

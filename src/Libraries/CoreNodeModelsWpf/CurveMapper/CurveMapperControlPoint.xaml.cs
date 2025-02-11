@@ -128,19 +128,19 @@ namespace Dynamo.Wpf.CurveMapper
         }
 
 
-        //[JsonIgnore]
-        //public bool IsEnabled
-        //{
-        //    get => isEnabled;
-        //    set
-        //    {
-        //        if (isEnabled != value)
-        //        {
-        //            isEnabled = value;
-        //            UpdateCursor();
-        //        }
-        //    }
-        //}
+        [JsonIgnore]
+        public bool IsEnabled
+        {
+            get => isEnabled;
+            set
+            {
+                if (isEnabled != value)
+                {
+                    isEnabled = value;
+                    UpdateCursor();
+                }
+            }
+        }
 
         ///// <summary>
         ///// Dependency property that indicates whether the control point is within the canvas bounds.
@@ -228,19 +228,18 @@ namespace Dynamo.Wpf.CurveMapper
             newX = Math.Max(0, Math.Min(newX, newCanvasSize));
             newY = Math.Max(0, Math.Min(newY, newCanvasSize));
 
-            // 🔥 Update ControlPointData with new relative position
+            // Update ControlPointData with new relative position
             ControlPointData.X = newX;
-            //ControlPointData.Y = newCanvasSize - newY; // Flip Y-axis // MAYBE WE SHOULD NOT FLIP IT HERE ???
             ControlPointData.Y = newY;
 
-            // 🔥 Update UI
+            // Update UI
             Canvas.SetLeft(this, newX - offsetValue);
             Canvas.SetTop(this, newY - offsetValue);
 
-            // 🔥 Notify CurveMapperNodeModel to update the curve
+            // Notify CurveMapperNodeModel to update the curve
             AssociatedModel.GenerateOutputValues();
 
-            // 🔥 Notify CurveMapperControl to update the graph
+            // Notify CurveMapperControl to update the graph
             OnControlPointMoved?.Invoke();
         }
 
