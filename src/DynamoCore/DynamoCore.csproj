@@ -238,6 +238,12 @@
         <GenerateResource SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" UseSourcePath="true" Sources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resx" OutputResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" />
         <AL SdkToolsPath="$(TargetFrameworkSDKToolsDirectory)" TargetType="library" EmbedResources="$(ProjectDir)/BuiltInAndOperators/BuiltInImages.resources" OutputAssembly="$(OutDir)BuiltIn.customization.dll" Version="%(AssemblyInfo.Version)" />
     </Target>
+	<Target Name="CopyDocXML" AfterTargets="gen_resources">
+		 <ItemGroup>
+			<DocXMLFiles Include="$(OutputPath)\en-US\**\*.xml"/>
+		</ItemGroup>
+		<Copy SourceFiles="@(DocXMLFiles)" DestinationFolder="$(SolutionDir)..\doc\distrib\xml\en-US"/>
+	</Target>
     <PropertyGroup>
         <EnableNETAnalyzers>true</EnableNETAnalyzers>
 		<AnalysisModeSecurity>All</AnalysisModeSecurity>
