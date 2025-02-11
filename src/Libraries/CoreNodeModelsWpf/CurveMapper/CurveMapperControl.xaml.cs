@@ -28,6 +28,7 @@ namespace Dynamo.Wpf.CurveMapper
         private readonly CurveMapperNodeModel curveMapperNodeModel;
         private CurveMapperControlPoint controlPoint1;
         private CurveMapperControlPoint controlPoint2;
+        private const double offsetValue = 6;
 
 
         private double previousCanvasSize = 240;
@@ -38,30 +39,28 @@ namespace Dynamo.Wpf.CurveMapper
         public CurveMapperControl(CurveMapperNodeModel model)
         {
             InitializeComponent();
-
-            model.PropertyChanged += NodeModel_PropertyChanged;
-
             this.curveMapperNodeModel = model;
             DataContext = model;
 
+            model.PropertyChanged += NodeModel_PropertyChanged;
             this.Unloaded += Unload;
 
-            var cp1 = new CurveMapperControlPoint(
+            // 🔥 Initialize control points earlier
+            controlPoint1 = new CurveMapperControlPoint(
                 curveMapperNodeModel.ControlPoint1,
                 curveMapperNodeModel.DynamicCanvasSize,
                 curveMapperNodeModel,
                 RenderGraph
             );
-            var cp2 = new CurveMapperControlPoint(
+            controlPoint2 = new CurveMapperControlPoint(
                 curveMapperNodeModel.ControlPoint2,
                 curveMapperNodeModel.DynamicCanvasSize,
                 curveMapperNodeModel,
                 RenderGraph
             );
 
-            GraphCanvas.Children.Add(cp1);
-            GraphCanvas.Children.Add(cp2);
-
+            GraphCanvas.Children.Add(controlPoint1);
+            GraphCanvas.Children.Add(controlPoint2);
 
             RenderGraph();
             DrawGrid();
@@ -77,17 +76,11 @@ namespace Dynamo.Wpf.CurveMapper
                 }
             }
 
-            //var path = CurveRenderer.RenderCurve(curveMapperNodeModel.OutputValuesX,
-            //                                     curveMapperNodeModel.OutputValuesY,
-            //                                     GraphCanvas.ActualWidth,
-            //                                     GraphCanvas.ActualHeight);
-
             var path = CurveRenderer.RenderCurve(
-                curveMapperNodeModel.OutputValuesX,
-                curveMapperNodeModel.OutputValuesY,
-                GraphCanvas.ActualWidth,
-                GraphCanvas.ActualHeight
-    );
+                curveMapperNodeModel.RenderValuesX,
+                curveMapperNodeModel.RenderValuesY,
+                curveMapperNodeModel.DynamicCanvasSize
+        );
 
             if (path != null)
             {
@@ -107,6 +100,31 @@ namespace Dynamo.Wpf.CurveMapper
             //        UpdateLockButton();
             //    });
             //}
+
+            if (e.PropertyName == nameof(curveMapperNodeModel.DynamicCanvasSize))
+            {
+                double newSize = curveMapperNodeModel.DynamicCanvasSize;
+
+                // 🔥 Adjust control points to the new canvas size
+                if (controlPoint1 != null)
+                {
+                    double newX1 = (curveMapperNodeModel.ControlPoint1.X / newSize) * newSize;
+                    double newY1 = (curveMapperNodeModel.ControlPoint1.Y / newSize) * newSize;
+
+                    Canvas.SetLeft(controlPoint1, newX1 - offsetValue);
+                    Canvas.SetTop(controlPoint1, newSize - newY1 - offsetValue);
+                }
+
+                if (controlPoint2 != null)
+                {
+                    double newX2 = (curveMapperNodeModel.ControlPoint2.X / newSize) * newSize;
+                    double newY2 = (curveMapperNodeModel.ControlPoint2.Y / newSize) * newSize;
+
+                    Canvas.SetLeft(controlPoint2, newX2 - offsetValue);
+                    Canvas.SetTop(controlPoint2, newSize - newY2 - offsetValue);
+                }
+            }
+
 
             if (e.PropertyName == nameof(curveMapperNodeModel.OutputValuesX) ||
             e.PropertyName == nameof(curveMapperNodeModel.OutputValuesY))
@@ -181,6 +199,13 @@ namespace Dynamo.Wpf.CurveMapper
 
             // Adjust the size of the GraphCanvas dynamically
             curveMapperNodeModel.DynamicCanvasSize = Math.Max(xAdjust - 70, curveMapperNodeModel.MinCanvasSize);
+            DrawGrid();
+
+            // 🔥 Reposition control points based on the new size
+            NodeModel_PropertyChanged(this, new PropertyChangedEventArgs(nameof(curveMapperNodeModel.DynamicCanvasSize)));
+
+            // 🔥 Ensure the curve redraws after resize
+            curveMapperNodeModel.GenerateOutputValues();
         }
 
         private void UpdateCurvesOnResize(CurveMapperNodeModel model, double newCanvasSize) //

@@ -26,8 +26,8 @@ namespace Dynamo.Wpf.CurveMapper
     /// </summary>
     public partial class CurveMapperControlPoint : Thumb, INotifyPropertyChanged
     {
-        public CurveMapperNodeModel AssociatedModel { get; set; } // 🔥 Link to model
-        public Action OnControlPointMoved { get; set; } // 🔥 Notify the curve to update
+        public CurveMapperNodeModel AssociatedModel { get; set; }
+        public Action OnControlPointMoved { get; set; } // Notify the curve to update
 
         public ControlPointData ControlPointData { get; private set; }
 
@@ -127,6 +127,7 @@ namespace Dynamo.Wpf.CurveMapper
             }
         }
 
+
         //[JsonIgnore]
         //public bool IsEnabled
         //{
@@ -169,23 +170,12 @@ namespace Dynamo.Wpf.CurveMapper
             InitializeComponent();
             DataContext = this;
 
-            //Point = position;
-            //LimitWidth = limitWidth;
-            //imitHeight = limitHeight;
-            //MinLimitX = minLimitX;
-            //MaxLimitX = maxLimitX;
-            //MinLimitY = minLimitY;
-            //MaxLimitY = maxLimitY;
-
             ControlPointData = controlPoint;
             CanvasSize = canvasSize;
             AssociatedModel = model;
             OnControlPointMoved = updateCurve;
             IsOrthogonal = isOrthogonal;
-            IsVertical = isVertical;
-
-
-            
+            IsVertical = isVertical;            
 
             Canvas.SetLeft(this, controlPoint.X - offsetValue);
             Canvas.SetTop(this, controlPoint.Y - offsetValue);
@@ -227,47 +217,31 @@ namespace Dynamo.Wpf.CurveMapper
         {
             if (!IsEnabled) return;
 
+            double newCanvasSize = AssociatedModel.DynamicCanvasSize;
+
             // Calculate new positions for X and Y based on drag changes
             double newX = Canvas.GetLeft(this) + (IsOrthogonal && IsVertical ? 0.0 : e.HorizontalChange) + offsetValue;
             double newY = Canvas.GetTop(this) + (IsOrthogonal && !IsVertical ? 0.0 : e.VerticalChange) + offsetValue;
 
 
             // Clamp within canvas boundaries
-            newX = Math.Max(0, Math.Min(newX, CanvasSize));
-            newY = Math.Max(0, Math.Min(newY, CanvasSize));
+            newX = Math.Max(0, Math.Min(newX, newCanvasSize));
+            newY = Math.Max(0, Math.Min(newY, newCanvasSize));
 
-            // Update the logical position
-            Point = new Point(newX, newY);
+            // 🔥 Update ControlPointData with new relative position
+            ControlPointData.X = newX;
+            //ControlPointData.Y = newCanvasSize - newY; // Flip Y-axis // MAYBE WE SHOULD NOT FLIP IT HERE ???
+            ControlPointData.Y = newY;
 
-            // Update the visual position on the canvas
+            // 🔥 Update UI
             Canvas.SetLeft(this, newX - offsetValue);
             Canvas.SetTop(this, newY - offsetValue);
 
-            // 🔥 Update CurveMapperNodeModel with new control point values
-            AssociatedModel.PointUpdated(ControlPointData, newX, CanvasSize - newY);
+            // 🔥 Notify CurveMapperNodeModel to update the curve
+            AssociatedModel.GenerateOutputValues();
 
             // 🔥 Notify CurveMapperControl to update the graph
             OnControlPointMoved?.Invoke();
-
-
-
-
-
-
-
-            //////// Regenerate associated elements
-            //////CurveLinear?.Regenerate();
-            //////ControlLineBezier?.Regenerate(this);
-            //////CurveBezier?.Regenerate(this);
-            //////CurveSine?.Regenerate();
-            //////CurveCosine?.Regenerate();
-            //////CurveParabolic?.Regenerate(this);
-            //////CurvePerlin?.Regenerate();
-            //////CurvePower?.Regenerate();
-            //////SquareRootCurve?.Regenerate();
-            //////GaussianCurve?.Regenerate();
-
-
         }
 
         private void Thumb_DragStarted(object sender, DragStartedEventArgs e)

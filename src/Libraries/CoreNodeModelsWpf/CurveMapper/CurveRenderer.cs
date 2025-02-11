@@ -11,19 +11,19 @@ namespace Dynamo.Wpf.CurveMapper
 {
     public class CurveRenderer
     {
-        public static Path RenderCurve(List<double> xValues, List<double> yValues, double canvasWidth, double canvasHeight)
+        public static Path RenderCurve(List<double> xValues, List<double> yValues, double canvasSize)
         {
             if (xValues == null || yValues == null || xValues.Count != yValues.Count || xValues.Count < 2)
                 return null;
 
             PathFigure pathFigure = new PathFigure
             {
-                StartPoint = new Point(xValues[0], canvasHeight - yValues[0])
+                StartPoint = new Point(xValues[0], canvasSize - yValues[0])
             };
 
             for (int i = 1; i < xValues.Count; i++)
             {
-                pathFigure.Segments.Add(new LineSegment(new Point(xValues[i], canvasHeight - yValues[i]), true));
+                pathFigure.Segments.Add(new LineSegment(new Point(xValues[i], canvasSize - yValues[i]), true));
             }
 
             PathGeometry pathGeometry = new PathGeometry();

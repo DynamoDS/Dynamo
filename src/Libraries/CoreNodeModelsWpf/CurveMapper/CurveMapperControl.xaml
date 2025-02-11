@@ -37,8 +37,8 @@
         <Grid x:Name="MainGrid"
           MinWidth="310"
           MinHeight="340"
-          Width="310"
-          Height="340">
+          Width="{Binding MainGridWidth, Mode=TwoWay}"
+          Height="{Binding MainGridHeight, Mode=TwoWay}">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="35" />
@@ -53,8 +53,8 @@
             <Canvas x:Name="GraphCanvas"
                 Grid.Row="0"
                 Grid.Column="1"
-                Width="240"
-                Height="240"
+                Width="{Binding DynamicCanvasSize, Mode=TwoWay}"
+                Height="{Binding DynamicCanvasSize, Mode=TwoWay}"
                 MinWidth="240"
                 MinHeight="240"
                 Margin="10,0,0,0"
