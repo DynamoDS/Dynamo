@@ -147,11 +147,13 @@
                        FontSize="14px"
                        FontFamily="{StaticResource ArtifaktElementRegular}"
                        Foreground="{StaticResource DefaultFontColorBrush}"
-                       Text="x:Static p:CoreNodeModelWpfResources.CurveMapperCurveTypeLabel" />
+                       Text="Curve Types:" />
                 <ComboBox Grid.Column="1"
-                      MinWidth="160"
-                      Margin="10,0,0,0"
-                      VerticalAlignment="Center">
+                          MinWidth="160"
+                          Margin="10,0,0,0"
+                          VerticalAlignment="Center"
+                          ItemsSource="{Binding GraphTypesList}"
+                          SelectedItem="{Binding SelectedGraphType, Mode=TwoWay}">
                     <ComboBox.Style>
                         <Style BasedOn="{StaticResource RefreshComboBox}" TargetType="ComboBox">
                             <Style.Triggers>
@@ -163,9 +165,9 @@
                     </ComboBox.Style>
                 </ComboBox>
             </Grid>
-            <!-- Buttons --><!--
+            <!-- Buttons -->
             <StackPanel Orientation="Vertical" Grid.Column="2" VerticalAlignment="Bottom">
-                <Button x:Name="LockButton"
+                <!--<Button x:Name="LockButton"
                     Width="20" Height="20"
                     Margin="1,0,0,0"
                     SnapsToDevicePixels="True"
@@ -176,7 +178,7 @@
                              Content="x:Static p:CoreNodeModelWpfResources.CurveMapperLockButtonToolTip"
                              Style="{StaticResource GenericToolTipLight}" />
                     </Button.ToolTip>
-                    --><!--<Button.Template>
+                    <Button.Template>
                         <ControlTemplate TargetType="Button">
                             <Grid HorizontalAlignment="Right">
                                 <Image x:Name="buttonImage"
@@ -204,8 +206,8 @@
                                 </MultiTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
-                    </Button.Template>--><!--
-                </Button>
+                    </Button.Template>
+                </Button>-->
                 <Button Name="ResetButton"
                     Width="20"
                     Height="20"
@@ -224,14 +226,14 @@
                         <Image x:Key="Shape"
                            Width="16"
                            Height="16"
-                           Source="/DynamoCoreWpf;component/UI/Images/reset.png" />
+                           Source="/DynamoCoreWpf;component/UI/Images/reset_default_16px.png" />
                         <Image x:Key="HighlightShape"
                            Width="16"
                            Height="16"
-                           Source="/DynamoCoreWpf;component/UI/Images/reset_hover.png" />
+                           Source="/DynamoCoreWpf;component/UI/Images/reset_hover_16px.png" />
                     </Button.Resources>
                 </Button>
-            </StackPanel>-->
+            </StackPanel>
         </Grid>
         <Thumb Name="resizeThumb"
            Grid.Row="1"

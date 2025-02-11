@@ -94,19 +94,17 @@ namespace CoreNodeModels.CurveMapper
             var lowY = double.NaN;
             var highY = double.NaN;
 
-            if (ControlPoint1Y < ControlPoint2Y)
-            {
-                lowY = LineEquation(0);
-                highY = LineEquation(CanvasSize);
-            }
-            else
-            {
-                lowY = LineEquation(CanvasSize);
-                highY = LineEquation(0);
-            }
+            lowY = LineEquation(0);
+            highY = LineEquation(CanvasSize);
 
             if (isRender)
             {
+                if (ControlPoint1Y > ControlPoint2Y)
+                {
+                    highY = LineEquation(0);
+                    lowY = LineEquation(CanvasSize);
+                }
+
                 var cp1Yrender = Math.Max(lowY, 0);
                 cp1Yrender = Math.Min(cp1Yrender, CanvasSize);
 

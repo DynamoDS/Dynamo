@@ -51,10 +51,11 @@ namespace CoreNodeModels
 
 
 
-        public ControlPointData ControlPoint1 { get; private set; }
-        public ControlPointData ControlPoint2 { get; private set; }
+        public ControlPointData LinearCurveControlPointData1 { get; private set; }
+        public ControlPointData LinearCurveControlPointData2 { get; private set; }
         private LinearCurve linearCurve;
 
+        #region Inputs
 
         [JsonIgnore]
         public double MinLimitX
@@ -65,7 +66,7 @@ namespace CoreNodeModels
                 if (minLimitX != value)
                 {
                     minLimitX = value;
-                    //GenerateOutputValues();
+                    GenerateOutputValues();
                     this.RaisePropertyChanged(nameof(MinLimitX));
                     this.RaisePropertyChanged(nameof(MidValueX));
                     OnNodeModified();
@@ -81,7 +82,7 @@ namespace CoreNodeModels
                 if (maxLimitX != value)
                 {
                     maxLimitX = value;
-                    //GenerateOutputValues();
+                    GenerateOutputValues();
                     this.RaisePropertyChanged(nameof(MaxLimitX));
                     this.RaisePropertyChanged(nameof(MidValueX));
                     OnNodeModified();
@@ -97,7 +98,7 @@ namespace CoreNodeModels
                 if (minLimitY != value)
                 {
                     minLimitY = value;
-                    //GenerateOutputValues();
+                    GenerateOutputValues();
                     this.RaisePropertyChanged(nameof(MinLimitY));
                     this.RaisePropertyChanged(nameof(MidValueY));
                     OnNodeModified();
@@ -113,7 +114,7 @@ namespace CoreNodeModels
                 if (maxLimitY != value)
                 {
                     maxLimitY = value;
-                    //GenerateOutputValues();
+                    GenerateOutputValues();
                     this.RaisePropertyChanged(nameof(MaxLimitY));
                     this.RaisePropertyChanged(nameof(MidValueY));
                     OnNodeModified();
@@ -129,7 +130,7 @@ namespace CoreNodeModels
                 if (pointsCount != value)
                 {
                     pointsCount = value;
-                    //GenerateOutputValues();
+                    GenerateOutputValues();
                     this.RaisePropertyChanged(nameof(PointsCount));
                     OnNodeModified();
                 }
@@ -139,6 +140,10 @@ namespace CoreNodeModels
         public double MidValueX => (MaxLimitX + MinLimitX) * 0.5;
         [JsonIgnore]
         public double MidValueY => (MaxLimitY + MinLimitY) * 0.5;
+
+        #endregion
+
+        #region Outputs
 
         [JsonIgnore]
         public List<double> OutputValuesY
@@ -181,6 +186,8 @@ namespace CoreNodeModels
             }
         }
 
+        #endregion
+
         [JsonProperty]
         public double DynamicCanvasSize
         {
@@ -193,8 +200,8 @@ namespace CoreNodeModels
                     dynamicCanvasSize = Math.Max(value, defaultCanvasSize);
 
                     // 🔥 Scale control points when resizing the canvas
-                    ControlPoint1.ScaleToNewCanvasSize(oldSize, dynamicCanvasSize);
-                    ControlPoint2.ScaleToNewCanvasSize(oldSize, dynamicCanvasSize);
+                    LinearCurveControlPointData1.ScaleToNewCanvasSize(oldSize, dynamicCanvasSize);
+                    LinearCurveControlPointData2.ScaleToNewCanvasSize(oldSize, dynamicCanvasSize);
 
                     RaisePropertyChanged(nameof(DynamicCanvasSize));
                     OnNodeModified();
@@ -204,6 +211,9 @@ namespace CoreNodeModels
             }
         }
 
+        [JsonIgnore]
+        public List<GraphTypes> GraphTypesList => Enum.GetValues(typeof(GraphTypes)).Cast<GraphTypes>().ToList();
+
         [JsonConverter(typeof(StringEnumConverter))]
         public GraphTypes SelectedGraphType
         {
@@ -211,10 +221,9 @@ namespace CoreNodeModels
             set
             {
                 selectedGraphType = value;
-                //GenerateOutputValues();
+                GenerateOutputValues();
                 RaisePropertyChanged(nameof(SelectedGraphType));
                 OnNodeModified();
-                //UpdateGaussianControlPointsVisibility();
             }
         }
 
@@ -269,16 +278,11 @@ namespace CoreNodeModels
             SelectedGraphType = GraphTypes.Empty;
             ArgumentLacing = LacingStrategy.Disabled;
 
-            // Setup control points and instantiate corresponding curves
-            //InitializeControlPointsAndCurves();
-
-
             // Create control points
-            ControlPoint1 = new ControlPointData(DynamicCanvasSize * 0.1, DynamicCanvasSize * 0.9);
-            ControlPoint2 = new ControlPointData(DynamicCanvasSize * 0.8, DynamicCanvasSize * 0.2);
+            LinearCurveControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.1, DynamicCanvasSize * 0.9);
+            LinearCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.9, DynamicCanvasSize * 0.1);
 
             GenerateOutputValues();
-            //InitiateCurve();
         }
 
         [JsonConstructor]
@@ -311,21 +315,25 @@ namespace CoreNodeModels
 
         public void GenerateOutputValues()
         {
-            linearCurve = new LinearCurve(
-                ControlPoint1.X,
-                (DynamicCanvasSize - ControlPoint1.Y),
-                ControlPoint2.X, (DynamicCanvasSize - ControlPoint2.Y),
-                DynamicCanvasSize
-            );
+            if (SelectedGraphType == GraphTypes.Empty)
+            {
+                OutputValuesX = null;
+                OutputValuesY = null;
+            }
+            if (SelectedGraphType == GraphTypes.LinearCurve)
+            {
+                linearCurve = new LinearCurve(
+                    LinearCurveControlPointData1.X, (DynamicCanvasSize - LinearCurveControlPointData1.Y),
+                    LinearCurveControlPointData2.X, (DynamicCanvasSize - LinearCurveControlPointData2.Y),
+                    DynamicCanvasSize
+                );
 
-            RenderValuesX = linearCurve.GetCurveXValues(PointsCount, true);
-            RenderValuesY = linearCurve.GetCurveYValues(PointsCount, true);
-
-            var c1 = linearCurve.GetCurveXValues(PointsCount);
-            var c2 = linearCurve.GetCurveYValues(PointsCount);
-
-            OutputValuesX = MapValues(linearCurve.GetCurveXValues(PointsCount), MinLimitX, MaxLimitY);
-            OutputValuesY = MapValues(linearCurve.GetCurveYValues(PointsCount), MinLimitY, MaxLimitY);
+                RenderValuesX = linearCurve.GetCurveXValues(PointsCount, true);
+                RenderValuesY = linearCurve.GetCurveYValues(PointsCount, true);
+                OutputValuesX = MapValues(linearCurve.GetCurveXValues(PointsCount), MinLimitX, MaxLimitX);
+                OutputValuesY = MapValues(linearCurve.GetCurveYValues(PointsCount), MinLimitY, MaxLimitY);
+            }
+            
 
             RaisePropertyChanged(nameof(OutputValuesX));
             RaisePropertyChanged(nameof(OutputValuesY));
@@ -337,8 +345,8 @@ namespace CoreNodeModels
             var mappedValues = new List<double>();
 
             foreach(var value in rawValues)
-            {
-                mappedValues.Add(value / DynamicCanvasSize * (maxLimit - minLimit));
+            {                
+                mappedValues.Add(minLimit + value / DynamicCanvasSize * (maxLimit - minLimit));
             }
             return mappedValues;
         }
@@ -446,24 +454,23 @@ namespace CoreNodeModels
         [Description("Select type")]
         Empty,
         [Description("Linear Curve")]
-        LinearCurve
-        //    ,
-        //[Description("Bezier Curve")]
-        //BezierCurve,
-        //[Description("Sine Wave")]
-        //SineWave,
-        //[Description("Cosine Wave")]
-        //CosineWave,
-        //[Description("Parabolic Curve")]
-        //ParabolicCurve,
-        //[Description("Perlin Noise")]
-        //PerlinNoiseCurve,
-        //[Description("Power Curve")]
-        //PowerCurve,
-        //[Description("Square Root Curve")]
-        //SquareRootCurve,
-        //[Description("Gaussian Curve")]
-        //GaussianCurve
+        LinearCurve,
+        [Description("Bezier Curve")]
+        BezierCurve,
+        [Description("Sine Wave")]
+        SineWave,
+        [Description("Cosine Wave")]
+        CosineWave,
+        [Description("Parabolic Curve")]
+        ParabolicCurve,
+        [Description("Perlin Noise")]
+        PerlinNoiseCurve,
+        [Description("Power Curve")]
+        PowerCurve,
+        [Description("Square Root Curve")]
+        SquareRootCurve,
+        [Description("Gaussian Curve")]
+        GaussianCurve
     }
 
 

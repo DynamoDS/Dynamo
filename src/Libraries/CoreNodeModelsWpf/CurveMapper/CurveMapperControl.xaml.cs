@@ -26,8 +26,8 @@ namespace Dynamo.Wpf.CurveMapper
     public partial class CurveMapperControl : UserControl, INotifyPropertyChanged
     {
         private readonly CurveMapperNodeModel curveMapperNodeModel;
-        private CurveMapperControlPoint controlPoint1;
-        private CurveMapperControlPoint controlPoint2;
+        private CurveMapperControlPoint linearCurveControlPoint1;
+        private CurveMapperControlPoint linearCurveControlPoint2;
         private const double offsetValue = 6;
 
 
@@ -45,22 +45,25 @@ namespace Dynamo.Wpf.CurveMapper
             model.PropertyChanged += NodeModel_PropertyChanged;
             this.Unloaded += Unload;
 
-            // 🔥 Initialize control points earlier
-            controlPoint1 = new CurveMapperControlPoint(
-                curveMapperNodeModel.ControlPoint1,
-                curveMapperNodeModel.DynamicCanvasSize,
-                curveMapperNodeModel,
-                RenderGraph
+            if (curveMapperNodeModel.SelectedGraphType == GraphTypes.LinearCurve)
+            {
+                linearCurveControlPoint1 = new CurveMapperControlPoint(
+                    curveMapperNodeModel.LinearCurveControlPointData1,
+                    curveMapperNodeModel.DynamicCanvasSize,
+                    curveMapperNodeModel,
+                    RenderGraph
             );
-            controlPoint2 = new CurveMapperControlPoint(
-                curveMapperNodeModel.ControlPoint2,
-                curveMapperNodeModel.DynamicCanvasSize,
-                curveMapperNodeModel,
-                RenderGraph
-            );
+                linearCurveControlPoint2 = new CurveMapperControlPoint(
+                    curveMapperNodeModel.LinearCurveControlPointData2,
+                    curveMapperNodeModel.DynamicCanvasSize,
+                    curveMapperNodeModel,
+                    RenderGraph
+                );
 
-            GraphCanvas.Children.Add(controlPoint1);
-            GraphCanvas.Children.Add(controlPoint2);
+                GraphCanvas.Children.Add(linearCurveControlPoint1);
+                GraphCanvas.Children.Add(linearCurveControlPoint2);
+            }
+
 
             RenderGraph();
             DrawGrid();
@@ -68,24 +71,33 @@ namespace Dynamo.Wpf.CurveMapper
 
         private void RenderGraph()
         {
-            for (int i = GraphCanvas.Children.Count - 1; i >= 0; i--)
+            // Remove existing curves (without affecting control points)
+            Dispatcher.Invoke(() =>
             {
-                if (GraphCanvas.Children[i] is Path) // Remove only Path elements
+                // Remove existing curves (without affecting control points)
+                for (int i = GraphCanvas.Children.Count - 1; i >= 0; i--)
                 {
-                    GraphCanvas.Children.RemoveAt(i);
+                    if (GraphCanvas.Children[i] is Path)
+                    {
+                        GraphCanvas.Children.RemoveAt(i);
+                    }
                 }
-            }
 
-            var path = CurveRenderer.RenderCurve(
-                curveMapperNodeModel.RenderValuesX,
-                curveMapperNodeModel.RenderValuesY,
-                curveMapperNodeModel.DynamicCanvasSize
-        );
+                // Only render the curve if "Linear Curve" is selected
+                if (curveMapperNodeModel.SelectedGraphType == GraphTypes.LinearCurve)
+                {
+                    var path = CurveRenderer.RenderCurve(
+                        curveMapperNodeModel.RenderValuesX,
+                        curveMapperNodeModel.RenderValuesY,
+                        curveMapperNodeModel.DynamicCanvasSize
+                    );
 
-            if (path != null)
-            {
-                GraphCanvas.Children.Add(path);
-            }
+                    if (path != null)
+                    {
+                        GraphCanvas.Children.Add(path);
+                    }
+                }
+            });
         }
 
 
@@ -105,31 +117,71 @@ namespace Dynamo.Wpf.CurveMapper
             {
                 double newSize = curveMapperNodeModel.DynamicCanvasSize;
 
-                // 🔥 Adjust control points to the new canvas size
-                if (controlPoint1 != null)
+                // Adjust control points to the new canvas size
+                if (linearCurveControlPoint1 != null)
                 {
-                    double newX1 = (curveMapperNodeModel.ControlPoint1.X / newSize) * newSize;
-                    double newY1 = (curveMapperNodeModel.ControlPoint1.Y / newSize) * newSize;
+                    double newX1 = (curveMapperNodeModel.LinearCurveControlPointData1.X / newSize) * newSize;
+                    double newY1 = (curveMapperNodeModel.LinearCurveControlPointData1.Y / newSize) * newSize;
 
-                    Canvas.SetLeft(controlPoint1, newX1 - offsetValue);
-                    Canvas.SetTop(controlPoint1, newSize - newY1 - offsetValue);
+                    Canvas.SetLeft(linearCurveControlPoint1, newX1 - offsetValue);
+                    Canvas.SetTop(linearCurveControlPoint1, newSize - newY1 - offsetValue); // Review this 
                 }
 
-                if (controlPoint2 != null)
+                if (linearCurveControlPoint2 != null)
                 {
-                    double newX2 = (curveMapperNodeModel.ControlPoint2.X / newSize) * newSize;
-                    double newY2 = (curveMapperNodeModel.ControlPoint2.Y / newSize) * newSize;
+                    double newX2 = (curveMapperNodeModel.LinearCurveControlPointData2.X / newSize) * newSize;
+                    double newY2 = (curveMapperNodeModel.LinearCurveControlPointData2.Y / newSize) * newSize;
 
-                    Canvas.SetLeft(controlPoint2, newX2 - offsetValue);
-                    Canvas.SetTop(controlPoint2, newSize - newY2 - offsetValue);
+                    Canvas.SetLeft(linearCurveControlPoint2, newX2 - offsetValue);
+                    Canvas.SetTop(linearCurveControlPoint2, newSize - newY2 - offsetValue);
                 }
             }
 
+            if (e.PropertyName == nameof(curveMapperNodeModel.SelectedGraphType))
+            {
+                // Remove existing control points
+                if (linearCurveControlPoint1 != null)
+                {
+                    GraphCanvas.Children.Remove(linearCurveControlPoint1);
+                    linearCurveControlPoint1 = null;
+                }
+
+                if (linearCurveControlPoint2 != null)
+                {
+                    GraphCanvas.Children.Remove(linearCurveControlPoint2);
+                    linearCurveControlPoint2 = null;
+                }
+
+                // Re-add control points if "Linear Curve" is selected
+                if (curveMapperNodeModel.SelectedGraphType == GraphTypes.LinearCurve)
+                {
+                    linearCurveControlPoint1 = new CurveMapperControlPoint(
+                        curveMapperNodeModel.LinearCurveControlPointData1,
+                        curveMapperNodeModel.DynamicCanvasSize,
+                        curveMapperNodeModel,
+                        RenderGraph
+                    );
+                    linearCurveControlPoint2 = new CurveMapperControlPoint(
+                        curveMapperNodeModel.LinearCurveControlPointData2,
+                        curveMapperNodeModel.DynamicCanvasSize,
+                        curveMapperNodeModel,
+                        RenderGraph
+                    );
+
+                    GraphCanvas.Children.Add(linearCurveControlPoint1);
+                    GraphCanvas.Children.Add(linearCurveControlPoint2);
+                }
+
+                curveMapperNodeModel.GenerateOutputValues();
+                RenderGraph();
+                // Dispatcher.Invoke(() => RenderGraph());
+            }
 
             if (e.PropertyName == nameof(curveMapperNodeModel.OutputValuesX) ||
             e.PropertyName == nameof(curveMapperNodeModel.OutputValuesY))
             {
                 RenderGraph();
+                // Dispatcher.Invoke(() => RenderGraph());
             }
         }
         private void Unload(object sender, RoutedEventArgs e)
