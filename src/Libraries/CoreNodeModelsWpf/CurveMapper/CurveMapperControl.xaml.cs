@@ -1,21 +1,12 @@
 using CoreNodeModels;
-using Dynamo.Graph;
-using Dynamo.Wpf.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace Dynamo.Wpf.CurveMapper
@@ -26,11 +17,15 @@ namespace Dynamo.Wpf.CurveMapper
     public partial class CurveMapperControl : UserControl, INotifyPropertyChanged
     {
         private readonly CurveMapperNodeModel curveMapperNodeModel;
+
         private CurveMapperControlPoint linearCurveControlPoint1;
         private CurveMapperControlPoint linearCurveControlPoint2;
+        private CurveMapperControlPoint sineWaveControlPoint1;
+        private CurveMapperControlPoint sineWaveControlPoint2;
+        private CurveMapperControlPoint cosineWaveControlPoint1;
+        private CurveMapperControlPoint cosineWaveControlPoint2;
+
         private const double offsetValue = 6;
-
-
         private double previousCanvasSize = 240;
         private const int gridSize = 10;
 
@@ -63,7 +58,42 @@ namespace Dynamo.Wpf.CurveMapper
                 GraphCanvas.Children.Add(linearCurveControlPoint1);
                 GraphCanvas.Children.Add(linearCurveControlPoint2);
             }
+            else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.SineWave)
+            {
+                sineWaveControlPoint1 = new CurveMapperControlPoint(
+                    curveMapperNodeModel.SineWaveControlPointData1,
+                    curveMapperNodeModel.DynamicCanvasSize,
+                    curveMapperNodeModel,
+                    RenderGraph
+                );
+                sineWaveControlPoint2 = new CurveMapperControlPoint(
+                    curveMapperNodeModel.SineWaveControlPointData2,
+                    curveMapperNodeModel.DynamicCanvasSize,
+                    curveMapperNodeModel,
+                    RenderGraph
+                );
 
+                GraphCanvas.Children.Add(sineWaveControlPoint1);
+                GraphCanvas.Children.Add(sineWaveControlPoint2);
+            }
+            else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.CosineWave)
+            {
+                cosineWaveControlPoint1 = new CurveMapperControlPoint(
+                    curveMapperNodeModel.CosineWaveControlPointData1,
+                    curveMapperNodeModel.DynamicCanvasSize,
+                    curveMapperNodeModel,
+                    RenderGraph
+                );
+                cosineWaveControlPoint2 = new CurveMapperControlPoint(
+                    curveMapperNodeModel.CosineWaveControlPointData2,
+                    curveMapperNodeModel.DynamicCanvasSize,
+                    curveMapperNodeModel,
+                    RenderGraph
+                );
+
+                GraphCanvas.Children.Add(cosineWaveControlPoint1);
+                GraphCanvas.Children.Add(cosineWaveControlPoint2);
+            }
 
             RenderGraph();
             DrawGrid();
@@ -74,7 +104,6 @@ namespace Dynamo.Wpf.CurveMapper
             // Remove existing curves (without affecting control points)
             Dispatcher.Invoke(() =>
             {
-                // Remove existing curves (without affecting control points)
                 for (int i = GraphCanvas.Children.Count - 1; i >= 0; i--)
                 {
                     if (GraphCanvas.Children[i] is Path)
@@ -83,8 +112,8 @@ namespace Dynamo.Wpf.CurveMapper
                     }
                 }
 
-                // Only render the curve if "Linear Curve" is selected
-                if (curveMapperNodeModel.SelectedGraphType == GraphTypes.LinearCurve)
+                // Only render the curve on valid selection
+                if (curveMapperNodeModel.SelectedGraphType != GraphTypes.Empty)
                 {
                     var path = CurveRenderer.RenderCurve(
                         curveMapperNodeModel.RenderValuesX,
@@ -100,24 +129,13 @@ namespace Dynamo.Wpf.CurveMapper
             });
         }
 
-
-
-        private void NodeModel_PropertyChanged(object sender, PropertyChangedEventArgs e) //
+        private void NodeModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            //if (e.PropertyName == nameof(curveMapperNodeModel.IsLocked))
-            //{
-            //    Dispatcher.Invoke(() =>
-            //    {
-            //        ToggleControlPointsLock();
-            //        UpdateLockButton();
-            //    });
-            //}
-
             if (e.PropertyName == nameof(curveMapperNodeModel.DynamicCanvasSize))
             {
                 double newSize = curveMapperNodeModel.DynamicCanvasSize;
 
-                // Adjust control points to the new canvas size
+                // Adjust control points to the new canvas size TODO : RATIONALIZE
                 if (linearCurveControlPoint1 != null)
                 {
                     double newX1 = (curveMapperNodeModel.LinearCurveControlPointData1.X / newSize) * newSize;
@@ -126,7 +144,6 @@ namespace Dynamo.Wpf.CurveMapper
                     Canvas.SetLeft(linearCurveControlPoint1, newX1 - offsetValue);
                     Canvas.SetTop(linearCurveControlPoint1, newSize - newY1 - offsetValue);
                 }
-
                 if (linearCurveControlPoint2 != null)
                 {
                     double newX2 = (curveMapperNodeModel.LinearCurveControlPointData2.X / newSize) * newSize;
@@ -135,21 +152,76 @@ namespace Dynamo.Wpf.CurveMapper
                     Canvas.SetLeft(linearCurveControlPoint2, newX2 - offsetValue);
                     Canvas.SetTop(linearCurveControlPoint2, newSize - newY2 - offsetValue);
                 }
+
+                if (sineWaveControlPoint1 != null)
+                {
+                    double newX1 = (curveMapperNodeModel.SineWaveControlPointData1.X / newSize) * newSize;
+                    double newY1 = ((curveMapperNodeModel.DynamicCanvasSize - curveMapperNodeModel.SineWaveControlPointData1.Y) / newSize) * newSize;
+
+                    Canvas.SetLeft(sineWaveControlPoint1, newX1 - offsetValue);
+                    Canvas.SetTop(sineWaveControlPoint1, newSize - newY1 - offsetValue);
+                }
+                if (sineWaveControlPoint2 != null)
+                {
+                    double newX2 = (curveMapperNodeModel.SineWaveControlPointData2.X / newSize) * newSize;
+                    double newY2 = ((curveMapperNodeModel.DynamicCanvasSize - curveMapperNodeModel.SineWaveControlPointData2.Y) / newSize) * newSize;
+
+                    Canvas.SetLeft(sineWaveControlPoint2, newX2 - offsetValue);
+                    Canvas.SetTop(sineWaveControlPoint2, newSize - newY2 - offsetValue);
+                }
+
+                if (cosineWaveControlPoint1 != null)
+                {
+                    double newX1 = (curveMapperNodeModel.CosineWaveControlPointData1.X / newSize) * newSize;
+                    double newY1 = ((curveMapperNodeModel.DynamicCanvasSize - curveMapperNodeModel.CosineWaveControlPointData1.Y) / newSize) * newSize;
+
+                    Canvas.SetLeft(cosineWaveControlPoint1, newX1 - offsetValue);
+                    Canvas.SetTop(cosineWaveControlPoint1, newSize - newY1 - offsetValue);
+                }
+                if (cosineWaveControlPoint2 != null)
+                {
+                    double newX2 = (curveMapperNodeModel.CosineWaveControlPointData2.X / newSize) * newSize;
+                    double newY2 = ((curveMapperNodeModel.DynamicCanvasSize - curveMapperNodeModel.CosineWaveControlPointData2.Y) / newSize) * newSize;
+
+                    Canvas.SetLeft(cosineWaveControlPoint2, newX2 - offsetValue);
+                    Canvas.SetTop(cosineWaveControlPoint2, newSize - newY2 - offsetValue);
+                }
             }
 
             if (e.PropertyName == nameof(curveMapperNodeModel.SelectedGraphType))
             {
-                // Remove existing control points
+                // Remove existing control points TODO: RATIONALIZE
                 if (linearCurveControlPoint1 != null)
                 {
                     GraphCanvas.Children.Remove(linearCurveControlPoint1);
                     linearCurveControlPoint1 = null;
                 }
-
                 if (linearCurveControlPoint2 != null)
                 {
                     GraphCanvas.Children.Remove(linearCurveControlPoint2);
                     linearCurveControlPoint2 = null;
+                }
+
+                if (sineWaveControlPoint1 != null)
+                {
+                    GraphCanvas.Children.Remove(sineWaveControlPoint1);
+                    sineWaveControlPoint1 = null;
+                }
+                if (sineWaveControlPoint2 != null)
+                {
+                    GraphCanvas.Children.Remove(sineWaveControlPoint2);
+                    sineWaveControlPoint2 = null;
+                }
+
+                if (cosineWaveControlPoint1 != null)
+                {
+                    GraphCanvas.Children.Remove(cosineWaveControlPoint1);
+                    cosineWaveControlPoint1 = null;
+                }
+                if (cosineWaveControlPoint2 != null)
+                {
+                    GraphCanvas.Children.Remove(cosineWaveControlPoint2);
+                    cosineWaveControlPoint2 = null;
                 }
 
                 // Re-add control points if "Linear Curve" is selected
@@ -171,6 +243,42 @@ namespace Dynamo.Wpf.CurveMapper
                     GraphCanvas.Children.Add(linearCurveControlPoint1);
                     GraphCanvas.Children.Add(linearCurveControlPoint2);
                 }
+                else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.SineWave)
+                {
+                    sineWaveControlPoint1 = new CurveMapperControlPoint(
+                        curveMapperNodeModel.SineWaveControlPointData1,
+                        curveMapperNodeModel.DynamicCanvasSize,
+                        curveMapperNodeModel,
+                        RenderGraph
+                    );
+                    sineWaveControlPoint2 = new CurveMapperControlPoint(
+                        curveMapperNodeModel.SineWaveControlPointData2,
+                        curveMapperNodeModel.DynamicCanvasSize,
+                        curveMapperNodeModel,
+                        RenderGraph
+                    );
+
+                    GraphCanvas.Children.Add(sineWaveControlPoint1);
+                    GraphCanvas.Children.Add(sineWaveControlPoint2);
+                }
+                else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.CosineWave)
+                {
+                    cosineWaveControlPoint1 = new CurveMapperControlPoint(
+                        curveMapperNodeModel.CosineWaveControlPointData1,
+                        curveMapperNodeModel.DynamicCanvasSize,
+                        curveMapperNodeModel,
+                        RenderGraph
+                    );
+                    cosineWaveControlPoint2 = new CurveMapperControlPoint(
+                        curveMapperNodeModel.CosineWaveControlPointData2,
+                        curveMapperNodeModel.DynamicCanvasSize,
+                        curveMapperNodeModel,
+                        RenderGraph
+                    );
+
+                    GraphCanvas.Children.Add(cosineWaveControlPoint1);
+                    GraphCanvas.Children.Add(cosineWaveControlPoint2);
+                }
 
                 curveMapperNodeModel.GenerateOutputValues();
                 RenderGraph();
@@ -181,7 +289,6 @@ namespace Dynamo.Wpf.CurveMapper
             e.PropertyName == nameof(curveMapperNodeModel.OutputValuesY))
             {
                 RenderGraph();
-                // Dispatcher.Invoke(() => RenderGraph());
             }
         }
         private void Unload(object sender, RoutedEventArgs e)
@@ -220,7 +327,7 @@ namespace Dynamo.Wpf.CurveMapper
             }
         }
 
-        private void DrawLine(double x1, double y1, double x2, double y2) //
+        private void DrawLine(double x1, double y1, double x2, double y2)
         {
             var line = new System.Windows.Shapes.Line
             {
@@ -236,7 +343,7 @@ namespace Dynamo.Wpf.CurveMapper
             GraphCanvas.Children.Add(line);
         }
 
-        private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e) //
+        private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e)
         {
             var sizeChange = Math.Min(e.VerticalChange, e.HorizontalChange);
             var yAdjust = ActualHeight + sizeChange;
@@ -253,76 +360,18 @@ namespace Dynamo.Wpf.CurveMapper
             curveMapperNodeModel.DynamicCanvasSize = Math.Max(xAdjust - 70, curveMapperNodeModel.MinCanvasSize);
             DrawGrid();
 
-            // 🔥 Reposition control points based on the new size
+            // Reposition control points based on the new size
             NodeModel_PropertyChanged(this, new PropertyChangedEventArgs(nameof(curveMapperNodeModel.DynamicCanvasSize)));
-
-            // 🔥 Ensure the curve redraws after resize
             curveMapperNodeModel.GenerateOutputValues();
-        }
-
-        private void UpdateCurvesOnResize(CurveMapperNodeModel model, double newCanvasSize) //
-        {
-            // Define a list of curves and their control points
-            var curves = new List<(Type CurveType, object Curve, CurveMapperControlPoint[] ControlPoints)>
-                {
-                    //(typeof(LinearCurve), model.LinearCurve, new[] { model.ControlPointLinear1, model.ControlPointLinear2 }),
-                    //(typeof(BezierCurve), model.BezierCurve, new[] { model.ControlPointBezier1, model.ControlPointBezier2,
-                    //    model.OrthoControlPointBezier1, model.OrthoControlPointBezier2 }),
-                    //(typeof(SineCurve), model.SineWave, new[] { model.ControlPointSine1, model.ControlPointSine2 }),
-                    //(typeof(SineCurve), model.CosineWave, new[] { model.ControlPointCosine1, model.ControlPointCosine2 }),
-                    //(typeof(ParabolicCurve), model.ParabolicCurve, new[] { model.ControlPointParabolic1, model.ControlPointParabolic2 }),
-                    //(typeof(PerlinCurve), model.PerlinNoiseCurve, new[] { model.ControlPointPerlin, model.OrthoControlPointPerlin1,
-                    //    model.OrthoControlPointPerlin2 }),
-                    //(typeof(PowerCurve), model.PowerCurve, new[] { model.ControlPointPower }),
-                    //(typeof(SquareRootCurve), model.SquareRootCurve, new[] { model.ControlPointSquareRoot1, model.ControlPointSquareRoot2 }),
-                    //(typeof(GaussianCurve), model.GaussianCurve, new[] { model.OrthoControlPointGaussian1, model.OrthoControlPointGaussian2,
-                    //    model.OrthoControlPointGaussian3, model.OrthoControlPointGaussian4 })
-                };
-
-            // Loop through each curve and update control points
-            foreach (var (curveType, curve, controlPoints) in curves)
-            {
-                if (curve == null || controlPoints.Any(cp => cp == null)) continue;
-
-                dynamic dynCurve = curve;
-
-                //// Disable gaussian curve point updates
-                //if (curveType == typeof(GaussianCurve))
-                //{
-                //    dynCurve.IsResizing = true;
-                //}
-
-                //// Update control points
-                //UpdateControlPoints(newCanvasSize, controlPoints);
-
-
-                dynCurve.MaxWidth = newCanvasSize;
-                dynCurve.MaxHeight = newCanvasSize;
-                dynCurve.Regenerate();
-                Canvas.SetZIndex(dynCurve.PathCurve, 10);
-
-                //// Handle special cases based on curve type
-                //if (curveType == typeof(BezierCurve))
-                //{
-                //    model.ControlLineBezier1?.Regenerate(model.ControlPointBezier1, model.OrthoControlPointBezier1);
-                //    model.ControlLineBezier2?.Regenerate(model.ControlPointBezier2, model.OrthoControlPointBezier2);
-                //}
-                //else if (curveType == typeof(ParabolicCurve))
-                //{
-                //    dynCurve.Regenerate(model.ControlPointParabolic1);
-                //    dynCurve.Regenerate(model.ControlPointParabolic2);
-                //}
-                //else if (curveType == typeof(GaussianCurve))
-                //{
-                //    dynCurve.IsResizing = false;
-                //}
-            }
-        }
+        }       
 
         private void ResetButton_Click(object sender, RoutedEventArgs e)
         {
+            if (curveMapperNodeModel.IsLocked) return;
+
             curveMapperNodeModel.ResetCurves();
 
+            // Linear Curve
             // Remove existing control points before recreating them
             if (linearCurveControlPoint1 != null)
             {
@@ -334,7 +383,6 @@ namespace Dynamo.Wpf.CurveMapper
                 GraphCanvas.Children.Remove(linearCurveControlPoint2);
                 linearCurveControlPoint2 = null;
             }
-
             // Recreate and rebind control points
             linearCurveControlPoint1 = new CurveMapperControlPoint(
                 curveMapperNodeModel.LinearCurveControlPointData1,
@@ -351,14 +399,32 @@ namespace Dynamo.Wpf.CurveMapper
             GraphCanvas.Children.Add(linearCurveControlPoint1);
             GraphCanvas.Children.Add(linearCurveControlPoint2);
 
+
             // Ensure the UI moves the control points to the correct positions
             Dispatcher.Invoke(() =>
             {
-                Canvas.SetLeft(linearCurveControlPoint1, curveMapperNodeModel.LinearCurveControlPointData1.X - offsetValue);
-                Canvas.SetTop(linearCurveControlPoint1, curveMapperNodeModel.LinearCurveControlPointData1.Y - offsetValue);
+                if (curveMapperNodeModel.SelectedGraphType == GraphTypes.LinearCurve)
+                {
+                    Canvas.SetLeft(linearCurveControlPoint1, curveMapperNodeModel.LinearCurveControlPointData1.X - offsetValue);
+                    Canvas.SetTop(linearCurveControlPoint1, curveMapperNodeModel.LinearCurveControlPointData1.Y - offsetValue);
+                    Canvas.SetLeft(linearCurveControlPoint2, curveMapperNodeModel.LinearCurveControlPointData2.X - offsetValue);
+                    Canvas.SetTop(linearCurveControlPoint2, curveMapperNodeModel.LinearCurveControlPointData2.Y - offsetValue);
+                }
+                else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.SineWave)
+                {
+                    Canvas.SetLeft(sineWaveControlPoint1, curveMapperNodeModel.SineWaveControlPointData1.X - offsetValue);
+                    Canvas.SetTop(sineWaveControlPoint1, curveMapperNodeModel.SineWaveControlPointData1.Y - offsetValue);
+                    Canvas.SetLeft(sineWaveControlPoint2, curveMapperNodeModel.SineWaveControlPointData2.X - offsetValue);
+                    Canvas.SetTop(sineWaveControlPoint2, curveMapperNodeModel.SineWaveControlPointData2.Y - offsetValue);
+                }
+                else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.CosineWave)
+                {
+                    Canvas.SetLeft(cosineWaveControlPoint1, curveMapperNodeModel.CosineWaveControlPointData1.X - offsetValue);
+                    Canvas.SetTop(cosineWaveControlPoint1, curveMapperNodeModel.CosineWaveControlPointData1.Y - offsetValue);
+                    Canvas.SetLeft(cosineWaveControlPoint2, curveMapperNodeModel.CosineWaveControlPointData2.X - offsetValue);
+                    Canvas.SetTop(cosineWaveControlPoint2, curveMapperNodeModel.CosineWaveControlPointData2.Y - offsetValue);
+                }
 
-                Canvas.SetLeft(linearCurveControlPoint2, curveMapperNodeModel.LinearCurveControlPointData2.X - offsetValue);
-                Canvas.SetTop(linearCurveControlPoint2, curveMapperNodeModel.LinearCurveControlPointData2.Y - offsetValue);
             });
 
             curveMapperNodeModel.GenerateOutputValues();
@@ -373,13 +439,6 @@ namespace Dynamo.Wpf.CurveMapper
                 curveMapperNodeModel.IsLocked = !curveMapperNodeModel.IsLocked;
                 UpdateLockButton();
                 ToggleControlPointsLock();
-
-                if (button.ToolTip is ToolTip toolTip)
-                {
-                    toolTip.Content = curveMapperNodeModel.IsLocked
-                        ? "CoreNodeModelWpfResources.CurveMapperUnlockButtonToolTip"
-                        : "CoreNodeModelWpfResources.CurveMapperLockButtonToolTip";
-                }
             }
         }
 
@@ -387,10 +446,7 @@ namespace Dynamo.Wpf.CurveMapper
         {
         }
 
-        /// <summary>
-        /// Enables or disables control points based on the graph's lock state.
-        /// </summary>
-        public void ToggleControlPointsLock() //
+        private void ToggleControlPointsLock() //
         {
             foreach (var child in GraphCanvas.Children)
             {
@@ -406,6 +462,19 @@ namespace Dynamo.Wpf.CurveMapper
             if (LockButton != null)
             {
                 LockButton.Tag = curveMapperNodeModel.IsLocked ? "Locked" : "Unlocked";
+                if (LockButton.ToolTip is ToolTip lockTooltip)
+                {
+                    lockTooltip.Content = curveMapperNodeModel.IsLocked
+                        ? "Curve cannot be modified. Click to unlock."
+                        : "Click to lock the curve.";
+                }
+                ResetButton.Tag = curveMapperNodeModel.IsLocked ? "Locked" : "Unlocked";
+                if (ResetButton.ToolTip is ToolTip resetTooltip)
+                {
+                    resetTooltip.Content = curveMapperNodeModel.IsLocked
+                        ? "The curve has been locked and cannot be reset. Please unlock the curve first."
+                        : "Reset the curve.";
+                }
             }
         }
     }

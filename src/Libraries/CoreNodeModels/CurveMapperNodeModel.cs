@@ -30,7 +30,7 @@ namespace CoreNodeModels
         private double maxLimitX = 1;
         private double minLimitY;
         private double maxLimitY = 1;
-        private int pointsCount = 6;
+        private int pointsCount = 10;
         private List<double> outputValuesY;
         private List<double> outputValuesX;
         private List<double> renderValuesY;
@@ -45,15 +45,24 @@ namespace CoreNodeModels
         private const double defaultMinGridWidth = 310;
         private const double defaultMinGridHeight = 340;
         private double dynamicCanvasSize = defaultCanvasSize;
-        private double mainGridWidth = 310;
-        private double mainGridHeight = 340;
         private bool isLocked;
 
+        #region Curves & point data
 
-
+        // Linear curve
         public ControlPointData LinearCurveControlPointData1 { get; private set; }
         public ControlPointData LinearCurveControlPointData2 { get; private set; }
         private LinearCurve linearCurve;
+        // Sine wave
+        public ControlPointData SineWaveControlPointData1 { get; private set; }
+        public ControlPointData SineWaveControlPointData2 { get; private set; }
+        private SineWave sineWave;
+        // Cosine wave
+        public ControlPointData CosineWaveControlPointData1 { get; private set; }
+        public ControlPointData CosineWaveControlPointData2 { get; private set; }
+        private SineWave cosineWave;
+
+        #endregion
 
         #region Inputs
 
@@ -199,9 +208,13 @@ namespace CoreNodeModels
                     double oldSize = dynamicCanvasSize;
                     dynamicCanvasSize = Math.Max(value, defaultCanvasSize);
 
-                    // 🔥 Scale control points when resizing the canvas
+                    // Scale control points when resizing the canvas
                     LinearCurveControlPointData1.ScaleToNewCanvasSize(oldSize, dynamicCanvasSize);
                     LinearCurveControlPointData2.ScaleToNewCanvasSize(oldSize, dynamicCanvasSize);
+                    SineWaveControlPointData1.ScaleToNewCanvasSize(oldSize, dynamicCanvasSize);
+                    SineWaveControlPointData2.ScaleToNewCanvasSize(oldSize, dynamicCanvasSize);
+                    CosineWaveControlPointData1.ScaleToNewCanvasSize(oldSize, dynamicCanvasSize);
+                    CosineWaveControlPointData2.ScaleToNewCanvasSize(oldSize, dynamicCanvasSize);
 
                     RaisePropertyChanged(nameof(DynamicCanvasSize));
                     OnNodeModified();
@@ -212,7 +225,27 @@ namespace CoreNodeModels
         }
 
         [JsonIgnore]
-        public List<GraphTypes> GraphTypesList => Enum.GetValues(typeof(GraphTypes)).Cast<GraphTypes>().ToList();
+        public List<string> GraphTypesList => Enum.GetValues(typeof(GraphTypes))
+            .Cast<GraphTypes>()
+            .Select(value => GetEnumDescription(value))
+            .ToList();
+
+        [JsonIgnore]
+        public string SelectedGraphTypeDescription
+        {
+            get => GetEnumDescription(SelectedGraphType);
+            set
+            {
+                SelectedGraphType = Enum.GetValues(typeof(GraphTypes))
+                    .Cast<GraphTypes>()
+                    .FirstOrDefault(e => GetEnumDescription(e) == value);
+
+                RaisePropertyChanged(nameof(SelectedGraphType));
+                RaisePropertyChanged(nameof(SelectedGraphTypeDescription));
+                GenerateOutputValues();
+                OnNodeModified();
+            }
+        }
 
         [JsonConverter(typeof(StringEnumConverter))]
         public GraphTypes SelectedGraphType
@@ -295,6 +328,10 @@ namespace CoreNodeModels
             // Create control points
             LinearCurveControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.1, DynamicCanvasSize * 0.9);
             LinearCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.9, DynamicCanvasSize * 0.1);
+            SineWaveControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.25, 0);
+            SineWaveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.75, DynamicCanvasSize);
+            CosineWaveControlPointData1 = new ControlPointData(0, 0);
+            CosineWaveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize);
 
             GenerateOutputValues();
         }
@@ -313,19 +350,7 @@ namespace CoreNodeModels
         private void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             OnNodeModified();
-        }
-
-        //public void PointUpdated(ControlPointData point, double newX, double newY)
-        //{
-        //    // executes when point is moved
-        //    point.X = newX;
-        //    point.Y = newY;
-        //    GenerateOutputValues();
-        //    RaisePropertyChanged(nameof(ControlPoint1));
-        //    RaisePropertyChanged(nameof(ControlPoint2));
-        //}
-
-        
+        }        
 
         public void GenerateOutputValues()
         {
@@ -334,7 +359,7 @@ namespace CoreNodeModels
                 OutputValuesX = null;
                 OutputValuesY = null;
             }
-            if (SelectedGraphType == GraphTypes.LinearCurve)
+            else if (SelectedGraphType == GraphTypes.LinearCurve)
             {
                 linearCurve = new LinearCurve(
                     LinearCurveControlPointData1.X, (DynamicCanvasSize - LinearCurveControlPointData1.Y),
@@ -347,7 +372,33 @@ namespace CoreNodeModels
                 OutputValuesX = MapValues(linearCurve.GetCurveXValues(PointsCount), MinLimitX, MaxLimitX);
                 OutputValuesY = MapValues(linearCurve.GetCurveYValues(PointsCount), MinLimitY, MaxLimitY);
             }
-            
+            else if (SelectedGraphType == GraphTypes.SineWave)
+            {
+                sineWave = new SineWave(
+                    SineWaveControlPointData1.X, (DynamicCanvasSize - SineWaveControlPointData1.Y),
+                    SineWaveControlPointData2.X, (DynamicCanvasSize - SineWaveControlPointData2.Y),
+                    DynamicCanvasSize
+                );
+
+                RenderValuesX = sineWave.GetCurveXValues(PointsCount, true);
+                RenderValuesY = sineWave.GetCurveYValues(PointsCount, true);
+                OutputValuesX = MapValues(sineWave.GetCurveXValues(PointsCount), MinLimitX, MaxLimitX); // Review
+                OutputValuesY = MapValues(sineWave.GetCurveYValues(PointsCount), MinLimitY, MaxLimitY); // Review
+            }
+            else if (SelectedGraphType == GraphTypes.CosineWave)
+            {
+                cosineWave = new SineWave(
+                    CosineWaveControlPointData1.X, (DynamicCanvasSize - CosineWaveControlPointData1.Y),
+                    CosineWaveControlPointData2.X, (DynamicCanvasSize - CosineWaveControlPointData2.Y),
+                    DynamicCanvasSize
+                );
+
+                RenderValuesX = cosineWave.GetCurveXValues(PointsCount, true);
+                RenderValuesY = cosineWave.GetCurveYValues(PointsCount, true);
+                OutputValuesX = MapValues(cosineWave.GetCurveXValues(PointsCount), MinLimitX, MaxLimitX); // Review
+                OutputValuesY = MapValues(cosineWave.GetCurveYValues(PointsCount), MinLimitY, MaxLimitY); // Review
+            }
+
 
             RaisePropertyChanged(nameof(OutputValuesX));
             RaisePropertyChanged(nameof(OutputValuesY));
@@ -371,12 +422,33 @@ namespace CoreNodeModels
             {
                 LinearCurveControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.1, DynamicCanvasSize * 0.9);
                 LinearCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.9, DynamicCanvasSize * 0.1);
+                RaisePropertyChanged(nameof(LinearCurveControlPointData1));
+                RaisePropertyChanged(nameof(LinearCurveControlPointData2));
+            }
+            else if (SelectedGraphType == GraphTypes.SineWave)
+            {
+                SineWaveControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.25, 0);
+                SineWaveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.75, DynamicCanvasSize);
+                RaisePropertyChanged(nameof(SineWaveControlPointData1));
+                RaisePropertyChanged(nameof(SineWaveControlPointData2));
+            }
+            else if (SelectedGraphType == GraphTypes.CosineWave)
+            {
+                CosineWaveControlPointData1 = new ControlPointData(0, 0);
+                CosineWaveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize);
+                RaisePropertyChanged(nameof(CosineWaveControlPointData1));
+                RaisePropertyChanged(nameof(CosineWaveControlPointData2));
             }
 
             GenerateOutputValues();
+        }
 
-            RaisePropertyChanged(nameof(LinearCurveControlPointData1));
-            RaisePropertyChanged(nameof(LinearCurveControlPointData2));
+        // Helper method to extract descriptions from enum values
+        private string GetEnumDescription(Enum value)
+        {
+            var field = value.GetType().GetField(value.ToString());
+            var attribute = (DescriptionAttribute)Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute));
+            return attribute != null ? attribute.Description : value.ToString();
         }
 
         #region BuildAst
@@ -418,16 +490,6 @@ namespace CoreNodeModels
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            //GenerateOutputValues();
-
-            //var outputX = AstFactory.BuildFunctionCall( new Func<List<double>>(() => OutputValuesX), new List<AssociativeNode>() );
-
-            //var outputY = AstFactory.BuildFunctionCall( new Func<List<double>>(() => OutputValuesY), new List<AssociativeNode>() );
-
-            //return new[]
-            //{ AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), outputY), AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), outputX) };
-
-            // Assign to output ports
             var xValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode());
             var yValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), AstFactory.BuildNullNode());
 
@@ -460,18 +522,11 @@ namespace CoreNodeModels
                 VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes))
             );
 
-            return new[]
-            {
-                yValuesAssignment,
-                xValuesAssignment,
-                dataBridgeCall
-            };
+            return new[] { yValuesAssignment, xValuesAssignment, dataBridgeCall };
         }
 
         #endregion
     }
-
-
 
     /// <summary>
     /// Represents the different types of graph curves available in the Curve Mapper.
@@ -501,8 +556,9 @@ namespace CoreNodeModels
         GaussianCurve
     }
 
-
-
+    /// <summary>
+    /// Represents a control point with X and Y coordinates, supporting scaling to a new canvas size.
+    /// </summary>
     public class ControlPointData
     {
         public double X { get; set; }

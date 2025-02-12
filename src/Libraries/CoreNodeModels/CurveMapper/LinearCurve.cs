@@ -1,9 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoreNodeModels.CurveMapper
 {
@@ -33,6 +29,7 @@ namespace CoreNodeModels.CurveMapper
 
             return dy / dx * (x - ControlPoint1X) + ControlPoint1Y;
         }
+
         // Calculates the X values (canvas coordinates) for bottom and to edge of the canvas 
         private double SolveForXGivenY(double y)
         {
@@ -42,39 +39,29 @@ namespace CoreNodeModels.CurveMapper
                 return double.NaN;
             }
 
-            var result = ((y - ControlPoint1Y) / slope) + ControlPoint1X;
-
-            return result;
+            return ((y - ControlPoint1Y) / slope) + ControlPoint1X;
         }
 
+        /// <summary>
+        /// Returns X values distributed across the curve.
+        /// </summary>
         public List<double> GetCurveXValues(int pointsCount, bool isRender = false)
         {
-            var leftX = double.NaN;
-            var rightX = double.NaN;
+            double leftX = SolveForXGivenY(0);
+            double rightX = SolveForXGivenY(CanvasSize);
 
-            if (ControlPoint1X < ControlPoint2X)
+            if (ControlPoint1X > ControlPoint2X)
             {
-                leftX = SolveForXGivenY(0);
-                rightX = SolveForXGivenY(CanvasSize);
-            }
-            else
-            {
-                leftX = SolveForXGivenY(CanvasSize);
-                rightX = SolveForXGivenY(0);
-            }
-
-            var c1 = leftX;
-            var c2 = rightX;
+                (leftX, rightX) = (rightX, leftX); // Swap values if needed
+            }                
 
             if (isRender)
             {
-                var cp1Xrender = Math.Max(leftX, 0);
-                cp1Xrender = Math.Min(cp1Xrender, CanvasSize);
-
-                var cp2Xrender = Math.Max(rightX, 0);
-                cp2Xrender = Math.Min(cp2Xrender, CanvasSize);
-
-                    return new List<double> { cp1Xrender, cp2Xrender };
+                return new List<double>
+                {
+                    Math.Clamp(leftX, 0, CanvasSize),
+                    Math.Clamp(rightX, 0, CanvasSize)
+                };
             }
 
             var values = new List<double>();
@@ -82,46 +69,40 @@ namespace CoreNodeModels.CurveMapper
 
             for (int i = 0; i < pointsCount; i++)
             {
-                double d = 0 + i * step;
-                values.Add(d);
+                values.Add(i * step);
             }
 
             return values;
         }
 
+        /// <summary>
+        /// Returns Y values distributed across the curve.
+        /// </summary>
         public List<double> GetCurveYValues(int pointsCount, bool isRender = false)
         {
-            var lowY = double.NaN;
-            var highY = double.NaN;
+            double lowY = LineEquation(0);
+            double highY = LineEquation(CanvasSize);
 
-            lowY = LineEquation(0);
-            highY = LineEquation(CanvasSize);
+            if (ControlPoint1Y > ControlPoint2Y)
+            {
+                (lowY, highY) = (highY, lowY); // Swap values if needed
+            }                
 
             if (isRender)
             {
-                if (ControlPoint1Y > ControlPoint2Y)
+                return new List<double>
                 {
-                    highY = LineEquation(0);
-                    lowY = LineEquation(CanvasSize);
-                }
-
-                var cp1Yrender = Math.Max(lowY, 0);
-                cp1Yrender = Math.Min(cp1Yrender, CanvasSize);
-
-                var cp2Yrender = Math.Max(highY, 0);
-                cp2Yrender = Math.Min(cp2Yrender, CanvasSize);
-
-                return new List<double> { cp1Yrender, cp2Yrender };
+                    Math.Clamp(lowY, 0, CanvasSize),
+                    Math.Clamp(highY, 0, CanvasSize)
+                };
             }
 
             var values = new List<double>();
-            var range = highY - lowY;
-            double step = range / (pointsCount - 1);
+            double step = (highY - lowY) / (pointsCount - 1);
 
             for (int i = 0; i < pointsCount; i++)
             {
-                double d = lowY + i * step;
-                values.Add(d);
+                values.Add(lowY + i * step);
             }
 
             return values;
