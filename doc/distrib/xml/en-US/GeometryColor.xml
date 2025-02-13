@@ -1,0 +1,154 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>GeometryColor</name>
+    </assembly>
+    <members>
+        <member name="M:Modifiers.GeometryColor.ByGeometryColor(Autodesk.DesignScript.Geometry.Geometry,DSCore.Color)">
+            <summary>
+            Display geometry using a color.
+            </summary>
+            <param name="geometry">The geometry to which you would like to apply color.</param>
+            <param name="color">The color.</param>
+            <returns>A Display object.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.BySurfaceColors(Autodesk.DesignScript.Geometry.Surface,DSCore.Color[][])">
+             <summary>
+             Display color values on a surface.
+            
+             The colors provided are converted internally to an image texture which is
+             mapped to the surface.
+             </summary>
+             <param name="surface">The surface on which to apply the colors.
+             </param>
+             <param name="colors">A two dimensional list of Colors.
+            
+             The list of colors must be square. Attempting to pass a jagged array
+             will result in an exception. </param>
+             <returns>A Display object.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ByPointsColors(Autodesk.DesignScript.Geometry.Point[],DSCore.Color[])">
+             <summary>
+             Create a colored mesh using points and colors.
+            
+             The list of points supplied is used to construct a triangulated mesh, with
+             non-joined vertices.
+             </summary>
+             <param name="points">A list of Points.
+            
+             Only triangular meshes are currently supported. Each triplet of points in the list will form one
+             triangle in the mesh. Points should be ordered CCW.
+             Attempting to pass a list of vertices whose count is not divisble by 3 will throw an exception.</param>
+             <param name="colors">A list of colors.
+            
+             The number of colors must match the number of vertices. Attempting pass a list of colors which does not
+             have the same number of Colors as the list of points will throw an exception.</param>
+             <returns>A Display object.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
+            <summary>
+            Display mesh by single color, per-face colors, per-vertex colors, or per-face-vertex colors.
+            </summary>
+            <param name="mesh"></param>The Mesh on which to apply the colors
+            <param name="colors">The color count must equal 1 (single color), or equal the face count (per-face color), or equal the vertex count (per-vertex color), or equal the triangle count multiplied by three (per-triangle-vertex color)</param>
+            <param name="smoothShading">If true, shading will look smooth instead of faceted, useful for visualizing smooth continuous surfaces</param>
+            <returns>A Display object.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ComputeColorMap(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},DSCore.Color[],System.Int32,System.Int32)">
+            <summary>
+            Compute a set of color maps from a set of SurfaceData objects.
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ComputeSamplesFromNormalizedValue(System.Double,System.Int32,System.Int32)">
+            <summary>
+            This method remaps a number between 0.0 and 1.0 to an integer value between lowestPower and highestPower
+            </summary>
+        </member>
+        <member name="T:Autodesk.DesignScript.Geometry.ImportHelpers">
+            <summary>
+            Geometry Import nodes that have dependencies we don't want to introduce into Protogeometry.
+            These methods are further wrapped up by NodeModel nodes so we can get the naming and library location 
+            exactly right.
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.ImportFromSATWithUnits(System.String,DynamoUnits.Unit)">
+            <summary>
+            Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are 
+            interperting the other numbers in your Dynamo file.
+            </summary>
+            <param name="filePath">string file path to a .SAT file.</param>
+            <param name="dynamoUnit">a forge unit length, if left null, sat file will be imported as unitless</param>
+            <returns></returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.ImportFromSATWithUnits(System.IO.FileInfo,DynamoUnits.Unit)">
+            <summary>
+            Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are 
+            interperting the other numbers in your Dynamo file.
+            </summary>
+            <param name="file">file object pointing to a .SAT file.</param>
+            <param name="dynamoUnit">a forge unit length, if left null, sat file will be imported as unitless</param>
+            <returns></returns>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.DeserializeFromSABWithUnits(System.Byte[],DynamoUnits.Unit)">
+            <summary>
+            Imports geometry from SAB byte array. Set the dynamoUnit input to match how you are 
+            interperting the other numbers in your Dynamo file.
+            </summary>
+            <param name="buffer">SAB byte array</param>
+            <param name="dynamoUnit">a forge unit length, if left null, sat file will be imported as unitless</param>
+            <returns></returns>
+        </member>
+        <member name="T:GeometryColor.Properties.Resources">
+            <summary>
+              A strongly-typed resource class, for looking up localized strings, etc.
+            </summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.ResourceManager">
+            <summary>
+              Returns the cached ResourceManager instance used by this class.
+            </summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.Culture">
+            <summary>
+              Overrides the current thread's CurrentUICulture property for all
+              resource lookups using this strongly typed resource class.
+            </summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.ByMeshColorsInvalidColorCountMessage">
+            <summary>
+              Looks up a localized string similar to The color count is invalid. It must equal 1 (single color), or equal the face count (per-face color), or equal the vertex count (per-vertex color), or equal the triangle count multiplied by three (per-triangle-vertex color). If you want to color multiple meshes, you may need to use List Levels..
+            </summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.JaggedListExceptionMessage">
+            <summary>
+              Looks up a localized string similar to The list of colors must not be a jagged list..
+            </summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.NoColorsExceptionMessage">
+            <summary>
+              Looks up a localized string similar to You must provide some colors..
+            </summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.NoVertexExceptionMessage">
+            <summary>
+              Looks up a localized string similar to You must provide some vertices..
+            </summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.TwoDimensionalListExceptionMessage">
+            <summary>
+              Looks up a localized string similar to You must supply a two dimensional list of Colors..
+            </summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.VertexColorCountMismatchExceptionMessage">
+            <summary>
+              Looks up a localized string similar to The number of colors supplied must match the number of vertices..
+            </summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.VerticesDivisibleByThreeExceptionMessage">
+            <summary>
+              Looks up a localized string similar to The number of vertices supplied must be divisible by three..
+            </summary>
+        </member>
+    </members>
+</doc>

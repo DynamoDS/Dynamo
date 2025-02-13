@@ -1881,4 +1881,38 @@
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
     <Copy SourceFiles="@(ExternTuneUpPkg)" DestinationFolder="$(OutputPath)\Built-In Packages\packages\TuneUp\%(RecursiveDir)" />
   </Target>
+  <Target Name="CopyDocXML" AfterTargets="AfterBuildOps">
+	 <ItemGroup>
+		<DocXMLFiles Include="$(OutputPath)\en-US\**\*.xml"/>
+	</ItemGroup>
+	<Copy SourceFiles="@(DocXMLFiles)" DestinationFolder="$(SolutionDir)..\doc\distrib\xml\en-US" SkipUnchangedFiles="True"/>
+  </Target>
+  <Target Name="CopyDocXMLAllLanguages" AfterTargets="CopyDocXML">
+	 <ItemGroup>
+		<DocXMLCsCZFiles Include="$(SolutionDir)..\doc\distrib\xml\cs-CZ\**\*.xml"/>
+		<DocXMLDeDEFiles Include="$(SolutionDir)..\doc\distrib\xml\de-DE\**\*.xml"/>
+		<DocXMLEsESFiles Include="$(SolutionDir)..\doc\distrib\xml\es-ES\**\*.xml"/>
+		<DocXMLFrFRFiles Include="$(SolutionDir)..\doc\distrib\xml\fr-FR\**\*.xml"/>
+		<DocXMLItITFiles Include="$(SolutionDir)..\doc\distrib\xml\it-IT\**\*.xml"/>
+		<DocXMLJaJPFiles Include="$(SolutionDir)..\doc\distrib\xml\ja-JP\**\*.xml"/>
+		<DocXMLKoKRFiles Include="$(SolutionDir)..\doc\distrib\xml\ko-KR\**\*.xml"/>
+		<DocXMLPlPLFiles Include="$(SolutionDir)..\doc\distrib\xml\pl-PL\**\*.xml"/>
+		<DocXMLPtBRFiles Include="$(SolutionDir)..\doc\distrib\xml\pt-BR\**\*.xml"/>
+		<DocXMLRuRUFiles Include="$(SolutionDir)..\doc\distrib\xml\ru-RU\**\*.xml"/>
+		<DocXMLZhCNFiles Include="$(SolutionDir)..\doc\distrib\xml\zh-CN\**\*.xml"/>
+		<DocXMLZhTWFiles Include="$(SolutionDir)..\doc\distrib\xml\zh-TW\**\*.xml"/>
+	</ItemGroup>
+	<Copy SourceFiles="@(DocXMLCsCZFiles)" DestinationFolder="$(OutputPath)\cs-CZ\" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(DocXMLDeDEFiles)" DestinationFolder="$(OutputPath)\de-DE\" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(DocXMLEsESFiles)" DestinationFolder="$(OutputPath)\es-ES\" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(DocXMLFrFRFiles)" DestinationFolder="$(OutputPath)\fr-FR\" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(DocXMLItITFiles)" DestinationFolder="$(OutputPath)\it-IT\" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(DocXMLJaJPFiles)" DestinationFolder="$(OutputPath)\ja-JP\" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(DocXMLKoKRFiles)" DestinationFolder="$(OutputPath)\ko-KR\" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(DocXMLPlPLFiles)" DestinationFolder="$(OutputPath)\pl-PL\" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(DocXMLPtBRFiles)" DestinationFolder="$(OutputPath)\pt-BR\" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(DocXMLRuRUFiles)" DestinationFolder="$(OutputPath)\ru-RU\" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(DocXMLZhCNFiles)" DestinationFolder="$(OutputPath)\zh-CN\" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(DocXMLZhTWFiles)" DestinationFolder="$(OutputPath)\zh-TW\" SkipUnchangedFiles="True"/>
+  </Target>
 </Project>
