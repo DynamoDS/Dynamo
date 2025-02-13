@@ -318,6 +318,8 @@ namespace Dynamo.Engine
             private set;
         }
 
+        private string category;
+
         /// <summary>
         ///     The category of this function.
         /// </summary>
@@ -325,6 +327,11 @@ namespace Dynamo.Engine
         {
             get
             {
+                if (category != null)
+                {
+                    return category;
+                }
+
                 var categoryBuf = new StringBuilder();
                 categoryBuf.Append(GetRootCategory());
 
@@ -334,13 +341,11 @@ namespace Dynamo.Engine
                     //get function assembly
                     var asm = AppDomain.CurrentDomain.GetAssemblies()
                         .Where(x => x.GetName().Name == Path.GetFileNameWithoutExtension(Assembly))
-                        .ToArray();
+                        .FirstOrDefault();
 
-                    if (asm.Any() && asm.First().GetType(ClassName) != null)
+                    //get class type of function
+                    if (asm?.GetType(ClassName) is System.Type type)
                     {
-                        //get class type of function
-                        var type = asm.First().GetType(ClassName);
-
                         //get NodeCategoryAttribute for this function if it was been defined
                         var nodeCat = type.GetMethods().Where(x => x.Name == FunctionName)
                             .Select(x => x.GetCustomAttribute(typeof(NodeCategoryAttribute)))
@@ -356,7 +361,8 @@ namespace Dynamo.Engine
                             || nodeCat == LibraryServices.Categories.MemberFunctions))
                         {
                             categoryBuf.Append("." + UnqualifedClassName + "." + nodeCat);
-                            return categoryBuf.ToString();
+                            category = categoryBuf.ToString();
+                            return category;
                         }
                     }
                 }
@@ -380,7 +386,9 @@ namespace Dynamo.Engine
                             "." + UnqualifedClassName + "." + LibraryServices.Categories.Properties);
                         break;
                 }
-                return categoryBuf.ToString();
+
+                category = categoryBuf.ToString();
+                return category;
             }
         }
 
