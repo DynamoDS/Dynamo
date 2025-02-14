@@ -73,9 +73,9 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// This is a dispatcher timer that ensures a preview control is only initialized
-        /// when it is absolutely needed. It is static so that it can be shared for all
-        /// node views, instead of each having its own timer with additional overhead.
+        /// This ensures that a preview control is initialized only when it is absolutely
+        /// needed. It is static so that it can be shared for all node views, instead of
+        /// each node having its own debouncer with additional overhead.
         /// </summary>
         private static ActionDebouncer delayPreviewControl = null;
 
