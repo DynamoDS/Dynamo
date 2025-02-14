@@ -150,7 +150,7 @@ namespace Dynamo.Views
             DynamoSelection.Instance.Selection.CollectionChanged -= OnSelectionCollectionChanged;
             infiniteGridView.DetachFromZoomBorder(zoomBorder);
 
-            NodeView.ClearPreviewDelayTimer();
+            NodeView.ResetPreviewControlDelay();
         }
 
         /// <summary>

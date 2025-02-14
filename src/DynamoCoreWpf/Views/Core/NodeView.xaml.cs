@@ -77,8 +77,7 @@ namespace Dynamo.Controls
         /// when it is absolutely needed. It is static so that it can be shared for all
         /// node views, instead of each having its own timer with additional overhead.
         /// </summary>
-        private static DispatcherTimer delayPreviewControlTimer = null;
-        private static NodeView previewControlHost = null;
+        private static ActionDebouncer delayPreviewControl = null;
 
         internal PreviewControl PreviewControl
         {
@@ -139,42 +138,33 @@ namespace Dynamo.Controls
             Panel.SetZIndex(this, 1);
         }
 
-        private static void DelayPreviewControlAction(object sender, EventArgs e)
+        private void DelayPreviewControlAction()
         {
-            delayPreviewControlTimer.Stop();
-            // potentially initialize the preview control only if the node is still in focus
-            if (previewControlHost?.IsMouseOver == true)
-            {
-                delayPreviewControlTimer.Dispatcher.BeginInvoke(previewControlHost.TryShowPreviewBubbles, DispatcherPriority.Loaded);
-            }
+            if (!IsMouseOver) return;
 
-            previewControlHost = null;
+            TryShowPreviewBubbles();
         }
 
         private void InitialTryShowPreviewBubble()
         {
-            if (delayPreviewControlTimer == null) // prepare the shared timer
-            {
-                delayPreviewControlTimer = new DispatcherTimer(DispatcherPriority.Background, Dispatcher);
-                delayPreviewControlTimer.Interval = TimeSpan.FromMilliseconds(300);
-                delayPreviewControlTimer.Tick += DelayPreviewControlAction;
-            }
-
             // Always set old ZIndex to the last value, even if mouse is not over the node.
             oldZIndex = NodeViewModel.StaticZIndex;
 
-            previewControlHost = this;
-            delayPreviewControlTimer.Start();
+            if (delayPreviewControl == null)
+            {
+                delayPreviewControl = new ActionDebouncer(null);
+            }
+
+            delayPreviewControl.Debounce(300, DelayPreviewControlAction);
         }
 
         /// <summary>
         /// Used to unload and dereference any stored node view preview data and events
         /// </summary>
-        public static void ClearPreviewDelayTimer()
+        public static void ResetPreviewControlDelay()
         {
-            delayPreviewControlTimer.Tick -= DelayPreviewControlAction;
-            delayPreviewControlTimer = null;
-            previewControlHost = null;
+            delayPreviewControl?.Dispose();
+            delayPreviewControl = null;
         }
 
         private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)
@@ -591,7 +581,7 @@ namespace Dynamo.Controls
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
             ViewModel.ZIndex = oldZIndex;
-            delayPreviewControlTimer.Stop();
+            delayPreviewControl.Cancel();
 
             // The preview hasn't been instantiated yet, we should stop here 
             if (previewControl == null) return;
