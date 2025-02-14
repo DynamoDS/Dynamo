@@ -1281,17 +1281,22 @@ namespace Dynamo.Models
             foreach (var maybeWs in Workspaces)
             {
                 foreach (var node in maybeWs.Nodes)
+                {
                     nodeToWorkspaceMap[node.GUID] = maybeWs;
+                }
 
-                var ws = maybeWs as HomeWorkspaceModel;
-                if (ws == null)
+                if (maybeWs is not HomeWorkspaceModel ws)
+                {
                     continue;
+                }
 
                 // Get the orphaned serializables to this workspace
-                var wsOrphans = (List<string>)ws.GetOrphanedSerializablesAndClearHistoricalTraceData();
+                var wsOrphans = ws.GetOrphanedSerializablesAndClearHistoricalTraceData();
 
                 if (!wsOrphans.Any())
+                {
                     continue;
+                }
 
                 if (workspaceOrphanMap.TryGetValue(ws.Guid, out var workspaceOrphans))
                 {
@@ -1312,15 +1317,9 @@ namespace Dynamo.Models
                 // TODO: MAGN-7314
                 // Find the owning workspace for a node.
                 if (!nodeToWorkspaceMap.TryGetValue(nodeGuid, out var nodeSpace))
+                {
                     continue;
-
-                //var nodeSpace =
-                //    Workspaces.FirstOrDefault(
-                //        ws =>
-                //            ws.Nodes.FirstOrDefault(n => n.GUID == nodeGuid)
-                //                != null);
-
-                //if (nodeSpace == null) continue;
+                }
 
                 // Add the node's orphaned serializables to the workspace
                 // orphan map.

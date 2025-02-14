@@ -159,15 +159,19 @@ namespace ProtoCore
                 return ret;
             }
 
-            public void RecursiveFillWithNestedData(List<string> listToFill)
+            internal void RecursiveFillWithNestedData(List<string> listToFill)
             {
                 if (HasData)
+                {
                     listToFill.Add(Data);
+                }
 
                 if (HasNestedData)
                 {
                     foreach (SingleRunTraceData srtd in NestedData)
+                    {
                         srtd.RecursiveFillWithNestedData(listToFill);
+                    }
                 }
             }
         }
@@ -475,8 +479,10 @@ namespace ProtoCore
         /// </summary>
         public IList<string> GetOrphanedSerializables()
         {
-            if (beforeFirstRunSerializables.Count == 0)
+            if (!beforeFirstRunSerializables.Any())
+            {
                 return new List<string>();
+            }
 
             var currentSerializables = traceData.SelectMany(td => td.RecursiveGetNestedData()).ToHashSet();
             var result = beforeFirstRunSerializables.Where(hs => !currentSerializables.Contains(hs)).ToList();
