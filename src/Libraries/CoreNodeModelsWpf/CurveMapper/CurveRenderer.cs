@@ -7,6 +7,9 @@ namespace Dynamo.Wpf.CurveMapper
 {
     public class CurveRenderer
     {
+        /// <summary>
+        /// Renders a curve as a Path object based on given X and Y values, adjusting for the inverted Y-axis in WPF.
+        /// </summary>
         public static Path RenderCurve(List<double> xValues, List<double> yValues, double canvasSize)
         {
             if (xValues == null || yValues == null || xValues.Count != yValues.Count || xValues.Count < 2)

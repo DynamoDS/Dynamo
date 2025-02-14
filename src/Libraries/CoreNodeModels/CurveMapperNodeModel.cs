@@ -1,5 +1,4 @@
-using Autodesk.DesignScript.Runtime;
-using Dynamo.Engine;
+using CoreNodeModels.CurveMapper;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -8,14 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
-using System.Runtime.Serialization;
-using System.Windows;
-using Dynamo.Core;
-using CoreNodeModels.CurveMapper;
-using Lucene.Net.QueryParsers.Surround.Query;
-using CoreNodeModels.HigherOrder;
 
 namespace CoreNodeModels
 {
@@ -42,30 +34,109 @@ namespace CoreNodeModels
         private readonly IntNode pointsCountDefaultValue = new IntNode(10);
         private GraphTypes selectedGraphType;
         private const double defaultCanvasSize = 240;
-        private const double defaultMinGridWidth = 310;
-        private const double defaultMinGridHeight = 340;
         private double dynamicCanvasSize = defaultCanvasSize;
         private bool isLocked;
 
         #region Curves & point data
 
         // Linear curve
+        /// <summary> Point data for the 1st control point of the linear curve. </summary>
+        [JsonProperty]
         public ControlPointData LinearCurveControlPointData1 { get; private set; }
+        /// <summary> Point data for the 2nd control point of the linear curve. </summary>
+        [JsonProperty]
         public ControlPointData LinearCurveControlPointData2 { get; private set; }
         private LinearCurve linearCurve;
+
+        // Besier curve
+        /// <summary> Point data for the 1st control point of the sine wave. </summary>
+        [JsonProperty]
+        public ControlPointData BezierCurveControlPointData1 { get; private set; }
+        /// <summary> Point data for the 2nd control point of the sine wave. </summary>
+        [JsonProperty]
+        public ControlPointData BezierCurveControlPointData2 { get; private set; }
+        /// <summary> Point data for the 3rd control point of the sine wave. </summary>
+        [JsonProperty]
+        public ControlPointData BezierCurveControlPointData3 { get; private set; }
+        /// <summary> Point data for the 4th control point of the sine wave. </summary>
+        [JsonProperty]
+        public ControlPointData BezierCurveControlPointData4 { get; private set; }
+        private BezierCurve bezierCurve;
+
         // Sine wave
+        /// <summary> Point data for the 1st control point of the sine wave. </summary>
+        [JsonProperty]
         public ControlPointData SineWaveControlPointData1 { get; private set; }
+        /// <summary> Point data for the 2nd control point of the sine wave. </summary>
+        [JsonProperty]
         public ControlPointData SineWaveControlPointData2 { get; private set; }
         private SineWave sineWave;
+
         // Cosine wave
+        /// <summary> Point data for the 1st control point of the cosine wave. </summary>
+        [JsonProperty]
         public ControlPointData CosineWaveControlPointData1 { get; private set; }
+        /// <summary> Point data for the 2nd control point of the cosine wave. </summary>
+        [JsonProperty]
         public ControlPointData CosineWaveControlPointData2 { get; private set; }
         private SineWave cosineWave;
+
+        // Parabolic curve
+        /// <summary> Point data for the 1st control point of the parabolic curve. </summary>
+        [JsonProperty]
+        public ControlPointData ParabolicCurveControlPointData1 { get; private set; }
+        /// <summary> Point data for the 2nd control point of the parabolic curve. </summary>
+        [JsonProperty]
+        public ControlPointData ParabolicCurveControlPointData2 { get; private set; }
+        private ParabolicCurve parabolicCurve;
+
+        // Perlin noise
+        /// <summary> Point data for the 1st control point of the perlin noise curve. </summary>
+        [JsonProperty]
+        public ControlPointData PerlinNoiseControlPointData1 { get; private set; }
+        /// <summary> Point data for the 2nd control point of the perlin noise curve. </summary>
+        [JsonProperty]
+        public ControlPointData PerlinNoiseControlPointData2 { get; private set; }
+        /// <summary> Point data for the 3rd control point of the perlin noise curve. </summary>
+        [JsonProperty]
+        public ControlPointData PerlinNoiseControlPointData3 { get; private set; }
+        private PerlinNoiseCurve perlinNoiseCurve;
+
+        // Power curve
+        /// <summary> Point data for the power curve control point. </summary>
+        [JsonProperty]
+        public ControlPointData PowerCurveControlPointData1 { get; private set; }
+        private PowerCurve powerCurve;
+
+        // Square root curve
+        /// <summary> Point data for the 1st control point of the square root curve. </summary>
+        [JsonProperty]
+        public ControlPointData SquareRootCurveControlPointData1 { get; private set; }
+        /// <summary> Point data for the 2nd control point of the square root curve. </summary>
+        [JsonProperty]
+        public ControlPointData SquareRootCurveControlPointData2 { get; private set; }
+        private SquareRootCurve squareRootCurve;
+
+        // Gaussian curve
+        /// <summary> Point data for the 1st control point of the Gaussian curve. </summary>
+        [JsonProperty]
+        public ControlPointData GaussianCurveControlPointData1 { get; private set; }
+        /// <summary> Point data for the 2nd control point of the Gaussian curve. </summary>
+        [JsonProperty]
+        public ControlPointData GaussianCurveControlPointData2 { get; private set; }
+        /// <summary> Point data for the 3rd control point of the Gaussian curve. </summary>
+        [JsonProperty]
+        public ControlPointData GaussianCurveControlPointData3 { get; private set; }
+        /// <summary> Point data for the 4th control point of the Gaussian curve. </summary>
+        [JsonProperty]
+        public ControlPointData GaussianCurveControlPointData4 { get; private set; }
+        private GaussianCurve gaussianCurve;
 
         #endregion
 
         #region Inputs
 
+        /// <summary> Gets or sets the minimum X limit for the curve. </summary>
         [JsonIgnore]
         public double MinLimitX
         {
@@ -82,6 +153,7 @@ namespace CoreNodeModels
                 }
             }
         }
+        /// <summary> Gets or sets the maximum X limit for the curve. </summary>
         [JsonIgnore]
         public double MaxLimitX
         {
@@ -98,6 +170,7 @@ namespace CoreNodeModels
                 }
             }
         }
+        /// <summary> Gets or sets the minimum Y limit for the curve. </summary>
         [JsonIgnore]
         public double MinLimitY
         {
@@ -114,6 +187,7 @@ namespace CoreNodeModels
                 }
             }
         }
+        /// <summary> Gets or sets the maximum Y limit for the curve. </summary>
         [JsonIgnore]
         public double MaxLimitY
         {
@@ -130,6 +204,7 @@ namespace CoreNodeModels
                 }
             }
         }
+        /// <summary> Gets or sets the number of points used to compute the curve. </summary>
         [JsonIgnore]
         public int PointsCount
         {
@@ -145,8 +220,10 @@ namespace CoreNodeModels
                 }
             }
         }
+        /// <summary> Gets the midpoint value of the X range. </summary>
         [JsonIgnore]
         public double MidValueX => (MaxLimitX + MinLimitX) * 0.5;
+        /// <summary> Gets the midpoint value of the Y range. </summary>
         [JsonIgnore]
         public double MidValueY => (MaxLimitY + MinLimitY) * 0.5;
 
@@ -154,6 +231,7 @@ namespace CoreNodeModels
 
         #region Outputs
 
+        /// <summary> Gets or sets the computed Y values of the curve for output. </summary>
         [JsonIgnore]
         public List<double> OutputValuesY
         {
@@ -164,6 +242,7 @@ namespace CoreNodeModels
                 OnNodeModified();
             }
         }
+        /// <summary> Gets or sets the computed X values of the curve for output. </summary>
         [JsonIgnore]
         public List<double> OutputValuesX
         {
@@ -174,6 +253,7 @@ namespace CoreNodeModels
                 OnNodeModified();
             }
         }
+        /// <summary> Gets or sets the Y values used for rendering the curve. </summary>
         [JsonIgnore]
         public List<double> RenderValuesY
         {
@@ -184,6 +264,7 @@ namespace CoreNodeModels
                 OnNodeModified();
             }
         }
+        /// <summary> Gets or sets the X values used for rendering the curve. </summary>
         [JsonIgnore]
         public List<double> RenderValuesX
         {
@@ -197,6 +278,7 @@ namespace CoreNodeModels
 
         #endregion
 
+        /// <summary> Gets or sets the dynamic size of the canvas, scaling control points accordingly. </summary>
         [JsonProperty]
         public double DynamicCanvasSize
         {
@@ -208,28 +290,20 @@ namespace CoreNodeModels
                     double oldSize = dynamicCanvasSize;
                     dynamicCanvasSize = Math.Max(value, defaultCanvasSize);
 
-                    // Scale control points when resizing the canvas
-                    LinearCurveControlPointData1.ScaleToNewCanvasSize(oldSize, dynamicCanvasSize);
-                    LinearCurveControlPointData2.ScaleToNewCanvasSize(oldSize, dynamicCanvasSize);
-                    SineWaveControlPointData1.ScaleToNewCanvasSize(oldSize, dynamicCanvasSize);
-                    SineWaveControlPointData2.ScaleToNewCanvasSize(oldSize, dynamicCanvasSize);
-                    CosineWaveControlPointData1.ScaleToNewCanvasSize(oldSize, dynamicCanvasSize);
-                    CosineWaveControlPointData2.ScaleToNewCanvasSize(oldSize, dynamicCanvasSize);
-
+                    ScaleAllControlPoints(oldSize, dynamicCanvasSize);
                     RaisePropertyChanged(nameof(DynamicCanvasSize));
                     OnNodeModified();
                     GenerateOutputValues();
-
                 }
             }
         }
-
+        /// <summary> Gets a list of graph type descriptions for UI selection. </summary>
         [JsonIgnore]
         public List<string> GraphTypesList => Enum.GetValues(typeof(GraphTypes))
             .Cast<GraphTypes>()
             .Select(value => GetEnumDescription(value))
             .ToList();
-
+        /// <summary> Gets or sets the selected graph type as a description for UI binding. </summary>
         [JsonIgnore]
         public string SelectedGraphTypeDescription
         {
@@ -246,7 +320,7 @@ namespace CoreNodeModels
                 OnNodeModified();
             }
         }
-
+        /// <summary> Gets or sets the currently selected graph type. </summary>
         [JsonConverter(typeof(StringEnumConverter))]
         public GraphTypes SelectedGraphType
         {
@@ -259,23 +333,8 @@ namespace CoreNodeModels
                 OnNodeModified();
             }
         }
-
-        /// <summary>
-        /// Gets the minimum allowed width for the grid in the view.
-        /// </summary>
-        public double MinGridWidth => defaultMinGridWidth;
-
-        /// <summary>
-        /// Gets the minimum allowed height for the grid in the view.
-        /// </summary>
-        public double MinGridHeight => defaultMinGridHeight;
-
-        /// <summary>
-        /// Gets the minimum allowed width/height for the canvas in the view.
-        /// </summary>
-        public double MinCanvasSize => defaultCanvasSize;
-
-        [JsonIgnore]
+        /// <summary> Gets or sets a value indicating whether the control points are locked. </summary>
+        [JsonProperty]
         public bool IsLocked
         {
             get => isLocked;
@@ -325,14 +384,7 @@ namespace CoreNodeModels
             SelectedGraphType = GraphTypes.Empty;
             ArgumentLacing = LacingStrategy.Disabled;
 
-            // Create control points
-            LinearCurveControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.1, DynamicCanvasSize * 0.9);
-            LinearCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.9, DynamicCanvasSize * 0.1);
-            SineWaveControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.25, 0);
-            SineWaveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.75, DynamicCanvasSize);
-            CosineWaveControlPointData1 = new ControlPointData(0, 0);
-            CosineWaveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize);
-
+            InitiateControlPointData();
             GenerateOutputValues();
         }
 
@@ -350,55 +402,130 @@ namespace CoreNodeModels
         private void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             OnNodeModified();
-        }        
+        }
+
+        private void InitiateControlPointData()
+        {
+            // Linear Curve
+            LinearCurveControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.1, DynamicCanvasSize * 0.9);
+            LinearCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.9, DynamicCanvasSize * 0.1);
+            // Bezier curve
+            BezierCurveControlPointData1 = new ControlPointData(0, DynamicCanvasSize);
+            BezierCurveControlPointData2 = new ControlPointData(DynamicCanvasSize, DynamicCanvasSize);
+            BezierCurveControlPointData3 = new ControlPointData(DynamicCanvasSize * 0.2, DynamicCanvasSize * 0.2);
+            BezierCurveControlPointData4 = new ControlPointData(DynamicCanvasSize * 0.8, DynamicCanvasSize * 0.2);
+            // Sine wave
+            SineWaveControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.25, 0);
+            SineWaveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.75, DynamicCanvasSize);
+            // Cosine wave
+            CosineWaveControlPointData1 = new ControlPointData(0, 0);
+            CosineWaveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize);
+            // Parabolic curve
+            ParabolicCurveControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.1);
+            ParabolicCurveControlPointData2 = new ControlPointData(DynamicCanvasSize, DynamicCanvasSize);
+            // Perlin noise curve
+            PerlinNoiseControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
+            PerlinNoiseControlPointData2 = new ControlPointData(0, DynamicCanvasSize);
+            PerlinNoiseControlPointData3 = new ControlPointData(DynamicCanvasSize * 0.5, 0);
+            // Power curve
+            PowerCurveControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
+            // Power curve  
+            SquareRootCurveControlPointData1 = new ControlPointData(0, DynamicCanvasSize);
+            SquareRootCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
+            // Gaussian curve
+            GaussianCurveControlPointData1 = new ControlPointData(0, DynamicCanvasSize * 0.8);
+            GaussianCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
+            GaussianCurveControlPointData3 = new ControlPointData(DynamicCanvasSize * 0.4, DynamicCanvasSize);
+            GaussianCurveControlPointData4 = new ControlPointData(DynamicCanvasSize * 0.8, DynamicCanvasSize);
+        }
 
         public void GenerateOutputValues()
         {
             if (SelectedGraphType == GraphTypes.Empty)
             {
-                OutputValuesX = null;
-                OutputValuesY = null;
+                RenderValuesX = RenderValuesY = null;
+                OutputValuesX = OutputValuesY  = null;
             }
-            else if (SelectedGraphType == GraphTypes.LinearCurve)
+            else
             {
-                linearCurve = new LinearCurve(
-                    LinearCurveControlPointData1.X, (DynamicCanvasSize - LinearCurveControlPointData1.Y),
-                    LinearCurveControlPointData2.X, (DynamicCanvasSize - LinearCurveControlPointData2.Y),
-                    DynamicCanvasSize
-                );
+                object curve = null;
 
-                RenderValuesX = linearCurve.GetCurveXValues(PointsCount, true);
-                RenderValuesY = linearCurve.GetCurveYValues(PointsCount, true);
-                OutputValuesX = MapValues(linearCurve.GetCurveXValues(PointsCount), MinLimitX, MaxLimitX);
-                OutputValuesY = MapValues(linearCurve.GetCurveYValues(PointsCount), MinLimitY, MaxLimitY);
+                switch (SelectedGraphType)
+                {
+                    case GraphTypes.LinearCurve:
+                        curve = new LinearCurve(
+                            LinearCurveControlPointData1.X, (DynamicCanvasSize - LinearCurveControlPointData1.Y),
+                            LinearCurveControlPointData2.X, (DynamicCanvasSize - LinearCurveControlPointData2.Y),
+                            DynamicCanvasSize
+                        );
+                        break;
+                    case GraphTypes.BezierCurve: // TODO: Review
+                        curve = new BezierCurve(
+                            BezierCurveControlPointData1.X, (DynamicCanvasSize - BezierCurveControlPointData1.Y),
+                            BezierCurveControlPointData2.X, (DynamicCanvasSize - BezierCurveControlPointData2.Y),
+                            DynamicCanvasSize
+                        );
+                        break;
+                    case GraphTypes.SineWave:
+                        curve = new SineWave(
+                            SineWaveControlPointData1.X, (DynamicCanvasSize - SineWaveControlPointData1.Y),
+                            SineWaveControlPointData2.X, (DynamicCanvasSize - SineWaveControlPointData2.Y),
+                            DynamicCanvasSize
+                        );
+                        break;
+                    case GraphTypes.CosineWave:
+                        curve = new SineWave(
+                            CosineWaveControlPointData1.X, (DynamicCanvasSize - CosineWaveControlPointData1.Y),
+                            CosineWaveControlPointData2.X, (DynamicCanvasSize - CosineWaveControlPointData2.Y),
+                            DynamicCanvasSize
+                        );
+                        break;
+                    case GraphTypes.ParabolicCurve:
+                        curve = new ParabolicCurve(
+                            ParabolicCurveControlPointData1.X, (DynamicCanvasSize - ParabolicCurveControlPointData1.Y),
+                            ParabolicCurveControlPointData2.X, (DynamicCanvasSize - ParabolicCurveControlPointData2.Y),
+                            DynamicCanvasSize
+                        );
+                        break;
+                    case GraphTypes.PerlinNoiseCurve: // TODO: Review
+                        curve = new PerlinNoiseCurve(
+                            PerlinNoiseControlPointData1.X, (DynamicCanvasSize - PerlinNoiseControlPointData1.Y),
+                            PerlinNoiseControlPointData2.X, (DynamicCanvasSize - PerlinNoiseControlPointData2.Y),
+                            DynamicCanvasSize
+                        );
+                        break;
+                    case GraphTypes.PowerCurve:
+                        curve = new PowerCurve(
+                            PowerCurveControlPointData1.X, (DynamicCanvasSize - PowerCurveControlPointData1.Y),
+                            DynamicCanvasSize
+                        );
+                        break;
+                    case GraphTypes.SquareRootCurve: // TODO: Review
+                        curve = new SquareRootCurve(
+                            SquareRootCurveControlPointData1.X, (DynamicCanvasSize - SquareRootCurveControlPointData1.Y),
+                            SquareRootCurveControlPointData2.X, (DynamicCanvasSize - SquareRootCurveControlPointData2.Y),
+                            DynamicCanvasSize
+                        );
+                        break;
+                    case GraphTypes.GaussianCurve: // TODO: Review
+                        curve = new GaussianCurve(
+                            GaussianCurveControlPointData1.X, (DynamicCanvasSize - GaussianCurveControlPointData1.Y),
+                            GaussianCurveControlPointData2.X, (DynamicCanvasSize - GaussianCurveControlPointData2.Y),
+                            DynamicCanvasSize
+                        );
+                        break;
+                }
+
+                if (curve is not null)
+                {
+                    // Dynamic to call methods on different curve types
+                    dynamic dynamicCurve = curve; 
+                    RenderValuesX = dynamicCurve.GetCurveXValues(PointsCount, true);
+                    RenderValuesY = dynamicCurve.GetCurveYValues(PointsCount, true);
+                    OutputValuesX = MapValues(dynamicCurve.GetCurveXValues(PointsCount), MinLimitX, MaxLimitX);
+                    OutputValuesY = MapValues(dynamicCurve.GetCurveYValues(PointsCount), MinLimitY, MaxLimitY);
+                }
             }
-            else if (SelectedGraphType == GraphTypes.SineWave)
-            {
-                sineWave = new SineWave(
-                    SineWaveControlPointData1.X, (DynamicCanvasSize - SineWaveControlPointData1.Y),
-                    SineWaveControlPointData2.X, (DynamicCanvasSize - SineWaveControlPointData2.Y),
-                    DynamicCanvasSize
-                );
-
-                RenderValuesX = sineWave.GetCurveXValues(PointsCount, true);
-                RenderValuesY = sineWave.GetCurveYValues(PointsCount, true);
-                OutputValuesX = MapValues(sineWave.GetCurveXValues(PointsCount), MinLimitX, MaxLimitX); // Review
-                OutputValuesY = MapValues(sineWave.GetCurveYValues(PointsCount), MinLimitY, MaxLimitY); // Review
-            }
-            else if (SelectedGraphType == GraphTypes.CosineWave)
-            {
-                cosineWave = new SineWave(
-                    CosineWaveControlPointData1.X, (DynamicCanvasSize - CosineWaveControlPointData1.Y),
-                    CosineWaveControlPointData2.X, (DynamicCanvasSize - CosineWaveControlPointData2.Y),
-                    DynamicCanvasSize
-                );
-
-                RenderValuesX = cosineWave.GetCurveXValues(PointsCount, true);
-                RenderValuesY = cosineWave.GetCurveYValues(PointsCount, true);
-                OutputValuesX = MapValues(cosineWave.GetCurveXValues(PointsCount), MinLimitX, MaxLimitX); // Review
-                OutputValuesY = MapValues(cosineWave.GetCurveYValues(PointsCount), MinLimitY, MaxLimitY); // Review
-            }
-
 
             RaisePropertyChanged(nameof(OutputValuesX));
             RaisePropertyChanged(nameof(OutputValuesY));
@@ -416,6 +543,32 @@ namespace CoreNodeModels
             return mappedValues;
         }
 
+        private void ScaleAllControlPoints(double oldSize, double newSize)
+        {
+            var controlPoints = new List<ControlPointData>
+            {
+                LinearCurveControlPointData1, LinearCurveControlPointData2,
+                BezierCurveControlPointData1, BezierCurveControlPointData2,
+                BezierCurveControlPointData3, BezierCurveControlPointData4,
+                SineWaveControlPointData1, SineWaveControlPointData2,
+                CosineWaveControlPointData1, CosineWaveControlPointData2,
+                ParabolicCurveControlPointData1, ParabolicCurveControlPointData2,
+                PerlinNoiseControlPointData1, PerlinNoiseControlPointData2, PerlinNoiseControlPointData3,
+                PowerCurveControlPointData1,
+                SquareRootCurveControlPointData1, SquareRootCurveControlPointData2,
+                GaussianCurveControlPointData1, GaussianCurveControlPointData2,
+                GaussianCurveControlPointData3, GaussianCurveControlPointData4
+            };
+
+            foreach (var point in controlPoints)
+            {
+                point.ScaleToNewCanvasSize(oldSize, newSize);
+            }
+        }
+
+        /// <summary>
+        /// Resets the curves to their original state
+        /// </summary>
         public void ResetCurves()
         {
             if (SelectedGraphType == GraphTypes.LinearCurve)
@@ -424,6 +577,17 @@ namespace CoreNodeModels
                 LinearCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.9, DynamicCanvasSize * 0.1);
                 RaisePropertyChanged(nameof(LinearCurveControlPointData1));
                 RaisePropertyChanged(nameof(LinearCurveControlPointData2));
+            }
+            else if (SelectedGraphType == GraphTypes.BezierCurve)
+            {
+                BezierCurveControlPointData1 = new ControlPointData(0, DynamicCanvasSize);
+                BezierCurveControlPointData2 = new ControlPointData(DynamicCanvasSize, DynamicCanvasSize);
+                BezierCurveControlPointData3 = new ControlPointData(DynamicCanvasSize * 0.2, DynamicCanvasSize * 0.2);
+                BezierCurveControlPointData4 = new ControlPointData(DynamicCanvasSize * 0.8, DynamicCanvasSize * 0.2);
+                RaisePropertyChanged(nameof(BezierCurveControlPointData1));
+                RaisePropertyChanged(nameof(BezierCurveControlPointData2));
+                RaisePropertyChanged(nameof(BezierCurveControlPointData3));
+                RaisePropertyChanged(nameof(BezierCurveControlPointData4));
             }
             else if (SelectedGraphType == GraphTypes.SineWave)
             {
@@ -438,6 +602,45 @@ namespace CoreNodeModels
                 CosineWaveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize);
                 RaisePropertyChanged(nameof(CosineWaveControlPointData1));
                 RaisePropertyChanged(nameof(CosineWaveControlPointData2));
+            }
+            else if (SelectedGraphType == GraphTypes.ParabolicCurve)
+            {
+                ParabolicCurveControlPointData1 = new ControlPointData(0, 0);
+                ParabolicCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize);
+                RaisePropertyChanged(nameof(ParabolicCurveControlPointData1));
+                RaisePropertyChanged(nameof(ParabolicCurveControlPointData2));
+            }
+            else if (SelectedGraphType != GraphTypes.PerlinNoiseCurve)
+            {
+                PerlinNoiseControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
+                PerlinNoiseControlPointData2 = new ControlPointData(0, DynamicCanvasSize);
+                PerlinNoiseControlPointData3 = new ControlPointData(DynamicCanvasSize * 0.5, 0);
+                RaisePropertyChanged(nameof(PerlinNoiseControlPointData1));
+                RaisePropertyChanged(nameof(PerlinNoiseControlPointData2));
+                RaisePropertyChanged(nameof(PerlinNoiseControlPointData3));
+            }
+            else if (SelectedGraphType != GraphTypes.PowerCurve)
+            {
+                PowerCurveControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
+                RaisePropertyChanged(nameof(PowerCurveControlPointData1));
+            }
+            else if (SelectedGraphType != GraphTypes.SquareRootCurve)
+            {
+                SquareRootCurveControlPointData1 = new ControlPointData(0, DynamicCanvasSize);
+                SquareRootCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
+                RaisePropertyChanged(nameof(SquareRootCurveControlPointData1));
+                RaisePropertyChanged(nameof(SquareRootCurveControlPointData2));
+            }
+            else if (SelectedGraphType != GraphTypes.GaussianCurve)
+            {
+                GaussianCurveControlPointData1 = new ControlPointData(0, DynamicCanvasSize * 0.8);
+                GaussianCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
+                GaussianCurveControlPointData3 = new ControlPointData(DynamicCanvasSize * 0.4, DynamicCanvasSize);
+                GaussianCurveControlPointData4 = new ControlPointData(DynamicCanvasSize * 0.8, DynamicCanvasSize);
+                RaisePropertyChanged(nameof(GaussianCurveControlPointData1));
+                RaisePropertyChanged(nameof(GaussianCurveControlPointData2));
+                RaisePropertyChanged(nameof(GaussianCurveControlPointData3));
+                RaisePropertyChanged(nameof(GaussianCurveControlPointData4));
             }
 
             GenerateOutputValues();
@@ -576,4 +779,6 @@ namespace CoreNodeModels
             Y = newCanvasSize - ((oldCanvasSize - Y) / oldCanvasSize) * newCanvasSize;
         }
     }
+
+
 }

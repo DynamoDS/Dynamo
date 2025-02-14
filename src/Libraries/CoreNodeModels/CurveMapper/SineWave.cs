@@ -10,6 +10,7 @@ namespace CoreNodeModels.CurveMapper
         private double ControlPoint1Y;
         private double ControlPoint2X;
         private double ControlPoint2Y;
+        private const double renderIncrementX = 1.0; // ADD THIS BASE CLASS ?
 
         // Coefficients
         private double coefA;   // Amplitude
@@ -42,7 +43,7 @@ namespace CoreNodeModels.CurveMapper
         }
 
         /// <summary>
-        /// Returns the Y values at evenly spaced points across the canvas.
+        /// Returns the calculated Y values.
         /// </summary>
         public List<double> GetCurveYValues(int pointsCount, bool isRender = false)
         {
@@ -50,7 +51,7 @@ namespace CoreNodeModels.CurveMapper
 
             if (isRender)
             {
-                for (double x = 0.0; x < CanvasSize; x++)
+                for (double x = 0.0; x < CanvasSize; x += renderIncrementX)
                 {
                     double y = CosineEquation(ConvertXToTrigo(x));
                     valuesY.Add(ConvertTrigoToY(y));
@@ -79,7 +80,7 @@ namespace CoreNodeModels.CurveMapper
 
             if (isRender)
             {
-                for (double i = 0.0; i < CanvasSize; i++)
+                for (double i = 0.0; i < CanvasSize; i += renderIncrementX)
                 {
                     values.Add(i);
                 }
