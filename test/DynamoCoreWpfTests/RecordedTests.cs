@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Xml;
 using System.Threading;
 using CoreNodeModels.Input;
@@ -20,12 +19,10 @@ using Dynamo.Scheduler;
 using Dynamo.Tests;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using DynamoShapeManager;
 using NUnit.Framework;
 using ProtoCore;
 using PythonNodeModels;
 using SystemTestServices;
-using TestServices;
 
 namespace DynamoCoreWpfTests
 {
@@ -38,6 +35,7 @@ namespace DynamoCoreWpfTests
         protected System.Random randomizer = null;
         private IEnumerable<string> customNodesToBeLoaded;
         private CommandCallback commandCallback;
+        private TestDiagnostics testDiagnostics = new();
 
         // Geometry preloading related members.
         protected bool preloadGeometry;
@@ -51,16 +49,19 @@ namespace DynamoCoreWpfTests
 
         public override void Setup()
         {
-            base.Setup();
+            testDiagnostics.StartupDiagnostics();
 
+            base.Setup();
             // Fixed seed randomizer for predictability.
             randomizer = new System.Random(123456);
         }
 
         public override void Cleanup()
         {
+            testDiagnostics.BeforeCleanupDiagnostics();
             commandCallback = null;
             base.Cleanup();
+            testDiagnostics.AfterCleanupDiagnostics();
         }
 
         #endregion

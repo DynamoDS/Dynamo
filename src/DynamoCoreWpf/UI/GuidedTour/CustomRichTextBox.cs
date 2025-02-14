@@ -117,8 +117,8 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         //Finding the end character that indicates the hyperlink is complete (no empty spaces are allowed in hyperlink URL just in the name)
                         if (word.Contains("="))
                         {
-                            string linkURL = word.Split('=')[1];
-                            hyperlinkName += word.Split('=')[0];
+                            string linkURL = word.Split('=').LastOrDefault();
+                            hyperlinkName += word.Split('=').FirstOrDefault();
 
                             Run run3 = new Run(hyperlinkName.Replace("#", ""));
                             Hyperlink link = new Hyperlink(run3);
@@ -130,7 +130,10 @@ namespace Dynamo.Wpf.UI.GuidedTour
                         }
                         //The hyperlink name is the next word followed by the # char (empty spaces are allowed) and the URL value is the one followed after the = char
                         else
+                        {
                             hyperlinkName += word.Replace("#", "") + " ";
+                            continue;
+                        }   
                     }
                     else if (bBoldActive)
                     {

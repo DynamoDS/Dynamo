@@ -2081,6 +2081,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestEnableShortcutBarItems -= DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage -= OnRequestExportWorkSpaceAsImage;
             this.dynamoViewModel.RequestShorcutToolbarLoaded -= onRequestShorcutToolbarLoaded;
+            PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= OnPythonEngineListUpdated;
 
             if (homePage != null)
             {

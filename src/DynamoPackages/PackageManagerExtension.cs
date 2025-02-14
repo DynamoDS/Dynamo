@@ -161,8 +161,16 @@ namespace Dynamo.PackageManager
                 new GregClient(startupParams.AuthProvider, url),
                 uploadBuilder, packageUploadDirectory);
 
-            LoadPackages(startupParams.Preferences, startupParams.PathManager);
             noNetworkMode = startupParams.NoNetworkMode;
+
+            //we don't ask dpm for the compatibility map in offline mode.
+            if (!noNetworkMode)
+            {
+                // Load the compatibility map
+                PackageManagerClient.LoadCompatibilityMap();
+            }
+
+            LoadPackages(startupParams.Preferences, startupParams.PathManager);
         }
 
         /// <summary>
@@ -269,10 +277,11 @@ namespace Dynamo.PackageManager
         
         private PackageInfo GetNodePackageFromAssemblyName(AssemblyName assemblyName)
         {
-            if (NodePackageDictionary != null && NodePackageDictionary.ContainsKey(assemblyName.FullName))
+            if (NodePackageDictionary?.TryGetValue(assemblyName.FullName, out var packages) == true)
             {
-                return NodePackageDictionary[assemblyName.FullName].Last();
+                return packages.Last();
             }
+
             return null;
         }
 
