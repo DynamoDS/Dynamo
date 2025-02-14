@@ -167,6 +167,16 @@ namespace Dynamo.Controls
             delayPreviewControlTimer.Start();
         }
 
+        /// <summary>
+        /// Used to unload and dereference any stored node view preview data and events
+        /// </summary>
+        public static void ClearPreviewDelayTimer()
+        {
+            delayPreviewControlTimer.Tick -= DelayPreviewControlAction;
+            delayPreviewControlTimer = null;
+            previewControlHost = null;
+        }
+
         private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)
         {
             ViewModel.NodeLogic.DispatchedToUI -= NodeLogic_DispatchedToUI;
