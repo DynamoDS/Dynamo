@@ -1959,6 +1959,8 @@ namespace Dynamo.ViewModels
             var left = -X / Zoom;
             var top = -Y / Zoom;
 
+            DeferredContent.Focus(left + width/2, top + height/2);
+
             var visibleRect = new Rect2D(left, top, width, height);
             var itemsToTest = Nodes.Cast<IWorkspaceElement>()
                                    .Concat(Notes)
