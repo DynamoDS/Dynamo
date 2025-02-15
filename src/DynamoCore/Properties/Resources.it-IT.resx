@@ -867,7 +867,7 @@ Il pacchetto non è stato caricato perché prima era stato caricato un altro pac
     <value>Impossibile inserire il file perché alcuni nodi esistono già nell'area di lavoro corrente.</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Inserisci definizione di Dynamo...</value>
+    <value>Insert Dynamo Graph...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>File di esempio aggiunto all'area di lavoro. Modalità di esecuzione modificata in Manuale.</value>

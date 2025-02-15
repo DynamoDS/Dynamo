@@ -3741,8 +3741,18 @@ Chcete-li vytvořit z tohoto souboru novou šablonu, uložte ho do jiné složky
   <data name="PackageVersionTooltip" xml:space="preserve">
     <value>Verze označené .x zahrnují všechny verze v uvedené hlavní nebo vedlejší verzi</value>
   </data>
+  <data name="CannotAddNodeToWorkspace" xml:space="preserve">
+    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
+  </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
     <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
+  </data>
+  <data name="IDSDKErrorMessage" xml:space="preserve">
+    <value>Zdá se, že v systému není nastaven nástroj Autodesk Identity Manager. Chcete-li zajistit plný přístup ke všem funkcím, přihlaste se ke svému účtu Autodesk pomocí nástroje Autodesk Identity Manager.
+#Stáhněte a instalujte=https://manage.autodesk.com/products/updates zde nebo prostřednictvím aplikace Autodesk Access a poté se přihlaste.</value>
+  </data>
+  <data name="IDSDKErrorMessageTitle" xml:space="preserve">
+    <value>Stáhnout aplikaci Autodesk Identity Manager</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

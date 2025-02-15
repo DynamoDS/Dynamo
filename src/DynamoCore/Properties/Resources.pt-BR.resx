@@ -873,7 +873,7 @@ Este pacote provavelmente contém uma montagem bloqueada. Será necessário carr
     <value>Falha durante a inserção do arquivo, pois alguns dos nós já existem no espaço de trabalho atual.</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Inserir definição do Dynamo...</value>
+    <value>Insert Dynamo Graph...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>Arquivo de exemplo adicionado ao espaço de trabalho. Modo de execução alterado para Manual.</value>
