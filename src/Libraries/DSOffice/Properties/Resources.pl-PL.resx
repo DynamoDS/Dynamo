@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExcelInteropObsoleteNode" xml:space="preserve">
-    <value>This node is obsolete and will be removed in a future version of Dynamo, please use the corresponding one that is OpenXML based.</value>
+    <value>Ten węzeł jest przestarzały i zostanie usunięty w przyszłej wersji dodatku Dynamo. Użyj odpowiedniego węzła opartego na języku OpenXML.</value>
   </data>
   <data name="ReadObsolete" xml:space="preserve">
     <value>Zamiast tego należy użyć węzła File.FromPath -&gt; Excel.ReadFromFile.</value>

@@ -873,7 +873,7 @@
     <value>由于某些节点已存在于当前工作空间中，因此无法插入文件。</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>插入 Dynamo 定义…</value>
+    <value>Insert Dynamo Graph...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>示例文件已添加到工作空间。运行模式已更改为“手动”。</value>

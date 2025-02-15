@@ -873,7 +873,7 @@
     <value>Не удалось вставить файл, так как некоторые узлы уже существуют в текущем рабочем пространстве.</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Вставить определение Dynamo...</value>
+    <value>Insert Dynamo Graph...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>Файл примера добавлен в рабочее пространство. Режим выполнения изменен на «Вручную».</value>

@@ -870,7 +870,7 @@ value : bool = false</value>
     <value>現在のワークスペースに既にノードが存在するため、ファイルの挿入に失敗しました。</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Dynamo 定義を挿入...</value>
+    <value>Insert Dynamo Graph...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>サンプル ファイルがワークスペースに追加されました。実行モードが手動に変更されました。</value>

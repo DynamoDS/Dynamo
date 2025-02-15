@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExcelInteropObsoleteNode" xml:space="preserve">
-    <value>This node is obsolete and will be removed in a future version of Dynamo, please use the corresponding one that is OpenXML based.</value>
+    <value>このノードは廃止され、Dynamo の将来のバージョンで削除される予定です。対応する OpenXML ベースのノードを使用してください。</value>
   </data>
   <data name="ReadObsolete" xml:space="preserve">
     <value>File.FromPath ノードの代わりに Excel.ReadFromFile ノードを使用してください。</value>

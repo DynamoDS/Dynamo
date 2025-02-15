@@ -3740,8 +3740,18 @@
   <data name="PackageVersionTooltip" xml:space="preserve">
     <value>.x로 표시된 버전에는 지정된 주 또는 부 릴리즈의 모든 버전이 포함됩니다.</value>
   </data>
+  <data name="CannotAddNodeToWorkspace" xml:space="preserve">
+    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
+  </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
     <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
+  </data>
+  <data name="IDSDKErrorMessage" xml:space="preserve">
+    <value>Autodesk Identity Manager가 시스템에 설정되어 있지 않은 것 같습니다. 모든 기능에 대한 전체 액세스 권한을 확보하려면 Autodesk Identity Manager를 사용하여 Autodesk 계정에 로그인하십시오.
+#=https://manage.autodesk.com/products/updates에서 또는 Autodesk Access 통해 Autodesk Identity Manager를 다운로드한 후 설치한 다음 로그인하십시오.</value>
+  </data>
+  <data name="IDSDKErrorMessageTitle" xml:space="preserve">
+    <value>Autodesk Identity Manager 다운로드</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

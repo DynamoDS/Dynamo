@@ -3740,8 +3740,18 @@ Um diese Datei als neue Vorlage zu speichern, speichern Sie sie in einem anderen
   <data name="PackageVersionTooltip" xml:space="preserve">
     <value>Versionen mit .x enthalten alle Versionen in der angegebenen Haupt- oder Nebenversion</value>
   </data>
+  <data name="CannotAddNodeToWorkspace" xml:space="preserve">
+    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
+  </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
     <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
+  </data>
+  <data name="IDSDKErrorMessage" xml:space="preserve">
+    <value>Autodesk Identity Manager ist offenbar nicht auf Ihrem System eingerichtet. Um vollen Zugriff auf alle Funktionen zu haben, melden Sie sich mit Autodesk Identity Manager bei Ihrem Autodesk-Konto an.
+Führen Sie #Download und Installation=https://manage.autodesk.com/products/updates hier oder über Autodesk Access durch, und melden Sie sich dann an.</value>
+  </data>
+  <data name="IDSDKErrorMessageTitle" xml:space="preserve">
+    <value>Autodesk Identity Manager herunterladen</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

@@ -3742,8 +3742,18 @@ Dynamo を再起動してアンインストールを完了します。
   <data name="PackageVersionTooltip" xml:space="preserve">
     <value>.x でマークされたバージョンには、指定されたメジャー リリースまたはマイナー リリースのすべてのバージョンが含まれます</value>
   </data>
+  <data name="CannotAddNodeToWorkspace" xml:space="preserve">
+    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
+  </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
     <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
+  </data>
+  <data name="IDSDKErrorMessage" xml:space="preserve">
+    <value>Autodesk Identity Manager がシステムに設定されていないようです。すべての機能に完全にアクセスするには、Autodesk Identity Manager を使用して Autodesk Account にサインインしてください。
+#ダウンロードとインストール=https://manage.autodesk.com/products/updates をここで行うか、Autodesk Access からサインインしてください。</value>
+  </data>
+  <data name="IDSDKErrorMessageTitle" xml:space="preserve">
+    <value>Autodesk Identity Manager をダウンロードする</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
