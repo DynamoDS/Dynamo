@@ -22,8 +22,6 @@
                     <TextBlock
                         Text="loading..."
                         Foreground="White"
-                        FontStyle="Italic"
-                        FontWeight="Thin"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Center" />
                 </Border>

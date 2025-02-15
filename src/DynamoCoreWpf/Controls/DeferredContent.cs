@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
@@ -47,11 +46,11 @@ namespace Dynamo.Controls
             }
         }
 
-        // new node added
         private void DeferredContent_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             DataContextChanged -= DeferredContent_DataContextChanged;
-            Priority.Enqueue(this, true);
+            // new node added,jump the queue
+            Dispatcher.BeginInvoke(ShowDeferredContent, DispatcherPriority.Render);
         }
 
         public void ShowDeferredContent()
@@ -72,41 +71,30 @@ namespace Dynamo.Controls
 
         private class DeferredContentRenderPriority
         {
+            private bool isRunning = false;
             private Point canvasCenter = default;
-            private CancellationTokenSource cts = null;
-            private bool isRunning => cts?.IsCancellationRequested == false;
             private readonly List<(DeferredContent, DispatcherOperation)> scheduled = [];
             private readonly PriorityQueue<DeferredContent, double> pending =
                 new PriorityQueue<DeferredContent, double>();
 
-            public void Cancel()
-            {
-                if (cts != null)
-                {
-                    cts.Cancel();
-                    cts.Dispose();
-                    cts = null;
-                }
-            }
-
-            public void Enqueue(DeferredContent control, bool topPriority = false)
+            public void Enqueue(DeferredContent control)
             {
                 if (control.DataContext is not NodeViewModel nvm) return;
 
-                var dist = topPriority ? 0 : (canvasCenter - new Point(nvm.X, nvm.Y)).Length;
+                var dist = (canvasCenter - new Point(nvm.X, nvm.Y)).Length;
                 pending.Enqueue(control, dist);
 
                 if (!isRunning)
                 {
-                    cts = new CancellationTokenSource();
-                    control.Dispatcher.BeginInvoke(Run, DispatcherPriority.ContextIdle);
+                    isRunning = true;
+                    control.Dispatcher.BeginInvoke(SchedulePending, DispatcherPriority.ContextIdle);
                 }
             }
 
             public void Focus(double x, double y)
             {
+                isRunning = false;
                 canvasCenter = new Point(x, y);
-                if (isRunning) Cancel();
 
                 var toReschedule = new List<DeferredContent>();
                 if (pending.Count > 0)
@@ -130,15 +118,14 @@ namespace Dynamo.Controls
                 }
             }
 
-            public void Run()
+            public void SchedulePending()
             {
-                while (cts?.IsCancellationRequested == false && pending.TryDequeue(out var control, out _))
+                while (isRunning && pending.TryDequeue(out var control, out _))
                 {
                     scheduled.Add((control, control.Dispatcher.BeginInvoke(control.ShowDeferredContent, DispatcherPriority.Background)));
                 }
 
-                cts?.Dispose();
-                cts = null;
+                isRunning = false;
             }
         }
     }
