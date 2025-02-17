@@ -384,10 +384,10 @@ namespace Dynamo.ViewModels
             var startNode = connector.Start.Owner;
             var endNode = connector.End.Owner;
 
-            foreach (var group in groups)
+            foreach (var group in workspace.Annotations)
             {
                 // Check if both nodes (start and end) are part of the same group
-                if (group.Nodes.Contains(startNode) && group.Nodes.Contains(endNode))
+                if (group.ContainsModel(startNode) && group.ContainsModel(endNode))
                 {
                     // If both nodes are part of the same group, add the pin to that group
                     group.AddToTargetAnnotationModel(model);

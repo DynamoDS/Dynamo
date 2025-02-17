@@ -2715,8 +2715,7 @@ namespace Dynamo.Models
                     //If there is only one model, then deleting that model should delete the group. In that case, do not record
                     //the group for modification. Until we have one model in a group, group should be recorded for modification
                     //otherwise, undo operation cannot get the group back.
-                    if (annotation.Nodes.Count() > 1 &&
-                        annotation.Nodes.Where(x => x.GUID == model.GUID).Any())
+                    if (annotation.Nodes.Count() > 1 && annotation.ContainsModel(model))
                     {
                         CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                     }
@@ -3237,7 +3236,7 @@ namespace Dynamo.Models
                             var nestedGroup = CreateAnnotationModel(
                                 group,
                                 modelLookup
-                                    .Where(x => group.Nodes.Select(y => y.GUID).Contains(x.Key))
+                                    .Where(x => group.ContainsModel(x.Value))
                                     .ToDictionary(x => x.Key, x => x.Value)
                                 );
 

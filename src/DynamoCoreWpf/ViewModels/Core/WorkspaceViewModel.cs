@@ -1173,14 +1173,14 @@ namespace Dynamo.ViewModels
             // Check all the collapsed groups and their sub groups
             foreach (var group in Model.Annotations.Where(x => !x.IsExpanded))
             {
-                if (group.Nodes.Contains(model))
+                if (group.ContainsModel(model))
                 {
                     IsInCollapsedGroup = true;
                     break;
                 }
                 foreach (var nestGroup in group.Nodes.OfType<AnnotationModel>())
                 {
-                    if (nestGroup.Nodes.Contains(model))
+                    if (nestGroup.ContainsModel(model))
                     {
                         IsInCollapsedGroup = true;
                         break;
