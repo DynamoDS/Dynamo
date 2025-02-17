@@ -772,14 +772,35 @@ namespace Dynamo.Graph.Annotations
         /// completely inside that group</param>
         internal void AddToTargetAnnotationModel(ModelBase model, bool checkOverlap = false)
         {
-            var list = this.Nodes.ToList();
-            if (model.GUID == this.GUID) return;
-            if (list.Where(x => x.GUID == model.GUID).Any()) return;
-            if (!CheckModelIsInsideGroup(model, checkOverlap)) return;
-            list.Add(model);
-            this.Nodes = list;
-            if (model is AnnotationModel annotationModel) annotationModel.OnAddedToGroup();
-            this.UpdateBoundaryFromSelection();
+            AddToTargetAnnotationModel([model], checkOverlap);
+        }
+
+        /// <summary>
+        /// This is called when models are added to or deleted from a group.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <param name="checkOverlap"> checkoverlap determines whether the selected model is 
+        /// completely inside that group</param>
+        internal void AddToTargetAnnotationModel(IEnumerable<ModelBase> models, bool checkOverlap = false)
+        {
+            var added = new List<ModelBase>();
+            foreach(var model in models)
+            {
+                if (model.GUID == this.GUID || nodes.ContainsKey(model.GUID)) continue;
+                if (!CheckModelIsInsideGroup(model, checkOverlap)) continue;
+                added.Add(model);
+            }
+
+            if (added.Count == 0) return;
+
+            Nodes = Nodes.Concat(added).ToList();
+
+            foreach(var addedAnnotation in added.OfType<AnnotationModel>())
+            {
+                addedAnnotation.OnAddedToGroup();
+            }
+
+            UpdateBoundaryFromSelection();
             UpdateErrorAndWarningIconVisibility();
         }
 
