@@ -1203,30 +1203,35 @@ namespace Dynamo.ViewModels
         /// </summary>
         public override void Dispose()
         {
-            model.PropertyChanged -= HandleConnectorPropertyChanged;
-
-            model.Start.PropertyChanged -= StartPortModel_PropertyChanged;
-            model.End.PropertyChanged -= EndPortModel_PropertyChanged;
-
-            model.Start.Owner.PropertyChanged -= StartOwner_PropertyChanged;
-            model.End.Owner.PropertyChanged -= EndOwner_PropertyChanged;
-            model.ConnectorPinModels.CollectionChanged -= ConnectorPinModelCollectionChanged;
-
-            workspaceViewModel.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
-            workspaceViewModel.DynamoViewModel.Model.PreferenceSettings.PropertyChanged -= DynamoViewModel_PropertyChanged;
-            if (Nodevm != null)
+            if (model != null)
             {
-                Nodevm.PropertyChanged -= nodeViewModel_PropertyChanged;
+                model.PropertyChanged -= HandleConnectorPropertyChanged;
+
+                model.Start.PropertyChanged -= StartPortModel_PropertyChanged;
+                model.End.PropertyChanged -= EndPortModel_PropertyChanged;
+
+                model.Start.Owner.PropertyChanged -= StartOwner_PropertyChanged;
+                model.End.Owner.PropertyChanged -= EndOwner_PropertyChanged;
+                model.ConnectorPinModels.CollectionChanged -= ConnectorPinModelCollectionChanged;
+
+                // Nodevm and NodeEnd props are found via model
+                if (Nodevm != null)
+                {
+                    Nodevm.PropertyChanged -= nodeViewModel_PropertyChanged;
+                }
+                if (NodeEnd != null)
+                {
+                    NodeEnd.PropertyChanged -= nodeEndViewModel_PropertyChanged;
+                }
             }
-            if (NodeEnd != null)
-            {
-                NodeEnd.PropertyChanged -= nodeEndViewModel_PropertyChanged;
-            }
-            ConnectorPinViewCollection.CollectionChanged -= HandleCollectionChanged;
 
             workspaceViewModel.PropertyChanged -= WorkspaceViewModel_PropertyChanged;
 
-            foreach (var pin in ConnectorPinViewCollection.ToList())
+            workspaceViewModel.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
+            workspaceViewModel.DynamoViewModel.Model.PreferenceSettings.PropertyChanged -= DynamoViewModel_PropertyChanged;
+            ConnectorPinViewCollection.CollectionChanged -= HandleCollectionChanged;
+
+            foreach (var pin in ConnectorPinViewCollection)
             {
                 pin.RequestRedraw -= HandlerRedrawRequest;
                 pin.RequestSelect -= HandleRequestSelected;
