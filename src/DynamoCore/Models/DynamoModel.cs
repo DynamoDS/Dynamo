@@ -2805,13 +2805,9 @@ namespace Dynamo.Models
 
             if (selectedGroup != null)
             {
-                foreach (var model in modelsToAdd)
-                {
-                    CurrentWorkspace.RecordGroupModelBeforeUngroup(selectedGroup);
-                    selectedGroup.AddToTargetAnnotationModel(model);
-                }
+                CurrentWorkspace.RecordGroupModelBeforeUngroup(selectedGroup);
+                selectedGroup.AddToTargetAnnotationModel(modelsToAdd);
             }
-
         }
 
         /// <summary>
@@ -2831,10 +2827,8 @@ namespace Dynamo.Models
 
             // Mark the parent group and groups to add all for undo recorder
             WorkspaceModel.RecordModelsForModification(modelsToModify, CurrentWorkspace.UndoRecorder);
-            foreach (var model in modelsToAdd)
-            {
-                selectedGroup.AddToTargetAnnotationModel(model);
-            }
+
+            selectedGroup.AddToTargetAnnotationModel(modelsToAdd);
         }
 
         internal void DumpLibraryToXml(object parameter)
