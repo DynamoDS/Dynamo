@@ -39,6 +39,7 @@ namespace Dynamo.Wpf.CurveMapper
         private CurveMapperControlPoint gaussianCurveControlPoint1;
         private CurveMapperControlPoint gaussianCurveControlPoint2;
         private CurveMapperControlPoint gaussianCurveControlPoint3;
+        private CurveMapperControlPoint gaussianCurveControlPoint4;
 
         private const double offsetValue = 6;
         private const int gridSize = 10;
@@ -61,7 +62,7 @@ namespace Dynamo.Wpf.CurveMapper
             model.PropertyChanged += NodeModel_PropertyChanged;
             this.Unloaded += Unload;
 
-            if (curveMapperNodeModel.SelectedGraphType == GraphTypes.LinearCurve)
+            if (curveMapperNodeModel.SelectedGraphType == GraphTypes.LinearCurve)  // TODO : IS THIS USED AT ALL?
             {
                 linearCurveControlPoint1 = new CurveMapperControlPoint(
                     curveMapperNodeModel.LinearCurveControlPointData1,
@@ -171,13 +172,15 @@ namespace Dynamo.Wpf.CurveMapper
                     curveMapperNodeModel.PerlinNoiseControlPointData1,
                     curveMapperNodeModel.DynamicCanvasSize,
                     curveMapperNodeModel,
-                    RenderGraph
+                    RenderGraph,
+                    true, false
                 );
                 perlinNoiseCurveControlPoint2 = new CurveMapperControlPoint(
                     curveMapperNodeModel.PerlinNoiseControlPointData2,
                     curveMapperNodeModel.DynamicCanvasSize,
                     curveMapperNodeModel,
-                    RenderGraph
+                    RenderGraph,
+                    true, true
                 );
                 perlinNoiseCurveControlPoint3 = new CurveMapperControlPoint(
                     curveMapperNodeModel.PerlinNoiseControlPointData3,
@@ -238,11 +241,16 @@ namespace Dynamo.Wpf.CurveMapper
                     curveMapperNodeModel.DynamicCanvasSize,
                     curveMapperNodeModel,
                     RenderGraph
+                ); gaussianCurveControlPoint4 = new CurveMapperControlPoint(
+                    curveMapperNodeModel.GaussianCurveControlPointData4,
+                    curveMapperNodeModel.DynamicCanvasSize,
+                    curveMapperNodeModel,
+                    RenderGraph
                 );
-
                 GraphCanvas.Children.Add(gaussianCurveControlPoint1);
                 GraphCanvas.Children.Add(gaussianCurveControlPoint2);
                 GraphCanvas.Children.Add(gaussianCurveControlPoint3);
+                GraphCanvas.Children.Add(gaussianCurveControlPoint4);
             }
 
             RenderGraph();
@@ -472,6 +480,11 @@ namespace Dynamo.Wpf.CurveMapper
                     GraphCanvas.Children.Remove(gaussianCurveControlPoint3);
                     gaussianCurveControlPoint3 = null;
                 }
+                if (gaussianCurveControlPoint4 != null)
+                {
+                    GraphCanvas.Children.Remove(gaussianCurveControlPoint4);
+                    gaussianCurveControlPoint4 = null;
+                }
 
                 // Re-add control points if "Linear Curve" is selected
                 if (curveMapperNodeModel.SelectedGraphType == GraphTypes.LinearCurve)
@@ -582,19 +595,22 @@ namespace Dynamo.Wpf.CurveMapper
                     GraphCanvas.Children.Add(parabolicCurveControlPoint1);
                     GraphCanvas.Children.Add(parabolicCurveControlPoint2);
                 }
+                // Perlin noise curve
                 else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.PerlinNoiseCurve)
                 {
                     perlinNoiseCurveControlPoint1 = new CurveMapperControlPoint(
                         curveMapperNodeModel.PerlinNoiseControlPointData1,
                         curveMapperNodeModel.DynamicCanvasSize,
                         curveMapperNodeModel,
-                        RenderGraph
+                        RenderGraph,
+                        true, false
                     );
                     perlinNoiseCurveControlPoint2 = new CurveMapperControlPoint(
                         curveMapperNodeModel.PerlinNoiseControlPointData2,
                         curveMapperNodeModel.DynamicCanvasSize,
                         curveMapperNodeModel,
-                        RenderGraph
+                        RenderGraph,
+                        true, true
                     );
                     perlinNoiseCurveControlPoint3 = new CurveMapperControlPoint(
                         curveMapperNodeModel.PerlinNoiseControlPointData3,
@@ -607,6 +623,7 @@ namespace Dynamo.Wpf.CurveMapper
                     GraphCanvas.Children.Add(perlinNoiseCurveControlPoint2);
                     GraphCanvas.Children.Add(perlinNoiseCurveControlPoint3);
                 }
+                // Power curve
                 else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.PowerCurve)
                 {
                     powerCurveControlPoint1 = new CurveMapperControlPoint(
@@ -618,6 +635,7 @@ namespace Dynamo.Wpf.CurveMapper
 
                     GraphCanvas.Children.Add(powerCurveControlPoint1);
                 }
+                // Square root curve
                 else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.SquareRootCurve)
                 {
                     squareRootCurveControlPoint1 = new CurveMapperControlPoint(
@@ -636,27 +654,42 @@ namespace Dynamo.Wpf.CurveMapper
                     GraphCanvas.Children.Add(squareRootCurveControlPoint1);
                     GraphCanvas.Children.Add(squareRootCurveControlPoint2);
                 }
+                // Gaussian curve
                 else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.GaussianCurve)
                 {
                     gaussianCurveControlPoint1 = new CurveMapperControlPoint(
                         curveMapperNodeModel.GaussianCurveControlPointData1,
                         curveMapperNodeModel.DynamicCanvasSize,
                         curveMapperNodeModel,
-                        RenderGraph
+                        RenderGraph,
+                        true, true
                     );
                     gaussianCurveControlPoint2 = new CurveMapperControlPoint(
                         curveMapperNodeModel.GaussianCurveControlPointData2,
                         curveMapperNodeModel.DynamicCanvasSize,
                         curveMapperNodeModel,
-                        RenderGraph
+                        RenderGraph,
+                        true, false
                     );
                     gaussianCurveControlPoint3 = new CurveMapperControlPoint(
                         curveMapperNodeModel.GaussianCurveControlPointData3,
                         curveMapperNodeModel.DynamicCanvasSize,
                         curveMapperNodeModel,
-                        RenderGraph
+                        RenderGraph,
+                        true, false
+                    );
+                    gaussianCurveControlPoint4 = new CurveMapperControlPoint(
+                        curveMapperNodeModel.GaussianCurveControlPointData4,
+                        curveMapperNodeModel.DynamicCanvasSize,
+                        curveMapperNodeModel,
+                        RenderGraph,
+                        true,false
                     );
 
+                    GraphCanvas.Children.Add(gaussianCurveControlPoint1);
+                    GraphCanvas.Children.Add(gaussianCurveControlPoint2);
+                    GraphCanvas.Children.Add(gaussianCurveControlPoint3);
+                    GraphCanvas.Children.Add(gaussianCurveControlPoint4);
                 }
                 curveMapperNodeModel.GenerateOutputValues();
                 RenderGraph();
@@ -668,7 +701,42 @@ namespace Dynamo.Wpf.CurveMapper
             {
                 RenderGraph();
             }
+
+            // Handle changes in Gaussian curve control points
+            bool point2Updating = false;
+            if (e.PropertyName == nameof(curveMapperNodeModel.GaussianCurveControlPointData2))
+            {
+                point2Updating = true;
+            }
+
+            if (e.PropertyName == nameof(curveMapperNodeModel.GaussianCurveControlPointData3))
+            {
+                UpdateGaussianControlPoint(gaussianCurveControlPoint3, curveMapperNodeModel.GaussianCurveControlPointData3);
+            }
+            if (e.PropertyName == nameof(curveMapperNodeModel.GaussianCurveControlPointData4))
+            {
+                UpdateGaussianControlPoint(gaussianCurveControlPoint4, curveMapperNodeModel.GaussianCurveControlPointData4);
+            }
         }
+        private void UpdateGaussianControlPoint(UIElement controlPoint, ControlPointData dataPoint)
+        {
+            if (controlPoint != null && dataPoint != null)
+            {
+                double newX = dataPoint.X;
+                double newY = dataPoint.Y;
+                double canvasSize = curveMapperNodeModel.DynamicCanvasSize;
+
+                // Update position
+                Canvas.SetLeft(controlPoint, newX - offsetValue);
+                Canvas.SetTop(controlPoint, newY - offsetValue);
+
+                // Hide if out of bounds
+                controlPoint.Visibility = (newX < 0 || newX > canvasSize || newY < 0 || newY > canvasSize)
+                    ? Visibility.Hidden
+                    : Visibility.Visible;
+            }
+        }
+
         private void Unload(object sender, RoutedEventArgs e)
         {
             this.curveMapperNodeModel.PropertyChanged -= NodeModel_PropertyChanged;

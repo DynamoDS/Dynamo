@@ -424,19 +424,19 @@ namespace CoreNodeModels
             ParabolicCurveControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.1);
             ParabolicCurveControlPointData2 = new ControlPointData(DynamicCanvasSize, DynamicCanvasSize);
             // Perlin noise curve
-            PerlinNoiseControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
+            PerlinNoiseControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.5, 0);
             PerlinNoiseControlPointData2 = new ControlPointData(0, DynamicCanvasSize);
-            PerlinNoiseControlPointData3 = new ControlPointData(DynamicCanvasSize * 0.5, 0);
+            PerlinNoiseControlPointData3 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
             // Power curve
             PowerCurveControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
             // Power curve  
             SquareRootCurveControlPointData1 = new ControlPointData(0, DynamicCanvasSize);
             SquareRootCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
             // Gaussian curve
-            GaussianCurveControlPointData1 = new ControlPointData(0, DynamicCanvasSize * 0.8);
-            GaussianCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
-            GaussianCurveControlPointData3 = new ControlPointData(DynamicCanvasSize * 0.4, DynamicCanvasSize);
-            GaussianCurveControlPointData4 = new ControlPointData(DynamicCanvasSize * 0.8, DynamicCanvasSize);
+            GaussianCurveControlPointData1 = new ControlPointData(0, DynamicCanvasSize * 0.8, "GaussianCurveControlPointData1");
+            GaussianCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5, "GaussianCurveControlPointData2");
+            GaussianCurveControlPointData3 = new ControlPointData(DynamicCanvasSize * 0.4, DynamicCanvasSize, "GaussianCurveControlPointData3");
+            GaussianCurveControlPointData4 = new ControlPointData(DynamicCanvasSize * 0.6, DynamicCanvasSize, "GaussianCurveControlPointData4");
         }
 
         public void GenerateOutputValues()
@@ -487,10 +487,11 @@ namespace CoreNodeModels
                             DynamicCanvasSize
                         );
                         break;
-                    case GraphTypes.PerlinNoiseCurve: // TODO: Review
+                    case GraphTypes.PerlinNoiseCurve:
                         curve = new PerlinNoiseCurve(
                             PerlinNoiseControlPointData1.X, (DynamicCanvasSize - PerlinNoiseControlPointData1.Y),
                             PerlinNoiseControlPointData2.X, (DynamicCanvasSize - PerlinNoiseControlPointData2.Y),
+                            PerlinNoiseControlPointData3.X, (DynamicCanvasSize - PerlinNoiseControlPointData3.Y),
                             DynamicCanvasSize
                         );
                         break;
@@ -500,7 +501,7 @@ namespace CoreNodeModels
                             DynamicCanvasSize
                         );
                         break;
-                    case GraphTypes.SquareRootCurve: // TODO: Review
+                    case GraphTypes.SquareRootCurve:
                         curve = new SquareRootCurve(
                             SquareRootCurveControlPointData1.X, (DynamicCanvasSize - SquareRootCurveControlPointData1.Y),
                             SquareRootCurveControlPointData2.X, (DynamicCanvasSize - SquareRootCurveControlPointData2.Y),
@@ -511,6 +512,8 @@ namespace CoreNodeModels
                         curve = new GaussianCurve(
                             GaussianCurveControlPointData1.X, (DynamicCanvasSize - GaussianCurveControlPointData1.Y),
                             GaussianCurveControlPointData2.X, (DynamicCanvasSize - GaussianCurveControlPointData2.Y),
+                            GaussianCurveControlPointData3.X, (DynamicCanvasSize - GaussianCurveControlPointData3.Y),
+                            GaussianCurveControlPointData4.X, (DynamicCanvasSize - GaussianCurveControlPointData4.Y),
                             DynamicCanvasSize
                         );
                         break;
@@ -524,6 +527,11 @@ namespace CoreNodeModels
                     RenderValuesY = dynamicCurve.GetCurveYValues(PointsCount, true);
                     OutputValuesX = MapValues(dynamicCurve.GetCurveXValues(PointsCount), MinLimitX, MaxLimitX);
                     OutputValuesY = MapValues(dynamicCurve.GetCurveYValues(PointsCount), MinLimitY, MaxLimitY);
+
+
+                    var c1 = GaussianCurveControlPointData2.X;
+                    var c2 = GaussianCurveControlPointData3.X;
+                    var c3 = GaussianCurveControlPointData4.X;
                 }
             }
 
@@ -612,9 +620,9 @@ namespace CoreNodeModels
             }
             else if (SelectedGraphType != GraphTypes.PerlinNoiseCurve)
             {
-                PerlinNoiseControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
+                PerlinNoiseControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.5, 0);
                 PerlinNoiseControlPointData2 = new ControlPointData(0, DynamicCanvasSize);
-                PerlinNoiseControlPointData3 = new ControlPointData(DynamicCanvasSize * 0.5, 0);
+                PerlinNoiseControlPointData3 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
                 RaisePropertyChanged(nameof(PerlinNoiseControlPointData1));
                 RaisePropertyChanged(nameof(PerlinNoiseControlPointData2));
                 RaisePropertyChanged(nameof(PerlinNoiseControlPointData3));
@@ -633,10 +641,10 @@ namespace CoreNodeModels
             }
             else if (SelectedGraphType != GraphTypes.GaussianCurve)
             {
-                GaussianCurveControlPointData1 = new ControlPointData(0, DynamicCanvasSize * 0.8);
-                GaussianCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
-                GaussianCurveControlPointData3 = new ControlPointData(DynamicCanvasSize * 0.4, DynamicCanvasSize);
-                GaussianCurveControlPointData4 = new ControlPointData(DynamicCanvasSize * 0.8, DynamicCanvasSize);
+                GaussianCurveControlPointData1 = new ControlPointData(0, DynamicCanvasSize * 0.8, "GaussianCurveControlPointData1");
+                GaussianCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5, "GaussianCurveControlPointData2");
+                GaussianCurveControlPointData3 = new ControlPointData(DynamicCanvasSize * 0.4, DynamicCanvasSize, "GaussianCurveControlPointData3");
+                GaussianCurveControlPointData4 = new ControlPointData(DynamicCanvasSize * 0.6, DynamicCanvasSize, "GaussianCurveControlPointData4");
                 RaisePropertyChanged(nameof(GaussianCurveControlPointData1));
                 RaisePropertyChanged(nameof(GaussianCurveControlPointData2));
                 RaisePropertyChanged(nameof(GaussianCurveControlPointData3));
@@ -653,6 +661,40 @@ namespace CoreNodeModels
             var attribute = (DescriptionAttribute)Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute));
             return attribute != null ? attribute.Description : value.ToString();
         }
+
+
+
+        // REVIEW THIS : BUG!
+        public void UpdateGaussianCurveControlPoint2(double deltaX)
+        {
+            if (GaussianCurveControlPointData3 != null && GaussianCurveControlPointData4 != null)
+            {
+                GaussianCurveControlPointData3 = new ControlPointData(GaussianCurveControlPointData3.X + deltaX, GaussianCurveControlPointData3.Y);
+                GaussianCurveControlPointData4 = new ControlPointData(GaussianCurveControlPointData4.X + deltaX, GaussianCurveControlPointData4.Y);
+
+                RaisePropertyChanged(nameof(GaussianCurveControlPointData3));
+                RaisePropertyChanged(nameof(GaussianCurveControlPointData4));
+            }
+        }
+        public void UpdateGaussianCurveControlPoint3(double deltaX)
+        {
+            if (GaussianCurveControlPointData4 != null)
+            {
+                GaussianCurveControlPointData4 = new ControlPointData(GaussianCurveControlPointData4.X - deltaX, GaussianCurveControlPointData4.Y, "GaussianCurveControlPointData4");
+
+                RaisePropertyChanged(nameof(GaussianCurveControlPointData4));
+            }
+        }
+        public void UpdateGaussianCurveControlPoint4(double deltaX)
+        {
+            if (GaussianCurveControlPointData3 != null)
+            {
+                GaussianCurveControlPointData3 = new ControlPointData(GaussianCurveControlPointData3.X - deltaX, GaussianCurveControlPointData3.Y, "GaussianCurveControlPointData3");
+
+                RaisePropertyChanged(nameof(GaussianCurveControlPointData3));
+            }
+        }
+
 
         #region BuildAst
 
@@ -766,11 +808,13 @@ namespace CoreNodeModels
     {
         public double X { get; set; }
         public double Y { get; set; }
+        public string Tag { get; set; }
 
-        public ControlPointData(double x, double y)
+        public ControlPointData(double x, double y, string tag = "")
         {
             X = x;
             Y = y;
+            Tag = tag;
         }
 
         public void ScaleToNewCanvasSize(double oldCanvasSize, double newCanvasSize)
