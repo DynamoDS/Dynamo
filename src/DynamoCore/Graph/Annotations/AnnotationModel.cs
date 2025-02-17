@@ -580,31 +580,29 @@ namespace Dynamo.Graph.Annotations
                 return;
             }
 
-            List<NodeModel> nodes = Nodes
-                .OfType<NodeModel>()
-                .ToList();
-
-            List<AnnotationModel> groups = Nodes
-                .OfType<AnnotationModel>()
-                .ToList();
-                
-            // If anything in this group is in an error state, we display an error icon.
-            if (nodes.Any(x => x.State == ElementState.Error) ||
-                groups.Any(x => x.GroupState == ElementState.Error))
+            var hasWarning = false;
+            foreach(var item in Nodes)
             {
-                GroupState = ElementState.Error;
-                return;
+                var state = item is NodeModel node ? node.State
+                    : item is AnnotationModel annotation ? annotation.groupState
+                    : ElementState.Active;
+
+                if (state == ElementState.Error)
+                {
+                    // If anything in this group is in an error state, we display an error icon.
+                    // Since this takes precedence over warning, we can safely exit here
+                    GroupState = ElementState.Error;
+                    return;
+                }
+                else if (state == ElementState.Warning)
+                {
+                    // Set warning flag, don't break out of loop in case a future item is in an error state
+                    hasWarning = true;
+                }
             }
 
             // If anything in this group is in a warning state, we display a warning icon.
-            if (nodes.Any(x => x.State == ElementState.Warning) ||
-                groups.Any(x => x.GroupState == ElementState.Warning))
-            {
-                GroupState = ElementState.Warning;
-                return;
-            }
-
-            GroupState = ElementState.Active;
+            GroupState = hasWarning ? ElementState.Warning : ElementState.Active;
         }
 
         /// <summary>
