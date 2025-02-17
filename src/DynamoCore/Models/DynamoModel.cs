@@ -2758,7 +2758,7 @@ namespace Dynamo.Models
             {
                 foreach (var annotation in annotations)
                 {
-                    if (annotation.Nodes.Any(x => x.GUID == model.GUID))
+                    if (annotation.ContainsModel(model))
                     {
                         var list = annotation.Nodes.ToList();
 
@@ -2772,7 +2772,6 @@ namespace Dynamo.Models
                                     annotation.MarkPinAsRemoved(pinModel);
                                 }
                                 annotation.Nodes = list;
-                                annotation.UpdateBoundaryFromSelection();                               
                             }
                         }
                         else

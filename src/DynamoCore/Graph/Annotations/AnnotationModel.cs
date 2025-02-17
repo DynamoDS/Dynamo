@@ -733,7 +733,7 @@ namespace Dynamo.Graph.Annotations
                         var result = mhelper.ReadGuid("ModelGuid", new Guid());
                         var model = ModelBaseRequested != null
                             ? ModelBaseRequested(result)
-                            : Nodes.FirstOrDefault(x => x.GUID == result);
+                            : (nodes.TryGetValue(result, out var n) ? n : null);
 
                         if (model != null)
                         {
@@ -776,7 +776,7 @@ namespace Dynamo.Graph.Annotations
         /// <summary>
         /// This is called when models are added to or deleted from a group.
         /// </summary>
-        /// <param name="model">The model.</param>
+        /// <param name="models">The models to add.</param>
         /// <param name="checkOverlap"> checkoverlap determines whether the selected model is 
         /// completely inside that group</param>
         internal void AddToTargetAnnotationModel(IEnumerable<ModelBase> models, bool checkOverlap = false)
@@ -784,14 +784,17 @@ namespace Dynamo.Graph.Annotations
             var added = new List<ModelBase>();
             foreach(var model in models)
             {
-                if (model.GUID == this.GUID || nodes.ContainsKey(model.GUID)) continue;
-                if (!CheckModelIsInsideGroup(model, checkOverlap)) continue;
+                // skip adding group to itself or any already existing 
+                if (model.GUID == GUID || nodes.ContainsKey(model.GUID)) continue;
+                // skip adding if checking for overlap when no overlap
+                if (checkOverlap && !Rect.Contains(model.Rect)) continue;
+
                 added.Add(model);
             }
 
             if (added.Count == 0) return;
 
-            Nodes = Nodes.Concat(added).ToList();
+            ReplaceNodes(Nodes.Concat(added).ToList());
 
             foreach(var addedAnnotation in added.OfType<AnnotationModel>())
             {
@@ -810,17 +813,6 @@ namespace Dynamo.Graph.Annotations
             {
                 annotationModel.OnRemovedFromGroup();
             }
-        }
-
-        private bool CheckModelIsInsideGroup(ModelBase model, bool checkOverlap)
-        {
-            if (!checkOverlap) return true;
-            var modelRect = model.Rect;
-            if (this.Rect.Contains(modelRect))
-            {
-                return true;
-            }
-            return false;
         }
 
         #endregion
@@ -874,6 +866,15 @@ namespace Dynamo.Graph.Annotations
             if (modelBase is null) return false;
 
             return nodes.TryGetValue(modelBase.GUID, out var current) && modelBase == current;
+        }
+
+        /// <summary>
+        /// Checks if the provided modelbase guid belongs to this group.
+        /// </summary>
+        /// <param name="modelBaseGuid">modelbase guid to check if belongs to this group</param>
+        internal bool ContainsGuid(Guid modelBaseGuid)
+        {
+            return nodes.ContainsKey(modelBaseGuid);
         }
 
         /// <summary>
