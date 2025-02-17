@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -79,6 +79,8 @@ namespace DSCore
             return @string.Length;
         }
 
+        private static readonly Regex newlineRegex = new Regex("(?<!\r)\n", RegexOptions.Compiled);
+
         /// <summary>
         ///     Divides a single string into a list of strings, with divisions
         ///     determined by the given separator strings.
@@ -92,7 +94,7 @@ namespace DSCore
         public static string[] Split(string @string, params string[] separators)
         {
             separators = separators.Select(s => s == "\n" ? Environment.NewLine : s).ToArray(); // converts all \n in separater array to Environment Newline (i.e. \r\n)
-            @string = Regex.Replace(@string, "(?<!\r)\n", Environment.NewLine); // converts all \n in String str to Environment.NewLine (i.e. '\r\n')
+            @string = newlineRegex.Replace(@string, Environment.NewLine); // converts all \n in String str to Environment.NewLine (i.e. '\r\n')
 
             return separators.Contains("")
                 ? @string.ToCharArray().Select(char.ToString).ToArray()

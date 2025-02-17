@@ -236,6 +236,8 @@ namespace Dynamo.DocumentationBrowser
             return sb.ToString();
         }
 
+        private static readonly Regex newLineRegex = new Regex(@"\r\n?|\n", RegexOptions.Compiled);
+
         private static string CreateNodeInfo(OpenNodeAnnotationEventArgs e)
         {
             StringBuilder sb = new StringBuilder();
@@ -245,7 +247,7 @@ namespace Dynamo.DocumentationBrowser
                 sb.AppendLine($"<p>{e.OriginalName}</p>");
             }
             sb.AppendLine($"<h2>{Resources.NodeDocumentationDescription}</h2>");
-            sb.AppendLine($"<p>{Regex.Replace(e.Description, @"\r\n?|\n", "<br>")}</p>");
+            sb.AppendLine($"<p>{newLineRegex.Replace(e.Description, "<br>")}</p>");
             
             return sb.ToString();
         }

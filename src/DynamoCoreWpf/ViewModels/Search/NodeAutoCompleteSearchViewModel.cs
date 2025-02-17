@@ -539,12 +539,12 @@ namespace Dynamo.ViewModels
             return new NodeModelTypeId(typeId);
         }
 
+        private static readonly Regex variableInputPortRegex = new Regex(@"\d+$", RegexOptions.Compiled);
+
         // Remove the digits at the end of the portname for variable input node
         private string ParseVariableInputPortName(string portName)
         {
-            string pattern = @"\d+$";
-            Regex rgx = new Regex(pattern);
-            return rgx.Replace(portName, string.Empty);
+            return variableInputPortRegex.Replace(portName, string.Empty);
         }
 
         // Get the host name from the enum list.

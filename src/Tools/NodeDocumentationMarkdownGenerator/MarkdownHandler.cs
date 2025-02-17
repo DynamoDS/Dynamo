@@ -283,6 +283,8 @@ namespace NodeDocumentationMarkdownGenerator
             return matchingEntry;
         }
 
+        private static readonly Regex whitespaceRegex = new Regex(@"\s+", RegexOptions.Compiled);
+
         /// <summary>
         /// Trys to find a DictionaryEntry that matches the input MdFileInfo while applying LayoutElement from a LayoutSpecification
         /// by recursively checking LayoutElements from the LayoutSpecification until a match is found.
@@ -356,8 +358,8 @@ namespace NodeDocumentationMarkdownGenerator
                                 // we need this as the Dictionary specify overloaded nodes with args like this:
                                 // Max (int1, int2) - adding unnecessary white space between node name and args.
                                 // the MdFileInfo will specify the same like this : Max(int1, int2).
-                                (Regex.Replace(x.Name, @"\s+", "") == Regex.Replace(info.NodeName, @"\s+", "") ||
-                                Regex.Replace(x.Name, @"\s+", "") == Regex.Replace(nodeNameWithoutPrefix, @"\s+", "")));
+                                (whitespaceRegex.Replace(x.Name, "") == whitespaceRegex.Replace(info.NodeName, "") ||
+                                whitespaceRegex.Replace(x.Name, "") == whitespaceRegex.Replace(nodeNameWithoutPrefix, "")));
 
                         if (matchingEntries.Count() > 1)
                         {

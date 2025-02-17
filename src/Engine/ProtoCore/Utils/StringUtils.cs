@@ -86,6 +86,8 @@ namespace ProtoCore.Utils
             return String.IsNullOrWhiteSpace(text) || text.All(c => c == ' ' || c == '\t');
         }
 
+        private static readonly Regex breakLinesRegex = new Regex("\r\n|\r|\n", RegexOptions.Compiled);
+
         /// <summary>
         /// Following suggestions from stackoverflow,
         /// A reliable method for breaking text into lines
@@ -96,7 +98,7 @@ namespace ProtoCore.Utils
         /// <returns> text lines </returns>
         public static string[] BreakTextIntoLines(string text)
         {
-            return Regex.Split(text, "\r\n|\r|\n");
+            return breakLinesRegex.Split(text);
         }
 
         /// <summary>

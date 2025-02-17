@@ -11,6 +11,8 @@ namespace Dynamo.PackageManager.UI
     /// </summary>
     public partial class NumericUpDownControl : UserControl
     {
+        private static readonly Regex numberMatchRegex = new Regex(@"^(?:0|[1-9]\d*)$", RegexOptions.Compiled);
+
         #region Private properties
         private Regex _numMatch;
         private bool mouseClickSelection = true; 
@@ -74,7 +76,7 @@ namespace Dynamo.PackageManager.UI
             InitializeComponent();
 
             // Allows positive whole numbers
-            _numMatch = new Regex(@"^(?:0|[1-9]\d*)$");
+            _numMatch = numberMatchRegex;
         }
 
         #region UI utility functions

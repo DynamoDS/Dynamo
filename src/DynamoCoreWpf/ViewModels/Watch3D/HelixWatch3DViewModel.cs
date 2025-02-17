@@ -2898,6 +2898,8 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             return selectedNodes.SelectMany(n => n.OutPorts.Select(p => n.GetAstIdentifierForOutputIndex(p.Index).Value));
         }
 
+        private static readonly Regex outIdRegex = new Regex("_out[0-9]", RegexOptions.Compiled);
+
         /// <summary>
         /// Find all output identifiers for all custom nodes in the provided workspace. 
         /// </summary>
@@ -2912,7 +2914,7 @@ namespace Dynamo.Wpf.ViewModels.Watch3D
             }
 
             // Remove the output identifier appended to the custom node outputs.
-            var rgx = new Regex("_out[0-9]");
+            var rgx = outIdRegex;
 
             var customNodes = workspace.Nodes.Where(n => n is Function);
             var idents = new List<string>();

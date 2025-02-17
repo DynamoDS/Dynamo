@@ -19,7 +19,7 @@ namespace Dynamo.Engine
         /// recognize this "if" syntax.
         /// </summary>
         private const string ifCond = @"(if\s*)\(\s*(.*?)\s*\)$";
-        private static readonly Regex ifRgx = new Regex(ifCond, RegexOptions.IgnoreCase);
+        private static readonly Regex ifRgx = new Regex(ifCond, RegexOptions.IgnoreCase | RegexOptions.Compiled);
 
 
         internal string ConvertFormulaToDS(string formula)
