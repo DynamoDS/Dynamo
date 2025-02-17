@@ -322,6 +322,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node..
+        /// </summary>
+        public static string CannotAddNodeToWorkspace {
+            get {
+                return ResourceManager.GetString("CannotAddNodeToWorkspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cannot Download Package.
         /// </summary>
         public static string CannotDownloadPackageMessageBoxTitle {
@@ -3728,6 +3737,25 @@ namespace Dynamo.Wpf.Properties {
         public static string HideWiresPopupMenuItem {
             get {
                 return ResourceManager.GetString("HideWiresPopupMenuItem", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to It seems like Autodesk Identity Manager is not set up on your system. To ensure full access to all features, please sign in to your Autodesk account using Autodesk Identity Manager.
+        ///#Download and install=https://manage.autodesk.com/products/updates it here or through Autodesk Access, then sign in..
+        /// </summary>
+        public static string IDSDKErrorMessage {
+            get {
+                return ResourceManager.GetString("IDSDKErrorMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Download Autodesk Identity Manager.
+        /// </summary>
+        public static string IDSDKErrorMessageTitle {
+            get {
+                return ResourceManager.GetString("IDSDKErrorMessageTitle", resourceCulture);
             }
         }
         

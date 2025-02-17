@@ -70,15 +70,16 @@ namespace PythonNodeModels
         /// <returns>Assembly Name</returns>
         internal override AssemblyName GetNameOfAssemblyReferencedByNode()
         {
-            AssemblyName assemblyName = null;
-
-            var pyEng = PythonEngineManager.Instance.AvailableEngines.Where(x => x.Name.Equals(this.EngineName)).FirstOrDefault();
-            if (pyEng != null)
+            if (NameOfAssemblyReferencedByNode == null)
             {
-                assemblyName = AssemblyName.GetAssemblyName(pyEng.GetType().Assembly.Location);
+                var pyEng = PythonEngineManager.Instance.AvailableEngines.Where(x => x.Name.Equals(this.EngineName)).FirstOrDefault();
+                if (pyEng != null)
+                {
+                    NameOfAssemblyReferencedByNode = pyEng.GetType().Assembly.GetName();
+                }
             }
 
-            return assemblyName;
+            return NameOfAssemblyReferencedByNode;
         }
 
         /// <summary>

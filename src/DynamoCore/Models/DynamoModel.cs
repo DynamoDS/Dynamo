@@ -454,6 +454,10 @@ namespace Dynamo.Models
 
             AnalyticsService.ShutDown();
 
+            LuceneSearch.LuceneUtilityNodeSearch = null;
+            LuceneSearch.LuceneUtilityNodeAutocomplete = null;
+            LuceneSearch.LuceneUtilityPackageManager = null;
+
             State = DynamoModelState.NotStarted;
             OnShutdownCompleted(); // Notify possible event handlers.
         }
@@ -1272,22 +1276,35 @@ namespace Dynamo.Models
             // This dictionary gets redistributed into a dictionary keyed by the workspace id.
 
             var workspaceOrphanMap = new Dictionary<Guid, List<string>>();
+            var nodeToWorkspaceMap = new Dictionary<Guid, WorkspaceModel>();
 
-            foreach (var ws in Workspaces.OfType<HomeWorkspaceModel>())
+            foreach (var maybeWs in Workspaces)
             {
+                foreach (var node in maybeWs.Nodes)
+                {
+                    nodeToWorkspaceMap[node.GUID] = maybeWs;
+                }
+
+                if (maybeWs is not HomeWorkspaceModel ws)
+                {
+                    continue;
+                }
+
                 // Get the orphaned serializables to this workspace
-                var wsOrphans = ws.GetOrphanedSerializablesAndClearHistoricalTraceData().ToList();
+                var wsOrphans = ws.GetOrphanedSerializablesAndClearHistoricalTraceData();
 
                 if (!wsOrphans.Any())
-                    continue;
-
-                if (!workspaceOrphanMap.ContainsKey(ws.Guid))
                 {
-                    workspaceOrphanMap.Add(ws.Guid, wsOrphans);
+                    continue;
+                }
+
+                if (workspaceOrphanMap.TryGetValue(ws.Guid, out var workspaceOrphans))
+                {
+                    workspaceOrphans.AddRange(wsOrphans);
                 }
                 else
                 {
-                    workspaceOrphanMap[ws.Guid].AddRange(wsOrphans);
+                    workspaceOrphanMap.Add(ws.Guid, wsOrphans);
                 }
             }
 
@@ -1299,23 +1316,20 @@ namespace Dynamo.Models
 
                 // TODO: MAGN-7314
                 // Find the owning workspace for a node.
-                var nodeSpace =
-                    Workspaces.FirstOrDefault(
-                        ws =>
-                            ws.Nodes.FirstOrDefault(n => n.GUID == nodeGuid)
-                                != null);
-
-                if (nodeSpace == null) continue;
+                if (!nodeToWorkspaceMap.TryGetValue(nodeGuid, out var nodeSpace))
+                {
+                    continue;
+                }
 
                 // Add the node's orphaned serializables to the workspace
                 // orphan map.
-                if (workspaceOrphanMap.ContainsKey(nodeSpace.Guid))
+                if (workspaceOrphanMap.TryGetValue(nodeSpace.Guid, out var workspaceOrphans))
                 {
-                    workspaceOrphanMap[nodeSpace.Guid].AddRange(kvp.Value);
+                    workspaceOrphans.AddRange(kvp.Value);
                 }
                 else
                 {
-                    workspaceOrphanMap.Add(nodeSpace.Guid, kvp.Value);
+                    workspaceOrphanMap.Add(nodeSpace.Guid, kvp.Value.ToList());
                 }
             }
 
@@ -1588,7 +1602,6 @@ namespace Dynamo.Models
 
             var cnbNode = new CodeBlockNodeSearchElement(cbnData, LibraryServices);
             SearchModel?.Add(cnbNode);
-            LuceneUtility.AddNodeTypeToSearchIndex(cnbNode, iDoc);
 
             var symbolSearchElement = new NodeModelSearchElement(symbolData)
             {
@@ -1607,10 +1620,8 @@ namespace Dynamo.Models
             };
 
             SearchModel?.Add(symbolSearchElement);
-            LuceneUtility.AddNodeTypeToSearchIndex(symbolSearchElement, iDoc);
-
             SearchModel?.Add(outputSearchElement);
-            LuceneUtility.AddNodeTypeToSearchIndex(outputSearchElement, iDoc);
+            LuceneUtility.AddNodeTypeToSearchIndexBulk([cnbNode, symbolSearchElement, outputSearchElement], iDoc);
 
         }
 
@@ -1751,6 +1762,7 @@ namespace Dynamo.Models
         private void LoadNodeModels(List<TypeLoadData> nodes, bool isPackageMember)
         {
             var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
+            List<NodeSearchElement> nodeSearchElements = [];
             foreach (var type in nodes)
             {
                 // Protect ourselves from exceptions thrown by malformed third party nodes.
@@ -1765,7 +1777,7 @@ namespace Dynamo.Models
                     // TODO: get search element some other way
                     if (ele != null)
                     {
-                        LuceneUtility.AddNodeTypeToSearchIndex(ele, iDoc);
+                        nodeSearchElements.Add(ele);
                     }
                 }
                 catch (Exception e)
@@ -1773,6 +1785,7 @@ namespace Dynamo.Models
                     Logger.Log(e);
                 }
             }
+            LuceneUtility.AddNodeTypeToSearchIndexBulk(nodeSearchElements, iDoc);
         }
 
         private void InitializePreferences()
@@ -3474,26 +3487,20 @@ namespace Dynamo.Models
         internal void AddZeroTouchNodesToSearch(IEnumerable<FunctionGroup> functionGroups)
         {
             var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
+            List<NodeSearchElement> nodes = new();
             foreach (var funcGroup in functionGroups)
-                AddZeroTouchNodeToSearch(funcGroup, iDoc);
-        }
-
-        private void AddZeroTouchNodeToSearch(FunctionGroup funcGroup, Document iDoc)
-        {
-            foreach (var functionDescriptor in funcGroup.Functions)
             {
-                AddZeroTouchNodeToSearch(functionDescriptor, iDoc);
+                foreach (var functionDescriptor in funcGroup.Functions)
+                {
+                    if (functionDescriptor.IsVisibleInLibrary)
+                    {
+                        var ele = new ZeroTouchSearchElement(functionDescriptor);
+                        SearchModel?.Add(ele);
+                        nodes.Add(ele);
+                    }
+                }
             }
-        }
-
-        private void AddZeroTouchNodeToSearch(FunctionDescriptor functionDescriptor, Document iDoc)
-        {
-            if (functionDescriptor.IsVisibleInLibrary)
-            {
-                var ele = new ZeroTouchSearchElement(functionDescriptor);
-                SearchModel?.Add(ele);
-                LuceneUtility.AddNodeTypeToSearchIndex(ele, iDoc);
-            }
+            LuceneUtility.AddNodeTypeToSearchIndexBulk(nodes, iDoc);
         }
 
         /// <summary>
