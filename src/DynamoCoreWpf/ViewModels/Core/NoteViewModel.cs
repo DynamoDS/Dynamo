@@ -136,9 +136,7 @@ namespace Dynamo.ViewModels
                     return null;
                 }
 
-                return WorkspaceViewModel.Nodes
-                    .Where(x => x.Id == Model.PinnedNode.GUID)
-                    .FirstOrDefault();
+                return WorkspaceViewModel.FindNode(Model.PinnedNode.GUID);
             }
         }
 

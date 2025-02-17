@@ -285,11 +285,17 @@ namespace Dynamo.ViewModels
 
         [JsonIgnore]
         public CompositeCollection WorkspaceElements { get; } = new CompositeCollection();
+
         [JsonIgnore]
         public ObservableCollection<ConnectorViewModel> Connectors { get; } = new ObservableCollection<ConnectorViewModel>();
 
+        private Dictionary<Guid, ConnectorViewModel> connectorDict = new();
+
         [JsonProperty("NodeViews")]
         public ObservableCollection<NodeViewModel> Nodes { get; } = new ObservableCollection<NodeViewModel>();
+
+        private Dictionary<Guid, NodeViewModel> nodeDict = new();
+
         // Do not serialize notes, they will be converted to annotations during serialization
         [JsonIgnore]
         public ObservableCollection<NoteViewModel> Notes { get; } = new ObservableCollection<NoteViewModel>();
@@ -713,9 +719,11 @@ namespace Dynamo.ViewModels
             Connectors.ToList().ForEach(connectorViewmModel => connectorViewmModel.Dispose());
             Annotations.ToList().ForEach(AnnotationViewModel => AnnotationViewModel.Dispose());
             Nodes.Clear();
+            nodeDict.Clear();
             Notes.Clear();
             Pins.Clear();
             Connectors.Clear();
+            connectorDict.Clear();
             Errors.Clear();
             Annotations.Clear();
             InCanvasSearchViewModel?.Dispose();
@@ -860,15 +868,18 @@ namespace Dynamo.ViewModels
 
         void Connectors_ConnectorAdded(ConnectorModel c)
         {
-            var viewModel = new ConnectorViewModel(this, c);
-            if (Connectors.All(x => x.ConnectorModel != c))
+            if (!connectorDict.ContainsKey(c.GUID))
+            {
+                // Only create the view model if needed. This prevents event handler leaks
+                var viewModel = new ConnectorViewModel(this, c);
+                connectorDict[c.GUID] = viewModel;
                 Connectors.Add(viewModel);
+            }
         }
 
         void Connectors_ConnectorDeleted(ConnectorModel c)
         {
-            var connector = Connectors.FirstOrDefault(x => x.ConnectorModel == c);
-            if (connector != null)
+            if (connectorDict.Remove(c.GUID, out var connector))
             {
                 Connectors.Remove(connector);
                 connector.Dispose();
@@ -930,6 +941,7 @@ namespace Dynamo.ViewModels
                     nodeViewModel.Dispose();
                 }
                 Nodes.Clear();
+                nodeDict.Clear();
             }
             Errors.Clear();
 
@@ -948,7 +960,7 @@ namespace Dynamo.ViewModels
             NodeViewModel nodeViewModel;
             lock (Nodes)
             {
-                nodeViewModel = Nodes.First(x => x.NodeLogic == node);
+                nodeDict.Remove(node.GUID, out nodeViewModel);
                 if (nodeViewModel.ErrorBubble != null)
                     Errors.Remove(nodeViewModel.ErrorBubble);
                 Nodes.Remove(nodeViewModel);
@@ -970,6 +982,7 @@ namespace Dynamo.ViewModels
             lock (Nodes)
             {
                 Nodes.Add(nodeViewModel);
+                nodeDict[node.GUID] = nodeViewModel;
             }
             if (nodeViewModel.ErrorBubble != null)
                 Errors.Add(nodeViewModel.ErrorBubble);
@@ -977,6 +990,20 @@ namespace Dynamo.ViewModels
             PostNodeChangeActions();
 
             SetStopNodeZoomAnimationBehavior(zoomAnimationThresholdFeatureFlagVal);
+        }
+
+        internal NodeViewModel? FindNode(Guid nodeGuid)
+        {
+            return nodeDict.TryGetValue(nodeGuid, out var nodeModel)
+                ? nodeModel
+                : null;
+        }
+
+        internal ConnectorViewModel? FindConnector(Guid connectorGuid)
+        {
+            return connectorDict.TryGetValue(connectorGuid, out var connectorModel)
+                ? connectorModel
+                : null;
         }
 
         void PostNodeChangeActions()
@@ -1897,7 +1924,7 @@ namespace Dynamo.ViewModels
         internal ViewModelBase GetViewModelInternal(Guid modelGuid)
         {
             ViewModelBase foundModel = (Connectors.FirstOrDefault(c => c.ConnectorModel.GUID == modelGuid)
-                ?? Nodes.FirstOrDefault(node => node.NodeModel.GUID == modelGuid) as ViewModelBase)
+                ?? FindNode(modelGuid) as ViewModelBase)
                 ?? (Notes.FirstOrDefault(note => note.Model.GUID == modelGuid)
                 ?? Annotations.FirstOrDefault(annotation => annotation.AnnotationModel.GUID == modelGuid) as ViewModelBase);
 
