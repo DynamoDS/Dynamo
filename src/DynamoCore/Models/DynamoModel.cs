@@ -1276,22 +1276,35 @@ namespace Dynamo.Models
             // This dictionary gets redistributed into a dictionary keyed by the workspace id.
 
             var workspaceOrphanMap = new Dictionary<Guid, List<string>>();
+            var nodeToWorkspaceMap = new Dictionary<Guid, WorkspaceModel>();
 
-            foreach (var ws in Workspaces.OfType<HomeWorkspaceModel>())
+            foreach (var maybeWs in Workspaces)
             {
+                foreach (var node in maybeWs.Nodes)
+                {
+                    nodeToWorkspaceMap[node.GUID] = maybeWs;
+                }
+
+                if (maybeWs is not HomeWorkspaceModel ws)
+                {
+                    continue;
+                }
+
                 // Get the orphaned serializables to this workspace
-                var wsOrphans = ws.GetOrphanedSerializablesAndClearHistoricalTraceData().ToList();
+                var wsOrphans = ws.GetOrphanedSerializablesAndClearHistoricalTraceData();
 
                 if (!wsOrphans.Any())
-                    continue;
-
-                if (!workspaceOrphanMap.ContainsKey(ws.Guid))
                 {
-                    workspaceOrphanMap.Add(ws.Guid, wsOrphans);
+                    continue;
+                }
+
+                if (workspaceOrphanMap.TryGetValue(ws.Guid, out var workspaceOrphans))
+                {
+                    workspaceOrphans.AddRange(wsOrphans);
                 }
                 else
                 {
-                    workspaceOrphanMap[ws.Guid].AddRange(wsOrphans);
+                    workspaceOrphanMap.Add(ws.Guid, wsOrphans);
                 }
             }
 
@@ -1303,23 +1316,20 @@ namespace Dynamo.Models
 
                 // TODO: MAGN-7314
                 // Find the owning workspace for a node.
-                var nodeSpace =
-                    Workspaces.FirstOrDefault(
-                        ws =>
-                            ws.Nodes.FirstOrDefault(n => n.GUID == nodeGuid)
-                                != null);
-
-                if (nodeSpace == null) continue;
+                if (!nodeToWorkspaceMap.TryGetValue(nodeGuid, out var nodeSpace))
+                {
+                    continue;
+                }
 
                 // Add the node's orphaned serializables to the workspace
                 // orphan map.
-                if (workspaceOrphanMap.ContainsKey(nodeSpace.Guid))
+                if (workspaceOrphanMap.TryGetValue(nodeSpace.Guid, out var workspaceOrphans))
                 {
-                    workspaceOrphanMap[nodeSpace.Guid].AddRange(kvp.Value);
+                    workspaceOrphans.AddRange(kvp.Value);
                 }
                 else
                 {
-                    workspaceOrphanMap.Add(nodeSpace.Guid, kvp.Value);
+                    workspaceOrphanMap.Add(nodeSpace.Guid, kvp.Value.ToList());
                 }
             }
 

@@ -1223,18 +1223,17 @@ namespace Dynamo.Graph.Nodes
             RaisesModificationEvents = true;
         }
 
+
+        internal protected AssemblyName NameOfAssemblyReferencedByNode = null;
+
         /// <summary>
         /// The method returns the assembly name from which the node originated.
         /// </summary>
         /// <returns>Assembly Name</returns>
         internal virtual AssemblyName GetNameOfAssemblyReferencedByNode()
         {
-            AssemblyName assemblyName = null;
-            
-            var assembly = this.GetType().Assembly;
-            assemblyName = AssemblyName.GetAssemblyName(assembly.Location);
-            
-            return assemblyName;
+            NameOfAssemblyReferencedByNode ??= GetType().Assembly.GetName();
+            return NameOfAssemblyReferencedByNode;
         }
 
         /// <summary>

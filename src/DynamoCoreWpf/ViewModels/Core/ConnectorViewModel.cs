@@ -1229,12 +1229,16 @@ namespace Dynamo.ViewModels
 
             workspaceViewModel.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
             workspaceViewModel.DynamoViewModel.Model.PreferenceSettings.PropertyChanged -= DynamoViewModel_PropertyChanged;
-            ConnectorPinViewCollection.CollectionChanged -= HandleCollectionChanged;
 
-            foreach (var pin in ConnectorPinViewCollection)
+            if (ConnectorPinViewCollection != null)
             {
-                pin.RequestRedraw -= HandlerRedrawRequest;
-                pin.RequestSelect -= HandleRequestSelected;
+                ConnectorPinViewCollection.CollectionChanged -= HandleCollectionChanged;
+
+                foreach (var pin in ConnectorPinViewCollection.ToList())
+                {
+                    pin.RequestRedraw -= HandlerRedrawRequest;
+                    pin.RequestSelect -= HandleRequestSelected;
+                }
             }
 
             this.PropertyChanged -= ConnectorViewModelPropertyChanged;
@@ -1456,17 +1460,27 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void Redraw()
         {
-            if (this.ConnectorModel?.End != null && ConnectorPinViewCollection?.Count > 0)
+            try
             {
-                RedrawBezierManyPoints();
-            }
-            else if (this.ConnectorModel?.End != null)
-            {
-                this.Redraw(this.ConnectorModel.End.Center);
-            }
+                if (this.ConnectorModel != null && ConnectorPinViewCollection != null)
+                {
+                    if (this.ConnectorModel?.End != null && ConnectorPinViewCollection?.Count > 0)
+                    {
+                        RedrawBezierManyPoints();
+                    }
+                    else if (this.ConnectorModel?.End != null)
+                    {
+                        this.Redraw(this.ConnectorModel.End.Center);
+                    }
+                }
 
-            this.SetCollapsedByNodeViewModel();
-            RaisePropertyChanged(nameof(ZIndex));
+                this.SetCollapsedByNodeViewModel();
+                RaisePropertyChanged(nameof(ZIndex));
+            }
+            catch (Exception ex)
+            {
+                workspaceViewModel.DynamoViewModel.Model.Logger.Log("Error when redrawing the connector: " + ex.StackTrace);
+            }
         }
 
         /// <summary>
