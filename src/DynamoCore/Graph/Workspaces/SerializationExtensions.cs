@@ -1,9 +1,12 @@
 using System;
-using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 using Dynamo.Engine;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Serialization;
 
 namespace Dynamo.Graph.Workspaces
 {
@@ -12,6 +15,19 @@ namespace Dynamo.Graph.Workspaces
     /// </summary>
     public static class SerializationExtensions
     {
+        private const string NewtonsoftTypeName = "$type";
+        private const string ServerTypeName = "ConcreteType";
+
+        private const string IntegerSlider32Bit = "CoreNodeModels.Input.IntegerSlider";
+        private const string IntegerSlider64Bit = "CoreNodeModels.Input.IntegerSlider64Bit";
+
+        private const int DefaultDynamoFileSize = 4096;
+
+        private static readonly Regex serverTypeRegex = new Regex(ServerTypeName, RegexOptions.Compiled);
+        private static readonly Regex newtonsoftTypeRegex = new Regex(Regex.Escape(NewtonsoftTypeName), RegexOptions.Compiled);
+
+        internal static SerializationBinder Binder { get; } = new SerializationBinder();
+
         /// <summary>
         /// Save a Workspace to json.
         /// </summary>
@@ -47,7 +63,83 @@ namespace Dynamo.Graph.Workspaces
 
             result = SerializeIntegerSliderAs32BitType(result);
 
-            return result;
+        internal static void SerializeJObject(JObject workspaceJObject, TextWriter textWriter)
+        {
+            using (var writer = new TypeReplacerWriter(textWriter))
+            {
+                workspaceJObject.WriteTo(writer);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="TypeReplacerWriter"/> replaces outgoing property name tokens in the raw json string that
+        /// match <see cref="NewtonsoftTypeName"/> with <see cref="ServerTypeName"/> so that the json can be
+        /// serialized correctly.
+        /// </summary>
+        /// <param name="textWriter">The text writer to write the serialized json to</param>
+        private class TypeReplacerWriter(TextWriter textWriter) : JsonTextWriter(textWriter)
+        {
+            public override void WritePropertyName(string name, bool escape)
+            {
+                base.WritePropertyName(name == NewtonsoftTypeName ? ServerTypeName : name, escape);
+            }
+
+            public override void WritePropertyName(string name)
+            {
+                base.WritePropertyName(name == NewtonsoftTypeName ? ServerTypeName : name);
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="TypeReplacerReader"/> replaces incoming property name tokens in the raw json string that
+        /// match <see cref="ServerTypeName"/> with <see cref="NewtonsoftTypeName"/> so that the json can be
+        /// deserialized correctly.
+        /// </summary>
+        /// <param name="reader">The text reader to read the json string from</param>
+        internal class TypeReplacerReader(TextReader reader) : JsonTextReader(reader)
+        {
+            public override bool Read()
+            {
+                var hasToken = base.Read();
+
+                if (hasToken && base.TokenType == JsonToken.PropertyName && base.Value != null && base.Value.Equals(ServerTypeName))
+                {
+                    SetToken(JsonToken.PropertyName, NewtonsoftTypeName);
+                }
+
+                return hasToken;
+            }
+        }
+
+        /// <summary>
+        /// The <see cref="SerializationBinder"/> is used to used to replace the given json type with another while
+        /// serializing or deserializing. In our case, it is used for the integer sliders (32 vs. 64) bit.
+        /// If other types need to be switched out in the future, this is more flexible than doing string
+        /// replacements on the raw json.
+        /// </summary>
+        internal class SerializationBinder : ISerializationBinder
+        {
+            private static readonly DefaultSerializationBinder _defaultBinder = new();
+
+            public void BindToName(Type serializedType, out string assemblyName, out string typeName)
+            {
+                assemblyName = serializedType.Assembly.FullName;
+                typeName = serializedType.FullName;
+
+                // serialize the serializedType (64 bit) to 32 bit
+                if (typeName == IntegerSlider64Bit)
+                {
+                    typeName = IntegerSlider32Bit;
+                }
+            }
+
+            public Type BindToType(string assemblyName, string typeName)
+            {
+                // deserialize the json type string (32 bit) to 64 bit
+                return typeName == IntegerSlider32Bit
+                    ? _defaultBinder.BindToType(assemblyName, IntegerSlider64Bit)
+                    : _defaultBinder.BindToType(assemblyName, typeName);
+            }
         }
 
         /// <summary>
@@ -60,20 +152,9 @@ namespace Dynamo.Graph.Workspaces
         /// <returns></returns>
         internal static string ReplaceTypeDeclarations(string json, bool fromServer = false)
         {
-            var result = json;
-
-            if (fromServer)
-            {
-                var rgx2 = new Regex(@"ConcreteType");
-                result = rgx2.Replace(result, "$type");
-            }
-            else
-            {
-                var rgx2 = new Regex(@"\$type");
-                result = rgx2.Replace(result, "ConcreteType");
-            }
-
-            return result;
+            return fromServer
+                ? serverTypeRegex.Replace(json, NewtonsoftTypeName)
+                : newtonsoftTypeRegex.Replace(json, ServerTypeName);
         }
 
         [Obsolete("Remove method after obsoleting IntegerSlider and replacing it with IntegerSlider64Bit")]
