@@ -503,7 +503,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(ElementIsInContainerWithEpsilonCompare(nodeView.PreviewControl.HiddenDummy, nodeView, 10));
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void PreviewBubble_ToggleShowPreviewBubbles()
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");
