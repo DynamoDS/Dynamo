@@ -34,34 +34,44 @@ namespace Dynamo.Graph.Workspaces
         /// <returns>A string representing the serialized WorkspaceModel.</returns>
         internal static string ToJson(this WorkspaceModel workspace, EngineController engine)
         {
+            var jobject = ToJsonJObject(workspace, engine);
+
+            var sb = new StringBuilder(DefaultDynamoFileSize);
+            using var tw = new StringWriter(sb);
+            SerializeJObject(jobject, tw);
+
+            return sb.ToString();
+        }
+
+        internal static JObject ToJsonJObject(this WorkspaceModel workspace, EngineController engine)
+        {
             var logger = engine != null ? engine.AsLogger() : null;
 
-            var settings = new JsonSerializerSettings
+            var serializer = new JsonSerializer
             {
-                Error = (sender, args) =>
-                {
-                    args.ErrorContext.Handled = true;
-                    Console.WriteLine(args.ErrorContext.Error);
-                },
+                SerializationBinder = Binder,
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 TypeNameHandling = TypeNameHandling.Auto,
                 Formatting = Formatting.Indented,
                 Culture = CultureInfo.InvariantCulture,
-                Converters = new List<JsonConverter>{
-                        new ConnectorConverter(logger),                        
-                        new WorkspaceWriteConverter(engine),
-                        new DummyNodeWriteConverter(),
-                        new TypedParameterConverter(),
-                        new NodeLibraryDependencyConverter(logger),
-                        new LinterManagerConverter(logger)
-                    },
-                ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
+                ReferenceResolver = new IdReferenceResolver(),
+                NullValueHandling = NullValueHandling.Include,
+            };
+            serializer.Converters.Add(new ConnectorConverter(logger));
+            serializer.Converters.Add(new WorkspaceWriteConverter(engine));
+            serializer.Converters.Add(new DummyNodeWriteConverter());
+            serializer.Converters.Add(new TypedParameterConverter());
+            serializer.Converters.Add(new NodeLibraryDependencyConverter(logger));
+            serializer.Converters.Add(new LinterManagerConverter(logger));
+
+            serializer.Error += (sender, args) =>
+            {
+                args.ErrorContext.Handled = true;
+                Console.WriteLine(args.ErrorContext.Error);
             };
 
-            var json = JsonConvert.SerializeObject(workspace, settings);
-            var result = ReplaceTypeDeclarations(json);
-
-            result = SerializeIntegerSliderAs32BitType(result);
+            return JObject.FromObject(workspace, serializer);
+        }
 
         internal static void SerializeJObject(JObject workspaceJObject, TextWriter textWriter)
         {
