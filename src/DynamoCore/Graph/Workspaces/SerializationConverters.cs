@@ -117,27 +117,27 @@ namespace Dynamo.Graph.Workspaces
         {
             NodeModel node = null;
 
-            String typeName = String.Empty;
-            String functionName = String.Empty;
-            String assemblyName = String.Empty;
+            Type type = null;
+            var functionName = string.Empty;
 
             var obj = JObject.Load(reader);
-            Type type = null;
+            var rawTypeName = obj["$type"].Value<string>();
+            Debug.Assert(rawTypeName != null);
+
+            var rawTypeParts = rawTypeName.Split(',');
+            var typeName = rawTypeParts[0];
+            // we get the assembly name from the type string for the node model nodes. 
+            var assemblyName = rawTypeParts.Length > 1 ? rawTypeParts[1].Trim() : string.Empty;
 
             try
             {
-               type = Type.GetType(obj["$type"].Value<string>());
-               typeName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
+                // use the native Newtonsoft DefaultSerializationBinder to resolve types.
+                type = SerializationExtensions.Binder.BindToType(assemblyName, typeName);
                 
                 if (typeName.Equals("Dynamo.Graph.Nodes.ZeroTouch.DSFunction"))
                 {
                     // If it is a zero touch node, then get the whole function name including the namespace.
                     functionName = obj["FunctionSignature"].Value<string>().Split('@').FirstOrDefault().Trim();
-                }
-                // we get the assembly name from the type string for the node model nodes. 
-                else
-                {
-                    assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
                 }
             }
             catch(Exception e)
@@ -151,16 +151,12 @@ namespace Dynamo.Graph.Workspaces
             // not be an issue during normal dynamo use but if it is we can enable this code.
             if(type == null && this.isTestMode == true)
             {
-                List<Assembly> resultList;
-
                 // This assemblyName does not usually contain version information...
-                assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
-                if (assemblyName != null)
+                if (!string.IsNullOrWhiteSpace(assemblyName))
                 {
-                    if(this.loadedAssemblies.TryGetValue(assemblyName, out resultList))
+                    if (loadedAssemblies.TryGetValue(assemblyName, out var resultList))
                     {
-                        var matchingTypes = resultList.Select(x => x.GetType(typeName)).ToList();
-                        type =  matchingTypes.FirstOrDefault();
+                        type = resultList.Select(x => x.GetType(typeName)).FirstOrDefault();
                     }
                 }
             }
@@ -169,30 +165,20 @@ namespace Dynamo.Graph.Workspaces
             if (type == null)
             {
                 // Attempt to resolve the type using `AlsoKnownAs`
-                var unresolvedName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
-                Type newType;
-                nodeFactory.ResolveType(unresolvedName, out newType);
-
-                // If resolved update the type
-                if (newType != null)
+                if (nodeFactory.ResolveType(typeName, out var newType))
                 {
+                    // If resolved update the type
                     type = newType;
                 }
             }
 
             // If the id is not a guid, makes a guid based on the id of the node
             var guid = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
-            
-            var replication = obj["Replication"].Value<string>();
            
-            var inPorts = obj["Inputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
-            var outPorts = obj["Outputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
-
-            var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
-            string assemblyLocation = objectType.Assembly.Location;
+            var inPorts = obj["Inputs"].Select(t => t.ToObject<PortModel>()).ToArray();
+            var outPorts = obj["Outputs"].Select(t => t.ToObject<PortModel>()).ToArray();
 
             bool remapPorts = true;
-
             if (type == null)
             {
                 // If type is still null at this point return a dummy node
@@ -283,11 +269,13 @@ namespace Dynamo.Graph.Workspaces
 
             if (remapPorts)
             {
+                var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
                 RemapPorts(node, inPorts, outPorts, resolver, manager.AsLogger());
             }
                
 
             // Cannot set Lacing directly as property is protected
+            var replication = obj["Replication"].Value<string>();
             node.UpdateValue(new UpdateValueParams("ArgumentLacing", replication));
             node.GUID = guid;
 
