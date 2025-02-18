@@ -149,8 +149,6 @@ namespace Dynamo.Views
             ViewModel.Model.CurrentOffsetChanged -= vm_CurrentOffsetChanged;
             DynamoSelection.Instance.Selection.CollectionChanged -= OnSelectionCollectionChanged;
             infiniteGridView.DetachFromZoomBorder(zoomBorder);
-
-            NodeView.ResetPreviewControlDelay();
         }
 
         /// <summary>

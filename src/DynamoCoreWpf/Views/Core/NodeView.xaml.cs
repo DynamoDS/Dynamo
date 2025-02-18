@@ -72,13 +72,6 @@ namespace Dynamo.Controls
                 viewModel.OnMouseLeave();
         }
 
-        /// <summary>
-        /// This ensures that a preview control is initialized only when it is absolutely
-        /// needed. It is static so that it can be shared for all node views, instead of
-        /// each node having its own debouncer with additional overhead.
-        /// </summary>
-        private static ActionDebouncer delayPreviewControl = null;
-
         internal PreviewControl PreviewControl
         {
             get
@@ -150,21 +143,7 @@ namespace Dynamo.Controls
             // Always set old ZIndex to the last value, even if mouse is not over the node.
             oldZIndex = NodeViewModel.StaticZIndex;
 
-            if (delayPreviewControl == null)
-            {
-                delayPreviewControl = new ActionDebouncer(null);
-            }
-
-            delayPreviewControl.Debounce(300, DelayPreviewControlAction);
-        }
-
-        /// <summary>
-        /// Used to unload and dereference any stored node view preview data and events
-        /// </summary>
-        public static void ResetPreviewControlDelay()
-        {
-            delayPreviewControl?.Dispose();
-            delayPreviewControl = null;
+            viewModel.WorkspaceViewModel.DelayNodePreviewControl.Debounce(300, DelayPreviewControlAction);
         }
 
         private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)
@@ -581,7 +560,7 @@ namespace Dynamo.Controls
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
             ViewModel.ZIndex = oldZIndex;
-            delayPreviewControl.Cancel();
+            viewModel.WorkspaceViewModel.DelayNodePreviewControl.Cancel();
 
             // The preview hasn't been instantiated yet, we should stop here 
             if (previewControl == null) return;
