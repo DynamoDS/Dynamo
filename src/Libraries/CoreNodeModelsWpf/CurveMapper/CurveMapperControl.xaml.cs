@@ -1,4 +1,5 @@
 using CoreNodeModels;
+using Lucene.Net.Search;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -62,197 +63,6 @@ namespace Dynamo.Wpf.CurveMapper
             model.PropertyChanged += NodeModel_PropertyChanged;
             this.Unloaded += Unload;
 
-            if (curveMapperNodeModel.SelectedGraphType == GraphTypes.LinearCurve)  // TODO : IS THIS USED AT ALL?
-            {
-                linearCurveControlPoint1 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.LinearCurveControlPointData1,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph
-                );
-                linearCurveControlPoint2 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.LinearCurveControlPointData2,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph
-                );
-
-                GraphCanvas.Children.Add(linearCurveControlPoint1);
-                GraphCanvas.Children.Add(linearCurveControlPoint2);
-            }
-            else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.BezierCurve)
-            {
-                bezierCurveControlPoint1 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.BezierCurveControlPointData1,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph
-                );
-                bezierCurveControlPoint2 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.BezierCurveControlPointData2,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph
-                );
-                bezierCurveControlPoint3 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.BezierCurveControlPointData3,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph
-                );
-                bezierCurveControlPoint4 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.BezierCurveControlPointData4,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph
-                );
-
-                GraphCanvas.Children.Add(bezierCurveControlPoint1);
-                GraphCanvas.Children.Add(bezierCurveControlPoint2);
-                GraphCanvas.Children.Add(bezierCurveControlPoint3);
-                GraphCanvas.Children.Add(bezierCurveControlPoint4);
-            }
-            else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.SineWave)
-            {
-                sineWaveControlPoint1 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.SineWaveControlPointData1,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph
-                );
-                sineWaveControlPoint2 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.SineWaveControlPointData2,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph 
-                );
-
-                GraphCanvas.Children.Add(sineWaveControlPoint1);
-                GraphCanvas.Children.Add(sineWaveControlPoint2);
-            }
-            else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.CosineWave)
-            {
-                cosineWaveControlPoint1 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.CosineWaveControlPointData1,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph
-                );
-                cosineWaveControlPoint2 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.CosineWaveControlPointData2,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph
-                );
-
-                GraphCanvas.Children.Add(cosineWaveControlPoint1);
-                GraphCanvas.Children.Add(cosineWaveControlPoint2);
-            }
-            else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.ParabolicCurve)
-            {
-                parabolicCurveControlPoint1 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.ParabolicCurveControlPointData1,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph
-                );
-                parabolicCurveControlPoint2 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.ParabolicCurveControlPointData2,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph
-                );
-
-                GraphCanvas.Children.Add(parabolicCurveControlPoint1);
-                GraphCanvas.Children.Add(parabolicCurveControlPoint2);
-            }
-            else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.PerlinNoiseCurve)
-            {
-                perlinNoiseCurveControlPoint1 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.PerlinNoiseControlPointData1,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph,
-                    true, false
-                );
-                perlinNoiseCurveControlPoint2 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.PerlinNoiseControlPointData2,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph,
-                    true, true
-                );
-                perlinNoiseCurveControlPoint3 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.PerlinNoiseControlPointData3,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph
-                );
-
-                GraphCanvas.Children.Add(perlinNoiseCurveControlPoint1);
-                GraphCanvas.Children.Add(perlinNoiseCurveControlPoint2);
-                GraphCanvas.Children.Add(perlinNoiseCurveControlPoint3);
-            }
-            else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.PowerCurve)
-            {
-                powerCurveControlPoint1 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.PowerCurveControlPointData1,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph
-                );
-
-                GraphCanvas.Children.Add(powerCurveControlPoint1);
-            }
-            else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.SquareRootCurve)
-            {
-                squareRootCurveControlPoint1 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.SquareRootCurveControlPointData1,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph
-                );
-                squareRootCurveControlPoint2 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.SquareRootCurveControlPointData2,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph
-                );
-
-                GraphCanvas.Children.Add(squareRootCurveControlPoint1);
-                GraphCanvas.Children.Add(squareRootCurveControlPoint2);
-            }
-            else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.GaussianCurve)
-            {
-                gaussianCurveControlPoint1 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.GaussianCurveControlPointData1,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph
-                );
-                gaussianCurveControlPoint2 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.GaussianCurveControlPointData2,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph
-                );
-                gaussianCurveControlPoint3 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.GaussianCurveControlPointData3,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph
-                ); gaussianCurveControlPoint4 = new CurveMapperControlPoint(
-                    curveMapperNodeModel.GaussianCurveControlPointData4,
-                    curveMapperNodeModel.DynamicCanvasSize,
-                    curveMapperNodeModel,
-                    RenderGraph
-                );
-                GraphCanvas.Children.Add(gaussianCurveControlPoint1);
-                GraphCanvas.Children.Add(gaussianCurveControlPoint2);
-                GraphCanvas.Children.Add(gaussianCurveControlPoint3);
-                GraphCanvas.Children.Add(gaussianCurveControlPoint4);
-            }
-
             RenderGraph();
             DrawGrid();
         }
@@ -273,16 +83,54 @@ namespace Dynamo.Wpf.CurveMapper
                 // Only render the curve on valid selection
                 if (curveMapperNodeModel.SelectedGraphType != GraphTypes.Empty)
                 {
-                    var path = CurveRenderer.RenderCurve(
+                    var paths = CurveRenderer.RenderCurve(
                         curveMapperNodeModel.RenderValuesX,
                         curveMapperNodeModel.RenderValuesY,
                         curveMapperNodeModel.DynamicCanvasSize
                     );
 
-                    if (path != null)
+                    if (paths != null)
                     {
-                        GraphCanvas.Children.Add(path);
+                        foreach (var path in paths)
+                        {
+                            GraphCanvas.Children.Add(path);
+                        }                        
                     }
+                }
+
+                // Render control line on Bezier curve
+                if (curveMapperNodeModel.SelectedGraphType == GraphTypes.BezierCurve)
+                {
+                    var controlLine1 = CurveRenderer.RenderCurve(
+                        new List<double> {
+                            curveMapperNodeModel.BezierCurveControlPointData1.X,
+                            curveMapperNodeModel.BezierCurveControlPointData3.X
+                        },
+                        new List<double> {
+                            curveMapperNodeModel.DynamicCanvasSize - curveMapperNodeModel.BezierCurveControlPointData1.Y,
+                            curveMapperNodeModel.DynamicCanvasSize - curveMapperNodeModel.BezierCurveControlPointData3.Y
+                        },
+                        curveMapperNodeModel.DynamicCanvasSize,
+                        true
+                    );
+                    var controlLine2 = CurveRenderer.RenderCurve(
+                        new List<double> {
+                            curveMapperNodeModel.BezierCurveControlPointData2.X,
+                            curveMapperNodeModel.BezierCurveControlPointData4.X
+                        },
+                        new List<double> {
+                            curveMapperNodeModel.DynamicCanvasSize - curveMapperNodeModel.BezierCurveControlPointData2.Y,
+                            curveMapperNodeModel.DynamicCanvasSize - curveMapperNodeModel.BezierCurveControlPointData4.Y
+                        },
+                        curveMapperNodeModel.DynamicCanvasSize,
+                        true
+                    );
+
+                    var cl1 = controlLine1[0];
+                    var cl2 = controlLine2[0];
+
+                    GraphCanvas.Children.Add(cl1);
+                    GraphCanvas.Children.Add(cl2);
                 }
             });
         }
@@ -293,197 +141,76 @@ namespace Dynamo.Wpf.CurveMapper
             {
                 double newSize = curveMapperNodeModel.DynamicCanvasSize;
 
-                // Adjust control points to the new canvas size TODO : RATIONALIZE
-                if (linearCurveControlPoint1 != null)
+                // Dictionary to map UI control points to their corresponding data
+                var controlPointMap = new Dictionary<UIElement, ControlPointData>();
+
+                AddToDictionary(controlPointMap, linearCurveControlPoint1, curveMapperNodeModel.LinearCurveControlPointData1);
+                AddToDictionary(controlPointMap, linearCurveControlPoint2, curveMapperNodeModel.LinearCurveControlPointData2);
+                AddToDictionary(controlPointMap, bezierCurveControlPoint1, curveMapperNodeModel.BezierCurveControlPointData1);
+                AddToDictionary(controlPointMap, bezierCurveControlPoint2, curveMapperNodeModel.BezierCurveControlPointData2);
+                AddToDictionary(controlPointMap, bezierCurveControlPoint3, curveMapperNodeModel.BezierCurveControlPointData3);
+                AddToDictionary(controlPointMap, bezierCurveControlPoint4, curveMapperNodeModel.BezierCurveControlPointData4);
+                AddToDictionary(controlPointMap, sineWaveControlPoint1, curveMapperNodeModel.SineWaveControlPointData1);
+                AddToDictionary(controlPointMap, sineWaveControlPoint2, curveMapperNodeModel.SineWaveControlPointData2);
+                AddToDictionary(controlPointMap, cosineWaveControlPoint1, curveMapperNodeModel.CosineWaveControlPointData1);
+                AddToDictionary(controlPointMap, cosineWaveControlPoint2, curveMapperNodeModel.CosineWaveControlPointData2);
+                AddToDictionary(controlPointMap, parabolicCurveControlPoint1, curveMapperNodeModel.ParabolicCurveControlPointData1);
+                AddToDictionary(controlPointMap, parabolicCurveControlPoint2, curveMapperNodeModel.ParabolicCurveControlPointData2);
+                AddToDictionary(controlPointMap, perlinNoiseCurveControlPoint1, curveMapperNodeModel.PerlinNoiseControlPointData1);
+                AddToDictionary(controlPointMap, perlinNoiseCurveControlPoint2, curveMapperNodeModel.PerlinNoiseControlPointData2);
+                AddToDictionary(controlPointMap, perlinNoiseCurveControlPoint3, curveMapperNodeModel.PerlinNoiseControlPointData3);
+                AddToDictionary(controlPointMap, powerCurveControlPoint1, curveMapperNodeModel.PowerCurveControlPointData1);
+                AddToDictionary(controlPointMap, squareRootCurveControlPoint1, curveMapperNodeModel.SquareRootCurveControlPointData1);
+                AddToDictionary(controlPointMap, squareRootCurveControlPoint2, curveMapperNodeModel.SquareRootCurveControlPointData2);
+                AddToDictionary(controlPointMap, gaussianCurveControlPoint1, curveMapperNodeModel.GaussianCurveControlPointData1);
+                AddToDictionary(controlPointMap, gaussianCurveControlPoint2, curveMapperNodeModel.GaussianCurveControlPointData2);
+                AddToDictionary(controlPointMap, gaussianCurveControlPoint3, curveMapperNodeModel.GaussianCurveControlPointData3);
+                AddToDictionary(controlPointMap, gaussianCurveControlPoint4, curveMapperNodeModel.GaussianCurveControlPointData4);
+
+                // Iterate over all control points and update their positions
+                foreach (var entry in controlPointMap)
                 {
-                    double newX1 = (curveMapperNodeModel.LinearCurveControlPointData1.X / newSize) * newSize;
-                    double newY1 = ((curveMapperNodeModel.DynamicCanvasSize - curveMapperNodeModel.LinearCurveControlPointData1.Y) / newSize) * newSize;
-
-                    Canvas.SetLeft(linearCurveControlPoint1, newX1 - offsetValue);
-                    Canvas.SetTop(linearCurveControlPoint1, newSize - newY1 - offsetValue);
-                }
-                if (linearCurveControlPoint2 != null)
-                {
-                    double newX2 = (curveMapperNodeModel.LinearCurveControlPointData2.X / newSize) * newSize;
-                    double newY2 = ((curveMapperNodeModel.DynamicCanvasSize - curveMapperNodeModel.LinearCurveControlPointData2.Y) / newSize) * newSize;
-
-                    Canvas.SetLeft(linearCurveControlPoint2, newX2 - offsetValue);
-                    Canvas.SetTop(linearCurveControlPoint2, newSize - newY2 - offsetValue);
-                }
-
-                if (sineWaveControlPoint1 != null)
-                {
-                    double newX1 = (curveMapperNodeModel.SineWaveControlPointData1.X / newSize) * newSize;
-                    double newY1 = ((curveMapperNodeModel.DynamicCanvasSize - curveMapperNodeModel.SineWaveControlPointData1.Y) / newSize) * newSize;
-
-                    Canvas.SetLeft(sineWaveControlPoint1, newX1 - offsetValue);
-                    Canvas.SetTop(sineWaveControlPoint1, newSize - newY1 - offsetValue);
-                }
-                if (sineWaveControlPoint2 != null)
-                {
-                    double newX2 = (curveMapperNodeModel.SineWaveControlPointData2.X / newSize) * newSize;
-                    double newY2 = ((curveMapperNodeModel.DynamicCanvasSize - curveMapperNodeModel.SineWaveControlPointData2.Y) / newSize) * newSize;
-
-                    Canvas.SetLeft(sineWaveControlPoint2, newX2 - offsetValue);
-                    Canvas.SetTop(sineWaveControlPoint2, newSize - newY2 - offsetValue);
-                }
-
-                if (cosineWaveControlPoint1 != null)
-                {
-                    double newX1 = (curveMapperNodeModel.CosineWaveControlPointData1.X / newSize) * newSize;
-                    double newY1 = ((curveMapperNodeModel.DynamicCanvasSize - curveMapperNodeModel.CosineWaveControlPointData1.Y) / newSize) * newSize;
-
-                    Canvas.SetLeft(cosineWaveControlPoint1, newX1 - offsetValue);
-                    Canvas.SetTop(cosineWaveControlPoint1, newSize - newY1 - offsetValue);
-                }
-                if (cosineWaveControlPoint2 != null)
-                {
-                    double newX2 = (curveMapperNodeModel.CosineWaveControlPointData2.X / newSize) * newSize;
-                    double newY2 = ((curveMapperNodeModel.DynamicCanvasSize - curveMapperNodeModel.CosineWaveControlPointData2.Y) / newSize) * newSize;
-
-                    Canvas.SetLeft(cosineWaveControlPoint2, newX2 - offsetValue);
-                    Canvas.SetTop(cosineWaveControlPoint2, newSize - newY2 - offsetValue);
-                }
-
-                if (parabolicCurveControlPoint1 != null)
-                {
-                    double newX1 = (curveMapperNodeModel.ParabolicCurveControlPointData1.X / newSize) * newSize;
-                    double newY1 = ((curveMapperNodeModel.DynamicCanvasSize - curveMapperNodeModel.ParabolicCurveControlPointData1.Y) / newSize) * newSize;
-
-                    Canvas.SetLeft(parabolicCurveControlPoint1, newX1 - offsetValue);
-                    Canvas.SetTop(parabolicCurveControlPoint1, newSize - newY1 - offsetValue);
-                }
-                if (parabolicCurveControlPoint2 != null)
-                {
-                    double newX2 = (curveMapperNodeModel.ParabolicCurveControlPointData2.X / newSize) * newSize;
-                    double newY2 = ((curveMapperNodeModel.DynamicCanvasSize - curveMapperNodeModel.ParabolicCurveControlPointData2.Y) / newSize) * newSize;
-
-                    Canvas.SetLeft(parabolicCurveControlPoint2, newX2 - offsetValue);
-                    Canvas.SetTop(parabolicCurveControlPoint2, newSize - newY2 - offsetValue);
+                    UpdateControlPointPosition(entry.Key, entry.Value, newSize);
                 }
             }
 
             if (e.PropertyName == nameof(curveMapperNodeModel.SelectedGraphType))
             {
-                // Remove existing control points TODO: RATIONALIZE
-                // Linear curve
-                if (linearCurveControlPoint1 != null)
+                // Dictionary to map UI control points to their corresponding data
+                var controlPoints = new Dictionary<string, (UIElement Control, ControlPointData Data)>
                 {
-                    GraphCanvas.Children.Remove(linearCurveControlPoint1);
-                    linearCurveControlPoint1 = null;
-                }
-                if (linearCurveControlPoint2 != null)
+                    { "LinearCurve1", (linearCurveControlPoint1, curveMapperNodeModel.LinearCurveControlPointData1) },
+                    { "LinearCurve2", (linearCurveControlPoint2, curveMapperNodeModel.LinearCurveControlPointData2) },
+                    { "BezierCurve1", (bezierCurveControlPoint1, curveMapperNodeModel.BezierCurveControlPointData1) },
+                    { "BezierCurve2", (bezierCurveControlPoint2, curveMapperNodeModel.BezierCurveControlPointData2) },
+                    { "BezierCurve3", (bezierCurveControlPoint3, curveMapperNodeModel.BezierCurveControlPointData3) },
+                    { "BezierCurve4", (bezierCurveControlPoint4, curveMapperNodeModel.BezierCurveControlPointData4) },
+                    { "SineWave1", (sineWaveControlPoint1, curveMapperNodeModel.SineWaveControlPointData1) },
+                    { "SineWave2", (sineWaveControlPoint2, curveMapperNodeModel.SineWaveControlPointData2) },
+                    { "CosineWave1", (cosineWaveControlPoint1, curveMapperNodeModel.CosineWaveControlPointData1) },
+                    { "CosineWave2", (cosineWaveControlPoint2, curveMapperNodeModel.CosineWaveControlPointData2) },
+                    { "Parabolic1", (parabolicCurveControlPoint1, curveMapperNodeModel.ParabolicCurveControlPointData1) },
+                    { "Parabolic2", (parabolicCurveControlPoint2, curveMapperNodeModel.ParabolicCurveControlPointData2) },
+                    { "PerlinNoise1", (perlinNoiseCurveControlPoint1, curveMapperNodeModel.PerlinNoiseControlPointData1) },
+                    { "PerlinNoise2", (perlinNoiseCurveControlPoint2, curveMapperNodeModel.PerlinNoiseControlPointData2) },
+                    { "PerlinNoise3", (perlinNoiseCurveControlPoint3, curveMapperNodeModel.PerlinNoiseControlPointData3) },
+                    { "PowerCurve", (powerCurveControlPoint1, curveMapperNodeModel.PowerCurveControlPointData1) },
+                    { "SquareRoot1", (squareRootCurveControlPoint1, curveMapperNodeModel.SquareRootCurveControlPointData1) },
+                    { "SquareRoot2", (squareRootCurveControlPoint2, curveMapperNodeModel.SquareRootCurveControlPointData2) },
+                    { "Gaussian1", (gaussianCurveControlPoint1, curveMapperNodeModel.GaussianCurveControlPointData1) },
+                    { "Gaussian2", (gaussianCurveControlPoint2, curveMapperNodeModel.GaussianCurveControlPointData2) },
+                    { "Gaussian3", (gaussianCurveControlPoint3, curveMapperNodeModel.GaussianCurveControlPointData3) },
+                    { "Gaussian4", (gaussianCurveControlPoint4, curveMapperNodeModel.GaussianCurveControlPointData4) }
+                };
+
+                // Remove existing control points
+                foreach (var entry in controlPoints)
                 {
-                    GraphCanvas.Children.Remove(linearCurveControlPoint2);
-                    linearCurveControlPoint2 = null;
-                }
-                // Bezier curve
-                if (bezierCurveControlPoint1 != null)
-                {
-                    GraphCanvas.Children.Remove(bezierCurveControlPoint1);
-                    bezierCurveControlPoint1 = null;
-                }
-                if (bezierCurveControlPoint2 != null)
-                {
-                    GraphCanvas.Children.Remove(bezierCurveControlPoint2);
-                    bezierCurveControlPoint2 = null;
-                }
-                if (bezierCurveControlPoint3 != null)
-                {
-                    GraphCanvas.Children.Remove(bezierCurveControlPoint3);
-                    bezierCurveControlPoint3 = null;
-                }
-                if (bezierCurveControlPoint4 != null)
-                {
-                    GraphCanvas.Children.Remove(bezierCurveControlPoint4);
-                    bezierCurveControlPoint4 = null;
-                }
-                // Sine wave
-                if (sineWaveControlPoint1 != null)
-                {
-                    GraphCanvas.Children.Remove(sineWaveControlPoint1);
-                    sineWaveControlPoint1 = null;
-                }
-                if (sineWaveControlPoint2 != null)
-                {
-                    GraphCanvas.Children.Remove(sineWaveControlPoint2);
-                    sineWaveControlPoint2 = null;
-                }
-                // Cosine wave
-                if (cosineWaveControlPoint1 != null)
-                {
-                    GraphCanvas.Children.Remove(cosineWaveControlPoint1);
-                    cosineWaveControlPoint1 = null;
-                }
-                if (cosineWaveControlPoint2 != null)
-                {
-                    GraphCanvas.Children.Remove(cosineWaveControlPoint2);
-                    cosineWaveControlPoint2 = null;
-                }
-                // Parabolic curve
-                if (parabolicCurveControlPoint1 != null)
-                {
-                    GraphCanvas.Children.Remove(parabolicCurveControlPoint1);
-                    parabolicCurveControlPoint1 = null;
-                }
-                if (parabolicCurveControlPoint2 != null)
-                {
-                    GraphCanvas.Children.Remove(parabolicCurveControlPoint2);
-                    parabolicCurveControlPoint2 = null;
-                }
-                // Perlin noise curve
-                if (perlinNoiseCurveControlPoint1 != null)
-                {
-                    GraphCanvas.Children.Remove(perlinNoiseCurveControlPoint1);
-                    perlinNoiseCurveControlPoint1 = null;
-                }
-                if (perlinNoiseCurveControlPoint2 != null)
-                {
-                    GraphCanvas.Children.Remove(perlinNoiseCurveControlPoint2);
-                    perlinNoiseCurveControlPoint2 = null;
-                }
-                if (perlinNoiseCurveControlPoint3 != null)
-                {
-                    GraphCanvas.Children.Remove(perlinNoiseCurveControlPoint3);
-                    perlinNoiseCurveControlPoint3 = null;
-                }
-                // Power curve
-                if (powerCurveControlPoint1 != null)
-                {
-                    GraphCanvas.Children.Remove(powerCurveControlPoint1);
-                    powerCurveControlPoint1 = null;
-                }                
-                // Square root curve
-                if (squareRootCurveControlPoint1 != null)
-                {
-                    GraphCanvas.Children.Remove(squareRootCurveControlPoint1);
-                    squareRootCurveControlPoint1 = null;
-                }
-                if (squareRootCurveControlPoint2 != null)
-                {
-                    GraphCanvas.Children.Remove(squareRootCurveControlPoint2);
-                    squareRootCurveControlPoint2 = null;
-                }
-                // Gaussian Curve
-                if (gaussianCurveControlPoint1 != null)
-                {
-                    GraphCanvas.Children.Remove(gaussianCurveControlPoint1);
-                    gaussianCurveControlPoint1 = null;
-                }
-                if (gaussianCurveControlPoint2 != null)
-                {
-                    GraphCanvas.Children.Remove(gaussianCurveControlPoint2);
-                    gaussianCurveControlPoint2 = null;
-                }
-                if (gaussianCurveControlPoint3 != null)
-                {
-                    GraphCanvas.Children.Remove(gaussianCurveControlPoint3);
-                    gaussianCurveControlPoint3 = null;
-                }
-                if (gaussianCurveControlPoint4 != null)
-                {
-                    GraphCanvas.Children.Remove(gaussianCurveControlPoint4);
-                    gaussianCurveControlPoint4 = null;
+                    if (entry.Value.Control != null)
+                    {
+                        GraphCanvas.Children.Remove(entry.Value.Control);
+                        controlPoints[entry.Key] = (null, entry.Value.Data);
+                    }
                 }
 
                 // Re-add control points if "Linear Curve" is selected
@@ -512,13 +239,15 @@ namespace Dynamo.Wpf.CurveMapper
                         curveMapperNodeModel.BezierCurveControlPointData1,
                         curveMapperNodeModel.DynamicCanvasSize,
                         curveMapperNodeModel,
-                        RenderGraph
+                        RenderGraph,
+                        true, true
                     );
                     bezierCurveControlPoint2 = new CurveMapperControlPoint(
                         curveMapperNodeModel.BezierCurveControlPointData2,
                         curveMapperNodeModel.DynamicCanvasSize,
                         curveMapperNodeModel,
-                        RenderGraph
+                        RenderGraph,
+                        true, true
                     );
                     bezierCurveControlPoint3 = new CurveMapperControlPoint(
                         curveMapperNodeModel.BezierCurveControlPointData3,
@@ -683,7 +412,7 @@ namespace Dynamo.Wpf.CurveMapper
                         curveMapperNodeModel.DynamicCanvasSize,
                         curveMapperNodeModel,
                         RenderGraph,
-                        true,false
+                        true, false
                     );
 
                     GraphCanvas.Children.Add(gaussianCurveControlPoint1);
@@ -691,6 +420,7 @@ namespace Dynamo.Wpf.CurveMapper
                     GraphCanvas.Children.Add(gaussianCurveControlPoint3);
                     GraphCanvas.Children.Add(gaussianCurveControlPoint4);
                 }
+
                 curveMapperNodeModel.GenerateOutputValues();
                 RenderGraph();
                 ToggleControlPointsLock();
@@ -718,6 +448,30 @@ namespace Dynamo.Wpf.CurveMapper
                 UpdateGaussianControlPoint(gaussianCurveControlPoint4, curveMapperNodeModel.GaussianCurveControlPointData4);
             }
         }
+
+        // Helper (for resizing node)
+        private void AddToDictionary(Dictionary<UIElement, ControlPointData> dictionary, UIElement controlPoint, ControlPointData dataPoint) //
+        {
+            if (controlPoint != null && dataPoint != null)
+            {
+                dictionary.Add(controlPoint, dataPoint);
+            }
+        }
+
+        // Helper (for resizing node)
+        private void UpdateControlPointPosition(UIElement controlPoint, ControlPointData dataPoint, double newSize) //
+        {
+            if (controlPoint != null && dataPoint != null)
+            {
+                double newX = (dataPoint.X / newSize) * newSize;
+                double newY = ((curveMapperNodeModel.DynamicCanvasSize - dataPoint.Y) / newSize) * newSize;
+
+                Canvas.SetLeft(controlPoint, newX - offsetValue);
+                Canvas.SetTop(controlPoint, newSize - newY - offsetValue);
+            }
+        }
+
+        // TODO : Review, might be connected to the Gaussian curve bug
         private void UpdateGaussianControlPoint(UIElement controlPoint, ControlPointData dataPoint)
         {
             if (controlPoint != null && dataPoint != null)
@@ -743,7 +497,7 @@ namespace Dynamo.Wpf.CurveMapper
             Unloaded -= Unload;
         }
 
-        private void DrawGrid()
+        private void DrawGrid() //
         {
             // Remove current grid lines
             var gridLines = GraphCanvas.Children
@@ -789,7 +543,7 @@ namespace Dynamo.Wpf.CurveMapper
             GraphCanvas.Children.Add(line);
         }
 
-        private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e)
+        private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e) //
         {
             var sizeChange = Math.Min(e.VerticalChange, e.HorizontalChange);
             var yAdjust = ActualHeight + sizeChange;
@@ -811,74 +565,108 @@ namespace Dynamo.Wpf.CurveMapper
             curveMapperNodeModel.GenerateOutputValues();
         }       
 
-        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        private void ResetButton_Click(object sender, RoutedEventArgs e) //
         {
             if (curveMapperNodeModel.IsLocked) return;
 
-            curveMapperNodeModel.ResetCurves();
+            curveMapperNodeModel.ResetControlPointData();
 
-            // Linear Curve
-            // Remove existing control points before recreating them
-            if (linearCurveControlPoint1 != null)
+            // Dictionary to store curve types and their respective control points
+            var controlPointsMap = new Dictionary<GraphTypes, (List<string> pointNames, List<ControlPointData> dataPoints)>
             {
-                GraphCanvas.Children.Remove(linearCurveControlPoint1);
-                linearCurveControlPoint1 = null;
+                { GraphTypes.LinearCurve, (new List<string> { nameof(linearCurveControlPoint1), nameof(linearCurveControlPoint2) },
+                new List<ControlPointData> { curveMapperNodeModel.LinearCurveControlPointData1, curveMapperNodeModel.LinearCurveControlPointData2 }) },
+
+                { GraphTypes.BezierCurve, (new List<string> { nameof(bezierCurveControlPoint1), nameof(bezierCurveControlPoint2), nameof(bezierCurveControlPoint3), nameof(bezierCurveControlPoint4) },
+                new List<ControlPointData> { curveMapperNodeModel.BezierCurveControlPointData1, curveMapperNodeModel.BezierCurveControlPointData2,
+                    curveMapperNodeModel.BezierCurveControlPointData3, curveMapperNodeModel.BezierCurveControlPointData4 }) },
+
+                { GraphTypes.SineWave, (new List<string> { nameof(sineWaveControlPoint1), nameof(sineWaveControlPoint2) },
+                new List<ControlPointData> { curveMapperNodeModel.SineWaveControlPointData1, curveMapperNodeModel.SineWaveControlPointData2 }) },
+
+                { GraphTypes.CosineWave, (new List<string> { nameof(cosineWaveControlPoint1), nameof(cosineWaveControlPoint2) },
+                new List<ControlPointData> { curveMapperNodeModel.CosineWaveControlPointData1, curveMapperNodeModel.CosineWaveControlPointData2 }) },
+
+                { GraphTypes.ParabolicCurve, (new List<string> { nameof(parabolicCurveControlPoint1), nameof(parabolicCurveControlPoint2) },
+                new List<ControlPointData> { curveMapperNodeModel.ParabolicCurveControlPointData1, curveMapperNodeModel.ParabolicCurveControlPointData2 }) },
+
+                { GraphTypes.PerlinNoiseCurve, (new List<string> { nameof(perlinNoiseCurveControlPoint1), nameof(perlinNoiseCurveControlPoint2), nameof(perlinNoiseCurveControlPoint3) },
+                new List<ControlPointData> { curveMapperNodeModel.PerlinNoiseControlPointData1, curveMapperNodeModel.PerlinNoiseControlPointData2,
+                    curveMapperNodeModel.PerlinNoiseControlPointData3 }) },
+
+                { GraphTypes.PowerCurve, (new List<string> { nameof(powerCurveControlPoint1) },
+                new List<ControlPointData> { curveMapperNodeModel.PowerCurveControlPointData1 }) },
+
+                { GraphTypes.SquareRootCurve, (new List<string> { nameof(squareRootCurveControlPoint1), nameof(squareRootCurveControlPoint2) },
+                new List<ControlPointData> { curveMapperNodeModel.SquareRootCurveControlPointData1, curveMapperNodeModel.SquareRootCurveControlPointData2 }) },
+
+                { GraphTypes.GaussianCurve, (new List<string> { nameof(gaussianCurveControlPoint1), nameof(gaussianCurveControlPoint2), nameof(gaussianCurveControlPoint3), nameof(gaussianCurveControlPoint4) },
+                new List<ControlPointData> { curveMapperNodeModel.GaussianCurveControlPointData1, curveMapperNodeModel.GaussianCurveControlPointData2,
+                    curveMapperNodeModel.GaussianCurveControlPointData3, curveMapperNodeModel.GaussianCurveControlPointData4}) }
+            };
+
+            // List of control points that need `isOrthogonal = true`
+            var orthogonalPoints = new HashSet<string> {
+                nameof(bezierCurveControlPoint1), nameof(bezierCurveControlPoint2),
+                nameof(perlinNoiseCurveControlPoint1), nameof(perlinNoiseCurveControlPoint2),
+                nameof(gaussianCurveControlPoint1), nameof(gaussianCurveControlPoint2), nameof(gaussianCurveControlPoint3), nameof(gaussianCurveControlPoint4)
+            };
+
+            // List of control points that need both `isOrthogonal = true` and `isVertical = true`
+            var verticalPoints = new HashSet<string>
+            {
+                nameof(bezierCurveControlPoint1), nameof(bezierCurveControlPoint2),
+                nameof(perlinNoiseCurveControlPoint2), nameof(gaussianCurveControlPoint1)
+            };
+
+
+            Type controlType = this.GetType();
+            GraphTypes selectedType = curveMapperNodeModel.SelectedGraphType;
+
+            if (controlPointsMap.ContainsKey(selectedType))
+            {
+                var (pointNames, dataPoints) = controlPointsMap[selectedType];
+
+                for (int i = 0; i < pointNames.Count; i++)
+                {
+                    // Get the field dynamically
+                    var pointField = controlType.GetField(pointNames[i], System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    var oldPoint = pointField?.GetValue(this) as CurveMapperControlPoint;
+
+                    // Remove old control point from the canvas if applicable
+                    if (oldPoint != null) GraphCanvas.Children.Remove(oldPoint);
+
+                    // Determine if this control point should be orthogonal or vertical
+                    bool isOrthogonal = orthogonalPoints.Contains(pointNames[i]);
+                    bool isVertical = verticalPoints.Contains(pointNames[i]);
+
+                    // Create new instance of the control point with the correct flags
+                    var newPoint = new CurveMapperControlPoint(dataPoints[i], curveMapperNodeModel.DynamicCanvasSize, curveMapperNodeModel, RenderGraph, isOrthogonal, isVertical);
+
+                    // Assign new instance to the original field
+                    pointField?.SetValue(this, newPoint);
+                }
+
+                // Ensure the UI updates control points **only if a UI is present**
+                if (Application.Current != null)
+                {
+                    Dispatcher.Invoke(() =>
+                    {
+                        for (int i = 0; i < pointNames.Count; i++)
+                        {
+                            var pointField = controlType.GetField(pointNames[i], System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                            var point = pointField?.GetValue(this) as CurveMapperControlPoint;
+
+                            if (point != null)
+                            {
+                                GraphCanvas.Children.Add(point);
+                                Canvas.SetLeft(point, dataPoints[i].X - offsetValue);
+                                Canvas.SetTop(point, dataPoints[i].Y - offsetValue);
+                            }
+                        }
+                    });
+                }
             }
-            if (linearCurveControlPoint2 != null)
-            {
-                GraphCanvas.Children.Remove(linearCurveControlPoint2);
-                linearCurveControlPoint2 = null;
-            }
-            // Recreate and rebind control points
-            linearCurveControlPoint1 = new CurveMapperControlPoint(
-                curveMapperNodeModel.LinearCurveControlPointData1,
-                curveMapperNodeModel.DynamicCanvasSize,
-                curveMapperNodeModel,
-                RenderGraph
-            );
-            linearCurveControlPoint2 = new CurveMapperControlPoint(
-                curveMapperNodeModel.LinearCurveControlPointData2,
-                curveMapperNodeModel.DynamicCanvasSize,
-                curveMapperNodeModel,
-                RenderGraph
-            );
-            GraphCanvas.Children.Add(linearCurveControlPoint1);
-            GraphCanvas.Children.Add(linearCurveControlPoint2);
-
-
-            // Ensure the UI moves the control points to the correct positions
-            Dispatcher.Invoke(() =>
-            {
-                if (curveMapperNodeModel.SelectedGraphType == GraphTypes.LinearCurve)
-                {
-                    Canvas.SetLeft(linearCurveControlPoint1, curveMapperNodeModel.LinearCurveControlPointData1.X - offsetValue);
-                    Canvas.SetTop(linearCurveControlPoint1, curveMapperNodeModel.LinearCurveControlPointData1.Y - offsetValue);
-                    Canvas.SetLeft(linearCurveControlPoint2, curveMapperNodeModel.LinearCurveControlPointData2.X - offsetValue);
-                    Canvas.SetTop(linearCurveControlPoint2, curveMapperNodeModel.LinearCurveControlPointData2.Y - offsetValue);
-                }
-                else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.SineWave)
-                {
-                    Canvas.SetLeft(sineWaveControlPoint1, curveMapperNodeModel.SineWaveControlPointData1.X - offsetValue);
-                    Canvas.SetTop(sineWaveControlPoint1, curveMapperNodeModel.SineWaveControlPointData1.Y - offsetValue);
-                    Canvas.SetLeft(sineWaveControlPoint2, curveMapperNodeModel.SineWaveControlPointData2.X - offsetValue);
-                    Canvas.SetTop(sineWaveControlPoint2, curveMapperNodeModel.SineWaveControlPointData2.Y - offsetValue);
-                }
-                else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.CosineWave)
-                {
-                    Canvas.SetLeft(cosineWaveControlPoint1, curveMapperNodeModel.CosineWaveControlPointData1.X - offsetValue);
-                    Canvas.SetTop(cosineWaveControlPoint1, curveMapperNodeModel.CosineWaveControlPointData1.Y - offsetValue);
-                    Canvas.SetLeft(cosineWaveControlPoint2, curveMapperNodeModel.CosineWaveControlPointData2.X - offsetValue);
-                    Canvas.SetTop(cosineWaveControlPoint2, curveMapperNodeModel.CosineWaveControlPointData2.Y - offsetValue);
-                }
-                else if (curveMapperNodeModel.SelectedGraphType == GraphTypes.ParabolicCurve)
-                {
-                    Canvas.SetLeft(parabolicCurveControlPoint1, curveMapperNodeModel.ParabolicCurveControlPointData1.X - offsetValue);
-                    Canvas.SetTop(parabolicCurveControlPoint1, curveMapperNodeModel.ParabolicCurveControlPointData1.Y - offsetValue);
-                    Canvas.SetLeft(parabolicCurveControlPoint2, curveMapperNodeModel.ParabolicCurveControlPointData2.X - offsetValue);
-                    Canvas.SetTop(parabolicCurveControlPoint2, curveMapperNodeModel.ParabolicCurveControlPointData2.Y - offsetValue);
-                }
-
-            });
 
             curveMapperNodeModel.GenerateOutputValues();
             RenderGraph();
@@ -910,7 +698,7 @@ namespace Dynamo.Wpf.CurveMapper
             }
         }
 
-        private void UpdateLockButton()
+        private void UpdateLockButton() //
         {
             if (LockButton != null)
             {

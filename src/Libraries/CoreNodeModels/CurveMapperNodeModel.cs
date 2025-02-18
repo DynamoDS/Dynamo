@@ -459,10 +459,12 @@ namespace CoreNodeModels
                             DynamicCanvasSize
                         );
                         break;
-                    case GraphTypes.BezierCurve: // TODO: Review
+                    case GraphTypes.BezierCurve:
                         curve = new BezierCurve(
                             BezierCurveControlPointData1.X, (DynamicCanvasSize - BezierCurveControlPointData1.Y),
                             BezierCurveControlPointData2.X, (DynamicCanvasSize - BezierCurveControlPointData2.Y),
+                            BezierCurveControlPointData3.X, (DynamicCanvasSize - BezierCurveControlPointData3.Y),
+                            BezierCurveControlPointData4.X, (DynamicCanvasSize - BezierCurveControlPointData4.Y),
                             DynamicCanvasSize
                         );
                         break;
@@ -508,7 +510,7 @@ namespace CoreNodeModels
                             DynamicCanvasSize
                         );
                         break;
-                    case GraphTypes.GaussianCurve: // TODO: Review
+                    case GraphTypes.GaussianCurve:
                         curve = new GaussianCurve(
                             GaussianCurveControlPointData1.X, (DynamicCanvasSize - GaussianCurveControlPointData1.Y),
                             GaussianCurveControlPointData2.X, (DynamicCanvasSize - GaussianCurveControlPointData2.Y),
@@ -527,11 +529,6 @@ namespace CoreNodeModels
                     RenderValuesY = dynamicCurve.GetCurveYValues(PointsCount, true);
                     OutputValuesX = MapValues(dynamicCurve.GetCurveXValues(PointsCount), MinLimitX, MaxLimitX);
                     OutputValuesY = MapValues(dynamicCurve.GetCurveYValues(PointsCount), MinLimitY, MaxLimitY);
-
-
-                    var c1 = GaussianCurveControlPointData2.X;
-                    var c2 = GaussianCurveControlPointData3.X;
-                    var c3 = GaussianCurveControlPointData4.X;
                 }
             }
 
@@ -577,7 +574,7 @@ namespace CoreNodeModels
         /// <summary>
         /// Resets the curves to their original state
         /// </summary>
-        public void ResetCurves()
+        public void ResetControlPointData()
         {
             if (SelectedGraphType == GraphTypes.LinearCurve)
             {
@@ -613,12 +610,12 @@ namespace CoreNodeModels
             }
             else if (SelectedGraphType == GraphTypes.ParabolicCurve)
             {
-                ParabolicCurveControlPointData1 = new ControlPointData(0, 0);
-                ParabolicCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize);
+                ParabolicCurveControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.1);
+                ParabolicCurveControlPointData2 = new ControlPointData(DynamicCanvasSize, DynamicCanvasSize);
                 RaisePropertyChanged(nameof(ParabolicCurveControlPointData1));
                 RaisePropertyChanged(nameof(ParabolicCurveControlPointData2));
             }
-            else if (SelectedGraphType != GraphTypes.PerlinNoiseCurve)
+            else if (SelectedGraphType == GraphTypes.PerlinNoiseCurve)
             {
                 PerlinNoiseControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.5, 0);
                 PerlinNoiseControlPointData2 = new ControlPointData(0, DynamicCanvasSize);
@@ -627,19 +624,19 @@ namespace CoreNodeModels
                 RaisePropertyChanged(nameof(PerlinNoiseControlPointData2));
                 RaisePropertyChanged(nameof(PerlinNoiseControlPointData3));
             }
-            else if (SelectedGraphType != GraphTypes.PowerCurve)
+            else if (SelectedGraphType == GraphTypes.PowerCurve)
             {
                 PowerCurveControlPointData1 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
                 RaisePropertyChanged(nameof(PowerCurveControlPointData1));
             }
-            else if (SelectedGraphType != GraphTypes.SquareRootCurve)
+            else if (SelectedGraphType == GraphTypes.SquareRootCurve)
             {
                 SquareRootCurveControlPointData1 = new ControlPointData(0, DynamicCanvasSize);
                 SquareRootCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
                 RaisePropertyChanged(nameof(SquareRootCurveControlPointData1));
                 RaisePropertyChanged(nameof(SquareRootCurveControlPointData2));
             }
-            else if (SelectedGraphType != GraphTypes.GaussianCurve)
+            else if (SelectedGraphType == GraphTypes.GaussianCurve)
             {
                 GaussianCurveControlPointData1 = new ControlPointData(0, DynamicCanvasSize * 0.8, "GaussianCurveControlPointData1");
                 GaussianCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5, "GaussianCurveControlPointData2");
