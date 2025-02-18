@@ -339,9 +339,8 @@ namespace Dynamo.Engine
                 if (ClassName != null)
                 {
                     //get function assembly
-                    var asm = AppDomain.CurrentDomain.GetAssemblies()
-                        .Where(x => x.GetName().Name == Path.GetFileNameWithoutExtension(Assembly))
-                        .FirstOrDefault();
+                    var asmName = Path.GetFileNameWithoutExtension(Assembly);
+                    var asm = AppDomain.CurrentDomain.GetAssemblies().FirstOrDefault(x => x.GetName().Name == asmName);
 
                     //get class type of function
                     if (asm?.GetType(ClassName) is System.Type type)
