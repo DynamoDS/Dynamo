@@ -117,13 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="ExcelInteropObsoleteNode" xml:space="preserve">
-    <value>Dieser Block ist veraltet und wird in einer zukünftigen Version von Dynamo entfernt. Verwenden Sie den entsprechenden Block, der auf OpenXML basiert.</value>
-  </data>
-  <data name="ReadObsolete" xml:space="preserve">
-    <value>Verwenden Sie stattdessen den Block File.FromPath -&gt; Excel.ReadFromFile.</value>
-  </data>
-  <data name="StreamWriterNotFoundException" xml:space="preserve">
-    <value>Datei oder Verzeichnis wurde nicht gefunden</value>
+  <data name="CannotAddNodeToWorkspace" xml:space="preserve">
+    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
   </data>
 </root>

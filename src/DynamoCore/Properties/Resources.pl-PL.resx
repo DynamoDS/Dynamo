@@ -873,7 +873,7 @@ Ten pakiet prawdopodobnie zawiera zablokowany zespół. Po odblokowaniu zespołu
     <value>Nie można wstawić pliku, ponieważ niektóre węzły już istnieją w bieżącym obszarze roboczym.</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Wstaw definicję dodatku Dynamo...</value>
+    <value>Insert Dynamo Graph...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>Dodano przykładowy plik do obszaru roboczego. Tryb uruchamiania zmieniono na ręczny.</value>
