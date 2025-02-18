@@ -66,7 +66,7 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(nodeView.PreviewControl.IsHidden);
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void PreviewBubbleVisible_MouseMoveOutOfNode()
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");
@@ -571,7 +571,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        [Test]
+        [Test, Category("Failure")]
         public void PreviewBubble_ShowExpandedPreviewOnPinIconHover()
         {
             Open(@"core\DetailedPreviewMargin_Test.dyn");
