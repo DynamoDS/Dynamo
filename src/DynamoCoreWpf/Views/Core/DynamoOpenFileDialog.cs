@@ -82,25 +82,33 @@ namespace Dynamo.UI
 
         public DialogResult ShowDialog()
         {
-            int result = _dialog.Show(GetActiveWindow());
-            if (result < 0)
+            try
             {
-                if ((uint) result == (uint) HRESULT.E_CANCELLED)
-                    return DialogResult.Cancel;
-                throw Marshal.GetExceptionForHR(result);
+                int result = _dialog.Show(GetActiveWindow());
+                if (result < 0)
+                {
+                    if ((uint)result == (uint)HRESULT.E_CANCELLED)
+                        return DialogResult.Cancel;
+                    throw Marshal.GetExceptionForHR(result);
+                }
+
+                IShellItem dialogResult;
+                _dialog.GetResult(out dialogResult);
+                dialogResult.GetDisplayName(SIGDN.SIGDN_FILESYSPATH, out _fileName);
+
+                IFileDialogCustomize customize = (IFileDialogCustomize)_dialog;
+                if (!enableCustomDialog) return DialogResult.OK;
+
+                customize.GetCheckButtonState(RunManualCheckboxId, out _runManualMode);
+                model.PreferenceSettings.OpenFileInManualExecutionMode = _runManualMode;
+
+                return DialogResult.OK;
             }
-
-            IShellItem dialogResult;
-            _dialog.GetResult(out dialogResult);
-            dialogResult.GetDisplayName(SIGDN.SIGDN_FILESYSPATH, out _fileName);
-
-            IFileDialogCustomize customize = (IFileDialogCustomize) _dialog;
-            if (!enableCustomDialog) return DialogResult.OK;
-
-            customize.GetCheckButtonState(RunManualCheckboxId, out _runManualMode);
-            model.PreferenceSettings.OpenFileInManualExecutionMode = _runManualMode;
-
-            return DialogResult.OK;
+            catch(Exception ex)
+            {
+                model.Model.Logger.Log(ex.Message);
+                return DialogResult.Cancel;
+            }
         }
         /// <summary>
         /// The method is used to get the last accessed path by the user
