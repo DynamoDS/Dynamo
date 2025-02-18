@@ -910,7 +910,16 @@ namespace Dynamo.Graph.Workspaces
 
                 // GraphDocumentaionLink
                 writer.WritePropertyName(nameof(HomeWorkspaceModel.GraphDocumentationURL));
-                writer.WriteValue(hws.GraphDocumentationURL);
+                if (hws.GraphDocumentationURL == null)
+                {
+                    // The JValue json text writer throws when writing null URI values, the regular
+                    // JsonConvert serializer does not.
+                    writer.WriteNull();
+                }
+                else
+                {
+                    writer.WriteValue(hws.GraphDocumentationURL);
+                }
 
                 // ExtensionData
                 writer.WritePropertyName(WorkspaceReadConverter.EXTENSION_WORKSPACE_DATA);
