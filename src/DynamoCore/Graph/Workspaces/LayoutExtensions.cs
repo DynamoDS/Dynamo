@@ -24,7 +24,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="originalNodeGUID"></param>
         internal static List<GraphLayout.Graph> DoGraphAutoLayout(this WorkspaceModel workspace, bool reuseUndoRedoGroup = false, bool isNodeAutoComplete = false, Guid? originalNodeGUID = null)
         {
-            if (workspace.NodeCount < 2) return null;
+            if (workspace.Nodes.Count() < 2) return null;
 
             var selection = DynamoSelection.Instance.Selection;
 
