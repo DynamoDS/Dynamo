@@ -120,6 +120,76 @@
     <None Remove="Views\Core\GeometryScalingPopup.xaml" />
     <None Remove="UI\Images\question-hover-blue-16px.png" />
     <None Remove="Views\Core\UpdateIconWindow.xaml" />
+    <None Remove="Views\GuidedTour\HtmlPages\connectTheNodes.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\cs-CZ\connectTheNodes.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\cs-CZ\installedPackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\cs-CZ\learnPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\cs-CZ\nodePackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\cs-CZ\searchPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\de-DE\connectTheNodes.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\de-DE\installedPackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\de-DE\learnPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\de-DE\nodePackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\de-DE\searchPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\en-US\connectTheNodes.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\en-US\installedPackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\en-US\learnPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\en-US\nodePackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\en-US\searchPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\es-ES\connectTheNodes.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\es-ES\installedPackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\es-ES\learnPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\es-ES\nodePackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\es-ES\searchPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\fr-FR\connectTheNodes.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\fr-FR\installedPackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\fr-FR\learnPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\fr-FR\nodePackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\fr-FR\searchPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\installedPackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\it-IT\connectTheNodes.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\it-IT\installedPackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\it-IT\learnPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\it-IT\nodePackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\it-IT\searchPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\ja-JP\connectTheNodes.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\ja-JP\installedPackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\ja-JP\learnPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\ja-JP\nodePackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\ja-JP\searchPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\ko-KR\connectTheNodes.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\ko-KR\installedPackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\ko-KR\learnPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\ko-KR\nodePackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\ko-KR\searchPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\learnPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\nodePackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\pl-PL\connectTheNodes.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\pl-PL\installedPackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\pl-PL\learnPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\pl-PL\nodePackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\pl-PL\searchPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\pt-BR\connectTheNodes.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\pt-BR\installedPackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\pt-BR\learnPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\pt-BR\nodePackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\pt-BR\searchPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\ru-RU\connectTheNodes.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\ru-RU\installedPackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\ru-RU\learnPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\ru-RU\nodePackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\ru-RU\searchPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\searchPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\zh-CN\connectTheNodes.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\zh-CN\installedPackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\zh-CN\learnPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\zh-CN\nodePackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\zh-CN\searchPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\zh-TW\connectTheNodes.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\zh-TW\installedPackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\zh-TW\learnPackages.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\zh-TW\nodePackage.html" />
+    <None Remove="Views\GuidedTour\HtmlPages\zh-TW\searchPackages.html" />
     <None Remove="Views\PackageManager\Controls\ControlColorsAndBrushes.xaml" />      
     <None Remove="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml" />
     <None Remove="Views\PackageManager\Controls\NumericUpDownControl.xaml" />
@@ -149,6 +219,71 @@
     <EmbeddedResource Include="Properties\Resources.ru-RU.resx" />
     <EmbeddedResource Include="Properties\Resources.zh-CN.resx" />
     <EmbeddedResource Include="Properties\Resources.zh-TW.resx" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\cs-CZ\connectTheNodes.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\cs-CZ\installedPackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\cs-CZ\learnPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\cs-CZ\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\cs-CZ\searchPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\de-DE\connectTheNodes.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\de-DE\installedPackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\de-DE\learnPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\de-DE\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\de-DE\searchPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\en-US\connectTheNodes.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\en-US\installedPackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\en-US\learnPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\en-US\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\en-US\searchPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\es-ES\connectTheNodes.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\es-ES\installedPackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\es-ES\learnPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\es-ES\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\es-ES\searchPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\fr-FR\connectTheNodes.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\fr-FR\installedPackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\fr-FR\learnPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\fr-FR\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\fr-FR\searchPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\it-IT\connectTheNodes.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\it-IT\installedPackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\it-IT\learnPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\it-IT\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\it-IT\searchPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\ja-JP\connectTheNodes.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\ja-JP\installedPackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\ja-JP\learnPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\ja-JP\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\ja-JP\searchPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\ko-KR\connectTheNodes.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\ko-KR\installedPackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\ko-KR\learnPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\ko-KR\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\ko-KR\searchPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\pl-PL\connectTheNodes.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\pl-PL\installedPackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\pl-PL\learnPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\pl-PL\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\pl-PL\searchPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\pt-BR\connectTheNodes.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\pt-BR\installedPackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\pt-BR\learnPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\pt-BR\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\pt-BR\searchPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\ru-RU\connectTheNodes.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\ru-RU\installedPackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\ru-RU\learnPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\ru-RU\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\ru-RU\searchPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\zh-CN\connectTheNodes.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\zh-CN\installedPackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\zh-CN\learnPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\zh-CN\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\zh-CN\searchPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\zh-TW\connectTheNodes.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\zh-TW\installedPackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\zh-TW\learnPackages.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\zh-TW\nodePackage.html" />
+    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\zh-TW\searchPackages.html" />
     <EmbeddedResource Include="Views\SplashScreen\WebApp\splashScreenBackground.png" />
     <EmbeddedResource Include="Packages\DynamoHome\build\index.bundle.js" />
     <EmbeddedResource Include="Packages\DynamoHome\build\index.html" />
@@ -191,7 +326,6 @@
     <None Remove="UI\Images\TitleBarButtons\restore-lighttheme-hover-16px.png" />
     <None Remove="UI\Images\warning_16px.png" />
     <None Remove="Views\FileTrust\FileTrustWarning.xaml" />
-    <None Remove="Views\GuidedTour\HtmlPages\nodePackage.html" />
     <None Remove="Views\Menu\TrustedPathView.xaml" />
     <None Remove="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
   </ItemGroup>
@@ -833,7 +967,6 @@
       <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="UI\Resources\DesignScript.Resources.SyntaxHighlighting.xshd" />
-    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\nodePackage.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\ConnectTheNode.gif" />
     <None Include="App.config">
       <SubType>Designer</SubType>
@@ -1734,13 +1867,10 @@
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\PackageNodes.gif" />
-    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\connectTheNodes.html" />
-    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\installedPackage.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\successIcon.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\filterIcon.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\sortIcon.png" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\Resources\SearchPackages.gif" />
-    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\searchPackages.html" />
     <Resource Include="UI\Images\error-icon.png" />
     <Resource Include="UI\Images\searchmagnifier.png" />
     <Resource Include="UI\Images\info-grey.png" />
@@ -1764,7 +1894,6 @@
     <Resource Include="UI\Images\info-default-16px.png" />
     <Resource Include="UI\Images\info-hover-16px.png" />
     <Resource Include="UI\Images\Pin_NoBackground_16px.png" />
-    <EmbeddedResource Include="Views\GuidedTour\HtmlPages\learnPackages.html" />
     <Resource Include="UI\Images\info_2.png" />
     <Resource Include="UI\Images\alert_2.png" />
     <Resource Include="UI\Images\pin_hidden_48_48.png" />
@@ -1880,5 +2009,34 @@
     </ItemGroup>
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
     <Copy SourceFiles="@(ExternTuneUpPkg)" DestinationFolder="$(OutputPath)\Built-In Packages\packages\TuneUp\%(RecursiveDir)" />
+  </Target>
+  <Target Name="CopyGuidedTourHTMLFiles" AfterTargets="AfterBuildOps">
+    <ItemGroup>
+		<HTMLCsCZFiles Include="$(SolutionDir)..\doc\distrib\html\cs-CZ\GuidedTour\**\*.html" />
+		<HTMLDeDEFiles Include="$(SolutionDir)..\doc\distrib\html\de-DE\GuidedTour\**\*.html" />
+		<HTMLEsESFiles Include="$(SolutionDir)..\doc\distrib\html\es-ES\GuidedTour\**\*.html" />
+		<HTMLFrFRFiles Include="$(SolutionDir)..\doc\distrib\html\fr-FR\GuidedTour\**\*.html" />
+		<HTMLItITFiles Include="$(SolutionDir)..\doc\distrib\html\it-IT\GuidedTour\**\*.html" />
+		<HTMLJaJPFiles Include="$(SolutionDir)..\doc\distrib\html\ja-JP\GuidedTour\**\*.html" />
+		<HTMLKoKRFiles Include="$(SolutionDir)..\doc\distrib\html\ko-KR\GuidedTour\**\*.html" />
+		<HTMLPlPLFiles Include="$(SolutionDir)..\doc\distrib\html\pl-PL\GuidedTour\**\*.html" />
+		<HTMLPtBRFiles Include="$(SolutionDir)..\doc\distrib\html\pt-BR\GuidedTour\**\*.html" />
+		<HTMLRuRUFiles Include="$(SolutionDir)..\doc\distrib\html\ru-RU\GuidedTour\**\*.html" />
+		<HTMLZhCNFiles Include="$(SolutionDir)..\doc\distrib\html\zh-CN\GuidedTour\**\*.html" />
+		<HTMLZhTWFiles Include="$(SolutionDir)..\doc\distrib\html\zh-TW\GuidedTour\**\*.html" />
+    </ItemGroup>
+    <Copy SourceFiles="@(HTMLEnUSFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\en-US" />
+	<Copy SourceFiles="@(HTMLCsCZFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\cs-CZ" />
+	<Copy SourceFiles="@(HTMLDeDEFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\de-DE" />
+	<Copy SourceFiles="@(HTMLEsESFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\es-ES" />
+	<Copy SourceFiles="@(HTMLFrFRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\fr-FR" />
+	<Copy SourceFiles="@(HTMLItITFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\it-IT" />
+	<Copy SourceFiles="@(HTMLJaJPFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\ja-JP" />
+	<Copy SourceFiles="@(HTMLKoKRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\ko-KR" />
+	<Copy SourceFiles="@(HTMLPlPLFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\pl-PL" />
+	<Copy SourceFiles="@(HTMLPtBRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\pt-BR" />
+	<Copy SourceFiles="@(HTMLRuRUFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\ru-RU" />
+	<Copy SourceFiles="@(HTMLZhCNFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\zh-CN" />
+	<Copy SourceFiles="@(HTMLZhTWFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\zh-TW" />
   </Target>
 </Project>
