@@ -492,30 +492,31 @@ namespace Dynamo.Graph.Workspaces
             var nrc = (NodeReadConverter)serializer.Converters.First(c => c is NodeReadConverter);
             nrc.ElementResolver = elementResolver;
 
-            var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer);
+            var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer).ToList();
+            var nodeLookup = nodes.ToDictionary(n => n.GUID);
 
             // Setting Inputs
             // Required in headless mode by Dynamo Player that certain view properties are set back to NodeModel
             var inputsToken = obj["Inputs"];
             if (inputsToken != null)
             {
-                var inputs = inputsToken.ToArray().Select(x =>
+                var inputs = inputsToken.Select(x =>
                 {
                     try
-                    { return x.ToObject<NodeInputData>(); }
+                    {
+                        return x.ToObject<NodeInputData>();
+                    }
                     catch (Exception ex)
                     {
                         engine?.AsLogger().Log(ex);
                         return null;
                     }
-                    //dump nulls
-                }).Where(x => !(x is null)).ToList();
+                }).Where(x => x != null);
 
                 // Use the inputs to set the correct properties on the nodes.
                 foreach (var inputData in inputs)
                 {
-                    var matchingNode = nodes.Where(x => x.GUID == inputData.Id).FirstOrDefault();
-                    if (matchingNode != null)
+                    if (nodeLookup.TryGetValue(inputData.Id, out var matchingNode))
                     {
                         matchingNode.IsSetAsInput = true;
                         matchingNode.Name = inputData.Name;
@@ -527,12 +528,11 @@ namespace Dynamo.Graph.Workspaces
             var outputsToken = obj["Outputs"];
             if (outputsToken != null)
             {
-                var outputs = outputsToken.ToArray().Select(x => x.ToObject<NodeOutputData>()).ToList();
+                var outputs = outputsToken.Select(x => x.ToObject<NodeOutputData>());
                 // Use the outputs to set the correct properties on the nodes.
                 foreach (var outputData in outputs)
                 {
-                    var matchingNode = nodes.Where(x => x.GUID == outputData.Id).FirstOrDefault();
-                    if (matchingNode != null)
+                    if (nodeLookup.TryGetValue(outputData.Id, out var matchingNode))
                     {
                         matchingNode.IsSetAsOutput = true;
                         matchingNode.Name = outputData.Name;
@@ -547,15 +547,13 @@ namespace Dynamo.Graph.Workspaces
             var view = obj["View"];
             if (view != null && view["NodeViews"] != null)
             {
-                var nodeViews = view["NodeViews"].ToList();
+                var nodeViews = view["NodeViews"];
                 foreach (var nodeview in nodeViews)
                 {
-                    Guid nodeGuid;
                     try
                     {
-                        nodeGuid = Guid.Parse(nodeview["Id"].Value<string>());
-                        var matchingNode = nodes.Where(x => x.GUID == nodeGuid).FirstOrDefault();
-                        if (matchingNode != null)
+                        var nodeGuid = Guid.Parse(nodeview["Id"].Value<string>());
+                        if (nodeLookup.TryGetValue(nodeGuid, out var matchingNode))
                         {
                             matchingNode.IsSetAsInput = nodeview["IsSetAsInput"].Value<bool>();
                             matchingNode.IsSetAsOutput = nodeview["IsSetAsOutput"].Value<bool>();
@@ -563,10 +561,7 @@ namespace Dynamo.Graph.Workspaces
                             matchingNode.Name = nodeview["Name"].Value<string>();
                         }
                     }
-                    catch
-                    {
-                        continue;
-                    }
+                    catch { }
                 }
             }
             #endregion
