@@ -38,7 +38,8 @@ namespace Dynamo.Graph.Workspaces
 
             var sb = new StringBuilder(DefaultDynamoFileSize);
             using var tw = new StringWriter(sb);
-            SerializeJObject(jobject, tw);
+            using var writer = new TypeReplacerWriter(tw);
+            jobject.WriteTo(writer);
 
             return sb.ToString();
         }
@@ -71,14 +72,6 @@ namespace Dynamo.Graph.Workspaces
             };
 
             return JObject.FromObject(workspace, serializer);
-        }
-
-        internal static void SerializeJObject(JObject workspaceJObject, TextWriter textWriter)
-        {
-            using (var writer = new TypeReplacerWriter(textWriter))
-            {
-                workspaceJObject.WriteTo(writer);
-            }
         }
 
         /// <summary>
