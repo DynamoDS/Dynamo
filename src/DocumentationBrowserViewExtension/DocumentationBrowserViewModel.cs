@@ -175,6 +175,8 @@ namespace Dynamo.DocumentationBrowser
             GC.SuppressFinalize(this);
         }
 
+        internal string Locale {  get; set; }
+
         #endregion
 
         #region Handle navigation event
@@ -228,7 +230,7 @@ namespace Dynamo.DocumentationBrowser
                     case OpenDocumentationLinkEventArgs openDocumentationLink:
                         link = openDocumentationLink.Link;
                         graphPath = GetGraphLinkFromMDLocation(link, false);
-                        targetContent = ResourceUtilities.LoadContentFromResources(openDocumentationLink.Link.ToString(), GetType().Assembly);
+                        targetContent = ResourceUtilities.LoadContentFromResources(openDocumentationLink.Link.ToString(), GetType().Assembly, true, true, Locale);
                         graphName = null;
                         break;
 
@@ -500,7 +502,7 @@ namespace Dynamo.DocumentationBrowser
 
         public void NavigateToInternalErrorPage(string errorDetails)
         {
-            this.content = ResourceUtilities.LoadContentFromResources(BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME, GetType().Assembly);
+            this.content = ResourceUtilities.LoadContentFromResources(BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME, GetType().Assembly, true, true, Locale);
 
             // if additional details about the error were passed in,
             // update the error page HTML with that content
@@ -514,13 +516,13 @@ namespace Dynamo.DocumentationBrowser
 
         public void NavigateToContentMissingPage()
         {
-            this.content = ResourceUtilities.LoadContentFromResources(BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME, GetType().Assembly);
+            this.content = ResourceUtilities.LoadContentFromResources(BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME, GetType().Assembly, true, true, Locale);
             UpdateLinkSafely(BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME);
         }
 
         public void NavigateToNoContentPage()
         {
-            this.content = ResourceUtilities.LoadContentFromResources(BUILT_IN_CONTENT_NO_CONTENT_FILENAME, GetType().Assembly);
+            this.content = ResourceUtilities.LoadContentFromResources(BUILT_IN_CONTENT_NO_CONTENT_FILENAME, GetType().Assembly, true, true, Locale);
             UpdateLinkSafely(BUILT_IN_CONTENT_NO_CONTENT_FILENAME);
         }
 

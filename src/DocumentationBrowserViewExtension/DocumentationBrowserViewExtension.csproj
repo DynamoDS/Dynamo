@@ -17,6 +17,158 @@
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Docs\en-US\ArgumentNullException.html" />
+    <None Remove="Docs\en-US\CustomNodeNotLoaded.html" />
+    <None Remove="Docs\en-US\Deprecated.html" />
+    <None Remove="Docs\en-US\DereferencingNonPointer.html" />
+    <None Remove="Docs\en-US\Empty.html" />
+    <None Remove="Docs\en-US\errorLibGCoreCannotMakePolycurveFromEmptyList.html" />
+    <None Remove="Docs\en-US\errorLibGCorePolycurveBranching.html" />
+    <None Remove="Docs\en-US\errorLibGCorePolycurveMoreThanOneWIRE.html" />
+    <None Remove="Docs\en-US\errorLibGCoreUnableToLoft.html" />
+    <None Remove="Docs\en-US\errorLibGCoreUnableUpdateSolidBySweep.html" />
+    <None Remove="Docs\en-US\ErrorPageTemplate.html" />
+    <None Remove="Docs\en-US\ExcelNotInstalled.html" />
+    <None Remove="Docs\en-US\FailedToCastFromNull.html" />
+    <None Remove="Docs\en-US\FileNotFound.html" />
+    <None Remove="Docs\en-US\IntegerOverflow.html" />
+    <None Remove="Docs\en-US\InternalError.html" />
+    <None Remove="Docs\en-US\InvalidArrayIndexType.html" />
+    <None Remove="Docs\en-US\InvalidKeysLenghtErrorMessage.html" />
+    <None Remove="Docs\en-US\kArrayOverIndexed.html" />
+    <None Remove="Docs\en-US\kConvertArrayToNonArray.html" />
+    <None Remove="Docs\en-US\kCyclicDependency.html" />
+    <None Remove="Docs\en-US\kIndexOutOfRange.html" />
+    <None Remove="Docs\en-US\kMethodHasInvalidArguments.html" />
+    <None Remove="Docs\en-US\kMethodNotFound.html" />
+    <None Remove="Docs\en-US\kMultipleSymbolFound.html" />
+    <None Remove="Docs\en-US\kPropertyOfClassNotFound.html" />
+    <None Remove="Docs\en-US\MarkdownStyling.html" />
+    <None Remove="Docs\en-US\MessageErrorOpeningFileGeneral.html" />
+    <None Remove="Docs\en-US\MessageFailedToOpenCorruptedFile.html" />
+    <None Remove="Docs\en-US\NoContent.html" />
+    <None Remove="Docs\en-US\NonOverloadMethodResolutionError.html" />
+    <None Remove="Docs\en-US\NothingIsSelectedWarning.html" />
+    <None Remove="Docs\en-US\OperationFailType1.html" />
+    <None Remove="Docs\en-US\RunCompletedWithWarningsMessage.html" />
+    <None Remove="Docs\en-US\syntaxHighlight.html" />
+    <None Remove="Docs\en-US\UnhandledException.html" />
+    <None Remove="Docs\en-US\UnhandledExceptionInDynamoEngine.html" />
+    <None Remove="Docs\es-ES\ArgumentNullException.html" />
+    <None Remove="Docs\es-ES\CustomNodeNotLoaded.html" />
+    <None Remove="Docs\es-ES\Deprecated.html" />
+    <None Remove="Docs\es-ES\DereferencingNonPointer.html" />
+    <None Remove="Docs\es-ES\Empty.html" />
+    <None Remove="Docs\es-ES\errorLibGCoreCannotMakePolycurveFromEmptyList.html" />
+    <None Remove="Docs\es-ES\errorLibGCorePolycurveBranching.html" />
+    <None Remove="Docs\es-ES\errorLibGCorePolycurveMoreThanOneWIRE.html" />
+    <None Remove="Docs\es-ES\errorLibGCoreUnableToLoft.html" />
+    <None Remove="Docs\es-ES\errorLibGCoreUnableUpdateSolidBySweep.html" />
+    <None Remove="Docs\es-ES\ErrorPageTemplate.html" />
+    <None Remove="Docs\es-ES\ExcelNotInstalled.html" />
+    <None Remove="Docs\es-ES\FailedToCastFromNull.html" />
+    <None Remove="Docs\es-ES\FileNotFound.html" />
+    <None Remove="Docs\es-ES\IntegerOverflow.html" />
+    <None Remove="Docs\es-ES\InternalError.html" />
+    <None Remove="Docs\es-ES\InvalidArrayIndexType.html" />
+    <None Remove="Docs\es-ES\InvalidKeysLenghtErrorMessage.html" />
+    <None Remove="Docs\es-ES\kArrayOverIndexed.html" />
+    <None Remove="Docs\es-ES\kConvertArrayToNonArray.html" />
+    <None Remove="Docs\es-ES\kCyclicDependency.html" />
+    <None Remove="Docs\es-ES\kIndexOutOfRange.html" />
+    <None Remove="Docs\es-ES\kMethodHasInvalidArguments.html" />
+    <None Remove="Docs\es-ES\kMethodNotFound.html" />
+    <None Remove="Docs\es-ES\kMultipleSymbolFound.html" />
+    <None Remove="Docs\es-ES\kPropertyOfClassNotFound.html" />
+    <None Remove="Docs\es-ES\MarkdownStyling.html" />
+    <None Remove="Docs\es-ES\MessageErrorOpeningFileGeneral.html" />
+    <None Remove="Docs\es-ES\MessageFailedToOpenCorruptedFile.html" />
+    <None Remove="Docs\es-ES\NoContent.html" />
+    <None Remove="Docs\es-ES\NonOverloadMethodResolutionError.html" />
+    <None Remove="Docs\es-ES\NothingIsSelectedWarning.html" />
+    <None Remove="Docs\es-ES\OperationFailType1.html" />
+    <None Remove="Docs\es-ES\RunCompletedWithWarningsMessage.html" />
+    <None Remove="Docs\es-ES\syntaxHighlight.html" />
+    <None Remove="Docs\es-ES\UnhandledException.html" />
+    <None Remove="Docs\es-ES\UnhandledExceptionInDynamoEngine.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Docs\en-US\ArgumentNullException.html" />
+    <EmbeddedResource Include="Docs\en-US\CustomNodeNotLoaded.html" />
+    <EmbeddedResource Include="Docs\en-US\Deprecated.html" />
+    <EmbeddedResource Include="Docs\en-US\DereferencingNonPointer.html" />
+    <EmbeddedResource Include="Docs\en-US\Empty.html" />
+    <EmbeddedResource Include="Docs\en-US\errorLibGCoreCannotMakePolycurveFromEmptyList.html" />
+    <EmbeddedResource Include="Docs\en-US\errorLibGCorePolycurveBranching.html" />
+    <EmbeddedResource Include="Docs\en-US\errorLibGCorePolycurveMoreThanOneWIRE.html" />
+    <EmbeddedResource Include="Docs\en-US\errorLibGCoreUnableToLoft.html" />
+    <EmbeddedResource Include="Docs\en-US\errorLibGCoreUnableUpdateSolidBySweep.html" />
+    <EmbeddedResource Include="Docs\en-US\ErrorPageTemplate.html" />
+    <EmbeddedResource Include="Docs\en-US\ExcelNotInstalled.html" />
+    <EmbeddedResource Include="Docs\en-US\FailedToCastFromNull.html" />
+    <EmbeddedResource Include="Docs\en-US\FileNotFound.html" />
+    <EmbeddedResource Include="Docs\en-US\IntegerOverflow.html" />
+    <EmbeddedResource Include="Docs\en-US\InternalError.html" />
+    <EmbeddedResource Include="Docs\en-US\InvalidArrayIndexType.html" />
+    <EmbeddedResource Include="Docs\en-US\InvalidKeysLenghtErrorMessage.html" />
+    <EmbeddedResource Include="Docs\en-US\kArrayOverIndexed.html" />
+    <EmbeddedResource Include="Docs\en-US\kConvertArrayToNonArray.html" />
+    <EmbeddedResource Include="Docs\en-US\kCyclicDependency.html" />
+    <EmbeddedResource Include="Docs\en-US\kIndexOutOfRange.html" />
+    <EmbeddedResource Include="Docs\en-US\kMethodHasInvalidArguments.html" />
+    <EmbeddedResource Include="Docs\en-US\kMethodNotFound.html" />
+    <EmbeddedResource Include="Docs\en-US\kMultipleSymbolFound.html" />
+    <EmbeddedResource Include="Docs\en-US\kPropertyOfClassNotFound.html" />
+    <EmbeddedResource Include="Docs\en-US\MarkdownStyling.html" />
+    <EmbeddedResource Include="Docs\en-US\MessageErrorOpeningFileGeneral.html" />
+    <EmbeddedResource Include="Docs\en-US\MessageFailedToOpenCorruptedFile.html" />
+    <EmbeddedResource Include="Docs\en-US\NoContent.html" />
+    <EmbeddedResource Include="Docs\en-US\NonOverloadMethodResolutionError.html" />
+    <EmbeddedResource Include="Docs\en-US\NothingIsSelectedWarning.html" />
+    <EmbeddedResource Include="Docs\en-US\OperationFailType1.html" />
+    <EmbeddedResource Include="Docs\en-US\RunCompletedWithWarningsMessage.html" />
+    <EmbeddedResource Include="Docs\en-US\syntaxHighlight.html" />
+    <EmbeddedResource Include="Docs\en-US\UnhandledException.html" />
+    <EmbeddedResource Include="Docs\en-US\UnhandledExceptionInDynamoEngine.html" />
+    <EmbeddedResource Include="Docs\es-ES\ArgumentNullException.html" />
+    <EmbeddedResource Include="Docs\es-ES\CustomNodeNotLoaded.html" />
+    <EmbeddedResource Include="Docs\es-ES\Deprecated.html" />
+    <EmbeddedResource Include="Docs\es-ES\DereferencingNonPointer.html" />
+    <EmbeddedResource Include="Docs\es-ES\Empty.html" />
+    <EmbeddedResource Include="Docs\es-ES\errorLibGCoreCannotMakePolycurveFromEmptyList.html" />
+    <EmbeddedResource Include="Docs\es-ES\errorLibGCorePolycurveBranching.html" />
+    <EmbeddedResource Include="Docs\es-ES\errorLibGCorePolycurveMoreThanOneWIRE.html" />
+    <EmbeddedResource Include="Docs\es-ES\errorLibGCoreUnableToLoft.html" />
+    <EmbeddedResource Include="Docs\es-ES\errorLibGCoreUnableUpdateSolidBySweep.html" />
+    <EmbeddedResource Include="Docs\es-ES\ErrorPageTemplate.html" />
+    <EmbeddedResource Include="Docs\es-ES\ExcelNotInstalled.html" />
+    <EmbeddedResource Include="Docs\es-ES\FailedToCastFromNull.html" />
+    <EmbeddedResource Include="Docs\es-ES\FileNotFound.html" />
+    <EmbeddedResource Include="Docs\es-ES\IntegerOverflow.html" />
+    <EmbeddedResource Include="Docs\es-ES\InternalError.html" />
+    <EmbeddedResource Include="Docs\es-ES\InvalidArrayIndexType.html" />
+    <EmbeddedResource Include="Docs\es-ES\InvalidKeysLenghtErrorMessage.html" />
+    <EmbeddedResource Include="Docs\es-ES\kArrayOverIndexed.html" />
+    <EmbeddedResource Include="Docs\es-ES\kConvertArrayToNonArray.html" />
+    <EmbeddedResource Include="Docs\es-ES\kCyclicDependency.html" />
+    <EmbeddedResource Include="Docs\es-ES\kIndexOutOfRange.html" />
+    <EmbeddedResource Include="Docs\es-ES\kMethodHasInvalidArguments.html" />
+    <EmbeddedResource Include="Docs\es-ES\kMethodNotFound.html" />
+    <EmbeddedResource Include="Docs\es-ES\kMultipleSymbolFound.html" />
+    <EmbeddedResource Include="Docs\es-ES\kPropertyOfClassNotFound.html" />
+    <EmbeddedResource Include="Docs\es-ES\MarkdownStyling.html" />
+    <EmbeddedResource Include="Docs\es-ES\MessageErrorOpeningFileGeneral.html" />
+    <EmbeddedResource Include="Docs\es-ES\MessageFailedToOpenCorruptedFile.html" />
+    <EmbeddedResource Include="Docs\es-ES\NoContent.html" />
+    <EmbeddedResource Include="Docs\es-ES\NonOverloadMethodResolutionError.html" />
+    <EmbeddedResource Include="Docs\es-ES\NothingIsSelectedWarning.html" />
+    <EmbeddedResource Include="Docs\es-ES\OperationFailType1.html" />
+    <EmbeddedResource Include="Docs\es-ES\RunCompletedWithWarningsMessage.html" />
+    <EmbeddedResource Include="Docs\es-ES\syntaxHighlight.html" />
+    <EmbeddedResource Include="Docs\es-ES\UnhandledException.html" />
+    <EmbeddedResource Include="Docs\es-ES\UnhandledExceptionInDynamoEngine.html" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
       <Name>DynamoCoreWpf</Name>
@@ -47,57 +199,7 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="Docs\NoContent.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Docs\InternalError.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Docs\FileNotFound.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Docs\ArgumentNullException.html" />
-    <EmbeddedResource Include="Docs\CustomNodeNotLoaded.html" />
-    <EmbeddedResource Include="Docs\Deprecated.html" />
-    <EmbeddedResource Include="Docs\DereferencingNonPointer.html" />
-    <EmbeddedResource Include="Docs\errorLibGCoreCannotMakePolycurveFromEmptyList.html" />
-    <EmbeddedResource Include="Docs\errorLibGCorePolycurveBranching.html" />
-    <EmbeddedResource Include="Docs\errorLibGCorePolycurveMoreThanOneWIRE.html" />
-    <EmbeddedResource Include="Docs\errorLibGCoreUnableToLoft.html" />
-    <EmbeddedResource Include="Docs\errorLibGCoreUnableUpdateSolidBySweep.html" />
-    <EmbeddedResource Include="Docs\ErrorPageTemplate.html" />
-    <EmbeddedResource Include="Docs\ExcelNotInstalled.html" />
-    <EmbeddedResource Include="Docs\FailedToCastFromNull.html" />
-    <EmbeddedResource Include="Docs\InvalidArrayIndexType.html" />
-    <EmbeddedResource Include="Docs\InvalidKeysLenghtErrorMessage.html" />
-    <EmbeddedResource Include="Docs\kArrayOverIndexed.html" />
-    <EmbeddedResource Include="Docs\kConvertArrayToNonArray.html" />
-    <EmbeddedResource Include="Docs\kCyclicDependency.html" />
-    <EmbeddedResource Include="Docs\kIndexOutOfRange.html" />
-    <EmbeddedResource Include="Docs\kMethodHasInvalidArguments.html" />
-    <EmbeddedResource Include="Docs\kMethodNotFound.html" />
-    <EmbeddedResource Include="Docs\kMultipleSymbolFound.html" />
-    <EmbeddedResource Include="Docs\kPropertyOfClassNotFound.html" />
-    <EmbeddedResource Include="Docs\MessageErrorOpeningFileGeneral.html" />
-    <EmbeddedResource Include="Docs\MessageFailedToOpenCorruptedFile.html" />
-    <EmbeddedResource Include="Docs\NonOverloadMethodResolutionError.html" />
-    <EmbeddedResource Include="Docs\NothingIsSelectedWarning.html" />
-    <EmbeddedResource Include="Docs\OperationFailType1.html" />
-    <EmbeddedResource Include="Docs\RunCompletedWithWarningsMessage.html" />
-    <EmbeddedResource Include="Docs\UnhandledException.html" />
-    <EmbeddedResource Include="Docs\UnhandledExceptionInDynamoEngine.html" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="README.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Docs\IntegerOverflow.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Docs\MarkdownStyling.html" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Docs\syntaxHighlight.html" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Web.WebView2" Version="1.0.2478.35" />

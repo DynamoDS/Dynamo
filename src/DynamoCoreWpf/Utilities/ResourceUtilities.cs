@@ -250,7 +250,7 @@ namespace Dynamo.Utilities
             return imageSource;
         }
 
-        internal static string LoadContentFromResources(string name, Assembly localAssembly = null, bool injectDPI = true, bool removeScriptTags = true)
+        internal static string LoadContentFromResources(string name, Assembly localAssembly = null, bool injectDPI = true, bool removeScriptTags = true, string locale = "")
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name));
@@ -288,6 +288,12 @@ namespace Dynamo.Utilities
 
             var matchingResource = availableResources
                 .FirstOrDefault(str => str.EndsWith(name));
+
+            if (!string.IsNullOrEmpty(locale))
+            {
+                matchingResource = availableResources
+                .FirstOrDefault(str => str.EndsWith(name) && str.Contains(locale.Replace('-', '_')));
+            }
 
             if (string.IsNullOrEmpty(matchingResource))
             {
