@@ -263,8 +263,14 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="*" />
                                     </Grid.RowDefinitions>
-
-                                    <local:PackageManagerPublishControl x:Name="packageManagerPublish" DataContext="{Binding Path=PackageManagerViewModel.PublishPackageViewModel, ElementName=PackageManagerWindow}" />
+                                    <!--Old PacMan Publish-->
+                                    <local:PackageManagerPublishControl x:Name="packageManagerPublish"
+                                                                        DataContext="{Binding Path=PackageManagerViewModel.PublishPackageViewModel, ElementName=PackageManagerWindow}"
+                                                                        Visibility="{Binding IsNewPublisherEnabled, Converter={StaticResource InverseBoolToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
+                                    <!--New PacMan Publish-->
+                                    <local:PackageManagerPublishHost x:Name="packageManagerPublishComponent"
+                                                                        DataContext="{Binding Path=PackageManagerViewModel.PublishPackageViewModel, ElementName=PackageManagerWindow}"
+                                                                        Visibility="{Binding IsNewPublisherEnabled, Converter={StaticResource BooleanToVisibilityConverter}, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}"/>
                                 </Grid>
                             </Border>
                         </TabItem>

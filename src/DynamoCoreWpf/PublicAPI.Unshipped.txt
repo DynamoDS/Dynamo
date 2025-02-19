@@ -1259,6 +1259,12 @@ Dynamo.PackageManager.UI.PackageManagerPublishControl.Owner.set -> void
 Dynamo.PackageManager.UI.PackageManagerPublishControl.PackageManagerPublishControl() -> void
 Dynamo.PackageManager.UI.PackageManagerPublishControl.PublishPackageViewModel.get -> Dynamo.PackageManager.PublishPackageViewModel
 Dynamo.PackageManager.UI.PackageManagerPublishControl.PublishPackageViewModel.set -> void
+Dynamo.PackageManager.UI.PackageManagerPublishHost
+Dynamo.PackageManager.UI.PackageManagerPublishHost.Owner.get -> System.Windows.Window
+Dynamo.PackageManager.UI.PackageManagerPublishHost.Owner.set -> void
+Dynamo.PackageManager.UI.PackageManagerPublishHost.PackageManagerPublishHost() -> void
+Dynamo.PackageManager.UI.PackageManagerPublishHost.PublishPackageViewModel.get -> Dynamo.PackageManager.PublishPackageViewModel
+Dynamo.PackageManager.UI.PackageManagerPublishHost.PublishPackageViewModel.set -> void
 Dynamo.PackageManager.UI.PackageManagerSearchControl
 Dynamo.PackageManager.UI.PackageManagerSearchControl.InitializeComponent() -> void
 Dynamo.PackageManager.UI.PackageManagerSearchControl.PackageManagerSearchControl() -> void
@@ -1619,6 +1625,9 @@ Dynamo.UI.Views.HomePage.InitializeComponent() -> void
 Dynamo.UI.Views.LibraryView
 Dynamo.UI.Views.LibraryView.InitializeComponent() -> void
 Dynamo.UI.Views.LibraryView.LibraryView() -> void
+Dynamo.UI.Views.PackageManagerWizard
+Dynamo.UI.Views.PackageManagerWizard.Dispose() -> void
+Dynamo.UI.Views.PackageManagerWizard.PackageManagerWizard() -> void
 Dynamo.UI.Views.ScriptHomeObject
 Dynamo.UI.Views.ScriptHomeObject.ApplicationLoaded() -> void
 Dynamo.UI.Views.ScriptHomeObject.NewCustomNodeWorkspace() -> void
@@ -1638,6 +1647,8 @@ Dynamo.UI.Views.ScriptObject.LaunchDynamo(bool showScreenAgain) -> void
 Dynamo.UI.Views.ScriptObject.ScriptObject(System.Action<bool> requestLaunchDynamo, System.Action<string> requestImportSettings, System.Func<bool> requestSignIn, System.Func<bool> requestSignOut) -> void
 Dynamo.UI.Views.ScriptObject.SignIn() -> bool
 Dynamo.UI.Views.ScriptObject.SignOut() -> bool
+Dynamo.UI.Views.ScriptWizardObject
+Dynamo.UI.Views.ScriptWizardObject.ScriptWizardObject() -> void
 Dynamo.UI.Views.SplashScreen
 Dynamo.UI.Views.SplashScreen.CloseWasExplicit.get -> bool
 Dynamo.UI.Views.SplashScreen.DynamicSplashScreenReady -> Dynamo.UI.Views.SplashScreen.DynamicSplashScreenReadyHandler
@@ -5732,6 +5743,7 @@ virtual Dynamo.UI.Controls.UseLevelSpinner.OnIncrease() -> void
 virtual Dynamo.UI.Controls.UseLevelSpinner.OnLevelChanged(System.Windows.RoutedPropertyChangedEventArgs<int> args) -> void
 virtual Dynamo.UI.Prompts.DynamoMessageBox.OnPropertyChanged(string propertyName = null) -> void
 virtual Dynamo.UI.Views.HomePage.Dispose(bool disposing) -> void
+virtual Dynamo.UI.Views.PackageManagerWizard.Dispose(bool disposing) -> void
 virtual Dynamo.ViewModels.ConnectorAnchorViewModel.OnRequestDispose(object sender, System.EventArgs e) -> void
 virtual Dynamo.ViewModels.ConnectorContextMenuViewModel.OnRequestDispose(object sender, System.EventArgs e) -> void
 virtual Dynamo.ViewModels.ConnectorPinViewModel.OnRequestRedraw(object sender, System.EventArgs e) -> void
