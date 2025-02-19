@@ -85,8 +85,8 @@ namespace CoreNodeModels.CurveMapper
 
             if (ControlPoint1Y > ControlPoint2Y)
             {
-                (lowY, highY) = (highY, lowY); // Swap values if needed
-            }                
+                (lowY, highY) = (highY, lowY);
+            }
 
             if (isRender)
             {
@@ -103,6 +103,11 @@ namespace CoreNodeModels.CurveMapper
             for (int i = 0; i < pointsCount; i++)
             {
                 values.Add(lowY + i * step);
+            }
+
+            if (ControlPoint1Y > ControlPoint2Y)
+            {
+                values.Reverse();
             }
 
             return values;

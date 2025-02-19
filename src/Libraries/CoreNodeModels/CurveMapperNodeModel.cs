@@ -33,6 +33,7 @@ namespace CoreNodeModels
         private readonly IntNode maxLimitYDefaultValue = new IntNode(1);
         private readonly IntNode pointsCountDefaultValue = new IntNode(10);
         private GraphTypes selectedGraphType;
+        private const int rounding = 15;
         private const double defaultCanvasSize = 240;
         private double dynamicCanvasSize = defaultCanvasSize;
         private bool isLocked;
@@ -448,6 +449,20 @@ namespace CoreNodeModels
             }
             else
             {
+                if (!IsValidCurve())
+                {
+                    ClearErrorsAndWarnings();
+                    Warning("The provided original values cannot be redistributed using the curve equation.", isPersistent: true); // TODO: add to resources
+
+                    OutputValuesY = null;
+                    OutputValuesX = null;
+                    RenderValuesX = null;
+                    RenderValuesY = null;
+                    return;
+                }
+
+                ClearErrorsAndWarnings();
+
                 object curve = null;
 
                 switch (SelectedGraphType)
@@ -536,14 +551,36 @@ namespace CoreNodeModels
             RaisePropertyChanged(nameof(OutputValuesY));
         }
 
+        private bool IsValidCurve() //
+        {
+            if (PointsCount < 2 || MinLimitX == MaxLimitX || MinLimitY == MaxLimitY)
+                return false;
+
+            // Dictionary mapping graph types to control point validation logic
+            var controlPointChecks = new Dictionary<GraphTypes, Func<bool>>
+            {
+                { GraphTypes.LinearCurve, () => LinearCurveControlPointData1.X != LinearCurveControlPointData2.X },
+                { GraphTypes.SineWave, () => SineWaveControlPointData1.X != SineWaveControlPointData2.X },
+                { GraphTypes.CosineWave, () => CosineWaveControlPointData1.X != CosineWaveControlPointData2.X },
+                { GraphTypes.ParabolicCurve, () => ParabolicCurveControlPointData1.X != ParabolicCurveControlPointData2.X },
+                { GraphTypes.PowerCurve, () => PowerCurveControlPointData1.X > 0 &&
+                PowerCurveControlPointData1.Y > 0 &&
+                PowerCurveControlPointData1.X < DynamicCanvasSize &&
+                PowerCurveControlPointData1.Y < DynamicCanvasSize }
+            };
+
+            // Validate the selected graph type if it exists in the dictionary
+            return controlPointChecks.TryGetValue(SelectedGraphType, out var validator) ? validator() : true;
+        }
+
         // Helper
-        private List<double> MapValues(List<double> rawValues, double minLimit, double maxLimit)
+        private List<double> MapValues(List<double> rawValues, double minLimit, double maxLimit) //
         {
             var mappedValues = new List<double>();
 
             foreach(var value in rawValues)
             {                
-                mappedValues.Add(minLimit + value / DynamicCanvasSize * (maxLimit - minLimit));
+                mappedValues.Add(Math.Round(minLimit + value / DynamicCanvasSize * (maxLimit - minLimit), rounding));
             }
             return mappedValues;
         }
@@ -574,7 +611,7 @@ namespace CoreNodeModels
         /// <summary>
         /// Resets the curves to their original state
         /// </summary>
-        public void ResetControlPointData()
+        public void ResetControlPointData() //
         {
             if (SelectedGraphType == GraphTypes.LinearCurve)
             {
@@ -652,13 +689,12 @@ namespace CoreNodeModels
         }
 
         // Helper method to extract descriptions from enum values
-        private string GetEnumDescription(Enum value)
+        private string GetEnumDescription(Enum value) //
         {
             var field = value.GetType().GetField(value.ToString());
             var attribute = (DescriptionAttribute)Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute));
             return attribute != null ? attribute.Description : value.ToString();
         }
-
 
 
         // REVIEW THIS : BUG!

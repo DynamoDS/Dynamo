@@ -226,7 +226,7 @@ namespace Dynamo.Wpf.CurveMapper
             Canvas.SetLeft(this, newX - offsetValue);
             Canvas.SetTop(this, newY - offsetValue);
 
-
+            // TODO : Review, this does not work in all cases
             // Check which control point is being moved
             string tag = ControlPointData.Tag;
             if (tag == "GaussianCurveControlPointData2") AssociatedModel.UpdateGaussianCurveControlPoint2(e.HorizontalChange);

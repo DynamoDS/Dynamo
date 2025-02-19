@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -25,7 +26,18 @@ namespace Dynamo.Wpf.CurveMapper
             {
                 Point currentPoint = new Point(xValues[i], canvasSize - yValues[i]);
 
-                if (yValues[i] == canvasSize) // Odd occurrences: Close the path and reset
+
+                //// ✅ Handle boundary lines explicitly (if the entire line is at a boundary)
+                //if ((yValues.All(y => y == 0) || yValues.All(y => y == canvasSize)) && xValues.Count == 2)
+                //{
+                //    currentFigure = new PathFigure { StartPoint = new Point(xValues[0], canvasSize - yValues[0] + 0.1) };
+                //    currentFigure.Segments.Add(new LineSegment(new Point(xValues[1], canvasSize - yValues[1] + 0.1), true));
+                //    currentGeometry.Figures.Add(currentFigure);
+                //    paths.Add(CreatePathFromGeometry(currentGeometry, isControlLine));
+                //    return paths;
+                //}
+
+                if (yValues[i] == canvasSize && !isControlLine) // Odd occurrences: Close the path and reset
                 {
                     hitCount++;
 

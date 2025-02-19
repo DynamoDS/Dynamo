@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoreNodeModels.CurveMapper
 {
@@ -55,6 +53,8 @@ namespace CoreNodeModels.CurveMapper
         /// </summary>
         public List<double>[] GenerateBezierCurve(int pointsCount, bool isRender)
         {
+            var renderValuesX = new List<double>();
+            var renderValuesY = new List<double>();
             var valuesX = new List<double>();
             var valuesY = new List<double>();
 
@@ -67,27 +67,39 @@ namespace CoreNodeModels.CurveMapper
 
                 GetValueAtT(t, out double x, out double y);
 
-                valuesX.Add(x);
+                renderValuesX.Add(x);
+                renderValuesY.Add(y);
+            }
+
+            if (isRender)
+            {
+                return [renderValuesX, renderValuesY];
+            }
+
+            // Collect output values
+            for (int i = 0; i < pointsCount; i++)
+            {
+                double targetX = (i / (double)(pointsCount - 1) * CanvasSize);
+                int closestIndex = renderValuesX.IndexOf(renderValuesX.OrderBy(x => Math.Abs(x - targetX)).First());
+                double y = renderValuesY[closestIndex];
+
+                valuesX.Add(targetX);
                 valuesY.Add(y);
             }
 
             return [valuesX, valuesY];
         }
 
-        public List<double> GetCurveXValues(int pointsCount, bool isRender = false)
+        public List<double> GetCurveXValues(int pointsCount, bool isRender = false) // TODO : Review 
         {
-            //return new List<double> { 1,2,3 };
-
-            var values = GenerateBezierCurve(pointsCount, true)[0];
+            var values = GenerateBezierCurve(pointsCount, isRender)[0];
 
             return values;
         }
 
         public List<double> GetCurveYValues(int pointsCount, bool isRender = false)
         {
-            //return new List<double> { 1,2,3 };
-
-            var values = GenerateBezierCurve(pointsCount, true)[1];
+            var values = GenerateBezierCurve(pointsCount, isRender)[1];
 
             return values;
         }
