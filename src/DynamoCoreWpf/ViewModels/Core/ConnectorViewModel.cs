@@ -1486,9 +1486,9 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void SetCollapsedByNodeViewModel()
         {
-            if (Nodevm?.IsCollapsed == true && NodeEnd?.IsCollapsed == true)
+            if (this.Nodevm.IsCollapsed && this.NodeEnd.IsCollapsed)
             {
-                IsCollapsed = true;
+                this.IsCollapsed = true;
             }
         }
 
