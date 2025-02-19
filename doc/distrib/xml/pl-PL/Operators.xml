@@ -1,0 +1,104 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Operators</name>
+    </assembly>
+    <members>
+        <member name="%add">
+            <summary>Zwraca sumę x i y</summary>
+            <param name="x">Liczba całkowita, podwójna lub ciąg</param>
+            <param name="y">Liczba całkowita, podwójna lub ciąg</param>
+            <returns name="var">Suma dwóch liczb wejściowych lub połączenie dwóch ciągów</returns>
+            <search>add, plus, addition, +</search>
+        </member>
+		<member name="%sub">
+            <summary>Zwraca wynik odjęcia y od x</summary>
+            <param name="x">Liczba całkowita lub wartość podwójna</param>
+            <param name="y">Liczba całkowita lub wartość podwójna</param>
+            <returns name="number">Wynik odjęcia danej wejściowej y od danej wejściowej x</returns>
+            <search>sub, subtract, difference, -</search>
+        </member>		
+		<member name="%mul">
+            <summary>Zwraca iloczyn x i y</summary>
+            <param name="x">Liczba całkowita lub wartość podwójna</param>
+            <param name="y">Liczba całkowita lub wartość podwójna</param>
+            <returns name="number">Iloczyn dwóch liczb wejściowych</returns>
+            <search>mul, multiply, product, times, *, x</search>
+        </member>
+		<member name="%div">
+            <summary>Zwraca wynik dzielenia x przez y</summary>
+            <param name="x">Liczba całkowita lub wartość podwójna</param>
+            <param name="y">Liczba całkowita lub wartość podwójna</param>
+            <returns name="double">Wynik dzielenia</returns>
+            <search>div, divide, product</search>
+        </member>
+		<member name="%eq">
+            <summary>Sprawdza, czy x i y są równe</summary>
+            <param name="x">Obiekt typu podstawowego do porównania (np. bool, int, double, string itp.)</param>
+            <param name="y">Obiekt typu podstawowego do porównania (np. Bool, int, double, string itp.)</param>
+            <returns name="bool">Wynik kontroli równości</returns>
+            <search>eq, equal, =</search>
+        </member>
+		<member name="%ge">
+            <summary>Sprawdza, czy x jest większe niż lub równe y</summary>
+            <param name="x">Liczba całkowita lub wartość podwójna</param>
+            <param name="y">Liczba całkowita lub wartość podwójna</param>
+            <returns name="bool">Prawda, jeśli x jest równe lub większe niż y, fałsz, jeśli nie</returns>
+            <search>greater,equal</search>
+        </member>
+		<member name="%gt">
+            <summary>Sprawdza, czy x jest większe niż y</summary>
+            <param name="x">Liczba całkowita lub wartość podwójna</param>
+            <param name="y">Liczba całkowita lub wartość podwójna</param>
+            <returns name="bool">Prawda, jeśli x jest większe niż y, fałsz, jeśli nie</returns>
+            <search>greater</search>
+        </member>
+		<member name="%mod">
+            <summary>Modulo: znajduje resztę z dzielenia x/y</summary>
+            <param name="x">Liczba całkowita lub wartość podwójna</param>
+            <param name="y">Liczba całkowita lub wartość podwójna</param>
+            <returns name="number">Reszta z dzielenia danej wejściowej x przez daną wejściową y</returns>
+            <search>mod, modulo, remainder</search>
+        </member>
+		<member name="%le">
+            <summary>Sprawdza, czy x jest mniejsze niż lub równe y</summary>
+            <param name="x">Liczba całkowita lub wartość podwójna</param>
+            <param name="y">Liczba całkowita lub wartość podwójna</param>
+            <returns name="bool">Wynik sprawdzenia</returns>
+            <search>less,equal</search>
+        </member>
+		<member name="%lt">
+            <summary>Sprawdza, czy x jest mniejsze niż y</summary>
+            <param name="x">Liczba całkowita lub wartość podwójna</param>
+            <param name="y">Liczba całkowita lub wartość podwójna</param>
+            <returns name="bool">Wynik sprawdzenia</returns>
+            <search>less</search>
+        </member>
+		<member name="%and">
+            <summary>Operator logiczny ORAZ</summary>
+            <param name="x">Wartość logiczna do sprawdzenia, czy ma wartość prawda</param>
+            <param name="y">Kolejna wartość logiczna do sprawdzenia, czy ma wartość prawda</param>
+            <returns name="bool">Wynik sprawdzenia</returns>
+            <search>and</search>
+        </member>
+		<member name="%or">
+            <summary>Operator logiczny LUB</summary>
+            <param name="bool">Wartość logiczna do sprawdzenia, czy ma wartość prawda</param>
+            <param name="otherBool">Inna wartość logiczna do sprawdzenia, czy ma wartość prawda</param>
+            <returns name="bool">Prawda, jeśli którakolwiek z danych wejściowych ma wartość prawda</returns>
+            <search>or</search>
+        </member>
+		<member name="%nq">
+            <summary>Zwraca wartość prawda, jeśli dwie wartości są różne</summary>
+            <param name="x">Liczba całkowita lub wartość podwójna</param>
+            <param name="y">Liczba całkowita lub wartość podwójna</param>
+            <returns name="bool">Wynik sprawdzenia</returns>
+            <search>equal</search>
+        </member>
+		<member name="%Not">
+		            <summary>Neguje dane wejściowe, na przykład zwraca wartość false, jeśli dane wejściowe to true.</summary>
+            <param name="x">wartość logiczna do odwrócenia.</param>
+            <returns name="bool">typ var[]..[] (odwrócona wartość logiczna)</returns>
+            <search>not</search>
+        </member>
+    </members>
+</doc>

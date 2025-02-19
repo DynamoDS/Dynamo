@@ -1,0 +1,1865 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>DSCoreNodes</name>
+    </assembly>
+    <members>
+        <member name="P:DSCore.Color.Red">
+            <summary>Umožňuje najít červenou složku barvy, 0 až 255.</summary>
+            <returns name="int">Hodnota červené barvy pro barevný model RGB, typ int mezi 0 a 255, včetně.</returns>
+        </member>
+        <member name="P:DSCore.Color.Green">
+            <summary>Umožňuje najít zelenou složku barvy, 0 až 255.</summary>
+            <returns name="int">Hodnota zelené barvy pro barevný model RGB, typ int mezi 0 a 255, včetně</returns>
+        </member>
+        <member name="P:DSCore.Color.Blue">
+            <summary>Umožňuje najít modrou složku barvy, 0 až 255.</summary>
+            <returns name="int">Hodnota modré barvy pro barevný model RGB, typ int mezi 0 a 255, včetně</returns>
+        </member>
+        <member name="P:DSCore.Color.Alpha">
+            <summary>Umožňuje najít alfa složku barvy, 0 až 255.</summary>
+            <returns name="int">Hodnota alfa, typ int mezi 0 a 255, včetně</returns>
+        </member>
+        <member name="M:DSCore.Color.ByARGB(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Umožňuje vytvořit barvu pomocí alfa, červené, zelené a modré složky.</summary>
+            <param name="alpha">Hodnota alfa (mezi 0 a 255, včetně)</param>
+            <param name="red">Červená hodnota pro barevný model RGB (mezi 0 a 255, včetně)</param>
+            <param name="green">Zelená hodnota pro barevný model RGB (mezi 0 a 255, včetně)</param>
+            <param name="blue">Modrá hodnota pro barevný model RGB (mezi 0 a 255, včetně)</param>
+            <returns name="color">Barva vytvořená z modelu ARGB</returns>
+            <search>color</search>
+        </member>
+        <member name="M:DSCore.Color.Brightness(DSCore.Color)">
+            <summary>Vrátí hodnotu jasu pro tuto barvu.</summary>
+            <param name="color">Barva pro dotaz jasu</param>
+            <returns name="double">Hodnota jasu (mezi 0 a 1, včetně)</returns>
+        </member>
+        <member name="M:DSCore.Color.Saturation(DSCore.Color)">
+            <summary>Vrátí hodnotu sytosti pro tuto barvu.</summary>
+            <returns name="double">Hodnota sytosti, mezi 0 a 1, včetně.</returns>
+        </member>
+        <member name="M:DSCore.Color.Hue(DSCore.Color)">
+            <summary>Vrátí hodnotu odstínu pro tuto barvu.</summary>
+            <param name="color">Objekt barvy</param> 
+            <returns name="double">Hodnota odstínu pro barvu jako hodnota double mezi 0 a 1, včetně</returns>
+            <search>hues</search>
+        </member>
+        <member name="M:DSCore.Color.Components(DSCore.Color)">
+            <summary>Zobrazí seznam složek pro barvy v pořadí: alfa, červená, zelená a modrá.</summary>
+            <param name="color">Objekt barvy</param> 
+            <returns name="alpha">Hodnota alfa, typ int mezi 0 a 255, včetně</returns>
+            <returns name="red">Hodnota červené barvy pro barevný model RGB, typ int mezi 0 a 255, včetně</returns>
+            <returns name="green">Hodnota zelené barvy pro barevný model RGB, typ int mezi 0 a 255, včetně</returns>
+            <returns name="blue">Hodnota modré barvy pro barevný model RGB, typ int mezi 0 a 255, včetně</returns>
+            <search>alpha,red,green,blue</search>
+        </member>
+        <member name="M:DSCore.Color.BuildColorFrom1DRange(System.Collections.Generic.List{DSCore.Color},System.Collections.Generic.List{System.Double},System.Double)">
+            <summary>Vrátí barvu z barevného gradientu mezi počáteční a koncovou barvou.</summary>
+            <param name="colors"/>
+            <param name="parameters">Hodnoty mezi 0 a 1 v rozsahu, pro který chcete barvu vzorkovat</param>
+            <param name="parameter"/>
+            <returns name="colors">Barvy v daném rozsahu</returns>
+            <search>color,range,gradient</search>
+        </member>
+        <member name="M:DSCore.Color.Lerp(DSCore.Color,DSCore.Color,System.Double)">
+            <summary>Umožňuje provést lineární interpolaci mezi dvěma barvami.</summary>
+            <param name="start">Počáteční barva</param>
+            <param name="end">Koncová barva</param>
+            <param name="t">Parametr v rozmezí 0.0 až 1.0</param>
+            <returns>Interpolovaná barva nebo bílá barva</returns>
+        </member>
+        <member name="M:DSCore.Color.Blerp(System.Collections.Generic.IList{DSCore.Color.IndexedColor2D},Autodesk.DesignScript.Geometry.UV)">
+            <summary>Umožňuje provést bilineární interpolaci mezi sadu barev.</summary>
+            <param name="colors"/>
+            <param name="parameter"/>
+            <returns>Interpolovaná barva nebo bílá barva</returns>
+            This algorithm is not the same as the solution found from wikipedia 
+            (reference: https://en.wikipedia.org/wiki/Bilinear_interpolation)
+        </member>
+        <member name="M:DSCore.Color.Add(DSCore.Color,DSCore.Color)">
+            <summary>Vytvořte barvu tvořenou kombinací dvou ARGB hodnot dvou existujících barev.</summary>
+            <param name="color">Barva k přidání</param>
+            <param name="otherColor">Další barva k přidání</param>
+            <returns name="color">Výsledek barvy při přidání dvou barev</returns>
+        </member>
+        <member name="M:DSCore.Color.Multiply(DSCore.Color,System.Double)">
+            <summary>Vynásobte vstupní barvu číselným násobitelem a vytvořte tmavší barvu. Hodnota alfa vstupní barvy musí být menší než 255.</summary>
+            <param name="color">Barva pro násobení</param>
+            <param name="multiplier">Hodnota násobitele</param>
+            <returns name="color">Výsledek barvy z násobení</returns>
+        </member>
+        <member name="M:DSCore.Color.Divide(DSCore.Color,System.Double)">
+            <summary>Vydělte vstupní barvu číselným dělitelem a vytvořte jasnější barvu a odeberte barevný nádech.</summary>
+            <param name="color">Barva k dělení</param>
+            <param name="dividend">Hodnota dělitele</param>
+            <returns name="color">Výsledek barvy z dělení</returns>
+        </member>
+        <member name="M:DSCore.ColorRange1D.ByColorsAndParameters(System.Collections.Generic.List{DSCore.Color},System.Collections.Generic.List{System.Double})">
+            <summary>Po zadání seznamů barev a parametrů vytvoří objekt ColorRange1D.</summary>
+            <param name="colors">Seznam barev</param>
+            <param name="parameters">Seznam parametrů v rozmezí 0.0 až 1.0</param>
+            <returns>Objekt ColorRange1D</returns>
+        </member>
+        <member name="M:DSCore.ColorRange1D.GetColorAtParameter(DSCore.ColorRange1D,System.Double)">
+            <summary>Vrátí barvu v daném rozsahu barev v zadaném parametru.</summary>
+            <param name="colorRange"/>
+            <param name="parameter">Hodnota v rozmezí 0.0 až 1.0</param>
+            <returns>Barva</returns>
+        </member>
+        <member name="M:DSCore.ColorRange1D.Default">
+            <summary>Pomocí výchozího barevného schématu vytvoří objekt ColorRange1D.</summary>
+            <returns/>
+        </member>
+        <member name="M:DSCore.ColorRange.ByColorsAndParameters(System.Collections.Generic.IList{DSCore.Color},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.UV})">
+            <summary>Zadáním seznamů barev a atributů UV vytvořte objekt ColorRange.</summary>
+            <param name="colors">Seznam barev</param>
+            <param name="parameters">Seznam parametrů v rozsahu (0.0,0.0) a (1.0,1.0)</param>
+            <returns>Objekt ColorRange</returns>
+        </member>
+        <member name="M:DSCore.ColorRange.GetColorAtParameter(Autodesk.DesignScript.Geometry.UV)">
+            <summary>Vrátí barvu v daném rozsahu barev určeném zadaným parametrem.</summary>
+            <param name="parameter">Atribut UV v rozsahu (0.0,0.0) a (1.0,1.0)</param>
+            <returns>Barva</returns>
+        </member>
+        <member name="T:DSCore.Compare">
+            <summary>Srovnávací metody</summary>
+        </member>
+        <member name="M:DSCore.Compare.GreaterThan(System.Object,System.Object)">
+            <summary>Pokud je hodnota a větší než hodnota b, vrátí hodnotu true.</summary>
+            <param name="a">Porovnatelný objekt</param>
+            <param name="b">Porovnatelný objekt</param>
+            <returns name="bool">Výsledek ve formě logické hodnoty</returns>
+            <search>larger,bigger</search>
+        </member>
+        <member name="M:DSCore.Compare.GreaterThanOrEqual(System.Object,System.Object)">
+            <summary>Pokud je hodnota a větší než hodnota b nebo je jí rovna, vrátí hodnotu true.</summary>
+            <param name="a">Porovnatelný objekt</param>
+            <param name="b">Porovnatelný objekt</param>
+            <returns name="bool">Výsledek ve formě logické hodnoty</returns>
+            <search>larger,bigger,equal</search>
+        </member>
+        <member name="M:DSCore.Compare.LessThan(System.Object,System.Object)">
+            <summary>Pokud je hodnota a menší než hodnota b, vrátí hodnotu true.</summary>
+            <param name="a">Porovnatelný objekt</param>
+            <param name="b">Porovnatelný objekt</param>
+            <returns name="bool">Výsledek ve formě logické hodnoty</returns>
+            <search>less,smaller</search>
+        </member>
+        <member name="M:DSCore.Compare.LessThanOrEqual(System.Object,System.Object)">
+            <summary>Pokud je hodnota a menší než hodnota b nebo je jí rovna, vrátí hodnotu true.</summary>
+            <param name="a">Porovnatelný objekt</param>
+            <param name="b">Porovnatelný objekt</param>
+            <returns name="bool">Výsledek ve formě logické hodnoty</returns>
+            <search>smaller,equal</search>
+        </member>
+        <member name="M:DSCore.Data.ParseJSON(System.String)">
+            <summary>Analýza převede libovolný řetězec JSON na hodnotu. Jedná se o opak funkce JSON.Stringify.</summary>
+            <param name="json">Řetězec JSON</param>
+            <returns name="result">Typ výsledku závisí na obsahu ze vstupního řetězce. Typ výsledku může být základní hodnota (například řetězec, booleovská hodnota, hodnota double), seznam nebo slovník.</returns>
+        </member>
+        <member name="M:DSCore.Data.ToNative(Newtonsoft.Json.Linq.JToken)">
+            <summary>Implementace analýzy pro převod typů JToken na nativní objekty .NET.</summary>
+            <param name="token">JToken k analýze na N</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.DynamoJObjectToNative(Newtonsoft.Json.Linq.JObject)">
+            <summary>Implementace analýzy pro převod typů objektů JObject na určité objekty aplikace Dynamo (například geometrie, barva, obrázky atd.)</summary>
+            <param name="jObject"/>
+            <returns/>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:DSCore.Data.StringifyJSON(System.Object)">
+            <summary>Funkce Stringify převede libovolnou hodnotu nebo seznam libovolných hodnot do formátu JSON. Při provádění operace na seznamu je možné použít replikace a získat seznam řetězců JSON.</summary>
+            <param name="values">Seznam hodnot</param>
+            <returns name="json">Řetězec JSON, kde se základní typy (například celé číslo, double, booleovský), seznamy a slovníky převedou na asociovaný typ JSON.</returns>
+        </member>
+        <member name="T:DSCore.Data.MaxDepthJsonTextWriter">
+            <summary>Podtřída objektu JsonTextWriter, která omezuje maximální podporovanou hloubku objektu, aby se zabránilo kruhovým referenčním selháním při serializaci libovolných typů objektů .NET.</summary>
+        </member>
+        <member name="T:DSCore.Data.DictConverter">
+            <summary>Zajišťuje, že slovníky DesignScript.Builtin.Dictionary, které záměrně neimplementují položky IDictionary, jsou změněny na objekty JSON.</summary>
+        </member>
+        <member name="M:DSCore.Data.CanObjectBeCached(System.Object)">
+            <summary>Pomocná funkce k určení, zda lze objekt uložit do mezipaměti nebo zda se jedná o typ null, „null“ nebo prázdný seznam.</summary>
+            <param name="inputObject">Objekt ke kontrole</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.Remember(System.Object,System.String)">
+            <summary>Funkce pro ukládání uzlu Data.Remember do mezipaměti</summary>
+            <param name="inputObject">Objekt k uložení do mezipaměti</param>
+            <param name="cachedJson">Volitelný soubor json existující mezipaměti</param>
+            <returns/>
+        </member>
+        <member name="T:DSCore.Data.DataNodeDynamoType">
+            <summary>Třída představující typ dat podporovaný aplikací Dynamo</summary>
+        </member>
+        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String)">
+            <summary>Třída představující typ dat podporovaný aplikací Dynamo</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Type">
+            <summary>Základní typ</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Name">
+            <summary>Volitelný název, který přepíše název typu (`NUmber` místo `long`)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Level">
+            <summary>Hierarchická úroveň, která se má zobrazit v uživatelském rozhraní</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.IsLastChild">
+            <summary>Pokud je typ poslední podřazený prvek hierarchie (pro účely uživatelského rozhraní)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Parent">
+            <summary>Nadřazený objekt Type, pokud existuje</summary>
+        </member>
+        <member name="F:DSCore.Data.DataNodeDynamoTypeList">
+            <summary>Statický seznam pro všechny typy dat podporované aplikací Dynamo</summary>
+            <returns>Seznam obsahující podporované typy dat</returns>
+        </member>
+        <member name="M:DSCore.Data.#cctor">
+            <summary>Statický konstruktor</summary>
+        </member>
+        <member name="M:DSCore.Data.SafeExtractDictionaryValue(System.Collections.Generic.Dictionary{System.String,System.Object},System.String)">
+            <summary>Pomocná funkce pro bezpečné extrahování hodnoty slovníku</summary>
+            <param name="dict">Slovník, ze kterého se má extrahovat hodnota</param>
+            <param name="key">Klíč dvojice klíč/hodnota</param>
+        </member>
+        <member name="M:DSCore.Data.EvaluateDefineDataNode(System.Object,System.String,System.Boolean,System.Boolean,System.String)">
+            <summary>Toto je funkce používaná aplikací AST k vyhodnocení uzlu Definovat data.
+            Při provádění ověření zpracovává část logiky uzlu.</summary>
+            <param name="inputValue">Vstupní hodnota proti směru proudu</param>
+            <param name="typeString">Typ jako řetězec (Úkol: Lepší je předat objekt typu 'Type' pro přímé porovnání typů)</param>
+            <param name="isList">Pokud je vstup typu `ArrayList`</param>
+            <param name="isAutoMode">Pokud je uzel v automatickém režimu.</param>
+            <param name="playerValue">Hodnota předávaná do uzlu aplikací Přehrávač skriptů Dynamo, pokud existuje.</param>
+        </member>
+        <member name="M:DSCore.Data.FindCommonAncestor(System.Collections.ArrayList)">
+            <summary>Funkce, která pomáhá najít typ v případě, že byl v režimu AutoMode předán objekt ArrayList objektů</summary>
+            <param name="list">Vstupní hodnota, u které se očekává, že bude typu ArrayList</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.LikelyAncestor(System.Collections.Generic.List{DSCore.Data.DataNodeDynamoType})">
+            <summary>Pomocná funkce vracející uzel nejnižší úrovně ze seznamu uzlů DataNodeDynamoType</summary>
+            <param name="nodes">Seznam DataNodeDynamoType k vyhodnocení</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.FindClosestCommonAncestor(System.Collections.Generic.List{DSCore.Data.DataNodeDynamoType})">
+            <summary>Pomocná funkce pro určení společného předchůdce v seznamu typů dat</summary>
+            <param name="nodes">Seznam uzlů DataType, které chcete vyhodnotit</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.FindCommonAncestorBetweenTwoNodes(DSCore.Data.DataNodeDynamoType,DSCore.Data.DataNodeDynamoType)">
+            <summary>Rekurzivní funkce pro hledání společného předchůdce mezi dvěma typy aplikace Dynamo
+             Vystoupí nahoru na hierarchický strom pravděpodobného předchůdce, dokud se</summary>
+            <param name="node">Zkontrolovat, zda je tento uzel odvozen od pravděpodobného předchůdce</param>
+            <param name="likelyAncestor">Pravděpodobný předchůdce, ze kterého by měl být uzel odvozen</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.GetListFromTypes(System.Collections.ArrayList)">
+            <summary>Vrátí seznam objektů DataNodeDynamoTypes z objektu ArrayList objektů.</summary>
+            <param name="list">Objekt ArrayList objektů, které chcete přeformátovat</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
+            <summary>Zkontrolujte, zda je vstupní objekt jedna hodnota nebo objekt ArrayList jedné úrovně.</summary>
+            <param name="obj">Vstupní objekt k vyhodnocení</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsSupportedDataNodeDynamoType(System.Object,System.Type,System.Boolean)">
+            <summary>Funkce k ověření typu vstupu oproti podporovaným typům vstupů aplikace Dynamo</summary>
+            <param name="inputValue">Vstupní data k ověření</param>
+            <param name="type">Typ vstupu poskytnutý uživatelem. Musí odpovídat typu inputValue.</param>
+            <param name="isList">Hodnota této booleovské operace určuje, zda je vstupem jeden objekt nebo seznam.</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsItemOfType(System.Object,System.Type)">
+            <summary>Tato metoda kontroluje, zda je položka požadovaným typem dat aplikace Dynamo
+ 'IsInstanceOfType' zpětně kontroluje dědičnost.</summary>
+            <param name="item">Položka, pro kterou se má zkontrolovat typ dat</param>
+            <param name="dataType">Typ dat, vůči kterému se má provést kontrola</param>
+            <returns>Výsledek true nebo false na základě ověření kontroly</returns>
+        </member>
+        <member name="M:DSCore.Data.IsDerivedFrom(System.Type,System.Type)">
+            <summary>Tato metoda kontroluje, zda je typ odvozen od základního typu.</summary>
+            <param name="derivedType">Typ, který chceme potvrdit</param>
+            <param name="baseType">Základní typ, se kterým porovnáváme</param>
+            <returns/>
+        </member>
+        <member name="T:DSCore.DateTime">
+            <summary>Objekt představující určité datum a čas</summary>
+        </member>
+        <member name="P:DSCore.DateTime.MinValue">
+            <summary>Nejdřívější datum a čas, které mohou být reprezentovány</summary>
+            <returns name="dateTime">Minimální možná položka DateTime</returns>
+        </member>
+        <member name="P:DSCore.DateTime.MaxValue">
+            <summary>Nejpozdější datum a čas, které mohou být reprezentovány</summary>
+            <returns name="dateTime">Maximální možná položka DateTime</returns>
+        </member>
+        <member name="P:DSCore.DateTime.Now">
+            <summary>Aktuální systémové datum a čas</summary>
+            <returns name="dateTime">Položka DateTime reprezentující aktuální čas</returns>
+        </member>
+        <member name="P:DSCore.DateTime.Today">
+            <summary>Aktuální systémové datum s časem nastaveným na půlnoc</summary>
+            <returns name="dateTime">Položka DateTime reprezentující dnešek</returns>
+        </member>
+        <member name="M:DSCore.DateTime.Format(System.DateTime,System.String)">
+             <summary>Vrátí zadané datum a čas v podobě řetězce v zadaném formátu.</summary>
+             <param name="dateTime">Položka DateTime k formátování</param>
+             <param name="format">Řetězcová reprezentace formátu data. Používá vlastnost InvariantCulture, jejíž výstup je nezávislý na jazyku operačního systému uživatele.
+Jako výchozí je nastaven standardní formát „F“: „Úterý, 21. února 2017 23:02:43“.
+Úplný seznam specifikátorů formátu najdete v článku Vlastní řetězce formátu data a času ve službě MSDN.</param>
+             <returns name="string">Položka DateTime reprezentovaná jako řetězec</returns>
+        </member>
+        <member name="M:DSCore.DateTime.ByDate(System.Int32,System.Int32,System.Int32)">
+            <summary>Vytvoří novou hodnotu DateTime v přesném datu.</summary>
+            <param name="year">Přesný rok (1–9999)</param>
+            <param name="month">Přesný měsíc (1–12)</param>
+            <param name="day">Přesný den (1 – [počet dní v měsíci])</param>
+            <returns name="dateTime">Položka DateTime vytvořená z data</returns>
+        </member>
+        <member name="M:DSCore.DateTime.ByDateAndTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Vytvoří novou hodnotu DateTime v přesném datu a čase.</summary>
+            <param name="year">Přesný rok (1–9999)</param>
+            <param name="month">Přesný měsíc (1–12)</param>
+            <param name="day">Přesný den (1 – [počet dní v měsíci])</param>
+            <param name="hour">Přesná hodina (0–23)</param>
+            <param name="minute">Přesná minuta (0–59)</param>
+            <param name="second">Přesná sekunda (0–59)</param>
+            <param name="millisecond">Přesná milisekunda (0–999)</param>
+            <returns name="dateTime">Položka DateTime vytvořená z data a času</returns>
+        </member>
+        <member name="M:DSCore.DateTime.SubtractTimeSpan(System.DateTime,System.TimeSpan)">
+            <summary>Odečte hodnotu TimeSpan od hodnoty DateTime, čímž vznikne nová hodnota DateTime.</summary>
+            <param name="dateTime">Počáteční hodnota položky DateTime</param>
+            <param name="timeSpan">Hodnota k odečtení</param>
+            <returns name="dateTime">Výsledný prvek DateTime z odečtení</returns>
+        </member>
+        <member name="M:DSCore.DateTime.AddTimeSpan(System.DateTime,System.TimeSpan)">
+            <summary>Přičte hodnotu TimeSpan k hodnotě DateTime, čímž vznikne nová hodnota DateTime.</summary>
+            <param name="dateTime">Počáteční hodnota položky DateTime</param>
+            <param name="timeSpan">Hodnota času k přidání do položky DateTime</param>
+            <returns name="dateTime">Výsledná položka DateTime z přidání hodnoty timespan</returns>
+        </member>
+        <member name="M:DSCore.DateTime.DaysInMonth(System.Int32,System.Int32)">
+            <summary>Vypočítá počet dnů v daném měsíci daného roku.</summary>
+            <param name="year">Přesný rok (1–9999)</param>
+            <param name="month">Přesný měsíc (1–12)</param>
+            <returns name="int">Počet dní v měsíci</returns>
+        </member>
+        <member name="M:DSCore.DateTime.IsDaylightSavingsTime(System.DateTime)">
+            <summary>Určuje, zda u dané hodnoty DateTime platí letní čas.</summary>
+            <param name="dateTime">Položka DateTime, která se používá k určení, zda tam jsou letní časy</param>
+            <returns name="bool">Hodnota True, pokud je položka DateTime v letním čase, hodnota False, pokud není</returns>
+        </member>
+        <member name="M:DSCore.DateTime.IsLeapYear(System.Int32)">
+            <summary>Určuje, zda je daný rok přestupný.</summary>
+            <param name="year">Přesný rok (1–9999)</param>
+            <returns name="bool">Hodnota True, pokud je rok přestupný, hodnota False, pokud není</returns>
+        </member>
+        <member name="M:DSCore.DateTime.FromString(System.String)">
+            <summary>Pokusí se načíst položku DateTime z řetězce</summary>
+            <param name="string">Řetězcová reprezentace položky DateTime</param>
+            <returns name="dateTime">Položka DateTime z analyzovaného řetězce</returns>
+        </member>
+        <member name="M:DSCore.DateTime.Date(System.DateTime)">
+            <summary>Extrahuje z hodnoty DateTime pouze datum. Komponenty času jsou nastaveny na hodnotu 0.</summary>
+            <param name="dateTime">Hodnota DateTime</param>
+            <returns name="date">datum z položky DateTime</returns>
+            <search>Date</search>
+        </member>
+        <member name="M:DSCore.DateTime.Components(System.DateTime)">
+            <summary>Extrahuje jednotlivé komponenty hodnoty DateTime.</summary>
+            <param name="dateTime">Položka DateTime k získání komponent</param>
+            <returns name="year">Numerická reprezentace roku (1–9999)</returns>
+            <returns name="month">Numerická reprezentace měsíce (1–12)</returns>
+            <returns name="day">Numerická reprezentace dne (1-[dní v měsíci])</returns>
+            <returns name="hour">Numerická reprezentace hodiny (0–23)</returns>
+            <returns name="minute">Numerické znázornění minut (0–59)</returns>
+            <returns name="second">Numerická reprezentace sekund (0–59)</returns>
+            <returns name="millisecond">Numerická reprezentace milisekund (0–999)</returns>
+        </member>
+        <member name="M:DSCore.DateTime.DayOfWeek(System.DateTime)">
+            <summary>Vrátí den v týdnu z dané hodnoty DateTime.</summary>
+            <param name="dateTime">Objekt položky DateTime k získání dne týdne</param>
+            <returns name="dayOfWeek">Den v týdnu</returns>
+        </member>
+        <member name="M:DSCore.DateTime.DayOfYear(System.DateTime)">
+            <summary>Vrací den roku (0–366).</summary>
+            <param name="dateTime">Položka DateTime k získání dne roku</param>
+            <returns name="int">Počet dnů od začátku roku</returns>
+        </member>
+        <member name="M:DSCore.DateTime.TimeOfDay(System.DateTime)">
+            <summary>Vytvoří novou hodnotu TimeSpan, která představuje čas uplynulý od půlnoci
+                dané hodnoty DateTime.</summary>
+            <param name="dateTime">Hodnota DateTime</param>
+            <returns name="timeSpan">Hodnota TimeSpan od půlnoci</returns>
+        </member>
+        <member name="T:DSCore.DayOfWeek">
+            <summary>Dny v týdnu</summary>
+        </member>
+        <member name="T:DSCore.TimeSpan">
+            <summary>Objekt představující uplynulé časové období, bez konkrétního počátečního nebo koncového data</summary>
+        </member>
+        <member name="M:DSCore.TimeSpan.ByDateDifference(System.DateTime,System.DateTime)">
+            <summary>Vytvoří novou hodnotu TimeSpan vypočtenou jako rozdíl mezi dvěma položkami DateTime</summary>
+            <param name="dateTime">Položka DateTime k odečtení</param>
+            <param name="otherDateTime">Položka DateTime k odečtení</param>
+            <returns name="timeSpan">Hodnota TimeSpan mezi dvěma daty</returns>
+        </member>
+        <member name="P:DSCore.TimeSpan.Zero">
+            <summary>Hodnota TimeSpan reprezentující nulový uplynulý čas</summary>
+            <returns name="timeSpan">Hodnota TimeSpan reprezentující uplynulý čas nuly</returns>
+        </member>
+        <member name="P:DSCore.TimeSpan.MaxValue">
+            <summary>Největší hodnota TimeSpan, která může být reprezentována</summary>
+            <returns name="timeSpan">Maximální možná hodnota TimeSpan</returns>
+        </member>
+        <member name="P:DSCore.TimeSpan.MinValue">
+            <summary>Nejmenší hodnota TimeSpan, která může být reprezentována</summary>
+            <returns name="timeSpan">Minimální možná hodnota TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Create(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>Vytvoří novou hodnotu TimeSpan z časového rozsahu.</summary>
+            <param name="days">Dny rozsahu</param>
+            <param name="hours">Hodiny rozsahu</param>
+            <param name="minutes">Minuty rozsahu</param>
+            <param name="seconds">Sekundy rozsahu</param>
+            <param name="milliseconds">Milisekundy rozsahu</param>
+            <returns name="timeSpan">Vytvořená hodnota TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Scale(System.TimeSpan,System.Double)">
+            <summary>Znásobí hodnotu TimeSpan faktorem měřítka</summary>
+            <param name="timeSpan">Hodnota TimeSpan ke znásobení</param>
+            <param name="scaleFactor">Množství pro změnu měřítka hodnoty TimeSpan. Například faktor měřítka 2
+            zdvojnásobí časový rozsah.</param>
+            <returns name="timeSpan">Produkt hodnoty TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Negate(System.TimeSpan)">
+            <summary>Zneguje hodnotu TimeSpan</summary>
+            <param name="timeSpan">Hodnota TimeSpan ke znegování</param>
+            <returns name="timeSpan">Negativní hodnota TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Add(System.TimeSpan,System.TimeSpan)">
+            <summary>Přidá dvě hodnoty TimeSpan</summary>
+            <param name="timeSpan1">Hodnota TimeSpan k přidání</param>
+            <param name="timeSpan2">Jiná hodnota TimeSpan k přidání</param>
+            <returns name="timeSpan">Výsledná hodnota TimeSpan ze součtu</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Subtract(System.TimeSpan,System.TimeSpan)">
+            <summary>Odečte dvě hodnoty TimeSpan</summary>
+            <param name="timeSpan1">Hodnota TimeSpan k odečtení</param>
+            <param name="timeSpan2">Hodnota TimeSpan k odečtení</param>
+            <returns name="timeSpan">Výsledná hodnota TimeSpan z odečtení</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.FromString(System.String)">
+            <summary>Pokusí se načíst hodnotu TimeSpan z řetězce</summary>
+            <param name="string">Řetězcová reprezentace hodnoty TimeSpan</param>
+            <returns name="timeSpan">Hodnota TimeSpan z analyzovaného řetězce</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Components(System.TimeSpan)">
+            <summary>Extrahuje jednotlivé komponenty hodnoty TimeSpan.</summary>
+            <param name="timeSpan">Hodnota TimeSpan k získání komponent</param>
+            <returns name="days">Počet dnů (typ int)</returns>
+            <returns name="hours">Počet hodin (typ int)</returns>
+            <returns name="minutes">Počet minut (typ int)</returns>
+            <returns name="seconds">Počet sekund (typ int)</returns>
+            <returns name="milliseconds">Počet milisekund (typ int)</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalDays(System.TimeSpan)">
+            <summary>Převede celkový čas reprezentovaný hodnotou TimeSpan na
+                nepřesný počet dnů.</summary>
+            <param name="timeSpan">Hodnota TimeSpan pro dotaz celkových dnů</param>
+            <returns name="double">Celkový počet dnů</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalHours(System.TimeSpan)">
+            <summary>Převede celkový čas reprezentovaný hodnotou TimeSpan na
+                nepřesný počet hodin.</summary>
+            <param name="timeSpan">Hodnota TimeSpan pro dotaz celkových hodin</param>
+            <returns name="double">Celkový počet hodin</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalMinutes(System.TimeSpan)">
+            <summary>Převede celkový čas reprezentovaný hodnotou TimeSpan na
+                nepřesný počet minut.</summary>
+            <param name="timeSpan">Hodnota TimeSpan pro dotaz celkových minut</param>
+            <returns name="double">Celkový počet minut</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalSeconds(System.TimeSpan)">
+            <summary>Převede celkový čas reprezentovaný hodnotou TimeSpan na
+                nepřesný počet sekund.</summary>
+            <param name="timeSpan">Hodnota TimeSpan pro dotaz celkových sekund</param>
+            <returns name="double">Celkový počet sekund</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalMilliseconds(System.TimeSpan)">
+            <summary>Převede celkový čas reprezentovaný hodnotou TimeSpan na
+                nepřesný počet milisekund.</summary>
+            <param name="timeSpan">Hodnota TimeSpan pro dotaz celkových milisekund</param>
+            <returns name="double">Celkový počet milisekund</returns>
+        </member>
+        <member name="T:DSCore.IO.FileSystem">
+            <summary>Metody pro práci se soubory</summary>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.AbsolutePath(System.String,System.String)">
+            <summary>Ze zadané cesty vrátí absolutní cestu. Pokud je zadaná cesta 
+            relativní cestou, bude rozpoznána s ohledem na aktuální 
+            pracovní prostor. Pokud soubor neexistuje v relativní cestě, ale existuje
+            v zadané cestě hintPath, bude jako výsledek vrácena cesta hintPath.</summary>
+            <param name="path">Relativní nebo úplná cesta</param>
+            <param name="hintPath">Poslední rozpoznaná cesta</param>
+            <returns>Absolutní cesta</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileFromPath(System.String)">
+            <summary>Z dané cesty k souboru vytvoří objekt souboru.</summary>
+            <param name="path"/>
+            <returns/>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.ReadText(System.IO.FileInfo)">
+            <summary>Čte textový soubor a vrací obsah jako řetězec.</summary>
+            <param name="file">Objekt souboru ke čtení textu</param>
+            <returns name="string">Obsah textového souboru</returns>
+            <search>read file,text,file</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.MoveFile(System.String,System.String,System.Boolean)">
+            <summary>Přesune určený soubor do nového umístění.</summary>
+            <param name="path">Řetězcová reprezentace existující cesty</param>
+            <param name="newPath">Řetězcová reprezentace nové cesty</param>
+            <param name="overwrite">Přepnout k přepsání existujících souborů</param>
+            <returns name="void">Uzel provede úlohu, nevytvoří výstup</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DeleteFile(System.String)">
+            <summary>Odstraní zadaný soubor.</summary>
+            <param name="path">Cesta k souboru k vymazání</param>
+            <returns name="void">Uzel provede úlohu, nevytvoří výstup</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.CopyFile(System.IO.FileInfo,System.String,System.Boolean)">
+            <summary>Zkopíruje soubor.</summary>
+            <param name="file">Objekt souboru ke kopírování</param>
+            <param name="destinationPath">Řetězcová reprezentace cílové cesty souboru</param>
+            <param name="overwrite">Přepnout k přepsání existujících souborů</param>
+            <returns name="bool">Uzel provede úlohu, vrací hodnotu true, pokud bude akce kopírování úspěšná.</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileExists(System.String)">
+            <summary>Určuje, zda soubor existuje v zadané cestě.</summary>
+            <param name="path">Řetězec představující cestu k souboru</param>
+            <returns name="bool">Hodnota True, pokud soubor existuje, hodnota False, pokud neexistuje</returns>
+            <search>filepath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.WriteText(System.String,System.String)">
+            <summary>Zapíše textový obsah do souboru určeného cestou.</summary>
+            <param name="filePath">Cesta, do níž se má zapisovat</param>
+            <param name="text">Textový obsah</param>
+            <returns name="void">Žádný výstup</returns>
+            <search>write file,text,file,filepath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.AppendText(System.String,System.String)">
+            <summary>Připojit obsah textu do souboru určeného cestou</summary>
+            <param name="filePath">Cesta, do níž se má zapisovat</param>
+            <param name="text">Textový obsah</param>
+            <returns name="void">Uzel provede úlohu, nevytvoří výstup</returns>
+            <search>append file,write file,text,file,filepath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.CombinePath(System.String[])">
+            <summary>Sloučí více řetězců do jedné cesty k souboru.</summary>
+            <param name="strings">Řetězce pro sloučení do cesty</param>
+            <returns name="string">Kombinovaná cesta k souboru</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileExtension(System.String)">
+            <summary>Vrátí příponu pro cestu k souboru.</summary>
+            <param name="path">Cesta k získání přípony</param>
+            <returns name="string">Přípona souboru</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.ChangePathExtension(System.String,System.String)">
+            <summary>Změní příponu pro cestu k souboru.</summary>
+            <param name="path">Cesta ke změnění přípony</param>
+            <param name="newExtension">Reprezentující řetězec nové přípony</param>
+            <returns name="string">Cesta k souboru se změněnou příponou</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DirectoryName(System.String)">
+            <summary>Vrátí název adresáře pro cestu k souboru.</summary>
+            <param name="path">Cesta k získání informace o adresáři</param>
+            <returns name="string">Název adresáře cesty k souboru</returns>
+            <search>directorypath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileName(System.String,System.Boolean)">
+            <summary>Vrátí název souboru pro cestu k souboru.</summary>
+            <param name="path">Cesta k získání názvu souboru</param>
+            <param name="withExtension">Přepnout k zahrnutí přípony ve výsledku</param>
+            <returns name="string">Název souboru z cesty k souboru</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileHasExtension(System.String)">
+            <summary>Určuje, zda cesta k souboru obsahuje příponu či nikoli.</summary>
+            <param name="path">Cesta ke kontrole přípony</param>
+            <returns name="bool">Hodnota True, pokud cesta k souboru obsahuje příponu, hodnota False, pokud ji neobsahuje</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.GetDirectoryContents(System.IO.DirectoryInfo,System.String,System.Boolean)">
+            <summary>Vrátí seznam souborů a adresářů, které jsou obsaženy v daném adresáři. K filtrování výsledků lze použít volitelný řetězec vyhledávání.</summary>
+            <param name="directory">Adresář k získání obsahů</param>
+            <param name="searchString">Hledat řetězec používaný k filtrování výsledků</param>
+            <param name="includeSubdirectories">Nastavte hodnotu na True, pokud chcete zahrnout soubory a složky do podadresářů (rekurzivní) nebo nastavte hodnotu na False, pokud chcete zahrnout výsledky pouze z nejvyšší úrovně daného adresáře.</param>
+            <returns name="files">Výsledné soubory z dotazu</returns>
+            <returns name="directories">Výsledné adresáře z dotazu</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.CopyDirectory(System.IO.DirectoryInfo,System.String,System.Boolean)">
+            <summary>Zkopíruje adresář do cílového umístění.</summary>
+            <param name="directory">Adresář ke zkopírování</param>
+            <param name="destinationPath">Cílové umístění operace kopírování na disku</param>
+            <param name="overwriteFiles">Přepnout pro přepsání existujícího adresáře</param>
+            <returns name="void">Uzel provede úlohu, nevytvoří výstup</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DeleteDirectory(System.String,System.Boolean)">
+            <summary>Odstraní adresář.</summary>
+            <param name="path">Cesta k adresáři na disku</param>
+            <param name="recursive">Určuje, zda chcete odstranit veškerý obsah adresáře, či nikoli. Výchozí hodnotou je false (nepravda).</param>
+            <returns name="void">Uzel provede úlohu, nevytvoří výstup</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DirectoryExists(System.String)">
+            <summary>Určuje, zda adresář existuje v zadané cestě.</summary>
+            <param name="path">Cesta k adresáři na disku</param>
+            <returns name="bool">Hodnota True, pokud adresář existuje, hodnota False, pokud neexistuje</returns>
+            <search>directorypath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.MoveDirectory(System.String,System.String,System.Boolean)">
+            <summary>Přesune adresář do nového umístění.</summary>
+            <param name="path">Řetězcová reprezentace existující cesty</param>
+            <param name="newPath">Řetězcová reprezentace nové cesty</param>
+            <param name="overwriteFiles">Přepnout k přepsání existujících souborů</param>
+            <returns name="void">Uzel provede úlohu, nevytvoří výstup</returns>
+        </member>
+        <member name="T:DSCore.IO.Image">
+            <summary>Metody pro práci v nástroji Image Bitmaps</summary>
+        </member>
+        <member name="M:DSCore.IO.Image.ReadFromFile(System.IO.FileInfo)">
+            <summary>Načte soubor jako rastrový obrázek.</summary>
+            <param name="file">Objekt souboru k načtení obrázku</param>
+            <returns name="image">Objekt obrázku ze souboru</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.Pixels(System.Drawing.Bitmap,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>Načte soubor obrázku a vrátí hodnoty barev v zadaných umístěních rastru.</summary>
+            <param name="image">Objekt obrázku k získání barev pixelů</param>
+            <param name="xSamples">Počet ukázkových bodů rastru ve směru X</param>
+            <param name="ySamples">Počet ukázkových bodů rastru ve směru Y</param>
+            <returns name="colors">Barvy v zadaných bodech rastru</returns>
+            <search>read,image,bitmap,png,jpg,jpeg</search>
+        </member>
+        <member name="M:DSCore.IO.Image.FromPixels(DSCore.Color[][])">
+            <summary>Vytvoří obrázek z 2D seznamu pixelů.</summary>
+            <param name="colors">2D obdélníkový seznam barev představující pixely</param>
+            <returns name="image">Obrázek z 2D seznamu pixelů</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.FromPixels(DSCore.Color[],System.Int32,System.Int32)">
+            <summary>Vytvoří obrázek z plochého seznamu pixelů, šířky a výšky.</summary>
+            <param name="colors">Seznam barev představujících pixely</param>
+            <param name="width">Šířka nového obrázku v pixelech</param>
+            <param name="height">Výška nového obrázku v pixelech</param>
+            <returns name="image">Obrázek ze seznamu pixelů</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.Dimensions(System.Drawing.Bitmap)">
+            <summary>Vrátí šířku a výšku obrázku.</summary>
+            <param name="image">Obrázek, jehož rozměry chcete získat</param>
+            <returns name="width">šířka obrázku v pixelech</returns>
+            <returns name="height">výška obrázku v pixelech</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.WriteToFile(System.String,System.Drawing.Bitmap)">
+            <summary>Zapište obrázek do cesty pro daný název souboru.</summary>
+            <param name="path"/>
+            <param name="image">Obrázek, který chcete zapsat</param>
+            <returns name="image">Vytvořený objekt obrázku</returns>
+            <search>write image,image,file,filepath</search>
+        </member>
+        <member name="T:DSCore.List">
+            <summary>Metody pro tvorbu a práci se seznamy</summary>
+        </member>
+        <member name="P:DSCore.List.Empty">
+            <summary>Vrátí prázdný seznam.</summary>
+            <returns name="list">Prázdný seznam</returns>
+            <search>empty list, emptylist,[]</search>
+        </member>
+        <member name="M:DSCore.List.UniqueItems(System.Collections.IList)">
+            <summary>Vytvoří nový seznam obsahující všechny jedinečné položky v daném seznamu.</summary>
+            <param name="list">Seznam, z něhož se mají filtrovat duplicity</param>
+            <returns name="list">Filtrovaný seznam</returns>
+            <search>removes,duplicates,remove duplicates,cull duplicates,distinct,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.Contains(System.Collections.IList,System.Object)">
+            <summary>Určuje, zda zadaný seznam obsahuje danou položku. Tato funkce prohledává dílčí seznamy, které jsou v něm obsažené.</summary>
+            <param name="list">Seznam, ve kterém se má vyhledávat</param>
+            <param name="item">Položka, kterou chcete hledat</param>
+            <returns name="bool">Hodnota True, pokud seznam obsahuje danou položku, hodnota False, pokud ji neobsahuje</returns>
+            <search>item,search,in,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.IsHomogeneous(System.Collections.IList)">
+            <summary>Zkontrolujte, zda jsou položky v seznamu stejného typu.</summary>
+            <param name="list">Seznam, jehož homogenita má být kontrolována</param>
+            <returns name="bool">Označuje, zda je seznam homogenní.</returns>
+            <search>homogeneous,allequal,same,type</search>
+        </member>
+        <member name="M:DSCore.List.IsRectangular(System.Collections.IList)">
+            <summary>Zkontrolujte, zda je počet položek ve všech řádcích seznamu stejný.</summary>
+            <param name="list">Seznam, ve kterém má být kontrolováno, zda řádky obsahují stejný počet položek</param>
+            <returns name="bool">Označuje, že je ve všech řádcích seznamu stejný počet položek.</returns>
+            <search>rectangular,isrectangular,same,sublist,row</search>
+        </member>
+        <member name="M:DSCore.List.IsUniformDepth(System.Collections.IList)">
+            <summary>Zkontrolujte, zda mají položky v seznamu stejnou hloubku.</summary>
+            <param name="list">Seznam, ve kterém má být kontrolováno, zda mají položky stejnou hloubku</param>
+            <returns name="bool">Označuje, zda je hloubka seznamu stejná.</returns>
+            <search>depth,uniform,isuniformdepth,sublist,jagged</search>
+        </member>
+        <member name="M:DSCore.List.SetDifference(System.Collections.Generic.IList{System.Object},System.Collections.Generic.IList{System.Object})">
+            <summary>Vrátí nový seznam obsahující objekty, které jsou v seznamu List1, ale nejsou v seznamu List2.</summary>
+            <param name="list1">Seznam objektů k zahrnutí v novém seznamu</param>
+            <param name="list2">Seznam objektů k vyřazení z nového seznamu</param>
+            <returns name="list">Nový seznam obsahující objekty, které jsou v seznamu List1, ale nejsou v seznamu List2</returns>
+            <search>difference,setdifference,set</search>
+        </member>
+        <member name="M:DSCore.List.SetIntersection(System.Collections.Generic.IList{System.Object},System.Collections.Generic.IList{System.Object})">
+            <summary>Vrátí nový seznam obsahující objekty, které jsou v seznamu List1 i v seznamu List2.</summary>
+            <param name="list1">Seznam objektů k porovnání se seznamem List2</param>
+            <param name="list2">Seznam objektů k porovnání se seznamem List1</param>
+            <returns name="list">Nový seznam obsahující objekty, které jsou v seznamu List1 i v seznamu List2</returns>
+            <search>intersection,setintersection,set,overlap</search>
+        </member>
+        <member name="M:DSCore.List.SetUnion(System.Collections.Generic.IList{System.Object},System.Collections.Generic.IList{System.Object})">
+            <summary>Vrátí nový seznam obsahující objekty, které jsou v seznamu List1 nebo v seznamu List2.</summary>
+            <param name="list1">Seznam objektů k zahrnutí</param>
+            <param name="list2">Seznam objektů k zahrnutí do seznamu List1</param>
+            <returns name="list">Nový seznam obsahující objekty, které jsou v seznamu List1 nebo v seznamu List2</returns>
+            <search>union,setunion,set</search>
+        </member>
+        <member name="M:DSCore.List.IndexOf(System.Collections.IList,System.Object)">
+            <summary>Vrací index prvku v daném seznamu. Shoda mezi daným seznamem a cílovým prvkem musí být striktní (tj. int k int, double k double, string ke string, object k object atd.).</summary>
+            <param name="list">Seznam, ve kterém má být prvek hledán</param>
+            <param name="element">Prvek, jehož index chcete vrátit</param>
+            <returns name="int">Index prvku v seznamu. Pokud není nalezena striktní shoda, je vrácen neplatný index -1.</returns>
+            <search>index,indexof</search>
+        </member>
+        <member name="M:DSCore.List.CountFalse(System.Collections.IList)">
+            <summary>Vrátí počet logických hodnot False v daném seznamu</summary>
+            <param name="list">Seznam, ve kterém mají být logické hodnoty False hledány</param>
+            <returns name="int">Počet logických hodnot False v seznamu</returns>
+            <search>false,count</search>
+        </member>
+        <member name="M:DSCore.List.CountTrue(System.Collections.IList)">
+            <summary>Vrátí počet logických hodnot True v daném seznamu</summary>
+            <param name="list">Seznam, ve kterém mají být logické hodnoty True hledány</param>
+            <returns name="int">Počet logických hodnot True v seznamu</returns>
+            <search>true,count</search>
+        </member>
+        <member name="M:DSCore.List.Insert(System.Collections.IList,System.Object,System.Int32)">
+            <summary>Vloží do seznamu prvek, a to na místo určené zadaným indexem.</summary>
+            <param name="list">Seznam, do kterého bude prvek vložen</param>
+            <param name="element">Prvek k vložení</param>
+            <param name="index">Určuje umístění vkládaného prvku v seznamu</param>
+            <returns name="list">Seznam s vloženým prvkem</returns>
+            <search>insert,add</search>
+        </member>
+        <member name="M:DSCore.List.Reorder(System.Collections.IList,System.Collections.IList)">
+            <summary>Změní pořadí položek ve vstupním seznamu na základě daného seznamu indexů.</summary>
+            <param name="list">Seznam, ve kterém má být změněno pořadí položek</param>
+            <param name="indices">Indexy sloužící k určené nového pořadí položek v seznamu</param>
+            <returns name="list">Seznam s položkami ve změněném pořadí</returns>
+            <search>reorder,index,indices</search>
+        </member>
+        <member name="M:DSCore.List.SortIndexByValue(System.Collections.Generic.List{System.Double})">
+            <summary>Seřadí položky v seznamu a vrátí jejich indexy.</summary>
+            <param name="list">Seznam položek k seřazení</param>
+            <returns name="int[]">Indexy položek v seřazeném seznamu</returns>
+            <search>sort,index,value</search>
+        </member>
+        <member name="M:DSCore.List.NormalizeDepth(System.Collections.IList,System.Int32)">
+            <summary>Vrátí vícerozměrný seznam na základě daného počtu úrovní.</summary>
+            <param name="list">Seznam, jehož hloubka má být normalizována na základě počtu úrovní</param>
+            <param name="rank">Počet úrovní pro normalizaci seznamu. Výchozí hodnota je 1.</param>
+            <returns name="list">Seznam s normalizovaným počtem úrovní</returns>
+            <search>depth,normalize</search>
+        </member>
+        <member name="M:DSCore.List.Reverse(System.Collections.IList)">
+            <summary>Vytvoří nový seznam obsahující položky daného seznamu, ale v obráceném pořadí.</summary>
+            <param name="list">Seznam, jehož pořadí se má obrátit</param>
+            <returns name="list">Obrácený seznam</returns>
+            <search>flip,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.__Create(System.Collections.IList)">
+            <summary>Vytvoří nový seznam obsahující dané položky.</summary>
+            <param name="items">Položky, které mají být uloženy v novém seznamu</param>
+        </member>
+        <member name="M:DSCore.List.Sublists(System.Collections.IList,System.Collections.IList,System.Int32)">
+            <summary>Sestaví dílčí seznamy ze seznamu pomocí syntaxe rozsahu DesignScript.</summary>
+            <param name="list">Seznam, ze kterého chcete vytvořit dílčí seznamy</param>
+            <param name="ranges">Rozsahy indexů prvků dílčích seznamů
+                Například \"{0.. 3,5,2} \".</param>
+            <param name="offset">Odsazení, které chcete použít na dílčí seznam
+                Například rozsah \" 0.. 3\" s odsazením 2 vytvoří
+                {0,1,2,3}{2,3,4,5}{4,5,6,7}...</param>
+            <returns name="lists">typ: var[]..[]</returns>
+            <search>sublists,build sublists,subset,</search>
+        </member>
+        <member name="M:DSCore.List.Sort(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>Seřadí seznam pomocí vestavěného přirozeného řazení.</summary>
+            <param name="list">Seznam k seřazení</param>
+            <returns name="list">Seřazený seznam</returns>
+            <search>sort,order,sorted</search>
+        </member>
+        <member name="M:DSCore.List.MinimumItem(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>Vrací minimální hodnotu ze seznamu.</summary>
+            <param name="list">Seznam porovnatelných položek, z něhož se má brát minimální hodnota</param>
+            <returns name="item">Minimální položka ze seznamu</returns>
+            <search>least,smallest,find min</search>
+        </member>
+        <member name="M:DSCore.List.MaximumItem(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>Vrací maximální hodnotu ze seznamu.</summary>
+            <param name="list">Seznam porovnatelných položek, z něhož se má brát maximální hodnota</param>
+            <returns name="item">Maximální položka ze seznamu</returns>
+            <search>greatest,largest,biggest,find max</search>
+        </member>
+        <member name="M:DSCore.List.FilterByBoolMask(System.Collections.IList,System.Collections.IList)">
+            <summary>Filtruje pořadí na základě vyhledávání příslušných indexů v samostatném seznamu
+                logických hodnot.</summary>
+            <param name="list">Seznam k filtrování</param>
+            <param name="mask">Seznam logických hodnot představujících masku</param>
+            <returns name="in">Položky, jejichž index masky je true (pravda)</returns>
+            <returns name="out">Položky, jejichž index masky je false (nepravda)</returns>
+            <search>filter,in,out,mask,dispatch,bool filter,boolfilter,bool filter</search>
+        </member>
+        <member name="M:DSCore.List.Deconstruct(System.Collections.IList)">
+            <summary>Když je dán seznam, vytváří první položku v seznamu a nový seznam obsahující všechny položky
+                kromě první.</summary>
+            <param name="list">Seznam k rozdělení</param>
+            <returns name="first">První položka v seznamu (typ: var[]..[])</returns>
+            <returns name="rest">Zbytek seznamu (typ: var[]..[])</returns>
+            <search>first,rest,list split,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.SortByKey(System.Collections.IList,System.Collections.IList)">
+            <summary>Seřadit seznam podle jeho klíčů</summary>
+            <param name="list">seznam, který má být seřazen</param>
+            <param name="keys">seznam klíčů, klíče se musejí dát řadit (např. čísla, řetězce)</param>
+            <returns name="sortedList">typ: var[]..[]</returns>
+            <returns name="sortedKeys">typ: var[]..[]</returns>
+            <search>sort;key</search>
+        </member>
+        <member name="M:DSCore.List.GroupByKey(System.Collections.IList,System.Collections.IList)">
+            <summary>Seskupí položky do dílčích seznamů na základě podobných klíčových hodnot.</summary>
+            <param name="list">Seznam položek k seskupení do dílčích seznamů</param>
+            <param name="keys">Klíčové hodnoty; jedna na položku v seznamu vstupů; použito k seskupení položek</param>
+            <returns name="groups">seznam dílčích seznamů, s položkami seskupenými podle podobných klíčových hodnot</returns>
+            <returns name="uniqueKeys">klíčová hodnota odpovídající každé skupině</returns>
+            <search>list;group;groupbykey;</search>
+        </member>
+        <member name="M:DSCore.List.AddItemToFront(System.Object,System.Collections.IList)">
+            <summary>Přidá položku na začátek seznamu.</summary>
+            <param name="item">Položka, která má být přidána. Může to být objekt nebo seznam.</param>
+            <param name="list">Seznam, do něhož se má položka přidat</param>
+            <returns name="list">Nový s přidanými položkami</returns>
+            <search>insert,add,item,front,start,begin</search>
+        </member>
+        <member name="M:DSCore.List.AddItemToEnd(System.Object,System.Collections.IList)">
+            <summary>Přidá položku na konec seznamu.</summary>
+            <param name="item">Položka, která má být přidána. Může to být objekt nebo seznam.</param>
+            <param name="list">Seznam, do něhož se má položka přidat</param>
+            <returns name="list">Seznam s přidanými položkami</returns>
+            <search>insert,add,item,end</search>
+        </member>
+        <member name="M:DSCore.List.TakeItems(System.Collections.IList,System.Int32)">
+            <summary>Načte množství položek ze začátku seznamu.</summary>
+            <param name="list">Seznam, z něhož se má načítat</param>
+            <param name="amount">Množství položek, které se mají načítat. Pokud je hodnota záporná, položky jsou převzaty z konce seznamu.</param>
+            <returns name="list">Seznam extrahovaných položek</returns>
+            <search>get,sub,sublist,extract</search>
+        </member>
+        <member name="M:DSCore.List.DropItems(System.Collections.IList,System.Int32)">
+            <summary>Odebere ze začátku seznamu určitý počet položek. Pokud je zadán záporný počet,
+                jsou položky odebrány z konce seznamu.</summary>
+            <param name="list">Seznam, z něhož se mají odebrat položky</param>
+            <param name="amount">Množství položek, které se mají odebrat. Pokud je hodnota záporná, položky jsou odebrány z konce seznamu.</param>
+            <returns name="list">Seznam zbývajících položek</returns>
+            <search>drop,remove,shorten</search>
+        </member>
+        <member name="M:DSCore.List.ShiftIndices(System.Collections.IList,System.Int32)">
+            <summary>Posune indexy v seznamu doprava o zadané množství.</summary>
+            <param name="list">Seznam, který má být posunut</param>
+            <param name="amount">Množství, o které se mají posunout indexy. Pokud je hodnota záporná, indexy se posunu doleva.</param>
+            <returns name="list">Posunutý seznam</returns>
+            <search>shift,offset</search>
+        </member>
+        <member name="M:DSCore.List.GetItemAtIndex(System.Collections.IList,System.Int32)">
+            <summary>Vrátí položku z daného seznamu, který se nachází v určeném indexu.</summary>
+            <param name="list">Seznam, ze kterého se má načíst položka</param>
+            <param name="index">Index položky, která se má načíst</param>
+            <returns name="item">Položka v seznamu v daném indexu</returns>
+            <search>get,item,index,fetch,at,getfrom,get from,extract</search>
+        </member>
+        <member name="M:DSCore.List.ReplaceItemAtIndex(System.Collections.IList,System.Int32,System.Object)">
+            <summary>Nahradit položku z daného seznamu, který se nachází v daném indexu.</summary>
+            <param name="list">Seznam, v němž se má položka nahradit</param>
+            <param name="index">Index položky, která se má nahradit</param>
+            <param name="item">Položka ke vložení</param>
+            <returns name="list">Nový seznam s nahrazenou položkou</returns>
+            <search>replace,switch</search>
+        </member>
+        <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">
+            <summary>Vrátí jeden dílčí seznam z daného seznamu, a to na základě počátečního indexu, koncového indexu
+                a počtu kroků.</summary>
+            <param name="list">Seznam, z něhož se má vytvořit řez</param>
+            <param name="start">Index, od kterého se má zahájit řez</param>
+            <param name="end">Index, u kterého se má ukončit řez</param>
+            <param name="step">Množství indexů položek je odděleno jako v původním seznamu.</param>
+            <returns name="items">Položky v řezu daného seznamu</returns>
+            <search>list,sub,sublist,subrange,get sublist</search>
+        </member>
+        <member name="M:DSCore.List.RemoveItemAtIndex(System.Collections.IList,System.Int32[])">
+            <summary>Odstraní položku z daného seznamu v daném indexu.</summary>
+            <param name="list">Seznam, z něhož se má odebrat položka či položky</param>
+            <param name="indices">Index nebo indexy položek, které mají být odebrány</param>
+            <returns name="list">Seznam s odebranými položkami</returns>
+            <search>index,indices,cull,remove,item</search>
+        </member>
+        <member name="M:DSCore.List.DropEveryNthItem(System.Collections.IList,System.Int32,System.Int32)">
+            <summary>Odebere položky ze zadaného seznamu v indexech, které jsou násobky
+                dané hodnoty, po daném odsazení.</summary>
+            <param name="list">Seznam, z něhož se mají odebrat položky</param>
+            <param name="n">Indexy, které jsou násobky tohoto argumentu, budou odebrány.</param>
+            <param name="offset">Množství položek, které mají být ignorovány od začátku seznamu</param>
+            <returns name="list">Seznam s odebranými položkami</returns>
+            <search>nth,remove,cull,every</search>
+        </member>
+        <member name="M:DSCore.List.TakeEveryNthItem(System.Collections.IList,System.Int32,System.Int32)">
+            <summary>Načte položky ze zadaného seznamu v indexech, které jsou násobky
+                dané hodnoty, po daném odsazení.</summary>
+            <param name="list">Seznam, z něhož se mají načíst položky</param>
+            <param name="n">Indexy, které jsou násobky tohoto čísla (po odsazení),
+                budou načteny</param>
+            <param name="offset">Množství položek, které mají být ignorovány od začátku seznamu</param>
+            <returns name="items">Položky ze seznamu</returns>
+            <search>fetch,take,every,nth</search>
+        </member>
+        <member name="M:DSCore.List.IsEmpty(System.Collections.IList)">
+            <summary>Určuje, zda je zadaný seznam prázdný.</summary>
+            <param name="list">Seznam ke zkontrolování, pokud je prázdný</param>
+            <returns name="bool">Hodnota True, pokud je seznam prázdný, hodnota False, pokud není</returns>
+            <search>test,is,empty,null,count</search>
+        </member>
+        <member name="M:DSCore.List.AllTrue(System.Collections.IList)">
+            <summary>Určuje, zda jsou všechny položky v daném seznamu logické hodnoty a zda mají hodnotu True.</summary>
+            <param name="list">Seznam, ve kterém má být kontrolováno, zda mají všechny položky hodnotu True</param>
+            <returns name="bool">Hodnota True, pokud všechny položky ze seznamu mají hodnotu True, hodnota False, pokud jeden nebo více předmětu nemají hodnotu True</returns>
+            <search>test,all,true,istrue</search>
+        </member>
+        <member name="M:DSCore.List.AllFalse(System.Collections.IList)">
+            <summary>Určuje, zda jsou všechny položky v daném seznamu logické hodnoty a zda mají hodnotu False.</summary>
+            <param name="list">Seznam, ve kterém má být kontrolováno, zda mají všechny položky hodnotu False.</param>
+            <returns name="bool">Hodnota True, pokud všechny položky ze seznamu mají hodnotu False, hodnota False, pokud jedna nebo více položek nemají hodnotu False</returns>
+            <search>test,all,false,isfalse</search>
+        </member>
+        <member name="M:DSCore.List.AnyTrue(System.Collections.IList)">
+            <summary>Určuje, zda je některá položka v daném seznamu booleovskou hodnotou a má hodnotu True.</summary>
+            <param name="list">Seznam, ve kterém má být kontrolováno, zda má některá položka hodnotu True.</param>
+            <returns name="bool">Určuje, zda má některá položka hodnotu True.</returns>
+            <search>test,any,true,istrue</search>
+        </member>
+        <member name="M:DSCore.List.AnyFalse(System.Collections.IList)">
+            <summary>Určuje, zda je některá položka v daném seznamu booleovskou hodnotou a má hodnotu False.</summary>
+            <param name="list">Seznam, ve kterém má být kontrolováno, zda má některá položka hodnotu False.</param>
+            <returns name="bool">Určuje, zda má některá položka hodnotu False.</returns>
+            <search>test,any,false,isfalse</search>
+        </member>
+        <member name="M:DSCore.List.Count(System.Collections.IList)">
+            <summary>Vrátí počet položek uložených v daném seznamu.</summary>
+            <param name="list">Seznam, u něhož chcete načíst počet položek</param>
+            <returns name="int">Délka seznamu</returns>
+            <search>listlength,list length,count,size,sizeof</search>
+        </member>
+        <member name="M:DSCore.List.Join(System.Collections.IList[])">
+            <summary>Zřetězí všechny dané seznamy do jednoho.</summary>
+            <param name="lists">Seznamy, které chcete spojit do jednoho</param>
+            <returns name="list">Spojený seznam</returns>
+            <search>join lists,merge,concatenate</search>
+        </member>
+        <member name="M:DSCore.List.FirstItem(System.Collections.IList)">
+            <summary>Vrátí první položku v seznamu.</summary>
+            <param name="list">Seznam, z něhož chcete načíst první položku</param>
+            <returns name="item">První položka v seznamu</returns>
+            <search>get,fetch,first,item,start</search>
+        </member>
+        <member name="M:DSCore.List.RestOfItems(System.Collections.IList)">
+            <summary>Odebere první položku z daného seznamu.</summary>
+            <param name="list">Seznam, jehož zbytek chcete načíst</param>
+            <returns name="rest">Zbytek seznamu</returns>
+            <search>get,fetch,rest,end,rest of list</search>
+        </member>
+        <member name="M:DSCore.List.Chop(System.Collections.IList,System.Collections.Generic.List{System.Int32})">
+            <summary>Rozdělí seznam do sady po sobě jdoucích dílčích seznamů s určenými délkami. Rozdělení seznamu začíná v horní části seznamu.</summary>
+            <param name="list">Seznam k rozdělení na dílčí seznamy</param>
+            <param name="lengths">Délky po sobě jdoucích dílčích seznamů budou vytvořeny ze seznamu vstupů.</param>
+            <returns name="lists">Dílčí seznamy vytvořené ze seznamu</returns>
+            <search>sublists,build sublists,slices,partitions,cut,listcontains,chop</search>
+        </member>
+        <member name="M:DSCore.List.DiagonalRight(System.Collections.IList,System.Int32)">
+            <summary>Vypíše prvky podél každé úhlopříčky v matici z levého dolního rohu do pravého horního rohu.</summary>
+            <param name="list">Plochý seznam</param>
+            <param name="subLength">Délka každého nového dílčího seznamu</param>
+            <returns name="diagonals">Seznamy prvků podél úhlopříček matice</returns>
+            <search>diagonal,right,matrix,get diagonals,diagonal sublists</search>
+        </member>
+        <member name="M:DSCore.List.DiagonalLeft(System.Collections.IList,System.Int32)">
+            <summary>Vypíše prvky podél každé úhlopříčky v matici z levého horního rohu do pravého dolního rohu.</summary>
+            <param name="list">Plochý seznam</param>
+            <param name="rowLength">Délka každého nového dílčího seznamu</param>
+            <returns name="diagonals">Seznamy prvků podél úhlopříček matice</returns>
+            <search>diagonal,left,matrix,get diagonals,diagonal sublists</search>
+        </member>
+        <member name="M:DSCore.List.Transpose(System.Collections.IList)">
+            <summary>Zamění řádky a sloupce v seznamu seznamů. 
+                Pokud jsou některé řádky kratší než jiné,
+                jsou jako zástupné znaky vloženy nulové hodnoty
+                tak, aby bylo výsledné pole vždy pravoúhlé.</summary>
+            <param name="lists">Seznam seznamů ke transponování</param>
+            <returns name="lists">Seznam transponovaných seznamů</returns>
+            <search>transpose,flip matrix,matrix,swap,rows,columns</search>
+        </member>
+        <member name="M:DSCore.List.Clean(System.Collections.IList,System.Boolean)">
+            <summary>V daném seznamu libovolných kót odstraní nulové hodnoty a prázdné seznamy.</summary>
+            <param name="list">Seznam obsahující nulové hodnoty a prázdné dílčí seznamy k vyčištění</param>
+            <param name="preserveIndices">Zadejte možnost, díky které se zachovají rejstříky dat
+            <returns name="list">Seznam transponovaných seznamů</returns>
+             tak, aby nebylo možné filtrovat koncové nulové hodnoty.</param>
+            <returns>Seznam bez nulových hodnot a prázdných seznamů</returns>
+        </member>
+        <member name="M:DSCore.List.OfRepeatedItem(System.Object,System.Int32)">
+            <summary>Vytvoří seznam obsahující danou položku, a to tolikrát, kolikrát je zadáno.</summary>
+            <param name="item">Položka, která se má opakovat</param>
+            <param name="amount">Počet opakování</param>
+            <returns name="list">Seznam opakovaných položek</returns>
+            <search>repeat,repeated,duplicate,list of item,fill list,copies,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.Cycle(System.Collections.IList,System.Int32)">
+            <summary>Vytvoří nový seznam zřetězením kopií daného seznamu.</summary>
+            <param name="list">Seznam k opakování</param>
+            <param name="amount">Počet opakování</param>
+            <returns name="list">Seznam opakovaných seznamů typů: var[]..[]</returns>
+            <search>repeat,repeated,duplicate,repeated list,concat list</search>
+        </member>
+        <member name="M:DSCore.List.LastItem(System.Collections.IList)">
+            <summary>Načte poslední položku v seznamu.</summary>
+            <param name="list">Seznam k získání poslední položky</param>
+            <returns name="item">Poslední položka v seznamu</returns>
+            <search>get,fetch,last,item,end of list</search>
+        </member>
+        <member name="M:DSCore.List.Shuffle(System.Collections.IList)">
+            <summary>Zamíchá seznam a přiřadí položkám náhodné pořadí.</summary>
+            <param name="list">Seznam, který chcete zamíchat</param>
+            <returns name="list">Seznamu s náhodným pořadím</returns>
+            <search>random,randomize,shuffle,jitter,randomness</search>
+        </member>
+        <member name="M:DSCore.List.Shuffle(System.Collections.IList,System.Int32)">
+            <summary>Zamíchá obsah seznamu, přičemž na základě počáteční výchozí hodnoty náhodně uspořádá jeho položky.</summary>
+            <param name="list">Seznam, který chcete zamíchat</param>
+            <param name="seed">Výchozí hodnota pro generátor náhodných čísel</param>
+            <returns name="list">Seznamu s náhodným pořadím</returns>
+            <search>random,randomize,shuffle,jitter,randomness,seed</search>
+        </member>
+        <member name="M:DSCore.List.Permutations(System.Collections.IList,System.Nullable{System.Int32})">
+            <summary>Vytváří všechny permutace dané délky daného seznamu.</summary>
+            <param name="list">Seznam, který chcete permutovat</param>
+            <param name="length">Délka každé permutace</param>
+            <returns name="permutations">Permutace seznamu dané délky (typ: var[]..[])</returns>
+            <search>permutation,permutations</search>
+        </member>
+        <member name="M:DSCore.List.Combinations(System.Collections.IList,System.Int32,System.Boolean)">
+            <summary>Vytváří všechny kombinace dané délky daného seznamu.</summary>
+            <param name="list">Seznam ke generování kombinací</param>
+            <param name="length">Délka každé kombinace</param>
+            <param name="replace">Určuje, zda jsou položky odebrány po výběru pro kombinaci. Výchozí
+                hodnotou je false (nepravda).</param>
+            <returns name="lists">Kombinace seznamu dané délky</returns>
+            <search>combo</search>
+        </member>
+        <member name="M:DSCore.List.FirstIndexOf(System.Collections.IList,System.Object)">
+            <summary>Po zadání položky vrací rejstřík s nulami prvního výskytu položky
+                v seznamu. Pokud položka nebyla nalezena v seznamu, je vrácena hodnota -1.</summary>
+            <param name="list">Seznam k vyhledávání. Pokud je výsledkem argumentu nulová hodnota, je vrácena hodnota -1.</param>
+            <param name="item">Položka, kterou chcete hledat</param>
+            <returns>Rejstřík s nulami dané položky v seznamu nebo hodnota -1, pokud není položka nalezena</returns>
+        </member>
+        <member name="M:DSCore.List.AllIndicesOf(System.Collections.IList,System.Object)">
+            <summary>Po zadání položky vrací rejstřík s nulami všech výskytů položky
+                v seznamu. Pokud položka nebyla nalezena, je vrácen prázdný seznam.</summary>
+            <param name="list">Seznam k vyhledávání. Pokud je výsledkem argumentu nulová hodnota, je vrácen prázdný seznam.</param>
+            <param name="item">Položka, kterou chcete hledat</param>
+            <returns name="indices">Seznam rejstříků s nulami všech výskytů položky, pokud je
+            nalezena, nebo prázdný seznam v případě, že položka v seznamu neexistuje.</returns>
+        </member>
+        <member name="M:DSCore.List.Flatten(System.Collections.IList,System.Int32)">
+            <summary>Vyrovná vnořený seznam seznamů o určitou hodnotu.</summary>
+            <param name="list">Seznam k vyrovnání</param>
+            <param name="amount">Hladiny vnoření seznamu k odebrání (-1 odebere všechna vnoření seznamu)</param>
+            <returns name="list">Vyrovnaný seznam o určité množství</returns>
+            <search>flatten,completely</search>
+        </member>
+        <member name="M:DSCore.List.IndexInList(System.Collections.IList,System.Object)">
+            <summary>Jedná se o alternativu k použití metody IList.Contains, kdy se pomocí metody Enumerable.SequenceEqual kontroluje, zda
+                je položka obsažena v seznamu. Položka je v tomto případě typu Pole. Pokud je nalezena, vrátí příslušný index,
+                a pokud ne, vrátí hodnotu –1.</summary>
+            <param name="list">Seznam, ve kterém má být přítomnost položky kontrolována</param>
+            <param name="item">Položka, kterou je třeba najít</param>
+            <returns name="index">Index položky v seznamu</returns>
+        </member>
+        <member name="M:DSCore.List.GetDepth(System.Object)">
+            <summary>Získejte maximální hloubku daného seznamu.</summary>
+            <param name="list">Vstupní seznam, jehož hloubka má být získána</param>
+            <returns name="depth">Hloubka daného seznam</returns>
+        </member>
+        <member name="M:DSCore.List.CountBool(System.Collections.IList,System.Boolean)">
+            <summary>Vrátí počet výskytů zadané logické hodnoty v daném seznamu.</summary>
+            <param name="list">Seznam, ve kterém má být logická hodnoty hledána</param>
+            <param name="value">Logická hodnota, která má být hledána</param>
+            <returns name="int">Počet výskytů zadané logické hodnoty v seznamu</returns>
+        </member>
+        <member name="M:DSCore.List.IncreaseDepth(System.Collections.IList,System.Int32)">
+            <summary>Zvětšete hloubku daného seznamu o zadanou hodnotu. Hloubka je zvětšena
+                vytvořením nového seznamu, v němž bude daný seznam obsažen.</summary>
+            <param name="list">Seznam, jehož je hloubka má být zvětšena</param>
+            <param name="amt">Hodnota, o kterou má být hloubka zvětšena</param>
+            <returns name="list">Nový seznam, jehož hloubka je zvětšeno o danou hodnotu</returns>
+        </member>
+        <member name="M:DSCore.List.DoubleConverter(System.Object)">
+            <summary>Číslo typu integer převede na číslo typu double, jinak vrátí vstupní objekt.</summary>
+        </member>
+        <member name="T:DSCore.ObjectComparer">
+            <summary>Implementuje funkci Compare pro dva objekty podle následující pravidla.
+                1. Předpokládá se, že jde o čísla nejmenšího datového typu, logické hodnoty, řetězcové hodnoty a ukazatele.
+                2. Pokud jde o dva objekty rozhraní IComparable a stejného typu, je použit
+                nativní mechanismus porovnání tohoto rozhraní.
+                3. Pokud jsou oba vstupy typu hodnota, ale jeden z nich je logická hodnota, je logická hodnota považována za větší.
+                4. Jinak jsou všechny vstupy převedeny na hodnoty typu double a porovnány.
+                5. Jinak platí, že pokud je pouze jeden vstup typu hodnota, je objekt typu hodnota považován za menší.
+                6. Jinak platí, že pokud je pouze jeden vstup typu řetězec, je tento řetězec považován za menší než ostatní vstupy.
+                7. Jinak platí, že pokud není způsob porovnání znám, je nejlepší provést porovnání na základě hodnoty hash.</summary>
+        </member>
+        <member name="T:DSCore.Math">
+            <summary>Metody pro provádění matematických operací</summary>
+        </member>
+        <member name="M:DSCore.Math.Random(System.Nullable{System.Int32})">
+            <summary>Vytvoří náhodnou hodnotu typu double v rozsahu [0, 1).</summary>
+            <param name="seed">Výchozí hodnota pro generátor náhodných čísel</param>
+            <returns name="number">Náhodné číslo mezi 0 a 1</returns>
+            <search>random,seed</search>
+        </member>
+        <member name="M:DSCore.Math.Random(System.Double,System.Double)">
+            <summary>Vytvoří náhodné číslo v rozsahu [lower_number, higher_number).</summary>
+            <param name="value1">Dolní konec rozsahu pro náhodné číslo.</param>
+            <param name="value2">Horní konec rozsahu pro náhodné číslo.</param>
+            <returns name="number">Náhodné číslo v rozsahu [lower_number, higher_number).</returns>
+            <search>random,numberrange</search>
+        </member>
+        <member name="M:DSCore.Math.Random(System.Double,System.Double,System.Int32)">
+            <summary>Vytvoří náhodné číslo v rozsahu [lower_number, higher_number) na základě počáteční výchozí hodnoty.</summary>
+            <param name="value1">Dolní konec rozsahu pro náhodné číslo.</param>
+            <param name="value2">Horní konec rozsahu pro náhodné číslo.</param>
+            <param name="seed">Výchozí hodnota pro generátor náhodných čísel.</param>
+            <returns name="number">Náhodné číslo v rozsahu [lower_number, higher_number).</returns>
+            <search>random,numberrange,seed</search>
+        </member>
+        <member name="M:DSCore.Math.RandomList(System.Int32)">
+            <summary>Vytvoří seznam obsahující dané množství náhodných hodnot typu double
+                v rozsahu [0, 1).</summary>
+            <param name="amount">Množství náhodných čísel, které bude seznam výsledků obsahovat</param>
+            <returns name="number">Seznam náhodných čísel mezi 0 a 1</returns>
+            <search>random,listcontains</search>
+        </member>
+        <member name="M:DSCore.Math.RandomList(System.Int32,System.Double,System.Double,System.Int32)">
+            <summary>Vytvoří seznam obsahující dané množství náhodných dvojic
+                v definovaném rozsahu [lower_number, higher_number) na základě počáteční výchozí hodnoty.</summary>
+            <param name="amount">Množství náhodných čísel, které bude seznam výsledků obsahovat.</param>
+            <param name="value1">Dolní konec rozsahu pro náhodné číslo.</param>
+            <param name="value2">Horní konec rozsahu pro náhodné číslo.</param>
+            <param name="seed">Výchozí hodnota pro generátor náhodných čísel.</param>
+            <returns name="number">Seznam náhodných čísel v rozsahu [lower_number, higher_number).</returns>
+            <search>random,listcontains,seed</search>
+        </member>
+        <member name="P:DSCore.Math.PiTimes2">
+            <summary>Konstanta pí vynásobená 2</summary>
+            <returns name="double">2 krát pí</returns>
+            <search>2pi,2*pi,twopi,two*pi</search>
+        </member>
+        <member name="M:DSCore.Math.Average(System.Collections.Generic.IList{System.Double})">
+            <summary>Zprůměruje seznam čísel.</summary>
+            <param name="numbers">Seznam čísel, která chcete zprůměrovat</param>
+            <returns name="double">Zprůměruje seznam čísel.</returns>
+            <search>avg,mean</search>
+        </member>
+        <member name="M:DSCore.Math.Map(System.Double,System.Double,System.Double)">
+            <summary>Mapuje vstupní hodnotu na číslo mezi 0 a 1 na základě vstupního rozsahu.</summary>
+            <param name="rangeMin">Minimální hodnota vstupního rozsahu</param>
+            <param name="rangeMax">Maximální hodnota vstupního rozsahu</param>
+            <param name="inputValue">Číslo, které má být mapováno</param>
+            <returns name="double">Mapovaná hodnota</returns>
+            <search>map,range,minimum,maximum,normalize,scale,remap</search>
+        </member>
+        <member name="M:DSCore.Math.MapTo(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>Mapuje vstupní hodnotu na číslo v rozsahu určeném parametry targetRangeMin a targetRangeMax.</summary>
+            <param name="rangeMin">Minimální hodnota vstupního rozsahu</param>
+            <param name="rangeMax">Maximální hodnota vstupního rozsahu</param>
+            <param name="inputValue">Číslo, které má být mapováno</param>
+            <param name="targetRangeMin">Minimální hodnota nového rozsahu</param>
+            <param name="targetRangeMax">Maximální hodnota nového rozsahu</param>
+            <returns name="double">Mapovaná hodnota</returns>
+            <search>map,range,mapto,minimum,maximum,normalize,scale,remap</search>
+        </member>
+        <member name="M:DSCore.Math.RemapRange(System.Collections.Generic.IList{System.Double},System.Double,System.Double)">
+            <summary>Upraví rozsah seznamu čísel při zachování
+                distribučního poměru.</summary>
+            <param name="numbers">Seznam čísel, jehož rozsah chcete upravit</param>
+            <param name="newMin">Nové minimum rozsahu</param>
+            <param name="newMax">Nové maximum rozsahu</param>
+            <returns name="list">Seznam přiřazen k novému rozsahu.</returns>
+            <search>remap range</search>
+        </member>
+        <member name="F:DSCore.Math.kRadiansToDegrees">
+            <summary>Umožňuje přesunout funkce/metody z knihovny Math.dll do této knihovny DSCoreNode.dll.</summary>
+        </member>
+        <member name="P:DSCore.Math.PI">
+            <summary>Matematická konstanta pí, 3,14159...</summary>
+            <returns name="double">Konstanta Pí</returns>
+            <search>3.141592653589793</search>
+        </member>
+        <member name="P:DSCore.Math.E">
+            <summary>Matematická konstanta e, 2,71828...</summary>
+            <returns name="double">Konstanta E</returns>
+            <search>exp,2.718281828459045</search>
+        </member>
+        <member name="P:DSCore.Math.GoldenRatio">
+            <summary>Zlatý poměr, (1 + sqrt(5))/2 = 1,61803...</summary>
+            <returns name="double">Hodnota zlatého řezu</returns>
+            <search>golden,ratio,divine,phi,tau,1.61803398875</search>
+        </member>
+        <member name="M:DSCore.Math.RadiansToDegrees(System.Double)">
+            <summary>Převede úhel v radiánech na úhel ve stupních.</summary>
+            <param name="radians">Úhel v radiánech</param>
+            <returns name="degrees">Úhel ve stupních</returns>
+            <search>radians,degrees,angle</search>
+        </member>
+        <member name="M:DSCore.Math.DegreesToRadians(System.Double)">
+            <summary>Převede úhel ve stupních na úhel v radiánech.</summary>
+            <param name="degrees">Úhel ve stupních</param>
+            <returns name="radians">Úhel v radiánech</returns>
+            <search>degrees,radians,angle</search>
+        </member>
+        <member name="M:DSCore.Math.Abs(System.Double)">
+            <summary>Najde absolutní hodnotu čísla.</summary>
+            <param name="number">Číslo k získání absolutní hodnoty z</param>
+            <returns name="number">Absolutní hodnota čísla</returns>
+            <search>absolute value,magnitude</search>
+        </member>
+        <member name="M:DSCore.Math.Equals(System.Double,System.Double,System.Double)">
+            <summary>Tuto metodu pouze používá uzel NodeModel s hodnotou Rovná se (s tolerancí)</summary>
+            <param name="lhs"/>
+            <param name="rhs"/>
+            <param name="tol"/>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Math.Abs(System.Int64)">
+            <summary>Najde absolutní hodnotu čísla.</summary>
+            <param name="integer">Číslo</param>
+            <returns name="absoluteValue">Absolutní hodnota čísla</returns>
+            <search>absolute value,magnitude</search>
+        </member>
+        <member name="M:DSCore.Math.Acos(System.Double)">
+            <summary>Najde inverzní kosinus, což je úhel, jehož kosinus je daný poměr.</summary>
+            <param name="ratio">Kosinus úhlu, číslo v rozsahu [-1, 1]</param>
+            <returns name="double">Úhel, jehož kosinus je vstupní poměr</returns>
+            <search>acosine,arccosine</search>
+        </member>
+        <member name="M:DSCore.Math.Asin(System.Double)">
+            <summary>Najde inverzní sinus, což je úhel, jehož sinus je daný poměr.</summary>
+            <param name="ratio">Sinus úhlu, číslo v rozsahu [-1, 1]</param>
+            <returns name="double">Úhel, jehož sinus je vstupní poměr</returns>
+            <search>asine,arcsin</search>
+        </member>
+        <member name="M:DSCore.Math.Atan(System.Double)">
+            <summary>Najde inverzní tangens, což je úhel, jehož tangens je daný poměr.</summary>
+            <param name="ratio">Tangens úhlu</param>
+            <returns name="double">Úhel, jehož tangens je vstupní poměr</returns>
+            <search>atangent,arctangent</search>
+        </member>
+        <member name="M:DSCore.Math.Atan2(System.Double,System.Double)">
+            <summary>Najde inverzní tangens kvocientu dvou čísel. Vrací úhel,
+                jehož tangens je poměr: čitatel/jmenovatel.</summary>
+            <param name="numerator">Čitatel tangens úhlu</param>
+            <param name="denominator">Jmenovatel tangens úhlu</param>
+            <returns name="double">Úhel, jehož tangens je čitatel/jmenovatel</returns>
+            <search>atangent,arctangent</search>
+        </member>
+        <member name="M:DSCore.Math.Ceiling(System.Double)">
+            <summary>Vrací první celé číslo větší než určité číslo</summary>
+            <param name="number">Číslo pro zaokrouhlení nahoru</param>
+            <returns name="int">První celé číslo větší než číslo</returns>
+            <search>ceiling,round</search>
+        </member>
+        <member name="M:DSCore.Math.Cos(System.Double)">
+            <summary>Najde kosinus úhlu.</summary>
+            <param name="angle">Úhel ve stupních, jehož kosinus chcete určit</param>
+            <returns name="double">Kosinus úhlu</returns>
+            <search>cosine</search>
+        </member>
+        <member name="M:DSCore.Math.Cosh(System.Double)">
+            <summary>Najde hyperbolický kosinus úhlu (v radiánech).</summary>
+            <param name="angle">Úhel v radiánech</param>
+            <returns name="double">Hyperbolický kosinus úhlu</returns>
+            <search>hyperbolic cosine</search>
+        </member>
+        <member name="M:DSCore.Math.DivRem(System.Int64,System.Int64)">
+            <summary>Najde zbytek po výpočtu dělenec/dělitel.</summary>
+            <param name="dividend">Číslo, které má být děleno</param>
+            <param name="divisor">Číslo, kterým má být děleno</param>
+            <returns name="int">Zbytek po dělení</returns>
+            <search>remainder</search>
+        </member>
+        <member name="M:DSCore.Math.EvaluateFormula(System.String,System.String[],System.Object[])">
+            <summary>Vyhodnotí vzorec NCalc s daným mapováním parametru.</summary>
+            <param name="formulaString">Vzorec NCalc</param>
+            <param name="parameters">Názvy proměnných</param>
+            <param name="arguments">Vazby proměnných</param>
+            <returns name="result">typ: var[]..[] (výsledek výpočtu vzorce)</returns>
+        </member>
+        <member name="M:DSCore.Math.Exp(System.Double)">
+            <summary>Vrací exponenciální funkci čísla, konstantu e umocněnou na číslo hodnoty.</summary>
+            <param name="number">Číslo</param>
+            <returns name="double">Exponenciální funkce čísla</returns>
+            <search>exponential</search>
+        </member>
+        <member name="M:DSCore.Math.Floor(System.Double)">
+            <summary>Vrací první celé číslo menší než určité číslo</summary>
+            <param name="number">Číslo pro zaokrouhlení nahoru</param>
+            <returns name="int">První celé číslo menší než dané číslo</returns>
+            <search>round</search>
+        </member>
+        <member name="M:DSCore.Math.Log(System.Double)">
+            <summary>Najde přirozený logaritmus čísla v rozsahu (0, ∞).</summary>
+            <param name="number">Číslo větší než 0</param>
+            <returns name="double">Přirozený logaritmus čísla</returns>
+            <search>natural,logarithm,ln</search>
+        </member>
+        <member name="M:DSCore.Math.Log(System.Double,System.Double)">
+            <summary>Najde logaritmus čísla s určeným základem.</summary>
+            <param name="number">Číslo větší než 0</param>
+            <param name="logBase">Základ logaritmu v rozsahu [0,1), (1, ∞)</param>
+            <returns name="double">Logaritmus čísla</returns>
+            <search>logarithm,ld,lg</search>
+        </member>
+        <member name="M:DSCore.Math.Log10(System.Double)">
+            <summary>Najde dekadický logaritmus čísla.</summary>
+            <param name="number">Číslo větší než 0</param>
+            <returns name="double">Logaritmus čísla</returns>
+            <search>logarithm</search>
+        </member>
+        <member name="M:DSCore.Math.Max(System.Double,System.Double)">
+            <summary>Vrací větší ze dvou čísel.</summary>
+            <param name="value1">Číslo, které chcete porovnat</param>
+            <param name="value2">Číslo, které chcete porovnat</param>
+            <returns name="max">Větší ze dvou čísel</returns>
+            <search>maximum,greater,larger</search>
+        </member>
+        <member name="M:DSCore.Math.Max(System.Int64,System.Int64)">
+            <summary>Vrací větší ze dvou čísel.</summary>
+            <param name="int1">Číslo, které chcete porovnat</param>
+            <param name="int2">Číslo, které chcete porovnat</param>
+            <returns name="max">Větší ze dvou čísel</returns>
+            <search>maximum,greater,larger</search>
+        </member>
+        <member name="M:DSCore.Math.Min(System.Double,System.Double)">
+            <summary>Vrací menší ze dvou čísel.</summary>
+            <param name="value1">Číslo, které chcete porovnat</param>
+            <param name="value2">Číslo, které chcete porovnat</param>
+            <returns name="min">Menší ze dvou čísel</returns>
+            <search>minimum,lesser,smaller</search>
+        </member>
+        <member name="M:DSCore.Math.Min(System.Int64,System.Int64)">
+            <summary>Vrací menší ze dvou čísel.</summary>
+            <param name="int1">Číslo, které chcete porovnat</param>
+            <param name="int2">Číslo, které chcete porovnat</param>
+            <returns name="min">Menší ze dvou čísel</returns>
+            <search>minimum,lesser,smaller</search>
+        </member>
+        <member name="M:DSCore.Math.Pow(System.Double,System.Double)">
+            <summary>Umocní číslo na danou mocninu.</summary>
+            <param name="number">Číslo, které má být umocněno na danou mocninu</param>
+            <param name="power">Mocnina, na kterou chcete číslo umocnit</param>
+            <returns name="result">Číslo umocněné na danou mocninu</returns>
+            <search>^,power,raise,exponent</search>
+        </member>
+        <member name="M:DSCore.Math.Rand">
+            <summary>Vytvoří náhodné číslo v rozsahu [0, 1).</summary>
+            <returns name="number">Náhodné číslo v rozsahu [0, 1)</returns>
+            <search>random,numberrange</search>
+        </member>
+        <member name="M:DSCore.Math.Round(System.Double)">
+            <summary>Zaokrouhlí číslo na nejbližší celé číslo.
+            Tato metoda vrátí číslo s plovoucí desetinnou čárkou a s přesností na dvě desetinná místa a nikoli celé číslo.</summary>
+            <param name="number">Číslo k zaokrouhlení</param>
+            <returns name="number">Celé číslo nejbližší danému číslu</returns>
+        </member>
+        <member name="M:DSCore.Math.Round(System.Double,System.Int32)">
+            <summary>Zaokrouhlí číslo na zadaný počet zlomkových číslic.</summary>
+            <param name="number">Číslo k zaokrouhlení</param>
+            <param name="digits">Vrácená hodnota bude obsahovat zlomkové číslice</param>
+            <returns name="number">Číslo nejblíže k hodnotě, která obsahuje počet zlomkových číslic rovných číslicím</returns>
+        </member>
+        <member name="M:DSCore.Math.Sign(System.Double)">
+            <summary>Vrací znaménko čísla: -1, 0 nebo 1.</summary>
+            <param name="number">Číslo k získání znaménka</param>
+            <returns name="int">Znaménko čísla: -1, 0 nebo 1</returns>
+        </member>
+        <member name="M:DSCore.Math.Sign(System.Int64)">
+            <summary>Vrací znaménko čísla: -1, 0 nebo 1.</summary>
+            <param name="int">Celé číslo k získání značky</param>
+            <returns name="int">Znaménko čísla: -1, 0 nebo 1</returns>
+        </member>
+        <member name="M:DSCore.Math.Sin(System.Double)">
+            <summary>Najde sinus úhlu.</summary>
+            <param name="angle">Úhel ve stupních, jehož sinus chcete určit</param>
+            <returns name="double">Sinus úhlu</returns>
+            <search>sine</search>
+        </member>
+        <member name="M:DSCore.Math.Sinh(System.Double)">
+            <summary>Najde hyperbolický sinus úhlu (v radiánech).</summary>
+            <param name="angle">Úhel v radiánech</param>
+            <returns name="double">Hyperbolický sinus úhlu</returns>
+            <search>hyperbolic</search>
+        </member>
+        <member name="M:DSCore.Math.Sqrt(System.Double)">
+            <summary>Najde kladnou druhou odmocninu čísla v rozsahu [0, ∞).</summary>
+            <param name="number">Číslo v rozsahu [0, ∞)</param>
+            <returns name="double">Kladná druhá odmocnina čísla</returns>
+            <search>square,root,radical</search>
+        </member>
+        <member name="M:DSCore.Math.Tan(System.Double)">
+            <summary>Najde tangens úhlu.</summary>
+            <param name="angle">Úhel v radiánech</param>
+            <returns name="double">Tangens úhlu</returns>
+            <search>tangent</search>
+        </member>
+        <member name="M:DSCore.Math.Tanh(System.Double)">
+            <summary>Najde hyperbolický tangens úhlu (v radiánech).</summary>
+            <param name="angle">Úhel v radiánech</param>
+            <returns name="double">Hyperbolický tangens úhlu</returns>
+            <search>hyperbolic,tanh</search>
+        </member>
+        <member name="M:DSCore.Math.Sum(System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>Najde součet posloupnosti čísel.</summary>
+            <param name="values">Čísla k přidání do součtu</param>
+            <returns name="double">Součet hodnot</returns>
+            <search>mass addition,massadd</search>
+        </member>
+        <member name="M:DSCore.Math.Factorial(System.Int64)">
+            <summary>Najde výsledek faktoriálu kladného celého čísla.</summary>
+            <param name="number">Kladné celé číslo</param>
+            <returns name="number">Výsledek faktoriálu celého čísla</returns>
+            <search>!</search>
+        </member>
+        <member name="M:DSCore.Math.Xor(System.Boolean,System.Boolean)">
+            <summary>Logický operátor XOR: Vrátí hodnotu true, pokud – a pouze pokud – má přesně jeden ze vstupů hodnotu true.</summary>
+            <param name="bool">Booleovská hodnota</param>
+            <param name="otherBool">Jiná booleovská hodnota</param>
+            <returns name="bool">Výsledek ve formě logické hodnoty</returns>
+            <search>xor,exclusive,or</search>
+        </member>
+        <member name="M:DSCore.Math.DoCheckedCast(System.Double)">
+            <summary>Provede odlitek až po zkontrolovaný kontext. Pokud operace vyvolá přetečení,
+            zobrazí se upozornění a výsledek přetečení se vrátí.</summary>
+            <param name="value">Operace, která se má provést</param>
+            <returns>Výsledek operace</returns>
+        </member>
+        <member name="T:DSCore.Object">
+            <summary>Obecné funkce, které pracují se všemi daty</summary>
+        </member>
+        <member name="M:DSCore.Object.IsNull(System.Object)">
+            <summary>Určuje, zda má zadaný objekt hodnotu null.</summary>
+            <param name="object">Objekt k testování.</param>
+            <returns name="bool">Určuje, zda má objekt hodnotu null.</returns>
+            <search>is null</search>
+        </member>
+        <member name="M:DSCore.Object.Identity(System.Object)">
+            <summary>Vrací, co je předáno, a nic neprovádí.</summary>
+            <param name="object">Objekt.</param>
+            <returns name="object">Stejný objekt</returns>
+        </member>
+        <member name="M:DSCore.Object.Type(System.Object)">
+            <summary>Vrátí typ objektu v podobě řetězce.</summary>
+            <param name="object">Objekt pro dotaz typu</param>
+            <returns>Typ objektu</returns>
+        </member>
+        <member name="T:DSCore.Properties.Resources">
+            <summary>Třída prostředků silného typu k vyhledávání lokalizovaných řetězců apod.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ResourceManager">
+            <summary>Vrátí instanci třídy ResourceManager uloženou ve vyrovnávací paměti, která je použita touto třídou.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Culture">
+            <summary>Přepíše vlastnost CurrentUICulture aktuálního vlákna pro všechna
+              vyhledávání prostředků pomocí této třídy prostředků silného typu.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.BitmapOverflowError">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Zadaná data barev jsou příliš velká, aby se vešla do hranic obrázku.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Vstup musí být jedna hodnota nebo seznam bez vnoření.“</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataUnexpectedInputExceptionMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tento uzel očekával vstup {0}, ale obdržel vstup {1}. Zadejte očekávaný vstup nebo vyberte nový typ v rozevírací nabídce uzlu.“</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataUnsupportedCombinationOfDataTypesExceptionMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tento uzel nepodporuje kombinaci typů dat v aktuálním seznamu vstupů {0}. Zkontrolujte, zda seznam vstupů obsahuje položky stejného typu dat nebo kombinaci typů se společným nadřazeným typem.“</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataUnsupportedDataTypeExceptionMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tento uzel nepodporuje aktuální typ vstupních dat ({0}). V rozevírací nabídce zobrazte podporované typy dat.“</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekFriday">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Pátek“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekMonday">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Pondělí“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekSaturday">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Sobota“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekSunday">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Neděle“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekThursday">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Čtvrtek“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekTuesday">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Úterý“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekWednesday">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Středa“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Deserialize_Bad_Format">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Json pro typ {0} nebyl správně naformátován.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Deserialize_Unsupported_Cache">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Uložená data nelze načíst.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Serialize_Depth_Unsupported">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Hloubka {0} překračuje maximální hloubku {1} v cestě "{2}"“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Serialize_DesignScript_Unsupported">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tento typ geometrie nelze serializovat.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Serialize_Unsupported_Type">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Nelze uložit data typu {0}.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ExportToCSVObsolete">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Použijte raději uzel Data.ExportCSV.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FactorialNegativeInt">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Vstupní hodnota funkce Math.Factorial nemůže být záporná.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FactorialOverflow">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Návratová hodnota funkce Math.Factorial je mimo rozsah.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FindPointsWithinRadiusNullPointMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Je nutné zadat střed.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FindPointsWithinRadiusSearchRadiusMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Poloměr vyhledávání nemůže být nula.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FromObjectObsolete">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tento uzel je zastaralý. Použijte řetězec String from Object.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.IntegerOverflow">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Operace vedla k přetečení celého čísla. Její výsledek může být nečekaný.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.InvalidDestinationPathErrorMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci "Jako cesta ke kopírování se používá neplatná cesta k cílovému souboru.."</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.InvalidKeysErrorMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Jeden nebo více vstupních typů se neshoduje. Seznamy klíčů nejsou podporovány.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.InvalidKeysLenghtErrorMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Počet položek se neshoduje s počtem klíčů.“ href=InvalidKeysLenghtErrorMessage.html.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.LoadImageFromPathObsolete">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Raději použijte uzly File.FromPath -&gt; Image.ReadFromFile.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.MissingPythonEngine">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Vybraný modul Python nebylo možné nalézt.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ObjectArgumentExceptionMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Objekt nemůže mít hodnotu null, zadejte správnou hodnotu.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.QuadtreeConstructionEmptyUVSetMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Nelze sestavit objekt QuadTree z prázdné množiny bodů.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.QuadtreeConstructionNullUVSetMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Objekt QuadTree nemůže být sestaven z množiny UV s hodnotou null.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ReadImageObsolete">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Raději použijte uzly File.FromPath -&gt; Image.ReadFromFile -&gt; Image.Pixels.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ReadTextObsolete">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Raději použijte uzly File.FromPath -&gt; File.ReadText.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.StringRemoveCountOutOfRangeMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Počet je mimo rozsah.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.StringRemoveStartIndexOutOfRangeMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Počáteční index je mimo rozsah.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.StringToNumberInvalidNumberMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Číslo není platné.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.WebRequestNullUrlMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Adresa URL nesmí mít hodnotu null.“.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.WriteImageObsolete">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Raději použijte uzel Image.WriteToFile.“.</summary>
+        </member>
+        <member name="T:DSCore.PythonEvaluator">
+            <summary>Vyhodnotí kód jazyka Python na libovolném modulu jazyka Python (pro použití pouze na virtuálním počítači)</summary>
+        </member>
+        <member name="M:DSCore.Quadtree.ByUVs(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
+            <summary>Umožňuje vytvořit objekt QuadTree obsahující doménu (0,0)-&gt;(1,1).</summary>
+            <param name="uvs">Sada atributů UV v doméně (0,0) -&gt; (1,1)</param>
+            <returns>Objekt QuadTree</returns>
+        </member>
+        <member name="M:DSCore.Quadtree.FindPointsWithinRadius(Autodesk.DesignScript.Geometry.UV,System.Double)">
+            <summary>Umožňuje najít v objektu QuadTree všechny body (souřadnice UV), které jsou uvnitř oblasti určené poloměrem a souřadnicí UV.</summary>
+            <param name="center">Souřadnice UV středu prohledávané oblasti</param>
+            <param name="radius">Poloměr prohledávané oblasti</param>
+            <returns>Seznam souřadnic UV</returns>
+        </member>
+        <member name="M:DSCore.Node.Split">
+            <summary>Umožňuje rozdělit uzel do čtyř kvadrantů.</summary>
+            <returns/>
+        </member>
+        <member name="T:DSCore.UVRect">
+            <summary>Pomocná třída sloužící k definování obdélníku popsaného
+            pomocí minimální a maximální hodnoty UV.</summary>
+        </member>
+        <member name="T:DSCore.UVExtensions">
+            <summary>Metody rozšíření pro souřadnice UV</summary>
+        </member>
+        <member name="T:DSCore.Sorting">
+            <summary>Metody nástroje pro třídění podle klíčů. Mělo by být potlačeno, aby se z nich staly uzly, místo
+            toho budou obalovány implementacemi DS, které přijímají klíčové funkce mapování.</summary>
+        </member>
+        <member name="T:DSCore.String">
+            <summary>Metody pro správu řetězců</summary>
+        </member>
+        <member name="M:DSCore.String.ToNumber(System.String)">
+            <summary>Převádí řetězec na celé číslo nebo hodnotu typu double.</summary>
+            <param name="string">Řetězec k převedení</param>
+            <returns name="number">Celé číslo nebo číslo typu double</returns>
+            <search>2number,str2number,strtonumber,string2number,stringtonumber,int,double,cast</search>
+        </member>
+        <member name="M:DSCore.String.GetNumber(System.String)">
+            <summary>Získat všechny číselné řetězce z cílového řetězce jako řetězec</summary>
+            <param name="string">Cílový řetězec, který má být získán</param>
+            <returns name="str">Číslo v řetězci</returns>
+            <search>getnumber,tonumber,strtonumber,numberinstring,string2number,stringtonumber,int,double,cast</search> 
+        </member>
+        <member name="M:DSCore.String.Concat(System.String[])">
+            <summary>Zřetězí více řetězců do jediného řetězce.</summary>
+            <param name="strings">Seznam řetězců pro zřetězení</param>
+            <returns name="string">Řetězec vytvořený ze seznamu řetězců</returns>
+            <search>concatenate,join,combine strings</search>
+        </member>
+        <member name="M:DSCore.String.Length(System.String)">
+            <summary>Vrací počet znaků obsažených v daném řetězci.</summary>
+            <param name="string">Řetězec k nalezení délky</param>
+            <returns name="int">Počet znaků v řetězci</returns>
+            <search>count,size,characters,chars,length,sizeof</search>
+        </member>
+        <member name="M:DSCore.String.Split(System.String,System.String[])">
+            <summary>Rozdělí jeden řetězec na seznam řetězců, s děleními
+                určenými podle daných oddělovacích řetězců.</summary>
+            <param name="string">Řetězec pro rozdělení</param>
+            <param name="separators">Řetězce, které (pokud existují) určují konec a začátek rozdělení.</param>
+            <returns name="strings">Seznam řetězců vytvořený ze vstupního řetězce</returns>
+            <search>divide,separator,delimiter,cut,csv,comma,</search>
+        </member>
+        <member name="M:DSCore.String.Join(System.String,System.String[])">
+            <summary>Zřetězí více řetězců do jediného řetězce, přičemž vloží daný
+                oddělovač mezi každý spojený řetězec.</summary>
+            <param name="separator">Řetězec, který má být vložen mezi spojené řetězce</param>
+            <param name="strings">Řetězce, které mají být spojeny do jediného řetězce</param>
+            <returns name="string">Řetězec vytvořený ze seznamu řetězců, včetně znaku oddělovače</returns>
+            <search>join,separator,build csv,concat,construct</search>
+        </member>
+        <member name="M:DSCore.String.ToUpper(System.String)">
+            <summary>Převede zadaný řetězec na všechna velká písmena.</summary>
+            <param name="string">Řetězec k převedení na velká písmena</param>
+            <returns name="string">Řetězec velkými písmeny</returns>
+            <search>2uppercase,to uppercase,touppercase,uppercase</search>
+        </member>
+        <member name="M:DSCore.String.ToLower(System.String)">
+            <summary>Převede zadaný řetězec na všechna malá písmena.</summary>
+            <param name="string">Řetězec k převedení na malá písmena</param>
+            <returns name="string">Řetězec malými písmeny</returns>
+            <search>2lowercase,to lowercase,tolowercase,lowercase</search>
+        </member>
+        <member name="M:DSCore.String.ToTitle(System.String)">
+            <summary>Převede zadaný řetězec na velikost písmen nadpisu.</summary>
+            <param name="str">Řetězec k nastavení na velikost písmen nadpisu</param>
+            <returns name="str">Řetězec pro velikost písmen nadpisu</returns>
+            <search>2titlecase,to titlecase,to title case,totitlecase,titlecase</search>
+        </member>
+        <member name="M:DSCore.String.ChangeCase(System.String,System.Boolean)">
+            <summary>Převede zadaný řetězec na všechna velká nebo všechna
+                malá písmena, a to na základě logického parametru.</summary>
+            <param name="string">Řetězec, který má být převeden na velká nebo malá písmena</param>
+            <param name="upper">True, pokud chcete převést na velká písmena, false, chcete-li převést na malá písmena</param>
+            <returns name="string">Řetězec s převedenou velikostí písmen</returns>
+            <search>
+                2lowercase,to lowercase,tolowercase,lowercase,
+                2uppercase,to uppercase,touppercase,uppercase
+            </search>
+        </member>
+        <member name="M:DSCore.String.Substring(System.String,System.Int32,System.Int32)">
+            <summary>Načte dílčí řetězec z daného řetězce. Dílčí řetězec začíná v daném
+                umístění znaku a má danou délku.</summary>
+            <param name="string">Řetězec, jehož dílčí řetězec chcete převzít</param>
+            <param name="startIndex">Počáteční umístění znaku dílčího řetězce v původním řetězci</param>
+            <param name="length">Počet znaků v dílčím řetězci</param>
+            <returns name="string">Dílčí řetězec z původního řetězce</returns>
+             <search>subset,get string,part,smaller string</search>
+        </member>
+        <member name="M:DSCore.String.Contains(System.String,System.String,System.Boolean)">
+            <summary>Určuje, zda zadaný řetězec obsahuje daný dílčí řetězec.</summary>
+            <param name="string">Řetězec, ve kterém se má hledat</param>
+            <param name="searchFor">Dílčí řetězec, který chcete vyhledat</param>
+            <param name="ignoreCase">Určuje, zda porovnání bere v úvahu velká a malá písmena</param>
+            <returns name="bool">Určuje, zda řetězec obsahuje dílčí řetězec</returns>
+            <search>test,within,in,is in,part of</search>
+        </member>
+        <member name="M:DSCore.String.CountOccurrences(System.String,System.String,System.Boolean)">
+            <summary>Spočítá počet nepřekrývajících se výskytů dílčího řetězce uvnitř daného řetězce.</summary>
+            <param name="string">Řetězec, ve kterém se má hledat</param>
+            <param name="searchFor">Dílčí řetězec, který chcete vyhledat</param>
+            <param name="ignoreCase">Určuje, zda porovnání bere v úvahu velká a malá písmena</param>
+            <returns name="int">Počet nepřekrývajících se výskytů dílčího řetězce v řetězci</returns>
+            <search>count,substring,count occurrences,numberof,search,find,within</search>
+        </member>
+        <member name="M:DSCore.String.Replace(System.String,System.String,System.String)">
+            <summary>Nahradí všechny výskyty textu v řetězci jiným textem.</summary>
+            <param name="string">Řetězec, v němž chcete nahradit dílčí řetězce.</param>
+            <param name="searchFor">Text, který má být nahrazen</param>
+            <param name="replaceWith">Text, kterým chcete nahradit</param>
+            <returns name="string">Řetězec s provedených nahrazením</returns>
+            <search>replace,overwrite,override,find and replace</search>
+        </member>
+        <member name="M:DSCore.String.EndsWith(System.String,System.String,System.Boolean)">
+            <summary>Určuje, zda zadaný řetězec končí daným dílčím řetězcem.</summary>
+            <param name="string">Řetězec, jehož konec chcete hledat</param>
+            <param name="searchFor">Dílčí řetězec, který chcete na konci řetězce hledat</param>
+            <param name="ignoreCase">Hodnota True k ignorování velkých a malých písmen, hodnota False k braní v úvahu velká a malá písmena</param>
+            <returns name="bool">Hodnota True, pokud řetězec začíná dílčím řetězcem, hodnota False, pokud nezačíná</returns>
+            <search>test,does end,last,str end,terminated</search>
+        </member>
+        <member name="M:DSCore.String.StartsWith(System.String,System.String,System.Boolean)">
+            <summary>Určuje, zda zadaný řetězec začíná daným dílčím řetězcem.</summary>
+            <param name="string">Řetězec, jehož začátek chcete hledat</param>
+            <param name="searchFor">Dílčí řetězec, který chcete na začátku řetězce hledat</param>
+            <param name="ignoreCase">Hodnota True k ignorování velkých a malých písmen, hodnota False k braní v úvahu velká a malá písmena</param>
+            <returns name="bool">Hodnota True, pokud řetězec začíná dílčím řetězcem, hodnota False, pokud nezačíná</returns>
+            <search>test,beginswith,start,string start,front</search>
+        </member>
+        <member name="M:DSCore.String.TrimWhitespace(System.String)">
+            <summary>Odstraní všechny bílé znaky ze začátku a konce daného řetězce.</summary>
+            <param name="string">Řetězec, který se má zkrátit</param>
+            <returns name="string">Řetězec s odstraněnými počátečními a koncovými bílými znaky</returns>
+            <search>trimstring,cleanstring,whitespace,blanks,spaces,string trim</search>
+        </member>
+        <member name="M:DSCore.String.TrimLeadingWhitespace(System.String)">
+            <summary>Odstraní všechny bílé znaky ze začátku daného řetězce.</summary>
+            <param name="string">Řetězec, který se má zkrátit</param>
+            <returns name="string">Řetězec s odstraněnými počátečními bílými znaky</returns>
+            <search>trim string,clean string,trim leading whitespaces,string trim</search>
+        </member>
+        <member name="M:DSCore.String.TrimTrailingWhitespace(System.String)">
+            <summary>Odstraní všechny bílé znaky z konce daného řetězce.</summary>
+            <param name="string">Řetězec, který se má zkrátit</param>
+            <returns name="string">Řetězec s odstraněnými koncovými bílými znaky</returns>
+            <search>trim string,clean string,trim trailing whitespaces,string trim</search>
+        </member>
+        <member name="M:DSCore.String.IndexOf(System.String,System.String,System.Boolean)">
+            <summary>Najde index založený na nule prvního výskytu dílčího řetězce uvnitř řetězce.
+                Vrací -1, pokud nelze najít žádný index.</summary>
+            <param name="string">Řetězec, ve kterém se má hledat</param>
+            <param name="searchFor">Dílčí řetězec, který chcete vyhledat</param>
+            <param name="ignoreCase">Určuje, zda porovnání bere v úvahu velká a malá písmena</param>
+            <returns name="int">Index prvního výskytu dílčího řetězce nebo -1, pokud jej nelze najít</returns>
+            <search>index of,find substring,where,search</search>
+        </member>
+        <member name="M:DSCore.String.AllIndicesOf(System.String,System.String,System.Boolean)">
+            <summary>Najde seznam indexů, kde se podřetězec zobrazí uvnitř řetězce.</summary>
+            <param name="string">Řetězec, ve kterém se má hledat.</param>
+            <param name="searchFor">Dílčí řetězec, který chcete vyhledat.</param>
+            <param name="ignoreCase">Určuje, zda porovnání bere v úvahu velká a malá písmena.</param>
+            <returns name="indexList">Seznam indexů, kde je nalezen dílčí řetězec (typ: int[])</returns>
+            <search>all indices of,find substring,where,search</search>
+        </member>
+        <member name="M:DSCore.String.LastIndexOf(System.String,System.String,System.Boolean)">
+            <summary>Najde index založený na nule posledního výskytu dílčího řetězce uvnitř řetězce.
+                Vrací -1, pokud nelze najít žádný index.</summary>
+            <param name="string">Řetězec, ve kterém se má hledat.</param>
+            <param name="searchFor">Dílčí řetězec, který chcete vyhledat</param>
+            <param name="ignoreCase">Určuje, zda porovnání bere v úvahu velká a malá písmena.</param>
+            <returns name="int">Index posledního výskytu dílčího řetězce nebo -1, pokud jej nelze najít</returns>
+            <search>last index of,find substring,where,search</search>
+        </member>
+        <member name="M:DSCore.String.PadLeft(System.String,System.Int32,System.String)">
+            <summary>Zarovná znaky v daném řetězci doprava tím, že vyplní prostory vlevo až
+                po zadanou celkovou délku.</summary>
+            <param name="string">Řetězec k vyplnění</param>
+            <param name="newLength">Celková délka řetězce po vyplnění</param>
+            <param name="padChars">Znak pro vyplnění, ve výchozím nastavení jde o mezeru</param>
+            <returns name="string">Řetězce zarovnané doprava vyplněním úvodních bílých znaků na zadanou celkovou délku</returns>
+            <search>pad left,right align,right-align,pad,string space,whitespace</search>
+        </member>
+        <member name="M:DSCore.String.PadRight(System.String,System.Int32,System.String)">
+            <summary>Zarovná znaky v daném řetězci doleva tím, že vyplní prostory vpravo až
+                po zadanou celkovou délku.</summary>
+            <param name="string">Řetězec k vyplnění</param>
+            <param name="newLength">Celková délka řetězce po vyplnění</param>
+            <param name="padChars">Znak pro vyplnění, ve výchozím nastavení jde o mezeru</param>
+            <returns name="string">Řetězce zarovnané doleva vyplněním koncových bílých znaků na zadanou celkovou délku</returns>
+            <search>pad right,left align,left-align,pad string space,whitespace</search>
+        </member>
+        <member name="M:DSCore.String.Center(System.String,System.Int32,System.String)">
+            <summary>Zvětšuje šířku řetězce obklopením původních znaků mezerami z obou stran.</summary>
+            <param name="string">Řetězec k vystředění</param>
+            <param name="newLength">Celková délka řetězce po vystředění</param>
+            <param name="padChars">Znak pro vystředění, ve výchozím nastavení jde o mezeru</param>
+            <returns name="string">Řetězce zarovnané na střed tím, že je obklopíte počátečními a koncovými
+                bílými znaky na zadanou celkovou délku.</returns>
+            <search>center align,center-align,centered,whitespace,expand string,surround</search>
+        </member>
+        <member name="M:DSCore.String.Insert(System.String,System.Int32,System.String)">
+            <summary>Vloží řetězec do jiného řetězce v daném indexu.</summary>
+            <param name="string">Řetězec, do kterého se má provést vložení.</param>
+            <param name="index">Index, ve kterém chcete vložit</param>
+            <param name="toInsert">Řetězec, který se má vložit</param>
+            <returns name="string">Řetězec s vloženým dílčím řetězcem</returns>
+            <search>insertstring,insert string</search>
+        </member>
+        <member name="M:DSCore.String.Remove(System.String,System.Int32,System.Nullable{System.Int32})">
+            <summary>Odstraní znaky z řetězce.</summary>
+            <param name="string">Řetězec, z něhož se mají odebrat znaky.</param>
+            <param name="startIndex">Index, ve které chcete začít s odstraňováním</param>
+            <param name="count">Počet znaků, které mají být odebrány.
+                Poznámka: Pokud je hodnota Počet záporná, bude proces odebírání probíhat zprava doleva.</param>
+            <returns name="string">Řetězec s odstraněnými znaky</returns>
+            <search>delete,rem,shorten</search>
+        </member>
+        <member name="T:DSCore.Thread">
+            <summary>Funkce pro práci s vlákny vyhodnocení</summary>
+        </member>
+        <member name="M:DSCore.Thread.Pause(System.Object,System.Int32)">
+            <summary>Pozastaví aktuální vlákno vyhodnocení na danou dobu.</summary>
+            <param name="object">Objekt k procházení.</param>
+            <param name="msTimeout">Doba pozastavení vlákna, v milisekundách</param>
+            <returns name="object">Procházený objekt</returns>
+        </member>
+    </members>
+</doc>

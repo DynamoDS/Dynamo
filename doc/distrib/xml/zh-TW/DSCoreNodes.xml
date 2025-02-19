@@ -1,0 +1,1841 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>DSCoreNodes</name>
+    </assembly>
+    <members>
+        <member name="P:DSCore.Color.Red">
+            <summary>尋找顏色 (0 到 255) 的紅色元件。</summary>
+            <returns name="int">RGB 顏色模型的紅色值，介於 0 到 255 (含) 之間的 int。</returns>
+        </member>
+        <member name="P:DSCore.Color.Green">
+            <summary>尋找顏色 (0 到 255) 的綠色元件。</summary>
+            <returns name="int">RGB 顏色模型的綠色值，介於 0 到 255 (含) 之間的 int。</returns>
+        </member>
+        <member name="P:DSCore.Color.Blue">
+            <summary>尋找顏色 (0 到 255) 的藍色元件。</summary>
+            <returns name="int">RGB 顏色模型的藍色值，介於 0 到 255 (含) 之間的 int。</returns>
+        </member>
+        <member name="P:DSCore.Color.Alpha">
+            <summary>尋找顏色 (0 到 255) 的 Alpha 元件。</summary>
+            <returns name="int">Alpha 值，介於 0 到 255 (含) 之間的 int。</returns>
+        </member>
+        <member name="M:DSCore.Color.ByARGB(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>依 Alpha、紅色、綠色及藍色元素建構顏色。</summary>
+            <param name="alpha">Alpha 值 (介於 0 到 255 (含) 之間)</param>
+            <param name="red">RGB 顏色模型的紅色值 (介於 0 到 255 (含) 之間)</param>
+            <param name="green">RGB 顏色模型的綠色值 (介於 0 到 255 (含) 之間)</param>
+            <param name="blue">RGB 顏色模型的藍色值 (介於 0 到 255 (含) 之間)</param>
+            <returns name="color">從 ARGB 建立的顏色</returns>
+            <search>color</search>
+        </member>
+        <member name="M:DSCore.Color.Brightness(DSCore.Color)">
+            <summary>傳回此顏色的亮度值。</summary>
+            <param name="color">要從中查詢亮度的顏色</param>
+            <returns name="double">亮度值 (介於 0 到 1 (含) 之間)</returns>
+        </member>
+        <member name="M:DSCore.Color.Saturation(DSCore.Color)">
+            <summary>傳回此顏色的彩度值。</summary>
+            <returns name="double">飽和度值，介於 0 到 1 之間的 double。</returns>
+        </member>
+        <member name="M:DSCore.Color.Hue(DSCore.Color)">
+            <summary>傳回此顏色的色相值。</summary>
+            <param name="color">顏色物件</param> 
+            <returns name="double">顏色的色相值，介於 0 到 1 (含) 之間的 double。</returns>
+            <search>hues</search>
+        </member>
+        <member name="M:DSCore.Color.Components(DSCore.Color)">
+            <summary>依下列順序列示顏色的元件 ：Alpha、紅色、綠色、藍色。</summary>
+            <param name="color">顏色物件</param> 
+            <returns name="alpha">Alpha 值，介於 0 到 255 (含) 之間的 int。</returns>
+            <returns name="red">RGB 顏色模型的紅色值，介於 0 到 255 (含) 之間的 int。</returns>
+            <returns name="green">RGB 顏色模型的綠色值，介於 0 到 255 (含) 之間的 int。</returns>
+            <returns name="blue">RGB 顏色模型的藍色值，介於 0 到 255 (含) 之間的 int。</returns>
+            <search>alpha,red,green,blue</search>
+        </member>
+        <member name="M:DSCore.Color.BuildColorFrom1DRange(System.Collections.Generic.List{DSCore.Color},System.Collections.Generic.List{System.Double},System.Double)">
+            <summary>傳回開始顏色和結束顏色之間的顏色漸層中的一個顏色。</summary>
+            <param name="colors"/>
+            <param name="parameters">沿著您想要取樣顏色之範圍的值，介於 0 與 1 之間。</param>
+            <param name="parameter"/>
+            <returns name="colors">給定範圍內的顏色。</returns>
+            <search>color,range,gradient</search>
+        </member>
+        <member name="M:DSCore.Color.Lerp(DSCore.Color,DSCore.Color,System.Double)">
+            <summary>可用線性方式內插於兩種顏色之間。</summary>
+            <param name="start">開始顏色。</param>
+            <param name="end">結束顏色。</param>
+            <param name="t">介於 0.0 和 1.0 之間的參數。</param>
+            <returns>內插的顏色或白色。</returns>
+        </member>
+        <member name="M:DSCore.Color.Blerp(System.Collections.Generic.IList{DSCore.Color.IndexedColor2D},Autodesk.DesignScript.Geometry.UV)">
+            <summary>可用雙線性方式內插於一組顏色之間。</summary>
+            <param name="colors"/>
+            <param name="parameter"/>
+            <returns>內插的顏色或白色。</returns>
+            This algorithm is not the same as the solution found from wikipedia 
+            (reference: https://en.wikipedia.org/wiki/Bilinear_interpolation)
+        </member>
+        <member name="M:DSCore.Color.Add(DSCore.Color,DSCore.Color)">
+            <summary>透過結合兩個既有顏色的 ARGB 值來建構顏色。</summary>
+            <param name="color">要相加的顏色</param>
+            <param name="otherColor">要相加的另一個顏色</param>
+            <returns name="color">相加兩種顏色後的顏色結果</returns>
+        </member>
+        <member name="M:DSCore.Color.Multiply(DSCore.Color,System.Double)">
+            <summary>以乘以數倍數輸入顏色，從而產生較暗的顏色。輸入顏色必須具有小於 255 的 Alpha。</summary>
+            <param name="color">要相乘的顏色</param>
+            <param name="multiplier">乘數值</param>
+            <returns name="color">相乘後的顏色結果</returns>
+        </member>
+        <member name="M:DSCore.Color.Divide(DSCore.Color,System.Double)">
+            <summary>以數字分隔器分割輸入顏色，從而產生較亮的顏色並移除顏色暈白</summary>
+            <param name="color">要相除的顏色</param>
+            <param name="dividend">被除數值</param>
+            <returns name="color">相除後的顏色結果</returns>
+        </member>
+        <member name="M:DSCore.ColorRange1D.ByColorsAndParameters(System.Collections.Generic.List{DSCore.Color},System.Collections.Generic.List{System.Double})">
+            <summary>透過提供顏色和參數的清單來建立 ColorRange1D。</summary>
+            <param name="colors">顏色清單。</param>
+            <param name="parameters">介於 0.0 和 1.0 之間的參數清單。</param>
+            <returns>一個 ColorRange1D 物件。</returns>
+        </member>
+        <member name="M:DSCore.ColorRange1D.GetColorAtParameter(DSCore.ColorRange1D,System.Double)">
+            <summary>傳回此顏色範圍中指定參數的顏色。</summary>
+            <param name="colorRange"/>
+            <param name="parameter">介於 0.0 和 1.0 之間的值。</param>
+            <returns>一種顏色。</returns>
+        </member>
+        <member name="M:DSCore.ColorRange1D.Default">
+            <summary>使用預設的色彩計畫建立一個 ColorRange1D。</summary>
+            <returns/>
+        </member>
+        <member name="M:DSCore.ColorRange.ByColorsAndParameters(System.Collections.Generic.IList{DSCore.Color},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.UV})">
+            <summary>建立 ColorRange 提供顏色和 UV 清單。</summary>
+            <param name="colors">顏色清單。</param>
+            <param name="parameters">介於 (0.0,0.0) 和 (1.0,1.0) 之間的參數清單。</param>
+            <returns>一個 ColorRange 物件。</returns>
+        </member>
+        <member name="M:DSCore.ColorRange.GetColorAtParameter(Autodesk.DesignScript.Geometry.UV)">
+            <summary>傳回此顏色範圍中指定參數的顏色。</summary>
+            <param name="parameter">介於 (0.0,0.0) 和 (1.0,1.0) 之間的 UV。</param>
+            <returns>一種顏色。</returns>
+        </member>
+        <member name="T:DSCore.Compare">
+            <summary>比較方法。</summary>
+        </member>
+        <member name="M:DSCore.Compare.GreaterThan(System.Object,System.Object)">
+            <summary>如果 a 大於 b，則傳回 true。</summary>
+            <param name="a">可比較的物件。</param>
+            <param name="b">可比較的物件。</param>
+            <returns name="bool">布林運算結果。</returns>
+            <search>larger,bigger</search>
+        </member>
+        <member name="M:DSCore.Compare.GreaterThanOrEqual(System.Object,System.Object)">
+            <summary>如果 a 大於或等於 b，則傳回 true。</summary>
+            <param name="a">可比較的物件。</param>
+            <param name="b">可比較的物件。</param>
+            <returns name="bool">布林運算結果。</returns>
+            <search>larger,bigger,equal</search>
+        </member>
+        <member name="M:DSCore.Compare.LessThan(System.Object,System.Object)">
+            <summary>如果 a 小於 b，則傳回 true。</summary>
+            <param name="a">可比較的物件。</param>
+            <param name="b">可比較的物件。</param>
+            <returns name="bool">布林運算結果。</returns>
+            <search>less,smaller</search>
+        </member>
+        <member name="M:DSCore.Compare.LessThanOrEqual(System.Object,System.Object)">
+            <summary>如果 a 小於或等於 b，則傳回 true。</summary>
+            <param name="a">可比較的物件。</param>
+            <param name="b">可比較的物件。</param>
+            <returns name="bool">布林運算結果。</returns>
+            <search>smaller,equal</search>
+        </member>
+        <member name="M:DSCore.Data.ParseJSON(System.String)">
+            <summary>Parse 會將任意的 JSON 字串轉換成值。與 JSON.Stringify 相反。</summary>
+            <param name="json">JSON 字串</param>
+            <returns name="result">結果類型取決於輸入字串的內容。結果類型可以是一個基本值 (例如，字串、布林或倍精度)、一個清單，或一個字典。</returns>
+        </member>
+        <member name="M:DSCore.Data.ToNative(Newtonsoft.Json.Linq.JToken)">
+            <summary>剖析將 JToken 類型轉換為原生 .NET 物件的實施。</summary>
+            <param name="token">要剖析為 N 的 JToken</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.DynamoJObjectToNative(Newtonsoft.Json.Linq.JObject)">
+            <summary>剖析將 JObject 類型轉換為特定 Dynamo 物件 (例如幾何圖形、顏色、影像等) 的實施</summary>
+            <param name="jObject"/>
+            <returns/>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:DSCore.Data.StringifyJSON(System.Object)">
+            <summary>Stringify 會將任意值或任意值的清單轉換成 JSON。可以使用複製對清單套用此作業，產生一個 JSON 字串的清單。</summary>
+            <param name="values">值清單</param>
+            <returns name="json">基本類型 (例如，倍精度、整數、布林)、清單和字典將轉換成關聯的 JSON 類型的 JSON 字串。</returns>
+        </member>
+        <member name="T:DSCore.Data.MaxDepthJsonTextWriter">
+            <summary>JsonTextWriter 的子類別，可限制最大支援的物件深度，以防止循環參考在序列化任意 .NET 物件類型時當機。</summary>
+        </member>
+        <member name="T:DSCore.Data.DictConverter">
+            <summary>確保 DesignScript.Builtin.Dictionary (刻意不實施 IDictionary) 會轉換成 JSON 物件。</summary>
+        </member>
+        <member name="M:DSCore.Data.CanObjectBeCached(System.Object)">
+            <summary>判斷物件是否可快取，或為空值、「null」字串或空清單的輔助工具函數。</summary>
+            <param name="inputObject">要檢查的物件</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.Remember(System.Object,System.String)">
+            <summary>處理 Data.Remember 節點快取的函數</summary>
+            <param name="inputObject">要快取的物件</param>
+            <param name="cachedJson">可選的既有快取 JSON</param>
+            <returns/>
+        </member>
+        <member name="T:DSCore.Data.DataNodeDynamoType">
+            <summary>表示 Dynamo 支援的 DataType 的類別</summary>
+        </member>
+        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String)">
+            <summary>表示 Dynamo 支援的 DataType 的類別</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Type">
+            <summary>基本類型</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Name">
+            <summary>要取代類型名稱的可選名稱 (`Number` 而非 `long`)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Level">
+            <summary>要在使用者介面中顯示的階層層級</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.IsLastChild">
+            <summary>如果類型是階層的最後一個子系 (用於使用者介面)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Parent">
+            <summary>類型的父系 (如果有)</summary>
+        </member>
+        <member name="F:DSCore.Data.DataNodeDynamoTypeList">
+            <summary>所有 Dynamo 支援的資料類型的靜態清單</summary>
+            <returns>包含支援的資料類型的清單</returns>
+        </member>
+        <member name="M:DSCore.Data.#cctor">
+            <summary>靜態建構函式</summary>
+        </member>
+        <member name="M:DSCore.Data.SafeExtractDictionaryValue(System.Collections.Generic.Dictionary{System.String,System.Object},System.String)">
+            <summary>安全地萃取字典值的輔助工具函數</summary>
+            <param name="dict">要從中萃取值的字典</param>
+            <param name="key">鍵/值對的鍵</param>
+        </member>
+        <member name="M:DSCore.Data.EvaluateDefineDataNode(System.Object,System.String,System.Boolean,System.Boolean,System.String)">
+            <summary>這是 AST 用於評估 Define Data 節點的函數。
+            執行驗證時，會處理某些節點邏輯</summary>
+            <param name="inputValue">上游輸入值</param>
+            <param name="typeString">類型，以字串表示 (待辦: 最好傳遞「Type」類型的物件以直接比較類型)</param>
+            <param name="isList">如果輸入為 `ArrayList` 類型</param>
+            <param name="isAutoMode">如果節點處於「自動」模式</param>
+            <param name="playerValue">被 Dynamo 播放器注入節點的值 (如果有)。</param>
+        </member>
+        <member name="M:DSCore.Data.FindCommonAncestor(System.Collections.ArrayList)">
+            <summary>如果在自動模式中傳遞物件的 ArrayList，用於協助尋找類型的函數</summary>
+            <param name="list">輸入值，應為 ArrayList 類型</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.LikelyAncestor(System.Collections.Generic.List{DSCore.Data.DataNodeDynamoType})">
+            <summary>從 DataNodeDynamoType 節點清單中傳回最低層節點的輔助工具函數</summary>
+            <param name="nodes">要演算的 DataNodeDynamoType 清單</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.FindClosestCommonAncestor(System.Collections.Generic.List{DSCore.Data.DataNodeDynamoType})">
+            <summary>嘗試決定資料類型清單中共同上層的輔助工具函數</summary>
+            <param name="nodes">要演算的 DataType 節點清單</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.FindCommonAncestorBetweenTwoNodes(DSCore.Data.DataNodeDynamoType,DSCore.Data.DataNodeDynamoType)">
+            <summary>嘗試在兩個 Dynamo 類型之間尋找共同上層的遞迴函數
+            會向上爬升到可能上層的階層樹</summary>
+            <param name="node">檢查此節點是否衍生自可能的上層</param>
+            <param name="likelyAncestor">節點應衍生自的可能上層</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.GetListFromTypes(System.Collections.ArrayList)">
+            <summary>從物件的 ArrayList 傳回 DataNodeDynamoTypes 清單</summary>
+            <param name="list">要重新格式化之物件的 ArrayList</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
+            <summary>檢查輸入物件是單一值還是單層 ArrayList。</summary>
+            <param name="obj">要演算的輸入物件</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsSupportedDataNodeDynamoType(System.Object,System.Type,System.Boolean)">
+            <summary>用於驗證輸入類型是否符合支援的 Dynamo 輸入類型的函數</summary>
+            <param name="inputValue">要驗證的進入資料</param>
+            <param name="type">使用者提供的輸入類型，必須符合 inputValue 類型</param>
+            <param name="isList">此布林值決定輸入是單一物件或清單</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsItemOfType(System.Object,System.Type)">
+            <summary>此方法會檢查項目是否為必要的 Dynamo DataType
+            「IsInstanceOfType」會遞迴檢查是否為向上繼承</summary>
+            <param name="item">要檢查其資料類型的項目</param>
+            <param name="dataType">要當作檢查目標的 DataType</param>
+            <returns>根據檢查驗證的 True 或 False 結果</returns>
+        </member>
+        <member name="M:DSCore.Data.IsDerivedFrom(System.Type,System.Type)">
+            <summary>此方法會檢查類型是否衍生自基準類型</summary>
+            <param name="derivedType">要宣告的類型</param>
+            <param name="baseType">我們比較的基準類型</param>
+            <returns/>
+        </member>
+        <member name="T:DSCore.DateTime">
+            <summary>代表特定日期和時間的物件。</summary>
+        </member>
+        <member name="P:DSCore.DateTime.MinValue">
+            <summary>可以表示的最早日期與時間。</summary>
+            <returns name="dateTime">可能的最小 DateTime 表現法</returns>
+        </member>
+        <member name="P:DSCore.DateTime.MaxValue">
+            <summary>可以表示的最晚日期與時間。</summary>
+            <returns name="dateTime">可能的最大 DateTime 表現法</returns>
+        </member>
+        <member name="P:DSCore.DateTime.Now">
+            <summary>目前的系統日期與時間。</summary>
+            <returns name="dateTime">表示目前時間的 DateTime</returns>
+        </member>
+        <member name="P:DSCore.DateTime.Today">
+            <summary>目前的系統日期，時間設在午夜。</summary>
+            <returns name="dateTime">表示今天的 DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.Format(System.DateTime,System.String)">
+             <summary>以指定格式的字串傳回指定的日期與時間。</summary>
+             <param name="dateTime">要格式化的 DateTime</param>
+             <param name="format">日期格式的字串表現法。使用獨立於使用者作業系統語言輸出的 InvariantCulture。預設為標準格式「F」：「2017 年 2 月 21 日 (星期二) 23:02:43」
+若要取得格式指定器的詳盡清單，請搜尋「MSDN 自訂日期及時間格式字串」。</param>
+             <returns name="string">以字串表示的 DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.ByDate(System.Int32,System.Int32,System.Int32)">
+            <summary>以精確日期建立新的 DateTime。</summary>
+            <param name="year">精確年份 (1-9999)</param>
+            <param name="month">精確月份 (1-12)</param>
+            <param name="day">精確日  (1 - [當月第幾天] )</param>
+            <returns name="dateTime">從日期建立的 DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.ByDateAndTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>以精確日期和時間建立新的 DateTime。</summary>
+            <param name="year">精確年份 (1-9999)</param>
+            <param name="month">精確月份 (1-12)</param>
+            <param name="day">精確日  (1 - [當月第幾天] )</param>
+            <param name="hour">精確小時 (0-23)</param>
+            <param name="minute">精確分鐘 (0-59)</param>
+            <param name="second">精確秒 (0-59)</param>
+            <param name="millisecond">精確毫秒 (0-999)</param>
+            <returns name="dateTime">從日期和時間建立的 DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.SubtractTimeSpan(System.DateTime,System.TimeSpan)">
+            <summary>將 TimeSpan 從 DateTime 減去，產生新的 DateTime。</summary>
+            <param name="dateTime">開始的 DateTime</param>
+            <param name="timeSpan">要減去的時間量</param>
+            <returns name="dateTime">相減後的 DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.AddTimeSpan(System.DateTime,System.TimeSpan)">
+            <summary>將 TimeSpan 加至 DateTime，產生新的 DateTime。</summary>
+            <param name="dateTime">開始的 DateTime</param>
+            <param name="timeSpan">要增加到 DateTime 的時間量</param>
+            <returns name="dateTime">增加時間跨距後的 DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.DaysInMonth(System.Int32,System.Int32)">
+            <summary>計算給定年給定月有多少天。</summary>
+            <param name="year">精確年份 (1-9999)</param>
+            <param name="month">精確月份 (1-12)</param>
+            <returns name="int">月的天數</returns>
+        </member>
+        <member name="M:DSCore.DateTime.IsDaylightSavingsTime(System.DateTime)">
+            <summary>判定它是否為給定 DateTime 的日光節約時間。</summary>
+            <param name="dateTime">用來決定是否有日光節約的 DateTime</param>
+            <returns name="bool">如果 DateTime 是在日光節約時間則為 true；如果不是則為 false</returns>
+        </member>
+        <member name="M:DSCore.DateTime.IsLeapYear(System.Int32)">
+            <summary>判定給定年份是否為閏年。</summary>
+            <param name="year">精確年份 (1-9999)</param>
+            <returns name="bool">如果年為閏年則為 true，如果不是則為 false</returns>
+        </member>
+        <member name="M:DSCore.DateTime.FromString(System.String)">
+            <summary>嘗試從字串剖析 DateTime</summary>
+            <param name="string">DateTime 的字串表現法</param>
+            <returns name="dateTime">剖析的字串的 DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.Date(System.DateTime)">
+            <summary>僅從 DateTime 萃取日期。 時間元件設為 0。</summary>
+            <param name="dateTime">DateTime。</param>
+            <returns name="date">來自 DateTime 的日期</returns>
+            <search>Date</search>
+        </member>
+        <member name="M:DSCore.DateTime.Components(System.DateTime)">
+            <summary>萃取 DateTime 的個別元件。</summary>
+            <param name="dateTime">要從中取得組成的 DateTime</param>
+            <returns name="year">年的數值表現法 (1-9999)</returns>
+            <returns name="month">月的數值表現法 (1-12)</returns>
+            <returns name="day">日的數值表現法 (1 到 [月的天])</returns>
+            <returns name="hour">小時的數值表現法 (0-23)</returns>
+            <returns name="minute">分鐘的數值表現法 (0-59)</returns>
+            <returns name="second">秒的數值表現法 (0-59)</returns>
+            <returns name="millisecond">毫秒的數值表現法 (0-999)</returns>
+        </member>
+        <member name="M:DSCore.DateTime.DayOfWeek(System.DateTime)">
+            <summary>從給定 DateTime 傳回一週的日子。</summary>
+            <param name="dateTime">要從中取得星期幾的 DateTime 物件</param>
+            <returns name="dayOfWeek">一週的日子</returns>
+        </member>
+        <member name="M:DSCore.DateTime.DayOfYear(System.DateTime)">
+            <summary>傳回一年的日子 (0-366)</summary>
+            <param name="dateTime">要取得一年的日子的 DateTime</param>
+            <returns name="int">從年初開始的天數</returns>
+        </member>
+        <member name="M:DSCore.DateTime.TimeOfDay(System.DateTime)">
+            <summary>產生新的 TimeSpan，表示自從給定 DateTime 的午夜後經過的時間量。</summary>
+            <param name="dateTime">DateTime。</param>
+            <returns name="timeSpan">自午夜起的 TimeSpan</returns>
+        </member>
+        <member name="T:DSCore.DayOfWeek">
+            <summary>一週的日子</summary>
+        </member>
+        <member name="T:DSCore.TimeSpan">
+            <summary>表示已經過之時間段的物件，沒有特定的開始或結束日期。</summary>
+        </member>
+        <member name="M:DSCore.TimeSpan.ByDateDifference(System.DateTime,System.DateTime)">
+            <summary>產生新的 TimeSpan，這是根據兩個 DateTime 的時間差計算而得</summary>
+            <param name="dateTime">要被減去的 DateTime</param>
+            <param name="otherDateTime">要減去的 DateTime</param>
+            <returns name="timeSpan">兩個日期之間的 TimeSpan 差</returns>
+        </member>
+        <member name="P:DSCore.TimeSpan.Zero">
+            <summary>表示已經過時間為零的 TimeSpan。</summary>
+            <returns name="timeSpan">表示經過時間為零的 TimeSpan</returns>
+        </member>
+        <member name="P:DSCore.TimeSpan.MaxValue">
+            <summary>可以表示的最大 TimeSpan。</summary>
+            <returns name="timeSpan">可能的最大 TimeSpan 表現法</returns>
+        </member>
+        <member name="P:DSCore.TimeSpan.MinValue">
+            <summary>可以表示的最小 TimeSpan。</summary>
+            <returns name="timeSpan">可能的最小 TimeSpan 表現法</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Create(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>根據時間跨距建立新的 TimeSpan。</summary>
+            <param name="days">跨距的天數。</param>
+            <param name="hours">跨距的小時數。</param>
+            <param name="minutes">跨距的分鐘數。</param>
+            <param name="seconds">跨距的秒數。</param>
+            <param name="milliseconds">跨距的毫秒數。</param>
+            <returns name="timeSpan">建立的 TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Scale(System.TimeSpan,System.Double)">
+            <summary>將 TimeSpan 乘以比例係數</summary>
+            <param name="timeSpan">要相乘的 TimeSpan</param>
+            <param name="scaleFactor">調整 TimeSpan 比例的數量。 例如，比例係數若為 2，將產生 2 倍的時間跨距量。</param>
+            <returns name="timeSpan">TimeSpan 乘積</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Negate(System.TimeSpan)">
+            <summary>讓 TimeSpan 變成負數</summary>
+            <param name="timeSpan">要變成負數的 TimeSpan</param>
+            <returns name="timeSpan">負數的 TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Add(System.TimeSpan,System.TimeSpan)">
+            <summary>讓兩個 TimeSpan 相加</summary>
+            <param name="timeSpan1">要相加的 TimeSpan</param>
+            <param name="timeSpan2">要相加的另一個 TimeSpan</param>
+            <returns name="timeSpan">相加後的 TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Subtract(System.TimeSpan,System.TimeSpan)">
+            <summary>讓兩個 TimeSpan 相減</summary>
+            <param name="timeSpan1">要被減去的 TimeSpan</param>
+            <param name="timeSpan2">要減去的 TimeSpan</param>
+            <returns name="timeSpan">減去後的 TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.FromString(System.String)">
+            <summary>嘗試從字串剖析 TimeSpan</summary>
+            <param name="string">TimeSpan 的字串表現法。</param>
+            <returns name="timeSpan">剖析的字串的 TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Components(System.TimeSpan)">
+            <summary>萃取 TimeSpan 的個別元件。</summary>
+            <param name="timeSpan">要從中取得組成的 TimeSpan</param>
+            <returns name="days">天數 (類型 int)</returns>
+            <returns name="hours">小時數 (類型 int)</returns>
+            <returns name="minutes">分鐘數 (類型 int)</returns>
+            <returns name="seconds">秒數 (類型 int)</returns>
+            <returns name="milliseconds">毫秒數 (類型 int)</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalDays(System.TimeSpan)">
+            <summary>將 TimeSpan 表示的總時間量轉換為不精確的天數。</summary>
+            <param name="timeSpan">要從中查詢總天數的 TimeSpan</param>
+            <returns name="double">總天數</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalHours(System.TimeSpan)">
+            <summary>將 TimeSpan 表示的總時間量轉換為不精確的小時數。</summary>
+            <param name="timeSpan">要從中查詢總時數的 TimeSpan</param>
+            <returns name="double">總時數</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalMinutes(System.TimeSpan)">
+            <summary>將 TimeSpan 表示的總時間量轉換為不精確的分鐘數。</summary>
+            <param name="timeSpan">要從中查詢總分鐘數的 TimeSpan</param>
+            <returns name="double">總分鐘數</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalSeconds(System.TimeSpan)">
+            <summary>將 TimeSpan 表示的總時間量轉換為不精確的秒數。</summary>
+            <param name="timeSpan">要從中查詢總秒數的 TimeSpan</param>
+            <returns name="double">總秒數</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalMilliseconds(System.TimeSpan)">
+            <summary>將 TimeSpan 表示的總時間量轉換為不精確的毫秒數。</summary>
+            <param name="timeSpan">要從中查詢總毫秒數的 TimeSpan</param>
+            <returns name="double">總毫秒數</returns>
+        </member>
+        <member name="T:DSCore.IO.FileSystem">
+            <summary>處理檔案的方法。</summary>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.AbsolutePath(System.String,System.String)">
+            <summary>從給定路徑傳回絕對路徑。如果給定路徑是
+            相對路徑，則會相對於目前工作區
+            進行解析。如果檔案在相對路徑不存在，但存在於
+            給定的 hintPath，則會傳回 hintPath。</summary>
+            <param name="path">相對路徑或完整路徑</param>
+            <param name="hintPath">前一個解析路徑</param>
+            <returns>絕對路徑</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileFromPath(System.String)">
+            <summary>從給定的檔案路徑建立檔案物件。</summary>
+            <param name="path"/>
+            <returns/>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.ReadText(System.IO.FileInfo)">
+            <summary>讀取文字檔，並將內容傳回為字串。</summary>
+            <param name="file">要從中讀取文字的檔案物件</param>
+            <returns name="string">文字檔的內容。</returns>
+            <search>read file,text,file</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.MoveFile(System.String,System.String,System.Boolean)">
+            <summary>將指定的檔案移至新位置</summary>
+            <param name="path">既有路徑的字串表現法</param>
+            <param name="newPath">新路徑的字串表現法</param>
+            <param name="overwrite">切換以覆蓋既有檔案</param>
+            <returns name="void">節點執行工作，不產生輸出</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DeleteFile(System.String)">
+            <summary>刪除指定的檔案。</summary>
+            <param name="path">要刪除的檔案路徑</param>
+            <returns name="void">節點執行工作，不產生輸出</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.CopyFile(System.IO.FileInfo,System.String,System.Boolean)">
+            <summary>複製檔案。</summary>
+            <param name="file">要複製的檔案物件</param>
+            <param name="destinationPath">目標檔案路徑的字串表現法</param>
+            <param name="overwrite">切換以覆蓋既有檔案</param>
+            <returns name="bool">節點會執行工作，如果複製動作成功則傳回 true。</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileExists(System.String)">
+            <summary>判定檔案是否存在於給定路徑中。</summary>
+            <param name="path">表示檔案路徑的字串</param>
+            <returns name="bool">如果檔案存在則為 true；如果不存在則為 false</returns>
+            <search>filepath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.WriteText(System.String,System.String)">
+            <summary>將文字內容寫入至路徑指定的檔案</summary>
+            <param name="filePath">要寫入的路徑</param>
+            <param name="text">文字內容</param>
+            <returns name="void">無輸出</returns>
+            <search>write file,text,file,filepath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.AppendText(System.String,System.String)">
+            <summary>附加文字內容至路徑指定的檔案</summary>
+            <param name="filePath">要寫入的路徑</param>
+            <param name="text">文字內容</param>
+            <returns name="void">節點執行工作，不產生輸出</returns>
+            <search>append file,write file,text,file,filepath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.CombinePath(System.String[])">
+            <summary>將多個字串結合成單一檔案路徑。</summary>
+            <param name="strings">要合併成路徑的字串</param>
+            <returns name="string">合併的檔案路徑</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileExtension(System.String)">
+            <summary>從檔案路徑傳回副檔名。</summary>
+            <param name="path">要取得其副檔名的路徑</param>
+            <returns name="string">副檔名</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.ChangePathExtension(System.String,System.String)">
+            <summary>變更檔案路徑的副檔名。</summary>
+            <param name="path">要變更其副檔名的路徑</param>
+            <param name="newExtension">新副檔名的字串表現法</param>
+            <returns name="string">副檔名已變更的檔案路徑</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DirectoryName(System.String)">
+            <summary>傳回檔案路徑的目錄名稱。</summary>
+            <param name="path">要取得其目錄資訊的路徑</param>
+            <returns name="string">檔案路徑的目錄名稱</returns>
+            <search>directorypath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileName(System.String,System.Boolean)">
+            <summary>傳回檔案路徑的檔案名稱。</summary>
+            <param name="path">要取得其檔案名稱的路徑</param>
+            <param name="withExtension">切換以在結果中包含副檔名</param>
+            <returns name="string">來自檔案路徑的檔案名稱</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileHasExtension(System.String)">
+            <summary>判定檔案路徑是否包含副檔名。</summary>
+            <param name="path">要檢查副檔名的路徑</param>
+            <returns name="bool">如果檔案路徑包含副檔名則為 true；如果不包含則為 false</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.GetDirectoryContents(System.IO.DirectoryInfo,System.String,System.Boolean)">
+            <summary>將傳回給定目錄中包含的檔案與目錄清單。可使用選擇性的 searchString 篩選結果。</summary>
+            <param name="directory">要取得其內容的目錄</param>
+            <param name="searchString">用來篩選結果的搜尋字串</param>
+            <param name="includeSubdirectories">設定為 true 可在子目錄 (遞迴) 中包括檔案和資料夾，設定為 false 就只能在給定目錄的最上層包括結果。</param>
+            <returns name="files">來自查詢的結果檔案</returns>
+            <returns name="directories">來自查詢的結果目錄</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.CopyDirectory(System.IO.DirectoryInfo,System.String,System.Boolean)">
+            <summary>將目錄複製至目標位置。</summary>
+            <param name="directory">要複製的目錄</param>
+            <param name="destinationPath">複製作業在磁碟上的目標</param>
+            <param name="overwriteFiles">切換以覆蓋既有目錄</param>
+            <returns name="void">節點執行工作，不產生輸出</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DeleteDirectory(System.String,System.Boolean)">
+            <summary>刪除目錄。</summary>
+            <param name="path">目錄在磁碟上的路徑</param>
+            <param name="recursive">是否刪除目錄的所有內容，預設為 False。</param>
+            <returns name="void">節點執行工作，不產生輸出</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DirectoryExists(System.String)">
+            <summary>判定目錄是否存在於給定路徑中。</summary>
+            <param name="path">目錄在磁碟上的路徑</param>
+            <returns name="bool">如果目錄存在則為 true；如果不存在則為 false</returns>
+            <search>directorypath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.MoveDirectory(System.String,System.String,System.Boolean)">
+            <summary>將目錄移至新位置。</summary>
+            <param name="path">既有路徑的字串表現法</param>
+            <param name="newPath">新路徑的字串表現法</param>
+            <param name="overwriteFiles">切換以覆蓋既有檔案</param>
+            <returns name="void">節點執行工作，不產生輸出</returns>
+        </member>
+        <member name="T:DSCore.IO.Image">
+            <summary>影像點陣圖的操作方法。</summary>
+        </member>
+        <member name="M:DSCore.IO.Image.ReadFromFile(System.IO.FileInfo)">
+            <summary>載入檔案做為點陣圖。</summary>
+            <param name="file">從中載入影像的檔案物件</param>
+            <returns name="image">來自檔案的影像物件</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.Pixels(System.Drawing.Bitmap,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>讀取影像檔案，然後傳回指定格線位置中的顏色值。</summary>
+            <param name="image">要從中取得像素顏色的影像物件</param>
+            <param name="xSamples">範例格線點在 X 方向的數量。</param>
+            <param name="ySamples">範例格線點在 Y 方向的數量。</param>
+            <returns name="colors">指定格線點處的顏色</returns>
+            <search>read,image,bitmap,png,jpg,jpeg</search>
+        </member>
+        <member name="M:DSCore.IO.Image.FromPixels(DSCore.Color[][])">
+            <summary>從 2D 像素清單建構影像。</summary>
+            <param name="colors">表示像素的顏色 2D 矩形清單</param>
+            <returns name="image">來自像素 2D 清單的影像</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.FromPixels(DSCore.Color[],System.Int32,System.Int32)">
+            <summary>從像素、寬度和高度的展開清單建構影像。</summary>
+            <param name="colors">表示像素的顏色清單</param>
+            <param name="width">新影像的寬度 (以像素為單位)</param>
+            <param name="height">新影像的高度 (以像素為單位)</param>
+            <returns name="image">來自像素清單的影像</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.Dimensions(System.Drawing.Bitmap)">
+            <summary>傳回影像的寬度和高度。</summary>
+            <param name="image">要取得標註的影像。</param>
+            <returns name="width">影像寬度 (像素)</returns>
+            <returns name="height">影像高度 (像素)</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.WriteToFile(System.String,System.Drawing.Bitmap)">
+            <summary>將影像寫入至路徑，給與指定的檔案名稱。</summary>
+            <param name="path"/>
+            <param name="image">要寫入的影像</param>
+            <returns name="image">建立的影像物件</returns>
+            <search>write image,image,file,filepath</search>
+        </member>
+        <member name="T:DSCore.List">
+            <summary>用於建立和操控清單的方法。</summary>
+        </member>
+        <member name="P:DSCore.List.Empty">
+            <summary>傳回空白清單。</summary>
+            <returns name="list">空清單。</returns>
+            <search>empty list, emptylist,[]</search>
+        </member>
+        <member name="M:DSCore.List.UniqueItems(System.Collections.IList)">
+            <summary>建立新的清單，其中包含給定清單中所有唯一的項目。</summary>
+            <param name="list">篩選重複項目的清單。</param>
+            <returns name="list">篩選清單。</returns>
+            <search>removes,duplicates,remove duplicates,cull duplicates,distinct,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.Contains(System.Collections.IList,System.Object)">
+            <summary>判定給定清單是否包含給定項目。 此函數可以搜尋子清單包含在其中。</summary>
+            <param name="list">要在其中搜尋的清單</param>
+            <param name="item">要查看的項目</param>
+            <returns name="bool">如果清單包含項目則為 true，如果不包含則為 false</returns>
+            <search>item,search,in,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.IsHomogeneous(System.Collections.IList)">
+            <summary>檢查清單中的項目相同的類型。</summary>
+            <param name="list">清單檢查其是否 ' s 同質。</param>
+            <returns name="bool">清單是否是同質的。</returns>
+            <search>homogeneous,allequal,same,type</search>
+        </member>
+        <member name="M:DSCore.List.IsRectangular(System.Collections.IList)">
+            <summary>檢查的項目清單中的所有列均相同。</summary>
+            <param name="list">清單中的列設定為要檢查是否有相同數目的項目。</param>
+            <returns name="bool">清單是否具有相同的料件數在所有列。</returns>
+            <search>rectangular,isrectangular,same,sublist,row</search>
+        </member>
+        <member name="M:DSCore.List.IsUniformDepth(System.Collections.IList)">
+            <summary>檢查清單中的項目具有相同的深度。</summary>
+            <param name="list">如果清單中要檢查的項目具有相同的深度。</param>
+            <returns name="bool">是否深度的清單會均勻。</returns>
+            <search>depth,uniform,isuniformdepth,sublist,jagged</search>
+        </member>
+        <member name="M:DSCore.List.SetDifference(System.Collections.Generic.IList{System.Object},System.Collections.Generic.IList{System.Object})">
+            <summary>傳回新清單，該清單包括物件 List1 中但排除 List2 中的物件。</summary>
+            <param name="list1">要包括在新清單中的物件清單</param>
+            <param name="list2">要排除在新清單中的物件清單</param>
+            <returns name="list">包含在 List1 但不在 List2 的物件的新清單</returns>
+            <search>difference,setdifference,set</search>
+        </member>
+        <member name="M:DSCore.List.SetIntersection(System.Collections.Generic.IList{System.Object},System.Collections.Generic.IList{System.Object})">
+            <summary>傳回新清單，其中包含的物件會顯示在這兩個清單 1 和 2。</summary>
+            <param name="list1">要與 list2 比較的物件清單</param>
+            <param name="list2">要與 list1 比較的物件清單</param>
+            <returns name="list">包含同時在 List1 與 List2 的物件的新清單</returns>
+            <search>intersection,setintersection,set,overlap</search>
+        </member>
+        <member name="M:DSCore.List.SetUnion(System.Collections.Generic.IList{System.Object},System.Collections.Generic.IList{System.Object})">
+            <summary>傳回新清單，其中包含的物件會顯示在清單 1 或 2。</summary>
+            <param name="list1">要包括的物件清單</param>
+            <param name="list2">要包括在 List1 的物件清單</param>
+            <returns name="list">包含在 List1 或 List2 的物件的新清單</returns>
+            <search>union,setunion,set</search>
+        </member>
+        <member name="M:DSCore.List.IndexOf(System.Collections.IList,System.Object)">
+            <summary>傳回元素在給定清單中的索引。給定清單與目標元素之間的比對必須完全相符 (亦即 int 對 int，double 對 double，string 對 string，object 對 object 等等)。</summary>
+            <param name="list">「 尋找」清單中的元素。</param>
+            <param name="element">其索引的元素將傳回。</param>
+            <returns name="int">元素在清單中的索引。如果找不到完全相符的項目，則會傳回無效的索引 -1。</returns>
+            <search>index,indexof</search>
+        </member>
+        <member name="M:DSCore.List.CountFalse(System.Collections.IList)">
+            <summary>傳回數假布林值給定清單中。</summary>
+            <param name="list">清單中尋找假布林值。</param>
+            <returns name="int">「 假布林清單中的值。</returns>
+            <search>false,count</search>
+        </member>
+        <member name="M:DSCore.List.CountTrue(System.Collections.IList)">
+            <summary>傳回數值的真實的布林值給定清單中。</summary>
+            <param name="list">清單中尋找的真實的布林值。</param>
+            <returns name="int">「 全布林清單中的值。</returns>
+            <search>true,count</search>
+        </member>
+        <member name="M:DSCore.List.Insert(System.Collections.IList,System.Object,System.Int32)">
+            <summary>將元素插入至清單中的指定索引。</summary>
+            <param name="list">元素將插入到的清單</param>
+            <param name="element">要插入的元素</param>
+            <param name="index">指定元素要插入清單中的位置</param>
+            <returns name="list">已插入元素的清單</returns>
+            <search>insert,add</search>
+        </member>
+        <member name="M:DSCore.List.Reorder(System.Collections.IList,System.Collections.IList)">
+            <summary>重新排序根據指定的輸入清單中的索引。</summary>
+            <param name="list">要重新排序的清單</param>
+            <param name="indices">用來重新排序清單中項目的索引</param>
+            <returns name="list">已重新排序的清單</returns>
+            <search>reorder,index,indices</search>
+        </member>
+        <member name="M:DSCore.List.SortIndexByValue(System.Collections.Generic.List{System.Double})">
+            <summary>排序清單中的項目，並返回其索引。</summary>
+            <param name="list">要排序的項目清單</param>
+            <returns name="int[]">項目在已排序清單中的索引</returns>
+            <search>sort,index,value</search>
+        </member>
+        <member name="M:DSCore.List.NormalizeDepth(System.Collections.IList,System.Int32)">
+            <summary>傳回多維清單根據給定的等級。</summary>
+            <param name="list">清單中的深度是標準化根據等級。</param>
+            <param name="rank">在順序清單中將標準化。 預設值是 1。</param>
+            <returns name="list">清單中的標準化等級。</returns>
+            <search>depth,normalize</search>
+        </member>
+        <member name="M:DSCore.List.Reverse(System.Collections.IList)">
+            <summary>建立新的清單，其中包含給定清單的項目，但以逆向順序排列。</summary>
+            <param name="list">要反轉的清單。</param>
+            <returns name="list">已反轉的清單</returns>
+            <search>flip,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.__Create(System.Collections.IList)">
+            <summary>建立新清單，其中包含給定的項目。</summary>
+            <param name="items">要儲存在新清單中的項目。</param>
+        </member>
+        <member name="M:DSCore.List.Sublists(System.Collections.IList,System.Collections.IList,System.Int32)">
+            <summary>使用 DesignScript 範圍語法，從清單建置子清單。</summary>
+            <param name="list">要從中建立子清單的清單。</param>
+            <param name="ranges">子清單元素的索引範圍。
+                例如 \"{0..3,5,2}\"</param>
+            <param name="offset">要套用至子清單的偏移。
+                例如，範圍 \"0..3\" 與偏移 2，將產生
+                {0,1,2,3}{2,3,4,5}{4,5,6,7}...</param>
+            <returns name="lists">類型: var[]..[]</returns>
+            <search>sublists,build sublists,subset,</search>
+        </member>
+        <member name="M:DSCore.List.Sort(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>使用內建的自然排序來排序清單。</summary>
+            <param name="list">要排序的清單</param>
+            <returns name="list">已排序的清單</returns>
+            <search>sort,order,sorted</search>
+        </member>
+        <member name="M:DSCore.List.MinimumItem(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>從清單中傳回最小值。</summary>
+            <param name="list">要從中取得最小值的可比較項目清單</param>
+            <returns name="item">清單中的最小項目。</returns>
+            <search>least,smallest,find min</search>
+        </member>
+        <member name="M:DSCore.List.MaximumItem(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>從清單中傳回最大值。</summary>
+            <param name="list">要從中取得最大值的可比較項目清單</param>
+            <returns name="item">清單中的最大項目。</returns>
+            <search>greatest,largest,biggest,find max</search>
+        </member>
+        <member name="M:DSCore.List.FilterByBoolMask(System.Collections.IList,System.Collections.IList)">
+            <summary>查看個別布林清單中的對應索引來篩選順序。</summary>
+            <param name="list">要篩選的清單。</param>
+            <param name="mask">表示遮罩的布林清單。</param>
+            <returns name="in">遮罩索引為 True 的項目。</returns>
+            <returns name="out">遮罩索引為 False 的項目。</returns>
+            <search>filter,in,out,mask,dispatch,bool filter,boolfilter,bool filter</search>
+        </member>
+        <member name="M:DSCore.List.Deconstruct(System.Collections.IList)">
+            <summary>若有清單，即會產生清單中的第一個項目，因此新清單包含第一個項目以外的所有項目。</summary>
+            <param name="list">要分割的清單。</param>
+            <returns name="first">清單中的第一個項目 (類型: var[]..[])</returns>
+            <returns name="rest">清單的其餘部分 (類型: var[]..[])</returns>
+            <search>first,rest,list split,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.SortByKey(System.Collections.IList,System.Collections.IList)">
+            <summary>根據清單鍵排序清單</summary>
+            <param name="list">要排序的清單</param>
+            <param name="keys">鍵清單，鍵必須可排序 (例如數字、字串)</param>
+            <returns name="sortedList">類型: var[]..[]</returns>
+            <returns name="sortedKeys">類型: var[]..[]</returns>
+            <search>sort;key</search>
+        </member>
+        <member name="M:DSCore.List.GroupByKey(System.Collections.IList,System.Collections.IList)">
+            <summary>根據項目的關鍵值等將項目群組至子清單</summary>
+            <param name="list">要群組為子清單的項目清單</param>
+            <param name="keys">用於群組項目的關鍵值 (在輸入清單中每一個項目皆有一個)</param>
+            <returns name="groups">子清單的清單，包含以關鍵值等群組的項目</returns>
+            <returns name="uniqueKeys">對應每個群組的關鍵值</returns>
+            <search>list;group;groupbykey;</search>
+        </member>
+        <member name="M:DSCore.List.AddItemToFront(System.Object,System.Collections.IList)">
+            <summary>將項目加入至清單開頭。</summary>
+            <param name="item">要加入的項目。項目可以是物件或清單。</param>
+            <param name="list">要加入至的清單。</param>
+            <returns name="list">已加入項目的清單</returns>
+            <search>insert,add,item,front,start,begin</search>
+        </member>
+        <member name="M:DSCore.List.AddItemToEnd(System.Object,System.Collections.IList)">
+            <summary>將項目加入至清單結尾。</summary>
+            <param name="item">要加入的項目。項目可以是物件或清單。</param>
+            <param name="list">要加入至的清單。</param>
+            <returns name="list">已加入項目的清單</returns>
+            <search>insert,add,item,end</search>
+        </member>
+        <member name="M:DSCore.List.TakeItems(System.Collections.IList,System.Int32)">
+            <summary>從清單開頭擷取項目數量。</summary>
+            <param name="list">要從中取得的清單。</param>
+            <param name="amount">要取得的項目數量。 若為負值，則從清單結尾取得項目。</param>
+            <returns name="list">萃取的項目清單。</returns>
+            <search>get,sub,sublist,extract</search>
+        </member>
+        <member name="M:DSCore.List.DropItems(System.Collections.IList,System.Int32)">
+            <summary>從清單開頭移除某個數量的項目。如果數量為負值，
+                則會從清單結尾移除項目。</summary>
+            <param name="list">要移除項目的清單。</param>
+            <param name="amount">要移除的項目數量。 若為負值，則從清單結尾移除項目。</param>
+            <returns name="list">剩餘項目的清單。</returns>
+            <search>drop,remove,shorten</search>
+        </member>
+        <member name="M:DSCore.List.ShiftIndices(System.Collections.IList,System.Int32)">
+            <summary>將清單中的索引向右移給定的數量。</summary>
+            <param name="list">要移動的清單。</param>
+            <param name="amount">索引的移動量。 若為負值，索引將向左移。</param>
+            <returns name="list">已移動的清單。</returns>
+            <search>shift,offset</search>
+        </member>
+        <member name="M:DSCore.List.GetItemAtIndex(System.Collections.IList,System.Int32)">
+            <summary>從位於指定索引的給定清單傳回項目。</summary>
+            <param name="list">要從中擷取項目的清單。</param>
+            <param name="index">要擷取的項目索引。</param>
+            <returns name="item">清單中位於給定索引的項目。</returns>
+            <search>get,item,index,fetch,at,getfrom,get from,extract</search>
+        </member>
+        <member name="M:DSCore.List.ReplaceItemAtIndex(System.Collections.IList,System.Int32,System.Object)">
+            <summary>從給定清單中取代位於指定索引的項目。</summary>
+            <param name="list">要取代其中項目的清單。</param>
+            <param name="index">要取代的項目索引。</param>
+            <param name="item">要插入的項目。</param>
+            <returns name="list">項目已被取代的新清單。</returns>
+            <search>replace,switch</search>
+        </member>
+        <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">
+            <summary>根據開始索引、結束索引和步長數量從給定清單傳回
+                單一子清單。</summary>
+            <param name="list">要切割的清單。</param>
+            <param name="start">開始切割的索引。</param>
+            <param name="end">結束切割的索引。</param>
+            <param name="step">項目的索引量與原始清單中的索引量是分開的。</param>
+            <returns name="items">給定清單的切割項目。</returns>
+            <search>list,sub,sublist,subrange,get sublist</search>
+        </member>
+        <member name="M:DSCore.List.RemoveItemAtIndex(System.Collections.IList,System.Int32[])">
+            <summary>從給定清單中移除指定索引中的項目。</summary>
+            <param name="list">要移除項目的清單。</param>
+            <param name="indices">要移除的項目索引。</param>
+            <returns name="list">項目已被移除的清單。</returns>
+            <search>index,indices,cull,remove,item</search>
+        </member>
+        <member name="M:DSCore.List.DropEveryNthItem(System.Collections.IList,System.Int32,System.Int32)">
+            <summary>在給定的偏移之後，從給定清單中移除索引中的項目，
+                而這些索引是給定值的倍數。</summary>
+            <param name="list">要移除項目的清單/</param>
+            <param name="n">將移除此引數倍數的索引。</param>
+            <param name="offset">要從清單開頭忽略的項目數量。</param>
+            <returns name="list">項目已被移除的清單。</returns>
+            <search>nth,remove,cull,every</search>
+        </member>
+        <member name="M:DSCore.List.TakeEveryNthItem(System.Collections.IList,System.Int32,System.Int32)">
+            <summary>在給定的偏移之後，從給定清單中擷取索引中的項目，
+                而這些索引是給定值的倍數。</summary>
+            <param name="list">要移除項目的清單。</param>
+            <param name="n">將擷取此數倍數 (在偏移之後) 的索引。</param>
+            <param name="offset">要從清單開頭忽略的項目數量。</param>
+            <returns name="items">清單中的項目。</returns>
+            <search>fetch,take,every,nth</search>
+        </member>
+        <member name="M:DSCore.List.IsEmpty(System.Collections.IList)">
+            <summary>判定給定清單是否為空的。</summary>
+            <param name="list">要檢查是否空白的清單</param>
+            <returns name="bool">如果清單是空的則為 true，如果不是則為 false</returns>
+            <search>test,is,empty,null,count</search>
+        </member>
+        <member name="M:DSCore.List.AllTrue(System.Collections.IList)">
+            <summary>判定給定清單中的所有項目都是一個布林運算和具有「True」值。</summary>
+            <param name="list">清單中的所有項目均會檢查是否正確。</param>
+            <returns name="bool">如果清單中所有項目都成立則為 true，如果一個或多個項目不成立則為 false</returns>
+            <search>test,all,true,istrue</search>
+        </member>
+        <member name="M:DSCore.List.AllFalse(System.Collections.IList)">
+            <summary>判定給定清單中的所有項目都是一個布林運算和具有「False」值。</summary>
+            <param name="list">清單是否要勾選所有項目都 False。</param>
+            <returns name="bool">如果清單中所有項目都不成立則為 true，如果一個或多個項目成立則為 false</returns>
+            <search>test,all,false,isfalse</search>
+        </member>
+        <member name="M:DSCore.List.AnyTrue(System.Collections.IList)">
+            <summary>判定給定清單中是否有任何項目為布林值，而且有 true 值。</summary>
+            <param name="list">要檢查是否有任何項目為 true 的清單。</param>
+            <returns name="bool">是否有任何項目為 true。</returns>
+            <search>test,any,true,istrue</search>
+        </member>
+        <member name="M:DSCore.List.AnyFalse(System.Collections.IList)">
+            <summary>判定給定清單中是否有任何項目為布林值，而且有 false 值。</summary>
+            <param name="list">要檢查是否有任何項目為 false 的清單。</param>
+            <returns name="bool">是否有任何項目為 false。</returns>
+            <search>test,any,false,isfalse</search>
+        </member>
+        <member name="M:DSCore.List.Count(System.Collections.IList)">
+            <summary>傳回給定清單中儲存的項目數目。</summary>
+            <param name="list">要取得項目計數的清單。</param>
+            <returns name="int">清單長度。</returns>
+            <search>listlength,list length,count,size,sizeof</search>
+        </member>
+        <member name="M:DSCore.List.Join(System.Collections.IList[])">
+            <summary>將所有給定清單連接成單一清單。</summary>
+            <param name="lists">要接合為一個清單的清單。</param>
+            <returns name="list">已接合的清單。</returns>
+            <search>join lists,merge,concatenate</search>
+        </member>
+        <member name="M:DSCore.List.FirstItem(System.Collections.IList)">
+            <summary>傳回清單中的第一個項目。</summary>
+            <param name="list">要從中取得第一個項目的清單。</param>
+            <returns name="item">清單中的第一個項目。</returns>
+            <search>get,fetch,first,item,start</search>
+        </member>
+        <member name="M:DSCore.List.RestOfItems(System.Collections.IList)">
+            <summary>從給定清單中移除第一個項目。</summary>
+            <param name="list">要取得其餘部分的清單。</param>
+            <returns name="rest">清單的其餘部分。</returns>
+            <search>get,fetch,rest,end,rest of list</search>
+        </member>
+        <member name="M:DSCore.List.Chop(System.Collections.IList,System.Collections.Generic.List{System.Int32})">
+            <summary>將清單細分為一組具有指定長度的連續子清單。清單分割於清單的頂端開始。</summary>
+            <param name="list">要細分為子清單的清單</param>
+            <param name="lengths">要從輸入清單建立的連續子清單長度</param>
+            <returns name="lists">從清單建立的子清單</returns>
+            <search>sublists,build sublists,slices,partitions,cut,listcontains,chop</search>
+        </member>
+        <member name="M:DSCore.List.DiagonalRight(System.Collections.IList,System.Int32)">
+            <summary>沿著矩陣中從左下角到右上角的每一條對角線列出元素。</summary>
+            <param name="list">展開清單</param>
+            <param name="subLength">每個新子清單的長度。</param>
+            <returns name="diagonals">沿著矩陣對角線的元素清單。</returns>
+            <search>diagonal,right,matrix,get diagonals,diagonal sublists</search>
+        </member>
+        <member name="M:DSCore.List.DiagonalLeft(System.Collections.IList,System.Int32)">
+            <summary>沿著矩陣中從左上角到右下角的每一條對角線列出元素。</summary>
+            <param name="list">展開清單。</param>
+            <param name="rowLength">每個新子清單的長度。</param>
+            <returns name="diagonals">沿著矩陣對角線的元素清單。</returns>
+            <search>diagonal,left,matrix,get diagonals,diagonal sublists</search>
+        </member>
+        <member name="M:DSCore.List.Transpose(System.Collections.IList)">
+            <summary>置換清單的清單中的「列和欄」。 
+                如果有某些列短於其他列，
+                空值會作為預留位置在結果
+                陣列中插入，以便其永遠為矩形。</summary>
+            <param name="lists">要轉置的清單的清單</param>
+            <returns name="lists">已轉置清單的清單</returns>
+            <search>transpose,flip matrix,matrix,swap,rows,columns</search>
+        </member>
+        <member name="M:DSCore.List.Clean(System.Collections.IList,System.Boolean)">
+            <summary>從任意標註的指定清單中清除空值和空白清單的資料</summary>
+            <param name="list">包含要清理的空值和空白子清單的清單</param>
+            <param name="preserveIndices">提供選項，以保留資料的索引
+            <returns name="list">已轉置清單的清單</returns>
+            讓非結尾的空值不會被篩選掉</param>
+            <returns>空值和空白清單的清理清單</returns>
+        </member>
+        <member name="M:DSCore.List.OfRepeatedItem(System.Object,System.Int32)">
+            <summary>建立一個清單，其中包含給定的項目和給定的項目數。</summary>
+            <param name="item">要重複的項目。</param>
+            <param name="amount">要重複的項目數。</param>
+            <returns name="list">已重複項目的清單。</returns>
+            <search>repeat,repeated,duplicate,list of item,fill list,copies,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.Cycle(System.Collections.IList,System.Int32)">
+            <summary>透過連接給定清單的複本來建立新清單。</summary>
+            <param name="list">要重複的清單。</param>
+            <param name="amount">要重複的項目數。</param>
+            <returns name="list">重複清單的清單，類型: var[]..[]</returns>
+            <search>repeat,repeated,duplicate,repeated list,concat list</search>
+        </member>
+        <member name="M:DSCore.List.LastItem(System.Collections.IList)">
+            <summary>擷取清單中的最後一個項目。</summary>
+            <param name="list">要取得其最後一個項目的清單</param>
+            <returns name="item">清單中的最後一個項目</returns>
+            <search>get,fetch,last,item,end of list</search>
+        </member>
+        <member name="M:DSCore.List.Shuffle(System.Collections.IList)">
+            <summary>攪亂清單，將其項目順序隨機化。</summary>
+            <param name="list">要攪亂的清單。</param>
+            <returns name="list">隨機化的清單。</returns>
+            <search>random,randomize,shuffle,jitter,randomness</search>
+        </member>
+        <member name="M:DSCore.List.Shuffle(System.Collections.IList,System.Int32)">
+            <summary>攪亂清單，根據初始種子值將其項目的順序隨機化。</summary>
+            <param name="list">要攪亂的清單。</param>
+            <param name="seed">隨機數產生器的種子值。</param>
+            <returns name="list">隨機化的清單。</returns>
+            <search>random,randomize,shuffle,jitter,randomness,seed</search>
+        </member>
+        <member name="M:DSCore.List.Permutations(System.Collections.IList,System.Nullable{System.Int32})">
+            <summary>產生給定清單的給定長度的所有排列。</summary>
+            <param name="list">要排列的清單。</param>
+            <param name="length">每個排列的長度。</param>
+            <returns name="permutations">給定長度之清單的排列 (類型: var[]..[])</returns>
+            <search>permutation,permutations</search>
+        </member>
+        <member name="M:DSCore.List.Combinations(System.Collections.IList,System.Int32,System.Boolean)">
+            <summary>產生給定清單的給定長度的所有組合。</summary>
+            <param name="list">要產生組合的清單</param>
+            <param name="length">每個組合的長度</param>
+            <param name="replace">一旦選取項目進行組合，是否移除這些項目，預設為 False。</param>
+            <returns name="lists">給定長度的清單組合</returns>
+            <search>combo</search>
+        </member>
+        <member name="M:DSCore.List.FirstIndexOf(System.Collections.IList,System.Object)">
+            <summary>給定項目，傳回其在清單中第一個發生
+                的 zero-based 索引。 如果在清單中找不到項目， 則傳回 -1。</summary>
+            <param name="list">要在其中搜尋的清單。如果此引數為空，則傳回 -1。</param>
+            <param name="item">要查看的項目。</param>
+            <returns>清單中項目的 Zero-based 索引，或如果找不到則為 -1。</returns>
+        </member>
+        <member name="M:DSCore.List.AllIndicesOf(System.Collections.IList,System.Object)">
+            <summary>給定項目，傳回其在清單中第一個發生
+                的 zero-based 索引。 如果在清單中找不到項目， 則傳回 -1。</summary>
+            <param name="list">要在其中搜尋的清單。如果此引數為空，則傳回 -1。</param>
+            <param name="item">要查看的項目。</param>
+            <returns name="indices">如果找到，則為項目的所有發生次數的 zero-based 索引的清單
+            ，或如果項目不存在清單中則為空白清單。</returns>
+        </member>
+        <member name="M:DSCore.List.Flatten(System.Collections.IList,System.Int32)">
+            <summary>依特定數量展開清單的巢狀清單。</summary>
+            <param name="list">要展開的清單。</param>
+            <param name="amount">要移除的清單巢狀層數 (-1 將移除所有清單巢狀)</param>
+            <returns name="list">依數量展開清單</returns>
+            <search>flatten,completely</search>
+        </member>
+        <member name="M:DSCore.List.IndexInList(System.Collections.IList,System.Object)">
+            <summary>除了使用 IList.Contains 使用 Enumerable.SequenceEqual 檢查
+                項目包含在清單，如果是陣列。 如果發現傳回索引
+                -1 (如果未找到)。</summary>
+            <param name="list">該清單檢查是否包含的項目。</param>
+            <param name="item">「 料件需要找到。</param>
+            <returns name="index">索引清單中的項目。</returns>
+        </member>
+        <member name="M:DSCore.List.GetDepth(System.Object)">
+            <summary>取得最大深度給定清單。</summary>
+            <param name="list">輸入清單以取得深度。</param>
+            <returns name="depth">深度給定清單。</returns>
+        </member>
+        <member name="M:DSCore.List.CountBool(System.Collections.IList,System.Boolean)">
+            <summary>傳回數值的布林值指定給定清單中。</summary>
+            <param name="list">清單中尋找的布林值。</param>
+            <param name="value">要尋找的布林值</param>
+            <returns name="int">數字指定的布林值清單中。</returns>
+        </member>
+        <member name="M:DSCore.List.IncreaseDepth(System.Collections.IList,System.Int32)">
+            <summary>增加深度的給定清單指定的數量。 深度增加
+                建立新的清單，其中包含給定清單。</summary>
+            <param name="list">清單中的深度會增加。</param>
+            <param name="amt">深度數量，來增加。</param>
+            <returns name="list">新清單 (其深度會增加 AMT。</returns>
+        </member>
+        <member name="M:DSCore.List.DoubleConverter(System.Object)">
+            <summary>將整數轉換為倍準度整數，否則會傳回輸入物件。</summary>
+        </member>
+        <member name="T:DSCore.ObjectComparer">
+            <summary>使用以下規則，對兩個物件實施比較函數。
+                1. 編號會假定為最小，接著為布林、字串和指標。
+                2. 如果兩個物件為 IComparable 且類型相同，則會使用
+                其原生比較機制。
+                3. 如果這兩個輸入皆為數值類型，但其中一個為布林，則布林較大
+                4. 或者，會將它們全部轉換為倍準度並比較。
+                5. 否則如果只有一個是數值類型，則數值類型物件較小
+                6. 否則如果只有一個是字串，則字串小於其他類型
+                7. 若不知道如何比較它們，最好根據雜湊碼比較它們。</summary>
+        </member>
+        <member name="T:DSCore.Math">
+            <summary>執行數學運算的方法。</summary>
+        </member>
+        <member name="M:DSCore.Math.Random(System.Nullable{System.Int32})">
+            <summary>產生範圍為 [0、1) 的隨機倍精數。</summary>
+            <param name="seed">隨機數產生器的種子值。</param>
+            <returns name="number">介於 0 和 1 之間的隨機數。</returns>
+            <search>random,seed</search>
+        </member>
+        <member name="M:DSCore.Math.Random(System.Double,System.Double)">
+            <summary>產生範圍為 [lower_number, higher_number) 的隨機數。</summary>
+            <param name="value1">隨機數的範圍下限。</param>
+            <param name="value2">隨機數的範圍上限。</param>
+            <returns name="number">範圍為 [lower_number, higher_number) 的隨機數。</returns>
+            <search>random,numberrange</search>
+        </member>
+        <member name="M:DSCore.Math.Random(System.Double,System.Double,System.Int32)">
+            <summary>根據初始種子值，產生範圍為 [lower_number, higher_number) 的隨機數。</summary>
+            <param name="value1">隨機數的範圍下限。</param>
+            <param name="value2">隨機數的範圍上限。</param>
+            <param name="seed">隨機數產生器的種子值。</param>
+            <returns name="number">範圍為 [lower_number, highter_number) 的隨機數。</returns>
+            <search>random,numberrange,seed</search>
+        </member>
+        <member name="M:DSCore.Math.RandomList(System.Int32)">
+            <summary>產生一個清單，其中包含給定的隨機倍精數的數量，範圍為 [0、1)。</summary>
+            <param name="amount">結果清單將包含的隨機數的數量。</param>
+            <returns name="number">介於 0 和 1 之間的隨機數清單。</returns>
+            <search>random,listcontains</search>
+        </member>
+        <member name="M:DSCore.Math.RandomList(System.Int32,System.Double,System.Double,System.Int32)">
+            <summary>產生一個清單，其中包含根據初始種子值在定義的
+                [lower_number, higher_number) 範圍內的給定隨機倍精數數量。</summary>
+            <param name="amount">結果清單將包含的隨機數的數量。</param>
+            <param name="value1">隨機數的範圍下限。</param>
+            <param name="value2">隨機數的範圍上限。</param>
+            <param name="seed">隨機數產生器的種子值。</param>
+            <returns name="number">範圍為 [lower_number, higher_number) 的隨機數清單。</returns>
+            <search>random,listcontains,seed</search>
+        </member>
+        <member name="P:DSCore.Math.PiTimes2">
+            <summary>Pi 常數乘以 2</summary>
+            <returns name="double">2 乘 PI。</returns>
+            <search>2pi,2*pi,twopi,two*pi</search>
+        </member>
+        <member name="M:DSCore.Math.Average(System.Collections.Generic.IList{System.Double})">
+            <summary>將數字清單平均。</summary>
+            <param name="numbers">要平均的數字清單。</param>
+            <returns name="double">數字清單的平均值。</returns>
+            <search>avg,mean</search>
+        </member>
+        <member name="M:DSCore.Math.Map(System.Double,System.Double,System.Double)">
+            <summary>根據輸入範圍，將輸入值對映至 0 到 1 之間的數字。</summary>
+            <param name="rangeMin">輸入範圍的最小值。</param>
+            <param name="rangeMax">輸入範圍的最大值。</param>
+            <param name="inputValue">要對映的數目。</param>
+            <returns name="double">對映的值。</returns>
+            <search>map,range,minimum,maximum,normalize,scale,remap</search>
+        </member>
+        <member name="M:DSCore.Math.MapTo(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>將輸入值對映至 targetRangeMin 到 targetRangeMax 之間的數字。</summary>
+            <param name="rangeMin">輸入範圍的最小值。</param>
+            <param name="rangeMax">輸入範圍的最大值。</param>
+            <param name="inputValue">要對映的數目。</param>
+            <param name="targetRangeMin">新範圍的最小值。</param>
+            <param name="targetRangeMax">新範圍的最大值。</param>
+            <returns name="double">對映的值。</returns>
+            <search>map,range,mapto,minimum,maximum,normalize,scale,remap</search>
+        </member>
+        <member name="M:DSCore.Math.RemapRange(System.Collections.Generic.IList{System.Double},System.Double,System.Double)">
+            <summary>調整數字清單的範圍，同時保留分配比率。</summary>
+            <param name="numbers">調整範圍的數字清單。</param>
+            <param name="newMin">範圍的新下限。</param>
+            <param name="newMax">範圍的新上限。</param>
+            <returns name="list">重新對映到新範圍的清單。</returns>
+            <search>remap range</search>
+        </member>
+        <member name="F:DSCore.Math.kRadiansToDegrees">
+            <summary>將函數/方法從 Math.dll 移至此 DSCoreNode.dll</summary>
+        </member>
+        <member name="P:DSCore.Math.PI">
+            <summary>數學常數 Pi, 3.14159...</summary>
+            <returns name="double">常數 Pi</returns>
+            <search>3.141592653589793</search>
+        </member>
+        <member name="P:DSCore.Math.E">
+            <summary>數學常數 e，2.71828...</summary>
+            <returns name="double">常數 e</returns>
+            <search>exp,2.718281828459045</search>
+        </member>
+        <member name="P:DSCore.Math.GoldenRatio">
+            <summary>黃金比率，(1 + sqrt(5))/2 = 1.61803...</summary>
+            <returns name="double">黃金比率</returns>
+            <search>golden,ratio,divine,phi,tau,1.61803398875</search>
+        </member>
+        <member name="M:DSCore.Math.RadiansToDegrees(System.Double)">
+            <summary>將以弳度表示的角度轉換為以度表示的角度。</summary>
+            <param name="radians">角度 (以弳度表示)。</param>
+            <returns name="degrees">角度 (以度表示)。</returns>
+            <search>radians,degrees,angle</search>
+        </member>
+        <member name="M:DSCore.Math.DegreesToRadians(System.Double)">
+            <summary>將以度表示的角度轉換為以弳度表示的角度。</summary>
+            <param name="degrees">角度 (以度表示)。</param>
+            <returns name="radians">角度 (以弳度表示)。</returns>
+            <search>degrees,radians,angle</search>
+        </member>
+        <member name="M:DSCore.Math.Abs(System.Double)">
+            <summary>尋找數值的絕對值。</summary>
+            <param name="number">要從其取得絕對值的數值</param>
+            <returns name="number">數值的絕對值</returns>
+            <search>absolute value,magnitude</search>
+        </member>
+        <member name="M:DSCore.Math.Equals(System.Double,System.Double,System.Double)">
+            <summary>此方法只能由「等於 (有公差)」的 NodeModel 節點使用</summary>
+            <param name="lhs"/>
+            <param name="rhs"/>
+            <param name="tol"/>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Math.Abs(System.Int64)">
+            <summary>尋找數值的絕對值。</summary>
+            <param name="integer">一個數值。</param>
+            <returns name="absoluteValue">數值的絕對值。</returns>
+            <search>absolute value,magnitude</search>
+        </member>
+        <member name="M:DSCore.Math.Acos(System.Double)">
+            <summary>尋找反餘弦，其餘弦為指定比率的角度。</summary>
+            <param name="ratio">角度的餘弦，範圍 [-1, 1] 中的數值。</param>
+            <returns name="double">其餘弦為輸入比率的角度。</returns>
+            <search>acosine,arccosine</search>
+        </member>
+        <member name="M:DSCore.Math.Asin(System.Double)">
+            <summary>尋找反正弦，其正弦為指定比率的角度。</summary>
+            <param name="ratio">角度的正弦，範圍 [-1, 1] 中的數值。</param>
+            <returns name="double">其正弦是輸入比率的角度</returns>
+            <search>asine,arcsin</search>
+        </member>
+        <member name="M:DSCore.Math.Atan(System.Double)">
+            <summary>尋找反正切，其正切為指定比率的角度。</summary>
+            <param name="ratio">角度的正切。</param>
+            <returns name="double">其正切為輸入比率的角度</returns>
+            <search>atangent,arctangent</search>
+        </member>
+        <member name="M:DSCore.Math.Atan2(System.Double,System.Double)">
+            <summary>尋找兩數之商的反正切。 傳回其正切為下列比率的角度：分子/分母。</summary>
+            <param name="numerator">角度正切的分子。</param>
+            <param name="denominator">角度正切的分母。</param>
+            <returns name="double">其正切為分子/分母的角度</returns>
+            <search>atangent,arctangent</search>
+        </member>
+        <member name="M:DSCore.Math.Ceiling(System.Double)">
+            <summary>傳回第一個大於數值的整數</summary>
+            <param name="number">要進位的數值。</param>
+            <returns name="int">大於數值的第一個整數</returns>
+            <search>ceiling,round</search>
+        </member>
+        <member name="M:DSCore.Math.Cos(System.Double)">
+            <summary>尋找角度的餘弦。</summary>
+            <param name="angle">要取得其餘弦的角度 (以度表示)。</param>
+            <returns name="double">角度的餘弦</returns>
+            <search>cosine</search>
+        </member>
+        <member name="M:DSCore.Math.Cosh(System.Double)">
+            <summary>尋找角度的變曲餘弦 (弳度)。</summary>
+            <param name="angle">角度 (以弳度表示)。</param>
+            <returns name="double">角度的變曲餘弦</returns>
+            <search>hyperbolic cosine</search>
+        </member>
+        <member name="M:DSCore.Math.DivRem(System.Int64,System.Int64)">
+            <summary>尋找被除數/除數的餘數。</summary>
+            <param name="dividend">要除以的數值。</param>
+            <param name="divisor">要被除的數值。</param>
+            <returns name="int">除法的餘數</returns>
+            <search>remainder</search>
+        </member>
+        <member name="M:DSCore.Math.EvaluateFormula(System.String,System.String[],System.Object[])">
+            <summary>使用給定的參數對映計算 NCalc 公式。</summary>
+            <param name="formulaString">NCalc 公式</param>
+            <param name="parameters">變數名稱</param>
+            <param name="arguments">變數繫結</param>
+            <returns name="result">類型: var[]..[] (公式計算的結果)</returns>
+        </member>
+        <member name="M:DSCore.Math.Exp(System.Double)">
+            <summary>傳回數值的指數，這是自乘至值數的常數 e。</summary>
+            <param name="number">數值。</param>
+            <returns name="double">數值的指數。</returns>
+            <search>exponential</search>
+        </member>
+        <member name="M:DSCore.Math.Floor(System.Double)">
+            <summary>傳回第一個小於數值的整數</summary>
+            <param name="number">要捨去的數值</param>
+            <returns name="int">小於數值的第一個整數</returns>
+            <search>round</search>
+        </member>
+        <member name="M:DSCore.Math.Log(System.Double)">
+            <summary>尋找數值的自然對數，範圍為 (0, ∞)。</summary>
+            <param name="number">大於 0 的數值。</param>
+            <returns name="double">數值的自然對數。</returns>
+            <search>natural,logarithm,ln</search>
+        </member>
+        <member name="M:DSCore.Math.Log(System.Double,System.Double)">
+            <summary>利用指定的底數尋找數值的對數。</summary>
+            <param name="number">大於 0 的數值。</param>
+            <param name="logBase">對數的底數，範圍為 [0,1),(1, ∞)。</param>
+            <returns name="double">數值的對數。</returns>
+            <search>logarithm,ld,lg</search>
+        </member>
+        <member name="M:DSCore.Math.Log10(System.Double)">
+            <summary>尋找數值的對數，以 10 為底數。</summary>
+            <param name="number">大於 0 的數值。</param>
+            <returns name="double">數值的對數。</returns>
+            <search>logarithm</search>
+        </member>
+        <member name="M:DSCore.Math.Max(System.Double,System.Double)">
+            <summary>傳回兩個數值的較大者。</summary>
+            <param name="value1">要比較的數值。</param>
+            <param name="value2">要比較的數值。</param>
+            <returns name="max">兩個數值的較大者。</returns>
+            <search>maximum,greater,larger</search>
+        </member>
+        <member name="M:DSCore.Math.Max(System.Int64,System.Int64)">
+            <summary>傳回兩個數值的較大者。</summary>
+            <param name="int1">要比較的數值。</param>
+            <param name="int2">要比較的數值。</param>
+            <returns name="max">兩個數值的較大者。</returns>
+            <search>maximum,greater,larger</search>
+        </member>
+        <member name="M:DSCore.Math.Min(System.Double,System.Double)">
+            <summary>傳回兩個數值的較小者。</summary>
+            <param name="value1">要比較的數值。</param>
+            <param name="value2">要比較的數值。</param>
+            <returns name="min">兩個數值的較小者。</returns>
+            <search>minimum,lesser,smaller</search>
+        </member>
+        <member name="M:DSCore.Math.Min(System.Int64,System.Int64)">
+            <summary>傳回兩個數值的較小者。</summary>
+            <param name="int1">要比較的數值。</param>
+            <param name="int2">要比較的數值。</param>
+            <returns name="min">兩個數值的較小者。</returns>
+            <search>minimum,lesser,smaller</search>
+        </member>
+        <member name="M:DSCore.Math.Pow(System.Double,System.Double)">
+            <summary>數值的指定次方。</summary>
+            <param name="number">次方的數值。</param>
+            <param name="power">數值的次方。</param>
+            <returns name="result">次方的數值。</returns>
+            <search>^,power,raise,exponent</search>
+        </member>
+        <member name="M:DSCore.Math.Rand">
+            <summary>產生範圍為 [0, 1) 的隨機數。</summary>
+            <returns name="number">範圍為 [0, 1) 的隨機數。</returns>
+            <search>random,numberrange</search>
+        </member>
+        <member name="M:DSCore.Math.Round(System.Double)">
+            <summary>將數值四捨五入為最近的整數值。
+            請注意，此方法將傳回雙倍精度浮點數值 (而非整數」類型。</summary>
+            <param name="number">要四捨五入的數值。</param>
+            <returns name="number">接近數字的整數值。</returns>
+        </member>
+        <member name="M:DSCore.Math.Round(System.Double,System.Int32)">
+            <summary>將數值四捨五入至指定的分數位數。</summary>
+            <param name="number">要四捨五入的數值</param>
+            <param name="digits">傳回值的小數位數</param>
+            <returns name="number">最接近其值且包含的小數位數等於指定數字的數值</returns>
+        </member>
+        <member name="M:DSCore.Math.Sign(System.Double)">
+            <summary>傳回數值的符號：-1、0 或 1。</summary>
+            <param name="number">要從其取得正負號的數值</param>
+            <returns name="int">數值的正負號: -1、0 或 1</returns>
+        </member>
+        <member name="M:DSCore.Math.Sign(System.Int64)">
+            <summary>傳回數值的符號：-1、0 或 1。</summary>
+            <param name="int">要從其取得正負號的整數</param>
+            <returns name="int">數值的正負號: -1、0 或 1</returns>
+        </member>
+        <member name="M:DSCore.Math.Sin(System.Double)">
+            <summary>尋找角度的正弦。</summary>
+            <param name="angle">要取得其正弦的角度 (以度表示)。</param>
+            <returns name="double">角度的正弦。</returns>
+            <search>sine</search>
+        </member>
+        <member name="M:DSCore.Math.Sinh(System.Double)">
+            <summary>尋找角度的變曲正弦 (弳度)。</summary>
+            <param name="angle">角度 (以弳度表示)。</param>
+            <returns name="double">角度的變曲正弦。</returns>
+            <search>hyperbolic</search>
+        </member>
+        <member name="M:DSCore.Math.Sqrt(System.Double)">
+            <summary>尋找數值的正平方根，範圍為 [0, ∞)。</summary>
+            <param name="number">範圍 [0, ∞) 中的數值。</param>
+            <returns name="double">數值的正平方根。</returns>
+            <search>square,root,radical</search>
+        </member>
+        <member name="M:DSCore.Math.Tan(System.Double)">
+            <summary>尋找角度的正切。</summary>
+            <param name="angle">角度 (以弳度表示)</param>
+            <returns name="double">角度的正切</returns>
+            <search>tangent</search>
+        </member>
+        <member name="M:DSCore.Math.Tanh(System.Double)">
+            <summary>尋找角度的變曲正切 (弳度)。</summary>
+            <param name="angle">角度 (以弳度表示)</param>
+            <returns name="double">角度的雙曲正切</returns>
+            <search>hyperbolic,tanh</search>
+        </member>
+        <member name="M:DSCore.Math.Sum(System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>尋找一系列數值的總和</summary>
+            <param name="values">要加總的數值</param>
+            <returns name="double">值的總和</returns>
+            <search>mass addition,massadd</search>
+        </member>
+        <member name="M:DSCore.Math.Factorial(System.Int64)">
+            <summary>尋找正整數的階乘結果。</summary>
+            <param name="number">正整數</param>
+            <returns name="number">整數的階乘結果。</returns>
+            <search>!</search>
+        </member>
+        <member name="M:DSCore.Math.Xor(System.Boolean,System.Boolean)">
+            <summary>布林 XOR：僅在只有一個輸入為 True 時，才會傳回 True。</summary>
+            <param name="bool">布林</param>
+            <param name="otherBool">其他布林</param>
+            <returns name="bool">布林運算結果</returns>
+            <search>xor,exclusive,or</search>
+        </member>
+        <member name="M:DSCore.Math.DoCheckedCast(System.Double)">
+            <summary>在檢查過的環境中執行轉型為長整數。如果作業產生溢位，
+            則會產生警告，並傳回溢位結果。</summary>
+            <param name="value">要執行的作業</param>
+            <returns>作業結果</returns>
+        </member>
+        <member name="T:DSCore.Object">
+            <summary>在所有資料上運算的一般函數。</summary>
+        </member>
+        <member name="M:DSCore.Object.IsNull(System.Object)">
+            <summary>判定給定物件是否為空值。</summary>
+            <param name="object">要測試的物件。</param>
+            <returns name="bool">物件是否為空值。</returns>
+            <search>is null</search>
+        </member>
+        <member name="M:DSCore.Object.Identity(System.Object)">
+            <summary>傳回傳入的項目，不執行任何動作。</summary>
+            <param name="object">一個物件。</param>
+            <returns name="object">相同物件</returns>
+        </member>
+        <member name="M:DSCore.Object.Type(System.Object)">
+            <summary>將表示為字串的物件類型傳回。</summary>
+            <param name="object">要查詢類型的物件</param>
+            <returns>物件類型。</returns>
+        </member>
+        <member name="T:DSCore.Properties.Resources">
+            <summary>一種強型別資源類別，用於查找本土化的字串等等。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ResourceManager">
+            <summary>傳回此類別所使用的已快取 ResourceManager 例證。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Culture">
+            <summary>為使用此強類型資源類別查找的所有資源，
+              取代目前執行緒的 CurrentUICulture 性質。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.BitmapOverflowError">
+            <summary>查找類似於「提供的顏色資料太大，無法佈滿影像邊界。」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
+            <summary>查找類似於「輸入必須是單一值或非巢狀清單。」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataUnexpectedInputExceptionMessage">
+            <summary>查找類似於「此節點應為 {0} 輸入，但收到 {1} 輸入。請提供預期的輸入，或在節點的下拉式功能表中點選新類型。」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataUnsupportedCombinationOfDataTypesExceptionMessage">
+            <summary>查找類似於「此節點不支援在目前輸入清單 {0} 中結合不同資料類型。請確保輸入清單的項目屬於相同資料類型，或是混合共同父系類型的類型」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataUnsupportedDataTypeExceptionMessage">
+            <summary>查找類似於「此節點不支援目前的輸入資料類型 ({0})。請在下拉式功能表中檢視支援的資料類型。」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekFriday">
+            <summary>查找類似於「星期五」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekMonday">
+            <summary>查找類似於「星期一」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekSaturday">
+            <summary>查找類似於「星期六」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekSunday">
+            <summary>查找類似於「星期日」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekThursday">
+            <summary>查找類似於「星期四」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekTuesday">
+            <summary>查找類似於「星期二」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekWednesday">
+            <summary>查找類似於「星期三」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Deserialize_Bad_Format">
+            <summary>查找類似於「類型 {0} 的 json 格式不正確」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Deserialize_Unsupported_Cache">
+            <summary>查找類似於「無法載入儲存的資料。」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Serialize_Depth_Unsupported">
+            <summary>查找類似於「深度 {0} 超過路徑「{2}」的最大深度 {1}」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Serialize_DesignScript_Unsupported">
+            <summary>查找類似於「此類型的幾何圖形無法序列化。」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Serialize_Unsupported_Type">
+            <summary>查找類似於「無法儲存類型為 {0} 的資料。」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ExportToCSVObsolete">
+            <summary>查找類似於「請改用 Data.ExportCSV 節點」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FactorialNegativeInt">
+            <summary>查找類似於「Math.Factorial 的輸入值不能為負數」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FactorialOverflow">
+            <summary>查找類似於「Math.Factorial 的傳回值超出範圍」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FindPointsWithinRadiusNullPointMessage">
+            <summary>查找類似於「您必須提供一個中心點。」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FindPointsWithinRadiusSearchRadiusMessage">
+            <summary>查找類似於「搜尋半徑不能為零。」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FromObjectObsolete">
+            <summary>查找類似於「此節點為舊型，請使用「來自物件的字串」」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.IntegerOverflow">
+            <summary>查找類似於「作業造成整數溢位。可能會產生非預期的結果。」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.InvalidDestinationPathErrorMessage">
+            <summary>查找類似於「用作複製路徑的目標檔案路徑無效。」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.InvalidKeysErrorMessage">
+            <summary>查找類似於「一個或多個輸入類型不相符」的本土化字串。列示為「關鍵字」不受支援。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.InvalidKeysLenghtErrorMessage">
+            <summary>查找類似於「項目數目與鍵的數目不相符 href=InvalidKeysLenghtErrorMessage.html」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.LoadImageFromPathObsolete">
+            <summary>查找類似於「改用 File.FromPath -&gt; Image.ReadFromFile 節點」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.MissingPythonEngine">
+            <summary>查找類似於「找不到選取的 Python 引擎」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ObjectArgumentExceptionMessage">
+            <summary>查找類似於「物件不能為空，請提供適當的值。」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.QuadtreeConstructionEmptyUVSetMessage">
+            <summary>查找類似於「您無法從空白的點組建構四元樹狀目錄。」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.QuadtreeConstructionNullUVSetMessage">
+            <summary>查找類似於「無法從空值的 UV 組建置四元樹狀目錄。」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ReadImageObsolete">
+            <summary>查找類似於「改用 File.FromPath -&gt; Image.ReadFromFile -&gt; Image.Pixels 節點」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ReadTextObsolete">
+            <summary>查找類似於「改用 File.FromPath -&gt;  File.ReadText 節點。」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.StringRemoveCountOutOfRangeMessage">
+            <summary>查找類似於「Count」的本土化字串超出範圍 ！</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.StringRemoveStartIndexOutOfRangeMessage">
+            <summary>查找類似於「startIndex」的本土化字串超出範圍 ！</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.StringToNumberInvalidNumberMessage">
+            <summary>查找類似於「不是一個有效數字。」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.WebRequestNullUrlMessage">
+            <summary>查找類似於「URL 不能為空。」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.WriteImageObsolete">
+            <summary>查找類似於「改用 Image.WriteToFile 節點」的本土化字串。</summary>
+        </member>
+        <member name="T:DSCore.PythonEvaluator">
+            <summary>在任何 Python 引擎上演算 Python 程式碼。只能 VM 中使用</summary>
+        </member>
+        <member name="M:DSCore.Quadtree.ByUVs(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
+            <summary>建構一個包含 (0,0) -&gt; (1,1) 網域的四元樹狀目錄。</summary>
+            <param name="uvs">(0,0) - &gt; (1,1)  網域中的一組 UV。</param>
+            <returns>一個四元樹狀目錄物件。</returns>
+        </member>
+        <member name="M:DSCore.Quadtree.FindPointsWithinRadius(Autodesk.DesignScript.Geometry.UV,System.Double)">
+            <summary>在給定的 UV 位置的半徑內，尋找四元樹狀目錄中的所有四元樹狀目錄點 (UV)。</summary>
+            <param name="center">位於搜尋區域中心的 UV。</param>
+            <param name="radius">搜尋區域的半徑。</param>
+            <returns>UV 清單。</returns>
+        </member>
+        <member name="M:DSCore.Node.Split">
+            <summary>將一個節點分割為四個象限。</summary>
+            <returns/>
+        </member>
+        <member name="T:DSCore.UVRect">
+            <summary>用來定義最小和最大 UV 所描述之矩形的輔助程式類別。</summary>
+        </member>
+        <member name="T:DSCore.UVExtensions">
+            <summary>UV 的延伸方法。</summary>
+        </member>
+        <member name="T:DSCore.Sorting">
+            <summary>依鍵排序的公用程式方法。應該抑制它們，不要變成節點，並改為
+            透過接受鍵對映功能的 DS 實施來折繞它們。</summary>
+        </member>
+        <member name="T:DSCore.String">
+            <summary>用於管理字串的方法。</summary>
+        </member>
+        <member name="M:DSCore.String.ToNumber(System.String)">
+            <summary>將字串轉換為整數或倍精數。</summary>
+            <param name="string">要轉換的字串</param>
+            <returns name="number">整數或倍精度類型數值</returns>
+            <search>2number,str2number,strtonumber,string2number,stringtonumber,int,double,cast</search>
+        </member>
+        <member name="M:DSCore.String.GetNumber(System.String)">
+            <summary>從目標字串中取得所有數字字串做為字串</summary>
+            <param name="string">要取得的目標字串</param>
+            <returns name="str">字串中的數字</returns>
+            <search>getnumber,tonumber,strtonumber,numberinstring,string2number,stringtonumber,int,double,cast</search> 
+        </member>
+        <member name="M:DSCore.String.Concat(System.String[])">
+            <summary>將多個字串連接成單一字串。</summary>
+            <param name="strings">要連接的字串清單。</param>
+            <returns name="string">由字串清單構成的字串。</returns>
+            <search>concatenate,join,combine strings</search>
+        </member>
+        <member name="M:DSCore.String.Length(System.String)">
+            <summary>傳回給定字串中包含的字元數。</summary>
+            <param name="string">要找出其長度的字串</param>
+            <returns name="int">字串中的字元數</returns>
+            <search>count,size,characters,chars,length,sizeof</search>
+        </member>
+        <member name="M:DSCore.String.Split(System.String,System.String[])">
+            <summary>將單一字串分割為字串清單，而這些分割是由
+                給定的分隔符號字串決定。</summary>
+            <param name="string">要分割的字串</param>
+            <param name="separators">決定分割終點和起點的字串 (如果存在)。</param>
+            <returns name="strings">由輸入字串構成的字串清單</returns>
+            <search>divide,separator,delimiter,cut,csv,comma,</search>
+        </member>
+        <member name="M:DSCore.String.Join(System.String,System.String[])">
+            <summary>將多個字串連接成單一字串，在每一個接合的字串之間插入指定的分隔符號。</summary>
+            <param name="separator">要在接合的字串之間插入的字串。</param>
+            <param name="strings">要接合為單一字串的字串。</param>
+            <returns name="string">由字串清單構成的字串，包括分隔符號字元。</returns>
+            <search>join,separator,build csv,concat,construct</search>
+        </member>
+        <member name="M:DSCore.String.ToUpper(System.String)">
+            <summary>將給定的字串轉換為全部大寫字元。</summary>
+            <param name="string">要變成大寫的字串</param>
+            <returns name="string">大寫字串</returns>
+            <search>2uppercase,to uppercase,touppercase,uppercase</search>
+        </member>
+        <member name="M:DSCore.String.ToLower(System.String)">
+            <summary>將給定的字串轉換為全部小寫字元。</summary>
+            <param name="string">要變成小寫的字串</param>
+            <returns name="string">小寫字串</returns>
+            <search>2lowercase,to lowercase,tolowercase,lowercase</search>
+        </member>
+        <member name="M:DSCore.String.ToTitle(System.String)">
+            <summary>將給定的字串轉換為字首大寫。</summary>
+            <param name="str">要變成字首大寫的字串</param>
+            <returns name="str">字首大寫字串</returns>
+            <search>2titlecase,to titlecase,to title case,totitlecase,titlecase</search>
+        </member>
+        <member name="M:DSCore.String.ChangeCase(System.String,System.Boolean)">
+            <summary>根據布林參數將給定的字串轉換為全部大寫字元或全部小寫字元。</summary>
+            <param name="string">要變成大寫或小寫的字串。</param>
+            <param name="upper">true 表示轉換為大寫，false 表示轉換為小寫。</param>
+            <returns name="string">字體已轉換的字串。</returns>
+            <search>
+                2lowercase,to lowercase,tolowercase,lowercase,
+                2uppercase,to uppercase,touppercase,uppercase
+            </search>
+        </member>
+        <member name="M:DSCore.String.Substring(System.String,System.Int32,System.Int32)">
+            <summary>從給定的字串擷取子字串。子字串開始於給定的字元位置，且具有給定的長度。</summary>
+            <param name="string">要取得其子字串的字串</param>
+            <param name="startIndex">原始字串中子字串的開始字元位置</param>
+            <param name="length">子字串中的字元數</param>
+            <returns name="string">由原始字串構成的子字串</returns>
+             <search>subset,get string,part,smaller string</search>
+        </member>
+        <member name="M:DSCore.String.Contains(System.String,System.String,System.Boolean)">
+            <summary>判定給定的字串是否包含給定的子字串。</summary>
+            <param name="string">要在其中搜尋的字串</param>
+            <param name="searchFor">要搜尋的子字串</param>
+            <param name="ignoreCase">比較時是否要將大小寫列入考量</param>
+            <returns name="bool">字串是否包含子字串</returns>
+            <search>test,within,in,is in,part of</search>
+        </member>
+        <member name="M:DSCore.String.CountOccurrences(System.String,System.String,System.Boolean)">
+            <summary>計算給定的字串內子字串發生非重疊的次數。</summary>
+            <param name="string">要在其中搜尋的字串</param>
+            <param name="searchFor">要搜尋的子字串</param>
+            <param name="ignoreCase">比較時是否要將大小寫列入考量</param>
+            <returns name="int">字串中子字串發生非重疊的次數</returns>
+            <search>count,substring,count occurrences,numberof,search,find,within</search>
+        </member>
+        <member name="M:DSCore.String.Replace(System.String,System.String,System.String)">
+            <summary>將字串中所有出現的文字取代為其他文字。</summary>
+            <param name="string">要取代其中子字串的字串。</param>
+            <param name="searchFor">要被取代的文字。</param>
+            <param name="replaceWith">要取代為的文字。</param>
+            <returns name="string">進行取代的字串。</returns>
+            <search>replace,overwrite,override,find and replace</search>
+        </member>
+        <member name="M:DSCore.String.EndsWith(System.String,System.String,System.Boolean)">
+            <summary>判定給定的字串是否以給定的子字串結尾。</summary>
+            <param name="string">要搜尋其結尾的字串</param>
+            <param name="searchFor">要搜尋其結尾的子字串</param>
+            <param name="ignoreCase">比較時忽略大小寫則為 true，要將大小寫列入考量則為 false</param>
+            <returns name="bool">如果字串以子字串開頭則為 true，如果不是則為 false</returns>
+            <search>test,does end,last,str end,terminated</search>
+        </member>
+        <member name="M:DSCore.String.StartsWith(System.String,System.String,System.Boolean)">
+            <summary>判定給定的字串是否以給定的子字串開頭。</summary>
+            <param name="string">要搜尋其開頭的字串</param>
+            <param name="searchFor">要搜尋開頭的子字串。</param>
+            <param name="ignoreCase">比較時忽略大小寫則為 true，要將大小寫列入考量則為 false</param>
+            <returns name="bool">如果字串以子字串開頭則為 true，如果不是則為 false</returns>
+            <search>test,beginswith,start,string start,front</search>
+        </member>
+        <member name="M:DSCore.String.TrimWhitespace(System.String)">
+            <summary>從給定字串的開頭和結尾中移除所有空格。</summary>
+            <param name="string">要修剪的字串。</param>
+            <returns name="string">已移除開始和結束空格的字串。</returns>
+            <search>trimstring,cleanstring,whitespace,blanks,spaces,string trim</search>
+        </member>
+        <member name="M:DSCore.String.TrimLeadingWhitespace(System.String)">
+            <summary>從給定字串的開頭中移除所有空格。</summary>
+            <param name="string">要修剪的字串。</param>
+            <returns name="string">已移除前導空格的字串。</returns>
+            <search>trim string,clean string,trim leading whitespaces,string trim</search>
+        </member>
+        <member name="M:DSCore.String.TrimTrailingWhitespace(System.String)">
+            <summary>從給定字串的結尾中移除所有空格。</summary>
+            <param name="string">要修剪的字串。</param>
+            <returns name="string">已在結尾移除空格的字串。</returns>
+            <search>trim string,clean string,trim trailing whitespaces,string trim</search>
+        </member>
+        <member name="M:DSCore.String.IndexOf(System.String,System.String,System.Boolean)">
+            <summary>尋找字串內第一個出現之子字串的零底索引。如果找不到任何索引，則傳回 -1。</summary>
+            <param name="string">要在其中搜尋的字串</param>
+            <param name="searchFor">要搜尋的子字串</param>
+            <param name="ignoreCase">比較時是否要將大小寫列入考量</param>
+            <returns name="int">第一個出現之子字串的索引，如果未找到則為 -1</returns>
+            <search>index of,find substring,where,search</search>
+        </member>
+        <member name="M:DSCore.String.AllIndicesOf(System.String,System.String,System.Boolean)">
+            <summary>尋找索引清單，其中子字串顯示在某個字串內。</summary>
+            <param name="string">要在其中搜尋的字串。</param>
+            <param name="searchFor">要搜尋的子字串。</param>
+            <param name="ignoreCase">比較時是否要將字體列入考量。</param>
+            <returns name="indexList">找到子字串的索引清單 (類型: int[])</returns>
+            <search>all indices of,find substring,where,search</search>
+        </member>
+        <member name="M:DSCore.String.LastIndexOf(System.String,System.String,System.Boolean)">
+            <summary>尋找字串內最後一個出現之子字串的零底索引。如果找不到任何索引，則傳回 -1。</summary>
+            <param name="string">要在其中搜尋的字串。</param>
+            <param name="searchFor">要搜尋的子字串。</param>
+            <param name="ignoreCase">比較時是否要將字體列入考量。</param>
+            <returns name="int">最後一個出現之字串的索引，或 -1 (如果未找到)。</returns>
+            <search>last index of,find substring,where,search</search>
+        </member>
+        <member name="M:DSCore.String.PadLeft(System.String,System.Int32,System.String)">
+            <summary>將給定字串中的字元靠右對齊，方法為在它們左邊填補空格，以達到指定的總長度。</summary>
+            <param name="string">要填補的字串</param>
+            <param name="newLength">填補後的字串總長度</param>
+            <param name="padChars">用來填補的字元，預設為空格</param>
+            <returns name="string">透過以前導空格填補來達到指定的總長度，以靠右對齊的字串。</returns>
+            <search>pad left,right align,right-align,pad,string space,whitespace</search>
+        </member>
+        <member name="M:DSCore.String.PadRight(System.String,System.Int32,System.String)">
+            <summary>將給定字串中的字元靠左對齊，方法為在它們右邊填補空格，以達到指定的總長度。</summary>
+            <param name="string">要填補的字串</param>
+            <param name="newLength">填補後的字串總長度</param>
+            <param name="padChars">用來填補的字元，預設為空格</param>
+            <returns name="string">透過以結尾空格填補到指定的總長度而靠左對齊的字串</returns>
+            <search>pad right,left align,left-align,pad string space,whitespace</search>
+        </member>
+        <member name="M:DSCore.String.Center(System.String,System.Int32,System.String)">
+            <summary>在任一側以空格包住原始字元來增加字串的長度。</summary>
+            <param name="string">要置中的字串</param>
+            <param name="newLength">置中後的字串總長度</param>
+            <param name="padChars">用來置中的字元，預設為空格</param>
+            <returns name="string">透過以前導和尾隨空格填補來達到指定的總長度，以置中對齊的字串。</returns>
+            <search>center align,center-align,centered,whitespace,expand string,surround</search>
+        </member>
+        <member name="M:DSCore.String.Insert(System.String,System.Int32,System.String)">
+            <summary>在給定索引中將一個字串插入至另一個字串。</summary>
+            <param name="string">要插入至其中的字串。</param>
+            <param name="index">要插入其中的索引。</param>
+            <param name="toInsert">要插入的字串。</param>
+            <returns name="string">已插入子字串的字串。</returns>
+            <search>insertstring,insert string</search>
+        </member>
+        <member name="M:DSCore.String.Remove(System.String,System.Int32,System.Nullable{System.Int32})">
+            <summary>移除字串中的字元。</summary>
+            <param name="string">要從中移除字元的字串。</param>
+            <param name="startIndex">在其中開始移除的索引。</param>
+            <param name="count">要移除的字元數
+                注意事項: 如果 Count 為負值，則從右至左執行移除程序。</param>
+            <returns name="string">已移除字元的字串。</returns>
+            <search>delete,rem,shorten</search>
+        </member>
+        <member name="T:DSCore.Thread">
+            <summary>用於操控演算執行緒的函數。</summary>
+        </member>
+        <member name="M:DSCore.Thread.Pause(System.Object,System.Int32)">
+            <summary>將目前的演算執行緒暫停給定的時間量。</summary>
+            <param name="object">要通過的物件。</param>
+            <param name="msTimeout">暫停執行緒的時間量 （以毫秒為單位)。</param>
+            <returns name="object">已通過的物件。</returns>
+        </member>
+    </members>
+</doc>

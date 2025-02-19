@@ -1,0 +1,112 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>GeometryColor</name>
+    </assembly>
+    <members>
+        <member name="M:Modifiers.GeometryColor.ByGeometryColor(Autodesk.DesignScript.Geometry.Geometry,DSCore.Color)">
+            <summary>Afficher la géométrie à l'aide d'une couleur.</summary>
+            <param name="geometry">La géométrie à laquelle vous souhaitez appliquer une couleur.</param>
+            <param name="color">La couleur.</param>
+            <returns>Un objet d'affichage.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.BySurfaceColors(Autodesk.DesignScript.Geometry.Surface,DSCore.Color[][])">
+             <summary>Affichez des valeurs de couleur sur une surface.
+            
+            Les couleurs fournies sont converties en interne en une texture d'image qui est
+            mappée avec la surface.</summary>
+             <param name="surface">La surface sur laquelle vous souhaitez appliquer les couleurs.</param>
+             <param name="colors">Une liste bidimensionnelle de couleurs.
+            
+            La liste de couleurs doit être carrée. Tenter d'envoyer une
+            matrice irrégulière générera une exception.</param>
+             <returns>Un objet d'affichage.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ByPointsColors(Autodesk.DesignScript.Geometry.Point[],DSCore.Color[])">
+             <summary>Créez un maillage en couleur à l'aide de points et de couleurs.
+            
+            La liste des points fournie est utilisée pour créer un maillage triangulé, avec
+            des sommets non joints.</summary>
+             <param name="points">Une liste de points. 
+            
+            Seuls les maillages triangulaires sont actuellement pris en charge. Chaque triplet de points dans la liste formera un 
+            triangle dans le maillage. Les points doivent être ordonnés dans un sens trigonométrique. 
+            Toute tentative d'envoi d'une liste de sommets dont le nombre d'éléments n'est pas divisible par 3 générera une exception.</param>
+             <param name="colors">Une liste de couleurs. 
+            
+            Le nombre de couleurs doit correspondre au nombre de sommets. Toute tentative d'envoi d'une liste de couleurs
+            où le nombre de couleurs est différent de celui de la liste de points générera une exception.</param>
+             <returns>Un objet d'affichage.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
+            <summary>Affichez le maillage par couleur unique, par couleur de face, par couleur de sommet ou par couleur de sommet de face.</summary>
+            <param name="mesh"/>The Mesh on which to apply the colors
+            <param name="colors">Le nombre de couleurs doit être égal à 1 (couleur unique), ou égal au nombre de faces (couleur par face), ou égal au nombre de sommets (couleur par sommet), ou égal au nombre de triangles multiplié par trois (couleur par sommet de triangle)</param>
+            <param name="smoothShading">Si la valeur est True, l’ombrage aura un aspect lisse au lieu d’être à facettes, ce qui est utile pour visualiser des surfaces continues lisses</param>
+            <returns>Un objet d'affichage.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ComputeColorMap(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},DSCore.Color[],System.Int32,System.Int32)">
+            <summary>Calculez un jeu de mappages de couleurs à partir d'un jeu d'objets SurfaceData.</summary>
+            <returns/>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ComputeSamplesFromNormalizedValue(System.Double,System.Int32,System.Int32)">
+            <summary>Cette méthode mappe un chiffre compris entre 0.0 et 1.0 avec une valeur entière comprise entre les valeurs lowestPower et highestPower.</summary>
+        </member>
+        <member name="T:Autodesk.DesignScript.Geometry.ImportHelpers">
+            <summary>noeuds d'importation de géométrie qui ont des dépendances que nous ne voulons pas introduire dans la protogéométrie.
+            Ces méthodes sont ensuite regroupées par noeuds NodeModel afin que nous puissions obtenir le nom et l'emplacement 
+            exacts de la bibliothèque.</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.ImportFromSATWithUnits(System.String,DynamoUnits.Unit)">
+            <summary>Importe la géométrie à partir du chemin d'accès au fichier SAT. Définissez l'entrée dynamoUnit pour qu'elle corresponde à la façon dont vous 
+            interprétez les autres nombres dans votre fichier Dynamo.</summary>
+            <param name="filePath">chemin d'accès à un fichier .SAT.</param>
+            <param name="dynamoUnit">une longueur d'unité de forge, si cette valeur est nulle, le fichier sat est importé sans unité</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.ImportFromSATWithUnits(System.IO.FileInfo,DynamoUnits.Unit)">
+            <summary>Importe la géométrie à partir du chemin d'accès au fichier SAT. Définissez l'entrée dynamoUnit pour qu'elle corresponde à la façon dont vous 
+            interprétez les autres nombres dans votre fichier Dynamo.</summary>
+            <param name="file">objet de fichier pointant vers un fichier .SAT.</param>
+            <param name="dynamoUnit">une longueur d'unité de forge, si cette valeur est nulle, le fichier sat est importé sans unité</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.DeserializeFromSABWithUnits(System.Byte[],DynamoUnits.Unit)">
+            <summary>Importe la géométrie à partir d'un tableau d'octets SAB. Définissez l'entrée dynamoUnit pour qu'elle corresponde à la façon dont vous 
+            interprétez les autres nombres dans votre fichier Dynamo.</summary>
+            <param name="buffer">Tableau d'octets SAB</param>
+            <param name="dynamoUnit">une longueur d'unité de forge, si cette valeur est nulle, le fichier sat est importé sans unité</param>
+            <returns/>
+        </member>
+        <member name="T:GeometryColor.Properties.Resources">
+            <summary>Une classe de ressource fortement typée, pour la recherche de chaînes localisées, etc.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.ResourceManager">
+            <summary>Renvoie l'instance ResourceManager mise en cache utilisée par cette classe.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.Culture">
+            <summary>Remplace la propriété CurrentUICulture du thread actuel pour toutes
+              les recherches de ressources qui utilisent cette classe de ressource fortement typée.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.ByMeshColorsInvalidColorCountMessage">
+            <summary>Recherche une chaîne localisée similaire à Le nombre de couleurs est incorrect. Il doit être égal à 1 (couleur unique), ou égal au nombre de faces (couleur par face), ou égal au nombre de sommets (couleur par sommet), ou égal au nombre de triangles multiplié par trois (couleur par sommet de triangle). Si vous souhaitez colorer plusieurs maillages, vous devrez peut-être utiliser les Niveaux de liste.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.JaggedListExceptionMessage">
+            <summary>Recherche une chaîne localisée semblable à La liste des couleurs ne doit pas être une liste irrégulière.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.NoColorsExceptionMessage">
+            <summary>Recherche une chaîne localisée semblable à Vous devez fournir des couleurs.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.NoVertexExceptionMessage">
+            <summary>Recherche une chaîne localisée semblable à Vous devez fournir des sommets.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.TwoDimensionalListExceptionMessage">
+            <summary>Recherche une chaîne localisée semblable à Vous devez fournir une liste bidimensionnelle de couleurs.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.VertexColorCountMismatchExceptionMessage">
+            <summary>Recherche une chaîne localisée semblable à Le nombre de couleurs fournies doit correspondre au nombre de sommets.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.VerticesDivisibleByThreeExceptionMessage">
+            <summary>Recherche une chaîne localisée semblable à Le nombre de sommets fournis doit être divisible par trois.</summary>
+        </member>
+    </members>
+</doc>

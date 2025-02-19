@@ -1,0 +1,85 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>DesignScriptBuiltin</name>
+    </assembly>
+    <members>
+        <member name="M:DesignScript.Builtin.Dictionary.CustomKeyComparer.GetHashCode(System.String)">
+            <summary>此代码已从 .NET framework 4.8 的 String.GetHashCode() 复制，该代码使用
+            确定性哈希算法。更具体地说，这是在以下位置找到的 String.GetLegacyNonRandomizedHashCode()
+            函数: https://referencesource.microsoft.com/mscorlib/R/42c2b7ffc7c3111f.html</summary>
+            <param name="obj"/>
+            <returns/>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ByKeysValues(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>使用提供的键和值生成词典。条目的数量取决于 
+                键或值之中的长度较短者。</summary>
+            <param name="keys">词典的键</param>
+            <param name="values">词典的值</param>
+            <returns name="dictionary">基于键和值构成的词典</returns>
+            <search>map,{},table</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.Components">
+            <summary>生成词典的组件。Dictionary.ByKeysValues 的反转。</summary>
+            <returns name="keys">词典的键</returns>
+            <returns name="values">词典的值</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Keys">
+            <summary>生成词典中的键。</summary>
+            <returns name="keys">词典的键</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Values">
+            <summary>生成词典中的值。</summary>
+            <returns name="values">词典的值</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Count">
+            <summary>词典中的键值对数量。</summary> 
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.SetValueAtKeys(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>使用设置为新值的一列键生成一个新词典，可能会覆盖现有键值对。 
+                预计这两个列表的长度相同。如果长度不同，则这两个列表中的长度较短者会限制插入的数量。</summary>
+            <param name="keys">词典中要设置的键。如果已存在相同的键，则会修改该键的值。</param>
+            <param name="values">要插入的相应值。</param>
+            <returns name="dictionary">含有已插入条目的新词典</returns>
+            <search>insert,add</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.RemoveKeys(System.Collections.Generic.IList{System.String})">
+            <summary>在给定键删除的情况下生成一个新词典。</summary>
+            <param name="keys">词典中要删除的键</param>
+            <returns name="dictionary">含有已删除键的新词典</returns>
+            <search>drop,delete</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ValueAtKey(System.String)">
+            <summary>获取指定键的值</summary>
+            <param name="key">词典中要获取其值的键</param>
+            <returns name="value">指定键的值或 NULL (如果尚未设置)</returns>
+            <search>lookup,valueatkey,find</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ToString">
+            <summary>返回词典的友好字符串表示。</summary>
+            <returns>词典的字符串表示。</returns>
+        </member>
+        <member name="T:DesignScript.Builtin.BuiltinNullReferenceException">
+            <summary>以下空 DS 内置类型引发了空参照异常:
+       列表、词典和字符串。</summary>
+        </member>
+        <member name="T:Builtin.Properties.DesignScriptBuiltin">
+            <summary>强类型资源类别，用于查找本地化字符串等。</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.ResourceManager">
+            <summary>返回该类别所用的缓存 ResourceManager 实例。</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.Culture">
+            <summary>使用该强类型资源类别，替换用于查找所有资源的
+              当前线程的 CurrentUICulture 特性。</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.IndexOutOfRangeExceptionMessage">
+            <summary>查找类似“索引超出范围。如果非负数必须小于列表的大小”的本地化字符串。href=kIndexOutOfRange.html。</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.NullReferenceExceptionMessage">
+            <summary>查找类似于“不能索引到空列表、词典或字符串。”的本地化字符串。</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.StringOverIndexingExceptionMessage">
+            <summary>查找类似“索引超出范围。如果非负数必须小于字符串的大小”的本地化字符串。href=kIndexOutOfRange.html。</summary>
+        </member>
+    </members>
+</doc>

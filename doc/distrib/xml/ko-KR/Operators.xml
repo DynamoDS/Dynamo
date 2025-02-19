@@ -1,0 +1,104 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Operators</name>
+    </assembly>
+    <members>
+        <member name="%add">
+            <summary>x와 y를 더하여 반환</summary>
+            <param name="x">정수 값, double 값 또는 문자열</param>
+            <param name="y">정수 값, double 값 또는 문자열</param>
+            <returns name="var">두 입력 숫자의 합계 또는 두 문자열의 연결</returns>
+            <search>add, plus, addition, +</search>
+        </member>
+		<member name="%sub">
+            <summary>x에서 y를 빼서 반환</summary>
+            <param name="x">정수 또는 double 값</param>
+            <param name="y">정수 또는 double 값</param>
+            <returns name="number">y 입력을 x 입력에서 뺀 결과</returns>
+            <search>sub, subtract, difference, -</search>
+        </member>		
+		<member name="%mul">
+            <summary>x와 y를 곱하여 반환</summary>
+            <param name="x">정수 또는 double 값</param>
+            <param name="y">정수 또는 double 값</param>
+            <returns name="number">두 입력 숫자의 곱</returns>
+            <search>mul, multiply, product, times, *, x</search>
+        </member>
+		<member name="%div">
+            <summary>x를 y로 나누어 반환</summary>
+            <param name="x">정수 또는 double 값</param>
+            <param name="y">정수 또는 double 값</param>
+            <returns name="double">나누기 결과</returns>
+            <search>div, divide, product</search>
+        </member>
+		<member name="%eq">
+            <summary>x와 y가 동일한지 비교</summary>
+            <param name="x">비교할 기본 유형 객체(예: 부울, 정수, double, 문자열 등)</param>
+            <param name="y">비교할 기본 유형 객체(예: 부울, 정수, double, 문자열 등)</param>
+            <returns name="bool">동일성 검사 결과</returns>
+            <search>eq, equal, =</search>
+        </member>
+		<member name="%ge">
+            <summary>x가 y보다 크거나 같은지 비교</summary>
+            <param name="x">정수 또는 double 값</param>
+            <param name="y">정수 또는 double 값</param>
+            <returns name="bool">x가 y보다 크거나 같으면 true, 그렇지 않으면 false</returns>
+            <search>greater,equal</search>
+        </member>
+		<member name="%gt">
+            <summary>x가 y보다 큰지 비교</summary>
+            <param name="x">정수 또는 double 값</param>
+            <param name="y">정수 또는 double 값</param>
+            <returns name="bool">x가 y보다 크면 true, 그렇지 않으면 false</returns>
+            <search>greater</search>
+        </member>
+		<member name="%mod">
+            <summary>모듈로: x/y의 나머지 부분 찾기</summary>
+            <param name="x">정수 또는 double 값</param>
+            <param name="y">정수 또는 double 값</param>
+            <returns name="number">y 입력으로 나눈 후의 x 입력의 나머지</returns>
+            <search>mod, modulo, remainder</search>
+        </member>
+		<member name="%le">
+            <summary>x가 y보다 작거나 같은지 비교</summary>
+            <param name="x">정수 또는 double 값</param>
+            <param name="y">정수 또는 double 값</param>
+            <returns name="bool">검사 결과</returns>
+            <search>less,equal</search>
+        </member>
+		<member name="%lt">
+            <summary>x가 y보다 작은지 비교</summary>
+            <param name="x">정수 또는 double 값</param>
+            <param name="y">정수 또는 double 값</param>
+            <returns name="bool">검사 결과</returns>
+            <search>less</search>
+        </member>
+		<member name="%and">
+            <summary>논리적 AND 연산자</summary>
+            <param name="x">true인지 확인하기 위한 부울 값</param>
+            <param name="y">true인지 확인하기 위한 기타 부울 값</param>
+            <returns name="bool">검사 결과</returns>
+            <search>and</search>
+        </member>
+		<member name="%or">
+            <summary>논리적 OR 연산자</summary>
+            <param name="bool">true인지 확인하기 위한 부울 값</param>
+            <param name="otherBool">true인지 확인하기 위힌 기타 부울 값</param>
+            <returns name="bool">입력이 true인 경우 True</returns>
+            <search>or</search>
+        </member>
+		<member name="%nq">
+            <summary>두 값이 다르면 true를 반환합니다.</summary>
+            <param name="x">정수 또는 double 값</param>
+            <param name="y">정수 또는 double 값</param>
+            <returns name="bool">검사 결과</returns>
+            <search>equal</search>
+        </member>
+		<member name="%Not">
+		            <summary>입력을 부정합니다(즉, 입력이 true일 때 false를 반환함).</summary>
+            <param name="x">반전할 부울.</param>
+            <returns name="bool">유형 var[]..[](반전된 부울)</returns>
+            <search>not</search>
+        </member>
+    </members>
+</doc>

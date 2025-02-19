@@ -1,0 +1,153 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Analysis</name>
+    </assembly>
+    <members>
+        <member name="T:Analysis.AnalysisResources">
+            <summary>Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.ResourceManager">
+            <summary>Gibt die im Cache gespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.Culture">
+            <summary>Überschreibt die Eigenschaft CurrentUICulture des aktuellen Threads für alle
+              Ressourcenabrufe, die diese stark typisierte Ressourcenklasse verwenden.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyColorsMessage">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Es sind keine Farben definiert.'.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyPointsMessage">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Es sind keine Punkte angegeben.'.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyUVsMessage">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Es sind keine UVs angegeben.'.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyValuesMessage">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Es sind keine Werte angegeben.'.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.InputsNotEquivalentMessage">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Sie müssen eine übereinstimmende Anzahl von Punkten und Werten angeben.'.</summary>
+        </member>
+        <member name="P:Analysis.IStructuredData`2.ValueLocations">
+            <summary>Eine Sammlung von Berechnungspositionen.</summary>
+        </member>
+        <member name="P:Analysis.IStructuredData`2.Values">
+            <summary>Eine Liste von Werten, die jeder Position entsprechen.</summary>
+        </member>
+        <member name="P:Analysis.ISurfaceData`2.Surface">
+            <summary>Die Analyseoberfläche.</summary>
+        </member>
+        <member name="P:Analysis.ICurveData`2.Curve">
+            <summary>Die Analysekurve.</summary>
+        </member>
+        <member name="T:Analysis.IAnalysisModel`2">
+            <summary>Ein Analysemodell.</summary>
+            <typeparam name="TLocation">The analysis location type. (i.e. UV, Point)</typeparam>
+            <typeparam name="TValue">The analysis return type. (i.e. double, vector, SIUnit)</typeparam>
+        </member>
+        <member name="M:Analysis.Label.ByPointAndString(Autodesk.DesignScript.Geometry.Point,System.String)">
+            <summary>Gibt nach Eingabe eines Punktobjekts und einer Zeichenfolgenbeschriftung ein Beschriftungsobjekt zurück.</summary>
+            <param name="point"/>
+            <param name="label"/>
+            <returns/>
+        </member>
+        <member name="T:Analysis.PointData">
+            <summary>Klasse zum Speichern der Daten aus Strukturpunktanalysen</summary>
+        </member>
+        <member name="P:Analysis.PointData.ValueLocations">
+            <summary>Eine Liste von Punkten.</summary>
+        </member>
+        <member name="P:Analysis.PointData.Values">
+            <summary>Ein Wörterbuch der Listen von double-Werten.</summary>
+        </member>
+        <member name="M:Analysis.PointData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{System.Double})">
+            <summary>Erstellt ein PointAnalysisData-Objekt.</summary>
+            <param name="points">Eine Liste von Punkten.</param>
+            <param name="values">Eine Liste von double-Werten.</param>
+        </member>
+        <member name="T:Analysis.Properties.Resources">
+            <summary>Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ResourceManager">
+            <summary>Gibt die im Cache gespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.Culture">
+            <summary>Überschreibt die Eigenschaft CurrentUICulture des aktuellen Threads für alle
+              Ressourcenabrufe, die diese stark typisierte Ressourcenklasse verwenden.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ByPointsAndValueObsolete">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Verwenden Sie Point- und Number-Blöcke als direkte Eingaben für Blöcke, für die bisher PointData-Blöcke verwendet wurden.'.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.BySurfacePointObsolete">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Verwenden Sie Surface- und UV-Blöcke als direkte Eingaben für Blöcke, für die bisher SurfaceData-Blöcke verwendet wurden.'.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.BySurfacePointsAndValues">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Verwenden Sie Surface-, UV- und Number-Blöcke als direkte Eingaben für Blöcke, für die bisher SurfaceData-Blöcke verwendet wurden.'.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.SurfaceObsolete">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Verwenden Sie die an anderer Stelle des Diagramms verfügbare Surface.'.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueLocationObsolete">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Verwenden Sie die an anderer Stelle des Diagramms verfügbaren Points.'.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueLocationsObsolete">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Verwenden Sie die an anderer Stelle des Diagramms verfügbaren UV-Positionen.'.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValuesObsolete">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Verwenden Sie die Werte aus dem Block, der die Analyse durchführt.'.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueSurfaceObsolete">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Verwenden Sie die Werte aus dem Block, der die Analyse durchführt.'.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.VectorValueObsolete">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Verwenden Sie Vector- und Number-Blöcke als direkte Eingaben für Blöcke, für die bisher VectorData-Blöcke verwendet wurden.'.</summary>
+        </member>
+        <member name="T:Analysis.SurfaceData">
+            <summary>Klasse zum Speichern von Analysedaten für strukturierte Oberflächen</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.Surface">
+            <summary>Die Oberfläche, die die Positionen enthält.</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.ValueLocations">
+            <summary>Eine Liste von UV-Positionen auf der Oberfläche.</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.Values">
+            <summary>Ein Wörterbuch der Listen von double-Werten.</summary>
+        </member>
+        <member name="M:Analysis.SurfaceData.BySurfaceAndPoints(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
+            <summary>Erstellt ein SurfaceData-Objekt ohne Werte.</summary>
+            <param name="surface">Die Oberfläche, die die Positionen enthält.</param>
+            <param name="uvs">Eine Liste von UV-Positionen auf der Oberfläche.</param>
+            <returns/>
+        </member>
+        <member name="M:Analysis.SurfaceData.BySurfacePointsAndValues(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},System.Collections.Generic.IList{System.Double})">
+            <summary>Erstellt ein SurfaceData-Objekt.</summary>
+            <param name="surface">Die Oberfläche, die die Positionen enthält.</param>
+            <param name="uvs">Eine Liste von UV-Positionen auf der Oberfläche.</param>
+            <param name="values">Eine Liste von double-Werten.</param>
+        </member>
+        <member name="M:Analysis.AnalysisExtensions.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
+            <summary>Ermittelt die Differenz zwischen zwei Ebenen (Typ UV) und gibt True zurück, wenn diese Differenz kleiner ist als 1.0e-6, andernfalls False.</summary>
+            <param name="a"/>
+            <param name="b"/>
+            <returns/>
+        </member>
+        <member name="T:Analysis.Utils.ValueLocation`1">
+            <summary>Eine Klasse zum Speichern eines Werts an einer Position.</summary>
+        </member>
+        <member name="T:Analysis.VectorData">
+            <summary>Klasse zum Speichern von Analysedaten für Strukturvektoren</summary>
+        </member>
+        <member name="P:Analysis.VectorData.ValueLocations">
+            <summary>Eine Liste von Berechnungspositionen.</summary>
+        </member>
+        <member name="P:Analysis.VectorData.Values">
+            <summary>Ein Wörterbuch der Ergebnisse.</summary>
+        </member>
+        <member name="M:Analysis.VectorData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.Vector})">
+            <summary>Erstellt ein VectorAnalysisData-Objekt.</summary>
+            <param name="points">Eine Liste von Punkten.</param>
+            <param name="values">Eine Liste von Vektor-Werten.</param>
+        </member>
+    </members>
+</doc>

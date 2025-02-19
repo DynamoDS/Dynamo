@@ -1,0 +1,104 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Operators</name>
+    </assembly>
+    <members>
+        <member name="%add">
+            <summary>Возврат результата сложения X и Y</summary>
+            <param name="x">Целое число, двойное значение или строка</param>
+            <param name="y">Целое число, двойное значение или строка</param>
+            <returns name="var">Сумма двух входных чисел или объединение двух строк</returns>
+            <search>add, plus, addition, +</search>
+        </member>
+		<member name="%sub">
+            <summary>Возврат результата вычитания Y из X</summary>
+            <param name="x">Целое число или двойное значение</param>
+            <param name="y">Целое число или двойное значение</param>
+            <returns name="number">Результат вычитания входных данных Y из входных данных X</returns>
+            <search>sub, subtract, difference, -</search>
+        </member>		
+		<member name="%mul">
+            <summary>Возврат результата умножения X на Y</summary>
+            <param name="x">Целое число или двойное значение</param>
+            <param name="y">Целое число или двойное значение</param>
+            <returns name="number">Произведение двух входных чисел</returns>
+            <search>mul, multiply, product, times, *, x</search>
+        </member>
+		<member name="%div">
+            <summary>Возврат результата деления X на Y</summary>
+            <param name="x">Целое число или двойное значение</param>
+            <param name="y">Целое число или двойное значение</param>
+            <returns name="double">Результат деления</returns>
+            <search>div, divide, product</search>
+        </member>
+		<member name="%eq">
+            <summary>Сравнение для определения того, равны ли значения X и Y</summary>
+            <param name="x">Стандартный объект для сравнения (например, bool, int, double, string и т. д.)</param>
+            <param name="y">Стандартный объект для сравнения (например, bool, int, double, string и т. д.)</param>
+            <returns name="bool">Результат проверки равенства</returns>
+            <search>eq, equal, =</search>
+        </member>
+		<member name="%ge">
+            <summary>Сравнение для определения того, больше ли значение X, чем значение Y, или равно ему</summary>
+            <param name="x">Целое число или двойное значение</param>
+            <param name="y">Целое число или двойное значение</param>
+            <returns name="bool">True — значение X больше или равно Y, в противном случае False</returns>
+            <search>greater,equal</search>
+        </member>
+		<member name="%gt">
+            <summary>Сравнение для определения того, больше ли значение X, чем значение Y</summary>
+            <param name="x">Целое число или двойное значение</param>
+            <param name="y">Целое число или двойное значение</param>
+            <returns name="bool">True — значение X больше, чем Y, в противном случае False</returns>
+            <search>greater</search>
+        </member>
+		<member name="%mod">
+            <summary>Модуль: поиск остатка от X/Y</summary>
+            <param name="x">Целое число или двойное значение</param>
+            <param name="y">Целое число или двойное значение</param>
+            <returns name="number">Остаток входных данных X после деления на входные данные Y</returns>
+            <search>mod, modulo, remainder</search>
+        </member>
+		<member name="%le">
+            <summary>Сравнение для определения того, меньше ли значение X, чем значение Y, или равно ему</summary>
+            <param name="x">Целое число или двойное значение</param>
+            <param name="y">Целое число или двойное значение</param>
+            <returns name="bool">Результат проверки</returns>
+            <search>less,equal</search>
+        </member>
+		<member name="%lt">
+            <summary>Сравнение для определения того, меньше ли значение X, чем Y</summary>
+            <param name="x">Целое число или двойное значение</param>
+            <param name="y">Целое число или двойное значение</param>
+            <returns name="bool">Результат проверки</returns>
+            <search>less</search>
+        </member>
+		<member name="%and">
+            <summary>Логический оператор AND</summary>
+            <param name="x">Логическое выражение для проверки на истинность</param>
+            <param name="y">Другое логическое выражение для проверки на истинность</param>
+            <returns name="bool">Результат проверки</returns>
+            <search>and</search>
+        </member>
+		<member name="%or">
+            <summary>Логический оператор OR</summary>
+            <param name="bool">Логическое выражение для проверки на истинность</param>
+            <param name="otherBool">Другое логическое выражение для проверки на истинность</param>
+            <returns name="bool">True, если любому из входных параметров присвоено значение True</returns>
+            <search>or</search>
+        </member>
+		<member name="%nq">
+            <summary>Возврат значения True, если два значения отличаются</summary>
+            <param name="x">Целое число или двойное значение</param>
+            <param name="y">Целое число или двойное значение</param>
+            <returns name="bool">Результат проверки</returns>
+            <search>equal</search>
+        </member>
+		<member name="%Not">
+		            <summary>Отрицание входных данных, т. е. когда входные данные имеют значение True, возвращается значение False.</summary>
+            <param name="x">логическое выражение для инвертирования.</param>
+            <returns name="bool">тип: var[]..[] (инвертированное логическое выражение)</returns>
+            <search>not</search>
+        </member>
+    </members>
+</doc>
