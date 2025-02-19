@@ -49,7 +49,7 @@ namespace CoreNodeModels
         public ControlPointData LinearCurveControlPointData2 { get; private set; }
         private LinearCurve linearCurve;
 
-        // Besier curve
+        // Bezier curve
         /// <summary> Point data for the 1st control point of the sine wave. </summary>
         [JsonProperty]
         public ControlPointData BezierCurveControlPointData1 { get; private set; }
