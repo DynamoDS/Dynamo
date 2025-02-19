@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
@@ -134,8 +135,27 @@ namespace Dynamo.UI.Views
         private void CoreWebView2_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
         {
             e.Handled = true;
-            // Not used yet, keep for the time being
-            //ProcessUri(e.Uri);
+            ProcessUri(e.Uri);
+        }
+
+        internal bool ProcessUri(string uri)
+        {
+            if (string.IsNullOrWhiteSpace(uri)) return false;
+
+            Uri fileUri;
+            try
+            {
+                fileUri = new Uri(uri);
+            }
+            catch (UriFormatException)
+            {
+                return false;
+            }
+
+            Process.Start(new ProcessStartInfo(uri) { UseShellExecute = true });
+            Logging.Analytics.TrackEvent(Logging.Actions.Open, Logging.Categories.DynamoHomeOperations, "Hyper Link: " + uri);
+
+            return false;
         }
 
         /// <summary>
