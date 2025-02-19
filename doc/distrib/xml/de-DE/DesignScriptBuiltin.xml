@@ -1,0 +1,85 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>DesignScriptBuiltin</name>
+    </assembly>
+    <members>
+        <member name="M:DesignScript.Builtin.Dictionary.CustomKeyComparer.GetHashCode(System.String)">
+            <summary>Dieser Code wurde von String.GetHashCode() für .NET Framework 4.8 kopiert, das einen
+            deterministischen Hashing-Algorithmus verwendet. Genauer gesagt ist dies die Funktion String.GetLegacyNonRandomizedHashCode(),
+            die sich hier befindet: https://referencesource.microsoft.com/mscorlib/R/42c2b7ffc7c3111f.html</summary>
+            <param name="obj"/>
+            <returns/>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ByKeysValues(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>Erzeugt ein Wörterbuch mit den angegebenen Schlüsseln und Werten. Die Anzahl der Einträge pro Person entspricht
+der kürzeren Version der Schlüssel oder Werte.</summary>
+            <param name="keys">Schlüssel des Wörterbuchs</param>
+            <param name="values">Werte des Wörterbuchs</param>
+            <returns name="dictionary">Wörterbuch von Schlüsseln und Werten</returns>
+            <search>map,{},table</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.Components">
+            <summary>Erzeugt die Komponenten eines Wörterbuchs. Die Umkehrwerte von Dictionary.ByKeysValues.</summary>
+            <returns name="keys">Schlüssel des Wörterbuchs</returns>
+            <returns name="values">Werte des Wörterbuchs</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Keys">
+            <summary>Erzeugt die Schlüssel in einem Wörterbuch.</summary>
+            <returns name="keys">Schlüssel des Wörterbuchs</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Values">
+            <summary>Erzeugt die Werte in einem Wörterbuch.</summary>
+            <returns name="values">Werte des Wörterbuchs</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Count">
+            <summary>Die Anzahl der Schlüsselwertpaare in einem Wörterbuch.</summary> 
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.SetValueAtKeys(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>Erstellen Sie ein neues Wörterbuch mit einer Liste von Schlüsseln, die auf die neuen Werte gesetzt sind, dabei werden eventuell vorhandene Schlüssel-Wert-Paare überschrieben. 
+                Diese beiden Listen werden voraussichtlich gleich lang sein. Wenn nicht, ist die kürzere der beiden Grenzen die Anzahl der Einfügungen.</summary>
+            <param name="keys">Die zu setzenden Tasten im Wörterbuch. Wenn derselbe Schlüssel bereits existiert, wird der Wert an diesem Schlüssel geändert.</param>
+            <param name="values">Die entsprechenden Werte einfügen.</param>
+            <returns name="dictionary">Neues Wörterbuch mit den eingefügten Einträgen</returns>
+            <search>insert,add</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.RemoveKeys(System.Collections.Generic.IList{System.String})">
+            <summary>Erstellen Sie ein neues Wörterbuch, wobei die angegebenen Schlüssel entfernt wurden.</summary>
+            <param name="keys">Der im Wörterbuch zu entfernende Schlüssel</param>
+            <returns name="dictionary">Neues Wörterbuch mit entferntem Schlüsseln</returns>
+            <search>drop,delete</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ValueAtKey(System.String)">
+            <summary>Ermitteln des Werts an einem bestimmten Schlüssel</summary>
+            <param name="key">Der Schlüssel im Wörterbuch, für den ein Wert ermittelt wird</param>
+            <returns name="value">Wert am angegebenen Schlüssel oder Null, wenn nichts eingestellt ist</returns>
+            <search>lookup,valueatkey,find</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ToString">
+            <summary>Gibt eine benutzerfreundliche Zeichenfolgendarstellung des Wörterbuchs zurück.</summary>
+            <returns>Zeichenfolgendarstellung des Wörterbuchs.</returns>
+        </member>
+        <member name="T:DesignScript.Builtin.BuiltinNullReferenceException">
+            <summary>Nullreferenzausnahmefehler für integrierte Null-DS-Typen:
+            Listen, Wörterbücher und Zeichenfolgen.</summary>
+        </member>
+        <member name="T:Builtin.Properties.DesignScriptBuiltin">
+            <summary>Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.ResourceManager">
+            <summary>Gibt die im Cache gespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.Culture">
+            <summary>Überschreibt die Eigenschaft CurrentUICulture des aktuellen Threads für alle
+              Ressourcenabrufe, die diese stark typisierte Ressourcenklasse verwenden.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.IndexOutOfRangeExceptionMessage">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie Der Index liegt außerhalb des Bereichs. Wenn nicht negativ, muss er kleiner sein als die Größe der Liste. href=kIndexOutOfRange.html.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.NullReferenceExceptionMessage">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie Indexieren in Nullliste, Wörterbuch oder Zeichenfolge nicht möglich.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.StringOverIndexingExceptionMessage">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie Der Index liegt außerhalb des Bereichs. Wenn nicht negativ, muss er kleiner sein als die Größe der Zeichenfolge. href=kIndexOutOfRange.html.</summary>
+        </member>
+    </members>
+</doc>

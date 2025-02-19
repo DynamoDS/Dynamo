@@ -1,0 +1,1866 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>DSCoreNodes</name>
+    </assembly>
+    <members>
+        <member name="P:DSCore.Color.Red">
+            <summary>Especifica el componente rojo del color, de 0 a 255.</summary>
+            <returns name="int">Valor de rojo para el modelo de color RGB, un entero entre 0 y 255 (inclusive).</returns>
+        </member>
+        <member name="P:DSCore.Color.Green">
+            <summary>Especifica el componente verde del color, de 0 a 255.</summary>
+            <returns name="int">Valor de verde para el modelo de color RGB, un entero entre 0 y 255 (inclusive).</returns>
+        </member>
+        <member name="P:DSCore.Color.Blue">
+            <summary>Especifica el componente azul del color, de 0 a 255.</summary>
+            <returns name="int">Valor de azul para el modelo de color RGB, un entero entre 0 y 255 (inclusive).</returns>
+        </member>
+        <member name="P:DSCore.Color.Alpha">
+            <summary>Especifica el componente alfa del color, de 0 a 255.</summary>
+            <returns name="int">Valor de alfa, un entero entre 0 y 255 (inclusive).</returns>
+        </member>
+        <member name="M:DSCore.Color.ByARGB(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Genera un color mediante componentes alfa, rojo, verde y azul.</summary>
+            <param name="alpha">Valor alfa (entre 0 y 255, inclusive).</param>
+            <param name="red">Valor rojo para el modelo de color RGB (entre 0 y 255, inclusive).</param>
+            <param name="green">Valor verde para el modelo de color RGB (entre 0 y 255, inclusive).</param>
+            <param name="blue">Valor azul para el modelo de color RGB (entre 0 y 255, inclusive).</param>
+            <returns name="color">Color creado a partir de ARGB.</returns>
+            <search>color</search>
+        </member>
+        <member name="M:DSCore.Color.Brightness(DSCore.Color)">
+            <summary>Devuelve el valor de brillo de este color.</summary>
+            <param name="color">Color desde el que se consultará el brillo.</param>
+            <returns name="double">Valor de brillo (entre 0 y 1, inclusive).</returns>
+        </member>
+        <member name="M:DSCore.Color.Saturation(DSCore.Color)">
+            <summary>Devuelve el valor de saturación de este color.</summary>
+            <returns name="double">Valor de saturación como doble entre 0 y 1 (inclusive).</returns>
+        </member>
+        <member name="M:DSCore.Color.Hue(DSCore.Color)">
+            <summary>Devuelve el valor de matiz de este color.</summary>
+            <param name="color">Un objeto de color</param> 
+            <returns name="double">Valor de matiz para el color, un valor doble entre 0 y 1 (inclusive).</returns>
+            <search>hues</search>
+        </member>
+        <member name="M:DSCore.Color.Components(DSCore.Color)">
+            <summary>Enumera los componentes del color en el orden siguiente: alfa, rojo, verde, azul.</summary>
+            <param name="color">Un objeto de color</param> 
+            <returns name="alpha">Valor de alfa, un entero entre 0 y 255 (inclusive)</returns>
+            <returns name="red">Valor de rojo para el modelo de color RGB, un entero entre 0 y 255 (inclusive).</returns>
+            <returns name="green">Valor de verde para el modelo de color RGB, un entero entre 0 y 255 (inclusive).</returns>
+            <returns name="blue">Valor de azul para el modelo de color RGB, un entero entre 0 y 255 (inclusive)</returns>
+            <search>alpha,red,green,blue</search>
+        </member>
+        <member name="M:DSCore.Color.BuildColorFrom1DRange(System.Collections.Generic.List{DSCore.Color},System.Collections.Generic.List{System.Double},System.Double)">
+            <summary>Devuelve un color de un degradado de color entre un color inicial y un color final.</summary>
+            <param name="colors"/>
+            <param name="parameters">Los valores entre 0 y 1 del rango en que desea tomar la muestra de color.</param>
+            <param name="parameter"/>
+            <returns name="colors">Los colores del rango especificado.</returns>
+            <search>color,range,gradient</search>
+        </member>
+        <member name="M:DSCore.Color.Lerp(DSCore.Color,DSCore.Color,System.Double)">
+            <summary>Interpola linealmente entre dos colores.</summary>
+            <param name="start">El color inicial.</param>
+            <param name="end">El color final.</param>
+            <param name="t">Un parámetro entre 0.0 y 1.0.</param>
+            <returns>El color interpolado o blanco.</returns>
+        </member>
+        <member name="M:DSCore.Color.Blerp(System.Collections.Generic.IList{DSCore.Color.IndexedColor2D},Autodesk.DesignScript.Geometry.UV)">
+            <summary>Interpola bilinealmente entre un conjunto de colores.</summary>
+            <param name="colors"/>
+            <param name="parameter"/>
+            <returns>El color interpolado o blanco.</returns>
+            This algorithm is not the same as the solution found from wikipedia 
+            (reference: https://en.wikipedia.org/wiki/Bilinear_interpolation)
+        </member>
+        <member name="M:DSCore.Color.Add(DSCore.Color,DSCore.Color)">
+            <summary>Construye un color con la combinación de los valores ARGB de dos colores existentes.</summary>
+            <param name="color">Un color que añadir.</param>
+            <param name="otherColor">Otro color que añadir.</param>
+            <returns name="color">Resultado de color de la adición de dos colores.</returns>
+        </member>
+        <member name="M:DSCore.Color.Multiply(DSCore.Color,System.Double)">
+            <summary>Multiplica un color de entrada con un multiplicador de número para producir un color más oscuro. El color de entrada debe tener un valor alfa menor que 255.</summary>
+            <param name="color">Color que multiplicar.</param>
+            <param name="multiplier">Valor del multiplicador.</param>
+            <returns name="color">Resultado de color de la multiplicación.</returns>
+        </member>
+        <member name="M:DSCore.Color.Divide(DSCore.Color,System.Double)">
+            <summary>Divide un color de entrada con un divisor de número para producir un color más claro y eliminar matiz de color</summary>
+            <param name="color">Color que dividir.</param>
+            <param name="dividend">Valor de dividendo.</param>
+            <returns name="color">Resultado de color de la división.</returns>
+        </member>
+        <member name="M:DSCore.ColorRange1D.ByColorsAndParameters(System.Collections.Generic.List{DSCore.Color},System.Collections.Generic.List{System.Double})">
+            <summary>Crea un ColorRange1D proporcionando listas de colores y parámetros.</summary>
+            <param name="colors">Una lista de colores.</param>
+            <param name="parameters">Una lista de parámetros entre 0.0 y 1.0.</param>
+            <returns>Un objeto ColorRange1D.</returns>
+        </member>
+        <member name="M:DSCore.ColorRange1D.GetColorAtParameter(DSCore.ColorRange1D,System.Double)">
+            <summary>Devuelve el color en este rango de colores dentro del parámetro especificado.</summary>
+            <param name="colorRange"/>
+            <param name="parameter">Un valor entre 0.0 y 1.0.</param>
+            <returns>Un color.</returns>
+        </member>
+        <member name="M:DSCore.ColorRange1D.Default">
+            <summary>Crear un ColorRange1D con el esquema de color por defecto.</summary>
+            <returns/>
+        </member>
+        <member name="M:DSCore.ColorRange.ByColorsAndParameters(System.Collections.Generic.IList{DSCore.Color},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.UV})">
+            <summary>Crea un ColorRange proporcionando listas de colores y de UV.</summary>
+            <param name="colors">Una lista de colores.</param>
+            <param name="parameters">Una lista de parámetros entre (0,0-0,0) y (1,0-1,0).</param>
+            <returns>Un objeto de ColorRange.</returns>
+        </member>
+        <member name="M:DSCore.ColorRange.GetColorAtParameter(Autodesk.DesignScript.Geometry.UV)">
+            <summary>Devuelve el color en este rango de colores dentro del parámetro especificado.</summary>
+            <param name="parameter">Un UV entre (0,0-0,0) y (1,0-1,0).</param>
+            <returns>Un color.</returns>
+        </member>
+        <member name="T:DSCore.Compare">
+            <summary>Métodos de comparación.</summary>
+        </member>
+        <member name="M:DSCore.Compare.GreaterThan(System.Object,System.Object)">
+            <summary>Devuelve True si A es mayor que B.</summary>
+            <param name="a">Un objeto comparable.</param>
+            <param name="b">Un objeto comparable.</param>
+            <returns name="bool">Resultado booleano.</returns>
+            <search>larger,bigger</search>
+        </member>
+        <member name="M:DSCore.Compare.GreaterThanOrEqual(System.Object,System.Object)">
+            <summary>Devuelve True si A es mayor o igual que B.</summary>
+            <param name="a">Un objeto comparable.</param>
+            <param name="b">Un objeto comparable.</param>
+            <returns name="bool">Resultado booleano.</returns>
+            <search>larger,bigger,equal</search>
+        </member>
+        <member name="M:DSCore.Compare.LessThan(System.Object,System.Object)">
+            <summary>Devuelve True si A es menor que B.</summary>
+            <param name="a">Un objeto comparable.</param>
+            <param name="b">Un objeto comparable.</param>
+            <returns name="bool">Resultado booleano.</returns>
+            <search>less,smaller</search>
+        </member>
+        <member name="M:DSCore.Compare.LessThanOrEqual(System.Object,System.Object)">
+            <summary>Devuelve True si A es menor o igual que B.</summary>
+            <param name="a">Un objeto comparable.</param>
+            <param name="b">Un objeto comparable.</param>
+            <returns name="bool">Resultado booleano.</returns>
+            <search>smaller,equal</search>
+        </member>
+        <member name="M:DSCore.Data.ParseJSON(System.String)">
+            <summary>Parse convierte una cadena JSON arbitraria en un valor. Es lo contrario de JSON.Stringify.</summary>
+            <param name="json">Una cadena JSON</param>
+            <returns name="result">El tipo de resultado depende del contenido de la cadena de entrada. Este tipo puede ser un valor primitivo (por ejemplo, cadena, booleano o doble), una lista o un diccionario.</returns>
+        </member>
+        <member name="M:DSCore.Data.ToNative(Newtonsoft.Json.Linq.JToken)">
+            <summary>Analiza la implementación para convertir tipos de JToken en objetos de .NET nativos.</summary>
+            <param name="token">JToken que se analizará en N</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.DynamoJObjectToNative(Newtonsoft.Json.Linq.JObject)">
+            <summary>Analiza la implementación para convertir tipos de JObject en objetos de Dynamo específicos (por ejemplo, geometría, color, imágenes, etc.)</summary>
+            <param name="jObject"/>
+            <returns/>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:DSCore.Data.StringifyJSON(System.Object)">
+            <summary>Stringify convierte un valor arbitrario o una lista de valores arbitrarios a JSON. La replicación permite aplicar la operación en una lista, lo que genera una lista de cadenas JSON.</summary>
+            <param name="values">Una lista de valores</param>
+            <returns name="json">Una cadena JSON donde los tipos primitivos (por ejemplo, doble, entero o boleano), las listas y el diccionario se convertirán al tipo JSON asociado.</returns>
+        </member>
+        <member name="T:DSCore.Data.MaxDepthJsonTextWriter">
+            <summary>Subclase de JsonTextWriter que limita una profundidad máxima de objetos admitida para evitar que se produzcan bloqueos de referencia circular al serializar tipos de objetos .NET arbitrarios.</summary>
+        </member>
+        <member name="T:DSCore.Data.DictConverter">
+            <summary>Garantiza que los elementos DesignScript.Builtin.Dictionary, que no implementan deliberadamente IDictionary, se transformen en objetos JSON.</summary>
+        </member>
+        <member name="M:DSCore.Data.CanObjectBeCached(System.Object)">
+            <summary>Función auxiliar para determinar si el objeto se puede almacenar en caché o si es nulo, una cadena "null" o una lista vacía.</summary>
+            <param name="inputObject">Objeto que comprobar</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.Remember(System.Object,System.String)">
+            <summary>Función para controlar el almacenamiento en caché del nodo Data.Remember.</summary>
+            <param name="inputObject">Objeto que almacenar en la memoria caché</param>
+            <param name="cachedJson">JSON de caché existente opcional</param>
+            <returns/>
+        </member>
+        <member name="T:DSCore.Data.DataNodeDynamoType">
+            <summary>Una clase que representa un DataType admitido por Dynamo</summary>
+        </member>
+        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String)">
+            <summary>Una clase que representa un DataType admitido por Dynamo</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Type">
+            <summary>El tipo subyacente</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Name">
+            <summary>Un nombre opcional para modificar el nombre de tipo (`Number` en lugar de `long`)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Level">
+            <summary>El nivel jerárquico que se mostrará en la interfaz de usuario</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.IsLastChild">
+            <summary>Determina el tipo es el último elemento secundario de una jerarquía (por motivos de interfaz de usuario).</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Parent">
+            <summary>El elemento principal del tipo (si existe)</summary>
+        </member>
+        <member name="F:DSCore.Data.DataNodeDynamoTypeList">
+            <summary>Una lista estática de todos los tipos de datos admitidos de Dynamo</summary>
+            <returns>La lista que contiene los tipos de datos admitidos</returns>
+        </member>
+        <member name="M:DSCore.Data.#cctor">
+            <summary>Constructor estático</summary>
+        </member>
+        <member name="M:DSCore.Data.SafeExtractDictionaryValue(System.Collections.Generic.Dictionary{System.String,System.Object},System.String)">
+            <summary>Una función auxiliar para extraer de forma segura un valor de diccionario</summary>
+            <param name="dict">El diccionario del que se extraerá el valor</param>
+            <param name="key">La clave del par de clave/valor</param>
+        </member>
+        <member name="M:DSCore.Data.EvaluateDefineDataNode(System.Object,System.String,System.Boolean,System.Boolean,System.String)">
+            <summary>Esta es la función que utiliza AST para evaluar el nodo "Define Data".
+            Gestiona parte de la lógica de nodos mientras realiza la validación.</summary>
+            <param name="inputValue">Valor de entrada ascendente</param>
+            <param name="typeString">El tipo como cadena (Nota: Es aconsejable transferir un objeto de tipo 'Type' para la comparación directa de tipos)</param>
+            <param name="isList">Si la entrada es de tipo `ArrayList`</param>
+            <param name="isAutoMode">Si el nodo se encuentra en modo automático</param>
+            <param name="playerValue">El valor introducido en el nodo por el Reproductor de Dynamo, si existe.</param>
+        </member>
+        <member name="M:DSCore.Data.FindCommonAncestor(System.Collections.ArrayList)">
+            <summary>Una función para ayudar a encontrar el tipo en caso de que se haya transferido una ArrayList de objetos en AutoMode.</summary>
+            <param name="list">El valor de entrada que se espera sea de tipo ArrayList</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.LikelyAncestor(System.Collections.Generic.List{DSCore.Data.DataNodeDynamoType})">
+            <summary>Una función auxiliar que devuelve el nodo de nivel más bajo de una lista de nodos DataNodeDynamoType.</summary>
+            <param name="nodes">La lista de DataNodeDynamoType que se evaluará</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.FindClosestCommonAncestor(System.Collections.Generic.List{DSCore.Data.DataNodeDynamoType})">
+            <summary>Una función auxiliar para intentar determinar un antecesor común en una lista de tipos de datos.</summary>
+            <param name="nodes">La lista de nodos DataType que se evaluarán</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.FindCommonAncestorBetweenTwoNodes(DSCore.Data.DataNodeDynamoType,DSCore.Data.DataNodeDynamoType)">
+            <summary>Función recursiva para intentar encontrar un antecesor común entre dos tipos de Dynamo.
+            Asciende por el árbol jerárquico del likelyAncestor hasta que</summary>
+            <param name="node">Compruebe si este nodo deriva del antecesor probable.</param>
+            <param name="likelyAncestor">El antecesor probable del que debería derivarse el nodo</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.GetListFromTypes(System.Collections.ArrayList)">
+            <summary>Devuelve una lista de DataNodeDynamoTypes a partir de una ArrayList de objetos.</summary>
+            <param name="list">La ArrayList de objetos a los que se va a aplicar un nuevo formato</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
+            <summary>Compruebe si el objeto de entrada es un valor único o una ArrayList de un solo nivel.</summary>
+            <param name="obj">El objeto de entrada que se va a evaluar</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsSupportedDataNodeDynamoType(System.Object,System.Type,System.Boolean)">
+            <summary>Función para validar el tipo de entrada en relación con los tipos de entrada admitidos por Dynamo</summary>
+            <param name="inputValue">Los datos entrantes que se validarán</param>
+            <param name="type">El tipo de entrada especificado por el usuario. Debe coincidir con el tipo inputValue.</param>
+            <param name="isList">Este valor booleano determina si la entrada es un único objeto o una lista.</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsItemOfType(System.Object,System.Type)">
+            <summary>Este método comprueba si un elemento es de un DataType de Dynamo necesario.
+            'IsInstanceOfType' comprueba recursivamente la herencia ascendente.</summary>
+            <param name="item">El elemento para el que se va a comprobar el tipo de datos</param>
+            <param name="dataType">El DataType en relación con el que se va a realizar la comprobación</param>
+            <returns>Un resultado "true" (verdadero) o "false" (falso) basado en la validación de comprobación</returns>
+        </member>
+        <member name="M:DSCore.Data.IsDerivedFrom(System.Type,System.Type)">
+            <summary>Este método comprueba si un tipo se deriva de un tipo base.</summary>
+            <param name="derivedType">El tipo que deseamos afirmar</param>
+            <param name="baseType">El tipo base con el que se realiza la comparación</param>
+            <returns/>
+        </member>
+        <member name="T:DSCore.DateTime">
+            <summary>Objeto que representa una fecha y una hora específicas.</summary>
+        </member>
+        <member name="P:DSCore.DateTime.MinValue">
+            <summary>La primera fecha y hora que se puede representar.</summary>
+            <returns name="dateTime">Representación de la DateTime mínima posible.</returns>
+        </member>
+        <member name="P:DSCore.DateTime.MaxValue">
+            <summary>La última fecha y hora que se puede representar.</summary>
+            <returns name="dateTime">Representación de la DateTime máxima posible.</returns>
+        </member>
+        <member name="P:DSCore.DateTime.Now">
+            <summary>La fecha y la hora actual del sistema.</summary>
+            <returns name="dateTime">DateTime que representa la hora actual.</returns>
+        </member>
+        <member name="P:DSCore.DateTime.Today">
+            <summary>La fecha actual del sistema, con la hora definida en medianoche.</summary>
+            <returns name="dateTime">DateTime que representa la fecha actual.</returns>
+        </member>
+        <member name="M:DSCore.DateTime.Format(System.DateTime,System.String)">
+             <summary>Devuelve una fecha y una hora concretas como cadena, en el formato especificado.</summary>
+             <param name="dateTime">DateTime al que aplicar un formato.</param>
+             <param name="format">Representación de cadena del formato de fecha. Utiliza InvariantCulture, que se genera de manera independiente del idioma del sistema operativo del usuario.
+Usa de forma predeterminada el formato estándar "F": "Martes, 21 de febrero de 2017 23:02:43"
+Busque "Cadenas de formato de fecha y hora personalizadas de MSDN" para obtener una lista completa de especificadores de formato.</param>
+             <returns name="string">DateTime representado como una cadena.</returns>
+        </member>
+        <member name="M:DSCore.DateTime.ByDate(System.Int32,System.Int32,System.Int32)">
+            <summary>Crea una nueva DateTime en una fecha exacta.</summary>
+            <param name="year">Año exacto (1-9999)</param>
+            <param name="month">Mes exacto (1-12)</param>
+            <param name="day">Día exacto (1-[días del mes])</param>
+            <returns name="dateTime">DateTime creada a partir de una fecha.</returns>
+        </member>
+        <member name="M:DSCore.DateTime.ByDateAndTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Crea una nueva DateTime en una fecha y una hora exactas.</summary>
+            <param name="year">Año exacto (1-9999)</param>
+            <param name="month">Mes exacto (1-12)</param>
+            <param name="day">Día exacto (1-[días del mes])</param>
+            <param name="hour">Hora exacta (0-23)</param>
+            <param name="minute">Minuto exacto (0-59)</param>
+            <param name="second">Segundo exacto (0-59)</param>
+            <param name="millisecond">Milisegundo exacto (0-999)</param>
+            <returns name="dateTime">DateTime creada a partir de una fecha y hora.</returns>
+        </member>
+        <member name="M:DSCore.DateTime.SubtractTimeSpan(System.DateTime,System.TimeSpan)">
+            <summary>Resta un TimeSpan de una DateTime y produce una nueva DateTime.</summary>
+            <param name="dateTime">DateTime inicial.</param>
+            <param name="timeSpan">Cantidad de tiempo que se restará.</param>
+            <returns name="dateTime">DateTime resultante de la resta.</returns>
+        </member>
+        <member name="M:DSCore.DateTime.AddTimeSpan(System.DateTime,System.TimeSpan)">
+            <summary>Añade un TimeSpan a una DateTime y produce una nueva DateTime.</summary>
+            <param name="dateTime">DateTime inicial.</param>
+            <param name="timeSpan">Cantidad de tiempo que se añadirá a DateTime.</param>
+            <returns name="dateTime">DateTime resultante de la suma de intervalo de tiempo.</returns>
+        </member>
+        <member name="M:DSCore.DateTime.DaysInMonth(System.Int32,System.Int32)">
+            <summary>Calcula el número de días que tiene el mes pertinente en el año indicado.</summary>
+            <param name="year">Año exacto (1-9999)</param>
+            <param name="month">Mes exacto (1-12)</param>
+            <returns name="int">Número de días del mes.</returns>
+        </member>
+        <member name="M:DSCore.DateTime.IsDaylightSavingsTime(System.DateTime)">
+            <summary>Determina si se aplica el horario de verano en la DateTime especificada.</summary>
+            <param name="dateTime">DateTime utilizada para determinar si hay horario de verano.</param>
+            <returns name="bool">True si DateTime se encuentra en el horario de verano; False si no.</returns>
+        </member>
+        <member name="M:DSCore.DateTime.IsLeapYear(System.Int32)">
+            <summary>Determina si el año especificado es bisiesto.</summary>
+            <param name="year">Año exacto (1-9999)</param>
+            <returns name="bool">True si el año es bisiesto; False si no.</returns>
+        </member>
+        <member name="M:DSCore.DateTime.FromString(System.String)">
+            <summary>Intenta analizar una DateTime a partir de una cadena.</summary>
+            <param name="string">Representación de cadena de DateTime.</param>
+            <returns name="dateTime">DateTime de la cadena analizada.</returns>
+        </member>
+        <member name="M:DSCore.DateTime.Date(System.DateTime)">
+            <summary>Extrae únicamente la fecha de una DateTime. Los componentes de tiempo se definen en 0.</summary>
+            <param name="dateTime">Una DateTime.</param>
+            <returns name="date">Fecha de DateTime</returns>
+            <search>Date</search>
+        </member>
+        <member name="M:DSCore.DateTime.Components(System.DateTime)">
+            <summary>Extrae los componentes individuales de una DateTime.</summary>
+            <param name="dateTime">DateTime desde la que obtener componentes.</param>
+            <returns name="year">Representación numérica del año (1-9999).</returns>
+            <returns name="month">Representación numérica del mes (1-12).</returns>
+            <returns name="day">Representación numérica del día (1-[días del mes]).</returns>
+            <returns name="hour">Representación numérica de la hora (0-23).</returns>
+            <returns name="minute">Representación numérica de los minutos (0-59).</returns>
+            <returns name="second">Representación numérica de los segundos (0-59).</returns>
+            <returns name="millisecond">Representación numérica de los milisegundos (0-999)</returns>
+        </member>
+        <member name="M:DSCore.DateTime.DayOfWeek(System.DateTime)">
+            <summary>Devuelve el día de la semana a partir de la DateTime especificada.</summary>
+            <param name="dateTime">Objeto DateTime desde el que obtener un día de la semana.</param>
+            <returns name="dayOfWeek">Día de la semana</returns>
+        </member>
+        <member name="M:DSCore.DateTime.DayOfYear(System.DateTime)">
+            <summary>Devuelve el día del año (0-366)</summary>
+            <param name="dateTime">DateTime desde la que obtener un día del año.</param>
+            <returns name="int">Número de días desde el comienzo del año.</returns>
+        </member>
+        <member name="M:DSCore.DateTime.TimeOfDay(System.DateTime)">
+            <summary>Produce un nuevo TimeSpan que representa la cantidad de tiempo que ha pasado desde
+                 la medianoche de la DateTime especificada.</summary>
+            <param name="dateTime">Una DateTime.</param>
+            <returns name="timeSpan">TimeSpan desde medianoche.</returns>
+        </member>
+        <member name="T:DSCore.DayOfWeek">
+            <summary>Días de la semana</summary>
+        </member>
+        <member name="T:DSCore.TimeSpan">
+            <summary>Objeto que representa el periodo de tiempo transcurrido, sin fecha específica de inicio o fin.</summary>
+        </member>
+        <member name="M:DSCore.TimeSpan.ByDateDifference(System.DateTime,System.DateTime)">
+            <summary>Produce una nuevo TimeSpan calculado a partir de la diferencia entre dos elementos DateTime.</summary>
+            <param name="dateTime">DateTime de la que restar.</param>
+            <param name="otherDateTime">DateTime que se restará.</param>
+            <returns name="timeSpan">Diferencia del TimeSpan entre dos fechas.</returns>
+        </member>
+        <member name="P:DSCore.TimeSpan.Zero">
+            <summary>Un TimeSpan que representa un tiempo transcurrido de cero.</summary>
+            <returns name="timeSpan">TimeSpan que representa un tiempo transcurrido de cero.</returns>
+        </member>
+        <member name="P:DSCore.TimeSpan.MaxValue">
+            <summary>El mayor TimeSpan que se puede representar.</summary>
+            <returns name="timeSpan">Representación del TimeSpan máximo posible.</returns>
+        </member>
+        <member name="P:DSCore.TimeSpan.MinValue">
+            <summary>El menor TimeSpan que se puede representar.</summary>
+            <returns name="timeSpan">Representación del TimeSpan mínimo posible.</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Create(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>Crea un nuevo TimeSpan a partir de un intervalo de tiempo.</summary>
+            <param name="days">Días abarcados.</param>
+            <param name="hours">Horas abarcadas.</param>
+            <param name="minutes">Minutos abarcados.</param>
+            <param name="seconds">Segundos abarcados.</param>
+            <param name="milliseconds">Milisegundos abarcados.</param>
+            <returns name="timeSpan">TimeSpan creado.</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Scale(System.TimeSpan,System.Double)">
+            <summary>Multiplica un TimeSpan por un factor de escala.</summary>
+            <param name="timeSpan">TimeSpan que se multiplicará.</param>
+            <param name="scaleFactor">Valor de escala para el TimeSpan. Por ejemplo, un factor de escala de 2 doblará
+            el tiempo abarcado.</param>
+            <returns name="timeSpan">Producto del TimeSpan.</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Negate(System.TimeSpan)">
+            <summary>Niega un TimeSpan.</summary>
+            <param name="timeSpan">TimeSpan que se negará.</param>
+            <returns name="timeSpan">TimeSpan negativo.</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Add(System.TimeSpan,System.TimeSpan)">
+            <summary>Suma dos TimeSpans.</summary>
+            <param name="timeSpan1">TimeSpan que se sumará.</param>
+            <param name="timeSpan2">Otro TimeSpan que se sumará.</param>
+            <returns name="timeSpan">TimeSpan resultante de la suma.</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Subtract(System.TimeSpan,System.TimeSpan)">
+            <summary>Resta dos TimeSpans.</summary>
+            <param name="timeSpan1">TimeSpan del que se restará.</param>
+            <param name="timeSpan2">TimeSpan que se restará.</param>
+            <returns name="timeSpan">TimeSpan resultante de la sustracción</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.FromString(System.String)">
+            <summary>Intenta analizar un TimeSpan a partir de una cadena.</summary>
+            <param name="string">Representación de cadena de TimeSpan.</param>
+            <returns name="timeSpan">TimeSpan de la cadena analizada.</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Components(System.TimeSpan)">
+            <summary>Extrae los componentes individuales de un TimeSpan.</summary>
+            <param name="timeSpan">TimeSpan desde el que obtener componentes.</param>
+            <returns name="days">Cantidad de días (tipo int)</returns>
+            <returns name="hours">Cantidad de horas (tipo int)</returns>
+            <returns name="minutes">Cantidad de minutos (tipo int)</returns>
+            <returns name="seconds">Cantidad de segundos (tipo int)</returns>
+            <returns name="milliseconds">Cantidad de milisegundos (tipo int)</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalDays(System.TimeSpan)">
+            <summary>Convierte la cantidad total de tiempo representada por un TimeSpan en un número 
+                inexacto de días.</summary>
+            <param name="timeSpan">TimeSpan desde el que consultar la cantidad total de días.</param>
+            <returns name="double">Cantidad total de días.</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalHours(System.TimeSpan)">
+            <summary>Convierte la cantidad total de tiempo representada por un TimeSpan en un número 
+                inexacto de horas.</summary>
+            <param name="timeSpan">TimeSpan desde el que consultar la cantidad total de horas.</param>
+            <returns name="double">Cantidad total de horas.</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalMinutes(System.TimeSpan)">
+            <summary>Convierte la cantidad total de tiempo representada por un TimeSpan en un número 
+                inexacto de minutos.</summary>
+            <param name="timeSpan">TimeSpan desde el que consultar la cantidad total de minutos.</param>
+            <returns name="double">Cantidad total de minutos.</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalSeconds(System.TimeSpan)">
+            <summary>Convierte la cantidad total de tiempo representada por un TimeSpan en un número 
+                inexacto de segundos.</summary>
+            <param name="timeSpan">TimeSpan desde el que consultar la cantidad total de segundos.</param>
+            <returns name="double">Cantidad total de segundos.</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalMilliseconds(System.TimeSpan)">
+            <summary>Convierte la cantidad total de tiempo representada por un TimeSpan en un número 
+                inexacto de milisegundos.</summary>
+            <param name="timeSpan">TimeSpan desde el que consultar la cantidad total de milisegundos.</param>
+            <returns name="double">Cantidad total de milisegundos.</returns>
+        </member>
+        <member name="T:DSCore.IO.FileSystem">
+            <summary>Métodos para trabajar con archivos.</summary>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.AbsolutePath(System.String,System.String)">
+            <summary>Devuelve la ruta absoluta de la ruta especificada. Si la ruta especificada es
+            una ruta relativa, se resuelve con respecto al actual
+            espacio de trabajo. Si el archivo no existe en la ruta relativa pero existe
+            en el hintPath especificado, se devuelve hintPath.</summary>
+            <param name="path">Ruta relativa o ruta completa</param>
+            <param name="hintPath">Última ruta resuelta</param>
+            <returns>Ruta absoluta</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileFromPath(System.String)">
+            <summary>Crea un objeto de archivo a partir de la ruta de archivo especificada.</summary>
+            <param name="path"/>
+            <returns/>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.ReadText(System.IO.FileInfo)">
+            <summary>Lee un archivo de texto y devuelve el contenido como una cadena.</summary>
+            <param name="file">Objeto de archivo desde el que se leerá texto</param>
+            <returns name="string">Contenido del archivo de texto.</returns>
+            <search>read file,text,file</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.MoveFile(System.String,System.String,System.Boolean)">
+            <summary>Desplaza el archivo especificado a una nueva ubicación.</summary>
+            <param name="path">Representación de cadena de la ruta existente.</param>
+            <param name="newPath">Representación de cadena de la nueva ruta.</param>
+            <param name="overwrite">Active o desactive esta opción para sobrescribir los archivos existentes.</param>
+            <returns name="void">El nodo realiza una tarea; no genera un resultado.</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DeleteFile(System.String)">
+            <summary>Suprime el archivo especificado.</summary>
+            <param name="path">Ruta de archivo que se suprimirá.</param>
+            <returns name="void">El nodo realiza una tarea; no genera un resultado.</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.CopyFile(System.IO.FileInfo,System.String,System.Boolean)">
+            <summary>Copia un archivo.</summary>
+            <param name="file">Objeto de archivo que se copiará.</param>
+            <param name="destinationPath">Representación de cadena de la ruta de archivo de destino.</param>
+            <param name="overwrite">Active o desactive esta opción para sobrescribir los archivos existentes.</param>
+            <returns name="bool">El nodo realiza una tarea; devuelve "true" cuando la acción de copia se completa correctamente.</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileExists(System.String)">
+            <summary>Determina si existe un archivo en la ruta especificada.</summary>
+            <param name="path">Cadena que representa una ruta de archivo.</param>
+            <returns name="bool">True si el archivo existe; False si no.</returns>
+            <search>filepath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.WriteText(System.String,System.String)">
+            <summary>Escribe el contenido de texto al archivo especificado por la ruta.</summary>
+            <param name="filePath">Ruta de escritura</param>
+            <param name="text">Contenido de texto</param>
+            <returns name="void">Sin salida</returns>
+            <search>write file,text,file,filepath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.AppendText(System.String,System.String)">
+            <summary>Añada el contenido de texto a un archivo especificado por la ruta.</summary>
+            <param name="filePath">Ruta de escritura</param>
+            <param name="text">Contenido de texto</param>
+            <returns name="void">El nodo realiza una tarea; no genera un resultado.</returns>
+            <search>append file,write file,text,file,filepath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.CombinePath(System.String[])">
+            <summary>Combina varias cadenas en una sola ruta de archivo.</summary>
+            <param name="strings">Cadenas que se deben combinar en una ruta.</param>
+            <returns name="string">Ruta de archivo combinada.</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileExtension(System.String)">
+            <summary>Devuelve la extensión a partir de una ruta de archivo.</summary>
+            <param name="path">Ruta de la que obtener la extensión.</param>
+            <returns name="string">Extensión del archivo.</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.ChangePathExtension(System.String,System.String)">
+            <summary>Cambia la extensión de una ruta de archivo.</summary>
+            <param name="path">Ruta en la que cambiar la extensión.</param>
+            <param name="newExtension">Representación de cadena de la nueva extensión.</param>
+            <returns name="string">Ruta de archivo con la extensión modificada.</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DirectoryName(System.String)">
+            <summary>Devuelve el nombre de directorio a partir de una ruta de archivo.</summary>
+            <param name="path">Ruta de la que obtener la información de directorio.</param>
+            <returns name="string">Nombre de directorio de la ruta de archivo.</returns>
+            <search>directorypath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileName(System.String,System.Boolean)">
+            <summary>Devuelve el nombre de archivo a partir de una ruta de archivo.</summary>
+            <param name="path">Ruta de la que obtener el nombre de archivo.</param>
+            <param name="withExtension">Active o desactive esta opción para incluir la extensión en el resultado.</param>
+            <returns name="string">Nombre de archivo de la ruta de archivo.</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileHasExtension(System.String)">
+            <summary>Determina si la ruta de un archivo contiene o no una extensión.</summary>
+            <param name="path">Ruta donde se debe comprobar si existe una extensión.</param>
+            <returns name="bool">True si la ruta de archivo contiene la extensión; False si no.</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.GetDirectoryContents(System.IO.DirectoryInfo,System.String,System.Boolean)">
+            <summary>Devolverá una lista de archivos y directorios incluidos en el directorio especificado. Se puede utilizar un elemento searchString opcional para filtrar los resultados.</summary>
+            <param name="directory">Directorio del que obtener el contenido.</param>
+            <param name="searchString">Cadena de búsqueda utilizada para filtrar los resultados.</param>
+            <param name="includeSubdirectories">Se establece en True para incluir los archivos y carpetas en subdirectorios (recursivo) o en False para incluir resultados solo desde el nivel superior del directorio especificado.</param>
+            <returns name="files">Archivos resultantes de la consulta.</returns>
+            <returns name="directories">Directorios resultantes de la consulta.</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.CopyDirectory(System.IO.DirectoryInfo,System.String,System.Boolean)">
+            <summary>Copia el directorio a la ubicación de destino.</summary>
+            <param name="directory">Directorio que copiar.</param>
+            <param name="destinationPath">Destino de la operación de copia en el disco.</param>
+            <param name="overwriteFiles">Active o desactive esta opción para sobrescribir el directorio existente.</param>
+            <returns name="void">El nodo realiza una tarea; no genera un resultado.</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DeleteDirectory(System.String,System.Boolean)">
+            <summary>Suprime un directorio.</summary>
+            <param name="path">Ruta a un directorio del disco.</param>
+            <param name="recursive">Si se debe o no suprimir todo el contenido del directorio. Predeterminado: False.</param>
+            <returns name="void">El nodo realiza una tarea; no genera un resultado.</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DirectoryExists(System.String)">
+            <summary>Determina si un directorio existe en la ruta especificada.</summary>
+            <param name="path">Ruta a un directorio del disco.</param>
+            <returns name="bool">True si el directorio existe; False si no.</returns>
+            <search>directorypath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.MoveDirectory(System.String,System.String,System.Boolean)">
+            <summary>Desplaza un directorio a una nueva ubicación.</summary>
+            <param name="path">Representación de cadena de la ruta existente.</param>
+            <param name="newPath">Representación de cadena de la nueva ruta.</param>
+            <param name="overwriteFiles">Active o desactive esta opción para sobrescribir los archivos existentes.</param>
+            <returns name="void">El nodo realiza una tarea; no genera un resultado.</returns>
+        </member>
+        <member name="T:DSCore.IO.Image">
+            <summary>Métodos para trabajar con imágenes de mapas de bits.</summary>
+        </member>
+        <member name="M:DSCore.IO.Image.ReadFromFile(System.IO.FileInfo)">
+            <summary>Carga el archivo como mapa de bits.</summary>
+            <param name="file">Objeto de archivo desde el que cargar la imagen.</param>
+            <returns name="image">Objeto de imagen de archivo.</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.Pixels(System.Drawing.Bitmap,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>Lee un archivo de imagen y devuelve los valores de color en las ubicaciones de rejilla especificadas.</summary>
+            <param name="image">Objeto de imagen desde el que obtener colores de píxeles.</param>
+            <param name="xSamples">Número de puntos de rejilla de muestra en la dirección X.</param>
+            <param name="ySamples">Número de puntos de rejilla de muestra en la dirección Y.</param>
+            <returns name="colors">Colores en los puntos de rejilla especificados.</returns>
+            <search>read,image,bitmap,png,jpg,jpeg</search>
+        </member>
+        <member name="M:DSCore.IO.Image.FromPixels(DSCore.Color[][])">
+            <summary>Genera una imagen a partir de una lista 2D de píxeles.</summary>
+            <param name="colors">Lista 2D rectangular de colores que representan los píxeles.</param>
+            <returns name="image">Imagen de la lista 2D de píxeles.</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.FromPixels(DSCore.Color[],System.Int32,System.Int32)">
+            <summary>Genera una imagen a partir de una lista plana de píxeles, una anchura y una altura.</summary>
+            <param name="colors">Lista de colores que representan los píxeles.</param>
+            <param name="width">Anchura de la nueva imagen en píxeles.</param>
+            <param name="height">Altura de la nueva imagen en píxeles.</param>
+            <returns name="image">Imagen de la lista de píxeles.</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.Dimensions(System.Drawing.Bitmap)">
+            <summary>Devuelve la anchura y altura de una imagen.</summary>
+            <param name="image">Imagen cuyas dimensiones se deben obtener.</param>
+            <returns name="width">Anchura de la imagen en píxeles</returns>
+            <returns name="height">Altura de la imagen en píxeles</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.WriteToFile(System.String,System.Drawing.Bitmap)">
+            <summary>Escribe la imagen en una ruta y se le da el nombre de archivo especificado.</summary>
+            <param name="path"/>
+            <param name="image">La imagen que se debe escribir.</param>
+            <returns name="image">Objeto de imagen creado</returns>
+            <search>write image,image,file,filepath</search>
+        </member>
+        <member name="T:DSCore.List">
+            <summary>Métodos de creación y manipulación de listas.</summary>
+        </member>
+        <member name="P:DSCore.List.Empty">
+            <summary>Devuelve una lista vacía.</summary>
+            <returns name="list">Lista vacía.</returns>
+            <search>empty list, emptylist,[]</search>
+        </member>
+        <member name="M:DSCore.List.UniqueItems(System.Collections.IList)">
+            <summary>Crea una lista con todos los elementos únicos de la lista especificada.</summary>
+            <param name="list">Lista cuyos duplicados se deben filtrar.</param>
+            <returns name="list">Lista filtrada.</returns>
+            <search>removes,duplicates,remove duplicates,cull duplicates,distinct,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.Contains(System.Collections.IList,System.Object)">
+            <summary>Determina si la lista especificada contiene el elemento indicado. Esta función busca en las sublistas que contiene.</summary>
+            <param name="list">Lista en la que se buscará.</param>
+            <param name="item">Elemento que se buscará.</param>
+            <returns name="bool">True si la lista contiene el elemento; False si no.</returns>
+            <search>item,search,in,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.IsHomogeneous(System.Collections.IList)">
+            <summary>Comprueba si los elementos de la lista son del mismo tipo.</summary>
+            <param name="list">Lista que se debe comprobar si es homogénea.</param>
+            <returns name="bool">Si la lista es homogénea.</returns>
+            <search>homogeneous,allequal,same,type</search>
+        </member>
+        <member name="M:DSCore.List.IsRectangular(System.Collections.IList)">
+            <summary>Comprueba si el número de elementos de todas las filas de la lista es el mismo.</summary>
+            <param name="list">Lista que se debe comprobar si las filas tienen el mismo número de elementos.</param>
+            <returns name="bool">Si la lista tiene el mismo número de elementos en todas las filas.</returns>
+            <search>rectangular,isrectangular,same,sublist,row</search>
+        </member>
+        <member name="M:DSCore.List.IsUniformDepth(System.Collections.IList)">
+            <summary>Comprueba si los elementos de la lista tienen la misma profundidad.</summary>
+            <param name="list">Lista que se debe comprobar si los elementos tienen la misma profundidad.</param>
+            <returns name="bool">Si la profundidad de la lista es uniforme.</returns>
+            <search>depth,uniform,isuniformdepth,sublist,jagged</search>
+        </member>
+        <member name="M:DSCore.List.SetDifference(System.Collections.Generic.IList{System.Object},System.Collections.Generic.IList{System.Object})">
+            <summary>Devuelve una lista nueva con objetos de List1, pero excluye objetos de List2.</summary>
+            <param name="list1">Lista de objetos que se incluirán en la lista nueva.</param>
+            <param name="list2">Lista de objetos que se excluirán de la lista nueva.</param>
+            <returns name="list">La lista nueva que contiene objetos en List1, pero no en List2.</returns>
+            <search>difference,setdifference,set</search>
+        </member>
+        <member name="M:DSCore.List.SetIntersection(System.Collections.Generic.IList{System.Object},System.Collections.Generic.IList{System.Object})">
+            <summary>Devuelve una lista nueva con objetos que están en List1 y List2.</summary>
+            <param name="list1">Lista de objetos que se compararán con List2.</param>
+            <param name="list2">Lista de objetos que se compararán con List1.</param>
+            <returns name="list">La lista nueva que contiene objetos que están tanto en List1 como en List2.</returns>
+            <search>intersection,setintersection,set,overlap</search>
+        </member>
+        <member name="M:DSCore.List.SetUnion(System.Collections.Generic.IList{System.Object},System.Collections.Generic.IList{System.Object})">
+            <summary>Devuelve una lista nueva con objetos que están en List1 o List2.</summary>
+            <param name="list1">Lista de objetos que se incluirán.</param>
+            <param name="list2">Lista de objetos que se incluirán en List1.</param>
+            <returns name="list">La lista nueva que contiene objetos que están en List1 o en List2.</returns>
+            <search>union,setunion,set</search>
+        </member>
+        <member name="M:DSCore.List.IndexOf(System.Collections.IList,System.Object)">
+            <summary>Devuelve el índice del elemento de la lista especificada. La coincidencia entre la lista especificada y el elemento de destino debe ser exacta (es decir, de entero a entero, de doble a doble, de cadena a cadena, de objeto a objeto, etc.).</summary>
+            <param name="list">Lista en la que buscar el elemento.</param>
+            <param name="element">Elemento cuyo índice se debe devolver.</param>
+            <returns name="int">El índice del elemento en la lista. Se devolverá el índice no válido -1 si no se encuentra una coincidencia exacta.</returns>
+            <search>index,indexof</search>
+        </member>
+        <member name="M:DSCore.List.CountFalse(System.Collections.IList)">
+            <summary>Devuelve el número de valores booleanos false de la lista especificada.</summary>
+            <param name="list">Lista donde buscar valores booleanos false.</param>
+            <returns name="int">Número de valores booleanos false de la lista.</returns>
+            <search>false,count</search>
+        </member>
+        <member name="M:DSCore.List.CountTrue(System.Collections.IList)">
+            <summary>Devuelve el número de valores booleanos true de la lista especificada.</summary>
+            <param name="list">Lista donde buscar valores booleanos true.</param>
+            <returns name="int">Número de valores booleanos true de la lista.</returns>
+            <search>true,count</search>
+        </member>
+        <member name="M:DSCore.List.Insert(System.Collections.IList,System.Object,System.Int32)">
+            <summary>Inserta un elemento en una lista en el índice especificado.</summary>
+            <param name="list">Lista en la que se insertará el elemento.</param>
+            <param name="element">Elemento que se insertará.</param>
+            <param name="index">Especifica la ubicación en la lista del elemento que se insertará.</param>
+            <returns name="list">Lista con el elemento insertado.</returns>
+            <search>insert,add</search>
+        </member>
+        <member name="M:DSCore.List.Reorder(System.Collections.IList,System.Collections.IList)">
+            <summary>Reordena la lista de entradas según la lista especificada de índices.</summary>
+            <param name="list">Lista que se reordenará.</param>
+            <param name="indices">Índices utilizados para reordenar los elementos de la lista.</param>
+            <returns name="list">Lista reordenada.</returns>
+            <search>reorder,index,indices</search>
+        </member>
+        <member name="M:DSCore.List.SortIndexByValue(System.Collections.Generic.List{System.Double})">
+            <summary>Ordena una lista por los elementos y devuelve sus índices.</summary>
+            <param name="list">Lista de los elementos que se ordenarán.</param>
+            <returns name="int[]">Índices de los elementos de la lista ordenada.</returns>
+            <search>sort,index,value</search>
+        </member>
+        <member name="M:DSCore.List.NormalizeDepth(System.Collections.IList,System.Int32)">
+            <summary>Devuelve lista multidimensional según la clasificación especificada.</summary>
+            <param name="list">Lista cuya profundidad se debe normalizar según la clasificación.</param>
+            <param name="rank">Clasificación en la que se debe normalizar la lista. El valor por defecto es 1.</param>
+            <returns name="list">Lista con la clasificación normalizada.</returns>
+            <search>depth,normalize</search>
+        </member>
+        <member name="M:DSCore.List.Reverse(System.Collections.IList)">
+            <summary>Crea una lista con los elementos de la lista especificada, pero en el orden inverso.</summary>
+            <param name="list">Lista que se debe invertir.</param>
+            <returns name="list">Lista invertida.</returns>
+            <search>flip,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.__Create(System.Collections.IList)">
+            <summary>Crea una nueva lista que contiene los elementos especificados.</summary>
+            <param name="items">Los elementos que se deben almacenar en la nueva lista.</param>
+        </member>
+        <member name="M:DSCore.List.Sublists(System.Collections.IList,System.Collections.IList,System.Int32)">
+            <summary>Genera sublistas a partir de una lista mediante la sintaxis de rangos DesignScript.</summary>
+            <param name="list">La lista a partir de la cual se deben crear sublistas.</param>
+            <param name="ranges">Los rangos de índice de los elementos de la sublista.
+                Por ejemplo, \"{0..3,5,2}\"</param>
+            <param name="offset">El desfase que se debe aplicar a la sublista.
+                Por ejemplo, el rango \"0..3\" con un desfase de 2 produce
+                {0,1,2,3}{2,3,4,5}{4,5,6,7}...</param>
+            <returns name="lists">tipo: var[]..[]</returns>
+            <search>sublists,build sublists,subset,</search>
+        </member>
+        <member name="M:DSCore.List.Sort(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>Ordena la lista en el orden natural integrado.</summary>
+            <param name="list">Lista que se ordenará.</param>
+            <returns name="list">Lista ordenada.</returns>
+            <search>sort,order,sorted</search>
+        </member>
+        <member name="M:DSCore.List.MinimumItem(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>Devuelve el valor mínimo de una lista.</summary>
+            <param name="list">Lista de elementos comparables desde la que se obtendrá el valor mínimo.</param>
+            <returns name="item">Elemento mínimo de la lista.</returns>
+            <search>least,smallest,find min</search>
+        </member>
+        <member name="M:DSCore.List.MaximumItem(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>Devuelve el valor máximo de una lista.</summary>
+            <param name="list">Lista de elementos comparables desde la que se obtendrá el valor máximo.</param>
+            <returns name="item">Elemento máximo de la lista.</returns>
+            <search>greatest,largest,biggest,find max</search>
+        </member>
+        <member name="M:DSCore.List.FilterByBoolMask(System.Collections.IList,System.Collections.IList)">
+            <summary>Filtra una secuencia mediante la búsqueda de los índices correspondientes en una lista separada de
+                booleanos.</summary>
+            <param name="list">Lista que se debe filtrar.</param>
+            <param name="mask">Lista de booleanos que representan una máscara.</param>
+            <returns name="in">Elementos cuyo índice de máscara es True.</returns>
+            <returns name="out">Elementos cuyo índice de máscara es False.</returns>
+            <search>filter,in,out,mask,dispatch,bool filter,boolfilter,bool filter</search>
+        </member>
+        <member name="M:DSCore.List.Deconstruct(System.Collections.IList)">
+            <summary>Si se especifica una lista, genera el primer elemento de la lista y una nueva
+                lista con todos los elementos excepto el primero.</summary>
+            <param name="list">Lista que se debe dividir.</param>
+            <returns name="first">Primer elemento de la lista (tipo: var[]..[])</returns>
+            <returns name="rest">Resto de la lista (tipo: var[]..[])</returns>
+            <search>first,rest,list split,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.SortByKey(System.Collections.IList,System.Collections.IList)">
+            <summary>Clasificar lista según sus claves</summary>
+            <param name="list">lista que se debe ordenar</param>
+            <param name="keys">Lista de claves; las claves deben poder ordenarse (por ejemplo, números, cadenas).</param>
+            <returns name="sortedList">tipo: var[]..[]</returns>
+            <returns name="sortedKeys">tipo: var[]..[]</returns>
+            <search>sort;key</search>
+        </member>
+        <member name="M:DSCore.List.GroupByKey(System.Collections.IList,System.Collections.IList)">
+            <summary>Agrupa elementos en sublistas en función de sus valores clave</summary>
+            <param name="list">Lista de elementos que se deben agrupar como sublistas</param>
+            <param name="keys">Los valores clave (uno por cada elemento de la lista de entrada) utilizados para agrupar los elementos</param>
+            <returns name="groups">lista de sublistas, con elementos agrupados por valores clave</returns>
+            <returns name="uniqueKeys">valor clave correspondiente a cada grupo</returns>
+            <search>list;group;groupbykey;</search>
+        </member>
+        <member name="M:DSCore.List.AddItemToFront(System.Object,System.Collections.IList)">
+            <summary>Añade un elemento al principio de una lista.</summary>
+            <param name="item">El elemento que se debe añadir. El elemento puede ser un objeto o una lista.</param>
+            <param name="list">Lista a la que se debe añadir.</param>
+            <returns name="list">Lista con elementos añadidos.</returns>
+            <search>insert,add,item,front,start,begin</search>
+        </member>
+        <member name="M:DSCore.List.AddItemToEnd(System.Object,System.Collections.IList)">
+            <summary>Añade un elemento al final de una lista.</summary>
+            <param name="item">Elemento que se debe añadir. El elemento puede ser un objeto o una lista.</param>
+            <param name="list">Lista a la que se debe añadir.</param>
+            <returns name="list">Lista con elementos añadidos.</returns>
+            <search>insert,add,item,end</search>
+        </member>
+        <member name="M:DSCore.List.TakeItems(System.Collections.IList,System.Int32)">
+            <summary>Recupera una cantidad de elementos del inicio de la lista.</summary>
+            <param name="list">Lista de la que se deben recuperar elementos.</param>
+            <param name="amount">Cantidad de elementos que se debe recuperar. Si el valor es negativo, los elementos se recuperan del final de la lista.</param>
+            <returns name="list">Lista de elementos recuperados.</returns>
+            <search>get,sub,sublist,extract</search>
+        </member>
+        <member name="M:DSCore.List.DropItems(System.Collections.IList,System.Int32)">
+            <summary>Elimina un número de elementos del inicio de la lista. Si el número es un valor negativo,
+                los elementos se eliminan del final de la lista.</summary>
+            <param name="list">Lista de la que se deben eliminar elementos.</param>
+            <param name="amount">Cantidad de elementos que se debe eliminar. Si el valor es negativo, los elementos se eliminan del final de la lista.</param>
+            <returns name="list">Lista de elementos restantes.</returns>
+            <search>drop,remove,shorten</search>
+        </member>
+        <member name="M:DSCore.List.ShiftIndices(System.Collections.IList,System.Int32)">
+            <summary>Desplaza a la derecha los índices de la lista aplicando el valor indicado.</summary>
+            <param name="list">Lista en la que se debe realizar el desplazamiento.</param>
+            <param name="amount">Valor de desplazamiento que se debe aplicar a los índices. Si es negativo, los índices se desplazarán a la izquierda.</param>
+            <returns name="list">Lista con desplazamiento.</returns>
+            <search>shift,offset</search>
+        </member>
+        <member name="M:DSCore.List.GetItemAtIndex(System.Collections.IList,System.Int32)">
+            <summary>Devuelve un elemento de la lista especificada que se encuentra en el índice indicado.</summary>
+            <param name="list">Lista de la cual se debe recuperar un elemento.</param>
+            <param name="index">El índice del elemento que se debe recuperar.</param>
+            <returns name="item">Elemento de la lista en el índice especificado.</returns>
+            <search>get,item,index,fetch,at,getfrom,get from,extract</search>
+        </member>
+        <member name="M:DSCore.List.ReplaceItemAtIndex(System.Collections.IList,System.Int32,System.Object)">
+            <summary>Sustituye un elemento de la lista especificada que se encuentra en el índice indicado.</summary>
+            <param name="list">Lista en la que se debe sustituir un elemento.</param>
+            <param name="index">El índice del elemento que se debe sustituir.</param>
+            <param name="item">El elemento que se debe insertar.</param>
+            <returns name="list">Una nueva lista con el artículo sustituido.</returns>
+            <search>replace,switch</search>
+        </member>
+        <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">
+            <summary>Devuelve una sola sublista de la lista especificada en función del índice inicial, el índice final,
+                y la cantidad de paso indicados.</summary>
+            <param name="list">Lista de la que se debe realizar la extracción.</param>
+            <param name="start">Índice a partir del cual se iniciará la extracción.</param>
+            <param name="end">Índice en que finalizará la extracción.</param>
+            <param name="step">Valor de separación de los elementos de los índices en la lista original.</param>
+            <returns name="items">Elementos en el fragmento extraído de la lista especificada.</returns>
+            <search>list,sub,sublist,subrange,get sublist</search>
+        </member>
+        <member name="M:DSCore.List.RemoveItemAtIndex(System.Collections.IList,System.Int32[])">
+            <summary>Elimina un elemento de la lista especificada en el índice indicado.</summary>
+            <param name="list">Lista de la que se debe eliminar uno o varios elementos.</param>
+            <param name="indices">Índices de elementos que se deben eliminar.</param>
+            <returns name="list">Lista con elementos eliminados.</returns>
+            <search>index,indices,cull,remove,item</search>
+        </member>
+        <member name="M:DSCore.List.DropEveryNthItem(System.Collections.IList,System.Int32,System.Int32)">
+            <summary>Elimina elementos de la lista especificada en los índices que son
+                múltiplos del valor especificado y después del desfase indicado.</summary>
+            <param name="list">Lista de la que se deben eliminar elementos/</param>
+            <param name="n">Los índices que sean múltiplos de este argumento se eliminarán.</param>
+            <param name="offset">Cantidad de elementos que se deben ignorar a partir del inicio de la lista.</param>
+            <returns name="list">Lista con elementos eliminados.</returns>
+            <search>nth,remove,cull,every</search>
+        </member>
+        <member name="M:DSCore.List.TakeEveryNthItem(System.Collections.IList,System.Int32,System.Int32)">
+            <summary>Recupera elementos de la lista especificada en los índices que son
+                múltiplos del valor especificado y después del desfase indicado.</summary>
+            <param name="list">Lista de la que se deben recuperar elementos.</param>
+            <param name="n">Se recuperarán los índices que sean múltiplos de este número
+                (después del desfase).</param>
+            <param name="offset">Cantidad de elementos que se deben ignorar a partir del inicio de la lista.</param>
+            <returns name="items">Elementos de la lista.</returns>
+            <search>fetch,take,every,nth</search>
+        </member>
+        <member name="M:DSCore.List.IsEmpty(System.Collections.IList)">
+            <summary>Determina si la lista especificada está vacía.</summary>
+            <param name="list">Lista que se comprobará si está vacía.</param>
+            <returns name="bool">True si la lista está vacía; False si no lo está.</returns>
+            <search>test,is,empty,null,count</search>
+        </member>
+        <member name="M:DSCore.List.AllTrue(System.Collections.IList)">
+            <summary>Determina si todos los elementos de la lista especificada son booleanos y tienen un valor true.</summary>
+            <param name="list">Lista en la que se debe comprobar si todos los elementos son true.</param>
+            <returns name="bool">True si todos los elementos de la lista son verdaderos; False si uno o varios elementos no son verdaderos.</returns>
+            <search>test,all,true,istrue</search>
+        </member>
+        <member name="M:DSCore.List.AllFalse(System.Collections.IList)">
+            <summary>Determina si todos los elementos de la lista especificada son booleanos y tienen un valor false.</summary>
+            <param name="list">Lista en la que se debe comprobar si todos los elementos son false.</param>
+            <returns name="bool">True si todos los elementos de la lista son falsos; False si uno o varios elementos no son falsos.</returns>
+            <search>test,all,false,isfalse</search>
+        </member>
+        <member name="M:DSCore.List.AnyTrue(System.Collections.IList)">
+            <summary>Determina si un elemento de la lista especificada es un elemento booleano con el valor "true" (verdadero).</summary>
+            <param name="list">Lista que se comprobará para ver si hay algún elemento que sea "true" (verdadero).</param>
+            <returns name="bool">Determina si hay algún elemento que sea "true" (verdadero).</returns>
+            <search>test,any,true,istrue</search>
+        </member>
+        <member name="M:DSCore.List.AnyFalse(System.Collections.IList)">
+            <summary>Determina si un elemento de la lista especificada es un elemento booleano con el valor "false" (falso).</summary>
+            <param name="list">Lista que se comprobará para ver si hay algún elemento que sea "false" (falso).</param>
+            <returns name="bool">Determina si hay algún elemento que sea "false" (falso).</returns>
+            <search>test,any,false,isfalse</search>
+        </member>
+        <member name="M:DSCore.List.Count(System.Collections.IList)">
+            <summary>Devuelve el número de elementos almacenados en la lista especificada.</summary>
+            <param name="list">Lista de la que se debe obtener el recuento de elementos.</param>
+            <returns name="int">Longitud de la lista.</returns>
+            <search>listlength,list length,count,size,sizeof</search>
+        </member>
+        <member name="M:DSCore.List.Join(System.Collections.IList[])">
+            <summary>Concatena todas las listas especificadas y crea una sola lista.</summary>
+            <param name="lists">Listas que se deben combinar para formar una sola lista.</param>
+            <returns name="list">Lista combinada.</returns>
+            <search>join lists,merge,concatenate</search>
+        </member>
+        <member name="M:DSCore.List.FirstItem(System.Collections.IList)">
+            <summary>Devuelve el primer elemento de una lista.</summary>
+            <param name="list">Lista de la que se debe obtener el primer elemento.</param>
+            <returns name="item">Primer elemento de la lista.</returns>
+            <search>get,fetch,first,item,start</search>
+        </member>
+        <member name="M:DSCore.List.RestOfItems(System.Collections.IList)">
+            <summary>Elimina el primer elemento de la lista especificada.</summary>
+            <param name="list">Lista cuya parte restante se debe recuperar.</param>
+            <returns name="rest">Resto de la lista.</returns>
+            <search>get,fetch,rest,end,rest of list</search>
+        </member>
+        <member name="M:DSCore.List.Chop(System.Collections.IList,System.Collections.Generic.List{System.Int32})">
+            <summary>Divide una lista en un conjunto de sublistas conjuntas con la longitud especificada. La división empieza al principio de la lista.</summary>
+            <param name="list">Lista que se debe dividir en sublistas</param>
+            <param name="lengths">Longitudes de las sublistas consecutivas que se deben crear a partir de la lista de entrada.</param>
+            <returns name="lists">Sublistas creadas a partir de la lista.</returns>
+            <search>sublists,build sublists,slices,partitions,cut,listcontains,chop</search>
+        </member>
+        <member name="M:DSCore.List.DiagonalRight(System.Collections.IList,System.Int32)">
+            <summary>Enumera los elementos a lo largo de cada diagonal de la matriz, desde la parte superior izquierda hasta la parte inferior derecha.</summary>
+            <param name="list">Una lista plana.</param>
+            <param name="subLength">Longitud de cada nueva sublista.</param>
+            <returns name="diagonals">Listas de elementos a lo largo de las diagonales de la matriz.</returns>
+            <search>diagonal,right,matrix,get diagonals,diagonal sublists</search>
+        </member>
+        <member name="M:DSCore.List.DiagonalLeft(System.Collections.IList,System.Int32)">
+            <summary>Enumera los elementos a lo largo de cada diagonal de la matriz, desde la parte superior izquierda hasta la parte inferior derecha.</summary>
+            <param name="list">Una lista plana.</param>
+            <param name="rowLength">Longitud de cada nueva sublista.</param>
+            <returns name="diagonals">Listas de elementos a lo largo de las diagonales de la matriz.</returns>
+            <search>diagonal,left,matrix,get diagonals,diagonal sublists</search>
+        </member>
+        <member name="M:DSCore.List.Transpose(System.Collections.IList)">
+            <summary>Intercambia filas y columnas en una lista de listas. 
+                Si hay varias filas que son más cortas que otras, se
+                insertan valores nulos como marcadores de posición en la
+                matriz resultante, para que sea siempre rectangular.</summary>
+            <param name="lists">Lista de listas a las que aplicar la transposición.</param>
+            <returns name="lists">Lista de listas a las que se ha aplicado la transposición.</returns>
+            <search>transpose,flip matrix,matrix,swap,rows,columns</search>
+        </member>
+        <member name="M:DSCore.List.Clean(System.Collections.IList,System.Boolean)">
+            <summary>Limpia los datos de los valores nulos y las listas vacías para una lista determinada de una dimensión arbitraria.</summary>
+            <param name="list">Lista que contiene los valores nulos y las sublistas vacías que se van a limpiar</param>
+            <param name="preserveIndices">Proporcione una opción para conservar los índices de los datos
+            <returns name="list">Lista de listas a las que se ha aplicado la transposición</returns>
+            de forma que los valores nulos que no estén en posición posterior no se puedan filtrar.</param>
+            <returns>Una lista sin valores nulos ni listas vacías.</returns>
+        </member>
+        <member name="M:DSCore.List.OfRepeatedItem(System.Object,System.Int32)">
+            <summary>Crea una lista que contiene el elemento especificado el número de veces indicado.</summary>
+            <param name="item">El elemento que se debe repetir.</param>
+            <param name="amount">El número de veces que se debe repetir.</param>
+            <returns name="list">Lista de elementos repetidos.</returns>
+            <search>repeat,repeated,duplicate,list of item,fill list,copies,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.Cycle(System.Collections.IList,System.Int32)">
+            <summary>Crea una lista mediante la concatenación de copias de la lista especificada.</summary>
+            <param name="list">Lista que se debe repetir.</param>
+            <param name="amount">Número de veces que se debe repetir.</param>
+            <returns name="list">Lista de listas repetidas de tipo: var[]..[]</returns>
+            <search>repeat,repeated,duplicate,repeated list,concat list</search>
+        </member>
+        <member name="M:DSCore.List.LastItem(System.Collections.IList)">
+            <summary>Recupera el último elemento de una lista.</summary>
+            <param name="list">Lista de la que se obtendrá el último elemento.</param>
+            <returns name="item">Último elemento de la lista.</returns>
+            <search>get,fetch,last,item,end of list</search>
+        </member>
+        <member name="M:DSCore.List.Shuffle(System.Collections.IList)">
+            <summary>Reorganiza una lista colocando sus elementos en orden aleatorio.</summary>
+            <param name="list">Lista que se debe reorganizar.</param>
+            <returns name="list">Lista reorganizada en orden aleatorio.</returns>
+            <search>random,randomize,shuffle,jitter,randomness</search>
+        </member>
+        <member name="M:DSCore.List.Shuffle(System.Collections.IList,System.Int32)">
+            <summary>Reorganiza una lista, ordenando de forma aleatoria sus elementos en función de un valor de semilla inicial.</summary>
+            <param name="list">Lista que se debe reorganizar.</param>
+            <param name="seed">Valor de semilla del generador de números aleatorios.</param>
+            <returns name="list">Lista reorganizada en orden aleatorio.</returns>
+            <search>random,randomize,shuffle,jitter,randomness,seed</search>
+        </member>
+        <member name="M:DSCore.List.Permutations(System.Collections.IList,System.Nullable{System.Int32})">
+            <summary>Genera todas las permutaciones de la longitud especificada de la lista indicada.</summary>
+            <param name="list">Lista que se debe permutar.</param>
+            <param name="length">Longitud de cada permutación.</param>
+            <returns name="permutations">Permutaciones de la lista de la longitud especificada (tipo: var[]..[])</returns>
+            <search>permutation,permutations</search>
+        </member>
+        <member name="M:DSCore.List.Combinations(System.Collections.IList,System.Int32,System.Boolean)">
+            <summary>Genera todas las combinaciones de la longitud especificada de la lista indicada.</summary>
+            <param name="list">Lista a partir de la que se generarán combinaciones.</param>
+            <param name="length">Longitud de cada combinación.</param>
+            <param name="replace">Si se eliminan o no los elementos tras seleccionarse para la combinación.
+                Predeterminado: False.</param>
+            <returns name="lists">Combinaciones de la lista de la longitud especificada.</returns>
+            <search>combo</search>
+        </member>
+        <member name="M:DSCore.List.FirstIndexOf(System.Collections.IList,System.Object)">
+            <summary>Al especificar un elemento, devuelve el índice de base cero de su primera
+                aparición en la lista. Si el elemento no se encuentra en la lista, se devuelve -1.</summary>
+            <param name="list">Lista en la que se debe realizar la búsqueda. Si este argumento tiene un valor nulo, se devuelve -1.</param>
+            <param name="item">Elemento que se debe buscar.</param>
+            <returns>Índice de base cero del elemento en la lista, o -1 si no se encuentra.</returns>
+        </member>
+        <member name="M:DSCore.List.AllIndicesOf(System.Collections.IList,System.Object)">
+            <summary>Al especificar un elemento, devuelve los índices de base cero de todas sus
+                apariciones en la lista. Si el elemento no se encuentra, se devuelve una lista vacía.</summary>
+            <param name="list">Lista en la que se debe realizar la búsqueda. Si este argumento tiene un valor nulo, se devuelve una lista vacía.</param>
+            <param name="item">Elemento que se debe buscar.</param>
+            <returns name="indices">Una lista de índices de base cero de todas las apariciones del 
+            elemento si las hay, o bien una lista vacía si el elemento no está presente en la lista.</returns>
+        </member>
+        <member name="M:DSCore.List.Flatten(System.Collections.IList,System.Int32)">
+            <summary>Aplana una lista anidada de listas aplicando el valor especificado.</summary>
+            <param name="list">Lista que se debe aplanar.</param>
+            <param name="amount">Capas de anidamiento de lista que se van a eliminar (-1 eliminará todos los anidamientos de lista).</param>
+            <returns name="list">Lista aplanada por cantidad.</returns>
+            <search>flatten,completely</search>
+        </member>
+        <member name="M:DSCore.List.IndexInList(System.Collections.IList,System.Object)">
+            <summary>Alternativa a utilizar IList.Contains que utiliza Enumerable.SequenceEqual para comprobar si
+                el elemento está en la lista si el elemento es una matriz. Devuelve el índice si se ha encontrado, 
+                -1 si no se ha encontrado.</summary>
+            <param name="list">Lista que comprobar si contiene el elemento.</param>
+            <param name="item">Elemento que se debe encontrar.</param>
+            <returns name="index">Índice del elemento de la lista.</returns>
+        </member>
+        <member name="M:DSCore.List.GetDepth(System.Object)">
+            <summary>Obtiene la profundidad máxima de una lista especificada.</summary>
+            <param name="list">Lista de entradas de la que obtener la profundidad.</param>
+            <returns name="depth">Profundidad de la lista especificada.</returns>
+        </member>
+        <member name="M:DSCore.List.CountBool(System.Collections.IList,System.Boolean)">
+            <summary>Devuelve el número de los valores booleanos indicados de la lista especificada.</summary>
+            <param name="list">Lista en la que buscar los valores booleanos.</param>
+            <param name="value">Valor booleano que se debe encontrar</param>
+            <returns name="int">Número del valor booleano especificado de la lista.</returns>
+        </member>
+        <member name="M:DSCore.List.IncreaseDepth(System.Collections.IList,System.Int32)">
+            <summary>Incrementa la profundidad de una lista especificada según una cantidad concreta. La profundidad se incrementa
+                creando una lista nueva con la lista especificada.</summary>
+            <param name="list">Lista cuya profundidad se debe incrementar.</param>
+            <param name="amt">Cantidad por la que se debe incrementar la profundidad.</param>
+            <returns name="list">Lista nueva cuya profundidad se incrementa por cantidad.</returns>
+        </member>
+        <member name="M:DSCore.List.DoubleConverter(System.Object)">
+            <summary>Convierte un entero en doble o bien devuelve el objeto de entrada.</summary>
+        </member>
+        <member name="T:DSCore.ObjectComparer">
+            <summary>Implementa la función Compare para dos objetos mediante la regla siguiente.
+                1. Se asume que los números son los más pequeños, seguidos de booleanos, cadenas y punteros.
+                2. Si ambos objetos son IComparable y del mismo tipo, se utiliza el mecanismo de comparación 
+                nativo.
+                3. Si ambos objetos son de tipo valor, pero uno de ellos es booleano, este es mayor.
+                4. De lo contrario, se convierten todos a dobles y se comparan.
+                5. Si solo uno es de tipo valor, el objeto de tipo valor es más pequeño.
+                6. Si solo uno es una cadena, la cadena es más pequeña que el otro objeto.
+                7. Si no se sabe cómo comparar, se comparan según código hash.</summary>
+        </member>
+        <member name="T:DSCore.Math">
+            <summary>Métodos para realizar operaciones matemáticas.</summary>
+        </member>
+        <member name="M:DSCore.Math.Random(System.Nullable{System.Int32})">
+            <summary>Genera un doble valor aleatorio en el rango de [0, 1).</summary>
+            <param name="seed">Valor de semilla del generador de números aleatorios.</param>
+            <returns name="number">Un número aleatorio entre 0 y 1.</returns>
+            <search>random,seed</search>
+        </member>
+        <member name="M:DSCore.Math.Random(System.Double,System.Double)">
+            <summary>Genera un número aleatorio en el rango [lower_number, higher_number).</summary>
+            <param name="value1">Extremo inferior del rango del número aleatorio.</param>
+            <param name="value2">Extremo superior del rango del número aleatorio.</param>
+            <returns name="number">Número aleatorio en el rango (número_inferior, número_superior).</returns>
+            <search>random,numberrange</search>
+        </member>
+        <member name="M:DSCore.Math.Random(System.Double,System.Double,System.Int32)">
+            <summary>Genere un número aleatorio en el rango (número_inferior, número_superior) según un valor de semilla inicial.</summary>
+            <param name="value1">Extremo inferior del rango del número aleatorio.</param>
+            <param name="value2">Extremo superior del rango del número aleatorio.</param>
+            <param name="seed">Valor de semilla del generador de números aleatorios.</param>
+            <returns name="number">Número aleatorio en el rango (número_inferior, número_superior).</returns>
+            <search>random,numberrange,seed</search>
+        </member>
+        <member name="M:DSCore.Math.RandomList(System.Int32)">
+            <summary>Genera una lista que contiene la cantidad especificada de dobles aleatorios
+                en el rango de [0, 1).</summary>
+            <param name="amount">Cantidad de números aleatorios que contendrá la lista resultante.</param>
+            <returns name="number">Lista de números aleatorios entre 0 y 1.</returns>
+            <search>random,listcontains</search>
+        </member>
+        <member name="M:DSCore.Math.RandomList(System.Int32,System.Double,System.Double,System.Int32)">
+            <summary>Genera una lista que contiene la cantidad especificada de valores dobles aleatorios.
+                 en el rango definido de (número_inferior, número_superior) según un valor de semilla inicial.</summary>
+            <param name="amount">Cantidad de números aleatorios que contendrá la lista resultante.</param>
+            <param name="value1">Extremo inferior del rango del número aleatorio.</param>
+            <param name="value2">Extremo superior del rango del número aleatorio.</param>
+            <param name="seed">Valor de semilla del generador de números aleatorios.</param>
+            <returns name="number">Lista de números aleatorios en el rango (número_inferior, número_superior).</returns>
+            <search>random,listcontains,seed</search>
+        </member>
+        <member name="P:DSCore.Math.PiTimes2">
+            <summary>Constante pi multiplicada por 2.</summary>
+            <returns name="double">Pi por 2.</returns>
+            <search>2pi,2*pi,twopi,two*pi</search>
+        </member>
+        <member name="M:DSCore.Math.Average(System.Collections.Generic.IList{System.Double})">
+            <summary>Calcula la media de una lista de números.</summary>
+            <param name="numbers">Lista de números de los que se debe calcular la media.</param>
+            <returns name="double">Media de la lista de números.</returns>
+            <search>avg,mean</search>
+        </member>
+        <member name="M:DSCore.Math.Map(System.Double,System.Double,System.Double)">
+            <summary>Asigna el valor de entrada a un número entre 0 y 1 según el rango de entrada.</summary>
+            <param name="rangeMin">Valor mínimo del rango de entrada.</param>
+            <param name="rangeMax">Valor máximo del rango de entrada.</param>
+            <param name="inputValue">Número que se debe asignar.</param>
+            <returns name="double">Valor asignado.</returns>
+            <search>map,range,minimum,maximum,normalize,scale,remap</search>
+        </member>
+        <member name="M:DSCore.Math.MapTo(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>Asigna el valor de entrada a un número entre targetRangeMin y targetRangeMax.</summary>
+            <param name="rangeMin">Valor mínimo del rango de entrada.</param>
+            <param name="rangeMax">Valor máximo del rango de entrada.</param>
+            <param name="inputValue">Número que se debe asignar.</param>
+            <param name="targetRangeMin">Valor mínimo del rango nuevo.</param>
+            <param name="targetRangeMax">Valor máximo del rango nuevo.</param>
+            <returns name="double">Valor asignado.</returns>
+            <search>map,range,mapto,minimum,maximum,normalize,scale,remap</search>
+        </member>
+        <member name="M:DSCore.Math.RemapRange(System.Collections.Generic.IList{System.Double},System.Double,System.Double)">
+            <summary>Ajusta el rango de una lista de números conservando la
+                relación de distribución.</summary>
+            <param name="numbers">Lista de números cuyos rangos se deben ajustar.</param>
+            <param name="newMin">Nuevo mínimo del rango.</param>
+            <param name="newMax">Nuevo máximo del rango.</param>
+            <returns name="list">Lista reasignada al nuevo rango.</returns>
+            <search>remap range</search>
+        </member>
+        <member name="F:DSCore.Math.kRadiansToDegrees">
+            <summary>mueve las funciones y los métodos de Math.dll a este archivo DSCoreNode.dll</summary>
+        </member>
+        <member name="P:DSCore.Math.PI">
+            <summary>La constante matemática pi, 3,14159...</summary>
+            <returns name="double">La constante pi.</returns>
+            <search>3.141592653589793</search>
+        </member>
+        <member name="P:DSCore.Math.E">
+            <summary>La constante matemática e, 2,71828...</summary>
+            <returns name="double">La constante e.</returns>
+            <search>exp,2.718281828459045</search>
+        </member>
+        <member name="P:DSCore.Math.GoldenRatio">
+            <summary>El número áureo (1 + sqrt(5))/2 = 1.61803...</summary>
+            <returns name="double">El número áureo.</returns>
+            <search>golden,ratio,divine,phi,tau,1.61803398875</search>
+        </member>
+        <member name="M:DSCore.Math.RadiansToDegrees(System.Double)">
+            <summary>Convierte un ángulo expresado en radianes en un ángulo expresado en grados.</summary>
+            <param name="radians">Ángulo en radianes.</param>
+            <returns name="degrees">Ángulo en grados.</returns>
+            <search>radians,degrees,angle</search>
+        </member>
+        <member name="M:DSCore.Math.DegreesToRadians(System.Double)">
+            <summary>Convierte un ángulo expresado en grados en un ángulo expresado en radianes.</summary>
+            <param name="degrees">Ángulo en grados.</param>
+            <returns name="radians">Ángulo en radianes.</returns>
+            <search>degrees,radians,angle</search>
+        </member>
+        <member name="M:DSCore.Math.Abs(System.Double)">
+            <summary>Calcula el valor absoluto de un número.</summary>
+            <param name="number">Número desde el que obtener un valor absoluto.</param>
+            <returns name="number">Valor absoluto del número.</returns>
+            <search>absolute value,magnitude</search>
+        </member>
+        <member name="M:DSCore.Math.Equals(System.Double,System.Double,System.Double)">
+            <summary>Este método SOLO lo utiliza el nodo NodeModel de Es igual a (con tolerancia).</summary>
+            <param name="lhs"/>
+            <param name="rhs"/>
+            <param name="tol"/>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Math.Abs(System.Int64)">
+            <summary>Calcula el valor absoluto de un número.</summary>
+            <param name="integer">Un número.</param>
+            <returns name="absoluteValue">Valor absoluto del número.</returns>
+            <search>absolute value,magnitude</search>
+        </member>
+        <member name="M:DSCore.Math.Acos(System.Double)">
+            <summary>Calcula el coseno inverso, el ángulo cuyo coseno es el valor proporcionado.</summary>
+            <param name="ratio">El coseno del ángulo, un número en el rango [-1, 1].</param>
+            <returns name="double">El ángulo cuyo coseno es el valor introducido.</returns>
+            <search>acosine,arccosine</search>
+        </member>
+        <member name="M:DSCore.Math.Asin(System.Double)">
+            <summary>Calcula el seno inverso, el ángulo cuyo seno es el valor proporcionado.</summary>
+            <param name="ratio">El seno del ángulo, un número en el rango [-1, 1].</param>
+            <returns name="double">El ángulo cuyo seno es el valor introducido.</returns>
+            <search>asine,arcsin</search>
+        </member>
+        <member name="M:DSCore.Math.Atan(System.Double)">
+            <summary>Calcula la tangente inversa, el ángulo cuya tangente es el valor proporcionado.</summary>
+            <param name="ratio">La tangente del ángulo.</param>
+            <returns name="double">El ángulo cuya tangente es el valor introducido.</returns>
+            <search>atangent,arctangent</search>
+        </member>
+        <member name="M:DSCore.Math.Atan2(System.Double,System.Double)">
+            <summary>Calcula la tangente inversa del cociente de dos números. Devuelve el
+                ángulo cuya tangente es el valor numerador/denominador.</summary>
+            <param name="numerator">El numerador de la tangente del ángulo.</param>
+            <param name="denominator">El denominador de la tangente del ángulo.</param>
+            <returns name="double">El ángulo cuya tangente es el numerador/denominador.</returns>
+            <search>atangent,arctangent</search>
+        </member>
+        <member name="M:DSCore.Math.Ceiling(System.Double)">
+            <summary>Devuelve el primer entero mayor que el número.</summary>
+            <param name="number">El número que se debe redondear.</param>
+            <returns name="int">Primer entero mayor que el número.</returns>
+            <search>ceiling,round</search>
+        </member>
+        <member name="M:DSCore.Math.Cos(System.Double)">
+            <summary>Calcula el coseno de un ángulo.</summary>
+            <param name="angle">Ángulo en grados del cual se debe obtener el coseno.</param>
+            <returns name="double">Coseno del ángulo.</returns>
+            <search>cosine</search>
+        </member>
+        <member name="M:DSCore.Math.Cosh(System.Double)">
+            <summary>Calcula el coseno hiperbólico de un ángulo (en radianes).</summary>
+            <param name="angle">Ángulo en radianes.</param>
+            <returns name="double">Coseno hiperbólico del ángulo.</returns>
+            <search>hyperbolic cosine</search>
+        </member>
+        <member name="M:DSCore.Math.DivRem(System.Int64,System.Int64)">
+            <summary>Calcula el resto del dividendo/divisor.</summary>
+            <param name="dividend">El número que se debe dividir.</param>
+            <param name="divisor">El número por el que se debe dividir.</param>
+            <returns name="int">El resto de la división.</returns>
+            <search>remainder</search>
+        </member>
+        <member name="M:DSCore.Math.EvaluateFormula(System.String,System.String[],System.Object[])">
+            <summary>Evalúa una fórmula de NCalc con las asignaciones de parámetros especificadas.</summary>
+            <param name="formulaString">Fórmula de NCalc</param>
+            <param name="parameters">Nombres de variables</param>
+            <param name="arguments">Enlaces de variables</param>
+            <returns name="result">type: var[]..[] (resultado del cálculo de la fórmula)</returns>
+        </member>
+        <member name="M:DSCore.Math.Exp(System.Double)">
+            <summary>Devuelve la función exponencial del número, la constante e elevada al número especificado.</summary>
+            <param name="number">Número.</param>
+            <returns name="double">La función exponencial del número.</returns>
+            <search>exponential</search>
+        </member>
+        <member name="M:DSCore.Math.Floor(System.Double)">
+            <summary>Devuelve el primer entero menor que el número.</summary>
+            <param name="number">El número que se debe redondear a la baja.</param>
+            <returns name="int">Primer entero menor que el número.</returns>
+            <search>round</search>
+        </member>
+        <member name="M:DSCore.Math.Log(System.Double)">
+            <summary>Calcula el logaritmo natural de un número en el rango (0, ∞).</summary>
+            <param name="number">Número mayor que 0.</param>
+            <returns name="double">Logaritmo natural del número.</returns>
+            <search>natural,logarithm,ln</search>
+        </member>
+        <member name="M:DSCore.Math.Log(System.Double,System.Double)">
+            <summary>Calcula el logaritmo de un número con la base especificada.</summary>
+            <param name="number">Número mayor que 0.</param>
+            <param name="logBase">Base del logaritmo en el rango [0,1),(1, ∞).</param>
+            <returns name="double">Logaritmo del número.</returns>
+            <search>logarithm,ld,lg</search>
+        </member>
+        <member name="M:DSCore.Math.Log10(System.Double)">
+            <summary>Calcula el logaritmo en base 10 de un número.</summary>
+            <param name="number">Número mayor que 0.</param>
+            <returns name="double">Logaritmo del número.</returns>
+            <search>logarithm</search>
+        </member>
+        <member name="M:DSCore.Math.Max(System.Double,System.Double)">
+            <summary>Devuelve el mayor de dos números.</summary>
+            <param name="value1">Número que se debe comparar.</param>
+            <param name="value2">Número que se debe comparar.</param>
+            <returns name="max">El mayor de los dos números.</returns>
+            <search>maximum,greater,larger</search>
+        </member>
+        <member name="M:DSCore.Math.Max(System.Int64,System.Int64)">
+            <summary>Devuelve el mayor de dos números.</summary>
+            <param name="int1">Número que se debe comparar.</param>
+            <param name="int2">Número que se debe comparar.</param>
+            <returns name="max">El mayor de los dos números.</returns>
+            <search>maximum,greater,larger</search>
+        </member>
+        <member name="M:DSCore.Math.Min(System.Double,System.Double)">
+            <summary>Devuelve el menor de dos números.</summary>
+            <param name="value1">Número que se debe comparar.</param>
+            <param name="value2">Número que se debe comparar.</param>
+            <returns name="min">El menor de dos números.</returns>
+            <search>minimum,lesser,smaller</search>
+        </member>
+        <member name="M:DSCore.Math.Min(System.Int64,System.Int64)">
+            <summary>Devuelve el menor de dos números.</summary>
+            <param name="int1">Número que se debe comparar.</param>
+            <param name="int2">Número que se debe comparar.</param>
+            <returns name="min">El menor de dos números.</returns>
+            <search>minimum,lesser,smaller</search>
+        </member>
+        <member name="M:DSCore.Math.Pow(System.Double,System.Double)">
+            <summary>Eleva un número a la potencia especificada.</summary>
+            <param name="number">Número que se debe elevar a una potencia.</param>
+            <param name="power">Potencia a la que se debe elevar el número.</param>
+            <returns name="result">Número elevado a la potencia especificada.</returns>
+            <search>^,power,raise,exponent</search>
+        </member>
+        <member name="M:DSCore.Math.Rand">
+            <summary>Genera un número aleatorio en el rango [0, 1).</summary>
+            <returns name="number">Número aleatorio en el rango [0, 1).</returns>
+            <search>random,numberrange</search>
+        </member>
+        <member name="M:DSCore.Math.Round(System.Double)">
+            <summary>Redondea un número al valor integral más próximo.
+            Tenga en cuenta que este método devuelve un tipo de datos flotante de precisión doble en lugar de un tipo integral.</summary>
+            <param name="number">Número que se debe redondear.</param>
+            <returns name="number">Valor integral más cercano al número.</returns>
+        </member>
+        <member name="M:DSCore.Math.Round(System.Double,System.Int32)">
+            <summary>Redondea un número a un determinado número de dígitos fraccionarios.</summary>
+            <param name="number">Número que se debe redondear.</param>
+            <param name="digits">Número de dígitos fraccionarios en el valor de retorno.</param>
+            <returns name="number">El número más próximo al valor que contiene un número de dígitos fraccionarios igual a dígitos.</returns>
+        </member>
+        <member name="M:DSCore.Math.Sign(System.Double)">
+            <summary>Devuelve el signo de un número: -1, 0 o 1.</summary>
+            <param name="number">Número desde el que obtener el signo.</param>
+            <returns name="int">El signo del número: -1, 0 o 1.</returns>
+        </member>
+        <member name="M:DSCore.Math.Sign(System.Int64)">
+            <summary>Devuelve el signo de un número: -1, 0 o 1.</summary>
+            <param name="int">Entero desde el que obtener el signo.</param>
+            <returns name="int">El signo del número: -1, 0 o 1.</returns>
+        </member>
+        <member name="M:DSCore.Math.Sin(System.Double)">
+            <summary>Calcula el seno de un ángulo.</summary>
+            <param name="angle">Ángulo en grados del cual se debe obtener el seno.</param>
+            <returns name="double">Seno del ángulo.</returns>
+            <search>sine</search>
+        </member>
+        <member name="M:DSCore.Math.Sinh(System.Double)">
+            <summary>Calcula el seno hiperbólico de un ángulo (en radianes).</summary>
+            <param name="angle">Ángulo en radianes.</param>
+            <returns name="double">Seno hiperbólico del ángulo.</returns>
+            <search>hyperbolic</search>
+        </member>
+        <member name="M:DSCore.Math.Sqrt(System.Double)">
+            <summary>Calcula la raíz cuadrada positiva de un número en el rango (0, ∞).</summary>
+            <param name="number">Un número en el rango [0, ∞).</param>
+            <returns name="double">Raíz cuadrada positiva de un número.</returns>
+            <search>square,root,radical</search>
+        </member>
+        <member name="M:DSCore.Math.Tan(System.Double)">
+            <summary>Calcula la tangente de un ángulo.</summary>
+            <param name="angle">Ángulo en radianes.</param>
+            <returns name="double">Tangente del ángulo.</returns>
+            <search>tangent</search>
+        </member>
+        <member name="M:DSCore.Math.Tanh(System.Double)">
+            <summary>Calcula la tangente hiperbólica de un ángulo (en radianes).</summary>
+            <param name="angle">Ángulo en radianes.</param>
+            <returns name="double">Tangente hiperbólica del ángulo.</returns>
+            <search>hyperbolic,tanh</search>
+        </member>
+        <member name="M:DSCore.Math.Sum(System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>Calcula la suma de una serie de números.</summary>
+            <param name="values">Números que se añadirán a la suma.</param>
+            <returns name="double">La suma de los valores.</returns>
+            <search>mass addition,massadd</search>
+        </member>
+        <member name="M:DSCore.Math.Factorial(System.Int64)">
+            <summary>Calcula el valor factorial de un entero positivo.</summary>
+            <param name="number">Un entero positivo.</param>
+            <returns name="number">El valor factorial del entero.</returns>
+            <search>!</search>
+        </member>
+        <member name="M:DSCore.Math.Xor(System.Boolean,System.Boolean)">
+            <summary>XOR booleano: devuelve True únicamente si solo uno de los valores introducidos es true.</summary>
+            <param name="bool">Un valor booleano.</param>
+            <param name="otherBool">Otro valor booleano.</param>
+            <returns name="bool">Resultado booleano.</returns>
+            <search>xor,exclusive,or</search>
+        </member>
+        <member name="M:DSCore.Math.DoCheckedCast(System.Double)">
+            <summary>Realiza una proyección demasiado larga en un contexto verificado. Si la operación genera un desbordamiento,
+             se produce una advertencia y se devuelve el resultado desbordado.</summary>
+            <param name="value">Operación que se va a realizar</param>
+            <returns>El resultado de la operación</returns>
+        </member>
+        <member name="T:DSCore.Object">
+            <summary>Funciones genéricas que operan en todos los datos.</summary>
+        </member>
+        <member name="M:DSCore.Object.IsNull(System.Object)">
+            <summary>Determina si el objeto especificado es nulo.</summary>
+            <param name="object">Objeto que se debe probar.</param>
+            <returns name="bool">Si el objeto es o no nulo.</returns>
+            <search>is null</search>
+        </member>
+        <member name="M:DSCore.Object.Identity(System.Object)">
+            <summary>Devuelve lo que se le pasa, sin hacer nada.</summary>
+            <param name="object">Un objeto.</param>
+            <returns name="object">El mismo objeto</returns>
+        </member>
+        <member name="M:DSCore.Object.Type(System.Object)">
+            <summary>Devuelve el tipo de objeto representado como cadena.</summary>
+            <param name="object">Objeto del que se consultará el tipo.</param>
+            <returns>Tipo de objeto.</returns>
+        </member>
+        <member name="T:DSCore.Properties.Resources">
+            <summary>Una clase de recurso con tipado fuerte que permite buscar cadenas localizadas, etc.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ResourceManager">
+            <summary>Devuelve el ejemplar de ResourceManager en caché utilizado por esta clase.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Culture">
+            <summary>Elimina la propiedad CurrentUICulture del hilo actual para todas
+              las búsquedas de recurso que utilizan esta clase de
+              recurso con tipado fuerte.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.BitmapOverflowError">
+            <summary>Busca una cadena localizada similar a Los datos de color proporcionados son demasiado grandes para que quepan en los límites de la imagen.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
+            <summary>Busca una cadena localizada similar a La entrada debe ser un único valor o una lista no anidada.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataUnexpectedInputExceptionMessage">
+            <summary>Busca una cadena localizada similar a Este nodo esperaba una entrada {0}, pero ha recibido una entrada {1}. Proporcione la entrada esperada o elija un nuevo tipo en el menú desplegable del nodo.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataUnsupportedCombinationOfDataTypesExceptionMessage">
+            <summary>Busca una cadena localizada similar a Este nodo no admite la combinación de tipos de datos de la lista de entrada actual {0}. Asegúrese de que la lista de entrada contiene elementos del mismo tipo de datos o una mezcla de tipos con un tipo principal común.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataUnsupportedDataTypeExceptionMessage">
+            <summary>Busca una cadena localizada similar a Este nodo no admite el tipo de datos de entrada actual ({0}). Consulte los tipos de datos admitidos en el menú desplegable.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekFriday">
+            <summary>Busca una cadena localizada similar a Viernes.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekMonday">
+            <summary>Busca una cadena localizada similar a Lunes.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekSaturday">
+            <summary>Busca una cadena localizada similar a Sábado.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekSunday">
+            <summary>Busca una cadena localizada similar a Domingo.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekThursday">
+            <summary>Busca una cadena localizada similar a Jueves.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekTuesday">
+            <summary>Busca una cadena localizada similar a Martes.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekWednesday">
+            <summary>Busca una cadena localizada similar a Miércoles.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Deserialize_Bad_Format">
+            <summary>Busca una cadena localizada similar a El contenido json para el tipo {0} no presenta un formato correcto.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Deserialize_Unsupported_Cache">
+            <summary>Busca una cadena localizada similar a No se pueden cargar los datos almacenados.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Serialize_Depth_Unsupported">
+            <summary>Busca una cadena localizada similar a La profundidad {0} supera el valor máximo {1} en la ruta "{2}".</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Serialize_DesignScript_Unsupported">
+            <summary>Busca una cadena localizada similar a No se puede serializar este tipo de geometría.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Serialize_Unsupported_Type">
+            <summary>Busca una cadena localizada similar a No se pueden almacenar datos del tipo {0}.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ExportToCSVObsolete">
+            <summary>Busca una cadena localizada similar a Utilizar el nodo Data.ExportCSV en su lugar.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FactorialNegativeInt">
+            <summary>Busca una cadena localizada similar a El valor de entrada de Math.Factorial no puede ser negativo.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FactorialOverflow">
+            <summary>Busca una cadena localizada similar a El valor de retorno de Math.Factorial está fuera de rango.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FindPointsWithinRadiusNullPointMessage">
+            <summary>Busca una cadena localizada similar a Debe proporcionar un centro.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FindPointsWithinRadiusSearchRadiusMessage">
+            <summary>Busca una cadena localizada similar a El radio de búsqueda no puede ser cero.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FromObjectObsolete">
+            <summary>Busca una cadena localizada similar a Este nodo es obsoleto, utilice "String from Object".</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.IntegerOverflow">
+            <summary>Busca una cadena localizada similar a La operación ha generado un desbordamiento de número entero. El resultado puede ser inesperado.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.InvalidDestinationPathErrorMessage">
+            <summary>Busca una cadena localizada similar a Ruta de archivo de destino no válida utilizada como ruta de copia.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.InvalidKeysErrorMessage">
+            <summary>Busca una cadena localizada similar a Uno o más tipos de entrada no coinciden. No se admiten listas como claves.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.InvalidKeysLenghtErrorMessage">
+            <summary>Busca una cadena localizada similar a El número de elementos no coincide con el número de claves. href=InvalidKeysLenghtErrorMessage.html.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.LoadImageFromPathObsolete">
+            <summary>Busca una cadena localizada similar a Utiliza los nodos File.FromPath - &gt; Image.ReadFromFile en su lugar.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.MissingPythonEngine">
+            <summary>Busca una cadena localizada similar a No se ha podido encontrar el motor de Python seleccionado.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ObjectArgumentExceptionMessage">
+            <summary>Busca una cadena localizada similar a Objeto no puede ser nulo; proporcione el valor adecuado.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.QuadtreeConstructionEmptyUVSetMessage">
+            <summary>Busca una cadena localizada similar a No se puede generar un árbol cuádruple a partir de un conjunto vacío de puntos.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.QuadtreeConstructionNullUVSetMessage">
+            <summary>Busca una cadena localizada similar a No se puede generar un árbol cuádruple a partir de un conjunto nulo de UV.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ReadImageObsolete">
+            <summary>Busca una cadena localizada similar a Utiliza los nodos File.FromPath - &gt; Image.ReadFromFile - &gt; Image.Pixels en su lugar.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ReadTextObsolete">
+            <summary>Busca una cadena localizada similar a Utiliza los nodos File.FromPath - &gt; File.ReadText en su lugar.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.StringRemoveCountOutOfRangeMessage">
+            <summary>Busca una cadena localizada similar a El recuento está fuera de rango.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.StringRemoveStartIndexOutOfRangeMessage">
+            <summary>Busca una cadena localizada similar a El startIndex está fuera de rango.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.StringToNumberInvalidNumberMessage">
+            <summary>Busca una cadena localizada similar a Este número no es válido..</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.WebRequestNullUrlMessage">
+            <summary>Busca una cadena localizada similar a La URL no puede ser nula..</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.WriteImageObsolete">
+            <summary>Busca una cadena localizada similar a Utiliza el nodo Image.WriteToFile en su lugar.</summary>
+        </member>
+        <member name="T:DSCore.PythonEvaluator">
+            <summary>Evalúe el código de Python en cualquier motor de Python. Solo debe usarse en VM.</summary>
+        </member>
+        <member name="M:DSCore.Quadtree.ByUVs(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
+            <summary>Genera un Quadtree que abarca el dominio (0,0)-&gt;(1,1).</summary>
+            <param name="uvs">Un conjunto de UV en el dominio (0,0)-&gt;(1,1).</param>
+            <returns>Un objeto Quadtree</returns>
+        </member>
+        <member name="M:DSCore.Quadtree.FindPointsWithinRadius(Autodesk.DesignScript.Geometry.UV,System.Double)">
+            <summary>Busca todos los puntos de árbol cuádruple (UV) en el árbol cuádruple dentro de un radio de la ubicación UV especificada.</summary>
+            <param name="center">UV en el centro del área de búsqueda.</param>
+            <param name="radius">El radio del área de búsqueda.</param>
+            <returns>Una lista de UV.</returns>
+        </member>
+        <member name="M:DSCore.Node.Split">
+            <summary>Divide un nodo en cuatro cuadrantes.</summary>
+            <returns/>
+        </member>
+        <member name="T:DSCore.UVRect">
+            <summary>Clase auxiliar utilizada para definir un rectángulo
+            descrito por un UV mínimo y máximo.</summary>
+        </member>
+        <member name="T:DSCore.UVExtensions">
+            <summary>Métodos de extensión para UV.</summary>
+        </member>
+        <member name="T:DSCore.Sorting">
+            <summary>Métodos de utilidad para ordenar por claves. Estos no se deben convertir en nodos, sino que
+             se deben ajustar en implementaciones de DS que acepten la función de asignación de claves.</summary>
+        </member>
+        <member name="T:DSCore.String">
+            <summary>Métodos de gestión de cadenas.</summary>
+        </member>
+        <member name="M:DSCore.String.ToNumber(System.String)">
+            <summary>Convierte una cadena en número entero o doble.</summary>
+            <param name="string">Cadena que se convertirá.</param>
+            <returns name="number">Número entero o doble.</returns>
+            <search>2number,str2number,strtonumber,string2number,stringtonumber,int,double,cast</search>
+        </member>
+        <member name="M:DSCore.String.GetNumber(System.String)">
+            <summary>Obtiene todas las cadenas numéricas de la cadena de destino como una cadena.</summary>
+            <param name="string">Cadena de destino que se va a obtener</param>
+            <returns name="str">Número en cadena</returns>
+            <search>getnumber,tonumber,strtonumber,numberinstring,string2number,stringtonumber,int,double,cast</search> 
+        </member>
+        <member name="M:DSCore.String.Concat(System.String[])">
+            <summary>Concatena varias cadenas y crea una sola cadena.</summary>
+            <param name="strings">Lista de cadenas que se deben concatenar.</param>
+            <returns name="string">Cadena hecha a partir de la lista de cadenas.</returns>
+            <search>concatenate,join,combine strings</search>
+        </member>
+        <member name="M:DSCore.String.Length(System.String)">
+            <summary>Devuelve el número de caracteres presentes en la cadena especificada.</summary>
+            <param name="string">Cadena de la que se buscará su longitud.</param>
+            <returns name="int">Número de caracteres de la cadena.</returns>
+            <search>count,size,characters,chars,length,sizeof</search>
+        </member>
+        <member name="M:DSCore.String.Split(System.String,System.String[])">
+            <summary>Divide una única cadena en una lista de cadenas. Las cadenas del separador
+                especificadas determinan las divisiones.</summary>
+            <param name="string">Cadena que se dividirá.</param>
+            <param name="separators">Cadenas que, de estar presentes, determinan el final y el inicio de una división.</param>
+            <returns name="strings">Lista de cadenas creadas a partir de la cadena de entrada.</returns>
+            <search>divide,separator,delimiter,cut,csv,comma,</search>
+        </member>
+        <member name="M:DSCore.String.Join(System.String,System.String[])">
+            <summary>Concatena varias cadenas en una sola e inserta el separador
+                especificado entre cada una de las cadenas unidas.</summary>
+            <param name="separator">Cadena que se debe insertar entre las cadenas unidas.</param>
+            <param name="strings">Cadenas que se deben unir en una sola cadena.</param>
+            <returns name="string">Una cadena hecha a partir de una lista de cadenas que incluyen el carácter separador.</returns>
+            <search>join,separator,build csv,concat,construct</search>
+        </member>
+        <member name="M:DSCore.String.ToUpper(System.String)">
+            <summary>Pasa la cadena especificada a mayúsculas.</summary>
+            <param name="string">Cadena que se pasará a mayúsculas.</param>
+            <returns name="string">Cadena en mayúsculas.</returns>
+            <search>2uppercase,to uppercase,touppercase,uppercase</search>
+        </member>
+        <member name="M:DSCore.String.ToLower(System.String)">
+            <summary>Pasa la cadena especificada a minúsculas.</summary>
+            <param name="string">Cadena que se pasará a minúsculas.</param>
+            <returns name="string">Cadena en minúsculas.</returns>
+            <search>2lowercase,to lowercase,tolowercase,lowercase</search>
+        </member>
+        <member name="M:DSCore.String.ToTitle(System.String)">
+            <summary>Convierte la cadena especificada al formato de mayúsculas/minúsculas de título.</summary>
+            <param name="str">Cadena que se convertirá al formato de mayúsculas/minúsculas de título.</param>
+            <returns name="str">Cadena para formato de mayúsculas/minúsculas de título.</returns>
+            <search>2titlecase,to titlecase,to title case,totitlecase,titlecase</search>
+        </member>
+        <member name="M:DSCore.String.ChangeCase(System.String,System.Boolean)">
+            <summary>Pasa la cadena especificada a mayúsculas o minúsculas, en
+                función de un parámetro booleano.</summary>
+            <param name="string">Cadena que se pasará a mayúsculas o minúsculas.</param>
+            <param name="upper">True para pasar a mayúsculas, False para pasar a minúsculas.</param>
+            <returns name="string">Cadena con el cambio de caja.</returns>
+            <search>
+                2lowercase,to lowercase,tolowercase,lowercase,
+                2uppercase,to uppercase,touppercase,uppercase
+            </search>
+        </member>
+        <member name="M:DSCore.String.Substring(System.String,System.Int32,System.Int32)">
+            <summary>Recupera una subcadena de la cadena especificada. La subcadena comienza en la  
+                posición de carácter indicada y tiene la longitud expresada.</summary>
+            <param name="string">Cadena de la que se recuperará una subcadena.</param>
+            <param name="startIndex">Posición de carácter inicial de la subcadena en la cadena original.</param>
+            <param name="length">Número de caracteres de la subcadena.</param>
+            <returns name="string">Subcadena creada a partir de la cadena original.</returns>
+             <search>subset,get string,part,smaller string</search>
+        </member>
+        <member name="M:DSCore.String.Contains(System.String,System.String,System.Boolean)">
+            <summary>Determina si la cadena indicada contiene la cadena especificada.</summary>
+            <param name="string">Cadena en la que se buscará.</param>
+            <param name="searchFor">Subcadena que se buscará.</param>
+            <param name="ignoreCase">Si la comparación distingue o no entre minúsculas y mayúsculas.</param>
+            <returns name="bool">Si la cadena contiene la subcadena.</returns>
+            <search>test,within,in,is in,part of</search>
+        </member>
+        <member name="M:DSCore.String.CountOccurrences(System.String,System.String,System.Boolean)">
+            <summary>Cuenta el número de coincidencias no solapadas de una subcadena en una determinada cadena.</summary>
+            <param name="string">Cadena en la que se buscará.</param>
+            <param name="searchFor">Subcadena que se buscará.</param>
+            <param name="ignoreCase">Si la comparación distingue o no entre minúsculas y mayúsculas.</param>
+            <returns name="int">Número de coincidencias no solapadas de la subcadena en la cadena.</returns>
+            <search>count,substring,count occurrences,numberof,search,find,within</search>
+        </member>
+        <member name="M:DSCore.String.Replace(System.String,System.String,System.String)">
+            <summary>Sustituye todas las coincidencias del texto de una cadena por otro texto.</summary>
+            <param name="string">Cadena en la que se deben sustituir las subcadenas.</param>
+            <param name="searchFor">Texto que se debe sustituir.</param>
+            <param name="replaceWith">Texto que se debe utilizar para la sustitución.</param>
+            <returns name="string">Cadena con las sustituciones realizadas.</returns>
+            <search>replace,overwrite,override,find and replace</search>
+        </member>
+        <member name="M:DSCore.String.EndsWith(System.String,System.String,System.Boolean)">
+            <summary>Determina si la cadena indicada termina con la subcadena especificada.</summary>
+            <param name="string">Cadena de la que se buscará el final.</param>
+            <param name="searchFor">Subcadena para la que se buscará el final.</param>
+            <param name="ignoreCase">True para omitir la distinción de mayúsculas y minúsculas en la comparación; False para tenerla en cuenta.</param>
+            <returns name="bool">True si la cadena empieza por una subcadena; False si no.</returns>
+            <search>test,does end,last,str end,terminated</search>
+        </member>
+        <member name="M:DSCore.String.StartsWith(System.String,System.String,System.Boolean)">
+            <summary>Determina si la cadena indicada empieza con la subcadena especificada.</summary>
+            <param name="string">Cadena del que se buscará el inicio.</param>
+            <param name="searchFor">Subcadena cuyo inicio se debe buscar.</param>
+            <param name="ignoreCase">True para omitir la distinción de mayúsculas y minúsculas en la comparación; False para tenerla en cuenta.</param>
+            <returns name="bool">True si la cadena empieza por una subcadena; False si no.</returns>
+            <search>test,beginswith,start,string start,front</search>
+        </member>
+        <member name="M:DSCore.String.TrimWhitespace(System.String)">
+            <summary>Elimina todos los espacios en el inicio y el final de la cadena especificada.</summary>
+            <param name="string">Cadena que se debe recortar.</param>
+            <returns name="string">Cadena con espacios iniciales y finales eliminados.</returns>
+            <search>trimstring,cleanstring,whitespace,blanks,spaces,string trim</search>
+        </member>
+        <member name="M:DSCore.String.TrimLeadingWhitespace(System.String)">
+            <summary>Elimina todos los espacios en el inicio de la cadena especificada.</summary>
+            <param name="string">Cadena que se debe recortar.</param>
+            <returns name="string">Cadena con espacios iniciales eliminados.</returns>
+            <search>trim string,clean string,trim leading whitespaces,string trim</search>
+        </member>
+        <member name="M:DSCore.String.TrimTrailingWhitespace(System.String)">
+            <summary>Elimina todos los espacios en el final de la cadena especificada.</summary>
+            <param name="string">Cadena que se debe recortar.</param>
+            <returns name="string">Cadena con espacios finales eliminados.</returns>
+            <search>trim string,clean string,trim trailing whitespaces,string trim</search>
+        </member>
+        <member name="M:DSCore.String.IndexOf(System.String,System.String,System.Boolean)">
+            <summary>Busca el índice de base cero de la primera coincidencia de una subcadena dentro de
+                 una cadena. Devuelve -1 si no se encuentra ninguna.</summary>
+            <param name="string">Cadena en la que se buscará.</param>
+            <param name="searchFor">Subcadena que se buscará.</param>
+            <param name="ignoreCase">Si la comparación distingue o no entre minúsculas y mayúsculas.</param>
+            <returns name="int">Índice de la primera coincidencia de la subcadena o -1 si no se encuentra ninguna.</returns>
+            <search>index of,find substring,where,search</search>
+        </member>
+        <member name="M:DSCore.String.AllIndicesOf(System.String,System.String,System.Boolean)">
+            <summary>Busca la lista de índices en los que la subcadena aparece dentro de una cadena.</summary>
+            <param name="string">Cadena en la que se debe buscar.</param>
+            <param name="searchFor">Subcadena en la que se debe buscar.</param>
+            <param name="ignoreCase">Si la comparación distingue o no entre minúsculas y mayúsculas.</param>
+            <returns name="indexList">Lista de índices en los que se encuentra la subcadena (tipo: int[])</returns>
+            <search>all indices of,find substring,where,search</search>
+        </member>
+        <member name="M:DSCore.String.LastIndexOf(System.String,System.String,System.Boolean)">
+            <summary>Busca el índice de base cero de la última coincidencia de una subcadena dentro de
+                 una cadena. Devuelve -1 si no se encuentra ninguna.</summary>
+            <param name="string">Cadena en la que se buscará.</param>
+            <param name="searchFor">Subcadena en la que se debe buscar.</param>
+            <param name="ignoreCase">Si la comparación distingue entre minúsculas y mayúsculas.</param>
+            <returns name="int">Índice de la última coincidencia de la subcadena o -1 si no se encuentra ninguna.</returns>
+            <search>last index of,find substring,where,search</search>
+        </member>
+        <member name="M:DSCore.String.PadLeft(System.String,System.Int32,System.String)">
+            <summary>Alinea a la derecha los caracteres de la cadena especificada y añade un relleno de
+                espacios a la izquierda para ajustarla a la longitud total especificada.</summary>
+            <param name="string">Cadena que se rellenará.</param>
+            <param name="newLength">Longitud total de la cadena tras el relleno.</param>
+            <param name="padChars">Carácter que se debe utilizar para el relleno; se establece por defecto en un espacio.</param>
+            <returns name="string">Cadenas alineadas a la derecha y con relleno de espacios a la izquierda, que se ajustan a la longitud total especificada.</returns>
+            <search>pad left,right align,right-align,pad,string space,whitespace</search>
+        </member>
+        <member name="M:DSCore.String.PadRight(System.String,System.Int32,System.String)">
+            <summary>Alinea a la izquierda los caracteres de la cadena especificada y añade un relleno de
+                espacios a la derecha para ajustarla a la longitud total especificada.</summary>
+            <param name="string">Cadena que se rellenará</param>
+            <param name="newLength">Longitud total de la cadena tras el relleno</param>
+            <param name="padChars">Carácter que se debe utilizar para el relleno; se establece por defecto en un espacio.</param>
+            <returns name="string">Cadenas alineadas a la izquierda y con relleno de espacios a la derecha, que se ajustan a la longitud total especificada.</returns>
+            <search>pad right,left align,left-align,pad string space,whitespace</search>
+        </member>
+        <member name="M:DSCore.String.Center(System.String,System.Int32,System.String)">
+            <summary>Aumenta la longitud de una cadena mediante la adición de espacios a izquierda y derecha del texto original.</summary>
+            <param name="string">Cadena que se centrará.</param>
+            <param name="newLength">Longitud total de la cadena tras centrarla.</param>
+            <param name="padChars">Carácter que se debe utilizar para el centrado; se establece por defecto en un espacio.</param>
+            <returns name="string">Cadenas centradas y con relleno de espacios a izquierda y derecha,
+                que se ajustan a la longitud total especificada.</returns>
+            <search>center align,center-align,centered,whitespace,expand string,surround</search>
+        </member>
+        <member name="M:DSCore.String.Insert(System.String,System.Int32,System.String)">
+            <summary>Inserta una cadena dentro de otra en el índice especificado.</summary>
+            <param name="string">Cadena en la que se debe realizar la inserción.</param>
+            <param name="index">Índice de inserción.</param>
+            <param name="toInsert">Cadena que se debe insertar.</param>
+            <returns name="string">Cadena con la subcadena insertada.</returns>
+            <search>insertstring,insert string</search>
+        </member>
+        <member name="M:DSCore.String.Remove(System.String,System.Int32,System.Nullable{System.Int32})">
+            <summary>Elimina caracteres de una cadena.</summary>
+            <param name="string">Cadena de la que se deben eliminar caracteres.</param>
+            <param name="startIndex">Índice de inicio de eliminación.</param>
+            <param name="count">Cantidad de caracteres que se van a eliminar.
+                 Nota: si el recuento es negativo, la eliminación va de derecha a izquierda.</param>
+            <returns name="string">Cadena con caracteres eliminados.</returns>
+            <search>delete,rem,shorten</search>
+        </member>
+        <member name="T:DSCore.Thread">
+            <summary>Funciones para manipular subprocesos de evaluación.</summary>
+        </member>
+        <member name="M:DSCore.Thread.Pause(System.Object,System.Int32)">
+            <summary>Pausa el subproceso de evaluación actual durante el tiempo indicado.</summary>
+            <param name="object">Objeto que se debe pasar.</param>
+            <param name="msTimeout">Número de milisegundos que el subproceso debe estar en pausa.</param>
+            <returns name="object">Objeto pasado.</returns>
+        </member>
+    </members>
+</doc>

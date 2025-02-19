@@ -1,0 +1,112 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>GeometryColor</name>
+    </assembly>
+    <members>
+        <member name="M:Modifiers.GeometryColor.ByGeometryColor(Autodesk.DesignScript.Geometry.Geometry,DSCore.Color)">
+            <summary>색상을 사용하여 형상을 표시합니다.</summary>
+            <param name="geometry">색상을 적용하려는 형상입니다.</param>
+            <param name="color">해당 색상입니다.</param>
+            <returns>화면표시 객체입니다.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.BySurfaceColors(Autodesk.DesignScript.Geometry.Surface,DSCore.Color[][])">
+             <summary>표면에 색상 값을 표시합니다.
+            
+            제공된 색상은 내부적으로 이미지 텍스처로 변환되어
+            표면에 매핑됩니다.</summary>
+             <param name="surface">색상을 적용할 표면입니다.</param>
+             <param name="colors">2차원 색상 리스트입니다.
+            
+            색상 리스트는 정사각형 형태여야 합니다. 불규칙한 배열을 전달하면
+            예외가 발생합니다.</param>
+             <returns>화면표시 객체입니다.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ByPointsColors(Autodesk.DesignScript.Geometry.Point[],DSCore.Color[])">
+             <summary>점과 색상을 사용하여 색상이 지정된 메쉬를 작성합니다.
+            
+            제공된 점 리스트는 연결되지 않은 정점으로
+            삼각형 메쉬를 구성하는 데 사용됩니다.</summary>
+             <param name="points">점 리스트입니다.
+            
+            현재 삼각형 메쉬만 지원됩니다. 리스트의 각 세 개 점이 메쉬에서 하나의 삼각형을
+            형성합니다. 점은 시계 반대 방향으로 정렬되어야 합니다. 
+            3으로 나눌 수 없는 수의 정점 리스트를 전달하면 예외가 발생합니다.</param>
+             <param name="colors">색상 리스트입니다.
+            
+            색상의 수는 정점의 수와 일치해야 합니다. 점의 수와 색상 수가 일치하지 않는 색상 리스트를
+            전달하면 예외가 발생합니다.</param>
+             <returns>화면표시 객체입니다.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
+            <summary>단일 색상, 면 기반 색상, 정점 기반 색상 또는 면 기반 정점 색상으로 메쉬를 표시합니다.</summary>
+            <param name="mesh"/>The Mesh on which to apply the colors
+            <param name="colors">색상 개수는 1(단색)이거나, 면 수(면별 색)와 같거나, 정점 수(정점별 색)와 같거나, 삼각형 수에 3을 곱한 값(삼각형-정점별 색)과 같아야 합니다.</param>
+            <param name="smoothShading">True인 경우 음영이 각진 형태 대신 부드럽게 표시되며, 이는 부드러운 연속 표면을 시각화하는 데 유용합니다.</param>
+            <returns>표시 객체입니다.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ComputeColorMap(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},DSCore.Color[],System.Int32,System.Int32)">
+            <summary>SurfaceData 객체 세트에서 색상 맵 세트를 계산합니다.</summary>
+            <returns/>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ComputeSamplesFromNormalizedValue(System.Double,System.Int32,System.Int32)">
+            <summary>이 방법은 0.0과 1.0 사이의 수를 lowestPower와 highestPower 사이의 정수로 다시 매핑합니다.</summary>
+        </member>
+        <member name="T:Autodesk.DesignScript.Geometry.ImportHelpers">
+            <summary>종속성이 있는 형상 가져오기 노드는 Protogeometry에 포함하지 않습니다.
+            이러한 메서드는 NodeModel 노드에 의해 추가로 마무리되므로 명명 및 라이브러리 위치를 정확하게 
+            가져올 수 있습니다.</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.ImportFromSATWithUnits(System.String,DynamoUnits.Unit)">
+            <summary>SAT 파일 경로에서 형상을 가져옵니다. dynamoUnit 입력을 Dynamo 파일의 다른 번호를 
+            해석하는 방식과 일치하도록 설정하십시오.</summary>
+            <param name="filePath">.SAT 파일에 대한 문자열 파일 경로.</param>
+            <param name="dynamoUnit">단조 단위 길이, null일 경우 sat 파일을 무단위로 가져옵니다</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.ImportFromSATWithUnits(System.IO.FileInfo,DynamoUnits.Unit)">
+            <summary>SAT 파일 경로에서 형상을 가져옵니다. dynamoUnit 입력을 Dynamo 파일의 다른 번호를 
+            해석하는 방식과 일치하도록 설정하십시오.</summary>
+            <param name="file">.SAT 파일을 가리키는 파일 객체.</param>
+            <param name="dynamoUnit">단조 단위 길이, null일 경우 sat 파일을 무단위로 가져옵니다</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.DeserializeFromSABWithUnits(System.Byte[],DynamoUnits.Unit)">
+            <summary>SAB 바이트 배열에서 형상을 가져옵니다. DynamoUnit 입력을 Dynamo 파일의 다른 숫자를 
+            해석하는 방식과 일치하도록 설정하십시오.</summary>
+            <param name="buffer">SAB 바이트 배열</param>
+            <param name="dynamoUnit">단조 단위 길이, null일 경우 sat 파일을 무단위로 가져옵니다</param>
+            <returns/>
+        </member>
+        <member name="T:GeometryColor.Properties.Resources">
+            <summary>현지화된 문자열 등을 조회하기 위한 강력한 유형의 리소스 클래스입니다.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.ResourceManager">
+            <summary>이 클래스에서 사용하는 캐시된 ResourceManager 인스턴스(instance)를 반환합니다.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.Culture">
+            <summary>이러한 강력한 유형의 리소스 클래스를 사용하여 모든 리소스 
+              조회에서 현재 스레드의 CurrentUICulture 특성을 재지정합니다.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.ByMeshColorsInvalidColorCountMessage">
+            <summary>'색상 개수가 잘못되었습니다. 1(단색)이거나, 면 수(면별 색)와 같거나, 정점 수(정점별 색)와 같거나, 삼각형 수에 3을 곱한 값(삼각형-정점별 색)과 같아야 합니다. 여러 메쉬에 색을 입히려면 List Levels를 사용해야 할 수 있습니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.JaggedListExceptionMessage">
+            <summary>"색상 리스트는 가변 리스트가 아니어야 합니다."와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.NoColorsExceptionMessage">
+            <summary>"색상을 몇 가지 제공해야 합니다."와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.NoVertexExceptionMessage">
+            <summary>"정점을 몇 개 제공해야 합니다."와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.TwoDimensionalListExceptionMessage">
+            <summary>"2차원 색상 리스트를 제공해야 합니다."와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.VertexColorCountMismatchExceptionMessage">
+            <summary>"제공된 색상의 수는 정점의 수와 일치해야 합니다."와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.VerticesDivisibleByThreeExceptionMessage">
+            <summary>"제공된 정점의 수를 3으로 나눌 수 있어야 합니다."와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+    </members>
+</doc>

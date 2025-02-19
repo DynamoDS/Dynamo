@@ -1,0 +1,173 @@
+<?xml version="1.0"?><doc>
+  <assembly>
+    <name>BuiltIn</name>
+  </assembly>
+  <members>
+    <member name="List.Rank">
+      <summary>Возврат максимального значения глубины в списке</summary>
+      <param name="list">Список для запроса ранга</param>
+      <returns name="int">Максимальное значение глубины в списке</returns>
+      <search>rank,depth,nesting,ranks</search>
+    </member>
+    <member name="List.RemoveIfNot">
+      <summary>Удаление элементов списка, которые не являются элементами указанного типа.</summary>
+      <param name="list">Список, из которого требуется удалить элементы</param>
+      <param name="type">Тип элемента</param>
+      <returns name="list">Список, из которого удалены все элементы, кроме указанного типа</returns>
+      <search>remove,not,ofType,filtertype</search>
+    </member>
+    <member name="List.Equals">
+      <summary>Определение эквивалентности двух экземпляров объекта.</summary>
+      <param name="object">Первый объект</param>
+      <param name="otherObject">Другой объект</param>
+      <returns name="bool">Возврат значения True, если экземпляры объектов равны, и False, если они различаются</returns>
+      <search>equals</search>
+    </member>
+    <member name="List.SortByFunction">
+      <summary>Функция используется для определения способа сортировки элементов списка.</summary>
+      <param name="list">список значений</param>
+      <param name="sortFunction">функция, используемая для сортировки списка</param>
+      <returns name="sortedList">тип: var[]..[]</returns>
+      <search>sort,order</search>
+    </member>
+    <member name="ToString">
+      <param name="object">некоторый объект</param>
+      <search>string</search>
+    </member>
+    <member name="__ToStringFromObject">
+      <param name="object">некоторый объект</param>
+      <search>string,from,object</search>
+    </member>
+    <member name="__ToStringFromArray">
+      <param name="list">некоторый список</param>
+      <search>string,from,array</search>
+    </member>
+    <member name="__Apply">
+      <param name="functionObject"/>
+      <param name="param"/>
+      <search>apply</search>
+    </member>
+    <member name="__ApplyList">
+      <param name="functionObject"/>
+      <param name="param"/>
+      <search>apply,list</search>
+    </member>
+    <member name="__GetOutput">
+      <param name="outputs"/>
+      <param name="key"/>
+      <search>output</search>
+    </member>
+    <member name="__Compose">
+      <param name="funcs"/>
+      <search>compose,functionchain</search>
+    </member>
+    <member name="__ComposeBuffered">
+      <param name="funcs"/>
+      <param name="amt"/>
+      <param name="arg"/>
+      <search>compose,buffered</search>
+    </member>
+    <member name="List.MinimumItemByKey">
+      <summary>Возврат элементов из списка, генерирующего минимальные значения для функции, указанной в качестве ключевого средства проецирования.</summary>
+      <param name="list">список значений</param>
+      <param name="keyFunction">функция, применяемая к элементам списка</param>
+      <returns name="minimumItem">Минимальный элемент в списке, использующий keyFunction (тип: var[]..[])</returns>
+      <search>min,item,key</search>
+    </member>
+    <member name="List.MaximumItemByKey">
+      <summary>Возврат элементов из списка, генерирующего максимальные значения для функции, указанной в качестве ключевого средства проецирования.</summary>
+      <param name="list">список значений</param>
+      <param name="keyFunction">функция, применяемая к элементам списка</param>
+      <returns name="maximumItem">Максимальный элемент в списке, использующий keyFunction (тип: var[]..[])</returns>
+      <search>max,item,key</search>
+    </member>
+    <member name="__Replace">
+      <param name="list">список значений</param>
+      <param name="with"/>
+      <param name="predicate"/>
+      <search>replace</search>
+    </member>
+    <member name="__Filter">
+      <param name="list">список значений</param>
+      <param name="predicate"/>
+      <search>filter</search>
+    </member>
+    <member name="__Combine">
+      <param name="func">функция</param>
+      <param name="lists"/>
+      <search>combine</search>
+    </member>
+    <member name="__Map">
+      <param name="func">функция</param>
+      <param name="arg"/>
+      <search>map</search>
+    </member>
+    <member name="__LaceShortest">
+      <param name="func">функция</param>
+      <param name="lists"/>
+      <search>lace,shortest</search>
+    </member>
+    <member name="__LaceLongest">
+      <param name="func">функция</param>
+      <param name="lists"/>
+      <search>lace,longest</search>
+    </member>
+    <member name="__ApplyNested">
+      <param name="fs">функция</param>
+      <param name="xs"/>
+      <param name="amt"/>
+      <search>apply,nested</search>
+    </member>
+    <member name="__CartesianProduct">
+      <param name="func">функция</param>
+      <param name="lists"/>
+      <search>cartesian,product</search>
+    </member>
+    <member name="__Scan">
+      <param name="accumulator"/>
+      <param name="seed"/>
+      <param name="lists"/>
+      <search>scan</search>
+    </member>
+    <member name="__Reduce">
+      <param name="accumulator"/>
+      <param name="seed"/>
+      <param name="lists"/>
+      <search>reduce</search>
+    </member>
+    <member name="List.GroupByFunction">
+      <summary>Функция используется для определения способа группировки элементов списка.</summary>
+      <param name="list">список значений</param>
+      <param name="groupFunction">Функция для группирования списка</param>
+      <returns name="groupedList">Список произвольных рангов/уровней (тип: var[]..[])</returns>
+      <search>group,function</search>
+    </member>
+    <member name="List.TrueForAll">
+      <summary>Возврат значения True, если все элементы списка определяются как True с помощью заданной функции запроса</summary>
+      <param name="list">Список для определения элементов посредством функции запроса</param>
+      <param name="queryFunction">Функция для оценки списка</param>
+      <returns name="bool">Возврат значения True, если все элементы списка определяются как True с помощью заданной функции запроса</returns>
+      <search>true,all</search>
+    </member>
+    <member name="List.TrueForAny">
+      <summary>Возврат значения True, если один или несколько элементов списка определяются как True с помощью заданной функции запроса</summary>
+      <param name="list">Список для определения элементов посредством функции запроса</param>
+      <param name="queryFunction">Функция для оценки списка</param>
+      <returns name="bool">Возврат значения True, если любой из элементов списка определяется как True с помощью заданной функции запроса</returns>
+      <search>true,any</search>
+    </member>
+    <member name="__ForEach">
+      <param name="functionObject"/>
+      <param name="lists"/>
+      <search>foreach</search>
+    </member>
+    <member name="LoopWhile">
+      <summary>Создание узла цикла с условием продолжения на основе исходного значения, условия и тела цикла.</summary>
+      <param name="initialValue">начальное значение для цикла</param>
+      <param name="continueWhile">while loop condition</param>
+      <param name="loopBody">while loop body</param>
+      <returns name="result">Результат из цикла (тип: var[]..[])</returns>
+      <search>loop,while,repeat</search>
+    </member>
+  </members>
+</doc>

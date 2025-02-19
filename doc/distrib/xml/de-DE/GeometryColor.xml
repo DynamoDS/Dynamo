@@ -1,0 +1,112 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>GeometryColor</name>
+    </assembly>
+    <members>
+        <member name="M:Modifiers.GeometryColor.ByGeometryColor(Autodesk.DesignScript.Geometry.Geometry,DSCore.Color)">
+            <summary>Zeigt die Geometrie mithilfe einer Farbe an.</summary>
+            <param name="geometry">Die Geometrie, auf die Sie Farbe anwenden möchten.</param>
+            <param name="color">Die Farbe.</param>
+            <returns>Ein Anzeigeobjekt.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.BySurfaceColors(Autodesk.DesignScript.Geometry.Surface,DSCore.Color[][])">
+             <summary>Zeigt Farbwerte auf einer Oberfläche an.
+            
+            Die angegebenen Farben werden intern in eine Bildtextur konvertiert, die
+            der Oberfläche zugewiesen wird.</summary>
+             <param name="surface">Die Oberfläche, auf die die Farben angewendet werden sollen.</param>
+             <param name="colors">Eine zweidimensionale Farbenliste.
+            
+            Die Farbenliste muss regelmäßig sein. Der Versuch, ein unregelmäßiges Array
+            zu übergeben, löst eine Ausnahme aus.</param>
+             <returns>Ein Anzeigeobjekt.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ByPointsColors(Autodesk.DesignScript.Geometry.Point[],DSCore.Color[])">
+             <summary>Erstellt ein farbiges Netz aus Punkten und Farben.
+            
+            Die Liste der angegebenen Punkte wird zur Erstellung eines triangulierten Netzes mit
+            nicht verbundenen Scheitelpunkten verwendet.</summary>
+             <param name="points">Eine Liste von Punkten.
+            
+            Nur dreieckige Netze werden derzeit unterstützt. Jede Dreiergruppe von Punkten in der Liste bildet
+            ein Dreieck im Netz. Punkte müssen gegen den Uhrzeigersinn angeordnet werden.
+            Der Versuch, eine Punktliste zu übergeben, deren Anzahl nicht durch 3 teilbar ist, löst eine Ausnahme aus.</param>
+             <param name="colors">Eine Liste von Farben.
+            
+            Die Anzahl der Farben muss der Anzahl der Scheitelpunkte entsprechen. Der Versuch, eine Farbenliste zu
+            übergeben, die nicht die gleiche Anzahl Einträge wie die Punktliste aufweist, löst eine Ausnahme aus.</param>
+             <returns>Ein Anzeigeobjekt.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
+            <summary>Zeigt das Netz nach Einzelfarbe, Farben pro Fläche, Farben pro Scheitelpunkt oder Farben pro Flächenscheitelpunkt an.</summary>
+            <param name="mesh"/>The Mesh on which to apply the colors
+            <param name="colors">Die Farbanzahl muss gleich 1 (Einzelfarbe) oder gleich der Flächenanzahl (Farbe pro Fläche) oder gleich der Scheitelpunktanzahl (Farbe pro Scheitelpunkt) oder gleich der Dreiecksanzahl multipliziert mit drei (Farbe pro Flächenscheitelpunkt) sein</param>
+            <param name="smoothShading">Wenn True, wird die Schattierung glatt statt facettiert aussehen, was für die Visualisierung glatter, kontinuierlicher Oberflächen nützlich ist</param>
+            <returns>Ein Anzeigeobjekt.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ComputeColorMap(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},DSCore.Color[],System.Int32,System.Int32)">
+            <summary>Berechnet einen Satz von Farbkarten aus einem Satz von SurfaceData-Objekten.</summary>
+            <returns/>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ComputeSamplesFromNormalizedValue(System.Double,System.Int32,System.Int32)">
+            <summary>Diese Methode ordnet eine Zahl zwischen 0.0 und 1.0 einem Ganzzahlwert zwischen lowestPower und highestPower neu zu</summary>
+        </member>
+        <member name="T:Autodesk.DesignScript.Geometry.ImportHelpers">
+            <summary>Blöcke für den Geometrie-Import mit Abhängigkeiten, die nicht Teil der Protogeometrie sein sollen.
+            Diese Methoden werden außerdem in Blöcke des Typs NodeModel eingeschlossen, damit Sie den Namen und den Speicherort der 
+            Bibliothek genau bestimmen können.</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.ImportFromSATWithUnits(System.String,DynamoUnits.Unit)">
+            <summary>Importiert Geometrie aus dem SAT-Dateipfad. Legen Sie die dynamoUnit-Eingabe so fest,
+            dass sie der Interpretation der anderen Zahlen in der Dynamo-Datei entspricht.</summary>
+            <param name="filePath">Pfad der Zeichenfolgendatei zu einer SAT-Datei.</param>
+            <param name="dynamoUnit">Eine Forge-Einheitenlänge; die SAT-Datei wird ohne Einheit importiert, wenn sie null ist</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.ImportFromSATWithUnits(System.IO.FileInfo,DynamoUnits.Unit)">
+            <summary>Importiert Geometrie aus dem SAT-Dateipfad. Legen Sie die dynamoUnit-Eingabe so fest,
+            dass sie der Interpretation der anderen Zahlen in der Dynamo-Datei entspricht.</summary>
+            <param name="file">Dateiobjekt, das auf eine SAT-Datei verweist.</param>
+            <param name="dynamoUnit">Eine Forge-Einheitenlänge; die SAT-Datei wird ohne Einheit importiert, wenn sie null ist.</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.DeserializeFromSABWithUnits(System.Byte[],DynamoUnits.Unit)">
+            <summary>Importiert Geometrie aus dem SAB-Byte-Array. Legen Sie die dynamoUnit-Eingabe so fest, 
+            dass sie der Interpretation der anderen Zahlen in der Dynamo-Datei entspricht.</summary>
+            <param name="buffer">SAB-Byte-Array</param>
+            <param name="dynamoUnit">Eine Forge-Einheitenlänge; die SAT-Datei wird ohne Einheit importiert, wenn sie null ist.</param>
+            <returns/>
+        </member>
+        <member name="T:GeometryColor.Properties.Resources">
+            <summary>Eine stark typisierte Ressourcenklasse zum Suchen von lokalisierten Zeichenfolgen usw.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.ResourceManager">
+            <summary>Gibt die im Cache gespeicherte ResourceManager-Instanz zurück, die von dieser Klasse verwendet wird.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.Culture">
+            <summary>Überschreibt die Eigenschaft CurrentUICulture des aktuellen Threads für alle
+              Ressourcenabrufe, die diese stark typisierte Ressourcenklasse verwenden.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.ByMeshColorsInvalidColorCountMessage">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Die Farbanzahl ist ungültig. Sie muss gleich 1 (Einzelfarbe) oder gleich der Flächenanzahl (Farbe pro Fläche) oder gleich der Scheitelpunktanzahl (Farbe pro Scheitelpunkt) oder gleich der Dreiecksanzahl multipliziert mit drei (Farbe pro Scheitelpunkt) sein. Wenn Sie mehrere Netze einfärben möchten, müssen Sie möglicherweise Listenebenen verwenden.'.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.JaggedListExceptionMessage">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie: Die Liste der Farben darf nicht unregelmäßig sein.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.NoColorsExceptionMessage">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie: Sie müssen einige Farben eingeben.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.NoVertexExceptionMessage">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie: Sie müssen einige Scheitelpunkte angeben.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.TwoDimensionalListExceptionMessage">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie: Sie müssen eine zweidimensionale Farbenliste angeben.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.VertexColorCountMismatchExceptionMessage">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie: Die Anzahl der angegebenen Farben muss der Anzahl der Scheitelpunkte entsprechen.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.VerticesDivisibleByThreeExceptionMessage">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie: Die Anzahl der angegebenen Scheitelpunkte muss durch drei teilbar sein.</summary>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,104 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Operators</name>
+    </assembly>
+    <members>
+        <member name="%add">
+            <summary>Restituisce l'aggiunta di x e y</summary>
+            <param name="x">Valore intero, valore doppio o stringa</param>
+            <param name="y">Valore intero, valore doppio o stringa</param>
+            <returns name="var">La somma di due numeri di input o la concatenazione di due stringhe</returns>
+            <search>add, plus, addition, +</search>
+        </member>
+		<member name="%sub">
+            <summary>Restituisce la sottrazione di x da y.</summary>
+            <param name="x">Valore intero o doppio</param>
+            <param name="y">Valore intero o doppio</param>
+            <returns name="number">Risultato dell'input y sottratto dall'input X</returns>
+            <search>sub, subtract, difference, -</search>
+        </member>		
+		<member name="%mul">
+            <summary>Restituisce la moltiplicazione di x per y</summary>
+            <param name="x">Valore intero o doppio</param>
+            <param name="y">Valore intero o doppio</param>
+            <returns name="number">Il prodotto dei due numeri di input</returns>
+            <search>mul, multiply, product, times, *, x</search>
+        </member>
+		<member name="%div">
+            <summary>Restituisce la divisione di x per y</summary>
+            <param name="x">Valore intero o doppio</param>
+            <param name="y">Valore intero o doppio</param>
+            <returns name="double">Risultato della divisione</returns>
+            <search>div, divide, product</search>
+        </member>
+		<member name="%eq">
+            <summary>Confronta se x e y sono uguali</summary>
+            <param name="x">Oggetto di tipo di base da confrontare (ad es. booleano, intero, doppio, stringa e così via)</param>
+            <param name="y">Oggetto di tipo di base da confrontare (ad es. booleano, intero, doppio, stringa e così via)</param>
+            <returns name="bool">Risultato del controllo di uguaglianza</returns>
+            <search>eq, equal, =</search>
+        </member>
+		<member name="%ge">
+            <summary>Confronta se x è maggiore di o uguale a y</summary>
+            <param name="x">Valore intero o doppio</param>
+            <param name="y">Valore intero o doppio</param>
+            <returns name="bool">True se x è uguale o maggiore di y, false se non lo è</returns>
+            <search>greater,equal</search>
+        </member>
+		<member name="%gt">
+            <summary>Confronta se x è maggiore di y</summary>
+            <param name="x">Valore intero o doppio</param>
+            <param name="y">Valore intero o doppio</param>
+            <returns name="bool">True se x è maggiore di y, false se non lo è</returns>
+            <search>greater</search>
+        </member>
+		<member name="%mod">
+            <summary>Modulo: trova il resto di x/y</summary>
+            <param name="x">Valore intero o doppio</param>
+            <param name="y">Valore intero o doppio</param>
+            <returns name="number">Resto dell'input X dopo la divisione per l'input Y</returns>
+            <search>mod, modulo, remainder</search>
+        </member>
+		<member name="%le">
+            <summary>Confronta se x è minore di o uguale a Y</summary>
+            <param name="x">Valore intero o doppio</param>
+            <param name="y">Valore intero o doppio</param>
+            <returns name="bool">Risultato del controllo</returns>
+            <search>less,equal</search>
+        </member>
+		<member name="%lt">
+            <summary>Confronta se x è minore di y</summary>
+            <param name="x">Valore intero o doppio</param>
+            <param name="y">Valore intero o doppio</param>
+            <returns name="bool">Risultato del controllo</returns>
+            <search>less</search>
+        </member>
+		<member name="%and">
+            <summary>Operatore AND logico</summary>
+            <param name="x">Un valore booleano per verificare se è true</param>
+            <param name="y">Un altro valore booleano per verificare se è true</param>
+            <returns name="bool">Risultato del controllo</returns>
+            <search>and</search>
+        </member>
+		<member name="%or">
+            <summary>Operatore OR logico</summary>
+            <param name="bool">Booleano per verificare se true</param>
+            <param name="otherBool">Altro valore booleano per verificare se è true</param>
+            <returns name="bool">True se uno qualsiasi degli input è true</returns>
+            <search>or</search>
+        </member>
+		<member name="%nq">
+            <summary>Restituisce true se i due valori sono differenti</summary>
+            <param name="x">Valore intero o doppio</param>
+            <param name="y">Valore intero o doppio</param>
+            <returns name="bool">Risultato del controllo</returns>
+            <search>equal</search>
+        </member>
+		<member name="%Not">
+		            <summary>Nega l'input, ad es. restituisce false quando l'input è true.</summary>
+            <param name="x">Booleano da invertire.</param>
+            <returns name="bool">tipo var[]..[] (booleano invertito)</returns>
+            <search>not</search>
+        </member>
+    </members>
+</doc>

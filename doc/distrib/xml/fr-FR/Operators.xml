@@ -1,0 +1,104 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Operators</name>
+    </assembly>
+    <members>
+        <member name="%add">
+            <summary>Renvoie la somme de x et y</summary>
+            <param name="x">Nombre entier, valeur double ou chaîne</param>
+            <param name="y">Nombre entier, valeur double ou chaîne</param>
+            <returns name="var">Somme de deux nombres spécifiés ou concaténation de deux chaînes</returns>
+            <search>add, plus, addition, +</search>
+        </member>
+		<member name="%sub">
+            <summary>Renvoie la valeur obtenue en soustrayant y a x</summary>
+            <param name="x">Nombre entier ou valeur double</param>
+            <param name="y">Nombre entier ou valeur double</param>
+            <returns name="number">Résultat obtenu en soustrayant la valeur y spécifiée à la valeur x spécifiée</returns>
+            <search>sub, subtract, difference, -</search>
+        </member>		
+		<member name="%mul">
+            <summary>Renvoie la valeur obtenue en multipliant x et y</summary>
+            <param name="x">Nombre entier ou valeur double</param>
+            <param name="y">Nombre entier ou valeur double</param>
+            <returns name="number">Produit des deux nombres spécifiés en entrée</returns>
+            <search>mul, multiply, product, times, *, x</search>
+        </member>
+		<member name="%div">
+            <summary>Renvoie la valeur obtenue en divisant x par y</summary>
+            <param name="x">Nombre entier ou valeur double</param>
+            <param name="y">Nombre entier ou valeur double</param>
+            <returns name="double">Résultat de la division</returns>
+            <search>div, divide, product</search>
+        </member>
+		<member name="%eq">
+            <summary>Compare x et y pour déterminer s'ils sont identiques</summary>
+            <param name="x">Objet d'un type de base (booléen, nombre entier, valeur double, chaîne, etc.) à comparer</param>
+            <param name="y">Objet d'un type de base (booléen, nombre entier, valeur double, chaîne, etc.) à comparer</param>
+            <returns name="bool">Résultat de la vérification d'égalité</returns>
+            <search>eq, equal, =</search>
+        </member>
+		<member name="%ge">
+            <summary>Compare x et y pour déterminer si x est supérieur ou égal à y</summary>
+            <param name="x">Nombre entier ou valeur double</param>
+            <param name="y">Nombre entier ou valeur double</param>
+            <returns name="bool">True si x est supérieur ou égal à y, False sinon</returns>
+            <search>greater,equal</search>
+        </member>
+		<member name="%gt">
+            <summary>Compare x et y pour déterminer si x est supérieur à y</summary>
+            <param name="x">Nombre entier ou valeur double</param>
+            <param name="y">Nombre entier ou valeur double</param>
+            <returns name="bool">True si x est supérieur à y, False sinon</returns>
+            <search>greater</search>
+        </member>
+		<member name="%mod">
+            <summary>Modulo: détermine le reste de x/y</summary>
+            <param name="x">Nombre entier ou valeur double</param>
+            <param name="y">Nombre entier ou valeur double</param>
+            <returns name="number">Reste obtenu en divisant la valeur x spécifiée par la valeur y spécifiée</returns>
+            <search>mod, modulo, remainder</search>
+        </member>
+		<member name="%le">
+            <summary>Compare x et y pour déterminer si x est inférieur ou égal à y</summary>
+            <param name="x">Nombre entier ou valeur double</param>
+            <param name="y">Nombre entier ou valeur double</param>
+            <returns name="bool">Résultat de la vérification</returns>
+            <search>less,equal</search>
+        </member>
+		<member name="%lt">
+            <summary>Compare x et y pour déterminer si x est inférieur à y</summary>
+            <param name="x">Nombre entier ou valeur double</param>
+            <param name="y">Nombre entier ou valeur double</param>
+            <returns name="bool">Résultat de la vérification</returns>
+            <search>less</search>
+        </member>
+		<member name="%and">
+            <summary>Opérateur ET logique</summary>
+            <param name="x">Vérifier si cette valeur booléenne est True</param>
+            <param name="y">Vérifier si cette autre valeur booléenne est True</param>
+            <returns name="bool">Résultat de la vérification</returns>
+            <search>and</search>
+        </member>
+		<member name="%or">
+            <summary>Opérateur OU logique</summary>
+            <param name="bool">Vérifier si cette valeur booléenne est True</param>
+            <param name="otherBool">Vérifier si cette autre valeur booléenne est True</param>
+            <returns name="bool">True si au moins une des entrées est True</returns>
+            <search>or</search>
+        </member>
+		<member name="%nq">
+            <summary>Renvoie True si les deux valeurs sont différentes</summary>
+            <param name="x">Nombre entier ou valeur double</param>
+            <param name="y">Nombre entier ou valeur double</param>
+            <returns name="bool">Résultat de la vérification</returns>
+            <search>equal</search>
+        </member>
+		<member name="%Not">
+		            <summary>Inverse l'entrée, par exemple renvoie la valeur False lorsque l'entrée correspond à la valeur True.</summary>
+            <param name="x">valeur booléenne à inverser.</param>
+            <returns name="bool">type var[]..[] (booléen inversé)</returns>
+            <search>not</search>
+        </member>
+    </members>
+</doc>
