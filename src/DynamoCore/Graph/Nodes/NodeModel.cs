@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -1313,6 +1314,48 @@ namespace Dynamo.Graph.Nodes
             OutPorts.CollectionChanged += PortsCollectionChanged;
         }
 
+        private Dictionary<PortModel, NotifyCollectionChangedEventHandler> portCollectionChangedEvents = new();
+
+        private void SubscribeToPort(PortModel portModel)
+        {
+            // is this port already subscribed?
+            if (portCollectionChangedEvents.ContainsKey(portModel)) return;
+
+            var func = (NotifyCollectionChangedEventHandler)OnCollectionChanged;
+
+            portModel.Connectors.CollectionChanged += func;
+            portCollectionChangedEvents[portModel] = func;
+
+            portModel.PropertyChanged += OnPortPropertyChanged;
+            SetNodeStateBasedOnConnectionAndDefaults();
+
+            void OnCollectionChanged(object connectorCollection, NotifyCollectionChangedEventArgs e)
+            {
+                // Call the collection changed handler, replacing
+                // the 'sender' with the port, which is required
+                // for the disconnect operations.
+                ConnectorsCollectionChanged(portModel, e);
+            }
+        }
+
+        private void UnsubscribeToPort(PortModel portModel, bool disposing = false)
+        {
+            portModel.PropertyChanged -= OnPortPropertyChanged;
+
+            // if this node is being disposed, we don't need to set node state and destroy the connectors,
+            // as the connectors will be deleted elsewhere
+            if (!disposing)
+            {
+                portModel.DestroyConnectors();
+                SetNodeStateBasedOnConnectionAndDefaults();
+            }
+
+            if (portCollectionChangedEvents.Remove(portModel, out var eventHandler))
+            {
+                portModel.Connectors.CollectionChanged -= eventHandler;
+            }
+        }
+
         private void PortsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
@@ -1321,25 +1364,13 @@ namespace Dynamo.Graph.Nodes
                     ConfigureSnapEdges(sender == InPorts ? InPorts : OutPorts);
                     foreach (PortModel p in e.NewItems)
                     {
-                        p.Connectors.CollectionChanged += (coll, args) =>
-                        {
-                            // Call the collection changed handler, replacing
-                            // the 'sender' with the port, which is required
-                            // for the disconnect operations.
-                            ConnectorsCollectionChanged(p, args);
-                        };
-                        p.PropertyChanged += OnPortPropertyChanged;
-                        SetNodeStateBasedOnConnectionAndDefaults();
+                        SubscribeToPort(p);
                     }
                     break;
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
                     foreach (PortModel p in e.OldItems)
                     {
-                        p.PropertyChanged -= OnPortPropertyChanged;
-
-                        p.DestroyConnectors();
-
-                        SetNodeStateBasedOnConnectionAndDefaults();
+                        UnsubscribeToPort(p);
                     }
                     break;
             }
@@ -2892,6 +2923,31 @@ namespace Dynamo.Graph.Nodes
             if (RenderPackagesUpdated != null)
             {
                 RenderPackagesUpdated(this, packages);
+            }
+        }
+
+
+        public override void Dispose()
+        {
+            if (HasBeenDisposed) return;
+
+            base.Dispose();
+
+            if (InPorts != null)
+            {
+                InPorts.CollectionChanged -= PortsCollectionChanged;
+                foreach(var port in InPorts)
+                {
+                    UnsubscribeToPort(port, disposing: true);
+                }
+            }
+            if (OutPorts != null)
+            {
+                OutPorts.CollectionChanged -= PortsCollectionChanged;
+                foreach(var port in OutPorts)
+                {
+                    UnsubscribeToPort(port, disposing: true);
+                }
             }
         }
     }

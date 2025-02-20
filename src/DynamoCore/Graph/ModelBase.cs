@@ -281,12 +281,17 @@ namespace Dynamo.Graph
             RaisePropertyChanged("Position");
         }
 
+        protected bool HasBeenDisposed { get; private set; }
+
         /// <summary>
         /// Invokes Dispose on the object.
         /// </summary>
         public virtual void Dispose()
         {
-            Disposed?.Invoke(this);
+            var wasDisposed = HasBeenDisposed;
+            HasBeenDisposed = true;
+
+            if (!wasDisposed) Disposed?.Invoke(this);
         }
 
         /// <summary>
