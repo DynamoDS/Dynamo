@@ -992,5 +992,87 @@ namespace DynamoCoreWpfTests
         {            
             return Model.CurrentWorkspace.Nodes.First(n => n.GUID == Guid.Parse(guid));
         }
+
+
+        [Test]
+        public void WatchNode_CtrlC_CopiesText()
+        {
+            // Arrange
+            Open(@"core\watch\WatchViewModelGetNodeLabelTree.dyn");
+            string expectedText = "Hello, world!";
+            var nodeView = NodeViewWithGuid("d653b1b0-ac60-4e26-b73c-627a39c5694a");
+
+            // Ensure PreviewControl is initialized
+            Assert.NotNull(nodeView.PreviewControl, "PreviewControl should not be null");
+            nodeView.PreviewControl.RaiseEvent(new RoutedEventArgs(FrameworkElement.LoadedEvent));
+
+            // Expand the preview bubble before accessing WatchTree
+            nodeView.PreviewControl.BindToDataSource();
+            nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Condensed);
+            nodeView.PreviewControl.TransitionToState(Dynamo.UI.Controls.PreviewControl.State.Expanded);
+
+            DispatcherUtil.DoEvents(); // Ensure UI updates
+
+            // Find WatchTree
+            var watchTree = nodeView.PreviewControl.ChildOfType<WatchTree>();
+            Assert.NotNull(watchTree, "WatchTree should not be null");
+
+            // Find the TreeView by Name (instead of ChildOfType)
+            var treeView = watchTree.FindName("treeView1") as TreeView;
+            Assert.NotNull(treeView, "TreeView should not be null");
+
+            // Ensure Data Binding has Applied
+            DispatcherUtil.DoEvents();
+
+            // Find First TreeViewItem After Binding is Complete
+            var treeViewItem = treeView.ItemContainerGenerator.ContainerFromIndex(0) as TreeViewItem;
+            Assert.NotNull(treeViewItem, "TreeViewItem should not be null");
+
+            treeViewItem.IsSelected = true; // Select the first item
+            treeViewItem.Focus();
+
+            // Clear clipboard before test
+            Clipboard.Clear();
+            DispatcherUtil.DoEvents();
+
+            // Act: Simulate Ctrl+C
+            RaiseCtrlCEvent(treeViewItem);
+
+            // Allow clipboard update
+            DispatcherUtil.DoEvents();
+
+            // Assert: Check clipboard content
+            string clipboardText = Clipboard.GetText();
+            Assert.AreEqual(expectedText, clipboardText, "Ctrl+C should copy the correct text");
+
+            // Verify up/down navigation still works
+            RaiseKeyEvent(treeViewItem, Key.Down);
+            DispatcherUtil.DoEvents();
+            Assert.IsTrue(treeViewItem.IsSelected, "TreeViewItem should still be selectable after Ctrl+C");
+
+            RaiseKeyEvent(treeViewItem, Key.Up);
+            DispatcherUtil.DoEvents();
+        }
+
+        // Helper to simulate Ctrl+C event
+        private void RaiseCtrlCEvent(TreeViewItem item)
+        {
+            RaiseKeyEvent(item, Key.LeftCtrl);
+            RaiseKeyEvent(item, Key.C);
+            RaiseKeyEvent(item, Key.C, KeyEventType.KeyUp);
+            RaiseKeyEvent(item, Key.LeftCtrl, KeyEventType.KeyUp);
+        }
+
+        // Helper to simulate key presses
+        private void RaiseKeyEvent(TreeViewItem item, Key key, KeyEventType type = KeyEventType.KeyDown)
+        {
+            var e = new KeyEventArgs(Keyboard.PrimaryDevice, PresentationSource.FromVisual(item), 0, key)
+            {
+                RoutedEvent = type == KeyEventType.KeyDown ? Keyboard.KeyDownEvent : Keyboard.KeyUpEvent
+            };
+            item.RaiseEvent(e);
+        }
+
+        private enum KeyEventType { KeyDown, KeyUp }
     }
 }

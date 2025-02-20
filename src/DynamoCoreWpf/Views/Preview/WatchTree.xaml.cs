@@ -1,10 +1,12 @@
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using Dynamo.ViewModels;
-using System;
+using System.Windows.Input;
+using System.Windows.Threading;
 using CoreNodeModels;
-using System.Linq;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Controls
 {
@@ -24,6 +26,13 @@ namespace Dynamo.Controls
         private readonly int minWidthSize = 100;
         private readonly int minHeightSize = 40;
         private readonly int minHeightForList = 83;
+        private bool isCtrlPressed = false;
+        private readonly DispatcherTimer _ctrlResetTimer = new DispatcherTimer
+        {
+            Interval = TimeSpan.FromSeconds(1), // Reset control timer after 1 seconds
+            IsEnabled = false
+        };
+
 
         public WatchTree(WatchViewModel vm)
         {
@@ -34,6 +43,8 @@ namespace Dynamo.Controls
             DataContext = vm;
             this.Loaded += WatchTree_Loaded;
             this.Unloaded += WatchTree_Unloaded;
+
+            _ctrlResetTimer.Tick += _ctrlResetTimer_Tick;
         }
 
         internal static double DefaultWidthSize { get { return defaultWidthSize; } }
@@ -167,10 +178,37 @@ namespace Dynamo.Controls
             e.Handled = true; 
         }
 
-        private void treeviewItem_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        private void treeviewItem_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (prevWatchViewModel != null)
+            if (prevWatchViewModel != null || Models.DynamoModel.IsTestMode)
             {
+                if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+                {
+                    isCtrlPressed = true;
+                    _ctrlResetTimer.IsEnabled = true;
+                    _ctrlResetTimer.Stop();  // Reset the timer
+                    _ctrlResetTimer.Start(); // Start countdown
+                    return; // Allow propagation to capture the follow-up key code
+                }
+
+                if (e.Key == Key.C && isCtrlPressed)
+                {
+                    isCtrlPressed = false;
+                    _ctrlResetTimer.IsEnabled = false;
+
+                    if (sender is TreeViewItem tvi)
+                    {
+                        var textBlock = WpfUtilities.ChildOfType<TextBlock>(tvi, "NodeValue");
+                        if (textBlock != null)
+                        {
+                            Clipboard.SetText(textBlock.Text);
+                            e.Handled = true; // Prevents further propagation
+                            return;
+                        }
+                    }
+                }
+
+
                 if (e.Key == System.Windows.Input.Key.Up || e.Key == System.Windows.Input.Key.Down)
                 {
                     TreeViewItem tvi = sender as TreeViewItem;
@@ -190,6 +228,14 @@ namespace Dynamo.Controls
 
             e.Handled = true;
         }
+
+        // Stop the timer to prevent unnecessary ticks
+        private void _ctrlResetTimer_Tick(object sender, EventArgs e)
+        {
+            isCtrlPressed = false;
+            _ctrlResetTimer.IsEnabled = false; 
+        }
+
 
         private void HandleItemChanged (TreeViewItem tvi, WatchViewModel node)
         {
