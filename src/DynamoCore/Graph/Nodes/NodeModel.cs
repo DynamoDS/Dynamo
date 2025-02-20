@@ -1314,23 +1314,26 @@ namespace Dynamo.Graph.Nodes
             OutPorts.CollectionChanged += PortsCollectionChanged;
         }
 
-        private Dictionary<PortModel, NotifyCollectionChangedEventHandler> portCollectionChangedEvents = new();
-
         private void SubscribeToPort(PortModel portModel)
         {
-            // is this port already subscribed?
-            if (portCollectionChangedEvents.ContainsKey(portModel)) return;
+            // eventHandler must be initialized before OnCollectionChanged can reference it(self)
+            NotifyCollectionChangedEventHandler eventHandler = null;
 
-            var func = (NotifyCollectionChangedEventHandler)OnCollectionChanged;
+            eventHandler = OnCollectionChanged;
 
-            portModel.Connectors.CollectionChanged += func;
-            portCollectionChangedEvents[portModel] = func;
+            portModel.Connectors.CollectionChanged += eventHandler;
 
             portModel.PropertyChanged += OnPortPropertyChanged;
             SetNodeStateBasedOnConnectionAndDefaults();
 
             void OnCollectionChanged(object connectorCollection, NotifyCollectionChangedEventArgs e)
             {
+                if (HasBeenDisposed && eventHandler != null)
+                {
+                    portModel.Connectors.CollectionChanged -= eventHandler;
+                    return;
+                }
+
                 // Call the collection changed handler, replacing
                 // the 'sender' with the port, which is required
                 // for the disconnect operations.
@@ -1348,11 +1351,6 @@ namespace Dynamo.Graph.Nodes
             {
                 portModel.DestroyConnectors();
                 SetNodeStateBasedOnConnectionAndDefaults();
-            }
-
-            if (portCollectionChangedEvents.Remove(portModel, out var eventHandler))
-            {
-                portModel.Connectors.CollectionChanged -= eventHandler;
             }
         }
 

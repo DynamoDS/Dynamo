@@ -1486,13 +1486,15 @@ namespace Dynamo.Graph.Workspaces
             // lot of graph executions. As connectors are deleted, nodes will
             // have invalid inputs, so these executions are meaningless and may
             // cause invalid GC. See comments in MAGN-7229.
-            foreach (NodeModel node in Nodes)
-                node.RaisesModificationEvents = false;
-
-            foreach (NodeModel el in Nodes)
+            var nodes = Nodes; 
+            foreach (NodeModel node in nodes)
             {
-                el.Dispose();
+                node.RaisesModificationEvents = false;
+                node.Dispose();
+            }
 
+            foreach (NodeModel el in nodes)
+            {
                 foreach (PortModel p in el.InPorts)
                 {
                     for (int i = p.Connectors.Count - 1; i >= 0; i--)
