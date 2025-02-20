@@ -873,7 +873,7 @@ value: bool = false</value>
     <value>일부 노드가 현재 작업공간에 이미 있으므로 파일을 삽입하지 못했습니다.</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Dynamo 정의 삽입...</value>
+    <value>Insert Dynamo Graph...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>예시 파일이 작업공간에 추가되었습니다. 실행 모드가 수동으로 변경되었습니다.</value>

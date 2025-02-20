@@ -1,0 +1,64 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Tessellation</name>
+    </assembly>
+    <members>
+        <member name="T:Tessellation.Adapters.Cell2">
+            <summary>Cella per tassellazione 2D</summary>
+        </member>
+        <member name="T:Tessellation.Adapters.Cell3">
+            <summary>Cella per tassellazione 3D</summary>
+        </member>
+        <member name="T:Tessellation.Adapters.Tetrahedron">
+            <summary>Un vertice è una classe semplice che memorizza la posizione di un punto, un nodo o un vertice.</summary>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.GetPosition(System.Int32)">
+            <summary>Funzione di supporto per la restituzione della posizione del vertice i-th.</summary>
+            <param name="i"/>
+            <returns>Posizione del vertice i-th</returns>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.MakeFace(System.Int32,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Questa funzione aggiunge indici per un triangolo che rappresenta la faccia. L'ordine è CCW (antiorario), pertanto le normali calcolate automaticamente puntano nella direzione corretta.</summary>
+            <param name="i"/>
+            <param name="j"/>
+            <param name="k"/>
+            <param name="center"/>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.MakeFaces">
+            <summary>Crea un modello del tetraedro. Al colore viene applicata la trasparenza.</summary>
+            <returns>Modello che rappresenta il tetraedro</returns>
+        </member>
+        <member name="T:Tessellation.Adapters.TriangleFace">
+            <summary>Un vertice è una classe semplice che memorizza la posizione di un punto, un nodo o un vertice.</summary>
+        </member>
+        <member name="T:Tessellation.ConvexHull">
+            <summary>Funzioni per la creazione di superfici convesse.</summary>
+        </member>
+        <member name="M:Tessellation.ConvexHull.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>Crea una superficie convessa da un gruppo di punti.</summary>
+            <param name="points">Gruppo di punti.</param>
+        </member>
+        <member name="T:Tessellation.Delaunay">
+            <summary>Funzioni per la creazione di triangolazioni di Delaunay.</summary>
+        </member>
+        <member name="M:Tessellation.Delaunay.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
+            <summary>Crea una triangolazione di Delaunay di una superficie con un determinato gruppo di parametri UV.</summary>
+            <param name="uvs">Gruppo di parametri UV.</param>
+            <param name="face">Superficie alla quale applicare la triangolazione.</param>
+            <search>uvs</search>
+        </member>
+        <member name="M:Tessellation.Delaunay.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>Crea una triangolazione di Delaunay da un gruppo di punti.</summary>
+            <param name="points">Gruppo di punti.</param>
+        </member>
+        <member name="T:Tessellation.Voronoi">
+            <summary>Funzioni per la creazione di tassellazioni di Voronoi.</summary>
+        </member>
+        <member name="M:Tessellation.Voronoi.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
+            <summary>Crea una tassellazione di Voronoi di una superficie con un determinato gruppo di parametri UV.</summary>
+            <param name="uvs">Gruppo di parametri UV.</param>
+            <param name="face">Superficie da sottoporre a tassellazione.</param>
+            <search>uvs</search>
+        </member>
+    </members>
+</doc>

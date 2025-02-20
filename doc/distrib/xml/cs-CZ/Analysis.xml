@@ -1,0 +1,153 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Analysis</name>
+    </assembly>
+    <members>
+        <member name="T:Analysis.AnalysisResources">
+            <summary>Třída prostředků silného typu k vyhledávání lokalizovaných řetězců apod.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.ResourceManager">
+            <summary>Vrátí instanci třídy ResourceManager uloženou ve vyrovnávací paměti, která je použita touto třídou.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.Culture">
+            <summary>Přepíše vlastnost CurrentUICulture aktuálního vlákna pro všechna
+              vyhledávání prostředků pomocí této třídy prostředků silného typu.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyColorsMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Nejsou určeny žádné barvy.“.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyPointsMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Nejsou určeny žádné body.“.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyUVsMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Nejsou určeny žádné UV.“.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyValuesMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Nejsou určeny žádné hodnoty.“.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.InputsNotEquivalentMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Je nutné zadat ekvivalentní počet bodů a hodnot.“.</summary>
+        </member>
+        <member name="P:Analysis.IStructuredData`2.ValueLocations">
+            <summary>Kolekce umístění pro výpočty</summary>
+        </member>
+        <member name="P:Analysis.IStructuredData`2.Values">
+            <summary>Seznam hodnot odpovídajících jednotlivým umístěním</summary>
+        </member>
+        <member name="P:Analysis.ISurfaceData`2.Surface">
+            <summary>Povrch analýzy</summary>
+        </member>
+        <member name="P:Analysis.ICurveData`2.Curve">
+            <summary>Křivka analýzy</summary>
+        </member>
+        <member name="T:Analysis.IAnalysisModel`2">
+            <summary>Model analýzy</summary>
+            <typeparam name="TLocation">The analysis location type. (i.e. UV, Point)</typeparam>
+            <typeparam name="TValue">The analysis return type. (i.e. double, vector, SIUnit)</typeparam>
+        </member>
+        <member name="M:Analysis.Label.ByPointAndString(Autodesk.DesignScript.Geometry.Point,System.String)">
+            <summary>Vrátí objekt Label pro daný bodový objekt a řetězcový štítek.</summary>
+            <param name="point"/>
+            <param name="label"/>
+            <returns/>
+        </member>
+        <member name="T:Analysis.PointData">
+            <summary>Třída pro ukládání dat analýzy konstrukčního bodu</summary>
+        </member>
+        <member name="P:Analysis.PointData.ValueLocations">
+            <summary>Seznam bodů</summary>
+        </member>
+        <member name="P:Analysis.PointData.Values">
+            <summary>Slovník ze seznamů hodnot typu double.</summary>
+        </member>
+        <member name="M:Analysis.PointData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{System.Double})">
+            <summary>Umožňuje vytvořit objekt PointAnalysisData.</summary>
+            <param name="points">Seznam bodů</param>
+            <param name="values">Seznam hodnot typu double</param>
+        </member>
+        <member name="T:Analysis.Properties.Resources">
+            <summary>Třída prostředků silného typu k vyhledávání lokalizovaných řetězců apod.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ResourceManager">
+            <summary>Vrátí instanci třídy ResourceManager uloženou ve vyrovnávací paměti, která je použita touto třídou.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.Culture">
+            <summary>Přepíše vlastnost CurrentUICulture aktuálního vlákna pro všechna
+              vyhledávání prostředků pomocí této třídy prostředků silného typu.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ByPointsAndValueObsolete">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Použijte uzly bodů a čísel jako přímé vstupy k uzlům, u kterých byly dříve použity uzly PointData.“.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.BySurfacePointObsolete">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Použijte uzly povrchů a atributů UV jako přímé vstupy k uzlům, u kterých byly dříve použity uzly SurfaceData.“.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.BySurfacePointsAndValues">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Použijte uzly povrchů, atributů UV a čísel jako přímé vstupy k uzlům, u kterých byly dříve použity uzly SurfaceData.“.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.SurfaceObsolete">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Použijte povrch dostupný na jiném místě v grafu.“.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueLocationObsolete">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Použijte body dostupné na jiném místě v grafu.“.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueLocationsObsolete">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Použijte umístění atributů UV dostupná na jiném místě v grafu.“.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValuesObsolete">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Použijte hodnoty dodané v rámci uzlu, pomocí kterého se provede analýza.“.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueSurfaceObsolete">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Použijte hodnoty dodané v rámci uzlu, pomocí kterého se provede analýza.“.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.VectorValueObsolete">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Použijte uzly vektorů a čísel jako přímé vstupy k uzlům, u kterých byly dříve použity uzly VectorData.“.</summary>
+        </member>
+        <member name="T:Analysis.SurfaceData">
+            <summary>Třída pro ukládání dat analýzy strukturovaného povrchu</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.Surface">
+            <summary>Povrch, který obsahuje umístění</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.ValueLocations">
+            <summary>Seznam umístění na povrchu určených souřadnicemi UV</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.Values">
+            <summary>Slovník ze seznamů hodnot typu double</summary>
+        </member>
+        <member name="M:Analysis.SurfaceData.BySurfaceAndPoints(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
+            <summary>Umožňuje vytvořit objekt SurfaceData bez hodnot.</summary>
+            <param name="surface">Povrch, který obsahuje umístění</param>
+            <param name="uvs">Seznam umístění na povrchu určených souřadnicemi UV</param>
+            <returns/>
+        </member>
+        <member name="M:Analysis.SurfaceData.BySurfacePointsAndValues(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},System.Collections.Generic.IList{System.Double})">
+            <summary>Umožňuje vytvořit objekt SurfaceData.</summary>
+            <param name="surface">Povrch, který obsahuje umístění</param>
+            <param name="uvs">Seznam umístění na povrchu určených souřadnicemi UV</param>
+            <param name="values">Seznam hodnot typu double</param>
+        </member>
+        <member name="M:Analysis.AnalysisExtensions.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
+            <summary>Pokud jsou dány dvě roviny (typu UV) a rozdíl mezi nimi je menší než 1.0e-6, vrátí hodnotu True. Jinak vrátí hodnotu False.</summary>
+            <param name="a"/>
+            <param name="b"/>
+            <returns/>
+        </member>
+        <member name="T:Analysis.Utils.ValueLocation`1">
+            <summary>Třída pro uložení hodnoty v určitém umístění</summary>
+        </member>
+        <member name="T:Analysis.VectorData">
+            <summary>Třída pro ukládání dat analýzy strukturovaného vektoru</summary>
+        </member>
+        <member name="P:Analysis.VectorData.ValueLocations">
+            <summary>Seznam umístění pro výpočty</summary>
+        </member>
+        <member name="P:Analysis.VectorData.Values">
+            <summary>Slovník výsledků</summary>
+        </member>
+        <member name="M:Analysis.VectorData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.Vector})">
+            <summary>Umožňuje vytvořit objekt VectorAnalysisData.</summary>
+            <param name="points">Seznam bodů</param>
+            <param name="values">Seznam hodnot vektoru</param>
+        </member>
+    </members>
+</doc>

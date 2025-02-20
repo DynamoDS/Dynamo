@@ -1,0 +1,155 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Analysis</name>
+    </assembly>
+    <members>
+        <member name="T:Analysis.AnalysisResources">
+            <summary>Una clase de recurso con tipado fuerte que permite buscar cadenas localizadas, etc.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.ResourceManager">
+            <summary>Devuelve el ejemplar de ResourceManager en caché utilizado por esta clase.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.Culture">
+            <summary>Elimina la propiedad CurrentUICulture del hilo actual para todas
+              las búsquedas de recurso que utilizan esta clase de
+              recurso con tipado fuerte.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyColorsMessage">
+            <summary>Busca una cadena localizada similar a No hay colores especificados.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyPointsMessage">
+            <summary>Busca una cadena localizada similar a no existen puntos especificados.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyUVsMessage">
+            <summary>Busca una cadena localizada similar a No hay UV especificados.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyValuesMessage">
+            <summary>Busca una cadena localizada similar a No hay valores especificados.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.InputsNotEquivalentMessage">
+            <summary>Busca una cadena localizada similar a Debe proporcionar un número equivalente de puntos y valores.</summary>
+        </member>
+        <member name="P:Analysis.IStructuredData`2.ValueLocations">
+            <summary>Una colección de ubicaciones de cálculo.</summary>
+        </member>
+        <member name="P:Analysis.IStructuredData`2.Values">
+            <summary>Una lista de valores que corresponden a cada ubicación.</summary>
+        </member>
+        <member name="P:Analysis.ISurfaceData`2.Surface">
+            <summary>La superficie de análisis.</summary>
+        </member>
+        <member name="P:Analysis.ICurveData`2.Curve">
+            <summary>La curva de análisis.</summary>
+        </member>
+        <member name="T:Analysis.IAnalysisModel`2">
+            <summary>Un modelo de análisis.</summary>
+            <typeparam name="TLocation">The analysis location type. (i.e. UV, Point)</typeparam>
+            <typeparam name="TValue">The analysis return type. (i.e. double, vector, SIUnit)</typeparam>
+        </member>
+        <member name="M:Analysis.Label.ByPointAndString(Autodesk.DesignScript.Geometry.Point,System.String)">
+            <summary>Devuelve un objeto de etiqueta según un objeto de punto y una etiqueta de cadena.</summary>
+            <param name="point"/>
+            <param name="label"/>
+            <returns/>
+        </member>
+        <member name="T:Analysis.PointData">
+            <summary>Una clase para almacenar datos de análisis de puntos estructurados.</summary>
+        </member>
+        <member name="P:Analysis.PointData.ValueLocations">
+            <summary>Una lista de puntos.</summary>
+        </member>
+        <member name="P:Analysis.PointData.Values">
+            <summary>Un diccionario de listas de valores dobles.</summary>
+        </member>
+        <member name="M:Analysis.PointData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{System.Double})">
+            <summary>Crea un objeto PointAnalysisData.</summary>
+            <param name="points">Una lista de puntos.</param>
+            <param name="values">Una lista de valores dobles.</param>
+        </member>
+        <member name="T:Analysis.Properties.Resources">
+            <summary>Una clase de recurso con tipado fuerte que permite buscar cadenas localizadas, etc.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ResourceManager">
+            <summary>Devuelve el ejemplar de ResourceManager en caché utilizado por esta clase.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.Culture">
+            <summary>Elimina la propiedad CurrentUICulture del hilo actual para todas
+              las búsquedas de recurso que utilizan esta clase de
+              recurso con tipado fuerte.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ByPointsAndValueObsolete">
+            <summary>Busca una cadena localizada similar a Utiliza nodos de puntos y nodos de números como entradas directas a nodos que ya utilizaron nodos PointData.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.BySurfacePointObsolete">
+            <summary>Busca una cadena localizada similar a Utiliza nodos de superficies y UV como entradas directas a nodos que ya utilizaron nodos SurfaceData.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.BySurfacePointsAndValues">
+            <summary>Busca una cadena localizada similar a Utiliza nodos de superficies, UV y números como entradas directas a nodos que ya utilizaron nodos SurfaceData.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.SurfaceObsolete">
+            <summary>Busca una cadena localizada similar a Utiliza la superficie disponible en el gráfico.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueLocationObsolete">
+            <summary>Busca una cadena localizada similar a Utiliza los puntos disponibles en cualquier otra parte del gráfico.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueLocationsObsolete">
+            <summary>Busca una cadena localizada similar a Utiliza las ubicaciones de UV disponibles en cualquier otra parte del gráfico.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValuesObsolete">
+            <summary>Busca una cadena localizada similar a Utiliza los valores proporcionados por el nodo que efectúa el análisis.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueSurfaceObsolete">
+            <summary>Busca una cadena localizada similar a Utiliza los valores proporcionados por el nodo que efectúa el análisis.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.VectorValueObsolete">
+            <summary>Busca una cadena localizada similar a Utiliza nodos de vectores y nodos de números como entradas directas a nodos que ya utilizaron nodos VectorData.</summary>
+        </member>
+        <member name="T:Analysis.SurfaceData">
+            <summary>Una clase para almacenar datos de análisis de superficie estructurados.</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.Surface">
+            <summary>La superficie que contiene las ubicaciones.</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.ValueLocations">
+            <summary>Una lista de ubicaciones de UV en la superficie.</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.Values">
+            <summary>Un diccionario de listas de dobles.</summary>
+        </member>
+        <member name="M:Analysis.SurfaceData.BySurfaceAndPoints(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
+            <summary>Crea un objeto SurfaceData sin valores.</summary>
+            <param name="surface">La superficie que contiene las ubicaciones.</param>
+            <param name="uvs">Una lista de ubicaciones de UV en la superficie.</param>
+            <returns/>
+        </member>
+        <member name="M:Analysis.SurfaceData.BySurfacePointsAndValues(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},System.Collections.Generic.IList{System.Double})">
+            <summary>Crea un objeto SurfaceData.</summary>
+            <param name="surface">La superficie que contiene las ubicaciones.</param>
+            <param name="uvs">Una lista de ubicaciones de UV en la superficie.</param>
+            <param name="values">Una lista de valores dobles.</param>
+        </member>
+        <member name="M:Analysis.AnalysisExtensions.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
+            <summary>Toma dos planos (de tipo UV) y devuelve True si la diferencia entre los dos planos es menor que 1.0e-6 y devuelve False en caso contrario.</summary>
+            <param name="a"/>
+            <param name="b"/>
+            <returns/>
+        </member>
+        <member name="T:Analysis.Utils.ValueLocation`1">
+            <summary>Una clase para almacenar un valor en una ubicación.</summary>
+        </member>
+        <member name="T:Analysis.VectorData">
+            <summary>Una clase para almacenar datos de análisis de vectores estructurados.</summary>
+        </member>
+        <member name="P:Analysis.VectorData.ValueLocations">
+            <summary>Una lista de ubicaciones de cálculo.</summary>
+        </member>
+        <member name="P:Analysis.VectorData.Values">
+            <summary>Un diccionario de resultados.</summary>
+        </member>
+        <member name="M:Analysis.VectorData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.Vector})">
+            <summary>Crea un objeto VectorAnalysisData.</summary>
+            <param name="points">Una lista de puntos.</param>
+            <param name="values">Una lista de valores de vectores.</param>
+        </member>
+    </members>
+</doc>

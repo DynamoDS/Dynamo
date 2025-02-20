@@ -3741,8 +3741,18 @@
   <data name="PackageVersionTooltip" xml:space="preserve">
     <value>標示 .x 的版本包括指定主要版本和次要版本中的所有版本</value>
   </data>
+  <data name="CannotAddNodeToWorkspace" xml:space="preserve">
+    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
+  </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
     <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
+  </data>
+  <data name="IDSDKErrorMessage" xml:space="preserve">
+    <value>您的系統似乎未設定 Autodesk Identity Manager。若要確保完整存取所有功能，請使用 Autodesk Identity Manager 登入您的 Autodesk 帳戶。
+請在此網址或透過 Autodesk Access #下載並安裝=https://manage.autodesk.com/products/updates，然後登入。</value>
+  </data>
+  <data name="IDSDKErrorMessageTitle" xml:space="preserve">
+    <value>下載 Autodesk Identity Manager</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

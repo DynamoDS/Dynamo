@@ -1,0 +1,112 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>GeometryColor</name>
+    </assembly>
+    <members>
+        <member name="M:Modifiers.GeometryColor.ByGeometryColor(Autodesk.DesignScript.Geometry.Geometry,DSCore.Color)">
+            <summary>Visualice geometría mediante un color.</summary>
+            <param name="geometry">La geometría a la que desea aplicar el color.</param>
+            <param name="color">El color.</param>
+            <returns>Un objeto de visualización.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.BySurfaceColors(Autodesk.DesignScript.Geometry.Surface,DSCore.Color[][])">
+             <summary>Muestra valores de color en una superficie.
+            
+             Los colores proporcionados se convierten de forma interna en una textura de imagen que
+             se asigna a la superficie.</summary>
+             <param name="surface">La superficie en la que se aplicarán los colores.</param>
+             <param name="colors">Una lista bidimensional de colores.
+            
+             La lista de colores debe ser cuadrada. Si se intenta transferir una matriz irregular,
+             se generará una excepción.</param>
+             <returns>Un objeto de visualización.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ByPointsColors(Autodesk.DesignScript.Geometry.Point[],DSCore.Color[])">
+             <summary>Crea una malla de colores mediante puntos y colores.
+            
+             La lista de puntos proporcionada se utiliza para crear una malla triangulada con
+             vértices no unidos.</summary>
+             <param name="points">Una lista de puntos.
+            
+             Actualmente, solo se admiten mallas triangulares. Cada triplete de puntos de la lista formará un
+             triángulo en la malla. Los puntos deben ordenarse en el sentido contrario a las agujas del reloj.
+             Si se intenta transferir una lista de vértices cuyo recuento no sea divisible por tres, se generará una excepción.</param>
+             <param name="colors">Una lista de colores.
+            
+             El número de colores debe coincidir con el número de vértices. Si se intenta transferir una lista de colores que no
+             tenga el mismo número de colores que la lista de puntos, se generará una excepción.</param>
+             <returns>Un objeto de visualización.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
+            <summary>Muestra la malla por un solo color, colores por cara, colores por vértice o colores por vértice de cara.</summary>
+            <param name="mesh"/>The Mesh on which to apply the colors
+            <param name="colors">El número de colores debe ser igual a 1 (un solo color), al número de caras (color por cara), al número de vértices (por vértice) o al número de triángulos multiplicado por tres (color por vértice de triángulo).</param>
+            <param name="smoothShading">Si se establece en "True" (verdadero), el sombreado se mostrará suave en lugar de facetado; esto es útil para visualizar superficies continuas suaves.</param>
+            <returns>Un objeto de visualización.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ComputeColorMap(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},DSCore.Color[],System.Int32,System.Int32)">
+            <summary>Calcule un conjunto de mapas de colores a partir de un conjunto de objetos SurfaceData.</summary>
+            <returns/>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ComputeSamplesFromNormalizedValue(System.Double,System.Int32,System.Int32)">
+            <summary>Este método asigna de nuevo un número entre 0,0 y 1,0 a un valor entero entre los valores de lowestPower y highestPower.</summary>
+        </member>
+        <member name="T:Autodesk.DesignScript.Geometry.ImportHelpers">
+            <summary>Nodos de importación de geometría que presentan dependencias que no deseamos  introducir en ProtoGeometry.
+Estos métodos están además envueltos por nodos NodeModel para que podamos obtener la nomenclatura y la ubicación de la biblioteca
+con exactitud.</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.ImportFromSATWithUnits(System.String,DynamoUnits.Unit)">
+            <summary>Importa la geometría desde la ruta de archivo SAT. Establezca la entrada de dynamoUnit para que coincida con la forma en que se están
+interpretando los demás números del archivo de Dynamo.</summary>
+            <param name="filePath">Cadena de ruta a un archivo .SAT.</param>
+            <param name="dynamoUnit">Una longitud de unidad de Forge; si se deja como nulo, el archivo SAT se importará como sin unidad.</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.ImportFromSATWithUnits(System.IO.FileInfo,DynamoUnits.Unit)">
+            <summary>Importa la geometría desde la ruta de archivo SAT. Establezca la entrada de dynamoUnit para que coincida con la forma en que se están
+interpretando los demás números del archivo de Dynamo.</summary>
+            <param name="file">Un objeto de archivo que señala a un archivo .SAT.</param>
+            <param name="dynamoUnit">Una longitud de unidad de Forge; si se deja como nulo, el archivo SAT se importará como sin unidad.</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.DeserializeFromSABWithUnits(System.Byte[],DynamoUnits.Unit)">
+            <summary>Importa la geometría desde la matriz de bytes SAB. Establezca la entrada de dynamoUnit para que coincida con la forma en que se están
+interpretando los demás números del archivo de Dynamo.</summary>
+            <param name="buffer">Matriz de bytes SAB</param>
+            <param name="dynamoUnit">Una longitud de unidad de Forge; si se deja como nulo, el archivo SAT se importará como sin unidad.</param>
+            <returns/>
+        </member>
+        <member name="T:GeometryColor.Properties.Resources">
+            <summary>Una clase de recurso con tipado fuerte que permite buscar cadenas localizadas, etc.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.ResourceManager">
+            <summary>Devuelve el ejemplar de ResourceManager en caché utilizado por esta clase.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.Culture">
+            <summary>Anula la propiedad CurrentUICulture del hilo actual para todas las
+               búsquedas de recursos mediante esta clase de recurso con tipado fuerte.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.ByMeshColorsInvalidColorCountMessage">
+            <summary>Busca una cadena localizada similar a El recuento de colores no es válido. Debe ser igual a 1 (un solo color), al recuento de caras (color por cara), al recuento de vértices (color por vértice) o al recuento de triángulos multiplicado por tres (color por vértice de triángulo). Si desea colorear varias mallas, es posible que deba usar Niveles de lista.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.JaggedListExceptionMessage">
+            <summary>Busca una cadena localizada similar a "La lista de colores no puede ser irregular".</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.NoColorsExceptionMessage">
+            <summary>Busca una cadena localizada similar a "Debe proporcionar algunos colores".</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.NoVertexExceptionMessage">
+            <summary>Busca una cadena localizada similar a "Debe proporcionar algunos vertices".</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.TwoDimensionalListExceptionMessage">
+            <summary>Busca una cadena localizada similar a "Debe proporcionar una lista bidimensional de colores".</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.VertexColorCountMismatchExceptionMessage">
+            <summary>Busca una cadena localizada similar a "El número de colores proporcionado debe coincidir con el número de vértices".</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.VerticesDivisibleByThreeExceptionMessage">
+            <summary>Busca una cadena localizada similar a "El número de vértices proporcionado debe ser divisible por tres".</summary>
+        </member>
+    </members>
+</doc>
