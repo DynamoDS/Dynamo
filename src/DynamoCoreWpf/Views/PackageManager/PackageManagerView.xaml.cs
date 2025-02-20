@@ -51,16 +51,17 @@ namespace Dynamo.PackageManager.UI
         private DynamoView dynamoView;
 
         /// <summary>
-        /// A bool controlling the appearance of the Package Publish component
+        /// A bool controlling the appearance of the Package Publish component from feature flag
         /// TODO: remove this public property and archive the feature flag in Dynamo 4.0 ?
         /// </summary>
-        public bool IsNewPublisherEnabled
+        public bool IsNewPMPublishWizardEnabled
         {
             get
             {
-                return true;
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsNewPMPublishWizardEnabled", true) ?? true;
             }
         }
+
 
         public PackageManagerView(DynamoView dynamoView, PackageManagerViewModel packageManagerViewModel)
         {
