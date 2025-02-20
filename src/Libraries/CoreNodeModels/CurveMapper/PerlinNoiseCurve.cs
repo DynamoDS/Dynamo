@@ -3,16 +3,14 @@ using System.Collections.Generic;
 
 namespace CoreNodeModels.CurveMapper
 {
-    public class PerlinNoiseCurve
+    public class PerlinNoiseCurve : CurveBase
     {
-        private double CanvasSize;
         private double ControlPoint1X;
         private double ControlPoint1Y;
         private double ControlPoint2X;
         private double ControlPoint2Y;
         private double ControlPoint3X;
         private double ControlPoint3Y;
-        private const double renderIncrementX = 1.0; // ADD THIS BASE CLASS ?
 
         private readonly List<double> randomValues;
         private readonly Random rand;
@@ -31,13 +29,14 @@ namespace CoreNodeModels.CurveMapper
 
 
         public PerlinNoiseCurve(double cp1X, double cp1Y, double cp2X, double cp2Y, double cp3X, double cp3Y, double canvasSize)
+            : base(canvasSize)
         {
-            CanvasSize = canvasSize;
-            ControlPoint1X = cp1X; // orthogonal - horizontal
+            //CanvasSize = canvasSize;
+            ControlPoint1X = cp1X;
             ControlPoint1Y = cp1Y;
-            ControlPoint2X = cp2X; // orthogonal - vertical
+            ControlPoint2X = cp2X;
             ControlPoint2Y = cp2Y;
-            ControlPoint3X = cp3X; // free
+            ControlPoint3X = cp3X;
             ControlPoint3Y = cp3Y;
 
             perlinVerticesMask = PerlinVertices - 1;
@@ -50,7 +49,6 @@ namespace CoreNodeModels.CurveMapper
             {
                 randomValues.Add(rand.NextDouble() - 0.5);
             }
-
         }
 
         private void ConfigureNoiseParameters(double persistenceFactor, double baseFrequency, double baseAmplitude, int numberOfOctaves, int seed)
@@ -160,7 +158,10 @@ namespace CoreNodeModels.CurveMapper
             return [clampedX, clampedY];
         }
 
-        private List<double>[] GeneratePerlinCurve(int pointsCount, bool isRender = false)
+        /// <summary>
+        /// Returns X and Y values distributed across the curve.
+        /// </summary>
+        protected override List<double>[] GenerateCurve(int pointsCount, bool isRender = false)
         {
             var valuesX = new List<double>();
             var valuesY = new List<double>();
@@ -198,16 +199,6 @@ namespace CoreNodeModels.CurveMapper
             }   
 
             return [valuesX, valuesY];
-        }
-
-        public List<double> GetCurveXValues(int pointsCount, bool isRender = false)
-        {
-            return GeneratePerlinCurve(pointsCount, isRender)[0];
-        }
-
-        public List<double> GetCurveYValues(int pointsCount, bool isRender = false)
-        {
-            return GeneratePerlinCurve(pointsCount, isRender)[1];
         }
     }
 }

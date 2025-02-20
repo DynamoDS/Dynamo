@@ -4,9 +4,8 @@ using System.Linq;
 
 namespace CoreNodeModels.CurveMapper
 {
-    public class BezierCurve
+    public class BezierCurve : CurveBase
     {
-        private double CanvasSize;
         private double ControlPoint1X;
         private double ControlPoint1Y;
         private double ControlPoint2X;
@@ -15,14 +14,14 @@ namespace CoreNodeModels.CurveMapper
         private double ControlPoint3Y;
         private double ControlPoint4X;
         private double ControlPoint4Y;
-        private const double renderIncrementX = 1.0; // ADD THIS BASE CLASS ?
 
         private Dictionary<double, double> xToYMap = new Dictionary<double, double>();
         private double tFactor;
 
-        public BezierCurve(double cp1X, double cp1Y, double cp2X, double cp2Y, double cp3X, double cp3Y, double cp4X, double cp4Y, double canvasSize)
+        public BezierCurve(double cp1X, double cp1Y, double cp2X, double cp2Y,
+            double cp3X, double cp3Y, double cp4X, double cp4Y, double canvasSize)
+            : base(canvasSize)
         {
-            CanvasSize = canvasSize;
             ControlPoint1X = cp1X;
             ControlPoint1Y = cp1Y;
             ControlPoint2X = cp2X;
@@ -51,7 +50,7 @@ namespace CoreNodeModels.CurveMapper
         /// <summary>
         /// Gets interpolated Y values based on the assigned parameters and limits.
         /// </summary>
-        public List<double>[] GenerateBezierCurve(int pointsCount, bool isRender)
+        protected override List<double>[] GenerateCurve(int pointsCount, bool isRender)
         {
             var renderValuesX = new List<double>();
             var renderValuesY = new List<double>();
@@ -88,20 +87,6 @@ namespace CoreNodeModels.CurveMapper
             }
 
             return [valuesX, valuesY];
-        }
-
-        public List<double> GetCurveXValues(int pointsCount, bool isRender = false) // TODO : Review 
-        {
-            var values = GenerateBezierCurve(pointsCount, isRender)[0];
-
-            return values;
-        }
-
-        public List<double> GetCurveYValues(int pointsCount, bool isRender = false)
-        {
-            var values = GenerateBezierCurve(pointsCount, isRender)[1];
-
-            return values;
         }
     }
 }

@@ -3,14 +3,12 @@ using System.Collections.Generic;
 
 namespace CoreNodeModels.CurveMapper
 {
-    public class SineWave
+    public class SineWave : CurveBase
     {
-        private double CanvasSize;
         private double ControlPoint1X;
         private double ControlPoint1Y;
         private double ControlPoint2X;
         private double ControlPoint2Y;
-        private const double renderIncrementX = 1.0; // ADD THIS BASE CLASS ?
 
         // Coefficients
         private double coefA;   // Amplitude
@@ -19,6 +17,7 @@ namespace CoreNodeModels.CurveMapper
         private double coefD;   // Vertical shift
 
         public SineWave(double cp1X, double cp1Y, double cp2X, double cp2Y, double canvasSize)
+            : base(canvasSize)
         {
             CanvasSize = canvasSize;
             ControlPoint1X = cp1X;
@@ -43,16 +42,18 @@ namespace CoreNodeModels.CurveMapper
         }
 
         /// <summary>
-        /// Returns the calculated Y values.
+        /// Returns X and Y values distributed across the curve.
         /// </summary>
-        public List<double> GetCurveYValues(int pointsCount, bool isRender = false)
+        protected override List<double>[] GenerateCurve(int pointsCount, bool isRender = false)
         {
+            var valuesX = new List<double>();
             var valuesY = new List<double>();
 
             if (isRender)
             {
                 for (double x = 0.0; x < CanvasSize; x += renderIncrementX)
                 {
+                    valuesX.Add(x);
                     double y = CosineEquation(ConvertXToTrigo(x));
                     valuesY.Add(ConvertTrigoToY(y));
                 }
@@ -63,42 +64,13 @@ namespace CoreNodeModels.CurveMapper
                 for (int i = 0; i < pointsCount; i++)
                 {
                     double x = i * step;
+                    valuesX.Add(x);
                     double y = CosineEquation(ConvertXToTrigo(x));
                     valuesY.Add(ConvertTrigoToY(y));
                 }
             }
 
-            return valuesY;
-        }
-
-        /// <summary>
-        /// Returns the X values at evenly spaced points across the canvas.
-        /// </summary>
-        public List<double> GetCurveXValues(int pointsCount, bool isRender = false) // TODO : MOVE TO BASE CLASS
-        {
-            var values = new List<double>();
-
-            if (isRender)
-            {
-                for (double i = 0.0; i < CanvasSize; i += renderIncrementX)
-                {
-                    values.Add(i);
-                }
-
-                return values;
-            }
-            else
-            {
-                double step = CanvasSize / (pointsCount - 1);
-
-                for (int i = 0; i < pointsCount; i++)
-                {
-                    double d = 0 + i * step;
-                    values.Add(d);
-                }
-            }
-
-            return values;
+            return [valuesX, valuesY];
         }
     }
 }

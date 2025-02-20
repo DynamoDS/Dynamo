@@ -11,7 +11,7 @@ namespace Dynamo.Wpf.CurveMapper
         /// <summary>
         /// Renders a curve as a Path object based on given X and Y values, adjusting for the inverted Y-axis in WPF.
         /// </summary>
-        public static List<Path> RenderCurve(List<double> xValues, List<double> yValues, double canvasSize, bool isControlLine = false)
+        public static List<Path> RenderCurve(List<double> xValues, List<double> yValues, double canvasSize, bool isControlLine = false, bool isGaussian = false)
         {
             if (xValues == null || yValues == null || xValues.Count != yValues.Count || xValues.Count < 2)
                 return null;
@@ -24,20 +24,9 @@ namespace Dynamo.Wpf.CurveMapper
 
             for (int i = 0; i < xValues.Count; i++)
             {
-                Point currentPoint = new Point(xValues[i], canvasSize - yValues[i]);
+                Point currentPoint = new Point(xValues[i], canvasSize - yValues[i]);               
 
-
-                //// ✅ Handle boundary lines explicitly (if the entire line is at a boundary)
-                //if ((yValues.All(y => y == 0) || yValues.All(y => y == canvasSize)) && xValues.Count == 2)
-                //{
-                //    currentFigure = new PathFigure { StartPoint = new Point(xValues[0], canvasSize - yValues[0] + 0.1) };
-                //    currentFigure.Segments.Add(new LineSegment(new Point(xValues[1], canvasSize - yValues[1] + 0.1), true));
-                //    currentGeometry.Figures.Add(currentFigure);
-                //    paths.Add(CreatePathFromGeometry(currentGeometry, isControlLine));
-                //    return paths;
-                //}
-
-                if (yValues[i] == canvasSize && !isControlLine) // Odd occurrences: Close the path and reset
+                if (yValues[i] == canvasSize && isGaussian) // Odd occurrences: Close the path and reset
                 {
                     hitCount++;
 

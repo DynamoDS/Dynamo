@@ -3,18 +3,16 @@ using System.Collections.Generic;
 
 namespace CoreNodeModels.CurveMapper
 {
-    public class ParabolicCurve
+    public class ParabolicCurve : CurveBase
     {
-        private double CanvasSize;
         private double ControlPoint1X;
         private double ControlPoint1Y;
         private double ControlPoint2X;
         private double ControlPoint2Y;
-        private const double renderIncrementX = 1.0; // ADD THIS BASE CLASS ?
 
         public ParabolicCurve(double cp1X, double cp1Y, double cp2X, double cp2Y, double canvasSize)
+            : base(canvasSize)
         {
-            CanvasSize = canvasSize;
             ControlPoint1X = cp1X;
             ControlPoint1Y = cp1Y;
             ControlPoint2X = cp2X;
@@ -37,7 +35,10 @@ namespace CoreNodeModels.CurveMapper
             return (Math.Pow(x - h, 2) / (4 * a)) + k;
         }
 
-        private List<double>[] GenerateParabola(int pointsCount, bool isRender)
+        /// <summary>
+        /// Returns X and Y values distributed across the curve.
+        /// </summary>
+        protected override List<double>[] GenerateCurve(int pointsCount, bool isRender)
         {
             double leftBoundaryY = (ControlPoint2Y > ControlPoint1Y) ? CanvasSize : 0.0;
             double rightBoundaryY = (ControlPoint2Y < ControlPoint1Y) ? CanvasSize : 0.0;
@@ -103,18 +104,6 @@ namespace CoreNodeModels.CurveMapper
 
                 return [valuesX, valuesY];
             }
-            
         }
-
-        public List<double> GetCurveXValues(int pointsCount, bool isRender = false)
-        {
-            return GenerateParabola(pointsCount, isRender)[0];
-        }
-
-        public List<double> GetCurveYValues(int pointsCount, bool isRender = false)
-        {
-            return GenerateParabola(pointsCount, isRender)[1];
-        }
-
     }
 }

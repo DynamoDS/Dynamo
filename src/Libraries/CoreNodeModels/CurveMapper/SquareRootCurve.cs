@@ -1,24 +1,18 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoreNodeModels.CurveMapper
 {
-    public class SquareRootCurve
+    public class SquareRootCurve : CurveBase
     {
-        private double CanvasSize;
         private double ControlPoint1X;
         private double ControlPoint1Y;
         private double ControlPoint2X;
         private double ControlPoint2Y;
-        private const double renderIncrementX = 1.0; // ADD THIS BASE CLASS ?
 
         public SquareRootCurve(double cp1X, double cp1Y, double cp2X, double cp2Y, double canvasSize)
+            : base(canvasSize)
         {
-            CanvasSize = canvasSize;
             ControlPoint1X = cp1X;
             ControlPoint1Y = cp1Y;
             ControlPoint2X = cp2X;
@@ -41,7 +35,25 @@ namespace CoreNodeModels.CurveMapper
             return (Gx < Ox) ? -sqrtFactor : sqrtFactor;
         }
 
-        private List<double>[] GenerateSquareRootCurve(int pointsCount, bool isRender)
+        private double ComputeSquareRootY(double x, double sqrtFactor)
+        {
+            double Ox = ControlPoint1X / CanvasSize;
+            double Oy = 1 - (ControlPoint1Y / CanvasSize);
+
+            double baseX = x / CanvasSize;
+            double adjustedX = baseX - Ox;
+
+            double sqrtComponent = sqrtFactor * Math.Sqrt(Math.Abs(adjustedX));
+
+            // Mirror the Y-values if X is to the left of controlPoint1
+            double normalizedY = Oy + (adjustedX < 0 ? -sqrtComponent : sqrtComponent);
+            return (1 - normalizedY) * CanvasSize;
+        }
+
+        /// <summary>
+        /// Returns X and Y values distributed across the curve.
+        /// </summary>
+        protected override List<double>[] GenerateCurve(int pointsCount, bool isRender)
         {
             var valuesX = new List<double>();
             var valuesY = new List<double>();
@@ -90,31 +102,6 @@ namespace CoreNodeModels.CurveMapper
             }
 
             return [valuesX, valuesY];
-        }
-
-        private double ComputeSquareRootY(double x, double sqrtFactor)
-        {
-            double Ox = ControlPoint1X / CanvasSize;
-            double Oy = 1 - (ControlPoint1Y / CanvasSize);
-
-            double baseX = x / CanvasSize;
-            double adjustedX = baseX - Ox;
-
-            double sqrtComponent = sqrtFactor * Math.Sqrt(Math.Abs(adjustedX));
-
-            // Mirror the Y-values if X is to the left of controlPoint1
-            double normalizedY = Oy + (adjustedX < 0 ? -sqrtComponent : sqrtComponent);
-            return (1 - normalizedY) * CanvasSize;
-        }
-
-        public List<double> GetCurveXValues(int pointsCount, bool isRender = false)
-        {
-            return GenerateSquareRootCurve(pointsCount, isRender)[0];
-        }
-
-        public List<double> GetCurveYValues(int pointsCount, bool isRender = false)
-        {
-            return GenerateSquareRootCurve(pointsCount, isRender)[1];
         }
     }
 }

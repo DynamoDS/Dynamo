@@ -76,24 +76,25 @@ namespace Dynamo.Wpf.CurveMapper
             set => SetValue(DynamicCanvasSizeProperty, value);
         }
 
-        ///// <summary>
-        ///// Gets the scaled coordinates of the control point, mapped to user-defined limits and formatted for display.
-        ///// </summary>
-        //public string ScaledCoordinates
-        //{
-        //    get
-        //    {
-        //        string formatNumber(double value)
-        //        {
-        //            return value % 1 == 0 ? value.ToString("F0") : value.ToString("F2");
-        //        }
+        /// <summary>
+        /// Gets the scaled coordinates of the control point, normalized based on Min/Max limits.
+        /// </summary>
+        [JsonIgnore]
+        public string ScaledCoordinates
+        {
+            get
+            {
+                double scaledX = AssociatedModel.MinLimitX +
+                                 (ControlPointData.X / CanvasSize) *
+                                 (AssociatedModel.MaxLimitX - AssociatedModel.MinLimitX);
 
-        //        double scaledX = MinLimitX + (Point.X / CanvasSize) * (MaxLimitX - MinLimitX);
-        //        double scaledY = MinLimitY + (1 - (Point.Y / CanvasSize)) * (MaxLimitY - MinLimitY);
+                double scaledY = AssociatedModel.MinLimitY +
+                                 (1 - (ControlPointData.Y / CanvasSize)) *
+                                 (AssociatedModel.MaxLimitY - AssociatedModel.MinLimitY);
 
-        //        return $"Control Point ({formatNumber(scaledX)}, {formatNumber(scaledY)})";
-        //    }
-        //}
+                return $"Coordinates: ({scaledX:F2}, {scaledY:F2})";
+            }
+        }
 
         /// <summary>
         /// Gets or sets the position of the control point on the canvas.
@@ -173,6 +174,16 @@ namespace Dynamo.Wpf.CurveMapper
 
             UpdateCursor();
 
+            AssociatedModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(AssociatedModel.MinLimitX) ||
+                    e.PropertyName == nameof(AssociatedModel.MaxLimitX) ||
+                    e.PropertyName == nameof(AssociatedModel.MinLimitY) ||
+                    e.PropertyName == nameof(AssociatedModel.MaxLimitY))
+                {
+                    RaisePropertyChanged(nameof(ScaledCoordinates));
+                }
+            };
         }
 
         /// <summary>
@@ -233,10 +244,12 @@ namespace Dynamo.Wpf.CurveMapper
             if (tag == "GaussianCurveControlPointData3") AssociatedModel.UpdateGaussianCurveControlPoint3(e.HorizontalChange);
             if (tag == "GaussianCurveControlPointData4") AssociatedModel.UpdateGaussianCurveControlPoint4(e.HorizontalChange);
 
-            // Notify CurveMapperNodeModel to update the curve
+            // Refresh scaled coordinates in tooltip
+            RaisePropertyChanged(nameof(ScaledCoordinates));
+
+            // Notify the mode and UI to update the curve
             AssociatedModel.GenerateOutputValues();
 
-            // Notify CurveMapperControl to update the graph
             OnControlPointMoved?.Invoke();
         }
 

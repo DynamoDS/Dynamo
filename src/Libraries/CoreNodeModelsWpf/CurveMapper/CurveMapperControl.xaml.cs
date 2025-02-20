@@ -75,12 +75,13 @@ namespace Dynamo.Wpf.CurveMapper
             model.PropertyChanged += NodeModel_PropertyChanged;
             this.Unloaded += Unload;
 
+            DrawGrid();
+
             // Dictionary to map UI control points to their corresponding data
             var controlPointsMap = BuildControlPointsDictionary();
             RecreateControlPoints(controlPointsMap);
 
             RenderGraph();
-            DrawGrid();
         }
 
         private void RenderGraph() //
@@ -97,7 +98,24 @@ namespace Dynamo.Wpf.CurveMapper
                 }
 
                 // Only render the curve on valid selection
-                if (curveMapperNodeModel.SelectedGraphType != GraphTypes.Empty)
+                if (curveMapperNodeModel.SelectedGraphType == GraphTypes.GaussianCurve)
+                {
+                    var paths = CurveRenderer.RenderCurve(
+                        curveMapperNodeModel.RenderValuesX,
+                        curveMapperNodeModel.RenderValuesY,
+                        curveMapperNodeModel.DynamicCanvasSize,
+                        false, true
+                    );
+
+                    if (paths != null)
+                    {
+                        foreach (var path in paths)
+                        {
+                            GraphCanvas.Children.Add(path);
+                        }
+                    }
+                }
+                else if (curveMapperNodeModel.SelectedGraphType != GraphTypes.Empty)
                 {
                     var paths = CurveRenderer.RenderCurve(
                         curveMapperNodeModel.RenderValuesX,
@@ -114,7 +132,7 @@ namespace Dynamo.Wpf.CurveMapper
                     }
                 }
 
-                // Render control line on Bezier curve
+                // Render control lines for Bezier curve
                 if (curveMapperNodeModel.SelectedGraphType == GraphTypes.BezierCurve)
                 {
                     var controlLine1 = CurveRenderer.RenderCurve(

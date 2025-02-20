@@ -1,21 +1,16 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CoreNodeModels.CurveMapper
 {
-    public class PowerCurve
+    public class PowerCurve : CurveBase
     {
-        private double CanvasSize;
         private double ControlPoint1X;
         private double ControlPoint1Y;
-        private const double renderIncrementX = 1.0; // ADD THIS BASE CLASS ?
 
         public PowerCurve(double cp1X, double cp1Y, double canvasSize)
+            : base(canvasSize)
         {
-            CanvasSize = canvasSize;
             ControlPoint1X = cp1X;
             ControlPoint1Y = cp1Y;
         }
@@ -47,22 +42,23 @@ namespace CoreNodeModels.CurveMapper
             return normalizedY * CanvasSize;
         }
 
-        public List<double> GetCurveYValues(int pointsCount, bool isRender = false)
+        /// <summary>
+        /// Returns X and Y values distributed across the curve.
+        /// </summary>
+        protected override List<double>[] GenerateCurve(int pointsCount, bool isRender)
         {
-            var values = new List<double>();
+            var valuesX = new List<double>();
+            var valuesY = new List<double>();
             double powerFactor = UpdatePowerEquation();
 
             if (isRender)
             {
-                for (double i = 0.0; i < CanvasSize; i += renderIncrementX)
+                for (double x = 0.0; x <= CanvasSize; x += renderIncrementX)
                 {
-                    double x = i;
+                    valuesX.Add(x);
                     double y = ComputePowerY(x, powerFactor);
-                    values.Add(y);
+                    valuesY.Add(y);
                 }
-
-                // Last value
-                values.Add(ComputePowerY(CanvasSize, powerFactor));
             }
             else
             {
@@ -71,40 +67,13 @@ namespace CoreNodeModels.CurveMapper
                 for (int i = 0; i < pointsCount; i++)
                 {
                     double x = i * step;
+                    valuesX.Add(x);
                     double y = ComputePowerY(x, powerFactor);
-                    values.Add(y);
+                    valuesY.Add(y);
                 }
             }
 
-            return values;
-        }
-
-        public List<double> GetCurveXValues(int pointsCount, bool isRender = false) // TODO : MOVE TO BASE CLASS
-        {
-            var values = new List<double>();
-
-            if (isRender)
-            {
-                for (double i = 0.0; i < CanvasSize; i += renderIncrementX)
-                {
-                    values.Add(i);
-                }
-                values.Add(CanvasSize);
-
-                return values;
-            }
-            else
-            {
-                double step = CanvasSize / (pointsCount - 1);
-
-                for (int i = 0; i < pointsCount; i++)
-                {
-                    double d = 0 + i * step;
-                    values.Add(d);
-                }
-            }
-
-            return values;
+            return [valuesX, valuesY];
         }
     }
 }

@@ -3,17 +3,19 @@ using System.Collections.Generic;
 
 namespace CoreNodeModels.CurveMapper
 {
-    public class LinearCurve
+    public class LinearCurve : CurveBase
     {
-        private double CanvasSize;
         private double ControlPoint1X;
         private double ControlPoint1Y;
         private double ControlPoint2X;
         private double ControlPoint2Y;
 
+        private bool flipHorizontally;
+        private bool flipVertically;
+
         public LinearCurve(double cp1X, double cp1Y, double cp2X, double cp2Y, double canvasSize)
+            : base(canvasSize)
         {
-            CanvasSize = canvasSize;
             ControlPoint1X = cp1X;
             ControlPoint1Y = cp1Y;
             ControlPoint2X = cp2X;
@@ -43,74 +45,44 @@ namespace CoreNodeModels.CurveMapper
         }
 
         /// <summary>
-        /// Returns X values distributed across the curve.
+        /// Returns X and Y values distributed across the curve.
         /// </summary>
-        public List<double> GetCurveXValues(int pointsCount, bool isRender = false)
+        protected override List<double>[] GenerateCurve(int pointsCount, bool isRender = false)
         {
             double leftX = SolveForXGivenY(0);
             double rightX = SolveForXGivenY(CanvasSize);
 
-            if (ControlPoint1X > ControlPoint2X)
-            {
-                (leftX, rightX) = (rightX, leftX); // Swap values if needed
-            }                
-
-            if (isRender)
-            {
-                return new List<double>
-                {
-                    Math.Clamp(leftX, 0, CanvasSize),
-                    Math.Clamp(rightX, 0, CanvasSize)
-                };
-            }
-
-            var values = new List<double>();
-            double step = CanvasSize / (pointsCount - 1);
-
-            for (int i = 0; i < pointsCount; i++)
-            {
-                values.Add(i * step);
-            }
-
-            return values;
-        }
-
-        /// <summary>
-        /// Returns Y values distributed across the curve.
-        /// </summary>
-        public List<double> GetCurveYValues(int pointsCount, bool isRender = false)
-        {
             double lowY = LineEquation(0);
             double highY = LineEquation(CanvasSize);
 
-            if (ControlPoint1Y > ControlPoint2Y)
-            {
-                (lowY, highY) = (highY, lowY);
-            }
+            var valuesX = new List<double>();
+            var valuesY = new List<double>();
+
+            flipHorizontally = ControlPoint1X > ControlPoint2X;
+            flipVertically = ControlPoint1Y > ControlPoint2Y;
 
             if (isRender)
             {
-                return new List<double>
+                valuesX = new List<double> { Math.Clamp(leftX, 0, CanvasSize), Math.Clamp(rightX, 0, CanvasSize) };
+
+                valuesY = (flipHorizontally ^ flipVertically)
+                    ? new List<double> { Math.Clamp(highY, 0, CanvasSize), Math.Clamp(lowY, 0, CanvasSize) }
+                    : new List<double> { Math.Clamp(lowY, 0, CanvasSize), Math.Clamp(highY, 0, CanvasSize) };
+            }
+            else
+            {
+                // For full point distribution
+                double stepX = CanvasSize / (pointsCount - 1);
+                double stepY = (highY - lowY) / (pointsCount - 1);
+
+                for (int i = 0; i < pointsCount; i++)
                 {
-                    Math.Clamp(lowY, 0, CanvasSize),
-                    Math.Clamp(highY, 0, CanvasSize)
-                };
+                    valuesX.Add(i * stepX);
+                    valuesY.Add(lowY + i * stepY);
+                }
             }
 
-            var values = new List<double>();
-            double step = (highY - lowY) / (pointsCount - 1);
-
-            for (int i = 0; i < pointsCount; i++)
-            {
-                values.Add(lowY + i * step);
-            }
-
-            if (ControlPoint1Y > ControlPoint2Y)
-            {
-                values.Reverse();
-            }
-
-            return values;
+            return [ valuesX, valuesY ];
         }
     }
 }

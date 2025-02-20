@@ -3,9 +3,8 @@ using System.Collections.Generic;
 
 namespace CoreNodeModels.CurveMapper
 {
-    public class GaussianCurve
+    public class GaussianCurve : CurveBase
     {
-        private double CanvasSize;
         private double ControlPoint1X;
         private double ControlPoint1Y;
         private double ControlPoint2X;
@@ -14,7 +13,6 @@ namespace CoreNodeModels.CurveMapper
         private double ControlPoint3Y;
         private double ControlPoint4X;
         private double ControlPoint4Y;
-        private const double renderIncrementX = 2.0; // ADD THIS BASE CLASS ?
 
         private double lastControlPoint2X;
         private double previousHorizontalOffset;
@@ -22,11 +20,9 @@ namespace CoreNodeModels.CurveMapper
         /// <summary>
         /// Indicates whether the node is currently being resized, preventing unintended control point updates.
         /// </summary>
-        public bool IsResizing { get; set; } = false;
-
         public GaussianCurve(double cp1X, double cp1Y, double cp2X, double cp2Y, double cp3X, double cp3Y, double cp4X, double cp4Y, double canvasSize)
+            : base(canvasSize)
         {
-            CanvasSize = canvasSize;
             ControlPoint1X = cp1X;
             ControlPoint1Y = cp1Y;
             ControlPoint2X = cp2X;
@@ -37,12 +33,22 @@ namespace CoreNodeModels.CurveMapper
             ControlPoint4Y = cp4Y;
         }
 
-        private List<double>[] GenerateGaussianCurve(int pointsCount, bool isRender)
+        private double ComputeGaussianY(double x, double A, double mu, double sigma)
+        {
+            double exponent = -Math.Pow(x - mu, 2) / (2 * Math.Pow(sigma, 2));
+            double normalizedY = A * Math.Exp(exponent);
+
+            return CanvasSize - normalizedY;
+        }
+
+        /// <summary>
+        /// Returns X and Y values distributed across the curve.
+        /// </summary>
+        protected override List<double>[] GenerateCurve(int pointsCount, bool isRender)
         {
             bool peakX = false;
             double xLeft = double.NaN, yLeft = 0;
             double xRight = double.NaN, yRight = 0;
-
 
             var valuesXleft = new List<double> ();
             var valuesYleft = new List<double> ();
@@ -119,28 +125,6 @@ namespace CoreNodeModels.CurveMapper
             }
 
             return [valuesX, valuesY];
-        }
-
-        private double ComputeGaussianY(double x, double A, double mu, double sigma)
-        {
-            double exponent = -Math.Pow(x - mu, 2) / (2 * Math.Pow(sigma, 2));
-            double normalizedY = A * Math.Exp(exponent);
-
-            return CanvasSize - normalizedY;
-        }
-
-        public List<double> GetCurveXValues(int pointsCount, bool isRender = false)
-        {
-            var result = GenerateGaussianCurve(pointsCount, isRender)[0];
-
-            return result;
-        }
-
-        public List<double> GetCurveYValues(int pointsCount, bool isRender = false)
-        {
-            var result = GenerateGaussianCurve(pointsCount, isRender)[1];
-
-            return result;
         }
     }
 }
