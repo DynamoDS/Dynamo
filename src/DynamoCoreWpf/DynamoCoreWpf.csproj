@@ -2038,6 +2038,7 @@
 	<Copy SourceFiles="@(HTMLRuRUFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\ru-RU" />
 	<Copy SourceFiles="@(HTMLZhCNFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\zh-CN" />
 	<Copy SourceFiles="@(HTMLZhTWFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Views\GuidedTour\HtmlPages\zh-TW" />
+  </Target>
   <Target Name="CopyDocXML" AfterTargets="AfterBuildOps">
 	 <ItemGroup>
 		<DocXMLFiles Include="$(OutputPath)\en-US\**\*.xml"/>
