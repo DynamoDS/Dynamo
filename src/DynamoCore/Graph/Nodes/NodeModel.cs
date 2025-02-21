@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -1314,44 +1313,19 @@ namespace Dynamo.Graph.Nodes
             OutPorts.CollectionChanged += PortsCollectionChanged;
         }
 
-        private void SubscribeToPort(PortModel portModel)
-        {
-            // eventHandler must be initialized before OnCollectionChanged can reference it(self)
-            NotifyCollectionChangedEventHandler eventHandler = null;
-
-            eventHandler = OnCollectionChanged;
-
-            portModel.Connectors.CollectionChanged += eventHandler;
-
-            portModel.PropertyChanged += OnPortPropertyChanged;
-            SetNodeStateBasedOnConnectionAndDefaults();
-
-            void OnCollectionChanged(object connectorCollection, NotifyCollectionChangedEventArgs e)
-            {
-                if (HasBeenDisposed && eventHandler != null)
-                {
-                    portModel.Connectors.CollectionChanged -= eventHandler;
-                    return;
-                }
-
-                // Call the collection changed handler, replacing
-                // the 'sender' with the port, which is required
-                // for the disconnect operations.
-                ConnectorsCollectionChanged(portModel, e);
-            }
-        }
-
-        private void UnsubscribeToPort(PortModel portModel, bool disposing = false)
+        private void DisposePort(PortModel portModel, bool nodeDisposing = false)
         {
             portModel.PropertyChanged -= OnPortPropertyChanged;
+            portModel.ConnectorCollectionChanged -= ConnectorsCollectionChanged;
 
             // if this node is being disposed, we don't need to set node state and destroy the connectors,
             // as the connectors will be deleted elsewhere
-            if (!disposing)
+            if (!nodeDisposing)
             {
                 portModel.DestroyConnectors();
                 SetNodeStateBasedOnConnectionAndDefaults();
             }
+            portModel.Dispose();
         }
 
         private void PortsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -1362,13 +1336,15 @@ namespace Dynamo.Graph.Nodes
                     ConfigureSnapEdges(sender == InPorts ? InPorts : OutPorts);
                     foreach (PortModel p in e.NewItems)
                     {
-                        SubscribeToPort(p);
+                        p.PropertyChanged += OnPortPropertyChanged;
+                        p.ConnectorCollectionChanged += ConnectorsCollectionChanged;
+                        SetNodeStateBasedOnConnectionAndDefaults();
                     }
                     break;
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
                     foreach (PortModel p in e.OldItems)
                     {
-                        UnsubscribeToPort(p);
+                        DisposePort(p);
                     }
                     break;
             }
@@ -2931,21 +2907,16 @@ namespace Dynamo.Graph.Nodes
 
             base.Dispose();
 
-            if (InPorts != null)
+            InPorts.CollectionChanged -= PortsCollectionChanged;
+            foreach(var port in InPorts)
             {
-                InPorts.CollectionChanged -= PortsCollectionChanged;
-                foreach(var port in InPorts)
-                {
-                    UnsubscribeToPort(port, disposing: true);
-                }
+                DisposePort(port, nodeDisposing: true);
             }
-            if (OutPorts != null)
+
+            OutPorts.CollectionChanged -= PortsCollectionChanged;
+            foreach(var port in OutPorts)
             {
-                OutPorts.CollectionChanged -= PortsCollectionChanged;
-                foreach(var port in OutPorts)
-                {
-                    UnsubscribeToPort(port, disposing: true);
-                }
+                DisposePort(port, nodeDisposing: true);
             }
         }
     }
