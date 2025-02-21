@@ -28,46 +28,8 @@ namespace Dynamo.Wpf.CurveMapper
 
         public bool IsOrthogonal { get; set; }
         public bool IsVertical { get; set; }
-        //public UVCoordText uvText { get; set; }
-        //public double LimitWidth { get; set; }
-        //public double LimitHeight { get; set; }
 
-
-        // Define dependency properties for control point limits (Min/Max X, Y) and canvas size,
-        // with a common change handler for dynamic updates.
-        //public static readonly DependencyProperty MinLimitXProperty = RegisterProperty(nameof(MinLimitX), 0.0);
-        //public static readonly DependencyProperty MaxLimitXProperty = RegisterProperty(nameof(MaxLimitX), 1.0);
-        //public static readonly DependencyProperty MinLimitYProperty = RegisterProperty(nameof(MinLimitY), 0.0);
-        //public static readonly DependencyProperty MaxLimitYProperty = RegisterProperty(nameof(MaxLimitY), 1.0);
         public static readonly DependencyProperty DynamicCanvasSizeProperty = RegisterProperty(nameof(DynamicCanvasSizeProperty), 240.0);
-
-        ///// <summary>Defines the minimum X limit of the control point.</summary>
-        //public double MinLimitX
-        //{
-        //    get => (double)GetValue(MinLimitXProperty);
-        //    set => SetValue(MinLimitXProperty, value);
-        //}
-
-        ///// <summary>Defines the maximum X limit of the control point.</summary>
-        //public double MaxLimitX
-        //{
-        //    get => (double)GetValue(MaxLimitXProperty);
-        //    set => SetValue(MaxLimitXProperty, value);
-        //}
-
-        ///// <summary>Defines the minimum Y limit of the control point.</summary>
-        //public double MinLimitY
-        //{
-        //    get => (double)GetValue(MinLimitYProperty);
-        //    set => SetValue(MinLimitYProperty, value);
-        //}
-
-        ///// <summary>Defines the maximum Y limit of the control point.</summary>
-        //public double MaxLimitY
-        //{
-        //    get => (double)GetValue(MaxLimitYProperty);
-        //    set => SetValue(MaxLimitYProperty, value);
-        //}
 
         /// <summary>Represents the dynamic canvas size for the control point.</summary>
         public double CanvasSize
@@ -112,8 +74,6 @@ namespace Dynamo.Wpf.CurveMapper
                     Canvas.SetTop(this, point.Y - offsetValue);
 
                     RaisePropertyChanged(nameof(Point));
-                    //RaisePropertyChanged(nameof(ScaledCoordinates));
-                    UpdateBounds(); // Call to update visibility
                 }
             }
         }
@@ -132,23 +92,6 @@ namespace Dynamo.Wpf.CurveMapper
                 }
             }
         }
-
-        ///// <summary>
-        ///// Dependency property that indicates whether the control point is within the canvas bounds.
-        ///// </summary>
-        //public static readonly DependencyProperty IsWithinBoundsProperty =
-        //    DependencyProperty.Register(
-        //        nameof(IsWithinBounds), typeof(bool), typeof(CurveMapperControlPoint), new PropertyMetadata(true)
-        //    );
-
-        ///// <summary>
-        ///// Gets or sets a value indicating whether the control point is within the canvas bounds.
-        ///// </summary>
-        //public bool IsWithinBounds
-        //{
-        //    get => (bool)GetValue(IsWithinBoundsProperty);
-        //    set => SetValue(IsWithinBoundsProperty, value);
-        //}
 
         public CurveMapperControlPoint(
             ControlPointData controlPoint,
@@ -216,40 +159,47 @@ namespace Dynamo.Wpf.CurveMapper
 
         private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            if (!IsEnabled) return;
+            if (!IsEnabled) return;            
 
             double newCanvasSize = AssociatedModel.DynamicCanvasSize;
 
+            // Calculate horizontal and vertical deltas within canvas boundaries
+            // Requires for Gaussian control points.
+            var deltaL = Canvas.GetLeft(this) + offsetValue;
+            var deltaR = newCanvasSize - Canvas.GetLeft(this) - offsetValue;
+            var deltaX = e.HorizontalChange > 0 ?
+                Math.Min(e.HorizontalChange, deltaR) :
+                Math.Max(e.HorizontalChange, -deltaL);
+
+            var deltaT = Canvas.GetTop(this) + offsetValue;
+            var deltaB = newCanvasSize - Canvas.GetTop(this) - offsetValue;
+            var deltaY = e.VerticalChange > 0 ?
+                Math.Min(e.VerticalChange, deltaB) :
+                Math.Max(e.VerticalChange, -deltaT);
+
             // Calculate new positions for X and Y based on drag changes
-            double newX = Canvas.GetLeft(this) + (IsOrthogonal && IsVertical ? 0.0 : e.HorizontalChange) + offsetValue;
-            double newY = Canvas.GetTop(this) + (IsOrthogonal && !IsVertical ? 0.0 : e.VerticalChange) + offsetValue;
-
-
-            // Clamp within canvas boundaries
-            newX = Math.Max(0, Math.Min(newX, newCanvasSize));
-            newY = Math.Max(0, Math.Min(newY, newCanvasSize));
+            double newX = Canvas.GetLeft(this) + (IsOrthogonal && IsVertical ? 0.0 : deltaX) + offsetValue;
+            double newY = Canvas.GetTop(this) + (IsOrthogonal && !IsVertical ? 0.0 : deltaY) + offsetValue;
 
             // Update ControlPointData with new relative position
             ControlPointData.X = newX;
             ControlPointData.Y = newY;
-
-            // Update UI
             Canvas.SetLeft(this, newX - offsetValue);
             Canvas.SetTop(this, newY - offsetValue);
 
-            // TODO : Review, this does not work in all cases
-            // Check which control point is being moved
+            // Handle Gaussian curve control points
             string tag = ControlPointData.Tag;
-            if (tag == "GaussianCurveControlPointData2") AssociatedModel.UpdateGaussianCurveControlPoint2(e.HorizontalChange);
-            if (tag == "GaussianCurveControlPointData3") AssociatedModel.UpdateGaussianCurveControlPoint3(e.HorizontalChange);
-            if (tag == "GaussianCurveControlPointData4") AssociatedModel.UpdateGaussianCurveControlPoint4(e.HorizontalChange);
+
+            if (tag.Contains("GaussianCurveControlPointData"))
+            {
+                AssociatedModel.UpdateGaussianCurveControlPoints(deltaX, tag);
+            }            
 
             // Refresh scaled coordinates in tooltip
             RaisePropertyChanged(nameof(ScaledCoordinates));
 
             // Notify the mode and UI to update the curve
             AssociatedModel.GenerateOutputValues();
-
             OnControlPointMoved?.Invoke();
         }
 
@@ -264,12 +214,6 @@ namespace Dynamo.Wpf.CurveMapper
         private void UpdateCursor()
         {
             this.Cursor = IsEnabled ? Cursors.Hand : Cursors.Arrow;
-        }
-
-        private void UpdateBounds()
-        {
-            //IsWithinBounds = Point.X >= 0 && Point.X <= LimitWidth;
-            //RaisePropertyChanged(nameof(IsWithinBounds));
         }
     }
 

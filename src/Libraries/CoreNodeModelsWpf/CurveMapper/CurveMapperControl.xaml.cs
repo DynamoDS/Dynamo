@@ -210,22 +210,14 @@ namespace Dynamo.Wpf.CurveMapper
                 RenderGraph();
             }
 
-            // TODO : Review
-            // Handle changes in Gaussian curve control points
-            bool point2Updating = false;
-            if (e.PropertyName == nameof(curveMapperNodeModel.GaussianCurveControlPointData2))
-            {
-                point2Updating = true;
-            }
-
-            if (e.PropertyName == nameof(curveMapperNodeModel.GaussianCurveControlPointData3))
-            {
-                UpdateGaussianControlPoint(gaussianCurveControlPoint3, curveMapperNodeModel.GaussianCurveControlPointData3);
-            }
-            if (e.PropertyName == nameof(curveMapperNodeModel.GaussianCurveControlPointData4))
-            {
-                UpdateGaussianControlPoint(gaussianCurveControlPoint4, curveMapperNodeModel.GaussianCurveControlPointData4);
-            }
+            //if (e.PropertyName == nameof(curveMapperNodeModel.GaussianCurveControlPointData3))
+            //{
+            //    UpdateGaussianControlPoint(gaussianCurveControlPoint3, curveMapperNodeModel.GaussianCurveControlPointData3);
+            //}
+            //if (e.PropertyName == nameof(curveMapperNodeModel.GaussianCurveControlPointData4))
+            //{
+            //    UpdateGaussianControlPoint(gaussianCurveControlPoint4, curveMapperNodeModel.GaussianCurveControlPointData4);
+            //}
         }
 
         // Helper (for resizing node)
@@ -241,7 +233,6 @@ namespace Dynamo.Wpf.CurveMapper
             }
         }
 
-        // TODO : Review, might be connected to the Gaussian curve bug
         private void UpdateGaussianControlPoint(UIElement controlPoint, ControlPointData dataPoint)
         {
             if (controlPoint != null && dataPoint != null)

@@ -434,7 +434,7 @@ namespace CoreNodeModels
             SquareRootCurveControlPointData1 = new ControlPointData(0, DynamicCanvasSize);
             SquareRootCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
             // Gaussian curve
-            GaussianCurveControlPointData1 = new ControlPointData(0, DynamicCanvasSize * 0.8, "GaussianCurveControlPointData1");
+            GaussianCurveControlPointData1 = new ControlPointData(0, DynamicCanvasSize * 0.8);
             GaussianCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5, "GaussianCurveControlPointData2");
             GaussianCurveControlPointData3 = new ControlPointData(DynamicCanvasSize * 0.4, DynamicCanvasSize, "GaussianCurveControlPointData3");
             GaussianCurveControlPointData4 = new ControlPointData(DynamicCanvasSize * 0.6, DynamicCanvasSize, "GaussianCurveControlPointData4");
@@ -675,7 +675,7 @@ namespace CoreNodeModels
             }
             else if (SelectedGraphType == GraphTypes.GaussianCurve)
             {
-                GaussianCurveControlPointData1 = new ControlPointData(0, DynamicCanvasSize * 0.8, "GaussianCurveControlPointData1");
+                GaussianCurveControlPointData1 = new ControlPointData(0, DynamicCanvasSize * 0.8);
                 GaussianCurveControlPointData2 = new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5, "GaussianCurveControlPointData2");
                 GaussianCurveControlPointData3 = new ControlPointData(DynamicCanvasSize * 0.4, DynamicCanvasSize, "GaussianCurveControlPointData3");
                 GaussianCurveControlPointData4 = new ControlPointData(DynamicCanvasSize * 0.6, DynamicCanvasSize, "GaussianCurveControlPointData4");
@@ -696,38 +696,51 @@ namespace CoreNodeModels
             return attribute != null ? attribute.Description : value.ToString();
         }
 
-
-        // REVIEW THIS : BUG!
-        public void UpdateGaussianCurveControlPoint2(double deltaX)
+        /// <summary>
+        /// Updates Gaussian control points positions while maintaining relative spacing and canvas boundaries.
+        /// </summary>
+        public void UpdateGaussianCurveControlPoints(double deltaX, string tag) //
         {
-            if (GaussianCurveControlPointData3 != null && GaussianCurveControlPointData4 != null)
+            switch (tag)
             {
-                GaussianCurveControlPointData3 = new ControlPointData(GaussianCurveControlPointData3.X + deltaX, GaussianCurveControlPointData3.Y);
-                GaussianCurveControlPointData4 = new ControlPointData(GaussianCurveControlPointData4.X + deltaX, GaussianCurveControlPointData4.Y);
+                case "GaussianCurveControlPointData2":
+                    GaussianCurveControlPointData3 = new ControlPointData(
+                        GaussianCurveControlPointData3.X + deltaX,
+                        GaussianCurveControlPointData3.Y,
+                        "GaussianCurveControlPointData3");
+                    GaussianCurveControlPointData4 = new ControlPointData(
+                        GaussianCurveControlPointData4.X + deltaX,
+                        GaussianCurveControlPointData4.Y,
+                        "GaussianCurveControlPointData4");
+                    break;
 
-                RaisePropertyChanged(nameof(GaussianCurveControlPointData3));
-                RaisePropertyChanged(nameof(GaussianCurveControlPointData4));
+                case "GaussianCurveControlPointData3":
+                    GaussianCurveControlPointData3 = new ControlPointData(
+                        GaussianCurveControlPointData3.X + deltaX,
+                        GaussianCurveControlPointData3.Y,
+                        "GaussianCurveControlPointData3");
+                    GaussianCurveControlPointData4 = new ControlPointData(
+                        GaussianCurveControlPointData4.X - deltaX,
+                        GaussianCurveControlPointData4.Y,
+                        "GaussianCurveControlPointData4");
+                    break;
+
+                case "GaussianCurveControlPointData4":
+                    GaussianCurveControlPointData4 = new ControlPointData(
+                        GaussianCurveControlPointData4.X + deltaX,
+                        GaussianCurveControlPointData4.Y,
+                        "GaussianCurveControlPointData4");
+                    GaussianCurveControlPointData3 = new ControlPointData(
+                        GaussianCurveControlPointData3.X - deltaX,
+                        GaussianCurveControlPointData3.Y,
+                        "GaussianCurveControlPointData3");
+
+                    break;
             }
-        }
-        public void UpdateGaussianCurveControlPoint3(double deltaX)
-        {
-            if (GaussianCurveControlPointData4 != null)
-            {
-                GaussianCurveControlPointData4 = new ControlPointData(GaussianCurveControlPointData4.X - deltaX, GaussianCurveControlPointData4.Y, "GaussianCurveControlPointData4");
 
-                RaisePropertyChanged(nameof(GaussianCurveControlPointData4));
-            }
+            RaisePropertyChanged(nameof(GaussianCurveControlPointData3));
+            RaisePropertyChanged(nameof(GaussianCurveControlPointData4));
         }
-        public void UpdateGaussianCurveControlPoint4(double deltaX)
-        {
-            if (GaussianCurveControlPointData3 != null)
-            {
-                GaussianCurveControlPointData3 = new ControlPointData(GaussianCurveControlPointData3.X - deltaX, GaussianCurveControlPointData3.Y, "GaussianCurveControlPointData3");
-
-                RaisePropertyChanged(nameof(GaussianCurveControlPointData3));
-            }
-        }
-
 
         #region BuildAst
 
