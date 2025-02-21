@@ -1342,6 +1342,9 @@ namespace Dynamo.Models
         /// <param name="e"></param>
         private void LibraryLoaded(object sender, LibraryServices.LibraryLoadedEventArgs e)
         {
+            if (!e.LibraryPaths.Any()) return;
+
+            using (var cachedAssemblies = FunctionDescriptor.CacheAssemblyNamesForZeroTouchNodeSearch())
             foreach (var newLibrary in e.LibraryPaths)
             {
                 // Load all functions defined in that library.
@@ -3478,6 +3481,9 @@ namespace Dynamo.Models
         {
             var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
             List<NodeSearchElement> nodes = new();
+
+            // Preload the assembly names for faster FunctionDescriptor.Category resolution
+            using (var cachedAssemblies = FunctionDescriptor.CacheAssemblyNamesForZeroTouchNodeSearch())
             foreach (var funcGroup in functionGroups)
             {
                 foreach (var functionDescriptor in funcGroup.Functions)
