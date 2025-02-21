@@ -44,7 +44,6 @@ namespace Dynamo.Controls
             this.Loaded += WatchTree_Loaded;
             this.Unloaded += WatchTree_Unloaded;
 
-            _ctrlResetTimer.Tick += _ctrlResetTimer_Tick;
         }
 
         internal static double DefaultWidthSize { get { return defaultWidthSize; } }
@@ -57,11 +56,13 @@ namespace Dynamo.Controls
         private void WatchTree_Unloaded(object sender, RoutedEventArgs e)
         {
             _vm.PropertyChanged -= _vm_PropertyChanged;
+            _ctrlResetTimer.Tick -= _ctrlResetTimer_Tick;
         }
 
         void WatchTree_Loaded(object sender, RoutedEventArgs e)
         {
             _vm.PropertyChanged += _vm_PropertyChanged;
+            _ctrlResetTimer.Tick += _ctrlResetTimer_Tick;
         }
 
         private void _vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
