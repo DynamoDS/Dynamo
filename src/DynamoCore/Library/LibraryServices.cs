@@ -506,10 +506,12 @@ namespace Dynamo.Engine
             }
         }
 
-        private static bool CanbeResolvedTo(ICollection<string> partialName, ICollection<string> fullName)
+        private static bool CanbeResolvedTo(string qualifiedName, string fullName)
         {
-            return null != partialName && null != fullName && partialName.Count <= fullName.Count
-                && fullName.Reverse().Take(partialName.Count).SequenceEqual(partialName.Reverse());
+            return null != qualifiedName && null != fullName
+                && qualifiedName.Length <= fullName.Length
+                // compare the backing char spans of fullname[end - length..end] and qualifiedName without any allocations
+                && fullName.AsSpan(fullName.Length - qualifiedName.Length, qualifiedName.Length).SequenceEqual(qualifiedName.AsSpan());
         }
 
         private static bool TryGetFunctionGroup(
@@ -518,8 +520,7 @@ namespace Dynamo.Engine
             if (funcGroupMap.TryGetValue(qualifiedName, out funcGroup))
                 return true;
 
-            string[] partialName = qualifiedName.Split('.');
-            string key = funcGroupMap.Keys.FirstOrDefault(k => CanbeResolvedTo(partialName, k.Split('.')));
+            string key = funcGroupMap.Keys.FirstOrDefault(k => CanbeResolvedTo(qualifiedName, k));
 
             if (key != null)
             {
