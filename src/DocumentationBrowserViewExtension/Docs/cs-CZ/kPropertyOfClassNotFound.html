@@ -1,0 +1,38 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Nebyla nalezena žádná vlastnost</h2>
+<p>Tato chybová zpráva naznačuje, že se v uzlu pokoušíte přistupovat k vlastnosti objektu, který danou vlastnost nemá. </p>
+
+<p>Vlastnosti jsou hodnoty uložené v objektu. Například objekt bodu v aplikaci Dynamo obsahuje vlastnosti X, Y a Z, které představují hodnoty souřadnic daného bodu. Objekt úsečky má různé vlastnosti, například Length, která představuje délku dané úsečky. Objekt úsečky nemá vlastnost <code>X</code>, <code>Y</code> a <code>Z</code>, kterou objekt bodu má, a objekt bodu nemá vlastnost Length, kterou objekt čáry má.</p>
+
+<p>K této chybě proto dojde, pokud se pokusíte přistoupit k určité vlastnosti objektu, který tuto vlastnost nemá. Pokud se například pokusíte získat přístup k vlastnosti Length u objektu bodu, zobrazí se chyba <code>&quot;Vlastnost Length u objektu Point nebyla nalezena&quot;</code>, protože objekt bodu neobsahuje vlastnost Length.  </p>
+
+<h4>Jak provést opravu</h4>
+<p>Ujistěte se, že objekt, který používáte jako vstup do vašeho uzlu, obsahuje požadovanou vlastnost.</p>
+
+<h4>Další informace</h4>
+<p>Další informace naleznete v <a href="https://forum.dynamobim.com/search?q=no%20property%20called%20could%20be%20found"><span> příspěvcích na fóru Dynamobim na téma &quot;<strong>no property called could be found</strong>&quot;</span></a>.</p>
+
+</body>

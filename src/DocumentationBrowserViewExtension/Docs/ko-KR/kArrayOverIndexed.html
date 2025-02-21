@@ -1,0 +1,34 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>색인이 지정된 범위를 벗어남</h2>
+<p>이 오류 메시지는 사용자가 제공한 색인 위치 요소가 리스트에 포함되어 있지 않음을 의미합니다. 예를 들어, 리스트가 <code>[a, b, c, d]</code>(색인 <code>0</code>, <code>1</code>, <code>2</code>, <code>3</code>에 요소가 있음)인데 색인 <code>5</code>의 요소에 액세스하려고 하면 <code>0</code>부터 <code>3</code>까지 색인에 있는 요소만 리스트에 있으므로 오류 메시지가 표시됩니다. </p>
+
+<h4>수정 방법</h4>
+<p>리스트의 요소에 액세스하는 데 사용 중인 색인 변수가 <code>0</code>보다 크거나 같고 정확히 리스트 크기보다 작은지 확인하십시오. 리스트 색인의 범위는 <code>0</code>에서 리스트 크기-<code>1</code>까지의 값입니다. 즉, 리스트에 <code>10</code>개의 요소가 있는데 10번째 요소에 액세스하려는 경우 해당 요소는 색인 <code>9</code>에 있게 됩니다.</p>
+
+<h4>추가 정보</h4>
+<p>자세한 내용을 보려면 <a href="https://forum.dynamobim.com/search?q=index%20out%20of%20range"><span>&quot;<strong>index out of range</strong>&quot;에 대해 논의하는 Dynamobim 포럼의 게시물</span></a>을 확인하십시오.</p>
+
+</body>

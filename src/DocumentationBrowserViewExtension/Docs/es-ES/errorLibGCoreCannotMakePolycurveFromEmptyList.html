@@ -13,36 +13,22 @@
 
 <head>
     
-    <meta charset="UTF-8" />
+    <meta charset="utf-8" />
 </head>
 
-<style>
-body {
-    color: white;
-    font-size: 14px;
-    font-family: "Artifakt Element";
-    src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
-    padding: 1%;
-}
-
-a {
-    color: lightgray;
-    cursor: pointer;
-    background-color: transparent;
-}
-</style>
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
 
 <!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
 <!-- and custom styling in Dynamo sidepanel. -->
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
-<h2>Cannot make a PolyCurve from an empty list</h2>
-<p>This warning happens if you are inputting an empty list when trying to create a PolyCurve.</p>
+<h2>No se puede crear una PolyCurve a partir de una lista vacía</h2>
+<p>Esta advertencia se produce cuando se introduce una lista vacía al intentar crear una PolyCurve.</p>
 
-<h4>How to fix</h4>
-<p>The error might be caused by other nodes in your graph. Check upstream nodes to see whether they execute correctly – it is common that upstream nodes pass empty lists downstream to a node which then displays this error message. Start from the node that is causing this warning and work backwards, checking the output of each node until you find the node that is causing this issue.</p>
+<h4>Cómo solucionar este error</h4>
+<p>El error puede deberse a otros nodos del gráfico. Compruebe los nodos ascendentes para ver si se ejecutan correctamente; es habitual que los nodos ascendentes transfieran listas vacías de forma descendente a un nodo que muestre a continuación este mensaje de error. Comience desde el nodo que provoca esta advertencia y retroceda en el proceso, comprobando la salida de cada nodo hasta que encuentre el nodo que provoca este problema.</p>
 
-<h4>More information</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=cannot%20make%20a%20polycurve%20from%20an%20empty%20list"><span> posts on the Dynamobim forum discussing "<strong>cannot make a polycurve from an empty list</strong>"</span></a>.</p>
+<h4>Más información</h4>
+<p>Para obtener más información, consulte las <a href="https://forum.dynamobim.com/search?q=cannot%20make%20a%20polycurve%20from%20an%20empty%20list"><span>publicaciones del foro de Dynamobim sobre &quot;<strong>cannot make a polycurve from an empty list</strong>&quot;</span></a>.</p>
 
 </body>

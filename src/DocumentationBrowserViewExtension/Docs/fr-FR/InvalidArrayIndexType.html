@@ -1,0 +1,38 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Les index de la liste doivent être numériques</h2>
+<p> Ce message d'erreur indique que vous essayez d'accéder à un élément de la liste en utilisant une valeur d'index qui n'est pas un entier (c'est-à-dire un nombre entier). </p>
+
+<p>À partir de Dynamo 2.0, les listes sont des ensembles de valeurs où chaque valeur de la liste est accessible à l'aide de valeurs d'index entières uniquement (les valeurs d'index vont de 0 à la taille de liste moins 1). </p>
+
+<p>Pour en savoir plus sur les différences entre Dynamo 1.X et Dynamo 2.X (y compris sur la manière dont l'accès aux éléments d'une liste a changé), cliquez ici. </p>
+
+<h4>Comment corriger cette erreur?</h4>
+<p>Assurez-vous que la valeur d'index que vous utilisez pour accéder aux éléments de la liste est strictement un entier (par exemple, 2 et non &quot;2&quot; ou 2.0). </p>
+
+<h4>Plus d'informations</h4>
+<p>Pour en savoir plus, consultez les <a href="https://forum.dynamobim.com/search?q=list%20indices%20must%20be%20numeric"><span>billets publiés sur le forum Dynamobim sur le sujet <strong>&quot;list indices must be numeric&quot; (les index de la liste doivent être numériques)</strong></span></a>.</p>
+
+</body>

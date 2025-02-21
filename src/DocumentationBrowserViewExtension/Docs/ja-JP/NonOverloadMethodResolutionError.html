@@ -1,0 +1,39 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>引数タイプが必要ですが、次で呼び出されました</h2>
+<p>このエラー メッセージは、使用しているノードに特定のタイプの入力が必要であるが、使用できないタイプの入力を受け取ったことを示しています。 通常このメッセージの後には、使用しているノードに渡されたタイプと、ノードが受け取る必要があるタイプに関する情報も表示されます。 このエラーの原因となる最も一般的な操作には次のようなものがあります。</p>
+
+<ul>
+    <li><code>Element.SetParameterByName</code> - 要素のパラメータの確認には、ノード Element.Parameters を使用してください。 詳細は、<a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20setparameter">DynamoBIM のフォーラムで「expects argument type setparameter」に関する投稿</a>を参照してください。</li>
+    <li><code>Geometry.BoundingBox</code> - <a href="https://forum.dynamobim.com/t/geometry-boundingbox-1-3-vs-2-0/21995/3">こちら</a>で説明されているように、代わりに Element.BoundingBox を使用してください。 詳細は、<a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20geometry">DynamoBIM のフォーラムで「expects argument type geometry」に関する投稿</a>を参照してください。</li>
+</ul>
+
+<h4>修正方法</h4>
+<p>上記のセクションでは、このエラーを修復するために必要な方法についていくつか説明しています。 一般的には、使用しているノードに必要な入力タイプを確認します。 可能な場合は、ノードに渡される入力を必要なタイプに変更するか、他のノードを使用して目的の機能を実現できるかどうかを確認します。 入力タイプは、<a href="https://dictionary.dynamobim.com/2/#/Input/Object/Action/Type">Object.Type</a> ノードを使用して確認できます。</p>
+
+<h4>詳細情報</h4>
+<p>詳細については、<a href="https://forum.dynamobim.com/search?q=expects%20argument%20type"><span>DynamoBIM のフォーラムで「<strong>expects argument type</strong>」に関する投稿</span></a>を参照してください。</p>
+
+</body>

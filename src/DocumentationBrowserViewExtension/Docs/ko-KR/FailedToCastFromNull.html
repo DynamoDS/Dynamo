@@ -1,0 +1,36 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>null 값은 유형에 투영할 수 없음</h2>
+<p>이 경고는 사용하려는 노드가 특정 데이터 유형의 입력을 기대하고 있으며 해당 유형이 null일 수 없음을 의미합니다. null은 단순히 &quot;객체 없음&quot;을 의미하므로 노드에서 노드에 객체를 입력하지 않는다는 경고를 표시합니다(이는 허용되지 않음).</p>
+
+<h4>수정 방법</h4>
+<p>이 오류는 그래프의 다른 노드로 인해 발생할 수 있습니다. 업스트림 노드가 제대로 실행되는지 확인하십시오. 업스트림 노드가 제대로 실행되지 않고 null 값을 노드에 다운스트림으로 전달하여 이 오류 메시지가 표시되는 경우가 자주 있습니다. 이 경고를 유발하는 노드부터 시작하여 거슬러 올라가며 이 문제를 일으키는 노드를 찾을 때까지 각 노드의 출력을 확인하십시오.</p>
+
+<p>오류 메시지에 null인 매개변수가 표시되는 경우 해당 매개변수의 업스트림 경로에서 노드가 제대로 실행되고 null이 아닌 값을 다운스트림으로 전달하는지 여부를 확인하십시오.</p>
+
+<h4>추가 정보</h4>
+<p>자세한 내용을 보려면 <a href="https://forum.dynamobim.com/search?q=null%20value%20cannot%20be%20cast%20to"><span>&quot;<strong>null 값은 유형에 투영할 수 없음</strong>&quot;</span></a>을 확인하십시오.</p>
+
+</body>

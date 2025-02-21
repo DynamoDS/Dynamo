@@ -13,41 +13,27 @@
 
 <head>
     
-    <meta charset="UTF-8" />
+    <meta charset="utf-8" />
 </head>
 
-<style>
-body {
-    color: white;
-    font-size: 14px;
-    font-family: "Artifakt Element";
-    src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
-    padding: 1%;
-}
-
-a {
-    color: lightgray;
-    cursor: pointer;
-    background-color: transparent;
-}
-</style>
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
 
 <!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
 <!-- and custom styling in Dynamo sidepanel. -->
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
-<h2>Expects argument type(s), but was called with</h2>
-<p>This error message indicates that the node you are using is expecting a certain type of input(s) but has received a type of input it cannot use. It is typically followed by additional information regarding what types were passed into the node you are using and what types the node expected to receive. Some of the most common operations that trigger this error are:</p>
+<h2>Espera los tipos de argumentos, pero se ha llamado con</h2>
+<p>Este mensaje de error indica que el nodo que está utilizando espera un determinado tipo de entradas, pero ha recibido un tipo de entrada que no puede utilizar. Normalmente, después de este mensaje, se proporciona información adicional sobre los tipos que se han transferido al nodo que se está utilizando y los tipos que el nodo esperaba recibir. Algunas de las operaciones más habituales que generan este error son:</p>
 
 <ul>
-    <li><code>Element.SetParameterByName</code> - try using use the node Element.Parameters to check the parameters in the element. Read more <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20setparameter">posts on the Dynamobim forum discussing "expects argument type setparameter"</a>.</li>
-    <li><code>Geometry.BoundingBox</code> - try using Element.BoundingBox instead, as discussed <a href="https://forum.dynamobim.com/t/geometry-boundingbox-1-3-vs-2-0/21995/3">here</a>. Read more <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20geometry">posts on the Dynamobim forum discussing "expects argument type geometry"</a>.</li>
+    <li><code>Element.SetParameterByName</code>: pruebe a utilizar el nodo Element.Parameters para comprobar los parámetros del elemento. Lea más <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20setparameter">publicaciones del foro de Dynamobim sobre &quot;expects argument type setparameter&quot;</a>.</li>
+    <li><code>Geometry.BoundingBox</code>: pruebe a utilizar Element.BoundingBox en su lugar, como se comenta <a href="https://forum.dynamobim.com/t/geometry-boundingbox-1-3-vs-2-0/21995/3">aquí</a>. Lea más <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20geometry">publicaciones del foro de Dynamobim sobre &quot;expects argument type geometry&quot;</a>.</li>
 </ul>
 
-<h4>How to fix</h4>
-<p>The section above mentions some approaches you can take to recover from this error. In general, check what input types the node you are using expects. If possible, change the inputs passed into the node to their expected types or check to see if other nodes can be used to achieve the functionality you want. Note that input types can be checked using the <a href="https://dictionary.dynamobim.com/2/#/Input/Object/Action/Type">Object.Type</a> node.</p>
+<h4>Cómo solucionar este error</h4>
+<p>En la sección anterior, se mencionan algunos métodos que puede utilizar para recuperarse de este error. En general, compruebe los tipos de entrada que espera el nodo que está utilizando. Si es posible, cambie las entradas transferidas al nodo a los tipos esperados o compruebe si se pueden utilizar otros nodos para obtener la función que desea. Tenga en cuenta que los tipos de entrada se pueden comprobar mediante el nodo <a href="https://dictionary.dynamobim.com/2/#/Input/Object/Action/Type">Object.Type</a>.</p>
 
-<h4>More information</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type"><span> posts on the Dynamobim forum discussing "<strong>expects argument type</strong>"</span></a>.</p>
+<h4>Más información</h4>
+<p>Para obtener más información, consulte las <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type"><span>publicaciones del foro de Dynamobim sobre &quot;<strong>expects argument type</strong>&quot;</span></a>.</p>
 
 </body>

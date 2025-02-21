@@ -1,0 +1,34 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>ポリカーブが分岐している可能性があります(分岐できません)</h2>
+<p>このエラー メッセージは、使用しているジオメトリ ノードが、非常に大規模な設定で小数点以下の値を破棄していることを示しています。 たとえば、複数の点の<code>X</code> 値が<code>[0.1, 0.2, 0.3, 5, 10]</code>から<code>[0, 0, 0, 5, 10]</code>になった場合などがあります。</p>
+
+<h4>修正方法</h4>
+<p>ジオメトリのスケーリングの設定は、<code>Geometry.Scale</code> を使用して変更できます。 ジオメトリのスケールの既定の設定は[中]です。</p>
+
+<h4>詳細情報</h4>
+<p>詳細については、<a href="https://forum.dynamobim.com/search?q=polycurves%20may%20be%20branching"><span>DynamoBIM のフォーラムで「<strong>polycurves may be branching</strong>」に関する投稿</span></a>を参照してください。</p>
+
+</body>

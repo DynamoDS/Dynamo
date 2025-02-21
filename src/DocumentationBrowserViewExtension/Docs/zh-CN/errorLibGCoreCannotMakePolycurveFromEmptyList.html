@@ -1,0 +1,34 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>无法由空列表生成 PolyCurve</h2>
+<p>如果在尝试创建 PolyCurve 时输入空列表，则会出现此警告。</p>
+
+<h4>如何修复</h4>
+<p>此错误可能由图形中的其他节点引起。 检查上游节点以查看它们是否正确执行 - 通常上游节点会向下游节点传递空列表，然后该节点显示此错误消息。 从导致出现此警告的节点开始，然后向后工作，以便检查每个节点的输出，直到找到导致此问题的节点。</p>
+
+<h4>更多信息</h4>
+<p>要了解更多信息，请查看 <a href="https://forum.dynamobim.com/search?q=cannot%20make%20a%20polycurve%20from%20an%20empty%20list"><span>Dynamobim 论坛上讨论“<strong>cannot make a polycurve from an empty list</strong>”的帖子</span></a>。</p>
+
+</body>

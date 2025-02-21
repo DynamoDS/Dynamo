@@ -1,0 +1,36 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>La jonction des courbes a produit plusieurs WIRE dans la polycourbe </h2>
+<p>Ce message d'erreur indique que les lignes générées par un noeud de polycourbe ne forment pas une courbe fermée.</p>
+
+<h4>Comment corriger cette erreur?</h4>
+<p>Cela peut être dû au fait que la sortie du noeud contient des valeurs NULL. Vérifiez dans chaque sortie de liste du noeud de polycourbe si les courbes se rejoignent en une ligne continue. Pour ce faire, vous pouvez masquer l'aperçu de la géométrie de tous les noeuds (cliquez avec le bouton droit de la souris sur le noeud ou la sélection de noeuds pour masquer l'aperçu de la géométrie), puis exécuter <a href="https://dictionary.dynamobim.com/2/#/List/Inspect/Action/GetItemAtIndex"><code>List.GetItemAtIndex</code></a> sur une liste à la fois pour l'afficher. </p>
+
+<p>En outre, cette erreur survient souvent avec les limites de pièce. Essayez plutôt d'utiliser <a href="https://dictionary.dynamobim.com/2/#/Revit/Elements/Room/Query/CenterBoundary"><code>Room.CenterBoundary</code></a> pour extraire les courbes.</p>
+
+<h4>Plus d'informations</h4>
+<p>Pour en savoir plus, consultez les <a href="https://forum.dynamobim.com/search?q=curve%20join%20produced%20more%20than%20one%20WIRE%20in%20Polycurve"><span>billets publiés sur le forum Dynamobim sur le sujet <strong>&quot;curve join produced more than one wire in polycurve&quot; (la jonction des courbes a produit plusieurs fils dans la polycourbe)</strong></span></a>.</p>
+
+</body>

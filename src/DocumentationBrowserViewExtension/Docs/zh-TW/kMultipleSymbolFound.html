@@ -1,0 +1,35 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>找到多個定義</h2>
+<p>此錯誤訊息表示 DynamoCore 和您為了圖表而載入的不同 Dynamo 套件中使用了相同的方法或類別名稱，但是 Dynamo 不知道要使用哪個方法或類別 (亦即從哪個套件)。</p>  
+<p>這個警告通常是在 CodeBlock 中使用 DesignScript 時發生。例如，如果您嘗試在 CodeBlock 中展開清單，要使用 <code>List.Flatten()</code>。如果您載入的其中一個協力廠商套件也有一個稱為 <code>List</code> 的類別，您就會看到這個警告。</p>
+
+<h4>如何修正</h4>
+<p>若要修正此錯誤，請為您嘗試使用的函數包括完整的名稱空間。例如，如果您執行 <code>List.Flatten()</code> 並看到此錯誤訊息，請嘗試改用 <code>DSCore.List.Flattte()</code> (DSCore 代表「Design Script Core」，是 Dynamo 隨附的一個預設套件)。</p>
+
+<h4>更多資訊</h4>
+<p>如欲瞭解更多資訊，請查看 <a href="https://forum.dynamobim.com/search?q=multiple%20definitions%20for%20found"><span>Dynamobim 論壇上討論「<strong>multiple definitions found</strong>」的貼文</span></a>。</p>
+
+</body>

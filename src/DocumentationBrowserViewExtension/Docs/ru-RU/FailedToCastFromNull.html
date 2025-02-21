@@ -1,0 +1,36 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Невозможно привести пустое значение к типу</h2>
+<p>Это предупреждение означает, что используемый узел предусматривает ввод определенного типа данных, не поддерживающего пустые значения. «Пустой» означает «без объекта», то есть, узел выдает предупреждение о попытке ввода в него данных без объекта, что недопустимо.</p>
+
+<h4>Устранение проблемы</h4>
+<p>Ошибка может быть вызвана другими узлами графика. Проверьте, правильно ли функционируют предшествующие узлы. Бывает, что они работают некорректно и передают последующим узлам отсутствующие значения, что приводит к появлению этого сообщения об ошибке. Начните с узла, который выдает предупреждение, и двигайтесь в обратном направлении, проверяя выходные данные каждого узла до тех пор, пока не найдете узел, который вызывает проблему.</p>
+
+<p>Если в сообщении об ошибке указано, какой параметр является пустым, проверьте предшествующие узлы, где используется этот параметр. Проверьте, правильно ли они функционируют и передают ли последующим узлам непустые значения.</p>
+
+<h4>Дополнительные сведения</h4>
+<p>Дополнительные сведения можно найти в публикациях с обсуждением ошибки <a href="https://forum.dynamobim.com/search?q=null%20value%20cannot%20be%20cast%20to"><span><strong>null value cannot be cast to type</strong></span></a>.</p>
+
+</body>

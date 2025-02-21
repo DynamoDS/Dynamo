@@ -1,0 +1,39 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Erwartet Argumenttyp(en), wurde jedoch aufgerufen mit</h2>
+<p>Diese Fehlermeldung weist darauf hin, dass der verwendete Block einen bestimmten Eingabetyp erwartet, aber einen Eingabetyp erhalten hat, den er nicht verwenden kann. In der Regel folgen zusätzliche Informationen dazu, welche Typen an den verwendeten Block übergeben wurden und welche Typen der Block erwartet hat. Einige der häufigsten Vorgänge, die diesen Fehler auslösen, sind:</p>
+
+<ul>
+    <li><code>Element.SetParameterByName</code>: Versuchen Sie, mithilfe des Blocks Element.Parameters die Parameter im Element zu überprüfen. Lesen Sie weitere <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20setparameter">Beiträge im DynamoBIM-Forum zum Thema "expects argument type setparameter"</a>.</li>
+    <li><code>Geometry.BoundingBox</code>: Versuchen Sie stattdessen, Element.BoundingBox zu verwenden, wie <a href="https://forum.dynamobim.com/t/geometry-boundingbox-1-3-vs-2-0/21995/3">hier</a> beschrieben. Lesen Sie weitere <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20geometry">Beiträge im DynamoBIM-Forum zum Thema "expects argument type geometry"</a>.</li>
+</ul>
+
+<h4>So beheben Sie Fehler</h4>
+<p>Im obigen Abschnitt werden einige Maßnahmen erwähnt, die Sie ergreifen können, um diesen Fehler zu beheben. Überprüfen Sie generell, welche Eingabetypen für den verwendeten Block erwartet werden. Ändern Sie nach Möglichkeit die Eingaben, die an den Block weitergegeben werden, in die erwarteten Typen, oder überprüfen Sie, ob andere Blöcke verwendet werden können, um die gewünschte Funktionalität zu erzielen. Beachten Sie, dass Eingabetypen mit dem <a href="https://dictionary.dynamobim.com/2/#/Input/Object/Action/Type">Object.Type</a>-Block überprüft werden können.</p>
+
+<h4>Weitere Informationen</h4>
+<p>Weitere Informationen finden Sie in den <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type"><span>Beiträgen im DynamoBIM-Forum zum Thema <strong>expects argument type</strong></span></a>.</p>
+
+</body>

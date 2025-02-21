@@ -1,0 +1,39 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Očekává argument typu, ale byla zavolána s</h2>
+<p>Tato chybová zpráva naznačuje, že uzel, který používáte, očekává určitý typ vstupu, ale obdržel typ vstupu, který nelze použít. Zpráva většinou obsahuje další informace o typech, které byly uzlu předány, a které typy byly očekávány. Mezi nejběžnější operace, které tuto chybu vyvolávají, patří:</p>
+
+<ul>
+    <li><code>Element.SetParameterByName</code> – zkuste zkontrolovat parametry v prvku pomocí uzlu Element.Parameters. Přečtěte si další <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20setparameter">příspěvky na fóru Dynamobim na téma &quot;expects argument type setparameter&quot;</a>.</li>
+    <li><code>Geometry.BoundingBox</code> – zkuste spíše použít metodu Element.BoundingBox, jak je popsáno <a href="https://forum.dynamobim.com/t/geometry-boundingbox-1-3-vs-2-0/21995/3">zde</a>. Přečtěte si další <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20geometry">příspěvky na fóru Dynamobim na téma &quot;expects argument type geometry&quot;</a>.</li>
+</ul>
+
+<h4>Jak provést opravu</h4>
+<p>Výše jsou uvedeny některé způsoby, jak tuto chybu vyřešit. Zkontrolujte, které vstupní typy používaný uzel očekává. Pokud je to možné, změňte vstupy předané do uzlu na očekávané typy nebo zkontrolujte, zda je možné k dosažení požadované funkčnosti použít jiné uzly. Typy vstupů lze zkontrolovat pomocí uzlu <a href="https://dictionary.dynamobim.com/2/#/Input/Object/Action/Type">Object.Type</a>.</p>
+
+<h4>Další informace</h4>
+<p>Další informace naleznete v <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type"><span> příspěvcích na fóru Dynamobim na téma &quot;<strong>expects argument type</strong>&quot;</span></a>.</p>
+
+</body>

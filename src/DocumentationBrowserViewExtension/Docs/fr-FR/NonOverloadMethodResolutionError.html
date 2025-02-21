@@ -1,0 +1,39 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Attend le ou les types d'argument, mais a été appelé avec</h2>
+<p>Ce message d'erreur indique que le noeud que vous utilisez attend un certain type d'entrée mais a reçu un autre type d'entrée qu'il ne peut pas utiliser. Il est généralement suivi d'informations supplémentaires concernant les types transmis au noeud que vous utilisez et les types que le noeud doit recevoir. Voici quelques-unes des opérations les plus courantes qui déclenchent cette erreur:</p>
+
+<ul>
+    <li><code>Element.SetParameterByName</code>: essayez d'utiliser le noeud Element.Parameters pour vérifier les paramètres dans l'élément. Consultez d'autres <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20setparameter">billets publiés sur le forum Dynamobim sur le sujet &quot;expects argument type setparameter&quot; (attend le type d'argument setparameter)</a>.</li>
+    <li><code>Geometry.BoundingBox</code>: essayez d'utiliser Element.BoundingBox à la place, comme décrit <a href="https://forum.dynamobim.com/t/geometry-boundingbox-1-3-vs-2-0/21995/3">ici</a>. Consultez d'autres <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20geometry">billets publiés sur le forum Dynamobim sur le sujet &quot;expects argument type geometry&quot; (attend le type d'argument geometry)</a>.</li>
+</ul>
+
+<h4>Comment corriger cette erreur?</h4>
+<p>La section ci-dessus indique certaines mesures que vous pouvez mettre en place pour corriger cette erreur. En général, vérifiez les types d'entrées qui sont attendus par le noeud que vous utilisez. Si possible, modifiez les entrées transmises au noeud afin qu'elles correspondent aux types attendus ou vérifiez si d'autres noeuds peuvent être utilisés pour obtenir la fonctionnalité souhaitée. Notez que les types d'entrées peuvent être vérifiés à l'aide du noeud <a href="https://dictionary.dynamobim.com/2/#/Input/Object/Action/Type">Object.Type</a>.</p>
+
+<h4>Plus d'informations</h4>
+<p>Pour en savoir plus, consultez les <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type"><span>billets publiés sur le forum Dynamobim sur le sujet<strong>&quot;expects argument type&quot; (attend le type d'argument)</strong></span></a>.</p>
+
+</body>

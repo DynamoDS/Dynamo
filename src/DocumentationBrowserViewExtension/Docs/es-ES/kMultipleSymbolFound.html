@@ -13,37 +13,23 @@
 
 <head>
     
-    <meta charset="UTF-8" />
+    <meta charset="utf-8" />
 </head>
 
-<style>
-body {
-    color: white;
-    font-size: 14px;
-    font-family: "Artifakt Element";
-    src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
-    padding: 1%;
-}
-
-a {
-    color: lightgray;
-    cursor: pointer;
-    background-color: transparent;
-}
-</style>
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
 
 <!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
 <!-- and custom styling in Dynamo sidepanel. -->
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
-<h2>Multiple definitions found</h2>
-<p>This error message means the same method or class name is used in DynamoCore and different Dynamo packages that you are loading for your graph and Dynamo does not know which method or class (i.e., from which package) to use.</p>  
-<p>This warning usually happens when using DesignScript in a CodeBlock. For example, if you are trying to Flatten a list in a CodeBlock, you would use <code>List.Flatten()</code>. If one of the 3rd party packages you are loading also have a class called <code>List</code>, you will see this warning.</p>
+<h2>Se han encontrado varias definiciones</h2>
+<p>Este mensaje de error indica que se utiliza el mismo método o nombre de clase en DynamoCore y se han cargado diferentes paquetes de Dynamo para el gráfico, y Dynamo no sabe qué método o clase (es decir, desde qué paquete) se debe utilizar.</p>  
+<p>Esta advertencia suele producirse cuando se utiliza DesignScript en un bloque de código. Por ejemplo, si intenta aplanar una lista en un bloque de código, puede utilizar <code>List.Flatten()</code>. Si uno de los paquetes de terceros que está cargando también tiene una clase denominada <code>List</code>, aparecerá esta advertencia.</p>
 
-<h4>How to fix</h4>
-<p>To fix this error include the full namespace of the function you are trying to use. For example, if you are running <code>List.Flatten()</code> and seeing this error message, try to use <code>DSCore.List.Flatten()</code> instead (DSCore stands for “Design Script Core” and is one of the default packages that comes with Dynamo).</p>
+<h4>Cómo solucionar este error</h4>
+<p>Para solucionar este error, incluya el espacio de nombres completo de la función que está intentando utilizar. Por ejemplo, si está ejecutando <code>List.Flatten()</code> y aparece este mensaje de error, pruebe a utilizar <code>DSCore.List.Flatten()</code> en su lugar (DSCore equivale a &quot;DesignScript Core&quot; y es uno de los paquetes por defecto que se suministra con Dynamo).</p>
 
-<h4>More information</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=multiple%20definitions%20for%20found"><span> posts on the Dynamobim forum discussing "<strong>multiple definitions found</strong>"</span></a>.</p>
+<h4>Más información</h4>
+<p>Para obtener más información, consulte las <a href="https://forum.dynamobim.com/search?q=multiple%20definitions%20for%20found"><span>publicaciones del foro de Dynamobim sobre &quot;<strong>multiple definitions found</strong>&quot;</span></a>.</p>
 
 </body>

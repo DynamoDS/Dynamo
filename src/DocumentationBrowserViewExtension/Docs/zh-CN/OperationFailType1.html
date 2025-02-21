@@ -1,0 +1,43 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>操作失败</h2>
+<p><code>Operation failed</code> 是一条常规错误消息，该消息指示其中一个节点无法执行。 它通常后跟附加信息，该信息涉及哪个操作失败以及失败的原因。 失败的一些最常见操作包括:</p>
+
+<ul>
+    <li><code>IronPythonEvaluator.EvaluateIronPythonScript</code> - 当运行 <tt>python</tt> 代码的节点无法正确执行时，将显示此消息。 出现此情况有许多原因，但导致发生此情况的最常见原因是 <tt>python</tt> 代码包含错误。 此错误消息经常显示，其中包含有关 <tt>python</tt> 代码行无法执行以及出现此情况的原因的附加信息。 在<a href="https://forum.dynamobim.comsearch?q=IronPythonEvaluator.EvaluateIronPythonScript"><span>此处</span></a>阅读有关此错误消息的更多信息。</li>
+    
+    <li><code>Element.SetParameterByName</code> - 在<a href="https://forum.dynamobim.com/search?q=Element.SetParameterByName"><span>此处</span></a>阅读有关此错误消息的更多信息。</li>
+
+    <li><code>Floor.ByOutlineTypeAndLevel</code> - 在<a href="https://forum.dynamobim.com/search?q=Floor.ByOutlineTypeAndLevel"><span>此处</span></a>阅读有关此错误消息的更多信息。</li>
+
+    <li><code>Dictionary.ByKeysValues</code> - 在<a href="https://forum.dynamobim.com/search?q=Dictionary.ByKeysValues"><span>此处</span></a>阅读有关此错误消息的更多信息。</li>
+    
+    <li><code>List.GetItemAtIndex</code> - 在<a href="https://forum.dynamobim.com/search?q=List.GetItemAtIndex"><span>此处</span></a>阅读有关此错误消息的更多信息。</li>
+</ul>
+
+<h4>更多信息</h4>
+<p>要了解更多信息，请查看 <a href="https://forum.dynamobim.com/search?q=operation%20failed"><span>Dynamobim 论坛上讨论“<strong>操作失败</strong>”的帖子</span></a>。</p>
+
+</body>

@@ -1,0 +1,43 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>作業失敗</h2>
+<p><code>Operation failed</code> 是一般錯誤訊息，表示您的其中一個節點無法執行。 後面通常會接哪個作業失敗，以及失敗發生原因的相關資訊。最常失敗的作業包括:</p>
+
+<ul>
+    <li><code>IronPythonEvaluator.EvaluateIronPythonScript</code> - 執行 <tt>python</tt> 程式碼的節點無法正確執行時，會顯示此訊息。 原因很多，但最常發生的原因是 <tt>python</tt> 程式碼有錯誤。此錯誤訊息常會顯示無法執行的 <tt>python</tt> 程式碼行，以及發生原因的相關資訊。請在<a href="https://forum.dynamobim.comsearch?q=IronPythonEvaluator.EvaluateIronPythonScript"><span>這裡</span></a>閱讀更多關於此錯誤訊息的資訊。</li>
+    
+    <li><code>Element.SetParameterByName</code> - 在<a href="https://forum.dynamobim.com/search?q=Element.SetParameterByName"><span>這裡</span></a>閱讀更多關於此錯誤訊息的資訊。</li>
+
+    <li><code>Floor.ByOutlineTypeAndLevel</code> - 在<a href="https://forum.dynamobim.com/search?q=Floor.ByOutlineTypeAndLevel"><span>這裡</span></a>閱讀更多關於此錯誤訊息的資訊。</li>
+
+    <li><code>Dictionary.ByKeysValues</code> - 在<a href="https://forum.dynamobim.com/search?q=Dictionary.ByKeysValues"><span>這裡</span></a>閱讀更多關於此錯誤訊息的資訊。</li>
+    
+    <li><code>List.GetItemAtIndex</code> - 在<a href="https://forum.dynamobim.com/search?q=List.GetItemAtIndex"><span>這裡</span></a>閱讀更多關於此錯誤訊息的資訊。</li>
+</ul>
+
+<h4>更多資訊</h4>
+<p>如欲瞭解更多資訊，請查看 <a href="https://forum.dynamobim.com/search?q=operation%20failed"><span>Dynamobim 論壇上討論「<strong>operation failed</strong>」的貼文</span></a>。</p>
+
+</body>
