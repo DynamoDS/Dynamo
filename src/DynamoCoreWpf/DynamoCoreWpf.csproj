@@ -2012,6 +2012,7 @@
   </Target>
   <Target Name="CopyGuidedTourHTMLFiles" AfterTargets="AfterBuildOps">
     <ItemGroup>
+		<HTMLEnUSFiles Include="$(SolutionDir)..\doc\distrib\html\en-US\GuidedTour\**\*.html" />
 		<HTMLCsCZFiles Include="$(SolutionDir)..\doc\distrib\html\cs-CZ\GuidedTour\**\*.html" />
 		<HTMLDeDEFiles Include="$(SolutionDir)..\doc\distrib\html\de-DE\GuidedTour\**\*.html" />
 		<HTMLEsESFiles Include="$(SolutionDir)..\doc\distrib\html\es-ES\GuidedTour\**\*.html" />
