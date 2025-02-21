@@ -1,0 +1,65 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Tessellation</name>
+    </assembly>
+    <members>
+        <member name="T:Tessellation.Adapters.Cell2">
+            <summary>Buňka pro 2D mozaiku</summary>
+        </member>
+        <member name="T:Tessellation.Adapters.Cell3">
+            <summary>Buňka pro 3D mozaiku</summary>
+        </member>
+        <member name="T:Tessellation.Adapters.Tetrahedron">
+            <summary>Vertex je jednoduchá třída, která uchovává polohu bodu, uzlu nebo vrcholu.</summary>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.GetPosition(System.Int32)">
+            <summary>Pomocná funkce pro získání polohy i-tého vrcholu</summary>
+            <param name="i"/>
+            <returns>Poloha i-tého vrcholu</returns>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.MakeFace(System.Int32,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Tato funkce přidá indexy pro trojúhelníkovou reprezentaci plochy.
+            Pro pořadí je použit levotočivý směr (proti směru hodinových ručiček), a to proto, aby automaticky počítané normály mířily vpravo.</summary>
+            <param name="i"/>
+            <param name="j"/>
+            <param name="k"/>
+            <param name="center"/>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.MakeFaces">
+            <summary>Vytvoří model čtyřstěnu. U barvy je použita průhlednost.</summary>
+            <returns>Model představující čtyřstěn</returns>
+        </member>
+        <member name="T:Tessellation.Adapters.TriangleFace">
+            <summary>Vertex je jednoduchá třída, která uchovává polohu bodu, uzlu nebo vrcholu.</summary>
+        </member>
+        <member name="T:Tessellation.ConvexHull">
+            <summary>Funkce pro vytváření konvexních koster</summary>
+        </member>
+        <member name="M:Tessellation.ConvexHull.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>Vytvoří konvexní kostru množiny bodů.</summary>
+            <param name="points">Množina bodů</param>
+        </member>
+        <member name="T:Tessellation.Delaunay">
+            <summary>Funkce pro vytváření Delaunayových triangulací</summary>
+        </member>
+        <member name="M:Tessellation.Delaunay.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
+            <summary>Vytváří Delaunayovu triangulaci povrchu s danou sadou parametrů UV.</summary>
+            <param name="uvs">Sada parametrů UV</param>
+            <param name="face">Povrch k triangulaci</param>
+            <search>uvs</search>
+        </member>
+        <member name="M:Tessellation.Delaunay.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>Vytvoří Delaunayovu triangulaci množiny bodů.</summary>
+            <param name="points">Množina bodů</param>
+        </member>
+        <member name="T:Tessellation.Voronoi">
+            <summary>Funkce pro vytváření Voronoiových mozajek</summary>
+        </member>
+        <member name="M:Tessellation.Voronoi.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
+            <summary>Vytváří Voronoiovy mozaiky povrchu s danou sadou parametrů UV.</summary>
+            <param name="uvs">Sada parametrů UV</param>
+            <param name="face">Povrch, který chcete mozaikovat</param>
+            <search>uvs</search>
+        </member>
+    </members>
+</doc>

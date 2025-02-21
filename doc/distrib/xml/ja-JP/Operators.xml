@@ -1,0 +1,104 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Operators</name>
+    </assembly>
+    <members>
+        <member name="%add">
+            <summary>x と y を加算した値を返します</summary>
+            <param name="x">整数値、倍精度値または文字列</param>
+            <param name="y">整数値、倍精度値または文字列</param>
+            <returns name="var">2 つの入力数値の合計、または 2 つの文字列の連結</returns>
+            <search>add, plus, addition, +</search>
+        </member>
+		<member name="%sub">
+            <summary>x から y を減算した値を返します</summary>
+            <param name="x">整数値または倍精度値</param>
+            <param name="y">整数値または倍精度値</param>
+            <returns name="number">入力された x から、入力された y を減算した結果</returns>
+            <search>sub, subtract, difference, -</search>
+        </member>		
+		<member name="%mul">
+            <summary>x を y で乗算した値を返します</summary>
+            <param name="x">整数値または倍精度値</param>
+            <param name="y">整数値または倍精度値</param>
+            <returns name="number">2 つの入力数値の積</returns>
+            <search>mul, multiply, product, times, *, x</search>
+        </member>
+		<member name="%div">
+            <summary>x を y で除算した値を返します</summary>
+            <param name="x">整数値または倍精度値</param>
+            <param name="y">整数値または倍精度値</param>
+            <returns name="double">除算の結果</returns>
+            <search>div, divide, product</search>
+        </member>
+		<member name="%eq">
+            <summary>x と y が等しいかどうか比較します</summary>
+            <param name="x">比較する標準タイプのオブジェクト(たとえば、ブール、整数、倍精度浮動小数点数、文字列)</param>
+            <param name="y">比較する標準タイプのオブジェクト(たとえば、ブール、整数、倍精度浮動小数点数、文字列)</param>
+            <returns name="bool">等価チェックの結果</returns>
+            <search>eq, equal, =</search>
+        </member>
+		<member name="%ge">
+            <summary>x が y 以上かどうか比較します</summary>
+            <param name="x">整数値または倍精度値</param>
+            <param name="y">整数値または倍精度値</param>
+            <returns name="bool">x が y 以上の場合は true、違う場合は false</returns>
+            <search>greater,equal</search>
+        </member>
+		<member name="%gt">
+            <summary>x が y より大きいかどうか比較します</summary>
+            <param name="x">整数値または倍精度値</param>
+            <param name="y">整数値または倍精度値</param>
+            <returns name="bool">x が y より大きい場合は true、違う場合は false</returns>
+            <search>greater</search>
+        </member>
+		<member name="%mod">
+            <summary>モジュロ: x/y の余りを求めます</summary>
+            <param name="x">整数値または倍精度値</param>
+            <param name="y">整数値または倍精度値</param>
+            <returns name="number">入力された x を入力された y で除算した後の余り</returns>
+            <search>mod, modulo, remainder</search>
+        </member>
+		<member name="%le">
+            <summary>x が y 以下かどうか比較します</summary>
+            <param name="x">整数値または倍精度値</param>
+            <param name="y">整数値または倍精度値</param>
+            <returns name="bool">チェックの結果</returns>
+            <search>less,equal</search>
+        </member>
+		<member name="%lt">
+            <summary>x が y より小さいかどうか比較します</summary>
+            <param name="x">整数値または倍精度値</param>
+            <param name="y">整数値または倍精度値</param>
+            <returns name="bool">チェックの結果</returns>
+            <search>less</search>
+        </member>
+		<member name="%and">
+            <summary>論理 AND 演算子</summary>
+            <param name="x">true かどうかチェックするブール値</param>
+            <param name="y">true かどうかチェックするもう一方のブール値</param>
+            <returns name="bool">チェックの結果</returns>
+            <search>and</search>
+        </member>
+		<member name="%or">
+            <summary>論理 OR 演算子</summary>
+            <param name="bool">true かどうかチェックするブール値</param>
+            <param name="otherBool">true かどうかチェックするもう一方のブール値</param>
+            <returns name="bool">入力のいずれかが true の場合は true</returns>
+            <search>or</search>
+        </member>
+		<member name="%nq">
+            <summary>2 つの値が異なる場合に true を返します</summary>
+            <param name="x">整数値または倍精度値</param>
+            <param name="y">整数値または倍精度値</param>
+            <returns name="bool">チェックの結果</returns>
+            <search>equal</search>
+        </member>
+		<member name="%Not">
+		            <summary>入力を反転します。たとえば、true が入力されると false を返します。</summary>
+            <param name="x">反転させるブール値。</param>
+            <returns name="bool">タイプ var[]..[] (反転するブール値)</returns>
+            <search>not</search>
+        </member>
+    </members>
+</doc>

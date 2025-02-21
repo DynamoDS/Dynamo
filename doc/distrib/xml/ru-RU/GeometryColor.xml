@@ -1,0 +1,112 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>GeometryColor</name>
+    </assembly>
+    <members>
+        <member name="M:Modifiers.GeometryColor.ByGeometryColor(Autodesk.DesignScript.Geometry.Geometry,DSCore.Color)">
+            <summary>Отображение геометрии с помощью цвета.</summary>
+            <param name="geometry">Геометрия, к которой требуется применить цвет.</param>
+            <param name="color">Цвет.</param>
+            <returns>Отображаемый объект.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.BySurfaceColors(Autodesk.DesignScript.Geometry.Surface,DSCore.Color[][])">
+             <summary>Отображение значений цветов на поверхности.
+            
+            Указанные цвета преобразуются программой самостоятельно в текстуру изображения,
+            которая сопоставляется с поверхностью.</summary>
+             <param name="surface">Поверхность, на которой требуется применить цвета.</param>
+             <param name="colors">Двумерный список цветов.
+            
+            Список цветов должен быть точным. Попытка передать неполный массив
+            приведет к исключению.</param>
+             <returns>Отображаемый объект.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ByPointsColors(Autodesk.DesignScript.Geometry.Point[],DSCore.Color[])">
+             <summary>Создание цветной сети с помощью точек и цветов.
+            
+            Предоставленный список точек используется для создания триангулированной сети
+            с несоединенными вершинами.</summary>
+             <param name="points">Список точек.
+            
+            В настоящий момент поддерживаются только треугольные сети. Каждая тройка точек в списке формирует
+            один треугольник сети. Точки должны быть упорядочены в направлении против часовой стрелки.
+            Попытка передать список вершин, число которых не кратно 3, приведет к исключению.</param>
+             <param name="colors">Список цветов.
+            
+            Количество цветов и вершин должно совпадать. Попытка передать список цветов, количество которых
+            отличается от списка точек, приведет к исключению.</param>
+             <returns>Отображаемый объект.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
+            <summary>Отображение сети по одному цвету, по цветам граней, по цветам вершин или по цветам вершин и граней.</summary>
+            <param name="mesh"/>The Mesh on which to apply the colors
+            <param name="colors">Количество цветов должно быть равно 1 (один цвет), количеству граней (цвет каждой грани), количеству вершин (цвет каждой вершины) или количеству треугольников, умноженному на три (цвет каждого треугольника и каждой вершины)</param>
+            <param name="smoothShading">Если задано значение true, тонирование будет выглядеть гладким, а не фасеточным, что полезно для визуализации гладких непрерывных поверхностей</param>
+            <returns>Объект отображения.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ComputeColorMap(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},DSCore.Color[],System.Int32,System.Int32)">
+            <summary>Рассчитать набор карт цветов на основе набора объектов SurfaceData.</summary>
+            <returns/>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ComputeSamplesFromNormalizedValue(System.Double,System.Int32,System.Int32)">
+            <summary>Этот метод повторно сопоставляет число от 0,0 до 1,0 с целочисленным значением в диапазоне между lowestPower и highestPower</summary>
+        </member>
+        <member name="T:Autodesk.DesignScript.Geometry.ImportHelpers">
+            <summary>Узлы импорта геометрии, имеющие зависимости, которые не следует включать в Protogeometry.
+            Эти методы в дальнейшем будут заключены в узлы NodeModel, что обеспечит корректное именование 
+            и расположение библиотеки.</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.ImportFromSATWithUnits(System.String,DynamoUnits.Unit)">
+            <summary>Импорт геометрии из файла SAT. Задайте входной параметр dynamoUnit в соответствии с тем, 
+            как интерпретируются другие числа в файле Dynamo.</summary>
+            <param name="filePath">путь к файлу SAT в виде строки.</param>
+            <param name="dynamoUnit">единица длины Forge. Если ее не указать, файл SAT будет импортирован как безразмерный.</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.ImportFromSATWithUnits(System.IO.FileInfo,DynamoUnits.Unit)">
+            <summary>Импорт геометрии из файла SAT. Задайте входной параметр dynamoUnit в соответствии с тем, 
+            как интерпретируются другие числа в файле Dynamo.</summary>
+            <param name="file">файловый объект, указывающий на файл SAT.</param>
+            <param name="dynamoUnit">единица длины Forge. Если ее не указать, файл SAT будет импортирован как безразмерный.</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.DeserializeFromSABWithUnits(System.Byte[],DynamoUnits.Unit)">
+            <summary>Импорт геометрии из массива байтов SAB. Задайте входной параметр dynamoUnit в соответствии с тем, 
+            как интерпретируются другие числа в файле Dynamo.</summary>
+            <param name="buffer">Массив байтов SAB</param>
+            <param name="dynamoUnit">единица длины Forge. Если ее не указать, файл SAT будет импортирован как безразмерный.</param>
+            <returns/>
+        </member>
+        <member name="T:GeometryColor.Properties.Resources">
+            <summary>Класс ресурса со строгим контролем типа, используемый для поиска локализованных строк и т. п.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.ResourceManager">
+            <summary>Возврат кэшированного экземпляра ResourceManager, используемого данным классом.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.Culture">
+            <summary>Переопределение свойства CurrentUICulture текущего потока для всех
+               случаев поиска ресурсов посредством данного класса ресурса со строгим контролем типа.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.ByMeshColorsInvalidColorCountMessage">
+            <summary>Поиск локализованной строки, подобной строке «Неверное количество цветов. Оно должно быть равно 1 (один цвет), количеству граней (цвет каждой грани), количеству вершин (цвет каждой вершины) или количеству треугольников, умноженному на три (цвет каждого треугольника и каждой вершины). Чтобы раскрасить несколько сеток, может потребоваться использовать уровни списка.».</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.JaggedListExceptionMessage">
+            <summary>Поиск локализованной строки, подобной строке «Список цветов не может быть неполным».</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.NoColorsExceptionMessage">
+            <summary>Поиск локализованной строки, подобной строке «Необходимо указать несколько цветов».</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.NoVertexExceptionMessage">
+            <summary>Поиск локализованной строки, подобной строке «Необходимо указать несколько вершин».</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.TwoDimensionalListExceptionMessage">
+            <summary>Поиск локализованной строки, подобной строке «Необходимо указать список цветов в двух измерениях».</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.VertexColorCountMismatchExceptionMessage">
+            <summary>Поиск локализованной строки, подобной строке «Количество указанных цветов должно совпадать с количеством вершин».</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.VerticesDivisibleByThreeExceptionMessage">
+            <summary>Поиск локализованной строки, подобной строке «Количество указанных вершин должно быть кратным 3».</summary>
+        </member>
+    </members>
+</doc>

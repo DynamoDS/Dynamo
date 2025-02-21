@@ -1,0 +1,1861 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>DSCoreNodes</name>
+    </assembly>
+    <members>
+        <member name="P:DSCore.Color.Red">
+            <summary>Найти красную составляющую цвета: от 0 до 255.</summary>
+            <returns name="int">Значение красного цвета для цветовой модели RGB, целое число от 0 до 255 включительно.</returns>
+        </member>
+        <member name="P:DSCore.Color.Green">
+            <summary>Найти зеленую составляющую цвета, от 0 до 255.</summary>
+            <returns name="int">Значение зеленого цвета для цветовой модели RGB, целое число от 0 до 255 включительно.</returns>
+        </member>
+        <member name="P:DSCore.Color.Blue">
+            <summary>Найти синюю составляющую цвета, от 0 до 255.</summary>
+            <returns name="int">Значение синего цвета для цветовой модели RGB, целое число от 0 до 255 включительно.</returns>
+        </member>
+        <member name="P:DSCore.Color.Alpha">
+            <summary>Найти альфа-составляющую цвета, от 0 до 255.</summary>
+            <returns name="int">Значение «альфа», целое число от 0 до 255 включительно.</returns>
+        </member>
+        <member name="M:DSCore.Color.ByARGB(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Создание цвета по значению "альфа" и компонентам красного, зеленого и синего.</summary>
+            <param name="alpha">Значение альфа (от 0 до 255 включительно)</param>
+            <param name="red">Значение красного для цветовой модели RGB (от 0 до 255 включительно)</param>
+            <param name="green">Значение зеленого для цветовой модели RGB (от 0 до 255 включительно)</param>
+            <param name="blue">Значение синего для цветовой модели RGB (от 0 до 255 включительно)</param>
+            <returns name="color">Цвет, созданный из ARGB</returns>
+            <search>color</search>
+        </member>
+        <member name="M:DSCore.Color.Brightness(DSCore.Color)">
+            <summary>Получение значения яркости для данного цвета.</summary>
+            <param name="color">Цвет для запроса яркости</param>
+            <returns name="double">Значение яркости (между 0 и 1 включительно)</returns>
+        </member>
+        <member name="M:DSCore.Color.Saturation(DSCore.Color)">
+            <summary>Получение значения насыщенности для данного цвета.</summary>
+            <returns name="double">Значение насыщенности, двойное значение от 0 до 1 включительно.</returns>
+        </member>
+        <member name="M:DSCore.Color.Hue(DSCore.Color)">
+            <summary>Получение значения оттенка для данного цвета.</summary>
+            <param name="color">Цветной объект</param> 
+            <returns name="double">Значение оттенка, двойное значение между 0 и 1 включительно.</returns>
+            <search>hues</search>
+        </member>
+        <member name="M:DSCore.Color.Components(DSCore.Color)">
+            <summary>Список составляющих цвета в следующем порядке: альфа, красная, зеленая и синяя.</summary>
+            <param name="color">Цветной объект</param> 
+            <returns name="alpha">Значение «альфа», целое число от 0 до 255 включительно.</returns>
+            <returns name="red">Значение красного цвета для цветовой модели RGB, целое число от 0 до 255 включительно.</returns>
+            <returns name="green">Значение зеленого цвета для цветовой модели RGB, целое число от 0 до 255 включительно.</returns>
+            <returns name="blue">Значение синего цвета для цветовой модели RGB, целое число от 0 до 255 включительно.</returns>
+            <search>alpha,red,green,blue</search>
+        </member>
+        <member name="M:DSCore.Color.BuildColorFrom1DRange(System.Collections.Generic.List{DSCore.Color},System.Collections.Generic.List{System.Double},System.Double)">
+            <summary>Получение цвета на основе цветового градиента между начальным и конечным цветом.</summary>
+            <param name="colors"/>
+            <param name="parameters">Значения от 0 до 1 в диапазоне, в котором требуется протестировать цвета.</param>
+            <param name="parameter"/>
+            <returns name="colors">Цвета в заданном диапазоне.</returns>
+            <search>color,range,gradient</search>
+        </member>
+        <member name="M:DSCore.Color.Lerp(DSCore.Color,DSCore.Color,System.Double)">
+            <summary>Линейная интерполяция между двумя цветами.</summary>
+            <param name="start">Начальный цвет.</param>
+            <param name="end">Конечный цвет.</param>
+            <param name="t">Параметр в диапазоне от 0,0 до 1,0.</param>
+            <returns>Интерполированный или белый цвет.</returns>
+        </member>
+        <member name="M:DSCore.Color.Blerp(System.Collections.Generic.IList{DSCore.Color.IndexedColor2D},Autodesk.DesignScript.Geometry.UV)">
+            <summary>Билинейная интерполяция между цветами в наборе.</summary>
+            <param name="colors"/>
+            <param name="parameter"/>
+            <returns>Интерполированный или белый цвет.</returns>
+            This algorithm is not the same as the solution found from wikipedia 
+            (reference: https://en.wikipedia.org/wiki/Bilinear_interpolation)
+        </member>
+        <member name="M:DSCore.Color.Add(DSCore.Color,DSCore.Color)">
+            <summary>Создание цвета путем объединения значений ARGB двух существующих цветов.</summary>
+            <param name="color">Цвет для добавления</param>
+            <param name="otherColor">Другой цвет для добавления</param>
+            <returns name="color">Итоговый цвет после добавления двух цветов</returns>
+        </member>
+        <member name="M:DSCore.Color.Multiply(DSCore.Color,System.Double)">
+            <summary>Умножение входного цвета на числовой множитель для получения более темного цвета. Альфа-значение входного цвета должно быть меньше 255.</summary>
+            <param name="color">Цвет для умножения</param>
+            <param name="multiplier">Значение множителя</param>
+            <returns name="color">Итоговый цвет после умножения</returns>
+        </member>
+        <member name="M:DSCore.Color.Divide(DSCore.Color,System.Double)">
+            <summary>Деление входного цвета на числовой делитель для получения более яркого цвета и удаления оттенка.</summary>
+            <param name="color">Цвет для деления</param>
+            <param name="dividend">Значение делимого</param>
+            <returns name="color">Итоговый цвет после деления</returns>
+        </member>
+        <member name="M:DSCore.ColorRange1D.ByColorsAndParameters(System.Collections.Generic.List{DSCore.Color},System.Collections.Generic.List{System.Double})">
+            <summary>Создание объекта ColorRange1D путем указания списка цветов и параметров.</summary>
+            <param name="colors">Список цветов.</param>
+            <param name="parameters">Список параметров в диапазоне от 0,0 до 1,0.</param>
+            <returns>Объект ColorRange1D.</returns>
+        </member>
+        <member name="M:DSCore.ColorRange1D.GetColorAtParameter(DSCore.ColorRange1D,System.Double)">
+            <summary>Возврат цвета в данном диапазоне цветов с заданным параметром.</summary>
+            <param name="colorRange"/>
+            <param name="parameter">Значение в диапазоне от 0,0 до 1,0.</param>
+            <returns>Цвет.</returns>
+        </member>
+        <member name="M:DSCore.ColorRange1D.Default">
+            <summary>Создать ColorRange1D, используя заданную по умолчанию цветовую схему.</summary>
+            <returns/>
+        </member>
+        <member name="M:DSCore.ColorRange.ByColorsAndParameters(System.Collections.Generic.IList{DSCore.Color},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.UV})">
+            <summary>Создание объекта ColorRange путем указания списка цветов и координат UV.</summary>
+            <param name="colors">Список цветов.</param>
+            <param name="parameters">Список параметров в диапазоне от (0,0;0,0) до (1,0;1,0).</param>
+            <returns>Объект ColorRange.</returns>
+        </member>
+        <member name="M:DSCore.ColorRange.GetColorAtParameter(Autodesk.DesignScript.Geometry.UV)">
+            <summary>Возврат цвета в данном диапазоне цветов с заданным параметром.</summary>
+            <param name="parameter">Значение UV в диапазоне от (от 0,0;0,0) до (1,0;1,0).</param>
+            <returns>Цвет.</returns>
+        </member>
+        <member name="T:DSCore.Compare">
+            <summary>Методы сравнения.</summary>
+        </member>
+        <member name="M:DSCore.Compare.GreaterThan(System.Object,System.Object)">
+            <summary>Возврат значения «Истина», если a больше b.</summary>
+            <param name="a">Объект для сравнения.</param>
+            <param name="b">Объект для сравнения.</param>
+            <returns name="bool">Логический результат.</returns>
+            <search>larger,bigger</search>
+        </member>
+        <member name="M:DSCore.Compare.GreaterThanOrEqual(System.Object,System.Object)">
+            <summary>Возврат значения «Истина», если a больше или равно b.</summary>
+            <param name="a">Объект для сравнения.</param>
+            <param name="b">Объект для сравнения.</param>
+            <returns name="bool">Логический результат.</returns>
+            <search>larger,bigger,equal</search>
+        </member>
+        <member name="M:DSCore.Compare.LessThan(System.Object,System.Object)">
+            <summary>Возврат значения «Истина», если a меньше b.</summary>
+            <param name="a">Объект для сравнения.</param>
+            <param name="b">Объект для сравнения.</param>
+            <returns name="bool">Логический результат.</returns>
+            <search>less,smaller</search>
+        </member>
+        <member name="M:DSCore.Compare.LessThanOrEqual(System.Object,System.Object)">
+            <summary>Возврат значения «Истина», если a меньше или равно b.</summary>
+            <param name="a">Объект для сравнения.</param>
+            <param name="b">Объект для сравнения.</param>
+            <returns name="bool">Логический результат.</returns>
+            <search>smaller,equal</search>
+        </member>
+        <member name="M:DSCore.Data.ParseJSON(System.String)">
+            <summary>Анализ преобразует произвольную строку формата JSON в значение. Противоположно методу JSON.Stringify.</summary>
+            <param name="json">Строка формата JSON</param>
+            <returns name="result">Тип результата зависит от содержимого строки ввода. Результат может быть элементарным значением (например, строковым, логическим или двойным значением), списком либо словарем.</returns>
+        </member>
+        <member name="M:DSCore.Data.ToNative(Newtonsoft.Json.Linq.JToken)">
+            <summary>Реализация синтаксического анализа для преобразования типов JToken в нативные объекты .NET.</summary>
+            <param name="token">Синтаксический анализ JToken в N</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.DynamoJObjectToNative(Newtonsoft.Json.Linq.JObject)">
+            <summary>Реализация синтаксического анализа для преобразования типов JObject в определенные объекты Dynamo (например, в геометрию, цвет, изображения и т. д.)</summary>
+            <param name="jObject"/>
+            <returns/>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:DSCore.Data.StringifyJSON(System.Object)">
+            <summary>При получении строкового представления произвольное значение или список произвольных значений преобразуются в формат JSON. Можно использовать репликацию для применения операции к списку, чтобы сформировать список строк формата JSON.</summary>
+            <param name="values">Список значений</param>
+            <returns name="json">Строка формата JSON, в котором элементарные значения (например, двойные, целые или логические значения), списки и словари будут преобразованы в соответствующий тип JSON.</returns>
+        </member>
+        <member name="T:DSCore.Data.MaxDepthJsonTextWriter">
+            <summary>Подкласс JsonTextWriter, ограничивающий максимальную глубину поддерживаемого объекта для предотвращения сбоев циклических ссылок при сериализации произвольных типов объектов .NET.</summary>
+        </member>
+        <member name="T:DSCore.Data.DictConverter">
+            <summary>Обеспечение того, что объекты DesignScript.Builtin.Dictionary, которые преднамеренно не внедряют интерфейс IDictionary, преобразуются в объекты формата JSON.</summary>
+        </member>
+        <member name="M:DSCore.Data.CanObjectBeCached(System.Object)">
+            <summary>Вспомогательная функция для определения того, можно ли кэшировать объект либо он имеет нулевое значение, является нулевой строкой или пустым списком.</summary>
+            <param name="inputObject">Объект для проверки</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.Remember(System.Object,System.String)">
+            <summary>Функция для обработки кэширования узла Data.Remember</summary>
+            <param name="inputObject">Объект для кэширования</param>
+            <param name="cachedJson">Дополнительный существующий кэшированный файл JSON</param>
+            <returns/>
+        </member>
+        <member name="T:DSCore.Data.DataNodeDynamoType">
+            <summary>Класс, представляющий элемент DataType, поддерживаемый Dynamo</summary>
+        </member>
+        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String)">
+            <summary>Класс, представляющий элемент DataType, поддерживаемый Dynamo</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Type">
+            <summary>Базовый тип</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Name">
+            <summary>Необязательное имя для переопределения имени типа (`Number` вместо `long`)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Level">
+            <summary>Иерархический уровень, который требуется отобразить в пользовательском интерфейсе</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.IsLastChild">
+            <summary>Если тип является последним дочерним элементом иерархии (для целей пользовательского интерфейса)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Parent">
+            <summary>Родительский элемент Type, если имеется</summary>
+        </member>
+        <member name="F:DSCore.Data.DataNodeDynamoTypeList">
+            <summary>Статический список для всех типов данных, поддерживаемых Dynamo</summary>
+            <returns>Список поддерживаемых типов данных</returns>
+        </member>
+        <member name="M:DSCore.Data.#cctor">
+            <summary>Статический конструктор</summary>
+        </member>
+        <member name="M:DSCore.Data.SafeExtractDictionaryValue(System.Collections.Generic.Dictionary{System.String,System.Object},System.String)">
+            <summary>Вспомогательная функция для безопасного извлечения значения словаря</summary>
+            <param name="dict">Словарь, из которого требуется извлечь значение</param>
+            <param name="key">Ключ пары «ключ — значение»</param>
+        </member>
+        <member name="M:DSCore.Data.EvaluateDefineDataNode(System.Object,System.String,System.Boolean,System.Boolean,System.String)">
+            <summary>Эта функция используется AST для оценки узла Define Data.
+            Она обрабатывает некоторые логические операции узла при выполнении проверки</summary>
+            <param name="inputValue">Предшествующее входное значение</param>
+            <param name="typeString">Тип как строка (Todo: лучше передать объект типа Type для непосредственного сравнения типов)</param>
+            <param name="isList">Если входные данные имеют тип `ArrayList`</param>
+            <param name="isAutoMode">Если узел находится в режиме «Авто»</param>
+            <param name="playerValue">Значение, введенное в узел проигрывателем Dynamo, если оно существует.</param>
+        </member>
+        <member name="M:DSCore.Data.FindCommonAncestor(System.Collections.ArrayList)">
+            <summary>Функция для поиска типа в случае, если в AutoMode был передан список объектов ArrayList</summary>
+            <param name="list">Входное значение, которое должно иметь тип ArrayList</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.LikelyAncestor(System.Collections.Generic.List{DSCore.Data.DataNodeDynamoType})">
+            <summary>Вспомогательная функция, возвращающая узел самого низкого уровня из списка узлов DataNodeDynamoType</summary>
+            <param name="nodes">Список DataNodeDynamoType для оценки</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.FindClosestCommonAncestor(System.Collections.Generic.List{DSCore.Data.DataNodeDynamoType})">
+            <summary>Вспомогательная функция для определения общего предка в списке типов данных</summary>
+            <param name="nodes">Список узлов DataType для оценки</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.FindCommonAncestorBetweenTwoNodes(DSCore.Data.DataNodeDynamoType,DSCore.Data.DataNodeDynamoType)">
+            <summary>Рекурсивная функция для поиска общего предка между двумя типами Dynamo
+            Восходит вверх по иерархическому дереву likelyAncestor до тех пор, пока</summary>
+            <param name="node">Проверьте, является ли этот узел производным от вероятного предка</param>
+            <param name="likelyAncestor">Вероятный предок, из которого должен быть создан узел</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.GetListFromTypes(System.Collections.ArrayList)">
+            <summary>Возврат списка DataNodeDynamoTypes из списка объектов ArrayList</summary>
+            <param name="list">Список объектов ArrayList для переформатирования</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
+            <summary>Проверьте, является ли входной объект отдельным значением или одноуровневым списком ArrayList.</summary>
+            <param name="obj">Входной объект для оценки</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsSupportedDataNodeDynamoType(System.Object,System.Type,System.Boolean)">
+            <summary>Функция для проверки типа входных данных на соответствие поддерживаемым типам Dynamo</summary>
+            <param name="inputValue">Входные данные для проверки</param>
+            <param name="type">Тип входных данных, предоставленный пользователем. Он должен соответствовать типу inputValue</param>
+            <param name="isList">Значение этого логического выражения определяет, является ли входной параметр отдельным объектом или списком</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsItemOfType(System.Object,System.Type)">
+            <summary>Этот метод проверяет, относится ли элемент к обязательному типу DataType Dynamo
+            IsInstanceOfType рекурсивно проверяет наследование вверх</summary>
+            <param name="item">Элемент, тип данных которого проверяется</param>
+            <param name="dataType">Тип DataType, на соответствие которому выполняется проверка</param>
+            <returns>Результат True или False на основе проверки</returns>
+        </member>
+        <member name="M:DSCore.Data.IsDerivedFrom(System.Type,System.Type)">
+            <summary>Этот метод проверяет, является ли тип производным от базового типа</summary>
+            <param name="derivedType">Тип, который требуется утвердить</param>
+            <param name="baseType">Базовый тип для сравнения</param>
+            <returns/>
+        </member>
+        <member name="T:DSCore.DateTime">
+            <summary>Объект, представляющий определенную дату и время.</summary>
+        </member>
+        <member name="P:DSCore.DateTime.MinValue">
+            <summary>Самая ранняя дата и время, которые возможно отобразить.</summary>
+            <returns name="dateTime">Минимально возможное представление DateTime</returns>
+        </member>
+        <member name="P:DSCore.DateTime.MaxValue">
+            <summary>Самая поздняя дата и время, которые возможно отобразить.</summary>
+            <returns name="dateTime">Максимально возможное представление DateTime</returns>
+        </member>
+        <member name="P:DSCore.DateTime.Now">
+            <summary>Текущая дата и время в системе.</summary>
+            <returns name="dateTime">Значение DateTime, представляющее настоящее время</returns>
+        </member>
+        <member name="P:DSCore.DateTime.Today">
+            <summary>Текущая дата в системе и время, установленное на полночь.</summary>
+            <returns name="dateTime">Значение DateTime, представляющее сегодняшний день</returns>
+        </member>
+        <member name="M:DSCore.DateTime.Format(System.DateTime,System.String)">
+             <summary>Возвращает указанные дату и время в качестве строки в определенном формате.</summary>
+             <param name="dateTime">Значение DateTime для формата</param>
+             <param name="format">Строчное представление формата даты. По умолчанию используется стандартный формат «F», соответствующий региональному стандарту операционной системы: «Вторник, 21 февраля 2017 23:02:43».
+Чтобы найти полный список форматов, выполните поиск по запросу «Строки настраиваемых форматов даты и времени».</param>
+             <returns name="string">Значение DateTime в виде строки</returns>
+        </member>
+        <member name="M:DSCore.DateTime.ByDate(System.Int32,System.Int32,System.Int32)">
+            <summary>Создание нового значения DateTime с точной датой.</summary>
+            <param name="year">Точный год (1–9999)</param>
+            <param name="month">Точный месяц (1–12)</param>
+            <param name="day">Точный день (1–[дней в месяце])</param>
+            <returns name="dateTime">Значение DateTime, полученное из даты</returns>
+        </member>
+        <member name="M:DSCore.DateTime.ByDateAndTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>Создание нового значения DateTime с точной датой и временем.</summary>
+            <param name="year">Точный год (1–9999)</param>
+            <param name="month">Точный месяц (1–12)</param>
+            <param name="day">Точный день (1–[дней в месяце])</param>
+            <param name="hour">Точное количество часов (0–23)</param>
+            <param name="minute">Точное количество минут (0–59)</param>
+            <param name="second">Точное количество секунд (0–59)</param>
+            <param name="millisecond">Точное количество миллисекунд (0–999)</param>
+            <returns name="dateTime">Значение DateTime, полученное из даты и времени</returns>
+        </member>
+        <member name="M:DSCore.DateTime.SubtractTimeSpan(System.DateTime,System.TimeSpan)">
+            <summary>Вычитание значения TimeSpan из DateTime с получением в итоге нового значения DateTime.</summary>
+            <param name="dateTime">Начальное значение DateTime</param>
+            <param name="timeSpan">Количество времени для вычитания</param>
+            <returns name="dateTime">Итоговое значение DateTime после вычитания</returns>
+        </member>
+        <member name="M:DSCore.DateTime.AddTimeSpan(System.DateTime,System.TimeSpan)">
+            <summary>Добавление значения TimeSpan к DateTime с получением в результате нового значения DateTime.</summary>
+            <param name="dateTime">Начальное значение DateTime</param>
+            <param name="timeSpan">Количество времени для прибавления к DateTime</param>
+            <returns name="dateTime">Итоговое значение DateTime после прибавления временного диапазона</returns>
+        </member>
+        <member name="M:DSCore.DateTime.DaysInMonth(System.Int32,System.Int32)">
+            <summary>Расчет количества дней в одном месяце данного года.</summary>
+            <param name="year">Точный год (1–9999)</param>
+            <param name="month">Точный месяц (1–12)</param>
+            <returns name="int">Количество дней в месяце</returns>
+        </member>
+        <member name="M:DSCore.DateTime.IsDaylightSavingsTime(System.DateTime)">
+            <summary>Определение того, имеются ли настройки перехода на летнее время для указанного значения DateTime.</summary>
+            <param name="dateTime">Значение DateTime для определения того, применяется ли переход на летнее время</param>
+            <returns name="bool">True — для DateTime применяется переход на летнее времени, False — не применяется</returns>
+        </member>
+        <member name="M:DSCore.DateTime.IsLeapYear(System.Int32)">
+            <summary>Определение того, является ли указанный год високосным.</summary>
+            <param name="year">Точный год (1–9999)</param>
+            <returns name="bool">True — високосный год, False — не високосный</returns>
+        </member>
+        <member name="M:DSCore.DateTime.FromString(System.String)">
+            <summary>Попытка выполнить разбор свойства DateTime из строки</summary>
+            <param name="string">Строковое представление DateTime</param>
+            <returns name="dateTime">Значение DateTime из проанализированной строки</returns>
+        </member>
+        <member name="M:DSCore.DateTime.Date(System.DateTime)">
+            <summary>Извлечение только даты из значения DateTime. Для компонентов времени задано значение 0.</summary>
+            <param name="dateTime">Значение DateTime.</param>
+            <returns name="date">дата из значения DateTime</returns>
+            <search>Date</search>
+        </member>
+        <member name="M:DSCore.DateTime.Components(System.DateTime)">
+            <summary>Извлечение отдельных компонентов DateTime.</summary>
+            <param name="dateTime">Значение DateTime для получения компонентов</param>
+            <returns name="year">Числовое представление года (1–9999)</returns>
+            <returns name="month">Числовое представление месяца (1–12)</returns>
+            <returns name="day">Числовое представление дня (1–[число дней в месяце])</returns>
+            <returns name="hour">Числовое представление часа (0–23)</returns>
+            <returns name="minute">Числовое представление минут (0–59)</returns>
+            <returns name="second">Числовое представление секунд (0–59)</returns>
+            <returns name="millisecond">Числовое представление миллисекунд (0–999)</returns>
+        </member>
+        <member name="M:DSCore.DateTime.DayOfWeek(System.DateTime)">
+            <summary>Получение дня недели из указанного значения DateTime.</summary>
+            <param name="dateTime">Объект DateTime для получения дня недели</param>
+            <returns name="dayOfWeek">День недели</returns>
+        </member>
+        <member name="M:DSCore.DateTime.DayOfYear(System.DateTime)">
+            <summary>Получение дня года (0–366)</summary>
+            <param name="dateTime">Значение DateTime для получения дня в году</param>
+            <returns name="int">Количество дней с начала года</returns>
+        </member>
+        <member name="M:DSCore.DateTime.TimeOfDay(System.DateTime)">
+            <summary>Получение нового значения TimeSpan, обозначающего период времени, прошедший с
+                полуночи указанного дня, из значения DateTime.</summary>
+            <param name="dateTime">Значение DateTime.</param>
+            <returns name="timeSpan">Значение TimeSpan с полуночи</returns>
+        </member>
+        <member name="T:DSCore.DayOfWeek">
+            <summary>Дни недели</summary>
+        </member>
+        <member name="T:DSCore.TimeSpan">
+            <summary>Объект, представляющий временную задержку без определенной начальной или конечной даты.</summary>
+        </member>
+        <member name="M:DSCore.TimeSpan.ByDateDifference(System.DateTime,System.DateTime)">
+            <summary>Получение нового значения TimeSpan, вычисленного на основе разницы во времени между двумя значениями DateTime</summary>
+            <param name="dateTime">Значение DateTime для вычитания</param>
+            <param name="otherDateTime">DateTime для вычитания</param>
+            <returns name="timeSpan">Разница значений TimeSpan между двумя датами</returns>
+        </member>
+        <member name="P:DSCore.TimeSpan.Zero">
+            <summary>Значение TimeSpan, равное нулевому времени задержки.</summary>
+            <returns name="timeSpan">Значение TimeSpan, представляющее собой нулевое время задержки</returns>
+        </member>
+        <member name="P:DSCore.TimeSpan.MaxValue">
+            <summary>Максимальное значение TimeSpan, которое может быть представлено.</summary>
+            <returns name="timeSpan">Максимально возможное представление TimeSpan</returns>
+        </member>
+        <member name="P:DSCore.TimeSpan.MinValue">
+            <summary>Минимальное значение TimeSpan, которое может быть представлено.</summary>
+            <returns name="timeSpan">Минимально возможное представление TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Create(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>Создание нового элемента TimeSpan на основе интервала времени.</summary>
+            <param name="days">Интервал в днях.</param>
+            <param name="hours">Интервал в часах.</param>
+            <param name="minutes">Интервал в минутах.</param>
+            <param name="seconds">Интервал в секундах.</param>
+            <param name="milliseconds">Интервал в миллисекундах.</param>
+            <returns name="timeSpan">Созданное значение TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Scale(System.TimeSpan,System.Double)">
+            <summary>Умножение значения TimeSpan на масштабный коэффициент</summary>
+            <param name="timeSpan">Значение TimeSpan для умножения</param>
+            <param name="scaleFactor">Число для пересчета интервала времени. Например, при масштабном коэффициенте 2
+            значение интервала времени умножается на 2.</param>
+            <returns name="timeSpan">Произведение TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Negate(System.TimeSpan)">
+            <summary>Преобразование значения TimeSpan в противоположное</summary>
+            <param name="timeSpan">Значение TimeSpan для преобразования в противоположное</param>
+            <returns name="timeSpan">Отрицательное значение TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Add(System.TimeSpan,System.TimeSpan)">
+            <summary>Прибавление двух значений TimeSpan</summary>
+            <param name="timeSpan1">Значение TimeSpan для прибавления</param>
+            <param name="timeSpan2">Другое значение TimeSpan для прибавления</param>
+            <returns name="timeSpan">Итоговое значение TimeSpan после прибавления</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Subtract(System.TimeSpan,System.TimeSpan)">
+            <summary>Вычитание двух значений TimeSpan</summary>
+            <param name="timeSpan1">Значение TimeSpan для вычитания</param>
+            <param name="timeSpan2">TimeSpan для вычитания</param>
+            <returns name="timeSpan">Значение TimeSpan, полученное в результате вычитания</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.FromString(System.String)">
+            <summary>Попытка выполнить разбор значения TimeSpan из строки</summary>
+            <param name="string">Строковое представление TimeSpan.</param>
+            <returns name="timeSpan">Значение TimeSpan из проанализированной строки</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Components(System.TimeSpan)">
+            <summary>Извлечение отдельных компонентов TimeSpan.</summary>
+            <param name="timeSpan">Значение TimeSpan для получения компонентов</param>
+            <returns name="days">Количество дней (тип: целое число)</returns>
+            <returns name="hours">Количество часов (тип: целое число)</returns>
+            <returns name="minutes">Количество минут (тип: целое число)</returns>
+            <returns name="seconds">Количество секунд (тип: целое число)</returns>
+            <returns name="milliseconds">Количество миллисекунд (тип: целое число)</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalDays(System.TimeSpan)">
+            <summary>Преобразование общего количества времени, обозначаемого TimeSpan, в
+                приблизительное количество дней.</summary>
+            <param name="timeSpan">Значение TimeSpan для запроса общего количества дней</param>
+            <returns name="double">Общее количество дней</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalHours(System.TimeSpan)">
+            <summary>Преобразование общего количества времени, обозначаемого TimeSpan, в
+                приблизительное количество часов.</summary>
+            <param name="timeSpan">Значение TimeSpan для запроса общего количества часов</param>
+            <returns name="double">Общее количество часов</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalMinutes(System.TimeSpan)">
+            <summary>Преобразование общего количества времени, обозначаемого TimeSpan, в
+                приблизительное количество минут.</summary>
+            <param name="timeSpan">Значение TimeSpan для запроса общего количества минут</param>
+            <returns name="double">Общее количество минут</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalSeconds(System.TimeSpan)">
+            <summary>Преобразование общего количества времени, обозначаемого TimeSpan, в
+                приблизительное количество секунд.</summary>
+            <param name="timeSpan">Значение TimeSpan для запроса общего количества секунд</param>
+            <returns name="double">Общее количество секунд</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalMilliseconds(System.TimeSpan)">
+            <summary>Преобразование общего количества времени, обозначаемого TimeSpan, в
+                приблизительное количество миллисекунд.</summary>
+            <param name="timeSpan">Значение TimeSpan для запроса общего количества миллисекунд</param>
+            <returns name="double">Общее количество миллисекунд</returns>
+        </member>
+        <member name="T:DSCore.IO.FileSystem">
+            <summary>Методы для работы с файлами.</summary>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.AbsolutePath(System.String,System.String)">
+            <summary>Получение абсолютного пути из заданного пути. Если указанный путь 
+            является относительным, то он будет обработан в рамках текущего
+            рабочего пространства. Если файл не существует по относительному
+            пути, но существует по указанному hintPath, то будет возвращен hintPath.</summary>
+            <param name="path">Относительный или полный путь</param>
+            <param name="hintPath">Последний обработанный путь</param>
+            <returns>Абсолютный путь</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileFromPath(System.String)">
+            <summary>Создание файлового объекта на основе указанного пути к файлу.</summary>
+            <param name="path"/>
+            <returns/>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.ReadText(System.IO.FileInfo)">
+            <summary>Чтение текстового файла с выводом содержимого в виде строки.</summary>
+            <param name="file">Файловый объект с текстом для чтения</param>
+            <returns name="string">Содержимое текстового файла.</returns>
+            <search>read file,text,file</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.MoveFile(System.String,System.String,System.Boolean)">
+            <summary>Перемещение указанного файла в новое местоположение</summary>
+            <param name="path">Строковое представление существующего пути</param>
+            <param name="newPath">Строковое представление нового пути</param>
+            <param name="overwrite">Переключатель для перезаписи существующих файлов</param>
+            <returns name="void">Узел выполняет задачу, но не создает выходные данные</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DeleteFile(System.String)">
+            <summary>Удаление указанного файла.</summary>
+            <param name="path">Путь к удаляемому файлу</param>
+            <returns name="void">Узел выполняет задачу, но не создает выходные данные</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.CopyFile(System.IO.FileInfo,System.String,System.Boolean)">
+            <summary>Копирование файла.</summary>
+            <param name="file">Файловый объект для копирования</param>
+            <param name="destinationPath">Строковое представление пути к конечному файлу</param>
+            <param name="overwrite">Переключатель для перезаписи существующих файлов</param>
+            <returns name="bool">Узел выполняет задачу, при успешном копировании возвращается значение «Истина».</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileExists(System.String)">
+            <summary>Определение, содержится ли файл в указанной папке.</summary>
+            <param name="path">Строка, представляющая путь к файлу</param>
+            <returns name="bool">True — файл существует, False — не существует</returns>
+            <search>filepath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.WriteText(System.String,System.String)">
+            <summary>Запись текстового содержимого в файл по заданному пути</summary>
+            <param name="filePath">Путь для записи</param>
+            <param name="text">Текстовое содержимое</param>
+            <returns name="void">Без вывода</returns>
+            <search>write file,text,file,filepath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.AppendText(System.String,System.String)">
+            <summary>Добавить текстовое содержимое в файл по заданному пути</summary>
+            <param name="filePath">Путь для записи</param>
+            <param name="text">Текстовое содержимое</param>
+            <returns name="void">Узел выполняет задачу, но не создает выходные данные</returns>
+            <search>append file,write file,text,file,filepath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.CombinePath(System.String[])">
+            <summary>Объединение нескольких строк в один путь к файлу.</summary>
+            <param name="strings">Строки для объединения в один путь</param>
+            <returns name="string">Объединенный путь к файлу</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileExtension(System.String)">
+            <summary>Получение расширения на основе пути файла.</summary>
+            <param name="path">Путь для получения расширения</param>
+            <returns name="string">Расширение файла</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.ChangePathExtension(System.String,System.String)">
+            <summary>Изменение расширения для пути к файлу.</summary>
+            <param name="path">Путь для изменения расширения</param>
+            <param name="newExtension">Строковое представление нового расширения</param>
+            <returns name="string">Путь к файлу с измененным расширением</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DirectoryName(System.String)">
+            <summary>Получение имени папки для пути к файлу.</summary>
+            <param name="path">Путь для получения информации о каталоге</param>
+            <returns name="string">Имя каталога из пути к файлу</returns>
+            <search>directorypath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileName(System.String,System.Boolean)">
+            <summary>Получение имени файла для пути к файлу.</summary>
+            <param name="path">Путь для получения имени файла</param>
+            <param name="withExtension">Переключатель для добавления расширения в результат</param>
+            <returns name="string">Имя файла из пути к файлу</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileHasExtension(System.String)">
+            <summary>Определение, содержит ли путь к файлу расширение.</summary>
+            <param name="path">Путь для проверки расширения</param>
+            <returns name="bool">True — путь к файлу содержит расширение, False — не содержит</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.GetDirectoryContents(System.IO.DirectoryInfo,System.String,System.Boolean)">
+            <summary>Вывод списка файлов и папок, которые содержатся в данном каталоге. Для фильтрации результатов можно использовать searchString (необязательно).</summary>
+            <param name="directory">Каталог для получения содержимого</param>
+            <param name="searchString">Строка поиска для фильтрации результатов</param>
+            <param name="includeSubdirectories">Задайте значение True, чтобы включить файлы и папки во вложенные каталоги (рекурсивные), или значение False, чтобы включить результаты только из указанного каталога верхнего уровня.</param>
+            <returns name="files">Файлы, полученные по запросу</returns>
+            <returns name="directories">Каталоги, полученные по запросу</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.CopyDirectory(System.IO.DirectoryInfo,System.String,System.Boolean)">
+            <summary>Копирование папки в целевое местоположение.</summary>
+            <param name="directory">Каталог для копирования</param>
+            <param name="destinationPath">Целевое расположение на диске для операции копирования</param>
+            <param name="overwriteFiles">Переключатель для перезаписи существующего каталога</param>
+            <returns name="void">Узел выполняет задачу, но не создает выходные данные</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DeleteDirectory(System.String,System.Boolean)">
+            <summary>Удаление папки.</summary>
+            <param name="path">Путь к каталогу на диске</param>
+            <param name="recursive">Удаление всего содержимого папки. По умолчанию устанавливается значение false.</param>
+            <returns name="void">Узел выполняет задачу, но не создает выходные данные</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DirectoryExists(System.String)">
+            <summary>Определение того, находится ли папка по указанному пути.</summary>
+            <param name="path">Путь к каталогу на диске</param>
+            <returns name="bool">True — каталог существует, False — не существует</returns>
+            <search>directorypath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.MoveDirectory(System.String,System.String,System.Boolean)">
+            <summary>Перемещение папки в новое местоположение.</summary>
+            <param name="path">Строковое представление существующего пути</param>
+            <param name="newPath">Строковое представление нового пути</param>
+            <param name="overwriteFiles">Переключатель для перезаписи существующих файлов</param>
+            <returns name="void">Узел выполняет задачу, но не создает выходные данные</returns>
+        </member>
+        <member name="T:DSCore.IO.Image">
+            <summary>Методы работы с растровыми изображениями.</summary>
+        </member>
+        <member name="M:DSCore.IO.Image.ReadFromFile(System.IO.FileInfo)">
+            <summary>Загрузка файла в виде растрового изображения.</summary>
+            <param name="file">Файловый объект для загрузки изображения</param>
+            <returns name="image">Объект изображения из файла</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.Pixels(System.Drawing.Bitmap,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>Файл изображения обрабатывается и значения цветов выводятся в указанных областях сетки.</summary>
+            <param name="image">Объект изображения для получения цветов пикселов</param>
+            <param name="xSamples">Количество выборочных точек сетки в направлении Х.</param>
+            <param name="ySamples">Количество выборочных точек сетки в направлении Y.</param>
+            <returns name="colors">Цвета в указанных точках сетки</returns>
+            <search>read,image,bitmap,png,jpg,jpeg</search>
+        </member>
+        <member name="M:DSCore.IO.Image.FromPixels(DSCore.Color[][])">
+            <summary>Построение изображения на основе двумерного списка пикселей.</summary>
+            <param name="colors">Двумерный прямоугольный список цветов, представляющий пикселы</param>
+            <returns name="image">Изображение из двумерного списка пикселов</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.FromPixels(DSCore.Color[],System.Int32,System.Int32)">
+            <summary>Построение изображения на основе плоского списка пикселей, ширины и высоты.</summary>
+            <param name="colors">Список цветов, представляющих пикселы</param>
+            <param name="width">Ширина нового изображения в пикселах</param>
+            <param name="height">Высота нового изображения в пикселах</param>
+            <returns name="image">Изображение из списка пикселов</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.Dimensions(System.Drawing.Bitmap)">
+            <summary>Возврат ширины и высоты изображения.</summary>
+            <param name="image">Изображение, для которого требуется получить размеры.</param>
+            <returns name="width">ширина изображения в пикселях</returns>
+            <returns name="height">высота изображения в пикселях</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.WriteToFile(System.String,System.Drawing.Bitmap)">
+            <summary>Запись изображения в файл с заданным именем.</summary>
+            <param name="path"/>
+            <param name="image">Изображение для записи</param>
+            <returns name="image">Созданный объект изображения</returns>
+            <search>write image,image,file,filepath</search>
+        </member>
+        <member name="T:DSCore.List">
+            <summary>Способы создания и управления списками.</summary>
+        </member>
+        <member name="P:DSCore.List.Empty">
+            <summary>Возвращение пустого списка.</summary>
+            <returns name="list">Пустой список.</returns>
+            <search>empty list, emptylist,[]</search>
+        </member>
+        <member name="M:DSCore.List.UniqueItems(System.Collections.IList)">
+            <summary>Создание нового списка, содержащего все уникальные элементы из заданного списка.</summary>
+            <param name="list">Список, который требуется отфильтровать, исключив повторы.</param>
+            <returns name="list">Отфильтрованный список.</returns>
+            <search>removes,duplicates,remove duplicates,cull duplicates,distinct,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.Contains(System.Collections.IList,System.Object)">
+            <summary>Определяет, содержит ли выбранный список указанный элемент. Эта функция позволяет выполнять поиск по вложенным спискам.</summary>
+            <param name="list">Список, в котором требуется выполнить поиск</param>
+            <param name="item">Элементы для поиска</param>
+            <returns name="bool">True — список содержит элемент, False — не содержит</returns>
+            <search>item,search,in,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.IsHomogeneous(System.Collections.IList)">
+            <summary>Установите флажок, если элементы в списке принадлежат к одному типу.</summary>
+            <param name="list">Список для проверки в случае однородности.</param>
+            <returns name="bool">Однородность списка.</returns>
+            <search>homogeneous,allequal,same,type</search>
+        </member>
+        <member name="M:DSCore.List.IsRectangular(System.Collections.IList)">
+            <summary>Установите флажок, если количество элементов во всех строках списка совпадает.</summary>
+            <param name="list">Список для проверки в случае, если строки имеют одинаковое количество элементов.</param>
+            <returns name="bool">Наличие во всех строках списка одинакового количества элементов.</returns>
+            <search>rectangular,isrectangular,same,sublist,row</search>
+        </member>
+        <member name="M:DSCore.List.IsUniformDepth(System.Collections.IList)">
+            <summary>Установите флажок, если элементы в списке имеют одинаковую глубину.</summary>
+            <param name="list">Список для проверки в случае, если элементы имеют одинаковую глубину.</param>
+            <returns name="bool">Равномерная глубина списка.</returns>
+            <search>depth,uniform,isuniformdepth,sublist,jagged</search>
+        </member>
+        <member name="M:DSCore.List.SetDifference(System.Collections.Generic.IList{System.Object},System.Collections.Generic.IList{System.Object})">
+            <summary>Возвращает новый список, в котором содержатся объекты из Списка1, но отсутствуют объекты из Списка2.</summary>
+            <param name="list1">Список объектов для включения в новый список</param>
+            <param name="list2">Список объектов для исключения из нового списка</param>
+            <returns name="list">Новый список, в котором содержатся объекты из Списка1 и отсутствуют объекты из Списка2</returns>
+            <search>difference,setdifference,set</search>
+        </member>
+        <member name="M:DSCore.List.SetIntersection(System.Collections.Generic.IList{System.Object},System.Collections.Generic.IList{System.Object})">
+            <summary>Возвращает новый список, содержащий объекты из Списка1 и Списка2.</summary>
+            <param name="list1">Список объектов для сравнения со Списком2</param>
+            <param name="list2">Список объектов для сравнения со Списком1</param>
+            <returns name="list">Новый список, в котором содержатся объекты из Списка1 и Списка2</returns>
+            <search>intersection,setintersection,set,overlap</search>
+        </member>
+        <member name="M:DSCore.List.SetUnion(System.Collections.Generic.IList{System.Object},System.Collections.Generic.IList{System.Object})">
+            <summary>Возвращает новый список, содержащий объекты из Списка1 или из Списка2.</summary>
+            <param name="list1">Список включаемых объектов</param>
+            <param name="list2">Список объектов, включаемых в Список1</param>
+            <returns name="list">Новый список, в котором содержатся объекты из Списка1 или Списка2</returns>
+            <search>union,setunion,set</search>
+        </member>
+        <member name="M:DSCore.List.IndexOf(System.Collections.IList,System.Object)">
+            <summary>Возврат индекса элемента в указанном списке. Между указанным списком и целевым элементом необходимо соблюдать строгое соответствие (то есть целое число должно соответствовать целому числу, двойное значение — двойному значению, строка — строке, объект — объекту и т. д.).</summary>
+            <param name="list">Список для поиска элемента.</param>
+            <param name="element">Элемент, индекс которого следует вернуть.</param>
+            <returns name="int">Индекс элемента в списке. Если строгое соответствие не обнаружено, возвращается недопустимый индекс –1.</returns>
+            <search>index,indexof</search>
+        </member>
+        <member name="M:DSCore.List.CountFalse(System.Collections.IList)">
+            <summary>Возвращает число логических значений «False» в указанном списке.</summary>
+            <param name="list">Список для поиска логических значений «False».</param>
+            <returns name="int">Количество логических значений «False» в списке.</returns>
+            <search>false,count</search>
+        </member>
+        <member name="M:DSCore.List.CountTrue(System.Collections.IList)">
+            <summary>Возвращает количество логических значений «True» в указанном списке.</summary>
+            <param name="list">Список для поиска логических значений «True».</param>
+            <returns name="int">Количество логических значений «True» в списке.</returns>
+            <search>true,count</search>
+        </member>
+        <member name="M:DSCore.List.Insert(System.Collections.IList,System.Object,System.Int32)">
+            <summary>Вставка элемента в список по заданному индексу.</summary>
+            <param name="list">Список, в который будет вставлен элемент</param>
+            <param name="element">Элемент для вставки</param>
+            <param name="index">Указание места для вставки в списке элементов</param>
+            <returns name="list">Список со вставленным элементом</returns>
+            <search>insert,add</search>
+        </member>
+        <member name="M:DSCore.List.Reorder(System.Collections.IList,System.Collections.IList)">
+            <summary>Переупорядочивание списка ввода на основании указанного списка индексов.</summary>
+            <param name="list">Список для переупорядочивания</param>
+            <param name="indices">Индексы для переупорядочивания элементов в списке</param>
+            <returns name="list">Переупорядоченный список</returns>
+            <search>reorder,index,indices</search>
+        </member>
+        <member name="M:DSCore.List.SortIndexByValue(System.Collections.Generic.List{System.Double})">
+            <summary>Сортировка списка по элементам и возврат их индексов.</summary>
+            <param name="list">Список элементов для сортировки</param>
+            <returns name="int[]">Индексы элементов в отсортированном списке</returns>
+            <search>sort,index,value</search>
+        </member>
+        <member name="M:DSCore.List.NormalizeDepth(System.Collections.IList,System.Int32)">
+            <summary>Получение многопланового списка в соответствии с заданным рангом.</summary>
+            <param name="list">Список, глубину которого необходимо нормализовать согласно рангу.</param>
+            <param name="rank">Ранг списка, который должен быть нормализован. По умолчанию используется значение 1.</param>
+            <returns name="list">Список с нормализованным рангом.</returns>
+            <search>depth,normalize</search>
+        </member>
+        <member name="M:DSCore.List.Reverse(System.Collections.IList)">
+            <summary>Создание нового списка, содержащего элементы из заданного списка, перечисленные в обратном порядке.</summary>
+            <param name="list">Список, в котором требуется изменить направление расстановки данных.</param>
+            <returns name="list">Обращенный список</returns>
+            <search>flip,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.__Create(System.Collections.IList)">
+            <summary>Создание нового списка, содержащего данные элементы.</summary>
+            <param name="items">Элементы для хранения в новом списке.</param>
+        </member>
+        <member name="M:DSCore.List.Sublists(System.Collections.IList,System.Collections.IList,System.Int32)">
+            <summary>Создание подсписков на основе списка с помощью синтаксиса диапазона DesignScript.</summary>
+            <param name="list">Список, в котором требуется создать подсписки.</param>
+            <param name="ranges">Диапазоны индексов элементов подсписка.
+                Напр., \"{0..3,5,2}\"</param>
+            <param name="offset">Значение смещения для применения к подсписку.
+                Например, диапазон \"0..3\" со смещениям 2 даст в результате
+                {0,1,2,3}{2,3,4,5}{4,5,6,7}...</param>
+            <returns name="lists">тип: var[]..[]</returns>
+            <search>sublists,build sublists,subset,</search>
+        </member>
+        <member name="M:DSCore.List.Sort(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>Сортировка списка в соответствии с предопределенным естественным порядком.</summary>
+            <param name="list">Список для сортировки</param>
+            <returns name="list">Отсортированный список</returns>
+            <search>sort,order,sorted</search>
+        </member>
+        <member name="M:DSCore.List.MinimumItem(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>Получение минимального значения из списка.</summary>
+            <param name="list">Список сравниваемых элементов, из которого требуется взять минимальное значение</param>
+            <returns name="item">Минимальное значение элемента из списка</returns>
+            <search>least,smallest,find min</search>
+        </member>
+        <member name="M:DSCore.List.MaximumItem(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>Получение максимального значения из списка.</summary>
+            <param name="list">Список сравниваемых элементов, из которого требуется взять максимальное значение</param>
+            <returns name="item">Максимальное значение элемента из списка</returns>
+            <search>greatest,largest,biggest,find max</search>
+        </member>
+        <member name="M:DSCore.List.FilterByBoolMask(System.Collections.IList,System.Collections.IList)">
+            <summary>Фильтрация последовательности путем поиска соответствующих индексов в отдельном списке
+                логических операций.</summary>
+            <param name="list">Список, который требуется отфильтровать.</param>
+            <param name="mask">Список логических операций, представляющих маску.</param>
+            <returns name="in">Элементы, индекс маски которых имеет значение «истина».</returns>
+            <returns name="out">Элементы, индекс маски которых имеет значение «ложь».</returns>
+            <search>filter,in,out,mask,dispatch,bool filter,boolfilter,bool filter</search>
+        </member>
+        <member name="M:DSCore.List.Deconstruct(System.Collections.IList)">
+            <summary>При наличии списка создается первый элемент из него и новый список, состоящий из всех элементов,
+                кроме первого.</summary>
+            <param name="list">Список для разделения.</param>
+            <returns name="first">Первый элемент в списке (тип: var[]..[])</returns>
+            <returns name="rest">Остальная часть списка (тип: var[]..[])</returns>
+            <search>first,rest,list split,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.SortByKey(System.Collections.IList,System.Collections.IList)">
+            <summary>Сортировка списка на основе ключей</summary>
+            <param name="list">список, который требуется отсортировать</param>
+            <param name="keys">список ключей, ключи должны быть сортируемыми (например, числа или строки)</param>
+            <returns name="sortedList">тип: var[]..[]</returns>
+            <returns name="sortedKeys">тип: var[]..[]</returns>
+            <search>sort;key</search>
+        </member>
+        <member name="M:DSCore.List.GroupByKey(System.Collections.IList,System.Collections.IList)">
+            <summary>Группирование элементов для получения вложенных списков на основе их ключевых значений</summary>
+            <param name="list">Список элементов, которые требуется сгруппировать во вложенные списки</param>
+            <param name="keys">Ключевые значения, одно для каждого элемента в списке ввода, используемые для группирования элементов</param>
+            <returns name="groups">список вложенных списков с элементами, сгруппированными по ключевым значениям</returns>
+            <returns name="uniqueKeys">ключевое значение для каждой группы</returns>
+            <search>list;group;groupbykey;</search>
+        </member>
+        <member name="M:DSCore.List.AddItemToFront(System.Object,System.Collections.IList)">
+            <summary>Добавление элемента в начало списка.</summary>
+            <param name="item">Элемент, который требуется добавить. Элемент может быть объектом или списком.</param>
+            <param name="list">Целевой список для добавления.</param>
+            <returns name="list">Список с добавленными элементами</returns>
+            <search>insert,add,item,front,start,begin</search>
+        </member>
+        <member name="M:DSCore.List.AddItemToEnd(System.Object,System.Collections.IList)">
+            <summary>Добавление элемента в конец списка.</summary>
+            <param name="item">Элемент, который требуется добавить. Элемент может быть объектом или списком.</param>
+            <param name="list">Целевой список для добавления.</param>
+            <returns name="list">Список с добавленными элементами</returns>
+            <search>insert,add,item,end</search>
+        </member>
+        <member name="M:DSCore.List.TakeItems(System.Collections.IList,System.Int32)">
+            <summary>Выборка некоторого количества элементов в начале списка.</summary>
+            <param name="list">Список, из которого требуется извлечь элемент.</param>
+            <param name="amount">Количество элементов для переноса. Если значение отрицательное, элементы переносятся с конца списка.</param>
+            <returns name="list">Список извлеченных элементов.</returns>
+            <search>get,sub,sublist,extract</search>
+        </member>
+        <member name="M:DSCore.List.DropItems(System.Collections.IList,System.Int32)">
+            <summary>Удаление определенного количества элементов в начале списка. Если количество представляет собой отрицательное значение,
+                элементы удаляются с конца списка.</summary>
+            <param name="list">Список, из которого требуется удалить элементы.</param>
+            <param name="amount">Количество элементов для удаления. Если значение отрицательное, элементы удаляются с конца списка.</param>
+            <returns name="list">Список остальных элементов.</returns>
+            <search>drop,remove,shorten</search>
+        </member>
+        <member name="M:DSCore.List.ShiftIndices(System.Collections.IList,System.Int32)">
+            <summary>Смещение индексов в списке направо на заданную величину.</summary>
+            <param name="list">Список, который требуется сместить.</param>
+            <param name="amount">Значение сдвига индексов. Если значение отрицательное, индексы будут сдвинуты влево.</param>
+            <returns name="list">Смещенный список.</returns>
+            <search>shift,offset</search>
+        </member>
+        <member name="M:DSCore.List.GetItemAtIndex(System.Collections.IList,System.Int32)">
+            <summary>Получение элемента из данного списка, расположенного по указанному индексу.</summary>
+            <param name="list">Список, из которого требуется извлечь элемент.</param>
+            <param name="index">Индекс элемента для включения в выборку.</param>
+            <returns name="item">Элемент в списке по заданному индексу.</returns>
+            <search>get,item,index,fetch,at,getfrom,get from,extract</search>
+        </member>
+        <member name="M:DSCore.List.ReplaceItemAtIndex(System.Collections.IList,System.Int32,System.Object)">
+            <summary>Замена элемента из данного списка, расположенного по указанному индексу.</summary>
+            <param name="list">Список, в котором требуется заменить элемент.</param>
+            <param name="index">Индекс элемента для замены.</param>
+            <param name="item">Элемент для вставки.</param>
+            <returns name="list">Новый список с замененным элементом.</returns>
+            <search>replace,switch</search>
+        </member>
+        <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">
+            <summary>Получение одного вложенного списка из данного списка на основе начального индекса, конечного индекса
+                и величины шага.</summary>
+            <param name="list">Список, часть которого нужно взять.</param>
+            <param name="start">Индекс, с которого начинается часть.</param>
+            <param name="end">Индекс, которым заканчивается часть.</param>
+            <param name="step">Число, на которое разделены индексы элементов в исходном списке.</param>
+            <returns name="items">Элементы, содержащиеся в части данного списка.</returns>
+            <search>list,sub,sublist,subrange,get sublist</search>
+        </member>
+        <member name="M:DSCore.List.RemoveItemAtIndex(System.Collections.IList,System.Int32[])">
+            <summary>Удаление элемента из данного списка по заданному индексу.</summary>
+            <param name="list">Список, из которого требуется удалить один или несколько элементов.</param>
+            <param name="indices">Индекс или индексы одного или нескольких элементов, подлежащие удалению.</param>
+            <returns name="list">Список, из которого удалены элементы.</returns>
+            <search>index,indices,cull,remove,item</search>
+        </member>
+        <member name="M:DSCore.List.DropEveryNthItem(System.Collections.IList,System.Int32,System.Int32)">
+            <summary>Удаление элементов из данного списка по индексам, которые являются множителями
+                данного значения после применения заданного смещения.</summary>
+            <param name="list">Список, из которого требуется удалить элементы/</param>
+            <param name="n">Индексы, являющиеся множителями для данного аргумента, будут удалены.</param>
+            <param name="offset">Количество элементов с начала списка, которые будут игнорироваться.</param>
+            <returns name="list">Список, из которого удалены элементы.</returns>
+            <search>nth,remove,cull,every</search>
+        </member>
+        <member name="M:DSCore.List.TakeEveryNthItem(System.Collections.IList,System.Int32,System.Int32)">
+            <summary>Выборка элементов из данного списка по индексам, которые являются множителями
+                указанного значения после применения заданного смещения.</summary>
+            <param name="list">Список, из которого требуется извлечь элементы.</param>
+            <param name="n">Индексы, являющиеся множителями этого числа (после применения смещения),
+                будут добавлены в выборку.</param>
+            <param name="offset">Количество элементов с начала списка, которые будут игнорироваться.</param>
+            <returns name="items">Элементы из списка.</returns>
+            <search>fetch,take,every,nth</search>
+        </member>
+        <member name="M:DSCore.List.IsEmpty(System.Collections.IList)">
+            <summary>Определение того, пуст ли данный список.</summary>
+            <param name="list">Проверка того, является ли список пустым</param>
+            <returns name="bool">True — список пуст, False — не пуст</returns>
+            <search>test,is,empty,null,count</search>
+        </member>
+        <member name="M:DSCore.List.AllTrue(System.Collections.IList)">
+            <summary>Определяет, являются ли все элементы заданного списка логическими и имеют ли они значение «True».</summary>
+            <param name="list">Список, который необходимо проверить на присвоение всем элементам значения «True».</param>
+            <returns name="bool">True — всем элементам списка присвоено значение True, False — одному или нескольким элементам не присвоено значение True</returns>
+            <search>test,all,true,istrue</search>
+        </member>
+        <member name="M:DSCore.List.AllFalse(System.Collections.IList)">
+            <summary>Определяет, являются ли все элементы заданного списка логическими и имеют ли они значение «False».</summary>
+            <param name="list">Список, который необходимо проверить на присвоение всем элементам значения «False».</param>
+            <returns name="bool">True — всем элементам списка присвоено значение False, False — одному или нескольким элементам не присвоено значение False</returns>
+            <search>test,all,false,isfalse</search>
+        </member>
+        <member name="M:DSCore.List.AnyTrue(System.Collections.IList)">
+            <summary>Определение того, является ли какой-либо элемент данного списка логическим и имеет ли он истинное значение.</summary>
+            <param name="list">Список, который требуется проверить на наличие элементов с истинным значением.</param>
+            <returns name="bool">Наличие элементов с истинным значением.</returns>
+            <search>test,any,true,istrue</search>
+        </member>
+        <member name="M:DSCore.List.AnyFalse(System.Collections.IList)">
+            <summary>Определение того, является ли какой-либо элемент данного списка логическим и имеет ли он ложное значение.</summary>
+            <param name="list">Список, который требуется проверить на наличие элементов с ложным значением.</param>
+            <returns name="bool">Наличие элементов с ложным значением.</returns>
+            <search>test,any,false,isfalse</search>
+        </member>
+        <member name="M:DSCore.List.Count(System.Collections.IList)">
+            <summary>Получение количества элементов, хранящихся в данном списке.</summary>
+            <param name="list">Список, элементы которого требуется сосчитать.</param>
+            <returns name="int">Длина списка.</returns>
+            <search>listlength,list length,count,size,sizeof</search>
+        </member>
+        <member name="M:DSCore.List.Join(System.Collections.IList[])">
+            <summary>Объединение всех имеющихся списков в один.</summary>
+            <param name="lists">Списки для объединения в один.</param>
+            <returns name="list">Объединенный список.</returns>
+            <search>join lists,merge,concatenate</search>
+        </member>
+        <member name="M:DSCore.List.FirstItem(System.Collections.IList)">
+            <summary>Получение первого элемента в списке.</summary>
+            <param name="list">Список, из которого требуется получить первый элемент.</param>
+            <returns name="item">Первый элемент в списке.</returns>
+            <search>get,fetch,first,item,start</search>
+        </member>
+        <member name="M:DSCore.List.RestOfItems(System.Collections.IList)">
+            <summary>Удаление первого элемента данного списка.</summary>
+            <param name="list">Список, из которого требуется получить все остальные элементы.</param>
+            <returns name="rest">Остальная часть списка.</returns>
+            <search>get,fetch,rest,end,rest of list</search>
+        </member>
+        <member name="M:DSCore.List.Chop(System.Collections.IList,System.Collections.Generic.List{System.Int32})">
+            <summary>Обрезка списка для получения набора последовательных вложенных списков заданной длины. Деление списка начинается в верхней части списка.</summary>
+            <param name="list">Списки, которые требуется обрезать для получения вложенных списков</param>
+            <param name="lengths">Длины последовательных вложенных списков, которые будут созданы из списка ввода</param>
+            <returns name="lists">Вложенные списки, созданные из списка</returns>
+            <search>sublists,build sublists,slices,partitions,cut,listcontains,chop</search>
+        </member>
+        <member name="M:DSCore.List.DiagonalRight(System.Collections.IList,System.Int32)">
+            <summary>Перечисление элементов вдоль каждой из диагоналей в матрице слева снизу вправо вверх.</summary>
+            <param name="list">Неструктурированный список</param>
+            <param name="subLength">Длина каждого нового подсписка.</param>
+            <returns name="diagonals">Списки элементов вдоль диагоналей матрицы.</returns>
+            <search>diagonal,right,matrix,get diagonals,diagonal sublists</search>
+        </member>
+        <member name="M:DSCore.List.DiagonalLeft(System.Collections.IList,System.Int32)">
+            <summary>Перечисление элементов вдоль каждой из диагоналей в матрице слева сверху вправо вниз.</summary>
+            <param name="list">Неструктурированный список.</param>
+            <param name="rowLength">Длина каждого нового подсписка.</param>
+            <returns name="diagonals">Списки элементов вдоль диагоналей матрицы.</returns>
+            <search>diagonal,left,matrix,get diagonals,diagonal sublists</search>
+        </member>
+        <member name="M:DSCore.List.Transpose(System.Collections.IList)">
+            <summary>Замена строк и столбцов в перечне списков. 
+                Если некоторые строки короче других, то в результирующий 
+                массив в качестве заполнителей вставляются нулевые значения,
+                благодаря чему он всегда остается прямоугольным.</summary>
+            <param name="lists">Перечень списков для переноса</param>
+            <returns name="lists">Перечень перенесенных списков</returns>
+            <search>transpose,flip matrix,matrix,swap,rows,columns</search>
+        </member>
+        <member name="M:DSCore.List.Clean(System.Collections.IList,System.Boolean)">
+            <summary>Удаление нулевых данных и очистка списков из заданного списка произвольных размеров</summary>
+            <param name="list">Список с нулями и пустыми вложенными списками для очистки</param>
+            <param name="preserveIndices">Возможность сохранения индексов данных
+            <returns name="list">Перечень перенесенных списков</returns>,
+            благодаря чему незамыкающие нули могут не отфильтровываться</param>
+            <returns>Список очищен от нулей и пустых списков</returns>
+        </member>
+        <member name="M:DSCore.List.OfRepeatedItem(System.Object,System.Int32)">
+            <summary>Создание списка, содержащего данный элемент, заданное количество раз.</summary>
+            <param name="item">Элемент для повтора.</param>
+            <param name="amount">Число повторений.</param>
+            <returns name="list">Список повторяющихся элементов.</returns>
+            <search>repeat,repeated,duplicate,list of item,fill list,copies,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.Cycle(System.Collections.IList,System.Int32)">
+            <summary>Создание нового списка путем объединения копий данного списка.</summary>
+            <param name="list">Список для повтора.</param>
+            <param name="amount">Число повторений.</param>
+            <returns name="list">Список повторяющихся списков с типом var[]..[]</returns>
+            <search>repeat,repeated,duplicate,repeated list,concat list</search>
+        </member>
+        <member name="M:DSCore.List.LastItem(System.Collections.IList)">
+            <summary>Извлечение последнего элемента в списке.</summary>
+            <param name="list">Список, из которого требуется получить последний элемент</param>
+            <returns name="item">Последний элемент в списке</returns>
+            <search>get,fetch,last,item,end of list</search>
+        </member>
+        <member name="M:DSCore.List.Shuffle(System.Collections.IList)">
+            <summary>Перемешивание элементов в списке в случайном порядке.</summary>
+            <param name="list">Список, в котором требуется перемешать элементы.</param>
+            <returns name="list">Список с элементами в случайном порядке.</returns>
+            <search>random,randomize,shuffle,jitter,randomness</search>
+        </member>
+        <member name="M:DSCore.List.Shuffle(System.Collections.IList,System.Int32)">
+            <summary>Перемешивание элементов списка произвольным образом для упорядочения на основе исходного случайного значения.</summary>
+            <param name="list">Список, в котором требуется перемешать элементы.</param>
+            <param name="seed">Случайное значение для формирования случайного числа.</param>
+            <returns name="list">Список с элементами в случайном порядке.</returns>
+            <search>random,randomize,shuffle,jitter,randomness,seed</search>
+        </member>
+        <member name="M:DSCore.List.Permutations(System.Collections.IList,System.Nullable{System.Int32})">
+            <summary>Создание всех перестановок заданной длины для данного списка.</summary>
+            <param name="list">Список, в котором требуется перестановка элементов.</param>
+            <param name="length">Длина каждой перестановки.</param>
+            <returns name="permutations">Перестановки в списке заданной длины (тип: var[]..[])</returns>
+            <search>permutation,permutations</search>
+        </member>
+        <member name="M:DSCore.List.Combinations(System.Collections.IList,System.Int32,System.Boolean)">
+            <summary>Создание всех сочетаний заданной длины для данного списка.</summary>
+            <param name="list">Список для создания сочетаний</param>
+            <param name="length">Длина каждого сочетания</param>
+            <param name="replace">Удаляются ли элементы при выборе для создания комбинации. Значение по умолчанию —
+                «ложь».</param>
+            <returns name="lists">Сочетания из списка заданной длины</returns>
+            <search>combo</search>
+        </member>
+        <member name="M:DSCore.List.FirstIndexOf(System.Collections.IList,System.Object)">
+            <summary>Возвращает индекс, отсчитанный от нуля, для первого вхождения элемента
+                в списке. Если элемент не найден в списке, возвращает -1.</summary>
+            <param name="list">Список, в котором выполняется поиск. Если этот аргумент является нулевым, возвращает -1.</param>
+            <param name="item">Элемент для поиска.</param>
+            <returns>Индекс, отсчитанный от нуля, для элемента списка, либо -1, если элемент не найден.</returns>
+        </member>
+        <member name="M:DSCore.List.AllIndicesOf(System.Collections.IList,System.Object)">
+            <summary>Возвращает индекс, отсчитанный от нуля, для всех вхождений элемента
+                в списке. Если элемент не найден, возвращает пустой список.</summary>
+            <param name="list">Список, в котором выполняется поиск. Если этот аргумент является нулевым, возвращает пустой список.</param>
+            <param name="item">Элемент для поиска.</param>
+            <returns name="indices">Список индексов, отсчитываемых от нуля, для всех вхождений элемента (если
+            элемент найден) или пустой список (если элемент отсутствует в списке).</returns>
+        </member>
+        <member name="M:DSCore.List.Flatten(System.Collections.IList,System.Int32)">
+            <summary>Выравнивание вложенного списка списков по определенному количественному значению.</summary>
+            <param name="list">Список для выравнивания.</param>
+            <param name="amount">Слои в списке, которые требуется исключить (–1 приведет к удалению всех вложенных в список слоев)</param>
+            <returns name="list">Список с выравниванием по объему</returns>
+            <search>flatten,completely</search>
+        </member>
+        <member name="M:DSCore.List.IndexInList(System.Collections.IList,System.Object)">
+            <summary>Альтернатива использованию метода IList.Contains, при которой используется метод Enumerable.SequenceEqual для проверки присутствия элемента в списке и в массиве. При обнаружении возвращает индекс, при отсутствии возвращает -1.</summary>
+            <param name="list">Список, проверяемый на наличие элемента.</param>
+            <param name="item">Элемент, который требуется найти.</param>
+            <returns name="index">Индекс элемента в списке.</returns>
+        </member>
+        <member name="M:DSCore.List.GetDepth(System.Object)">
+            <summary>Получение максимальной глубины заданного списка.</summary>
+            <param name="list">Список ввода для получения глубины.</param>
+            <returns name="depth">Глубина заданного списка.</returns>
+        </member>
+        <member name="M:DSCore.List.CountBool(System.Collections.IList,System.Boolean)">
+            <summary>Возвращает количество указанных логических значений в заданном списке.</summary>
+            <param name="list">Список для поиска логических значений.</param>
+            <param name="value">Искомое логическое значение</param>
+            <returns name="int">Количество заданных логических значений в списке.</returns>
+        </member>
+        <member name="M:DSCore.List.IncreaseDepth(System.Collections.IList,System.Int32)">
+            <summary>Увеличение глубины заданного списка на определенную величину. Глубина увеличивается путем создания нового списка, содержащего данный список.</summary>
+            <param name="list">Список, глубина которого должна быть увеличена.</param>
+            <param name="amt">Значение, на которое должна быть увеличена глубина.</param>
+            <returns name="list">Новый список, глубина которого увеличивается на указанное значение.</returns>
+        </member>
+        <member name="M:DSCore.List.DoubleConverter(System.Object)">
+            <summary>Преобразование целого числа в двойное значение. При его отсутствии - возврат объекта входных данных.</summary>
+        </member>
+        <member name="T:DSCore.ObjectComparer">
+            <summary>Реализация функций для сравнения двух объектов с использованием следующих правил.
+                1. Числа принимаются начиная с наименьших, затем логические значения, строки и указатели.
+                2. Если два сравниваемых объекта имеют один и тот же тип, используйте
+                их специальный механизм сравнения.
+                3. Если оба объекта входных данных являются значениями, но одно из них - логическое значение, оно считается наибольшим.
+                4. В противном случае можно преобразовать все объекты в двойные значения и сравнить.
+                5. Else If: если один из объектов является значением, он является наименьшим.
+                6. Else If: если один из объектов является строкой, он является наименьшим.
+                7. Else: оптимальный метод сравнения неизвестен - лучше всего сравнивать объекты по хэш-коду.</summary>
+        </member>
+        <member name="T:DSCore.Math">
+            <summary>Способы выполнения математических операций.</summary>
+        </member>
+        <member name="M:DSCore.Math.Random(System.Nullable{System.Int32})">
+            <summary>Создание случайного двойного значения в диапазоне [0; 1).</summary>
+            <param name="seed">Случайное значение для формирования случайного числа.</param>
+            <returns name="number">Случайное число из диапазона между 0 и 1.</returns>
+            <search>random,seed</search>
+        </member>
+        <member name="M:DSCore.Math.Random(System.Double,System.Double)">
+            <summary>Получение произвольного числа из в диапазона [lower_number; higher_number).</summary>
+            <param name="value1">Нижняя граница диапазона — случайное число.</param>
+            <param name="value2">Верхняя граница диапазона — случайное число.</param>
+            <returns name="number">Случайное число из диапазона [lower_number, higher_number).</returns>
+            <search>random,numberrange</search>
+        </member>
+        <member name="M:DSCore.Math.Random(System.Double,System.Double,System.Int32)">
+            <summary>Получение случайного числа из диапазона [lower_number, higher_number) на основе исходного случайного значения.</summary>
+            <param name="value1">Нижняя граница диапазона для случайного числа.</param>
+            <param name="value2">Верхняя граница диапазона для случайного числа.</param>
+            <param name="seed">Случайное значение для формирования случайного числа.</param>
+            <returns name="number">Случайное число из диапазона [lower_number, higher_number).</returns>
+            <search>random,numberrange,seed</search>
+        </member>
+        <member name="M:DSCore.Math.RandomList(System.Int32)">
+            <summary>Формирование списка, содержащего заданное количество произвольных двойных значений
+                из диапазона [0; 1).</summary>
+            <param name="amount">Количество случайных чисел списке результатов.</param>
+            <returns name="number">Список случайных чисел от 0 до 1.</returns>
+            <search>random,listcontains</search>
+        </member>
+        <member name="M:DSCore.Math.RandomList(System.Int32,System.Double,System.Double,System.Int32)">
+            <summary>Создание списка с заданным количеством случайных двойных чисел
+                в заданном диапазоне [lower_number, higher_number) на основе исходного случайного значения.</summary>
+            <param name="amount">Количество случайных чисел списке результатов.</param>
+            <param name="value1">Нижний предел диапазона для случайного числа.</param>
+            <param name="value2">Верхний предел диапазона для случайного числа.</param>
+            <param name="seed">Случайное значение для формирования случайного числа.</param>
+            <returns name="number">Список случайных чисел из диапазона [lower_number, higher_number).</returns>
+            <search>random,listcontains,seed</search>
+        </member>
+        <member name="P:DSCore.Math.PiTimes2">
+            <summary>Константа «пи», умноженная на 2</summary>
+            <returns name="double">«Пи», умноженное на 2</returns>
+            <search>2pi,2*pi,twopi,two*pi</search>
+        </member>
+        <member name="M:DSCore.Math.Average(System.Collections.Generic.IList{System.Double})">
+            <summary>Вывод среднего значения для списка чисел.</summary>
+            <param name="numbers">Список чисел, которые требуется усреднить.</param>
+            <returns name="double">Среднее значение из списка значений.</returns>
+            <search>avg,mean</search>
+        </member>
+        <member name="M:DSCore.Math.Map(System.Double,System.Double,System.Double)">
+            <summary>Сопоставляет значение ввода с числом в диапазоне от 0 до 1 на основании диапазона входных данных.</summary>
+            <param name="rangeMin">Минимальное значение диапазона входных данных.</param>
+            <param name="rangeMax">Максимальное значение диапазона входных данных.</param>
+            <param name="inputValue">Число для сопоставления.</param>
+            <returns name="double">Сопоставляемое значение.</returns>
+            <search>map,range,minimum,maximum,normalize,scale,remap</search>
+        </member>
+        <member name="M:DSCore.Math.MapTo(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>Сопоставляет значение ввода с числом в диапазоне от targetRangeMin до targetRangeMax.</summary>
+            <param name="rangeMin">Минимальное значение диапазона входных данных.</param>
+            <param name="rangeMax">Максимальное значение диапазона входных данных.</param>
+            <param name="inputValue">Число для сопоставления.</param>
+            <param name="targetRangeMin">Минимальное значение нового диапазона.</param>
+            <param name="targetRangeMax">Максимальное значение нового диапазона.</param>
+            <returns name="double">Сопоставляемое значение.</returns>
+            <search>map,range,mapto,minimum,maximum,normalize,scale,remap</search>
+        </member>
+        <member name="M:DSCore.Math.RemapRange(System.Collections.Generic.IList{System.Double},System.Double,System.Double)">
+            <summary>Корректировка диапазона списка чисел при сохранении
+                коэффициента распределения.</summary>
+            <param name="numbers">Список чисел, для которых требуется задать диапазон.</param>
+            <param name="newMin">Новое минимальное значение диапазона.</param>
+            <param name="newMax">Новое максимальное значение диапазона</param>
+            <returns name="list">Список с соответствием новому диапазону.</returns>
+            <search>remap range</search>
+        </member>
+        <member name="F:DSCore.Math.kRadiansToDegrees">
+            <summary>переместить функции/методы из Math.dll в эту библиотеку DSCoreNode.dll</summary>
+        </member>
+        <member name="P:DSCore.Math.PI">
+            <summary>Математическая константа «пи»: 3,14159...</summary>
+            <returns name="double">Постоянная «пи»</returns>
+            <search>3.141592653589793</search>
+        </member>
+        <member name="P:DSCore.Math.E">
+            <summary>Математическая константа e: 2,71828...</summary>
+            <returns name="double">Постоянная e</returns>
+            <search>exp,2.718281828459045</search>
+        </member>
+        <member name="P:DSCore.Math.GoldenRatio">
+            <summary>Золотое отношение, (1 + sqrt(5))/2 = 1,61803...</summary>
+            <returns name="double">Золотое отношение</returns>
+            <search>golden,ratio,divine,phi,tau,1.61803398875</search>
+        </member>
+        <member name="M:DSCore.Math.RadiansToDegrees(System.Double)">
+            <summary>Изменение угла в радианах на угол в градусах.</summary>
+            <param name="radians">Значение угла в радианах.</param>
+            <returns name="degrees">Значение угла в градусах.</returns>
+            <search>radians,degrees,angle</search>
+        </member>
+        <member name="M:DSCore.Math.DegreesToRadians(System.Double)">
+            <summary>Изменение угла в градусах на угол в радианах.</summary>
+            <param name="degrees">Значение угла в градусах.</param>
+            <returns name="radians">Значение угла в радианах.</returns>
+            <search>degrees,radians,angle</search>
+        </member>
+        <member name="M:DSCore.Math.Abs(System.Double)">
+            <summary>Нахождение абсолютного значения числа.</summary>
+            <param name="number">Число для получения абсолютного значения</param>
+            <returns name="number">Абсолютное значение числа</returns>
+            <search>absolute value,magnitude</search>
+        </member>
+        <member name="M:DSCore.Math.Equals(System.Double,System.Double,System.Double)">
+            <summary>Этот метод используется ТОЛЬКО в узле равенства (с допуском) NodeModel</summary>
+            <param name="lhs"/>
+            <param name="rhs"/>
+            <param name="tol"/>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Math.Abs(System.Int64)">
+            <summary>Нахождение абсолютного значения числа.</summary>
+            <param name="integer">Число.</param>
+            <returns name="absoluteValue">Абсолютное значение числа.</returns>
+            <search>absolute value,magnitude</search>
+        </member>
+        <member name="M:DSCore.Math.Acos(System.Double)">
+            <summary>Нахождение арккосинуса — угла, косинус которого равен данному отношению.</summary>
+            <param name="ratio">Косинус угла, число в диапазоне [–1; 1].</param>
+            <returns name="double">Угол, косинус которого равен введенному отношению.</returns>
+            <search>acosine,arccosine</search>
+        </member>
+        <member name="M:DSCore.Math.Asin(System.Double)">
+            <summary>Нахождение арксинуса — угла, синус которого равен данному отношению.</summary>
+            <param name="ratio">Синус угла, число в диапазоне [–1; 1].</param>
+            <returns name="double">Угол, синус которого равен введенному отношению</returns>
+            <search>asine,arcsin</search>
+        </member>
+        <member name="M:DSCore.Math.Atan(System.Double)">
+            <summary>Нахождение арктангенса — угла, тангенс которого равен данному отношению.</summary>
+            <param name="ratio">Тангенс угла.</param>
+            <returns name="double">Угол, тангенс которого равен введенному отношению</returns>
+            <search>atangent,arctangent</search>
+        </member>
+        <member name="M:DSCore.Math.Atan2(System.Double,System.Double)">
+            <summary>Нахождение арктангенса соотношения двух чисел. В результате получается величина угла,
+                тангенс которого составляет это отношение: числитель/знаменатель.</summary>
+            <param name="numerator">Числитель тангенса угла.</param>
+            <param name="denominator">Знаменатель тангенса угла.</param>
+            <returns name="double">Угол, тангенс которого равен значению: числитель/знаменатель</returns>
+            <search>atangent,arctangent</search>
+        </member>
+        <member name="M:DSCore.Math.Ceiling(System.Double)">
+            <summary>Получение первого целого числа, большего, чем данное число</summary>
+            <param name="number">Число для округления.</param>
+            <returns name="int">Первое целое число, большее чем данное число</returns>
+            <search>ceiling,round</search>
+        </member>
+        <member name="M:DSCore.Math.Cos(System.Double)">
+            <summary>Нахождение косинуса угла.</summary>
+            <param name="angle">Угол в градусах для получения косинуса.</param>
+            <returns name="double">Косинус угла</returns>
+            <search>cosine</search>
+        </member>
+        <member name="M:DSCore.Math.Cosh(System.Double)">
+            <summary>Нахождение гиперболического косинуса угла (в радианах).</summary>
+            <param name="angle">Значение угла в радианах.</param>
+            <returns name="double">Гиперболический косинус угла</returns>
+            <search>hyperbolic cosine</search>
+        </member>
+        <member name="M:DSCore.Math.DivRem(System.Int64,System.Int64)">
+            <summary>Нахождение остатка делимого/делителя.</summary>
+            <param name="dividend">Число, которое требуется разделить.</param>
+            <param name="divisor">Число, на которое требуется разделить.</param>
+            <returns name="int">Остаток деления</returns>
+            <search>remainder</search>
+        </member>
+        <member name="M:DSCore.Math.EvaluateFormula(System.String,System.String[],System.Object[])">
+            <summary>Оценка формулы NCalc с заданным сопоставлением параметров.</summary>
+            <param name="formulaString">Формула NCalc</param>
+            <param name="parameters">Имена переменных</param>
+            <param name="arguments">Привязки переменных</param>
+            <returns name="result">тип: var[]..[] (результат расчета по формуле)</returns>
+        </member>
+        <member name="M:DSCore.Math.Exp(System.Double)">
+            <summary>Получение экспоненты числа — константы e, возведенной в определенную степень.</summary>
+            <param name="number">Число.</param>
+            <returns name="double">Экспонента числа.</returns>
+            <search>exponential</search>
+        </member>
+        <member name="M:DSCore.Math.Floor(System.Double)">
+            <summary>Получение первого целого числа, меньшего, чем заданное число.</summary>
+            <param name="number">Число для округления в меньшую сторону</param>
+            <returns name="int">Первое целое число, меньшее чем данное число</returns>
+            <search>round</search>
+        </member>
+        <member name="M:DSCore.Math.Log(System.Double)">
+            <summary>Нахождение натурального логарифма числа из диапазона (0; ∞).</summary>
+            <param name="number">Число больше 0.</param>
+            <returns name="double">Натуральный логарифм числа.</returns>
+            <search>natural,logarithm,ln</search>
+        </member>
+        <member name="M:DSCore.Math.Log(System.Double,System.Double)">
+            <summary>Нахождение логарифма числа с заданным основанием.</summary>
+            <param name="number">Число больше 0.</param>
+            <param name="logBase">Основание логарифма в диапазоне [0; 1),(1; ∞).</param>
+            <returns name="double">Логарифм числа.</returns>
+            <search>logarithm,ld,lg</search>
+        </member>
+        <member name="M:DSCore.Math.Log10(System.Double)">
+            <summary>Нахождение десятичного логарифма числа.</summary>
+            <param name="number">Число больше 0.</param>
+            <returns name="double">Логарифм числа.</returns>
+            <search>logarithm</search>
+        </member>
+        <member name="M:DSCore.Math.Max(System.Double,System.Double)">
+            <summary>Получение большего из двух чисел.</summary>
+            <param name="value1">Число для сравнения.</param>
+            <param name="value2">Число для сравнения.</param>
+            <returns name="max">Большее из двух чисел.</returns>
+            <search>maximum,greater,larger</search>
+        </member>
+        <member name="M:DSCore.Math.Max(System.Int64,System.Int64)">
+            <summary>Получение большего из двух чисел.</summary>
+            <param name="int1">Число для сравнения.</param>
+            <param name="int2">Число для сравнения.</param>
+            <returns name="max">Большее из двух чисел.</returns>
+            <search>maximum,greater,larger</search>
+        </member>
+        <member name="M:DSCore.Math.Min(System.Double,System.Double)">
+            <summary>Получение меньшего из двух чисел.</summary>
+            <param name="value1">Число для сравнения.</param>
+            <param name="value2">Число для сравнения.</param>
+            <returns name="min">Меньшее из двух чисел.</returns>
+            <search>minimum,lesser,smaller</search>
+        </member>
+        <member name="M:DSCore.Math.Min(System.Int64,System.Int64)">
+            <summary>Получение меньшего из двух чисел.</summary>
+            <param name="int1">Число для сравнения.</param>
+            <param name="int2">Число для сравнения.</param>
+            <returns name="min">Меньшее из двух чисел.</returns>
+            <search>minimum,lesser,smaller</search>
+        </member>
+        <member name="M:DSCore.Math.Pow(System.Double,System.Double)">
+            <summary>Возведение числа в указанную степень.</summary>
+            <param name="number">Число, возводимое в степень.</param>
+            <param name="power">Степень, в которую требуется возвести число.</param>
+            <returns name="result">Число, возведенное в степень.</returns>
+            <search>^,power,raise,exponent</search>
+        </member>
+        <member name="M:DSCore.Math.Rand">
+            <summary>Получение случайного числа из диапазона [0; 1).</summary>
+            <returns name="number">Случайное число из диапазона [0; 1).</returns>
+            <search>random,numberrange</search>
+        </member>
+        <member name="M:DSCore.Math.Round(System.Double)">
+            <summary>Округление числа до ближайшего интегрального значения.
+            Обратите внимание на то, что этот метод возвращает число с плавающей точкой двойной точности вместо интегрального типа.</summary>
+            <param name="number">Число для округления.</param>
+            <returns name="number">Ближайшее интегральное значение.</returns>
+        </member>
+        <member name="M:DSCore.Math.Round(System.Double,System.Int32)">
+            <summary>Округление числа до заданного количества цифр дробной части.</summary>
+            <param name="number">Округляемое число</param>
+            <param name="digits">Число цифр дробной части в возвращаемом значении</param>
+            <returns name="number">Число, наиболее близкое к значению, в котором содержится количество цифр дробной части, равное цифрам</returns>
+        </member>
+        <member name="M:DSCore.Math.Sign(System.Double)">
+            <summary>Получение знака числа: –1, 0 или 1.</summary>
+            <param name="number">Число для получения знака</param>
+            <returns name="int">Знак числа: –1, 0 или 1</returns>
+        </member>
+        <member name="M:DSCore.Math.Sign(System.Int64)">
+            <summary>Получение знака числа: –1, 0 или 1.</summary>
+            <param name="int">Целое число для получения знака</param>
+            <returns name="int">Знак числа: –1, 0 или 1</returns>
+        </member>
+        <member name="M:DSCore.Math.Sin(System.Double)">
+            <summary>Нахождение синуса угла.</summary>
+            <param name="angle">Угол в градусах для получения синуса.</param>
+            <returns name="double">Синус угла.</returns>
+            <search>sine</search>
+        </member>
+        <member name="M:DSCore.Math.Sinh(System.Double)">
+            <summary>Нахождение гиперболического синуса угла (в радианах).</summary>
+            <param name="angle">Значение угла в радианах.</param>
+            <returns name="double">Гиперболический синус угла.</returns>
+            <search>hyperbolic</search>
+        </member>
+        <member name="M:DSCore.Math.Sqrt(System.Double)">
+            <summary>Извлечение положительного квадратного корня из числа в диапазоне [0; ∞).</summary>
+            <param name="number">Число в диапазоне [0; ∞).</param>
+            <returns name="double">Положительный квадратный корень числа.</returns>
+            <search>square,root,radical</search>
+        </member>
+        <member name="M:DSCore.Math.Tan(System.Double)">
+            <summary>Нахождение тангенса угла.</summary>
+            <param name="angle">Угол в радианах</param>
+            <returns name="double">Тангенс угла</returns>
+            <search>tangent</search>
+        </member>
+        <member name="M:DSCore.Math.Tanh(System.Double)">
+            <summary>Нахождение гиперболического тангенса угла (в радианах).</summary>
+            <param name="angle">Угол в радианах</param>
+            <returns name="double">Гиперболический тангенс угла</returns>
+            <search>hyperbolic,tanh</search>
+        </member>
+        <member name="M:DSCore.Math.Sum(System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>Найти сумму последовательности чисел</summary>
+            <param name="values">Числа для прибавления к сумме</param>
+            <returns name="double">Сумма значений</returns>
+            <search>mass addition,massadd</search>
+        </member>
+        <member name="M:DSCore.Math.Factorial(System.Int64)">
+            <summary>Нахождение факторного результата положительного целого числа.</summary>
+            <param name="number">Положительное целое число</param>
+            <returns name="number">Результат факториала для целого числа.</returns>
+            <search>!</search>
+        </member>
+        <member name="M:DSCore.Math.Xor(System.Boolean,System.Boolean)">
+            <summary>Логическое «XOR»: возвращает значение «истина» только в том случае, если оба ввода имеют значение «истина».</summary>
+            <param name="bool">Логическая операция</param>
+            <param name="otherBool">Другие логические операции</param>
+            <returns name="bool">Логический результат</returns>
+            <search>xor,exclusive,or</search>
+        </member>
+        <member name="M:DSCore.Math.DoCheckedCast(System.Double)">
+            <summary>Приведение к типу long в проверенном контексте. Если операция
+            приводит к переполнению, отображается предупреждение
+            и возвращается результат с переполнением.</summary>
+            <param name="value">Операция для выполнения</param>
+            <returns>Результат операции</returns>
+        </member>
+        <member name="T:DSCore.Object">
+            <summary>Типовые функции, которые используются для всех видов данных.</summary>
+        </member>
+        <member name="M:DSCore.Object.IsNull(System.Object)">
+            <summary>Определение того, имеет ли данный объект нулевое значение.</summary>
+            <param name="object">Объект для проверки.</param>
+            <returns name="bool">Установлено ли для объекта нулевое значение.</returns>
+            <search>is null</search>
+        </member>
+        <member name="M:DSCore.Object.Identity(System.Object)">
+            <summary>Возврат предъявленных значений, отсутствие действия.</summary>
+            <param name="object">Объект.</param>
+            <returns name="object">Тот же объект</returns>
+        </member>
+        <member name="M:DSCore.Object.Type(System.Object)">
+            <summary>Возврат типа объекта, представленного в виде строки.</summary>
+            <param name="object">Объект для запроса типа</param>
+            <returns>Тип объекта.</returns>
+        </member>
+        <member name="T:DSCore.Properties.Resources">
+            <summary>Класс ресурса со строгим контролем типа, используемый для поиска локализованных строк и т. п.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ResourceManager">
+            <summary>Возврат кэшированного экземпляра ResourceManager, используемого в данном классе.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Culture">
+            <summary>Переопределение свойства CurrentUICulture текущего потока для всех
+               случаев поиска ресурсов при использовании данного класса ресурса со строгим контролем типа.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.BitmapOverflowError">
+            <summary>Поиск локализованной строки, подобной строке «Предоставленные данные цвета слишком велики для вписывания в границы изображения».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
+            <summary>Поиск локализованной строки, подобной строке «Входное значение должно быть одним значением или не являться вложенным списком».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataUnexpectedInputExceptionMessage">
+            <summary>Поиск локализованной строки, подобной строке «Для этого узла ожидался ввод {0}, но получен ввод {1}. Введите ожидаемое входное значение или выберите новый тип в раскрывающемся меню узла».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataUnsupportedCombinationOfDataTypesExceptionMessage">
+            <summary>Поиск локализованной строки, подобной строке «Этот узел не поддерживает комбинацию типов данных в текущем списке ввода {0}. Убедитесь, что список ввода содержит элементы одного типа данных или содержит элементы разных типов с общим родительским типом».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataUnsupportedDataTypeExceptionMessage">
+            <summary>Поиск локализованной строки, подобной строке «Этот узел не поддерживает текущий тип входных данных ({0}). Просмотрите поддерживаемые типы данных в раскрывающемся меню».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekFriday">
+            <summary>Поиск локализованной строки, подобной строке «Пятница».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekMonday">
+            <summary>Поиск локализованной строки, подобной строке «Понедельник».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekSaturday">
+            <summary>Поиск локализованной строки, подобной строке «Суббота».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekSunday">
+            <summary>Поиск локализованной строки, подобной строке «Воскресенье».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekThursday">
+            <summary>Поиск локализованной строки, подобной строке «Четверг».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekTuesday">
+            <summary>Поиск локализованной строки, подобной строке «Вторник».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekWednesday">
+            <summary>Поиск локализованной строки, подобной строке «Среда».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Deserialize_Bad_Format">
+            <summary>Поиск локализованной строки, подобной строке «Файл JSON для типа {0} был отформатирован неправильно».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Deserialize_Unsupported_Cache">
+            <summary>Поиск локализованной строки, подобной строке «Не удается загрузить сохраненные данные».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Serialize_Depth_Unsupported">
+            <summary>Поиск локализованной строки, подобной строке «Глубина {0} превышает максимальную глубину {1} по пути {2}».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Serialize_DesignScript_Unsupported">
+            <summary>Поиск локализованной строки, подобной строке «Невозможно сериализовать этот тип геометрии».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Serialize_Unsupported_Type">
+            <summary>Поиск локализованной строки, подобной строке «Не удается сохранить данные типа {0}».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ExportToCSVObsolete">
+            <summary>Поиск локализованной строки, подобной строке «Используйте узел Data.ExportCSV».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FactorialNegativeInt">
+            <summary>Поиск локализованной строки, подобной строке «Входное значение Math.Factorial не может быть отрицательным».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FactorialOverflow">
+            <summary>Поиск локализованной строки, подобной строке «Возвращаемое значение Math.Factorial находится вне диапазона».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FindPointsWithinRadiusNullPointMessage">
+            <summary>Поиск локализованной строки, подобной строке «Необходимо указать центральную точку».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FindPointsWithinRadiusSearchRadiusMessage">
+            <summary>Поиск локализованной строки, подобной строке «Радиус поиска не может быть равен нулю».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FromObjectObsolete">
+            <summary>Поиск локализованной строки, подобной строке «Этот узел является устаревшим, используйте String from Object».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.IntegerOverflow">
+            <summary>Поиск локализованной строки, подобной строке «Операция привела к переполнению целого числа. Результат может быть непредсказуемым».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.InvalidDestinationPathErrorMessage">
+            <summary>Поиск локализованной строки, подобной строке «В качестве пути для копирования используется недопустимый путь к конечному файлу».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.InvalidKeysErrorMessage">
+            <summary>Поиск локализованной строки, подобной строке «Один или несколько типов ввода не совпадают. Списки ключей не поддерживаются».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.InvalidKeysLenghtErrorMessage">
+            <summary>Поиск локализованной строки, подобной строке «Количество элементов не соответствует количеству ключей. href=InvalidKeysLenghtErrorMessage.html».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.LoadImageFromPathObsolete">
+            <summary>Поиск локализованной строки, подобной строке «Используйте узлы File.FromPath -&gt;  Image.ReadFromFile».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.MissingPythonEngine">
+            <summary>Поиск локализованной строки, подобной строке «Не удалось найти выбранный механизм Python».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ObjectArgumentExceptionMessage">
+            <summary>Поиск локализованной строки, подобной строке «Объект не может быть нулевым, введите соответствующее значение».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.QuadtreeConstructionEmptyUVSetMessage">
+            <summary>Поиск локализованной строки, подобной строке «Невозможно сформировать квадрадерево на основе пустого набора точек».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.QuadtreeConstructionNullUVSetMessage">
+            <summary>Поиск локализованной строки, подобной строке «Квадрадерево не может быть построено на основе пустого набора UV».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ReadImageObsolete">
+            <summary>Поиск локализованной строки, подобной строке «Используйте узлы File.FromPath -&gt;  Image.ReadFromFile -&gt;  Image.Pixels».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ReadTextObsolete">
+            <summary>Поиск локализованной строки, подобной строке «Используйте узлы File.FromPath -&gt;  File.ReadText».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.StringRemoveCountOutOfRangeMessage">
+            <summary>Поиск локализованной строки, подобной строке «Количество выходит за пределы диапазона!».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.StringRemoveStartIndexOutOfRangeMessage">
+            <summary>Поиск локализованной строки, подобной строке «StartIndex выходит за пределы диапазона!».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.StringToNumberInvalidNumberMessage">
+            <summary>Поиск локализованной строки, подобной строке «Недопустимое число».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.WebRequestNullUrlMessage">
+            <summary>Поиск локализованной строки, подобной строке «URL-адрес не может быть пустым».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.WriteImageObsolete">
+            <summary>Поиск локализованной строки, подобной строке «Используйте узел Image.WriteToFile».</summary>
+        </member>
+        <member name="T:DSCore.PythonEvaluator">
+            <summary>Вычисление кода Python в любом механизме Python. Следует использовать только в ВМ</summary>
+        </member>
+        <member name="M:DSCore.Quadtree.ByUVs(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
+            <summary>Создание квадрадерева, охватывающего область (0;0)-&gt;(1;1).</summary>
+            <param name="uvs">Набор UV в области (0,0)-&gt;(1,1).</param>
+            <returns>Объект квадрадерева.</returns>
+        </member>
+        <member name="M:DSCore.Quadtree.FindPointsWithinRadius(Autodesk.DesignScript.Geometry.UV,System.Double)">
+            <summary>Найти все точки (UV) квадрадерева в квадрадереве, которое расположено в радиусе до указанного местоположения  UV.</summary>
+            <param name="center">UV в центре области поиска.</param>
+            <param name="radius">Радиус области поиска.</param>
+            <returns>Список UV.</returns>
+        </member>
+        <member name="M:DSCore.Node.Split">
+            <summary>Разделение узла на четыре квадранта.</summary>
+            <returns/>
+        </member>
+        <member name="T:DSCore.UVRect">
+            <summary>Вспомогательный класс, используемый для определения прямоугольника,
+            можно описать минимальным и максимальным значением UV.</summary>
+        </member>
+        <member name="T:DSCore.UVExtensions">
+            <summary>Методы расширения UV.</summary>
+        </member>
+        <member name="T:DSCore.Sorting">
+            <summary>Служебные методы сортировки по ключам. Следует блокировать их преобразование в узлы —
+            вместо этого они будут заключены в оболочки элементов DS, которые поддерживают функцию сопоставления ключей.</summary>
+        </member>
+        <member name="T:DSCore.String">
+            <summary>Методы управления строками.</summary>
+        </member>
+        <member name="M:DSCore.String.ToNumber(System.String)">
+            <summary>Преобразование строки в целое число или двойное значение.</summary>
+            <param name="string">Строка для преобразования</param>
+            <returns name="number">Целое число или число двойного типа</returns>
+            <search>2number,str2number,strtonumber,string2number,stringtonumber,int,double,cast</search>
+        </member>
+        <member name="M:DSCore.String.GetNumber(System.String)">
+            <summary>Получение всех строк с числами из целевой строки в виде строки</summary>
+            <param name="string">Целевая строка для получения</param>
+            <returns name="str">Число в строке</returns>
+            <search>getnumber,tonumber,strtonumber,numberinstring,string2number,stringtonumber,int,double,cast</search> 
+        </member>
+        <member name="M:DSCore.String.Concat(System.String[])">
+            <summary>Объединение нескольких строк в одну строку.</summary>
+            <param name="strings">Список строк для объединения.</param>
+            <returns name="string">Строка, созданная на основе списка строк.</returns>
+            <search>concatenate,join,combine strings</search>
+        </member>
+        <member name="M:DSCore.String.Length(System.String)">
+            <summary>Получение числа символов, содержащихся в данной строке.</summary>
+            <param name="string">Строка для поиска длины</param>
+            <returns name="int">Количество символов в строке</returns>
+            <search>count,size,characters,chars,length,sizeof</search>
+        </member>
+        <member name="M:DSCore.String.Split(System.String,System.String[])">
+            <summary>Разделение одной строки на список строк, деления которого
+                определяются заданными строками-разделителями.</summary>
+            <param name="string">Строка для разделения</param>
+            <param name="separators">Строки, которые (при наличии) определяют конец и начало разделения.</param>
+            <returns name="strings">Список строк, созданных на основе строки ввода</returns>
+            <search>divide,separator,delimiter,cut,csv,comma,</search>
+        </member>
+        <member name="M:DSCore.String.Join(System.String,System.String[])">
+            <summary>Объединение нескольких строк в одну строку со вставкой данного
+                разделителя между всеми соединенными строками.</summary>
+            <param name="separator">Строка для вставки между объединенными строками.</param>
+            <param name="strings">Строки, которые будут объединены в одну строку.</param>
+            <returns name="string">Строка из списка строк, в том числе символ-разделитель.</returns>
+            <search>join,separator,build csv,concat,construct</search>
+        </member>
+        <member name="M:DSCore.String.ToUpper(System.String)">
+            <summary>Преобразование символов данной строки в символы верхнего регистра.</summary>
+            <param name="string">Строка, регистр которой требуется изменить на верхний</param>
+            <returns name="string">Строка с символами в верхнем регистре</returns>
+            <search>2uppercase,to uppercase,touppercase,uppercase</search>
+        </member>
+        <member name="M:DSCore.String.ToLower(System.String)">
+            <summary>Перевод всех символов данной строки в нижний регистр.</summary>
+            <param name="string">Строка, регистр которой требуется изменить на нижний</param>
+            <returns name="string">Строка с символами в нижнем регистре</returns>
+            <search>2lowercase,to lowercase,tolowercase,lowercase</search>
+        </member>
+        <member name="M:DSCore.String.ToTitle(System.String)">
+            <summary>Капитализация начальных букв всех слов данной строки.</summary>
+            <param name="str">Строка, начальные буквы всех слов которой требуется сделать заглавными</param>
+            <returns name="str">Строка с капитализацией начальных букв всех слов</returns>
+            <search>2titlecase,to titlecase,to title case,totitlecase,titlecase</search>
+        </member>
+        <member name="M:DSCore.String.ChangeCase(System.String,System.Boolean)">
+            <summary>Перевод всех символов данной строки в верхний регистр или
+                в нижний в зависимости от логического параметра.</summary>
+            <param name="string">Строка, регистр которой требуется изменить</param>
+            <param name="upper">Значение «истина» для преобразования в верхний регистр, значение «ложь» для преобразования в нижний регистр</param>
+            <returns name="string">Строка с измененным регистром.</returns>
+            <search>
+                2lowercase,to lowercase,tolowercase,lowercase,
+                2uppercase,to uppercase,touppercase,uppercase
+            </search>
+        </member>
+        <member name="M:DSCore.String.Substring(System.String,System.Int32,System.Int32)">
+            <summary>Извлечение подстроки из данной строки. Подстрока начинается с указанного
+                положения символов и имеет заданную длину.</summary>
+            <param name="string">Строка для извлечения подстроки</param>
+            <param name="startIndex">Начальная позиция символа подстроки в исходной строке</param>
+            <param name="length">Количество символов в подстроке</param>
+            <returns name="string">Подстрока на основе исходной строки</returns>
+             <search>subset,get string,part,smaller string</search>
+        </member>
+        <member name="M:DSCore.String.Contains(System.String,System.String,System.Boolean)">
+            <summary>Определение того, содержит ли данная строка подстроку.</summary>
+            <param name="string">Строка, в которой требуется выполнить поиск</param>
+            <param name="searchFor">Подстрока для поиска</param>
+            <param name="ignoreCase">Определение того, учитывается ли при сравнении регистр</param>
+            <returns name="bool">Определение того, содержится ли в строке подстрока</returns>
+            <search>test,within,in,is in,part of</search>
+        </member>
+        <member name="M:DSCore.String.CountOccurrences(System.String,System.String,System.Boolean)">
+            <summary>Подсчет количества неперекрывающихся вхождений подстроки внутри заданной строки.</summary>
+            <param name="string">Строка, в которой требуется выполнить поиск</param>
+            <param name="searchFor">Подстрока для поиска</param>
+            <param name="ignoreCase">Определение того, учитывается ли при сравнении регистр</param>
+            <returns name="int">Количество неперекрывающихся вхождений подстроки в строку</returns>
+            <search>count,substring,count occurrences,numberof,search,find,within</search>
+        </member>
+        <member name="M:DSCore.String.Replace(System.String,System.String,System.String)">
+            <summary>Замена всех текстовых вхождений строки другим текстом.</summary>
+            <param name="string">Строка, в которой требуется заменить подстроки.</param>
+            <param name="searchFor">Текст, который требуется заменить.</param>
+            <param name="replaceWith">Текст для замены.</param>
+            <returns name="string">Строка с произведенными заменами.</returns>
+            <search>replace,overwrite,override,find and replace</search>
+        </member>
+        <member name="M:DSCore.String.EndsWith(System.String,System.String,System.Boolean)">
+            <summary>Определение того, заканчивается ли данная строка данной подстрокой.</summary>
+            <param name="string">Строка, в конце которой требуется осуществить поиск</param>
+            <param name="searchFor">Подстрока, которую требуется найти в конце строки</param>
+            <param name="ignoreCase">True — игнорировать регистр при сравнении, False — учитывать регистр при сравнении</param>
+            <returns name="bool">True — строка начинается подстрокой, False — не начинается</returns>
+            <search>test,does end,last,str end,terminated</search>
+        </member>
+        <member name="M:DSCore.String.StartsWith(System.String,System.String,System.Boolean)">
+            <summary>Определение того, начинается ли данная строка с данной подстроки.</summary>
+            <param name="string">Строка, в начале которой требуется осуществить поиск</param>
+            <param name="searchFor">Подстрока для поиска начала.</param>
+            <param name="ignoreCase">True — игнорировать регистр при сравнении, False — учитывать регистр при сравнении</param>
+            <returns name="bool">True — строка начинается подстрокой, False — не начинается</returns>
+            <search>test,beginswith,start,string start,front</search>
+        </member>
+        <member name="M:DSCore.String.TrimWhitespace(System.String)">
+            <summary>Удаление всех пробелов в начале и в конце данной строки.</summary>
+            <param name="string">Строка для сокращения.</param>
+            <returns name="string">Строка, в которой удалены пробелы в начале и в конце.</returns>
+            <search>trimstring,cleanstring,whitespace,blanks,spaces,string trim</search>
+        </member>
+        <member name="M:DSCore.String.TrimLeadingWhitespace(System.String)">
+            <summary>Удаление всех пробелов в начале данной строки.</summary>
+            <param name="string">Строка для сокращения.</param>
+            <returns name="string">Строки, в начале которых удален пробел.</returns>
+            <search>trim string,clean string,trim leading whitespaces,string trim</search>
+        </member>
+        <member name="M:DSCore.String.TrimTrailingWhitespace(System.String)">
+            <summary>Удаление всех пробелов в конце данной строки.</summary>
+            <param name="string">Строка для сокращения.</param>
+            <returns name="string">Строки, в конце которых удален пробел.</returns>
+            <search>trim string,clean string,trim trailing whitespaces,string trim</search>
+        </member>
+        <member name="M:DSCore.String.IndexOf(System.String,System.String,System.Boolean)">
+            <summary>Нахождение индекса первого вхождения в подстроки внутри строки, отсчитываемого от нуля.
+                Получение значения –1, если индекс не найден.</summary>
+            <param name="string">Строка, в которой требуется выполнить поиск</param>
+            <param name="searchFor">Подстрока для поиска</param>
+            <param name="ignoreCase">Определение того, учитывается ли при сравнении регистр</param>
+            <returns name="int">Индекс первого вхождения подстроки или –1, если он не найден</returns>
+            <search>index of,find substring,where,search</search>
+        </member>
+        <member name="M:DSCore.String.AllIndicesOf(System.String,System.String,System.Boolean)">
+            <summary>Поиск списка индексов, в котором подстрока отображается внутри строки.</summary>
+            <param name="string">Строка, в которой требуется выполнить поиск.</param>
+            <param name="searchFor">Подстрока, которую требуется найти.</param>
+            <param name="ignoreCase">Определение того, учитывается ли при сравнении регистр.</param>
+            <returns name="indexList">Список индексов, где найдена подстрока (тип: int[])</returns>
+            <search>all indices of,find substring,where,search</search>
+        </member>
+        <member name="M:DSCore.String.LastIndexOf(System.String,System.String,System.Boolean)">
+            <summary>Нахождение индекса последнего вхождения в подстроки внутри строки, отсчитываемого от нуля.
+                Получение значения –1, если индекс не найден.</summary>
+            <param name="string">Строка, в которой требуется выполнить поиск.</param>
+            <param name="searchFor">Подстрока для поиска.</param>
+            <param name="ignoreCase">Учитывается ли при сравнении регистр.</param>
+            <returns name="int">Индекс последнего вхождения подстроки или –1, если он не найден.</returns>
+            <search>last index of,find substring,where,search</search>
+        </member>
+        <member name="M:DSCore.String.PadLeft(System.String,System.Int32,System.String)">
+            <summary>Выравнивание символов данной строки по правому краю путем добавления к ним пробелов слева
+                для достижения определенной общей длины.</summary>
+            <param name="string">Строка для заполнения</param>
+            <param name="newLength">Общая длина строки после заполнения</param>
+            <param name="padChars">Символ для заполнения: по умолчанию пробел</param>
+            <returns name="string">Строки, выровненные по правому краю путем добавления пробелов в начале для достижения определенной общей длины.</returns>
+            <search>pad left,right align,right-align,pad,string space,whitespace</search>
+        </member>
+        <member name="M:DSCore.String.PadRight(System.String,System.Int32,System.String)">
+            <summary>Выравнивание символов данной строки по левому краю путем добавления к ним пробелов справа
+                для достижения определенной общей длины.</summary>
+            <param name="string">Строка для заполнения</param>
+            <param name="newLength">Общая длина строки после заполнения</param>
+            <param name="padChars">Символ для заполнения: по умолчанию пробел</param>
+            <returns name="string">Строки, выровненные по левому краю путем добавления пробелов в конце для достижения определенной общей длины</returns>
+            <search>pad right,left align,left-align,pad string space,whitespace</search>
+        </member>
+        <member name="M:DSCore.String.Center(System.String,System.Int32,System.String)">
+            <summary>Увеличение длины строки путем добавления к исходным символам пробелов с обеих сторон.</summary>
+            <param name="string">Строка для центрирования</param>
+            <param name="newLength">Общая длина строки после центрирования</param>
+            <param name="padChars">Символ для выравнивания: по умолчанию — пробел</param>
+            <returns name="string">Строки, выровненные по центру путем добавления пробелов в начале и в конце, для достижения определенной общей длины.</returns>
+            <search>center align,center-align,centered,whitespace,expand string,surround</search>
+        </member>
+        <member name="M:DSCore.String.Insert(System.String,System.Int32,System.String)">
+            <summary>Вставка строки в другую строку с заданным индексом.</summary>
+            <param name="string">Строка, в которой требуется выполнить вставку.</param>
+            <param name="index">Индекс для вставки.</param>
+            <param name="toInsert">Строка для вставки.</param>
+            <returns name="string">Строки со вставленной подстрокой.</returns>
+            <search>insertstring,insert string</search>
+        </member>
+        <member name="M:DSCore.String.Remove(System.String,System.Int32,System.Nullable{System.Int32})">
+            <summary>Удаление символов из строки.</summary>
+            <param name="string">Строка, из которой требуется удалить символы.</param>
+            <param name="startIndex">Индекс для запуска процесса удаления.</param>
+            <param name="count">Количество символов для удаления.
+                Примечание. При отрицательном значении удаление выполняется справа налево.</param>
+            <returns name="string">Строка с удаленными символами.</returns>
+            <search>delete,rem,shorten</search>
+        </member>
+        <member name="T:DSCore.Thread">
+            <summary>Функции для работы с вычислительными потоками.</summary>
+        </member>
+        <member name="M:DSCore.Thread.Pause(System.Object,System.Int32)">
+            <summary>Пауза текущего потока оценки в течение заданного количества времени.</summary>
+            <param name="object">Объект, через который проходит другой объект.</param>
+            <param name="msTimeout">Количество времени, необходимое для приостановки потока исполнения в миллисекундах.</param>
+            <returns name="object">Объект, проходящий насквозь.</returns>
+        </member>
+    </members>
+</doc>

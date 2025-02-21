@@ -1,0 +1,65 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Tessellation</name>
+    </assembly>
+    <members>
+        <member name="T:Tessellation.Adapters.Cell2">
+            <summary>Eine Zelle für eine 2D-Tessellation</summary>
+        </member>
+        <member name="T:Tessellation.Adapters.Cell3">
+            <summary>Eine Zelle für eine 3D-Tessellation</summary>
+        </member>
+        <member name="T:Tessellation.Adapters.Tetrahedron">
+            <summary>Ein Scheitelpunkt ist eine einfache Klasse, die die Position eines Punkts, Blocks oder Scheitelpunkts speichert.</summary>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.GetPosition(System.Int32)">
+            <summary>Hilfsfunktion zum Abrufen der Position des i-ten Scheitelpunkts.</summary>
+            <param name="i"/>
+            <returns>Position des i-ten Scheitelpunkts</returns>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.MakeFace(System.Int32,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Diese Funktion fügt Indizes einem der Fläche darstellenden Dreieck hinzu.
+            Die Reihenfolge ist gegen den Uhrzeigersinn, sodass die automatisch berechneten Normalen in die richtige Richtung weisen.</summary>
+            <param name="i"/>
+            <param name="j"/>
+            <param name="k"/>
+            <param name="center"/>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.MakeFaces">
+            <summary>Erstellt ein Modell des Tetraeders. Transparenz wird auf die Farbe angewendet.</summary>
+            <returns>Ein Modell, das den Tetraeder angibt</returns>
+        </member>
+        <member name="T:Tessellation.Adapters.TriangleFace">
+            <summary>Ein Scheitelpunkt ist eine einfache Klasse, die die Position eines Punkts, Blocks oder Scheitelpunkts speichert.</summary>
+        </member>
+        <member name="T:Tessellation.ConvexHull">
+            <summary>Funktionen zum Erstellen konvexer Hüllen</summary>
+        </member>
+        <member name="M:Tessellation.ConvexHull.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>Erstellt eine konvexe Hülle aus einer Menge von Punkten.</summary>
+            <param name="points">Eine Punktmenge</param>
+        </member>
+        <member name="T:Tessellation.Delaunay">
+            <summary>Funktionen zum Erstellen von Delaunay-Triangulationen</summary>
+        </member>
+        <member name="M:Tessellation.Delaunay.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
+            <summary>Erstellt eine Delaunay-Triangulation für eine Oberfläche mit einem gegebenen Satz von UV-Parametern.</summary>
+            <param name="uvs">Der Satz der UV-Parameter.</param>
+            <param name="face">Die zu triangulierende Oberfläche.</param>
+            <search>uvs</search>
+        </member>
+        <member name="M:Tessellation.Delaunay.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>Erstellt eine Delaunay-Triangulation einer Punktmenge.</summary>
+            <param name="points">Eine Punktmenge.</param>
+        </member>
+        <member name="T:Tessellation.Voronoi">
+            <summary>Funktionen zum Erstellen von Voronoi-Tessellationen</summary>
+        </member>
+        <member name="M:Tessellation.Voronoi.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
+            <summary>Erstellt eine Voronoi-Tessellation einer Oberfläche mit einem gegebenen Satz von UV-Parametern.</summary>
+            <param name="uvs">Der Satz der UV-Parameter.</param>
+            <param name="face">Die zu tessellierende Oberfläche.</param>
+            <search>uvs</search>
+        </member>
+    </members>
+</doc>

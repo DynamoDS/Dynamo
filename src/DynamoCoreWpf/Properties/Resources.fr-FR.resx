@@ -3736,8 +3736,18 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
   <data name="PackageVersionTooltip" xml:space="preserve">
     <value>Les versions portant l'indication .x comprennent toutes les versions de l'édition majeure ou mineure indiquée</value>
   </data>
+  <data name="CannotAddNodeToWorkspace" xml:space="preserve">
+    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
+  </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
     <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
+  </data>
+  <data name="IDSDKErrorMessage" xml:space="preserve">
+    <value>Il semble qu’Autodesk Identity Manager n’est pas configuré sur votre système. Pour garantir un accès complet à toutes les fonctionnalités, connectez-vous à votre compte Autodesk à l’aide d’Autodesk Identity Manager.
+#Téléchargez et installez=https ://manage.autodesk.com/products/updates ici ou via Autodesk Access, puis connectez-vous.</value>
+  </data>
+  <data name="IDSDKErrorMessageTitle" xml:space="preserve">
+    <value>Télécharger Autodesk Identity Manager</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

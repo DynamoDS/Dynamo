@@ -871,7 +871,7 @@ Tento balíček pravděpodobně obsahuje sestavu, která je blokována. Po odblo
     <value>Vložení souboru se nezdařilo, protože některé uzly již v aktuálním pracovním prostoru existují.</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Vložit definici aplikace Dynamo...</value>
+    <value>Insert Dynamo Graph...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>Do pracovního prostoru byl přidán vzorový soubor. Režim spuštění byl změněn na Ruční.</value>

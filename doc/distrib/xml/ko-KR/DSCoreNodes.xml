@@ -1,0 +1,1854 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>DSCoreNodes</name>
+    </assembly>
+    <members>
+        <member name="P:DSCore.Color.Red">
+            <summary>색상의 빨간색 구성요소를 찾습니다(0-255).</summary>
+            <returns name="int">RGB 색상 모델의 빨간색 값, 0에서 255 사이의 정수.</returns>
+        </member>
+        <member name="P:DSCore.Color.Green">
+            <summary>색상의 녹색 구성요소를 찾습니다(0-255).</summary>
+            <returns name="int">RGB 색상 모델의 녹색 값, 0에서 255 사이의 정수.</returns>
+        </member>
+        <member name="P:DSCore.Color.Blue">
+            <summary>색상의 파란색 구성요소를 찾습니다(0-255).</summary>
+            <returns name="int">RGB 색상 모델의 파란색 값, 0에서 255 사이의 정수.</returns>
+        </member>
+        <member name="P:DSCore.Color.Alpha">
+            <summary>색상의 알파 구성요소를 찾습니다(0-255).</summary>
+            <returns name="int">알파 값, 0에서 255 사이의 정수.</returns>
+        </member>
+        <member name="M:DSCore.Color.ByARGB(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>알파, 빨간색, 녹색, 파란색 구성요소로 색상을 구성합니다.</summary>
+            <param name="alpha">알파 값(0에서 255 사이)</param>
+            <param name="red">RGB 색상 모델의 빨간색 값(0에서 255 사이)</param>
+            <param name="green">RGB 색상 모델의 녹색 값(0에서 255 사이)</param>
+            <param name="blue">RGB 색상 모델의 파란색 값(0에서 255 사이)</param>
+            <returns name="color">ARGB에서 작성된 색상</returns>
+            <search>color</search>
+        </member>
+        <member name="M:DSCore.Color.Brightness(DSCore.Color)">
+            <summary>이 색상의 밝기 값을 반환합니다.</summary>
+            <param name="color">밝기를 조회할 색상</param>
+            <returns name="double">밝기 값(0에서 1 사이)</returns>
+        </member>
+        <member name="M:DSCore.Color.Saturation(DSCore.Color)">
+            <summary>이 색상의 채도 값을 반환합니다.</summary>
+            <returns name="double">0에서 1 사이의 double인 채도 값.</returns>
+        </member>
+        <member name="M:DSCore.Color.Hue(DSCore.Color)">
+            <summary>이 색상의 색조 값을 반환합니다.</summary>
+            <param name="color">색상 객체</param> 
+            <returns name="double">색상의 색조 값, 0에서 1 사이의 double.</returns>
+            <search>hues</search>
+        </member>
+        <member name="M:DSCore.Color.Components(DSCore.Color)">
+            <summary>색상의 구성요소를 알파, 빨간색, 녹색, 파란색의 순서로 나열합니다.</summary>
+            <param name="color">색상 객체</param> 
+            <returns name="alpha">알파 값, 0에서 255 사이의 정수.</returns>
+            <returns name="red">RGB 색상 모델의 빨간색 값, 0에서 255 사이의 정수.</returns>
+            <returns name="green">RGB 색상 모델의 녹색 값, 0에서 255 사이의 정수.</returns>
+            <returns name="blue">RGB 색상 모델의 파란색 값, 0에서 255 사이의 정수.</returns>
+            <search>alpha,red,green,blue</search>
+        </member>
+        <member name="M:DSCore.Color.BuildColorFrom1DRange(System.Collections.Generic.List{DSCore.Color},System.Collections.Generic.List{System.Double},System.Double)">
+            <summary>시작 색상과 끝 색상 간의 색상 그라데이션에서 색상을 반환합니다.</summary>
+            <param name="colors"/>
+            <param name="parameters">색상을 샘플링하려는 범위의 0과 1 사이의 값.</param>
+            <param name="parameter"/>
+            <returns name="colors">지정된 범위의 색상.</returns>
+            <search>color,range,gradient</search>
+        </member>
+        <member name="M:DSCore.Color.Lerp(DSCore.Color,DSCore.Color,System.Double)">
+            <summary>두 색상 사이에서 선형으로 보간합니다.</summary>
+            <param name="start">시작 색상.</param>
+            <param name="end">끝 색상.</param>
+            <param name="t">0.0과 1.0 사이의 매개변수.</param>
+            <returns>보간된 색상 또는 흰색.</returns>
+        </member>
+        <member name="M:DSCore.Color.Blerp(System.Collections.Generic.IList{DSCore.Color.IndexedColor2D},Autodesk.DesignScript.Geometry.UV)">
+            <summary>색상 집합 사이에서 이중 선형으로 보간합니다.</summary>
+            <param name="colors"/>
+            <param name="parameter"/>
+            <returns>보간된 색상 또는 흰색.</returns>
+            This algorithm is not the same as the solution found from wikipedia 
+            (reference: https://en.wikipedia.org/wiki/Bilinear_interpolation)
+        </member>
+        <member name="M:DSCore.Color.Add(DSCore.Color,DSCore.Color)">
+            <summary>두 개의 기존 색상의 ARGB 값을 결합하여 색상을 구성합니다.</summary>
+            <param name="color">추가할 색상</param>
+            <param name="otherColor">추가할 다른 색상</param>
+            <returns name="color">두 색상을 추가한 색상 결과</returns>
+        </member>
+        <member name="M:DSCore.Color.Multiply(DSCore.Color,System.Double)">
+            <summary>입력 색상에 숫자 승수를 곱하여 더 어두운 색상을 만들 수 있습니다. 입력 색상의 알파 값은 255보다 작아야 합니다.</summary>
+            <param name="color">곱할 색상</param>
+            <param name="multiplier">승수 값</param>
+            <returns name="color">곱한 색상 결과</returns>
+        </member>
+        <member name="M:DSCore.Color.Divide(DSCore.Color,System.Double)">
+            <summary>입력 색상을 숫자 제수로 나누어 더 밝은 색상을 만들고 색상 색조를 제거할 수 있습니다.</summary>
+            <param name="color">분할할 색상</param>
+            <param name="dividend">분할 값</param>
+            <returns name="color">분할한 색상 결과</returns>
+        </member>
+        <member name="M:DSCore.ColorRange1D.ByColorsAndParameters(System.Collections.Generic.List{DSCore.Color},System.Collections.Generic.List{System.Double})">
+            <summary>색상과 매개변수의 리스트를 제공하여 ColorRange1D를 작성합니다.</summary>
+            <param name="colors">색상 리스트.</param>
+            <param name="parameters">0.0과 1.0 사이의 매개변수 리스트.</param>
+            <returns>ColorRange1D 객체.</returns>
+        </member>
+        <member name="M:DSCore.ColorRange1D.GetColorAtParameter(DSCore.ColorRange1D,System.Double)">
+            <summary>지정된 매개변수의 해당 색상 범위에서 색상을 반환합니다.</summary>
+            <param name="colorRange"/>
+            <param name="parameter">0.0과 1.0 사이의 값.</param>
+            <returns>Color.</returns>
+        </member>
+        <member name="M:DSCore.ColorRange1D.Default">
+            <summary>기본 색상 구성표를 사용하여 ColorRange1D를 작성합니다.</summary>
+            <returns/>
+        </member>
+        <member name="M:DSCore.ColorRange.ByColorsAndParameters(System.Collections.Generic.IList{DSCore.Color},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.UV})">
+            <summary>UV 및 색상 리스트를 제공하여 ColorRange를 작성합니다.</summary>
+            <param name="colors">색상 리스트.</param>
+            <param name="parameters">(0.0,0.0)에서 (1.0,1.0) 사이의 매개변수 리스트.</param>
+            <returns>ColorRange 객체.</returns>
+        </member>
+        <member name="M:DSCore.ColorRange.GetColorAtParameter(Autodesk.DesignScript.Geometry.UV)">
+            <summary>지정된 매개변수의 해당 색상 범위에서 색상을 반환합니다.</summary>
+            <param name="parameter">(0.0,0.0)에서 (1.0,1.0) 사이의 UV.</param>
+            <returns>색상.</returns>
+        </member>
+        <member name="T:DSCore.Compare">
+            <summary>비교 방법.</summary>
+        </member>
+        <member name="M:DSCore.Compare.GreaterThan(System.Object,System.Object)">
+            <summary>a가 b보다 큰 경우 true를 반환합니다.</summary>
+            <param name="a">비교 가능한 객체.</param>
+            <param name="b">비교 가능한 객체.</param>
+            <returns name="bool">부울 결과.</returns>
+            <search>larger,bigger</search>
+        </member>
+        <member name="M:DSCore.Compare.GreaterThanOrEqual(System.Object,System.Object)">
+            <summary>a가 b보다 크거나 같은 경우 true를 반환합니다.</summary>
+            <param name="a">비교 가능한 객체.</param>
+            <param name="b">비교 가능한 객체.</param>
+            <returns name="bool">부울 결과.</returns>
+            <search>larger,bigger,equal</search>
+        </member>
+        <member name="M:DSCore.Compare.LessThan(System.Object,System.Object)">
+            <summary>a가 b보다 작은 경우 true를 반환합니다.</summary>
+            <param name="a">비교 가능한 객체.</param>
+            <param name="b">비교 가능한 객체.</param>
+            <returns name="bool">부울 결과.</returns>
+            <search>less,smaller</search>
+        </member>
+        <member name="M:DSCore.Compare.LessThanOrEqual(System.Object,System.Object)">
+            <summary>a가 b보다 작거나 같은 경우 true를 반환합니다.</summary>
+            <param name="a">비교 가능한 객체.</param>
+            <param name="b">비교 가능한 객체.</param>
+            <returns name="bool">부울 결과.</returns>
+            <search>smaller,equal</search>
+        </member>
+        <member name="M:DSCore.Data.ParseJSON(System.String)">
+            <summary>Parse는 임의의 JSON 문자열을 값으로 변환합니다. 이는 JSON.Stringify의 반대 작업입니다.</summary>
+            <param name="json">JSON 문자열</param>
+            <returns name="result">결과 유형은 입력 문자열의 내용에 따라 달라집니다. 결과 유형은 원형 값(예: 문자열, 부울, 이중), 리스트 또는 사전이 될 수 있습니다.</returns>
+        </member>
+        <member name="M:DSCore.Data.ToNative(Newtonsoft.Json.Linq.JToken)">
+            <summary>JToken 유형을 네이티브 .NET 객체로 변환하기 위한 구문 분석 구현입니다.</summary>
+            <param name="token">N으로 구문 분석할 JToken</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.DynamoJObjectToNative(Newtonsoft.Json.Linq.JObject)">
+            <summary>JObject 유형을 특정 Dynamo 객체(예: 형상, 색상, 이미지 등)로 변환하기 위한 구문 분석 구현입니다.</summary>
+            <param name="jObject"/>
+            <returns/>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:DSCore.Data.StringifyJSON(System.Object)">
+            <summary>Stringify는 임의 값이나 임의 값 리스트를 JSON으로 변환합니다. 리스트에 작업을 적용하는 데 복제를 사용할 수 있으며, 사용하면 JSON 문자열 리스트가 생성됩니다.</summary>
+            <param name="values">값 리스트</param>
+            <returns name="json">원형 유형(예: double, 정수, 부울), 리스트 및 사전 값이 연관된 JSON 유형으로 변환되는 JSON 문자열입니다.</returns>
+        </member>
+        <member name="T:DSCore.Data.MaxDepthJsonTextWriter">
+            <summary>임의 .NET 객체 유형을 직렬화할 때 순환 참조 충돌을 방지하기 위해 지원되는 최대 객체 깊이를 제한하는 JsonTextWriter의 하위 클래스입니다.</summary>
+        </member>
+        <member name="T:DSCore.Data.DictConverter">
+            <summary>일부러 IDictionary를 구현하지 않는 DesignScript.Builtin.Dictionary's가 JSON 객체로 변환되도록 합니다.</summary>
+        </member>
+        <member name="M:DSCore.Data.CanObjectBeCached(System.Object)">
+            <summary>객체를 캐시할 수 있는지 또는 객체가 null, "null" 문자열 또는 빈 리스트인지 확인하는 헬퍼 함수입니다.</summary>
+            <param name="inputObject">확인할 객체</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.Remember(System.Object,System.String)">
+            <summary>Data.Remember 노드에 대한 캐싱을 처리하는 함수입니다.</summary>
+            <param name="inputObject">캐시할 오브젝트</param>
+            <param name="cachedJson">선택적 기존 캐시 json</param>
+            <returns/>
+        </member>
+        <member name="T:DSCore.Data.DataNodeDynamoType">
+            <summary>Dynamo에서 지원하는 DataType을 나타내는 클래스</summary>
+        </member>
+        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String)">
+            <summary>Dynamo에서 지원하는 DataType을 나타내는 클래스</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Type">
+            <summary>기본 Type</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Name">
+            <summary>Type 이름을 재지정할 선택적 Name(`long` 대신 Number`)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Level">
+            <summary>UI에 표시할 계층 레벨</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.IsLastChild">
+            <summary>유형이 계층의 마지막 하위인 경우(UI 용도)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Parent">
+            <summary>유형의 상위(있는 경우)</summary>
+        </member>
+        <member name="F:DSCore.Data.DataNodeDynamoTypeList">
+            <summary>Dynamo에서 지원하는 모든 데이터 유형에 대한 정적 리스트</summary>
+            <returns>지원되는 데이터 유형을 포함하는 리스트</returns>
+        </member>
+        <member name="M:DSCore.Data.#cctor">
+            <summary>정적 생성자</summary>
+        </member>
+        <member name="M:DSCore.Data.SafeExtractDictionaryValue(System.Collections.Generic.Dictionary{System.String,System.Object},System.String)">
+            <summary>사전 값을 안전하게 추출하기 위한 도우미 함수</summary>
+            <param name="dict">값을 추출할 사전</param>
+            <param name="key">키/값 쌍의 키</param>
+        </member>
+        <member name="M:DSCore.Data.EvaluateDefineDataNode(System.Object,System.String,System.Boolean,System.Boolean,System.String)">
+            <summary>AST에서 데이터 정의 노드를 평가하는 데 사용하는 함수입니다.
+            유효성 검사를 수행하는 동안 노드 논리의 일부를 처리합니다</summary>
+            <param name="inputValue">업스트림 입력 값</param>
+            <param name="typeString">유형을 문자열로(할 일: 유형을 직접 비교하기 위해 'Type' 유형의 객체를 전달하는 것이 더 좋음)</param>
+            <param name="isList">입력이 `ArrayList` 유형인 경우</param>
+            <param name="isAutoMode">노드가 Auto 모드인 경우</param>
+            <param name="playerValue">Dynamo 플레이어에서 노드로 주입된 값(있는 경우)</param>
+        </member>
+        <member name="M:DSCore.Data.FindCommonAncestor(System.Collections.ArrayList)">
+            <summary>AutoMode에서 객체의 ArrayList가 전달된 경우 유형을 찾는 데 도움이 되는 함수입니다.</summary>
+            <param name="list">ArrayList 유형이 될 것으로 보이는 입력 값</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.LikelyAncestor(System.Collections.Generic.List{DSCore.Data.DataNodeDynamoType})">
+            <summary>DataNodeDynamoType 노드 리스트에서 가장 낮은 레벨의 노드를 반환하는 도우미 함수입니다.</summary>
+            <param name="nodes">평가할 DataNodeDynamoType의 리스트</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.FindClosestCommonAncestor(System.Collections.Generic.List{DSCore.Data.DataNodeDynamoType})">
+            <summary>데이터 유형의 리스트에서 공통 조상을 확인하려는 도우미 함수입니다.</summary>
+            <param name="nodes">평가할 DataType 노드의 리스트</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.FindCommonAncestorBetweenTwoNodes(DSCore.Data.DataNodeDynamoType,DSCore.Data.DataNodeDynamoType)">
+            <summary>두 개의 Dynamo 유형 간의 공통 조상을 찾아보는 재귀 함수입니다.
+            가능성이 있는 조상이 될 때까지 계층 트리를 올라갑니다.</summary>
+            <param name="node">이 노드가 가능성이 있는 조상으로부터 파생된 노드인지 확인</param>
+            <param name="likelyAncestor">노드가 파생될 가능성이 있는 조상</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.GetListFromTypes(System.Collections.ArrayList)">
+            <summary>객체의 ArrayList에서 DataNodeDynamoTypes 리스트를 반환합니다.</summary>
+            <param name="list">형식을 다시 지정할 객체의 ArrayList</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
+            <summary>입력 객체가 단일 값인지 또는 단일 레벨 ArrayList인지 확인합니다.</summary>
+            <param name="obj">평가할 입력 객체</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsSupportedDataNodeDynamoType(System.Object,System.Type,System.Boolean)">
+            <summary>지원되는 Dynamo 입력 유형에 대해 입력 유형의 유효성을 검사하는 함수</summary>
+            <param name="inputValue">유효성을 확인할 수신 데이터</param>
+            <param name="type">사용자가 제공한 입력 유형입니다. inputValue 유형과 일치해야 합니다</param>
+            <param name="isList">이 부울 값은 입력이 단일 객체인지 리스트인지를 결정합니다</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsItemOfType(System.Object,System.Type)">
+            <summary>이 메서드는 항목이 필수 Dynamo DataType에 속하는지 확인합니다
+            'IsInstanceOfType'은 위로 상속되는지 재귀적으로 확인합니다</summary>
+            <param name="item">데이터 유형을 확인할 항목</param>
+            <param name="dataType">확인할 데이터 유형</param>
+            <returns>유효성 검사 확인을 기준으로 참 또는 거짓 결과</returns>
+        </member>
+        <member name="M:DSCore.Data.IsDerivedFrom(System.Type,System.Type)">
+            <summary>이 메서드는 유형이 기본 유형으로부터 파생되었는지 여부를 확인합니다.</summary>
+            <param name="derivedType">어설션할 유형</param>
+            <param name="baseType">비교 대상의 기본 유형</param>
+            <returns/>
+        </member>
+        <member name="T:DSCore.DateTime">
+            <summary>특정 날짜 및 시간을 나타내는 객체.</summary>
+        </member>
+        <member name="P:DSCore.DateTime.MinValue">
+            <summary>표현할 수 있는 최초의 날짜 및 시간.</summary>
+            <returns name="dateTime">가능한 최소 DateTime 표현</returns>
+        </member>
+        <member name="P:DSCore.DateTime.MaxValue">
+            <summary>표현할 수 있는 최신 날짜 및 시간.</summary>
+            <returns name="dateTime">가능한 최대 DateTime 표현</returns>
+        </member>
+        <member name="P:DSCore.DateTime.Now">
+            <summary>현재 시스템 날짜 및 시간.</summary>
+            <returns name="dateTime">현재 시간을 표현하는 DateTime</returns>
+        </member>
+        <member name="P:DSCore.DateTime.Today">
+            <summary>현재 시스템 날짜(시간은 자정으로 설정됨).</summary>
+            <returns name="dateTime">오늘을 표현하는 DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.Format(System.DateTime,System.String)">
+             <summary>지정된 날짜 및 시간을 지정된 형식의 문자열로 반환합니다.</summary>
+             <param name="dateTime">형식 지정할 DateTime</param>
+             <param name="format">날짜 형식의 문자열 표현입니다. InvariantCulture를 사용하며 이는 사용자의 운영 체제 언어와 무관하게 결과물을 출력합니다.
+기본값인 표준 형식 "F" : "화요일, 21 2월 2017 23:02:43"
+형식 지정자 전체 리스트를 확인하려면"MSDN 사용자 지정 날짜 및 시간 형식 문자열"를 검색해 보십시오.</param>
+             <returns name="string">문자열로 표현된 DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.ByDate(System.Int32,System.Int32,System.Int32)">
+            <summary>정확한 날짜에 새 DateTime을 만듭니다.</summary>
+            <param name="year">정확한 연도(1-9999)</param>
+            <param name="month">정확한 월(1-12)</param>
+            <param name="day">정확한 일(1-[달의 일 수])</param>
+            <returns name="dateTime">날짜에서 작성된 DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.ByDateAndTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>정확한 날짜와 시간에 새 DateTime을 만듭니다.</summary>
+            <param name="year">정확한 연도(1-9999)</param>
+            <param name="month">정확한 월(1-12)</param>
+            <param name="day">정확한 일(1-[달의 일 수])</param>
+            <param name="hour">정확한 시간(0-23)</param>
+            <param name="minute">정확한 분(0-59)</param>
+            <param name="second">정확한 초(0-59)</param>
+            <param name="millisecond">정확한 밀리초(0-999)</param>
+            <returns name="dateTime">날짜 및 시간에서 작성된 DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.SubtractTimeSpan(System.DateTime,System.TimeSpan)">
+            <summary>DateTime에서 TimeSpan을 빼서 새 DateTime을 생성합니다.</summary>
+            <param name="dateTime">시작 DateTime</param>
+            <param name="timeSpan">뺄 시간</param>
+            <returns name="dateTime">뺀 DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.AddTimeSpan(System.DateTime,System.TimeSpan)">
+            <summary>DateTime에 TimeSpan을 추가하여 새 DateTime을 생성합니다.</summary>
+            <param name="dateTime">시작 DateTime</param>
+            <param name="timeSpan">DateTime에 추가할 시간</param>
+            <returns name="dateTime">시간 간격 추가에 따른 결과 DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.DaysInMonth(System.Int32,System.Int32)">
+            <summary>지정된 연도의 지정된 달의 일 수를 계산합니다.</summary>
+            <param name="year">정확한 연도(1-9999)</param>
+            <param name="month">정확한 월(1-12)</param>
+            <returns name="int">월 일수</returns>
+        </member>
+        <member name="M:DSCore.DateTime.IsDaylightSavingsTime(System.DateTime)">
+            <summary>지정된 DateTime에 일광 절약 시간인지 여부를 확인합니다.</summary>
+            <param name="dateTime">일광 절약 시간 여부를 확인하는 데 사용되는 DateTime</param>
+            <returns name="bool">DateTime이 일광 절약 시간이면 true, 그렇지 않으면 false</returns>
+        </member>
+        <member name="M:DSCore.DateTime.IsLeapYear(System.Int32)">
+            <summary>지정된 연도가 윤년인지 여부를 확인합니다.</summary>
+            <param name="year">정확한 연도(1-9999)</param>
+            <returns name="bool">연도가 윤년이면 true, 그렇지 않으면 false</returns>
+        </member>
+        <member name="M:DSCore.DateTime.FromString(System.String)">
+            <summary>문자열에서 DateTime 구문 분석 시도</summary>
+            <param name="string">DateTime의 문자열 표현</param>
+            <returns name="dateTime">구문 분석된 문자열 DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.Date(System.DateTime)">
+            <summary>DateTime에서 날짜만 추출합니다. 시간 구성요소는 0으로 설정됩니다.</summary>
+            <param name="dateTime">DateTime.</param>
+            <returns name="date">DateTime의 날짜</returns>
+            <search>Date</search>
+        </member>
+        <member name="M:DSCore.DateTime.Components(System.DateTime)">
+            <summary>DateTime의 개별 구성요소를 추출합니다.</summary>
+            <param name="dateTime">구성요소를 가져올 DateTime</param>
+            <returns name="year">연도의 숫자 표현(1-9999)</returns>
+            <returns name="month">월의 숫자 표현(1-12)</returns>
+            <returns name="day">날짜의 숫자 표현(1-[월의 일수])</returns>
+            <returns name="hour">시간의 숫자 표현(0-23)</returns>
+            <returns name="minute">분의 숫자 표현(0-59)</returns>
+            <returns name="second">초의 숫자 표현(0-59)</returns>
+            <returns name="millisecond">밀리초의 숫자 표현(0-999)</returns>
+        </member>
+        <member name="M:DSCore.DateTime.DayOfWeek(System.DateTime)">
+            <summary>지정된 DateTime에서 요일을 반환합니다.</summary>
+            <param name="dateTime">요일을 가져올 DateTime 객체</param>
+            <returns name="dayOfWeek">요일</returns>
+        </member>
+        <member name="M:DSCore.DateTime.DayOfYear(System.DateTime)">
+            <summary>연도 중 날짜(0-366)를 반환합니다</summary>
+            <param name="dateTime">연도 중 날짜를 가져올 DateTime</param>
+            <returns name="int">연도 시작일로부터의 일수</returns>
+        </member>
+        <member name="M:DSCore.DateTime.TimeOfDay(System.DateTime)">
+            <summary>지정된 DateTime의 자정 이후 경과한 시간을 나타내는 새 TimeSpan을 생성합니다.</summary>
+            <param name="dateTime">DateTime.</param>
+            <returns name="timeSpan">자정 이후의 TimeSpan</returns>
+        </member>
+        <member name="T:DSCore.DayOfWeek">
+            <summary>요일</summary>
+        </member>
+        <member name="T:DSCore.TimeSpan">
+            <summary>경과된 기간을 나타내는 객체(특정한 시작 또는 종료 날짜 없음).</summary>
+        </member>
+        <member name="M:DSCore.TimeSpan.ByDateDifference(System.DateTime,System.DateTime)">
+            <summary>두 DateTime 간 시간 간격에서 계산된 새 TimeSpan 산출</summary>
+            <param name="dateTime">뺄 DateTime</param>
+            <param name="otherDateTime">뺄 DateTime</param>
+            <returns name="timeSpan">두 날짜 간 TimeSpan 간격</returns>
+        </member>
+        <member name="P:DSCore.TimeSpan.Zero">
+            <summary>경과 시간 0을 나타내는 TimeSpan.</summary>
+            <returns name="timeSpan">경과 시간 0을 나타내는 TimeSpan</returns>
+        </member>
+        <member name="P:DSCore.TimeSpan.MaxValue">
+            <summary>표시할 수 있는 최대 TimeSpan.</summary>
+            <returns name="timeSpan">가능한 최대 TimeSpan 표현</returns>
+        </member>
+        <member name="P:DSCore.TimeSpan.MinValue">
+            <summary>표시할 수 있는 최소 TimeSpan.</summary>
+            <returns name="timeSpan">가능한 최소 TimeSpan 표현</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Create(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>시간 간격에서 새 TimeSpan을 만듭니다.</summary>
+            <param name="days">날짜 간격.</param>
+            <param name="hours">시간 간격.</param>
+            <param name="minutes">분 간격.</param>
+            <param name="seconds">초 간격.</param>
+            <param name="milliseconds">밀리초 간격.</param>
+            <returns name="timeSpan">TimeSpan 작성됨</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Scale(System.TimeSpan,System.Double)">
+            <summary>TimeSpan에 배율 인수 곱하기</summary>
+            <param name="timeSpan">곱할 TimeSpan</param>
+            <param name="scaleFactor">TimeSpan의 축척 비율. 예를 들어, 축척 비율이 2이면 시간 간격이 두 배가 됩니다.</param>
+            <returns name="timeSpan">TimeSpan 제품</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Negate(System.TimeSpan)">
+            <summary>TimeSpan 부정</summary>
+            <param name="timeSpan">부정할 TimeSpan</param>
+            <returns name="timeSpan">음수 TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Add(System.TimeSpan,System.TimeSpan)">
+            <summary>두 TimeSpan 더하기</summary>
+            <param name="timeSpan1">더할 TimeSpan</param>
+            <param name="timeSpan2">더할 다른 TimeSpan</param>
+            <returns name="timeSpan">더한 결과 TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Subtract(System.TimeSpan,System.TimeSpan)">
+            <summary>두 TimeSpan 빼기</summary>
+            <param name="timeSpan1">뺄 TimeSpan</param>
+            <param name="timeSpan2">뺄 TimeSpan</param>
+            <returns name="timeSpan">뺀 결과 TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.FromString(System.String)">
+            <summary>문자열에서 TimeSpan 구문 분석 시도</summary>
+            <param name="string">TimeSpan의 문자열 표현.</param>
+            <returns name="timeSpan">구문 분석된 문자열의 TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Components(System.TimeSpan)">
+            <summary>TimeSpan의 개별 구성요소를 추출합니다.</summary>
+            <param name="timeSpan">구성요소를 가져올 TimeSpan</param>
+            <returns name="days">일수(정수 입력)</returns>
+            <returns name="hours">시간(정수 입력)</returns>
+            <returns name="minutes">분(정수 입력)</returns>
+            <returns name="seconds">초(정수 입력)</returns>
+            <returns name="milliseconds">밀리초(정수 입력)</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalDays(System.TimeSpan)">
+            <summary>TimeSpan이 나타내는 총 시간을 부정확한 기간(일)으로 변환합니다.</summary>
+            <param name="timeSpan">총 일수를 조회할 TimeSpan</param>
+            <returns name="double">총 일수</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalHours(System.TimeSpan)">
+            <summary>TimeSpan이 나타내는 총 시간을 부정확한 기간(시간)으로 변환합니다.</summary>
+            <param name="timeSpan">총 시간을 조회할 TimeSpan</param>
+            <returns name="double">총 시간(시)</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalMinutes(System.TimeSpan)">
+            <summary>TimeSpan이 나타내는 총 시간을 부정확한 기간(분)으로 변환합니다.</summary>
+            <param name="timeSpan">총 시간(분)을 조회할 TimeSpan</param>
+            <returns name="double">총 시간(분)</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalSeconds(System.TimeSpan)">
+            <summary>TimeSpan이 나타내는 총 시간을 부정확한 기간(초)으로 변환합니다.</summary>
+            <param name="timeSpan">총 시간(초)을 조회할 TimeSpan</param>
+            <returns name="double">총 시간(초)</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalMilliseconds(System.TimeSpan)">
+            <summary>TimeSpan이 나타내는 총 시간을 부정확한 기간(밀리초)으로 변환합니다.</summary>
+            <param name="timeSpan">밀리초를 조회할 TimeSpan</param>
+            <returns name="double">총 시간(밀리초)</returns>
+        </member>
+        <member name="T:DSCore.IO.FileSystem">
+            <summary>파일 사용 방법.</summary>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.AbsolutePath(System.String,System.String)">
+            <summary>지정된 경로에서 절대 경로를 반환합니다. 지정된 경로가
+            상대 경로인 경우 해당 상대 경로가 현재 작업공간과 연관되어
+            해석됩니다. 파일이 상대 경로에 존재하지 않고 지정된 hintPath에
+            존재하면 hintPath가 반환됩니다.</summary>
+            <param name="path">상대 경로 또는 전체 경로</param>
+            <param name="hintPath">마지막 해석된 경로</param>
+            <returns>절대 경로</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileFromPath(System.String)">
+            <summary>지정된 파일 경로에서 파일 객체를 작성합니다.</summary>
+            <param name="path"/>
+            <returns/>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.ReadText(System.IO.FileInfo)">
+            <summary>텍스트 파일을 읽고 내용을 문자열로 반환합니다.</summary>
+            <param name="file">문자를 읽을 파일 객체</param>
+            <returns name="string">텍스트 파일 내용.</returns>
+            <search>read file,text,file</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.MoveFile(System.String,System.String,System.Boolean)">
+            <summary>지정된 파일을 새 위치로 이동합니다</summary>
+            <param name="path">기존 경로의 문자열 표현</param>
+            <param name="newPath">새 경로의 문자열 표현</param>
+            <param name="overwrite">토글하여 기존 파일 덮어쓰기</param>
+            <returns name="void">노드가 작업 수행, 출력 생성 안 함</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DeleteFile(System.String)">
+            <summary>지정된 파일을 삭제합니다.</summary>
+            <param name="path">삭제할 파일 경로</param>
+            <returns name="void">노드 작업 수행, 출력 생성 안 함</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.CopyFile(System.IO.FileInfo,System.String,System.Boolean)">
+            <summary>파일을 복사합니다.</summary>
+            <param name="file">복사할 파일 객체</param>
+            <param name="destinationPath">대상 파일 경로의 문자열 표현</param>
+            <param name="overwrite">토글하여 기존 파일 덮어쓰기</param>
+            <returns name="bool">노드는 작업을 수행하고 복사 작업에 성공하면 true를 반환합니다.</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileExists(System.String)">
+            <summary>지정된 경로에 파일이 존재하는지 확인합니다.</summary>
+            <param name="path">파일 경로를 나타내는 문자열</param>
+            <returns name="bool">파일이 존재하면 true, 그렇지 않으면 false</returns>
+            <search>filepath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.WriteText(System.String,System.String)">
+            <summary>텍스트 내용을 경로로 지정된 파일에 씁니다</summary>
+            <param name="filePath">쓸 경로</param>
+            <param name="text">텍스트 내용</param>
+            <returns name="void">출력 없음</returns>
+            <search>write file,text,file,filepath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.AppendText(System.String,System.String)">
+            <summary>텍스트 내용을 경로에 지정된 파일에 추가합니다.</summary>
+            <param name="filePath">쓸 경로</param>
+            <param name="text">텍스트 내용</param>
+            <returns name="void">노드가 작업을 수행하고 출력을 생성하지 않음</returns>
+            <search>append file,write file,text,file,filepath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.CombinePath(System.String[])">
+            <summary>여러 문자열을 하나의 파일 경로로 결합합니다.</summary>
+            <param name="strings">경로로 결합할 문자열</param>
+            <returns name="string">결합된 파일 경로</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileExtension(System.String)">
+            <summary>파일 경로에서 확장자를 반환합니다.</summary>
+            <param name="path">확장자를 가져올 경로</param>
+            <returns name="string">파일 확장자</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.ChangePathExtension(System.String,System.String)">
+            <summary>파일 경로의 확장자를 변경합니다.</summary>
+            <param name="path">확장자를 변경할 경로</param>
+            <param name="newExtension">새 확장자의 문자열 표현</param>
+            <returns name="string">확장자가 변경된 파일 경로</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DirectoryName(System.String)">
+            <summary>파일 경로의 디렉토리 이름을 반환합니다.</summary>
+            <param name="path">디렉토리 정보를 가져올 경로</param>
+            <returns name="string">파일 경로의 디렉토리 이름</returns>
+            <search>directorypath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileName(System.String,System.Boolean)">
+            <summary>파일 경로의 파일 이름을 반환합니다.</summary>
+            <param name="path">파일 이름을 가져올 경로</param>
+            <param name="withExtension">토글하여 결과에 확장자 포함</param>
+            <returns name="string">파일 경로의 파일 이름</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileHasExtension(System.String)">
+            <summary>파일 경로에 확장자가 포함되어 있는지 여부를 확인합니다.</summary>
+            <param name="path">확장자를 확인할 경로</param>
+            <returns name="bool">파일 경로에 확장자가 포함되어 있으면 true, 그렇지 않으면 false</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.GetDirectoryContents(System.IO.DirectoryInfo,System.String,System.Boolean)">
+            <summary>지정된 디렉토리에 포함된 파일 및 디렉토리의 리스트를 반환합니다. 선택적 searchString을 사용하여 결과를 필터링할 수 있습니다.</summary>
+            <param name="directory">컨텐츠를 가져올 디렉토리</param>
+            <param name="searchString">결과 필터링에 사용된 검색 문자열</param>
+            <param name="includeSubdirectories">true로 설정하여 하위 디렉토리(재귀)에 파일 및 폴더를 포함하거나 false로 설정하여 지정된 디렉토리의 상단 레벨의 결과만 포함합니다.</param>
+            <returns name="files">조회의 결과 파일</returns>
+            <returns name="directories">조회 결과 디렉토리</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.CopyDirectory(System.IO.DirectoryInfo,System.String,System.Boolean)">
+            <summary>디렉토리를 대상 위치에 복사합니다.</summary>
+            <param name="directory">복사할 디렉토리</param>
+            <param name="destinationPath">디스크에서의 복사 작업 대상</param>
+            <param name="overwriteFiles">토글하여 기존 디렉토리 덮어쓰기</param>
+            <returns name="void">노드 작업 수행, 출력 생성 안 함</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DeleteDirectory(System.String,System.Boolean)">
+            <summary>디렉토리를 삭제합니다.</summary>
+            <param name="path">디스크의 디렉토리에 대한 경로</param>
+            <param name="recursive">디렉토리의 모든 내용을 삭제할 것인지 여부. 기본값은 false입니다.</param>
+            <returns name="void">노드 작업 수행, 출력 생성 안 함</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DirectoryExists(System.String)">
+            <summary>지정된 경로에 디렉토리가 존재하는지 확인합니다.</summary>
+            <param name="path">디스크의 디렉토리에 대한 경로</param>
+            <returns name="bool">디렉토리가 존재하면 true, 그렇지 않으면 false</returns>
+            <search>directorypath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.MoveDirectory(System.String,System.String,System.Boolean)">
+            <summary>디렉토리를 새 위치로 이동합니다.</summary>
+            <param name="path">기존 경로의 문자열 표현</param>
+            <param name="newPath">새 경로의 문자열 표현</param>
+            <param name="overwriteFiles">토글하여 기존 파일 덮어쓰기</param>
+            <returns name="void">노드 작업 수행, 출력 생성 안 함</returns>
+        </member>
+        <member name="T:DSCore.IO.Image">
+            <summary>이미지 비트맵 사용 방법.</summary>
+        </member>
+        <member name="M:DSCore.IO.Image.ReadFromFile(System.IO.FileInfo)">
+            <summary>파일을 비트맵으로 로드합니다.</summary>
+            <param name="file">이미지를 로드할 파일 객체</param>
+            <returns name="image">파일의 이미지 객체</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.Pixels(System.Drawing.Bitmap,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>이미지 파일을 읽고 지정된 그리드 위치에 색상 값을 반환합니다.</summary>
+            <param name="image">픽셀 색상을 가져올 이미지 객체</param>
+            <param name="xSamples">X 방향의 샘플 그리드 점 수.</param>
+            <param name="ySamples">Y 방향의 샘플 그리드 점 수.</param>
+            <returns name="colors">지정된 그리드 점의 색상</returns>
+            <search>read,image,bitmap,png,jpg,jpeg</search>
+        </member>
+        <member name="M:DSCore.IO.Image.FromPixels(DSCore.Color[][])">
+            <summary>픽셀의 2D 리스트에서 이미지를 구성합니다.</summary>
+            <param name="colors">픽셀을 나타내는 색상의 2D 직사각형 리스트</param>
+            <returns name="image">픽셀의 2D 리스트의 이미지</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.FromPixels(DSCore.Color[],System.Int32,System.Int32)">
+            <summary>픽셀. 폭 및 높이의 단순 리스트에서 이미지를 구성합니다.</summary>
+            <param name="colors">픽셀을 나타내는 색상 리스트</param>
+            <param name="width">새 이미지의 폭(픽셀)</param>
+            <param name="height">새 이미지의 높이(픽셀)</param>
+            <returns name="image">픽셀 리스트의 이미지</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.Dimensions(System.Drawing.Bitmap)">
+            <summary>이미지의 폭 및 높이를 반환합니다.</summary>
+            <param name="image">치수를 가져올 이미지.</param>
+            <returns name="width">픽셀 단위의 이미지 폭</returns>
+            <returns name="height">픽셀 단위의 이미지 높이</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.WriteToFile(System.String,System.Drawing.Bitmap)">
+            <summary>이미지를 지정된 파일 이름으로 경로에 씁니다.</summary>
+            <param name="path"/>
+            <param name="image">쓸 이미지</param>
+            <returns name="image">이미지 객체를 작성함</returns>
+            <search>write image,image,file,filepath</search>
+        </member>
+        <member name="T:DSCore.List">
+            <summary>리스트 작성 및 조작 방법.</summary>
+        </member>
+        <member name="P:DSCore.List.Empty">
+            <summary>빈 리스트를 반환합니다.</summary>
+            <returns name="list">빈 리스트.</returns>
+            <search>empty list, emptylist,[]</search>
+        </member>
+        <member name="M:DSCore.List.UniqueItems(System.Collections.IList)">
+            <summary>지정된 리스트의 고유한 항목이 모두 포함된 새 리스트를 만듭니다.</summary>
+            <param name="list">중복 항목을 필터링할 리스트.</param>
+            <returns name="list">필터링된 리스트.</returns>
+            <search>removes,duplicates,remove duplicates,cull duplicates,distinct,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.Contains(System.Collections.IList,System.Object)">
+            <summary>지정된 리스트에 지정된 항목이 포함되어 있는지 확인합니다. 이 기능은 지정된 리스트에 포함된 하위 리스트를 검색합니다.</summary>
+            <param name="list">검색할 리스트</param>
+            <param name="item">찾을 항목</param>
+            <returns name="bool">리스트에 항목이 포함되어 있으면 true, 그렇지 않으면 false</returns>
+            <search>item,search,in,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.IsHomogeneous(System.Collections.IList)">
+            <summary>리스트의 항목이 동일한 유형인지 확인합니다.</summary>
+            <param name="list">동종인 경우 확인할 리스트입니다.</param>
+            <returns name="bool">리스트가 동종인지 여부입니다.</returns>
+            <search>homogeneous,allequal,same,type</search>
+        </member>
+        <member name="M:DSCore.List.IsRectangular(System.Collections.IList)">
+            <summary>리스트의 모든 행에 있는 항목 수가 동일한지 확인합니다.</summary>
+            <param name="list">행에 동일한 수의 항목이 있는지 검사할 리스트입니다.</param>
+            <returns name="bool">리스트에 있는 모든 행의 항목 수가 동일한지 여부입니다.</returns>
+            <search>rectangular,isrectangular,same,sublist,row</search>
+        </member>
+        <member name="M:DSCore.List.IsUniformDepth(System.Collections.IList)">
+            <summary>리스트에 있는 항목의 깊이가 동일한지 확인합니다.</summary>
+            <param name="list">항목의 깊이가 동일한지 검사할 리스트입니다.</param>
+            <returns name="bool">리스트의 깊이가 일정한지 여부입니다.</returns>
+            <search>depth,uniform,isuniformdepth,sublist,jagged</search>
+        </member>
+        <member name="M:DSCore.List.SetDifference(System.Collections.Generic.IList{System.Object},System.Collections.Generic.IList{System.Object})">
+            <summary>List1의 객체는 포함하지만 List2의 객체는 제외된 새 리스트를 반환합니다.</summary>
+            <param name="list1">새 리스트에 포함할 객체의 리스트</param>
+            <param name="list2">새 리스트에서 제외할 객체의 리스트</param>
+            <returns name="list">List1의 객체는 포함하나 List2의 객체는 포함하지 않는 새 리스트</returns>
+            <search>difference,setdifference,set</search>
+        </member>
+        <member name="M:DSCore.List.SetIntersection(System.Collections.Generic.IList{System.Object},System.Collections.Generic.IList{System.Object})">
+            <summary>List1 및 List2 모두에 있는 객체를 포함하는 새 리스트를 반환합니다.</summary>
+            <param name="list1">List2와 비교할 객체의 리스트</param>
+            <param name="list2">List1과 비교할 객체의 리스트</param>
+            <returns name="list">List1 및 List2 모두에 있는 객체를 포함하는 새 리스트</returns>
+            <search>intersection,setintersection,set,overlap</search>
+        </member>
+        <member name="M:DSCore.List.SetUnion(System.Collections.Generic.IList{System.Object},System.Collections.Generic.IList{System.Object})">
+            <summary>List1 또는 List2에 있는 객체를 포함하는 새 리스트를 반환합니다.</summary>
+            <param name="list1">포함할 객체의 리스트</param>
+            <param name="list2">List1에 포함할 객체의 리스트</param>
+            <returns name="list">List1 또는 List2에 있는 객체를 포함하는 새 리스트</returns>
+            <search>union,setunion,set</search>
+        </member>
+        <member name="M:DSCore.List.IndexOf(System.Collections.IList,System.Object)">
+            <summary>지정된 리스트에 있는 요소의 색인을 반환합니다. 지정된 리스트와 대상 요소 간의 일치는 엄격하게 일치해야 합니다(예: 정수와 정수, double과 double, 문자열과 문자열, 객체와 객체 등).</summary>
+            <param name="list">요소를 찾을 리스트입니다.</param>
+            <param name="element">색인이 반환될 요소입니다.</param>
+            <returns name="int">리스트에 있는 요소의 색인입니다. 엄격한 일치를 찾을 수 없는 경우 유효하지 않은 색인 -1이 반환됩니다.</returns>
+            <search>index,indexof</search>
+        </member>
+        <member name="M:DSCore.List.CountFalse(System.Collections.IList)">
+            <summary>지정된 리스트의 false 부울 값 수를 반환합니다.</summary>
+            <param name="list">False 부울 값을 찾을 리스트입니다.</param>
+            <returns name="int">리스트의 False 부울 값 수입니다.</returns>
+            <search>false,count</search>
+        </member>
+        <member name="M:DSCore.List.CountTrue(System.Collections.IList)">
+            <summary>지정된 리스트의 true 부울 값 수를 반환합니다.</summary>
+            <param name="list">True 부울 값을 찾을 리스트입니다.</param>
+            <returns name="int">리스트의 True 부울 값 수입니다.</returns>
+            <search>true,count</search>
+        </member>
+        <member name="M:DSCore.List.Insert(System.Collections.IList,System.Object,System.Int32)">
+            <summary>요소를 지정된 색인의 리스트에 삽입합니다.</summary>
+            <param name="list">요소가 삽입될 리스트</param>
+            <param name="element">삽입될 요소</param>
+            <param name="index">삽입할 요소 리스트의 위치 지정</param>
+            <returns name="list">요소가 삽입된 리스트</returns>
+            <search>insert,add</search>
+        </member>
+        <member name="M:DSCore.List.Reorder(System.Collections.IList,System.Collections.IList)">
+            <summary>지정된 색인의 리스트를 기준으로 입력 리스트를 다시 정렬합니다.</summary>
+            <param name="list">다시 정렬할 리스트</param>
+            <param name="indices">리스트의 항목을 다시 정렬하는 데 사용되는 색인</param>
+            <returns name="list">다시 정렬된 리스트</returns>
+            <search>reorder,index,indices</search>
+        </member>
+        <member name="M:DSCore.List.SortIndexByValue(System.Collections.Generic.List{System.Double})">
+            <summary>항목별로 리스트를 정렬하고 색인을 반환합니다.</summary>
+            <param name="list">정렬될 항목의 리스트</param>
+            <returns name="int[]">정렬한 리스트에 있는 항목의 색인</returns>
+            <search>sort,index,value</search>
+        </member>
+        <member name="M:DSCore.List.NormalizeDepth(System.Collections.IList,System.Int32)">
+            <summary>지정된 순위에 따라 다차원 리스트를 반환합니다.</summary>
+            <param name="list">순위에 따라 깊이가 정규화될 리스트입니다.</param>
+            <param name="rank">리스트가 정규화될 순위입니다. 기본값은 1입니다.</param>
+            <returns name="list">정규화된 순위를 가진 리스트입니다.</returns>
+            <search>depth,normalize</search>
+        </member>
+        <member name="M:DSCore.List.Reverse(System.Collections.IList)">
+            <summary>지정된 리스트의 항목이 역순으로 포함된 새 리스트를 만듭니다.</summary>
+            <param name="list">반전할 리스트.</param>
+            <returns name="list">반전된 리스트</returns>
+            <search>flip,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.__Create(System.Collections.IList)">
+            <summary>지정된 항목이 포함된 새 리스트를 작성합니다.</summary>
+            <param name="items">새 리스트에 저장될 항목.</param>
+        </member>
+        <member name="M:DSCore.List.Sublists(System.Collections.IList,System.Collections.IList,System.Int32)">
+            <summary>리스트에서 DesignScript 범위 구문을 사용하여 하위 리스트를 작성합니다.</summary>
+            <param name="list">하위 리스트를 작성할 리스트.</param>
+            <param name="ranges">하위 리스트 요소의 인덱스 범위.
+                예: \"{0..3,5,2}\"</param>
+            <param name="offset">하위 리스트에 적용할 간격띄우기.
+                예: 간격띄우기가 2인 \"0..3\" 범위는 다음과 같은 결과를 생성합니다.
+                {0,1,2,3}{2,3,4,5}{4,5,6,7}...</param>
+            <returns name="lists">유형: var[]..[]</returns>
+            <search>sublists,build sublists,subset,</search>
+        </member>
+        <member name="M:DSCore.List.Sort(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>내장된 기본 순서를 사용하여 리스트를 정렬합니다.</summary>
+            <param name="list">정렬할 리스트</param>
+            <returns name="list">정렬된 리스트</returns>
+            <search>sort,order,sorted</search>
+        </member>
+        <member name="M:DSCore.List.MinimumItem(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>리스트에서 최소값을 반환합니다.</summary>
+            <param name="list">최소값을 가져올 비교 가능한 항목의 리스트</param>
+            <returns name="item">리스트의 최소값 항목</returns>
+            <search>least,smallest,find min</search>
+        </member>
+        <member name="M:DSCore.List.MaximumItem(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>리스트에서 최대값을 반환합니다.</summary>
+            <param name="list">최대값을 가져올 비교 가능한 항목의 리스트</param>
+            <returns name="item">리스트의 최대값 항목</returns>
+            <search>greatest,largest,biggest,find max</search>
+        </member>
+        <member name="M:DSCore.List.FilterByBoolMask(System.Collections.IList,System.Collections.IList)">
+            <summary>별도의 부울 리스트에서 해당하는 인덱스를 조회하여 시퀀스를
+                필터링합니다.</summary>
+            <param name="list">필터링할 리스트.</param>
+            <param name="mask">마스크를 나타내는 부울 리스트.</param>
+            <returns name="in">마스크 인덱스가 true인 항목.</returns>
+            <returns name="out">마스크 인덱스가 false인 항목.</returns>
+            <search>filter,in,out,mask,dispatch,bool filter,boolfilter,bool filter</search>
+        </member>
+        <member name="M:DSCore.List.Deconstruct(System.Collections.IList)">
+            <summary>지정된 리스트에서 리스트의 첫 번째 항목 및 첫 번째 항목을 제외한 모든
+                항목이 포함된 새 리스트를 생성합니다.</summary>
+            <param name="list">분할할 리스트.</param>
+            <returns name="first">리스트의 첫 번째 항목(유형: var[]..[])</returns>
+            <returns name="rest">리스트의 나머지 항목(유형: var[]..[])</returns>
+            <search>first,rest,list split,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.SortByKey(System.Collections.IList,System.Collections.IList)">
+            <summary>키를 기준으로 리스트 정렬</summary>
+            <param name="list">정렬할 리스트</param>
+            <param name="keys">키 리스트, 키는 정렬 가능해야 함(예: 숫자, 문자열)</param>
+            <returns name="sortedList">유형: var[]..[]</returns>
+            <returns name="sortedKeys">유형: var[]..[]</returns>
+            <search>sort;key</search>
+        </member>
+        <member name="M:DSCore.List.GroupByKey(System.Collections.IList,System.Collections.IList)">
+            <summary>유사한 키 값을 기준으로 항목을 하위 리스트로 그룹화</summary>
+            <param name="list">하위 리스트로 그룹화할 항목 리스트</param>
+            <param name="keys">항목 그룹화에 사용하는 키 값(입력 리스트 항목당 하나)</param>
+            <returns name="groups">항목이 유사한 키 값으로 그룹화된 하위 리스트의 리스트</returns>
+            <returns name="uniqueKeys">각 그룹에 해당하는 키 값</returns>
+            <search>list;group;groupbykey;</search>
+        </member>
+        <member name="M:DSCore.List.AddItemToFront(System.Object,System.Collections.IList)">
+            <summary>리스트의 처음에 항목을 추가합니다.</summary>
+            <param name="item">추가할 항목. 항목은 객체 또는 리스트일 수 있습니다.</param>
+            <param name="list">항목을 추가할 리스트.</param>
+            <returns name="list">추가 항목 리스트</returns>
+            <search>insert,add,item,front,start,begin</search>
+        </member>
+        <member name="M:DSCore.List.AddItemToEnd(System.Object,System.Collections.IList)">
+            <summary>리스트의 끝에 항목을 추가합니다.</summary>
+            <param name="item">추가할 항목. 항목은 객체 또는 리스트일 수 있습니다.</param>
+            <param name="list">항목을 추가할 리스트.</param>
+            <returns name="list">추가 항목 리스트</returns>
+            <search>insert,add,item,end</search>
+        </member>
+        <member name="M:DSCore.List.TakeItems(System.Collections.IList,System.Int32)">
+            <summary>리스트의 시작 부분에서 항목을 가져옵니다.</summary>
+            <param name="list">항목을 가져올 리스트.</param>
+            <param name="amount">가져올 항목의 수. 음수인 경우 리스트의 끝에서 항목을 가져옵니다.</param>
+            <returns name="list">추출된 항목의 리스트.</returns>
+            <search>get,sub,sublist,extract</search>
+        </member>
+        <member name="M:DSCore.List.DropItems(System.Collections.IList,System.Int32)">
+            <summary>리스트의 시작 부분에서 일정한 양의 항목을 제거합니다. 양이 음수 값이면,
+                리스트의 끝 부분에서 항목이 제거됩니다.</summary>
+            <param name="list">항목을 제거할 리스트.</param>
+            <param name="amount">제거할 항목의 수. 음수인 경우 리스트의 끝에서 항목이 제거됩니다.</param>
+            <returns name="list">나머지 항목의 리스트.</returns>
+            <search>drop,remove,shorten</search>
+        </member>
+        <member name="M:DSCore.List.ShiftIndices(System.Collections.IList,System.Int32)">
+            <summary>리스트의 인덱스를 지정된 수만큼 오른쪽으로 이동합니다.</summary>
+            <param name="list">이동할 리스트.</param>
+            <param name="amount">이동할 인덱스의 수. 음수인 경우 인덱스가 왼쪽으로 이동됩니다.</param>
+            <returns name="list">이동된 리스트.</returns>
+            <search>shift,offset</search>
+        </member>
+        <member name="M:DSCore.List.GetItemAtIndex(System.Collections.IList,System.Int32)">
+            <summary>지정된 색인에 위치하는 지정된 리스트에서 항목을 반환합니다.</summary>
+            <param name="list">항목을 가져올 리스트.</param>
+            <param name="index">가져올 항목의 인덱스.</param>
+            <returns name="item">지정된 인덱스의 리스트에 있는 항목.</returns>
+            <search>get,item,index,fetch,at,getfrom,get from,extract</search>
+        </member>
+        <member name="M:DSCore.List.ReplaceItemAtIndex(System.Collections.IList,System.Int32,System.Object)">
+            <summary>지정된 인덱스에 위치한 지정된 리스트에서 항목을 대체합니다.</summary>
+            <param name="list">항목을 대체할 리스트.</param>
+            <param name="index">대체할 항목의 인덱스.</param>
+            <param name="item">삽입할 항목.</param>
+            <returns name="list">항목이 대체된 새 리스트.</returns>
+            <search>replace,switch</search>
+        </member>
+        <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">
+            <summary>시작 색인, 끝 색인 및 단계 양을 기준으로 지정된 리스트에서 단일 하위 리스트를
+                반환합니다.</summary>
+            <param name="list">슬라이스를 가져올 리스트.</param>
+            <param name="start">슬라이스의 시작 인덱스.</param>
+            <param name="end">슬라이스의 끝 인덱스.</param>
+            <param name="step">원래 리스트에서 분리될 항목의 인덱스 수.</param>
+            <returns name="items">지정된 리스트의 슬라이스에 있는 항목.</returns>
+            <search>list,sub,sublist,subrange,get sublist</search>
+        </member>
+        <member name="M:DSCore.List.RemoveItemAtIndex(System.Collections.IList,System.Int32[])">
+            <summary>지정된 인덱스의 지정된 리스트에서 항목을 제거합니다.</summary>
+            <param name="list">항목을 제거할 리스트.</param>
+            <param name="indices">제거할 항목의 인덱스.</param>
+            <returns name="list">항목이 제거된 리스트.</returns>
+            <search>index,indices,cull,remove,item</search>
+        </member>
+        <member name="M:DSCore.List.DropEveryNthItem(System.Collections.IList,System.Int32,System.Int32)">
+            <summary>지정된 리스트에서 지정된 간격띄우기 이후 지정된 값의 배수인
+                인덱스의 항목을 제거합니다.</summary>
+            <param name="list">항목을 제거할 리스트</param>
+            <param name="n">이 인수의 배수인 인덱스가 제거됩니다.</param>
+            <param name="offset">리스트의 시작 부분에서 무시할 항목 수.</param>
+            <returns name="list">항목이 제거된 리스트.</returns>
+            <search>nth,remove,cull,every</search>
+        </member>
+        <member name="M:DSCore.List.TakeEveryNthItem(System.Collections.IList,System.Int32,System.Int32)">
+            <summary>지정된 리스트에서 지정된 간격띄우기 이후 지정된 값의 배수인
+                인덱스의 항목을 가져옵니다.</summary>
+            <param name="list">항목을 가져올 리스트.</param>
+            <param name="n">(간격띄우기 후) 이 숫자의 배수인 인덱스를 가져옵니다.</param>
+            <param name="offset">리스트의 시작 부분에서 무시할 항목 수.</param>
+            <returns name="items">리스트에서 가져온 항목.</returns>
+            <search>fetch,take,every,nth</search>
+        </member>
+        <member name="M:DSCore.List.IsEmpty(System.Collections.IList)">
+            <summary>지정된 리스트가 비어 있는지 확인합니다.</summary>
+            <param name="list">비어 있는지 확인할 리스트</param>
+            <returns name="bool">리스트가 비어 있으면 true, 그렇지 않으면 false</returns>
+            <search>test,is,empty,null,count</search>
+        </member>
+        <member name="M:DSCore.List.AllTrue(System.Collections.IList)">
+            <summary>지정된 리스트의 모든 항목이 부울이고 true 값을 가지는지 여부를 결정합니다.</summary>
+            <param name="list">모든 항목이 true인지 여부를 확인할 리스트입니다.</param>
+            <returns name="bool">리스트의 모든 항목이 true이면 true, 하나 이상의 항목이 true가 아니면 false</returns>
+            <search>test,all,true,istrue</search>
+        </member>
+        <member name="M:DSCore.List.AllFalse(System.Collections.IList)">
+            <summary>지정된 리스트의 모든 항목이 부울이고 false 값을 가지는지 여부를 결정합니다.</summary>
+            <param name="list">모든 항목이 false인지 여부를 확인할 리스트입니다.</param>
+            <returns name="bool">리스트의 모든 항목이 false이면 true, 하나 이상의 항목이 false가 아니면 false</returns>
+            <search>test,all,false,isfalse</search>
+        </member>
+        <member name="M:DSCore.List.AnyTrue(System.Collections.IList)">
+            <summary>지정된 리스트의 항목이 부울인지와 true 값을 갖는지 여부를 확인합니다.</summary>
+            <param name="list">항목이 true인지 여부를 확인할 리스트입니다.</param>
+            <returns name="bool">항목이 true인지 여부입니다.</returns>
+            <search>test,any,true,istrue</search>
+        </member>
+        <member name="M:DSCore.List.AnyFalse(System.Collections.IList)">
+            <summary>지정된 리스트의 항목이 부울인지와 false 값을 갖는지 여부를 확인합니다.</summary>
+            <param name="list">항목이 false인지 여부를 확인할 리스트입니다.</param>
+            <returns name="bool">항목이 false인지 여부입니다.</returns>
+            <search>test,any,false,isfalse</search>
+        </member>
+        <member name="M:DSCore.List.Count(System.Collections.IList)">
+            <summary>지정된 리스트에 저장된 항목의 개수를 반환합니다.</summary>
+            <param name="list">항목 수를 가져올 리스트.</param>
+            <returns name="int">리스트 길이.</returns>
+            <search>listlength,list length,count,size,sizeof</search>
+        </member>
+        <member name="M:DSCore.List.Join(System.Collections.IList[])">
+            <summary>지정된 모든 리스트를 단일 리스트로 연결합니다.</summary>
+            <param name="lists">하나로 결합할 리스트.</param>
+            <returns name="list">결합된 리스트.</returns>
+            <search>join lists,merge,concatenate</search>
+        </member>
+        <member name="M:DSCore.List.FirstItem(System.Collections.IList)">
+            <summary>리스트에서 첫 번째 항목을 반환합니다.</summary>
+            <param name="list">첫 번째 항목을 가져올 리스트.</param>
+            <returns name="item">리스트의 첫 번째 항목.</returns>
+            <search>get,fetch,first,item,start</search>
+        </member>
+        <member name="M:DSCore.List.RestOfItems(System.Collections.IList)">
+            <summary>지정된 리스트에서 첫 번째 항목을 제거합니다.</summary>
+            <param name="list">나머지 항목을 가져올 리스트.</param>
+            <returns name="rest">리스트의 나머지 항목.</returns>
+            <search>get,fetch,rest,end,rest of list</search>
+        </member>
+        <member name="M:DSCore.List.Chop(System.Collections.IList,System.Collections.Generic.List{System.Int32})">
+            <summary>리스트를 지정된 길이의 연속적인 하위 리스트 세트로 자릅니다. 리스트 분할은 리스트 맨 위에서 시작합니다.</summary>
+            <param name="list">하위 리스트로 자를 리스트</param>
+            <param name="lengths">입력 리스트에서 작성될 연속적인 하위 리스트 길이</param>
+            <returns name="lists">리스트에서 작성된 하위 리스트</returns>
+            <search>sublists,build sublists,slices,partitions,cut,listcontains,chop</search>
+        </member>
+        <member name="M:DSCore.List.DiagonalRight(System.Collections.IList,System.Int32)">
+            <summary>매트릭스에서 왼쪽 하단부터 오른쪽 상단까지 각 대각선을 따라 요소를 나열합니다.</summary>
+            <param name="list">단순 리스트</param>
+            <param name="subLength">각 새 하위 리스트의 길이.</param>
+            <returns name="diagonals">매트릭스 대각선을 따라 나열된 요소의 리스트.</returns>
+            <search>diagonal,right,matrix,get diagonals,diagonal sublists</search>
+        </member>
+        <member name="M:DSCore.List.DiagonalLeft(System.Collections.IList,System.Int32)">
+            <summary>매트릭스에서 왼쪽 상단부터 오른쪽 하단까지 각 대각선을 따라 요소를 나열합니다.</summary>
+            <param name="list">단순 리스트.</param>
+            <param name="rowLength">각 새 하위 리스트의 길이.</param>
+            <returns name="diagonals">매트릭스 대각선을 따라 나열된 요소의 리스트.</returns>
+            <search>diagonal,left,matrix,get diagonals,diagonal sublists</search>
+        </member>
+        <member name="M:DSCore.List.Transpose(System.Collections.IList)">
+            <summary>리스트의 리스트에서 행 및 열을 교체합니다. 
+                다른 행보다 짧은 행이 몇 개 있을 경우
+                null 값이 결과 배열에 자리 표시자로 삽입되어
+                항상 직사각형이 되도록 합니다.</summary>
+            <param name="lists">행과 열을 바꿀 리스트의 리스트</param>
+            <returns name="lists">행과 열을 바꾼 리스트의 리스트</returns>
+            <search>transpose,flip matrix,matrix,swap,rows,columns</search>
+        </member>
+        <member name="M:DSCore.List.Clean(System.Collections.IList,System.Boolean)">
+            <summary>지정된 임의 치수의 리스트에서 null 및 빈 리스트의 데이터를 정리합니다.</summary>
+            <param name="list">정리할 null 및 빈 하위 리스트가 포함된 리스트</param>
+            <param name="preserveIndices">후행이 아닌 null이 필터링되지 않을 수 있도록
+            <returns name="list">행과 열을 바꾼 리스트의 리스트</returns>
+             데이터 색인을 유지하는 옵션 제공</param>
+            <returns>null 및 빈 리스트를 정리한 리스트</returns>
+        </member>
+        <member name="M:DSCore.List.OfRepeatedItem(System.Object,System.Int32)">
+            <summary>지정된 항목이 지정된 횟수만큼 포함된 리스트를 만듭니다.</summary>
+            <param name="item">반복할 항목.</param>
+            <param name="amount">반복할 횟수.</param>
+            <returns name="list">반복된 항목의 리스트.</returns>
+            <search>repeat,repeated,duplicate,list of item,fill list,copies,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.Cycle(System.Collections.IList,System.Int32)">
+            <summary>지정된 리스트의 사본을 연결하여 새 리스트를 만듭니다.</summary>
+            <param name="list">반복할 리스트.</param>
+            <param name="amount">반복할 횟수.</param>
+            <returns name="list">유형의 반복된 리스트의 리스트: var[]..[]</returns>
+            <search>repeat,repeated,duplicate,repeated list,concat list</search>
+        </member>
+        <member name="M:DSCore.List.LastItem(System.Collections.IList)">
+            <summary>리스트의 마지막 항목을 검색합니다.</summary>
+            <param name="list">마지막 항목을 가져올 리스트</param>
+            <returns name="item">리스트의 마지막 항목</returns>
+            <search>get,fetch,last,item,end of list</search>
+        </member>
+        <member name="M:DSCore.List.Shuffle(System.Collections.IList)">
+            <summary>리스트 항목의 순서를 무작위로 섞습니다.</summary>
+            <param name="list">항목을 섞을 리스트.</param>
+            <returns name="list">항목을 무작위로 섞은 리스트.</returns>
+            <search>random,randomize,shuffle,jitter,randomness</search>
+        </member>
+        <member name="M:DSCore.List.Shuffle(System.Collections.IList,System.Int32)">
+            <summary>리스트 항목을 섞어 초기 시드 값을 기준으로 항목의 순서를 무작위로 지정합니다.</summary>
+            <param name="list">항목을 섞을 리스트.</param>
+            <param name="seed">난수 생성기의 시드 값</param>
+            <returns name="list">항목을 무작위로 섞은 리스트.</returns>
+            <search>random,randomize,shuffle,jitter,randomness,seed</search>
+        </member>
+        <member name="M:DSCore.List.Permutations(System.Collections.IList,System.Nullable{System.Int32})">
+            <summary>지정된 리스트의 지정된 길이의 모든 순열을 생성합니다.</summary>
+            <param name="list">순열을 생성할 리스트.</param>
+            <param name="length">각 순열의 길이.</param>
+            <returns name="permutations">지정된 길이의 리스트 순열(유형: var[]..[])</returns>
+            <search>permutation,permutations</search>
+        </member>
+        <member name="M:DSCore.List.Combinations(System.Collections.IList,System.Int32,System.Boolean)">
+            <summary>지정된 리스트의 지정된 길이의 모든 조합을 생성합니다.</summary>
+            <param name="list">조합을 생성할 리스트</param>
+            <param name="length">각 조합의 길이</param>
+            <param name="replace">항목이 조합을 위해 선택된 후 제거되는지 여부. 기본값은 false입니다.</param>
+            <returns name="lists">지정된 길이의 리스트 조합</returns>
+            <search>combo</search>
+        </member>
+        <member name="M:DSCore.List.FirstIndexOf(System.Collections.IList,System.Object)">
+            <summary>항목을 지정하면 리스트에서 첫 번째 발생의 0 기점 색인을 반환합니다.
+                리스트에서 항목을 찾을 수 없으면 -1이 반환됩니다.</summary>
+            <param name="list">검색할 리스트. 이 인수가 null이면 -1이 반환됩니다.</param>
+            <param name="item">찾을 항목.</param>
+            <returns>리스트에서 항목의 0 기점 색인 또는 항목이 없는 경우 -1.</returns>
+        </member>
+        <member name="M:DSCore.List.AllIndicesOf(System.Collections.IList,System.Object)">
+            <summary>항목을 지정하면 리스트에서 모든 발생의 0 기점 색인을 반환합니다.
+                항목을 찾을 수 없으면 빈 리스트가 반환됩니다.</summary>
+            <param name="list">검색할 리스트. 이 인수가 null이면 빈 리스트가 반환됩니다.</param>
+            <param name="item">찾을 항목.</param>
+            <returns name="indices">항목이 발견된 경우 항목의 모든 발생의 0 기점 색인 
+            리스트 또는 항목이 리스트에 없는 경우 빈 리스트.</returns>
+        </member>
+        <member name="M:DSCore.List.Flatten(System.Collections.IList,System.Int32)">
+            <summary>리스트의 내포된 리스트를 특정한 양만큼 단순화합니다.</summary>
+            <param name="list">단순화할 리스트.</param>
+            <param name="amount">제거할 리스트 내포 레이어(-1은 모든 리스트 내포 제거)</param>
+            <returns name="list">양 기준으로 단순화한 리스트</returns>
+            <search>flatten,completely</search>
+        </member>
+        <member name="M:DSCore.List.IndexInList(System.Collections.IList,System.Object)">
+            <summary>항목이 배열인 경우 Enumerable.SequenceEqual을 통해 리스트에 항목이 포함되어 있는지 확인하는
+                IList.Contains를 사용하는 대체 방법입니다. 찾는 경우 색인을,
+                찾을 수 없는 경우 -1를 반환합니다.</summary>
+            <param name="list">항목이 포함되어 있는지 확인하는 리스트입니다.</param>
+            <param name="item">찾아야 하는 항목입니다.</param>
+            <returns name="index">리스트에 있는 항목의 색인입니다.</returns>
+        </member>
+        <member name="M:DSCore.List.GetDepth(System.Object)">
+            <summary>지정된 리스트의 최대 깊이를 가져옵니다.</summary>
+            <param name="list">깊이를 가져오는 입력 리스트입니다.</param>
+            <returns name="depth">지정된 리스트의 깊이입니다.</returns>
+        </member>
+        <member name="M:DSCore.List.CountBool(System.Collections.IList,System.Boolean)">
+            <summary>지정된 리스트에 있는 지정된 부울 값 수를 반환합니다.</summary>
+            <param name="list">부울 값을 찾을 리스트입니다.</param>
+            <param name="value">찾을 부울 값입니다.</param>
+            <returns name="int">리스트의 지정된 부울 값 수 입니다.</returns>
+        </member>
+        <member name="M:DSCore.List.IncreaseDepth(System.Collections.IList,System.Int32)">
+            <summary>지정된 리스트의 깊이를 지정된 양만큼 증가시킵니다. 지정된 리스트를 포함하는
+                새 리스트를 작성하면 깊이가 증가합니다.</summary>
+            <param name="list">깊이가 증가할 리스트입니다.</param>
+            <param name="amt">깊이를 증가시킬 양입니다.</param>
+            <returns name="list">양만큼 깊이가 증가하는 새 리스트입니다.</returns>
+        </member>
+        <member name="M:DSCore.List.DoubleConverter(System.Object)">
+            <summary>정수를 double 값으로 변환하고, 그렇지 않은 경우 입력 객체를 반환합니다.</summary>
+        </member>
+        <member name="T:DSCore.ObjectComparer">
+            <summary>다음과 같은 규칙을 사용하여 두 객체에 대한 Compare 함수를 구현합니다.
+                1. 숫자가 가장 작은 것으로 간주되며 부울, 문자열 및 포인터 순으로 작습니다.
+                2. 두 객체가 IComparable이고 같은 유형인 경우 기본 비교 메커니즘을
+                사용합니다.
+                3. 두 입력 모두 값 유형이지만 그 중 하나가 부울이면 부울이 더 큽니다.
+                4. 그렇지 않으면 모두 double 값으로 변환하고 비교합니다.
+                5. 하나만 값 유형인 경우에는 값 유형 객체가 더 작습니다.
+                6. 하나만 문자열인 경우에는 문자열이 다른 객체보다 작습니다.
+                7. 비교 방법을 모를 경우에는 HashCode를 기반으로 비교합니다.</summary>
+        </member>
+        <member name="T:DSCore.Math">
+            <summary>수학적 연산 수행 방법.</summary>
+        </member>
+        <member name="M:DSCore.Math.Random(System.Nullable{System.Int32})">
+            <summary>[0, 1) 범위의 난수(double 값)를 생성합니다.</summary>
+            <param name="seed">난수 생성기의 시드 값.</param>
+            <returns name="number">0과 1 사이의 난수.</returns>
+            <search>random,seed</search>
+        </member>
+        <member name="M:DSCore.Math.Random(System.Double,System.Double)">
+            <summary>[lower_number, higher_number) 범위의 난수를 생성합니다.</summary>
+            <param name="value1">난수 범위의 하한</param>
+            <param name="value2">난수 범위의 상한</param>
+            <returns name="number">[lower_number, higher_number) 범위의 난수</returns>
+            <search>random,numberrange</search>
+        </member>
+        <member name="M:DSCore.Math.Random(System.Double,System.Double,System.Int32)">
+            <summary>초기 시드 값을 기준으로 [lower_number, higher_number) 범위의 난수를 생성합니다.</summary>
+            <param name="value1">난수 범위의 하한</param>
+            <param name="value2">난수 범위의 상한</param>
+            <param name="seed">난수 생성기의 시드 값</param>
+            <returns name="number">[lower_number, higher_number) 범위의 난수</returns>
+            <search>random,numberrange,seed</search>
+        </member>
+        <member name="M:DSCore.Math.RandomList(System.Int32)">
+            <summary>[0, 1) 범위의 난수(double 값)가 지정된 수만큼 포함된
+                리스트를 생성합니다.</summary>
+            <param name="amount">결과 리스트에 포함될 난수의 수.</param>
+            <returns name="number">0과 1 사이의 난수 리스트.</returns>
+            <search>random,listcontains</search>
+        </member>
+        <member name="M:DSCore.Math.RandomList(System.Int32,System.Double,System.Double,System.Int32)">
+            <summary>초기 시드 값을 기준으로 정의된 [lower_number, higher_number) 범위의
+                지정된 임의 배정도 양을 포함하는 리스트를 생성합니다.</summary>
+            <param name="amount">결과 리스트에 포함될 난수의 수.</param>
+            <param name="value1">난수 범위의 하한</param>
+            <param name="value2">난수 범위의 상한</param>
+            <param name="seed">난수 생성기의 시드 값</param>
+            <returns name="number">[lower_number, higher_number) 범위의 난수 리스트</returns>
+            <search>random,listcontains,seed</search>
+        </member>
+        <member name="P:DSCore.Math.PiTimes2">
+            <summary>파이 상수 x 2</summary>
+            <returns name="double">2 x 파이.</returns>
+            <search>2pi,2*pi,twopi,two*pi</search>
+        </member>
+        <member name="M:DSCore.Math.Average(System.Collections.Generic.IList{System.Double})">
+            <summary>숫자 리스트의 평균을 계산합니다.</summary>
+            <param name="numbers">평균을 계산할 숫자의 리스트.</param>
+            <returns name="double">숫자 리스트의 평균.</returns>
+            <search>avg,mean</search>
+        </member>
+        <member name="M:DSCore.Math.Map(System.Double,System.Double,System.Double)">
+            <summary>입력 범위를 기준으로 입력 값을 0과 1 사이의 숫자로 매핑합니다.</summary>
+            <param name="rangeMin">입력 범위의 최소값입니다.</param>
+            <param name="rangeMax">입력 범위의 최대값입니다.</param>
+            <param name="inputValue">매핑할 숫자입니다.</param>
+            <returns name="double">매핑된 값입니다.</returns>
+            <search>map,range,minimum,maximum,normalize,scale,remap</search>
+        </member>
+        <member name="M:DSCore.Math.MapTo(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>입력 값을 targetRangeMin과 targetRangeMax 사이의 숫자로 매핑합니다.</summary>
+            <param name="rangeMin">입력 범위의 최소값입니다.</param>
+            <param name="rangeMax">입력 범위의 최대값입니다.</param>
+            <param name="inputValue">매핑할 숫자입니다.</param>
+            <param name="targetRangeMin">새 범위의 최소값입니다.</param>
+            <param name="targetRangeMax">새 범위의 최대값입니다.</param>
+            <returns name="double">매핑된 값입니다.</returns>
+            <search>map,range,mapto,minimum,maximum,normalize,scale,remap</search>
+        </member>
+        <member name="M:DSCore.Math.RemapRange(System.Collections.Generic.IList{System.Double},System.Double,System.Double)">
+            <summary>분포 비율을 유지하면서 숫자 리스트의 범위를 조정합니다.</summary>
+            <param name="numbers">범위를 조정할 숫자의 리스트.</param>
+            <param name="newMin">범위의 새 최소값.</param>
+            <param name="newMax">범위의 새 최대값</param>
+            <returns name="list">새 범위로 다시 매핑된 리스트.</returns>
+            <search>remap range</search>
+        </member>
+        <member name="F:DSCore.Math.kRadiansToDegrees">
+            <summary>함수/메서드를 Math.dll에서 이 DSCoreNode.dll로 이동합니다.</summary>
+        </member>
+        <member name="P:DSCore.Math.PI">
+            <summary>수학적 상수 파이, 3.14159...</summary>
+            <returns name="double">상수 파이</returns>
+            <search>3.141592653589793</search>
+        </member>
+        <member name="P:DSCore.Math.E">
+            <summary>수학적 상수 e, 2.71828...</summary>
+            <returns name="double">상수 e</returns>
+            <search>exp,2.718281828459045</search>
+        </member>
+        <member name="P:DSCore.Math.GoldenRatio">
+            <summary>황금비, (1 + sqrt(5))/2 = 1.61803...</summary>
+            <returns name="double">황금비</returns>
+            <search>golden,ratio,divine,phi,tau,1.61803398875</search>
+        </member>
+        <member name="M:DSCore.Math.RadiansToDegrees(System.Double)">
+            <summary>라디안 각도를 도 각도로 변환합니다.</summary>
+            <param name="radians">라디안 각도.</param>
+            <returns name="degrees">도 각도.</returns>
+            <search>radians,degrees,angle</search>
+        </member>
+        <member name="M:DSCore.Math.DegreesToRadians(System.Double)">
+            <summary>도 각도를 라디안 각도로 변환합니다.</summary>
+            <param name="degrees">도 각도.</param>
+            <returns name="radians">라디안 각도.</returns>
+            <search>degrees,radians,angle</search>
+        </member>
+        <member name="M:DSCore.Math.Abs(System.Double)">
+            <summary>숫자의 절대값을 계산합니다.</summary>
+            <param name="number">절대값을 가져올 숫자</param>
+            <returns name="number">숫자의 절대값</returns>
+            <search>absolute value,magnitude</search>
+        </member>
+        <member name="M:DSCore.Math.Equals(System.Double,System.Double,System.Double)">
+            <summary>이 방법은 허용치가 설정된 같음 NodeMode 노드에서만 사용됩니다.</summary>
+            <param name="lhs"/>
+            <param name="rhs"/>
+            <param name="tol"/>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Math.Abs(System.Int64)">
+            <summary>숫자의 절대값을 계산합니다.</summary>
+            <param name="integer">숫자.</param>
+            <returns name="absoluteValue">숫자의 절대값.</returns>
+            <search>absolute value,magnitude</search>
+        </member>
+        <member name="M:DSCore.Math.Acos(System.Double)">
+            <summary>역코사인을 계산합니다(코사인이 지정된 비율인 각도).</summary>
+            <param name="ratio">각도의 코사인([-1, 1] 범위의 숫자).</param>
+            <returns name="double">코사인이 입력 비율인 각도.</returns>
+            <search>acosine,arccosine</search>
+        </member>
+        <member name="M:DSCore.Math.Asin(System.Double)">
+            <summary>역사인을 계산합니다(사인이 지정된 비율인 각도).</summary>
+            <param name="ratio">각도의 사인([-1, 1] 범위의 숫자).</param>
+            <returns name="double">사인이 입력 비율인 각도</returns>
+            <search>asine,arcsin</search>
+        </member>
+        <member name="M:DSCore.Math.Atan(System.Double)">
+            <summary>역탄젠트를 계산합니다(탄젠트가 지정된 비율인 각도).</summary>
+            <param name="ratio">각도의 탄젠트.</param>
+            <returns name="double">탄젠트가 입력 비율인 각도</returns>
+            <search>atangent,arctangent</search>
+        </member>
+        <member name="M:DSCore.Math.Atan2(System.Double,System.Double)">
+            <summary>두 숫자의 몫의 역탄젠트를 계산합니다. 탄젠트가 분자/분모 비율인 
+                각도를 반환합니다.</summary>
+            <param name="numerator">각도의 탄젠트의 분자.</param>
+            <param name="denominator">각도의 탄젠트의 분모.</param>
+            <returns name="double">탄젠트가 분자/분모인 각도</returns>
+            <search>atangent,arctangent</search>
+        </member>
+        <member name="M:DSCore.Math.Ceiling(System.Double)">
+            <summary>지정된 숫자보다 큰 첫 번째 정수를 반환합니다</summary>
+            <param name="number">반올림할 숫자.</param>
+            <returns name="int">지정된 숫자보다 큰 첫 번째 정수</returns>
+            <search>ceiling,round</search>
+        </member>
+        <member name="M:DSCore.Math.Cos(System.Double)">
+            <summary>각도의 코사인을 계산합니다.</summary>
+            <param name="angle">코사인을 계산할 각도(도).</param>
+            <returns name="double">각도의 코사인</returns>
+            <search>cosine</search>
+        </member>
+        <member name="M:DSCore.Math.Cosh(System.Double)">
+            <summary>각도(라디안)의 쌍곡선 코사인을 계산합니다.</summary>
+            <param name="angle">라디안 각도.</param>
+            <returns name="double">각도의 쌍곡선 코사인</returns>
+            <search>hyperbolic cosine</search>
+        </member>
+        <member name="M:DSCore.Math.DivRem(System.Int64,System.Int64)">
+            <summary>피제수/제수의 나머지를 계산합니다.</summary>
+            <param name="dividend">피제수.</param>
+            <param name="divisor">제수.</param>
+            <returns name="int">나눗셈의 나머지</returns>
+            <search>remainder</search>
+        </member>
+        <member name="M:DSCore.Math.EvaluateFormula(System.String,System.String[],System.Object[])">
+            <summary>지정된 매개변수 매핑을 사용하여 NCalc 수식을 평가합니다.</summary>
+            <param name="formulaString">NCalc 수식</param>
+            <param name="parameters">변수 이름</param>
+            <param name="arguments">변수 바인딩</param>
+            <returns name="result">유형: var[]..[](수식 계산 결과)</returns>
+        </member>
+        <member name="M:DSCore.Math.Exp(System.Double)">
+            <summary>숫자의 지수를 반환합니다(상수 e의 제곱수).</summary>
+            <param name="number">숫자.</param>
+            <returns name="double">숫자의 지수.</returns>
+            <search>exponential</search>
+        </member>
+        <member name="M:DSCore.Math.Floor(System.Double)">
+            <summary>지정된 숫자보다 작은 첫 번째 정수를 반환합니다.</summary>
+            <param name="number">반내림할 숫자</param>
+            <returns name="int">지정된 숫자보다 작은 첫 번째 정수</returns>
+            <search>round</search>
+        </member>
+        <member name="M:DSCore.Math.Log(System.Double)">
+            <summary>(0, ∞) 범위에 있는 숫자의 자연 로그를 계산합니다.</summary>
+            <param name="number">0보다 큰 숫자.</param>
+            <returns name="double">숫자의 자연 로그.</returns>
+            <search>natural,logarithm,ln</search>
+        </member>
+        <member name="M:DSCore.Math.Log(System.Double,System.Double)">
+            <summary>지정된 밑을 사용하여 숫자의 로그를 계산합니다.</summary>
+            <param name="number">0보다 큰 숫자.</param>
+            <param name="logBase">[0,1),(1, ∞) 범위의 로그의 밑.</param>
+            <returns name="double">숫자의 로그.</returns>
+            <search>logarithm,ld,lg</search>
+        </member>
+        <member name="M:DSCore.Math.Log10(System.Double)">
+            <summary>숫자의 상용 로그를 계산합니다.</summary>
+            <param name="number">0보다 큰 숫자.</param>
+            <returns name="double">숫자의 로그.</returns>
+            <search>logarithm</search>
+        </member>
+        <member name="M:DSCore.Math.Max(System.Double,System.Double)">
+            <summary>두 숫자 중 큰 숫자를 반환합니다.</summary>
+            <param name="value1">비교할 숫자.</param>
+            <param name="value2">비교할 숫자.</param>
+            <returns name="max">두 숫자 중 큰 숫자.</returns>
+            <search>maximum,greater,larger</search>
+        </member>
+        <member name="M:DSCore.Math.Max(System.Int64,System.Int64)">
+            <summary>두 숫자 중 큰 숫자를 반환합니다.</summary>
+            <param name="int1">비교할 숫자.</param>
+            <param name="int2">비교할 숫자.</param>
+            <returns name="max">두 숫자 중 큰 숫자.</returns>
+            <search>maximum,greater,larger</search>
+        </member>
+        <member name="M:DSCore.Math.Min(System.Double,System.Double)">
+            <summary>두 숫자 중 작은 숫자를 반환합니다.</summary>
+            <param name="value1">비교할 숫자.</param>
+            <param name="value2">비교할 숫자.</param>
+            <returns name="min">두 숫자 중 작은 숫자.</returns>
+            <search>minimum,lesser,smaller</search>
+        </member>
+        <member name="M:DSCore.Math.Min(System.Int64,System.Int64)">
+            <summary>두 숫자 중 작은 숫자를 반환합니다.</summary>
+            <param name="int1">비교할 숫자.</param>
+            <param name="int2">비교할 숫자.</param>
+            <returns name="min">두 숫자 중 작은 숫자.</returns>
+            <search>minimum,lesser,smaller</search>
+        </member>
+        <member name="M:DSCore.Math.Pow(System.Double,System.Double)">
+            <summary>숫자를 지정된 멱 수만큼 제곱합니다.</summary>
+            <param name="number">제곱할 숫자.</param>
+            <param name="power">숫자를 제곱할 멱 수.</param>
+            <returns name="result">제곱한 숫자.</returns>
+            <search>^,power,raise,exponent</search>
+        </member>
+        <member name="M:DSCore.Math.Rand">
+            <summary>[0, 1) 범위의 난수를 생성합니다.</summary>
+            <returns name="number">[0, 1) 범위의 난수.</returns>
+            <search>random,numberrange</search>
+        </member>
+        <member name="M:DSCore.Math.Round(System.Double)">
+            <summary>숫자를 가장 가까운 정수 값으로 반올림합니다.
+            참고로 이 방법은 정수 유형 대신 배정밀도 부동 소수점 수로 반환합니다.</summary>
+            <param name="number">반올림할 숫자.</param>
+            <returns name="number">해당 숫자와 가까운 정수 값입니다.</returns>
+        </member>
+        <member name="M:DSCore.Math.Round(System.Double,System.Int32)">
+            <summary>숫자를 지정된 소수 자릿수로 반올림합니다.</summary>
+            <param name="number">반올림할 숫자</param>
+            <param name="digits">반환 값에 대한 소수 자릿수</param>
+            <returns name="number">자릿수와 동일한 소수 자릿수를 포함하는 값과 가장 가까운 숫자</returns>
+        </member>
+        <member name="M:DSCore.Math.Sign(System.Double)">
+            <summary>숫자의 부호를 반환합니다(-1, 0, 1).</summary>
+            <param name="number">부호를 가져올 숫자</param>
+            <returns name="int">숫자의 부호: -1, 0 또는 1</returns>
+        </member>
+        <member name="M:DSCore.Math.Sign(System.Int64)">
+            <summary>숫자의 부호를 반환합니다(-1, 0, 1).</summary>
+            <param name="int">부호를 가져올 정수</param>
+            <returns name="int">숫자의 부호: -1, 0 또는 1</returns>
+        </member>
+        <member name="M:DSCore.Math.Sin(System.Double)">
+            <summary>각도의 사인을 계산합니다.</summary>
+            <param name="angle">사인을 계산할 각도(도)입니다.</param>
+            <returns name="double">각도의 사인.</returns>
+            <search>sine</search>
+        </member>
+        <member name="M:DSCore.Math.Sinh(System.Double)">
+            <summary>각도(라디안)의 쌍곡선 사인을 계산합니다.</summary>
+            <param name="angle">라디안 각도.</param>
+            <returns name="double">각도의 쌍곡선 사인.</returns>
+            <search>hyperbolic</search>
+        </member>
+        <member name="M:DSCore.Math.Sqrt(System.Double)">
+            <summary>[0, ∞) 범위 숫자의 양의 제곱근을 계산합니다.</summary>
+            <param name="number">[0, ∞) 범위의 숫자.</param>
+            <returns name="double">숫자의 양의 제곱근.</returns>
+            <search>square,root,radical</search>
+        </member>
+        <member name="M:DSCore.Math.Tan(System.Double)">
+            <summary>각도의 탄젠트를 계산합니다.</summary>
+            <param name="angle">라디안 각도</param>
+            <returns name="double">각도의 탄젠트</returns>
+            <search>tangent</search>
+        </member>
+        <member name="M:DSCore.Math.Tanh(System.Double)">
+            <summary>각도(라디안)의 쌍곡선 탄젠트를 계산합니다.</summary>
+            <param name="angle">라디안 각도</param>
+            <returns name="double">각도의 쌍곡선 탄젠트</returns>
+            <search>hyperbolic,tanh</search>
+        </member>
+        <member name="M:DSCore.Math.Sum(System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>숫자의 합계를 계산합니다</summary>
+            <param name="values">합계를 더할 숫자</param>
+            <returns name="double">값의 합계</returns>
+            <search>mass addition,massadd</search>
+        </member>
+        <member name="M:DSCore.Math.Factorial(System.Int64)">
+            <summary>양의 정수의 계승을 계산합니다.</summary>
+            <param name="number">양의 정수</param>
+            <returns name="number">정수의 계승.</returns>
+            <search>!</search>
+        </member>
+        <member name="M:DSCore.Math.Xor(System.Boolean,System.Boolean)">
+            <summary>부울 XOR: 정확히 하나의 입력이 true인 경우에만 true를 반환합니다.</summary>
+            <param name="bool">부울</param>
+            <param name="otherBool">기타 부울</param>
+            <returns name="bool">부울 결과</returns>
+            <search>xor,exclusive,or</search>
+        </member>
+        <member name="M:DSCore.Math.DoCheckedCast(System.Double)">
+            <summary>선택한 컨텍스트에서 오래 캐스트할 수 있도록 투사를 수행합니다. 작업에서 오버플로우가 발생하면 경고가 생성되고 오버플로 처리된 결과가 반환됩니다.</summary>
+            <param name="value">수행할 작업</param>
+            <returns>작업의 결과</returns>
+        </member>
+        <member name="T:DSCore.Object">
+            <summary>모든 데이터에 적용되는 일반 함수.</summary>
+        </member>
+        <member name="M:DSCore.Object.IsNull(System.Object)">
+            <summary>지정된 객체가 null인지 확인합니다.</summary>
+            <param name="object">테스트할 객체.</param>
+            <returns name="bool">객체가 null인지 여부.</returns>
+            <search>is null</search>
+        </member>
+        <member name="M:DSCore.Object.Identity(System.Object)">
+            <summary>전달된 값을 반환하며 아무 것도 하지 않습니다.</summary>
+            <param name="object">객체.</param>
+            <returns name="object">동일한 객체</returns>
+        </member>
+        <member name="M:DSCore.Object.Type(System.Object)">
+            <summary>문자열로 표현된 객체 유형을 반환합니다.</summary>
+            <param name="object">유형을 조회할 객체</param>
+            <returns>객체 유형.</returns>
+        </member>
+        <member name="T:DSCore.Properties.Resources">
+            <summary>현지화된 문자열 등을 조회하기 위한 강력한 유형의 리소스 클래스</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ResourceManager">
+            <summary>이 클래스에서 사용하는 캐시된 ResourceManager 인스턴스(instance)를 반환합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Culture">
+            <summary>이러한 강력한 유형의 리소스 클래스를 사용하여 모든 리소스 
+              조회에 대한 현재 스레드의 CurrentUICulture 특성을 재지정합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.BitmapOverflowError">
+            <summary>"제공된 색상 데이터가 너무 커서 이미지 경계에 맞지 않습니다."와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
+            <summary>"입력은 단일 값 또는 내포되지 않은 리스트여야 합니다."와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataUnexpectedInputExceptionMessage">
+            <summary>"이 노드는 {0} 입력을 예상했지만 {1} 입력을 수신했습니다. 필요한 입력을 제공하거나 노드의 드롭다운 메뉴에서 새 유형을 선택하십시오."와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataUnsupportedCombinationOfDataTypesExceptionMessage">
+            <summary>"이 노드는 현재 입력 리스트 {0}의 데이터 유형 조합을 지원하지 않습니다. 입력 리스트에 동일한 데이터 유형의 항목이 포함되어 있는지, 아니면 공통 상위 유형이 혼합된 유형인지 확인하십시오."와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataUnsupportedDataTypeExceptionMessage">
+            <summary>"이 노드는 현재 입력 데이터 유형({0})을 지원하지 않습니다. 드롭다운 메뉴에서 지원되는 데이터 유형을 확인하십시오."와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekFriday">
+            <summary>'금요일'과 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekMonday">
+            <summary>'월요일'과 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekSaturday">
+            <summary>'토요일'과 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekSunday">
+            <summary>'일요일'과 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekThursday">
+            <summary>'목요일'과 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekTuesday">
+            <summary>'화요일'과 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekWednesday">
+            <summary>'수요일'과 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Deserialize_Bad_Format">
+            <summary>"유형 {0}에 대한 json 형식이 올바르게 지정되지 않았습니다."와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Deserialize_Unsupported_Cache">
+            <summary>"저장된 데이터를 로드할 수 없습니다."와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Serialize_Depth_Unsupported">
+            <summary>'경로 "{2}"에서 깊이 {0}이(가) 최대 깊이 {1}을(를) 초과합니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Serialize_DesignScript_Unsupported">
+            <summary>"이 유형의 형상은 직렬화할 수 없습니다."와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Serialize_Unsupported_Type">
+            <summary>"유형 {0}의 데이터를 저장할 수 없습니다."와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ExportToCSVObsolete">
+            <summary>'대신 Data.ExportCSV 노드를 사용하십시오.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FactorialNegativeInt">
+            <summary>'Math.Factorial 입력 값은 음수일 수 없습니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FactorialOverflow">
+            <summary>'Math.Factorial 반환 값이 범위를 벗어났습니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FindPointsWithinRadiusNullPointMessage">
+            <summary>'중심점을 입력해야 합니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FindPointsWithinRadiusSearchRadiusMessage">
+            <summary>'검색 반지름은 0이 아니어야 합니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FromObjectObsolete">
+            <summary>'사용하지 않는 노드입니다. "String from Object"를 사용하십시오.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.IntegerOverflow">
+            <summary>'작업으로 인해 정수 오버플로우가 발생하였습니다. 그 결과가 예기치 않게 발생할 수 있습니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.InvalidDestinationPathErrorMessage">
+            <summary>복사 경로로 사용된 잘못된 대상 파일 경로와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.InvalidKeysErrorMessage">
+            <summary>'하나 이상의 입력 유형이 일치하지 않습니다. 키로 나열한 리스트는 지원되지 않습니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.InvalidKeysLenghtErrorMessage">
+            <summary>'항목 수가 키 수와 일치하지 않습니다.'와 유사한 현지화된 문자열을 조회합니다. href=InvalidKeysLenghtErrorMessage.html.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.LoadImageFromPathObsolete">
+            <summary>'대신 File.FromPath -&gt; Image.ReadFromFile 노드를 사용하십시오.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.MissingPythonEngine">
+            <summary>'선택한 Python 엔진을 찾을 수 없음'과 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ObjectArgumentExceptionMessage">
+            <summary>Object와 유사한 현지화된 문자열 조회는 null일 수 없습니다. 적절한 값을 제공하십시오.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.QuadtreeConstructionEmptyUVSetMessage">
+            <summary>'빈 점 집합에서 쿼드트리를 구성할 수 없습니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.QuadtreeConstructionNullUVSetMessage">
+            <summary>'null UV 집합에서 Quadtree를 구성할 수 없습니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ReadImageObsolete">
+            <summary>'대신 File.FromPath -&gt; Image.ReadFromFile -&gt; Image.Pixels 노드를 사용하십시오.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ReadTextObsolete">
+            <summary>'대신 File.FromPath -&gt; File.ReadText 노드를 사용하십시오.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.StringRemoveCountOutOfRangeMessage">
+            <summary>'개수가 범위를 벗어났습니다!'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.StringRemoveStartIndexOutOfRangeMessage">
+            <summary>'StartIndex가 범위를 벗어났습니다!'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.StringToNumberInvalidNumberMessage">
+            <summary>유효하지 않은 숫자와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.WebRequestNullUrlMessage">
+            <summary>Null이 될 수 없는 URL과 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.WriteImageObsolete">
+            <summary>'대신 Image.WriteToFile 노드를 사용하십시오.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="T:DSCore.PythonEvaluator">
+            <summary>모든 Python 엔진에서 Python 코드를 평가합니다. VM에서만 사용해야 합니다.</summary>
+        </member>
+        <member name="M:DSCore.Quadtree.ByUVs(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
+            <summary>(0,0)-&gt;(1,1) 도메인을 포함하는 Quadtree를 구성합니다.</summary>
+            <param name="uvs">(0,0)-&gt;(1,1) 도메인 내 UV 집합.</param>
+            <returns>Quadtree 객체.</returns>
+        </member>
+        <member name="M:DSCore.Quadtree.FindPointsWithinRadius(Autodesk.DesignScript.Geometry.UV,System.Double)">
+            <summary>지정된 UV 위치의 반지름 내 쿼드트리에서 모든 쿼드트리 점(UV)을 찾습니다.</summary>
+            <param name="center">검색 영역 중심의 UV.</param>
+            <param name="radius">검색 영역의 반지름.</param>
+            <returns>UV 리스트.</returns>
+        </member>
+        <member name="M:DSCore.Node.Split">
+            <summary>하나의 노드를 네 개의 사분면으로 분할합니다.</summary>
+            <returns/>
+        </member>
+        <member name="T:DSCore.UVRect">
+            <summary>최소 및 최대 UV에 의해 설명된 직사각형을 정의하는 데 
+            사용되는 도우미 클래스.</summary>
+        </member>
+        <member name="T:DSCore.UVExtensions">
+            <summary>UV에 대한 확장 방법.</summary>
+        </member>
+        <member name="T:DSCore.Sorting">
+            <summary>키 기준 정렬을 위한 유틸리티 방법. 이 방법은 노드가 되지 않도록 표시하지 말아야 하며, 대신
+            키 매핑 함수를 수용하는 DS 구현으로 마무리해야 합니다.</summary>
+        </member>
+        <member name="T:DSCore.String">
+            <summary>문자열 관리 방법.</summary>
+        </member>
+        <member name="M:DSCore.String.ToNumber(System.String)">
+            <summary>문자열을 정수 또는 double 값으로 변환합니다.</summary>
+            <param name="string">변환할 문자열</param>
+            <returns name="number">정수 또는 double 유형 숫자</returns>
+            <search>2number,str2number,strtonumber,string2number,stringtonumber,int,double,cast</search>
+        </member>
+        <member name="M:DSCore.String.GetNumber(System.String)">
+            <summary>대상 문자열에서 모든 숫자 문자열을 문자열로 가져옵니다.</summary>
+            <param name="string">가져올 대상 문자열</param>
+            <returns name="str">문자열의 숫자</returns>
+            <search>getnumber,tonumber,strtonumber,numberinstring,string2number,stringtonumber,int,double,cast</search> 
+        </member>
+        <member name="M:DSCore.String.Concat(System.String[])">
+            <summary>여러 문자열을 하나의 문자열로 연결합니다.</summary>
+            <param name="strings">연결할 문자열 리스트.</param>
+            <returns name="string">문자열 리스트에서 작성된 문자열.</returns>
+            <search>concatenate,join,combine strings</search>
+        </member>
+        <member name="M:DSCore.String.Length(System.String)">
+            <summary>지정된 문자열에 포함된 문자의 수를 반환합니다.</summary>
+            <param name="string">길이를 찾을 문자열</param>
+            <returns name="int">문자열 내 문자의 수</returns>
+            <search>count,size,characters,chars,length,sizeof</search>
+        </member>
+        <member name="M:DSCore.String.Split(System.String,System.String[])">
+            <summary>단일 문자열을 지정된 구분 기호 문자열을 사용하여 문자열
+                 리스트로 구분합니다.</summary>
+            <param name="string">분할할 문자열</param>
+            <param name="separators">분할의 시작과 끝을 지정하는 문자열(존재하는 경우).</param>
+            <returns name="strings">입력 문자열에서 작성된 문자열의 리스트</returns>
+            <search>divide,separator,delimiter,cut,csv,comma,</search>
+        </member>
+        <member name="M:DSCore.String.Join(System.String,System.String[])">
+            <summary>결합되는 각 문자열 사이에 지정된 구분자를 삽입하여, 여러 문자열을
+                하나의 문자열로 연결합니다.</summary>
+            <param name="separator">결합되는 문자열 사이에 삽입할 문자열.</param>
+            <param name="strings">단일 문자열로 결합될 문자열.</param>
+            <returns name="string">구분 문자가 포함된 문자열 리스트에서 작성된 문자열.</returns>
+            <search>join,separator,build csv,concat,construct</search>
+        </member>
+        <member name="M:DSCore.String.ToUpper(System.String)">
+            <summary>지정된 문자열의 모든 문자를 대문자로 변환합니다.</summary>
+            <param name="string">대문자로 변환할 문자열</param>
+            <returns name="string">대문자 문자열</returns>
+            <search>2uppercase,to uppercase,touppercase,uppercase</search>
+        </member>
+        <member name="M:DSCore.String.ToLower(System.String)">
+            <summary>지정된 문자열의 모든 문자를 소문자로 변환합니다.</summary>
+            <param name="string">소문자로 변환할 문자열</param>
+            <returns name="string">소문자 문자열</returns>
+            <search>2lowercase,to lowercase,tolowercase,lowercase</search>
+        </member>
+        <member name="M:DSCore.String.ToTitle(System.String)">
+            <summary>지정된 문자열을 제목으로 변환합니다.</summary>
+            <param name="str">제목이 될 문자열</param>
+            <returns name="str">제목 문자열</returns>
+            <search>2titlecase,to titlecase,to title case,totitlecase,titlecase</search>
+        </member>
+        <member name="M:DSCore.String.ChangeCase(System.String,System.Boolean)">
+            <summary>지정된 문자열의 모든 문자를 부울 매개변수를 기준으로 
+                대문자 또는 소문자로 변환합니다.</summary>
+            <param name="string">대문자 또는 소문자로 변환할 문자열.</param>
+            <param name="upper">true면 대문자, false면 소문자로 변환합니다.</param>
+            <returns name="string">대문자 또는 소문자로 변환된 문자열.</returns>
+            <search>
+                2lowercase,to lowercase,tolowercase,lowercase,
+                2uppercase,to uppercase,touppercase,uppercase
+            </search>
+        </member>
+        <member name="M:DSCore.String.Substring(System.String,System.Int32,System.Int32)">
+            <summary>지정된 문자열에서 하위 문자열을 검색합니다. 하위 문자열은 지정된 문자
+                위치에서 시작하고 지정된 길이를 가집니다.</summary>
+            <param name="string">하위 문자열을 가져올 문자열</param>
+            <param name="startIndex">원래 문자열에서 하위 문자열의 시작 문자 위치</param>
+            <param name="length">하위 문자열의 문자 수</param>
+            <returns name="string">원래 문자열에서 가져온 하위 문자열</returns>
+             <search>subset,get string,part,smaller string</search>
+        </member>
+        <member name="M:DSCore.String.Contains(System.String,System.String,System.Boolean)">
+            <summary>지정된 문자열에 지정된 하위 문자열이 포함되어 있는지 확인합니다.</summary>
+            <param name="string">검색할 문자열</param>
+            <param name="searchFor">검색할 하위 문자열</param>
+            <param name="ignoreCase">대소문자 구분 여부</param>
+            <returns name="bool">문자열에 하위 문자열이 포함되어 있는지 여부</returns>
+            <search>test,within,in,is in,part of</search>
+        </member>
+        <member name="M:DSCore.String.CountOccurrences(System.String,System.String,System.Boolean)">
+            <summary>지정된 문자열에 하위 문자열이 겹치지 않고 나오는 횟수를 계산합니다.</summary>
+            <param name="string">검색할 문자열</param>
+            <param name="searchFor">검색할 하위 문자열</param>
+            <param name="ignoreCase">대소문자 구분 여부</param>
+            <returns name="int">지정된 문자열에 하위 문자열이 겹치지 않고 나오는 횟수</returns>
+            <search>count,substring,count occurrences,numberof,search,find,within</search>
+        </member>
+        <member name="M:DSCore.String.Replace(System.String,System.String,System.String)">
+            <summary>문자열에서 지정된 텍스트가 나오는 모든 경우 다른 텍스트로 대체합니다.</summary>
+            <param name="string">하위 문자열을 대체할 문자열.</param>
+            <param name="searchFor">대체될 텍스트.</param>
+            <param name="replaceWith">대체할 텍스트.</param>
+            <returns name="string">대체가 완료된 문자열.</returns>
+            <search>replace,overwrite,override,find and replace</search>
+        </member>
+        <member name="M:DSCore.String.EndsWith(System.String,System.String,System.Boolean)">
+            <summary>지정된 문자열이 지정된 하위 문자열로 끝나는지 확인합니다.</summary>
+            <param name="string">끝 부분을 검색할 문자열</param>
+            <param name="searchFor">끝 부분에서 검색할 하위 문자열</param>
+            <param name="ignoreCase">대소문자를 구분하지 않으려면 true, 대소문자를 구분하려면 false</param>
+            <returns name="bool">문자열이 하위 문자열로 시작하면 true, 그렇지 않으면 false</returns>
+            <search>test,does end,last,str end,terminated</search>
+        </member>
+        <member name="M:DSCore.String.StartsWith(System.String,System.String,System.Boolean)">
+            <summary>지정된 문자열이 지정된 하위 문자열로 시작하는지 확인합니다.</summary>
+            <param name="string">시작 부분을 검색할 문자열</param>
+            <param name="searchFor">시작 부분에서 검색할 하위 문자열.</param>
+            <param name="ignoreCase">대소문자를 구분하지 않으려면 true, 대소문자를 구분하려면 false</param>
+            <returns name="bool">문자열이 하위 문자열로 시작하면 true, 그렇지 않으면 false</returns>
+            <search>test,beginswith,start,string start,front</search>
+        </member>
+        <member name="M:DSCore.String.TrimWhitespace(System.String)">
+            <summary>지정된 문자열의 처음과 끝에서 공백을 모두 제거합니다.</summary>
+            <param name="string">자를 문자열.</param>
+            <returns name="string">처음과 끝에서 공백이 제거된 문자열.</returns>
+            <search>trimstring,cleanstring,whitespace,blanks,spaces,string trim</search>
+        </member>
+        <member name="M:DSCore.String.TrimLeadingWhitespace(System.String)">
+            <summary>지정된 문자열의 처음에서 공백을 모두 제거합니다.</summary>
+            <param name="string">자를 문자열.</param>
+            <returns name="string">선행 공백이 제거된 문자열.</returns>
+            <search>trim string,clean string,trim leading whitespaces,string trim</search>
+        </member>
+        <member name="M:DSCore.String.TrimTrailingWhitespace(System.String)">
+            <summary>지정된 문자열의 끝에서 공백을 모두 제거합니다.</summary>
+            <param name="string">자를 문자열.</param>
+            <returns name="string">끝에서 공백이 제거된 문자열.</returns>
+            <search>trim string,clean string,trim trailing whitespaces,string trim</search>
+        </member>
+        <member name="M:DSCore.String.IndexOf(System.String,System.String,System.Boolean)">
+            <summary>문자열 내에서 하위 문자열이 처음 나오는 경우의 0 기반 인덱스를 찾습니다.
+                인덱스를 찾을 수 없는 경우 -1을 반환합니다.</summary>
+            <param name="string">검색할 문자열</param>
+            <param name="searchFor">검색할 하위 문자열</param>
+            <param name="ignoreCase">대소문자 구분 여부</param>
+            <returns name="int">하위 문자열이 처음 나오는 경우의 인덱스 또는 -1(찾을 수 없는 경우)</returns>
+            <search>index of,find substring,where,search</search>
+        </member>
+        <member name="M:DSCore.String.AllIndicesOf(System.String,System.String,System.Boolean)">
+            <summary>하위 문자열이 문자열 내에 나타나는 색인의 리스트를 찾습니다.</summary>
+            <param name="string">검색할 문자열.</param>
+            <param name="searchFor">검색할 하위 문자열.</param>
+            <param name="ignoreCase">대소문자 구분 여부.</param>
+            <returns name="indexList">하위 문자열이 발견된 색인의 리스트(유형: int[])</returns>
+            <search>all indices of,find substring,where,search</search>
+        </member>
+        <member name="M:DSCore.String.LastIndexOf(System.String,System.String,System.Boolean)">
+            <summary>문자열 내에서 하위 문자열이 마지막으로 나오는 경우의 0 기반 인덱스를 찾습니다.
+                인덱스를 찾을 수 없는 경우 -1을 반환합니다.</summary>
+            <param name="string">검색할 문자열.</param>
+            <param name="searchFor">검색할 하위 문자열.</param>
+            <param name="ignoreCase">대소문자 구분 여부.</param>
+            <returns name="int">하위 문자열이 마지막으로 나오는 경우의 인덱스 또는 -1(찾을 수 없는 경우).</returns>
+            <search>last index of,find substring,where,search</search>
+        </member>
+        <member name="M:DSCore.String.PadLeft(System.String,System.Int32,System.String)">
+            <summary>지정된 문자열의 문자를 지정된 총 길이가 되도록 왼쪽에 공백을 채워 
+                오른쪽 정렬합니다.</summary>
+            <param name="string">채울 문자열</param>
+            <param name="newLength">문자를 채운 후 문자열의 총 길이</param>
+            <param name="padChars">채울 문자, 기본값은 공백입니다.</param>
+            <returns name="string">지정된 총 길이가 되도록 선행 공백을 채워 오른쪽 정렬한 문자열.</returns>
+            <search>pad left,right align,right-align,pad,string space,whitespace</search>
+        </member>
+        <member name="M:DSCore.String.PadRight(System.String,System.Int32,System.String)">
+            <summary>지정된 문자열의 문자를 지정된 총 길이가 되도록 오른쪽에 공백을 채워 
+                왼쪽 정렬합니다.</summary>
+            <param name="string">채울 문자열</param>
+            <param name="newLength">문자를 채운 후 문자열의 총 길이</param>
+            <param name="padChars">채울 문자, 기본값은 공백입니다.</param>
+            <returns name="string">지정된 총 길이가 되도록 후행 공백을 채워 왼쪽 정렬한 문자열</returns>
+            <search>pad right,left align,left-align,pad string space,whitespace</search>
+        </member>
+        <member name="M:DSCore.String.Center(System.String,System.Int32,System.String)">
+            <summary>원래 문자의 양쪽에 공백을 넣어 문자열의 폭을 늘립니다.</summary>
+            <param name="string">중앙에 놓을 문자열</param>
+            <param name="newLength">중앙에 놓은 후 문자열의 총 길이</param>
+            <param name="padChars">양쪽에 넣을 문자. 기본값은 공백입니다.</param>
+            <returns name="string">지정된 총 길이가 되도록 선행 및 후행 공백을 채워 
+                가운데 정렬한 문자열.</returns>
+            <search>center align,center-align,centered,whitespace,expand string,surround</search>
+        </member>
+        <member name="M:DSCore.String.Insert(System.String,System.Int32,System.String)">
+            <summary>문자열을 지정된 인덱스의 다른 문자열에 삽입합니다.</summary>
+            <param name="string">삽입할 문자열.</param>
+            <param name="index">인덱스 위치.</param>
+            <param name="toInsert">삽입할 문자열.</param>
+            <returns name="string">하위 문자열이 삽입된 문자열.</returns>
+            <search>insertstring,insert string</search>
+        </member>
+        <member name="M:DSCore.String.Remove(System.String,System.Int32,System.Nullable{System.Int32})">
+            <summary>문자열에서 문자를 제거합니다.</summary>
+            <param name="string">문자를 제거할 문자열.</param>
+            <param name="startIndex">제거를 시작할 위치의 인덱스.</param>
+            <param name="count">제거할 문자 수,
+                주: 개수가 음수이면 제거 프로세스는 오른쪽에서 왼쪽으로 진행됩니다.</param>
+            <returns name="string">문자가 제거된 문자열.</returns>
+            <search>delete,rem,shorten</search>
+        </member>
+        <member name="T:DSCore.Thread">
+            <summary>평가 스레드 조작 함수.</summary>
+        </member>
+        <member name="M:DSCore.Thread.Pause(System.Object,System.Int32)">
+            <summary>현재 평가 스레드를 지정된 기간 동안 일시 중지합니다.</summary>
+            <param name="object">통과할 객체.</param>
+            <param name="msTimeout">스레드를 일시 중지할 기간(밀리초).</param>
+            <returns name="object">통과한 객체.</returns>
+        </member>
+    </members>
+</doc>

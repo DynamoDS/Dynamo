@@ -873,7 +873,7 @@ Ce package contient probablement un ensemble qui est bloqué. Vous devrez charge
     <value>Echec de l'insertion du fichier, car certains noeuds existent déjà dans l'espace de travail courant.</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Insérer une définition de Dynamo…</value>
+    <value>Insert Dynamo Graph...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>Fichier d'exemple ajouté à l'espace de travail. Le mode d'exécution est passé à Manuel.</value>

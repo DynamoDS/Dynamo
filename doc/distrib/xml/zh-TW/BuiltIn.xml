@@ -1,0 +1,173 @@
+<?xml version="1.0"?><doc>
+  <assembly>
+    <name>BuiltIn</name>
+  </assembly>
+  <members>
+    <member name="List.Rank">
+      <summary>傳回清單的最深深度</summary>
+      <param name="list">要從中查詢等級的清單</param>
+      <returns name="int">清單的最深深度</returns>
+      <search>rank,depth,nesting,ranks</search>
+    </member>
+    <member name="List.RemoveIfNot">
+      <summary>移除清單中不屬於指定類型之成員的成員。</summary>
+      <param name="list">要從中移除項目的清單</param>
+      <param name="type">元素類型</param>
+      <returns name="list">移除指定類型外所有項目的清單</returns>
+      <search>remove,not,ofType,filtertype</search>
+    </member>
+    <member name="List.Equals">
+      <summary>判斷兩個物件例證是否相等。</summary>
+      <param name="object">第一個物件</param>
+      <param name="otherObject">其他物件</param>
+      <returns name="bool">如果物件例證相等則傳回 true，如果不同則傳回 false</returns>
+      <search>equals</search>
+    </member>
+    <member name="List.SortByFunction">
+      <summary>使用函數來決定如何排序清單項目。</summary>
+      <param name="list">值清單</param>
+      <param name="sortFunction">用來排序清單的函數</param>
+      <returns name="sortedList">類型: var[]..[]</returns>
+      <search>sort,order</search>
+    </member>
+    <member name="ToString">
+      <param name="object">某些物件</param>
+      <search>string</search>
+    </member>
+    <member name="__ToStringFromObject">
+      <param name="object">某些物件</param>
+      <search>string,from,object</search>
+    </member>
+    <member name="__ToStringFromArray">
+      <param name="list">某些清單</param>
+      <search>string,from,array</search>
+    </member>
+    <member name="__Apply">
+      <param name="functionObject"/>
+      <param name="param"/>
+      <search>apply</search>
+    </member>
+    <member name="__ApplyList">
+      <param name="functionObject"/>
+      <param name="param"/>
+      <search>apply,list</search>
+    </member>
+    <member name="__GetOutput">
+      <param name="outputs"/>
+      <param name="key"/>
+      <search>output</search>
+    </member>
+    <member name="__Compose">
+      <param name="funcs"/>
+      <search>compose,functionchain</search>
+    </member>
+    <member name="__ComposeBuffered">
+      <param name="funcs"/>
+      <param name="amt"/>
+      <param name="arg"/>
+      <search>compose,buffered</search>
+    </member>
+    <member name="List.MinimumItemByKey">
+      <summary>傳回清單中產生做為鍵投射之函數最小值的項目</summary>
+      <param name="list">值清單</param>
+      <param name="keyFunction">套用至清單項目的函數</param>
+      <returns name="minimumItem">清單中使用 keyFunction 的最小項目 (類型: var[]..[])</returns>
+      <search>min,item,key</search>
+    </member>
+    <member name="List.MaximumItemByKey">
+      <summary>傳回清單中產生做為鍵投射之函數最大值的項目</summary>
+      <param name="list">值清單</param>
+      <param name="keyFunction">套用至清單項目的函數</param>
+      <returns name="maximumItem">清單中使用 keyFunction 的最大項目 (類型: var[]..[])</returns>
+      <search>max,item,key</search>
+    </member>
+    <member name="__Replace">
+      <param name="list">值清單</param>
+      <param name="with"/>
+      <param name="predicate"/>
+      <search>replace</search>
+    </member>
+    <member name="__Filter">
+      <param name="list">值清單</param>
+      <param name="predicate"/>
+      <search>filter</search>
+    </member>
+    <member name="__Combine">
+      <param name="func">函數</param>
+      <param name="lists"/>
+      <search>combine</search>
+    </member>
+    <member name="__Map">
+      <param name="func">函數</param>
+      <param name="arg"/>
+      <search>map</search>
+    </member>
+    <member name="__LaceShortest">
+      <param name="func">函數</param>
+      <param name="lists"/>
+      <search>lace,shortest</search>
+    </member>
+    <member name="__LaceLongest">
+      <param name="func">函數</param>
+      <param name="lists"/>
+      <search>lace,longest</search>
+    </member>
+    <member name="__ApplyNested">
+      <param name="fs">函數</param>
+      <param name="xs"/>
+      <param name="amt"/>
+      <search>apply,nested</search>
+    </member>
+    <member name="__CartesianProduct">
+      <param name="func">函數</param>
+      <param name="lists"/>
+      <search>cartesian,product</search>
+    </member>
+    <member name="__Scan">
+      <param name="accumulator"/>
+      <param name="seed"/>
+      <param name="lists"/>
+      <search>scan</search>
+    </member>
+    <member name="__Reduce">
+      <param name="accumulator"/>
+      <param name="seed"/>
+      <param name="lists"/>
+      <search>reduce</search>
+    </member>
+    <member name="List.GroupByFunction">
+      <summary>使用函數來決定如何將清單項目分組。</summary>
+      <param name="list">值清單</param>
+      <param name="groupFunction">要群組清單的函數</param>
+      <returns name="groupedList">任意等級/層級的清單 (類型: var[]..[])</returns>
+      <search>group,function</search>
+    </member>
+    <member name="List.TrueForAll">
+      <summary>如果清單中所有項目使用給定的查詢函數都評估為 true，則傳回 true</summary>
+      <param name="list">要依查詢函數評估其中項目的清單</param>
+      <param name="queryFunction">要評估清單的函數</param>
+      <returns name="bool">如果清單中所有項目使用給定的查詢函數都評估為 true，則傳回 true</returns>
+      <search>true,all</search>
+    </member>
+    <member name="List.TrueForAny">
+      <summary>如果清單中一或多個項目使用給定的查詢函數都評估為 true，則傳回 true</summary>
+      <param name="list">要依查詢函數評估其中項目的清單</param>
+      <param name="queryFunction">要評估清單的函數</param>
+      <returns name="bool">如果清單中任何一個項目使用查詢函數評估為 true，則傳回 true</returns>
+      <search>true,any</search>
+    </member>
+    <member name="__ForEach">
+      <param name="functionObject"/>
+      <param name="lists"/>
+      <search>foreach</search>
+    </member>
+    <member name="LoopWhile">
+      <summary>指定初始值、條件和迴圈本文建構 while 迴圈節點。</summary>
+      <param name="initialValue">迴路的初始值</param>
+      <param name="continueWhile">while loop condition</param>
+      <param name="loopBody">while loop body</param>
+      <returns name="result">來自迴路的結果 (類型: var[]..[])</returns>
+      <search>loop,while,repeat</search>
+    </member>
+  </members>
+</doc>

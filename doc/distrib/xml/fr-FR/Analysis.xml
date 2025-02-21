@@ -1,0 +1,153 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Analysis</name>
+    </assembly>
+    <members>
+        <member name="T:Analysis.AnalysisResources">
+            <summary>Une classe de ressource fortement typée, pour la recherche de chaînes localisées, etc.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.ResourceManager">
+            <summary>Renvoie l'instance ResourceManager mise en cache utilisée par cette classe.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.Culture">
+            <summary>Remplace la propriété CurrentUICulture du thread actuel pour toutes
+              les recherches de ressources qui utilisent cette classe de ressource fortement typée.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyColorsMessage">
+            <summary>Recherche une chaîne localisée similaire à Il n'existe aucune couleur spécifiée..</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyPointsMessage">
+            <summary>Recherche une chaîne localisée similaire à Il n'existe aucun point spécifié..</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyUVsMessage">
+            <summary>Recherche une chaîne localisée similaire à Il n'existe aucun UV spécifié..</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyValuesMessage">
+            <summary>Recherche une chaîne localisée similaire à Il n'existe aucune valeur spécifiée..</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.InputsNotEquivalentMessage">
+            <summary>Recherche une chaîne localisée similaire à Vous devez indiquer un même nombre de points et de valeurs..</summary>
+        </member>
+        <member name="P:Analysis.IStructuredData`2.ValueLocations">
+            <summary>Un ensemble d'emplacements de calcul.</summary>
+        </member>
+        <member name="P:Analysis.IStructuredData`2.Values">
+            <summary>Une liste des valeurs correspondant à chaque emplacement.</summary>
+        </member>
+        <member name="P:Analysis.ISurfaceData`2.Surface">
+            <summary>La surface d'analyse.</summary>
+        </member>
+        <member name="P:Analysis.ICurveData`2.Curve">
+            <summary>La courbe d'analyse.</summary>
+        </member>
+        <member name="T:Analysis.IAnalysisModel`2">
+            <summary>Un modèle d'analyse.</summary>
+            <typeparam name="TLocation">The analysis location type. (i.e. UV, Point)</typeparam>
+            <typeparam name="TValue">The analysis return type. (i.e. double, vector, SIUnit)</typeparam>
+        </member>
+        <member name="M:Analysis.Label.ByPointAndString(Autodesk.DesignScript.Geometry.Point,System.String)">
+            <summary>Renvoie un objet de libellé dans un objet de point et un libellé de chaîne.</summary>
+            <param name="point"/>
+            <param name="label"/>
+            <returns/>
+        </member>
+        <member name="T:Analysis.PointData">
+            <summary>Classe de stockage des données d'analyse de point de structure.</summary>
+        </member>
+        <member name="P:Analysis.PointData.ValueLocations">
+            <summary>Une liste de points.</summary>
+        </member>
+        <member name="P:Analysis.PointData.Values">
+            <summary>Un dictionnaire des listes de valeurs doubles.</summary>
+        </member>
+        <member name="M:Analysis.PointData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{System.Double})">
+            <summary>Créer un objet PointAnalysisData.</summary>
+            <param name="points">Une liste de points.</param>
+            <param name="values">Liste de valeurs doubles.</param>
+        </member>
+        <member name="T:Analysis.Properties.Resources">
+            <summary>Une classe de ressource fortement typée, pour la recherche de chaînes localisées, etc.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ResourceManager">
+            <summary>Renvoie l'instance ResourceManager mise en cache utilisée par cette classe.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.Culture">
+            <summary>Remplace la propriété CurrentUICulture du thread actuel pour toutes
+              les recherches de ressources qui utilisent cette classe de ressource fortement typée.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ByPointsAndValueObsolete">
+            <summary>Recherche une chaîne localisée similaire à Utiliser des noeuds Point et des noeuds Number comme entrées directes pour les noeuds qui utilisaient précédemment des noeuds PointData.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.BySurfacePointObsolete">
+            <summary>Recherche une chaîne localisée similaire à Utiliser des noeuds de surface et d'UV comme entrées directes pour les noeuds qui utilisaient précédemment des noeuds SurfaceData.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.BySurfacePointsAndValues">
+            <summary>Recherche une chaîne localisée similaire à Utiliser des noeuds Surface, UV et Number comme entrées directes pour les noeuds qui utilisaient précédemment des noeuds SurfaceData.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.SurfaceObsolete">
+            <summary>Recherche une chaîne localisée similaire à Utiliser la surface disponible ailleurs dans le graphique.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueLocationObsolete">
+            <summary>Recherche une chaîne localisée similaire à Utiliser les points disponibles ailleurs dans le graphique.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueLocationsObsolete">
+            <summary>Recherche une chaîne localisée similaire à Utilisez les emplacements d'UV disponibles ailleurs dans votre graphique..</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValuesObsolete">
+            <summary>Recherche une chaîne localisée similaire à Utilisez les valeurs fournies par le noeud effectuant l'analyse..</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueSurfaceObsolete">
+            <summary>Recherche une chaîne localisée similaire à Utiliser les valeurs fournies par le noeud effectuant l'analyse.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.VectorValueObsolete">
+            <summary>Recherche une chaîne localisée similaire à Utiliser des noeuds de vecteur et des noeuds de nombre comme entrées directes pour les noeuds qui utilisaient précédemment des noeuds VectorData.</summary>
+        </member>
+        <member name="T:Analysis.SurfaceData">
+            <summary>Classe de stockage des données structurées d'analyse de surface.</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.Surface">
+            <summary>Surface qui contient les emplacements.</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.ValueLocations">
+            <summary>Liste des emplacements des UV sur la surface.</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.Values">
+            <summary>Dictionnaire des listes de doubles.</summary>
+        </member>
+        <member name="M:Analysis.SurfaceData.BySurfaceAndPoints(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
+            <summary>Créer un objet SurfaceData sans valeurs.</summary>
+            <param name="surface">Surface qui contient les emplacements.</param>
+            <param name="uvs">Liste des emplacements des UV sur la surface.</param>
+            <returns/>
+        </member>
+        <member name="M:Analysis.SurfaceData.BySurfacePointsAndValues(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},System.Collections.Generic.IList{System.Double})">
+            <summary>Créer un objet SurfaceData.</summary>
+            <param name="surface">Surface qui contient les emplacements.</param>
+            <param name="uvs">Liste des emplacements des UV sur la surface.</param>
+            <param name="values">Liste de valeurs doubles.</param>
+        </member>
+        <member name="M:Analysis.AnalysisExtensions.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
+            <summary>Prend deux plans (de type UV) et renvoie True si la différence entre les deux plans est inférieure à 1.0e-6 et renvoie la valeur False dans le cas contraire.</summary>
+            <param name="a"/>
+            <param name="b"/>
+            <returns/>
+        </member>
+        <member name="T:Analysis.Utils.ValueLocation`1">
+            <summary>Une classe pour le stockage d'une valeur à un emplacement.</summary>
+        </member>
+        <member name="T:Analysis.VectorData">
+            <summary>Classe de stockage des données structurées d'analyse vectorielle.</summary>
+        </member>
+        <member name="P:Analysis.VectorData.ValueLocations">
+            <summary>Liste d'emplacements de calcul.</summary>
+        </member>
+        <member name="P:Analysis.VectorData.Values">
+            <summary>Dictionnaire des résultats.</summary>
+        </member>
+        <member name="M:Analysis.VectorData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.Vector})">
+            <summary>Créer un objet VectorAnalysisData.</summary>
+            <param name="points">Liste de points.</param>
+            <param name="values">Liste de valeurs vectorielles.</param>
+        </member>
+    </members>
+</doc>

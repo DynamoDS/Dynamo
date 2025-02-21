@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExtensionName" xml:space="preserve">
-    <value>Node AutoComplete View Extension</value>
+    <value>节点自动完成视图扩展</value>
   </data>
 </root>

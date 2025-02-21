@@ -1,0 +1,106 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>GeometryColor</name>
+    </assembly>
+    <members>
+        <member name="M:Modifiers.GeometryColor.ByGeometryColor(Autodesk.DesignScript.Geometry.Geometry,DSCore.Color)">
+            <summary>Zobrazit geometrii v barvě.</summary>
+            <param name="geometry">Geometrie, kterou chcete použít barvu.</param>
+            <param name="color">Barva.</param>
+            <returns>Objekt zobrazení.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.BySurfaceColors(Autodesk.DesignScript.Geometry.Surface,DSCore.Color[][])">
+             <summary>Zobrazí hodnoty barev na povrchu.
+            
+             Barvy jsou interně převedeny na obrázek textury, který je
+             mapován na povrch.</summary>
+             <param name="surface">Povrch, na který mají být použity barvy.</param>
+             <param name="colors">Dvourozměrný seznam barev.
+            
+             Seznam barev musí být čtvercový. Při pokusu o vložení klikatého pole
+             dojde k výjimce.</param>
+             <returns>Objekt zobrazení.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ByPointsColors(Autodesk.DesignScript.Geometry.Point[],DSCore.Color[])">
+             <summary>Vytvoří barevnou síť pomocí bodů a barev.
+            
+             Seznam bodů se používá k tvorbě trojúhelníkové sítě s
+             nespojenými vrcholy.</summary>
+             <param name="points">Seznam bodů.
+            
+             Aktuálně jsou podporovány pouze trojúhelníkové sítě. Každá trojice bodů v seznamu bude tvořit jeden
+             trojúhelník v síti. Body by měly být uspořádány proti směru hodinových ručiček.
+             Při pokusu o vložení seznamu vrcholů, jejichž počet není dělitelný 3, dojde k výjimce.</param>
+             <param name="colors">Seznam barev.
+            
+             Počet barev musí odpovídat počtu vrcholů. Při pokusu o vložení seznamu barev, v němž není
+             stejný počet barev jako v seznamu bodů, dojde k výjimce.</param>
+             <returns>Objekt zobrazení.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
+            <summary>Zobrazí síť podle jedné barvy, barev na plochu, barev na vrchol nebo barev na vrchol plochy.</summary>
+            <param name="mesh"/>The Mesh on which to apply the colors
+            <param name="colors">Počet barev se musí rovnat 1 (jedna barva), počtu ploch (barva na plochu), počtu vrcholů (barva na vrchol) nebo počtu trojúhelníků vynásobenému třemi (barva na vrchol trojúhelníku)</param>
+            <param name="smoothShading">Pokud je tato hodnota true, stínování bude vypadat vyhlazeně místo složeně, což je užitečné k vizualizaci vyhlazených souvislých povrchů</param>
+            <returns>Objekt zobrazení.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ComputeColorMap(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},DSCore.Color[],System.Int32,System.Int32)">
+            <summary>Vypočítejte množinu barevných map z množiny objektů SurfaceData.</summary>
+            <returns/>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ComputeSamplesFromNormalizedValue(System.Double,System.Int32,System.Int32)">
+            <summary>Tato metoda přemapuje číslo od 0.0 až 1.0 na celočíselnou hodnotu mezi hodnotami lowestpower a highestpower.</summary>
+        </member>
+        <member name="T:Autodesk.DesignScript.Geometry.ImportHelpers">
+            <summary>Uzly Import geometrie se závislostmi, které nechceme nechceme je zavést do protogeometrie. Tyto metody jsou dále sbaleny uzly NodeModel, abychom mohli přesně určit správné umístění názvů a knihoven.</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.ImportFromSATWithUnits(System.String,DynamoUnits.Unit)">
+            <summary>Importuje geometrii z cesty souboru SAT. Nastavte vstup dynamoUnit tak, aby odpovídal způsobu, jakým interpretujete ostatní čísla v souboru aplikace Dynamo.</summary>
+            <param name="filePath">cesta souboru řetězce k souboru .SAT.</param>
+            <param name="dynamoUnit">délka jednotky forge, pokud je ponechána hodnota null, soubor sat bude importován jako bez jednotek.</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.ImportFromSATWithUnits(System.IO.FileInfo,DynamoUnits.Unit)">
+            <summary>Importuje geometrii z cesty souboru SAT. Nastavte vstup dynamoUnit tak, aby odpovídal způsobu, jakým interpretujete ostatní čísla v souboru aplikace Dynamo.</summary>
+            <param name="file">objekt souboru ukazující na soubor .SAT.</param>
+            <param name="dynamoUnit">pokud je délka jednotky kování nulová, soubor sat bude importován bez jednotek</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.DeserializeFromSABWithUnits(System.Byte[],DynamoUnits.Unit)">
+            <summary>Importuje geometrii z bajtového pole SAB. Nastavte vstup dynamoUnit tak, aby odpovídal způsobu, jakým interpretujete ostatní čísla v souboru aplikace Dynamo.</summary>
+            <param name="buffer">Bajtové pole SAB</param>
+            <param name="dynamoUnit">pokud je délka jednotky kování nulová, soubor sat bude importován bez jednotek</param>
+            <returns/>
+        </member>
+        <member name="T:GeometryColor.Properties.Resources">
+            <summary>Třída prostředků silného typu k vyhledávání lokalizovaných řetězců apod.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.ResourceManager">
+            <summary>Vrátí instanci ResourceManager uloženou ve vyrovnávací paměti, která je použita touto třídou.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.Culture">
+            <summary>Přepíše vlastnost CurrentUICulture aktuálního vlákna pro všechna vyhledávání prostředků používající tuto třídu prostředků silného typu.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.ByMeshColorsInvalidColorCountMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Počet barev není platný.“. Musí se rovnat 1 (jedna barva) nebo se rovnat počtu ploch (barva na plochu) nebo se rovnat počtu vrcholů (barva na vrchol) nebo se rovnat počtu trojúhelníků vynásobenému třemi (barva na vrchol trojúhelníku). Pokud chcete obarvit více sítí, možná budete muset použít úroveň seznamu.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.JaggedListExceptionMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Seznam barev nesmí být vícenásobný seznam“.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.NoColorsExceptionMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Je nutné zadat určité barvy.“.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.NoVertexExceptionMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Je nutné zadat určité vrcholy".</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.TwoDimensionalListExceptionMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Je nutné zadat dvojrozměrný seznam barev“.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.VertexColorCountMismatchExceptionMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Počet zadaných barev musí odpovídat počtu vrcholů“.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.VerticesDivisibleByThreeExceptionMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Počet zadaných vrcholů musí být dělitelný třemi.“.</summary>
+        </member>
+    </members>
+</doc>

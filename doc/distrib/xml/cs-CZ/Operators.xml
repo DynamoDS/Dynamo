@@ -1,0 +1,104 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Operators</name>
+    </assembly>
+    <members>
+        <member name="%add">
+            <summary>Vrátí součet hodnot X a Y.</summary>
+            <param name="x">Celočíselná hodnota, hodnota double nebo řetězec</param>
+            <param name="y">Celočíselná hodnota, hodnota double nebo řetězec</param>
+            <returns name="var">Součet dvou vstupních čísel nebo zřetězení dvou řetězců</returns>
+            <search>add, plus, addition, +</search>
+        </member>
+		<member name="%sub">
+            <summary>Vrátí rozdíl hodnot X a Y</summary>
+            <param name="x">Celočíselná nebo hodnota double</param>
+            <param name="y">Celočíselná nebo hodnota double</param>
+            <returns name="number">Výsledek vstupu Y odečtený od vstupu X</returns>
+            <search>sub, subtract, difference, -</search>
+        </member>		
+		<member name="%mul">
+            <summary>Vrátí součin hodnot X a Y</summary>
+            <param name="x">Celočíselná nebo hodnota double</param>
+            <param name="y">Celočíselná nebo hodnota double</param>
+            <returns name="number">Produkt těchto dvou vstupních čísel</returns>
+            <search>mul, multiply, product, times, *, x</search>
+        </member>
+		<member name="%div">
+            <summary>Vrátí podíl hodnot X a Y</summary>
+            <param name="x">Celočíselná nebo hodnota double</param>
+            <param name="y">Celočíselná nebo hodnota double</param>
+            <returns name="double">Výsledek dělení</returns>
+            <search>div, divide, product</search>
+        </member>
+		<member name="%eq">
+            <summary>Porovná, zda je hodnota X rovna hodnotě Y</summary>
+            <param name="x">Základní typ objektu k porovnání (např. booleovská, int, double, řetězec atd.)</param>
+            <param name="y">Základní typ objektu k porovnání (např. booleovská, int, double, řetězec atd.)</param>
+            <returns name="bool">Výsledek kontroly rovnosti</returns>
+            <search>eq, equal, =</search>
+        </member>
+		<member name="%ge">
+            <summary>Porovná, zda je hodnota X větší nebo rovna hodnotě Y</summary>
+            <param name="x">Celočíselná nebo hodnota double</param>
+            <param name="y">Celočíselná nebo hodnota double</param>
+            <returns name="bool">Hodnota True, pokud X je rovno nebo větší než Y, hodnota False, pokud není</returns>
+            <search>greater,equal</search>
+        </member>
+		<member name="%gt">
+            <summary>Porovná, zda je hodnota X větší než hodnota Y</summary>
+            <param name="x">Celočíselná nebo hodnota double</param>
+            <param name="y">Celočíselná nebo hodnota double</param>
+            <returns name="bool">Hodnota True, pokud X je větší než Y, hodnota False, pokud není</returns>
+            <search>greater</search>
+        </member>
+		<member name="%mod">
+            <summary>Modul: Najde zbytek podílu X/Y</summary>
+            <param name="x">Celočíselná nebo hodnota double</param>
+            <param name="y">Celočíselná nebo hodnota double</param>
+            <returns name="number">Zbytek vstupu X po dělení vstupem Y</returns>
+            <search>mod, modulo, remainder</search>
+        </member>
+		<member name="%le">
+            <summary>Porovná, zda je hodnota X menší nebo rovna hodnotě Y</summary>
+            <param name="x">Celočíselná nebo hodnota double</param>
+            <param name="y">Celočíselná nebo hodnota double</param>
+            <returns name="bool">Výsledek kontroly</returns>
+            <search>less,equal</search>
+        </member>
+		<member name="%lt">
+            <summary>Porovná, zda je hodnota X menší než hodnota Y</summary>
+            <param name="x">Celočíselná nebo hodnota double</param>
+            <param name="y">Celočíselná nebo hodnota double</param>
+            <returns name="bool">Výsledek kontroly</returns>
+            <search>less</search>
+        </member>
+		<member name="%and">
+            <summary>Logický operátor AND</summary>
+            <param name="x">Booleovská hodnota ke zkontrolování, pokud má hodnotu True</param>
+            <param name="y">Jiná booleovská hodnota ke zkontrolování, pokud má hodnotu True</param>
+            <returns name="bool">Výsledek kontroly</returns>
+            <search>and</search>
+        </member>
+		<member name="%or">
+            <summary>Logický operátor OR</summary>
+            <param name="bool">Booleovská hodnota ke zkontrolování, pokud má hodnotu True</param>
+            <param name="otherBool">Jiná booleovská hodnota ke zkontrolování, pokud má hodnotu True</param>
+            <returns name="bool">Hodnota True, pokud má jakýkoli vstup hodnotu True</returns>
+            <search>or</search>
+        </member>
+		<member name="%nq">
+            <summary>Vrátí hodnotu True, pokud jsou dvě hodnoty rozdílné</summary>
+            <param name="x">Celočíselná nebo hodnota double</param>
+            <param name="y">Celočíselná nebo hodnota double</param>
+            <returns name="bool">Výsledek kontroly</returns>
+            <search>equal</search>
+        </member>
+		<member name="%Not">
+		            <summary>Neguje vstup, např. vrátí nepravdu, když je vstup pravdivý.</summary>
+            <param name="x">booleovská hodnota k převrácení.</param>
+            <returns name="bool">typ var[]..[] (převrácená booleovská hodnota)</returns>
+            <search>not</search>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,65 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Tessellation</name>
+    </assembly>
+    <members>
+        <member name="T:Tessellation.Adapters.Cell2">
+            <summary>用於 2D 嵌合的儲存格</summary>
+        </member>
+        <member name="T:Tessellation.Adapters.Cell3">
+            <summary>用於 3D 嵌合的儲存格</summary>
+        </member>
+        <member name="T:Tessellation.Adapters.Tetrahedron">
+            <summary>頂點是一種簡單類別，用於儲存點、節點或頂點的位置。</summary>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.GetPosition(System.Int32)">
+            <summary>取得 i-th 頂點位置的 Helper 函數。</summary>
+            <param name="i"/>
+            <returns>i-th 頂點的位置</returns>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.MakeFace(System.Int32,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>此函數會加入表示面之三角形的索引。
+            順序為 CCW (逆時鐘方向) 順序，以便自動計算的法線指向正確方向。</summary>
+            <param name="i"/>
+            <param name="j"/>
+            <param name="k"/>
+            <param name="center"/>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.MakeFaces">
+            <summary>建立四面體的模型。透明度會套用至顏色。</summary>
+            <returns>表示四面體的模型</returns>
+        </member>
+        <member name="T:Tessellation.Adapters.TriangleFace">
+            <summary>頂點是一種簡單類別，用於儲存點、節點或頂點的位置。</summary>
+        </member>
+        <member name="T:Tessellation.ConvexHull">
+            <summary>用於建立凸面關聯線的函數。</summary>
+        </member>
+        <member name="M:Tessellation.ConvexHull.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>建立一組點的凸面關聯線。</summary>
+            <param name="points">一組點。</param>
+        </member>
+        <member name="T:Tessellation.Delaunay">
+            <summary>用於建立 Delaunay 三角法的函數。</summary>
+        </member>
+        <member name="M:Tessellation.Delaunay.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
+            <summary>使用給定的 UV 參數集，建立曲面的 Delaunay 三角法。</summary>
+            <param name="uvs">UV 參數集。</param>
+            <param name="face">要分成三角形的曲面。</param>
+            <search>uvs</search>
+        </member>
+        <member name="M:Tessellation.Delaunay.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>建立一組點的 Delaunay 三角法。</summary>
+            <param name="points">一組點。</param>
+        </member>
+        <member name="T:Tessellation.Voronoi">
+            <summary>用於建立 Voronoi 鑲嵌的函數。</summary>
+        </member>
+        <member name="M:Tessellation.Voronoi.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
+            <summary>使用給定的 UV 參數集，建立曲面的 Voronoi 鑲嵌。</summary>
+            <param name="uvs">UV 參數集。</param>
+            <param name="face">要鑲嵌的曲面。</param>
+            <search>uvs</search>
+        </member>
+    </members>
+</doc>
