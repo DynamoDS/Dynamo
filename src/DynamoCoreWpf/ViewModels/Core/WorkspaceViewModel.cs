@@ -560,6 +560,14 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Ensures that a preview control is initialized only when it is
+        /// absolutely needed. It lives here so that it can be shared by
+        /// all node views for reduced overhead and better management.
+        /// </summary>
+        internal Wpf.Utilities.ActionDebouncer DelayNodePreviewControl
+            = new Wpf.Utilities.ActionDebouncer(null);
+
         #endregion
 
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
@@ -721,6 +729,9 @@ namespace Dynamo.ViewModels
             InCanvasSearchViewModel?.Dispose();
             NodeAutoCompleteSearchViewModel.LuceneUtility?.DisposeAll();
             NodeAutoCompleteSearchViewModel?.Dispose();
+
+            DelayNodePreviewControl?.Dispose();
+            DelayNodePreviewControl = null;
         }
 
         internal void ZoomInInternal()
