@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -16,4 +16,6 @@ using System.Runtime.InteropServices;
 [assembly: InternalsVisibleTo("DynamoPackagesUI")]
 [assembly: InternalsVisibleTo("DynamoPackagesWPF")]
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpf2Tests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpf3Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

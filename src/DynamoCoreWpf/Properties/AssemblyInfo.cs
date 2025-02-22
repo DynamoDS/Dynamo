@@ -27,6 +27,8 @@ using System.Windows;
 
 [assembly: InternalsVisibleTo("DynamoCoreTests")]
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpf2Tests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpf3Tests")]
 [assembly: InternalsVisibleTo("DynamoMSOfficeTests")]
 [assembly: InternalsVisibleTo("PackageManagerSearchElementViewModelTests")]
 [assembly: InternalsVisibleTo("CoreNodeModelsWpf")]

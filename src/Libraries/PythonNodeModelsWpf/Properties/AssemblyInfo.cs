@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -13,4 +13,6 @@ using System.Runtime.InteropServices;
 
 [assembly:InternalsVisibleTo("DynamoPythonTests")]
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpf2Tests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpf3Tests")]
 [assembly: InternalsVisibleTo("IronPythonTests")]

@@ -1,4 +1,4 @@
-﻿using System.Reflection;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
@@ -10,4 +10,5 @@ using System.Runtime.InteropServices;
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("12fb4da4-7e9c-4c2e-91cd-1d0b523a9535")]
 [assembly: InternalsVisibleTo("DynamoCoreWpfTests")]
+[assembly: InternalsVisibleTo("DynamoCoreWpf2Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]

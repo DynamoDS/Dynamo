@@ -140,7 +140,7 @@ namespace DynamoCoreWpfTests
             var extensionManager = View.viewExtensionManager;
             var loader = extensionManager.ExtensionLoader;
             // Once IsEnabled set to false, loader will skip the loading and expect to return null.
-            Assert.IsNull(loader.Load(Path.Combine(GetTestDirectory(ExecutingDirectory), @"DynamoCoreWpfTests\ViewExtensions\Sample Manifests\Sample_ViewExtensionDefinition.xml")));
+            Assert.IsNull(loader.Load(Path.Combine(GetTestDirectory(ExecutingDirectory), @"DynamoCoreWpf2Tests\ViewExtensions\Sample Manifests\Sample_ViewExtensionDefinition.xml")));
         }
 
         [Test]
