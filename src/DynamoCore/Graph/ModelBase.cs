@@ -291,10 +291,11 @@ namespace Dynamo.Graph
         /// </summary>
         public virtual void Dispose()
         {
-            var wasDisposed = HasBeenDisposed;
-            HasBeenDisposed = true;
-
-            if (!wasDisposed) Disposed?.Invoke(this);
+            if (!HasBeenDisposed)
+            {
+                HasBeenDisposed = true;
+                Disposed?.Invoke(this);
+            }
         }
 
         /// <summary>
