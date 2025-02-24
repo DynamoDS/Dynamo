@@ -1,17 +1,13 @@
 using System;
 using System.Diagnostics;
 using System.Linq;
-using System.Transactions;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
-using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace Dynamo.ViewModels
 {
