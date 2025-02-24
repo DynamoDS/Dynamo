@@ -172,7 +172,7 @@ namespace Dynamo.Controls
 
         private void treeviewItem_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
-            if (prevWatchViewModel != null || Models.DynamoModel.IsTestMode)
+            if (prevWatchViewModel != null)
             {
                 // Perform Ctrl+C 
                 if (e.Key == Key.C && (Keyboard.Modifiers & System.Windows.Input.ModifierKeys.Control) == System.Windows.Input.ModifierKeys.Control)
