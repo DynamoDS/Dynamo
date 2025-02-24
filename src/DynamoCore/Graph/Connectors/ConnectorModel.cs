@@ -240,14 +240,9 @@ namespace Dynamo.Graph.Connectors
         /// </summary>
         internal void Delete()
         {
-            if (Start != null && Start.Connectors.Contains(this))
-            {
-                Start.Connectors.Remove(this);
-            }
-            if (End != null && End.Connectors.Contains(this))
-            {
-                End.Connectors.Remove(this);
-            }
+            Start?.Connectors.Remove(this);
+            End?.Connectors.Remove(this);
+
             OnDeleted();
         }
 
