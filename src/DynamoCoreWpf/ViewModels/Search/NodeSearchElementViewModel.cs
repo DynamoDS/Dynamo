@@ -332,12 +332,12 @@ namespace Dynamo.Wpf.ViewModels
             var nodeView = (NodeView) sender;
             var dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
 
-            if (nodeView.ViewModel.NodeModel.OutputNodes.Count() > 0)
+            if (nodeView.ViewModel.NodeModel.OutputNodes.Count > 0)
             {
-                var originalNodeId = nodeView.ViewModel.NodeModel.OutputNodes.Values.SelectMany(s => s.Select(t => t.Item2)).Distinct().FirstOrDefault().GUID;
+                var originalNodeId = nodeView.ViewModel.NodeModel.OutputNodes.Values.SelectMany(s => s.Select(t => t.Item2)).Distinct().FirstOrDefault()?.GUID;
                 dynamoViewModel.CurrentSpace.DoGraphAutoLayout(true, true, originalNodeId);
             }
-            else if (nodeView.ViewModel.NodeModel.InputNodes.Count() > 0)
+            else if (nodeView.ViewModel.NodeModel.InputNodes.Count > 0)
             {
                 var originalNodeId = nodeView.ViewModel.NodeModel.InputNodes.Values.Select(s => s.Item2).Distinct().FirstOrDefault().GUID;
                 dynamoViewModel.CurrentSpace.DoGraphAutoLayout(true, true, originalNodeId);

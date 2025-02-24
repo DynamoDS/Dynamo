@@ -622,6 +622,13 @@ namespace Dynamo.ViewModels
             }
         }
 
+        [JsonIgnore]
+        public bool IsPreview
+        {
+            set { NodeModel.IsPreview = value; }
+            get { return NodeModel.IsPreview; }
+        }
+
         /// <summary>
         /// A flag indicating whether the node is set to freeze by the user.
         /// </summary>
