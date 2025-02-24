@@ -2074,34 +2074,34 @@
 	<Copy SourceFiles="@(DocXMLZhCNFiles)" DestinationFolder="$(OutputPath)\zh-CN\" SkipUnchangedFiles="True"/>
 	<Copy SourceFiles="@(DocXMLZhTWFiles)" DestinationFolder="$(OutputPath)\zh-TW\" SkipUnchangedFiles="True"/>
   </Target>
-  <Target Name="CopyDocumentationBrowserHTMLFiles" AfterTargets="AfterBuildOps">
+  <Target Name="CopyDocumentationBrowserHTMLFiles" AfterTargets="CopyGuidedTourHTMLFiles">
     <ItemGroup>
-		<HTMLEnUSFiles Include="$(SolutionDir)..\doc\distrib\html\en-US\DocumentationBrowserViewExtension\**\*.html" />
-		<HTMLCsCZFiles Include="$(SolutionDir)..\doc\distrib\html\cs-CZ\DocumentationBrowserViewExtension\**\*.html" />
-		<HTMLDeDEFiles Include="$(SolutionDir)..\doc\distrib\html\de-DE\DocumentationBrowserViewExtension\**\*.html" />
-		<HTMLEsESFiles Include="$(SolutionDir)..\doc\distrib\html\es-ES\DocumentationBrowserViewExtension\**\*.html" />
-		<HTMLFrFRFiles Include="$(SolutionDir)..\doc\distrib\html\fr-FR\DocumentationBrowserViewExtension\**\*.html" />
-		<HTMLItITFiles Include="$(SolutionDir)..\doc\distrib\html\it-IT\DocumentationBrowserViewExtension\**\*.html" />
-		<HTMLJaJPFiles Include="$(SolutionDir)..\doc\distrib\html\ja-JP\DocumentationBrowserViewExtension\**\*.html" />
-		<HTMLKoKRFiles Include="$(SolutionDir)..\doc\distrib\html\ko-KR\DocumentationBrowserViewExtension\**\*.html" />
-		<HTMLPlPLFiles Include="$(SolutionDir)..\doc\distrib\html\pl-PL\DocumentationBrowserViewExtension\**\*.html" />
-		<HTMLPtBRFiles Include="$(SolutionDir)..\doc\distrib\html\pt-BR\DocumentationBrowserViewExtension\**\*.html" />
-		<HTMLRuRUFiles Include="$(SolutionDir)..\doc\distrib\html\ru-RU\DocumentationBrowserViewExtension\**\*.html" />
-		<HTMLZhCNFiles Include="$(SolutionDir)..\doc\distrib\html\zh-CN\DocumentationBrowserViewExtension\**\*.html" />
-		<HTMLZhTWFiles Include="$(SolutionDir)..\doc\distrib\html\zh-TW\DocumentationBrowserViewExtension\**\*.html" />
+		<HTMLDocBrowEnUSFiles Include="$(SolutionDir)..\doc\distrib\html\en-US\DocumentationBrowserViewExtension\**\*.html" />
+		<HTMLDocBrowCsCZFiles Include="$(SolutionDir)..\doc\distrib\html\cs-CZ\DocumentationBrowserViewExtension\**\*.html" />
+		<HTMLDocBrowDeDEFiles Include="$(SolutionDir)..\doc\distrib\html\de-DE\DocumentationBrowserViewExtension\**\*.html" />
+		<HTMLDocBrowEsESFiles Include="$(SolutionDir)..\doc\distrib\html\es-ES\DocumentationBrowserViewExtension\**\*.html" />
+		<HTMLDocBrowFrFRFiles Include="$(SolutionDir)..\doc\distrib\html\fr-FR\DocumentationBrowserViewExtension\**\*.html" />
+		<HTMLDocBrowItITFiles Include="$(SolutionDir)..\doc\distrib\html\it-IT\DocumentationBrowserViewExtension\**\*.html" />
+		<HTMLDocBrowJaJPFiles Include="$(SolutionDir)..\doc\distrib\html\ja-JP\DocumentationBrowserViewExtension\**\*.html" />
+		<HTMLDocBrowKoKRFiles Include="$(SolutionDir)..\doc\distrib\html\ko-KR\DocumentationBrowserViewExtension\**\*.html" />
+		<HTMLDocBrowPlPLFiles Include="$(SolutionDir)..\doc\distrib\html\pl-PL\DocumentationBrowserViewExtension\**\*.html" />
+		<HTMLDocBrowPtBRFiles Include="$(SolutionDir)..\doc\distrib\html\pt-BR\DocumentationBrowserViewExtension\**\*.html" />
+		<HTMLDocBrowRuRUFiles Include="$(SolutionDir)..\doc\distrib\html\ru-RU\DocumentationBrowserViewExtension\**\*.html" />
+		<HTMLDocBrowZhCNFiles Include="$(SolutionDir)..\doc\distrib\html\zh-CN\DocumentationBrowserViewExtension\**\*.html" />
+		<HTMLDocBrowZhTWFiles Include="$(SolutionDir)..\doc\distrib\html\zh-TW\DocumentationBrowserViewExtension\**\*.html" />
     </ItemGroup>
-    <Copy SourceFiles="@(HTMLEnUSFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\en-US" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLCsCZFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\cs-CZ" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLDeDEFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\de-DE" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLEsESFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\es-ES" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLFrFRFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\fr-FR" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLItITFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\it-IT" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLJaJPFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\ja-JP" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLKoKRFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\ko-KR" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLPlPLFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\pl-PL" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLPtBRFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\pt-BR" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLRuRUFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\ru-RU" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLZhCNFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\zh-CN" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLZhTWFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\zh-TW" SkipUnchangedFiles="True"/>
+    <Copy SourceFiles="@(HTMLDocBrowEnUSFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\en-US" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLDocBrowCsCZFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\cs-CZ" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLDocBrowDeDEFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\de-DE" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLDocBrowEsESFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\es-ES" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLDocBrowFrFRFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\fr-FR" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLDocBrowItITFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\it-IT" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLDocBrowJaJPFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\ja-JP" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLDocBrowKoKRFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\ko-KR" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLDocBrowPlPLFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\pl-PL" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLDocBrowPtBRFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\pt-BR" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLDocBrowRuRUFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\ru-RU" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLDocBrowZhCNFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\zh-CN" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLDocBrowZhTWFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\zh-TW" SkipUnchangedFiles="True"/>
   </Target>
 </Project>
