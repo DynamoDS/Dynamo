@@ -63,8 +63,8 @@ namespace CoreNodeModelsWpf.Nodes
 
             ResetWatch();
 
-            watchTree.Width = nodeModel.WatchWidth == 0 ? watchTree.Width : nodeModel.WatchWidth;
-            watchTree.Height = nodeModel.WatchHeight == 0 ? watchTree.Height : nodeModel.WatchHeight;
+            watchTree.Width = nodeModel.WatchWidth < watchTree.Width ? watchTree.Width : nodeModel.WatchWidth;
+            watchTree.Height = nodeModel.WatchHeight < watchTree.Height ? watchTree.Height : nodeModel.WatchHeight;
             
             //Store width and height info of the node in the dictionary.
             Watch.NodeSizes[watch.GUID] = new Tuple<double, double>(nodeModel.WatchWidth, nodeModel.WatchHeight);

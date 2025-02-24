@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
@@ -12,6 +13,7 @@ using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Migration;
 using Dynamo.Scheduler;
@@ -1230,6 +1232,19 @@ namespace Dynamo.Graph.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
 
             RaisesModificationEvents = true;
+        }
+
+
+        internal protected AssemblyName NameOfAssemblyReferencedByNode = null;
+
+        /// <summary>
+        /// The method returns the assembly name from which the node originated.
+        /// </summary>
+        /// <returns>Assembly Name</returns>
+        internal virtual AssemblyName GetNameOfAssemblyReferencedByNode()
+        {
+            NameOfAssemblyReferencedByNode ??= GetType().Assembly.GetName();
+            return NameOfAssemblyReferencedByNode;
         }
 
         /// <summary>
@@ -2865,6 +2880,22 @@ namespace Dynamo.Graph.Nodes
 
         protected bool ShouldDisplayPreviewCore { get; set; }
 
+        [Experimental("NM_ISEXPERIMENTAL_GLPYH")]
+        internal bool IsExperimental
+        {
+            get
+            {
+                //TODO switch on model type?
+                if (this is DSFunction ztnm)
+                {
+                    return ztnm.Controller.Definition.IsExperimental;
+                }
+                else
+                {
+                    return TypeLoadData.CheckExperimentalFromAttribute(GetType());
+                }
+            }
+        }
         public event Action<NodeModel, RenderPackageCache> RenderPackagesUpdated;
 
         private void OnRenderPackagesUpdated(RenderPackageCache packages)

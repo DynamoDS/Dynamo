@@ -64,12 +64,12 @@ namespace Dynamo.Configuration
         /// <summary>
         /// Search Description matching weight
         /// </summary>
-        internal static int SearchDescriptionWeight = 6;
+        internal static int SearchDescriptionWeight = 4;
 
         /// <summary>
         /// Search tags matching weight
         /// </summary>
-        internal static int SearchTagsWeight = 6;
+        internal static int SearchTagsWeight = 4;
 
         /// <summary>
         /// other fields search matching weight

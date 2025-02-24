@@ -1,0 +1,618 @@
+{
+  "Uuid": "25e2d11a-3bf0-48c6-9cd4-34430822952d",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "CoreNodeModels.Input.BoolSelector",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [
+    {
+      "Id": "41d3606c6f284314a35d78bfe885496f",
+      "Name": "Boolean",
+      "Type": "boolean",
+      "Type2": "boolean",
+      "Value": "true",
+      "Description": "Enables selection between True and False"
+    },
+    {
+      "Id": "1102d4e694034f60841baa7594a072b9",
+      "Name": "Boolean",
+      "Type": "boolean",
+      "Type2": "boolean",
+      "Value": "false",
+      "Description": "Enables selection between True and False"
+    },
+    {
+      "Id": "26d0b1e7ab024d088ecdf6b21d8d7b2a",
+      "Name": "Boolean",
+      "Type": "boolean",
+      "Type2": "boolean",
+      "Value": "true",
+      "Description": "Enables selection between True and False"
+    },
+    {
+      "Id": "0ac8ec1aa5cc461eb44e7d78a72131a8",
+      "Name": "Boolean",
+      "Type": "boolean",
+      "Type2": "boolean",
+      "Value": "true",
+      "Description": "Enables selection between True and False"
+    },
+    {
+      "Id": "368eede4693245a596e3fa2e7f439954",
+      "Name": "Boolean",
+      "Type": "boolean",
+      "Type2": "boolean",
+      "Value": "false",
+      "Description": "Enables selection between True and False"
+    },
+    {
+      "Id": "0fff5cac9d7b41148e042aa0c8b791e6",
+      "Name": "Boolean",
+      "Type": "boolean",
+      "Type2": "boolean",
+      "Value": "false",
+      "Description": "Enables selection between True and False"
+    }
+  ],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 50.0,
+      "WatchHeight": 38.0,
+      "Id": "7511136f6be34b19ab37af4ba66b82c7",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "8549371412784e9989501123fdda30f5",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "98123a68406b4f2099e7d0c7fcb1cead",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "41d3606c6f284314a35d78bfe885496f",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "491f33d300ca4612915e056a7a0515ce",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": true
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "1102d4e694034f60841baa7594a072b9",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "dd666cc3bf7144aa93085472850b5199",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": false
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 50.0,
+      "WatchHeight": 38.0,
+      "Id": "9688493eb05e4fcbb9c69bb4288517e2",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "87ab81ee56d644109eb9e2399ac982aa",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "61e9f9ce7e2c49538f0ee9667944864e",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "26d0b1e7ab024d088ecdf6b21d8d7b2a",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "4ce0913ad162425cbe8af37b4465886d",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": true
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "0ac8ec1aa5cc461eb44e7d78a72131a8",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e8191bdb1bd3447e9b97d5a63a35c142",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": true
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 58.0,
+      "WatchHeight": 38.0,
+      "Id": "48f5a1e497d340bfada76f5c22ccf560",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "a6aa4ab1bc8340c0898231bffcda1f52",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "37b8d5b6bbd94e46a97463880a779393",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "368eede4693245a596e3fa2e7f439954",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "eb5d4725f63d4c11b86e07ac8e77a10d",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": false
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "0fff5cac9d7b41148e042aa0c8b791e6",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2977d17d4f464ce6a236ab27417232e7",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": false
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "ef4bfe82cd334a56b79136e69ca25dd8",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "7570ae6144ff48089baaedb02db72717",
+          "Name": "x",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3855908223da4cc4915b90c7f9cfeaa6",
+          "Name": "y",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2cbaf91f55a74bb5b7dfaa5cea0c74c9",
+          "Name": "bool",
+          "Description": "True if any of the inputs are true",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "||@var[]..[],var[]..[]",
+      "Replication": "Auto",
+      "Description": "Logical OR operator\n\n|| (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "e99a5c717b4248128d8d9147432ffe27",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "80091b8e925343b0ad8b4345fb32ad72",
+          "Name": "x",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "282485fb084d40ec92bae24e31ca46d8",
+          "Name": "y",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e1999a6ceff140b38c0c4cb43475b52c",
+          "Name": "bool",
+          "Description": "True if any of the inputs are true",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "||@var[]..[],var[]..[]",
+      "Replication": "Auto",
+      "Description": "Logical OR operator\n\n|| (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "bf9f3a69aaa5453b937b69def48a0408",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "2026ac819bea4eddbb155236eaa47458",
+          "Name": "x",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0cd8689919e54ceabc912b4487cb8458",
+          "Name": "y",
+          "Description": "var[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "714b118a00d943f7b497579ebcbb5f58",
+          "Name": "bool",
+          "Description": "True if any of the inputs are true",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "||@var[]..[],var[]..[]",
+      "Replication": "Auto",
+      "Description": "Logical OR operator\n\n|| (x: var[]..[], y: var[]..[]): var[]..[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "491f33d300ca4612915e056a7a0515ce",
+      "End": "7570ae6144ff48089baaedb02db72717",
+      "Id": "e0bbba44993e46be8f1ae0627d8bd4f1",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "dd666cc3bf7144aa93085472850b5199",
+      "End": "3855908223da4cc4915b90c7f9cfeaa6",
+      "Id": "0832bc8544e34104bd7f9032d16548aa",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "4ce0913ad162425cbe8af37b4465886d",
+      "End": "2026ac819bea4eddbb155236eaa47458",
+      "Id": "a03dbabf298b42eb9ff2049df12fca3c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e8191bdb1bd3447e9b97d5a63a35c142",
+      "End": "0cd8689919e54ceabc912b4487cb8458",
+      "Id": "23ea8a99489c4a70a18326ba400b89ad",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "eb5d4725f63d4c11b86e07ac8e77a10d",
+      "End": "80091b8e925343b0ad8b4345fb32ad72",
+      "Id": "27addf7dbe114c01b1e61008de300660",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2977d17d4f464ce6a236ab27417232e7",
+      "End": "282485fb084d40ec92bae24e31ca46d8",
+      "Id": "8feb381431dd4b83853f7e08600f1c4b",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2cbaf91f55a74bb5b7dfaa5cea0c74c9",
+      "End": "8549371412784e9989501123fdda30f5",
+      "Id": "f556f50824f641dca144ca81d7bd6c33",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e1999a6ceff140b38c0c4cb43475b52c",
+      "End": "a6aa4ab1bc8340c0898231bffcda1f52",
+      "Id": "056366afd60c430a8a136d91bc1dee14",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "714b118a00d943f7b497579ebcbb5f58",
+      "End": "87ab81ee56d644109eb9e2399ac982aa",
+      "Id": "5973a7162f564b7db223e408265615af",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.19",
+      "Data": {}
+    }
+  ],
+  "Author": "None provided",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.3.0.5104",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "7511136f6be34b19ab37af4ba66b82c7",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 839.6343299460295,
+        "Y": 89.61858068131352
+      },
+      {
+        "Id": "41d3606c6f284314a35d78bfe885496f",
+        "Name": "Boolean",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 281.63432994602954,
+        "Y": 32.61858068131352
+      },
+      {
+        "Id": "1102d4e694034f60841baa7594a072b9",
+        "Name": "Boolean",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 281.63432994602954,
+        "Y": 180.61858068131346
+      },
+      {
+        "Id": "9688493eb05e4fcbb9c69bb4288517e2",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 839.1963421501725,
+        "Y": 390.6634441294675
+      },
+      {
+        "Id": "26d0b1e7ab024d088ecdf6b21d8d7b2a",
+        "Name": "Boolean",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 281.19634215017254,
+        "Y": 333.6634441294675
+      },
+      {
+        "Id": "0ac8ec1aa5cc461eb44e7d78a72131a8",
+        "Name": "Boolean",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 281.19634215017254,
+        "Y": 481.6634441294675
+      },
+      {
+        "Id": "48f5a1e497d340bfada76f5c22ccf560",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 840.3490251479705,
+        "Y": 685.9277985554835
+      },
+      {
+        "Id": "368eede4693245a596e3fa2e7f439954",
+        "Name": "Boolean",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 282.34902514797045,
+        "Y": 628.9277985554835
+      },
+      {
+        "Id": "0fff5cac9d7b41148e042aa0c8b791e6",
+        "Name": "Boolean",
+        "IsSetAsInput": true,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 282.34902514797045,
+        "Y": 776.9277985554835
+      },
+      {
+        "Id": "ef4bfe82cd334a56b79136e69ca25dd8",
+        "Name": "||",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 575.6343299460295,
+        "Y": 89.61858068131352
+      },
+      {
+        "Id": "e99a5c717b4248128d8d9147432ffe27",
+        "Name": "||",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 576.3490251479705,
+        "Y": 685.9277985554835
+      },
+      {
+        "Id": "bf9f3a69aaa5453b937b69def48a0408",
+        "Name": "||",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 575.1963421501725,
+        "Y": 390.6634441294675
+      }
+    ],
+    "Annotations": [],
+    "X": 97.68231115443962,
+    "Y": -2.5689993834801683,
+    "Zoom": 0.9984799676504087
+  }
+}

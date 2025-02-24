@@ -25,6 +25,7 @@ using Dynamo.Models;
 using Dynamo.Nodes;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
+using Dynamo.PythonServices;
 using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Services;
@@ -144,7 +145,7 @@ namespace Dynamo.Controls
             _timer = new Stopwatch();
             _timer.Start();
 
-            InitializeComponent();
+            InitializeComponent();  
 
             Loaded += DynamoView_Loaded;
             Unloaded += DynamoView_Unloaded;
@@ -251,6 +252,11 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestEnableShortcutBarItems += DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage += OnRequestExportWorkSpaceAsImage;
 
+            //add option to update python engine for all python nodes in the workspace.
+            AddPythonEngineToMainMenu();
+            PythonEngineManager.Instance.AvailableEngines.CollectionChanged += OnPythonEngineListUpdated;
+            dynamoViewModel.Owner = this;
+
             FocusableGrid.InputBindings.Clear();
 
             if (fileTrustWarningPopup == null)
@@ -263,11 +269,32 @@ namespace Dynamo.Controls
             }
 
             DefaultMinWidth = MinWidth;
-    }
-
+            PinHomeButton();
+        }
         private void OnRequestCloseHomeWorkSpace()
         {
             CalculateWindowMinWidth();
+        }
+
+        private void OnPythonEngineListUpdated(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            //Update the main menu Python Engine list whenever a python engine is added or removed.
+            AddPythonEngineToMainMenu();
+        }
+
+        /// <summary>
+        /// Populates the PythonEngineMenu in the main menu bar with currently available python engines.
+        /// </summary>
+        private void AddPythonEngineToMainMenu()
+        {
+            PythonEngineMenu.Items.Clear();
+            var availablePythonEngines = PythonEngineManager.Instance.AvailableEngines.Select(x => x.Name).ToList();
+            availablePythonEngines.Select(pythonEngine => new MenuItem
+            {
+                Header = pythonEngine,
+                Command = dynamoViewModel.UpdateAllPythonEngineCommand,
+                CommandParameter = pythonEngine
+            }).ToList().ForEach(x => PythonEngineMenu.Items.Add(x));
         }
 
         private void OnWorkspaceHidden(WorkspaceModel workspace)
@@ -889,6 +916,11 @@ namespace Dynamo.Controls
 
         private void OnRequestPaste()
         {
+            // When focus is at webview2 component Keyboard.FocusedElement returns null so we interrupt the execution
+            // with an early return
+            var FocuseElement = Keyboard.FocusedElement;
+            if (FocuseElement == null) return;
+
             var clipBoard = dynamoViewModel.Model.ClipBoard;
 
             var locatableModels = clipBoard.Where(item => item is NoteModel || item is NodeModel);
@@ -1386,7 +1418,7 @@ namespace Dynamo.Controls
             }
 
             // Load the new HomePage
-            if (IsNewAppHomeEnabled) LoadHomePage();
+            LoadHomePage();
 
             loaded = true;
         }
@@ -1396,21 +1428,28 @@ namespace Dynamo.Controls
         {
             if (homePage == null && (startPage != null))
             {
-                homePage = new UI.Views.HomePage();
-                homePage.DataContext = startPage;
-
-                var visibilityBinding = new System.Windows.Data.Binding
+                try
                 {
-                    RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(DynamoView), 1),
-                    Path = new PropertyPath("DataContext.ShowStartPage"),
-                    Mode = BindingMode.OneWay,
-                    Converter = new BooleanToVisibilityConverter(),
-                    UpdateSourceTrigger = UpdateSourceTrigger.Explicit
-                };
+                    homePage = new UI.Views.HomePage();
+                    homePage.DataContext = startPage;
 
-                BindingOperations.SetBinding(homePage, UIElement.VisibilityProperty, visibilityBinding);
+                    var visibilityBinding = new System.Windows.Data.Binding
+                    {
+                        RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(DynamoView), 1),
+                        Path = new PropertyPath("DataContext.ShowStartPage"),
+                        Mode = BindingMode.OneWay,
+                        Converter = new BooleanToVisibilityConverter(),
+                        UpdateSourceTrigger = UpdateSourceTrigger.Explicit
+                    };
 
-                this.newHomePageContainer.Children.Add(homePage);
+                    BindingOperations.SetBinding(homePage, UIElement.VisibilityProperty, visibilityBinding);
+
+                    this.newHomePageContainer.Children.Add(homePage);
+                }
+                catch (Exception ex)
+                {
+                    Log(ex.Message);
+                }
             }
         }
 
@@ -1469,14 +1508,9 @@ namespace Dynamo.Controls
         {
             var prefSettings = dynamoViewModel.Model.PreferenceSettings;
             if (prefSettings.PackageDownloadTouAccepted)
-                return true; // User accepts the terms of use.
+                return true; // User accepted the terms of use.
 
-            Window packageManParent = null;
-            //If any Guide is being executed then the ShowTermsOfUse Window WON'T be modal otherwise will be modal (as in the normal behavior)
-            if (dynamoViewModel.MainGuideManager != null && GuideFlowEvents.IsAnyGuideActive)
-                packageManParent = _this;
-            var acceptedTermsOfUse = TermsOfUseHelper.ShowTermsOfUseDialog(false, null, packageManParent);
-            prefSettings.PackageDownloadTouAccepted = acceptedTermsOfUse;
+            prefSettings.PackageDownloadTouAccepted = TermsOfUseHelper.ShowTermsOfUseDialog(false, null, _this);
 
             // User may or may not accept the terms.
             return prefSettings.PackageDownloadTouAccepted;
@@ -1726,6 +1760,7 @@ namespace Dynamo.Controls
                 categoryBox = { Text = e.Category },
                 DescriptionInput = { Text = e.Description },
                 nameBox = { Text = e.Name },
+                Owner = this,
             };
 
             if (e.CanEditName)
@@ -2046,6 +2081,7 @@ namespace Dynamo.Controls
             this.dynamoViewModel.RequestEnableShortcutBarItems -= DynamoViewModel_RequestEnableShortcutBarItems;
             this.dynamoViewModel.RequestExportWorkSpaceAsImage -= OnRequestExportWorkSpaceAsImage;
             this.dynamoViewModel.RequestShorcutToolbarLoaded -= onRequestShorcutToolbarLoaded;
+            PythonEngineManager.Instance.AvailableEngines.CollectionChanged -= OnPythonEngineListUpdated;
 
             if (homePage != null)
             {
@@ -2067,7 +2103,7 @@ namespace Dynamo.Controls
 
         // the key press event is being intercepted before it can get to
         // the active workspace. This code simply grabs the key presses and
-        // passes it to thecurrent workspace
+        // passes it to the current workspace
         private void DynamoView_KeyDown(object sender, KeyEventArgs e)
         {
             Analytics.TrackActivityStatus(HeartBeatType.User.ToString());
@@ -2187,6 +2223,7 @@ namespace Dynamo.Controls
         private void LoadSamplesMenu()
         {
             var samplesDirectory = dynamoViewModel.Model.PathManager.SamplesDirectory;
+
             if (Directory.Exists(samplesDirectory))
             {
                 var sampleFiles = new System.Collections.Generic.List<string>();
@@ -2209,7 +2246,7 @@ namespace Dynamo.Controls
                     }
                 }
 
-                // handle top-level dirs, TODO - factor out to a seperate function, make recusive
+                // handle top-level dirs, TODO - factor out to a separate function, make recursive
                 if (dirPaths.Any())
                 {
                     foreach (string dirPath in dirPaths)
@@ -2342,6 +2379,8 @@ namespace Dynamo.Controls
 
             var cmd = Analytics.TrackCommandEvent("PackageManager");
             cmd.Dispose();
+
+            this.Activate();
         }
 
         /// <summary>
@@ -2426,6 +2465,7 @@ namespace Dynamo.Controls
 
         private void ToggleWorkspaceTabVisibility(int tabSelected)
         {
+            // Switch off the start page first
             SlideWindowToIncludeTab(tabSelected);
 
             for (int tabIndex = 1; tabIndex < WorkspaceTabs.Items.Count; tabIndex++)
@@ -2667,13 +2707,14 @@ namespace Dynamo.Controls
         }
 
         /// <summary>
-        /// A feature flag controlling the appearance of the Dynamo home navigation page
+        /// A bool controlling the appearance of the Dynamo home navigation page
+        /// TODO: remove this public property and archive the feature flag in Dynamo 4.0
         /// </summary>
         public bool IsNewAppHomeEnabled
         {
             get
             {
-                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsDynamoAppHomeEnabled", false) ?? false;
+                return true;
             }
         }
 
@@ -2888,17 +2929,18 @@ namespace Dynamo.Controls
             UpdateLibraryCollapseIcon();
         }
 
+        // The Workspace TabItems must appear to the right of icon buttons (New File, Open, Save, Undo, Redo)
+        // but never overlap them. 230 is the minimum offset required to achieve this. 
+        // If the library panel is stretched greater than 230, they must align with its width instead.
+        private const int FirstTabItemMinimumLeftMarginOffset = 230;
+        private const int LibraryScrollBarWidth = 15;
+
         /// <summary>
         /// Updates the workspace TabItems to have the correct margins in response to events
         /// such as the library being stretched or a Custom Node workspace being created.
         /// </summary>
         private void UpdateWorkspaceTabSizes()
         {
-            // The Workspace TabItems must appear to the right of icon buttons (New File, Open, Save, Undo, Redo)
-            // but never overlap them. 230 is the minimum offset required to achieve this. 
-            // If the library panel is stretched greater than 230, they must align with its width instead.
-            const int FirstTabItemMinimumLeftMarginOffset = 230;
-            const int LibraryScrollBarWidth = 15;
             
             // We measure the full library width at runtime.
             int fullLibraryWidth = dynamoViewModel.LibraryWidth + LibraryScrollBarWidth;
@@ -2923,6 +2965,8 @@ namespace Dynamo.Controls
             {
                 tabItem.Margin = new System.Windows.Thickness(-leftMargin, 0, leftMargin, 0);
             }
+
+            PinHomeButton();
         }
 
         private void DynamoView_OnDrop(object sender, DragEventArgs e)
@@ -2975,6 +3019,15 @@ namespace Dynamo.Controls
         private void GetStartedMenuItem_Click(object sender, RoutedEventArgs e)
         {
             ShowGetStartedGuidedTour();
+        }
+
+
+        private void HomeButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (!this.dynamoViewModel.ShowStartPage)
+            {
+                this.dynamoViewModel.ShowStartPage = true;
+            }
         }
 
         /// <summary>
@@ -3031,6 +3084,32 @@ namespace Dynamo.Controls
         {
             if(fileTrustWarningPopup != null)
                 fileTrustWarningPopup.ManagePopupActivation(false);
+        }
+
+        private void TabItem_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            if (this.dynamoViewModel.ShowStartPage)
+                this.dynamoViewModel.ShowStartPage = false;
+        }
+
+        private void PinHomeButton()
+        {
+            const int minimumLeftMarginOffset = FirstTabItemMinimumLeftMarginOffset - LibraryScrollBarWidth;
+
+            var parentGrid = (Grid)verticalSplitter.Parent;
+            var columnWidth = parentGrid.ColumnDefinitions[0].ActualWidth == 0
+                ? dynamoViewModel.LibraryWidth + LibraryScrollBarWidth
+                : parentGrid.ColumnDefinitions[0].ActualWidth;
+
+            // Constrain the position of the HomeButton.
+            if (columnWidth < minimumLeftMarginOffset)
+            {
+                this.dynamoViewModel.MinLeftMarginOffset = minimumLeftMarginOffset - columnWidth;
+            }
+            else
+            {
+                this.dynamoViewModel.MinLeftMarginOffset = 0;
+            }
         }
 
         public void Dispose()

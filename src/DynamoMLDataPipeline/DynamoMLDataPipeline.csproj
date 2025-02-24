@@ -10,8 +10,8 @@
   </PropertyGroup>
   <ItemGroup>
 		<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-        <PackageReference Include="RestSharp" Version="108.0.1" />
-        <PackageReference Include="Greg" Version="3.0.1.4707" />
+        <PackageReference Include="RestSharp" Version="112.0.0" />
+        <PackageReference Include="Greg" Version="3.0.2.6533" />
   </ItemGroup>
   <ItemGroup>
 	<ProjectReference Include="..\DynamoCore\DynamoCore.csproj">

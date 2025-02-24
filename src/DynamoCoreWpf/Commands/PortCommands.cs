@@ -6,6 +6,7 @@ namespace Dynamo.ViewModels
     {
         private DelegateCommand connectCommand;
         private DelegateCommand autoCompleteCommand;
+        private DelegateCommand nodeClusterAutoCompleteCommand;
         private DelegateCommand portMouseEnterCommand;
         private DelegateCommand portMouseLeaveCommand;
         private DelegateCommand portMouseLeftButtonCommand;
@@ -31,7 +32,8 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                autoCompleteCommand ??= new DelegateCommand(NodeViewModel.WorkspaceViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled?AutoCompleteCluster:AutoComplete, CanAutoComplete);
+                if (autoCompleteCommand == null)
+                    autoCompleteCommand ??= new DelegateCommand(NodeViewModel.WorkspaceViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled ? AutoCompleteCluster : AutoComplete, CanAutoComplete);
 
                 return autoCompleteCommand;
             }

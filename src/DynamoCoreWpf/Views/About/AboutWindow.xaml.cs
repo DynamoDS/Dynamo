@@ -44,7 +44,7 @@ namespace Dynamo.UI.Views
 
         private void OnClickLink(object sender, RoutedEventArgs e)
         {
-            Process.Start(new ProcessStartInfo("http://dynamobim.org/") { UseShellExecute = true });
+            Process.Start(new ProcessStartInfo(Configuration.Configurations.DynamoSiteLink) { UseShellExecute = true });
         }
         
         private void CloseButton_OnClick(object sender, RoutedEventArgs e)

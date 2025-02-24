@@ -98,10 +98,14 @@ namespace Dynamo.Models
     /// </summary>
     public struct HostAnalyticsInfo
     {
-        // Dynamo variation identified by host.
+        // Dynamo variation identified by host, e.g. Dynamo Revit
         public string HostName;
         // Dynamo variation version specific to host
         public Version HostVersion;
+        // Dynamo host application name, e.g. Revit
+        public string HostProductName;
+        // Dynamo host application version, e.g. 2025.2.0
+        public Version HostProductVersion;
         // Dynamo host parent id for analytics purpose.
         public string ParentId;
         // Dynamo host session id for analytics purpose.
@@ -236,6 +240,11 @@ namespace Dynamo.Models
         /// True if Dynamo starts up in offline mode.
         /// </summary>
         internal bool NoNetworkMode { get; }
+
+        /// <summary>
+        /// Locale forced by cli arguments
+        /// </summary>
+        internal string CLILocale { get; set; }
 
         /// <summary>
         ///     The path manager that configures path information required for
@@ -445,6 +454,10 @@ namespace Dynamo.Models
 
             AnalyticsService.ShutDown();
 
+            LuceneSearch.LuceneUtilityNodeSearch = null;
+            LuceneSearch.LuceneUtilityNodeAutocomplete = null;
+            LuceneSearch.LuceneUtilityPackageManager = null;
+
             State = DynamoModelState.NotStarted;
             OnShutdownCompleted(); // Notify possible event handlers.
         }
@@ -585,6 +598,7 @@ namespace Dynamo.Models
             /// CLIMode indicates if we are running in DynamoCLI or DynamoWPFCLI mode.
             /// </summary>
             public bool CLIMode { get; set; }
+            public string CLILocale { get; set; }
         }
 
         /// <summary>
@@ -631,6 +645,7 @@ namespace Dynamo.Models
                 DefaultPythonEngine = defaultStartConfig.DefaultPythonEngine;
                 CLIMode = defaultStartConfig.CLIMode;
                 IsServiceMode = defaultStartConfig.IsServiceMode;
+                CLILocale = defaultStartConfig.CLILocale;
             }
 
             if (config is IStartConfigCrashReporter cerConfig)
@@ -681,7 +696,7 @@ namespace Dynamo.Models
 
             if (PreferenceSettings != null)
             {
-                SetUICulture(PreferenceSettings.Locale);
+                SetUICulture(CLILocale ?? PreferenceSettings.Locale);
                 PreferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
                 PreferenceSettings.MessageLogged += LogMessage;
             }
@@ -926,6 +941,7 @@ namespace Dynamo.Models
 
             if (extensions.Any())
             {
+                Logger.Log("\nLoading Dynamo extensions:");
                 var startupParams = new StartupParams(this);
 
                 foreach (var ext in extensions)
@@ -1260,22 +1276,35 @@ namespace Dynamo.Models
             // This dictionary gets redistributed into a dictionary keyed by the workspace id.
 
             var workspaceOrphanMap = new Dictionary<Guid, List<string>>();
+            var nodeToWorkspaceMap = new Dictionary<Guid, WorkspaceModel>();
 
-            foreach (var ws in Workspaces.OfType<HomeWorkspaceModel>())
+            foreach (var maybeWs in Workspaces)
             {
+                foreach (var node in maybeWs.Nodes)
+                {
+                    nodeToWorkspaceMap[node.GUID] = maybeWs;
+                }
+
+                if (maybeWs is not HomeWorkspaceModel ws)
+                {
+                    continue;
+                }
+
                 // Get the orphaned serializables to this workspace
-                var wsOrphans = ws.GetOrphanedSerializablesAndClearHistoricalTraceData().ToList();
+                var wsOrphans = ws.GetOrphanedSerializablesAndClearHistoricalTraceData();
 
                 if (!wsOrphans.Any())
-                    continue;
-
-                if (!workspaceOrphanMap.ContainsKey(ws.Guid))
                 {
-                    workspaceOrphanMap.Add(ws.Guid, wsOrphans);
+                    continue;
+                }
+
+                if (workspaceOrphanMap.TryGetValue(ws.Guid, out var workspaceOrphans))
+                {
+                    workspaceOrphans.AddRange(wsOrphans);
                 }
                 else
                 {
-                    workspaceOrphanMap[ws.Guid].AddRange(wsOrphans);
+                    workspaceOrphanMap.Add(ws.Guid, wsOrphans);
                 }
             }
 
@@ -1287,23 +1316,20 @@ namespace Dynamo.Models
 
                 // TODO: MAGN-7314
                 // Find the owning workspace for a node.
-                var nodeSpace =
-                    Workspaces.FirstOrDefault(
-                        ws =>
-                            ws.Nodes.FirstOrDefault(n => n.GUID == nodeGuid)
-                                != null);
-
-                if (nodeSpace == null) continue;
+                if (!nodeToWorkspaceMap.TryGetValue(nodeGuid, out var nodeSpace))
+                {
+                    continue;
+                }
 
                 // Add the node's orphaned serializables to the workspace
                 // orphan map.
-                if (workspaceOrphanMap.ContainsKey(nodeSpace.Guid))
+                if (workspaceOrphanMap.TryGetValue(nodeSpace.Guid, out var workspaceOrphans))
                 {
-                    workspaceOrphanMap[nodeSpace.Guid].AddRange(kvp.Value);
+                    workspaceOrphans.AddRange(kvp.Value);
                 }
                 else
                 {
-                    workspaceOrphanMap.Add(nodeSpace.Guid, kvp.Value);
+                    workspaceOrphanMap.Add(nodeSpace.Guid, kvp.Value.ToList());
                 }
             }
 
@@ -1467,11 +1493,18 @@ namespace Dynamo.Models
             var customNodeSearchRegistry = new HashSet<Guid>();
             CustomNodeManager.InfoUpdated += info =>
             {
+                //just bail in service mode.
+                if (IsServiceMode)
+                {
+                    return;
+                }
+
                 if (customNodeSearchRegistry.Contains(info.FunctionId)
                         || !info.IsVisibleInDynamoLibrary)
                     return;
 
-                var elements = SearchModel.Entries.OfType<CustomNodeSearchElement>().
+               
+                var elements = SearchModel?.Entries.OfType<CustomNodeSearchElement>().
                                 Where(x =>
                                 {
                                     // Search for common paths and get rid of empty paths.
@@ -1489,6 +1522,7 @@ namespace Dynamo.Models
                     }
                     return;
                 }
+                
 
                 customNodeSearchRegistry.Add(info.FunctionId);
                 var searchElement = new CustomNodeSearchElement(CustomNodeManager, info);
@@ -1525,6 +1559,7 @@ namespace Dynamo.Models
                     }
                 };
             };
+
             CustomNodeManager.DefinitionUpdated += UpdateCustomNodeDefinition;
         }
 
@@ -1567,7 +1602,6 @@ namespace Dynamo.Models
 
             var cnbNode = new CodeBlockNodeSearchElement(cbnData, LibraryServices);
             SearchModel?.Add(cnbNode);
-            LuceneUtility.AddNodeTypeToSearchIndex(cnbNode, iDoc);
 
             var symbolSearchElement = new NodeModelSearchElement(symbolData)
             {
@@ -1586,10 +1620,8 @@ namespace Dynamo.Models
             };
 
             SearchModel?.Add(symbolSearchElement);
-            LuceneUtility.AddNodeTypeToSearchIndex(symbolSearchElement, iDoc);
-
             SearchModel?.Add(outputSearchElement);
-            LuceneUtility.AddNodeTypeToSearchIndex(outputSearchElement, iDoc);
+            LuceneUtility.AddNodeTypeToSearchIndexBulk([cnbNode, symbolSearchElement, outputSearchElement], iDoc);
 
         }
 
@@ -1730,6 +1762,7 @@ namespace Dynamo.Models
         private void LoadNodeModels(List<TypeLoadData> nodes, bool isPackageMember)
         {
             var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
+            List<NodeSearchElement> nodeSearchElements = [];
             foreach (var type in nodes)
             {
                 // Protect ourselves from exceptions thrown by malformed third party nodes.
@@ -1744,7 +1777,7 @@ namespace Dynamo.Models
                     // TODO: get search element some other way
                     if (ele != null)
                     {
-                        LuceneUtility.AddNodeTypeToSearchIndex(ele, iDoc);
+                        nodeSearchElements.Add(ele);
                     }
                 }
                 catch (Exception e)
@@ -1752,6 +1785,7 @@ namespace Dynamo.Models
                     Logger.Log(e);
                 }
             }
+            LuceneUtility.AddNodeTypeToSearchIndexBulk(nodeSearchElements, iDoc);
         }
 
         private void InitializePreferences()
@@ -1774,6 +1808,22 @@ namespace Dynamo.Models
             {
                 PreferenceSettings.TemplateFilePath = pathManager.DefaultTemplatesDirectory;
             }
+            var supportedLocales = Configurations.SupportedLocaleDic.Values.ToList<string>();
+
+            //Get the last part of the template path e.f. if the path is C:\ProgramData\Dynamo\Dynamo Core\templates\en-US then currentPathLocale = en-US
+            var pathParts = PreferenceSettings.TemplateFilePath.Split("\\");
+            var currentPathLocale = pathParts.Last();
+
+            //Check if the locale is found inside the supported locales 
+            if (supportedLocales.Contains(currentPathLocale))
+            {
+                //If the CurrentUICulture is different than the locale in the TemplateFilePath then needs to be updated         
+                if (CultureInfo.CurrentUICulture.Name != currentPathLocale)
+                {
+                    PreferenceSettings.TemplateFilePath= PreferenceSettings.TemplateFilePath.Replace(currentPathLocale, CultureInfo.CurrentUICulture.Name);
+                }
+            }
+
 
             UpdatePreferenceItemLocation(PreferenceItem.Backup, PreferenceSettings.BackupLocation);
             UpdatePreferenceItemLocation(PreferenceItem.Templates, PreferenceSettings.TemplateFilePath);
@@ -2118,7 +2168,7 @@ namespace Dynamo.Models
                     Console.WriteLine(args.ErrorContext.Error);
                 },
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.Auto,
+                TypeNameHandling = TypeNameHandling.None,
                 Formatting = Newtonsoft.Json.Formatting.Indented,
                 Culture = CultureInfo.InvariantCulture
             };
@@ -2728,8 +2778,12 @@ namespace Dynamo.Models
                             CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                             if (list.Remove(model))
                             {
+                                if (model is ConnectorPinModel pinModel)
+                                {
+                                    annotation.MarkPinAsRemoved(pinModel);
+                                }
                                 annotation.Nodes = list;
-                                annotation.UpdateBoundaryFromSelection();
+                                annotation.UpdateBoundaryFromSelection();                               
                             }
                         }
                         else
@@ -2798,7 +2852,7 @@ namespace Dynamo.Models
             string fileName = String.Format("LibrarySnapshot_{0}.xml", DateTime.Now.ToString("yyyyMMddHmmss"));
             string fullFileName = Path.Combine(pathManager.LogDirectory, fileName);
 
-            SearchModel.DumpLibraryToXml(fullFileName, PathManager.DynamoCoreDirectory);
+            SearchModel?.DumpLibraryToXml(fullFileName, PathManager.DynamoCoreDirectory);
 
             Logger.Log(string.Format(Resources.LibraryIsDumped, fullFileName));
         }
@@ -2941,6 +2995,26 @@ namespace Dynamo.Models
                 }
 
                 CurrentWorkspace = customNodeWorkspace;
+                return true;
+            }
+
+            return false;
+        }
+        /// <summary>
+        ///     Opens an existing custom node workspace.
+        /// </summary>
+        /// <param name="guid">Identifier of the workspace to open</param>
+        /// <returns>True if workspace was found and open</returns>
+        internal bool OpenCustomNodeWorkspaceSilent(Guid guid)
+        {
+            CustomNodeWorkspaceModel customNodeWorkspace;
+            if (CustomNodeManager.TryGetFunctionWorkspace(guid, IsTestMode, out customNodeWorkspace))
+            {
+                if (!Workspaces.OfType<CustomNodeWorkspaceModel>().Contains(customNodeWorkspace))
+                {
+                    AddWorkspace(customNodeWorkspace);
+                }
+
                 return true;
             }
 
@@ -3361,6 +3435,11 @@ namespace Dynamo.Models
             {
                 return null;
             }
+                if(PreferenceSettings.InitialExperimentalLib_Namespaces.
+                Select(x => x.Split(":").LastOrDefault()).Any(x => x.Contains(typeLoadData.Category))){
+                //TODO safer way to set this?
+                typeLoadData.IsExperimental = true;
+            }
 
             var node = new NodeModelSearchElement(typeLoadData);
             SearchModel?.Add(node);
@@ -3408,26 +3487,20 @@ namespace Dynamo.Models
         internal void AddZeroTouchNodesToSearch(IEnumerable<FunctionGroup> functionGroups)
         {
             var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
+            List<NodeSearchElement> nodes = new();
             foreach (var funcGroup in functionGroups)
-                AddZeroTouchNodeToSearch(funcGroup, iDoc);
-        }
-
-        private void AddZeroTouchNodeToSearch(FunctionGroup funcGroup, Document iDoc)
-        {
-            foreach (var functionDescriptor in funcGroup.Functions)
             {
-                AddZeroTouchNodeToSearch(functionDescriptor, iDoc);
+                foreach (var functionDescriptor in funcGroup.Functions)
+                {
+                    if (functionDescriptor.IsVisibleInLibrary)
+                    {
+                        var ele = new ZeroTouchSearchElement(functionDescriptor);
+                        SearchModel?.Add(ele);
+                        nodes.Add(ele);
+                    }
+                }
             }
-        }
-
-        private void AddZeroTouchNodeToSearch(FunctionDescriptor functionDescriptor, Document iDoc)
-        {
-            if (functionDescriptor.IsVisibleInLibrary)
-            {
-                var ele = new ZeroTouchSearchElement(functionDescriptor);
-                SearchModel?.Add(ele);
-                LuceneUtility.AddNodeTypeToSearchIndex(ele, iDoc);
-            }
+            LuceneUtility.AddNodeTypeToSearchIndexBulk(nodes, iDoc);
         }
 
         /// <summary>

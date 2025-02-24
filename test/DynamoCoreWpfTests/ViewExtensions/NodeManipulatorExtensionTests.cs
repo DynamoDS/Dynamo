@@ -2,6 +2,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Manipulation;
 using Dynamo.Models;
+using DynamoCoreWpfTests.Utility;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
@@ -28,12 +29,18 @@ namespace DynamoCoreWpfTests.ViewExtensions
     public class NodeManipulatorExtensionTests : DynamoTestUIBase
     {
         [SetUp]
-        public virtual void Start()
+        public override void Start()
         {
             // Forcing the dispatcher to execute all of its tasks within these tests causes crashes in Helix.
             // For now just skip it.
             SkipDispatcherFlush = true;
             base.Start();
+        }
+
+        [OneTimeTearDown]
+        public void TearDown()
+        {
+            DispatcherUtil.DoEventsLoop(() => DispatcherOpsCounter == 0);
         }
 
         protected override void GetLibrariesToPreload(List<string> libraries)

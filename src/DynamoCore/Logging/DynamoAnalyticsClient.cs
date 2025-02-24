@@ -124,6 +124,7 @@ namespace Dynamo.Logging
             Session.Start();
 
             var hostName = string.IsNullOrEmpty(hostAnalyticsInfo.HostName) ? Configurations.DynamoAsString : hostAnalyticsInfo.HostName;
+            var appversion = hostAnalyticsInfo.HostVersion?.ToString();
 
             hostInfo = new HostContextInfo() { ParentId = hostAnalyticsInfo.ParentId, SessionId = hostAnalyticsInfo.SessionId };
 
@@ -133,7 +134,7 @@ namespace Dynamo.Logging
                 buildId = $"{version.Major}.{version.Minor}.{version.Build}"; // BuildId has the following format major.minor.build, ex: 2.5.1
                 releaseId = $"{version.Major}.{version.Minor}.0"; // ReleaseId has the following format: major.minor.0; ex: 2.5.0
             }
-            product = new ProductInfo() { Id = "DYN", Name = hostName, VersionString = "", AppVersion = "", BuildId = buildId, ReleaseId = releaseId };
+            product = new ProductInfo() { Id = "DYN", Name = hostName, VersionString = "", AppVersion = appversion, BuildId = buildId, ReleaseId = releaseId };
         }
 
         private void RegisterADPTracker(Service service)
@@ -192,7 +193,7 @@ namespace Dynamo.Logging
             {
                 serviceInitialized.Wait();
 
-                lock(trackEventLockObj)
+                lock (trackEventLockObj)
                 {
                     if (!ReportingAnalytics) return;
 
@@ -402,7 +403,7 @@ namespace Dynamo.Logging
 
             Task.Run(() =>
             {
-                lock(trackEventLockObj)
+                lock (trackEventLockObj)
                 {
                     taskToEnd.Wait();
                     taskToEnd.Result.Dispose();
@@ -416,7 +417,7 @@ namespace Dynamo.Logging
             serviceInitialized.Wait();
             if (!ReportingAnalytics) return Disposable;
 
-            lock(trackEventLockObj)
+            lock (trackEventLockObj)
             {
                 var e = new FileOperationEvent()
                 {
@@ -468,7 +469,13 @@ namespace Dynamo.Logging
             // If the Analytics Client was initialized, shut it down.
             // Otherwise skip this step because it would cause an exception.
             if (Service.IsInitialized)
-                Service.ShutDown();
+            {
+                // Lock shutdown sequence in case other tracking calls might be executing concurently.
+                lock (trackEventLockObj)
+                {
+                    Service.ShutDown();
+                }
+            }
 
             if (Session != null)
             {

@@ -34,7 +34,7 @@ namespace Dynamo.PackageManager.Tests
 
             Assert.AreEqual(5, fs.DirectoriesCreated.Count());
             Assert.AreEqual(2, fs.CopiedFiles.Count());
-            Assert.AreEqual(2, fs.DeletedFiles.Count());
+            Assert.AreEqual(0, fs.DeletedFiles.Count());    
             Assert.AreEqual(1, fs.NewFilesWritten.Count());
         }
 
@@ -53,7 +53,7 @@ namespace Dynamo.PackageManager.Tests
 
             Assert.AreEqual(1, fs.DirectoriesCreated.Count());
             Assert.AreEqual(2, fs.CopiedFiles.Count());
-            Assert.AreEqual(2, fs.DeletedFiles.Count());
+            Assert.AreEqual(0, fs.DeletedFiles.Count());
             Assert.AreEqual(1, fs.NewFilesWritten.Count());
         }
 
@@ -278,7 +278,7 @@ namespace Dynamo.PackageManager.Tests
             var dyfDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.CustomNodeDirectoryName);
 
             Assert.AreEqual(2, fs.CopiedFiles.Count());
-            Assert.AreEqual(2, fs.DeletedFiles.Count());
+            Assert.AreEqual(0, fs.DeletedFiles.Count());    // no longer deletes the original dyf files
             Assert.AreEqual(0, fs.DeletedDirectories.Count());
 
             Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(dyfDir, "file1.dyf"))));
@@ -304,7 +304,7 @@ namespace Dynamo.PackageManager.Tests
             var dyfDir2 = Path.Combine(pkgsDir, pkg.Name, Path.GetFileName(Path.GetDirectoryName(files[1].First())));
 
             Assert.AreEqual(2, fs.CopiedFiles.Count());
-            Assert.AreEqual(2, fs.DeletedFiles.Count());
+            Assert.AreEqual(0, fs.DeletedFiles.Count()); // no longer deletes the original dyf files
             Assert.AreEqual(0, fs.DeletedDirectories.Count());
 
             Assert.IsTrue(fs.CopiedFiles.Any(x => ComparePaths(x.Item2, Path.Combine(dyfDir1, "file1.dyf"))));
@@ -381,13 +381,10 @@ namespace Dynamo.PackageManager.Tests
 
             db.BuildDirectory(pkg, pkgsDir, files, Enumerable.Empty<string>());
 
-            // The original files are moved
+            // The original files are moved but DYF files are not deleted
 
-            Assert.AreEqual(2, fs.DeletedFiles.Count());
+            Assert.AreEqual(0, fs.DeletedFiles.Count());
             Assert.AreEqual(0, fs.DeletedDirectories.Count());
-
-            Assert.Contains(files[0], fs.DeletedFiles.ToList());
-            Assert.Contains(files[1], fs.DeletedFiles.ToList());
         }
 
         [Test]
@@ -406,13 +403,10 @@ namespace Dynamo.PackageManager.Tests
 
             db.BuildRetainDirectory(pkg, pkgsDir, roots, files, Enumerable.Empty<string>());
 
-            // The original files are moved
+            // The original files are moved but DYF files are not deleted
 
-            Assert.AreEqual(2, fs.DeletedFiles.Count());
+            Assert.AreEqual(0, fs.DeletedFiles.Count());
             Assert.AreEqual(0, fs.DeletedDirectories.Count());
-
-            Assert.Contains(files[0].First(), fs.DeletedFiles.ToList());
-            Assert.Contains(files[1].First(), fs.DeletedFiles.ToList());
         }
 
         [Test]
@@ -439,7 +433,7 @@ namespace Dynamo.PackageManager.Tests
 
             Assert.AreEqual(5, fs.DirectoriesCreated.Count());
             Assert.AreEqual(4, fs.CopiedFiles.Count());
-            Assert.AreEqual(3, fs.DeletedFiles.Count());
+            Assert.AreEqual(2, fs.DeletedFiles.Count());
             Assert.AreEqual(2, fs.DeletedDirectories.Count());
             Assert.AreEqual(1, fs.NewFilesWritten.Count());
         }
@@ -471,7 +465,7 @@ namespace Dynamo.PackageManager.Tests
 
             Assert.AreEqual(1, fs.DirectoriesCreated.Count());
             Assert.AreEqual(4, fs.CopiedFiles.Count());
-            Assert.AreEqual(3, fs.DeletedFiles.Count());
+            Assert.AreEqual(2, fs.DeletedFiles.Count());
             Assert.AreEqual(2, fs.DeletedDirectories.Count());
             Assert.AreEqual(1, fs.NewFilesWritten.Count());
         }
@@ -556,7 +550,7 @@ namespace Dynamo.PackageManager.Tests
         [Test]
         public void BuildPackageDirectory_DeletesOriginalDyfFiles()
         {
-            // This tests asserts that the initial custom definition files will be deleted in the build process 
+            // This tests asserts that the initial custom definition files won't be deleted in the build process 
             var files = new[] { @"C:\pkg\file1.dyf", @"C:\pkg\file2.DYF" };
             var pkg = new Package(@"C:\pkg", "Foo", "0.1.0", "MIT");
 
@@ -572,7 +566,7 @@ namespace Dynamo.PackageManager.Tests
             var dyfDir = Path.Combine(pkgsDir, pkg.Name, PackageDirectoryBuilder.CustomNodeDirectoryName);
 
             Assert.AreEqual(files.Length, fs.CopiedFiles.Count());
-            Assert.AreEqual(files.Length, fs.DeletedFiles.Count());
+            Assert.AreEqual(0, fs.DeletedFiles.Count());
         }
 
         #endregion
