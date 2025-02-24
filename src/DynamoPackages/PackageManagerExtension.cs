@@ -277,10 +277,11 @@ namespace Dynamo.PackageManager
         
         private PackageInfo GetNodePackageFromAssemblyName(AssemblyName assemblyName)
         {
-            if (NodePackageDictionary != null && NodePackageDictionary.ContainsKey(assemblyName.FullName))
+            if (NodePackageDictionary?.TryGetValue(assemblyName.FullName, out var packages) == true)
             {
-                return NodePackageDictionary[assemblyName.FullName].Last();
+                return packages.Last();
             }
+
             return null;
         }
 
