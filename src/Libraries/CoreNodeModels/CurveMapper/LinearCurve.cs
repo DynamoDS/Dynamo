@@ -47,7 +47,7 @@ namespace CoreNodeModels.CurveMapper
         /// <summary>
         /// Returns X and Y values distributed across the curve.
         /// </summary>
-        protected override List<double>[] GenerateCurve(int pointsCount, bool isRender = false)
+        protected override (List<double> XValues, List<double> YValues) GenerateCurve(int pointsCount, bool isRender = false)
         {
             double leftX = SolveForXGivenY(0);
             double rightX = SolveForXGivenY(CanvasSize);
@@ -82,7 +82,7 @@ namespace CoreNodeModels.CurveMapper
                 }
             }
 
-            return [ valuesX, valuesY ];
+            return ( valuesX, valuesY );
         }
     }
 }

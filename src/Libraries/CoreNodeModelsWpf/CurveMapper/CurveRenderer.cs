@@ -11,7 +11,9 @@ namespace Dynamo.Wpf.CurveMapper
         /// <summary>
         /// Renders a curve as a Path object based on given X and Y values, adjusting for the inverted Y-axis in WPF.
         /// </summary>
-        public static List<Path> RenderCurve(List<double> xValues, List<double> yValues, double canvasSize, bool isControlLine = false, bool isGaussian = false)
+        public static List<Path> RenderCurve(
+            List<double> xValues, List<double> yValues, double canvasSize,
+            bool isControlLine = false, bool isGaussian = false, bool isPerlin = false)
         {
             if (xValues == null || yValues == null || xValues.Count != yValues.Count || xValues.Count < 2)
                 return null;
@@ -19,32 +21,30 @@ namespace Dynamo.Wpf.CurveMapper
             List<Path> paths = new List<Path>();
             PathGeometry currentGeometry = new PathGeometry();
             PathFigure currentFigure = null;
-
-            int hitCount = 0;
+            int hitCount = (isPerlin && (yValues[0] == 0 || yValues[0] == canvasSize)) ? 1 : 0;
 
             for (int i = 0; i < xValues.Count; i++)
             {
-                Point currentPoint = new Point(xValues[i], canvasSize - yValues[i]);               
+                Point currentPoint = new Point(xValues[i], canvasSize - yValues[i]);
+                bool isBoundaryGaussian = isGaussian && yValues[i] == canvasSize;
+                bool isBoundaryPerlin = isPerlin && (yValues[i] == 0 || yValues[i] == canvasSize);
 
-                if (yValues[i] == canvasSize && isGaussian) // Odd occurrences: Close the path and reset
+
+                if (isBoundaryGaussian || isBoundaryPerlin) // Odd occurrences: Close the path and reset
                 {
                     hitCount++;
-
                     if (hitCount % 2 == 1)
                     {
-                        // Add the last point to the current path before switching
                         if (currentFigure != null)
                         {
                             currentFigure.Segments.Add(new LineSegment(currentPoint, true));
                             currentGeometry.Figures.Add(currentFigure);
                             paths.Add(CreatePathFromGeometry(currentGeometry, isControlLine));
                         }
-
-                        // Reset for a new path
                         currentGeometry = new PathGeometry();
                         currentFigure = null;
                     }
-                    else // Even occurrences: Start the new path with this point
+                    else
                     {
                         currentFigure = new PathFigure { StartPoint = currentPoint };
                         currentGeometry.Figures.Add(currentFigure);

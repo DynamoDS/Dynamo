@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace CoreNodeModels.CurveMapper
 {
@@ -143,46 +144,51 @@ namespace CoreNodeModels.CurveMapper
             return 1.0 - (double)t * 0.93132257461547858515625e-9;
         }
 
-        private double[] ComputePerlinCurveY(double x)
+        private double ComputePerlinCurveY(double x)
         {
             // Calculate the raw point using the adjusted Y
-            double rawY = GetHeight(-ControlPoint3X + x, 0.0) + (CanvasSize - ControlPoint3Y);
+            double y = GetHeight(-ControlPoint3X + x, 0.0) + (CanvasSize - ControlPoint3Y);
 
             // Flipped value to align correctly with WPF's coordinate system
-            rawY = CanvasSize - rawY;
-
-            // Clamp the values to ensure they stay within the canvas
-            double clampedX = Math.Max(0, Math.Min(x, CanvasSize));
-            double clampedY = Math.Max(0, Math.Min(rawY, CanvasSize));
-
-            return [clampedX, clampedY];
+            return CanvasSize - y;
         }
 
         /// <summary>
         /// Returns X and Y values distributed across the curve.
         /// </summary>
-        protected override List<double>[] GenerateCurve(int pointsCount, bool isRender = false)
+        protected override (List<double> XValues, List<double> YValues) GenerateCurve(int pointsCount, bool isRender = false)
         {
             var valuesX = new List<double>();
             var valuesY = new List<double>();
 
             double scalingFactor = CanvasSize / initialWidth;
-
             scale = (CanvasSize - ControlPoint1X) / (CanvasSize * 3.0);
             amplitude = (CanvasSize - ControlPoint2Y) * 1.1;
             baseFrequency = scale / scalingFactor;
 
             if (isRender )
             {
-                for (double x = 0.0; x < CanvasSize; x += renderIncrementX)
+                for (double x = 0.0; x <= CanvasSize; x += renderIncrementX)
                 {
-                    valuesX.Add(x);
-                    valuesY.Add(ComputePerlinCurveY(x)[1]);
+                    var y = ComputePerlinCurveY(x);
+
+                    if (y >= 0 && y <= CanvasSize)
+                    {
+                        valuesX.Add(x);
+                        valuesY.Add(y);
+                    }
                 }
 
-                // end value
-                valuesX.Add(CanvasSize);
-                valuesY.Add(ComputePerlinCurveY(CanvasSize)[1]);
+                // Add the intersection points & sort the values
+                var intersectionValuesX = GetBoundaryIntersections();
+                valuesX.AddRange(intersectionValuesX.XValues);
+                valuesY.AddRange(intersectionValuesX.YValues);
+
+                var sortedPairs = valuesX.Zip(valuesY, (x, y) => new { X = x, Y = y })
+                    .OrderBy(pair => pair.X)
+                    .ToList();
+                valuesX = sortedPairs.Select(p => p.X).ToList();
+                valuesY = sortedPairs.Select(p => p.Y).ToList();
             }
             else
             {
@@ -191,14 +197,50 @@ namespace CoreNodeModels.CurveMapper
                 for (int i = 0; i < pointsCount; i++)
                 {
                     double x = 0 + step * i;
-                    double y = ComputePerlinCurveY(x)[1];
+                    double y = ComputePerlinCurveY(x);
 
                     valuesX.Add(x);
-                    valuesY.Add(ComputePerlinCurveY(x)[1]);
+                    valuesY.Add(y);
                 }
             }   
 
-            return [valuesX, valuesY];
+            return (valuesX, valuesY);
+        }
+
+        private (List<double> XValues, List<double> YValues) GetBoundaryIntersections()
+        {
+            var intersectionXPoints = new List<double>();
+            var intersectionYPoints = new List<double>();
+
+            double previousY = ComputePerlinCurveY(0);
+            double previousX = 0;
+            double step = renderIncrementX;
+
+            for (double currentX = step; currentX <= CanvasSize; currentX += step)
+            {
+                double currentY = ComputePerlinCurveY(currentX);
+
+                // Check for intersection at Y = 0
+                if ((previousY < 0 && currentY >= 0) || (previousY > 0 && currentY <= 0))
+                {
+                    double intersectX = previousX + ((0 - previousY) * (currentX - previousX) / (currentY - previousY));
+                    intersectionXPoints.Add(intersectX);
+                    intersectionYPoints.Add(0);
+                }
+
+                // Check for intersection at Y = CanvasSize
+                if ((previousY < CanvasSize && currentY >= CanvasSize) || (previousY > CanvasSize && currentY <= CanvasSize))
+                {
+                    double intersectX = previousX + ((CanvasSize - previousY) * (currentX - previousX) / (currentY - previousY));
+                    intersectionXPoints.Add(intersectX);
+                    intersectionYPoints.Add(CanvasSize);
+                }
+
+                previousX = currentX;
+                previousY = currentY;
+            }
+
+            return (intersectionXPoints, intersectionYPoints);
         }
     }
 }

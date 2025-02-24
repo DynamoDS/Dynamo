@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Forms.Design.Behavior;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -97,38 +98,23 @@ namespace Dynamo.Wpf.CurveMapper
                     }
                 }
 
+                // Determine rendering behavior based on graph type
+                bool isGaussian = curveMapperNodeModel.SelectedGraphType == GraphTypes.GaussianCurve;
+                bool isPerlin = curveMapperNodeModel.SelectedGraphType == GraphTypes.PerlinNoiseCurve;
+
                 // Only render the curve on valid selection
-                if (curveMapperNodeModel.SelectedGraphType == GraphTypes.GaussianCurve)
+                if (curveMapperNodeModel.SelectedGraphType != GraphTypes.Empty)
                 {
                     var paths = CurveRenderer.RenderCurve(
                         curveMapperNodeModel.RenderValuesX,
                         curveMapperNodeModel.RenderValuesY,
                         curveMapperNodeModel.DynamicCanvasSize,
-                        false, true
+                        false, isGaussian, isPerlin
                     );
 
                     if (paths != null)
                     {
-                        foreach (var path in paths)
-                        {
-                            GraphCanvas.Children.Add(path);
-                        }
-                    }
-                }
-                else if (curveMapperNodeModel.SelectedGraphType != GraphTypes.Empty)
-                {
-                    var paths = CurveRenderer.RenderCurve(
-                        curveMapperNodeModel.RenderValuesX,
-                        curveMapperNodeModel.RenderValuesY,
-                        curveMapperNodeModel.DynamicCanvasSize
-                    );
-
-                    if (paths != null)
-                    {
-                        foreach (var path in paths)
-                        {
-                            GraphCanvas.Children.Add(path);
-                        }                        
+                        paths.ForEach(path => GraphCanvas.Children.Add(path));
                     }
                 }
 
@@ -210,14 +196,14 @@ namespace Dynamo.Wpf.CurveMapper
                 RenderGraph();
             }
 
-            //if (e.PropertyName == nameof(curveMapperNodeModel.GaussianCurveControlPointData3))
-            //{
-            //    UpdateGaussianControlPoint(gaussianCurveControlPoint3, curveMapperNodeModel.GaussianCurveControlPointData3);
-            //}
-            //if (e.PropertyName == nameof(curveMapperNodeModel.GaussianCurveControlPointData4))
-            //{
-            //    UpdateGaussianControlPoint(gaussianCurveControlPoint4, curveMapperNodeModel.GaussianCurveControlPointData4);
-            //}
+            if (e.PropertyName == nameof(curveMapperNodeModel.GaussianCurveControlPointData3))
+            {
+                UpdateGaussianControlPoint(gaussianCurveControlPoint3, curveMapperNodeModel.GaussianCurveControlPointData3);
+            }
+            if (e.PropertyName == nameof(curveMapperNodeModel.GaussianCurveControlPointData4))
+            {
+                UpdateGaussianControlPoint(gaussianCurveControlPoint4, curveMapperNodeModel.GaussianCurveControlPointData4);
+            }
         }
 
         // Helper (for resizing node)
@@ -361,7 +347,7 @@ namespace Dynamo.Wpf.CurveMapper
             {
                 if (child is CurveMapperControlPoint controlPoint)
                 {
-                    controlPoint.IsEnabled = !curveMapperNodeModel.IsLocked;
+                    controlPoint.IsMoveEnabled = !curveMapperNodeModel.IsLocked;
                 }
             }
         }

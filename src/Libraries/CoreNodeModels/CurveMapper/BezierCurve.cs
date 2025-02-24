@@ -50,7 +50,7 @@ namespace CoreNodeModels.CurveMapper
         /// <summary>
         /// Gets interpolated Y values based on the assigned parameters and limits.
         /// </summary>
-        protected override List<double>[] GenerateCurve(int pointsCount, bool isRender)
+        protected override (List<double> XValues, List<double> YValues) GenerateCurve(int pointsCount, bool isRender)
         {
             var renderValuesX = new List<double>();
             var renderValuesY = new List<double>();
@@ -72,7 +72,7 @@ namespace CoreNodeModels.CurveMapper
 
             if (isRender)
             {
-                return [renderValuesX, renderValuesY];
+                return (renderValuesX, renderValuesY);
             }
 
             // Collect output values
@@ -86,7 +86,7 @@ namespace CoreNodeModels.CurveMapper
                 valuesY.Add(y);
             }
 
-            return [valuesX, valuesY];
+            return (valuesX, valuesY);
         }
     }
 }

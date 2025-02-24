@@ -14,8 +14,8 @@ namespace CoreNodeModels
     [IsDesignScriptCompatible]
     [NodeName("Curve Mapper")]
     [NodeCategory("Math.Graph.Create")]
-    [NodeDescription("CurveMapperNodeDescription")]
-    [NodeSearchTags("CurveMapperSearchTags")]
+    [NodeDescription("Generates a list of values mapped from a curve.")]
+    [NodeSearchTags("graph;curve;mapper;math")]
     public class CurveMapperNodeModel : NodeModel
     {
         private double minLimitX;
@@ -354,25 +354,25 @@ namespace CoreNodeModels
             if (InPorts.Count == 0)
             {
                 InPorts.Add(new PortModel(PortType.Input, this, new PortData("x-MinLimit",
-                    "add ToolTip",
+                    "Minimum value for the X-axis domain.",
                     minLimitXDefaultValue)));
                 InPorts.Add(new PortModel(PortType.Input, this, new PortData("x-MaxLimit",
-                    "add ToolTip",
+                    "Maximum value for the X-axis domain.",
                     maxLimitXDefaultValue)));
                 InPorts.Add(new PortModel(PortType.Input, this, new PortData("y-MinLimit",
-                    "add ToolTip",
+                    "Minimum value for the Y-axis domain.",
                     minLimitYDefaultValue)));
                 InPorts.Add(new PortModel(PortType.Input, this, new PortData("y-MaxLimit",
-                    "add ToolTip",
+                    "Maximum value for the Y-axis domain.",
                     maxLimitYDefaultValue)));
                 InPorts.Add(new PortModel(PortType.Input, this, new PortData("count",
-                    "add ToolTip",
+                    "Number of values to generate.",
                     pointsCountDefaultValue)));
             }
             if (OutPorts.Count == 0)
             {
-                OutPorts.Add(new PortModel(PortType.Output, this, new PortData("y-Values", "add ToolTip for y")));
-                OutPorts.Add(new PortModel(PortType.Output, this, new PortData("x-Values", "add ToolTip for x")));
+                OutPorts.Add(new PortModel(PortType.Output, this, new PortData("y-Values", "Values derived from the curve.")));
+                OutPorts.Add(new PortModel(PortType.Output, this, new PortData("x-Values", "Values derived from the curve.")));
             }
 
             RegisterAllPorts();

@@ -15,14 +15,14 @@ namespace CoreNodeModels.CurveMapper
         /// <summary>
         /// Abstract method to be implemented by derived classes for generating curve values.
         /// </summary>
-        protected abstract List<double>[] GenerateCurve(int pointsCount, bool isRender);
-                
+        protected abstract (List<double> XValues, List<double> YValues) GenerateCurve(int pointsCount, bool isRender);
+
         /// <summary>
         /// Common method for retrieving X values.
         /// </summary>
         public virtual List<double> GetCurveXValues(int pointsCount, bool isRender = false)
         {
-            return GenerateCurve(pointsCount, isRender)[0];
+            return GenerateCurve(pointsCount, isRender).XValues;
         }
 
         /// <summary>
@@ -30,7 +30,7 @@ namespace CoreNodeModels.CurveMapper
         /// </summary>
         public virtual List<double> GetCurveYValues(int pointsCount, bool isRender = false)
         {
-            return GenerateCurve(pointsCount, isRender)[1];
+            return GenerateCurve(pointsCount, isRender).YValues;
         }
     }
 }

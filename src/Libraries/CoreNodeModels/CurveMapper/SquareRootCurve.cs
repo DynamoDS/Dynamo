@@ -53,7 +53,7 @@ namespace CoreNodeModels.CurveMapper
         /// <summary>
         /// Returns X and Y values distributed across the curve.
         /// </summary>
-        protected override List<double>[] GenerateCurve(int pointsCount, bool isRender)
+        protected override (List<double> XValues, List<double> YValues) GenerateCurve(int pointsCount, bool isRender)
         {
             var valuesX = new List<double>();
             var valuesY = new List<double>();
@@ -101,7 +101,7 @@ namespace CoreNodeModels.CurveMapper
                 }
             }
 
-            return [valuesX, valuesY];
+            return (valuesX, valuesY);
         }
     }
 }

@@ -38,7 +38,7 @@ namespace CoreNodeModels.CurveMapper
         /// <summary>
         /// Returns X and Y values distributed across the curve.
         /// </summary>
-        protected override List<double>[] GenerateCurve(int pointsCount, bool isRender)
+        protected override (List<double> XValues, List<double> YValues) GenerateCurve(int pointsCount, bool isRender)
         {
             double leftBoundaryY = (ControlPoint2Y > ControlPoint1Y) ? CanvasSize : 0.0;
             double rightBoundaryY = (ControlPoint2Y < ControlPoint1Y) ? CanvasSize : 0.0;
@@ -71,7 +71,7 @@ namespace CoreNodeModels.CurveMapper
                 valuesX.Add(maxX);
                 valuesY.Add(SolveParabolaForY(maxX));
 
-                return [valuesX, valuesY];
+                return (valuesX, valuesY);
             }
             else
             {
@@ -102,7 +102,7 @@ namespace CoreNodeModels.CurveMapper
                     valuesY.Reverse();
                 }
 
-                return [valuesX, valuesY];
+                return (valuesX, valuesY);
             }
         }
     }

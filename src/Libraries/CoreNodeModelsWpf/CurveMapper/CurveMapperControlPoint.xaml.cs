@@ -16,15 +16,16 @@ namespace Dynamo.Wpf.CurveMapper
     /// </summary>
     public partial class CurveMapperControlPoint : Thumb, INotifyPropertyChanged
     {
-        public CurveMapperNodeModel AssociatedModel { get; set; }
+        private CurveMapperNodeModel curveMapperNodeModel;
+        private const double offsetValue = 6; // thumb size * 0.5
+        private bool isMoveEnabled = true;
+
         public Action OnControlPointMoved { get; set; } // Notify the curve to update
 
         public ControlPointData ControlPointData { get; private set; }
 
 
-        private const double offsetValue = 6; // thumb size * 0.5
-        private Point point;
-        private bool isEnabled = true;
+        
 
         public bool IsOrthogonal { get; set; }
         public bool IsVertical { get; set; }
@@ -46,48 +47,27 @@ namespace Dynamo.Wpf.CurveMapper
         {
             get
             {
-                double scaledX = AssociatedModel.MinLimitX +
+                double scaledX = curveMapperNodeModel.MinLimitX +
                                  (ControlPointData.X / CanvasSize) *
-                                 (AssociatedModel.MaxLimitX - AssociatedModel.MinLimitX);
+                                 (curveMapperNodeModel.MaxLimitX - curveMapperNodeModel.MinLimitX);
 
-                double scaledY = AssociatedModel.MinLimitY +
+                double scaledY = curveMapperNodeModel.MinLimitY +
                                  (1 - (ControlPointData.Y / CanvasSize)) *
-                                 (AssociatedModel.MaxLimitY - AssociatedModel.MinLimitY);
+                                 (curveMapperNodeModel.MaxLimitY - curveMapperNodeModel.MinLimitY);
 
                 return $"Coordinates: ({scaledX:F2}, {scaledY:F2})";
             }
         }
 
-        /// <summary>
-        /// Gets or sets the position of the control point on the canvas.
-        /// </summary>
         [JsonIgnore]
-        public Point Point
+        public bool IsMoveEnabled
         {
-            get { return point; }
+            get => isMoveEnabled;
             set
             {
-                if (point != value)
+                if (isMoveEnabled != value)
                 {
-                    point = value;
-                    Canvas.SetLeft(this, point.X - offsetValue);
-                    Canvas.SetTop(this, point.Y - offsetValue);
-
-                    RaisePropertyChanged(nameof(Point));
-                }
-            }
-        }
-
-
-        [JsonIgnore]
-        public bool IsEnabled
-        {
-            get => isEnabled;
-            set
-            {
-                if (isEnabled != value)
-                {
-                    isEnabled = value;
+                    isMoveEnabled = value;
                     UpdateCursor();
                 }
             }
@@ -106,7 +86,7 @@ namespace Dynamo.Wpf.CurveMapper
 
             ControlPointData = controlPoint;
             CanvasSize = canvasSize;
-            AssociatedModel = model;
+            curveMapperNodeModel = model;
             OnControlPointMoved = updateCurve;
             IsOrthogonal = isOrthogonal;
             IsVertical = isVertical;            
@@ -117,12 +97,12 @@ namespace Dynamo.Wpf.CurveMapper
 
             UpdateCursor();
 
-            AssociatedModel.PropertyChanged += (s, e) =>
+            curveMapperNodeModel.PropertyChanged += (s, e) =>
             {
-                if (e.PropertyName == nameof(AssociatedModel.MinLimitX) ||
-                    e.PropertyName == nameof(AssociatedModel.MaxLimitX) ||
-                    e.PropertyName == nameof(AssociatedModel.MinLimitY) ||
-                    e.PropertyName == nameof(AssociatedModel.MaxLimitY))
+                if (e.PropertyName == nameof(curveMapperNodeModel.MinLimitX) ||
+                    e.PropertyName == nameof(curveMapperNodeModel.MaxLimitX) ||
+                    e.PropertyName == nameof(curveMapperNodeModel.MinLimitY) ||
+                    e.PropertyName == nameof(curveMapperNodeModel.MaxLimitY))
                 {
                     RaisePropertyChanged(nameof(ScaledCoordinates));
                 }
@@ -133,7 +113,7 @@ namespace Dynamo.Wpf.CurveMapper
         /// Helper method to register dependency properties with a common property changed callback.
         /// </summary>
         /// <returns></returns>
-        private static DependencyProperty RegisterProperty(string name, double defaultValue)
+        private static DependencyProperty RegisterProperty(string name, double defaultValue) //
         {
             return DependencyProperty.Register(name, typeof(double), typeof(CurveMapperControlPoint),
                 new PropertyMetadata(defaultValue, OnPropertyUpdated));
@@ -152,16 +132,16 @@ namespace Dynamo.Wpf.CurveMapper
 
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public void RaisePropertyChanged(string propertyName)
+        public void RaisePropertyChanged(string propertyName) //
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
-        private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
+        private void Thumb_DragDelta(object sender, DragDeltaEventArgs e) //
         {
-            if (!IsEnabled) return;            
+            if (!IsMoveEnabled) return;            
 
-            double newCanvasSize = AssociatedModel.DynamicCanvasSize;
+            double newCanvasSize = curveMapperNodeModel.DynamicCanvasSize;
 
             // Calculate horizontal and vertical deltas within canvas boundaries
             // Requires for Gaussian control points.
@@ -192,45 +172,20 @@ namespace Dynamo.Wpf.CurveMapper
 
             if (tag.Contains("GaussianCurveControlPointData"))
             {
-                AssociatedModel.UpdateGaussianCurveControlPoints(deltaX, tag);
+                curveMapperNodeModel.UpdateGaussianCurveControlPoints(deltaX, tag);
             }            
 
             // Refresh scaled coordinates in tooltip
             RaisePropertyChanged(nameof(ScaledCoordinates));
 
             // Notify the mode and UI to update the curve
-            AssociatedModel.GenerateOutputValues();
+            curveMapperNodeModel.GenerateOutputValues();
             OnControlPointMoved?.Invoke();
         }
 
-        private void Thumb_DragStarted(object sender, DragStartedEventArgs e)
+        private void UpdateCursor() //
         {
-        }
-
-        private void Thumb_DragCompleted(object sender, DragCompletedEventArgs e)
-        {
-        }
-
-        private void UpdateCursor()
-        {
-            this.Cursor = IsEnabled ? Cursors.Hand : Cursors.Arrow;
-        }
-    }
-
-    public class HalfWidthConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            if (value is double width)
-            {
-                return -width / 2; // Negative to offset correctly
-            }
-            return DependencyProperty.UnsetValue;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            throw new NotImplementedException();
+            this.Cursor = IsMoveEnabled ? Cursors.Hand : Cursors.Arrow;
         }
     }
 }
