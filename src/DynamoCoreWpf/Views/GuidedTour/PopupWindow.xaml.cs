@@ -6,6 +6,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Dynamo.Utilities;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.GuidedTour;
@@ -125,7 +126,8 @@ namespace Dynamo.Wpf.Views.GuidedTour
             contentGrid.Children.Add(webBrowserComponent);
             Grid.SetRow(webBrowserComponent, 1);
 
-            ResourceUtilities.LoadWebBrowser(hostControlInfo.HtmlPage, webBrowserComponent, resourcesPath, mainFontStylePath, GetType().Assembly, WebBrowserUserDataFolder);
+            var localeStr = popupViewModel.Step.DynamoViewModelStep.PreferenceSettings.Locale;
+            ResourceUtilities.LoadWebBrowser(hostControlInfo.HtmlPage, webBrowserComponent, resourcesPath, mainFontStylePath, GetType().Assembly, WebBrowserUserDataFolder, localeStr);
         }
 
        
