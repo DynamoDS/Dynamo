@@ -161,16 +161,17 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Returns the index of the element in the given list. Match between given list and target element must be a strict match (i.e. int to int, double to double, string to string, object to object etc.)
+        ///     Returns the index of the element in the given list. Match between given list and target element must be a strict match (i.e. int to int, double to double, string to string, object to object etc.).
         /// </summary>
         /// <param name="list">The list to find the element in.</param>
         /// <param name="element">The element whose index is to be returned.</param>
         /// <returns name="int">The index of the element in the list. Invalid index -1 will be returned if strict match not found.</returns>
         /// <search>index,indexof</search>
         [IsVisibleInDynamoLibrary(true)]
-        public static int IndexOf(IList list, object element)
+        public static int? IndexOf(IList list, object element)
         {
-            return list.IndexOf(element);
+            var index = list.IndexOf(element);
+            return index < 0 ? null : index;
         }
 
         /// <summary>
@@ -662,6 +663,49 @@ namespace DSCore
             // copy the list, insert and return
             var newList = new ArrayList(list);
             newList[index] = item;
+            return newList;
+        }
+
+        /// <summary>
+        ///     Replaces items from the given list that are located at the specified indices.
+        /// </summary>
+        /// <param name="list">List to replace an item in.</param>
+        /// <param name="indices">Indices of the item(s) to be replaced.</param>
+        /// <param name="item">The item to insert.</param>
+        /// <returns name="list">A new list with the item(s) replaced.</returns>
+        /// <search>replace,switch</search>
+        [IsVisibleInDynamoLibrary(true)]
+        public static IList ReplaceItemAtIndices(IList list, IList<int> indices, [ArbitraryDimensionArrayImport] object item)
+        {
+            //Validate input
+            if (list == null || list.Count == 0)
+                throw new ArgumentException("Need at least one item in the list of items.", nameof(list));
+            if (indices == null || indices.Count == 0)
+                throw new ArgumentException("Need at least one index in the list of indices to be replaced.", nameof(indices));
+
+            // Use a HashSet for faster lookup and to avoid duplicate indices
+            HashSet<int> uniqueIndices = new HashSet<int>(indices);
+
+            // Copy list and replace items at specified indices
+            var newList = new ArrayList(list);
+            foreach (int index in uniqueIndices)
+            {
+                int idx = index;
+
+                if (idx < 0)
+                {
+                    idx = newList.Count + index;
+                }
+
+                if (idx >= 0 && idx < list.Count)
+                {
+                    newList[idx] = item;
+                }
+                else
+                {
+                    throw new IndexOutOfRangeException($"Index {idx} is out of range. (Parameter: '{nameof(indices)}')");
+                }
+            }
             return newList;
         }
 

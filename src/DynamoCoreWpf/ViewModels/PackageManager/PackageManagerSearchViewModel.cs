@@ -87,6 +87,22 @@ namespace Dynamo.PackageManager
             public string Tooltip { get; set; }
 
             /// <summary>
+            /// Controls the IsEnabled status of the filter
+            /// </summary>
+            private bool isEnabled = true;
+
+            public bool IsEnabled
+            {
+                get { return isEnabled; }
+                set
+                {
+                    isEnabled = value;
+                    RaisePropertyChanged(nameof(IsEnabled));
+                }
+            }
+
+
+            /// <summary>
             /// Filter entry click command, notice this is a dynamic command
             /// with command param set to FilterName so that the code is robust
             /// in a way UI could handle as many hosts as possible
@@ -164,6 +180,14 @@ namespace Dynamo.PackageManager
                         Categories.PackageManagerOperations,
                         string.Join(",", pmSearchViewModel.SelectedHosts));
                 }
+                if(GroupName.Equals(Resources.PackageFilterByCompatibility))
+                {
+                    // Send filter event with what compatibility state filter user using
+                    Dynamo.Logging.Analytics.TrackEvent(
+                        Actions.Filter,
+                        Categories.PackageManagerOperations,
+                        pmSearchViewModel.CompatibilityFilter.FirstOrDefault(x=>x.OnChecked)?.FilterName);
+                }
                 pmSearchViewModel.SearchAndUpdateResults();
                 return;
             }
@@ -202,7 +226,7 @@ namespace Dynamo.PackageManager
             set
             {
                 _sortingKey = value;
-                RaisePropertyChanged("SortingKey");
+                RaisePropertyChanged(nameof(SortingKey));
             }
         }
 
@@ -218,10 +242,9 @@ namespace Dynamo.PackageManager
             set
             {
                 hostFilter = value;
-                RaisePropertyChanged("HostFilter");
+                RaisePropertyChanged(nameof(HostFilter));
             }
         }
-
 
         private List<FilterEntry> nonHostFilter;
 
@@ -235,7 +258,22 @@ namespace Dynamo.PackageManager
             set
             {
                 nonHostFilter = value;
-                RaisePropertyChanged("NonHostFilter");
+                RaisePropertyChanged(nameof(NonHostFilter));
+            }
+        }
+
+        private List<FilterEntry> compatibilityFilter;
+
+        /// <summary>
+        /// Compatibility filters (Compatible, Non-compatible, Unknown)
+        /// </summary>
+        public List<FilterEntry> CompatibilityFilter
+        {
+            get { return compatibilityFilter; }
+            set
+            {
+                compatibilityFilter = value;
+                RaisePropertyChanged(nameof(CompatibilityFilter));
             }
         }
 
@@ -252,7 +290,7 @@ namespace Dynamo.PackageManager
             set
             {
                 _sortingDirection = value;
-                RaisePropertyChanged("SortingDirection");
+                RaisePropertyChanged(nameof(SortingDirection));
             }
         }
 
@@ -308,7 +346,7 @@ namespace Dynamo.PackageManager
                 {
                     _SearchText = value;
                     SearchAndUpdateResults();
-                    RaisePropertyChanged("SearchText");
+                    RaisePropertyChanged(nameof(SearchText));
                 }
             }
         }
@@ -329,7 +367,7 @@ namespace Dynamo.PackageManager
                 if (_selectedIndex != value)
                 {
                     _selectedIndex = value;
-                    RaisePropertyChanged("SelectedIndex");
+                    RaisePropertyChanged(nameof(SelectedIndex));
                 }
             }
         }
@@ -395,7 +433,34 @@ namespace Dynamo.PackageManager
 
         private void SetFilterChange()
         {
-            IsAnyFilterOn = HostFilter.Any(f => f.OnChecked) || NonHostFilter.Any(f => f.OnChecked);
+            IsAnyFilterOn = HostFilter.Any(f => f.OnChecked) || NonHostFilter.Any(f => f.OnChecked) || CompatibilityFilter.Any(f => f.OnChecked);
+            ApplyFilterRules();
+        }
+
+        /// <summary>
+        /// Executes any additional logic on the filters
+        /// </summary>
+        internal void ApplyFilterRules()
+        {
+            // Enable/disable Compatibility filters if any HostFilter is on
+            if (CompatibilityFilter.Any(f => f.OnChecked))
+            {
+                HostFilter.ForEach(x => x.IsEnabled = false);   
+            }
+            else
+            {
+                HostFilter.ForEach(x => x.IsEnabled = true);
+            }
+
+            // Enable/disable Host filters if any CompatibilityFilter is on
+            if (HostFilter.Any(f => f.OnChecked))
+            {
+                CompatibilityFilter.ForEach(x => x.IsEnabled = false);
+            }
+            else
+            {
+                CompatibilityFilter.ForEach(x => x.IsEnabled = true);
+            }
         }
 
         /// <summary>
@@ -579,8 +644,11 @@ namespace Dynamo.PackageManager
             SortingDirection = PackageSortingDirection.Descending;
             HostFilter = new List<FilterEntry>();
             NonHostFilter = new List<FilterEntry>();
+            CompatibilityFilter = new List<FilterEntry>();
             SelectedHosts = new List<string>();
         }
+
+
 
         /// <summary>
         /// Add package information to Lucene index
@@ -591,7 +659,7 @@ namespace Dynamo.PackageManager
         {
             if (LuceneUtility.addedFields == null) return;
 
-            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), package.Name);
+            LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Name), package.Name.Trim().Replace(" ", string.Empty));
             LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Description), package.Description);
             LuceneUtility.SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Author), package.Maintainers);
 
@@ -616,6 +684,7 @@ namespace Dynamo.PackageManager
             PackageManagerClientViewModel = client;
             HostFilter = InitializeHostFilter();
             NonHostFilter = InitializeNonHostFilter();
+            CompatibilityFilter = InitializeCompatibilityFilter();
             InitializeLuceneForPackageManager();
         }
 
@@ -655,7 +724,6 @@ namespace Dynamo.PackageManager
                 var p = GetSearchElementViewModel(pkg, true);
 
                 p.RequestDownload += this.PackageOnExecuted;
-                p.RequestShowFileDialog += this.OnRequestShowFileDialog;
                 p.IsOnwer = true;
 
                 myPackages.Add(p);
@@ -739,11 +807,17 @@ namespace Dynamo.PackageManager
         public List<FilterEntry> InitializeHostFilter()
         {
             var hostFilter = new List<FilterEntry>();
-            foreach (var host in PackageManagerClientViewModel.Model.GetKnownHosts())
+            try
             {
-                hostFilter.Add(new FilterEntry(host, Resources.PackageFilterByHost, Resources.PackageHostDependencyFilterContextItem, this));
+                foreach (var host in PackageManagerClientViewModel.Model?.GetKnownHosts())
+                {
+                    hostFilter.Add(new FilterEntry(host, Resources.PackageFilterByHost, Resources.PackageHostDependencyFilterContextItem, this));
+                }
             }
-
+            catch (Exception ex)
+            {
+                PackageManagerClientViewModel.DynamoViewModel.Model.Logger.Log("Could not fetch hosts: " + ex.Message);
+            }
             return hostFilter;
         }
 
@@ -759,7 +833,18 @@ namespace Dynamo.PackageManager
             nonHostFilter.ForEach(f => f.PropertyChanged += filter_PropertyChanged);
 
             return nonHostFilter;
+        }
 
+        private List<FilterEntry> InitializeCompatibilityFilter()
+        {
+            var compatibilityFilter = new List<FilterEntry>() { new FilterEntry(Resources.PackageCompatible, Resources.PackageFilterByCompatibility, Resources.PackageCompatibleFilterTooltip, this),
+                                                          new FilterEntry(Resources.PackageUnknownCompatibility, Resources.PackageFilterByCompatibility, Resources.PackageUnknownCompatibilityFilterTooltip, this),
+                                                          new FilterEntry(Resources.PackageIncompatible, Resources.PackageFilterByCompatibility, Resources.PackageIncompatibleFilterTooltip, this)
+            };
+
+            compatibilityFilter.ForEach(f => f.PropertyChanged += filter_PropertyChanged);
+
+            return compatibilityFilter;
         }
 
         /// <summary>
@@ -790,6 +875,24 @@ namespace Dynamo.PackageManager
                     negateFilter.OnChecked = false;
                     break;
 
+                // Mutually exclusive case for Compatible and Incompatible
+                case var name when name.Equals(Resources.PackageCompatible):
+                    if (!filter.OnChecked)
+                        break;
+                    var incompatibleFilter = CompatibilityFilter.First(x => x.FilterName.Equals(Resources.PackageIncompatible));
+                    if (!incompatibleFilter.OnChecked)
+                        break;
+                    incompatibleFilter.OnChecked = false;
+                    break;
+
+                case var name when name.Equals(Resources.PackageIncompatible):
+                    if (!filter.OnChecked)
+                        break;
+                    var compatibleFilter = CompatibilityFilter.First(x => x.FilterName.Equals(Resources.PackageCompatible));
+                    if (!compatibleFilter.OnChecked)
+                        break;
+                    compatibleFilter.OnChecked = false;
+                    break;
             }
         }
 
@@ -926,6 +1029,15 @@ namespace Dynamo.PackageManager
                 }
             }
 
+            foreach (var filter in CompatibilityFilter)
+            {
+                if (filter.OnChecked)
+                {
+                    filter.OnChecked = false;
+                    filter.FilterCommand.Execute(filter.FilterName);
+                }
+            }
+
             RaisePropertyChanged(nameof(IsAnyFilterOn));
         }
 
@@ -998,6 +1110,7 @@ namespace Dynamo.PackageManager
             var pkgs = PackageManagerClientViewModel.ListAll();
 
             pkgs.Sort((e1, e2) => e1.Name.ToLower().CompareTo(e2.Name.ToLower()));
+            pkgs = pkgs.Where(x => x.Header.versions != null && x.Header.versions.Count > 0).ToList(); // We expect compliant data structure
             LastSync = pkgs;
 
             PopulateMyPackages();   // adding 
@@ -1125,6 +1238,8 @@ namespace Dynamo.PackageManager
         internal void AddToSearchResults(PackageManagerSearchElementViewModel element)
         {
             element.RequestDownload += this.PackageOnExecuted;
+            element.RequestShowFileDialog += this.OnRequestShowFileDialog;
+
             this.SearchResults.Add(element);
         }
 
@@ -1259,6 +1374,7 @@ namespace Dynamo.PackageManager
                 results = Search(query, true);
                 results = ApplyNonHostFilters(results);
                 results = ApplyHostFilters(results);
+                results = ApplyCompatibilityFilters(results);
             }
 
             this.ClearSearchResults();
@@ -1355,6 +1471,7 @@ namespace Dynamo.PackageManager
             var initialResults = LastSync?.Select(x => GetSearchElementViewModel(x));
             list = ApplyNonHostFilters(initialResults);
             list = ApplyHostFilters(list).ToList();
+            list = ApplyCompatibilityFilters(list).ToList();
 
             Sort(list, this.SortingKey);
 
@@ -1362,9 +1479,6 @@ namespace Dynamo.PackageManager
             {
                 list.Reverse();
             }
-
-            foreach (var x in list)
-                x.RequestShowFileDialog += OnRequestShowFileDialog;
 
             return list;
         }
@@ -1382,6 +1496,34 @@ namespace Dynamo.PackageManager
                                   .Where(x => !NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterDependencies)).OnChecked ? true : PackageHasDependencies(x.SearchElementModel))
                                   .Where(x => !NonHostFilter.First(f => f.FilterName.Equals(Resources.PackageSearchViewContextMenuFilterNoDependencies)).OnChecked ? true : !PackageHasDependencies(x.SearchElementModel))
                                   .ToList();
+        }
+
+        /// <summary>
+        /// Applies the compatibility filters - works on the package versions rather than the packages themselves
+        /// </summary>
+        /// <param name="list"></param>
+        /// <returns></returns>
+        internal IEnumerable<PackageManagerSearchElementViewModel> ApplyCompatibilityFilters(IEnumerable<PackageManagerSearchElementViewModel> list)
+        {
+            // No need to filter by host if nothing selected
+            if (!CompatibilityFilter.Any(f => f.OnChecked))
+            {
+                return list;
+            }
+
+            // Filter the list by checking if the selected version's compatibility matches the filters
+            IEnumerable<PackageManagerSearchElementViewModel> filteredList = list.Where(x =>
+                // Apply filter for Compatible (IsSelectedVersionCompatible == true)
+                CompatibilityFilter.FirstOrDefault(f => f.FilterName.Equals(Wpf.Properties.Resources.PackageCompatible))?.OnChecked == true && x.IsSelectedVersionCompatible == true ||
+
+                // Apply filter for Incompatible (IsSelectedVersionCompatible == false)
+                CompatibilityFilter.FirstOrDefault(f => f.FilterName.Equals(Wpf.Properties.Resources.PackageIncompatible))?.OnChecked == true && x.IsSelectedVersionCompatible == false ||
+
+                // Apply filter for Unknown compatibility (IsSelectedVersionCompatible == null)
+                CompatibilityFilter.FirstOrDefault(f => f.FilterName.Equals(Wpf.Properties.Resources.PackageUnknownCompatibility))?.OnChecked == true && x.IsSelectedVersionCompatible == null
+            ).ToList();
+
+            return filteredList;
         }
 
         /// <summary>
@@ -1488,7 +1630,7 @@ namespace Dynamo.PackageManager
         /// <returns></returns>
         private PackageManagerSearchElementViewModel GetViewModelForPackageSearchElement(string packageName)
         {
-            var result = PackageManagerClientViewModel.CachedPackageList.Where(e => e.Name.Equals(packageName));
+            var result = PackageManagerClientViewModel.CachedPackageList.Where(e => e.Name.Replace(" ", string.Empty).Equals(packageName));
 
             if (!result.Any())
             {
@@ -1632,6 +1774,9 @@ namespace Dynamo.PackageManager
 
             nonHostFilter?.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
             nonHostFilter.Clear();
+
+            compatibilityFilter?.ForEach(f => f.PropertyChanged -= filter_PropertyChanged);
+            compatibilityFilter.Clear();
 
             if (aTimer != null)
             {

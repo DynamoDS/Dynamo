@@ -1647,6 +1647,7 @@ namespace ProtoCore.AST.AssociativeAST
             HiddenInLibrary = IsObsolete;
             PreferredShortName = preferredShortName;
         }
+        internal bool IsExperimental { get; set; }
     }
 
     public class MethodAttributes
@@ -1670,6 +1671,9 @@ namespace ProtoCore.AST.AssociativeAST
         /// Returns/Sets description for the method.
         /// </summary>
         public string Description { get; set; }
+
+        internal bool IsExperimental { get; set; }
+
 
         public MethodAttributes(bool hiddenInLibrary = false, bool canUpdatePeriodically = false, string msg = "")
         {

@@ -177,7 +177,7 @@ namespace Dynamo.Graph.Nodes
         internal static string GetPackageName(this NodeModel node, Workspaces.PackageInfo packageInfo)
         {
             // Only return package name if the node comes from a package
-            if (node == null || !node.IsCustomFunction || packageInfo == null) return string.Empty;
+            if (node == null || packageInfo == null) return string.Empty;
 
             return packageInfo?.Name;
         }

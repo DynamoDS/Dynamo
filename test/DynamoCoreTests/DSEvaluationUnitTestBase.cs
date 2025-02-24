@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -155,6 +155,11 @@ namespace Dynamo.Tests
         {
             var node = GetModel().CurrentWorkspace.Nodes.First(n => n.GUID.ToString() == guid);
             Assert.True(node.IsInErrorState);
+        }
+        protected void AssertWarning(string guid)
+        {
+            var node = GetModel().CurrentWorkspace.Nodes.First(n => n.GUID.ToString() == guid);
+            Assert.True(node.State is ElementState.Warning || node.State is ElementState.PersistentWarning);
         }
 
         protected void AssertPreviewValue(string guid, object value)

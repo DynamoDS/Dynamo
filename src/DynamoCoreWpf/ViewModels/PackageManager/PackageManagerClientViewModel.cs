@@ -20,6 +20,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Properties;
+using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
 using DynamoServices;
 using Greg.AuthProviders;
@@ -34,6 +35,7 @@ namespace Dynamo.ViewModels
         internal PackageManagerClient PackageManagerClient { get; set; }
         internal AuthenticationManager AuthenticationManager { get; set; }
         internal Action AcceptanceCallback { get; set; }
+        internal Window Parent { get; set; }
     }
 
     /// <summary>
@@ -47,7 +49,7 @@ namespace Dynamo.ViewModels
         private readonly Action callbackAction;
         private readonly PackageManagerClient packageManagerClient;
         private readonly AuthenticationManager authenticationManager;
-
+        private readonly Window parent;
         private static bool isTermsOfUseCreated;
 
         public TermsOfUseHelper(TermsOfUseHelperParams touParams)
@@ -67,6 +69,7 @@ namespace Dynamo.ViewModels
             packageManagerClient = touParams.PackageManagerClient;
             callbackAction = touParams.AcceptanceCallback;
             authenticationManager = touParams.AuthenticationManager;
+            parent = touParams.Parent;
         }
 
         internal void Execute(bool preventReentrant)
@@ -122,13 +125,16 @@ namespace Dynamo.ViewModels
             var termsOfUseView = new TermsOfUseView(touFilePath);
             termsOfUseView.Closed += TermsOfUseView_Closed;
             isTermsOfUseCreated = true;
+            termsOfUseView.Owner = parent;
 
-            if (parent == null)
+            //If any Guide is being executed then the ShowTermsOfUse Window WON'T be modal otherwise will be modal (as in the normal behavior)
+            if (!GuideFlowEvents.IsAnyGuideActive)
+            {
                 termsOfUseView.ShowDialog();
+            }
             else
             {
-                //Means that a Guide is being executed then the TermsOfUseView cannot be modal and has the DynamoView as owner
-                termsOfUseView.Owner = parent;
+                //When a Guide is being executed then the TermsOfUseView cannot be modal and has the DynamoView as owner
                 termsOfUseView.Show();
             }
 
@@ -278,6 +284,7 @@ namespace Dynamo.ViewModels
 
         private void ToggleLoginState()
         {
+            if(!this.DynamoViewModel.IsIDSDKInitialized()) return;
             if (AuthenticationManager.LoginState == LoginState.LoggedIn)
             {
                 AuthenticationManager.Logout();
@@ -295,6 +302,7 @@ namespace Dynamo.ViewModels
 
         public void PublishCurrentWorkspace(object m)
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             var ws = (CustomNodeWorkspaceModel)DynamoViewModel.CurrentSpace;
 
             CustomNodeDefinition currentFunDef;
@@ -316,7 +324,8 @@ namespace Dynamo.ViewModels
                         AcceptanceCallback = () => ShowNodePublishInfo(new[]
                         {
                             Tuple.Create(currentFunInfo, currentFunDef)
-                        })
+                        }),
+                        Parent = ViewModelOwner ?? DynamoViewModel.Owner,
                     };
 
                     var termsOfUseCheck = new TermsOfUseHelper(touParams);
@@ -339,12 +348,14 @@ namespace Dynamo.ViewModels
 
         public void PublishNewPackage(object m)
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             var termsOfUseCheck = new TermsOfUseHelper(new TermsOfUseHelperParams
             {
                 PackageManagerClient = Model,
                 AuthenticationManager = AuthenticationManager,
                 ResourceProvider = DynamoViewModel.BrandingResourceProvider,
-                AcceptanceCallback = ShowNodePublishInfo
+                AcceptanceCallback = ShowNodePublishInfo,
+                Parent = ViewModelOwner ?? DynamoViewModel.Owner,
             });
 
             termsOfUseCheck.Execute(true);
@@ -357,6 +368,7 @@ namespace Dynamo.ViewModels
 
         public void PublishCustomNode(Function m)
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             CustomNodeInfo currentFunInfo;
             if (DynamoViewModel.Model.CustomNodeManager.TryGetNodeInfo(
                 m.Definition.FunctionId,
@@ -370,7 +382,9 @@ namespace Dynamo.ViewModels
                     AcceptanceCallback = () => ShowNodePublishInfo(new[]
                     {
                         Tuple.Create(currentFunInfo, m.Definition)
-                    })
+                    }),
+                    Parent = ViewModelOwner ?? DynamoViewModel.Owner,
+
                 });
 
                 termsOfUseCheck.Execute(true);
@@ -384,6 +398,7 @@ namespace Dynamo.ViewModels
 
         public void PublishSelectedNodes(object m)
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             var nodeList = DynamoSelection.Instance.Selection
                                 .Where(x => x is Function)
                                 .Cast<Function>()
@@ -428,7 +443,8 @@ namespace Dynamo.ViewModels
                 PackageManagerClient = Model,
                 AuthenticationManager = AuthenticationManager,
                 ResourceProvider = DynamoViewModel.BrandingResourceProvider,
-                AcceptanceCallback = () => ShowNodePublishInfo(defs)
+                AcceptanceCallback = () => ShowNodePublishInfo(defs),
+                Parent = ViewModelOwner ?? DynamoViewModel.Owner,
             });
 
             termsOfUseCheck.Execute(true);
@@ -442,12 +458,14 @@ namespace Dynamo.ViewModels
 
         private void ShowNodePublishInfo()
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             var newPkgVm = new PublishPackageViewModel(DynamoViewModel);
             DynamoViewModel.OnRequestPackagePublishDialog(newPkgVm);
         }
 
         private void ShowNodePublishInfo(ICollection<Tuple<CustomNodeInfo, CustomNodeDefinition>> funcDefs)
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             foreach (var f in funcDefs)
             {
                 var pkg = PackageManagerExtension.PackageLoader.GetOwnerPackage(f.Item1);
@@ -502,6 +520,7 @@ namespace Dynamo.ViewModels
         /// <returns></returns>
         public List<PackageManagerSearchElement> GetInfectedPackages()
         {
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return null;
             InfectedPackageList = new List<PackageManagerSearchElement>();
             var latestPkgs = Model.GetUsersLatestPackages();
             if (latestPkgs != null && latestPkgs.maintains?.Count > 0)
@@ -526,11 +545,12 @@ namespace Dynamo.ViewModels
         public void DownloadAndInstallPackage(IPackageInfo packageInfo, string downloadPath = null)
         {
             // User needs to accept terms of use before any packages can be downloaded from package manager
+            if (!this.DynamoViewModel.IsIDSDKInitialized(true, ViewModelOwner)) return;
             var prefSettings = DynamoViewModel.Model.PreferenceSettings;
             var touAccepted = prefSettings.PackageDownloadTouAccepted;
             if (!touAccepted)
             {
-                touAccepted = TermsOfUseHelper.ShowTermsOfUseDialog(false, null);
+                touAccepted = TermsOfUseHelper.ShowTermsOfUseDialog(false, null, ViewModelOwner);
                 prefSettings.PackageDownloadTouAccepted = touAccepted;
                 if (!touAccepted)
                 {
@@ -737,13 +757,50 @@ namespace Dynamo.ViewModels
 
         internal async void ExecutePackageDownload(string name, PackageVersion package, string installPath)
         {
-            string msg = String.IsNullOrEmpty(installPath) ?
-                String.Format(Resources.MessageConfirmToInstallPackage, name, package.version) :
-                String.Format(Resources.MessageConfirmToInstallPackageToFolder, name, package.version, installPath);
+            string msg;
+            MessageBoxResult result;
 
-            var result = MessageBoxService.Show(ViewModelOwner, msg,
-                Resources.PackageDownloadConfirmMessageBoxTitle,
-                MessageBoxButton.OKCancel, MessageBoxImage.Question);
+            // initialize default download consent message
+            msg = String.IsNullOrEmpty(installPath) ?
+                    String.Format(Resources.MessageConfirmToInstallPackage, name, package.version) :
+                    String.Format(Resources.MessageConfirmToInstallPackageToFolder, name, package.version, installPath);
+
+            // Calculate compatibility and display a single download consent across cases
+            var compatible = PackageManagerSearchElement.CalculateCompatibility(package.compatibility_matrix);
+
+            // Unknown package compatibility with current Dynamo env, this is expected to be the most popular case for now
+            if (compatible == null && !DynamoModel.IsTestMode)
+            {
+                msg = msg + "\n\n" + Resources.PackageUnknownCompatibilityVersionDownloadMsg;
+                result = MessageBoxService.Show(ViewModelOwner, msg,
+                    Resources.PackageDownloadConfirmMessageBoxTitle,
+                    MessageBoxButton.OKCancel, MessageBoxImage.Question);
+
+                if (result != MessageBoxResult.OK)
+                {
+                    return;
+                }
+            }
+            // Package incompatible with current Dynamo env
+            else if (compatible == false && !DynamoModel.IsTestMode)
+            {
+                msg = msg + "\n\n" + Resources.PackageManagerIncompatibleVersionDownloadMsg;
+                result = MessageBoxService.Show(ViewModelOwner, msg,
+                    Resources.PackageManagerIncompatibleVersionDownloadTitle,
+                    MessageBoxButton.OKCancel, MessageBoxImage.Warning);
+
+                if (result != MessageBoxResult.OK)
+                {
+                    return;
+                }
+            }
+            // Package compatible with current Dynamo env
+            else
+            {
+                result = MessageBoxService.Show(ViewModelOwner, msg,
+                    Resources.PackageDownloadConfirmMessageBoxTitle,
+                    MessageBoxButton.OKCancel, MessageBoxImage.Question);
+            }
 
             var pmExt = DynamoViewModel.Model.GetPackageManagerExtension();
             if (result == MessageBoxResult.OK)
@@ -870,8 +927,8 @@ namespace Dynamo.ViewModels
 
                 var containsPackagesThatTargetOtherHosts = PackageManagerExtension.CheckIfPackagesTargetOtherHosts(newPackageHeaders);
 
-                // if any do, notify user and allow cancellation
-                if (containsPackagesThatTargetOtherHosts)
+                // if unknown compatibility, and package target other hosts, notify user and allow cancellation
+                if (compatible == null && containsPackagesThatTargetOtherHosts)
                 {
                     var res = MessageBoxService.Show(ViewModelOwner,
                         Resources.MessagePackageTargetOtherHosts,
@@ -929,11 +986,11 @@ namespace Dynamo.ViewModels
                         }
                     }
                 }
-                catch(ArgumentException ex)
+                catch (ArgumentException ex)
                 {
                     DynamoConsoleLogger.OnLogMessageToDynamoConsole($"exception while trying to compare version info between package and dynamo {ex}");
                 }
-                catch(FormatException ex)
+                catch (FormatException ex)
                 {
                     DynamoConsoleLogger.OnLogMessageToDynamoConsole($"exception while trying to compare version info between package and dynamo {ex}");
                 }
@@ -1087,6 +1144,7 @@ namespace Dynamo.ViewModels
                 Process.Start(sInfo);
             }
         }
+
     }
 
 }

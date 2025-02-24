@@ -8,6 +8,7 @@ using System.Text;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -48,6 +49,7 @@ namespace Dynamo.ViewModels
         private double dotLeft;
         private double endDotSize = 6;
         private double zIndex = 3;
+        private double dynamicStrokeThickness;
 
         private Point curvePoint1;
         private Point curvePoint2;
@@ -568,6 +570,16 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public double DynamicStrokeThickness
+        {
+            get => dynamicStrokeThickness;
+            set
+            {
+                dynamicStrokeThickness = value;
+                RaisePropertyChanged(nameof(DynamicStrokeThickness));
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -959,6 +971,7 @@ namespace Dynamo.ViewModels
             this.workspaceViewModel = workspace;
             ConnectorPinViewCollection = new ObservableCollection<ConnectorPinViewModel>();
             ConnectorPinViewCollection.CollectionChanged += HandleCollectionChanged;
+            workspaceViewModel.PropertyChanged += WorkspaceViewModel_PropertyChanged;
 
             IsHidden = !workspaceViewModel.DynamoViewModel.IsShowingConnectors;
             IsConnecting = true;
@@ -966,6 +979,7 @@ namespace Dynamo.ViewModels
             activeStartPort = port;
             ZIndex = SetZIndex();
 
+            UpdateDynamicStrokeThickness();
             Redraw(port.Center);
 
             InitializeCommands();
@@ -1001,6 +1015,7 @@ namespace Dynamo.ViewModels
 
             ConnectorPinViewCollection = new ObservableCollection<ConnectorPinViewModel>();
             ConnectorPinViewCollection.CollectionChanged += HandleCollectionChanged;
+            workspaceViewModel.PropertyChanged += WorkspaceViewModel_PropertyChanged;
 
 
             if (connectorModel.ConnectorPinModels != null)
@@ -1028,6 +1043,7 @@ namespace Dynamo.ViewModels
                 NodeEnd.PropertyChanged += nodeEndViewModel_PropertyChanged;
             }
             
+            UpdateDynamicStrokeThickness();
             Redraw();
             InitializeCommands();
 
@@ -1164,6 +1180,24 @@ namespace Dynamo.ViewModels
             Redraw();
         }
 
+        private void WorkspaceViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(workspaceViewModel.Zoom))
+            {
+                UpdateDynamicStrokeThickness();
+            }
+        }
+
+        private void UpdateDynamicStrokeThickness()
+        {
+            DynamicStrokeThickness = Math.Max(
+                Configurations.ConnectorBaseThickness,
+                Configurations.ConnectorBaseThickness *
+                (1 / workspaceViewModel.Zoom) *
+                Configurations.ConnectorZoomScalingFactor
+            );
+        }
+
         /// <summary>
         /// Dispose function
         /// </summary>
@@ -1188,13 +1222,19 @@ namespace Dynamo.ViewModels
             {
                 NodeEnd.PropertyChanged -= nodeEndViewModel_PropertyChanged;
             }
-            ConnectorPinViewCollection.CollectionChanged -= HandleCollectionChanged;
 
-            foreach (var pin in ConnectorPinViewCollection.ToList())
+            if (ConnectorPinViewCollection != null)
             {
-                pin.RequestRedraw -= HandlerRedrawRequest;
-                pin.RequestSelect -= HandleRequestSelected;
+                ConnectorPinViewCollection.CollectionChanged -= HandleCollectionChanged;
+
+                foreach (var pin in ConnectorPinViewCollection.ToList())
+                {
+                    pin.RequestRedraw -= HandlerRedrawRequest;
+                    pin.RequestSelect -= HandleRequestSelected;
+                }
             }
+
+            workspaceViewModel.PropertyChanged -= WorkspaceViewModel_PropertyChanged;
 
             this.PropertyChanged -= ConnectorViewModelPropertyChanged;
             DiscardAllConnectorPinModels();
@@ -1415,17 +1455,27 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void Redraw()
         {
-            if (this.ConnectorModel?.End != null && ConnectorPinViewCollection?.Count > 0)
+            try
             {
-                RedrawBezierManyPoints();
-            }
-            else if (this.ConnectorModel?.End != null)
-            {
-                this.Redraw(this.ConnectorModel.End.Center);
-            }
+                if (this.ConnectorModel != null && ConnectorPinViewCollection != null)
+                {
+                    if (this.ConnectorModel?.End != null && ConnectorPinViewCollection?.Count > 0)
+                    {
+                        RedrawBezierManyPoints();
+                    }
+                    else if (this.ConnectorModel?.End != null)
+                    {
+                        this.Redraw(this.ConnectorModel.End.Center);
+                    }
+                }
 
-            this.SetCollapsedByNodeViewModel();
-            RaisePropertyChanged(nameof(ZIndex));
+                this.SetCollapsedByNodeViewModel();
+                RaisePropertyChanged(nameof(ZIndex));
+            }
+            catch (Exception ex)
+            {
+                workspaceViewModel.DynamoViewModel.Model.Logger.Log("Error when redrawing the connector: " + ex.StackTrace);
+            }
         }
 
         /// <summary>
@@ -1436,9 +1486,9 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void SetCollapsedByNodeViewModel()
         {
-            if (this.Nodevm.IsCollapsed && this.NodeEnd.IsCollapsed)
+            if (Nodevm?.IsCollapsed == true && NodeEnd?.IsCollapsed == true)
             {
-                this.IsCollapsed = true;
+                IsCollapsed = true;
             }
         }
 
@@ -1450,22 +1500,18 @@ namespace Dynamo.ViewModels
         {
             var p2 = new Point();
 
-            if (parameter is Point)
+            if (parameter is Point point)
             {
-                p2 = (Point)parameter;
+                p2 = point;
             }
-            else if (parameter is Point2D)
+            else if (parameter is Point2D d)
             {
-                p2 = ((Point2D)parameter).AsWindowsType();
+                p2 = d.AsWindowsType();
             }
 
             CurvePoint3 = p2;
-
-            var offset = 0.0;
-            double distance = 0;
-
-            distance = Math.Sqrt(Math.Pow(CurvePoint3.X - CurvePoint0.X, 2) + Math.Pow(CurvePoint3.Y - CurvePoint0.Y, 2));
-            offset = .45 * distance;
+            double distance = Math.Sqrt(Math.Pow(CurvePoint3.X - CurvePoint0.X, 2) + Math.Pow(CurvePoint3.Y - CurvePoint0.Y, 2));
+            double offset = .45 * distance;
 
             CurvePoint1 = new Point(CurvePoint0.X + offset, CurvePoint0.Y);
             CurvePoint2 = new Point(p2.X - offset, p2.Y);
@@ -1485,20 +1531,28 @@ namespace Dynamo.ViewModels
             //RaisePropertyChanged(string.Empty);
 
 
-            PathFigure pathFigure = new PathFigure();
-            pathFigure.StartPoint = CurvePoint0;
+            PathFigure pathFigure = new PathFigure
+            {
+                StartPoint = CurvePoint0
+            };
 
             BezierSegment segment = new BezierSegment(CurvePoint1, CurvePoint2, CurvePoint3, true);
-            var segmentCollection = new PathSegmentCollection(1);
-            segmentCollection.Add(segment);
+            var segmentCollection = new PathSegmentCollection(1)
+            {
+                segment
+            };
             pathFigure.Segments = segmentCollection;
             PathFigureCollection pathFigureCollection = new PathFigureCollection();
             pathFigureCollection.Add(pathFigure);
 
-            ComputedBezierPathGeometry = new PathGeometry();
-            ComputedBezierPathGeometry.Figures = pathFigureCollection;
-            ComputedBezierPath = new Path();
-            ComputedBezierPath.Data = ComputedBezierPathGeometry;
+            ComputedBezierPathGeometry = new PathGeometry
+            {
+                Figures = pathFigureCollection
+            };
+            ComputedBezierPath = new Path
+            {
+                Data = ComputedBezierPathGeometry
+            };
         }
 
         private PathFigure DrawSegmentBetweenPointPairs(Point startPt, Point endPt, ref List<Point[]> controlPointList)

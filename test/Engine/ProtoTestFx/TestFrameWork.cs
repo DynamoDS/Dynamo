@@ -43,6 +43,17 @@ namespace ProtoTestFx.TD
             runner = new ProtoScriptRunner();
         }
 
+        internal static ProtoCore.Core TestParserCore()
+        {
+            var core = new ProtoCore.Core(new ProtoCore.Options())
+            {
+                ParsingMode = ProtoCore.ParseMode.AllowNonAssignment,
+                IsParsingPreloadedAssembly = false,
+                IsParsingInTestMode = true,
+            };
+            return core;
+        }
+
         /// <summary>
         /// Execute the DS code and verifies the results given a list of verification pairs
         /// </summary>
@@ -906,7 +917,7 @@ namespace ProtoTestFx.TD
 
         public static Subtree CreateSubTreeFromCode(Guid guid, string code)
         {
-            var cbn = ProtoCore.Utils.ParserUtils.Parse(code);
+            var cbn = ProtoCore.Utils.ParserUtils.ParseWithCore(code, TestParserCore()).CodeBlockNode;
             var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
             subtree.DeltaComputation = false;
             return subtree;

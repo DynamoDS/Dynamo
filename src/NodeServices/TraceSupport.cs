@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization;
 
 namespace DynamoServices
 {
@@ -70,15 +69,9 @@ namespace DynamoServices
         /// <returns></returns>
         public static string GetTraceData(string key)
         {
-            string data;  
-            if (!LocalStorageSlot.TryGetValue(key, out data))
-            {
-                return null;
-            }
-            else
-            {
+            if (LocalStorageSlot.TryGetValue(key, out string data))
                 return data;
-            }
+            return null;
         }
 
         /// <summary>
@@ -88,14 +81,7 @@ namespace DynamoServices
         /// <param name="value"></param>
         public static void SetTraceData(string key, string value)
         {
-            if (LocalStorageSlot.ContainsKey(key))
-            {
-                LocalStorageSlot[key] = value;
-            }
-            else
-            {
-                LocalStorageSlot.Add(key, value);
-            }
+            LocalStorageSlot[key] = value;
         }
     }
 }

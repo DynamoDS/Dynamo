@@ -95,10 +95,6 @@ namespace Dynamo.PackageManager
         /// <param name="e"></param>
         private void CloseButton_Click(object sender, RoutedEventArgs e)
         {
-            Dynamo.Logging.Analytics.TrackEvent(
-                Actions.Close,
-                Categories.PackageManagerOperations);
-
             PublishPackageViewModel.RequestShowFolderBrowserDialog -= OnRequestShowFolderBrowserDialog;
 
             Close();
@@ -115,9 +111,6 @@ namespace Dynamo.PackageManager
             if (e.ChangedButton == MouseButton.Left)
             {
                 this.DragMove();
-                Dynamo.Logging.Analytics.TrackEvent(
-                    Actions.Move,
-                    Categories.PackageManagerOperations);
             }
         }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Dynamo;
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Models;
@@ -17,6 +18,8 @@ namespace DynamoCoreWpfTests
 {
     class NodeAutoCompleteSearchTests : DynamoTestUIBase
     {
+
+        private readonly List<string> expectedNodes = new List<string> { "ProtoGeometry.Autodesk.DesignScript.Geometry.Arc.ByFillet", "ProtoGeometry.Autodesk.DesignScript.Geometry.Arc.ByFilletTangentToCurve", "ProtoGeometry.Autodesk.DesignScript.Geometry.BoundingBox.ByGeometry", "ProtoGeometry.Autodesk.DesignScript.Geometry.BoundingBox.ByMinimumVolume", "ProtoGeometry.Autodesk.DesignScript.Geometry.Curve.ByBlendBetweenCurves", "ProtoGeometry.Autodesk.DesignScript.Geometry.Line.ByTangency", "ProtoGeometry.Autodesk.DesignScript.Geometry.Mesh.ByGeometry", "ProtoGeometry.Autodesk.DesignScript.Geometry.Plane.ByLineAndPoint", "ProtoGeometry.Autodesk.DesignScript.Geometry.PolyCurve.ByJoinedCurves", "ProtoGeometry.Autodesk.DesignScript.Geometry.PolyCurve.ByThickeningCurveNormal", "ProtoGeometry.Autodesk.DesignScript.Geometry.PolySurface.ByLoft", "ProtoGeometry.Autodesk.DesignScript.Geometry.PolySurface.ByLoft", "ProtoGeometry.Autodesk.DesignScript.Geometry.PolySurface.ByLoftGuides", "ProtoGeometry.Autodesk.DesignScript.Geometry.PolySurface.BySweep", "ProtoGeometry.Autodesk.DesignScript.Geometry.Solid.ByLoft", "ProtoGeometry.Autodesk.DesignScript.Geometry.Solid.ByLoft", "ProtoGeometry.Autodesk.DesignScript.Geometry.Solid.ByRevolve", "ProtoGeometry.Autodesk.DesignScript.Geometry.Solid.BySweep", "ProtoGeometry.Autodesk.DesignScript.Geometry.Solid.BySweep2Rails", "ProtoGeometry.Autodesk.DesignScript.Geometry.Surface.ByLoft", "ProtoGeometry.Autodesk.DesignScript.Geometry.Surface.ByLoft", "ProtoGeometry.Autodesk.DesignScript.Geometry.Surface.ByPatch", "ProtoGeometry.Autodesk.DesignScript.Geometry.Surface.ByRevolve", "ProtoGeometry.Autodesk.DesignScript.Geometry.Surface.ByRuledLoft", "ProtoGeometry.Autodesk.DesignScript.Geometry.Surface.BySweep", "ProtoGeometry.Autodesk.DesignScript.Geometry.Surface.BySweep2Rails", "ProtoGeometry.Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildFromLines", "ProtoGeometry.Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BuildPipes", "ProtoGeometry.Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByExtrude", "ProtoGeometry.Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByPlaneLineAndPoint", "ProtoGeometry.Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ByRevolve", "ProtoGeometry.Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySweep", "ProtoGeometry.Autodesk.DesignScript.Geometry.Geometry.DoesIntersect", "ProtoGeometry.Autodesk.DesignScript.Geometry.Geometry.IsAlmostEqualTo", "ProtoGeometry.Autodesk.DesignScript.Geometry.Geometry.DistanceTo", "ProtoGeometry.Autodesk.DesignScript.Geometry.Geometry.Intersect", "ProtoGeometry.Autodesk.DesignScript.Geometry.Geometry.IntersectAll", "ProtoGeometry.Autodesk.DesignScript.Geometry.Curve.Project", "ProtoGeometry.Autodesk.DesignScript.Geometry.Point.Project", "ProtoGeometry.Autodesk.DesignScript.Geometry.Solid.ProjectInputOnto", "ProtoGeometry.Autodesk.DesignScript.Geometry.Surface.ProjectInputOnto", "ProtoGeometry.Autodesk.DesignScript.Geometry.Geometry.Split", "ProtoGeometry.Autodesk.DesignScript.Geometry.Geometry.Trim", "ProtoGeometry.Autodesk.DesignScript.Geometry.Geometry.SerializeAsSAB", "ProtoGeometry.Autodesk.DesignScript.Geometry.Geometry.ClosestPointTo", "ProtoGeometry.Autodesk.DesignScript.Geometry.Curve.Join", "ProtoGeometry.Autodesk.DesignScript.Geometry.PolyCurve.ByGroupedCurves", "ProtoGeometry.Autodesk.DesignScript.Geometry.Curve.SweepAsSolid", "ProtoGeometry.Autodesk.DesignScript.Geometry.Geometry.ExportToSAT", "ProtoGeometry.Autodesk.DesignScript.Geometry.Curve.SweepAsSurface", "ProtoGeometry.Autodesk.DesignScript.Geometry.PolySurface.LocateSurfacesByLine", "ProtoGeometry.Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BridgeEdgesToEdges", "ProtoGeometry.Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BridgeEdgesToFaces", "ProtoGeometry.Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BridgeFacesToEdges", "ProtoGeometry.Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BridgeFacesToFaces", "ProtoGeometry.Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.CreateMatch", "ProtoGeometry.Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ExtrudeEdgesAlongCurve", "ProtoGeometry.Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ExtrudeFacesAlongCurve", "ProtoGeometry.Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.PullVertices" };
 
         [NodeDescription("This is test node with multiple output ports and types specified.")]
         [NodeName("node with multi type outputs")]
@@ -61,6 +64,28 @@ namespace DynamoCoreWpfTests
         {
             base.Start();
             Model.AddZeroTouchNodesToSearch(Model.LibraryServices.GetAllFunctionGroups());
+        }
+
+        private void ValidateMissingAddedNodes(List<string> nodeNamesResultList, PreferenceSettings prefSettings)
+        {
+            var namespacesToExcludeFromLibraryStr = "\"" + string.Join("\",", prefSettings.NamespacesToExcludeFromLibrary);
+            var missingNodes = new List<string>();
+
+            string nodesMatchingFailText = "Missing nodes";
+            if (expectedNodes.Count() > nodeNamesResultList.Count())
+            {
+                missingNodes = expectedNodes.Except(nodeNamesResultList).ToList();
+            }
+            else if (expectedNodes.Count() < nodeNamesResultList.Count())
+            {
+                nodesMatchingFailText = "New Added nodes";
+                missingNodes = nodeNamesResultList.Except(expectedNodes).ToList();
+            }
+            Assert.AreEqual(expectedNodes.Count(), nodeNamesResultList.Count(), string.Format("{0}: {1}\nNamespacesToExcludeFromLibrarySpecified: {2}\n NamespacesToExcludeFromLibrary: {3}",
+                                                                                                nodesMatchingFailText,
+                                                                                                string.Join(", ", missingNodes),
+                                                                                                namespacesToExcludeFromLibraryStr,
+                                                                                                prefSettings.NamespacesToExcludeFromLibrarySpecified.ToString()));
         }
 
         [Test]
@@ -166,7 +191,9 @@ namespace DynamoCoreWpfTests
 
             // Results will be nodes that accept Line as parameter.
             searchViewModel.PopulateAutoCompleteCandidates();
-            Assert.AreEqual(58, searchViewModel.FilteredResults.Count());
+            var nodeNamesResultList = searchViewModel.FilteredResults.Select(x => x.FullName).ToList();
+
+            ValidateMissingAddedNodes(nodeNamesResultList, searchViewModel.dynamoViewModel.PreferenceSettings);
         }
         [Test]
         public void NodeSuggestions_CanAutoCompleteOnCustomNodesOutPort_WithWhiteSpaceStartingPortName()
@@ -186,7 +213,9 @@ namespace DynamoCoreWpfTests
 
             // Results will be nodes that accept Line as parameter.
             searchViewModel.PopulateAutoCompleteCandidates();
-            Assert.AreEqual(58, searchViewModel.FilteredResults.Count());
+            var nodeNamesResultList = searchViewModel.FilteredResults.Select(x => x.FullName).ToList();
+
+            ValidateMissingAddedNodes(nodeNamesResultList, searchViewModel.dynamoViewModel.PreferenceSettings);
         }
 
         [Test]
@@ -326,7 +355,10 @@ namespace DynamoCoreWpfTests
             var searchViewModel = ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel;
             searchViewModel.PortViewModel = outPorts[0];
             var suggestions = searchViewModel.GetMatchingSearchElements();
-            Assert.AreEqual(58, suggestions.Count());
+
+            var nodeNamesResultList = suggestions.Select(x => x.FullName).ToList();
+
+            ValidateMissingAddedNodes(nodeNamesResultList, searchViewModel.dynamoViewModel.PreferenceSettings);
         }
 
         [Test]
@@ -497,7 +529,7 @@ namespace DynamoCoreWpfTests
 
             // Filter the node elements using the search field.
             searchViewModel.SearchAutoCompleteCandidates("ar");
-            Assert.AreEqual(5 , searchViewModel.FilteredResults.Count());
+            Assert.AreEqual(4 , searchViewModel.FilteredResults.Count());
         }
 
         [Test]
