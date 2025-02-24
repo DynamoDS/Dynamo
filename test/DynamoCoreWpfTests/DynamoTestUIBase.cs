@@ -59,7 +59,7 @@ namespace DynamoCoreWpfTests
             Console.WriteLine("}");
         }
 
-        internal void SetupStartupDiagnostics()
+        internal void StartupDiagnostics()
         {
             System.Console.WriteLine($"PID {Process.GetCurrentProcess().Id} Start test: {TestContext.CurrentContext.Test.Name}");
             TestUtilities.WebView2Tag = TestContext.CurrentContext.Test.Name;
@@ -69,7 +69,7 @@ namespace DynamoCoreWpfTests
             Dispatcher.CurrentDispatcher.Hooks.OperationPosted += Hooks_OperationPosted;
         }
 
-        internal void SetupBeforeCleanupDiagnostics()
+        internal void BeforeCleanupDiagnostics()
         {
             Dispatcher.CurrentDispatcher.Hooks.OperationPosted -= Hooks_OperationPosted;
             if (!SkipDispatcherFlush)
@@ -78,7 +78,7 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        internal void SetupAfterCleanupDiagnostics()
+        internal void AfterCleanupDiagnostics()
         {
             TestUtilities.WebView2Tag = string.Empty;
             using (var currentProc = Process.GetCurrentProcess())
@@ -93,10 +93,10 @@ namespace DynamoCoreWpfTests
             }
         }
 
-        internal void SetupCleanupDiagnostics()
+        internal void CleanupDiagnostics()
         {
-            SetupBeforeCleanupDiagnostics();
-            SetupAfterCleanupDiagnostics();
+            BeforeCleanupDiagnostics();
+            AfterCleanupDiagnostics();
         }
     }
 
@@ -132,7 +132,7 @@ namespace DynamoCoreWpfTests
         [SetUp]
         public virtual void Start()
         {
-            testDiagnostics.SetupStartupDiagnostics();
+            testDiagnostics.StartupDiagnostics();
             var assemblyPath = Assembly.GetExecutingAssembly().Location;
             preloader = new Preloader(Path.GetDirectoryName(assemblyPath));
             preloader.Preload();
@@ -229,7 +229,7 @@ namespace DynamoCoreWpfTests
             {
                 Console.WriteLine(ex.StackTrace);
             }
-            testDiagnostics.SetupAfterCleanupDiagnostics();
+            testDiagnostics.AfterCleanupDiagnostics();
         }
 
         protected virtual void GetLibrariesToPreload(List<string> libraries)

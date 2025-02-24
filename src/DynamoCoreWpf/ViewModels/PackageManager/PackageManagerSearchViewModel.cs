@@ -724,7 +724,6 @@ namespace Dynamo.PackageManager
                 var p = GetSearchElementViewModel(pkg, true);
 
                 p.RequestDownload += this.PackageOnExecuted;
-                p.RequestShowFileDialog += this.OnRequestShowFileDialog;
                 p.IsOnwer = true;
 
                 myPackages.Add(p);
@@ -1239,6 +1238,8 @@ namespace Dynamo.PackageManager
         internal void AddToSearchResults(PackageManagerSearchElementViewModel element)
         {
             element.RequestDownload += this.PackageOnExecuted;
+            element.RequestShowFileDialog += this.OnRequestShowFileDialog;
+
             this.SearchResults.Add(element);
         }
 
@@ -1478,9 +1479,6 @@ namespace Dynamo.PackageManager
             {
                 list.Reverse();
             }
-
-            foreach (var x in list)
-                x.RequestShowFileDialog += OnRequestShowFileDialog;
 
             return list;
         }
