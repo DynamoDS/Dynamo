@@ -959,10 +959,7 @@ namespace Dynamo.ViewModels
 
             foreach (var connector in connectorsToHide)
             {
-                var connectorViewModel = WorkspaceViewModel
-                    .Connectors
-                    .Where(x => connector.GUID == x.ConnectorModel.GUID)
-                    .FirstOrDefault();
+                var connectorViewModel = WorkspaceViewModel.FindConnector(connector.GUID);
 
                 connectorViewModel.IsCollapsed = true;
             }
@@ -977,10 +974,7 @@ namespace Dynamo.ViewModels
 
             foreach (var connector in allNodes.SelectMany(x => x.AllConnectors))
             {
-                var connectorViewModel = WorkspaceViewModel
-                    .Connectors
-                    .Where(x => connector.GUID == x.ConnectorModel.GUID)
-                    .FirstOrDefault();
+                var connectorViewModel = WorkspaceViewModel.FindConnector(connector.GUID);
 
                 connectorViewModel.Redraw();
                 connector.Start.Owner.ReportPosition();
@@ -1031,14 +1025,11 @@ namespace Dynamo.ViewModels
         {
             foreach (var nodeModel in nodes.OfType<NodeModel>())
             {
-                var connectorGuids = nodeModel.AllConnectors
-                    .Select(x => x.GUID);
+                var connectorViewModels = nodeModel.AllConnectors
+                    .Select(x => WorkspaceViewModel.FindConnector(x.GUID))
+                    .Where(c => c != null);
 
-                var connectorViewModels = WorkspaceViewModel.Connectors
-                    .Where(x => connectorGuids.Contains(x.ConnectorModel.GUID))
-                    .ToList();
-
-                connectorViewModels.ForEach(x => x.IsCollapsed = false);
+                foreach(var c in connectorViewModels) c.IsCollapsed = false;
 
                 // Set IsProxyPort back to false when the group is expanded.
                 nodeModel.InPorts.ToList().ForEach(x => x.IsProxyPort = false);

@@ -1923,10 +1923,10 @@ namespace Dynamo.ViewModels
         /// <returns>Found <see cref="ViewModelBase"/> object.</returns>
         internal ViewModelBase GetViewModelInternal(Guid modelGuid)
         {
-            ViewModelBase foundModel = (Connectors.FirstOrDefault(c => c.ConnectorModel.GUID == modelGuid)
-                ?? FindNode(modelGuid) as ViewModelBase)
-                ?? (Notes.FirstOrDefault(note => note.Model.GUID == modelGuid)
-                ?? Annotations.FirstOrDefault(annotation => annotation.AnnotationModel.GUID == modelGuid) as ViewModelBase);
+            ViewModelBase foundModel = FindConnector(modelGuid) as ViewModelBase
+                ?? FindNode(modelGuid) as ViewModelBase
+                ?? Notes.FirstOrDefault(note => note.Model.GUID == modelGuid) as ViewModelBase
+                ?? Annotations.FirstOrDefault(annotation => annotation.AnnotationModel.GUID == modelGuid) as ViewModelBase;
 
             return foundModel;
         }
