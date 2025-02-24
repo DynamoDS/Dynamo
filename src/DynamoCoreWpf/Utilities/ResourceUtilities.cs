@@ -591,11 +591,11 @@ namespace Dynamo.Utilities
         /// <param name="fontStylePath">Path to the Font Style that will be used in some part of the HTML page</param>
         /// <param name="localAssembly">Local Assembly in which the resource will be loaded</param>
         /// <param name="userDataFolder">the folder that WebView2 will use for storing cache info</param>
-        internal static async void LoadWebBrowser(HtmlPage htmlPage, DynamoWebView2 webBrowserComponent, string resourcesPath, string fontStylePath, Assembly localAssembly, string userDataFolder = default(string))
+        internal static async void LoadWebBrowser(HtmlPage htmlPage, DynamoWebView2 webBrowserComponent, string resourcesPath, string fontStylePath, Assembly localAssembly, string userDataFolder = default(string), string locale = "")
         {
             try
             {
-                var bodyHtmlPage = ResourceUtilities.LoadContentFromResources(htmlPage.FileName, localAssembly, false, false);
+                var bodyHtmlPage = ResourceUtilities.LoadContentFromResources(htmlPage.FileName, localAssembly, false, false, locale);
 
                 bodyHtmlPage = LoadResouces(bodyHtmlPage, htmlPage.Resources, resourcesPath);
                 bodyHtmlPage = LoadResourceAndReplaceByKey(bodyHtmlPage, "#fontStyle", fontStylePath);
