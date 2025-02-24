@@ -26,13 +26,6 @@ namespace Dynamo.Controls
         private readonly int minWidthSize = 100;
         private readonly int minHeightSize = 40;
         private readonly int minHeightForList = 83;
-        private bool isCtrlPressed = false;
-        private readonly DispatcherTimer _ctrlResetTimer = new DispatcherTimer
-        {
-            Interval = TimeSpan.FromSeconds(1), // Reset control timer after 1 seconds
-            IsEnabled = false
-        };
-
 
         public WatchTree(WatchViewModel vm)
         {
@@ -56,13 +49,11 @@ namespace Dynamo.Controls
         private void WatchTree_Unloaded(object sender, RoutedEventArgs e)
         {
             _vm.PropertyChanged -= _vm_PropertyChanged;
-            _ctrlResetTimer.Tick -= _ctrlResetTimer_Tick;
         }
 
         void WatchTree_Loaded(object sender, RoutedEventArgs e)
         {
             _vm.PropertyChanged += _vm_PropertyChanged;
-            _ctrlResetTimer.Tick += _ctrlResetTimer_Tick;
         }
 
         private void _vm_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -183,20 +174,9 @@ namespace Dynamo.Controls
         {
             if (prevWatchViewModel != null || Models.DynamoModel.IsTestMode)
             {
-                if (e.Key == Key.LeftCtrl || e.Key == Key.RightCtrl)
+                // Perform Ctrl+C 
+                if (e.Key == Key.C && (Keyboard.Modifiers & System.Windows.Input.ModifierKeys.Control) == System.Windows.Input.ModifierKeys.Control)
                 {
-                    isCtrlPressed = true;
-                    _ctrlResetTimer.IsEnabled = true;
-                    _ctrlResetTimer.Stop();  // Reset the timer
-                    _ctrlResetTimer.Start(); // Start countdown
-                    return; // Allow propagation to capture the follow-up key code
-                }
-
-                if (e.Key == Key.C && isCtrlPressed)
-                {
-                    isCtrlPressed = false;
-                    _ctrlResetTimer.IsEnabled = false;
-
                     if (sender is TreeViewItem tvi)
                     {
                         var textBlock = WpfUtilities.ChildOfType<TextBlock>(tvi, "NodeValue");
@@ -208,7 +188,6 @@ namespace Dynamo.Controls
                         }
                     }
                 }
-
 
                 if (e.Key == System.Windows.Input.Key.Up || e.Key == System.Windows.Input.Key.Down)
                 {
@@ -229,14 +208,6 @@ namespace Dynamo.Controls
 
             e.Handled = true;
         }
-
-        // Stop the timer to prevent unnecessary ticks
-        private void _ctrlResetTimer_Tick(object sender, EventArgs e)
-        {
-            isCtrlPressed = false;
-            _ctrlResetTimer.IsEnabled = false; 
-        }
-
 
         private void HandleItemChanged (TreeViewItem tvi, WatchViewModel node)
         {
