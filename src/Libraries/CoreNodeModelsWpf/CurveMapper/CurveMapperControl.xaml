@@ -3,9 +3,8 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:Dynamo.Wpf.CurveMapper"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-             Width="300"
+             Width="310"
              Height="340"
              MinWidth="310"
              MinHeight="340"
@@ -58,8 +57,7 @@
                 MinWidth="240"
                 MinHeight="240"
                 Margin="10,0,0,0"
-                Background="Transparent"
-                PreviewMouseLeftButtonUp="GraphCanvas_PreviewMouseLeftButtonUp" />
+                Background="Transparent" />
             <!--  X labels  -->
             <Grid Grid.Row="1" Grid.Column="1">
                 <Grid.ColumnDefinitions>

@@ -2,11 +2,9 @@ using CoreNodeModels;
 using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
-using System.Globalization;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Input;
 
 namespace Dynamo.Wpf.CurveMapper
@@ -17,22 +15,15 @@ namespace Dynamo.Wpf.CurveMapper
     public partial class CurveMapperControlPoint : Thumb, INotifyPropertyChanged
     {
         private CurveMapperNodeModel curveMapperNodeModel;
-        private const double offsetValue = 6; // thumb size * 0.5
+        private const double offsetValue = 6;
         private bool isMoveEnabled = true;
+        private bool isOrthogonal;
+        private bool isVertical;
+        private ControlPointData controlPointData;
 
-        public Action OnControlPointMoved { get; set; } // Notify the curve to update
-
-        public ControlPointData ControlPointData { get; private set; }
-
-
-        
-
-        public bool IsOrthogonal { get; set; }
-        public bool IsVertical { get; set; }
-
-        public static readonly DependencyProperty DynamicCanvasSizeProperty = RegisterProperty(nameof(DynamicCanvasSizeProperty), 240.0);
-
-        /// <summary>Represents the dynamic canvas size for the control point.</summary>
+        /// <summary>
+        /// Represents the dynamic canvas size for the control point.
+        /// </summary>
         public double CanvasSize
         {
             get => (double)GetValue(DynamicCanvasSizeProperty);
@@ -48,17 +39,20 @@ namespace Dynamo.Wpf.CurveMapper
             get
             {
                 double scaledX = curveMapperNodeModel.MinLimitX +
-                                 (ControlPointData.X / CanvasSize) *
+                                 (controlPointData.X / CanvasSize) *
                                  (curveMapperNodeModel.MaxLimitX - curveMapperNodeModel.MinLimitX);
 
                 double scaledY = curveMapperNodeModel.MinLimitY +
-                                 (1 - (ControlPointData.Y / CanvasSize)) *
+                                 (1 - (controlPointData.Y / CanvasSize)) *
                                  (curveMapperNodeModel.MaxLimitY - curveMapperNodeModel.MinLimitY);
 
                 return $"Coordinates: ({scaledX:F2}, {scaledY:F2})";
             }
         }
 
+        /// <summary>
+        /// Gets or sets a value indicating whether the control point can be moved by the user.
+        /// </summary>
         [JsonIgnore]
         public bool IsMoveEnabled
         {
@@ -73,6 +67,19 @@ namespace Dynamo.Wpf.CurveMapper
             }
         }
 
+        /// <summary>
+        /// Identifies the DynamicCanvasSize dependency property, which represents the dynamic canvas size 
+        /// used for scaling and rendering the control point.
+        /// </summary>
+        //public static readonly DependencyProperty DynamicCanvasSizeProperty = RegisterProperty(nameof(DynamicCanvasSizeProperty), 240.0);
+
+        /// <summary>
+        /// Gets or sets the action invoked when the control point is moved.
+        /// </summary>
+        public Action OnControlPointMoved { get; set; }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
         public CurveMapperControlPoint(
             ControlPointData controlPoint,
             double canvasSize,
@@ -84,12 +91,12 @@ namespace Dynamo.Wpf.CurveMapper
             InitializeComponent();
             DataContext = this;
 
-            ControlPointData = controlPoint;
+            controlPointData = controlPoint;
             CanvasSize = canvasSize;
             curveMapperNodeModel = model;
             OnControlPointMoved = updateCurve;
-            IsOrthogonal = isOrthogonal;
-            IsVertical = isVertical;            
+            this.isOrthogonal = isOrthogonal;
+            this.isVertical = isVertical;            
 
             Canvas.SetLeft(this, controlPoint.X - offsetValue);
             Canvas.SetTop(this, controlPoint.Y - offsetValue);
@@ -109,37 +116,9 @@ namespace Dynamo.Wpf.CurveMapper
             };
         }
 
-        /// <summary>
-        /// Helper method to register dependency properties with a common property changed callback.
-        /// </summary>
-        /// <returns></returns>
-        private static DependencyProperty RegisterProperty(string name, double defaultValue) //
+        private void Thumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
-            return DependencyProperty.Register(name, typeof(double), typeof(CurveMapperControlPoint),
-                new PropertyMetadata(defaultValue, OnPropertyUpdated));
-        }
-
-        /// <summary>
-        /// Common property changed handler to raise updates for ScaledCoordinates.
-        /// </summary>
-        private static void OnPropertyUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            if (d is CurveMapperControlPoint controlPoint)
-            {
-                //controlPoint.RaisePropertyChanged(nameof(ScaledCoordinates));
-            }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        public void RaisePropertyChanged(string propertyName) //
-        {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        }
-
-        private void Thumb_DragDelta(object sender, DragDeltaEventArgs e) //
-        {
-            if (!IsMoveEnabled) return;            
+            if (!IsMoveEnabled) return;
 
             double newCanvasSize = curveMapperNodeModel.DynamicCanvasSize;
 
@@ -158,22 +137,21 @@ namespace Dynamo.Wpf.CurveMapper
                 Math.Max(e.VerticalChange, -deltaT);
 
             // Calculate new positions for X and Y based on drag changes
-            double newX = Canvas.GetLeft(this) + (IsOrthogonal && IsVertical ? 0.0 : deltaX) + offsetValue;
-            double newY = Canvas.GetTop(this) + (IsOrthogonal && !IsVertical ? 0.0 : deltaY) + offsetValue;
+            double newX = Canvas.GetLeft(this) + (isOrthogonal && isVertical ? 0.0 : deltaX) + offsetValue;
+            double newY = Canvas.GetTop(this) + (isOrthogonal && !isVertical ? 0.0 : deltaY) + offsetValue;
 
-            // Update ControlPointData with new relative position
-            ControlPointData.X = newX;
-            ControlPointData.Y = newY;
+            controlPointData.X = newX;
+            controlPointData.Y = newY;
             Canvas.SetLeft(this, newX - offsetValue);
             Canvas.SetTop(this, newY - offsetValue);
 
             // Handle Gaussian curve control points
-            string tag = ControlPointData.Tag;
+            string tag = controlPointData.Tag;
 
             if (tag.Contains("GaussianCurveControlPointData"))
             {
                 curveMapperNodeModel.UpdateGaussianCurveControlPoints(deltaX, tag);
-            }            
+            }
 
             // Refresh scaled coordinates in tooltip
             RaisePropertyChanged(nameof(ScaledCoordinates));
@@ -183,9 +161,32 @@ namespace Dynamo.Wpf.CurveMapper
             OnControlPointMoved?.Invoke();
         }
 
-        private void UpdateCursor() //
+        private void UpdateCursor()
         {
             this.Cursor = IsMoveEnabled ? Cursors.Hand : Cursors.Arrow;
+        }
+
+        public void RaisePropertyChanged(string propertyName)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
+
+        /// <summary>
+        /// Helper method to register dependency properties with a common property changed callback.
+        /// </summary>
+        /// <returns></returns>
+        private static DependencyProperty RegisterProperty(string name, double defaultValue)
+        {
+            return DependencyProperty.Register(name, typeof(double), typeof(CurveMapperControlPoint),
+                new PropertyMetadata(defaultValue, OnPropertyUpdated));
+        }
+
+        /// <summary>
+        /// Common property changed handler to raise updates for ScaledCoordinates.
+        /// </summary>
+        private static void OnPropertyUpdated(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
         }
     }
 }

@@ -6,7 +6,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Forms.Design.Behavior;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -18,7 +17,6 @@ namespace Dynamo.Wpf.CurveMapper
     public partial class CurveMapperControl : UserControl, INotifyPropertyChanged
     {
         private readonly CurveMapperNodeModel curveMapperNodeModel;
-
         private CurveMapperControlPoint linearCurveControlPoint1;
         private CurveMapperControlPoint linearCurveControlPoint2;
         private CurveMapperControlPoint bezierCurveControlPoint1;
@@ -57,21 +55,24 @@ namespace Dynamo.Wpf.CurveMapper
 
         private const double offsetValue = 6;
         private const int gridSize = 10;
-        private const double MinGridWidth = 310;
-        private const double MinGridHeight = 340;
-        private const double MinCanvasSize = 240;
-        private double previousCanvasSize = 240;
+        private const int minCanvasSize = 240;
+        private const int controlLabelsWidth = 70;
+        private const int controlLabelsHeight = 100;
 
         /// <summary> 
         /// Occurs when a property value changes, notifying bound UI elements of updates. 
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
-        public CurveMapperControl(CurveMapperNodeModel model)
+        public CurveMapperControl(CurveMapperNodeModel model, double canvasSize)
         {
             InitializeComponent();
             this.curveMapperNodeModel = model;
             DataContext = model;
+
+            Width = canvasSize + controlLabelsWidth;
+            Height = canvasSize + controlLabelsHeight;
+
 
             model.PropertyChanged += NodeModel_PropertyChanged;
             this.Unloaded += Unload;
@@ -82,10 +83,10 @@ namespace Dynamo.Wpf.CurveMapper
             var controlPointsMap = BuildControlPointsDictionary();
             RecreateControlPoints(controlPointsMap);
 
-            RenderGraph();
+            RenderCurve();
         }
 
-        private void RenderGraph() //
+        private void RenderCurve()
         {
             // Remove existing curves (without affecting control points)
             Dispatcher.Invoke(() =>
@@ -152,6 +153,31 @@ namespace Dynamo.Wpf.CurveMapper
             });
         }
 
+        private void ResetButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (curveMapperNodeModel.IsLocked) return;
+
+            curveMapperNodeModel.ResetControlPointData();
+
+            // Dictionary to map UI control points to their corresponding data
+            var controlPointsResetMap = BuildControlPointsDictionary();
+            RecreateControlPoints(controlPointsResetMap);
+
+            curveMapperNodeModel.GenerateOutputValues();
+            RenderCurve();
+        }
+
+        private void LockButton_Click(object sender, RoutedEventArgs e)
+        {
+            var button = sender as Button;
+            if (button != null)
+            {
+                curveMapperNodeModel.IsLocked = !curveMapperNodeModel.IsLocked;
+                UpdateLockButton();
+                ToggleControlPointsLock();
+            }
+        }
+
         private void NodeModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == nameof(curveMapperNodeModel.DynamicCanvasSize))
@@ -176,7 +202,7 @@ namespace Dynamo.Wpf.CurveMapper
                     }
                 }
 
-                RenderGraph();
+                RenderCurve();
             }
 
             if (e.PropertyName == nameof(curveMapperNodeModel.SelectedGraphType)) //
@@ -185,7 +211,7 @@ namespace Dynamo.Wpf.CurveMapper
                 RecreateControlPoints(controlPointsMap);
 
                 curveMapperNodeModel.GenerateOutputValues();
-                RenderGraph();
+                RenderCurve();
 
                 ToggleControlPointsLock();
             }
@@ -193,7 +219,7 @@ namespace Dynamo.Wpf.CurveMapper
             if (e.PropertyName == nameof(curveMapperNodeModel.RenderValuesX) ||
             e.PropertyName == nameof(curveMapperNodeModel.RenderValuesY))
             {
-                RenderGraph();
+                RenderCurve();
             }
 
             if (e.PropertyName == nameof(curveMapperNodeModel.GaussianCurveControlPointData3))
@@ -206,8 +232,51 @@ namespace Dynamo.Wpf.CurveMapper
             }
         }
 
-        // Helper (for resizing node)
-        private void UpdateControlPointPosition(UIElement controlPoint, ControlPointData dataPoint, double newSize) //
+        private void Unload(object sender, RoutedEventArgs e)
+        {
+            this.curveMapperNodeModel.PropertyChanged -= NodeModel_PropertyChanged;
+            Unloaded -= Unload;
+        }
+
+        private void RecreateControlPoints(Dictionary<GraphTypes, (List<string> pointNames, List<ControlPointData> dataPoints)> controlPointsMap)
+        {
+            // Remove existing control points
+            var existingControlPoints = GraphCanvas.Children.OfType<CurveMapperControlPoint>().ToList();
+            foreach (var cp in existingControlPoints)
+            {
+                GraphCanvas.Children.Remove(cp);
+            }
+
+            // Recreate control points for the selected graph
+            var selectedType = curveMapperNodeModel.SelectedGraphType;
+            if (controlPointsMap.ContainsKey(selectedType))
+            {
+                var (pointNames, dataPoints) = controlPointsMap[selectedType];
+                Type controlType = this.GetType();
+
+                for (int i = 0; i < pointNames.Count; i++)
+                {
+                    // Get the field dynamically & remove the old control point
+                    var pointField = controlType.GetField(pointNames[i], System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
+                    var oldPoint = pointField?.GetValue(this) as CurveMapperControlPoint;
+                    if (oldPoint != null) GraphCanvas.Children.Remove(oldPoint);
+
+                    // Determine if this control point should be orthogonal or vertical
+                    (bool isOrthogonal, bool isVertical) = controlPointProperties.TryGetValue(pointNames[i], out var props)
+                        ? props
+                        : (false, false);
+
+                    var newPoint = new CurveMapperControlPoint(dataPoints[i], curveMapperNodeModel.DynamicCanvasSize, curveMapperNodeModel, RenderCurve, isOrthogonal, isVertical);
+                    pointField?.SetValue(this, newPoint);
+                    GraphCanvas.Children.Add(newPoint);
+
+                    Canvas.SetLeft(newPoint, dataPoints[i].X - offsetValue);
+                    Canvas.SetTop(newPoint, dataPoints[i].Y - offsetValue);
+                }
+            }
+        }
+
+        private void UpdateControlPointPosition(UIElement controlPoint, ControlPointData dataPoint, double newSize)
         {
             if (controlPoint != null && dataPoint != null)
             {
@@ -238,13 +307,8 @@ namespace Dynamo.Wpf.CurveMapper
             }
         }
 
-        private void Unload(object sender, RoutedEventArgs e)
-        {
-            this.curveMapperNodeModel.PropertyChanged -= NodeModel_PropertyChanged;
-            Unloaded -= Unload;
-        }
-
-        private void DrawGrid() //
+        
+        private void DrawGrid()
         {
             // Remove current grid lines
             var gridLines = GraphCanvas.Children
@@ -290,133 +354,12 @@ namespace Dynamo.Wpf.CurveMapper
             GraphCanvas.Children.Add(line);
         }
 
-        private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e) //
-        {
-            var sizeChange = Math.Min(e.VerticalChange, e.HorizontalChange);
-            var yAdjust = ActualHeight + sizeChange;
-            var xAdjust = ActualWidth + sizeChange;
-
-            // Ensure the mainGrid doesn't resize below its minimum size
-            yAdjust = Math.Max(yAdjust, MinGridHeight);
-            xAdjust = Math.Max(xAdjust, MinGridWidth);
-
-            Width = xAdjust;
-            Height = yAdjust;
-
-            // Adjust the size of the GraphCanvas dynamically
-            curveMapperNodeModel.DynamicCanvasSize = Math.Max(xAdjust - 70, MinCanvasSize);
-            DrawGrid();
-
-            // Reposition control points based on the new size
-            NodeModel_PropertyChanged(this, new PropertyChangedEventArgs(nameof(curveMapperNodeModel.DynamicCanvasSize)));
-            curveMapperNodeModel.GenerateOutputValues();
-        }       
-
-        private void ResetButton_Click(object sender, RoutedEventArgs e) //
-        {
-            if (curveMapperNodeModel.IsLocked) return;
-
-            curveMapperNodeModel.ResetControlPointData();
-
-            // Dictionary to map UI control points to their corresponding data
-            var controlPointsResetMap = BuildControlPointsDictionary();
-            RecreateControlPoints(controlPointsResetMap);
-
-            curveMapperNodeModel.GenerateOutputValues();
-            RenderGraph();
-        }
-
-        private void LockButton_Click(object sender, RoutedEventArgs e) //
-        {
-            var button = sender as Button;
-            if (button != null)
-            {
-                curveMapperNodeModel.IsLocked = !curveMapperNodeModel.IsLocked;
-                UpdateLockButton();
-                ToggleControlPointsLock();
-            }
-        }
-
-        private void GraphCanvas_PreviewMouseLeftButtonUp(object sender, System.Windows.Input.MouseButtonEventArgs e)
-        {
-        }
-
-        private void ToggleControlPointsLock() //
-        {
-            foreach (var child in GraphCanvas.Children)
-            {
-                if (child is CurveMapperControlPoint controlPoint)
-                {
-                    controlPoint.IsMoveEnabled = !curveMapperNodeModel.IsLocked;
-                }
-            }
-        }
-
-        private void UpdateLockButton() //
-        {
-            if (LockButton != null)
-            {
-                LockButton.Tag = curveMapperNodeModel.IsLocked ? "Locked" : "Unlocked";
-                if (LockButton.ToolTip is ToolTip lockTooltip)
-                {
-                    lockTooltip.Content = curveMapperNodeModel.IsLocked
-                        ? "Curve cannot be modified. Click to unlock."
-                        : "Click to lock the curve.";
-                }
-                ResetButton.Tag = curveMapperNodeModel.IsLocked ? "Locked" : "Unlocked";
-                if (ResetButton.ToolTip is ToolTip resetTooltip)
-                {
-                    resetTooltip.Content = curveMapperNodeModel.IsLocked
-                        ? "The curve has been locked and cannot be reset. Please unlock the curve first."
-                        : "Reset the curve.";
-                }
-            }
-        }
-
-        private void RecreateControlPoints(Dictionary<GraphTypes, (List<string> pointNames, List<ControlPointData> dataPoints)> controlPointsMap) //
-        {
-            // Remove existing control points
-            var existingControlPoints = GraphCanvas.Children.OfType<CurveMapperControlPoint>().ToList();
-            foreach (var cp in existingControlPoints)
-            {
-                GraphCanvas.Children.Remove(cp);
-            }
-
-            // Recreate control points for the selected graph
-            var selectedType = curveMapperNodeModel.SelectedGraphType;
-            if (controlPointsMap.ContainsKey(selectedType))
-            {
-                var (pointNames, dataPoints) = controlPointsMap[selectedType];
-                Type controlType = this.GetType();
-
-                for (int i = 0; i < pointNames.Count; i++)
-                {
-                    // Get the field dynamically & remove the old control point
-                    var pointField = controlType.GetField(pointNames[i], System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance);
-                    var oldPoint = pointField?.GetValue(this) as CurveMapperControlPoint;
-                    if (oldPoint != null) GraphCanvas.Children.Remove(oldPoint);
-
-                    // Determine if this control point should be orthogonal or vertical
-                    (bool isOrthogonal, bool isVertical) = controlPointProperties.TryGetValue(pointNames[i], out var props)
-                        ? props
-                        : (false, false);
-
-                    var newPoint = new CurveMapperControlPoint(dataPoints[i], curveMapperNodeModel.DynamicCanvasSize, curveMapperNodeModel, RenderGraph, isOrthogonal, isVertical);
-                    pointField?.SetValue(this, newPoint);
-                    GraphCanvas.Children.Add(newPoint);
-
-                    Canvas.SetLeft(newPoint, dataPoints[i].X - offsetValue);
-                    Canvas.SetTop(newPoint, dataPoints[i].Y - offsetValue);
-                }
-            }
-        }
-
         /// <summary>
         /// Dictionary mapping UI control points to their corresponding data.
         /// Although it seems redundant to recreate this dictionary, reusing a property does not work 
         /// because control point data references are updated dynamically.
         /// </summary>
-        private Dictionary<GraphTypes, (List<string> pointNames, List<ControlPointData> dataPoints)> BuildControlPointsDictionary() //
+        private Dictionary<GraphTypes, (List<string> pointNames, List<ControlPointData> dataPoints)> BuildControlPointsDictionary()
         {
             var controlPointsResetMap = new Dictionary<GraphTypes, (List<string> pointNames, List<ControlPointData> dataPoints)>
             {
@@ -452,6 +395,60 @@ namespace Dynamo.Wpf.CurveMapper
             };
 
             return controlPointsResetMap;
+        }
+
+        private void ToggleControlPointsLock()
+        {
+            foreach (var child in GraphCanvas.Children)
+            {
+                if (child is CurveMapperControlPoint controlPoint)
+                {
+                    controlPoint.IsMoveEnabled = !curveMapperNodeModel.IsLocked;
+                }
+            }
+        }
+
+        private void UpdateLockButton()
+        {
+            if (LockButton != null)
+            {
+                LockButton.Tag = curveMapperNodeModel.IsLocked ? "Locked" : "Unlocked";
+                if (LockButton.ToolTip is ToolTip lockTooltip)
+                {
+                    lockTooltip.Content = curveMapperNodeModel.IsLocked
+                        ? "Curve cannot be modified. Click to unlock."
+                        : "Click to lock the curve.";
+                }
+                ResetButton.Tag = curveMapperNodeModel.IsLocked ? "Locked" : "Unlocked";
+                if (ResetButton.ToolTip is ToolTip resetTooltip)
+                {
+                    resetTooltip.Content = curveMapperNodeModel.IsLocked
+                        ? "The curve has been locked and cannot be reset. Please unlock the curve first."
+                        : "Reset the curve.";
+                }
+            }
+        }
+
+        private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e)
+        {
+            var sizeChange = Math.Min(e.VerticalChange, e.HorizontalChange);
+            var yAdjust = ActualHeight + sizeChange;
+            var xAdjust = ActualWidth + sizeChange;
+
+            // Ensure the mainGrid doesn't resize below its minimum size
+            yAdjust = Math.Max(yAdjust, minCanvasSize + controlLabelsHeight);
+            xAdjust = Math.Max(xAdjust, minCanvasSize + controlLabelsWidth);
+
+            Width = xAdjust;
+            Height = yAdjust;
+
+            // Adjust the size of the GraphCanvas dynamically
+            curveMapperNodeModel.DynamicCanvasSize = Math.Max(xAdjust - controlLabelsWidth, minCanvasSize);
+            DrawGrid();
+
+            // Reposition control points based on the new size
+            NodeModel_PropertyChanged(this, new PropertyChangedEventArgs(nameof(curveMapperNodeModel.DynamicCanvasSize)));
+            curveMapperNodeModel.GenerateOutputValues();
         }
     }
 }

@@ -390,13 +390,15 @@ namespace CoreNodeModels
         }
 
         [JsonConstructor]
-        public CurveMapperNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
+        public CurveMapperNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts,
+            double dynamicCanvasSize = defaultCanvasSize) : base(inPorts, outPorts)
         {
             foreach (var port in InPorts)
             {
                 port.Connectors.CollectionChanged += Connectors_CollectionChanged;
             }
 
+            DynamicCanvasSize = dynamicCanvasSize;
             ArgumentLacing = LacingStrategy.Disabled;
         }
 
@@ -600,11 +602,11 @@ namespace CoreNodeModels
                 SquareRootCurveControlPointData1, SquareRootCurveControlPointData2,
                 GaussianCurveControlPointData1, GaussianCurveControlPointData2,
                 GaussianCurveControlPointData3, GaussianCurveControlPointData4
-            };
+            }.Where(p => p != null).ToList();
 
             foreach (var point in controlPoints)
             {
-                point.ScaleToNewCanvasSize(oldSize, newSize);
+                point?.ScaleToNewCanvasSize(oldSize, newSize);
             }
         }
 
