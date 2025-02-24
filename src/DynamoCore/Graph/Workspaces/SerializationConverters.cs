@@ -493,13 +493,16 @@ namespace Dynamo.Graph.Workspaces
             nrc.ElementResolver = elementResolver;
 
             var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer).ToList();
-            var nodeLookup = nodes.ToDictionary(n => n.GUID);
+            // initialize this dictionary lazily if it needs to be queried
+            Dictionary<Guid, NodeModel> nodeLookup = null;
 
             // Setting Inputs
             // Required in headless mode by Dynamo Player that certain view properties are set back to NodeModel
             var inputsToken = obj["Inputs"];
             if (inputsToken != null)
             {
+                nodeLookup ??= nodes.ToDictionary(n => n.GUID);
+
                 var inputs = inputsToken.Select(x =>
                 {
                     try
@@ -528,6 +531,8 @@ namespace Dynamo.Graph.Workspaces
             var outputsToken = obj["Outputs"];
             if (outputsToken != null)
             {
+                nodeLookup ??= nodes.ToDictionary(n => n.GUID);
+
                 var outputs = outputsToken.Select(x => x.ToObject<NodeOutputData>());
                 // Use the outputs to set the correct properties on the nodes.
                 foreach (var outputData in outputs)
@@ -547,6 +552,8 @@ namespace Dynamo.Graph.Workspaces
             var view = obj["View"];
             if (view != null && view["NodeViews"] != null)
             {
+                nodeLookup ??= nodes.ToDictionary(n => n.GUID);
+
                 var nodeViews = view["NodeViews"];
                 foreach (var nodeview in nodeViews)
                 {
