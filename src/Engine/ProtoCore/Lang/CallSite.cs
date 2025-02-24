@@ -155,17 +155,24 @@ namespace ProtoCore
             public List<string> RecursiveGetNestedData()
             {
                 List<string> ret = new List<string>();
+                RecursiveFillWithNestedData(ret);
+                return ret;
+            }
 
+            internal void RecursiveFillWithNestedData(List<string> listToFill)
+            {
                 if (HasData)
-                    ret.Add(Data);
+                {
+                    listToFill.Add(Data);
+                }
 
                 if (HasNestedData)
                 {
                     foreach (SingleRunTraceData srtd in NestedData)
-                        ret.AddRange(srtd.RecursiveGetNestedData());
+                    {
+                        srtd.RecursiveFillWithNestedData(listToFill);
+                    }
                 }
-
-                return ret;
             }
         }
 
@@ -472,13 +479,13 @@ namespace ProtoCore
         /// </summary>
         public IList<string> GetOrphanedSerializables()
         {
-            var result = new List<string>();
-
             if (!beforeFirstRunSerializables.Any())
-                return result;
+            {
+                return new List<string>();
+            }
 
-            var currentSerializables = traceData.SelectMany(td => td.RecursiveGetNestedData());
-            result.AddRange(beforeFirstRunSerializables.Where(hs => !currentSerializables.Contains(hs)).ToList());
+            var currentSerializables = traceData.SelectMany(td => td.RecursiveGetNestedData()).ToHashSet();
+            var result = beforeFirstRunSerializables.Where(hs => !currentSerializables.Contains(hs)).ToList();
 
             // Clear the historical serializable to avoid 
             // them being used again. 

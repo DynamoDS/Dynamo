@@ -250,6 +250,7 @@ namespace Dynamo.UI.Views
         /// </summary>
         private bool SignIn()
         {
+            if (!viewModel.IsIDSDKInitialized(true, this)) return false;
             authManager.Login();
             bool ret = authManager.IsLoggedIn();
             Analytics.TrackEvent(Actions.SignIn, Categories.SplashScreenOperations, ret.ToString());
@@ -347,7 +348,7 @@ namespace Dynamo.UI.Views
 
             webView.CreationProperties = new CoreWebView2CreationProperties
             {
-                UserDataFolder = webBrowserUserDataFolder.FullName
+                UserDataFolder = DynamoModel.IsTestMode ? TestUtilities.UserDataFolderDuringTests(nameof(SplashScreen)) : webBrowserUserDataFolder.FullName
             };
 
             //ContentRendered ensures that the webview2 component is visible.

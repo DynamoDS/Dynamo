@@ -1,4 +1,5 @@
 @DYNAMO v.3.5.0 © 2025 Autodesk, Inc.  All rights reserved.
+
 Dynamo License
 
 Those portions created by Ian are provided with the following copyright:
@@ -19,7 +20,7 @@ The trademarks on the Autodesk Trademarks page are registered trademarks or trad
 
 All other brand names, product names or trademarks belong to their respective holders.
 Autodesk Cloud and Desktop Components
-This Product or Service may incorporate or use background Autodesk online and desktop technology components.  For information about these components, see Autodesk Cloud Platform Components and Autodesk Desktop Platform Components.
+This Product or Service may incorporate or use background Autodesk online and desktop technology components. For information about these components, see Autodesk Cloud Platform Components and Autodesk Desktop Platform Components.
 
 LIBG, ProtoGeometry v.2.7.0, DynamoVisualProgramming.Analytics, CER, ADP, GRegRevitAuth, AGET, IDSDK, IDSDK Wrapper, ForgeUnits.NET, ForgeUnits.Schemas, and Autodesk.GeometryPrimitives.Dynamo are closed source files licensed by Autodesk under the license that can be found here https://github.com/DynamoDS/Dynamo/tree/master/doc/distrib/Autodesk.rtf
 
@@ -68,7 +69,6 @@ The MIT License (MIT)
 Copyright (c) .NET Foundation and Contributors
 All rights reserved.
 
-
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
@@ -81,47 +81,9 @@ https://github.com/MartinTopfstedt/FontAwesome5/blob/master/LICENSE
 MIT License
 Copyright (c) 2018 MartinTopfstedt
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
-FontAwesome v.5.15.4:
-https://github.com/FortAwesome/Font-Awesome/blob/5.x/LICENSE.txt
-CC BY 4.0 License (https://creativecommons.org/licenses/by/4.0/)
-Copyright (c) 2022 Fonticons, Inc. (https://fontawesome.com)
-
-In the Font Awesome Free download, the CC BY 4.0 license applies to all icons packaged as SVG and JS file types.
-
-Icons: CC BY 4.0 License (https://creativecommons.org/licenses/by/4.0/):  The Font Awesome Free download is licensed under a Creative Commons Attribution 4.0 International License and applies to all icons packaged as SVG and JS file types.
-
-Fonts: SIL OFL 1.1 License
-In the Font Awesome Free download, the SIL OFL license applies to all icons packaged as web and desktop font files.
-Copyright (c) 2023 Fonticons, Inc. (https://fontawesome.com)
-with Reserved Font Name: "Font Awesome".
-This Font Software is licensed under the SIL Open Font License, Version 1.1. 
-This license can be found at: http://scripts.sil.org/OFL
-
-Code: MIT License (https://opensource.org/licenses/MIT)
-In the Font Awesome Free download, the MIT license applies to all non-font and
-non-icon files.
-Copyright 2023 Fonticons, Inc.
-Permission is hereby granted, free of charge, to any person obtaining a copy of
-this software and associated documentation files (the "Software"), to deal in the
-Software without restriction, including without limitation the rights to use, copy,
-modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
-and to permit persons to whom the Software is furnished to do so, subject to the
-following conditions:
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
-INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
-PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
-HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
-OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
-SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 
 Cyotek.Drawing.BitmapFont v.2.0.0:
 https://github.com/cyotek/Cyotek.Drawing.BitmapFont
@@ -139,7 +101,6 @@ Helix Toolkit v.2.24.0:
 HelixToolkit.Core.Wpf v.2.24.0:
 HelixToolkit.SharpDX.Core v.2.24.0:
 HelixToolkit.SharpDX.Core.Wpf v.2.24.0:
-
 https://github.com/helix-toolkit/helix-toolkit
 https://github.com/helix-toolkit/helix-toolkit/blob/develop/LICENSE
 The MIT License (MIT)
@@ -152,14 +113,12 @@ The above copyright notice and this permission notice shall be included in all c
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 SharpDX v.4.2.0:
-SharpDX v.4.2.0:
 SharpDX.D3DCompiler v.4.2.0:
 SharpDX.Direct2D1 v.4.2.0:
 SharpDX.Direct3D11 v.4.2.0:
 SharpDX.Direct3D9 v.4.2.0:
 SharpDX.DXGI v.4.2.0:
 SharpDX.Mathematics v.4.2.0:
-
 https://github.com/sharpdx/SharpDX/blob/master/LICENSE
 Copyright (c) 2010-2014 SharpDX - Alexandre Mutel
 
@@ -168,6 +127,7 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 ICSharpCode.AvalonEdit v.6.3.0.90:
 http://www.avalonedit.net/
@@ -179,13 +139,14 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 
 The above copyright notice and this permission notice (including the next paragraph) shall be included in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE
 
 Google OpenSans:
 OpenSans font from Google
 http://www.google.com/fonts/specimen/Open+Sans
 http://www.apache.org/licenses/LICENSE-2.0.html
 Copyright © [yyyy] Steve Matteson
+
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 
 DocumentFormat.OpenXml v.2.12.3:
@@ -281,12 +242,12 @@ Copyright © 2000-2002 Philip A. Craig
 This software is provided 'as-is', without any express or implied warranty. In no event will the authors be held liable for any damages arising from the use of this software.
 Permission is granted to anyone to use this software for any purpose, including commercial applications, and to alter it and redistribute it freely, subject to the following restrictions:
 
-1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment (see the following) in the product documentation is required. Portions Copyright © 2002-2009 Charlie Poole or Copyright © 2002-2004 James W. Newkirk, Michael C. Two, Alexei A. Vorontsov or Copyright © 2000-2002 Philip A. Craig 
-2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software. 
+1. The origin of this software must not be misrepresented; you must not claim that you wrote the original software. If you use this software in a product, an acknowledgment (see the following) in the product documentation is required. Portions Copyright © 2002-2009 Charlie Poole or Copyright © 2002-2004 James W. Newkirk, Michael C. Two, Alexei A. Vorontsov or Copyright © 2000-2002 Philip A. Craig 
+2. Altered source versions must be plainly marked as such, and must not be misrepresented as being the original software. 
 3. This notice may not be removed or altered from any source distribution.
 
 License Note
-This license is based on the open source zlib/libpng license (https://opensource.org/licenses/zlib-license.html). The idea was to keep the license as simple as possible to encourage use of NUnit in free and commercial applications and libraries, but to keep the source code together and to give credit to the NUnit contributors for their efforts. While this license allows shipping NUnit in source and binary form, if shipping a NUnit variant is the sole purpose of your product, please let us know (cpoole@pooleconsulting.com ).
+This license is based on the open source zlib/libpng license (https://opensource.org/licenses/zlib-license.html). The idea was to keep the license as simple as possible to encourage use of NUnit in free and commercial applications and libraries, but to keep the source code together and to give credit to the NUnit contributors for their efforts. While this license allows shipping NUnit in source and binary form, if shipping a NUnit variant is the sole purpose of your product, please let us know (cpoole@pooleconsulting.com ).
 
 Moq v.4.18.4:
 https://github.com/moq/moq4/blob/master/License.txt/
@@ -353,7 +314,7 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE. 
 
-StarMath v.2.0.17.1019:
+StarMath v.2.0.17.1019
 https://github.com/DesignEngrLab/StarMath/blob/master/LICENSE
 The MIT License (MIT)
 Copyright (c) 2015 DesignEngrLab
@@ -369,6 +330,43 @@ DiffPlex v.1.6.3:
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at
 http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+
+FontAwesome v.5.15.4:
+https://github.com/FortAwesome/Font-Awesome/blob/5.x/LICENSE.txt
+CC BY 4.0 License (https://creativecommons.org/licenses/by/4.0/)
+Copyright (c) 2022 Fonticons, Inc. (https://fontawesome.com)
+
+In the Font Awesome Free download, the CC BY 4.0 license applies to all icons packaged as SVG and JS file types.
+
+Icons: CC BY 4.0 License (https://creativecommons.org/licenses/by/4.0/):  The Font Awesome Free download is licensed under a Creative Commons Attribution 4.0 International License and applies to all icons packaged as SVG and JS file types.
+
+Fonts: SIL OFL 1.1 License
+In the Font Awesome Free download, the SIL OFL license applies to all icons packaged as web and desktop font files.
+Copyright (c) 2023 Fonticons, Inc. (https://fontawesome.com)
+with Reserved Font Name: "Font Awesome".
+This Font Software is licensed under the SIL Open Font License, Version 1.1. 
+This license can be found at: http://scripts.sil.org/OFL
+
+Code: MIT License (https://opensource.org/licenses/MIT)
+In the Font Awesome Free download, the MIT license applies to all non-font and
+non-icon files.
+Copyright 2023 Fonticons, Inc.
+Permission is hereby granted, free of charge, to any person obtaining a copy of
+this software and associated documentation files (the "Software"), to deal in the
+Software without restriction, including without limitation the rights to use, copy,
+modify, merge, publish, distribute, sublicense, and/or sell copies of the Software,
+and to permit persons to whom the Software is furnished to do so, subject to the
+following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED,
+INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
+HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 AngleSharp v.0.14.0: Copyright (c) 2013 - 2019 AngleSharp
 AngleSharp.CSS v.0.14.2: Copyright © 2013-2020 AngleSharp
@@ -406,6 +404,7 @@ Redistribution and use in source and binary forms, with or without modification,
 
 THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL  DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR  SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER  CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+
 System.Buffers v.4.5.1
 The MIT License (MIT)
 Copyright (c) .NET Foundation and Contributors
@@ -439,6 +438,7 @@ The above copyright notice and this permission notice shall be included in all c
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+
 System.Numerics.Vectors v.4.5.0
 The MIT License (MIT)
 Copyright (c) .NET Foundation and Contributors
@@ -449,6 +449,7 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 
 System.Text.Encoding.CodePages v.4.5.0 
 The MIT License (MIT)
@@ -521,9 +522,9 @@ https://github.com/DynamoDS/Dynamo/tree/master/tools/install/Extra/DirectX/Licen
 ImageMagick
 https://imagemagick.org/script/license.php
 
-LiveChartsCore v.2.0.0-rc5.1:
-LiveChartsCore.SkiaSharpView v.2.0.0-rc5.1:
-LiveChartsCore.SkiaSharpView.WPF v.2.0.0-rc5.1:
+LiveChartsCore v.2.0.0-rc5.4:
+LiveChartsCore.SkiaSharpView v.2.0.0-rc5.4:
+LiveChartsCore.SkiaSharpView.WPF v.2.0.0-rc5.4:
 Copyright (c) 2021 Alberto Rodriguez Orozco
 
 MIT License
@@ -543,8 +544,7 @@ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 Magick.NET.Core v7.0.1:
 Copyright [2013] [dlemstra]
@@ -564,7 +564,7 @@ limitations under the License.
 
 Magick.NET-Q8-AnyCPU v7.24.1:
 https://imagemagick.org/script/license.php
-Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization dedicated to making software imaging solutions freely available.   
+Copyright 1999-2021 ImageMagick Studio LLC, a non-profit organization dedicated to making software imaging solutions freely available.
 
 Open XML SDK
 https://github.com/OfficeDev/Open-XML-SDK
@@ -575,14 +575,16 @@ https://docs.python.org/2.7/library/
 https://docs.python.org/2.7/license.html
 
 Python Modules
-https://numpy.org/ License: Distributed under a liberal BSD license
+https://numpy.org/ License: Distributed under a liberal BSD license
 https://pandas.pydata.org/ License: BSD 3-Clause "New" or "Revised" License
-https://scipy.org/ License: Distributed under a liberal BSD license
-https://pypi.org/project/openpyxl/ License: MIT License (MIT)
-https://matplotlib.org/ License: Matplotlib only uses BSD compatible code, and its license is based on the PSF license
-https://pypi.org/project/Pillow/ License: Historical Permission Notice and Disclaimer (HPND) 
+https://scipy.org/ License: Distributed under a liberal BSD license
+https://pypi.org/project/openpyxl/ License: MIT License (MIT)
+https://matplotlib.org/ License: Matplotlib only uses BSD compatible code, and its license is based on the PSF license
+https://pypi.org/project/Pillow/ License: Historical Permission Notice and Disclaimer (HPND) 
 
-Xceed Extended WPF Toolkit v.5.0.103:
+
+
+Xceed Extended WPF Toolkit v.5.0.103
 Microsoft Public License
 https://github.com/xceedsoftware/wpftoolkit/blob/0ed4ed84152d6a3e2a627f2ef05f82627fdaf3fc/license.md
 
@@ -620,7 +622,6 @@ Lucene.Net.Analysis.Common v.4.8.0-beta00016
 Lucene.Net.Queries v.4.8.0-beta00016
 Lucene.Net.QueryParser v.4.8.0-beta00016
 Lucene.Net.Sandbox v.4.8.0-beta00016
-
 https://lucenenet.apache.org/
 https://github.com/apache/lucenenet/blob/master/LICENSE.txt
 Copyright 2022 Apache Lucene.NET
@@ -643,7 +644,8 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 CsvHelper v30.0.1
 Apache 2.0
 https://github.com/JoshClose/CsvHelper/blob/master/LICENSE.txt
-Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+
+Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License.  You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.  See the License for the specific language governing permissions and limitations under the License.
 
 Prism.Core v8.1.97
 The MIT License (MIT)
@@ -655,15 +657,17 @@ All rights reserved. Permission is hereby granted, free of charge, to any person
 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+
 MimeMapping v2.0.0
 MIT License
 https://licenses.nuget.org/MIT
 Copyright (c) <year> <copyright holders>
 
-Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
-The above copyright notice and this permission notice (including the next paragraph) shall be included in all copies or substantial portions of the Software.
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice (including the next paragraph) shall be included in all copies or substantial portions of the Software.
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 DotNetProjects.Extended.Wpf.Toolkit v5.0.103
 Microsoft Public License
@@ -724,7 +728,6 @@ Permission is hereby granted, free of charge, to any person obtaining a copy of 
 The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
-
 
 coverlet.collector v.3.1.2
 The MIT License (MIT)
