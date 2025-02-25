@@ -584,7 +584,8 @@ namespace Dynamo.ViewModels
         private static readonly string warningGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/alert-64px.png";
         private static readonly string errorGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/error-64px.png";
         private static readonly string infoGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/info-64px.png";
-        private static readonly string previewGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/hidden-64px.png";
+        private static readonly string previewGeometryGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/hidden-64px.png";
+        private static readonly string previewClusterGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/preview-64px.png";
         private static readonly string frozenGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png";
         private static readonly string packageGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/package-64px.png";
 
@@ -1370,7 +1371,7 @@ namespace Dynamo.ViewModels
                 result = nodePreviewColor;
                 if (result != null)
                 {
-                    ImgGlyphOneSource = previewGlyph;
+                    ImgGlyphOneSource = previewGeometryGlyph;
                 } 
             }
 
@@ -1386,7 +1387,7 @@ namespace Dynamo.ViewModels
                     else
                     {
                         ImgGlyphOneSource = packageGlyph;
-                        ImgGlyphTwoSource = previewGlyph;
+                        ImgGlyphTwoSource = previewGeometryGlyph;
                     }
                 }
             }
@@ -1403,10 +1404,28 @@ namespace Dynamo.ViewModels
                     else
                     {
                         ImgGlyphOneSource = frozenGlyph;
-                        ImgGlyphTwoSource = previewGlyph;
+                        ImgGlyphTwoSource = previewGeometryGlyph;
                     }
                 }
             }
+
+            if (this.IsPreview)
+            {
+                result = nodeFrozenOverlayColor;
+                if (result != null)
+                {
+                    if (ImgGlyphOneSource == null)
+                    {
+                        ImgGlyphOneSource = previewClusterGlyph;
+                    }
+                    else
+                    {
+                        ImgGlyphOneSource = previewClusterGlyph;
+                        ImgGlyphTwoSource = previewGeometryGlyph;
+                    }
+                }
+            }
+
             if (NodeModel.State == ElementState.Info || NodeModel.State == ElementState.PersistentInfo)
             {
                 result = nodeInfoColor;
