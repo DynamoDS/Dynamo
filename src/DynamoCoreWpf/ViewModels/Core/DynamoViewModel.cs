@@ -2252,7 +2252,7 @@ namespace Dynamo.ViewModels
         {
             var filePath = parameters as string;
 
-            if (filePath.Contains(".zip") || filePath.Contains(".ZIP"))
+            if (filePath.Contains(".zip\\") || filePath.Contains(".ZIP\\"))
             {
                 MessageBoxService.Show(
                     String.Format(Resources.MessageErrorOpeningZippedFile) + "\n\n" + filePath,
