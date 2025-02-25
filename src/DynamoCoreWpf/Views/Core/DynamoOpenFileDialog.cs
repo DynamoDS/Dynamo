@@ -58,8 +58,8 @@ namespace Dynamo.UI
             }
         }
 
-        public string FileName
-        {
+        public string FileName 
+        { 
             get { return _fileName; }
         }
 
@@ -75,7 +75,7 @@ namespace Dynamo.UI
             _dialog = new NativeFileOpenDialog();
             if (!enableCustomDialog) return;
             IFileDialogCustomize customize = (IFileDialogCustomize) _dialog;
-            customize.AddCheckButton(RunManualCheckboxId,
+            customize.AddCheckButton(RunManualCheckboxId, 
                 Dynamo.Wpf.Properties.Resources.FileDialogManualMode,
                 model.PreferenceSettings.OpenFileInManualExecutionMode);
         }
@@ -106,17 +106,6 @@ namespace Dynamo.UI
             }
             catch(Exception ex)
             {
-                if (ex is ArgumentException && ex.Message == "Value does not fall within the expected range.")
-                {
-                    var directoryName = Path.GetDirectoryName(_fileName);
-
-                    // Check if the directory is actually a zipped folder
-                    if (!Directory.Exists(directoryName) && File.Exists(directoryName + ".zip"))
-                    {
-                        // Show warning message box.
-                    }
-                }
-
                 model.Model.Logger.Log(ex.Message);
                 return DialogResult.Cancel;
             }
@@ -225,9 +214,9 @@ namespace Dynamo.UI
             try
             {
                 // If the caller did not specify a starting path, or set it to null,
-                // it is not healthy as it causes SHCreateItemFromParsingName to
+                // it is not healthy as it causes SHCreateItemFromParsingName to 
                 // throw E_INVALIDARG (0x80070057). Setting it to an empty string.
-                //
+                // 
                 if (SelectedPath == null)
                     SelectedPath = string.Empty;
 
@@ -262,7 +251,7 @@ namespace Dynamo.UI
 
                 return DialogResult.OK;
             }
-            finally
+            finally 
             {
                 if (dialog != null)
                     Marshal.FinalReleaseComObject(dialog);
