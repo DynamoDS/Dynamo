@@ -175,6 +175,7 @@ namespace Dynamo.DocumentationBrowser
             GC.SuppressFinalize(this);
         }
 
+        internal string Locale { get; set; }
         #endregion
 
         #region Handle navigation event
@@ -228,7 +229,7 @@ namespace Dynamo.DocumentationBrowser
                     case OpenDocumentationLinkEventArgs openDocumentationLink:
                         link = openDocumentationLink.Link;
                         graphPath = GetGraphLinkFromMDLocation(link, false);
-                        targetContent = ResourceUtilities.LoadContentFromResources(openDocumentationLink.Link.ToString(), GetType().Assembly);
+                        targetContent = ResourceUtilities.LoadContentFromResources(openDocumentationLink.Link.ToString(), GetType().Assembly, true, true, Locale);
                         graphName = null;
                         break;
 

@@ -2124,7 +2124,7 @@
 	<Copy SourceFiles="@(DocXMLZhCNFiles)" DestinationFolder="$(OutputPath)\zh-CN\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(DocXMLZhTWFiles)" DestinationFolder="$(OutputPath)\zh-TW\" SkipUnchangedFiles="True" />
   </Target>
-  <Target Name="CopyControlHTMLFiles" AfterTargets="AfterBuildOps">
+  <Target Name="CopyControlHTMLFiles" AfterTargets="CopyDocXMLAllLanguages">
     <ItemGroup>
 		<HTMLControlsEnUSFiles Include="$(SolutionDir)..\doc\distrib\html\en-US\Controls\**\*.html" />
 		<HTMLControlsCsCZFiles Include="$(SolutionDir)..\doc\distrib\html\cs-CZ\Controls\**\*.html" />
@@ -2140,18 +2140,18 @@
 		<HTMLControlsZhCNFiles Include="$(SolutionDir)..\doc\distrib\html\zh-CN\Controls\**\*.html" />
 		<HTMLControlsZhTWFiles Include="$(SolutionDir)..\doc\distrib\html\zh-TW\Controls\**\*.html" />
     </ItemGroup>
-    <Copy SourceFiles="@(HTMLControlsEnUSFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\en-US" />
-	<Copy SourceFiles="@(HTMLControlsCsCZFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\cs-CZ" />
-	<Copy SourceFiles="@(HTMLControlsDeDEFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\de-DE" />
-	<Copy SourceFiles="@(HTMLControlsEsESFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\es-ES" />
-	<Copy SourceFiles="@(HTMLControlsFrFRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\fr-FR" />
-	<Copy SourceFiles="@(HTMLControlsItITFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\it-IT" />
-	<Copy SourceFiles="@(HTMLControlsJaJPFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\ja-JP" />
-	<Copy SourceFiles="@(HTMLControlsKoKRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\ko-KR" />
-	<Copy SourceFiles="@(HTMLControlsPlPLFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\pl-PL" />
-	<Copy SourceFiles="@(HTMLControlsPtBRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\pt-BR" />
-	<Copy SourceFiles="@(HTMLControlsRuRUFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\ru-RU" />
-	<Copy SourceFiles="@(HTMLControlsZhCNFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\zh-CN" />
-	<Copy SourceFiles="@(HTMLControlsZhTWFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\zh-TW" />
+    <Copy SourceFiles="@(HTMLControlsEnUSFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\en-US" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsCsCZFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\cs-CZ" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsDeDEFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\de-DE" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsEsESFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\es-ES" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsFrFRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\fr-FR" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsItITFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\it-IT" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsJaJPFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\ja-JP" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsKoKRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\ko-KR" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsPlPLFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\pl-PL" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsPtBRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\pt-BR" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsRuRUFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\ru-RU" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsZhCNFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\zh-CN" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsZhTWFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\zh-TW" SkipUnchangedFiles="True"/>
   </Target>
 </Project>
