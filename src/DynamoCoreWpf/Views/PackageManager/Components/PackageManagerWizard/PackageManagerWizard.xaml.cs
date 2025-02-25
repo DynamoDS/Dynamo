@@ -49,6 +49,10 @@ namespace Dynamo.UI.Views
         internal Action<string> RequestAddFileOrFolder;
         internal Action<string> RequestRemoveFileOrFolder;
         internal Action<bool> RequestRetainFolderStructure;
+        internal Action<string> RequestUpdatePackageDetails;
+        internal Action RequestSubmit;
+        internal Action RequestPublish;
+        internal Action RequestReset;
 
         #endregion
 
@@ -56,6 +60,8 @@ namespace Dynamo.UI.Views
         /// The WebView2 Browser instance used to display splash screen
         /// </summary>
         internal DynamoWebView2 dynWebView;
+
+        private PackageUpdateRequest previousPackageDetails;
 
         public PackageManagerWizard()
         {
@@ -73,6 +79,10 @@ namespace Dynamo.UI.Views
             RequestAddFileOrFolder = AddFileOrFolder;
             RequestRemoveFileOrFolder = RemoveFileOrFolder;
             RequestRetainFolderStructure = ToggleRetainFolderStructure;
+            RequestUpdatePackageDetails = UpdatePackageDetails;
+            RequestSubmit = Submit;
+            RequestPublish = Publish;
+            RequestReset = Reset;
 
             DataContextChanged += OnDataContextChanged;
         }
@@ -192,7 +202,11 @@ namespace Dynamo.UI.Views
                         new ScriptWizardObject(
                             RequestAddFileOrFolder,
                             RequestRemoveFileOrFolder,
-                            RequestRetainFolderStructure));
+                            RequestRetainFolderStructure,
+                            RequestUpdatePackageDetails,
+                            RequestSubmit,
+                            RequestPublish,
+                            RequestReset));
                 }
                 catch (Exception ex)
                 {
@@ -274,6 +288,83 @@ namespace Dynamo.UI.Views
             publishPackageViewModel.RetainFolderStructureOverride = flag;
         }
 
+        public void UpdatePackageDetails(string jsonPayload)
+        {
+            if (string.IsNullOrWhiteSpace(jsonPayload) || publishPackageViewModel == null)
+                return;
+
+            try
+            {
+                var packageDetails = JsonSerializer.Deserialize<PackageUpdateRequest>(
+                    jsonPayload,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                );
+                if (packageDetails == null) return;
+
+                // Check if the new details are the same as the previous ones
+                if (previousPackageDetails != null && previousPackageDetails.Equals(packageDetails))
+                    return;
+
+                // Store the new details to prevent redundant updates
+                previousPackageDetails = packageDetails;
+
+                // Assign required fields
+                publishPackageViewModel.Name = packageDetails.Name;
+                publishPackageViewModel.Description = packageDetails.Description;
+
+                // Assign version numbers separately
+                publishPackageViewModel.MajorVersion = packageDetails.Major;
+                publishPackageViewModel.MinorVersion = packageDetails.Minor;
+                publishPackageViewModel.BuildVersion = packageDetails.Patch;
+
+                // Join keywords into a comma-separated string
+                publishPackageViewModel.Keywords = packageDetails.Keywords?.Count > 0
+                    ? string.Join(", ", packageDetails.Keywords)
+                    : string.Empty;
+
+                // Assign optional fields
+                publishPackageViewModel.CopyrightHolder = packageDetails.CopyrightHolder ?? string.Empty;
+                publishPackageViewModel.CopyrightYear = packageDetails.CopyrightYear ?? string.Empty;
+                publishPackageViewModel.License = packageDetails.License ?? string.Empty;
+                publishPackageViewModel.RepositoryUrl = packageDetails.RepositoryUrl ?? string.Empty;
+                publishPackageViewModel.SiteUrl = packageDetails.SiteUrl ?? string.Empty;
+                publishPackageViewModel.Group = packageDetails.Group ?? string.Empty;
+
+                Console.WriteLine("Package details updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating package details: {ex.Message}");
+            }
+        }
+
+
+        public void Submit()
+        {
+            if (publishPackageViewModel == null) return;
+            if (publishPackageViewModel.SubmitCommand?.CanExecute() == true)
+            {
+                publishPackageViewModel.SubmitCommand.Execute();
+            }
+        }
+
+        public void Publish()
+        {
+            if (publishPackageViewModel == null) return;
+            if (publishPackageViewModel.PublishLocallyCommand?.CanExecute() == true)
+            {
+                publishPackageViewModel.PublishLocallyCommand.Execute();
+            }
+        }
+
+        public void Reset()
+        {
+            if (publishPackageViewModel == null) return;
+            if (publishPackageViewModel.CancelCommand?.CanExecute() == true)
+            {
+                publishPackageViewModel.CancelCommand.Execute();
+            }
+        }
 
         #endregion
 
@@ -470,15 +561,27 @@ namespace Dynamo.UI.Views
         readonly Action<string> RequestAddFileOrFolder;
         readonly Action<string> RequestRemoveFileOrFolder;
         readonly Action<bool> RequestRetainFolderStructure;
+        readonly Action<string> RequestUpdatePackageDetails;
+        readonly Action RequestSubmit;
+        readonly Action RequestPublish;
+        readonly Action RequestReset;
 
         public ScriptWizardObject(
             Action<string> requestAddFileOrFolder,
             Action<string> requestRemoveFileOrFolder,
-            Action<bool> requestRetainFolderStructure)
+            Action<bool> requestRetainFolderStructure,
+            Action<string> requestUpdatePackageDetails,
+            Action requestSubmit,
+            Action requestPublish,
+            Action requestReset)
         {
             RequestAddFileOrFolder = requestAddFileOrFolder;
             RequestRemoveFileOrFolder = requestRemoveFileOrFolder;
             RequestRetainFolderStructure = requestRetainFolderStructure;
+            RequestUpdatePackageDetails = requestUpdatePackageDetails;
+            RequestSubmit = requestSubmit;
+            RequestPublish = requestPublish;
+            RequestReset = requestReset;
         }
 
         [DynamoJSInvokable]
@@ -500,5 +603,103 @@ namespace Dynamo.UI.Views
         {
             RequestRetainFolderStructure(flag);
         }
+
+        [DynamoJSInvokable]
+        public void UpdatePackageDetails(string jsonPayload)
+        {
+            RequestUpdatePackageDetails(jsonPayload);
+        }
+
+        [DynamoJSInvokable]
+        public void Submit()
+        {
+            RequestSubmit();
+        }
+
+        [DynamoJSInvokable]
+        public void Publish()
+        {
+            RequestPublish();
+        }
+
+        [DynamoJSInvokable]
+        public void Reset()
+        {
+            RequestReset();
+        }
     }
+
+    public class PackageUpdateRequest : IEquatable<PackageUpdateRequest>
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public string Major { get; set; }
+        public string Minor { get; set; }
+        public string Patch { get; set; }
+        public List<string> Keywords { get; set; }
+        public string ReleaseNotesUrl { get; set; }
+        public string CopyrightHolder { get; set; }
+        public string CopyrightYear { get; set; }
+        public string License { get; set; }
+        public string RepositoryUrl { get; set; }
+        public string SiteUrl { get; set; }
+        public string Group { get; set; }
+
+        public bool Equals(PackageUpdateRequest other)
+        {
+            if (other == null) return false;
+
+            return Name == other.Name &&
+                   Description == other.Description &&
+                   Major == other.Major &&
+                   Minor == other.Minor &&
+                   Patch == other.Patch &&
+                   (Keywords == null && other.Keywords == null || (Keywords?.SequenceEqual(other.Keywords) ?? false)) &&
+                   ReleaseNotesUrl == other.ReleaseNotesUrl &&
+                   CopyrightHolder == other.CopyrightHolder &&
+                   CopyrightYear == other.CopyrightYear &&
+                   License == other.License &&
+                   RepositoryUrl == other.RepositoryUrl &&
+                   SiteUrl == other.SiteUrl &&
+                   Group == other.Group;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals(obj as PackageUpdateRequest);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked // Allow integer overflow (safe for hash calculations)
+            {
+                int hash = 17;
+                hash = hash * 31 + (Name?.GetHashCode() ?? 0);
+                hash = hash * 31 + (Description?.GetHashCode() ?? 0);
+                hash = hash * 31 + (Major?.GetHashCode() ?? 0);
+                hash = hash * 31 + (Minor?.GetHashCode() ?? 0);
+                hash = hash * 31 + (Patch?.GetHashCode() ?? 0);
+                hash = hash * 31 + (ReleaseNotesUrl?.GetHashCode() ?? 0);
+                hash = hash * 31 + (CopyrightHolder?.GetHashCode() ?? 0);
+                hash = hash * 31 + (CopyrightYear?.GetHashCode() ?? 0);
+                hash = hash * 31 + (License?.GetHashCode() ?? 0);
+                hash = hash * 31 + (RepositoryUrl?.GetHashCode() ?? 0);
+                hash = hash * 31 + (SiteUrl?.GetHashCode() ?? 0);
+                hash = hash * 31 + (Group?.GetHashCode() ?? 0);
+
+                // Handle list separately
+                if (Keywords != null)
+                {
+                    foreach (var keyword in Keywords)
+                    {
+                        hash = hash * 31 + (keyword?.GetHashCode() ?? 0);
+                    }
+                }
+
+                return hash;
+            }
+        }
+
+    }
+
 }
