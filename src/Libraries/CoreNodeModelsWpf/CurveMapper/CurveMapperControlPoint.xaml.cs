@@ -71,7 +71,7 @@ namespace Dynamo.Wpf.CurveMapper
         /// Identifies the DynamicCanvasSize dependency property, which represents the dynamic canvas size 
         /// used for scaling and rendering the control point.
         /// </summary>
-        //public static readonly DependencyProperty DynamicCanvasSizeProperty = RegisterProperty(nameof(DynamicCanvasSizeProperty), 240.0);
+        public static readonly DependencyProperty DynamicCanvasSizeProperty = RegisterProperty(nameof(DynamicCanvasSizeProperty), 240.0);
 
         /// <summary>
         /// Gets or sets the action invoked when the control point is moved.

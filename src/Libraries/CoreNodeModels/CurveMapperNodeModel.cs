@@ -18,9 +18,9 @@ namespace CoreNodeModels
     [NodeSearchTags("graph;curve;mapper;math")]
     public class CurveMapperNodeModel : NodeModel
     {
-        private double minLimitX;
+        private double minLimitX = 0;
         private double maxLimitX = 1;
-        private double minLimitY;
+        private double minLimitY = 0;
         private double maxLimitY = 1;
         private int pointsCount = 10;
         private List<double> outputValuesY;
@@ -298,12 +298,14 @@ namespace CoreNodeModels
                 }
             }
         }
+
         /// <summary> Gets a list of graph type descriptions for UI selection. </summary>
         [JsonIgnore]
         public List<string> GraphTypesList => Enum.GetValues(typeof(GraphTypes))
             .Cast<GraphTypes>()
             .Select(value => GetEnumDescription(value))
             .ToList();
+
         /// <summary> Gets or sets the selected graph type as a description for UI binding. </summary>
         [JsonIgnore]
         public string SelectedGraphTypeDescription
@@ -553,7 +555,7 @@ namespace CoreNodeModels
             RaisePropertyChanged(nameof(OutputValuesY));
         }
 
-        private bool IsValidCurve() //
+        private bool IsValidCurve()
         {
             if (PointsCount < 2 || MinLimitX == MaxLimitX || MinLimitY == MaxLimitY)
                 return false;
@@ -575,8 +577,7 @@ namespace CoreNodeModels
             return controlPointChecks.TryGetValue(SelectedGraphType, out var validator) ? validator() : true;
         }
 
-        // Helper
-        private List<double> MapValues(List<double> rawValues, double minLimit, double maxLimit) //
+       private List<double> MapValues(List<double> rawValues, double minLimit, double maxLimit)
         {
             var mappedValues = new List<double>();
 
@@ -613,7 +614,7 @@ namespace CoreNodeModels
         /// <summary>
         /// Resets the curves to their original state
         /// </summary>
-        public void ResetControlPointData() //
+        public void ResetControlPointData()
         {
             if (SelectedGraphType == GraphTypes.LinearCurve)
             {
@@ -691,7 +692,7 @@ namespace CoreNodeModels
         }
 
         // Helper method to extract descriptions from enum values
-        private string GetEnumDescription(Enum value) //
+        private string GetEnumDescription(Enum value)
         {
             var field = value.GetType().GetField(value.ToString());
             var attribute = (DescriptionAttribute)Attribute.GetCustomAttribute(field, typeof(DescriptionAttribute));
@@ -701,7 +702,7 @@ namespace CoreNodeModels
         /// <summary>
         /// Updates Gaussian control points positions while maintaining relative spacing and canvas boundaries.
         /// </summary>
-        public void UpdateGaussianCurveControlPoints(double deltaX, string tag) //
+        public void UpdateGaussianCurveControlPoints(double deltaX, string tag)
         {
             switch (tag)
             {

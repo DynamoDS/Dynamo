@@ -84,6 +84,9 @@ namespace Dynamo.Wpf.CurveMapper
             RecreateControlPoints(controlPointsMap);
 
             RenderCurve();
+
+            ToggleControlPointsLock();
+            UpdateLockButton();
         }
 
         private void RenderCurve()
