@@ -58,8 +58,8 @@ namespace Dynamo.UI
             }
         }
 
-        public string FileName 
-        { 
+        public string FileName
+        {
             get { return _fileName; }
         }
 
@@ -75,7 +75,7 @@ namespace Dynamo.UI
             _dialog = new NativeFileOpenDialog();
             if (!enableCustomDialog) return;
             IFileDialogCustomize customize = (IFileDialogCustomize) _dialog;
-            customize.AddCheckButton(RunManualCheckboxId, 
+            customize.AddCheckButton(RunManualCheckboxId,
                 Dynamo.Wpf.Properties.Resources.FileDialogManualMode,
                 model.PreferenceSettings.OpenFileInManualExecutionMode);
         }
@@ -94,7 +94,7 @@ namespace Dynamo.UI
 
                 IShellItem dialogResult;
                 _dialog.GetResult(out dialogResult);
-                dialogResult.GetDisplayName(SIGDN.SIGDN_FILESYSPATH, out _fileName);
+                dialogResult.GetDisplayName(SIGDN.SIGDN_DESKTOPABSOLUTEEDITING, out _fileName);
 
                 IFileDialogCustomize customize = (IFileDialogCustomize)_dialog;
                 if (!enableCustomDialog) return DialogResult.OK;
@@ -214,9 +214,9 @@ namespace Dynamo.UI
             try
             {
                 // If the caller did not specify a starting path, or set it to null,
-                // it is not healthy as it causes SHCreateItemFromParsingName to 
+                // it is not healthy as it causes SHCreateItemFromParsingName to
                 // throw E_INVALIDARG (0x80070057). Setting it to an empty string.
-                // 
+                //
                 if (SelectedPath == null)
                     SelectedPath = string.Empty;
 
@@ -251,7 +251,7 @@ namespace Dynamo.UI
 
                 return DialogResult.OK;
             }
-            finally 
+            finally
             {
                 if (dialog != null)
                     Marshal.FinalReleaseComObject(dialog);

@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <root>
-  <!-- 
-    Microsoft ResX Schema 
-    
+  <!--
+    Microsoft ResX Schema
+
     Version 2.0
-    
-    The primary goals of this format is to allow a simple XML format 
-    that is mostly human readable. The generation and parsing of the 
-    various data types are done through the TypeConverter classes 
+
+    The primary goals of this format is to allow a simple XML format
+    that is mostly human readable. The generation and parsing of the
+    various data types are done through the TypeConverter classes
     associated with the data types.
-    
+
     Example:
-    
+
     ... ado.net/XML headers & schema ...
     <resheader name="resmimetype">text/microsoft-resx</resheader>
     <resheader name="version">2.0</resheader>
@@ -26,36 +26,36 @@
         <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
         <comment>This is a comment</comment>
     </data>
-                
-    There are any number of "resheader" rows that contain simple 
+
+    There are any number of "resheader" rows that contain simple
     name/value pairs.
-    
-    Each data row contains a name, and value. The row also contains a 
-    type or mimetype. Type corresponds to a .NET class that support 
-    text/value conversion through the TypeConverter architecture. 
-    Classes that don't support this are serialized and stored with the 
+
+    Each data row contains a name, and value. The row also contains a
+    type or mimetype. Type corresponds to a .NET class that support
+    text/value conversion through the TypeConverter architecture.
+    Classes that don't support this are serialized and stored with the
     mimetype set.
-    
-    The mimetype is used for serialized objects, and tells the 
-    ResXResourceReader how to depersist the object. This is currently not 
+
+    The mimetype is used for serialized objects, and tells the
+    ResXResourceReader how to depersist the object. This is currently not
     extensible. For a given mimetype the value must be set accordingly:
-    
-    Note - application/x-microsoft.net.object.binary.base64 is the format 
-    that the ResXResourceWriter will generate, however the reader can 
+
+    Note - application/x-microsoft.net.object.binary.base64 is the format
+    that the ResXResourceWriter will generate, however the reader can
     read any of the formats listed below.
-    
+
     mimetype: application/x-microsoft.net.object.binary.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
             : and then encoded with base64 encoding.
-    
+
     mimetype: application/x-microsoft.net.object.soap.base64
-    value   : The object must be serialized with 
+    value   : The object must be serialized with
             : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
             : and then encoded with base64 encoding.
 
     mimetype: application/x-microsoft.net.object.bytearray.base64
-    value   : The object must be serialized into a byte array 
+    value   : The object must be serialized into a byte array
             : using a System.ComponentModel.TypeConverter
             : and then encoded with base64 encoding.
     -->
@@ -937,7 +937,7 @@ Would you like to save your changes?</value>
   </data>
   <data name="MessageFileInUseByApplication" xml:space="preserve">
     <value>The file is currently in use by another application.
-	
+
 Please close the file before trying to overwrite it.</value>
   </data>
   <data name="TitleFileInUse" xml:space="preserve">
@@ -1018,7 +1018,7 @@ If not, this node will be moved to the new package you are creating."</value>
     <comment>Message box content</comment>
   </data>
   <data name="MessageToDeprecatePackage" xml:space="preserve">
-    <value>Are you sure you want to deprecate {0} ?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will no longer support the package, although the package will still appear when explicitly searched for. 
+    <value>Are you sure you want to deprecate {0} ?  This request will be rejected if you are not a maintainer of the package.  It indicates that you will no longer support the package, although the package will still appear when explicitly searched for.
 
 You can always undeprecate the package.</value>
   </data>
@@ -1029,7 +1029,7 @@ You can always re-deprecate the package.</value>
   </data>
   <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
     <value>Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
-    
+
 Do you wish to continue installing it while keeping the packages that are already installed?
 
 If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Try restarting {2} and download {0} again.</value>
@@ -1457,12 +1457,12 @@ Don't worry, you'll have the option to save your work.</value>
     <comment>Disable package install icon tooltip.</comment>
   </data>
   <data name="DisableBuiltInPackageToggleInfo" xml:space="preserve">
-    <value>If the toggle is on, built-in packages will not load on restart. Built-in packages that are currently loaded will be unloaded on restart. 
+    <value>If the toggle is on, built-in packages will not load on restart. Built-in packages that are currently loaded will be unloaded on restart.
 If the toggle is off built-in packages that are not already loaded will load once the preferences dialog is closed.</value>
     <comment>Disable built-in package toggle info.</comment>
   </data>
   <data name="DisableCustomPackageToggleInfo" xml:space="preserve">
-    <value>If the toggle is on, custom packages will not load on restart. Custom packages that are currently loaded will be unloaded on restart. 
+    <value>If the toggle is on, custom packages will not load on restart. Custom packages that are currently loaded will be unloaded on restart.
 If the toggle is off custom packages that are not already loaded will load once the preferences dialog is closed.</value>
     <comment>Disable custom package toggle info.</comment>
   </data>
@@ -2526,14 +2526,14 @@ Next assemblies were loaded several times:
   <data name="FileNotPublishMessage" xml:space="preserve">
     <value>File(s) were not found or are contained inside of a package. Please only add files that are located outside of packages.
 
-Failed to publish file(s): 
+Failed to publish file(s):
 {0}</value>
   </data>
   <data name="PublishPackageDialogCaption" xml:space="preserve">
     <value>Published Successfully</value>
   </data>
   <data name="PublishPackageMessage" xml:space="preserve">
-    <value>Package published successfully. 
+    <value>Package published successfully.
 Want to publish a different package?</value>
   </data>
   <data name="SolutionToFolderNotWritatbleError" xml:space="preserve">
@@ -2582,8 +2582,8 @@ Want to publish a different package?</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
     <value>{1} cannot be loaded.
-Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
-To install {1}, Dynamo needs to first uninstall {0}. 
+Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded.
+To install {1}, Dynamo needs to first uninstall {0}.
 Restart Dynamo to complete the uninstall.
 
 Uninstall the following packages: {0}?</value>
@@ -2784,12 +2784,12 @@ Uninstall the following packages: {0}?</value>
   </data>
   <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
     <value>{0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
-    
+
 Do you wish to continue trying to install {0}?</value>
   </data>
   <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
     <value>{0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
-    
+
 You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again.</value>
   </data>
   <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
@@ -2799,7 +2799,7 @@ You can try disabling loading packages from built-in package paths, or unload th
     <value>The same version of {0} is already installed and does not need to be installed again.</value>
   </data>
   <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
-    <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
+    <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed.
 
 Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again.</value>
   </data>
@@ -3675,7 +3675,7 @@ You can manage this in Preferences -&gt; Security.</value>
   <data name="PreferencesViewDefaultRunSettingsInfoTooltip" xml:space="preserve">
     <value>Set the default run mode for your graphs. In Manual mode,  graph changes are executed when you click Run. Use this mode when working in large graphs, unfamiliar graphs, or host programs.
 
-In Automatic mode, graph changes are executed in real time. This mode provides immediate feedback. 
+In Automatic mode, graph changes are executed in real time. This mode provides immediate feedback.
 
 In certain complex graphs or host program scenarios, Automatic mode may cause instability issues or other problems. If this happens, try switching to Manual mode.</value>
   </data>
@@ -4101,5 +4101,8 @@ To make this file into a new template, save it to a different folder, then move 
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Download Autodesk Identity Manager</value>
+  </data>
+  <data name="MessageErrorOpeningZippedFile" xml:space="preserve">
+      <value>This .dyn file is inside a zipped folder. Please unzip the folder first.</value>
   </data>
 </root>
