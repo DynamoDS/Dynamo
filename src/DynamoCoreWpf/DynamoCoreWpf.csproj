@@ -93,6 +93,32 @@
     </Target>
 
     <ItemGroup>
+    <None Remove="Controls\Docs\cs-CZ\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\cs-CZ\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\de-DE\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\de-DE\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\en-US\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\en-US\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\es-ES\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\es-ES\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\fr-FR\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\fr-FR\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\it-IT\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\it-IT\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\ja-JP\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\ja-JP\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\ko-KR\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\ko-KR\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\pl-PL\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\pl-PL\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\pt-BR\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\pt-BR\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\ru-RU\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\ru-RU\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\zh-CN\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\zh-CN\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\zh-TW\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\zh-TW\NodeAutocompleteDocumentation.html" />
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="Packages\DynamoHome\build\index.bundle.js" />
@@ -205,6 +231,32 @@
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\Docs\cs-CZ\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\cs-CZ\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\de-DE\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\de-DE\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\en-US\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\en-US\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\es-ES\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\es-ES\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\fr-FR\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\fr-FR\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\it-IT\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\it-IT\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\ja-JP\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\ja-JP\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\ko-KR\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\ko-KR\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\pl-PL\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\pl-PL\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\pt-BR\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\pt-BR\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\ru-RU\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\ru-RU\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\zh-CN\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\zh-CN\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\zh-TW\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\zh-TW\NodeAutocompleteDocumentation.html" />
     <EmbeddedResource Include="Packages\SplashScreen\build\index.bundle.js" />
     <EmbeddedResource Include="Packages\SplashScreen\build\index.html" />
     <EmbeddedResource Include="Properties\Resources.cs-CZ.resx" />
@@ -1949,8 +2001,6 @@
     <Resource Include="UI\Images\up_16_16.png" />
     <Resource Include="UI\Images\up-hover-16px.png" />
     <Resource Include="UI\Images\link-16px.png" />
-    <EmbeddedResource Include="Controls\Docs\NodeAutocompleteDocumentation.html" />
-    <EmbeddedResource Include="Controls\Docs\FileTrustWarningDocumentation.html" />
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -2042,36 +2092,66 @@
   </Target>
   <Target Name="CopyDocXML" AfterTargets="AfterBuildOps">
 	 <ItemGroup>
-		<DocXMLFiles Include="$(OutputPath)\en-US\**\*.xml"/>
+		<DocXMLFiles Include="$(OutputPath)\en-US\**\*.xml" />
 	</ItemGroup>
-	<Copy SourceFiles="@(DocXMLFiles)" DestinationFolder="$(SolutionDir)..\doc\distrib\xml\en-US" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(DocXMLFiles)" DestinationFolder="$(SolutionDir)..\doc\distrib\xml\en-US" SkipUnchangedFiles="True" />
   </Target>
   <Target Name="CopyDocXMLAllLanguages" AfterTargets="CopyDocXML">
 	 <ItemGroup>
-		<DocXMLCsCZFiles Include="$(SolutionDir)..\doc\distrib\xml\cs-CZ\**\*.xml"/>
-		<DocXMLDeDEFiles Include="$(SolutionDir)..\doc\distrib\xml\de-DE\**\*.xml"/>
-		<DocXMLEsESFiles Include="$(SolutionDir)..\doc\distrib\xml\es-ES\**\*.xml"/>
-		<DocXMLFrFRFiles Include="$(SolutionDir)..\doc\distrib\xml\fr-FR\**\*.xml"/>
-		<DocXMLItITFiles Include="$(SolutionDir)..\doc\distrib\xml\it-IT\**\*.xml"/>
-		<DocXMLJaJPFiles Include="$(SolutionDir)..\doc\distrib\xml\ja-JP\**\*.xml"/>
-		<DocXMLKoKRFiles Include="$(SolutionDir)..\doc\distrib\xml\ko-KR\**\*.xml"/>
-		<DocXMLPlPLFiles Include="$(SolutionDir)..\doc\distrib\xml\pl-PL\**\*.xml"/>
-		<DocXMLPtBRFiles Include="$(SolutionDir)..\doc\distrib\xml\pt-BR\**\*.xml"/>
-		<DocXMLRuRUFiles Include="$(SolutionDir)..\doc\distrib\xml\ru-RU\**\*.xml"/>
-		<DocXMLZhCNFiles Include="$(SolutionDir)..\doc\distrib\xml\zh-CN\**\*.xml"/>
-		<DocXMLZhTWFiles Include="$(SolutionDir)..\doc\distrib\xml\zh-TW\**\*.xml"/>
+		<DocXMLCsCZFiles Include="$(SolutionDir)..\doc\distrib\xml\cs-CZ\**\*.xml" />
+		<DocXMLDeDEFiles Include="$(SolutionDir)..\doc\distrib\xml\de-DE\**\*.xml" />
+		<DocXMLEsESFiles Include="$(SolutionDir)..\doc\distrib\xml\es-ES\**\*.xml" />
+		<DocXMLFrFRFiles Include="$(SolutionDir)..\doc\distrib\xml\fr-FR\**\*.xml" />
+		<DocXMLItITFiles Include="$(SolutionDir)..\doc\distrib\xml\it-IT\**\*.xml" />
+		<DocXMLJaJPFiles Include="$(SolutionDir)..\doc\distrib\xml\ja-JP\**\*.xml" />
+		<DocXMLKoKRFiles Include="$(SolutionDir)..\doc\distrib\xml\ko-KR\**\*.xml" />
+		<DocXMLPlPLFiles Include="$(SolutionDir)..\doc\distrib\xml\pl-PL\**\*.xml" />
+		<DocXMLPtBRFiles Include="$(SolutionDir)..\doc\distrib\xml\pt-BR\**\*.xml" />
+		<DocXMLRuRUFiles Include="$(SolutionDir)..\doc\distrib\xml\ru-RU\**\*.xml" />
+		<DocXMLZhCNFiles Include="$(SolutionDir)..\doc\distrib\xml\zh-CN\**\*.xml" />
+		<DocXMLZhTWFiles Include="$(SolutionDir)..\doc\distrib\xml\zh-TW\**\*.xml" />
 	</ItemGroup>
-	<Copy SourceFiles="@(DocXMLCsCZFiles)" DestinationFolder="$(OutputPath)\cs-CZ\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLDeDEFiles)" DestinationFolder="$(OutputPath)\de-DE\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLEsESFiles)" DestinationFolder="$(OutputPath)\es-ES\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLFrFRFiles)" DestinationFolder="$(OutputPath)\fr-FR\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLItITFiles)" DestinationFolder="$(OutputPath)\it-IT\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLJaJPFiles)" DestinationFolder="$(OutputPath)\ja-JP\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLKoKRFiles)" DestinationFolder="$(OutputPath)\ko-KR\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLPlPLFiles)" DestinationFolder="$(OutputPath)\pl-PL\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLPtBRFiles)" DestinationFolder="$(OutputPath)\pt-BR\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLRuRUFiles)" DestinationFolder="$(OutputPath)\ru-RU\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLZhCNFiles)" DestinationFolder="$(OutputPath)\zh-CN\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLZhTWFiles)" DestinationFolder="$(OutputPath)\zh-TW\" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(DocXMLCsCZFiles)" DestinationFolder="$(OutputPath)\cs-CZ\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLDeDEFiles)" DestinationFolder="$(OutputPath)\de-DE\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLEsESFiles)" DestinationFolder="$(OutputPath)\es-ES\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLFrFRFiles)" DestinationFolder="$(OutputPath)\fr-FR\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLItITFiles)" DestinationFolder="$(OutputPath)\it-IT\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLJaJPFiles)" DestinationFolder="$(OutputPath)\ja-JP\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLKoKRFiles)" DestinationFolder="$(OutputPath)\ko-KR\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLPlPLFiles)" DestinationFolder="$(OutputPath)\pl-PL\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLPtBRFiles)" DestinationFolder="$(OutputPath)\pt-BR\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLRuRUFiles)" DestinationFolder="$(OutputPath)\ru-RU\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLZhCNFiles)" DestinationFolder="$(OutputPath)\zh-CN\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLZhTWFiles)" DestinationFolder="$(OutputPath)\zh-TW\" SkipUnchangedFiles="True" />
+  </Target>
+  <Target Name="CopyControlHTMLFiles" AfterTargets="AfterBuildOps">
+    <ItemGroup>
+		<HTMLControlsEnUSFiles Include="$(SolutionDir)..\doc\distrib\html\en-US\Controls\**\*.html" />
+		<HTMLControlsCsCZFiles Include="$(SolutionDir)..\doc\distrib\html\cs-CZ\Controls\**\*.html" />
+		<HTMLControlsDeDEFiles Include="$(SolutionDir)..\doc\distrib\html\de-DE\Controls\**\*.html" />
+		<HTMLControlsEsESFiles Include="$(SolutionDir)..\doc\distrib\html\es-ES\Controls\**\*.html" />
+		<HTMLControlsFrFRFiles Include="$(SolutionDir)..\doc\distrib\html\fr-FR\Controls\**\*.html" />
+		<HTMLControlsItITFiles Include="$(SolutionDir)..\doc\distrib\html\it-IT\Controls\**\*.html" />
+		<HTMLControlsJaJPFiles Include="$(SolutionDir)..\doc\distrib\html\ja-JP\Controls\**\*.html" />
+		<HTMLControlsKoKRFiles Include="$(SolutionDir)..\doc\distrib\html\ko-KR\Controls\**\*.html" />
+		<HTMLControlsPlPLFiles Include="$(SolutionDir)..\doc\distrib\html\pl-PL\Controls\**\*.html" />
+		<HTMLControlsPtBRFiles Include="$(SolutionDir)..\doc\distrib\html\pt-BR\Controls\**\*.html" />
+		<HTMLControlsRuRUFiles Include="$(SolutionDir)..\doc\distrib\html\ru-RU\Controls\**\*.html" />
+		<HTMLControlsZhCNFiles Include="$(SolutionDir)..\doc\distrib\html\zh-CN\Controls\**\*.html" />
+		<HTMLControlsZhTWFiles Include="$(SolutionDir)..\doc\distrib\html\zh-TW\Controls\**\*.html" />
+    </ItemGroup>
+    <Copy SourceFiles="@(HTMLControlsEnUSFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\en-US" />
+	<Copy SourceFiles="@(HTMLControlsCsCZFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\cs-CZ" />
+	<Copy SourceFiles="@(HTMLControlsDeDEFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\de-DE" />
+	<Copy SourceFiles="@(HTMLControlsEsESFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\es-ES" />
+	<Copy SourceFiles="@(HTMLControlsFrFRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\fr-FR" />
+	<Copy SourceFiles="@(HTMLControlsItITFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\it-IT" />
+	<Copy SourceFiles="@(HTMLControlsJaJPFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\ja-JP" />
+	<Copy SourceFiles="@(HTMLControlsKoKRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\ko-KR" />
+	<Copy SourceFiles="@(HTMLControlsPlPLFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\pl-PL" />
+	<Copy SourceFiles="@(HTMLControlsPtBRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\pt-BR" />
+	<Copy SourceFiles="@(HTMLControlsRuRUFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\ru-RU" />
+	<Copy SourceFiles="@(HTMLControlsZhCNFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\zh-CN" />
+	<Copy SourceFiles="@(HTMLControlsZhTWFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\zh-TW" />
   </Target>
 </Project>
