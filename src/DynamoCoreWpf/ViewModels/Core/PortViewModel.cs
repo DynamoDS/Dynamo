@@ -500,7 +500,7 @@ namespace Dynamo.ViewModels
             // Bail out from connect state
             wsViewModel.CancelActiveState();
 
-            // Create mock nodes, currently Python nodes, and connect them to the input port
+            // Create mock nodes, currently Watch nodes (to avoid potential memory leak from Python Editor), and connect them to the input port
             var targetNodeSearchEle = wsViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.ToList()[5];
             targetNodeSearchEle.CreateAndConnectCommand.Execute(wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel);
 
@@ -521,18 +521,18 @@ namespace Dynamo.ViewModels
             wsViewModel.DynamoViewModel.Model.Logger.Log($"Cluster Placement Execution Time: {stopwatch.ElapsedMilliseconds} ms");
             
             // cluster info display in right side panel
-            if (wsViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled)
-            {
-                try
-                {
-                    MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
-                    wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
-                }
-                catch (Exception e)
-                {
-                    // Log the exception and show a notification to the user
-                }
-            }
+            //if (wsViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled)
+            //{
+            //    try
+            //    {
+            //        MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
+            //        wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
+            //    }
+            //    catch (Exception e)
+            //    {
+            //        // Log the exception and show a notification to the user
+            //    }
+            //}
         }
 
         private void NodePortContextMenu(object obj)

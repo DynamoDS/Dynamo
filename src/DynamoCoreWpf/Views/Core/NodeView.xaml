@@ -609,7 +609,7 @@
                 SnapsToDevicePixels="True" />
 
         <!--  Displays when the node is Frozen/Warning/Error state and Zoom is above 0.4 -->
-        <!--<Border Name="nodeColorOverlayZoomIn"
+        <Border Name="nodeColorOverlayZoomIn"
                 Grid.Row="1"
                 Grid.RowSpan="4"    
                 Grid.ColumnSpan="3"
@@ -622,11 +622,11 @@
                                   RelativeSource={RelativeSource FindAncestor, 
                                   AncestorType={x:Type controls:WorkspaceView}}, 
                                   Converter={StaticResource ZoomToOpacityConverter}}"
-                Style="{StaticResource SZoomFadeOutPreview}"
-                Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />-->
+                Style="{Binding Path=DataContext.StopNodeViewOpacityAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeOutPreview}}"
+                Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <!--  Displays when the node cluster is Preivew state and Zoom is above 0.4 -->
-        <Border Name="nodeColorOverlayZoomIn"
+        <Border Name="nodePreviewColorOverlayZoomIn"
                 Grid.Row="1"
                 Grid.RowSpan="4"
                 Grid.ColumnSpan="3"
