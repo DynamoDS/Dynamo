@@ -11,6 +11,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -254,6 +255,9 @@ namespace Dynamo.Utilities
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name));
+
+            if (locale == "Default")
+                locale = Thread.CurrentThread.CurrentCulture.Name;
 
             string result;
             // If an assembly was specified in the uri, the resource will be searched there.
