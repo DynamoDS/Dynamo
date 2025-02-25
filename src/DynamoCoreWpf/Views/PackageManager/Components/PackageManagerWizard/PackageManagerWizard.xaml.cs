@@ -21,6 +21,9 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
+using Newtonsoft.Json;
+using JsonSerializer = System.Text.Json.JsonSerializer;
+using System.Runtime.InteropServices.JavaScript;
 
 namespace Dynamo.UI.Views
 {
@@ -40,10 +43,13 @@ namespace Dynamo.UI.Views
         private bool _disposed = false;
 
         private PublishPackageViewModel publishPackageViewModel;
+        private List<PackageItemRootViewModel> _previousPackageContents = new List<PackageItemRootViewModel>();
+        private List<PackageItemRootViewModel> _previousPreviewPackageContents = new List<PackageItemRootViewModel>();
 
         internal Action<string> RequestAddFileOrFolder;
         internal Action<string> RequestRemoveFileOrFolder;
-        
+        internal Action<bool> RequestRetainFolderStructure;
+
         #endregion
 
         /// <summary>
@@ -57,8 +63,8 @@ namespace Dynamo.UI.Views
 
             dynWebView = new DynamoWebView2
             {
-                Margin = new System.Windows.Thickness(0),  
-                ZoomFactor = 1.0 
+                Margin = new System.Windows.Thickness(0),
+                ZoomFactor = 1.0
             };
 
             HostGrid.Children.Add(dynWebView);
@@ -66,6 +72,7 @@ namespace Dynamo.UI.Views
             // Bind event handlers
             RequestAddFileOrFolder = AddFileOrFolder;
             RequestRemoveFileOrFolder = RemoveFileOrFolder;
+            RequestRetainFolderStructure = ToggleRetainFolderStructure;
 
             DataContextChanged += OnDataContextChanged;
         }
@@ -88,38 +95,52 @@ namespace Dynamo.UI.Views
             }
         }
 
-        private List<PackageItemRootViewModel> _previousPackageContents = new List<PackageItemRootViewModel>();
         private void PublishPackageViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName.Equals(nameof(publishPackageViewModel.PackageContents)))
             {
-                var updatedContents = publishPackageViewModel.PackageContents.ToList();
+                var updatedContents = publishPackageViewModel.PackageContents
+                    .Where(item => item.DependencyType != DependencyType.CustomNode) // Filter out CustomNode
+                    .ToList();
 
-                // Compare the previous state with the new state
                 var changesDetected = !ArePackageContentsEqual(_previousPackageContents, updatedContents);
-
                 if (changesDetected)
                 {
                     _previousPackageContents = updatedContents; // Update the snapshot
-
-                    // Convert to front-end format and send update
                     var frontendData = ConvertToJsonFormat(updatedContents);
-                    SendUpdatedPackageContents(frontendData);
+                    SendUpdatedPackageContents(frontendData, "package"); // Specify "package"
+                }
+            }
+            else if (e.PropertyName.Equals(nameof(publishPackageViewModel.PreviewPackageContents)))
+            {
+                var updatedPreviewContents = publishPackageViewModel.PreviewPackageContents
+                    .Where(item => item.DependencyType != DependencyType.CustomNode) // Filter out CustomNode
+                    .ToList();
+
+                var previewChangesDetected = !ArePackageContentsEqual(_previousPreviewPackageContents, updatedPreviewContents);
+                if (previewChangesDetected)
+                {
+                    _previousPreviewPackageContents = updatedPreviewContents;
+                    var frontendPreviewData = ConvertToJsonFormat(updatedPreviewContents);
+                    SendUpdatedPackageContents(frontendPreviewData, "preview"); // Specify "preview"
                 }
             }
         }
 
-        private async void SendUpdatedPackageContents(object frontendData)
+        private async void SendUpdatedPackageContents(object frontendData, string type)
         {
             if (frontendData != null)
             {
-                // Serialize to JSON
-                string jsonData = JsonSerializer.Serialize(frontendData);
+                // Create an object with both jsonData and type
+                var payload = new { jsonData = frontendData, type = type };
+
+                // Serialize the payload
+                string jsonPayload = JsonSerializer.Serialize(payload);
 
                 // Send to the front-end if WebView2 is available
                 if (dynWebView?.CoreWebView2 != null)
                 {
-                    await dynWebView.CoreWebView2.ExecuteScriptAsync(@$"window.receiveUpdatedPackageContents({jsonData})");
+                    await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveUpdatedPackageContents({jsonPayload})");
                 }
             }
         }
@@ -170,7 +191,8 @@ namespace Dynamo.UI.Views
                     dynWebView.CoreWebView2.AddHostObjectToScript("scriptObject",
                         new ScriptWizardObject(
                             RequestAddFileOrFolder,
-                            RequestRemoveFileOrFolder));
+                            RequestRemoveFileOrFolder,
+                            RequestRetainFolderStructure));
                 }
                 catch (Exception ex)
                 {
@@ -178,7 +200,7 @@ namespace Dynamo.UI.Views
                     //this.startPage.DynamoViewModel.Model.Logger.Log(ex.Message);
                 }
             }
-            catch (ObjectDisposedException ex)  
+            catch (ObjectDisposedException ex)
             {
                 Console.WriteLine(ex.Message);
                 //this.startPage.DynamoViewModel.Model.Logger.Log(ex.Message);
@@ -207,16 +229,51 @@ namespace Dynamo.UI.Views
             }
         }
 
-        public void RemoveFileOrFolder(string name)
+        public void RemoveFileOrFolder(string filePath)
         {
-            var itemToRemove = publishPackageViewModel.PackageContents
-                .FirstOrDefault(item => item.DisplayName == name);
+            if (publishPackageViewModel == null) return;
+
+            var itemToRemove = FindItemByFilePath(publishPackageViewModel.PackageContents.ToList(), filePath);
 
             if (itemToRemove != null)
             {
-                publishPackageViewModel.PackageContents.Remove(itemToRemove);
+                if (publishPackageViewModel.RemoveItemCommand?.CanExecute(itemToRemove) == true)
+                {
+                    publishPackageViewModel.RemoveItemCommand.Execute(itemToRemove);
+                }
             }
         }
+
+        private PackageItemRootViewModel FindItemByFilePath(List<PackageItemRootViewModel> items, string filePath)
+        {
+            foreach (var item in items)
+            {
+                switch (item.DependencyType)
+                {
+                    case DependencyType.Folder when item.DirectoryName == filePath:
+                    case DependencyType.File when item.FilePath == filePath:
+                    case DependencyType.CustomNodePreview when item.FilePath == filePath:
+                    case DependencyType.Assembly when item.FilePath == filePath:
+                        return item;
+                }
+
+                var foundItem = FindItemByFilePath(item.ChildItems.ToList(), filePath);
+                if (foundItem != null)
+                {
+                    return foundItem;
+                }
+            }
+
+            return null;
+        }
+
+        public void ToggleRetainFolderStructure(bool flag)
+        {
+            if (publishPackageViewModel == null) return;
+
+            publishPackageViewModel.RetainFolderStructureOverride = flag;
+        }
+
 
         #endregion
 
@@ -280,14 +337,30 @@ namespace Dynamo.UI.Views
         /// <param name="oldContents"></param>
         /// <param name="newContents"></param>
         /// <returns></returns>
-        private bool ArePackageContentsEqual(List<PackageItemRootViewModel> oldContents, List<PackageItemRootViewModel> newContents)
+        internal static bool ArePackageContentsEqual(List<PackageItemRootViewModel> oldContents, List<PackageItemRootViewModel> newContents)
         {
-            if (oldContents.Count != newContents.Count) return false;
+            if (oldContents.Count != newContents.Count)
+                return false;
 
-            var oldSet = new HashSet<string>(oldContents.Select(item => item.FilePath));
-            var newSet = new HashSet<string>(newContents.Select(item => item.FilePath));
+            // Sort by FilePath to ensure order-independent comparison
+            var oldSorted = oldContents.OrderBy(item => item.FilePath).ToList();
+            var newSorted = newContents.OrderBy(item => item.FilePath).ToList();
 
-            return oldSet.SetEquals(newSet);
+            for (int i = 0; i < oldSorted.Count; i++)
+            {
+                var oldItem = oldSorted[i];
+                var newItem = newSorted[i];
+
+                // Compare file paths directly
+                if (oldItem.FilePath != newItem.FilePath)
+                    return false;
+
+                // Recursively compare child items
+                if (!ArePackageContentsEqual(oldItem.ChildItems.ToList(), newItem.ChildItems.ToList()))
+                    return false;
+            }
+
+            return true;
         }
 
         /// <summary>
@@ -300,7 +373,11 @@ namespace Dynamo.UI.Views
             return new
             {
                 name = "root",
-                children = packageContents.Select(ConvertToNode).ToList()
+                children = packageContents.Select(ConvertToNode).ToList(),
+                filePath = "",
+                isNodeLibrary = false,
+                isSelected = false,
+                isFolder = true,
             };
         }
 
@@ -311,10 +388,16 @@ namespace Dynamo.UI.Views
         /// <returns></returns>
         private object ConvertToNode(PackageItemRootViewModel node)
         {
+            bool isFolder = node.DependencyType == DependencyType.Folder;
+
             return new
             {
                 name = node.DisplayName,
-                children = node.ChildItems?.Select(ConvertToNode).ToList() ?? new List<object>()
+                children = node.ChildItems?.Select(ConvertToNode).ToList() ?? new List<object>(),
+                filePath = isFolder ? node.DirectoryName : node.FilePath,
+                isNodeLibrary = node.IsNodeLibrary,
+                isSelected = node.IsSelected,
+                isFolder = isFolder
             };
         }
         #endregion
@@ -354,6 +437,13 @@ namespace Dynamo.UI.Views
                     //    }
                     //}
 
+                    this.DataContextChanged -= OnDataContextChanged;
+
+                    if (this.publishPackageViewModel != null)
+                    {
+                        this.publishPackageViewModel.PropertyChanged += PublishPackageViewModel_PropertyChanged;
+                    }
+
                     if (this.dynWebView != null && this.dynWebView.CoreWebView2 != null)
                     {
                         this.dynWebView.CoreWebView2.NewWindowRequested -= CoreWebView2_NewWindowRequested;
@@ -379,14 +469,16 @@ namespace Dynamo.UI.Views
     {
         readonly Action<string> RequestAddFileOrFolder;
         readonly Action<string> RequestRemoveFileOrFolder;
+        readonly Action<bool> RequestRetainFolderStructure;
 
         public ScriptWizardObject(
             Action<string> requestAddFileOrFolder,
-            Action<string> requestRemoveFileOrFolder)
+            Action<string> requestRemoveFileOrFolder,
+            Action<bool> requestRetainFolderStructure)
         {
             RequestAddFileOrFolder = requestAddFileOrFolder;
             RequestRemoveFileOrFolder = requestRemoveFileOrFolder;
-            RequestRemoveFileOrFolder = requestRemoveFileOrFolder;
+            RequestRetainFolderStructure = requestRetainFolderStructure;
         }
 
         [DynamoJSInvokable]
@@ -400,6 +492,13 @@ namespace Dynamo.UI.Views
         public void RemoveFileOrFolder(string name)
         {
             RequestRemoveFileOrFolder(name);
+        }
+
+
+        [DynamoJSInvokable]
+        public void ToggleRetainFolderStructure(bool flag)
+        {
+            RequestRetainFolderStructure(flag);
         }
     }
 }

@@ -2799,12 +2799,13 @@ namespace Dynamo.PackageManager
         internal PackageItemRootViewModel GetExistingRootItemViewModel(string publishPath, string packageName)
         {
             if (!PackageContents.Any()) return null;
-            if (PackageContents.Count(x => x.DependencyType.Equals(DependencyType.Folder)) == 1) {
+            if (PackageContents.Count(x => x.DependencyType.Equals(DependencyType.Folder)) == 1)
+            {
                 // If there is only one root item, this root item becomes the new folder
                 var item = PackageContents.First(x => x.DependencyType.Equals(DependencyType.Folder));
 
                 item = new PackageItemRootViewModel(Path.Combine(publishPath, packageName));
-                item.AddChildren( PackageContents.First().ChildItems.ToList() );
+                item.AddChildren(PackageContents.First().ChildItems.ToList());
 
                 return item;
             }
@@ -2814,7 +2815,7 @@ namespace Dynamo.PackageManager
             foreach (var item in PackageContents)
             {
                 // Skip 'bare' custom nodes, they will be represented by their CustomNodePreview counterparts
-                if(item.DependencyType.Equals(DependencyType.CustomNode)) { continue; }
+                if (item.DependencyType.Equals(DependencyType.CustomNode)) { continue; }
 
                 item.isChild = true;
                 rootItem.AddChildren(item);
