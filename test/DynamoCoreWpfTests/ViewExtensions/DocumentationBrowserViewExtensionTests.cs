@@ -470,7 +470,7 @@ namespace DynamoCoreWpfTests
                 Assert.AreEqual(0, tabsBeforeExternalEventTrigger);
                 Assert.AreEqual(1, tabsAfterExternalEventTrigger);
                 Assert.IsTrue(htmlContent.Contains("<h2 id=\"heading\">Division by zero</h2>"));
-                var message = string.Format("hml: {0} sanitizedHTML:{1}", htmlContent);
+                var message = string.Format("hml: {0}", htmlContent);
                 Assert.False(htmlContent.Contains("document.getElementById(\"heading\").innerHTML = \"Script1\";"),message);
             }
         }
