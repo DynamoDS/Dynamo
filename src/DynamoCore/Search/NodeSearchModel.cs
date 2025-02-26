@@ -11,6 +11,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using DynamoUtilities;
 using Lucene.Net.Documents;
+using Lucene.Net.Index;
 using Lucene.Net.QueryParsers.Classic;
 using Lucene.Net.Search;
 
@@ -245,10 +246,8 @@ namespace Dynamo.Search
 
             if (luceneSearchUtility != null)
             {
-                if (luceneSearchUtility.Searcher == null)
-                {
-                    throw new Exception("Invalid IndexSearcher found");
-                }
+                luceneSearchUtility.dirReader = luceneSearchUtility.writer != null ? luceneSearchUtility.writer.GetReader(applyAllDeletes: true) : DirectoryReader.Open(luceneSearchUtility.indexDir);
+                luceneSearchUtility.Searcher = new(luceneSearchUtility.dirReader);
 
                 string searchTerm = search.Trim();
                 var candidates = new List<NodeSearchElement>();
