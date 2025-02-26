@@ -504,7 +504,7 @@ namespace Dynamo.ViewModels
             var targetNodeSearchEle = wsViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.ToList()[5];
             targetNodeSearchEle.CreateAndConnectCommand.Execute(wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel);
 
-            var sizeOfMockCluster = 10;
+            var sizeOfMockCluster = 3;
             var n = 1;
             while (n < sizeOfMockCluster)
             {
@@ -519,20 +519,29 @@ namespace Dynamo.ViewModels
 
             stopwatch.Stop(); // Stop the stopwatch
             wsViewModel.DynamoViewModel.Model.Logger.Log($"Cluster Placement Execution Time: {stopwatch.ElapsedMilliseconds} ms");
-            
+
             // cluster info display in right side panel
-            //if (wsViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled)
-            //{
-            //    try
-            //    {
-            //        MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
-            //        wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
-            //    }
-            //    catch (Exception e)
-            //    {
-            //        // Log the exception and show a notification to the user
-            //    }
-            //}
+            if (wsViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled)
+            {
+                try
+                {
+                    MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
+
+                    // Process the results and display the preview of the first cluster as a starting point, or maybe the one with the highest confidence level?
+                    // Leverage some API here to convert topology to actual cluster
+                    results.Results.FirstOrDefault().Topology.Nodes.ToList().ForEach(node =>
+                    {
+                        // nothing for now
+                    });
+
+                    // Display the cluster info in the right side panel
+                    // wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
+                }
+                catch (Exception e)
+                {
+                    // Log the exception and show a notification to the user
+                }
+            }
         }
 
         private void NodePortContextMenu(object obj)
