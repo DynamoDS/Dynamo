@@ -273,6 +273,14 @@ namespace Dynamo.Wpf.CurveMapper
                     pointField?.SetValue(this, newPoint);
                     GraphCanvas.Children.Add(newPoint);
 
+                    // Ensure correct visibility on graph load
+                    double newX = dataPoints[i].X;
+                    double newY = dataPoints[i].Y;
+                    double canvasSize = curveMapperNodeModel.DynamicCanvasSize;
+                    newPoint.Visibility = (newX < 0 || newX > canvasSize || newY < 0 || newY > canvasSize)
+                        ? Visibility.Hidden
+                        : Visibility.Visible;
+
                     Canvas.SetLeft(newPoint, dataPoints[i].X - offsetValue);
                     Canvas.SetTop(newPoint, dataPoints[i].Y - offsetValue);
                 }
