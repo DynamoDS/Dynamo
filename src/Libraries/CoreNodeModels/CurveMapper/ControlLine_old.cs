@@ -2,14 +2,14 @@ using System.Collections.Generic;
 
 namespace CoreNodeModels.CurveMapper
 {
-    public class ControlLine : CurveBase
+    public class ControlLine_old : CurveBase_old
     {
         private double ControlPoint1X;
         private double ControlPoint1Y;
         private double ControlPoint2X;
         private double ControlPoint2Y;
 
-        public ControlLine(double cp1X, double cp1Y, double cp2X, double cp2Y, double canvasSize)
+        public ControlLine_old(double cp1X, double cp1Y, double cp2X, double cp2Y, double canvasSize)
             : base(canvasSize)
         {
             ControlPoint1X = cp1X;

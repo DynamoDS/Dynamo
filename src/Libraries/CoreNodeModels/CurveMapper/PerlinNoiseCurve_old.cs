@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace CoreNodeModels.CurveMapper
 {
-    public class PerlinNoiseCurve : CurveBase
+    public class PerlinNoiseCurve_old : CurveBase_old
     {
         private double ControlPoint1X;
         private double ControlPoint1Y;
@@ -29,7 +29,7 @@ namespace CoreNodeModels.CurveMapper
         private int randomSeed;             // Seed for random noise generation
 
 
-        public PerlinNoiseCurve(double cp1X, double cp1Y, double cp2X, double cp2Y, double cp3X, double cp3Y, double canvasSize)
+        public PerlinNoiseCurve_old(double cp1X, double cp1Y, double cp2X, double cp2Y, double cp3X, double cp3Y, double canvasSize)
             : base(canvasSize)
         {
             //CanvasSize = canvasSize;

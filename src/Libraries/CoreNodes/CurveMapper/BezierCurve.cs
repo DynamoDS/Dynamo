@@ -1,8 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace CoreNodeModels.CurveMapper
+namespace DSCore.CurveMapper
 {
     public class BezierCurve : CurveBase
     {

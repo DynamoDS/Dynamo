@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CoreNodeModels.CurveMapper
+namespace DSCore.CurveMapper
 {
     public class ParabolicCurve : CurveBase
     {

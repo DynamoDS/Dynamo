@@ -1,7 +1,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace CoreNodeModels.CurveMapper
+namespace DSCore.CurveMapper
 {
     public class SineWave : CurveBase
     {
@@ -27,11 +27,10 @@ namespace CoreNodeModels.CurveMapper
             GetEquationCoefficients();
         }
 
-        private double ConvertXToTrigo(double x) => Math.PI * x / CanvasSize;
+        private double ConvertXToTrigo(double x) => System.Math.PI * x / CanvasSize;
         private double ConvertYToTrigo(double y) => 2.0 * y / CanvasSize - 1.0;
-        private double ConvertTrigoToX(double unitX) => unitX * CanvasSize / Math.PI;
         private double ConvertTrigoToY(double unitY) => (unitY + 1.0) * CanvasSize / (2.0);
-        private double CosineEquation(double x) => -(coefA * Math.Cos(coefB * x - coefC)) + coefD;
+        private double CosineEquation(double x) => -(coefA * System.Math.Cos(coefB * x - coefC)) + coefD;
 
         private void GetEquationCoefficients()
         {

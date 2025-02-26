@@ -3,12 +3,12 @@ using System.Collections.Generic;
 
 namespace CoreNodeModels.CurveMapper
 {
-    public class PowerCurve : CurveBase
+    public class PowerCurve_old : CurveBase_old
     {
         private double ControlPoint1X;
         private double ControlPoint1Y;
 
-        public PowerCurve(double cp1X, double cp1Y, double canvasSize)
+        public PowerCurve_old(double cp1X, double cp1Y, double canvasSize)
             : base(canvasSize)
         {
             ControlPoint1X = cp1X;

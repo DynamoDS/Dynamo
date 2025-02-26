@@ -2,12 +2,12 @@ using System.Collections.Generic;
 
 namespace CoreNodeModels.CurveMapper
 {
-    public abstract class CurveBase
+    public abstract class CurveBase_old
     {
         protected double CanvasSize;
         protected const double renderIncrementX = 1.0;
 
-        protected CurveBase(double canvasSize)
+        protected CurveBase_old(double canvasSize)
         {
             CanvasSize = canvasSize;
         }

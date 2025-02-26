@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Policy;
 using Autodesk.DesignScript.Geometry;
 using Autodesk.DesignScript.Runtime;
 
@@ -503,6 +504,11 @@ namespace DSCore
             }
 
             return Color.Lerp(c1.Color, c2.Color, (parameter - c1.Parameter) / (c2.Parameter - c1.Parameter));
+        }
+
+        public static int Test(int a, int b)
+        {
+            return a + b;
         }
 
         /// <summary>

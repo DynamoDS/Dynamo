@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CoreNodeModels.CurveMapper
 {
-    public class LinearCurve : CurveBase
+    public class LinearCurve_old : CurveBase_old
     {
         private double ControlPoint1X;
         private double ControlPoint1Y;
@@ -13,7 +13,7 @@ namespace CoreNodeModels.CurveMapper
         private bool flipHorizontally;
         private bool flipVertically;
 
-        public LinearCurve(double cp1X, double cp1Y, double cp2X, double cp2Y, double canvasSize)
+        public LinearCurve_old(double cp1X, double cp1Y, double cp2X, double cp2Y, double canvasSize)
             : base(canvasSize)
         {
             ControlPoint1X = cp1X;

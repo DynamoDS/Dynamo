@@ -3,14 +3,14 @@ using System.Collections.Generic;
 
 namespace CoreNodeModels.CurveMapper
 {
-    public class SquareRootCurve : CurveBase
+    public class SquareRootCurve_old : CurveBase_old
     {
         private double ControlPoint1X;
         private double ControlPoint1Y;
         private double ControlPoint2X;
         private double ControlPoint2Y;
 
-        public SquareRootCurve(double cp1X, double cp1Y, double cp2X, double cp2Y, double canvasSize)
+        public SquareRootCurve_old(double cp1X, double cp1Y, double cp2X, double cp2Y, double canvasSize)
             : base(canvasSize)
         {
             ControlPoint1X = cp1X;

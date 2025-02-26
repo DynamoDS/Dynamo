@@ -1,4 +1,6 @@
 using CoreNodeModels.CurveMapper;
+using DSCore;
+using DSCore.CurveMapper;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -33,14 +35,12 @@ namespace CoreNodeModels
         private readonly IntNode maxLimitYDefaultValue = new IntNode(1);
         private readonly IntNode pointsCountDefaultValue = new IntNode(10);
         private GraphTypes selectedGraphType;
-        private const int rounding = 15;
         private const double defaultCanvasSize = 240;
         private double dynamicCanvasSize = defaultCanvasSize;
         private bool isLocked;
 
         #region Curves & point data
-
-        // Linear curve
+        
         /// <summary> Point data for the 1st control point of the linear curve. </summary>
         [JsonProperty]
         public ControlPointData LinearCurveControlPointData1 { get; private set; }
@@ -49,7 +49,6 @@ namespace CoreNodeModels
         public ControlPointData LinearCurveControlPointData2 { get; private set; }
         private LinearCurve linearCurve;
 
-        // Bezier curve
         /// <summary> Point data for the 1st control point of the sine wave. </summary>
         [JsonProperty]
         public ControlPointData BezierCurveControlPointData1 { get; private set; }
@@ -64,7 +63,6 @@ namespace CoreNodeModels
         public ControlPointData BezierCurveControlPointData4 { get; private set; }
         private BezierCurve bezierCurve;
 
-        // Sine wave
         /// <summary> Point data for the 1st control point of the sine wave. </summary>
         [JsonProperty]
         public ControlPointData SineWaveControlPointData1 { get; private set; }
@@ -73,7 +71,6 @@ namespace CoreNodeModels
         public ControlPointData SineWaveControlPointData2 { get; private set; }
         private SineWave sineWave;
 
-        // Cosine wave
         /// <summary> Point data for the 1st control point of the cosine wave. </summary>
         [JsonProperty]
         public ControlPointData CosineWaveControlPointData1 { get; private set; }
@@ -82,7 +79,6 @@ namespace CoreNodeModels
         public ControlPointData CosineWaveControlPointData2 { get; private set; }
         private SineWave cosineWave;
 
-        // Parabolic curve
         /// <summary> Point data for the 1st control point of the parabolic curve. </summary>
         [JsonProperty]
         public ControlPointData ParabolicCurveControlPointData1 { get; private set; }
@@ -91,7 +87,6 @@ namespace CoreNodeModels
         public ControlPointData ParabolicCurveControlPointData2 { get; private set; }
         private ParabolicCurve parabolicCurve;
 
-        // Perlin noise
         /// <summary> Point data for the 1st control point of the perlin noise curve. </summary>
         [JsonProperty]
         public ControlPointData PerlinNoiseControlPointData1 { get; private set; }
@@ -103,13 +98,11 @@ namespace CoreNodeModels
         public ControlPointData PerlinNoiseControlPointData3 { get; private set; }
         private PerlinNoiseCurve perlinNoiseCurve;
 
-        // Power curve
         /// <summary> Point data for the power curve control point. </summary>
         [JsonProperty]
         public ControlPointData PowerCurveControlPointData1 { get; private set; }
         private PowerCurve powerCurve;
 
-        // Square root curve
         /// <summary> Point data for the 1st control point of the square root curve. </summary>
         [JsonProperty]
         public ControlPointData SquareRootCurveControlPointData1 { get; private set; }
@@ -118,7 +111,6 @@ namespace CoreNodeModels
         public ControlPointData SquareRootCurveControlPointData2 { get; private set; }
         private SquareRootCurve squareRootCurve;
 
-        // Gaussian curve
         /// <summary> Point data for the 1st control point of the Gaussian curve. </summary>
         [JsonProperty]
         public ControlPointData GaussianCurveControlPointData1 { get; private set; }
@@ -147,7 +139,7 @@ namespace CoreNodeModels
                 if (minLimitX != value)
                 {
                     minLimitX = value;
-                    GenerateOutputValues();
+                    GeneratRenderValues();
                     this.RaisePropertyChanged(nameof(MinLimitX));
                     this.RaisePropertyChanged(nameof(MidValueX));
                     OnNodeModified();
@@ -164,7 +156,7 @@ namespace CoreNodeModels
                 if (maxLimitX != value)
                 {
                     maxLimitX = value;
-                    GenerateOutputValues();
+                    GeneratRenderValues();
                     this.RaisePropertyChanged(nameof(MaxLimitX));
                     this.RaisePropertyChanged(nameof(MidValueX));
                     OnNodeModified();
@@ -181,7 +173,7 @@ namespace CoreNodeModels
                 if (minLimitY != value)
                 {
                     minLimitY = value;
-                    GenerateOutputValues();
+                    GeneratRenderValues();
                     this.RaisePropertyChanged(nameof(MinLimitY));
                     this.RaisePropertyChanged(nameof(MidValueY));
                     OnNodeModified();
@@ -198,7 +190,7 @@ namespace CoreNodeModels
                 if (maxLimitY != value)
                 {
                     maxLimitY = value;
-                    GenerateOutputValues();
+                    GeneratRenderValues();
                     this.RaisePropertyChanged(nameof(MaxLimitY));
                     this.RaisePropertyChanged(nameof(MidValueY));
                     OnNodeModified();
@@ -215,7 +207,7 @@ namespace CoreNodeModels
                 if (pointsCount != value)
                 {
                     pointsCount = value;
-                    GenerateOutputValues();
+                    GeneratRenderValues();
                     this.RaisePropertyChanged(nameof(PointsCount));
                     OnNodeModified();
                 }
@@ -232,28 +224,6 @@ namespace CoreNodeModels
 
         #region Outputs
 
-        /// <summary> Gets or sets the computed Y values of the curve for output. </summary>
-        [JsonIgnore]
-        public List<double> OutputValuesY
-        {
-            get => outputValuesY;
-            set
-            {
-                outputValuesY = value;
-                OnNodeModified();
-            }
-        }
-        /// <summary> Gets or sets the computed X values of the curve for output. </summary>
-        [JsonIgnore]
-        public List<double> OutputValuesX
-        {
-            get => outputValuesX;
-            set
-            {
-                outputValuesX = value;
-                OnNodeModified();
-            }
-        }
         /// <summary> Gets or sets the Y values used for rendering the curve. </summary>
         [JsonIgnore]
         public List<double> RenderValuesY
@@ -289,12 +259,12 @@ namespace CoreNodeModels
                 if (dynamicCanvasSize != value)
                 {
                     double oldSize = dynamicCanvasSize;
-                    dynamicCanvasSize = Math.Max(value, defaultCanvasSize);
+                    dynamicCanvasSize = System.Math.Max(value, defaultCanvasSize);
 
                     ScaleAllControlPoints(oldSize, dynamicCanvasSize);
                     RaisePropertyChanged(nameof(DynamicCanvasSize));
                     OnNodeModified();
-                    GenerateOutputValues();
+                    GeneratRenderValues();
                 }
             }
         }
@@ -319,10 +289,11 @@ namespace CoreNodeModels
 
                 RaisePropertyChanged(nameof(SelectedGraphType));
                 RaisePropertyChanged(nameof(SelectedGraphTypeDescription));
-                GenerateOutputValues();
+                GeneratRenderValues();
                 OnNodeModified();
             }
         }
+
         /// <summary> Gets or sets the currently selected graph type. </summary>
         [JsonConverter(typeof(StringEnumConverter))]
         public GraphTypes SelectedGraphType
@@ -331,11 +302,12 @@ namespace CoreNodeModels
             set
             {
                 selectedGraphType = value;
-                GenerateOutputValues();
+                GeneratRenderValues();
                 RaisePropertyChanged(nameof(SelectedGraphType));
                 OnNodeModified();
             }
         }
+
         /// <summary> Gets or sets a value indicating whether the control points are locked. </summary>
         [JsonProperty]
         public bool IsLocked
@@ -388,7 +360,7 @@ namespace CoreNodeModels
             ArgumentLacing = LacingStrategy.Disabled;
 
             InitiateControlPointData();
-            GenerateOutputValues();
+            GeneratRenderValues();
         }
 
         [JsonConstructor]
@@ -444,12 +416,11 @@ namespace CoreNodeModels
             GaussianCurveControlPointData4 = new ControlPointData(DynamicCanvasSize * 0.6, DynamicCanvasSize, "GaussianCurveControlPointData4");
         }
 
-        public void GenerateOutputValues()
+        public void GeneratRenderValues()
         {
             if (SelectedGraphType == GraphTypes.Empty)
             {
                 RenderValuesX = RenderValuesY = null;
-                OutputValuesX = OutputValuesY  = null;
             }
             else
             {
@@ -458,8 +429,6 @@ namespace CoreNodeModels
                     ClearErrorsAndWarnings();
                     Warning("The provided original values cannot be redistributed using the curve equation.", isPersistent: true); // TODO: add to resources
 
-                    OutputValuesY = null;
-                    OutputValuesX = null;
                     RenderValuesX = null;
                     RenderValuesY = null;
                     return;
@@ -542,17 +511,11 @@ namespace CoreNodeModels
 
                 if (curve is not null)
                 {
-                    // Dynamic to call methods on different curve types
                     dynamic dynamicCurve = curve; 
                     RenderValuesX = dynamicCurve.GetCurveXValues(PointsCount, true);
                     RenderValuesY = dynamicCurve.GetCurveYValues(PointsCount, true);
-                    OutputValuesX = MapValues(dynamicCurve.GetCurveXValues(PointsCount), MinLimitX, MaxLimitX);
-                    OutputValuesY = MapValues(dynamicCurve.GetCurveYValues(PointsCount), MinLimitY, MaxLimitY);
                 }
             }
-
-            RaisePropertyChanged(nameof(OutputValuesX));
-            RaisePropertyChanged(nameof(OutputValuesY));
         }
 
         private bool IsValidCurve()
@@ -575,17 +538,6 @@ namespace CoreNodeModels
 
             // Validate the selected graph type if it exists in the dictionary
             return controlPointChecks.TryGetValue(SelectedGraphType, out var validator) ? validator() : true;
-        }
-
-       private List<double> MapValues(List<double> rawValues, double minLimit, double maxLimit)
-        {
-            var mappedValues = new List<double>();
-
-            foreach(var value in rawValues)
-            {                
-                mappedValues.Add(Math.Round(minLimit + value / DynamicCanvasSize * (maxLimit - minLimit), rounding));
-            }
-            return mappedValues;
         }
 
         private void ScaleAllControlPoints(double oldSize, double newSize)
@@ -688,7 +640,7 @@ namespace CoreNodeModels
                 RaisePropertyChanged(nameof(GaussianCurveControlPointData4));
             }
 
-            GenerateOutputValues();
+            GeneratRenderValues();
         }
 
         // Helper method to extract descriptions from enum values
@@ -752,6 +704,7 @@ namespace CoreNodeModels
             base.OnBuilt();
             VMDataBridge.DataBridge.Instance.RegisterCallback(GUID.ToString(), DataBridgeCallback);
         }
+
         private void DataBridgeCallback(object data)
         {
             // Ignore invalid inputs
@@ -784,39 +737,145 @@ namespace CoreNodeModels
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            var xValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildNullNode());
-            var yValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), AstFactory.BuildNullNode());
+            AssociativeNode controlPointsList = null;
 
-            if (OutputValuesY != null)
+            if (SelectedGraphType == GraphTypes.Empty)
             {
-                var doubListY = new List<AssociativeNode>();
-                if (OutputValuesY != null)
-                {
-                    foreach (double yVal in OutputValuesY)
-                    {
-                        doubListY.Add(AstFactory.BuildDoubleNode(yVal));
-                    }
-                    yValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), AstFactory.BuildExprList(doubListY));
-                }
-
-                var doubListX = new List<AssociativeNode>();
-                if (OutputValuesX != null)
-                {
-                    foreach (double xVal in OutputValuesX)
-                    {
-                        doubListX.Add(AstFactory.BuildDoubleNode(xVal));
-                    }
-                    xValuesAssignment = AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(1), AstFactory.BuildExprList(doubListX));
-                }
+                return new[] { AstFactory.BuildNullNode(), AstFactory.BuildNullNode() };
             }
 
-            // DataBridge call
-            var dataBridgeCall = AstFactory.BuildAssignment(
-                AstFactory.BuildIdentifier(AstIdentifierBase + "_dataBridge"),
-                VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputAstNodes))
+            switch (SelectedGraphType)
+            {
+                case GraphTypes.LinearCurve:
+                    controlPointsList = AstFactory.BuildExprList( new List<AssociativeNode>
+                    {
+                        AstFactory.BuildDoubleNode(LinearCurveControlPointData1.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - LinearCurveControlPointData1.Y),
+                        AstFactory.BuildDoubleNode(LinearCurveControlPointData2.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - LinearCurveControlPointData2.Y)
+                    });
+                    break;
+                case GraphTypes.BezierCurve:
+                    controlPointsList = AstFactory.BuildExprList(new List<AssociativeNode>
+                    {
+                        AstFactory.BuildDoubleNode(BezierCurveControlPointData1.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - BezierCurveControlPointData1.Y),
+                        AstFactory.BuildDoubleNode(BezierCurveControlPointData2.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - BezierCurveControlPointData2.Y),
+                        AstFactory.BuildDoubleNode(BezierCurveControlPointData3.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - BezierCurveControlPointData3.Y),
+                        AstFactory.BuildDoubleNode(BezierCurveControlPointData4.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - BezierCurveControlPointData4.Y)
+                    });
+                    break;
+                case GraphTypes.SineWave:
+                    controlPointsList = AstFactory.BuildExprList(new List<AssociativeNode>
+                    {
+                        AstFactory.BuildDoubleNode(SineWaveControlPointData1.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - SineWaveControlPointData1.Y),
+                        AstFactory.BuildDoubleNode(SineWaveControlPointData2.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - SineWaveControlPointData2.Y)
+                    });
+                    break;
+                case GraphTypes.CosineWave:
+                    controlPointsList = AstFactory.BuildExprList(new List<AssociativeNode>
+                    {
+                        AstFactory.BuildDoubleNode(CosineWaveControlPointData1.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - CosineWaveControlPointData1.Y),
+                        AstFactory.BuildDoubleNode(CosineWaveControlPointData2.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - CosineWaveControlPointData2.Y)
+                    });
+                    break;
+                case GraphTypes.ParabolicCurve:
+                    controlPointsList = AstFactory.BuildExprList(new List<AssociativeNode>
+                    {
+                        AstFactory.BuildDoubleNode(ParabolicCurveControlPointData1.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - ParabolicCurveControlPointData1.Y),
+                        AstFactory.BuildDoubleNode(ParabolicCurveControlPointData2.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - ParabolicCurveControlPointData2.Y)
+                    });
+                    break;
+                case GraphTypes.PerlinNoiseCurve:
+                    controlPointsList = AstFactory.BuildExprList(new List<AssociativeNode>
+                    {
+                        AstFactory.BuildDoubleNode(PerlinNoiseControlPointData1.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - PerlinNoiseControlPointData1.Y),
+                        AstFactory.BuildDoubleNode(PerlinNoiseControlPointData2.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - PerlinNoiseControlPointData2.Y),
+                        AstFactory.BuildDoubleNode(PerlinNoiseControlPointData3.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - PerlinNoiseControlPointData3.Y)
+                    });
+                    break;
+                case GraphTypes.PowerCurve:
+                    controlPointsList = AstFactory.BuildExprList(new List<AssociativeNode>
+                    {
+                        AstFactory.BuildDoubleNode(PowerCurveControlPointData1.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - PowerCurveControlPointData1.Y)
+                    });
+                    break;
+                case GraphTypes.SquareRootCurve:
+                    controlPointsList = AstFactory.BuildExprList(new List<AssociativeNode>
+                    {
+                        AstFactory.BuildDoubleNode(SquareRootCurveControlPointData1.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - SquareRootCurveControlPointData1.Y),
+                        AstFactory.BuildDoubleNode(SquareRootCurveControlPointData2.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - SquareRootCurveControlPointData2.Y)
+                    });
+                    break;
+                case GraphTypes.GaussianCurve:
+                    controlPointsList = AstFactory.BuildExprList(new List<AssociativeNode>
+                    {
+                        AstFactory.BuildDoubleNode(GaussianCurveControlPointData1.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - GaussianCurveControlPointData1.Y),
+                        AstFactory.BuildDoubleNode(GaussianCurveControlPointData2.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - GaussianCurveControlPointData2.Y),
+                        AstFactory.BuildDoubleNode(GaussianCurveControlPointData3.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - GaussianCurveControlPointData3.Y),
+                        AstFactory.BuildDoubleNode(GaussianCurveControlPointData4.X),
+                        AstFactory.BuildDoubleNode(DynamicCanvasSize - GaussianCurveControlPointData4.Y)
+                    });
+                    break;
+            }
+
+            var curveInputs = new List<AssociativeNode>
+            {
+                controlPointsList,
+                AstFactory.BuildDoubleNode(DynamicCanvasSize),
+                inputAstNodes[0] ?? minLimitXDefaultValue,
+                inputAstNodes[1] ?? maxLimitXDefaultValue,
+                inputAstNodes[2] ?? minLimitYDefaultValue,
+                inputAstNodes[3] ?? maxLimitYDefaultValue,
+                inputAstNodes[4] ?? pointsCountDefaultValue,
+                AstFactory.BuildStringNode(SelectedGraphType.ToString())
+            };
+
+            AssociativeNode buildResultNode =
+                AstFactory.BuildFunctionCall(
+                    new Func<List<double>, double, double, double, double, double, int, string, List<List<double>>>(
+                        CurveMapperGenerator.CalculateValues),
+                    curveInputs
+                );
+
+            //var dataBridgeNode = AstFactory.BuildFunctionCall(
+            //    new Func<object, object>(VMDataBridge.DataBridge.GetData),
+            //    new List<AssociativeNode>
+            //    {
+            //        AstFactory.BuildStringNode(GUID.ToString()),
+            //        AstFactory.BuildExprList(inputAstNodes)
+            //    });
+
+            // Assign outputs
+            var xValuesAssignment = AstFactory.BuildAssignment(
+                GetAstIdentifierForOutputIndex(0),
+                AstFactory.BuildIndexExpression(buildResultNode, AstFactory.BuildIntNode(0))
             );
 
-            return new[] { yValuesAssignment, xValuesAssignment, dataBridgeCall };
+            var yValuesAssignment = AstFactory.BuildAssignment(
+                GetAstIdentifierForOutputIndex(1),
+                AstFactory.BuildIndexExpression(buildResultNode, AstFactory.BuildIntNode(1))
+            );
+
+            return new[] { xValuesAssignment, yValuesAssignment, dataBridgeNode };
         }
 
         #endregion
