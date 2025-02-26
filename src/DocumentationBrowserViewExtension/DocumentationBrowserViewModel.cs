@@ -230,6 +230,8 @@ namespace Dynamo.DocumentationBrowser
                     case OpenDocumentationLinkEventArgs openDocumentationLink:
                         link = openDocumentationLink.Link;
                         graphPath = GetGraphLinkFromMDLocation(link, false);
+                        if (string.IsNullOrEmpty(Locale))
+                            Locale = "Default";
                         targetContent = ResourceUtilities.LoadContentFromResources(openDocumentationLink.Link.ToString(), GetType().Assembly, true, true, Locale);
                         graphName = null;
                         break;
@@ -334,7 +336,7 @@ namespace Dynamo.DocumentationBrowser
             var writer = new StringWriter();
             try
             {
-                writer.WriteLine(DocumentationBrowserUtils.GetContentFromEmbeddedResource(STYLE_RESOURCE));
+                writer.WriteLine(DocumentationBrowserUtils.GetContentFromEmbeddedResource(STYLE_RESOURCE, Locale));
 
                 // Convert the markdown file to html
                 var mkDown = MarkdownHandlerInstance.ParseToHtml(e.MinimumQualifiedName, e.PackageName);
@@ -342,7 +344,7 @@ namespace Dynamo.DocumentationBrowser
 
                 writer.WriteLine(NodeDocumentationHtmlGenerator.OpenDocument());
                 // Get the Node info section
-                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e, BreadCrumbs, mkDown);
+                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e, BreadCrumbs, mkDown, Locale);
                 writer.WriteLine(nodeDocumentation);
                 writer.WriteLine(NodeDocumentationHtmlGenerator.CloseDocument());
 
@@ -358,7 +360,7 @@ namespace Dynamo.DocumentationBrowser
                 // inject the syntax highlighting script at the bottom at the document.
                 output += DocumentationBrowserUtils.GetImageNavigationScript();
                 output += DocumentationBrowserUtils.GetDPIScript();
-                output += DocumentationBrowserUtils.GetSyntaxHighlighting();
+                output += DocumentationBrowserUtils.GetSyntaxHighlighting(Locale);
 
                 return output;
             }

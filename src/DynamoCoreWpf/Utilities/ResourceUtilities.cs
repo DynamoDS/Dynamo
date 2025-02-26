@@ -295,8 +295,10 @@ namespace Dynamo.Utilities
 
             if (!string.IsNullOrEmpty(locale))
             {
-                matchingResource = availableResources
+                var AlternativeMatchingResource = availableResources
                 .FirstOrDefault(str => str.EndsWith(name) && str.Contains(locale.Replace('-', '_')));
+                //If AlternativeMatchingResource is null then use the embedded resource found by name (means that the resource using the specific locale was not found)
+                matchingResource = AlternativeMatchingResource ?? matchingResource;
             }
 
             if (string.IsNullOrEmpty(matchingResource))
