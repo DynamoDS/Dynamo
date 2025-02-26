@@ -585,7 +585,7 @@ namespace Dynamo.ViewModels
         private static readonly string errorGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/error-64px.png";
         private static readonly string infoGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/info-64px.png";
         private static readonly string previewGeometryGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/hidden-64px.png";
-        private static readonly string previewClusterGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/preview-64px.png";
+        private static readonly string previewClusterGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/preview-light-64px.png";
         private static readonly string frozenGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png";
         private static readonly string packageGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/package-64px.png";
 
@@ -1310,8 +1310,9 @@ namespace Dynamo.ViewModels
         private static SolidColorBrush infoColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#6AC0E7"));
         private static SolidColorBrush noPreviewColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BBBBBB"));
         private static SolidColorBrush nodeCustomColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#B385F2"));
-        private static SolidColorBrush nodePreviewColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BBBBBB"));
+        private static SolidColorBrush nodePreviewGeometryColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BBBBBB"));
         private static SolidColorBrush nodeFrozenOverlayColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BCD3EE"));
+        private static SolidColorBrush nodePreviewOverlayColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#D5BCF7"));
         private static SolidColorBrush nodeInfoColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#6AC0E7"));        
 
         /// <summary>
@@ -1368,7 +1369,7 @@ namespace Dynamo.ViewModels
 
             if (!this.IsVisible)
             {
-                result = nodePreviewColor;
+                result = nodePreviewGeometryColor;
                 if (result != null)
                 {
                     ImgGlyphOneSource = previewGeometryGlyph;
@@ -1411,7 +1412,7 @@ namespace Dynamo.ViewModels
 
             if (this.IsPreview)
             {
-                result = nodeFrozenOverlayColor;
+                result = nodePreviewOverlayColor;
                 if (result != null)
                 {
                     if (ImgGlyphOneSource == null)

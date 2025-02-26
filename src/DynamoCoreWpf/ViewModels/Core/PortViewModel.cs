@@ -527,7 +527,7 @@ namespace Dynamo.ViewModels
                 {
                     MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
 
-                    // Process the results and display the preview of the first cluster as a starting point, or maybe the one with the highest confidence level?
+                    // Process the results and display the preview of the cluster with the highest confidence level
                     // Leverage some API here to convert topology to actual cluster
                     results.Results.FirstOrDefault().Topology.Nodes.ToList().ForEach(node =>
                     {

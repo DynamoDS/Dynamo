@@ -476,8 +476,8 @@
                        Source="/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png"
                        Stretch="UniformToFill" />
             </Grid>
-            <!--This is a test style and may not needed in the final version-->
-            <Grid x:Name="PreviewGlyph" 
+            <!-- Node preview state indication, light sparkle -->
+            <Grid x:Name="ClusterPreviewGlyph" 
                   Visibility="{Binding Path=IsPreview, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}">
                 <Image x:Name="PreviewImage"
                        Width="16px"
@@ -542,6 +542,8 @@
                     </Style>
                 </Grid.Style>
             </Grid>
+            
+            <!-- Button to open node context menu from lower right corner -->
             <Button x:Name="OptionsButton"
                     Click="DisplayNodeContextMenu">
                 <Button.ToolTip>
@@ -611,7 +613,7 @@
         <!--  Displays when the node is Frozen/Warning/Error state and Zoom is above 0.4 -->
         <Border Name="nodeColorOverlayZoomIn"
                 Grid.Row="1"
-                Grid.RowSpan="4"    
+                Grid.RowSpan="4"
                 Grid.ColumnSpan="3"
                 Margin="-8"
                 Background="{StaticResource NodeFrozenOverlayColor}"
@@ -631,7 +633,7 @@
                 Grid.RowSpan="4"
                 Grid.ColumnSpan="3"
                 Margin="-8"
-                Background="{StaticResource NodeFrozenOverlayColor}"
+                Background="{StaticResource NodePreviewOverlayColor}"
                 Canvas.ZIndex="6"
                 CornerRadius="8,8,0,0"
                 IsHitTestVisible="False"
