@@ -750,7 +750,7 @@ namespace Dynamo.ViewModels
                     //Memory indexing process for Node Autocomplete (indexing just the nodes returned by the NodeAutocomplete service so we limit the scope of the query search)
                     var doc = LuceneUtility.InitializeIndexDocumentForNodes();
                     List<NodeSearchElement> nodeSearchElements = [.. searchElementsCache.Select(x => x.Model)];
-                    LuceneUtility.AddNodeTypeToSearchIndexBulk(nodeSearchElements, doc);
+                    LuceneUtility.AddNodeTypeToSearchIndex(nodeSearchElements, doc);
 
                     //Write the Lucene documents to memory
                     LuceneUtility.CommitWriterChanges();
