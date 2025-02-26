@@ -434,7 +434,7 @@ namespace Dynamo.Utilities
         /// </summary>
         /// <param name="content"></param>
         /// <returns>Returns true if any content was removed from the content string</returns>
-        private static bool SanitizeHtml(ref string content)
+        internal static bool SanitizeHtml(ref string content)
         {
             using (var converter = new Md2Html())
             {
