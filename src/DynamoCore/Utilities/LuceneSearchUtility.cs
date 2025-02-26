@@ -253,11 +253,7 @@ namespace Dynamo.Utilities
             {
                 writer.DeleteAll();
                 var iDoc = InitializeIndexDocumentForNodes();
-
-                foreach (var node in nodeList)
-                {
-                    AddNodeTypeToSearchIndex(node, iDoc);
-                }
+                AddNodeTypeToSearchIndexBulk(nodeList, iDoc);
             }         
         }
 
@@ -633,6 +629,14 @@ namespace Dynamo.Utilities
             SetDocumentFieldValue(doc, nameof(LuceneConfig.NodeFieldsEnum.Parameters), node.Parameters ?? string.Empty);
 
             writer?.AddDocument(doc);
+        }
+
+        internal void AddNodeTypeToSearchIndexBulk(List<NodeSearchElement> nodes, Document doc)
+        {
+            foreach(var node in nodes)
+            {
+                AddNodeTypeToSearchIndex(node, doc);
+            }
         }
     }
 
