@@ -1,0 +1,36 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>曲線の結合により、ポリカーブに複数のワイヤが作成されました </h2>
+<p>このエラー メッセージは、Polycurve ノードによって出力された線分が閉じた曲線を形成していないことを示しています。</p>
+
+<h4>修正方法</h4>
+<p>Polycurve ノードの出力に NULL 値が含まれていることが原因となっている可能性があります。 Polycurve ノードによって出力される各リスト内で、曲線が接続して 1 本の連続した線となっているか確認します。 確認する方法の 1 つは、すべてのノードのジオメトリのプレビューを非表示(ノードまたは選択した複数のノードを右クリックして、ジオメトリのプレビューを非表示)にして、<a href="https://dictionary.dynamobim.com/2/#/List/Inspect/Action/GetItemAtIndex"><code>List.GetItemAtIndex</code></a> で一度に 1 つのリストを確認することです。 </p>
+
+<p>また、このエラーは部屋の境界でもよく発生します。曲線を抽出する別の方法として、<a href="https://dictionary.dynamobim.com/2/#/Revit/Elements/Room/Query/CenterBoundary"><code>Room.CenterBoundary</code></a> を使用してみてください。</p>
+
+<h4>詳細情報</h4>
+<p>詳細については、<a href="https://forum.dynamobim.com/search?q=curve%20join%20produced%20more%20than%20one%20WIRE%20in%20Polycurve"><span>DynamoBIM のフォーラムで「<strong>curve join produced more than one wire in polycurve</strong>」に関する投稿</span></a>を参照してください。</p>
+
+</body>

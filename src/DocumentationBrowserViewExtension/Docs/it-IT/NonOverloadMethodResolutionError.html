@@ -1,0 +1,39 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Prevede i tipi di argomento, ma è stato chiamato con</h2>
+<p>Questo messaggio di errore indica che il nodo in uso prevede un determinato tipo di input, ma ha ricevuto un tipo di input che non può utilizzare. In genere, viene seguito da informazioni aggiuntive relative ai tipi trasferiti al nodo in uso e ai tipi che il nodo ha previsto di ricevere. Alcune delle operazioni più comuni che causano questo errore sono:</p>
+
+<ul>
+    <li><code>Element.SetParameterByName</code>: provare ad utilizzare il nodo Element.Parameters per verificare i parametri dell'elemento. Per ulteriori <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20setparameter">post, vedere il forum di discussione di Dynamobim &quot;expects argument type setparameter&quot;</a>.</li>
+    <li><code>Geometry.BoundingBox</code>: provare ad utilizzare Element.BoundingBox, come descritto <a href="https://forum.dynamobim.com/t/geometry-boundingbox-1-3-vs-2-0/21995/3">qui</a>. Per ulteriori <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20geometry">post, vedere il forum di discussione di Dynamobim &quot;expects argument type geometry&quot;</a>.</li>
+</ul>
+
+<h4>Come risolvere questo problema</h4>
+<p>Nella sezione precedente sono descritti alcuni approcci che è possibile adottare per il ripristino in seguito a questo errore. In generale, verificare i tipi di input previsti per il nodo in uso. Se possibile, modificare gli input trasferiti al nodo nei tipi previsti o verificare se altri nodi possono essere utilizzati per ottenere la funzionalità desiderata. Si noti che i tipi di input possono essere controllati utilizzando il nodo <a href="https://dictionary.dynamobim.com/2/#/Input/Object/Action/Type">Object.Type</a>.</p>
+
+<h4>Ulteriori informazioni</h4>
+<p>Per saperne di più, consultare i <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type"><span>post nel forum di discussione di Dynamobim &quot;<strong>expects argument type</strong>&quot;</span></a>.</p>
+
+</body>
