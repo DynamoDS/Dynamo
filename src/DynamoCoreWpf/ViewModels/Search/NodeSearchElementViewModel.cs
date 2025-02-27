@@ -343,7 +343,7 @@ namespace Dynamo.Wpf.ViewModels
             return parameter as PortModel != null ? portModel.CanAutoCompleteInput() : true;
         }
 
-        private Rect2D ComputeNodesBBox(IEnumerable<NodeModel> nodes)
+        private Rect2D GetNodesBoundingBox(IEnumerable<NodeModel> nodes)
         {
             if (nodes is null || nodes.Count() == 0)
                 return Rect2D.Empty;
@@ -377,7 +377,7 @@ namespace Dynamo.Wpf.ViewModels
                 }
             }
 
-            Rect2D connectedNodesBBBox = ComputeNodesBBox(connectedNodesToConsider);
+            Rect2D connectedNodesBBox = GetNodesBoundingBox(connectedNodesToConsider);
 
             //See if there are other nodes that intersect with our bbbox.
             //If there are, check to see if they actually intersect with one of the
@@ -389,8 +389,8 @@ namespace Dynamo.Wpf.ViewModels
                 if (connectedNodesGuids.Contains(node.GUID))
                     continue;
 
-                if (connectedNodesBBBox.IntersectsWith(node.Rect) ||
-                    connectedNodesBBBox.Contains(node.Rect))
+                if (connectedNodesBBox.IntersectsWith(node.Rect) ||
+                    connectedNodesBBox.Contains(node.Rect))
                 {
                     intersectedNodes.Add(node);
                     if (!realIntersection)
