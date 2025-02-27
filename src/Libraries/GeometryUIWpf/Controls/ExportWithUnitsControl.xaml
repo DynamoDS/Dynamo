@@ -39,7 +39,7 @@
             VerticalAlignment="Center"
             FontSize="12"
             FontFamily="{StaticResource OpenSansSemibold}"
-            Height="{x:Static configuration:Configurations.PortHeightInPixels}" />
+            Height ="{x:Static configuration:Configurations.PortHeightInPixels}" />
 
         <TextBlock 
             Text=""
@@ -48,8 +48,8 @@
             VerticalAlignment="Center"
             FontSize="12"
             FontFamily="{StaticResource OpenSansSemibold}"
-            Height="{x:Static configuration:Configurations.PortHeightInPixels}" />
-
+            Height ="{x:Static configuration:Configurations.PortHeightInPixels}" />
+        
         <Grid Grid.Row="2">
 
             <Grid.ColumnDefinitions>
@@ -67,12 +67,12 @@
             FontWeight="SemiBold"
             FontFamily="{StaticResource OpenSansSemibold}"
             Height ="{x:Static configuration:Configurations.PortHeightInPixels}"/>
-
+            
 
             <ComboBox Name="SelectExportedUnit"
                 Grid.Column="1"
                 ItemsSource="{Binding SelectedExportedUnitsSource}"
-                Height="{x:Static configuration:Configurations.PortHeightInPixels}"
+                Height ="{x:Static configuration:Configurations.PortHeightInPixels}"
                 SelectedItem="{Binding SelectedExportedUnit}">
 
                 <ComboBox.ItemTemplate>
@@ -84,5 +84,5 @@
         </Grid>
 
         </Grid>
-
+    
 </UserControl>
