@@ -760,6 +760,7 @@ Dynamo.Graph.ModelBase.CenterY.set -> void
 Dynamo.Graph.ModelBase.DeletionStarted -> System.EventHandler<System.ComponentModel.CancelEventArgs>
 Dynamo.Graph.ModelBase.Deserialize(System.Xml.XmlElement element, Dynamo.Graph.SaveContext context) -> void
 Dynamo.Graph.ModelBase.Disposed -> System.Action<Dynamo.Graph.ModelBase>
+Dynamo.Graph.ModelBase.HasBeenDisposed.get -> bool
 Dynamo.Graph.ModelBase.IsSelected.get -> bool
 Dynamo.Graph.ModelBase.IsSelected.set -> void
 Dynamo.Graph.ModelBase.Log(Dynamo.Logging.ILogMessage obj) -> void
