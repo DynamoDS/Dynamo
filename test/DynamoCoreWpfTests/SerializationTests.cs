@@ -318,7 +318,7 @@ namespace DynamoCoreWpfTests
 
             // Act
             // Stage 1: Serialize the workspace view.
-            var jobject1 = JObject.Parse(ViewModel.CurrentSpaceViewModel.ToJson());
+            var jobject1 = ViewModel.CurrentSpaceViewModel.ToJsonJObject();
             var userDescriptionBefore = jobject1["NodeViews"].FirstOrDefault()["UserDescription"];
 
             // Stage 2: set UserDescription
@@ -326,7 +326,7 @@ namespace DynamoCoreWpfTests
             nodeViewModel.UserDescription = userDescription;
 
             // Stage 3: Serialize the workspace view again to make sure UserDescription is now serialized.
-            var jobject2 = JToken.Parse(ViewModel.CurrentSpaceViewModel.ToJson());
+            var jobject2 = ViewModel.CurrentSpaceViewModel.ToJsonJObject();
             var userDescriptionAfter = jobject2["NodeViews"].FirstOrDefault()["UserDescription"];
 
             // Assert
@@ -409,7 +409,7 @@ namespace DynamoCoreWpfTests
             var serializationNodeViewModelFile = Path.Combine(TestDirectory, @"core\serialization\serializationNodeViewModel.dyn");
             OpenModel(serializationNodeViewModelFile);
 
-            var workSpaceJobject = JObject.Parse(ViewModel.CurrentSpaceViewModel.ToJson());
+            var workSpaceJobject = ViewModel.CurrentSpaceViewModel.ToJsonJObject();
             JObject nodeViewModelJobject = JObject.Parse(workSpaceJobject["NodeViews"][0].ToString());
 
             Assert.AreEqual(8, nodeViewModelJobject.Properties().Count(), "The number of Serialized properties is not the expected");
@@ -497,7 +497,7 @@ namespace DynamoCoreWpfTests
 
             // Stage 2: Add the View.
             var jobject2 = JObject.Parse(jsonModel);
-            var token = JToken.Parse(ViewModel.CurrentSpaceViewModel.ToJson());
+            var token = ViewModel.CurrentSpaceViewModel.ToJsonJObject();
             jobject2.Add("View", token);
 
             // Re-saving the file will update the version number (which can be expected)
@@ -761,7 +761,7 @@ namespace DynamoCoreWpfTests
 
             // Stage 2: Add the View.
             var jo = JObject.Parse(jsonModel);
-            var token = JToken.Parse(viewModel.CurrentSpaceViewModel.ToJson());
+            var token = viewModel.CurrentSpaceViewModel.ToJsonJObject();
             jo.Add("View", token);
 
             Assert.IsFalse(string.IsNullOrEmpty(jsonModel));
@@ -793,7 +793,7 @@ namespace DynamoCoreWpfTests
             var jsonModel = viewModel.Model.CurrentWorkspace.ToJson(viewModel.Model.EngineController);
             // Stage 2: Add the View.
             var jo = JObject.Parse(jsonModel);
-            var token = JToken.Parse(viewModel.CurrentSpaceViewModel.ToJson());
+            var token = viewModel.CurrentSpaceViewModel.ToJsonJObject();
             jo.Add("View", token);
             var json = jo.ToString();
             var model = viewModel.Model;
@@ -1100,7 +1100,7 @@ namespace DynamoCoreWpfTests
             var numXMLNotes = workspace.Notes.Count();
             var numXMLAnnotations = workspace.Annotations.Count();
 
-            var view = JToken.Parse(ViewModel.CurrentSpaceViewModel.ToJson());
+            var view = ViewModel.CurrentSpaceViewModel.ToJsonJObject();
             var numJsonAnnotations = view["Annotations"].Count();
 
             Assert.AreEqual(numXMLNotes, 0);

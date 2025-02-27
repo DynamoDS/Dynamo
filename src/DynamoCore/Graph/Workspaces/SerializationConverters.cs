@@ -117,27 +117,27 @@ namespace Dynamo.Graph.Workspaces
         {
             NodeModel node = null;
 
-            String typeName = String.Empty;
-            String functionName = String.Empty;
-            String assemblyName = String.Empty;
+            Type type = null;
+            var functionName = string.Empty;
 
             var obj = JObject.Load(reader);
-            Type type = null;
+            var rawTypeName = obj["$type"].Value<string>();
+            Debug.Assert(rawTypeName != null);
+
+            var rawTypeParts = rawTypeName.Split(',');
+            var typeName = rawTypeParts[0];
+            // we get the assembly name from the type string for the node model nodes. 
+            var assemblyName = rawTypeParts.Length > 1 ? rawTypeParts[1].Trim() : string.Empty;
 
             try
             {
-               type = Type.GetType(obj["$type"].Value<string>());
-               typeName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
+                // use the native Newtonsoft DefaultSerializationBinder to resolve types.
+                type = SerializationExtensions.Binder.BindToType(assemblyName, typeName);
                 
                 if (typeName.Equals("Dynamo.Graph.Nodes.ZeroTouch.DSFunction"))
                 {
                     // If it is a zero touch node, then get the whole function name including the namespace.
                     functionName = obj["FunctionSignature"].Value<string>().Split('@').FirstOrDefault().Trim();
-                }
-                // we get the assembly name from the type string for the node model nodes. 
-                else
-                {
-                    assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
                 }
             }
             catch(Exception e)
@@ -151,16 +151,12 @@ namespace Dynamo.Graph.Workspaces
             // not be an issue during normal dynamo use but if it is we can enable this code.
             if(type == null && this.isTestMode == true)
             {
-                List<Assembly> resultList;
-
                 // This assemblyName does not usually contain version information...
-                assemblyName = obj["$type"].Value<string>().Split(',').Skip(1).FirstOrDefault().Trim();
-                if (assemblyName != null)
+                if (!string.IsNullOrWhiteSpace(assemblyName))
                 {
-                    if(this.loadedAssemblies.TryGetValue(assemblyName, out resultList))
+                    if (loadedAssemblies.TryGetValue(assemblyName, out var resultList))
                     {
-                        var matchingTypes = resultList.Select(x => x.GetType(typeName)).ToList();
-                        type =  matchingTypes.FirstOrDefault();
+                        type = resultList.Select(x => x.GetType(typeName)).FirstOrDefault();
                     }
                 }
             }
@@ -169,30 +165,20 @@ namespace Dynamo.Graph.Workspaces
             if (type == null)
             {
                 // Attempt to resolve the type using `AlsoKnownAs`
-                var unresolvedName = obj["$type"].Value<string>().Split(',').FirstOrDefault();
-                Type newType;
-                nodeFactory.ResolveType(unresolvedName, out newType);
-
-                // If resolved update the type
-                if (newType != null)
+                if (nodeFactory.ResolveType(typeName, out var newType))
                 {
+                    // If resolved update the type
                     type = newType;
                 }
             }
 
             // If the id is not a guid, makes a guid based on the id of the node
             var guid = GuidUtility.tryParseOrCreateGuid(obj["Id"].Value<string>());
-            
-            var replication = obj["Replication"].Value<string>();
            
-            var inPorts = obj["Inputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
-            var outPorts = obj["Outputs"].ToArray().Select(t => t.ToObject<PortModel>()).ToArray();
-
-            var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
-            string assemblyLocation = objectType.Assembly.Location;
+            var inPorts = obj["Inputs"].Select(t => t.ToObject<PortModel>()).ToArray();
+            var outPorts = obj["Outputs"].Select(t => t.ToObject<PortModel>()).ToArray();
 
             bool remapPorts = true;
-
             if (type == null)
             {
                 // If type is still null at this point return a dummy node
@@ -283,11 +269,13 @@ namespace Dynamo.Graph.Workspaces
 
             if (remapPorts)
             {
+                var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
                 RemapPorts(node, inPorts, outPorts, resolver, manager.AsLogger());
             }
                
 
             // Cannot set Lacing directly as property is protected
+            var replication = obj["Replication"].Value<string>();
             node.UpdateValue(new UpdateValueParams("ArgumentLacing", replication));
             node.GUID = guid;
 
@@ -504,30 +492,34 @@ namespace Dynamo.Graph.Workspaces
             var nrc = (NodeReadConverter)serializer.Converters.First(c => c is NodeReadConverter);
             nrc.ElementResolver = elementResolver;
 
-            var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer);
+            var nodes = obj["Nodes"].ToObject<IEnumerable<NodeModel>>(serializer).ToList();
+            // initialize this dictionary lazily if it needs to be queried
+            Dictionary<Guid, NodeModel> nodeLookup = null;
 
             // Setting Inputs
             // Required in headless mode by Dynamo Player that certain view properties are set back to NodeModel
             var inputsToken = obj["Inputs"];
             if (inputsToken != null)
             {
-                var inputs = inputsToken.ToArray().Select(x =>
+                nodeLookup ??= nodes.ToDictionary(n => n.GUID);
+
+                var inputs = inputsToken.Select(x =>
                 {
                     try
-                    { return x.ToObject<NodeInputData>(); }
+                    {
+                        return x.ToObject<NodeInputData>();
+                    }
                     catch (Exception ex)
                     {
                         engine?.AsLogger().Log(ex);
                         return null;
                     }
-                    //dump nulls
-                }).Where(x => !(x is null)).ToList();
+                }).Where(x => x != null);
 
                 // Use the inputs to set the correct properties on the nodes.
                 foreach (var inputData in inputs)
                 {
-                    var matchingNode = nodes.Where(x => x.GUID == inputData.Id).FirstOrDefault();
-                    if (matchingNode != null)
+                    if (nodeLookup.TryGetValue(inputData.Id, out var matchingNode))
                     {
                         matchingNode.IsSetAsInput = true;
                         matchingNode.Name = inputData.Name;
@@ -539,12 +531,13 @@ namespace Dynamo.Graph.Workspaces
             var outputsToken = obj["Outputs"];
             if (outputsToken != null)
             {
-                var outputs = outputsToken.ToArray().Select(x => x.ToObject<NodeOutputData>()).ToList();
+                nodeLookup ??= nodes.ToDictionary(n => n.GUID);
+
+                var outputs = outputsToken.Select(x => x.ToObject<NodeOutputData>());
                 // Use the outputs to set the correct properties on the nodes.
                 foreach (var outputData in outputs)
                 {
-                    var matchingNode = nodes.Where(x => x.GUID == outputData.Id).FirstOrDefault();
-                    if (matchingNode != null)
+                    if (nodeLookup.TryGetValue(outputData.Id, out var matchingNode))
                     {
                         matchingNode.IsSetAsOutput = true;
                         matchingNode.Name = outputData.Name;
@@ -559,15 +552,15 @@ namespace Dynamo.Graph.Workspaces
             var view = obj["View"];
             if (view != null && view["NodeViews"] != null)
             {
-                var nodeViews = view["NodeViews"].ToList();
+                nodeLookup ??= nodes.ToDictionary(n => n.GUID);
+
+                var nodeViews = view["NodeViews"];
                 foreach (var nodeview in nodeViews)
                 {
-                    Guid nodeGuid;
                     try
                     {
-                        nodeGuid = Guid.Parse(nodeview["Id"].Value<string>());
-                        var matchingNode = nodes.Where(x => x.GUID == nodeGuid).FirstOrDefault();
-                        if (matchingNode != null)
+                        var nodeGuid = Guid.Parse(nodeview["Id"].Value<string>());
+                        if (nodeLookup.TryGetValue(nodeGuid, out var matchingNode))
                         {
                             matchingNode.IsSetAsInput = nodeview["IsSetAsInput"].Value<bool>();
                             matchingNode.IsSetAsOutput = nodeview["IsSetAsOutput"].Value<bool>();
@@ -575,10 +568,7 @@ namespace Dynamo.Graph.Workspaces
                             matchingNode.Name = nodeview["Name"].Value<string>();
                         }
                     }
-                    catch
-                    {
-                        continue;
-                    }
+                    catch { }
                 }
             }
             #endregion
@@ -927,7 +917,16 @@ namespace Dynamo.Graph.Workspaces
 
                 // GraphDocumentaionLink
                 writer.WritePropertyName(nameof(HomeWorkspaceModel.GraphDocumentationURL));
-                writer.WriteValue(hws.GraphDocumentationURL);
+                if (hws.GraphDocumentationURL == null)
+                {
+                    // The JValue json text writer throws when writing null URI values, the regular
+                    // JsonConvert serializer does not.
+                    writer.WriteNull();
+                }
+                else
+                {
+                    writer.WriteValue(hws.GraphDocumentationURL);
+                }
 
                 // ExtensionData
                 writer.WritePropertyName(WorkspaceReadConverter.EXTENSION_WORKSPACE_DATA);
