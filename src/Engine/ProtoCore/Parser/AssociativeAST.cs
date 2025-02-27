@@ -2210,54 +2210,6 @@ namespace ProtoCore.AST.AssociativeAST
         }
     }
 
-
-
-
-
-
-    public class CustomExpressionNode : ArrayNameNode
-    {
-        public AssociativeNode InputA { get; set; }
-        public AssociativeNode InputB { get; set; }
-        public AssociativeNode InputC { get; set; }
-        public AssociativeNode InputD { get; set; }
-        public AssociativeNode InputE { get; set; }
-
-        public CustomExpressionNode() { }
-
-        public CustomExpressionNode(CustomExpressionNode rhs) : base(rhs)
-        {
-            InputA = NodeUtils.Clone(rhs.InputA);
-            InputB = NodeUtils.Clone(rhs.InputB);
-            InputC = NodeUtils.Clone(rhs.InputC);
-            InputD = NodeUtils.Clone(rhs.InputD);
-            InputE = NodeUtils.Clone(rhs.InputE);
-        }
-
-        public override AstKind Kind => AstKind.Dynamic;
-
-        public override TResult Accept<TResult>(IAstVisitor<TResult> visitor)
-        {
-            // Implement if necessary
-            return default;
-        }
-
-        public override IEnumerable<Node> Children()
-        {
-            return new[] { InputA, InputB, InputC, InputD, InputE }.Where(n => n != null);
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
     public class RangeExprNode : ArrayNameNode
     {
         public AssociativeNode From { get; set; }
