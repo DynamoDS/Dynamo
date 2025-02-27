@@ -32,25 +32,23 @@
             <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
 
-        <TextBlock
+        <TextBlock 
             Text=""
             Grid.Row="0"
-            Height="{x:Static configuration:Configurations.PortHeightInPixels}"
             Margin="0,0,0,0"
             VerticalAlignment="Center"
-            FontFamily="{StaticResource OpenSansSemibold}"
             FontSize="12"
-            Text="" />
+            FontFamily="{StaticResource OpenSansSemibold}"
+            Height="{x:Static configuration:Configurations.PortHeightInPixels}" />
 
-        <TextBlock
+        <TextBlock 
             Text=""
             Grid.Row="1"
-            Height="{x:Static configuration:Configurations.PortHeightInPixels}"
             Margin="0,0,0,0"
             VerticalAlignment="Center"
-            FontFamily="{StaticResource OpenSansSemibold}"
             FontSize="12"
-            Text="" />
+            FontFamily="{StaticResource OpenSansSemibold}"
+            Height="{x:Static configuration:Configurations.PortHeightInPixels}" />
 
         <Grid Grid.Row="2">
 
@@ -71,11 +69,10 @@
             Height ="{x:Static configuration:Configurations.PortHeightInPixels}"/>
 
 
-            <ComboBox
-                Name="SelectExportedUnit"
+            <ComboBox Name="SelectExportedUnit"
                 Grid.Column="1"
-                Height="{x:Static configuration:Configurations.PortHeightInPixels}"
                 ItemsSource="{Binding SelectedExportedUnitsSource}"
+                Height="{x:Static configuration:Configurations.PortHeightInPixels}"
                 SelectedItem="{Binding SelectedExportedUnit}">
 
                 <ComboBox.ItemTemplate>
@@ -85,7 +82,7 @@
                 </ComboBox.ItemTemplate>
             </ComboBox>
         </Grid>
-    
-    </Grid>
+
+        </Grid>
 
 </UserControl>
