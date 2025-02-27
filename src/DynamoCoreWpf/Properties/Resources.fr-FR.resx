@@ -3744,7 +3744,7 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Il semble qu’Autodesk Identity Manager n’est pas configuré sur votre système. Pour garantir un accès complet à toutes les fonctionnalités, connectez-vous à votre compte Autodesk à l’aide d’Autodesk Identity Manager.
-#Téléchargez et installez=https ://manage.autodesk.com/products/updates ici ou via Autodesk Access, puis connectez-vous.</value>
+#Téléchargez et installez=https://manage.autodesk.com/products/updates ici ou via Autodesk Access, puis connectez-vous.</value>
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Télécharger Autodesk Identity Manager</value>
