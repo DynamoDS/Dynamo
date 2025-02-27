@@ -1,11 +1,14 @@
-﻿<UserControl x:Class="UnitsUI.Controls.DynamoUnitConverterControl"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:converters="clr-namespace:UnitsUI.Converters"
-             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-             mc:Ignorable="d" Width="400" Height="Auto">
+<UserControl
+    x:Class="UnitsUI.Controls.DynamoUnitConverterControl"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:converters="clr-namespace:UnitsUI.Converters"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+    Width="400"
+    Height="Auto"
+    mc:Ignorable="d">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -15,75 +18,80 @@
             <converters:ForgeQuantityToTextConverter x:Key="ForgeQuantityToTextConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
-    
+
 
 
     <Grid Width="400" Height="Auto">
-        
+
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
         </Grid.RowDefinitions>
-        
-        <ComboBox Name="SelectConversionQuantity"                
-                ItemsSource="{Binding QuantityConversionSource}"   
-                Grid.Row="0"
-                Height ="29"
-                Width="400"
-                Margin="0,0,0, 3"
-                SelectedItem="{Binding SelectedQuantityConversion}"
-                Style="{StaticResource ResourceKey=RefreshComboBox}">
+
+        <ComboBox
+            Name="SelectConversionQuantity"
+            Grid.Row="0"
+            Width="400"
+            Height="29"
+            Margin="0,0,0,3"
+            ItemsSource="{Binding QuantityConversionSource}"
+            SelectedItem="{Binding SelectedQuantityConversion}"
+            Style="{StaticResource ResourceKey=RefreshComboBox}">
             <ComboBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Converter={StaticResource ForgeQuantityToTextConverter}}"></TextBlock>
+                    <TextBlock Text="{Binding Converter={StaticResource ForgeQuantityToTextConverter}}" />
                 </DataTemplate>
             </ComboBox.ItemTemplate>
         </ComboBox>
 
         <Grid Grid.Row="1">
-            
+
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="180"/>
-                <ColumnDefinition Width="40"/>
-                <ColumnDefinition Width="180"/>
+                <ColumnDefinition Width="180" />
+                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="180" />
             </Grid.ColumnDefinitions>
-            
-            <ComboBox Name="SelectConversionFrom" 
+
+            <ComboBox
+                Name="SelectConversionFrom"
                 Grid.Column="0"
-                ItemsSource="{Binding SelectedFromConversionSource}"
-                Height ="29" 
+                Height="29"
                 MinWidth="180"
-                Margin="0,0,0, 3"
+                Margin="0,0,0,3"
+                ItemsSource="{Binding SelectedFromConversionSource}"
                 SelectedItem="{Binding SelectedFromConversion, Mode=TwoWay}"
                 Style="{StaticResource ResourceKey=RefreshComboBox}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Converter={StaticResource ForgeUnitToTextConverter}}"></TextBlock>
+                        <TextBlock Text="{Binding Converter={StaticResource ForgeUnitToTextConverter}}" />
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
 
-            <Button Name="DirectionButton"
+            <Button
+                Name="DirectionButton"
                 Grid.Column="1"
-                Content="⇄"  
-                FontWeight="Bold"
-                FontSize="13"
-                Height ="29"
-                Margin="3,0,3, 3"
+                Width="34"
+                Height="29"
+                Margin="3,0,3,3"
                 Background="#666666"
-                Width="34" Command="{Binding SwitchUnitsButtonClick}"/>
+                Command="{Binding SwitchUnitsButtonClick}"
+                Content="⇄"
+                FontSize="13"
+                FontWeight="Bold" />
 
-            <ComboBox x:Name="SelectConversionTo"   
+            <ComboBox
+                x:Name="SelectConversionTo"
                 Grid.Column="2"
-        	    ItemsSource="{Binding SelectedToConversionSource}"
-                Height ="29"   
-                Margin="0,0,0, 3"
+                Height="29"
                 MinWidth="180"
-        	    SelectedItem="{Binding SelectedToConversion, Mode=TwoWay}"
+                Margin="0,0,0,3"
+                ItemsSource="{Binding SelectedToConversionSource}"
+                SelectedItem="{Binding SelectedToConversion, Mode=TwoWay}"
                 Style="{StaticResource ResourceKey=RefreshComboBox}">
                 <ComboBox.ItemTemplate>
                     <DataTemplate>
-                        <TextBlock Text="{Binding Converter={StaticResource ForgeUnitToTextConverter}}"></TextBlock>
+                        <TextBlock Text="{Binding Converter={StaticResource ForgeUnitToTextConverter}}" />
                     </DataTemplate>
                 </ComboBox.ItemTemplate>
             </ComboBox>
