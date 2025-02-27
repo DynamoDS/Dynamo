@@ -9,10 +9,8 @@ using NUnit.Framework;
 // associated with an assembly.
 [assembly: AssemblyTitle("DynamoCoreWpfTests")]
 [assembly: AssemblyCulture("")]
-[assembly: Guid("0e3a9cb1-69eb-4fc1-ab44-5fa36cfaa906")]
+[assembly: Guid("619AFC1C-FC8E-4F1B-ADE9-AE6FBDB3CC38")]
 [assembly: RequiresThread(ApartmentState.STA)]
 [assembly: InternalsVisibleTo("WpfVisualizationTests")]
-[assembly: InternalsVisibleTo("DynamoCoreWpf2Tests")]
-[assembly: InternalsVisibleTo("DynamoCoreWpf3Tests")]
 [assembly: InternalsVisibleTo("CrashReportingTests")]
 [assembly: TypeForwardedToAttribute(typeof(DynamoCoreWpfTests.Utility.DispatcherUtil))]
