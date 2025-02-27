@@ -172,6 +172,8 @@ namespace Dynamo.DocumentationBrowser
 
             this.DynamoViewModel = (viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel);
 
+            this.ViewModel.Locale = DynamoViewModel.PreferenceSettings.Locale;
+
             // set the viewmodel UIElement property to be used for Nodes Library manipulation
             this.ViewModel.DynamoView = viewLoadedParams.DynamoWindow;
         }

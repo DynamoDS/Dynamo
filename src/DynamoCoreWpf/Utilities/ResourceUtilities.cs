@@ -11,6 +11,7 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -255,6 +256,9 @@ namespace Dynamo.Utilities
             if (string.IsNullOrWhiteSpace(name))
                 throw new ArgumentNullException(nameof(name));
 
+            if (locale == "Default")
+                locale = Thread.CurrentThread.CurrentCulture.Name;
+
             string result;
             // If an assembly was specified in the uri, the resource will be searched there.
             Assembly assembly;
@@ -289,10 +293,12 @@ namespace Dynamo.Utilities
             var matchingResource = availableResources
                 .FirstOrDefault(str => str.EndsWith(name));
 
-            if(!string.IsNullOrEmpty(locale))
+            if (!string.IsNullOrEmpty(locale))
             {
-                matchingResource = availableResources
-                .FirstOrDefault(str => str.EndsWith(name) && str.Contains(locale.Replace('-','_')));
+                var alternativeMatchingResource = availableResources
+                .FirstOrDefault(str => str.EndsWith(name) && str.Contains(locale.Replace('-', '_')));
+                //If AlternativeMatchingResource is null then use the embedded resource found by name (means that the resource using the specific locale was not found)
+                matchingResource = alternativeMatchingResource ?? matchingResource;
             }
 
             if (string.IsNullOrEmpty(matchingResource))

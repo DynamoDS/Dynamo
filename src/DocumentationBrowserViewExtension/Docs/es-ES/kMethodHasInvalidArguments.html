@@ -1,0 +1,36 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Hay algunos argumentos no válidos</h2>
+<p>Este mensaje de error indica que el nodo que está utilizando espera un determinado tipo de datos de entrada, pero ha recibido un tipo de entrada que no puede utilizar. Es similar al error &quot;Espera los tipos de argumentos, pero se ha llamado con&quot; y, por lo general, muestra información adicional que puede ayudarle a identificar los tipos de argumentos que debe transferir al nodo que está utilizando. </p>
+
+<h4>Cómo solucionar este error</h4>
+<p>En general, compruebe los tipos de entrada que espera el nodo que está utilizando e intente determinar si (a) se ha transferido el tipo de entrada correcto al nodo o (b) puede cambiar el tipo de entrada a alguna que pueda usar el nodo (por ejemplo, mediante el cambio de la entrada a otro tipo, como se muestra en <a href="https://forum.dynamobim.com/t/springs-number-tostring/35562/2">este ejemplo</a>).</p>
+
+<p>Por ejemplo, cuando aparece un mensaje como <code>Warning: Element.SetParameterByName operation failed. The best overloaded method match for ‘Revit.Elements.InternalUtilities.ElementUtils.SetParameterValue(Autodesk.Revit.DB.Parameter, double)’ has some invalid arguments</code>, la información adicional incluida entre paréntesis puede ayudarle a entender cuál es el problema. En este caso, <code>SetParameterValue(Autodesk.Revit.DB.Parameter, double)</code> muestra que el nodo que está utilizando espera una entrada de tipo <code>double</code>, por lo que cualquier otro tipo de entrada no funcionará.</p>
+
+<h4>Más información</h4>
+<p>Para obtener más información, consulte las <a href="https://forum.dynamobim.com/search?q=has%20some%20invalid%20arguments"><span>publicaciones del foro de Dynamobim sobre &quot;<strong>has some invalid arguments</strong>&quot;</span></a>.</p>
+
+</body>

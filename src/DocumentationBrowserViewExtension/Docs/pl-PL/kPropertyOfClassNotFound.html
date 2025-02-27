@@ -1,0 +1,38 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Nie znaleziono właściwości</h2>
+<p>Ten komunikat o błędzie wskazuje, że w używanym węźle próbujesz uzyskać dostęp do właściwości obiektu, który nie ma tej właściwości. </p>
+
+<p>Właściwości są wartościami przechowywanymi w obiekcie. Na przykład w dodatku Dynamo obiekt punktu ma właściwości X, Y i Z, które reprezentują wartości współrzędnych danego punktu. Obiekt linii ma inne właściwości, takie jak długość, która oznacza długość danej linii. Obiekt linii nie ma właściwości <code>X</code>, <code>Y</code> i <code>Z</code>, które ma obiekt punktu. Natomiast obiekt punktu nie ma właściwości długości, którą ma obiekt linii.</p>
+
+<p>Ten błąd będzie zatem występował, jeśli spróbujesz uzyskać dostęp do określonej właściwości w obiekcie, który nie ma tej właściwości. Jeśli przykładowo spróbujesz uzyskać dostęp do właściwości długości w obiekcie punktu, otrzymasz błąd „<code>No property called Length on Point could be found</code>”, ponieważ obiekt punktu nie zawiera właściwości długości.  </p>
+
+<h4>Jak to naprawić</h4>
+<p>Upewnij się, że obiekt, który przekazujesz na wejście węzła, ma właściwość, do której próbujesz uzyskać dostęp.</p>
+
+<h4>Więcej informacji</h4>
+<p>Aby dowiedzieć się więcej, sprawdź <a href="https://forum.dynamobim.com/search?q=no%20property%20called%20could%20be%20found"><span>wpisy na forum Dynamobim z frazą „<strong>no property called could be found</strong>”</span></a>.</p>
+
+</body>

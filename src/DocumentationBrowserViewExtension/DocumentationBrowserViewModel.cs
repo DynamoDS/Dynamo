@@ -175,6 +175,8 @@ namespace Dynamo.DocumentationBrowser
             GC.SuppressFinalize(this);
         }
 
+        internal string Locale {  get; set; }
+
         #endregion
 
         #region Handle navigation event
@@ -228,7 +230,9 @@ namespace Dynamo.DocumentationBrowser
                     case OpenDocumentationLinkEventArgs openDocumentationLink:
                         link = openDocumentationLink.Link;
                         graphPath = GetGraphLinkFromMDLocation(link, false);
-                        targetContent = ResourceUtilities.LoadContentFromResources(openDocumentationLink.Link.ToString(), GetType().Assembly);
+                        if (string.IsNullOrEmpty(Locale))
+                            Locale = "Default";
+                        targetContent = ResourceUtilities.LoadContentFromResources(openDocumentationLink.Link.ToString(), GetType().Assembly, true, true, Locale);
                         graphName = null;
                         break;
 
@@ -332,7 +336,7 @@ namespace Dynamo.DocumentationBrowser
             var writer = new StringWriter();
             try
             {
-                writer.WriteLine(DocumentationBrowserUtils.GetContentFromEmbeddedResource(STYLE_RESOURCE));
+                writer.WriteLine(DocumentationBrowserUtils.GetContentFromEmbeddedResource(STYLE_RESOURCE, Locale));
 
                 // Convert the markdown file to html
                 var mkDown = MarkdownHandlerInstance.ParseToHtml(e.MinimumQualifiedName, e.PackageName);
@@ -340,7 +344,7 @@ namespace Dynamo.DocumentationBrowser
 
                 writer.WriteLine(NodeDocumentationHtmlGenerator.OpenDocument());
                 // Get the Node info section
-                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e, BreadCrumbs, mkDown);
+                var nodeDocumentation = NodeDocumentationHtmlGenerator.FromAnnotationEventArgs(e, BreadCrumbs, mkDown, Locale);
                 writer.WriteLine(nodeDocumentation);
                 writer.WriteLine(NodeDocumentationHtmlGenerator.CloseDocument());
 
@@ -356,7 +360,7 @@ namespace Dynamo.DocumentationBrowser
                 // inject the syntax highlighting script at the bottom at the document.
                 output += DocumentationBrowserUtils.GetImageNavigationScript();
                 output += DocumentationBrowserUtils.GetDPIScript();
-                output += DocumentationBrowserUtils.GetSyntaxHighlighting();
+                output += DocumentationBrowserUtils.GetSyntaxHighlighting(Locale);
 
                 return output;
             }
@@ -500,7 +504,7 @@ namespace Dynamo.DocumentationBrowser
 
         public void NavigateToInternalErrorPage(string errorDetails)
         {
-            this.content = ResourceUtilities.LoadContentFromResources(BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME, GetType().Assembly);
+            this.content = ResourceUtilities.LoadContentFromResources(BUILT_IN_CONTENT_INTERNAL_ERROR_FILENAME, GetType().Assembly, true, true, Locale);
 
             // if additional details about the error were passed in,
             // update the error page HTML with that content
@@ -514,13 +518,13 @@ namespace Dynamo.DocumentationBrowser
 
         public void NavigateToContentMissingPage()
         {
-            this.content = ResourceUtilities.LoadContentFromResources(BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME, GetType().Assembly);
+            this.content = ResourceUtilities.LoadContentFromResources(BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME, GetType().Assembly, true, true, Locale);
             UpdateLinkSafely(BUILT_IN_CONTENT_FILE_NOT_FOUND_FILENAME);
         }
 
         public void NavigateToNoContentPage()
         {
-            this.content = ResourceUtilities.LoadContentFromResources(BUILT_IN_CONTENT_NO_CONTENT_FILENAME, GetType().Assembly);
+            this.content = ResourceUtilities.LoadContentFromResources(BUILT_IN_CONTENT_NO_CONTENT_FILENAME, GetType().Assembly, true, true, Locale);
             UpdateLinkSafely(BUILT_IN_CONTENT_NO_CONTENT_FILENAME);
         }
 

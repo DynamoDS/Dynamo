@@ -1,0 +1,34 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Zwischen zwei Variablen besteht eine zyklische Abhängigkeit</h2>
+<p>Diese Warnmeldungen gibt an, dass Sie versuchen, die Ausgabe eines Blocks an die Eingabe desselben Blocks zu übergeben. Dadurch wird eine zyklische Abhängigkeit erstellt, die in Dynamo nicht zulässig ist.</p>
+
+<h4>So beheben Sie Fehler</h4>
+<p>Stellen Sie sicher, dass Sie die Ausgabe eines Blocks nicht wieder in die Eingabe desselben Blocks übergeben. Wenn Sie eine Schleife erstellen müssen, können Sie den <a href="https://dictionary.dynamobim.com/2/#/Script/Control%20Flow/Action/LoopWhile">LoopWhile-Block</a> verwenden, <a href="https://forum.dynamobim.com/search?q=Loop%20using%20designscript">eine Schleife mithilfe von DesignScript</a> erstellen oder eine Schleife mithilfe von Python erstellen, wie in den <a href="https://github.com/Amoursol/dynamoPython/tree/master/concepts">folgenden Beispielen</a> dargestellt.</p>
+
+<h4>Weitere Informationen</h4>
+<p>Weitere Informationen finden Sie in den <a href="https://forum.dynamobim.com/search?q=cyclic%20dependency%20exists%20between%20two%20variables"><span>Beiträgen im DynamoBIM-Forum zum Thema <starke>cyclic dependency exists between two variables</strong></span></a>.</p>
+
+</body>
