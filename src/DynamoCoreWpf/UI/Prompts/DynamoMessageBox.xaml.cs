@@ -116,10 +116,15 @@ namespace Dynamo.UI.Prompts
         /// </summary>
         public DynamoMessageBox()
         {
-            InitializeComponent();
-            DataContext = this;
-            ShowTooltip = false;
-            ToolTip = "";
+            // CER: 52164327 - Catching all exceptions to prevent the application from crashing
+            try
+            {
+                InitializeComponent();
+                DataContext = this;
+                ShowTooltip = false;
+                ToolTip = "";
+            }
+            catch { }
         }
 
         /// <summary>
