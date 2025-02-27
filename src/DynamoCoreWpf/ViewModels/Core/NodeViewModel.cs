@@ -623,6 +623,9 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Return a value indicating whether this node is in preview state.
+        /// </summary>
         [JsonIgnore]
         public bool IsPreview
         {
