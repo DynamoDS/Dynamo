@@ -343,6 +343,19 @@ namespace Dynamo.Wpf.ViewModels
             return parameter as PortModel != null ? portModel.CanAutoCompleteInput() : true;
         }
 
+        private Rect2D ComputeNodesBBox(IEnumerable<NodeModel> nodes)
+        {
+            if (nodes is null || nodes.Count() == 0)
+                return Rect2D.Empty;
+
+            double minX = nodes.Min(node => node.Rect.TopLeft.X);
+            double maxX = nodes.Max(node => node.Rect.BottomRight.X);
+            double minY = nodes.Min(node => node.Rect.TopLeft.Y);
+            double maxY = nodes.Max(node => node.Rect.BottomRight.Y);
+
+            return new Rect2D(minX, minY, maxX - minX, maxY - minY);
+        }
+
         private bool AutoLayoutNeeded(NodeModel originalNode, IEnumerable<NodeModel> allNodes, bool newInput, out List<NodeModel> intersectedNodes)
         {
             //Collect all connected input or output nodes from the original node.
@@ -364,13 +377,7 @@ namespace Dynamo.Wpf.ViewModels
                 }
             }
 
-            //Compute a bbox of the connected nodes.
-            double minX = connectedNodesToConsider.Min(node => node.Rect.TopLeft.X);
-            double maxX = connectedNodesToConsider.Max(node => node.Rect.BottomRight.X);
-            double minY = connectedNodesToConsider.Min(node => node.Rect.TopLeft.Y);
-            double maxY = connectedNodesToConsider.Max(node => node.Rect.BottomRight.Y);
-
-            Rect2D connectedNodesBBBox = new Rect2D(minX, minY, maxX - minX, maxY - minY);
+            Rect2D connectedNodesBBBox = ComputeNodesBBox(connectedNodesToConsider);
 
             //See if there are other nodes that intersect with our bbbox.
             //If there are, check to see if they actually intersect with one of the
