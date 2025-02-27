@@ -1,0 +1,43 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>작업에 실패함</h2>
+<p><code>Operation failed</code>는 노드 중 하나를 실행하지 못했음을 나타내는 일반 오류 메시지입니다. 일반적으로 이 뒤에는 실패한 작업과 실패한 이유에 대한 추가 정보가 표시됩니다. 가장 많이 실패하는 작업 중 몇 가지는 다음과 같습니다.</p>
+
+<ul>
+    <li><code>IronPythonEvaluator.EvaluateIronPythonScript</code> - <tt>python</tt> 코드를 실행하는 노드가 제대로 실행되지 못할 경우 이 메시지가 표시됩니다. 여기에는 여러 가지 이유가 있지만 가장 일반적으로 이 문제는 <tt>python</tt> 코드에 버그가 있기 때문에 발생합니다. 이 오류 메시지는 흔히 실행하지 못한 <tt>python</tt> 코드 행과 그 이유에 관한 추가 정보와 함께 표시됩니다. 이 오류 메시지에 대한 자세한 내용은 <a href="https://forum.dynamobim.comsearch?q=IronPythonEvaluator.EvaluateIronPythonScript"><span>여기</span></a>에서 읽어보십시오.</li>
+    
+    <li><code>Element.SetParameterByName</code> - 이 오류 메시지에 대한 자세한 내용은 <a href="https://forum.dynamobim.com/search?q=Element.SetParameterByName"> <span>여기</span></a>에서 읽어보십시오.</li>
+
+    <li><code>Floor.ByOutlineTypeAndLevel</code> - 이 오류 메시지에 대한 자세한 내용은 <a href="https://forum.dynamobim.com/search?q=Floor.ByOutlineTypeAndLevel"> <span>여기</span></a>에서 읽어보십시오.</li>
+
+    <li><code>Dictionary.ByKeysValues</code> - 이 오류 메시지에 대한 자세한 내용은 <a href="https://forum.dynamobim.com/search?q=Dictionary.ByKeysValues"> <span>여기</span></a>에서 읽어보십시오.</li>
+    
+    <li><code>List.GetItemAtIndex</code> - 이 오류 메시지에 대한 자세한 내용은 <a href="https://forum.dynamobim.com/search?q=List.GetItemAtIndex"><span>여기</span></a>에서 읽어보십시오.</li>
+</ul>
+
+<h4>추가 정보</h4>
+<p>자세한 내용을 보려면 <a href="https://forum.dynamobim.com/search?q=operation%20failed"><span>&quot;<strong>operation failed</strong>&quot;에 대해 논의하는 Dynamobim 포럼의 게시물</span></a>을 확인하십시오.</p>
+
+</body>
