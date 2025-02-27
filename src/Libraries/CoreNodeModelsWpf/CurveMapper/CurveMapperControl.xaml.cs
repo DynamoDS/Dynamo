@@ -166,7 +166,7 @@ namespace Dynamo.Wpf.CurveMapper
             var controlPointsResetMap = BuildControlPointsDictionary();
             RecreateControlPoints(controlPointsResetMap);
 
-            curveMapperNodeModel.GeneratRenderValues();
+            curveMapperNodeModel.GenerateRenderValues();
             RenderCurve();
         }
 
@@ -208,12 +208,12 @@ namespace Dynamo.Wpf.CurveMapper
                 RenderCurve();
             }
 
-            if (e.PropertyName == nameof(curveMapperNodeModel.SelectedGraphType)) //
+            if (e.PropertyName == nameof(curveMapperNodeModel.SelectedGraphType))
             {
                 var controlPointsMap = BuildControlPointsDictionary();
                 RecreateControlPoints(controlPointsMap);
 
-                curveMapperNodeModel.GeneratRenderValues();
+                curveMapperNodeModel.GenerateRenderValues();
                 RenderCurve();
 
                 ToggleControlPointsLock();
@@ -459,7 +459,7 @@ namespace Dynamo.Wpf.CurveMapper
 
             // Reposition control points based on the new size
             NodeModel_PropertyChanged(this, new PropertyChangedEventArgs(nameof(curveMapperNodeModel.DynamicCanvasSize)));
-            curveMapperNodeModel.GeneratRenderValues();
+            curveMapperNodeModel.GenerateRenderValues();
         }
     }
 }

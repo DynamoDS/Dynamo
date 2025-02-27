@@ -157,7 +157,7 @@ namespace Dynamo.Wpf.CurveMapper
             RaisePropertyChanged(nameof(ScaledCoordinates));
 
             // Notify the mode and UI to update the curve
-            curveMapperNodeModel.GeneratRenderValues();
+            curveMapperNodeModel.GenerateRenderValues();
             OnControlPointMoved?.Invoke();
         }
 
