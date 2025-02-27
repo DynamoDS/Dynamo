@@ -39,7 +39,7 @@
             VerticalAlignment="Center"
             FontSize="12"
             FontFamily="{StaticResource OpenSansSemibold}"
-            Height ="{x:Static configuration:Configurations.PortHeightInPixels}" />
+            Height ="{x:Static configuration:Configurations.PortHeightInPixels}"/>
 
         <TextBlock 
             Text=""
@@ -48,7 +48,7 @@
             VerticalAlignment="Center"
             FontSize="12"
             FontFamily="{StaticResource OpenSansSemibold}"
-            Height ="{x:Static configuration:Configurations.PortHeightInPixels}" />
+            Height ="{x:Static configuration:Configurations.PortHeightInPixels}"/>
         
         <Grid Grid.Row="2">
 
