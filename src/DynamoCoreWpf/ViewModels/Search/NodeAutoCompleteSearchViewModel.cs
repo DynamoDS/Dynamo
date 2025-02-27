@@ -399,31 +399,41 @@ namespace Dynamo.ViewModels
                     }
                 }
 
-                foreach (var result in results)
-                {
-                    if (result.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= dynamoViewModel.PreferenceSettings.MLRecommendationConfidenceLevel)
-                    {
-                        FilteredHighConfidenceResults = FilteredHighConfidenceResults.Append(result);
-                    }
-                    else {
-                        FilteredLowConfidenceResults = FilteredLowConfidenceResults.Append(result);
-                    }
-                }
-
-                // Show low confidence section if there are some results under threshold and feature enabled
-                DisplayLowConfidence = FilteredLowConfidenceResults.Any() && dynamoViewModel.PreferenceSettings.HideNodesBelowSpecificConfidenceLevel;
-
-                if (!FilteredHighConfidenceResults.Any())
-                {
-                    DisplayAutocompleteMLStaticPage = true;
-                    AutocompleteMLTitle = Resources.AutocompleteLowConfidenceTitle;
-                    AutocompleteMLMessage = Resources.AutocompleteLowConfidenceMessage;
-                    return;
-                }
-
-                // By default, show only the results which are above the threshold
-                FilteredResults = dynamoViewModel.PreferenceSettings.HideNodesBelowSpecificConfidenceLevel? FilteredHighConfidenceResults : results    ;
+                OrganizeConfidenceSection(results);
             }
+        }
+
+        /// <summary>
+        /// Compare to low confidence threadhold defined by user can origanize the results into high and low confidence sections.
+        /// </summary>
+        /// <param name="results"></param>
+        internal void OrganizeConfidenceSection(List<NodeSearchElementViewModel> results)
+        {
+            foreach (var result in results)
+            {
+                if (result.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= dynamoViewModel.PreferenceSettings.MLRecommendationConfidenceLevel)
+                {
+                    FilteredHighConfidenceResults = FilteredHighConfidenceResults.Append(result);
+                }
+                else
+                {
+                    FilteredLowConfidenceResults = FilteredLowConfidenceResults.Append(result);
+                }
+            }
+
+            // Show low confidence section if there are some results under threshold and feature enabled
+            DisplayLowConfidence = FilteredLowConfidenceResults.Any() && dynamoViewModel.PreferenceSettings.HideNodesBelowSpecificConfidenceLevel;
+
+            if (!FilteredHighConfidenceResults.Any())
+            {
+                DisplayAutocompleteMLStaticPage = true;
+                AutocompleteMLTitle = Resources.AutocompleteLowConfidenceTitle;
+                AutocompleteMLMessage = Resources.AutocompleteLowConfidenceMessage;
+                return;
+            }
+
+            // By default, show only the results which are above the threshold
+            FilteredResults = dynamoViewModel.PreferenceSettings.HideNodesBelowSpecificConfidenceLevel ? FilteredHighConfidenceResults : results;
         }
 
         private MLNodeAutoCompletionResponse GetMLNodeAutocompleteResults(string requestJSON)
@@ -528,7 +538,7 @@ namespace Dynamo.ViewModels
         }
 
         // Full name and assembly name 
-        private NodeModelTypeId GetInfoFromTypeId(string typeId)
+        internal NodeModelTypeId GetInfoFromTypeId(string typeId)
         {
             if (typeId.Contains(','))
             {
