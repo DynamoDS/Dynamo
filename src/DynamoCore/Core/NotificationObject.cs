@@ -27,6 +27,11 @@ namespace Dynamo.Core
             {
                 return;
             }
+            OnPropertyChanged(propertyName);
+        }
+
+        private void OnPropertyChanged(string propertyName)
+        {
             PropertyChangedEventHandler handler = PropertyChanged;
             if (handler != null)
             {
