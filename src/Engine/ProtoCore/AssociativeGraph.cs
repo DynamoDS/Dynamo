@@ -1504,7 +1504,7 @@ namespace ProtoCore.AssociativeGraph
             return (((ulong)ci) << 32) | pi;
         }
 
-        public void Purge(List<AST.AssociativeAST.AssociativeNode> oldNodes)
+        internal void Purge(List<AST.AssociativeAST.AssociativeNode> oldNodes)
         {
             HashSet<Guid> oldGuids = [];
             foreach (AST.AssociativeAST.AssociativeNode astNode in oldNodes)
