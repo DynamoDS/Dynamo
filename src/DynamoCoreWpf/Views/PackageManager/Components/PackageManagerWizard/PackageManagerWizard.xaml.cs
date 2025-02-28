@@ -24,6 +24,7 @@ using Dynamo.PackageManager.UI;
 using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using System.Runtime.InteropServices.JavaScript;
+using Greg.Requests;
 
 namespace Dynamo.UI.Views
 {
@@ -53,6 +54,9 @@ namespace Dynamo.UI.Views
         internal Action RequestSubmit;
         internal Action RequestPublish;
         internal Action RequestReset;
+        internal Action<string> RequestToggleNodeLibraryOnItem;
+        internal Action<string> RequestOpenFolder;
+        internal Action<string> RequestUpdateCompatibilityMatrix;
 
         #endregion
 
@@ -83,6 +87,9 @@ namespace Dynamo.UI.Views
             RequestSubmit = Submit;
             RequestPublish = Publish;
             RequestReset = Reset;
+            RequestToggleNodeLibraryOnItem = ToggleNodeLibraryOnItem;
+            RequestOpenFolder = OpenFolder;
+            RequestUpdateCompatibilityMatrix = UpdateCompatibilityMatrix;
 
             DataContextChanged += OnDataContextChanged;
         }
@@ -135,6 +142,10 @@ namespace Dynamo.UI.Views
                     SendUpdatedPackageContents(frontendPreviewData, "preview"); // Specify "preview"
                 }
             }
+            else if (e.PropertyName.Equals(nameof(publishPackageViewModel.PublishDirectory)))
+            {
+                SendPublishPathLocation(publishPackageViewModel.PublishDirectory);
+            }
         }
 
         private async void SendUpdatedPackageContents(object frontendData, string type)
@@ -154,6 +165,20 @@ namespace Dynamo.UI.Views
                 }
             }
         }
+
+        private async void SendPublishPathLocation(string path)
+        {
+            if (string.IsNullOrEmpty(path)) return;
+
+            var payload = new { folderPath = path };
+            string jsonPayload = JsonSerializer.Serialize(payload);
+
+            if (dynWebView?.CoreWebView2 != null)
+            {
+                await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receivePublishPathLocation({jsonPayload});");
+            }
+        }
+
 
         internal async Task PreloadWebView2Async()
         {
@@ -206,7 +231,10 @@ namespace Dynamo.UI.Views
                             RequestUpdatePackageDetails,
                             RequestSubmit,
                             RequestPublish,
-                            RequestReset));
+                            RequestReset,
+                            RequestToggleNodeLibraryOnItem,
+                            RequestOpenFolder,
+                            RequestUpdateCompatibilityMatrix));
                 }
                 catch (Exception ex)
                 {
@@ -255,6 +283,18 @@ namespace Dynamo.UI.Views
                 {
                     publishPackageViewModel.RemoveItemCommand.Execute(itemToRemove);
                 }
+            }
+        }
+
+        public void ToggleNodeLibraryOnItem(string filePath)
+        {
+            if (publishPackageViewModel == null) return;
+
+            var itemToToggle = FindItemByFilePath(publishPackageViewModel.PackageContents.ToList(), filePath);
+
+            if (itemToToggle != null)
+            {
+                itemToToggle.IsNodeLibrary = !itemToToggle.IsNodeLibrary;
             }
         }
 
@@ -329,12 +369,36 @@ namespace Dynamo.UI.Views
                 publishPackageViewModel.RepositoryUrl = packageDetails.RepositoryUrl ?? string.Empty;
                 publishPackageViewModel.SiteUrl = packageDetails.SiteUrl ?? string.Empty;
                 publishPackageViewModel.Group = packageDetails.Group ?? string.Empty;
+                publishPackageViewModel.ReleaseNotesUrl = packageDetails.ReleaseNotesUrl ?? string.Empty;
 
                 Console.WriteLine("Package details updated successfully.");
             }
             catch (Exception ex)
             {
                 Console.WriteLine($"Error updating package details: {ex.Message}");
+            }
+        }
+
+        public void UpdateCompatibilityMatrix(string jsonPayload)
+        {
+            if (string.IsNullOrWhiteSpace(jsonPayload) || publishPackageViewModel == null)
+                return;
+
+            try
+            {
+                var compatibilityMatrix = JsonSerializer.Deserialize<ICollection<PackageCompatibility>>(
+                    jsonPayload,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                );
+                if (compatibilityMatrix == null) return;
+
+                publishPackageViewModel.CompatibilityMatrix = compatibilityMatrix;
+
+                Console.WriteLine("Compatibility matrix updated successfully.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating compatibility matrix: {ex.Message}");
             }
         }
 
@@ -363,6 +427,14 @@ namespace Dynamo.UI.Views
             if (publishPackageViewModel.CancelCommand?.CanExecute() == true)
             {
                 publishPackageViewModel.CancelCommand.Execute();
+            }
+        }
+
+        public void OpenFolder(string folderPath)
+        {
+            if (Directory.Exists(folderPath))
+            {
+                System.Diagnostics.Process.Start("explorer.exe", folderPath);
             }
         }
 
@@ -532,7 +604,7 @@ namespace Dynamo.UI.Views
 
                     if (this.publishPackageViewModel != null)
                     {
-                        this.publishPackageViewModel.PropertyChanged += PublishPackageViewModel_PropertyChanged;
+                        this.publishPackageViewModel.PropertyChanged -= PublishPackageViewModel_PropertyChanged;
                     }
 
                     if (this.dynWebView != null && this.dynWebView.CoreWebView2 != null)
@@ -565,6 +637,9 @@ namespace Dynamo.UI.Views
         readonly Action RequestSubmit;
         readonly Action RequestPublish;
         readonly Action RequestReset;
+        readonly Action<string> RequestToggleNodeLibraryOnItem;
+        readonly Action<string> RequestOpenFolder;
+        readonly Action<string> RequestUpdateCompatibilityMatrix;
 
         public ScriptWizardObject(
             Action<string> requestAddFileOrFolder,
@@ -573,7 +648,10 @@ namespace Dynamo.UI.Views
             Action<string> requestUpdatePackageDetails,
             Action requestSubmit,
             Action requestPublish,
-            Action requestReset)
+            Action requestReset,
+            Action<string> requestToggleNodeLibraryOnItem,
+            Action<string> requestOpenFolder,
+            Action<string> requestUpdateCompatibilityMatrix)
         {
             RequestAddFileOrFolder = requestAddFileOrFolder;
             RequestRemoveFileOrFolder = requestRemoveFileOrFolder;
@@ -582,6 +660,9 @@ namespace Dynamo.UI.Views
             RequestSubmit = requestSubmit;
             RequestPublish = requestPublish;
             RequestReset = requestReset;
+            RequestToggleNodeLibraryOnItem = requestToggleNodeLibraryOnItem;
+            RequestOpenFolder = requestOpenFolder;
+            RequestUpdateCompatibilityMatrix = requestUpdateCompatibilityMatrix;
         }
 
         [DynamoJSInvokable]
@@ -611,6 +692,12 @@ namespace Dynamo.UI.Views
         }
 
         [DynamoJSInvokable]
+        public void UpdateCompatibilityMatrix(string jsonPayload)
+        {
+            RequestUpdateCompatibilityMatrix(jsonPayload);
+        }
+
+        [DynamoJSInvokable]
         public void Submit()
         {
             RequestSubmit();
@@ -627,23 +714,62 @@ namespace Dynamo.UI.Views
         {
             RequestReset();
         }
+
+        [DynamoJSInvokable]
+        public void ToggleNodeLibraryOnItem(string name)
+        {
+            RequestToggleNodeLibraryOnItem(name);
+        }
+
+        [DynamoJSInvokable]
+        public void OpenFolder(string path)
+        {
+            RequestOpenFolder(path);
+        }
+
     }
 
     public class PackageUpdateRequest : IEquatable<PackageUpdateRequest>
     {
+        [JsonPropertyName("name")]
         public string Name { get; set; }
+
+        [JsonPropertyName("description")]
         public string Description { get; set; }
+
+        [JsonPropertyName("major")]
         public string Major { get; set; }
+
+        [JsonPropertyName("minor")]
         public string Minor { get; set; }
+
+        [JsonPropertyName("patch")]
         public string Patch { get; set; }
-        public List<string> Keywords { get; set; }
+
+        [JsonPropertyName("keywords")]
+        public List<string> Keywords { get; set; } = new();
+
+        [JsonPropertyName("release_notes_url")]
         public string ReleaseNotesUrl { get; set; }
+
+        [JsonPropertyName("copyright_holder")]
         public string CopyrightHolder { get; set; }
+
+        [JsonPropertyName("copyright_year")]
         public string CopyrightYear { get; set; }
+
+        [JsonPropertyName("license")]
         public string License { get; set; }
+
+        [JsonPropertyName("repository_url")]
         public string RepositoryUrl { get; set; }
+
+        [JsonPropertyName("site_url")]
         public string SiteUrl { get; set; }
+
+        [JsonPropertyName("group")]
         public string Group { get; set; }
+
 
         public bool Equals(PackageUpdateRequest other)
         {

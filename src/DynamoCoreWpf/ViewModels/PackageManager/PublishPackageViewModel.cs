@@ -659,6 +659,44 @@ namespace Dynamo.PackageManager
             }
         }
 
+
+        private string publishDirectory;
+
+        /// <summary>
+        /// A public property to surface the folder to publish the package locally
+        /// </summary>
+        public string PublishDirectory
+        {
+            get => publishDirectory;
+            set
+            {
+                publishDirectory = value;
+                RaisePropertyChanged(nameof(PublishDirectory));
+            }
+        }
+
+        private ICollection<PackageCompatibility> compatibilityMatrix;
+        public ICollection<PackageCompatibility> CompatibilityMatrix
+        {
+            get => compatibilityMatrix;
+            set
+            {
+                compatibilityMatrix = value;
+                RaisePropertyChanged(nameof(CompatibilityMatrix));
+            }
+        }
+
+        private string releaseNotesUrl;
+        public string ReleaseNotesUrl
+        {
+            get => releaseNotesUrl;
+            set
+            {
+                releaseNotesUrl = value;
+                RaisePropertyChanged(nameof(ReleaseNotesUrl));
+            }
+        }
+
         /// <summary>
         /// SubmitCommand property </summary>
         /// <value>
@@ -1090,7 +1128,7 @@ namespace Dynamo.PackageManager
             if (!rootItems.Any()) return rootItems;
 
             var roots = new List<PackageItemRootViewModel>();
-                      
+
             var commonPaths = GetCommonPaths(items.Keys.ToArray());
             if (commonPaths == null) return null;
 
@@ -1307,6 +1345,9 @@ namespace Dynamo.PackageManager
             this.ClearMarkdownDirectory();
             this.ClearPackageContents();
             this.KeywordsCollection?.Clear();
+            this.PublishDirectory = string.Empty;
+            this.CompatibilityMatrix.Clear();
+            this.ReleaseNotesUrl = string.Empty;
         }
 
         /// <summary>
@@ -1914,6 +1955,7 @@ namespace Dynamo.PackageManager
             }
         }
 
+
         private void ShowAddFileDialogAndAdd()
         {
             // show file open dialog
@@ -2496,6 +2538,8 @@ namespace Dynamo.PackageManager
                 Package.RepositoryUrl = RepositoryUrl;
                 Package.CopyrightHolder = string.IsNullOrEmpty(CopyrightHolder) ? dynamoViewModel.Model.AuthenticationManager?.Username : CopyrightHolder;
                 Package.CopyrightYear = string.IsNullOrEmpty(CopyrightYear) ? DateTime.Now.Year.ToString() : copyrightYear;
+                Package.Header.compatibility_matrix = CompatibilityMatrix;  // New - CompatibilityMatrix, Dynamo 3.5
+                Package.Header.release_notes_url = ReleaseNotesUrl; // New - ReleaseNotesUrl, Dynamo 3.5
 
                 AppendPackageContents();
 
@@ -2585,6 +2629,8 @@ namespace Dynamo.PackageManager
                 Dynamo.Wpf.Utilities.MessageBoxService.Show(Owner, ErrorMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return string.Empty;
             }
+
+            PublishDirectory = folder;
 
             var pkgSubFolder = Path.Combine(folder, PathManager.PackagesDirectoryName);
 
@@ -2854,7 +2900,9 @@ namespace Dynamo.PackageManager
                 }
                 else if (file.ToLower().EndsWith(".dll") || PackageDirectoryBuilder.IsXmlDocFile(file, files) || PackageDirectoryBuilder.IsDynamoCustomizationFile(file, files))
                 {
-                    // Assemblies carry the information if they are NodeLibrary or not  
+                    // Assemblies carry the information if they are NodeLibrary or not
+                    // TODO: Propose - check if x.LocalFilePath.Equals(file) instead
+                    // There are cases where the Assembly name is different than the actual file name on disc. The filepath will be a way to match those
                     if (Assemblies.Any(x => x.Name.Equals(Path.GetFileNameWithoutExtension(fileName))))
                     {
                         var packageContents = PackageItemRootViewModel.GetFiles(PackageContents.ToList());
