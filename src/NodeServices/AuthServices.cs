@@ -8,19 +8,19 @@ namespace DynamoServices
     /// <summary>
     /// Event arguments for the RequestAuthProvider event.
     /// </summary>
-    public class RequstAuthProviderEventArgs : EventArgs
+    internal class RequstAuthProviderEventArgs : EventArgs
     {
         /// <summary>
         /// Gets or sets the found auth provider.
         /// </summary>
-        public object FoundAuthProvider { get; internal set; }
+        internal object FoundAuthProvider { get; set; }
     }
 
     /// <summary>
     /// Delegate for handling the RequestAuthProvider event.
     /// </summary>
     /// <param name="args">The event arguments.</param>
-    public delegate void RequestAuthProviderEventHandler(RequstAuthProviderEventArgs args);
+    internal delegate void RequestAuthProviderEventHandler(RequstAuthProviderEventArgs args);
 
 
     /// <summary>
