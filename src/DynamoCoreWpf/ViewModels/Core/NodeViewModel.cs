@@ -585,7 +585,7 @@ namespace Dynamo.ViewModels
         private static readonly string errorGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/error-64px.png";
         private static readonly string infoGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/info-64px.png";
         private static readonly string previewGeometryGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/hidden-64px.png";
-        private static readonly string previewClusterGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/preview-light-64px.png";
+        private static readonly string previewClusterGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/transient-light-64px.png";
         private static readonly string frozenGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png";
         private static readonly string packageGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/package-64px.png";
 

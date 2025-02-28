@@ -1000,7 +1000,7 @@ namespace Dynamo.Graph.Nodes
         /// When a node is in transient mode, the node will not participate in execution,
         /// Or saved to the graph. It is only used for previewing the AutoComplete result in the canvas.
         /// </summary>
-        public bool IsTransient
+        internal bool IsTransient
         {
             get;
             set;
