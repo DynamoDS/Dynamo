@@ -2073,7 +2073,7 @@ namespace Dynamo.ViewModels
         /// <param name="parameters"></param>
         private void Open(object parameters)
         {
-            if (CurrentSpaceViewModel.HasUnsavedChanges)
+            if (CurrentSpaceViewModel != null && CurrentSpaceViewModel.HasUnsavedChanges)
             {
                 if (!AskUserToSaveWorkspaceOrCancel(HomeSpace))
                     return;
