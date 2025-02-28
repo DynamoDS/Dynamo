@@ -482,6 +482,13 @@ namespace Dynamo.ViewModels
 
             // Bail out from connect state
             wsViewModel.CancelActiveState();
+
+            if (PortModel != null && !PortModel.CanAutoCompleteInput())
+            {
+                return;
+            }
+
+
             wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
         }
 
@@ -499,6 +506,11 @@ namespace Dynamo.ViewModels
 
             // Bail out from connect state
             wsViewModel.CancelActiveState();
+
+            if (PortModel != null && !PortModel.CanAutoCompleteInput())
+            {
+                return;
+            }
 
             if (wsViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled)
             {
