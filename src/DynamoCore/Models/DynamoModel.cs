@@ -991,6 +991,7 @@ namespace Dynamo.Models
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
             LogWarningMessageEvents.LogInfoMessage += LogInfoMessage;
+            AuthServicesEvents.RequestAuthProvider += AuthServicesEvents_AuthProviderRequested;
             DynamoConsoleLogger.LogMessageToDynamoConsole += LogMessageWrapper;
             DynamoConsoleLogger.LogErrorToDynamoConsole += LogErrorMessageWrapper;
             if (!IsServiceMode)
@@ -1018,6 +1019,11 @@ namespace Dynamo.Models
                  
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
+        }
+
+        private void AuthServicesEvents_AuthProviderRequested(RequstAuthProviderEventArgs args)
+        {
+            args.FoundAuthProvider = AuthenticationManager.AuthProvider;
         }
 
         /// <summary>
@@ -1461,6 +1467,7 @@ namespace Dynamo.Models
 
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
             LogWarningMessageEvents.LogInfoMessage -= LogInfoMessage;
+            AuthServicesEvents.RequestAuthProvider -= AuthServicesEvents_AuthProviderRequested;
             DynamoConsoleLogger.LogMessageToDynamoConsole -= LogMessageWrapper;
             DynamoConsoleLogger.LogErrorToDynamoConsole -= LogErrorMessageWrapper;
             foreach (var ws in _workspaces)

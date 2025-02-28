@@ -81,11 +81,5 @@ namespace Dynamo.Session
         /// The return value is an ILogger
         /// </summary>
         public static readonly string Logger = nameof(Logger);
-
-        /// <summary>
-        /// This key is used to get an instance of the current IOAuth2AccessTokenProvider.
-        /// </summary>
-        public static readonly string AuthTokenProvider = nameof(AuthTokenProvider);
-
     }
 }
