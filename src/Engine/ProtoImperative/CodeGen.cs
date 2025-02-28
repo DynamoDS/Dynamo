@@ -2549,6 +2549,11 @@ namespace ProtoImperative
             EmitReturnToRegister();
         }
 
+        protected override void EmitReturnNull()
+        {
+            EmitReturnNull(null);
+        }
+
         protected void EmitGropuExpressionNode(ImperativeNode node, ref ProtoCore.Type inferedType)
         {
             GroupExpressionNode group = node as GroupExpressionNode;

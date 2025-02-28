@@ -5910,7 +5910,7 @@ namespace ProtoAssociative
             }
         }
 
-        protected override void EmitReturnNull(Guid? guid = null)
+        protected override void EmitReturnNull(Guid? guid)
         {
             int startpc = pc;
 
@@ -5935,6 +5935,10 @@ namespace ProtoAssociative
             }
 
             PushGraphNode(retNode);
+        }
+        protected override void EmitReturnNull()
+        {
+            EmitReturnNull(null);
         }
 
         private ProtoCore.Type BuildArgumentTypeFromVarDeclNode(VarDeclNode argNode, GraphNode graphNode = null)
