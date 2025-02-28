@@ -864,7 +864,7 @@ namespace Dynamo.Graph.Workspaces
 
             // Nodes except for nodes in Transient state
             writer.WritePropertyName("Nodes");
-            serializer.Serialize(writer, ws.Nodes.Where(x => x.IsTransient != true);
+            serializer.Serialize(writer, ws.Nodes.Where(x => x.IsTransient != true));
 
             // Connectors
             writer.WritePropertyName("Connectors");

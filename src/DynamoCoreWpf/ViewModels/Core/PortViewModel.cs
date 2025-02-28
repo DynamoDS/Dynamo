@@ -510,12 +510,12 @@ namespace Dynamo.ViewModels
             {
                 // Get the last node and connect a new node to it
                 var node1 = wsViewModel.Nodes.LastOrDefault();
-                node1.IsPreview = true;
+                node1.IsTransient = true;
                 targetNodeSearchEle.CreateAndConnectCommand.Execute(node1.InPorts.FirstOrDefault().PortModel);
                 n++;
             }
 
-            wsViewModel.Nodes.LastOrDefault().IsPreview = true;
+            wsViewModel.Nodes.LastOrDefault().IsTransient = true;
 
             stopwatch.Stop(); // Stop the stopwatch
             wsViewModel.DynamoViewModel.Model.Logger.Log($"Cluster Placement Execution Time: {stopwatch.ElapsedMilliseconds} ms");
