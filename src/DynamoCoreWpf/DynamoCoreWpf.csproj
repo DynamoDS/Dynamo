@@ -116,6 +116,19 @@
     <None Remove="UI\Images\TitleBarButtons\close-darktheme-disabled-16px.png" />
     <None Remove="UI\Images\warning_48px.png" />
     <None Remove="UI\Prompts\PortPropertiesEditPrompt.xaml" />
+    <None Remove="ViewModels\PackageManager\Docs\cs-CZ\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\de-DE\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\en-US\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\es-ES\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\fr-FR\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\it-IT\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\ja-JP\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\ko-KR\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\pl-PL\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\pt-BR\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\ru-RU\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\zh-CN\PublishPackageDocumentation.html" />
+    <None Remove="ViewModels\PackageManager\Docs\zh-TW\PublishPackageDocumentation.html" />
     <None Remove="Views\Core\CustomColorPicker.xaml" />
     <None Remove="Views\Core\GeometryScalingPopup.xaml" />
     <None Remove="UI\Images\question-hover-blue-16px.png" />
@@ -219,6 +232,19 @@
     <EmbeddedResource Include="Properties\Resources.ru-RU.resx" />
     <EmbeddedResource Include="Properties\Resources.zh-CN.resx" />
     <EmbeddedResource Include="Properties\Resources.zh-TW.resx" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\cs-CZ\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\de-DE\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\en-US\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\es-ES\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\fr-FR\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\it-IT\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\ja-JP\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\ko-KR\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\pl-PL\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\pt-BR\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\ru-RU\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\zh-CN\PublishPackageDocumentation.html" />
+    <EmbeddedResource Include="ViewModels\PackageManager\Docs\zh-TW\PublishPackageDocumentation.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\cs-CZ\connectTheNodes.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\cs-CZ\installedPackage.html" />
     <EmbeddedResource Include="Views\GuidedTour\HtmlPages\cs-CZ\learnPackages.html" />
@@ -1959,7 +1985,6 @@
     </Content>
     <Resource Include="UI\Images\add_icon.png" />
     <Resource Include="UI\Images\pin.png" />
-    <EmbeddedResource Include="ViewModels\PackageManager\Docs\PublishPackageDocumentation.html" />
     <Resource Include="UI\Images\undock_hover.png" />
     <Resource Include="UI\Images\undock_normal.png" />
     <Resource Include="UI\Images\TitleBarButtons\dock-darktheme-default.png" />
@@ -2042,37 +2067,37 @@
   </Target>
   <Target Name="CopyDocXML" AfterTargets="AfterBuildOps">
 	 <ItemGroup>
-		<DocXMLFiles Include="$(OutputPath)\en-US\**\*.xml"/>
+		<DocXMLFiles Include="$(OutputPath)\en-US\**\*.xml" />
 	</ItemGroup>
-	<Copy SourceFiles="@(DocXMLFiles)" DestinationFolder="$(SolutionDir)..\doc\distrib\xml\en-US" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(DocXMLFiles)" DestinationFolder="$(SolutionDir)..\doc\distrib\xml\en-US" SkipUnchangedFiles="True" />
   </Target>
   <Target Name="CopyDocXMLAllLanguages" AfterTargets="CopyDocXML">
 	 <ItemGroup>
-		<DocXMLCsCZFiles Include="$(SolutionDir)..\doc\distrib\xml\cs-CZ\**\*.xml"/>
-		<DocXMLDeDEFiles Include="$(SolutionDir)..\doc\distrib\xml\de-DE\**\*.xml"/>
-		<DocXMLEsESFiles Include="$(SolutionDir)..\doc\distrib\xml\es-ES\**\*.xml"/>
-		<DocXMLFrFRFiles Include="$(SolutionDir)..\doc\distrib\xml\fr-FR\**\*.xml"/>
-		<DocXMLItITFiles Include="$(SolutionDir)..\doc\distrib\xml\it-IT\**\*.xml"/>
-		<DocXMLJaJPFiles Include="$(SolutionDir)..\doc\distrib\xml\ja-JP\**\*.xml"/>
-		<DocXMLKoKRFiles Include="$(SolutionDir)..\doc\distrib\xml\ko-KR\**\*.xml"/>
-		<DocXMLPlPLFiles Include="$(SolutionDir)..\doc\distrib\xml\pl-PL\**\*.xml"/>
-		<DocXMLPtBRFiles Include="$(SolutionDir)..\doc\distrib\xml\pt-BR\**\*.xml"/>
-		<DocXMLRuRUFiles Include="$(SolutionDir)..\doc\distrib\xml\ru-RU\**\*.xml"/>
-		<DocXMLZhCNFiles Include="$(SolutionDir)..\doc\distrib\xml\zh-CN\**\*.xml"/>
-		<DocXMLZhTWFiles Include="$(SolutionDir)..\doc\distrib\xml\zh-TW\**\*.xml"/>
+		<DocXMLCsCZFiles Include="$(SolutionDir)..\doc\distrib\xml\cs-CZ\**\*.xml" />
+		<DocXMLDeDEFiles Include="$(SolutionDir)..\doc\distrib\xml\de-DE\**\*.xml" />
+		<DocXMLEsESFiles Include="$(SolutionDir)..\doc\distrib\xml\es-ES\**\*.xml" />
+		<DocXMLFrFRFiles Include="$(SolutionDir)..\doc\distrib\xml\fr-FR\**\*.xml" />
+		<DocXMLItITFiles Include="$(SolutionDir)..\doc\distrib\xml\it-IT\**\*.xml" />
+		<DocXMLJaJPFiles Include="$(SolutionDir)..\doc\distrib\xml\ja-JP\**\*.xml" />
+		<DocXMLKoKRFiles Include="$(SolutionDir)..\doc\distrib\xml\ko-KR\**\*.xml" />
+		<DocXMLPlPLFiles Include="$(SolutionDir)..\doc\distrib\xml\pl-PL\**\*.xml" />
+		<DocXMLPtBRFiles Include="$(SolutionDir)..\doc\distrib\xml\pt-BR\**\*.xml" />
+		<DocXMLRuRUFiles Include="$(SolutionDir)..\doc\distrib\xml\ru-RU\**\*.xml" />
+		<DocXMLZhCNFiles Include="$(SolutionDir)..\doc\distrib\xml\zh-CN\**\*.xml" />
+		<DocXMLZhTWFiles Include="$(SolutionDir)..\doc\distrib\xml\zh-TW\**\*.xml" />
 	</ItemGroup>
-	<Copy SourceFiles="@(DocXMLCsCZFiles)" DestinationFolder="$(OutputPath)\cs-CZ\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLDeDEFiles)" DestinationFolder="$(OutputPath)\de-DE\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLEsESFiles)" DestinationFolder="$(OutputPath)\es-ES\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLFrFRFiles)" DestinationFolder="$(OutputPath)\fr-FR\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLItITFiles)" DestinationFolder="$(OutputPath)\it-IT\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLJaJPFiles)" DestinationFolder="$(OutputPath)\ja-JP\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLKoKRFiles)" DestinationFolder="$(OutputPath)\ko-KR\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLPlPLFiles)" DestinationFolder="$(OutputPath)\pl-PL\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLPtBRFiles)" DestinationFolder="$(OutputPath)\pt-BR\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLRuRUFiles)" DestinationFolder="$(OutputPath)\ru-RU\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLZhCNFiles)" DestinationFolder="$(OutputPath)\zh-CN\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(DocXMLZhTWFiles)" DestinationFolder="$(OutputPath)\zh-TW\" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(DocXMLCsCZFiles)" DestinationFolder="$(OutputPath)\cs-CZ\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLDeDEFiles)" DestinationFolder="$(OutputPath)\de-DE\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLEsESFiles)" DestinationFolder="$(OutputPath)\es-ES\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLFrFRFiles)" DestinationFolder="$(OutputPath)\fr-FR\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLItITFiles)" DestinationFolder="$(OutputPath)\it-IT\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLJaJPFiles)" DestinationFolder="$(OutputPath)\ja-JP\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLKoKRFiles)" DestinationFolder="$(OutputPath)\ko-KR\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLPlPLFiles)" DestinationFolder="$(OutputPath)\pl-PL\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLPtBRFiles)" DestinationFolder="$(OutputPath)\pt-BR\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLRuRUFiles)" DestinationFolder="$(OutputPath)\ru-RU\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLZhCNFiles)" DestinationFolder="$(OutputPath)\zh-CN\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(DocXMLZhTWFiles)" DestinationFolder="$(OutputPath)\zh-TW\" SkipUnchangedFiles="True" />
   </Target>
   <Target Name="CopyDocumentationBrowserHTMLFiles" AfterTargets="CopyGuidedTourHTMLFiles">
     <ItemGroup>
@@ -2090,18 +2115,110 @@
 		<HTMLDocBrowZhCNFiles Include="$(SolutionDir)..\doc\distrib\html\zh-CN\DocumentationBrowserViewExtension\**\*.html" />
 		<HTMLDocBrowZhTWFiles Include="$(SolutionDir)..\doc\distrib\html\zh-TW\DocumentationBrowserViewExtension\**\*.html" />
     </ItemGroup>
-    <Copy SourceFiles="@(HTMLDocBrowEnUSFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\en-US" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLDocBrowCsCZFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\cs-CZ" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLDocBrowDeDEFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\de-DE" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLDocBrowEsESFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\es-ES" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLDocBrowFrFRFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\fr-FR" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLDocBrowItITFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\it-IT" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLDocBrowJaJPFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\ja-JP" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLDocBrowKoKRFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\ko-KR" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLDocBrowPlPLFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\pl-PL" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLDocBrowPtBRFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\pt-BR" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLDocBrowRuRUFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\ru-RU" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLDocBrowZhCNFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\zh-CN" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(HTMLDocBrowZhTWFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\zh-TW" SkipUnchangedFiles="True"/>
+    <Copy SourceFiles="@(HTMLDocBrowEnUSFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\en-US" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLDocBrowCsCZFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\cs-CZ" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLDocBrowDeDEFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\de-DE" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLDocBrowEsESFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\es-ES" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLDocBrowFrFRFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\fr-FR" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLDocBrowItITFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\it-IT" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLDocBrowJaJPFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\ja-JP" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLDocBrowKoKRFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\ko-KR" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLDocBrowPlPLFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\pl-PL" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLDocBrowPtBRFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\pt-BR" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLDocBrowRuRUFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\ru-RU" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLDocBrowZhCNFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\zh-CN" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLDocBrowZhTWFiles)" DestinationFolder="$(SolutionDir)\DocumentationBrowserViewExtension\Docs\zh-TW" SkipUnchangedFiles="True" />
+  </Target>
+  <Target Name="CopyPackageManagerHTMLFiles" AfterTargets="CopyDocumentationBrowserHTMLFiles">
+    <ItemGroup>
+		<HTMLPackageManagerEnUSFiles Include="$(SolutionDir)..\doc\distrib\html\en-US\PackageManager\**\*.html" />
+		<HTMLPackageManagerCsCZFiles Include="$(SolutionDir)..\doc\distrib\html\cs-CZ\PackageManager\**\*.html" />
+		<HTMLPackageManagerDeDEFiles Include="$(SolutionDir)..\doc\distrib\html\de-DE\PackageManager\**\*.html" />
+		<HTMLPackageManagerEsESFiles Include="$(SolutionDir)..\doc\distrib\html\es-ES\PackageManager\**\*.html" />
+		<HTMLPackageManagerFrFRFiles Include="$(SolutionDir)..\doc\distrib\html\fr-FR\PackageManager\**\*.html" />
+		<HTMLPackageManagerItITFiles Include="$(SolutionDir)..\doc\distrib\html\it-IT\PackageManager\**\*.html" />
+		<HTMLPackageManagerJaJPFiles Include="$(SolutionDir)..\doc\distrib\html\ja-JP\PackageManager\**\*.html" />
+		<HTMLPackageManagerKoKRFiles Include="$(SolutionDir)..\doc\distrib\html\ko-KR\PackageManager\**\*.html" />
+		<HTMLPackageManagerPlPLFiles Include="$(SolutionDir)..\doc\distrib\html\pl-PL\PackageManager\**\*.html" />
+		<HTMLPackageManagerPtBRFiles Include="$(SolutionDir)..\doc\distrib\html\pt-BR\PackageManager\**\*.html" />
+		<HTMLPackageManagerRuRUFiles Include="$(SolutionDir)..\doc\distrib\html\ru-RU\PackageManager\**\*.html" />
+		<HTMLPackageManagerZhCNFiles Include="$(SolutionDir)..\doc\distrib\html\zh-CN\PackageManager\**\*.html" />
+		<HTMLPackageManagerZhTWFiles Include="$(SolutionDir)..\doc\distrib\html\zh-TW\PackageManager\**\*.html" />
+    </ItemGroup>
+    <Copy SourceFiles="@(HTMLPackageManagerEnUSFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\en-US" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerCsCZFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\cs-CZ" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerDeDEFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\de-DE" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerEsESFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\es-ES" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerFrFRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\fr-FR" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerItITFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\it-IT" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerJaJPFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\ja-JP" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerKoKRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\ko-KR" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerPlPLFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\pl-PL" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerPtBRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\pt-BR" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerRuRUFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\ru-RU" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerZhCNFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\zh-CN" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPackageManagerZhTWFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\zh-TW" SkipUnchangedFiles="True" />
+  </Target>
+  
+  <Target Name="CopyLintingViewExtensionHTMLFiles" AfterTargets="CopyPackageManagerHTMLFiles">
+    <ItemGroup>
+		<HTMLLintingViewExtensionEnUSFiles Include="$(SolutionDir)..\doc\distrib\html\en-US\LinterViewExtension\**\*.html" />
+		<HTMLLintingViewExtensionCsCZFiles Include="$(SolutionDir)..\doc\distrib\html\cs-CZ\LinterViewExtension\**\*.html" />
+		<HTMLLintingViewExtensionDeDEFiles Include="$(SolutionDir)..\doc\distrib\html\de-DE\LinterViewExtension\**\*.html" />
+		<HTMLLintingViewExtensionEsESFiles Include="$(SolutionDir)..\doc\distrib\html\es-ES\LinterViewExtension\**\*.html" />
+		<HTMLLintingViewExtensionFrFRFiles Include="$(SolutionDir)..\doc\distrib\html\fr-FR\LinterViewExtension\**\*.html" />
+		<HTMLLintingViewExtensionItITFiles Include="$(SolutionDir)..\doc\distrib\html\it-IT\LinterViewExtension\**\*.html" />
+		<HTMLLintingViewExtensionJaJPFiles Include="$(SolutionDir)..\doc\distrib\html\ja-JP\LinterViewExtension\**\*.html" />
+		<HTMLLintingViewExtensionKoKRFiles Include="$(SolutionDir)..\doc\distrib\html\ko-KR\LinterViewExtension\**\*.html" />
+		<HTMLLintingViewExtensionPlPLFiles Include="$(SolutionDir)..\doc\distrib\html\pl-PL\LinterViewExtension\**\*.html" />
+		<HTMLLintingViewExtensionPtBRFiles Include="$(SolutionDir)..\doc\distrib\html\pt-BR\LinterViewExtension\**\*.html" />
+		<HTMLLintingViewExtensionRuRUFiles Include="$(SolutionDir)..\doc\distrib\html\ru-RU\LinterViewExtension\**\*.html" />
+		<HTMLLintingViewExtensionZhCNFiles Include="$(SolutionDir)..\doc\distrib\html\zh-CN\LinterViewExtension\**\*.html" />
+		<HTMLLintingViewExtensionZhTWFiles Include="$(SolutionDir)..\doc\distrib\html\zh-TW\LinterViewExtension\**\*.html" />
+    </ItemGroup>
+    <Copy SourceFiles="@(HTMLLintingViewExtensionEnUSFiles)" DestinationFolder="$(SolutionDir)\LintingViewExtension\Docs\en-US" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLLintingViewExtensionCsCZFiles)" DestinationFolder="$(SolutionDir)\LintingViewExtension\Docs\cs-CZ" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLLintingViewExtensionDeDEFiles)" DestinationFolder="$(SolutionDir)\LintingViewExtension\Docs\de-DE" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLLintingViewExtensionEsESFiles)" DestinationFolder="$(SolutionDir)\LintingViewExtension\Docs\es-ES" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLLintingViewExtensionFrFRFiles)" DestinationFolder="$(SolutionDir)\LintingViewExtension\Docs\fr-FR" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLLintingViewExtensionItITFiles)" DestinationFolder="$(SolutionDir)\LintingViewExtension\Docs\it-IT" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLLintingViewExtensionJaJPFiles)" DestinationFolder="$(SolutionDir)\LintingViewExtension\Docs\ja-JP" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLLintingViewExtensionKoKRFiles)" DestinationFolder="$(SolutionDir)\LintingViewExtension\Docs\ko-KR" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLLintingViewExtensionPlPLFiles)" DestinationFolder="$(SolutionDir)\LintingViewExtension\Docs\pl-PL" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLLintingViewExtensionPtBRFiles)" DestinationFolder="$(SolutionDir)\LintingViewExtension\Docs\pt-BR" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLLintingViewExtensionRuRUFiles)" DestinationFolder="$(SolutionDir)\LintingViewExtension\Docs\ru-RU" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLLintingViewExtensionZhCNFiles)" DestinationFolder="$(SolutionDir)\LintingViewExtension\Docs\zh-CN" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLLintingViewExtensionZhTWFiles)" DestinationFolder="$(SolutionDir)\LintingViewExtension\Docs\zh-TW" SkipUnchangedFiles="True" />
+  </Target>
+  
+  <Target Name="CopyPythonNodeModelsHTMLFiles" AfterTargets="CopyLintingViewExtensionHTMLFiles">
+    <ItemGroup>
+		<HTMLPythonNodeModelsEnUSFiles Include="$(SolutionDir)..\doc\distrib\html\en-US\PythonNodeModels\**\*.html" />
+		<HTMLPythonNodeModelsCsCZFiles Include="$(SolutionDir)..\doc\distrib\html\cs-CZ\PythonNodeModels\**\*.html" />
+		<HTMLPythonNodeModelsDeDEFiles Include="$(SolutionDir)..\doc\distrib\html\de-DE\PythonNodeModels\**\*.html" />
+		<HTMLPythonNodeModelsEsESFiles Include="$(SolutionDir)..\doc\distrib\html\es-ES\PythonNodeModels\**\*.html" />
+		<HTMLPythonNodeModelsFrFRFiles Include="$(SolutionDir)..\doc\distrib\html\fr-FR\PythonNodeModels\**\*.html" />
+		<HTMLPythonNodeModelsItITFiles Include="$(SolutionDir)..\doc\distrib\html\it-IT\PythonNodeModels\**\*.html" />
+		<HTMLPythonNodeModelsJaJPFiles Include="$(SolutionDir)..\doc\distrib\html\ja-JP\PythonNodeModels\**\*.html" />
+		<HTMLPythonNodeModelsKoKRFiles Include="$(SolutionDir)..\doc\distrib\html\ko-KR\PythonNodeModels\**\*.html" />
+		<HTMLPythonNodeModelsPlPLFiles Include="$(SolutionDir)..\doc\distrib\html\pl-PL\PythonNodeModels\**\*.html" />
+		<HTMLPythonNodeModelsPtBRFiles Include="$(SolutionDir)..\doc\distrib\html\pt-BR\PythonNodeModels\**\*.html" />
+		<HTMLPythonNodeModelsRuRUFiles Include="$(SolutionDir)..\doc\distrib\html\ru-RU\PythonNodeModels\**\*.html" />
+		<HTMLPythonNodeModelsZhCNFiles Include="$(SolutionDir)..\doc\distrib\html\zh-CN\PythonNodeModels\**\*.html" />
+		<HTMLPythonNodeModelsZhTWFiles Include="$(SolutionDir)..\doc\distrib\html\zh-TW\PythonNodeModels\**\*.html" />
+    </ItemGroup>
+    <Copy SourceFiles="@(HTMLPythonNodeModelsEnUSFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\en-US" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPythonNodeModelsCsCZFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\cs-CZ" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPythonNodeModelsDeDEFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\de-DE" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPythonNodeModelsEsESFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\es-ES" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPythonNodeModelsFrFRFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\fr-FR" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPythonNodeModelsItITFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\it-IT" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPythonNodeModelsJaJPFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\ja-JP" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPythonNodeModelsKoKRFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\ko-KR" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPythonNodeModelsPlPLFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\pl-PL" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPythonNodeModelsPtBRFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\pt-BR" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPythonNodeModelsRuRUFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\ru-RU" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPythonNodeModelsZhCNFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\zh-CN" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(HTMLPythonNodeModelsZhTWFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\zh-TW" SkipUnchangedFiles="True" />
   </Target>
 </Project>

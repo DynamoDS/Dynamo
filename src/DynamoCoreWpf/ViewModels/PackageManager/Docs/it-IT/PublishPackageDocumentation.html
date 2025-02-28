@@ -1,0 +1,67 @@
+﻿<!--
+    Dynamo: https://github.com/DynamoDS/Dynamo
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code  .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h3>Package Manager</h3>
+    <p>Dynamo Package Manager è un unico punto di riferimento per la ricerca, l'installazione e la pubblicazione di pacchetti. È possibile accedervi tramite la navigazione nella parte superiore in Pacchetti &gt; Package Manager.</p>
+    <h4>Che cosa sono i pacchetti?</h4>
+    <p>Dynamo offre numerose funzionalità pronte all'uso e dispone di un'ampia libreria di pacchetti che possono estendere in modo significativo le capacità del programma. Un pacchetto è una raccolta di nodi personalizzati o funzionalità aggiuntive. Dynamo Package Manager è un portale per la comunità in cui scaricare qualsiasi pacchetto pubblicato in linea. Questi set di strumenti sono sviluppati da terze parti per estendere le funzionalità principali di Dynamo, accessibili a tutti e pronti per il download con un semplice clic .</p>
+    <h4>Installazione dei pacchetti di Dynamo</h4>
+    <p>È possibile cercare e installare i pacchetti nella scheda Cerca pacchetti di Package Manager. Utilizzare il campo di ricerca per individuare pacchetti specifici. È inoltre possibile applicare filtri e un ordinamento per restringere l'elenco in modo da soddisfare criteri specifici, ad esempio un programma host o la mancanza di dipendenze.</p>
+    <p>Per visualizzare ulteriori informazioni su un pacchetto, fare clic su Visualizza dettagli. Viene visualizzato un pannello in cui è possibile leggere una descrizione del pacchetto, trovare le informazioni sulla versione e sulla licenza e altro ancora.</p>
+    <p>Per installare un pacchetto, fare clic su Installa nella vista di ricerca o nel pannello dei dettagli. È possibile specificare una versione da installare nella vista di ricerca facendo clic sul menu a discesa e selezionando una versione; in caso contrario, verrà installata la versione più recente. Nel pannello dei dettagli del pacchetto, fare clic su Installa sotto una versione specifica nella tabella Versioni e requisiti di pacchetti per installare tale versione.</p>
+    <p>È possibile trovare un elenco dei pacchetti installati nella scheda Pacchetti installati di Package Manager. In questa scheda è possibile visualizzare i file di pacchetto, disinstallare i pacchetti e molto altro.</p>
+    <h4>Pubblicazione di pacchetti Dynamo</h4>
+    <p>Package Manager consente di pubblicare i pacchetti all'interno di Dynamo. Aprire la scheda Pubblica un pacchetto per iniziare. Nella scheda Pubblica un pacchetto vengono richieste tutte le informazioni obbligatorie e facoltative relative al pacchetto che si desidera pubblicare.</p>
+
+    <h4>Aggiunta di dettagli del pacchetto</h4>
+
+    <p><b>Nome pacchetto:</b><br/> Nome del pacchetto che si desidera pubblicare. Comparirà nella libreria, nella ricerca di pacchetti e nel sito Web di Package Manager. I nomi dei pacchetti devono contenere almeno 3 caratteri.</p>
+    <p><b>Descrizione:</b><br/> La descrizione è lo spazio ideale per aggiungere ulteriori dettagli sul pacchetto, inclusi l'elenco di eventuali eccezioni e prerequisiti. Consente anche di spiegare agli utenti come funziona il pacchetto e come può essere utilizzato nelle loro aree di lavoro.</p>
+    <p><b>Versione:</b><br/> Il campo relativo alla versione è suddiviso in tre sezioni, principale, secondaria e build, che consentono all'autore di un pacchetto di caricare nuove versioni del pacchetto stesso che seguono la semantica di controllo delle versioni. Gli autori possono voler pubblicare più versioni per i loro pacchetti con funzionalità nuove e migliorate, perfezionare alcuni aspetti che erano stati tralasciati nella prima versione o correggere un difetto.</p>
+    <p><b>Host:</b><br/> Se il pacchetto si basa su un programma host, ad esempio Revit, Civil 3D, Alias o altri, è possibile selezionare uno o più host dal menu a discesa. Durante la ricerca di pacchetti, gli utenti possono filtrare i risultati in base all'host per individuare i pacchetti progettati per funzionare con i loro programmi preferiti.</p>
+    <p><b>Parole chiave (facoltativo):</b><br/> Parole chiave che possono essere utilizzate come etichette correlate al pacchetto, ad esempio Progettazione generativa, ML e così via. È possibile digitare più parole chiave nel campo contemporaneamente separandole con il tasto BARRA SPAZIATRICE, quindi premendo INVIO.</p>
+    <p><b>Gruppo (facoltativo):</b><br/> Questo campo può essere utilizzato per specificare un gruppo a cui appartiene un pacchetto, ad esempio la società/l'organizzazione.</p>
+    <p><b>Sito Web (facoltativo):</b><br/> Collegamento ad un sito Web che può fornire all'utente ulteriori informazioni sul pacchetto o sull'organizzazione/autore.</p>
+    <p><b>URL del repository (facoltativo):</b><br/> Collegamento al repository del pacchetto che consente agli utenti di visualizzare il pacchetto o contribuirne allo sviluppo.</p>
+    <p><b>Licenza (facoltativo):</b><br/> Licenza con cui viene rilasciato il pacchetto. Licenza di default: MIT.</p>
+    <p><b>Titolare del copyright (facoltativo):</b><br/> Nome della persona che detiene il copyright del pacchetto. Se il campo viene lasciato vuoto, per default viene utilizzato il nome utente.</p>
+    <p><b>Anno del copyright (facoltativo):</b><br/> Anno del copyright del pacchetto. Se il campo viene lasciato vuoto, per default viene utilizzato l'anno di pubblicazione del pacchetto.</p>
+
+    <h4>Aggiunta di file di pacchetto</h4>
+
+    <p><b>Contenuto pacchetto:</b><br/> Questa sezione, situata sulla barra laterale destra della scheda Pubblica un pacchetto, consente di organizzare il contenuto del pacchetto prima della pubblicazione.</p>
+    <p><b>Aggiungi file/directory:</b><br/><p>Selezionare e aggiungere tutti i file correlati al pacchetto. In genere, vengono aggiunte la cartella bin, i file binari e le dipendenze. È possibile aggiungere singoli file o cartelle.</p>
+    <p>Dopo aver selezionato i file o le cartelle da aggiungere, è possibile visualizzare, rimuovere o aggiungere file nella pagina Seleziona contenuto pacchetto. È possibile visualizzare la struttura delle cartelle dei file selezionati nel pannello sinistro e il contenuto di ciascuna cartella nel pannello destro.</p>
+    <p><b>Seleziona librerie di nodi:</b><br/><p>Specificare quali file aggiunti al pacchetto sono librerie di nodi selezionando la casella nella colonna Libreria di nodi. Le librerie di nodi contengono i tipi e i metodi che Dynamo importerà come nodi. In generale, è necessario contrassegnare qualsiasi assieme come libreria di nodi che contiene i tipi che si desidera importare in Dynamo. Gli assiemi zeroTouch, NodeModel o NodeViewCustomization devono essere contrassegnati come libreria di nodi.</p>
+    <p>Per caricare i tipi NodeViewCustomization dell'interfaccia utente, è necessario definirli nello stesso assieme che contiene le definizioni NodeModel corrispondenti OPPURE definirli in un assieme separato. In entrambi i casi, l'assieme deve essere contrassegnato come libreria di nodi. Attualmente, per gli assiemi contrassegnati come libreria di nodi contenenti tipi NodeModel o NodeCustomization, tutti gli altri tipi verranno ignorati. Per questo motivo, è importante separare i tipi NodeModel/NodeViewCustomization dai tipi che si desidera importare utilizzando l'importazione ZeroTouch.</p>
+    </p>
+    <p><b>Mantieni struttura delle cartelle:</b><br/><p>Gli autori del pacchetto con strutture complesse delle cartelle di pacchetti possono attivare il pulsante di commutazione Mantieni struttura delle cartelle sotto il pannello di anteprima del contenuto del pacchetto. Questa impostazione è attivata per default quando un utente pubblica una nuova versione di un pacchetto esistente; in questo caso Dynamo non apporterà modifiche alla struttura delle cartelle del pacchetto, ma il pacchetto verrà caricato così com'è.</p>
+        <p>Se è necessario impostare il pacchetto in un determinato modo per garantirne il funzionamento ed evitare eventuali problemi, attivare l'impostazione. In caso di dubbi o di pubblicazione di un nuovo pacchetto, disattivare l'impostazione per consentire a Dynamo di impostare la struttura delle cartelle.</p>
+    </p>
+    <p><b>Anteprima contenuto del pacchetto:</b><br/> Quando si è soddisfatti del contenuto del pacchetto, fare clic su Avanti per visualizzare un'anteprima dell'impostazione dei file di pacchetto una volta pubblicati. Questa pagina è di sola lettura. Per apportare ulteriori modifiche al contenuto del pacchetto, tornare alla pagina precedente. Fare clic su Fine per tornare alla pagina Dettagli pacchetto.</p>
+    <p><b>Aggiungi percorso file Markdown (facoltativo):</b><br/> È possibile specificare un percorso di file che ospita la documentazione Markdown (.md) per il pacchetto nella sezione Percorso dei file Markdown.</p>
+    <p><b>Pubblicazione del pacchetto</b><br/> Dopo aver compilato tutti i dettagli richiesti, è possibile pubblicare il pacchetto localmente o in linea. Quando si esegue la pubblicazione in locale, il pacchetto verrà pubblicato nella directory principale locale, mentre quando si esegue la pubblicazione in linea, il pacchetto verrà caricato in Package Manager.</p>
+
+    <hr />
+
+    <h3>Scansioni antivirus</h3>
+    <p>Per fornire un ambiente sicuro a tutti gli utenti di pacchetti Dynamo, sono state introdotte scansioni antivirus per nuovi pacchetti. Quando un utente carica un pacchetto, viene eseguita la scansione per rilevare eventuali virus e tale pacchetto sarà disponibile pubblicamente solo dopo che è stato contrassegnato come sicuro. La scansione verrà eseguita durante il processo di caricamento del pacchetto e non si aggiungerà ai 10-15 minuti solitamente necessari per rendere disponibile online il nuovo pacchetto. Se il pacchetto è contrassegnato come infettato, nella pagina di ricerca di Package Manager viene visualizzata una notifica che indica che il pacchetto caricato è stato trovato infettato e non verrà pubblicato in linea. Per rendere disponibile pubblicamente il pacchetto, verificare i file inclusi nel pacchetto e caricare una nuova versione tramite Package Manager.</p>
+    <h3>Gestione dei pacchetti</h3>
+    <p>È possibile trovare un elenco dei pacchetti pubblicati nella scheda Pacchetti personali di Package Manager, in cui è possibile renderli obsoleti, pubblicare una nuova versione e così via.</p>
+    <h3>Impostazioni pacchetto</h3>
+    <p>È possibile visualizzare le impostazioni correlate al pacchetto nella scheda Impostazioni pacchetto di Package Manager, inclusi i nuovi percorsi di download dei pacchetti e i percorsi di ricerca di pacchetti/librerie. Per modificare le impostazioni, fare clic sul collegamento Preferenze nella scheda Impostazioni pacchetto per accedere al pannello Preferenze.</p>
+</body>
