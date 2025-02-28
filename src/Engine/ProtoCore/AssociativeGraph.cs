@@ -57,7 +57,12 @@ namespace ProtoCore.AssociativeEngine
             {
                 return;
             }
-
+            for (int i = 0; i < graphNodesInScope.Count; ++i)
+            {
+                AssociativeGraph.GraphNode currentNode = graphNodesInScope[i];
+                currentNode.ParentNodes.Clear();
+                currentNode.ChildrenNodes.Clear();
+            }
             // Get the current graphnode to check against the list
             //  [a = 10]  -> this one
             //  c = 1
@@ -967,33 +972,32 @@ namespace ProtoCore.AssociativeGraph
             Stack<GraphNode> stack = new Stack<GraphNode>();
             stack.Push(this);
 
-            var visited = graphNodes.ToDictionary(node => node, node => false);
+            var visited = new HashSet<int>();
 
-            var guids = new List<Guid>();
+            var guids = new HashSet<Guid>();
             while(stack.Any())
             {
                 var node = stack.Pop();
-                if (!visited[node])
+                if (!visited.Contains(node.UID))
                 {
                     guids.Add(node.guid);
                     if (node.isCyclic)
                     {
                         node.isCyclic = false;
                         node.isActive = true;
-
                     }
-                    visited[node] = true;
+                    visited.Add(node.UID);
                 }
 
                 foreach(var cNode in node.ChildrenNodes)
                 {
-                    if (!visited[cNode])
+                    if (!visited.Contains(cNode.UID))
                     {
                         stack.Push(cNode);
                     }
                 }
             }
-            return guids;
+            return guids.ToList();
         }
 
         public void PushDependent(GraphNode dependent)
@@ -1498,6 +1502,28 @@ namespace ProtoCore.AssociativeGraph
             uint ci = (uint)classIndex;
             uint pi = (uint)procIndex;
             return (((ulong)ci) << 32) | pi;
+        }
+
+        public void Purge(List<AST.AssociativeAST.AssociativeNode> oldNodes)
+        {
+            HashSet<Guid> oldGuids = [];
+            foreach (AST.AssociativeAST.AssociativeNode astNode in oldNodes)
+            {
+                var x = (astNode as AST.AssociativeAST.BinaryExpressionNode)?.guid;
+                if (x != null)
+                {
+                    oldGuids.Add(x.Value);
+                }
+            }
+            if(oldGuids.Count == 0)
+            {
+                return;
+            }
+            List<GraphNode> nodeList;
+            if(graphNodeMap.TryGetValue(GetGraphNodeKey(Constants.kInvalidPC, Constants.kInvalidPC), out nodeList))
+            {
+                nodeList.RemoveAll(node => oldGuids.Contains(node.guid));
+            }
         }
 
         public DependencyGraph(Core core)

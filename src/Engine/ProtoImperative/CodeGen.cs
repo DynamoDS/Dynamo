@@ -2543,7 +2543,7 @@ namespace ProtoImperative
             //AppendInstruction(instr);
         }
 
-        protected override void EmitReturnNull()
+        protected override void EmitReturnNull(Guid? guid = null)
         {
             EmitPushNull();
             EmitReturnToRegister();
