@@ -998,7 +998,7 @@ namespace Dynamo.Graph.Nodes
         /// <summary>
         /// A flag indicating whether the node is in transient mode.
         /// When a node is in transient mode, the node will not participate in execution,
-        /// Or saved to the graph. It is only used for previewing the AutoComplete cluster in the canvas.
+        /// Or saved to the graph. It is only used for previewing the AutoComplete result in the canvas.
         /// </summary>
         public bool IsTransient
         {
