@@ -628,7 +628,7 @@
                 Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <!--  Displays when the node cluster is Preivew state and Zoom is above 0.4 -->
-        <Border Name="nodePreviewColorOverlayZoomIn"
+        <Border Name="nodeTransientColorOverlayZoomIn"
                 Grid.Row="1"
                 Grid.RowSpan="4"
                 Grid.ColumnSpan="3"
