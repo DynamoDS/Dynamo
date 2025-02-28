@@ -1,7 +1,13 @@
 using System;
 using System.Collections.Generic;
 using Dynamo.Events;
+using Dynamo.Interfaces;
+using Dynamo.Models;
+using Dynamo.Scheduler;
+using Greg;
+using Greg.AuthProviders;
 using NUnit.Framework;
+using RestSharp;
 
 namespace Dynamo.Tests.Configuration
 {
@@ -10,6 +16,7 @@ namespace Dynamo.Tests.Configuration
     {
         private TimeSpan lastExecutionDuration = new TimeSpan();
         private IEnumerable<string> packagePaths;
+        private object authprovider;
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -20,6 +27,49 @@ namespace Dynamo.Tests.Configuration
             libraries.Add("DSCPython.dll");
             libraries.Add("FunctionObject.ds");
             base.GetLibrariesToPreload(libraries);
+        }
+      
+        protected override DynamoModel.IStartConfiguration CreateStartConfiguration(IPreferences settings)
+        {
+            return new DynamoModel.DefaultStartConfiguration()
+            {
+                PathResolver = pathResolver,
+                StartInTestMode = true,
+                GeometryFactoryPath = preloader.GeometryFactoryPath,
+                Preferences = settings,
+                ProcessMode = TaskProcessMode.Synchronous,
+                AuthProvider = new MockTokenProvider()
+            };
+        }
+
+        private class MockTokenProvider : IAuthProvider, IOAuth2AccessTokenProvider
+        {
+            public LoginState LoginState => LoginState.LoggedIn;
+
+            public string Username => throw new NotImplementedException();
+
+            public event Func<object, bool> RequestLogin;
+            public event Action<LoginState> LoginStateChanged;
+
+            public string GetAccessToken()
+            {
+                return "faketoken";
+            }
+
+            public bool Login()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void Logout()
+            {
+                throw new NotImplementedException();
+            }
+
+            public void SignRequest(ref RestRequest m, RestClient client)
+            {
+                throw new NotImplementedException();
+            }
         }
 
         [OneTimeSetUp]
@@ -46,9 +96,20 @@ namespace Dynamo.Tests.Configuration
             ExecutionEvents.GraphPreExecution -= ExecutionEvents_GraphPreExecution;
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void TestExecutionSessionAuthProvider()
+        {
+            ExecutionEvents.GraphPreExecution += ExecutionEvents_GraphPreExecution;
+            RunModel(@"core\HomogeneousList\HomogeneousInputsValid.dyn");
+            Assert.IsInstanceOf<IOAuth2AccessTokenProvider>(authprovider, $"was not an instance of {nameof(IOAuth2AccessTokenProvider)}");
+            ExecutionEvents.GraphPreExecution -= ExecutionEvents_GraphPreExecution;
+        }
+
         private void ExecutionEvents_GraphPreExecution(Session.IExecutionSession session)
         {
             packagePaths = ExecutionEvents.ActiveSession.GetParameterValue(Session.ParameterKeys.PackagePaths) as IEnumerable<string>;
+            authprovider = ExecutionEvents.ActiveSession.GetParameterValue(Session.ParameterKeys.AuthTokenProvider);
 
         }
         
