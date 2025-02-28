@@ -480,6 +480,13 @@ namespace Dynamo.ViewModels
 
             // Bail out from connect state
             wsViewModel.CancelActiveState();
+
+            if (PortModel != null && !PortModel.CanAutoCompleteInput())
+            {
+                return;
+            }
+
+
             wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
         }
 
@@ -500,6 +507,11 @@ namespace Dynamo.ViewModels
             // Bail out from connect state
             wsViewModel.CancelActiveState();
 
+            if (PortModel != null && !PortModel.CanAutoCompleteInput())
+            {
+                return;
+            }
+            
             // Create mock nodes, currently Watch nodes (to avoid potential memory leak from Python Editor), and connect them to the input port
             var targetNodeSearchEle = wsViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.ToList()[5];
             targetNodeSearchEle.CreateAndConnectCommand.Execute(wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel);
