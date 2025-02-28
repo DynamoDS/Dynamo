@@ -256,7 +256,7 @@ namespace Dynamo.Scheduler
         {
             var nodesToUpdate = new List<NodeModel>();
             //Get those modified nodes that are not frozen or preview states
-            foreach (var node in workspace.Nodes.Where(n => n.IsModified && !n.IsFrozen && !n.IsPreview))
+            foreach (var node in workspace.Nodes.Where(n => n.IsModified && !n.IsFrozen && !n.IsTransient))
             {
                 GetDownstreamNodes(node, nodesToUpdate);
             }

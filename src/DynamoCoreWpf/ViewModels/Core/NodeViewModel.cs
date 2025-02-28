@@ -629,8 +629,8 @@ namespace Dynamo.ViewModels
         [JsonIgnore]
         public bool IsPreview
         {
-            set { NodeModel.IsPreview = value; }
-            get { return NodeModel.IsPreview; }
+            set { NodeModel.IsTransient = value; }
+            get { return NodeModel.IsTransient; }
         }
 
         /// <summary>
