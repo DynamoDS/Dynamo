@@ -633,7 +633,7 @@
                 Grid.RowSpan="4"
                 Grid.ColumnSpan="3"
                 Margin="-8"
-                Background="{StaticResource NodePreviewOverlayColor}"
+                Background="{StaticResource NodeTransientOverlayColor}"
                 Canvas.ZIndex="6"
                 CornerRadius="8,8,0,0"
                 IsHitTestVisible="False"

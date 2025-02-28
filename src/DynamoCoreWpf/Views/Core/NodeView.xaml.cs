@@ -545,7 +545,7 @@ namespace Dynamo.Controls
             return !ViewModel.DynamoViewModel.ShowPreviewBubbles ||
                 ViewModel.WorkspaceViewModel.IsConnecting ||
                 ViewModel.WorkspaceViewModel.IsSelecting || !previewEnabled ||
-                !ViewModel.IsPreviewInsetVisible || ViewModel.IsFrozen || viewModel.IsPreview;
+                !ViewModel.IsPreviewInsetVisible || ViewModel.IsFrozen || viewModel.IsTransient;
         }
 
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)

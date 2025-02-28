@@ -624,10 +624,10 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Return a value indicating whether this node is in preview state.
+        /// Return a value indicating whether this node is in transient state.
         /// </summary>
         [JsonIgnore]
-        public bool IsPreview
+        public bool IsTransient
         {
             set { NodeModel.IsTransient = value; }
             get { return NodeModel.IsTransient; }
@@ -1315,7 +1315,7 @@ namespace Dynamo.ViewModels
         private static SolidColorBrush nodeCustomColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#B385F2"));
         private static SolidColorBrush nodePreviewGeometryColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BBBBBB"));
         private static SolidColorBrush nodeFrozenOverlayColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BCD3EE"));
-        private static SolidColorBrush nodePreviewOverlayColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#D5BCF7"));
+        private static SolidColorBrush nodeTransientOverlayColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#D5BCF7"));
         private static SolidColorBrush nodeInfoColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#6AC0E7"));        
 
         /// <summary>
@@ -1413,9 +1413,9 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            if (this.IsPreview)
+            if (this.IsTransient)
             {
-                result = nodePreviewOverlayColor;
+                result = nodeTransientOverlayColor;
                 if (result != null)
                 {
                     if (ImgGlyphOneSource == null)
