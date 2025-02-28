@@ -273,7 +273,7 @@ namespace Dynamo.Scheduler
         /// 
         private static void GetDownstreamNodes(NodeModel node, ICollection<NodeModel> gathered)
         {
-            if (gathered.Contains(node) || node.IsFrozen) // Considered this node before, bail.pu
+            if (gathered.Contains(node) || node.IsFrozen || node.IsTransient) // Considered this node before, bail.pu
                 return;
 
             gathered.Add(node);
