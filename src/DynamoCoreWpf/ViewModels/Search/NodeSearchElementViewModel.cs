@@ -356,6 +356,10 @@ namespace Dynamo.Wpf.ViewModels
             return new Rect2D(minX, minY, maxX - minX, maxY - minY);
         }
 
+        // Determines whether an AutoLayout operation is needed for originalNode and its connected inputs or outputs.
+        // This is based on whether the input or output nodes connected to the originalNode intersect with other nodes in the model.
+        // If intersections occur, the function identifies the newly intersected nodes and returns true considering
+        // an additional AutoLayout operation is needed.
         private bool AutoLayoutNeeded(NodeModel originalNode, IEnumerable<NodeModel> allNodes, bool newInput, out List<NodeModel> intersectedNodes)
         {
             //Collect all connected input or output nodes from the original node.
@@ -412,6 +416,8 @@ namespace Dynamo.Wpf.ViewModels
             return realIntersection;
         }
 
+        // We want to perform an AutoLayout operation only after all nodes have updated their UI.
+        // Therefore, we will queue the AutoLayout operation to execute during the next idle event.
         private void PostAutoLayoutNodes(object sender, EventArgs e)
         {
             var nodeView = sender as NodeView;

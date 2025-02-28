@@ -507,7 +507,7 @@ namespace Dynamo.ViewModels
             // Bail out from connect state
             wsViewModel.CancelActiveState();
 
-            if (!CanAutoComplete(null))
+            if (PortModel != null && !PortModel.CanAutoCompleteInput())
             {
                 return;
             }
