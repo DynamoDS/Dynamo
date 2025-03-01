@@ -214,5 +214,28 @@ namespace DynamoUtilities
                 }
             }
         }
+
+        internal void PushToFrontAndTrimExcess(T item, int maxNumItems = -1)
+        {
+            using (DeferCollectionNotification(NotifyCollectionChangedAction.Reset, Items.ToList()))
+            {
+                var index = Items.IndexOf(item);
+                if (index > 0)
+                {
+                    RemoveAt(index);
+                }
+                Insert(0, item);
+
+                if (maxNumItems > 0 && Items.Count > maxNumItems)
+                {
+                    var toRemove = Items.Count - maxNumItems;
+                    while (toRemove > 0)
+                    {
+                        toRemove--;
+                        RemoveAt(Items.Count - 1);
+                    }
+                }
+            }
+        }
     }
 }
