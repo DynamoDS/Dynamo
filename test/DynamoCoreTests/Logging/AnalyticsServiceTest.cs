@@ -17,6 +17,7 @@ namespace Dynamo.Tests.Loggings
         {
             var versions = new List<Version>(){
 
+                    new Version(231, 0,0),
                     new Version(230, 0,0),
             };
 
@@ -73,6 +74,7 @@ namespace Dynamo.Tests.Loggings
         {
             var versions = new List<Version>(){
 
+                    new Version(231, 0,0),
                     new Version(230, 0,0),
             };
 
