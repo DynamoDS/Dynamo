@@ -307,6 +307,9 @@ namespace Dynamo.PackageManager
         /// <value>
         /// A string of space-delimited keywords</value>
         private string _Keywords = "";
+
+        private static readonly Regex keyWordsRegex = new Regex(@"[ ]{2,}", RegexOptions.None | RegexOptions.Compiled);
+
         public string Keywords
         {
             get { return _Keywords; }
@@ -315,9 +318,7 @@ namespace Dynamo.PackageManager
                 if (_Keywords != value)
                 {
                     value = value.Replace(',', ' ').ToLower();
-                    var options = RegexOptions.None;
-                    var regex = new Regex(@"[ ]{2,}", options);
-                    value = regex.Replace(value, @" ");
+                    value = keyWordsRegex.Replace(value, @" ");
 
                     _Keywords = value;
                     RaisePropertyChanged("Keywords");
@@ -2319,9 +2320,9 @@ namespace Dynamo.PackageManager
         }
 
         private static readonly Regex UserIsNotAMaintainerRegex =
-            new Regex("^The user sending the new package version, ([^,]+), is not a maintainer of the package (.*)$");
+            new Regex("^The user sending the new package version, ([^,]+), is not a maintainer of the package (.*)$", RegexOptions.Compiled);
         private static readonly Regex PackageAlreadyExistsRegex =
-            new Regex("^A package with the given name and engine already exists\\.$");
+            new Regex("^A package with the given name and engine already exists\\.$", RegexOptions.Compiled);
 
         /// <summary>
         /// Inspects an error message to see if it matches a known Package Manager error message. If it does,

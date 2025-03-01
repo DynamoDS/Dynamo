@@ -1079,6 +1079,9 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private const string guidRegexStr = @"([0-9a-f-]{32}).*?";
+        private static Regex guidRegex = new Regex(guidRegexStr, RegexOptions.None | RegexOptions.Compiled);
+
         /// <summary>
         /// Handler for the EngineController's AstBuilt event.
         /// Formats a string of AST for preview on the node.
@@ -1095,13 +1098,8 @@ namespace Dynamo.ViewModels
                 foreach (var assocNode in e.AstNodes)
                 {
                     var pretty = assocNode.ToString();
-
                     //shorten the guids
-                    var strRegex = @"([0-9a-f-]{32}).*?";
-                    var myRegex = new Regex(strRegex, RegexOptions.None);
-                    string strTargetString = assocNode.ToString();
-
-                    foreach (Match myMatch in myRegex.Matches(strTargetString))
+                    foreach (Match myMatch in guidRegex.Matches(pretty))
                     {
                         if (myMatch.Success)
                         {
