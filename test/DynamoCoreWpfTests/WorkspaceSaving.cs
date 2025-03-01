@@ -856,6 +856,37 @@ namespace Dynamo.Tests
             System.IO.File.Delete(newPath);
         }
 
+        [Test]
+        [Category("UnitTests")]
+        public void EnsureSavePromptOnRecentGraphOpen()
+        {
+            // Open an existing graph
+            string openPath = Path.Combine(TestDirectory, @"UI\GroupTest.dyn");
+            ViewModel.OpenCommand.Execute(openPath);
+
+            // Assert workspace is opened
+            Assert.IsNotNull(ViewModel.Model.CurrentWorkspace);
+
+            // Mark workspace as having unsaved changes
+            ViewModel.Model.CurrentWorkspace.HasUnsavedChanges = true;
+            Assert.IsTrue(ViewModel.Model.CurrentWorkspace.HasUnsavedChanges);
+
+            // Move to Home workspace
+            ViewModel.ShowStartPage = true;
+            Assert.IsTrue(ViewModel.ShowStartPage);
+
+            // Attempt to open a recent file
+            var eventCount = 0;
+            var handler = new WorkspaceSaveEventHandler((o, e) => { eventCount++; });
+            ViewModel.RequestUserSaveWorkflow += handler;
+            ViewModel.OpenRecentCommand.Execute(openPath);
+            ViewModel.RequestUserSaveWorkflow -= handler;
+
+            // Assert save prompt was triggered and the workspace was opened
+            Assert.AreEqual(1, eventCount);
+            Assert.AreEqual(openPath, ViewModel.Model.CurrentWorkspace.FileName);
+        }
+
         #region CustomNodeWorkspaceModel SaveAs side effects
 
         [Test]
