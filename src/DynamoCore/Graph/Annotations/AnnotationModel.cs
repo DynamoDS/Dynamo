@@ -171,53 +171,15 @@ namespace Dynamo.Graph.Annotations
             }
         }
 
-        private HashSet<ModelBase> nodes;
+        private Dictionary<Guid, ModelBase> nodes;
+
         /// <summary>
         /// Returns collection of models (nodes and notes) which the group contains
         /// </summary>
         public IEnumerable<ModelBase> Nodes
         {
-            get { return nodes; }
-            set
-            {
-                // Unsubscribe all content in group before
-                // overwriting with the new content.
-                // If we dont do this we end up with
-                // lots of memory leaks that eventually will
-                // lead to a stackoverflow exception
-                if (nodes != null && nodes.Any())
-                {
-                    foreach (var model in nodes)
-                    {
-                        model.PropertyChanged -= model_PropertyChanged;
-                        model.Disposed -= model_Disposed;
-                    }
-                }
-
-                // First separate all pins from the input
-                var pinModels = value.OfType<ConnectorPinModel>().ToList();
-                var valuesWithoutPins = value.Except(pinModels);
-
-                // Then recalculate which pins belong to the group based on the nodes
-                var pinsFromNodes = GetPinsFromNodes(valuesWithoutPins.OfType<NodeModel>());
-
-                // Then filter out pins that have been marked as removed
-                pinsFromNodes = pinsFromNodes.Where(p => !removedPins.Contains(p.GUID)).ToArray();  
-
-                // Combine all
-                nodes = valuesWithoutPins.Concat(pinModels).Concat(pinsFromNodes).ToHashSet<ModelBase>();
-
-                if (nodes != null && nodes.Any())
-                {
-                    foreach (var model in nodes)
-                    {
-                        model.PropertyChanged += model_PropertyChanged;
-                        model.Disposed += model_Disposed;
-                    }
-                }
-                UpdateBoundaryFromSelection();
-                RaisePropertyChanged(nameof(Nodes));
-            }
+            get { return nodes.Values; }
+            set { ReplaceNodes(value); }
         }
 
         /// <summary>
@@ -400,7 +362,7 @@ namespace Dynamo.Graph.Annotations
         /// <summary>
         /// Checks if this group contains any nested groups.
         /// </summary>
-        public bool HasNestedGroups => nodes.OfType<AnnotationModel>().Any();
+        public bool HasNestedGroups => nodes.Values.OfType<AnnotationModel>().Any();
 
         private bool isVisible = true;
         /// <summary>
@@ -439,36 +401,52 @@ namespace Dynamo.Graph.Annotations
         /// <param name="groups">The groups that belongs to this group</param>
         public AnnotationModel(IEnumerable<NodeModel> nodes, IEnumerable<NoteModel> notes, IEnumerable<AnnotationModel> groups)
         {
-            var nodeModels = nodes as NodeModel[] ?? nodes.ToArray();
-            var noteModels = notes as NoteModel[] ?? notes.ToArray();
-            var groupModels = groups as AnnotationModel[] ?? groups.ToArray();
-
             DeletedModelBases = new List<ModelBase>();
-            this.Nodes = nodeModels
-                .Concat(noteModels.Cast<ModelBase>())
-                .Concat(groupModels.Cast<ModelBase>())
-                .ToList();
+            ReplaceNodes(nodes.Cast<ModelBase>().Concat(notes).Concat(groups));
 
             UpdateBoundaryFromSelection();
             UpdateErrorAndWarningIconVisibility();
         }
 
-        private ConnectorPinModel[] GetPinsFromNodes(IEnumerable<NodeModel> nodeModels)
+        private void ReplaceNodes(IEnumerable<ModelBase> newNodes)
         {
-            if (nodeModels is null ||
-                !nodeModels.Any())
+            // Unsubscribe all content in group before
+            // overwriting with the new content.
+            // If we dont do this we end up with
+            // lots of memory leaks that eventually will
+            // lead to a stackoverflow exception
+            if (nodes?.Count > 0)
             {
-                return new List<ConnectorPinModel>().ToArray();
+                foreach (var model in nodes.Values)
+                {
+                    model.PropertyChanged -= model_PropertyChanged;
+                    model.Disposed -= model_Disposed;
+                }
             }
 
-            var connectorPinsToAdd = nodeModels
+            // Get the pins from the node models (this will exclude all ConnectorPinModels)
+            var uniqueNodes = newNodes.OfType<NodeModel>().ToHashSet();
+
+            // Then recalculate which pins belong to the group based on the nodes,
+            // then filter out pins that have been marked as removed
+            var pinsFromNodes = uniqueNodes
                 .SelectMany(x => x.AllConnectors)
-                .Where(x => nodeModels.Contains(x.Start.Owner) && nodeModels.Contains(x.End.Owner))
+                .Where(x => uniqueNodes.Contains(x.Start.Owner) && uniqueNodes.Contains(x.End.Owner))
                 .SelectMany(x => x.ConnectorPinModels)
                 .Distinct()
-                .ToArray();
+                .Where(p => !removedPins.Contains(p.GUID));
 
-            return connectorPinsToAdd;
+            // Combine all (including all ConnectorPinModels)
+            nodes = newNodes.Concat(pinsFromNodes).ToDictionary(m => m.GUID);
+            foreach (var model in nodes.Values)
+            {
+                model.PropertyChanged += model_PropertyChanged;
+                model.Disposed += model_Disposed;
+            }
+
+            UpdateBoundaryFromSelection();
+
+            RaisePropertyChanged(nameof(Nodes));
         }
 
         /// <summary>
@@ -528,12 +506,10 @@ namespace Dynamo.Graph.Annotations
         /// </summary>      
         internal void UpdateBoundaryFromSelection()
         {          
-            var selectedModelsList = nodes.ToList();
+            var groupModels = nodes.Values.OrderBy(x => x.X).ToList();
 
-            if (selectedModelsList.Any())
+            if (groupModels.Count > 0)
             {
-                var groupModels = selectedModelsList.OrderBy(x => x.X).ToList();
-
                 //Shifting x by 10 and y to the height of textblock
                 var regionX = groupModels.Min(x => x.X) - ExtendSize;
                 //Increase the Y value by 10. This provides the extra space between
@@ -604,31 +580,29 @@ namespace Dynamo.Graph.Annotations
                 return;
             }
 
-            List<NodeModel> nodes = Nodes
-                .OfType<NodeModel>()
-                .ToList();
-
-            List<AnnotationModel> groups = Nodes
-                .OfType<AnnotationModel>()
-                .ToList();
-                
-            // If anything in this group is in an error state, we display an error icon.
-            if (nodes.Any(x => x.State == ElementState.Error) ||
-                groups.Any(x => x.GroupState == ElementState.Error))
+            var hasWarning = false;
+            foreach(var item in Nodes)
             {
-                GroupState = ElementState.Error;
-                return;
+                var state = item is NodeModel node ? node.State
+                    : item is AnnotationModel annotation ? annotation.groupState
+                    : ElementState.Active;
+
+                if (state == ElementState.Error)
+                {
+                    // If anything in this group is in an error state, we display an error icon.
+                    // Since this takes precedence over warning, we can safely exit here
+                    GroupState = ElementState.Error;
+                    return;
+                }
+                else if (state == ElementState.Warning)
+                {
+                    // Set warning flag, don't break out of loop in case a future item is in an error state
+                    hasWarning = true;
+                }
             }
 
             // If anything in this group is in a warning state, we display a warning icon.
-            if (nodes.Any(x => x.State == ElementState.Warning) ||
-                groups.Any(x => x.GroupState == ElementState.Warning))
-            {
-                GroupState = ElementState.Warning;
-                return;
-            }
-
-            GroupState = ElementState.Active;
+            GroupState = hasWarning ? ElementState.Warning : ElementState.Active;
         }
 
         /// <summary>
@@ -759,7 +733,7 @@ namespace Dynamo.Graph.Annotations
                         var result = mhelper.ReadGuid("ModelGuid", new Guid());
                         var model = ModelBaseRequested != null
                             ? ModelBaseRequested(result)
-                            : Nodes.FirstOrDefault(x => x.GUID == result);
+                            : (nodes.TryGetValue(result, out var n) ? n : null);
 
                         if (model != null)
                         {
@@ -796,14 +770,38 @@ namespace Dynamo.Graph.Annotations
         /// completely inside that group</param>
         internal void AddToTargetAnnotationModel(ModelBase model, bool checkOverlap = false)
         {
-            var list = this.Nodes.ToList();
-            if (model.GUID == this.GUID) return;
-            if (list.Where(x => x.GUID == model.GUID).Any()) return;
-            if (!CheckModelIsInsideGroup(model, checkOverlap)) return;
-            list.Add(model);
-            this.Nodes = list;
-            if (model is AnnotationModel annotationModel) annotationModel.OnAddedToGroup();
-            this.UpdateBoundaryFromSelection();
+            AddToTargetAnnotationModel([model], checkOverlap);
+        }
+
+        /// <summary>
+        /// This is called when models are added to or deleted from a group.
+        /// </summary>
+        /// <param name="models">The models to add.</param>
+        /// <param name="checkOverlap"> checkoverlap determines whether the selected model is 
+        /// completely inside that group</param>
+        internal void AddToTargetAnnotationModel(IEnumerable<ModelBase> models, bool checkOverlap = false)
+        {
+            var added = new List<ModelBase>();
+            foreach(var model in models)
+            {
+                // skip adding group to itself or any already existing 
+                if (model.GUID == GUID || nodes.ContainsKey(model.GUID)) continue;
+                // skip adding if checking for overlap when no overlap
+                if (checkOverlap && !Rect.Contains(model.Rect)) continue;
+
+                added.Add(model);
+            }
+
+            if (added.Count == 0) return;
+
+            ReplaceNodes(Nodes.Concat(added).ToList());
+
+            foreach(var addedAnnotation in added.OfType<AnnotationModel>())
+            {
+                addedAnnotation.OnAddedToGroup();
+            }
+
+            UpdateBoundaryFromSelection();
             UpdateErrorAndWarningIconVisibility();
         }
 
@@ -815,17 +813,6 @@ namespace Dynamo.Graph.Annotations
             {
                 annotationModel.OnRemovedFromGroup();
             }
-        }
-
-        private bool CheckModelIsInsideGroup(ModelBase model, bool checkOverlap)
-        {
-            if (!checkOverlap) return true;
-            var modelRect = model.Rect;
-            if (this.Rect.Contains(modelRect))
-            {
-                return true;
-            }
-            return false;
         }
 
         #endregion
@@ -871,16 +858,23 @@ namespace Dynamo.Graph.Annotations
         }
 
         /// <summary>
-        /// Checks if the provided modelbase belongs
-        /// to this group.
+        /// Checks if the provided modelbase belongs to this group.
         /// </summary>
         /// <param name="modelBase">modelbase to check if belongs to this group</param>
-        /// <returns></returns>
         public bool ContainsModel(ModelBase modelBase)
         {
             if (modelBase is null) return false;
 
-            return nodes.Contains(modelBase);
+            return nodes.TryGetValue(modelBase.GUID, out var current) && modelBase == current;
+        }
+
+        /// <summary>
+        /// Checks if the provided modelbase guid belongs to this group.
+        /// </summary>
+        /// <param name="modelBaseGuid">modelbase guid to check if belongs to this group</param>
+        internal bool ContainsGuid(Guid modelBaseGuid)
+        {
+            return nodes.ContainsKey(modelBaseGuid);
         }
 
         /// <summary>
