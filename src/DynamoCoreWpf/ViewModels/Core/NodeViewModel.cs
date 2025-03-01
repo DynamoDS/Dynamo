@@ -1974,6 +1974,7 @@ namespace Dynamo.ViewModels
                 if (current != null)
                 {
                     current.RaisePropertyChanged("IsFrozen");
+                    current.HandleColorOverlayChange();
                 }
             }
         }
