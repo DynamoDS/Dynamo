@@ -330,8 +330,8 @@ namespace Dynamo.Manipulation
                 node.PropertyChanged += OnNodePropertyChanged;
             }
             
-            //No manipulator for frozen node or node in state of error
-            if (node.IsFrozen || node.IsInErrorState) return false;
+            //No manipulator for frozen node or node in state of error/ transient.
+            if (node.IsFrozen || node.IsInErrorState || node.IsTransient) return false;
 
             //If the node already has a manipulator, then skip creating new one.
             if (manipulatorDaemon.HasNodeManipulator(node)) return false;

@@ -4,9 +4,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
-using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
@@ -495,6 +493,8 @@ namespace Dynamo.ViewModels
         // Handler to invoke Node autocomplete cluster
         private void AutoCompleteCluster(object parameter)
         {
+            // Put a C# timer here to test the cluster placement mock
+            Stopwatch stopwatch = Stopwatch.StartNew();
             var wsViewModel = node.WorkspaceViewModel;
             wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
 
@@ -511,13 +511,43 @@ namespace Dynamo.ViewModels
             {
                 return;
             }
+            
+            // Create mock nodes, currently Watch nodes (to avoid potential memory leak from Python Editor), and connect them to the input port
+            var targetNodeSearchEle = wsViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.ToList()[5];
+            targetNodeSearchEle.CreateAndConnectCommand.Execute(wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel);
 
+            var sizeOfMockCluster = 3;
+            var n = 1;
+            while (n < sizeOfMockCluster)
+            {
+                // Get the last node and connect a new node to it
+                var node1 = wsViewModel.Nodes.LastOrDefault();
+                node1.IsTransient = true;
+                targetNodeSearchEle.CreateAndConnectCommand.Execute(node1.InPorts.FirstOrDefault().PortModel);
+                n++;
+            }
+
+            wsViewModel.Nodes.LastOrDefault().IsTransient = true;
+
+            stopwatch.Stop(); // Stop the stopwatch
+            wsViewModel.DynamoViewModel.Model.Logger.Log($"Cluster Placement Execution Time: {stopwatch.ElapsedMilliseconds} ms");
+
+            // cluster info display in right side panel
             if (wsViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled)
             {
                 try
                 {
                     MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
-                    wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
+
+                    // Process the results and display the preview of the cluster with the highest confidence level
+                    // Leverage some API here to convert topology to actual cluster
+                    results.Results.FirstOrDefault().Topology.Nodes.ToList().ForEach(node =>
+                    {
+                        // nothing for now
+                    });
+
+                    // Display the cluster info in the right side panel
+                    // wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
                 }
                 catch (Exception e)
                 {

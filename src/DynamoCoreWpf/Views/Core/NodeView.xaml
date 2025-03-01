@@ -476,6 +476,17 @@
                        Source="/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png"
                        Stretch="UniformToFill" />
             </Grid>
+            <!-- Node transient state indication, light sparkle -->
+            <Grid x:Name="ClusterTransientGlyph" 
+                  Visibility="{Binding Path=IsTransient, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}">
+                <Image x:Name="TransientImage"
+                       Width="16px"
+                       Height="16px"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Source="/DynamoCoreWpf;component/UI/Images/NodeStates/transient-64px.png"
+                       Stretch="UniformToFill" />
+            </Grid>
             <Grid x:Name="HiddenEyeGlyph" 
                   Visibility="{Binding Path=IsVisible, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}, Mode=OneWay}">
                 <Image x:Name="HiddenEyeImage"
@@ -531,6 +542,8 @@
                     </Style>
                 </Grid.Style>
             </Grid>
+            
+            <!-- Button to open node context menu from lower right corner -->
             <Button x:Name="OptionsButton"
                     Click="DisplayNodeContextMenu">
                 <Button.ToolTip>
@@ -613,6 +626,23 @@
                                   Converter={StaticResource ZoomToOpacityConverter}}"
                 Style="{Binding Path=DataContext.StopNodeViewOpacityAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeOutPreview}}"
                 Visibility="{Binding Path=IsFrozen, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
+
+        <!--  Displays when the node cluster is Preivew state and Zoom is above 0.4 -->
+        <Border Name="nodeTransientColorOverlayZoomIn"
+                Grid.Row="1"
+                Grid.RowSpan="4"
+                Grid.ColumnSpan="3"
+                Margin="-8"
+                Background="{StaticResource NodeTransientOverlayColor}"
+                Canvas.ZIndex="6"
+                CornerRadius="8,8,0,0"
+                IsHitTestVisible="False"
+                Opacity="{Binding Path=DataContext.Zoom, 
+                                  RelativeSource={RelativeSource FindAncestor, 
+                                  AncestorType={x:Type controls:WorkspaceView}}, 
+                                  Converter={StaticResource ZoomToOpacityConverter}}"
+                Style="{Binding Path=DataContext.StopNodeViewOpacityAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeOutPreview}}"
+                Visibility="{Binding Path=IsTransient, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}" />
 
         <!--  Displays when the node is Frozen/Warning/Error state and Zoom is below 0.4 -->
         <Border Name="nodeColorOverlayZoomOut"
