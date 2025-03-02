@@ -2091,6 +2091,8 @@ namespace Dynamo.PackageManager
                     "*",
                     SearchOption.AllDirectories
                 ).ToList();
+
+            RaisePropertyChanged(nameof(MarkdownFiles));
         }
 
         /// <summary>

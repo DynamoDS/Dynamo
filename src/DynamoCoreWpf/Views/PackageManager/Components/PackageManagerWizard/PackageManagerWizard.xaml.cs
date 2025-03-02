@@ -57,6 +57,8 @@ namespace Dynamo.UI.Views
         internal Action<string> RequestToggleNodeLibraryOnItem;
         internal Action<string> RequestOpenFolder;
         internal Action<string> RequestUpdateCompatibilityMatrix;
+        internal Action RequestLoadMarkdownContent;
+        internal Action RequestClearMarkdownContent;
 
         #endregion
 
@@ -90,6 +92,8 @@ namespace Dynamo.UI.Views
             RequestToggleNodeLibraryOnItem = ToggleNodeLibraryOnItem;
             RequestOpenFolder = OpenFolder;
             RequestUpdateCompatibilityMatrix = UpdateCompatibilityMatrix;
+            RequestLoadMarkdownContent = LoadMarkdownContent;
+            RequestClearMarkdownContent = ClearMarkdownContent;
 
             DataContextChanged += OnDataContextChanged;
         }
@@ -146,6 +150,14 @@ namespace Dynamo.UI.Views
             {
                 SendPublishPathLocation(publishPackageViewModel.PublishDirectory);
             }
+            else if (e.PropertyName.Equals(nameof(publishPackageViewModel.MarkdownFilesDirectory)))
+            {
+                SendMarkdownFilesDirectory(publishPackageViewModel.MarkdownFilesDirectory);
+            }
+            else if (e.PropertyName.Equals(nameof(publishPackageViewModel.MarkdownFiles)))
+            {
+                SendMarkdownFiles(publishPackageViewModel.MarkdownFiles);
+            }
         }
 
         private async void SendUpdatedPackageContents(object frontendData, string type)
@@ -176,6 +188,31 @@ namespace Dynamo.UI.Views
             if (dynWebView?.CoreWebView2 != null)
             {
                 await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receivePublishPathLocation({jsonPayload});");
+            }
+        }
+        private async void SendMarkdownFiles(IEnumerable<string> markdownFiles)
+        {
+            if (!markdownFiles.Any()) return;
+
+            var payload = new { markdownFiles = markdownFiles };
+            string jsonPayload = JsonSerializer.Serialize(payload);
+
+            if (dynWebView?.CoreWebView2 != null)
+            {
+                await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveMarkdownFiles({jsonPayload});");
+            }
+        }
+
+        private async void SendMarkdownFilesDirectory(string path)
+        {
+            if (string.IsNullOrEmpty(path)) return;
+
+            var payload = new { markdownPath = path };
+            string jsonPayload = JsonSerializer.Serialize(payload);
+
+            if (dynWebView?.CoreWebView2 != null)
+            {
+                await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveMarkdownPathLocation({jsonPayload});");
             }
         }
 
@@ -234,7 +271,9 @@ namespace Dynamo.UI.Views
                             RequestReset,
                             RequestToggleNodeLibraryOnItem,
                             RequestOpenFolder,
-                            RequestUpdateCompatibilityMatrix));
+                            RequestUpdateCompatibilityMatrix,
+                            RequestLoadMarkdownContent,
+                            RequestClearMarkdownContent));
                 }
                 catch (Exception ex)
                 {
@@ -402,6 +441,27 @@ namespace Dynamo.UI.Views
             }
         }
 
+        public void LoadMarkdownContent()
+        {
+            if (publishPackageViewModel == null)
+                return;
+
+            if (publishPackageViewModel.SelectMarkdownDirectoryCommand?.CanExecute() == true)
+            {
+                publishPackageViewModel.SelectMarkdownDirectoryCommand.Execute();
+            }
+        }
+
+        public void ClearMarkdownContent()
+        {
+            if (publishPackageViewModel == null)
+                return;
+
+            if (publishPackageViewModel.ClearMarkdownDirectoryCommand?.CanExecute() == true)
+            {
+                publishPackageViewModel.ClearMarkdownDirectoryCommand.Execute();
+            }
+        }
 
         public void Submit()
         {
@@ -640,6 +700,8 @@ namespace Dynamo.UI.Views
         readonly Action<string> RequestToggleNodeLibraryOnItem;
         readonly Action<string> RequestOpenFolder;
         readonly Action<string> RequestUpdateCompatibilityMatrix;
+        readonly Action RequestLoadMarkdownContent;
+        readonly Action RequestClearMarkdownContent;
 
         public ScriptWizardObject(
             Action<string> requestAddFileOrFolder,
@@ -651,7 +713,9 @@ namespace Dynamo.UI.Views
             Action requestReset,
             Action<string> requestToggleNodeLibraryOnItem,
             Action<string> requestOpenFolder,
-            Action<string> requestUpdateCompatibilityMatrix)
+            Action<string> requestUpdateCompatibilityMatrix,
+            Action requestLoadMarkdownContent,
+            Action requestClearMarkdownContent)
         {
             RequestAddFileOrFolder = requestAddFileOrFolder;
             RequestRemoveFileOrFolder = requestRemoveFileOrFolder;
@@ -663,6 +727,8 @@ namespace Dynamo.UI.Views
             RequestToggleNodeLibraryOnItem = requestToggleNodeLibraryOnItem;
             RequestOpenFolder = requestOpenFolder;
             RequestUpdateCompatibilityMatrix = requestUpdateCompatibilityMatrix;
+            RequestLoadMarkdownContent = requestLoadMarkdownContent;
+            RequestClearMarkdownContent = requestClearMarkdownContent;
         }
 
         [DynamoJSInvokable]
@@ -695,6 +761,18 @@ namespace Dynamo.UI.Views
         public void UpdateCompatibilityMatrix(string jsonPayload)
         {
             RequestUpdateCompatibilityMatrix(jsonPayload);
+        }
+
+        [DynamoJSInvokable]
+        public void LoadMarkdownContent()
+        {
+            RequestLoadMarkdownContent();
+        }
+
+        [DynamoJSInvokable]
+        public void ClearMarkdownContent()
+        {
+            RequestClearMarkdownContent();
         }
 
         [DynamoJSInvokable]
