@@ -257,12 +257,11 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="end"></param>
         private static void AddConnectorEdgesIncludingPinEdges(GraphLayout.Graph combinedGraph, ConnectorModel connector, Guid? start = null, Guid? end = null)
         {
+            Guid startGuid = start == null ? connector.Start.Owner.GUID : (Guid)start;
+            Guid endGuid = end == null ? connector.End.Owner.GUID : (Guid)end;
             // Bail if there are no connectorPins
             if (connector.ConnectorPinModels.Count < 1)
             {
-                Guid startGuid = start == null ? connector.Start.Owner.GUID : (Guid)start;
-                Guid endGuid = end == null ? connector.End.Owner.GUID : (Guid)end;
-
                 combinedGraph.AddEdge(startGuid, endGuid,
                        connector.Start.Center.X, connector.Start.Center.Y, connector.End.Center.X, connector.End.Center.Y);
                 return;
@@ -270,7 +269,7 @@ namespace Dynamo.Graph.Workspaces
 
             // Add an edge between the left-most (start) node 
             // (its corresponding port) to which this connector connects, and the first connectorPin.
-            combinedGraph.AddEdge(connector.Start.Owner.GUID, 
+            combinedGraph.AddEdge(startGuid, 
                 connector.ConnectorPinModels[0].GUID,
                 connector.Start.Center.X, 
                 connector.Start.Center.Y, 
@@ -294,8 +293,8 @@ namespace Dynamo.Graph.Workspaces
 
             // Add an edge between the last connectorPin and the right-most (end) node
             // (its corresponding port) to which this connector connects.
-            combinedGraph.AddEdge(connector.ConnectorPinModels[connector.ConnectorPinModels.Count - 1].GUID, 
-                connector.End.Owner.GUID,
+            combinedGraph.AddEdge(connector.ConnectorPinModels[connector.ConnectorPinModels.Count - 1].GUID,
+                endGuid,
                 connector.ConnectorPinModels[connector.ConnectorPinModels.Count - 1].CenterX, 
                 connector.ConnectorPinModels[connector.ConnectorPinModels.Count - 1].CenterY, 
                 connector.End.Center.X, 
