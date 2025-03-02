@@ -640,6 +640,9 @@ namespace PythonNodeModelsWpf
             {
                 var senderContext = (sender as Button)?.DataContext;
 
+                //At this point the user choses to close the window without saving the script, so mark the script as saved.
+                IsSaved = true;
+
                 if (this.Equals(senderContext))
                 {
                     Close();
