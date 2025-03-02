@@ -1346,7 +1346,7 @@ namespace Dynamo.PackageManager
             this.ClearPackageContents();
             this.KeywordsCollection?.Clear();
             this.PublishDirectory = string.Empty;
-            this.CompatibilityMatrix.Clear();
+            this.CompatibilityMatrix?.Clear();
             this.ReleaseNotesUrl = string.Empty;
         }
 

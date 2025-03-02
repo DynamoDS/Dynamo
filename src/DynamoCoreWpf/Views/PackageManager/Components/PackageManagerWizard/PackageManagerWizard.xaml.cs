@@ -116,6 +116,11 @@ namespace Dynamo.UI.Views
             }
         }
 
+        /// <summary>
+        /// The main PublishPackageViewModel PropertyChanged reference 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e">PropertyName contains the name of the changed property</param>
         private void PublishPackageViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
             if (e.PropertyName.Equals(nameof(publishPackageViewModel.PackageContents)))
