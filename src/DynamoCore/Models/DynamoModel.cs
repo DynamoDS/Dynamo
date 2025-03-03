@@ -993,7 +993,7 @@ namespace Dynamo.Models
             LogWarningMessageEvents.LogInfoMessage += LogInfoMessage;
 
 #pragma warning disable AUTH_SERVICES
-            AuthServicesEvents.RequestAuthProvider += AuthServicesEvents_AuthProviderRequested;
+            AuthServices.RequestAuthProvider += AuthServicesEvents_AuthProviderRequested;
 #pragma warning restore AUTH_SERVICES
 
             DynamoConsoleLogger.LogMessageToDynamoConsole += LogMessageWrapper;
@@ -1473,7 +1473,7 @@ namespace Dynamo.Models
             LogWarningMessageEvents.LogInfoMessage -= LogInfoMessage;
 
 #pragma warning disable AUTH_SERVICES
-            AuthServicesEvents.RequestAuthProvider -= AuthServicesEvents_AuthProviderRequested;
+            AuthServices.RequestAuthProvider -= AuthServicesEvents_AuthProviderRequested;
 #pragma warning restore AUTH_SERVICES
 
             DynamoConsoleLogger.LogMessageToDynamoConsole -= LogMessageWrapper;

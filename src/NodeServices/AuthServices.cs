@@ -32,7 +32,7 @@ namespace DynamoServices
 #else
         [Obsolete("This method is for evaluation purposes only and is subject to change or removal in future updates.")]
 #endif
-    public static class AuthServicesEvents
+    public static class AuthServices
     {
         /// <summary>
         /// Event triggered to request an authentication provider.
