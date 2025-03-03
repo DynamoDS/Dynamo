@@ -7,7 +7,9 @@ using System.Windows;
 using System.Windows.Input;
 using Dynamo.Annotations;
 using Dynamo.Controls;
+using Dynamo.Events;
 using Dynamo.Logging;
+using Dynamo.Session;
 using Dynamo.Utilities;
 
 namespace Dynamo.UI.Prompts
@@ -124,7 +126,11 @@ namespace Dynamo.UI.Prompts
                 ShowTooltip = false;
                 ToolTip = "";
             }
-            catch { }
+            catch (Exception ex)
+            {
+                var dynamoLogger = ExecutionEvents.ActiveSession?.GetParameterValue(ParameterKeys.Logger) as DynamoLogger;
+                dynamoLogger?.Log("Failed to initialize DynamoMessageBox: " + ex.Message, LogLevel.Console);
+            }
         }
 
         /// <summary>
