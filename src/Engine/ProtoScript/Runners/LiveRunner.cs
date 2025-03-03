@@ -1660,6 +1660,7 @@ namespace ProtoScript.Runners
             }
 
             ResetForDeltaExecution();
+            runnerCore.CodeBlockList[(int)Language.Associative].instrStream.dependencyGraph.Purge(dispatchASTList);
             CompileAndExecute(dispatchASTList);
             PostExecution();
         }
@@ -1721,6 +1722,8 @@ namespace ProtoScript.Runners
                 var guids = runtimeCore.ExecutedAstGuids.ToList();
                 executedAstGuids[syncData.SessionID] = guids;
                 runtimeCore.RemoveExecutedAstGuids();
+
+                runnerCore.CodeBlockList[(int)Language.Associative].instrStream.dependencyGraph.Purge(changeSetComputer.csData.DeletedBinaryExprASTNodes);
             }
         }
 
