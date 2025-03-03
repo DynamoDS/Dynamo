@@ -2822,6 +2822,8 @@ Dynamo.ViewModels.PreferencesViewModel.SelectedUnits.get -> string
 Dynamo.ViewModels.PreferencesViewModel.SelectedUnits.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowCodeBlockLineNumber.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowCodeBlockLineNumber.set -> void
+Dynamo.ViewModels.PreferencesViewModel.ShowDefaultGroupDescription.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.ShowDefaultGroupDescription.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowEdges.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowEdges.set -> void
 Dynamo.ViewModels.PreferencesViewModel.UseRenderInstancing.get -> bool
