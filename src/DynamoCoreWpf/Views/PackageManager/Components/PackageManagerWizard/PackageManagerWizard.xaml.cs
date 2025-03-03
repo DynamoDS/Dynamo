@@ -124,6 +124,79 @@ namespace Dynamo.UI.Views
             SendPackageDependencies(publishPackageViewModel.DependencyNames);
         }
 
+        internal async Task PreloadWebView2Async()
+        {
+            if (_onlyLoadOnce) return;
+            _onlyLoadOnce = true;
+
+            // When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
+            var userDataDir = new DirectoryInfo(GetUserDirectory());
+            PathHelper.CreateFolderIfNotExist(userDataDir.ToString());
+
+            var webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
+
+            dynWebView.CreationProperties = new CoreWebView2CreationProperties
+            {
+                UserDataFolder = webBrowserUserDataFolder.FullName
+            };
+
+            // Pre-generate the html temp file
+            string tempFilePath = GetFileFromRelativePath(htmlRelativeFilePath);
+
+            try
+            {
+                // Initialize the webview asynchroneously 
+                await dynWebView?.Initialize();
+
+                // Set WebView2 settings    
+                this.dynWebView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+                this.dynWebView.CoreWebView2.Settings.IsZoomControlEnabled = false;
+                this.dynWebView.CoreWebView2.Settings.AreDevToolsEnabled = true;
+                this.dynWebView.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
+
+                // Embed the font
+                var assembly = Assembly.GetExecutingAssembly();
+                PathHelper.ExtractAndSaveEmbeddedFont(fontStylePath, virtualFolderPath, "ArtifaktElement-Regular.woff", assembly);
+
+                // Set up virtual host name to folder mapping
+                dynWebView.CoreWebView2.SetVirtualHostNameToFolderMapping(virtualFolderName, virtualFolderPath, CoreWebView2HostResourceAccessKind.Allow);
+
+                try
+                {
+                    // Navigate to the temp html file
+                    dynWebView.Source = new Uri(tempFilePath);
+
+                    // Exposing commands to the React front-end
+                    dynWebView.CoreWebView2.AddHostObjectToScript("scriptObject",
+                        new ScriptWizardObject(
+                            RequestAddFileOrFolder,
+                            RequestRemoveFileOrFolder,
+                            RequestRetainFolderStructure,
+                            RequestUpdatePackageDetails,
+                            RequestSubmit,
+                            RequestPublish,
+                            RequestReset,
+                            RequestToggleNodeLibraryOnItem,
+                            RequestOpenFolder,
+                            RequestUpdateCompatibilityMatrix,
+                            RequestLoadMarkdownContent,
+                            RequestClearMarkdownContent,
+                            RequestLogMessage));
+                }
+                catch (Exception ex)
+                {
+                    LogMessage(ex.Message);
+                }
+            }
+            catch (ObjectDisposedException ex)
+            {
+                LogMessage(ex.Message);
+            }
+        }
+
+
+        #region View Model PropertyChanged
+
         /// <summary>
         /// The main PublishPackageViewModel PropertyChanged reference 
         /// </summary>
@@ -131,6 +204,7 @@ namespace Dynamo.UI.Views
         /// <param name="e">PropertyName contains the name of the changed property</param>
         private void PublishPackageViewModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            /* PackageContents */
             if (e.PropertyName.Equals(nameof(publishPackageViewModel.PackageContents)))
             {
                 var updatedContents = publishPackageViewModel.PackageContents
@@ -145,6 +219,7 @@ namespace Dynamo.UI.Views
                     SendUpdatedPackageContents(frontendData, "package"); // Specify "package"
                 }
             }
+            /* PreviewPackageContents */
             else if (e.PropertyName.Equals(nameof(publishPackageViewModel.PreviewPackageContents)))
             {
                 var updatedPreviewContents = publishPackageViewModel.PreviewPackageContents
@@ -159,35 +234,39 @@ namespace Dynamo.UI.Views
                     SendUpdatedPackageContents(frontendPreviewData, "preview"); // Specify "preview"
                 }
             }
+            /* PublishDirectory*/
             else if (e.PropertyName.Equals(nameof(publishPackageViewModel.PublishDirectory)))
             {
                 SendPublishPathLocation(publishPackageViewModel.PublishDirectory);
             }
+            /* MarkdownFilesDirectory*/
             else if (e.PropertyName.Equals(nameof(publishPackageViewModel.MarkdownFilesDirectory)))
             {
                 SendMarkdownFilesDirectory(publishPackageViewModel.MarkdownFilesDirectory);
             }
+            /* MarkdownFiles*/
             else if (e.PropertyName.Equals(nameof(publishPackageViewModel.MarkdownFiles)))
             {
                 SendMarkdownFiles(publishPackageViewModel.MarkdownFiles);
             }
+            /* ErrorString*/
             else if (e.PropertyName.Equals(nameof(publishPackageViewModel.ErrorString)))
             {
                 SendErrorString(publishPackageViewModel.ErrorString);
             }
         }
+        #endregion
+
+        #region Upstream API calls
 
         private async void SendCompatibilityMap(object frontendData)
         {
             if (frontendData != null)
             {
-                // Create an object with the compatibility map data
                 var payload = new { jsonData = frontendData };
 
-                // Serialize the payload
                 string jsonPayload = JsonSerializer.Serialize(payload);
 
-                // Send to the front-end if WebView2 is available
                 if (dynWebView?.CoreWebView2 != null)
                 {
                     await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveCompatibilityMap({jsonPayload})");
@@ -199,13 +278,10 @@ namespace Dynamo.UI.Views
         {
             if (frontendData != null)
             {
-                // Create an object with both jsonData and type
                 var payload = new { jsonData = frontendData, type = type };
 
-                // Serialize the payload
                 string jsonPayload = JsonSerializer.Serialize(payload);
 
-                // Send to the front-end if WebView2 is available
                 if (dynWebView?.CoreWebView2 != null)
                 {
                     await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveUpdatedPackageContents({jsonPayload})");
@@ -279,76 +355,7 @@ namespace Dynamo.UI.Views
             }
         }
 
-        internal async Task PreloadWebView2Async()
-        {
-            if (_onlyLoadOnce) return;
-            _onlyLoadOnce = true;
-
-            // When executing Dynamo as Sandbox or inside any host like Revit, FormIt, Civil3D the WebView2 cache folder will be located in the AppData folder
-            var userDataDir = new DirectoryInfo(GetUserDirectory());
-            PathHelper.CreateFolderIfNotExist(userDataDir.ToString());
-
-            var webBrowserUserDataFolder = userDataDir.Exists ? userDataDir : null;
-
-            dynWebView.CreationProperties = new CoreWebView2CreationProperties
-            {
-                UserDataFolder = webBrowserUserDataFolder.FullName
-            };
-
-            // Pre-generate the html temp file
-            string tempFilePath = GetFileFromRelativePath(htmlRelativeFilePath);
-
-            try
-            {
-                // Initialize the webview asynchroneously 
-                await dynWebView?.Initialize();
-
-                // Set WebView2 settings    
-                this.dynWebView.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-                this.dynWebView.CoreWebView2.Settings.IsZoomControlEnabled = false;
-                this.dynWebView.CoreWebView2.Settings.AreDevToolsEnabled = true;
-                this.dynWebView.CoreWebView2.NewWindowRequested += CoreWebView2_NewWindowRequested;
-
-                // Embed the font
-                var assembly = Assembly.GetExecutingAssembly();
-                PathHelper.ExtractAndSaveEmbeddedFont(fontStylePath, virtualFolderPath, "ArtifaktElement-Regular.woff", assembly);
-
-                // Set up virtual host name to folder mapping
-                dynWebView.CoreWebView2.SetVirtualHostNameToFolderMapping(virtualFolderName, virtualFolderPath, CoreWebView2HostResourceAccessKind.Allow);
-
-                try
-                {
-                    // Navigate to the temp html file
-                    dynWebView.Source = new Uri(tempFilePath);
-
-                    // Exposing commands to the React front-end
-                    dynWebView.CoreWebView2.AddHostObjectToScript("scriptObject",
-                        new ScriptWizardObject(
-                            RequestAddFileOrFolder,
-                            RequestRemoveFileOrFolder,
-                            RequestRetainFolderStructure,
-                            RequestUpdatePackageDetails,
-                            RequestSubmit,
-                            RequestPublish,
-                            RequestReset,
-                            RequestToggleNodeLibraryOnItem,
-                            RequestOpenFolder,
-                            RequestUpdateCompatibilityMatrix,
-                            RequestLoadMarkdownContent,
-                            RequestClearMarkdownContent,
-                            RequestLogMessage));
-                }
-                catch (Exception ex)
-                {
-                    LogMessage(ex.Message);
-                }
-            }
-            catch (ObjectDisposedException ex)
-            {
-                LogMessage(ex.Message);
-            }
-        }
-
+        #endregion
 
         #region Relay Commands
         internal void AddFileOrFolder(string fileOrFolder)
@@ -372,7 +379,7 @@ namespace Dynamo.UI.Views
             }
         }
 
-        public void RemoveFileOrFolder(string filePath)
+        internal void RemoveFileOrFolder(string filePath)
         {
             if (publishPackageViewModel == null) return;
 
@@ -387,7 +394,7 @@ namespace Dynamo.UI.Views
             }
         }
 
-        public void ToggleNodeLibraryOnItem(string filePath)
+        internal void ToggleNodeLibraryOnItem(string filePath)
         {
             if (publishPackageViewModel == null) return;
 
@@ -422,14 +429,14 @@ namespace Dynamo.UI.Views
             return null;
         }
 
-        public void ToggleRetainFolderStructure(bool flag)
+        internal void ToggleRetainFolderStructure(bool flag)
         {
             if (publishPackageViewModel == null) return;
 
             publishPackageViewModel.RetainFolderStructureOverride = flag;
         }
 
-        public void UpdatePackageDetails(string jsonPayload)
+        internal void UpdatePackageDetails(string jsonPayload)
         {
             if (string.IsNullOrWhiteSpace(jsonPayload) || publishPackageViewModel == null)
                 return;
@@ -480,7 +487,7 @@ namespace Dynamo.UI.Views
             }
         }
 
-        public void UpdateCompatibilityMatrix(string jsonPayload)
+        internal void UpdateCompatibilityMatrix(string jsonPayload)
         {
             if (string.IsNullOrWhiteSpace(jsonPayload) || publishPackageViewModel == null)
                 return;
@@ -503,7 +510,7 @@ namespace Dynamo.UI.Views
             }
         }
 
-        public void LoadMarkdownContent()
+        internal void LoadMarkdownContent()
         {
             if (publishPackageViewModel == null)
                 return;
@@ -514,7 +521,7 @@ namespace Dynamo.UI.Views
             }
         }
 
-        public void ClearMarkdownContent()
+        internal void ClearMarkdownContent()
         {
             if (publishPackageViewModel == null)
                 return;
@@ -525,7 +532,7 @@ namespace Dynamo.UI.Views
             }
         }
 
-        public void Submit()
+        internal void Submit()
         {
             if (publishPackageViewModel == null) return;
             if (publishPackageViewModel.SubmitCommand?.CanExecute() == true)
@@ -534,7 +541,7 @@ namespace Dynamo.UI.Views
             }
         }
 
-        public void Publish()
+        internal void Publish()
         {
             if (publishPackageViewModel == null) return;
             if (publishPackageViewModel.PublishLocallyCommand?.CanExecute() == true)
@@ -543,7 +550,7 @@ namespace Dynamo.UI.Views
             }
         }
 
-        public void Reset()
+        internal void Reset()
         {
             if (publishPackageViewModel == null) return;
             if (publishPackageViewModel.CancelCommand?.CanExecute() == true)
@@ -552,7 +559,7 @@ namespace Dynamo.UI.Views
             }
         }
 
-        public void OpenFolder(string folderPath)
+        internal void OpenFolder(string folderPath)
         {
             if (Directory.Exists(folderPath))
             {
@@ -691,7 +698,6 @@ namespace Dynamo.UI.Views
             };
         }
 
-
         /// <summary>
         /// Error handling and loging
         /// Overloaded method for messages
@@ -740,20 +746,6 @@ namespace Dynamo.UI.Views
             {
                 if (disposing)
                 {
-                    // Unsubscribe from events
-                    //DataContextChanged -= OnDataContextChanged;
-                    //if (startPage != null)
-                    //{
-                    //    if (startPage.DynamoViewModel != null)
-                    //    {
-                    //        startPage.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
-                    //        if (startPage.DynamoViewModel.RecentFiles != null)
-                    //        {
-                    //            startPage.DynamoViewModel.RecentFiles.CollectionChanged -= RecentFiles_CollectionChanged;
-                    //        }
-                    //    }
-                    //}
-
                     this.DataContextChanged -= OnDataContextChanged;
 
                     if (this.publishPackageViewModel != null)
@@ -765,12 +757,6 @@ namespace Dynamo.UI.Views
                     {
                         this.dynWebView.CoreWebView2.NewWindowRequested -= CoreWebView2_NewWindowRequested;
                     }
-
-                    // Delete font file if it exists
-                    //if (File.Exists(fontFilePath))
-                    //{
-                    //    File.Delete(fontFilePath);
-                    //}
                 }
 
                 _disposed = true;
@@ -778,7 +764,6 @@ namespace Dynamo.UI.Views
         }
         #endregion
     }
-
 
     [ClassInterface(ClassInterfaceType.AutoDual)]
     [ComVisible(true)]
@@ -950,7 +935,6 @@ namespace Dynamo.UI.Views
         [JsonPropertyName("group")]
         public string Group { get; set; }
 
-
         public bool Equals(PackageUpdateRequest other)
         {
             if (other == null) return false;
@@ -975,6 +959,10 @@ namespace Dynamo.UI.Views
             return Equals(obj as PackageUpdateRequest);
         }
 
+        /// <summary>
+        /// Overriding GetHashCode allows us to get a deep equality
+        /// </summary>
+        /// <returns></returns>
         public override int GetHashCode()
         {
             unchecked // Allow integer overflow (safe for hash calculations)
