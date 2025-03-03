@@ -98,6 +98,10 @@ namespace Dynamo.UI.Views
             RequestLogMessage = LogMessage;
 
             DataContextChanged += OnDataContextChanged;
+
+            // TODO - handle no internet
+            var compatibilityMap = PackageManagerClient.GetCompatibilityMap();
+            SendCompatibilityMap(compatibilityMap);
         }
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -168,6 +172,24 @@ namespace Dynamo.UI.Views
             else if (e.PropertyName.Equals(nameof(publishPackageViewModel.ErrorString)))
             {
                 SendErrorString(publishPackageViewModel.ErrorString);
+            }
+        }
+
+        private async void SendCompatibilityMap(object frontendData)
+        {
+            if (frontendData != null)
+            {
+                // Create an object with the compatibility map data
+                var payload = new { jsonData = frontendData };
+
+                // Serialize the payload
+                string jsonPayload = JsonSerializer.Serialize(payload);
+
+                // Send to the front-end if WebView2 is available
+                if (dynWebView?.CoreWebView2 != null)
+                {
+                    await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveCompatibilityMap({jsonPayload})");
+                }
             }
         }
 
