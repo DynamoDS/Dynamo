@@ -147,7 +147,12 @@ namespace Dynamo.Tests
         [Test]
         public void Test_OnRequestAuthProvider_FindsAuthProvider()
         {
+#pragma warning disable AUTH_SERVICES
+#pragma warning disable REQUEST_AUTHPROVIDER
             var result = AuthServicesEvents.OnRequestAuthProvider();
+#pragma warning restore REQUEST_AUTHPROVIDER
+#pragma warning restore AUTH_SERVICES
+
             Assert.AreEqual((result as IOAuth2AccessTokenProvider).GetAccessToken(), "faketoken");
         }
     }
