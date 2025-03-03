@@ -2250,20 +2250,17 @@ namespace Dynamo.ViewModels
 
         private bool CanOpen(object parameters)
         {
+
             var filePath = parameters as string;
 
-            if (filePath.Contains(".zip\\", StringComparison.OrdinalIgnoreCase))
+            if (!PathHelper.IsValidPath(filePath))
             {
-                MessageBoxService.Show(
-                    String.Format(Resources.MessageErrorOpeningZippedFile) + "\n\n" + filePath,
-                    String.Format(Resources.MessageErrorOpeningFileGeneral),
-                    MessageBoxButton.OK,
-                    MessageBoxImage.Error);
-
+                DynamoMessageBox.Show(Owner, string.Format(WpfResources.MessageErrorOpeningInvalidPath.Replace("\\n", Environment.NewLine), filePath), WpfResources.MessageErrorOpeningFileGeneral,
+                        MessageBoxButton.OK, MessageBoxImage.Error);
                 return false;
             }
 
-            return PathHelper.IsValidPath(filePath);
+            return true;
         }
 
         private bool CanOpenFromJson(object parameters)
