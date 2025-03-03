@@ -2279,37 +2279,7 @@ namespace Dynamo.Graph.Workspaces
             EngineController engineController, DynamoScheduler scheduler, NodeFactory factory,
             bool isTestMode, bool verboseLogging, CustomNodeManager manager)
         {
-            var logger = engineController != null ? engineController.AsLogger() : null;
-
-            var settings = new JsonSerializerSettings
-            {
-                Error = (sender, args) =>
-                {
-                    args.ErrorContext.Handled = true;
-                    Console.WriteLine(args.ErrorContext.Error);
-                },
-                ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
-                TypeNameHandling = TypeNameHandling.None,
-                Formatting = Newtonsoft.Json.Formatting.Indented,
-                Culture = CultureInfo.InvariantCulture,
-                Converters = new List<JsonConverter>{
-                        new ConnectorConverter(logger),
-                        new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging),
-                        new NodeReadConverter(manager, libraryServices, factory, isTestMode),
-                        new TypedParameterConverter(),
-                        new NodeLibraryDependencyConverter(logger)
-                    },
-                ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
-            };
-
-            var result = SerializationExtensions.ReplaceTypeDeclarations(json, true);
-
-            // TODO: Remove after deprecating "IntegerSlider : SliderBase<int>" 
-            result = SerializationExtensions.DeserializeIntegerSliderTo64BitType(result);
-
-            var ws = JsonConvert.DeserializeObject<WorkspaceModel>(result, settings);
-
-            return ws;
+            return FromJson(json, libraryServices, engineController, scheduler, factory, isTestMode, verboseLogging, manager, linterManager: null);
         }
 
         public static WorkspaceModel FromJson(string json, LibraryServices libraryServices,
@@ -2318,35 +2288,34 @@ namespace Dynamo.Graph.Workspaces
         {
             var logger = engineController != null ? engineController.AsLogger() : null;
 
-            var settings = new JsonSerializerSettings
+            var workspaceReadConverter = linterManager == null
+                ? new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging)
+                : new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging, linterManager);
+
+            var serializer = new JsonSerializer
             {
-                Error = (sender, args) =>
-                {
-                    args.ErrorContext.Handled = true;
-                    Console.WriteLine(args.ErrorContext.Error);
-                },
+                SerializationBinder = SerializationExtensions.Binder,
                 ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                 TypeNameHandling = TypeNameHandling.None,
-                Formatting = Newtonsoft.Json.Formatting.Indented,
                 Culture = CultureInfo.InvariantCulture,
-                Converters = new List<JsonConverter>{
-                        new ConnectorConverter(logger),
-                        new WorkspaceReadConverter(engineController, scheduler, factory, isTestMode, verboseLogging, linterManager),
-                        new NodeReadConverter(manager, libraryServices, factory, isTestMode),
-                        new TypedParameterConverter(),
-                        new NodeLibraryDependencyConverter(logger)
-                    },
-                ReferenceResolverProvider = () => { return new IdReferenceResolver(); }
+                ReferenceResolver = new IdReferenceResolver(),
             };
 
-            var result = SerializationExtensions.ReplaceTypeDeclarations(json, true);
+            serializer.Converters.Add(new ConnectorConverter(logger));
+            serializer.Converters.Add(workspaceReadConverter);
+            serializer.Converters.Add(new NodeReadConverter(manager, libraryServices, factory, isTestMode));
+            serializer.Converters.Add(new TypedParameterConverter());
+            serializer.Converters.Add(new NodeLibraryDependencyConverter(logger));
 
-            // TODO: Remove after deprecating "IntegerSlider : SliderBase<int>" 
-            result = SerializationExtensions.DeserializeIntegerSliderTo64BitType(result);
+            serializer.Error += (sender, args) =>
+            {
+                args.ErrorContext.Handled = true;
+                Console.WriteLine(args.ErrorContext.Error);
+            };
 
-            var ws = JsonConvert.DeserializeObject<WorkspaceModel>(result, settings);
-
-            return ws;
+            using var reader = new StringReader(json);
+            using var jsonReader = new SerializationExtensions.TypeReplacerReader(reader);
+            return serializer.Deserialize<WorkspaceModel>(jsonReader);
         }
 
         /// <summary>
