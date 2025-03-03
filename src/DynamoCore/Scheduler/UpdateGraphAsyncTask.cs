@@ -255,8 +255,8 @@ namespace Dynamo.Scheduler
         private static IEnumerable<NodeModel> ComputeModifiedNodes(WorkspaceModel workspace)
         {
             var nodesToUpdate = new List<NodeModel>();
-            //Get those modified nodes that are not frozen
-            foreach (var node in workspace.Nodes.Where(n => n.IsModified && !n.IsFrozen))
+            //Get those modified nodes that are not frozen or transient states
+            foreach (var node in workspace.Nodes.Where(n => n.IsModified && !n.IsFrozen && !n.IsTransient))
             {
                 GetDownstreamNodes(node, nodesToUpdate);
             }
@@ -273,7 +273,7 @@ namespace Dynamo.Scheduler
         /// 
         private static void GetDownstreamNodes(NodeModel node, ICollection<NodeModel> gathered)
         {
-            if (gathered.Contains(node) || node.IsFrozen) // Considered this node before, bail.pu
+            if (gathered.Contains(node) || node.IsFrozen || node.IsTransient) // Considered this node before, bail.pu
                 return;
 
             gathered.Add(node);

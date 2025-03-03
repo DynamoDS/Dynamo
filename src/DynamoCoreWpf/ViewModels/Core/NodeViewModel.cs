@@ -584,7 +584,8 @@ namespace Dynamo.ViewModels
         private static readonly string warningGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/alert-64px.png";
         private static readonly string errorGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/error-64px.png";
         private static readonly string infoGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/info-64px.png";
-        private static readonly string previewGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/hidden-64px.png";
+        private static readonly string previewGeometryGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/hidden-64px.png";
+        private static readonly string previewClusterGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/transient-light-64px.png";
         private static readonly string frozenGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png";
         private static readonly string packageGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/package-64px.png";
 
@@ -620,6 +621,16 @@ namespace Dynamo.ViewModels
             {
                 NodeModel.IsFrozen = value;
             }
+        }
+
+        /// <summary>
+        /// Return a value indicating whether this node is in transient state.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsTransient
+        {
+            set { NodeModel.IsTransient = value; }
+            get { return NodeModel.IsTransient; }
         }
 
         /// <summary>
@@ -1302,8 +1313,9 @@ namespace Dynamo.ViewModels
         private static SolidColorBrush infoColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#6AC0E7"));
         private static SolidColorBrush noPreviewColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BBBBBB"));
         private static SolidColorBrush nodeCustomColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#B385F2"));
-        private static SolidColorBrush nodePreviewColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BBBBBB"));
+        private static SolidColorBrush nodePreviewGeometryColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BBBBBB"));
         private static SolidColorBrush nodeFrozenOverlayColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BCD3EE"));
+        private static SolidColorBrush nodeTransientOverlayColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#D5BCF7"));
         private static SolidColorBrush nodeInfoColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#6AC0E7"));        
 
         /// <summary>
@@ -1360,10 +1372,10 @@ namespace Dynamo.ViewModels
 
             if (!this.IsVisible)
             {
-                result = nodePreviewColor;
+                result = nodePreviewGeometryColor;
                 if (result != null)
                 {
-                    ImgGlyphOneSource = previewGlyph;
+                    ImgGlyphOneSource = previewGeometryGlyph;
                 } 
             }
 
@@ -1379,7 +1391,7 @@ namespace Dynamo.ViewModels
                     else
                     {
                         ImgGlyphOneSource = packageGlyph;
-                        ImgGlyphTwoSource = previewGlyph;
+                        ImgGlyphTwoSource = previewGeometryGlyph;
                     }
                 }
             }
@@ -1396,10 +1408,28 @@ namespace Dynamo.ViewModels
                     else
                     {
                         ImgGlyphOneSource = frozenGlyph;
-                        ImgGlyphTwoSource = previewGlyph;
+                        ImgGlyphTwoSource = previewGeometryGlyph;
                     }
                 }
             }
+
+            if (this.IsTransient)
+            {
+                result = nodeTransientOverlayColor;
+                if (result != null)
+                {
+                    if (ImgGlyphOneSource == null)
+                    {
+                        ImgGlyphOneSource = previewClusterGlyph;
+                    }
+                    else
+                    {
+                        ImgGlyphOneSource = previewClusterGlyph;
+                        ImgGlyphTwoSource = previewGeometryGlyph;
+                    }
+                }
+            }
+
             if (NodeModel.State == ElementState.Info || NodeModel.State == ElementState.PersistentInfo)
             {
                 result = nodeInfoColor;

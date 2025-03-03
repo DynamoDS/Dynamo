@@ -310,7 +310,8 @@ namespace DynamoCoreWpfTests
             // images like node icon, lacing image etc
             // As of Nov 2024, we have 8 images per NodeView
             // Images are named for ease of use
-            Assert.AreEqual(8, imgs.Count());
+            // As of Dynamo 3.5, the number of images in a node view is 9 after the addition of the TransientImage
+            Assert.AreEqual(9, imgs.Count());
 
             var img = imgs.First(x => x.Name == "DotsImage");
 

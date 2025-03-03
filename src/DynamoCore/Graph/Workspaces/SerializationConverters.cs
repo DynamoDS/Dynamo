@@ -862,9 +862,9 @@ namespace Dynamo.Graph.Workspaces
                 .Select(outputNode => outputNode.OutputData).ToList();
             serializer.Serialize(writer, outputNodeDatas);
 
-            // Nodes
+            // Nodes except for nodes in Transient state
             writer.WritePropertyName("Nodes");
-            serializer.Serialize(writer, ws.Nodes);
+            serializer.Serialize(writer, ws.Nodes.Where(x => x.IsTransient != true));
 
             // Connectors
             writer.WritePropertyName("Connectors");

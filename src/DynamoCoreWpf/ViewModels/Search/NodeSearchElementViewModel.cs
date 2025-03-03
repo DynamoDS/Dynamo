@@ -450,7 +450,7 @@ namespace Dynamo.Wpf.ViewModels
                 originalNodeId = nodeView.ViewModel.NodeModel.OutputNodes.Values.SelectMany(s => s.Select(t => t.Item2)).Distinct().FirstOrDefault().GUID;
                 newInput = true;
             }
-            else if (nodeView.ViewModel.NodeModel.InputNodes.Count() > 0)
+            else if (nodeView.ViewModel.NodeModel.InputNodes.Count > 0)
             {
                 originalNodeId = nodeView.ViewModel.NodeModel.InputNodes.Values.Select(s => s.Item2).Distinct().FirstOrDefault().GUID;                
             }
