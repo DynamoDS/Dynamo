@@ -12,7 +12,7 @@ namespace Dynamo.Wpf.ViewModels.Core
     {
         public static bool ContainsModel(this IEnumerable<AnnotationModel> groups, Guid nodeGuid)
         {
-            return (groups.SelectMany(m => m.Nodes).Any(m => m.GUID == nodeGuid));
+            return groups.Any(g => g.ContainsGuid(nodeGuid));
         }
     }
 }

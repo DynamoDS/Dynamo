@@ -192,7 +192,7 @@ namespace Dynamo.Graph.Workspaces
                 }
 
                 AnnotationModel group = workspace.Annotations
-                    .Where(g => g.Nodes.Contains(note))
+                    .Where(g => g.ContainsModel(note))
                     .FirstOrDefault();
 
                 GraphLayout.Node nd = null;
