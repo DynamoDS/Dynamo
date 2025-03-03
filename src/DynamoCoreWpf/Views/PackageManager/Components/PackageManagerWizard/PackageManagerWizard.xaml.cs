@@ -120,6 +120,8 @@ namespace Dynamo.UI.Views
             {
                 publishPackageViewModel.PropertyChanged += PublishPackageViewModel_PropertyChanged;
             }
+
+            SendPackageDependencies(publishPackageViewModel.DependencyNames);
         }
 
         /// <summary>
@@ -263,6 +265,19 @@ namespace Dynamo.UI.Views
             }
         }
 
+
+        private async void SendPackageDependencies(string names)
+        {
+            if (string.IsNullOrEmpty(names)) return;
+
+            var payload = new { dependencyNames = names };
+            string jsonPayload = JsonSerializer.Serialize(payload);
+
+            if (dynWebView?.CoreWebView2 != null)
+            {
+                await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveDependencyNames({jsonPayload});");
+            }
+        }
 
         internal async Task PreloadWebView2Async()
         {
