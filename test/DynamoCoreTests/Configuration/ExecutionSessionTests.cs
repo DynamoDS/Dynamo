@@ -10,6 +10,7 @@ namespace Dynamo.Tests.Configuration
     {
         private TimeSpan lastExecutionDuration = new TimeSpan();
         private IEnumerable<string> packagePaths;
+        private string preferenceFilePath;
 
         protected override void GetLibrariesToPreload(List<string> libraries)
         {
@@ -38,18 +39,19 @@ namespace Dynamo.Tests.Configuration
 
         [Test]
         [Category("UnitTests")]
-        public void TestExecutionSessionPackagePaths()
+        public void TestExecutionSessionPaths()
         {
             ExecutionEvents.GraphPreExecution += ExecutionEvents_GraphPreExecution;
             RunModel(@"core\HomogeneousList\HomogeneousInputsValid.dyn");
-            Assert.IsNotEmpty(packagePaths, "packgePaths was empty");
+            Assert.IsNotEmpty(packagePaths, "packagePaths was empty");
+            Assert.IsNotEmpty(preferenceFilePath, "preferenceFilePath was empty");
             ExecutionEvents.GraphPreExecution -= ExecutionEvents_GraphPreExecution;
         }
 
         private void ExecutionEvents_GraphPreExecution(Session.IExecutionSession session)
         {
             packagePaths = ExecutionEvents.ActiveSession.GetParameterValue(Session.ParameterKeys.PackagePaths) as IEnumerable<string>;
-
+            preferenceFilePath = ExecutionEvents.ActiveSession.GetParameterValue(Session.ParameterKeys.PreferenceFilePath) as string;
         }
         
         [OneTimeTearDown]
