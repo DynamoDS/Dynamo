@@ -1621,7 +1621,7 @@ namespace Dynamo.Models
 
             SearchModel?.Add(symbolSearchElement);
             SearchModel?.Add(outputSearchElement);
-            LuceneUtility.AddNodeTypeToSearchIndexBulk([cnbNode, symbolSearchElement, outputSearchElement], iDoc);
+            LuceneUtility.AddNodeTypeToSearchIndex([cnbNode, symbolSearchElement, outputSearchElement], iDoc);
 
         }
 
@@ -1785,7 +1785,7 @@ namespace Dynamo.Models
                     Logger.Log(e);
                 }
             }
-            LuceneUtility.AddNodeTypeToSearchIndexBulk(nodeSearchElements, iDoc);
+            LuceneUtility.AddNodeTypeToSearchIndex(nodeSearchElements, iDoc);
         }
 
         private void InitializePreferences()
@@ -3500,7 +3500,7 @@ namespace Dynamo.Models
                     }
                 }
             }
-            LuceneUtility.AddNodeTypeToSearchIndexBulk(nodes, iDoc);
+            LuceneUtility.AddNodeTypeToSearchIndex(nodes, iDoc);
         }
 
         /// <summary>

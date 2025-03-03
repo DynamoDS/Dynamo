@@ -1249,15 +1249,24 @@ namespace Dynamo.ViewModels
 
         private void UpdateAllGroupedGroups()
         {
-            using (NestedGroupsGeometries.DeferCollectionReset())
+            try
             {
-                if (ViewModelBases != null)
-                {        
-                    ViewModelBases
-                        .OfType<AnnotationViewModel>()
-                        .ToList()
-                        .ForEach(x => UpdateGroupCutGeometry(x));
+                using (NestedGroupsGeometries.DeferCollectionReset())
+                {
+                    if (ViewModelBases != null)
+                    {
+                        ViewModelBases
+                            .OfType<AnnotationViewModel>()
+                            .ToList()?
+                            .ForEach(x => UpdateGroupCutGeometry(x));
+                    }
                 }
+            }
+            catch (Exception ex)
+            {
+                WorkspaceViewModel.DynamoViewModel.Model.Logger.Log("Error updating all grouped groups");
+                WorkspaceViewModel.DynamoViewModel.Model.Logger.Log(ex);
+                WorkspaceViewModel.DynamoViewModel.Model.Logger.Log(ex.StackTrace);
             }
         }
 
