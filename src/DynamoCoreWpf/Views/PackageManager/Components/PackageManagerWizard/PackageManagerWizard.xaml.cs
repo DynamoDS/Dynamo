@@ -59,6 +59,7 @@ namespace Dynamo.UI.Views
         internal Action<string> RequestUpdateCompatibilityMatrix;
         internal Action RequestLoadMarkdownContent;
         internal Action RequestClearMarkdownContent;
+        internal Action<string> RequestLogMessage;
 
         #endregion
 
@@ -94,6 +95,7 @@ namespace Dynamo.UI.Views
             RequestUpdateCompatibilityMatrix = UpdateCompatibilityMatrix;
             RequestLoadMarkdownContent = LoadMarkdownContent;
             RequestClearMarkdownContent = ClearMarkdownContent;
+            RequestLogMessage = LogMessage;
 
             DataContextChanged += OnDataContextChanged;
         }
@@ -278,18 +280,17 @@ namespace Dynamo.UI.Views
                             RequestOpenFolder,
                             RequestUpdateCompatibilityMatrix,
                             RequestLoadMarkdownContent,
-                            RequestClearMarkdownContent));
+                            RequestClearMarkdownContent,
+                            RequestLogMessage));
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine(ex.Message);
-                    //this.startPage.DynamoViewModel.Model.Logger.Log(ex.Message);
+                    LogMessage(ex.Message);
                 }
             }
             catch (ObjectDisposedException ex)
             {
-                Console.WriteLine(ex.Message);
-                //this.startPage.DynamoViewModel.Model.Logger.Log(ex.Message);
+                LogMessage(ex.Message);
             }
         }
 
@@ -415,11 +416,11 @@ namespace Dynamo.UI.Views
                 publishPackageViewModel.Group = packageDetails.Group ?? string.Empty;
                 publishPackageViewModel.ReleaseNotesUrl = packageDetails.ReleaseNotesUrl ?? string.Empty;
 
-                Console.WriteLine("Package details updated successfully.");
+                LogMessage("Package details updated successfully.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error updating package details: {ex.Message}");
+                LogMessage(ex);
             }
         }
 
@@ -438,11 +439,11 @@ namespace Dynamo.UI.Views
 
                 publishPackageViewModel.CompatibilityMatrix = compatibilityMatrix;
 
-                Console.WriteLine("Compatibility matrix updated successfully.");
+                LogMessage("Compatibility matrix updated successfully.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error updating compatibility matrix: {ex.Message}");
+                LogMessage(ex);
             }
         }
 
@@ -520,6 +521,11 @@ namespace Dynamo.UI.Views
             return toolPath;
         }
 
+        /// <summary>
+        /// Process web page opening 
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void CoreWebView2_NewWindowRequested(object sender, CoreWebView2NewWindowRequestedEventArgs e)
         {
             e.Handled = true;
@@ -628,6 +634,33 @@ namespace Dynamo.UI.Views
                 isFolder = isFolder
             };
         }
+
+
+        /// <summary>
+        /// Error handling and loging
+        /// Overloaded method for messages
+        /// </summary>
+        /// <param name="message">Message to log</param>
+        private void LogMessage(string message)
+        {
+            if (string.IsNullOrWhiteSpace(message)) return;
+
+            string logMessage = $"Package Manager Wizard INFO: {message}";
+            this.publishPackageViewModel?.DynamoViewModel?.Model.Logger.Log(logMessage);
+        }
+
+        /// <summary>
+        /// Error handling and loging
+        /// Overloaded method for exceptions
+        /// </summary>
+        /// <param name="ex">Exception to log</param>
+        private void LogMessage(Exception ex)
+        {
+            if (ex == null) return;
+
+            string logMessage = $"Package Manager Wizard ERROR: {ex.GetType()}: {ex.Message}\nStack Trace:\n{ex.StackTrace}";
+            this.publishPackageViewModel?.DynamoViewModel?.Model.Logger.Log(logMessage);
+        }
         #endregion
 
         #region Dispose
@@ -707,6 +740,7 @@ namespace Dynamo.UI.Views
         readonly Action<string> RequestUpdateCompatibilityMatrix;
         readonly Action RequestLoadMarkdownContent;
         readonly Action RequestClearMarkdownContent;
+        readonly Action<string> RequestLogMessage;
 
         public ScriptWizardObject(
             Action<string> requestAddFileOrFolder,
@@ -720,7 +754,8 @@ namespace Dynamo.UI.Views
             Action<string> requestOpenFolder,
             Action<string> requestUpdateCompatibilityMatrix,
             Action requestLoadMarkdownContent,
-            Action requestClearMarkdownContent)
+            Action requestClearMarkdownContent,
+            Action<string> requestLogMessage)
         {
             RequestAddFileOrFolder = requestAddFileOrFolder;
             RequestRemoveFileOrFolder = requestRemoveFileOrFolder;
@@ -734,6 +769,7 @@ namespace Dynamo.UI.Views
             RequestUpdateCompatibilityMatrix = requestUpdateCompatibilityMatrix;
             RequestLoadMarkdownContent = requestLoadMarkdownContent;
             RequestClearMarkdownContent = requestClearMarkdownContent;
+            RequestLogMessage = requestLogMessage;
         }
 
         [DynamoJSInvokable]
@@ -810,6 +846,11 @@ namespace Dynamo.UI.Views
             RequestOpenFolder(path);
         }
 
+        [DynamoJSInvokable]
+        public void LogMessage(string message)
+        {
+            RequestLogMessage(message);
+        }
     }
 
     public class PackageUpdateRequest : IEquatable<PackageUpdateRequest>

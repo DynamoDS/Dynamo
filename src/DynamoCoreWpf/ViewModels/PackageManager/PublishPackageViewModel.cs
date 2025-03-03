@@ -1374,6 +1374,8 @@ namespace Dynamo.PackageManager
             if (!String.IsNullOrEmpty(this.copyrightHolder)) return true;
             if (!String.IsNullOrEmpty(this.copyrightYear)) return true;
             if (!String.IsNullOrEmpty(this.RootFolder)) return true;
+            if (this.CompatibilityMatrix.Any()) return true;
+            if (!String.IsNullOrEmpty(this.ReleaseNotesUrl)) return true;
 
             return false;
         }
