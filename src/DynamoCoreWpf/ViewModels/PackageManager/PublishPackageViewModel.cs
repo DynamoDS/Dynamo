@@ -1374,7 +1374,7 @@ namespace Dynamo.PackageManager
             if (!String.IsNullOrEmpty(this.copyrightHolder)) return true;
             if (!String.IsNullOrEmpty(this.copyrightYear)) return true;
             if (!String.IsNullOrEmpty(this.RootFolder)) return true;
-            if (this.CompatibilityMatrix.Any()) return true;
+            if (this.CompatibilityMatrix != null && this.CompatibilityMatrix.Any()) return true;
             if (!String.IsNullOrEmpty(this.ReleaseNotesUrl)) return true;
 
             return false;
@@ -2100,8 +2100,13 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// Method linked to the ClearMarkdownDirectoryCommand.
         /// Sets the MarkdownFilesDirectory to an empty string.
+        /// Also, cleans up the markdown files.
         /// </summary>
-        private void ClearMarkdownDirectory() => MarkdownFilesDirectory = string.Empty;
+        private void ClearMarkdownDirectory()
+        {
+            MarkdownFilesDirectory = string.Empty;
+            this.MarkdownFiles = new List<string>();
+        }
 
         /// <summary>
         /// Removes an item from the package contents list.

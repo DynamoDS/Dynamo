@@ -165,6 +165,10 @@ namespace Dynamo.UI.Views
             {
                 SendMarkdownFiles(publishPackageViewModel.MarkdownFiles);
             }
+            else if (e.PropertyName.Equals(nameof(publishPackageViewModel.ErrorString)))
+            {
+                SendErrorString(publishPackageViewModel.ErrorString);
+            }
         }
 
         private async void SendUpdatedPackageContents(object frontendData, string type)
@@ -197,6 +201,7 @@ namespace Dynamo.UI.Views
                 await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receivePublishPathLocation({jsonPayload});");
             }
         }
+
         private async void SendMarkdownFiles(IEnumerable<string> markdownFiles)
         {
             if (!markdownFiles.Any()) return;
@@ -220,6 +225,19 @@ namespace Dynamo.UI.Views
             if (dynWebView?.CoreWebView2 != null)
             {
                 await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveMarkdownPathLocation({jsonPayload});");
+            }
+        }
+
+        private async void SendErrorString(string error)
+        {
+            if (string.IsNullOrEmpty(error)) return;
+
+            var payload = new { errorString = error };
+            string jsonPayload = JsonSerializer.Serialize(payload);
+
+            if (dynWebView?.CoreWebView2 != null)
+            {
+                await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveErrorString({jsonPayload});");
             }
         }
 
@@ -293,6 +311,7 @@ namespace Dynamo.UI.Views
                 LogMessage(ex.Message);
             }
         }
+
 
         #region Relay Commands
         internal void AddFileOrFolder(string fileOrFolder)
