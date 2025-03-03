@@ -149,7 +149,7 @@ namespace Dynamo.Tests
         {
 #pragma warning disable AUTH_SERVICES
 #pragma warning disable REQUEST_AUTHPROVIDER
-            var result = AuthServices.OnRequestAuthProvider();
+            var result = AuthServices.AuthProvider;
 #pragma warning restore REQUEST_AUTHPROVIDER
 #pragma warning restore AUTH_SERVICES
 

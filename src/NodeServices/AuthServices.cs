@@ -40,20 +40,23 @@ namespace DynamoServices
         internal static event RequestAuthProviderEventHandler RequestAuthProvider;
 
         /// <summary>
-        /// Invokes the RequestAuthProvider event and returns an IOAuth2AccessTokenProvider if one is found.
-        /// If no auth provider is found, this will return null.
+        /// Returns the active DynamoModel's AuthProvider.
         /// </summary>
-        /// <returns>The found IOAuth2AccessTokenProvider.</returns>
+        /// <returns>The IOAuth2AccessTokenProvider associated with the active DynamoModel.
+        /// It's possible this property might be null.</returns>
 #if NET8_0_OR_GREATER
         [System.Diagnostics.CodeAnalysis.Experimental("REQUEST_AUTHPROVIDER")]
 #else
-        [Obsolete("This method is for evaluation purposes only and is subject to change or removal in future updates.")]
+        [Obsolete("This property is for evaluation purposes only and is subject to change or removal in future updates.")]
 #endif
-        public static object OnRequestAuthProvider()
+        public static object AuthProvider
         {
-            var args = new RequestAuthProviderEventArgs();
-            RequestAuthProvider?.Invoke(args);
-            return args.AuthProvider;
+            get
+            {
+                var args = new RequestAuthProviderEventArgs();
+                RequestAuthProvider?.Invoke(args);
+                return args.AuthProvider;
+            }
         }
     }
 }
