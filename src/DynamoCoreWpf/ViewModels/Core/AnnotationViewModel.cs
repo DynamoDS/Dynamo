@@ -1257,7 +1257,7 @@ namespace Dynamo.ViewModels
                     {
                         ViewModelBases
                             .OfType<AnnotationViewModel>()
-                            .ToList()
+                            .ToList()?
                             .ForEach(x => UpdateGroupCutGeometry(x));
                     }
                 }
