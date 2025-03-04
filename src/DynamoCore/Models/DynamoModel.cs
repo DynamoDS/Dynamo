@@ -991,6 +991,11 @@ namespace Dynamo.Models
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
             LogWarningMessageEvents.LogInfoMessage += LogInfoMessage;
+
+#pragma warning disable AUTH_SERVICES
+            AuthServices.RequestAuthProvider += AuthServicesEvents_AuthProviderRequested;
+#pragma warning restore AUTH_SERVICES
+
             DynamoConsoleLogger.LogMessageToDynamoConsole += LogMessageWrapper;
             DynamoConsoleLogger.LogErrorToDynamoConsole += LogErrorMessageWrapper;
             if (!IsServiceMode)
@@ -1018,6 +1023,11 @@ namespace Dynamo.Models
                  
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
+        }
+
+        private void AuthServicesEvents_AuthProviderRequested(RequestAuthProviderEventArgs args)
+        {
+            args.AuthProvider = AuthenticationManager.AuthProvider;
         }
 
         /// <summary>
@@ -1461,6 +1471,11 @@ namespace Dynamo.Models
 
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
             LogWarningMessageEvents.LogInfoMessage -= LogInfoMessage;
+
+#pragma warning disable AUTH_SERVICES
+            AuthServices.RequestAuthProvider -= AuthServicesEvents_AuthProviderRequested;
+#pragma warning restore AUTH_SERVICES
+
             DynamoConsoleLogger.LogMessageToDynamoConsole -= LogMessageWrapper;
             DynamoConsoleLogger.LogErrorToDynamoConsole -= LogErrorMessageWrapper;
             foreach (var ws in _workspaces)
@@ -1621,7 +1636,7 @@ namespace Dynamo.Models
 
             SearchModel?.Add(symbolSearchElement);
             SearchModel?.Add(outputSearchElement);
-            LuceneUtility.AddNodeTypeToSearchIndexBulk([cnbNode, symbolSearchElement, outputSearchElement], iDoc);
+            LuceneUtility.AddNodeTypeToSearchIndex([cnbNode, symbolSearchElement, outputSearchElement], iDoc);
 
         }
 
@@ -1785,7 +1800,7 @@ namespace Dynamo.Models
                     Logger.Log(e);
                 }
             }
-            LuceneUtility.AddNodeTypeToSearchIndexBulk(nodeSearchElements, iDoc);
+            LuceneUtility.AddNodeTypeToSearchIndex(nodeSearchElements, iDoc);
         }
 
         private void InitializePreferences()
@@ -3500,7 +3515,7 @@ namespace Dynamo.Models
                     }
                 }
             }
-            LuceneUtility.AddNodeTypeToSearchIndexBulk(nodes, iDoc);
+            LuceneUtility.AddNodeTypeToSearchIndex(nodes, iDoc);
         }
 
         /// <summary>

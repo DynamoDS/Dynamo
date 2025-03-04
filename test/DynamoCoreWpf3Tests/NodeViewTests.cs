@@ -107,7 +107,7 @@ namespace DynamoCoreWpfTests
             };
         }
 
-        [Test, Category("Failure")]
+        [Test]
         public void ZIndex_NodeAsMemberOfGroup()
         {
             // Reset zindex to start value.
