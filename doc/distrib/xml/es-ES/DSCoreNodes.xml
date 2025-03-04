@@ -895,6 +895,14 @@ Busque "Cadenas de formato de fecha y hora personalizadas de MSDN" para obtener 
             <returns name="list">Una nueva lista con el artículo sustituido.</returns>
             <search>replace,switch</search>
         </member>
+        <member name="M:DSCore.List.ReplaceItemAtIndices(System.Collections.IList,System.Collections.Generic.IList{System.Int32},System.Object)">
+            <summary>Replaces items from the given list that are located at the specified indices.</summary>
+            <param name="list">Lista en la que se debe sustituir un elemento.</param>
+            <param name="indices">Indices of the item(s) to be replaced.</param>
+            <param name="item">El elemento que se debe insertar.</param>
+            <returns name="list">A new list with the item(s) replaced.</returns>
+            <search>replace,switch</search>
+        </member>
         <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">
             <summary>Devuelve una sola sublista de la lista especificada en función del índice inicial, el índice final,
                 y la cantidad de paso indicados.</summary>
