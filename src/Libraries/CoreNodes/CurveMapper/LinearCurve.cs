@@ -1,8 +1,11 @@
-using System;
 using System.Collections.Generic;
 
 namespace DSCore.CurveMapper
 {
+    /// <summary>
+    /// Represents a linear curve in the CurveMapper.
+    /// A linear curve is a straight line between two control points.
+    /// </summary>
     public class LinearCurve : CurveBase
     {
         private double ControlPoint1X;

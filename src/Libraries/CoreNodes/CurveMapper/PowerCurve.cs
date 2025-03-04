@@ -1,11 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DSCore.CurveMapper
 {
+    /// <summary>
+    /// Represents a power function curve in the CurveMapper.
+    /// The curve is defined by a power equation derived from a control point.
+    /// </summary>
     public class PowerCurve : CurveBase
     {
         private double ControlPoint1X;

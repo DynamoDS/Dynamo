@@ -3,6 +3,10 @@ using System.Linq;
 
 namespace DSCore.CurveMapper
 {
+    /// <summary>
+    /// Represents a Bezier curve in the CurveMapper.
+    /// A Bezier curve is defined by four control points and provides smooth interpolation.
+    /// </summary>
     public class BezierCurve : CurveBase
     {
         private double ControlPoint1X;

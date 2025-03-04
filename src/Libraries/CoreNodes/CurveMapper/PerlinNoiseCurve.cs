@@ -1,11 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DSCore.CurveMapper
 {
+    /// <summary>
+    /// Represents a Perlin noise curve in the CurveMapper.
+    /// The curve generates procedural noise based on control points and Perlin noise functions.
+    /// </summary>
     public class PerlinNoiseCurve : CurveBase
     {
         private double ControlPoint1X;

@@ -1,11 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DSCore.CurveMapper
 {
+    /// <summary>
+    /// Represents a control line in the CurveMapper.
+    /// This is used for auxiliary control of other curves, particularly Bezier curves.
+    /// </summary>
     public class ControlLine : CurveBase
     {
         private double ControlPoint1X;

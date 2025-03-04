@@ -1,8 +1,11 @@
-using System;
 using System.Collections.Generic;
 
 namespace DSCore.CurveMapper
 {
+    /// <summary>
+    /// Represents a parabolic curve in the CurveMapper.
+    /// The curve follows a quadratic equation based on two control points.
+    /// </summary>
     public class ParabolicCurve : CurveBase
     {
         private double ControlPoint1X;

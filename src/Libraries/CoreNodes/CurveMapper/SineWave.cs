@@ -1,8 +1,11 @@
-using System;
 using System.Collections.Generic;
 
 namespace DSCore.CurveMapper
 {
+    /// <summary>
+    /// Represents a sine wave curve in the CurveMapper.
+    /// The sine wave is defined by two control points and follows a trigonometric function.
+    /// </summary>
     public class SineWave : CurveBase
     {
         private double ControlPoint1X;

@@ -1,11 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DSCore.CurveMapper
 {
+    /// <summary>
+    /// Represents a Gaussian curve in the CurveMapper.
+    /// The Gaussian curve follows a bell-shaped distribution defined by four control points.
+    /// </summary>
     public class GaussianCurve : CurveBase
     {
         private double ControlPoint1X;

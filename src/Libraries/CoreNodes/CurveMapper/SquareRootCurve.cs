@@ -1,11 +1,11 @@
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace DSCore.CurveMapper
 {
+    /// <summary>
+    /// Represents a square root curve in the CurveMapper.
+    /// The curve follows a square root function and is influenced by two control points.
+    /// </summary>
     public class SquareRootCurve : CurveBase
     {
         private double ControlPoint1X;
