@@ -5296,6 +5296,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsGeoScaling.
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsRun.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsTemplate.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralTab.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewGroupStylesHeader.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewIncludeTimestampExportPathTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageSwitchHelp.get -> string
@@ -5312,6 +5313,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewSavedChangesTooltip.get ->
 static Dynamo.Wpf.Properties.Resources.PreferencesViewSelectedPackagePathForDownload.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewSettingIncludeTimestampExportPath.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowCodeBlockNodeLineNumber.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewShowDefaultGroupDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowPreviewBubbles.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowRunPreviewTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowStaticSplashScreenTooltip.get -> string
