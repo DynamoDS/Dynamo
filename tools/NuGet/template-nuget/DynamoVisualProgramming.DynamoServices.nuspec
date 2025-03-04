@@ -24,11 +24,13 @@
             </group>
         </dependencies>
     </metadata>
+    <!--these binaries are pulled from the intermediate build
+    path because the install harvest path will only include the net8 version-->
     <files>
-        <file src="..\..\..\src\NodeServices\obj\netstandard2.0\DynamoServices.dll" target="lib\netstandard2.0" />
+        <file src="..\..\NodeServices\obj\netstandard2.0\DynamoServices.dll" target="lib\netstandard2.0" />
         <file src="DynamoServices.xml" target="lib\netstandard2.0" />
 
-        <file src="..\..\..\src\NodeServices\obj\net8.0\DynamoServices.dll" target="lib\net8.0" />
+        <file src="..\..\NodeServices\obj\net8.0\DynamoServices.dll" target="lib\net8.0" />
         <file src="DynamoServices.xml" target="lib\net8.0" />
 
         
