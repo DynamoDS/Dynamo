@@ -93,6 +93,32 @@
     </Target>
 
     <ItemGroup>
+    <None Remove="Controls\Docs\cs-CZ\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\cs-CZ\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\de-DE\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\de-DE\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\en-US\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\en-US\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\es-ES\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\es-ES\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\fr-FR\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\fr-FR\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\it-IT\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\it-IT\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\ja-JP\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\ja-JP\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\ko-KR\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\ko-KR\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\pl-PL\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\pl-PL\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\pt-BR\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\pt-BR\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\ru-RU\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\ru-RU\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\zh-CN\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\zh-CN\NodeAutocompleteDocumentation.html" />
+    <None Remove="Controls\Docs\zh-TW\FileTrustWarningDocumentation.html" />
+    <None Remove="Controls\Docs\zh-TW\NodeAutocompleteDocumentation.html" />
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="Packages\DynamoHome\build\index.bundle.js" />
@@ -110,7 +136,6 @@
     <None Remove="UI\Images\help-16px.png" />
     <None Remove="UI\Images\info_48px.png" />
     <None Remove="UI\Images\menu_white_48px.png" />
-    <None Remove="UI\Images\NodeStates\package-64px.png" />
     <None Remove="UI\Images\PackageManager\empty-state-first-use-light-gray.png" />
     <None Remove="UI\Images\search_icon_20px.png" />
     <None Remove="UI\Images\TitleBarButtons\close-darktheme-disabled-16px.png" />
@@ -218,6 +243,32 @@
     <None Remove="Views\SplashScreen\WebApp\splashScreenBackground.png" />
   </ItemGroup>
   <ItemGroup>
+    <EmbeddedResource Include="Controls\Docs\cs-CZ\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\cs-CZ\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\de-DE\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\de-DE\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\en-US\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\en-US\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\es-ES\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\es-ES\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\fr-FR\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\fr-FR\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\it-IT\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\it-IT\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\ja-JP\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\ja-JP\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\ko-KR\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\ko-KR\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\pl-PL\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\pl-PL\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\pt-BR\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\pt-BR\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\ru-RU\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\ru-RU\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\zh-CN\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\zh-CN\NodeAutocompleteDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\zh-TW\FileTrustWarningDocumentation.html" />
+    <EmbeddedResource Include="Controls\Docs\zh-TW\NodeAutocompleteDocumentation.html" />
     <EmbeddedResource Include="Packages\SplashScreen\build\index.bundle.js" />
     <EmbeddedResource Include="Packages\SplashScreen\build\index.html" />
     <EmbeddedResource Include="Properties\Resources.cs-CZ.resx" />
@@ -334,6 +385,9 @@
     <None Remove="UI\Images\NodeStates\frozen-64px.png" />
     <None Remove="UI\Images\NodeStates\hidden-64px.png" />
     <None Remove="UI\Images\NodeStates\info-64px.png" />
+    <None Remove="UI\Images\NodeStates\package-64px.png" />
+    <None Remove="UI\Images\NodeStates\transient-64px.png" />
+    <None Remove="UI\Images\NodeStates\transient-light-64px.png" />
     <None Remove="UI\Images\TitleBarButtons\close-darktheme-default-16px.png" />
     <None Remove="UI\Images\TitleBarButtons\close-darktheme-hover-16px.png" />
     <None Remove="UI\Images\TitleBarButtons\close-lighttheme-default-16px.png" />
@@ -1212,6 +1266,8 @@
     <Resource Include="UI\Images\NodeStates\hidden-64px.png" />
     <Resource Include="UI\Images\NodeStates\info-64px.png" />
     <Resource Include="UI\Images\NodeStates\package-64px.png" />
+    <Resource Include="UI\Images\NodeStates\transient-64px.png" />
+    <Resource Include="UI\Images\NodeStates\transient-light-64px.png" />
     <Resource Include="UI\Images\PackageManager\empty-state-first-use-light-gray.png" />
     <Resource Include="UI\Images\question-hover-blue-16px.png" />
     <Resource Include="UI\Images\search_icon_20px.png" />
@@ -1975,8 +2031,6 @@
     <Resource Include="UI\Images\up_16_16.png" />
     <Resource Include="UI\Images\up-hover-16px.png" />
     <Resource Include="UI\Images\link-16px.png" />
-    <EmbeddedResource Include="Controls\Docs\NodeAutocompleteDocumentation.html" />
-    <EmbeddedResource Include="Controls\Docs\FileTrustWarningDocumentation.html" />
     <Content Include="sharpdx_direct3d11_effects_x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -2098,6 +2152,36 @@
 	<Copy SourceFiles="@(DocXMLRuRUFiles)" DestinationFolder="$(OutputPath)\ru-RU\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(DocXMLZhCNFiles)" DestinationFolder="$(OutputPath)\zh-CN\" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(DocXMLZhTWFiles)" DestinationFolder="$(OutputPath)\zh-TW\" SkipUnchangedFiles="True" />
+  </Target>
+  <Target Name="CopyControlHTMLFiles" AfterTargets="CopyDocXMLAllLanguages">
+    <ItemGroup>
+		<HTMLControlsEnUSFiles Include="$(SolutionDir)..\doc\distrib\html\en-US\Controls\**\*.html" />
+		<HTMLControlsCsCZFiles Include="$(SolutionDir)..\doc\distrib\html\cs-CZ\Controls\**\*.html" />
+		<HTMLControlsDeDEFiles Include="$(SolutionDir)..\doc\distrib\html\de-DE\Controls\**\*.html" />
+		<HTMLControlsEsESFiles Include="$(SolutionDir)..\doc\distrib\html\es-ES\Controls\**\*.html" />
+		<HTMLControlsFrFRFiles Include="$(SolutionDir)..\doc\distrib\html\fr-FR\Controls\**\*.html" />
+		<HTMLControlsItITFiles Include="$(SolutionDir)..\doc\distrib\html\it-IT\Controls\**\*.html" />
+		<HTMLControlsJaJPFiles Include="$(SolutionDir)..\doc\distrib\html\ja-JP\Controls\**\*.html" />
+		<HTMLControlsKoKRFiles Include="$(SolutionDir)..\doc\distrib\html\ko-KR\Controls\**\*.html" />
+		<HTMLControlsPlPLFiles Include="$(SolutionDir)..\doc\distrib\html\pl-PL\Controls\**\*.html" />
+		<HTMLControlsPtBRFiles Include="$(SolutionDir)..\doc\distrib\html\pt-BR\Controls\**\*.html" />
+		<HTMLControlsRuRUFiles Include="$(SolutionDir)..\doc\distrib\html\ru-RU\Controls\**\*.html" />
+		<HTMLControlsZhCNFiles Include="$(SolutionDir)..\doc\distrib\html\zh-CN\Controls\**\*.html" />
+		<HTMLControlsZhTWFiles Include="$(SolutionDir)..\doc\distrib\html\zh-TW\Controls\**\*.html" />
+    </ItemGroup>
+    <Copy SourceFiles="@(HTMLControlsEnUSFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\en-US" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsCsCZFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\cs-CZ" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsDeDEFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\de-DE" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsEsESFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\es-ES" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsFrFRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\fr-FR" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsItITFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\it-IT" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsJaJPFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\ja-JP" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsKoKRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\ko-KR" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsPlPLFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\pl-PL" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsPtBRFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\pt-BR" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsRuRUFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\ru-RU" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsZhCNFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\zh-CN" SkipUnchangedFiles="True"/>
+	<Copy SourceFiles="@(HTMLControlsZhTWFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\Controls\Docs\zh-TW" SkipUnchangedFiles="True"/>
   </Target>
   <Target Name="CopyDocumentationBrowserHTMLFiles" AfterTargets="CopyGuidedTourHTMLFiles">
     <ItemGroup>
