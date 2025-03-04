@@ -886,6 +886,14 @@ Cercare la sezione relativa alle stringhe di formato ora e data personalizzate M
             <returns name="list">Nuovo elenco con la voce sostituita.</returns>
             <search>replace,switch</search>
         </member>
+        <member name="M:DSCore.List.ReplaceItemAtIndices(System.Collections.IList,System.Collections.Generic.IList{System.Int32},System.Object)">
+            <summary>Replaces items from the given list that are located at the specified indices.</summary>
+            <param name="list">Elenco nel quale sostituire la voce.</param>
+            <param name="indices">Indices of the item(s) to be replaced.</param>
+            <param name="item">Voce da inserire.</param>
+            <returns name="list">A new list with the item(s) replaced.</returns>
+            <search>replace,switch</search>
+        </member>
         <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">
             <summary>Restituisce un singolo sottoelenco dall'elenco fornito, in base all'indice iniziale,
                 a quello finale e ad un valore di incremento.</summary>
