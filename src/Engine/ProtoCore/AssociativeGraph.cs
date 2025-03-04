@@ -978,7 +978,7 @@ namespace ProtoCore.AssociativeGraph
             while(stack.Any())
             {
                 var node = stack.Pop();
-                if (!visited.Contains(node.UID))
+                if (visited.Add(node.UID))
                 {
                     guids.Add(node.guid);
                     if (node.isCyclic)
@@ -986,7 +986,6 @@ namespace ProtoCore.AssociativeGraph
                         node.isCyclic = false;
                         node.isActive = true;
                     }
-                    visited.Add(node.UID);
                 }
 
                 foreach(var cNode in node.ChildrenNodes)
