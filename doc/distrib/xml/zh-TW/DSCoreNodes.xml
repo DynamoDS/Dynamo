@@ -885,6 +885,14 @@
             <returns name="list">項目已被取代的新清單。</returns>
             <search>replace,switch</search>
         </member>
+        <member name="M:DSCore.List.ReplaceItemAtIndices(System.Collections.IList,System.Collections.Generic.IList{System.Int32},System.Object)">
+            <summary>Replaces items from the given list that are located at the specified indices.</summary>
+            <param name="list">要取代其中項目的清單。</param>
+            <param name="indices">Indices of the item(s) to be replaced.</param>
+            <param name="item">要插入的項目。</param>
+            <returns name="list">A new list with the item(s) replaced.</returns>
+            <search>replace,switch</search>
+        </member>
         <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">
             <summary>根據開始索引、結束索引和步長數量從給定清單傳回
                 單一子清單。</summary>

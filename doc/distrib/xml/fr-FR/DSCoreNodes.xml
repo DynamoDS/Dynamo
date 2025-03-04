@@ -895,6 +895,14 @@ Recherchez "Chaînes de format de date et d'heure personnalisées MSDN" pour obt
             <returns name="list">Nouvelle liste contenant l'élément remplacé.</returns>
             <search>replace,switch</search>
         </member>
+        <member name="M:DSCore.List.ReplaceItemAtIndices(System.Collections.IList,System.Collections.Generic.IList{System.Int32},System.Object)">
+            <summary>Replaces items from the given list that are located at the specified indices.</summary>
+            <param name="list">Remplacer un élément de cette liste.</param>
+            <param name="indices">Indices of the item(s) to be replaced.</param>
+            <param name="item">Elément à insérer.</param>
+            <returns name="list">A new list with the item(s) replaced.</returns>
+            <search>replace,switch</search>
+        </member>
         <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">
             <summary>Renvoie une seule sous-liste de la liste indiquée, en fonction de l'index de départ, de l'index de fin
                 et d'une quantité de pas.</summary>

@@ -894,6 +894,14 @@ Obszerna lista opcji dostosowania formatu jest dostępna po wyszukaniu ciągu "N
             <returns name="list">Nowa lista z zastąpionym elementem.</returns>
             <search>replace,switch</search>
         </member>
+        <member name="M:DSCore.List.ReplaceItemAtIndices(System.Collections.IList,System.Collections.Generic.IList{System.Int32},System.Object)">
+            <summary>Replaces items from the given list that are located at the specified indices.</summary>
+            <param name="list">Lista, na której zostanie zastąpiony element.</param>
+            <param name="indices">Indices of the item(s) to be replaced.</param>
+            <param name="item">Element do wstawienia.</param>
+            <returns name="list">A new list with the item(s) replaced.</returns>
+            <search>replace,switch</search>
+        </member>
         <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">
             <summary>Zwraca pojedynczą podlistę z danej listy, w oparciu o indeks początkowy, końcowy,
                 i wielkości kroku.</summary>
