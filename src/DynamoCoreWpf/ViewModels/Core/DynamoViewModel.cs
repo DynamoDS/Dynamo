@@ -225,7 +225,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsDNAClusterPlacementEnabled", false) ?? true;
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsDNAClusterPlacementEnabled", false) ?? false;
             }
         }
 
@@ -2073,6 +2073,12 @@ namespace Dynamo.ViewModels
         /// <param name="parameters"></param>
         private void Open(object parameters)
         {
+            if (CurrentSpaceViewModel != null && CurrentSpaceViewModel.HasUnsavedChanges)
+            {
+                if (!AskUserToSaveWorkspaceOrCancel(HomeSpace))
+                    return;
+            }
+
             // try catch for exceptions thrown while opening files, say from a future version, 
             // that can't be handled reliably
             filePath = string.Empty;
@@ -3343,9 +3349,10 @@ namespace Dynamo.ViewModels
         {
             var args = new WorkspaceSaveEventArgs(workspace, allowCancel);
             OnRequestUserSaveWorkflow(this, args);
-            if (!args.Success)
-                return false;
-            return true;
+
+            workspace.HasUnsavedChanges = !args.Success;
+
+            return args.Success;
         }
 
         internal bool CanAddToSelection(object parameters)
