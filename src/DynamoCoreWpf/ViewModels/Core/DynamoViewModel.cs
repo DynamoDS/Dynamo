@@ -2622,6 +2622,22 @@ namespace Dynamo.ViewModels
                 if (!isBackup && hasSaved)
                 {
                     AddToRecentFiles(path);
+
+                    // Track save and save-as operations on workspace, excluding the backup files.
+                    if (saveContext.Equals(SaveContext.Save))
+                    {
+                        Analytics.TrackTaskFileOperationEvent(
+                                  path,
+                                  Logging.Actions.Save,
+                                  Model.CurrentWorkspace.Nodes.Count());
+                    }
+                    else if (saveContext.Equals(SaveContext.SaveAs))
+                    {
+                        Analytics.TrackTaskFileOperationEvent(
+                                  path,
+                                  Logging.Actions.SaveAs,
+                                  Model.CurrentWorkspace.Nodes.Count());
+                    }
                 }
             }
             catch (Exception ex)
@@ -3227,6 +3243,12 @@ namespace Dynamo.ViewModels
 
         private void CloseHomeWorkspace(object parameter)
         {
+            // Tracking analytics for workspace file close operation.
+            Analytics.TrackTaskFileOperationEvent(
+                                     model.CurrentWorkspace.FileName,
+                                     Logging.Actions.Close,
+                                     model.CurrentWorkspace.Nodes.Count());
+
             // Upon closing a workspace, validate if the workspace is valid to be sent to the ML datapipeline and then send it.
             if (!DynamoModel.IsTestMode && !HomeSpace.HasUnsavedChanges && (currentWorkspaceViewModel?.IsHomeSpace ?? true) && HomeSpace.HasRunWithoutCrash)
             {
