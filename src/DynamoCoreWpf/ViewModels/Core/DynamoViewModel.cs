@@ -2108,6 +2108,10 @@ namespace Dynamo.ViewModels
                 RunSettings.ForceBlockRun = displayTrustWarning;
                 // Execute graph open command
                 ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, isTemplate));
+
+                // Apply annotation updates based on the preference setting
+                ApplyAnnotationDescriptionSetting(PreferenceSettings.ShowDefaultGroupDescription);
+
                 // Only show trust warning popop when current opened workspace is homeworkspace and not custom node workspace
                 if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
                 {
@@ -2258,6 +2262,29 @@ namespace Dynamo.ViewModels
         {
             string fileContents = parameters as string;
             return PathHelper.isFileContentsValidJson(fileContents, out _);
+        }
+
+        /// <summary>
+        /// Updates all existing annotations in the workspace based on the 
+        /// ShowDefaultGroupDescription setting.
+        /// </summary>
+        /// <param name="showDefault">Whether to apply the default description or clear it.</param>
+        public void ApplyAnnotationDescriptionSetting(bool showDefault)
+        {
+            foreach (var workspace in Model.Workspaces)
+            {
+                foreach (var group in workspace.Annotations)
+                {
+                    if (showDefault && string.IsNullOrEmpty(group.AnnotationDescriptionText))
+                    {
+                        group.AnnotationDescriptionText = Resources.GroupDefaultText;
+                    }
+                    else if (!showDefault && group.AnnotationDescriptionText == Resources.GroupDefaultText)
+                    {
+                        group.AnnotationDescriptionText = string.Empty;
+                    }
+                }
+            }
         }
 
         /// <summary>
