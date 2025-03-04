@@ -1504,28 +1504,6 @@ namespace ProtoCore.AssociativeGraph
             return (((ulong)ci) << 32) | pi;
         }
 
-        internal void Purge(List<AST.AssociativeAST.AssociativeNode> oldNodes)
-        {
-            HashSet<Guid> oldGuids = [];
-            foreach (AST.AssociativeAST.AssociativeNode astNode in oldNodes)
-            {
-                var x = (astNode as AST.AssociativeAST.BinaryExpressionNode)?.guid;
-                if (x != null)
-                {
-                    oldGuids.Add(x.Value);
-                }
-            }
-            if(oldGuids.Count == 0)
-            {
-                return;
-            }
-            List<GraphNode> nodeList;
-            if(graphNodeMap.TryGetValue(GetGraphNodeKey(Constants.kInvalidPC, Constants.kInvalidPC), out nodeList))
-            {
-                nodeList.RemoveAll(node => oldGuids.Contains(node.guid));
-            }
-        }
-
         public DependencyGraph(Core core)
         {
             this.core = core;
