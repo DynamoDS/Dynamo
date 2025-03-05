@@ -3227,6 +3227,11 @@ namespace Dynamo.ViewModels
 
         public void MakeNewHomeWorkspace(object parameter)
         {
+            Analytics.TrackTaskFileOperationEvent(
+                                  HomeSpace.Name,
+                                  Actions.New,
+                                  Convert.ToInt32(null));
+
             if (ClearHomeWorkspaceInternal())
             {
                 var t = new DelegateBasedAsyncTask(model.Scheduler, () => model.ResetEngine());
