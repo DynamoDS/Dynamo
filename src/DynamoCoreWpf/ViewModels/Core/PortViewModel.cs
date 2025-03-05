@@ -5,6 +5,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
+using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
@@ -532,27 +533,36 @@ namespace Dynamo.ViewModels
             stopwatch.Stop(); // Stop the stopwatch
             wsViewModel.DynamoViewModel.Model.Logger.Log($"Cluster Placement Execution Time: {stopwatch.ElapsedMilliseconds} ms");
 
-            // cluster info display in right side panel
-            if (wsViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled)
+            try
             {
-                try
-                {
-                    MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
+                MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
 
-                    // Process the results and display the preview of the cluster with the highest confidence level
-                    // Leverage some API here to convert topology to actual cluster
-                    results.Results.FirstOrDefault().Topology.Nodes.ToList().ForEach(node =>
-                    {
-                        // nothing for now
-                    });
-
-                    // Display the cluster info in the right side panel
-                    // wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
-                }
-                catch (Exception e)
+                // Process the results and display the preview of the cluster with the highest confidence level
+                // Leverage some API here to convert topology to actual cluster
+                results.Results.FirstOrDefault().Topology.Nodes.ToList().ForEach(node =>
                 {
-                    // Log the exception and show a notification to the user
-                }
+                    // Retreive assembly name and node full name from type.id.
+                    var typeInfo = wsViewModel.NodeAutoCompleteSearchViewModel.GetInfoFromTypeId(node.Type.Id);
+                    wsViewModel.DynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, 0, 0, false, false));
+
+                    // convert from node type to search element
+
+                    //string fullName = typeInfo.FullName;
+                    //string assemblyName = typeInfo.AssemblyName;
+                    //NodeSearchElement nodeSearchElement = null;
+
+                    //var nodesFromAssembly = wsViewModel.NodeAutoCompleteSearchViewModel.nodeModelSearchElements.Where(n => Path.GetFileNameWithoutExtension(n.Assembly).Equals(assemblyName));
+                    //var element = nodesFromAssembly.FirstOrDefault(n => n.CreationName.Equals(fullName));
+
+                    //nodeSearchElement.CreateAndConnectCommand.Execute(port.PortModel);
+                });
+
+                // Display the cluster info in the right side panel
+                // wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
+            }
+            catch (Exception e)
+            {
+                // Log the exception and show a notification to the user
             }
         }
 
