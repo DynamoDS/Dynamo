@@ -456,7 +456,7 @@
         </Grid>
 
         <!-- Template for the feedback banner -->
-        <DockPanel Name="Feedback" VerticalAlignment="Bottom" Grid.Row="4" Width="600">
+        <DockPanel Name="Feedback" VerticalAlignment="Bottom" Grid.Row="4" Width="Auto">
             <!-- Restart Banner -->
             <StatusBar
                 Name="RestartBanner"
@@ -468,7 +468,7 @@
                 <!-- Preview text -->
                 <StatusBarItem>
                     <Border Height="50">
-                        <TextBlock TextWrapping="Wrap" Width="500" Padding="10,0,10,0" FontSize="15" Foreground="White" Text="{x:Static w:Resources.RestartBannerMessage}" VerticalAlignment="Center"/>
+                        <TextBlock TextWrapping="Wrap" MinWidth="350" Padding="10,0,10,0" FontSize="15" Foreground="White" Text="{x:Static w:Resources.RestartBannerMessage}" VerticalAlignment="Center"/>
                     </Border>
                 </StatusBarItem>
             </StatusBar>
