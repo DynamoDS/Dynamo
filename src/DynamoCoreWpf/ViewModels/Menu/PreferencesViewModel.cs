@@ -825,7 +825,7 @@ namespace Dynamo.ViewModels
                 preferenceSettings.ShowDefaultGroupDescription = value;
                 RaisePropertyChanged(nameof(ShowDefaultGroupDescription));
 
-                dynamoViewModel.ApplyAnnotationDescriptionSetting(value);
+                dynamoViewModel.RefreshAnnotationDescriptions();
             }
         }
 

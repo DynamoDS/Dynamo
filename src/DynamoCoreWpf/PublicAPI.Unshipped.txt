@@ -2188,7 +2188,7 @@ Dynamo.ViewModels.DynamoViewModel.UngroupAnnotationCommand.get -> Dynamo.UI.Comm
 Dynamo.ViewModels.DynamoViewModel.UngroupAnnotationCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.UngroupModelCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UngroupModelCommand.set -> void
-Dynamo.ViewModels.DynamoViewModel.ApplyAnnotationDescriptionSetting(bool showDefault) -> void
+Dynamo.ViewModels.DynamoViewModel.RefreshAnnotationDescriptions() -> void
 Dynamo.ViewModels.DynamoViewModel.UpdateAllPythonEngineCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UpdateAllPythonEngineCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.UpdateGraphicHelpersScale(object parameter) -> void
