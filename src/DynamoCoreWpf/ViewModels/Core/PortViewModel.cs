@@ -494,8 +494,6 @@ namespace Dynamo.ViewModels
         // Handler to invoke Node autocomplete cluster
         private void AutoCompleteCluster(object parameter)
         {
-            // Put a C# timer here to test the cluster placement mock
-            Stopwatch stopwatch = Stopwatch.StartNew();
             var wsViewModel = node.WorkspaceViewModel;
             wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
 
@@ -512,26 +510,29 @@ namespace Dynamo.ViewModels
             {
                 return;
             }
-            
+
+            // Put a C# timer here to test the cluster placement mock
+            //Stopwatch stopwatch = Stopwatch.StartNew();
+
             // Create mock nodes, currently Watch nodes (to avoid potential memory leak from Python Editor), and connect them to the input port
-            var targetNodeSearchEle = wsViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.ToList()[5];
-            targetNodeSearchEle.CreateAndConnectCommand.Execute(wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel);
+            //var targetNodeSearchEle = wsViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.ToList()[5];
+            //targetNodeSearchEle.CreateAndConnectCommand.Execute(wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel);
 
-            var sizeOfMockCluster = 3;
-            var n = 1;
-            while (n < sizeOfMockCluster)
-            {
-                // Get the last node and connect a new node to it
-                var node1 = wsViewModel.Nodes.LastOrDefault();
-                node1.IsTransient = true;
-                targetNodeSearchEle.CreateAndConnectCommand.Execute(node1.InPorts.FirstOrDefault().PortModel);
-                n++;
-            }
+            //var sizeOfMockCluster = 3;
+            //var n = 1;
+            //while (n < sizeOfMockCluster)
+            //{
+            //    // Get the last node and connect a new node to it
+            //    var node1 = wsViewModel.Nodes.LastOrDefault();
+            //    node1.IsTransient = true;
+            //    targetNodeSearchEle.CreateAndConnectCommand.Execute(node1.InPorts.FirstOrDefault().PortModel);
+            //    n++;
+            //}
 
-            wsViewModel.Nodes.LastOrDefault().IsTransient = true;
+            //wsViewModel.Nodes.LastOrDefault().IsTransient = true;
 
-            stopwatch.Stop(); // Stop the stopwatch
-            wsViewModel.DynamoViewModel.Model.Logger.Log($"Cluster Placement Execution Time: {stopwatch.ElapsedMilliseconds} ms");
+            //stopwatch.Stop(); // Stop the stopwatch
+            //wsViewModel.DynamoViewModel.Model.Logger.Log($"Cluster Placement Execution Time: {stopwatch.ElapsedMilliseconds} ms");
 
             try
             {
@@ -544,17 +545,19 @@ namespace Dynamo.ViewModels
                     // Retreive assembly name and node full name from type.id.
                     var typeInfo = wsViewModel.NodeAutoCompleteSearchViewModel.GetInfoFromTypeId(node.Type.Id);
                     wsViewModel.DynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, 0, 0, false, false));
+                    wsViewModel.Nodes.LastOrDefault().IsTransient = true;
+                });
 
-                    // convert from node type to search element
-
-                    //string fullName = typeInfo.FullName;
-                    //string assemblyName = typeInfo.AssemblyName;
-                    //NodeSearchElement nodeSearchElement = null;
-
-                    //var nodesFromAssembly = wsViewModel.NodeAutoCompleteSearchViewModel.nodeModelSearchElements.Where(n => Path.GetFileNameWithoutExtension(n.Assembly).Equals(assemblyName));
-                    //var element = nodesFromAssembly.FirstOrDefault(n => n.CreationName.Equals(fullName));
-
-                    //nodeSearchElement.CreateAndConnectCommand.Execute(port.PortModel);
+                results.Results.FirstOrDefault().Topology.Connections.ToList().ForEach(connection =>
+                {
+                    // Connect the nodes
+                    var sourceNode = wsViewModel.Nodes.FirstOrDefault(n => n.NodeModel.GUID.ToString() == connection.StartNode.NodeId);
+                    var targetNode = wsViewModel.Nodes.FirstOrDefault(n => n.NodeModel.GUID.ToString() == connection.EndNode.NodeId);
+                    var sourcePort = sourceNode.OutPorts.FirstOrDefault(p => p.PortModel.Index == connection.StartNode.PortIndex);
+                    var targetPort = targetNode.InPorts.FirstOrDefault(p => p.PortModel.Index == connection.EndNode.PortIndex);
+                    sourcePort.connectCommand.Execute(targetPort);
+                //    new DynamoModel.MakeConnectionCommand(sourceNode.Id, sourcePort., PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
+                //    new DynamoModel.MakeConnectionCommand(unexistingNodeGuid, 0, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
                 });
 
                 // Display the cluster info in the right side panel
