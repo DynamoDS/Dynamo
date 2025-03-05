@@ -1,0 +1,67 @@
+﻿<!--
+    Dynamo: https://github.com/DynamoDS/Dynamo
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code  .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h3>Package Manager</h3>
+    <p>Dynamo Package Manager는 패키지를 검색, 설치 및 게시하기 위한 원스톱 솔루션입니다. 패키지 &gt; Package Manager 아래의 상단 탐색에서 액세스합니다.</p>
+    <h4>패키지란 무엇입니까?</h4>
+    <p>Dynamo는 다양한 기능을 기본적으로 제공하고, Dynamo의 기능을 크게 확장할 수 있는 광범위한 패키지 라이브러리도 유지합니다. 패키지는 사용자 노드 또는 추가 기능의 모음입니다.Dynamo Package Manager는 커뮤니티에서 온라인으로 게시된 패키지를 다운로드할 수 있는 포털입니다.이러한 도구 세트는 Dynamo의 핵심 기능을 확장하고, 누구나 액세스할 수 있으며, 버튼 클릭으로 즉시 다운로드할 수 있도록 타사에서 개발되었습니다.</p>
+    <h4>Dynamo 패키지 설치</h4>
+    <p>Package Manager의 패키지 검색 탭에서 패키지를 찾아 설치할 수 있습니다. 검색 필드를 사용하여 특정 패키지를 찾습니다. 또한 필터 및 정렬을 적용하여 호스트 프로그램 또는 종속성 부족과 같은 기준에 맞게 리스트 범위를 좁힐 수 있습니다.</p>
+    <p>패키지에 대한 자세한 내용을 보려면 상세 정보 보기를 클릭합니다.그러면 패키지에 대한 설명을 읽고, 버전 및 라이선스 정보 등을 찾을 수 있는 패널이 열립니다.</p>
+    <p>패키지를 설치하려면 검색 뷰 또는 상세 정보 패널에서 설치를 클릭합니다.드롭다운을 클릭하고 버전을 선택하여 검색 뷰에 설치할 버전을 지정할 수 있습니다. 지정하지 않으면 최신 버전이 설치됩니다. 패키지 상세 정보 패널의 버전 및 패키지 요구사항 테이블에서 특정 버전 아래의 설치를 클릭하여 해당 버전을 설치합니다.</p>
+    <p>Package Manager의 설치된 패키지 탭에서 설치한 패키지 리스트를 찾을 수 있습니다. 이 탭에서 패키지 파일을 보고 패키지를 설치제거하는 등의 작업을 할 수 있습니다.</p>
+    <h4>Dynamo 패키지 게시</h4>
+    <p>Package Manager를 사용하여 Dynamo 내에 패키지를 게시할 수 있습니다. 시작하려면 패키지 게시 탭을 엽니다.패키지 게시 탭에서 게시하려는 패키지와 관련된 모든 필수 정보 및 선택적 정보를 묻습니다.</p>
+
+    <h4>패키지 상세 정보 추가</h4>
+
+    <p><b> 패키지 이름:</b><br/> 게시할 패키지의 이름입니다. 이는 라이브러리, 패키지 검색 및 Package Manager 웹사이트에 표시됩니다. 패키지 이름의 길이는 3자 이상이어야 합니다.</p>
+    <p><b>설명:</b><br/> 설명은 예외 및 전제 조건을 포함하여 패키지에 대한 더 많은 세부 정보를 추가하기에 좋은 곳입니다. 또한 패키지가 하는 일과 작업공간에서 어떻게 사용될 수 있는지에 대해 사용자를 교육하는 데 사용할 수 있습니다.</p>
+    <p><b>버전:</b><br/> 버전 필드는 세 개의 섹션인 주요, 보조 및 빌드로 나뉘며, 이를 통해 패키지 작성자가 버전 관리 의미 체계를 따르는 패키지의 새 버전을 업로드할 수 있습니다. 패키지 작성자는 새로운 기능과 향상된 기능이 포함된 패키지의 추가 버전을 게시하고 첫 번째 버전에서 다루지 못한 부분을 개선하거나 버그를 해결할 수 있습니다.</p>
+    <p><b>호스트:</b><br/> 패키지가 Revit, Civil3D, Alias 등의 호스트 프로그램을 활용하는 경우 드롭다운에서 하나 이상의 호스트를 선택할 수 있습니다. 패키지를 검색할 때 사용자는 호스트를 기준으로 결과를 필터링하여 원하는 프로그램과 작동하도록 설계된 패키지를 찾을 수 있습니다.</p>
+    <p><b>키워드(선택 사항):</b><br/> 패키지와 관련된 태그로 사용할 수 있는 키워드(예: 제너레이티브 디자인, ML 등)입니다. 스페이스 키로 구분한 다음 Enter 키를 눌러 여러 키워드를 필드에 한 번에 입력할 수 있습니다.</p>
+    <p><b>그룹(선택 사항):</b><br/> 이 필드는 패키지가 속한 회사/조직 등의 그룹을 지정하는 데 사용할 수 있습니다.</p>
+    <p><b>웹사이트(선택 사항):</b><br/> 패키지 또는 조직/작성자에 대한 자세한 정보를 사용자에게 제공할 수 있는 웹 사이트의 링크입니다.</p>
+    <p><b>리포지토리 URL(선택 사항):</b><br/> 사용자가 패키지 개발을 확인하거나 패키지 개발에 기여할 수 있는 패키지 리포지토리의 링크입니다.</p>
+    <p><b>라이센스(선택 사항):</b><br/> 패키지가 릴리즈되는 라이센스입니다. 기본 라이센스: MIT.</p>
+    <p><b>저작권 소유자(선택 사항):</b> <br/> 패키지의 저작권을 보유한 사람의 이름입니다. 비워 두면 사용자 이름이 기본값이 됩니다.</p>
+    <p><b>저작권 연도(선택 사항):</b><br/> 패키지의 저작권 연도입니다. 비워 두면 패키지가 게시된 연도가 기본값이 됩니다.</p>
+
+    <h4>패키지 파일 추가</h4>
+
+    <p><b>패키지 컨텐츠:</b><br/> 패키지 게시 탭의 오른쪽 사이드바에 있는 이 섹션을 사용하면 게시하기 전에 패키지 컨텐츠를 구성할 수 있습니다.</p>
+    <p><b>파일/디렉토리 추가:</b><br/><p>패키지와 관련된 모든 파일을 선택하여 추가합니다.일반적으로 bin 폴더, 바이너리 및 종속성이 추가됩니다.개별 파일 또는 폴더를 추가할 수 있습니다.</p>
+    <p>추가할 파일 또는 폴더를 선택한 후 패키지 컨텐츠 선택 페이지에서 파일을 보거나 제거하거나 추가할 수 있습니다. 왼쪽 패널에서 선택한 파일의 폴더 구조를 보고 오른쪽 패널에서 각 폴더의 컨텐츠를 볼 수 있습니다.</p>
+    <p><b>노드 라이브러리 선택:</b><br/><p>노드 라이브러리 열의 상자를 선택하여 패키지에 추가한 파일 중 노드 라이브러리인 파일을 지정합니다. 노드 라이브러리에는 Dynamo에서 노드로 가져올 유형 및 메서드가 포함되어 있습니다. 일반적으로 모든 조합은 Dynamo로 가져올 유형이 포함된 노드 라이브러리로 표시해야 합니다. ZeroTouch, NodeModel 또는 NodeViewCustomization 조합은 노드 라이브러리로 표시해야 합니다.</p>
+    <p>UI NodeViewCustomizations를 로드하려면 해당 NodeModel 정의를 포함하는 동일한 조함에 정의되거나 별도의 조합에 정의되어야 합니다. 어느 경우든 조합에는 노드 라이브러리라는 태그를 지정해야 합니다. 현재 NodeModel 또는 NodeCustomization 유형을 포함하는 노드 라이브러리로 표시된 조합의 경우 다른 모든 유형은 무시됩니다. 이 때문에 ZeroTouch 가져오기를 사용하여 가져올 유형에서 NodeModel/NodeViewCustomization 유형을 분리하는 것이 중요합니다.</p>
+    </p>
+    <p><b>폴더 구조 유지:</b><br/><p>패키지 폴더 구조를 복잡하게 만든 패키지 작성자는 패키지 컨텐츠 미리보기 패널 아래에 있는 폴더 구조 유지 토글을 활성화할 수 있습니다. 이 설정은 사용자가 기존 패키지의 새 버전을 게시할 때 기본적으로 켜져 있습니다. 이 경우 Dynamo는 패키지 폴더 구조를 변경하지 않고 패키지를 그대로 업로드합니다.</p>
+        <p>패키지가 제대로 작동하고 문제가 발생하지 않도록 패키지를 특정 방식으로 설정하려면 이 설정을 켜십시오. 확실하지 않거나 새 패키지를 게시할 때 설정을 끄면 Dynamo에서 폴더 구조를 설정할 수 있습니다.</p>
+    </p>
+    <p><b>패키지 컨텐츠 미리보기:</b><br/> 패키지 컨텐츠가 만족스러우면 다음을 클릭하여 패키지 파일이 게시된 후 설정되는 방식에 대한 미리보기를 확인합니다. 이 페이지는 보기 전용입니다. 패키지 컨텐츠를 추가로 변경하려면 이전 페이지로 돌아갑니다. 완료를 클릭하여 패키지 상세 정보 페이지로 돌아갑니다.</p>
+    <p><b>Markdown 파일 경로 추가(선택 사항):</b><br/> Markdown 파일 경로 섹션에서 패키지에 대한 Markdown(.md) 문서를 호스팅하는 파일 경로를 지정할 수 있습니다.</p>
+    <p><b>패키지 게시</b><br/> 필요한 모든 상세 정보를 입력한 후 패키지를 로컬이나 온라인에 게시할 수 있습니다. 로컬로 게시할 때는 패키지가 로컬 루트 디렉토리에 게시되고 온라인으로 게시할 때는 패키지가 Package Manager에 업로드됩니다.</p>
+
+    <hr />
+
+    <h3>바이러스 백신 스캔</h3>
+    <p>모든 Dynamo 패키지 사용자에게 안전한 환경을 제공하기 위해 새 패키지에 대한 바이러스 백신 스캔을 도입했습니다. 사용자가 패키지를 업로드하면 바이러스 스캔이 수행되고 안전 플래그가 지정된 후에만 패키지를 공개적으로 사용할 수 있습니다. 스캔은 패키지 업로드 프로세스 중에 수행되며 새 패키지를 온라인으로 사용할 수 있도록 일반적으로 10~15분 동안에는 추가되지 않습니다. 패키지가 감염된 것으로 플래그가 지정되면 업로드된 패키지가 감염된 것으로 확인되었고 온라인으로 게시되지 않는다는 알림이 Package Manager 검색 페이지에 표시됩니다. 패키지를 공개적으로 사용할 수 있도록 하려면 패키지에 포함된 파일을 확인하고 Package Manager를 통해 새 버전을 업로드하십시오.</p>
+    <h3>패키지 관리</h3>
+    <p>게시된 패키지의 리스트는 Package Manager의 내 패키지 탭에서 찾을 수 있고, 여기에서 해당 패키지를 사용 중단하고 새 버전을 게시하는 등의 작업을 수행할 수 있습니다.</p>
+    <h3>패키지 설정</h3>
+    <p>Package Manager의 패키지 설정 탭에서 새 패키지 다운로드 경로 및 패키지/라이브러리 검색 경로를 포함하여 패키지 관련 설정을 볼 수 있습니다. 설정을 편집하려면 패키지 설정 탭에서 기본 설정 링크를 클릭하여 기본 설정 패널에 액세스합니다.</p>
+</body>

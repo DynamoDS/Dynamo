@@ -1,0 +1,131 @@
+﻿<!--
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.
+
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code  .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } .questionmark:after { content: '?'; display: inline-block; font-family: sans-serif; font-weight: bold; text-align: center; font-size: 0.8em; line-height: 0.8em; border-radius: 50%; margin-left: 6px; padding: 0.13em 0.2em 0.09em 0.2em; color: inherit; border: 1px solid; text-decoration: none; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <form action="https://forum.dynamobim.com/t/new-feature-preview-python-3-support-issue-thread/51649"><input type="submit" class="button" value="Zgłaszanie problemu z węzłem języka Python 3" style="font-size:medium;"/></form>
+    <h2>Konwersja języka Python 2 na język Python 3</h2>
+    <p>1 stycznia 2020 r. fundacja Python Software Foundation (PSF) oficjalnie zakończyła wsparcie dla języka Python 2. Od wersji 2.7 dodatek Dynamo używa mechanizmu CPython3, czyli aparatu języka Python zapewniającego dostęp do języka Python 3 w dodatku Dynamo.</p>
+   
+    <h3>Dlaczego zmieniliśmy wersję języka Python?</h3>
+    <p>Dodatek Dynamo, podobnie jak wiele innych środowisk opartych na języku C#, używa narzędzia o nazwie IronPython do przenoszenia danych między obiektami .NET a skryptami w języku Python. Ponieważ narzędzia IronPython nie zaktualizowano do języka Python 3, dodatek Dynamo używa teraz CPython, standardowego natywnego interpretera języka Python.</p>
+    <p>Przejście w dodatku Dynamo na język Python 3 umożliwia użytkownikom dodatku Dynamo dostęp do popularnych nowoczesnych bibliotek i dalsze korzystanie z nowych funkcji platformy, najważniejszych poprawek konserwacyjnych i zabezpieczeń. Ponadto wykresy Dynamo mogą używać bibliotek w języku Python z natywnymi rozszerzeniami, które wcześniej nie były dostępne, takimi jak NumPy, SciPy i Pandas.</p>
+
+    <h3>Zgodność ze starszymi wersjami</h3>
+    <p>Nie ma gwarancji, że jakikolwiek kod napisany w środowisku CPython3 będzie działał w poprzednich wersjach dodatku Dynamo. Autorzy kodu powinni zapewnić zgodność z silnikami IronPython2 i CPython3, zgodnie z konkretnymi wymaganiami.</p>
+    
+    <h3>Co to oznacza dla Ciebie i dla Twoich wykresów zawierających kod w języku Python?</h3>
+    <p>Jeśli użytkownik nie jest autorem wykresu lub zawartych w nim węzłów w języku Python, powinien skontaktować się z autorem i poinformować go o tych zmianach, aby ten mógł w razie potrzeby wprowadzić zmiany.</p>
+    <p>Jeśli jesteś autorem wykresu, przeczytaj poniższe wskazówki, aby zrozumieć, w jaki sposób te zmiany mogą wpłynąć na węzły w języku Python i jak wprowadzić aktualizacje.</p>
+
+    <p>Język Python 3 jest zasadniczo taki sam jak język Python 2, ale pewne wprowadzone w nim zmiany składni i biblioteki podstawowej sprawiają, że język ten staje się spójniejszy i czytelniejszy, oraz zapewniają ulepszoną obsługę formatu Unicode.</p>
+    <p>Niektóre programy w języku Python 2 będą działać normalnie w języku Python 3, ale wiele często występujących konstrukcji będzie wymagać małych zmian, między innymi instrukcja print. Na szczęście wiele z tych zmian można zautomatyzować.</p>
+
+    <h3>Jak zaktualizować węzły w języku Python do języka Python 3 </h3>
+    <p>Zazwyczaj skrypty w języku Python mogą być uruchamiane przy użyciu silnika IronPython2 lub CPython3. Na potrzeby obsługi wszystkich przypadków, w których skrypt zawiera składnię zmienioną między wersjami, ułatwiliśmy aktualizację skryptu przez dodanie automatycznego konwertera kodu w węźle Python o nazwie Migration Assistant.</p>
+    <p>Aby zaktualizować skrypt za pomocą węzła Migration Assistant, otwórz edytor węzłów w języku Python, przejdź do silnika CPython3 za pomocą listy rozwijanej i kliknij ikonę 2-3. Dodatek Dynamo poinformuje o tym, które zmiany są potrzebne, i umożliwi odrzucenie lub zaakceptowanie konwersji.</p>
+    <p>Węzeł Python Script From String po prostu wykonuje wprowadzanie kodu w języku Python i nie udostępnia środowiska edytora tekstu — nie ma dostępu do węzła Migration Assistant. Aby użyć tej funkcji, należy tymczasowo skopiować i wkleić kod do węzła w języku Python, a następnie ponownie go skopiować i wkleić z powrotem do węzła bloku kodu.</p>
+
+    <h3>Dowiedz się więcej</h3>
+    <p>Jeśli chcesz dowiedzieć się więcej o różnicach między dwiema wersjami języka Python, tutaj znajdziesz dwa zewnętrzne łącza, które ułatwią Ci rozpoczęcie:<ul>
+            <li><a href="https://docs.python.org/3/howto/pyporting.html">Oficjalny podręcznik „Porting Python 2 Code to Python 3”</a></li>
+            <li><a href="http://python3porting.com/">Podręcznik „Supporting Python 3: An in-depth guide”</a></li>
+        </ul>
+    </p>
+
+    <h3>Kluczowe zmiany w składni w języku Python 3</h3>
+    <p>Poniższa lista zawiera wyjaśnienie niektórych kluczowych zmian składni między językiem Python 2 a językiem Python 3. Jest to zestaw niektórych najczęściej używanych funkcji, których dotyczy ten problem, a nie pełna lista.</p>
+
+
+    <h4><b>Funkcja print</b></h4>
+    <p>Składnia funkcji print jest prawdopodobnie najbardziej znaną zmianą. Mimo że funkcja ta nie jest często używana w dodatku Dynamo, poniżej przedstawiono przykład tego, jak zmieniła się instrukcja <code>print</code>.</p>
+
+    <table>
+        <tr>
+            <th>Python 2</th>
+            <th class="hidden-sm">Python 3</th>
+        </tr>
+        <tr>
+            <td><code><span class="k">print</span> <span class="s">'Hello, Dynamo!'</span></code> <samp>// Hello, Dynamo!</samp></td>
+            <th class="hidden-lg" style="border-top: 1px solid white;">Python 3</th>
+            <td><code><span class="k">print</span>(<span class="s">'Hello, Dynamo!'</span>)</code> <samp>// Hello, Dynamo!</samp></td>
+        </tr>
+    </table>
+
+    <h4><b>Dzielenie liczb całkowitych</b></h4>
+    <p>Ta zmiana nie spowoduje zgłoszenia żadnych wyjątków w skrypcie, ale może wpłynąć na dane wyjściowe. W przypadku użycia operandów całkowitych domyślnym zachowaniem operatora dzielenia w języku Python 2.x jest zastosowanie klasycznego dzielenia, które powoduje obcięcie miejsca dziesiętnego i zwrócenie liczby całkowitej. W przypadku użycia operandów zmiennoprzecinkowych zwracany jest faktyczny iloraz zmiennoprzecinkowy (czyli przeprowadzane jest rzeczywiste dzielenie).</p>
+
+    <table>
+        <tr>
+            <th>Python 2</th>
+            <th class="hidden-sm">Python 3</th>
+        </tr>
+        <tr>
+            <td><code><span class="v">1</span>/<span class="v">2</span></code> <samp>// 0</samp></td>
+            <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
+            <td><code><span class="v">1</span>/<span class="v">2</span></code> <samp>// 0.5</samp></td>
+        </tr>
+        <tr class="spaced-sm">
+            <td class="hidden-lg">Python 2</td>
+            <td><code><span class="v">1.0</span>/<span class="v">2.0</span></code> <samp>// 0.5</samp></td>
+            <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
+            <td><code><span class="v">1.0</span>/<span class="v">2.0</span></code> <samp>// 0.5</samp></td>
+        </tr>
+    </table>
+
+    <h4><b>xrange</b></h4>
+    <p>Funkcja <code>xrange</code> jest zwykle używana w połączeniu z pętlą for oraz instrukcjami list składanych. Gdy trzeba przeprowadzić tylko jedną iterację, zwykle szybciej będzie iterować funkcję <code>xrange()</code> niż <code>range()</code>. W języku Python 3 funkcja <code>range()</code> została zaimplementowana w taki sam sposób jak funkcja <code>xrange()</code>, więc dedykowana funkcja <code>xrange()</code> już nie istnieje. Próba wywołania funkcji xrange() zwraca błąd NameError.</p>
+
+    <table>
+        <tr>
+            <th>Python 2</th>
+            <th class="hidden-sm">Python 3</th>
+        </tr>
+        <tr>
+            <td><code> <span class="nl">n = <span class="v">1000000</span></span> <span class="nl"> <span class="o">for</span> i <span class="i">in</span> <span class="b">xrange</span>(n): <span class="nl"><span class="k">print</span> i</span> </span> </code> <samp>// 1,2,3,4,5...</samp></td>
+            <th class="hidden-lg" style="border-top: 1px solid white;">Python 3</th>
+            <td><code> <span class="nl">n = <span class="v">1000000</span></span> <span class="nl"> <span class="o">for</span> i <span class="i">in</span> <span class="k">range</span>(n): <span class="nl"><span class="k">print</span>(i)</span> </span> </code> <samp>// 1,2,3,4,5...</samp></td>
+        </tr>
+    </table>
+
+    <h4><b>Zgłaszanie i obsługa wyjątków</b></h4>
+    <p>Mimo że język Python 2 akceptuje obie notacje — „nową” i „starą” składnię — w języku Python 3 zgłaszany jest błąd składni, jeśli argument wyjątku nie zostanie ujęty w nawiasy. Obsługa wyjątków także nieco się zmieniła w języku Python 3 tam, gdzie należy uwzględnić słowo kluczowe „as”.</p>
+
+    <table>
+        <tr>
+            <th>Python 2</th>
+            <th class="hidden-sm">Python 3</th>
+        </tr>
+        <tr>
+            <td><code> <span class="o">raise</span> <span class="e">IOError</span>, <span class="s">&quot;file error&quot;</span> </code> <samp>// IOError: file error</samp></td>
+            <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
+            <td><code> <span class="o">raise</span> <span class="e">IOError</span>(<span class="s">&quot;file error&quot;</span>) </code> <samp>// OSError: file error</samp></td>
+        </tr>
+        <tr class="spaced-sm">
+            <td class="hidden-lg">Python 2</td>
+            <td><code> <span class="nl"> <span class="o">try:</span> <span class="nl">let_us_cause_a_NameError</span> </span> <span class="nl"> <span class="o">except</span> <span class="e">NameError</span>, err: <span class="nl"><span class="k">print</span> err, <span class="s">'-- our error message'</span></span> </span> </code> <samp>// IOError: file error</samp></td>
+            <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
+            <td><code> <span class="nl"> <span class="o">try:</span> <span class="nl">let_us_cause_a_NameError</span> </span> <span class="nl"> <span class="o">except</span> <span class="e">NameError</span> <span class="o">as</span> err: <span class="nl"><span class="k">print</span>(err, <span class="s">'-- our error message'</span>)</span> </span> </code> <samp>// OSError: file error</samp></td>
+        </tr>
+    </table>
+</body>

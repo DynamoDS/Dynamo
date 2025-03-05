@@ -1,0 +1,37 @@
+﻿<!--
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.
+
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code  .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } .questionmark:after { content: '?'; display: inline-block; font-family: sans-serif; font-weight: bold; text-align: center; font-size: 0.8em; line-height: 0.8em; border-radius: 50%; margin-left: 6px; padding: 0.13em 0.2em 0.09em 0.2em; color: inherit; border: 1px solid; text-decoration: none; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h3>그래프 상태</h3>
+    <h4>개요</h4>
+    <p>그래프 상태 확장에서 Dynamo가 그래프에서 감지한 문제에 대한 정보를 찾을 수 있습니다. 그래프 상태 패널에 표시되는 문제는 작업공간의 개별 Dynamo 노드에 표시되는 경고 및 오류와는 별개입니다. 대신, 이러한 문제는 Dynamo 확장으로 정의할 수 있는 사용자 규칙에서 파생됩니다.</p>
+    <h4>그래프 유형</h4>
+    <p>Dynamo 확장에서 Dynamo의 Linting API를 사용하여 사용자 규칙 세트를 등록할 경우 해당 확장의 이름은 <i>그래프 유형</i>으로 레이블이 지정된 드롭다운에 옵션으로 표시됩니다. Dynamo에서는 그래프가 변경될 때마다 이러한 규칙이 위반되었는지 확인합니다.</p>
+    <p>예를 들어, Dynamo용 제너레이티브 디자인 확장은 이 기능을 사용하여 제너레이티브 디자인에서 사용하도록 설계된 Dynamo 그래프가 제너레이티브 디자인 앱에서 제대로 작동하는 데 필요한 특성을 포함하고 있는지 확인합니다. 제너레이티브 디자인을 사용하려면 그래프에 하나 이상의 입력 및 출력 노드가 있어야 하며, 이것은 Dynamo 확장에 의해 등록된 규칙을 사용하여 적용됩니다.</p>
+    <h4>노드 문제 및 그래프 문제</h4>
+    <p>확장에 의해 정의된 규칙은 두 가지 유형인 그래프 규칙 또는 노드 규칙 중 하나로 등록됩니다.  Dynamo에서 이러한 규칙 중 하나가 현재 그래프에서 위반되었음을 감지하면 문제를 해결하는 방법에 대한 정보가 포함된 경고와 문제가 감지된 위치에 대한 링크가 다음 두 섹션 중 하나에 표시됩니다.</p>
+    <h4>기타 정보</h4>
+    <p>그래프가 저장될 때마다 그래프 상태 확장은 선택한 그래프 유형 및 그래프를 마지막으로 저장할 때 문제가 발생했는지 여부 등과 같은 일부 메타데이터를 Dynamo 파일에 저장합니다.</p>
+    <p>그래프 상태 확장은 새 Dynamo 그래프가 작성될 때 특정 규칙이 있는지 자동으로 확인하지 않습니다. 그래프 유형에 대한 기본 선택은 <i>없음</i>입니다. 현재, 그래프 상태 뷰에서는 그래프 유형을 한 번에 하나만 선택할 수 있습니다.</p>
+</body>

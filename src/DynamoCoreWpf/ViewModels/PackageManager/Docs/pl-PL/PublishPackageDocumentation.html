@@ -1,0 +1,67 @@
+﻿<!--
+    Dynamo: https://github.com/DynamoDS/Dynamo
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code  .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h3>Package Manager</h3>
+    <p>Dynamo Package Manager to kompleksowe narzędzie do przeglądania, instalowania i publikowania pakietów. Dostęp do niego można uzyskać w górnym obszarze nawigacji: Pakiety, Package Manager.</p>
+    <h4>Czym są pakiety?</h4>
+    <p>Dodatek Dynamo udostępnia bardzo wiele gotowych funkcji oraz obszerną bibliotekę pakietów znacznie zwiększającą możliwości dodatku Dynamo. Pakiet jest zbiorem węzłów niestandardowych lub dodatkowych funkcji. Dynamo Package Manager to portal dla społeczności umożliwiający pobranie dowolnego pakietu opublikowanego w trybie online. Te zestawy narzędzi opracowują inne firmy w celu rozszerzenia podstawowych funkcji dodatku Dynamo. Są one dostępne dla wszystkich i gotowe do pobrania przez kliknięcie przycisku.</p>
+    <h4>Instalowanie pakietów Dynamo</h4>
+    <p>Pakiety można przeglądać i instalować na karcie Wyszukiwanie pakietów w narzędziu Package Manager. Użyj pola wyszukiwania, aby zlokalizować określone pakiety. Można również zastosować filtry i sortowanie, aby zawęzić listę i spełnić kryteria, takie jak program nadrzędny lub brak zależności.</p>
+    <p>Aby wyświetlić więcej informacji na temat pakietu, kliknij przycisk Wyświetl szczegóły. Powoduje to otwarcie panelu, w którym można przeczytać opis pakietu, a także informacje o wersji i licencji oraz inne.</p>
+    <p>Aby zainstalować pakiet, kliknij przycisk Zainstaluj w widoku wyszukiwania lub w panelu szczegółów. Można określić wersję do zainstalowania w widoku wyszukiwania, klikając listę rozwijaną i wybierając wersję. W przeciwnym razie zostanie zainstalowana najnowsza wersja. W panelu szczegółów pakietu w tabeli „Wersje i wymagania dotyczące pakietów” kliknij przycisk Zainstaluj poniżej określonej wersji, aby zainstalować tę wersję.</p>
+    <p>Listę zainstalowanych pakietów można znaleźć na karcie Zainstalowane pakiety w narzędziu Package Manager. Na tej karcie można między innymi przeglądać pliki pakietów i odinstalowywać pakiety.</p>
+    <h4>Publikowanie pakietów Dynamo</h4>
+    <p>Narzędzie Package Manager umożliwia publikowanie pakietów w dodatku Dynamo. Otwórz kartę Opublikuj pakiet, aby rozpocząć. Na karcie Opublikuj pakiet jest wyświetlane zapytanie o wszystkie wymagane i opcjonalne informacje dotyczące pakietu, który chcesz opublikować.</p>
+
+    <h4>Dodawanie szczegółów pakietu</h4>
+
+    <p><b>Nazwa pakietu:</b><br/> Nazwa pakietu, który chcesz opublikować. Ta informacja będzie wyświetlana w bibliotece, w wyszukiwaniu pakietów i w witrynie Package Manager. Nazwy pakietów muszą zawierać co najmniej 3 znaki.</p>
+    <p><b>Opis:</b><br/> Opis jest doskonałym miejscem, w którym można dodać więcej informacji na temat pakietu, w tym wymienić wszelkie wyjątki i wymagania wstępne. Za jego pomocą można również poinformować użytkowników o tym, jak działa pakiet i jak można go używać w obszarach roboczych.</p>
+    <p><b>Wersja:</b><br/> Pole wersji jest podzielone na trzy sekcje: wersji głównej, wersji pośredniej i kompilacji, co umożliwia autorowi pakietu przekazywanie nowych wersji pakietu zgodnie z semantyką oznaczania kolejnych wersji. Autorzy pakietów mogą chcieć opublikować więcej wersji pakietów z nowymi i ulepszonymi funkcjami, dopracować niektóre ich aspekty, których nie dokończono w pierwszej wersji, lub wyeliminować usterki.</p>
+    <p><b>Program nadrzędny:</b><br/> Jeśli pakiet jest zależny od programu nadrzędnego, takiego jak Revit, Civil3D, Alias lub innego, można wybrać co najmniej jeden program nadrzędny z listy rozwijanej. Podczas wyszukiwania pakietów użytkownicy mogą filtrować wyniki na podstawie programu nadrzędnego, aby znajdować pakiety przeznaczone do pracy z ich preferowanymi programami.</p>
+    <p><b>Słowa kluczowe (opcjonalne):</b><br/> Słowa kluczowe, które mogą być używane jako oznaczenia powiązane z pakietem, na przykład Projektowanie generatywne, ML (Uczenie maszynowe) itp. W polu można jednocześnie wpisać wiele słów kluczowych, oddzielając je przez naciśnięcie klawisza spacji, a następnie naciskając klawisz Enter.</p>
+    <p><b>Grupa (opcjonalnie):</b><br/> Za pomocą tego pola można określić grupę, do której należy pakiet, np. firmy/organizacji.</p>
+    <p><b>Witryna internetowa (opcjonalna):</b><br/> Łącze do witryny internetowej, które może zapewnić użytkownikowi więcej informacji na temat pakietu lub organizacji/autora.</p>
+    <p><b>Adres URL repozytorium (opcjonalny):</b><br/> Łącze do repozytorium pakietu, które umożliwia użytkownikom przeglądanie opracowania pakietu lub udział w tym projekcie.</p>
+    <p><b>Licencja (opcjonalna):</b><br/> Licencja, na podstawie której pakiet zostanie wydany. Licencja domyślna: MIT.</p>
+    <p><b>Posiadacz praw autorskich (opcjonalnie):</b><br/> Nazwisko osoby posiadającej prawa autorskie do pakietu. Jeśli to pole pozostanie puste, będzie to domyślnie nazwa użytkownika.</p>
+    <p><b>Rok praw autorskich (opcjonalnie):</b><br/> Rok praw autorskich do pakietu. Jeśli to pole pozostanie puste, będzie to domyślnie rok publikacji pakietu.</p>
+
+    <h4>Dodawanie plików pakietu</h4>
+
+    <p><b>Zawartość pakietu:</b><br/> Ta sekcja, znajdująca się na prawym pasku bocznym karty Opublikuj pakiet, umożliwia organizowanie zawartości pakietu przed jego opublikowaniem.</p>
+    <p><b>Dodaj pliki/katalog:</b><br/><p>Wybierz i dodaj wszystkie pliki powiązane z pakietem. Zazwyczaj dodawane są folder bin, pliki binarne i zależności. Można dodać pojedyncze pliki lub foldery.</p>
+    <p>Po wybraniu plików lub folderów do dodania można wyświetlać, usuwać lub dodawać pliki na stronie Wybierz zawartość pakietu. Strukturę folderów wybranych plików można przeglądać w lewym panelu, a zawartość każdego folderu w prawym panelu.</p>
+    <p><b>Wybierz biblioteki węzłów:</b><br/><p>Określ, które pliki dodane do pakietu są bibliotekami węzłów, przez zaznaczenie pola w kolumnie Biblioteka węzłów. Biblioteki węzłów zawierają typy i metody, które dodatek Dynamo zaimportuje jako węzły. Ogólnie jako bibliotekę węzłów należy oznaczyć każdy zespół zawierający typy, które mają zostać zaimportowane do dodatku Dynamo. Zespoły ZeroTouch, NodeModel lub NodeViewCustomization powinny zostać oznaczone jako biblioteki węzłów.</p>
+    <p>Aby można było wczytać dostosowania NodeViewCustomization interfejsu użytkownika, należy zdefiniować te dostosowania w tym samym zespole, który zawiera odpowiednie definicje NodeModel, LUB zdefiniować je w oddzielnym zespole. W obu przypadkach zespół musi być oznaczony jako biblioteka węzłów. Obecnie w przypadku zespołów oznaczonych jako biblioteka węzłów zawierających typy NodeModel lub NodeCustomization wszystkie pozostałe typy zostaną zignorowane. Z tego powodu ważne jest oddzielenie typów NodeModel/NodeViewCustomization od typów, które mają zostać zaimportowane przy użyciu importu ZeroTouch.</p>
+    </p>
+    <p><b>Zachowaj strukturę folderów:</b><br/><p>Autorzy pakietów ze złożonymi strukturami folderów pakietów mogą włączyć przełącznik Zachowaj strukturę folderów poniżej panelu podglądu zawartości pakietu. To ustawienie jest domyślnie włączone, gdy użytkownik publikuje nową wersję istniejącego pakietu. W tym przypadku dodatek Dynamo nie wprowadza zmian w strukturze folderów pakietu. Zamiast tego pakiet zostanie przekazany w bieżącej postaci.</p>
+        <p>Jeśli pakiet powinien zostać skonfigurowany w określony sposób w celu zapewnienia jego działania i uniknięcia problemów, włącz to ustawienie. Jeśli masz wątpliwości lub publikujesz nowy pakiet, wyłącz to ustawienie, aby umożliwić dodatkowi Dynamo skonfigurowanie struktury folderów.</p>
+    </p>
+    <p><b>Podgląd zawartości pakietu:</b><br/> Gdy zawartość pakietu będzie już zadowalająca, kliknij przycisk Dalej, aby zobaczyć podgląd konfiguracji plików pakietu po ich opublikowaniu. Ta strona jest tylko do odczytu — aby wprowadzić dodatkowe zmiany w zawartości pakietu, wróć do poprzedniej strony. Kliknij przycisk Zakończ, aby wrócić do strony szczegółów pakietu.</p>
+    <p><b>Dodaj ścieżkę pliku znaczników (opcjonalnie):</b><br/> Istnieje możliwość określenia ścieżki pliku zawierającego dokumentację znaczników (.md) dla pakietu w sekcji Ścieżka plików znaczników.</p>
+    <p><b>Publikowanie pakietu</b><br/> Po podaniu wszystkich wymaganych informacji można opublikować pakiet lokalnie lub online. W przypadku opublikowania lokalnego pakiet zostanie opublikowany w lokalnym katalogu głównym, natomiast w przypadku opublikowania online pakiet zostanie przekazany do witryny Package Manager.</p>
+
+    <hr />
+
+    <h3>Skanowania antywirusowe</h3>
+    <p>Aby zapewnić wszystkim użytkownikom pakietów Dynamo bezpieczne środowisko, wprowadziliśmy skanowania antywirusowe nowych pakietów. Gdy użytkownik przekaże pakiet, zostanie on przeskanowany pod kątem obecności wirusów i zostanie on udostępniony publicznie tylko wtedy, gdy zostanie oznaczony jako bezpieczny. Skanowanie zostanie przeprowadzone podczas procesu przekazywania pakietu i nie wydłuży normalnego oczekiwania na udostępnienie pakietu online (10–15 minut). W razie oznaczenia pakietu jako zainfekowanego na stronie wyszukiwania narzędzia Package Manager zostanie wyświetlone powiadomienie z informacją, że przekazany pakiet został zainfekowany i nie zostanie opublikowany online. Aby udostępnić pakiet publicznie, sprawdź pliki zawarte w pakiecie i przekaż nową wersję za pomocą narzędzia Package Manager.</p>
+    <h3>Zarządzanie własnymi pakietami</h3>
+    <p>Listę opublikowanych przez siebie pakietów znajdziesz na karcie Moje pakiety w narzędziu Package Manager — w tym miejscu możesz je wycofać, opublikować nową wersję itp.</p>
+    <h3>Ustawienia pakietów</h3>
+    <p>Ustawienia związane z pakietami można przejrzeć na karcie Ustawienia pakietów w narzędziu Package Manager, w tym ścieżki pobierania nowych pakietów i ścieżki wyszukiwania pakietów/bibliotek. Aby edytować ustawienia, kliknij łącze Preferencje na karcie Ustawienia pakietów w celu uzyskania dostępu do panelu Preferencje.</p>
+</body>

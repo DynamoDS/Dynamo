@@ -1,0 +1,303 @@
+<!--
+    Dynamo: https://github.com/DynamoDS/Dynamo
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="UTF-8" />
+</head>
+
+<style>
+    body {
+        color: white;
+        font-size: 14px;
+        font-family: "Artifakt Element";
+        src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
+        padding: 1%;
+    }
+
+    a {
+        color: lightgray;
+        cursor: pointer;
+        background-color: transparent;
+    }
+
+    table {
+        border-collapse: collapse;
+        border: 1px solid white;
+    }
+
+    th,
+    td {
+        border: 1px solid white;
+        padding-right: 10px;
+        padding-left: 10px;
+        padding-bottom: 10px;
+        padding-top: 10px;
+    }
+
+    samp {
+        margin-top: 10px;
+        display: block;
+        color: lightgrey;
+    }
+
+    code .k {
+        color: #dcdcaa;
+        font-weight: bold;
+    }
+
+    code .s {
+        color: #ce9178;
+    }
+
+    code .v {
+        color: #b5cea8;
+    }
+
+    code .o {
+        color: #c586c0;
+        font-weight: bold;
+    }
+
+    code .i {
+        color: #569cd6;
+        font-weight: bold;
+    }
+
+    code .b {
+        color: #9cdcfe;
+        font-weight: bold;
+    }
+
+    code .e {
+        color: #43c9b0;
+    }
+
+    code > .nl .nl {
+        padding-left: 10px;
+    }
+
+    code .nl {
+        display: block;
+    }
+
+    thead {
+        text-align: center;
+    }
+
+    .hidden-lg {
+        display: none;
+    }
+
+    .button {
+        background-color: transparent;
+        border-color: #3c3c3c;
+        color: #bbbbbb;
+    }
+
+    .button:hover {
+        border-color: #656565;
+        background-color: #373737;
+        opacity: 1.0;
+    }
+
+    @media screen and (max-width: 600px) {
+        table {
+            width: 100%;
+        }
+
+        table,
+        th,
+        td {
+            border: none;
+        }
+
+        tr {
+            border: 1px solid white;
+            display: block;
+        }
+
+        td,
+        th {
+            display: block;
+        }
+
+        .hidden-lg {
+            display: block;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 1px solid white;
+        }
+
+        .hidden-sm {
+            display: none;
+        }
+
+        .spaced-sm {
+            margin-top: 20px;
+        }
+
+        tbody tr:first-of-type {
+            border-bottom: none;
+        }
+    }
+</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h3>ESPAÑOL - Package Manager</h3>
+    <p>
+        The Dynamo Package Manager is a one-stop-shop for browsing, installing, and publishing packages. Access it from the top navigation under Packages > Package Manager.
+    </p>
+    <h4>What are packages?</h4>
+    <p>
+        Dynamo offers a vast number of features out of the box and also maintains an extensive package library that can significantly extend Dynamo’s capability.
+        A package is a collection of custom nodes or additional functionality. The Dynamo Package Manager is a portal for the community to download any package that has been published online.
+        These toolsets are developed by third parties to extend Dynamo's core functionality, accessible to all, and ready to download at the click of the button.
+    </p>
+    <h4>Installing Dynamo packages</h4>
+    <p>
+        You can browse and install packages in the Search for Packages tab of the Package Manager. Use the search field to locate specific packages.
+        You can also apply filters and sorting to narrow down the list to meet your criteria, such as a host program or lack of dependencies.
+    </p>
+    <p>
+        To view more information about a package, click View Details. This opens a panel where you can read a description of the package, find version and license information, and more.
+    </p>
+    <p>
+        To install a package, click Install either in the search view or in the details panel. You can specify a version to install in the search view by clicking the drop-down and selecting a version; otherwise, the most recent version will be installed.
+        In the package details panel, click Install below a specific version in the Versions and Package Requirements table to install that version.
+    </p>
+    <p>
+        You can find a list of the packages you have installed in the Installed Packages tab of the Package Manager. On this tab, you can view package files, uninstall packages, and more.
+    </p>
+    <h4>Publishing Dynamo Packages</h4>
+    <p>
+        The Package Manager allows you to publish packages inside Dynamo. Open the Publish a Package tab to get started.
+        The Publish a Package tab asks for all required and optional information related to the package that you want to publish.
+    </p>
+
+    <h4>Adding package details</h4>
+
+    <p>
+        <b>Package Name:</b><br />
+        Name of the package you want to publish. This will appear in the library, in package search, and on the package manager website. Package names must be at least 3 characters in length.
+    </p>
+    <p>
+        <b>Description:</b><br />
+        The description is a great place to add more details about your package, including listing any exceptions and prerequisites. It can also be used to educate users on what the package does and how it can be used in their workspaces.
+    </p>
+    <p>
+        <b>Version:</b><br />
+        The version field is split into three sections, major, minor, and build, which allows you as a package author to upload new versions of your package that follow versioning semantics. Package authors may want to publish more versions for their packages with new and improved features, polish some corners that were left out in the first version, or fix a bug.
+    </p>
+    <p>
+        <b>Host:</b><br />
+        If your package relies on a host program, such as Revit, Civil3D, Alias, or others, you can pick one or more hosts from the drop-down. When searching for packages, users can filter results based on host to help them locate packages that are designed to work with their preferred programs.
+    </p>
+    <p>
+        <b>Keywords (optional):</b><br />
+        Keywords that can be used as tags related to your package, for example, Generative Design, ML, etc. You can type multiple keywords into the field at once by separating them with the space key, then pressing Enter.
+    </p>
+    <p>
+        <b>Group (optional):</b><br />
+        This field can be used to specify a group that a package belongs to such as the company/organization.
+    </p>
+    <p>
+        <b>Website (optional):</b><br />
+        A link to a website that may provide the user with more information regarding the package or the organization/author.
+    </p>
+    <p>
+        <b>Repository URL (optional):</b><br />
+        A link to the package’s repository that allows users to view or contribute to package development.
+    </p>
+    <p>
+        <b>License (optional):</b><br />
+        A license under which the package is released. Default license : MIT.
+    </p>
+    <p>
+        <b>Copyright holder (optional):</b><br />
+        Name of the person who holds the copyright to the package. If left blank, this defaults to your username.
+    </p>
+    <p>
+        <b>Copyright year (optional):</b><br />
+        The copyright year for the package. If left blank, this defaults to the year the package was published.
+    </p>
+
+    <h4>Adding package files</h4>
+
+    <p>
+        <b>Package Contents:</b><br />
+        This section, located in the right sidebar of the Publish a Package tab, allows you to organize your package contents prior to publishing.
+    </p>
+    <p>
+        <b>Add Files/Directory:</b><br />
+    <p>
+        Select and add all the files that are related to your package. Generally, the bin folder, binaries, and dependencies are added.
+        You can add individual files or folders.
+    </p>
+    <p>
+        After you’ve selected files or folders to add, you can view, remove, or add files on the Select Package Contents page.
+        You can view the folder structure of your selected files in the left panel, and the contents of each folder in the right panel.
+    </p>
+    <p>
+        <b>Select Node Libraries:</b><br />
+    <p>
+        Specify which of the files you added to the package are the node libraries by checking the box in the Node Library column.
+        Node libraries contain the types and methods that Dynamo will import as nodes. In general, you should mark any assembly as a node library which contains types you wish to import into Dynamo.
+        ZeroTouch, NodeModel, or NodeViewCustomization assemblies should be marked as a node library.
+    </p>
+    <p>
+        To load UI NodeViewCustomizations, they should be either defined in the same assembly that contains the corresponding NodeModel definitions OR defined in a separate assembly.
+        In either case, the assembly must be tagged as a node library. Currently, for assemblies marked as node library that contain NodeModel or NodeCustomization types, all other types will be ignored. For this reason, it is important to separate NodeModel/NodeViewCustomization types from types you wish to import using ZeroTouch import.
+    </p>
+    </p>
+    <p>
+
+        <b>Retain folder structure:</b><br />
+        <p>
+            Package authors with complex package folder structures may want to enable the Retain Folder Structure toggle below the package contents preview panel.
+            This setting is toggled on by default when a user is publishing a new version of an existing package, in this case, Dynamo won’t make changes to your package folder structure; instead, the package will be uploaded as is.
+        </p>
+        <p>
+            If you need your package to be set up in a certain way to ensure they work and to avoid any issues, toggle the setting on.
+            When in doubt, or publishing a new package, toggle the setting off to allow Dynamo to set up the folder structure.
+        </p>
+    </p>
+    <p>
+        <b>Preview Package Contents:</b><br />
+        When you are satisfied with your package contents, click Next to see a preview of how the package files will be set up once they are published.
+        This page is view only; to make additional changes to the package contents, go back to the previous page. Click Finish to return to the package details page.
+    </p>
+    <p>
+        <b>Add markdown file path (optional):</b><br />
+        You have the option to specify a file path that hosts markdown (.md) documentation for your package in the Markdown Files Path section.
+    </p>
+    <p>
+        <b>Publishing your package</b><br />
+        After filling in all the required details, you can publish the package locally or online. When publishing locally, the package will be published in the local root directory, whereas when publishing online, the package will be uploaded to the Package Manager.
+    </p>
+
+    <hr />
+
+    <h3>Anti-virus Scans</h3>
+    <p>
+        To provide a secure environment to all Dynamo package users, we have introduced anti-virus scans for new packages.
+        When a user uploads a package, it will be scanned for viruses and will only be available publicly once it has been flagged as safe.
+        The scan will happen during the package upload process and will not add to the usual duration of 10-15 minutes for the new package to be available online.
+        If your package is flagged as infected, the Package Manager search page will display a notification stating that the uploaded package has been found to be infected and won't be published online.
+        To make the package publicly available, check the files included with the package and upload a new version through the Package Manager.
+    </p>
+    <h3>Managing your packages</h3>
+    <p>
+        You can find a list of your published packages in the My Packages tab of the Package Manager, where you can deprecate them, publish a new version, etc.
+    </p>
+    <h3>Package Settings</h3>
+    <p>
+        You can view your package-related settings in the Package Settings tab of the Package Manager, including new package download paths and package/library search paths. To edit your settings, click the Preferences link in the Package Settings tab to access the Preferences panel.
+    </p>
+</body>

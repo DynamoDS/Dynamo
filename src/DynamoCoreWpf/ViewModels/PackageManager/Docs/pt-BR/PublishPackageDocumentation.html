@@ -1,0 +1,67 @@
+﻿<!--
+    Dynamo: https://github.com/DynamoDS/Dynamo
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code  .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h3>Package Manager</h3>
+    <p>O Package Manager do Dynamo é um local único para navegar, instalar e publicar pacotes. Acesse-o na parte superior da navegação em Pacotes &gt; Package Manager.</p>
+    <h4>O que são pacotes?</h4>
+    <p>O Dynamo oferece um grande número de recursos prontos para uso e também mantém uma ampla biblioteca de pacotes que pode estender significativamente a capacidade do Dynamo. Um pacote é uma coleção de nós personalizados ou funcionalidades adicionais. O Package Manager do Dynamo é um portal para a comunidade fazer o download de qualquer pacote que tenha sido publicado on-line. Esses conjuntos de ferramentas foram desenvolvidos por terceiros para estender a funcionalidade central do Dynamo, acessíveis a todos, e prontos para download com o clique do botão.</p>
+    <h4>Instalar pacotes do Dynamo</h4>
+    <p>É possível procurar e instalar pacotes na guia Procurar pacotes do Package Manager. Use o campo de pesquisa para localizar pacotes específicos. Também é possível aplicar filtros e classificar para restringir a lista para atender aos critérios, como um programa hospedeiro ou falta de dependências.</p>
+    <p>Para visualizar mais informações sobre um pacote, clique em Exibir detalhes. Isso abre um painel onde é possível ler uma descrição do pacote, encontrar informações da versão e da licença e muito mais.</p>
+    <p>Para instalar um pacote, clique em Instalar na vista de pesquisa ou no painel de detalhes. É possível especificar uma versão para instalar na vista de pesquisa clicando no menu suspenso e selecionando uma versão; caso contrário, a versão mais recente será instalada. No painel Detalhes do pacote, clique em Instalar abaixo de uma versão específica na tabela Versões e requisitos do pacote para instalar essa versão.</p>
+    <p>É possível encontrar uma lista dos pacotes instalados na guia Pacotes instalados do Package Manager. Nessa guia, é possível visualizar os arquivos dos pacotes, desinstalar pacotes e muito mais.</p>
+    <h4>Publicar pacotes do Dynamo</h4>
+    <p>O Package Manager permite publicar pacotes no Dynamo. Abra a guia Publicar um pacote para começar. A guia Publicar um pacote solicita todas as informações necessárias e opcionais relacionadas ao pacote que você deseja publicar.</p>
+
+    <h4>Adicionar detalhes do pacote</h4>
+
+    <p><b>Nome do pacote: </b><br/> Nome do pacote que você deseja publicar. Esse nome aparecerá na biblioteca, na pesquisa de pacotes e no site do Package Manager. Os nomes de pacote devem ter pelo menos 3 caracteres.</p>
+    <p><b>Descrição:</b><br/> A descrição é um ótimo local para adicionar mais detalhes sobre o pacote, incluindo a listagem de quaisquer exceções e pré-requisitos. Ela também pode ser usada para educar os usuários sobre o que o pacote faz e como ele pode ser usado em seus espaços de trabalho.</p>
+    <p><b>Versão:</b><br/> O campo de versão está dividido em três seções, principal, secundária e de compilação, o que permite que você, como autor de um pacote, carregue novas versões do pacote que seguem a semântica de controle de versão. Os autores de pacotes podem desejar publicar mais versões de seus pacotes com recursos novos e aprimorados, melhorar alguns elementos que foram deixados de fora na primeira versão ou corrigir um erro.</p>
+    <p><b>Hospedeiro: </b><br/> Se o pacote depender de um programa hospedeiro, como o Revit, o Civil3D, o Alias ou outros, será possível selecionar um ou mais hospedeiros no menu suspenso. Ao procurar pacotes, os usuários podem filtrar os resultados com base no hospedeiro para ajudá-los a localizar os pacotes que são projetados para trabalhar com seus programas preferidos.</p>
+    <p><b>Palavras-chave (opcional):</b><br/> Palavras-chave que podem ser usadas como identificadores relacionados ao pacote, por exemplo, Projeto generativo, ML etc. É possível digitar várias palavras-chave no campo de uma só vez, separando-as com a tecla de espaços e pressionando Enter.</p>
+    <p><b>Grupo (opcional): </b><br/> É possível usar esse campo para especificar um grupo ao qual um pacote pertence, como a empresa/organização.</p>
+    <p><b>Site (opcional):</b><br/> Um link para um site que pode fornecer ao usuário mais informações sobre o pacote ou a organização/autor.</p>
+    <p><b>URL do repositório (opcional):</b><br/> Um link para o repositório do pacote que permite que os usuários visualizem ou contribuam para o desenvolvimento do pacote.</p>
+    <p><b>Licença (opcional):</b><br/> Uma licença com base na qual o pacote é lançado. Licença padrão: MIT.</p>
+    <p><b>Titular dos direitos autorais (opcional):</b><br/> Nome da pessoa que possui os direitos autorais do pacote. Se deixado em branco, o padrão será seu nome de usuário.</p>
+    <p><b>Ano dos direitos autorais (opcional): </b><br/> O ano dos direitos autorais do pacote. Se deixado em branco, o padrão será o ano em que o pacote foi publicado.</p>
+
+    <h4>Adicionar arquivos do pacote</h4>
+
+    <p><b>Conteúdo do pacote:</b><br/> Essa seção, localizada na barra lateral direita da guia Publicar um pacote, permite organizar o conteúdo do pacote antes da publicação.</p>
+    <p><b>Adicionar arquivos/diretório:</b><br/><p>Selecione e adicione todos os arquivos relacionados ao pacote. Geralmente, a pasta bin, os binários e as dependências são adicionados. É possível adicionar arquivos ou pastas individuais.</p>
+    <p>Após selecionar os arquivos ou pastas a serem adicionados, será possível visualizar, remover ou adicionar arquivos na página Selecionar conteúdo do pacote. É possível visualizar a estrutura de pastas dos arquivos selecionados no painel esquerdo e o conteúdo de cada pasta no painel direito.</p>
+    <p><b>Selecionar bibliotecas de nós:</b><br/><p>Especifique quais dos arquivos adicionados ao pacote são as bibliotecas de nós marcando a caixa na coluna Biblioteca de nós. As bibliotecas de nós contêm os tipos e os métodos que o Dynamo importará como nós. Em geral, você deve marcar qualquer montagem como uma biblioteca de nós que contenha tipos que deseja importar para o Dynamo. As montagens ZeroTouch, NodeModel ou NodeViewCustomization devem ser marcadas como uma biblioteca de nós.</p>
+    <p>Para carregar as montagens NodeViewCustomizations da interface do usuário, elas devem ser definidas na mesma montagem que contém as definições correspondentes do NodeModel OU definidas em uma montagem separada. Em ambos os casos, a montagem deve ser identificada como uma biblioteca de nós. No momento, no caso das montagens marcadas como biblioteca de nós que contêm os tipos NodeModel ou NodeCustomization, todos os outros tipos serão ignorados. Por esse motivo, é importante separar os tipos NodeModel/NodeViewCustomization dos tipos que você deseja importar usando a importação ZeroTouch.</p>
+    </p>
+    <p><b>Manter estrutura de pastas:</b><br/><p>Os autores de pacotes com estruturas de pastas de pacotes complexas podem desejar ativar a opção Manter estrutura de pastas abaixo do painel de visualização do conteúdo do pacote. Essa configuração é ativada por padrão quando um usuário está publicando uma nova versão de um pacote existente. Nesse caso, o Dynamo não fará alterações na estrutura de pastas do pacote; em vez disso, o pacote será carregado como está.</p>
+        <p>Se você precisar que o pacote seja configurado de uma determinada forma para garantir que ele funcione e para evitar problemas, ative a configuração. Em caso de dúvida ou de publicação de um novo pacote, desative a configuração para permitir que o Dynamo configure a estrutura de pastas.</p>
+    </p>
+    <p><b>Visualizar conteúdo do pacote:</b><br/> Quando estiver satisfeito com o conteúdo do pacote, clique em Avançar para ver uma visualização de como os arquivos do pacote serão configurados depois que forem publicados. Essa página é somente exibição; para fazer alterações adicionais no conteúdo do pacote, volte para a página anterior. Clique em Concluir para retornar à página de detalhes do pacote.</p>
+    <p><b>Adicionar caminho do arquivo markdown (opcional): </b><br/> Você tem a opção de especificar um caminho de arquivo que hospeda a documentação de markdown (.md) para o pacote na seção Caminho do arquivo markdown.</p>
+    <p><b>Publicar o pacote</b><br/> Após preencher todos os detalhes necessários, é possível publicar o pacote localmente ou on-line. Ao publicar localmente, o pacote será publicado no diretório raiz local, enquanto ao publicar on-line, o pacote será carregado no Package Manager.</p>
+
+    <hr />
+
+    <h3>Verificações antivírus</h3>
+    <p>Para fornecer um ambiente seguro a todos os usuários de pacotes do Dynamo, introduzimos verificações antivírus para novos pacotes. Quando um usuário carregar um pacote, ele será verificado para detectar se existem vírus e somente ficará disponível publicamente depois que for marcado como seguro. A verificação ocorrerá durante o processo de carregamento do pacote e não levará mais tempo do que a duração usual de 10 a 15 minutos para que o novo pacote esteja disponível on-line. Se o pacote estiver marcado como infectado, a página de pesquisa do Package Manager exibirá uma notificação informando que o pacote carregado foi considerado infectado e não será publicado on-line. Para tornar o pacote disponível publicamente, verifique os arquivos incluídos no pacote e carregue uma nova versão através do Package Manager.</p>
+    <h3>Gerenciamento dos pacotes</h3>
+    <p>Você pode encontrar uma lista dos pacotes publicados na guia Meus pacotes do Package Manager, onde é possível torná-los obsoletos, publicar uma nova versão etc.</p>
+    <h3>Configurações do pacote</h3>
+    <p>É possível visualizar as configurações relacionadas ao pacote na guia Configurações do pacote do Package Manager, incluindo novos caminhos de download de pacotes e caminhos de pesquisa de pacote/biblioteca. Para editar as configurações, clique no link Preferências na guia Configurações do pacote para acessar o painel Preferências.</p>
+</body>

@@ -1,0 +1,37 @@
+﻿<!--
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.
+
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code  .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } .questionmark:after { content: '?'; display: inline-block; font-family: sans-serif; font-weight: bold; text-align: center; font-size: 0.8em; line-height: 0.8em; border-radius: 50%; margin-left: 6px; padding: 0.13em 0.2em 0.09em 0.2em; color: inherit; border: 1px solid; text-decoration: none; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h3>Stav grafu</h3>
+    <h4>Přehled</h4>
+    <p>V rozšíření Stav grafu naleznete informace o problémech, které aplikace Dynamo zjistila v grafu. Problémy, které jsou zobrazeny na panelu Stav grafu, jsou odděleny od upozornění a chyb, které se zobrazují v jednotlivých uzlech aplikace Dynamo v pracovním prostoru. Místo toho jsou odvozeny z vlastních pravidel, která lze definovat pomocí rozšíření aplikace Dynamo.</p>
+    <h4>Typ grafu</h4>
+    <p>Pokud rozšíření aplikace Dynamo používá k registraci vlastní sady pravidel rozhraní API analýzy kódu aplikace Dynamo, název tohoto rozšíření se zobrazí jako možnost v rozevíracím seznamu <i>Typ grafu</i>. Aplikace Dynamo při každé změně grafu zkontroluje, zda nebyla tato pravidla porušena.</p>
+    <p>Například rozšíření Generativní návrh pro aplikaci Dynamo používá tuto funkci k zajištění toho, aby grafy aplikace Dynamo navržené pro použití s generativním návrhem měly potřebné vlastnosti nutné pro správné fungování grafu v generativním návrhu. Generativní návrh vyžaduje, aby grafy měly alespoň jeden vstupní a výstupní uzel, což je vynuceno pomocí pravidel registrovaných v rozšíření aplikace Dynamo.</p>
+    <h4>Problémy s uzly a grafy</h4>
+    <p>Pravidla definovaná rozšířením jsou registrována jako jeden ze dvou typů: pravidla grafu nebo pravidla uzlu. Pokud aplikace Dynamo zjistí, že v aktuálním grafu bylo porušeno některé z těchto pravidel, zobrazí se v jedné z těchto dvou částí upozornění s informacemi o tom, jak problém opravit, a odkaz na místo, kde byl problém zjištěn.</p>
+    <h4>Další informace</h4>
+    <p>Při každém uložení grafu uloží rozšíření Stav grafu do souboru aplikace Dynamo určitá metadata, například vybraný typ grafu, a také to, zda při posledním uložení grafu byly zjištěny problémy.</p>
+    <p>Při vytváření nového grafu aplikace Dynamo rozšíření Stav grafu automaticky nekontroluje žádná konkrétní pravidla. Jako výchozí bude vybrán typ grafu <i>Žádný</i>. V současné době lze v pohledu Stav grafu vybrat vždy pouze jeden typ grafu.</p>
+</body>

@@ -1,0 +1,67 @@
+﻿<!--
+    Dynamo: https://github.com/DynamoDS/Dynamo
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code  .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h3>Package Manager</h3>
+    <p>Dynamo Package Manager 是瀏覽、安裝和發佈套件的一站式工具。請從「套件」&gt;「Package Manager」下的頂端導覽存取。</p>
+    <h4>什麼是套件？</h4>
+    <p>Dynamo 提供大量現成功能，也維護一個豐富的套件資源庫，可大幅擴充 Dynamo 的功能。套件是自訂節點或其他功能的集合。Dynamo Package Manager 是一個供社群下載任何已線上發佈套件的入口網站。這些工具集由協力廠商開發來擴充 Dynamo 的核心功能，所有人都能存取，只要按一下按鈕就能下載。</p>
+    <h4>安裝 Dynamo 套件</h4>
+    <p>您可以在 Package Manager 的「搜尋套件」頁籤中瀏覽並安裝套件。使用搜尋欄位找出特定套件。您也可以套用篩選和排序，縮小清單範圍以符合您的準則，例如主體程式或缺少相依性。</p>
+    <p>若要檢視有關套件的更多資訊，請按一下「檢視詳細資料」。這會開啟一個面板，您可以在其中閱讀套件的描述、尋找版本和授權資訊等。</p>
+    <p>若要安裝套件，請在搜尋視圖或詳細資料面板中按一下「安裝」。您可以在搜尋視圖中按一下下拉式清單並選取版本，指定要安裝的版本；否則會安裝最新版本。在套件詳細資料面板中，按一下「版本和套件需求」表格中特定版本下方的「安裝」以安裝該版本。</p>
+    <p>您可以在 Package Manager 的「已安裝的套件」頁籤中找到已安裝的套件清單。在此頁籤上，您可以檢視套件檔案、解除安裝套件等。</p>
+    <h4>發佈 Dynamo 套件</h4>
+    <p>您可以使用 Package Manager 在 Dynamo 中發佈套件。請開啟「發佈套件」頁籤開始。「發佈套件」頁籤會詢問您要發佈之套件的所有必要和選擇性資訊。</p>
+
+    <h4>加入套件詳細資料</h4>
+
+    <p><b>套件名稱:</b><br/> 要發佈的套件名稱。 這會顯示在資源庫、套件搜尋和 Package Manager 網站中。套件名稱的長度必須至少 3 個字元。</p>
+    <p><b>描述:</b><br/> 描述是加入套件更多詳細資料 (包括列出任何例外狀況和必備條件) 的絕佳位置。 也可以用來告知使用者套件的功能，以及在工作區中的使用方式。</p>
+    <p><b>版本:</b><br/> 版本欄位分為三個區段: 主要、次要和建置，可讓您以套件作者的身分上傳遵循版本控制語意的新版套件。 套件作者可以發佈更多有新功能和改進功能的套件版本、改善第一版留下的一些問題，或修正錯誤。</p>
+    <p><b>主體:</b><br/> 如果您的套件依賴主體程式，例如 Revit、Civil3D、Alias 或其他程式，您可以從下拉式清單中點選一或多個主體。 搜尋套件時，使用者可以根據主體篩選結果，協助他們找到設計來使用其偏好程式的套件。</p>
+    <p><b>關鍵字 (可選):</b><br/> 可用作與套件相關標籤的關鍵字，例如衍生式設計、ML 等。您可以使用空格分隔多個關鍵字，然後按 Enter，在欄位中一次輸入多個關鍵字。</p>
+    <p><b>群組 (選填):</b><br/> 此欄位可用來指定套件所屬的群組，例如公司/組織。</p>
+    <p><b>網站 (可選):</b><br/> 可為使用者提供有關套件或組織/作者更多資訊的網站連結。</p>
+    <p><b>儲存庫 URL (可選):</b><br/> 可讓使用者檢視或參與套件開發的套件儲存庫連結。</p>
+    <p><b>授權 (可選):</b><br/> 套件發行所依據的授權。 預設授權: MIT。</p>
+    <p><b>版權擁有者 (選填):</b><br/> 擁有套件版權的使用者姓名。 如果留空，則會預設填入您的使用者名稱。</p>
+    <p><b>版權年份 (選填):</b><br/> 套件的版權年份。 如果留空，則會預設填入發佈套件的年份。</p>
+
+    <h4>加入套件檔案</h4>
+
+    <p><b>套件內容:</b><br/> 此區段位於「發佈套件」頁籤的右側側邊欄中，可讓您在發佈之前整理套件內容。</p>
+    <p><b>加入檔案/目錄:</b><br/><p>選取並加入與套件相關的所有檔案。通常會加入 bin 資料夾、二進位檔和相依性。您可以加入個別檔案或資料夾。</p>
+    <p>選取要加入的檔案或資料夾後，您可以在「選取套件內容」頁面檢視、移除或加入檔案。您可以在左側面板中檢視所選檔案的資料夾結構，在右側面板中檢視每個資料夾的內容。</p>
+    <p><b>選取節點資源庫:</b><br/><p>勾選「節點資源庫」欄中的方塊，指定您加到套件的哪些檔案是節點資源庫。節點資源庫包含 Dynamo 將匯入為節點的類型和方法。您通常應將任何包含您要匯入至 Dynamo 之類型的組合標記為節點資源庫。ZeroTouch、NodeModel 或 NodeViewCustomization 組合應標記為節點資源庫。</p>
+    <p>若要載入使用者介面 NodeViewCustomization，必須以包含對應 NodeModel 定義的同一組合定義，或以單獨的組合定義。無論是哪一種，組合都必須標記為節點資源庫。目前，對於標記為節點資源庫且包含 NodeModel 或 NodeCustomization 類型的組合，將忽略其他所有類型。因此，請務必將 NodeModel/NodeViewCustomization 類型與您要使用 ZeroTouch 匯入來匯入的類型分開。</p>
+    </p>
+    <p><b>保留資料夾結構:</b><br/><p>套件資料夾結構複雜的套件作者可以啟用套件內容預覽面板下的「保留資料夾結構」切換開關。使用者發佈既有套件的新版本時，預設會開啟此設定，此時 Dynamo 不會變更您的套件資料夾結構，而會按原樣上傳套件。</p>
+        <p>如果您需要以某種方式設定套件，確保套件能正常運作以避免任何問題，請開啟設定。如果不確定，或發佈新套件時，請關閉設定，讓 Dynamo 能設定資料夾結構。</p>
+    </p>
+    <p><b>預覽套件內容:</b><br/> 如果您對套件內容滿意，請按「下一步」，查看套件檔案發佈後將如何設定的預覽。 此頁面僅供檢視；若要對套件內容做其他變更，請回到上一頁。按一下「完成」返回套件詳細資料頁面。</p>
+    <p><b>加入 markdown 檔案路徑 (選填):</b><br/> 您可以選擇在「Markdown 檔案路徑」區段中指定裝載套件 markdown (.md) 文件的檔案路徑。</p>
+    <p><b>發佈套件</b><br/> 填寫所有必要詳細資料後，您可以在本端或線上發佈套件。 在本端發佈時，套件會發佈在本端根目錄中，線上發佈時，套件會上傳到 Package Manager。</p>
+
+    <hr />
+
+    <h3>防毒掃瞄</h3>
+    <p>為了為所有 Dynamo 套件使用者提供安全的環境，我們為新套件引入了防毒掃瞄功能。當使用者上傳套件時，系統會掃瞄套件是否有病毒，而且只有將其標示為安全後才可公開使用。掃瞄作業將在套件上傳過程中進行，因此不會增加新套件通常可在線上使用的 10-15 分鐘時間。如果您的套件被標示為受到病毒感染，Package Manager 搜尋頁面將顯示通知，說明發現上傳的套件受到病毒感染，不會線上發佈。若要讓套件公開供人使用，請檢查套件隨附的檔案，並透過 Package Manager 上傳新版本。</p>
+    <h3>管理您的套件</h3>
+    <p>您可以在 Package Manager 的「我的套件」頁籤中找到已發佈套件的清單，您可以在其中棄用套件、發佈新版本等。</p>
+    <h3>套件設定</h3>
+    <p>您可以在 Package Manager 的「套件設定」頁籤中檢視與套件相關的設定，包括新套件下載路徑和套件/資源庫搜尋路徑。若要編輯設定，請按一下「套件設定」頁籤中的「偏好」連結存取「偏好」面板。</p>
+</body>

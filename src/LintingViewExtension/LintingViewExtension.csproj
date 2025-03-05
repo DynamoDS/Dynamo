@@ -14,6 +14,36 @@
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Docs\cs-CZ\LinterViewHelpDoc.html" />
+    <None Remove="Docs\de-DE\LinterViewHelpDoc.html" />
+    <None Remove="Docs\en-US\LinterViewHelpDoc.html" />
+    <None Remove="Docs\es-ES\LinterViewHelpDoc.html" />
+    <None Remove="Docs\fr-FR\LinterViewHelpDoc.html" />
+    <None Remove="Docs\it-IT\LinterViewHelpDoc.html" />
+    <None Remove="Docs\ja-JP\LinterViewHelpDoc.html" />
+    <None Remove="Docs\ko-KR\LinterViewHelpDoc.html" />
+    <None Remove="Docs\pl-PL\LinterViewHelpDoc.html" />
+    <None Remove="Docs\pt-BR\LinterViewHelpDoc.html" />
+    <None Remove="Docs\ru-RU\LinterViewHelpDoc.html" />
+    <None Remove="Docs\zh-CN\LinterViewHelpDoc.html" />
+    <None Remove="Docs\zh-TW\LinterViewHelpDoc.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Docs\cs-CZ\LinterViewHelpDoc.html" />
+    <EmbeddedResource Include="Docs\de-DE\LinterViewHelpDoc.html" />
+    <EmbeddedResource Include="Docs\en-US\LinterViewHelpDoc.html" />
+    <EmbeddedResource Include="Docs\es-ES\LinterViewHelpDoc.html" />
+    <EmbeddedResource Include="Docs\fr-FR\LinterViewHelpDoc.html" />
+    <EmbeddedResource Include="Docs\it-IT\LinterViewHelpDoc.html" />
+    <EmbeddedResource Include="Docs\ja-JP\LinterViewHelpDoc.html" />
+    <EmbeddedResource Include="Docs\ko-KR\LinterViewHelpDoc.html" />
+    <EmbeddedResource Include="Docs\pl-PL\LinterViewHelpDoc.html" />
+    <EmbeddedResource Include="Docs\pt-BR\LinterViewHelpDoc.html" />
+    <EmbeddedResource Include="Docs\ru-RU\LinterViewHelpDoc.html" />
+    <EmbeddedResource Include="Docs\zh-CN\LinterViewHelpDoc.html" />
+    <EmbeddedResource Include="Docs\zh-TW\LinterViewHelpDoc.html" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
   </ItemGroup>
   <ItemGroup>
@@ -51,9 +81,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Docs\LinterViewHelpDoc.html" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">

@@ -1,0 +1,37 @@
+﻿<!--
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.
+
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code  .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } .questionmark:after { content: '?'; display: inline-block; font-family: sans-serif; font-weight: bold; text-align: center; font-size: 0.8em; line-height: 0.8em; border-radius: 50%; margin-left: 6px; padding: 0.13em 0.2em 0.09em 0.2em; color: inherit; border: 1px solid; text-decoration: none; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h3>État du graphique</h3>
+    <h4>Présentation</h4>
+    <p>L'extension État du graphique permet de trouver des informations sur les problèmes que Dynamo a détectés dans votre graphique. Les problèmes qui sont affichés dans le groupe de fonctions État du graphique sont distincts des avertissements et des erreurs qui sont affichés sur les noeuds Dynamo individuels dans l'espace de travail. Ceux-ci sont dérivés de règles personnalisées qui peuvent être définies par des extensions Dynamo.</p>
+    <h4>Type de graphique</h4>
+    <p>Lorsqu'une extension Dynamo utilise l'API Linting de Dynamo pour enregistrer un jeu de règles personnalisé, le nom de cette extension apparaît sous la forme d'une option dans la liste déroulante intitulée <i>Type de graphique</i>. Dynamo vérifie si ces règles ont été enfreintes lorsque des modifications sont apportées au graphique.</p>
+    <p>Par exemple, l'extension Generative Design pour Dynamo utilise cette fonction pour s'assurer que les graphiques Dynamo conçus pour être utilisés avec Generative Design possèdent les propriétés nécessaires pour que le graphique fonctionne correctement dans l'application Generative Design. Generative Design nécessite que les graphiques disposent d'au moins un noeud d'entrée et un noeud de sortie, et cette opération est appliquée à l'aide des règles enregistrées par l'extension Dynamo.</p>
+    <h4>Problèmes de noeud et de graphique</h4>
+    <p>Les règles définies par une extension sont enregistrées sous l'un des deux types suivants: règles de graphique ou règles de noeud.  Si Dynamo détecte que l'une de ces règles a été endommagée dans le graphique en cours, un avertissement contenant des informations sur la manière de résoudre le problème et un lien vers l'emplacement où le problème a été détecté s'affichent dans l'une de ces deux sections.</p>
+    <h4>Autres informations</h4>
+    <p>Lorsqu'un graphique est enregistré, l'extension État du graphique stocke certaines métadonnées dans le fichier Dynamo, telles que le type de graphique sélectionné, et indique si des problèmes sont survenus lors du dernier enregistrement du graphique.</p>
+    <p>Lorsqu'un nouveau graphique Dynamo est créé, l'extension État du graphique ne vérifie pas automatiquement la présence de règles spécifiques. La sélection par défaut pour le type de graphique est <i>Aucun</i>. Actuellement, un seul type de graphique peut être sélectionné à la fois dans la vue État du graphique.</p>
+</body>

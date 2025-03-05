@@ -1,0 +1,131 @@
+﻿<!--
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.
+
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code  .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } .questionmark:after { content: '?'; display: inline-block; font-family: sans-serif; font-weight: bold; text-align: center; font-size: 0.8em; line-height: 0.8em; border-radius: 50%; margin-left: 6px; padding: 0.13em 0.2em 0.09em 0.2em; color: inherit; border: 1px solid; text-decoration: none; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <form action="https://forum.dynamobim.com/t/new-feature-preview-python-3-support-issue-thread/51649"><input type="submit" class="button" value="Сообщить о проблеме с узлом Python 3" style="font-size:medium;"/></form>
+    <h2>Преобразование из Python 2 в Python 3</h2>
+    <p>С 1 января 2020 г. компания Python Software Foundation (PSF) официально прекратила поддержку Python 2. Начиная с версии 2.7, в Dynamo используется CPython3 — механизм Python, который обеспечивает доступ к Python 3 в Dynamo.</p>
+   
+    <h3>Почему мы изменили версию Python?</h3>
+    <p>Как и многие другие среды на языке C#, Dynamo использует инструмент IronPython для переноса данных между объектами .NET и сценариями Python. Поскольку инструмент IronPython не был обновлен до версии Python 3, в Dynamo теперь используется CPython — стандартный интерпретатор языка Python.</p>
+    <p>Переход на Python 3 позволяет пользователям Dynamo получать доступ к популярным современным библиотекам, новым возможностям платформы, обслуживанию и исправлениям системы безопасности. Кроме того, для графиков Dynamo можно использовать библиотеки Python с собственными расширениями, которые ранее были недоступны, например NumPy, SciPy и Pandas.</p>
+
+    <h3>Совместимость с предыдущими версиями</h3>
+    <p>Возможность использования кода, написанного в среде CPython3, в предыдущих версиях Dynamo не гарантируется. При необходимости разработчики кода должны обеспечить совместимость версий IronPython2 и CPython3 с предыдущими версиями среды разработки.</p>
+    
+    <h3>Последствия изменений для пользователей и графиков с элементами на языке Python</h3>
+    <p>Если вы не являетесь разработчиком графика или узлов Python, которые он содержит, обратитесь к разработчику и сообщите ему об этих нововведениях, чтобы он мог внести необходимые изменения.</p>
+    <p>Если вы разработчик графиков, ознакомьтесь с приведенными ниже инструкциями, чтобы узнать, как эти изменения могут повлиять на узлы Python и как выполнить обновление.</p>
+
+    <p>Язык Python 3 в основном похож на Python 2; отличается синтаксис и основная библиотека, что позволяет сделать Python более последовательным и доступным языком для изучения, а также обеспечивает улучшенную поддержку Unicode.</p>
+    <p>Некоторые программы, написанные на Python 2, будут свободно работать на Python 3, однако многие часто используемые конструкции, в том числе оператор печати, потребуют внесения небольших изменений. К счастью, в большинстве случаев процесс можно автоматизировать.</p>
+
+    <h3>Обновление узлов Python до версии Python 3 </h3>
+    <p>Обычно сценарии Python можно запустить с помощью механизмов IronPython2 или CPython3. В узел Python добавлен автоматический преобразователь кода под названием Migration Assistant, чтобы вы могли легко обновить сценарий, если он содержит синтаксис, который был изменен в новой версии.</p>
+    <p>Чтобы обновить сценарий с помощью Migration Assistant, откройте редактор узлов Python, перейдите к CPython3 с помощью раскрывающегося списка и щелкните значок «2-3». Dynamo сообщит, какие изменения необходимы, и предложит отклонить или принять преобразование.</p>
+    <p>Поскольку узел Python Script From String просто выполняет ввод кода Python и не предоставляет среду текстового редактора, у него нет доступа к расширению Migration Assistant. Если требуется использовать эту функцию, временно скопируйте и вставьте код в узел Python перед копированием и вставкой кода обратно в узел Code Block.</p>
+
+    <h3>Подробнее</h3>
+    <p>Чтобы подробнее узнать о различиях между двумя версиями Python, начните с изучения двух следующих внешних ссылок:<ul>
+            <li><a href="https://docs.python.org/3/howto/pyporting.html">Официальное руководство по переносу кода Python 2 в Python 3</a></li>
+            <li><a href="http://python3porting.com/">Поддержка Python 3: подробное руководство</a></li>
+        </ul>
+    </p>
+
+    <h3>Основные изменения синтаксиса в Python 3</h3>
+    <p>Ниже приведен список основных изменений в синтаксисе Python 2 и Python 3. Это лишь некоторые из часто используемых функций, которые были затронуты, список ими не исчерпывается.</p>
+
+
+    <h4><b>Функция печати</b></h4>
+    <p>Наиболее значительные изменения внесены в синтаксис печати. Хотя оператор <code>print</code> в Dynamo используется не часто, приведем пример, демонстрирующий его изменение.</p>
+
+    <table>
+        <tr>
+            <th>Python 2</th>
+            <th class="hidden-sm">Python 3</th>
+        </tr>
+        <tr>
+            <td><code><span class="k">print</span> <span class="s">'Hello, Dynamo!'</span></code> <samp>// Hello, Dynamo!</samp></td>
+            <th class="hidden-lg" style="border-top: 1px solid white;">Python 3</th>
+            <td><code><span class="k">print</span>(<span class="s">'Hello, Dynamo!'</span>)</code> <samp>// Hello, Dynamo!</samp></td>
+        </tr>
+    </table>
+
+    <h4><b>Деление целых чисел</b></h4>
+    <p>Это изменение не приведет к появлению исключений в сценарии, но может повлиять на вывод. При наличии целочисленных операндов в Python 2.x используется оператор деления по умолчанию, который усекает десятичный знак и возвращает целое число. При наличии пары операндов с плавающей запятой возвращается фактическое частное с плавающей запятой (также используется термин True Division («истинное деление»)).</p>
+
+    <table>
+        <tr>
+            <th>Python 2</th>
+            <th class="hidden-sm">Python 3</th>
+        </tr>
+        <tr>
+            <td><code><span class="v">1</span>/<span class="v">2</span></code> <samp>// 0</samp></td>
+            <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
+            <td><code><span class="v">1</span>/<span class="v">2</span></code> <samp>// 0.5</samp></td>
+        </tr>
+        <tr class="spaced-sm">
+            <td class="hidden-lg">Python 2</td>
+            <td><code><span class="v">1.0</span>/<span class="v">2.0</span></code> <samp>// 0.5</samp></td>
+            <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
+            <td><code><span class="v">1.0</span>/<span class="v">2.0</span></code> <samp>// 0.5</samp></td>
+        </tr>
+    </table>
+
+    <h4><b>xrange</b></h4>
+    <p>Функция <code>xrange</code> обычно используется в сочетании с операторами циклов for или генерирования списков. Если требуется выполнить итерацию только один раз, это можно сделать быстрее с помощью функции <code>xrange()</code>, а не <code>range()</code>. В Python 3 функция <code>range()</code> реализована таким же образом, как и <code>xrange()</code>, поэтому <code>xrange()</code> как отдельная функция более не существует. При использовании функции xrange() появится ошибка NameError.</p>
+
+    <table>
+        <tr>
+            <th>Python 2</th>
+            <th class="hidden-sm">Python 3</th>
+        </tr>
+        <tr>
+            <td><code> <span class="nl">n = <span class="v">1000000</span></span> <span class="nl"> <span class="o">for</span> i <span class="i">in</span> <span class="b">xrange</span>(n): <span class="nl"><span class="k">print</span> i</span> </span> </code> <samp>// 1,2,3,4,5...</samp></td>
+            <th class="hidden-lg" style="border-top: 1px solid white;">Python 3</th>
+            <td><code> <span class="nl">n = <span class="v">1000000</span></span> <span class="nl"> <span class="o">for</span> i <span class="i">in</span> <span class="k">range</span>(n): <span class="nl"><span class="k">print</span>(i)</span> </span> </code> <samp>// 1,2,3,4,5...</samp></td>
+        </tr>
+    </table>
+
+    <h4><b>Вызов и обработка исключений</b></h4>
+    <p>В Python 2 допускаются записи с использованием «старого» и «нового» синтаксиса, а в Python 3, если не заключить аргумент исключения в круглые скобки, появится ошибка SyntaxError. Обработка исключений также незначительно изменилась в Python 3: теперь необходимо добавить ключевое слово as.</p>
+
+    <table>
+        <tr>
+            <th>Python 2</th>
+            <th class="hidden-sm">Python 3</th>
+        </tr>
+        <tr>
+            <td><code> <span class="o">raise</span> <span class="e">IOError</span>, <span class="s">&quot;file error&quot;</span> </code> <samp>// IOError: file error</samp></td>
+            <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
+            <td><code> <span class="o">raise</span> <span class="e">IOError</span>(<span class="s">&quot;file error&quot;</span>) </code> <samp>// OSError: file error</samp></td>
+        </tr>
+        <tr class="spaced-sm">
+            <td class="hidden-lg">Python 2</td>
+            <td><code> <span class="nl"> <span class="o">try:</span> <span class="nl">let_us_cause_a_NameError</span> </span> <span class="nl"> <span class="o">except</span> <span class="e">NameError</span>, err: <span class="nl"><span class="k">print</span> err, <span class="s">'-- our error message'</span></span> </span> </code> <samp>// IOError: file error</samp></td>
+            <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
+            <td><code> <span class="nl"> <span class="o">try:</span> <span class="nl">let_us_cause_a_NameError</span> </span> <span class="nl"> <span class="o">except</span> <span class="e">NameError</span> <span class="o">as</span> err: <span class="nl"><span class="k">print</span>(err, <span class="s">'-- our error message'</span>)</span> </span> </code> <samp>// OSError: file error</samp></td>
+        </tr>
+    </table>
+</body>

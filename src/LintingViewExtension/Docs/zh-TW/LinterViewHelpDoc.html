@@ -1,0 +1,37 @@
+﻿<!--
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.
+
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code  .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } .questionmark:after { content: '?'; display: inline-block; font-family: sans-serif; font-weight: bold; text-align: center; font-size: 0.8em; line-height: 0.8em; border-radius: 50%; margin-left: 6px; padding: 0.13em 0.2em 0.09em 0.2em; color: inherit; border: 1px solid; text-decoration: none; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h3>圖表狀態</h3>
+    <h4>概述</h4>
+    <p>「圖表狀態」延伸可讓您尋找 Dynamo 在圖表中偵測到之問題的相關資訊。「圖表狀態」面板中展示的問題與工作區中個別 Dynamo 節點顯示的警告和錯誤不同。這些問題是從可由 Dynamo 延伸定義的自訂規則衍生。</p>
+    <h4>圖表類型</h4>
+    <p>當 Dynamo 延伸使用 Dynamo 的 Lint 分析 API 註冊自訂規則集時，該延伸的名稱在標示為<i>圖表類型</i>的下拉式清單中會顯示為一個選項。每當圖表發生變更時，Dynamo 會檢查是否違反了這些規則。</p>
+    <p>例如，Dynamo 的「衍生式設計」延伸會使用此功能，確保針對「衍生式設計」而設計的 Dynamo 圖表有必要的性質，以便圖表能在「衍生式設計」應用程式中正常運作。「衍生式設計」要求圖表至少要有一個輸入節點和一個輸出節點，這會利用 Dynamo 延伸所註冊的規則強制執行。</p>
+    <h4>節點問題和圖表問題</h4>
+    <p>由延伸定義的規則會註冊為兩種類型之一: 圖表規則或節點規則。 如果 Dynamo 偵測到目前圖表違反了其中一個規則，則會在這兩個區段中的其中一個顯示警告，其中包含如何修正問題的資訊，以及一個連結導向偵測到問題的位置。</p>
+    <h4>其他資訊</h4>
+    <p>每當儲存圖表時，「圖表狀態」延伸會將某些詮釋資料儲存在 Dynamo 檔案中，例如選取的圖表類型，以及上次儲存圖表時是否出現問題。</p>
+    <p>建立新 Dynamo 圖表時，「圖表狀態」延伸不會自動檢查任何特定規則。「圖表類型」的預設選項為<i>無</i>。「圖表狀態」視圖中目前一次只能選取一個圖表類型。</p>
+</body>

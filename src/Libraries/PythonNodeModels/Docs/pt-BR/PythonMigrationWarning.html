@@ -1,0 +1,131 @@
+﻿<!--
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.
+
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code  .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } .questionmark:after { content: '?'; display: inline-block; font-family: sans-serif; font-weight: bold; text-align: center; font-size: 0.8em; line-height: 0.8em; border-radius: 50%; margin-left: 6px; padding: 0.13em 0.2em 0.09em 0.2em; color: inherit; border: 1px solid; text-decoration: none; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <form action="https://forum.dynamobim.com/t/new-feature-preview-python-3-support-issue-thread/51649"><input type="submit" class="button" value="Reportar problema de nós do Python 3" style="font-size:medium;"/></form>
+    <h2>Conversão do Python 2 para o Python 3</h2>
+    <p>A Python Software Foundation (PSF) terminou oficialmente o suporte para o Python 2 em 1º de janeiro de 2020. Desde a versão 2.7, o Dynamo passou a usar o CPython3, um mecanismo do Python que fornece acesso ao Python 3 dentro do Dynamo.</p>
+   
+    <h3>Por que mudamos a versão do Python?</h3>
+    <p>O Dynamo, como muitos outros ambientes com base em C#, usa uma ferramenta chamada IronPython para mover dados entre objetos .NET e scripts Python. Como o IronPython não foi atualizado para o Python 3, o Dynamo passou a usar o CPython, o interpretador Python nativo padrão.</p>
+    <p>A mudança do Dynamo para o Python 3 permite que os usuários do Dynamo acessem as bibliotecas modernas populares e continuem acessando novos recursos da plataforma, manutenção essencial e correções de segurança. Além disso, os gráficos do Dynamo podem aproveitar as bibliotecas do Python com extensões nativas que não eram acessíveis anteriormente, como NumPy, SciPy e Pandas.</p>
+
+    <h3>Compatibilidade com versões anteriores</h3>
+    <p>Não há garantia de que qualquer código escrito no ambiente CPython3 funcione em versões anteriores do Dynamo. Os autores de código devem garantir a compatibilidade com as versões anteriores do IronPython2 e do CPython3 conforme desejado.</p>
+    
+    <h3>O que isso significa para você e seus gráficos que contêm Python?</h3>
+    <p>Se você não for o autor do gráfico ou dos nós Python contidos nele, entre em contato com o autor e informe sobre essas alterações para que ele possa fazer mudanças onde for necessário.</p>
+    <p>Se você for o autor do gráfico, leia as orientações abaixo para entender como essas alterações podem afetar os nós Python e como fazer atualizações.</p>
+
+    <p>O Python 3 é fundamentalmente a mesma linguagem do Python 2, com alterações na sintaxe e na biblioteca principal para tornar o Python mais consistente e acessível, e para fornecer suporte Unicode aprimorado.</p>
+    <p>Alguns programas do Python 2 serão executados normalmente no Python 3, mas muitas construções comuns exigirão pequenas alterações, incluindo a declaração de impressão. Felizmente, muitos deles podem ser automatizados.</p>
+
+    <h3>Como atualizar os nós Python para o Python 3 </h3>
+    <p>Normalmente, os scripts Python podem ser executados usando os mecanismos IronPython2 ou CPython3. Para qualquer caso em que o script contenha sintaxe que tenha sido alterada entre versões, facilitamos para você a atualização do script com a inclusão de um conversor de código automático no nó Python denominado Assistente de migração.</p>
+    <p>Para atualizar o script com o Assistente de migração, abra o Editor de nós Python, alterne para o mecanismo CPython3 usando o menu suspenso e clique no ícone 2-3. O Dynamo informa quais alterações são necessárias e oferece a opção de recusar ou aceitar a conversão.</p>
+    <p>Como o nó Script Python com base na sequência de caracteres simplesmente executa a entrada de código Python e não fornece um ambiente de editor de texto, ele não tem acesso ao Assistente de migração. Se você desejar usar esse recurso, será necessário copiar e colar o código em um nó Python temporariamente antes de copiá-lo e colá-lo de novo no nó do bloco de código.</p>
+
+    <h3>Saiba mais</h3>
+    <p>Se você está curioso para se aprofundar nas diferenças entre as duas versões do Python, aqui estão dois links externos para começar:<ul>
+            <li><a href="https://docs.python.org/3/howto/pyporting.html">O guia oficial “Porting Python 2 Code to Python 3”</a></li>
+            <li><a href="http://python3porting.com/">O guia “Supporting Python 3: An in-depth guide”</a></li>
+        </ul>
+    </p>
+
+    <h3>Principais alterações na sintaxe no Python 3</h3>
+    <p>A lista abaixo explica algumas das principais alterações de sintaxe entre o Python 2 e o Python 3. Esta é uma seleção de alguns dos recursos mais amplamente usados que foram afetados, não é uma lista exaustiva.</p>
+
+
+    <h4><b>Função de impressão</b></h4>
+    <p>A sintaxe de impressão é provavelmente a alteração mais conhecida. Apesar de não ser usada com frequência no Dynamo, veja um exemplo que mostra como a declaração de <code>impressão</code> foi alterada.</p>
+
+    <table>
+        <tr>
+            <th>Python 2</th>
+            <th class="hidden-sm">Python 3</th>
+        </tr>
+        <tr>
+            <td><code><span class="k">print</span> <span class="s">'Hello, Dynamo!'</span></code> <samp>// Hello, Dynamo!</samp></td>
+            <th class="hidden-lg" style="border-top: 1px solid white;">Python 3</th>
+            <td><code><span class="k">print</span>(<span class="s">'Hello, Dynamo!'</span>)</code> <samp>// Hello, Dynamo!</samp></td>
+        </tr>
+    </table>
+
+    <h4><b>Divisão de número inteiro</b></h4>
+    <p>Essa alteração não gerará exceções em seu script, mas poderá afetar a saída. Quando são fornecidos operandos inteiros, o comportamento padrão do operador de divisão no Python 2.x é usar a divisão clássica que trunca a casa decimal e retorna um inteiro. Quando um par de operandos de ponto flutuante é fornecido, ele retorna o quociente real de ponto flutuante (também conhecido como divisão verdadeira).</p>
+
+    <table>
+        <tr>
+            <th>Python 2</th>
+            <th class="hidden-sm">Python 3</th>
+        </tr>
+        <tr>
+            <td><code><span class="v">1</span>/<span class="v">2</span></code> <samp>// 0</samp></td>
+            <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
+            <td><code><span class="v">1</span>/<span class="v">2</span></code> <samp>// 0.5</samp></td>
+        </tr>
+        <tr class="spaced-sm">
+            <td class="hidden-lg">Python 2</td>
+            <td><code><span class="v">1.0</span>/<span class="v">2.0</span></code> <samp>// 0.5</samp></td>
+            <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
+            <td><code><span class="v">1.0</span>/<span class="v">2.0</span></code> <samp>// 0.5</samp></td>
+        </tr>
+    </table>
+
+    <h4><b>xrange</b></h4>
+    <p><code>xrange</code> é normalmente usado em combinação com declarações de loop com for ou de lista abrangentes. Quando você só precisa iterar uma vez, geralmente é mais rápido iterar em <code>xrange()</code> em comparação com <code>range()</code>. No Python 3, a função <code>range()</code> foi implementada da mesma forma que a função <code>xrange()</code> para que uma função dedicada <code>xrange()</code> não exista mais. Em vez disso, xrange() gera um NameError.</p>
+
+    <table>
+        <tr>
+            <th>Python 2</th>
+            <th class="hidden-sm">Python 3</th>
+        </tr>
+        <tr>
+            <td><code> <span class="nl">n = <span class="v">1000000</span></span> <span class="nl"> <span class="o">for</span> i <span class="i">in</span> <span class="b">xrange</span>(n): <span class="nl"><span class="k">print</span> i</span> </span> </code> <samp>// 1,2,3,4,5...</samp></td>
+            <th class="hidden-lg" style="border-top: 1px solid white;">Python 3</th>
+            <td><code> <span class="nl">n = <span class="v">1000000</span></span> <span class="nl"> <span class="o">for</span> i <span class="i">in</span> <span class="k">range</span>(n): <span class="nl"><span class="k">print</span>(i)</span> </span> </code> <samp>// 1,2,3,4,5...</samp></td>
+        </tr>
+    </table>
+
+    <h4><b>Criação e tratamento de exceções</b></h4>
+    <p>Nos casos em que o Python 2 aceitar as duas notações (a sintaxe “antiga” e a “nova”), o Python 3 gerará um SyntaxError se não incluirmos o argumento da exceção entre parênteses. O tratamento de exceções também foi ligeiramente alterado no Python 3, no qual agora precisamos incluir a palavra-chave “as”.</p>
+
+    <table>
+        <tr>
+            <th>Python 2</th>
+            <th class="hidden-sm">Python 3</th>
+        </tr>
+        <tr>
+            <td><code> <span class="o">raise</span> <span class="e">IOError</span>, <span class="s">&quot;file error&quot;</span> </code> <samp>// IOError: file error</samp></td>
+            <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
+            <td><code> <span class="o">raise</span> <span class="e">IOError</span>(<span class="s">&quot;file error&quot;</span>) </code> <samp>// OSError: file error</samp></td>
+        </tr>
+        <tr class="spaced-sm">
+            <td class="hidden-lg">Python 2</td>
+            <td><code> <span class="nl"> <span class="o">try:</span> <span class="nl">let_us_cause_a_NameError</span> </span> <span class="nl"> <span class="o">except</span> <span class="e">NameError</span>, err: <span class="nl"><span class="k">print</span> err, <span class="s">'-- our error message'</span></span> </span> </code> <samp>// IOError: file error</samp></td>
+            <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
+            <td><code> <span class="nl"> <span class="o">try:</span> <span class="nl">let_us_cause_a_NameError</span> </span> <span class="nl"> <span class="o">except</span> <span class="e">NameError</span> <span class="o">as</span> err: <span class="nl"><span class="k">print</span>(err, <span class="s">'-- our error message'</span>)</span> </span> </code> <samp>// OSError: file error</samp></td>
+        </tr>
+    </table>
+</body>

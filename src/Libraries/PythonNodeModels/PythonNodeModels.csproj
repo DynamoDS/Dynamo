@@ -17,6 +17,36 @@
 	</ReferenceCopyLocalPaths>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <None Remove="Docs\cs-CZ\PythonMigrationWarning.html" />
+    <None Remove="Docs\de-DE\PythonMigrationWarning.html" />
+    <None Remove="Docs\en-US\PythonMigrationWarning.html" />
+    <None Remove="Docs\es-ES\PythonMigrationWarning.html" />
+    <None Remove="Docs\fr-FR\PythonMigrationWarning.html" />
+    <None Remove="Docs\it-IT\PythonMigrationWarning.html" />
+    <None Remove="Docs\ja-JP\PythonMigrationWarning.html" />
+    <None Remove="Docs\ko-KR\PythonMigrationWarning.html" />
+    <None Remove="Docs\pl-PL\PythonMigrationWarning.html" />
+    <None Remove="Docs\pt-BR\PythonMigrationWarning.html" />
+    <None Remove="Docs\ru-RU\PythonMigrationWarning.html" />
+    <None Remove="Docs\zh-CN\PythonMigrationWarning.html" />
+    <None Remove="Docs\zh-TW\PythonMigrationWarning.html" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Docs\cs-CZ\PythonMigrationWarning.html" />
+    <EmbeddedResource Include="Docs\de-DE\PythonMigrationWarning.html" />
+    <EmbeddedResource Include="Docs\en-US\PythonMigrationWarning.html" />
+    <EmbeddedResource Include="Docs\es-ES\PythonMigrationWarning.html" />
+    <EmbeddedResource Include="Docs\fr-FR\PythonMigrationWarning.html" />
+    <EmbeddedResource Include="Docs\it-IT\PythonMigrationWarning.html" />
+    <EmbeddedResource Include="Docs\ja-JP\PythonMigrationWarning.html" />
+    <EmbeddedResource Include="Docs\ko-KR\PythonMigrationWarning.html" />
+    <EmbeddedResource Include="Docs\pl-PL\PythonMigrationWarning.html" />
+    <EmbeddedResource Include="Docs\pt-BR\PythonMigrationWarning.html" />
+    <EmbeddedResource Include="Docs\ru-RU\PythonMigrationWarning.html" />
+    <EmbeddedResource Include="Docs\zh-CN\PythonMigrationWarning.html" />
+    <EmbeddedResource Include="Docs\zh-TW\PythonMigrationWarning.html" />
+  </ItemGroup>
+  <ItemGroup>
 	<PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
   <ItemGroup>
@@ -35,9 +65,6 @@
       <Name>DynamoServices</Name>
       <Private>False</Private>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Docs\PythonMigrationWarning.html" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
