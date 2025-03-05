@@ -1,12 +1,9 @@
 using System;
-using System.Diagnostics;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
-using Dynamo.Controls;
+using System.Windows.Threading;
 using Dynamo.Graph.Nodes;
-using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
@@ -25,14 +22,15 @@ namespace Dynamo.ViewModels
         private DelegateCommand useLevelsCommand;
         private DelegateCommand keepListStructureCommand;
         private bool showUseLevelMenu;
+        private bool doubleClickDetected = false;
         private const double autocompletePopupSpacing = 2.5;
         private const double proxyPortContextMenuOffset = 20;
-        internal bool inputPortDisconnectedByConnectCommand = false;
         protected static readonly SolidColorBrush PortBackgroundColorPreviewOff = new SolidColorBrush(Color.FromRgb(102, 102, 102));
         protected static readonly SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
         protected static readonly SolidColorBrush PortBorderBrushColorDefault = new SolidColorBrush(Color.FromRgb(161, 161, 161));
         private SolidColorBrush portBorderBrushColor = PortBorderBrushColorDefault;
         private SolidColorBrush portBackgroundColor = PortBackgroundColorDefault;
+
         /// <summary>
         /// Port model.
         /// </summary>
@@ -455,12 +453,26 @@ namespace Dynamo.ViewModels
             }
         }
 
-       
         private void Connect(object parameter)
         {
-            DynamoViewModel dynamoViewModel = this.node.DynamoViewModel;
-            WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
-            workspaceViewModel.HandlePortClicked(this);
+            // Postponing the Connect command on the dispatcher's background queue gives us enough time  
+            // to determine whether the user performed a double-click, which we associate with the AutoComplete command.
+            Application.Current?.Dispatcher?.InvokeAsync(async () =>
+            {
+                int maxDelay = 500;
+                await System.Threading.Tasks.Task.Delay(maxDelay);
+
+                if (doubleClickDetected)
+                {
+                    doubleClickDetected = false;
+                    return;
+                }
+
+                DynamoViewModel dynamoViewModel = node.DynamoViewModel;
+                WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
+                workspaceViewModel.HandlePortClicked(this);
+
+            }, DispatcherPriority.Background);
         }
 
         protected bool CanConnect(object parameter)
@@ -471,23 +483,14 @@ namespace Dynamo.ViewModels
         // Handler to invoke node Auto Complete
         private void AutoComplete(object parameter)
         {
-            var wsViewModel = node.WorkspaceViewModel;
-            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
-
-            // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
-            if (this.inputPortDisconnectedByConnectCommand)
-            {
-                wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
-            }
-
-            // Bail out from connect state
-            wsViewModel.CancelActiveState();
-
-            if (PortModel != null && !PortModel.CanAutoCompleteInput())
+            doubleClickDetected = true;
+            if (!CanAutoComplete(parameter))
             {
                 return;
             }
 
+            var wsViewModel = node.WorkspaceViewModel;
+            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
 
             wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
         }
@@ -495,25 +498,19 @@ namespace Dynamo.ViewModels
         // Handler to invoke Node autocomplete cluster
         private void AutoCompleteCluster(object parameter)
         {
-            var wsViewModel = node.WorkspaceViewModel;
-            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
-
-            // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
-            if (this.inputPortDisconnectedByConnectCommand)
-            {
-                wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
-            }
-
-            // Bail out from connect state
-            wsViewModel.CancelActiveState();
-
-            if (PortModel != null && !PortModel.CanAutoCompleteInput())
+            doubleClickDetected = true;
+            if (!CanAutoComplete(parameter))
             {
                 return;
             }
 
-            if (wsViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled)
+
+            var wsViewModel = node?.WorkspaceViewModel;
+            
+            bool clusterEnabled = wsViewModel?.DynamoViewModel?.IsDNAClusterPlacementEnabled ?? false;
+            if (clusterEnabled)
             {
+                wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
                 try
                 {
                     MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
@@ -552,7 +549,7 @@ namespace Dynamo.ViewModels
                 dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.NodeAutoCompleteNotAvailableForCollapsedGroups);
             }
             // If the feature is enabled from Dynamo experiment setting and if user interaction is not on proxy ports.
-            return dynamoViewModel.EnableNodeAutoComplete && !port.IsProxyPort;
+            return dynamoViewModel.EnableNodeAutoComplete && !port.IsProxyPort && (PortModel?.CanAutoCompleteInput() ?? false);
         }
 
         /// <summary>
