@@ -1,5 +1,5 @@
 using System;
-using System.Diagnostics;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
@@ -539,26 +539,32 @@ namespace Dynamo.ViewModels
                 MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
 
                 // Process the results and display the preview of the cluster with the highest confidence level
-                // Leverage some API here to convert topology to actual cluster
-                results.Results.FirstOrDefault().Topology.Nodes.ToList().ForEach(node =>
+                var ClusterResultItem = results.Results.FirstOrDefault();
                 {
-                    // Retreive assembly name and node full name from type.id.
-                    var typeInfo = wsViewModel.NodeAutoCompleteSearchViewModel.GetInfoFromTypeId(node.Type.Id);
-                    wsViewModel.DynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, 0, 0, false, false));
-                    wsViewModel.Nodes.LastOrDefault().IsTransient = true;
-                });
+                    var clusterMapping = new Dictionary<string, NodeViewModel>();
+                    // Leverage some API here to convert topology to actual cluster
+                    ClusterResultItem.Topology.Nodes.ToList().ForEach(node =>
+                    {
+                        // Retreive assembly name and node full name from type.id.
+                        var typeInfo = wsViewModel.NodeAutoCompleteSearchViewModel.GetInfoFromTypeId(node.Type.Id);
+                        wsViewModel.DynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, 0, 0, false, false));
+                        var nodeFromCluster = wsViewModel.Nodes.LastOrDefault();
+                        nodeFromCluster.IsTransient = true;
+                        clusterMapping.Add(node.Id, nodeFromCluster);
+                    });
 
-                results.Results.FirstOrDefault().Topology.Connections.ToList().ForEach(connection =>
-                {
-                    // Connect the nodes
-                    var sourceNode = wsViewModel.Nodes.FirstOrDefault(n => n.NodeModel.GUID.ToString() == connection.StartNode.NodeId);
-                    var targetNode = wsViewModel.Nodes.FirstOrDefault(n => n.NodeModel.GUID.ToString() == connection.EndNode.NodeId);
-                    var sourcePort = sourceNode.OutPorts.FirstOrDefault(p => p.PortModel.Index == connection.StartNode.PortIndex);
-                    var targetPort = targetNode.InPorts.FirstOrDefault(p => p.PortModel.Index == connection.EndNode.PortIndex);
-                    sourcePort.connectCommand.Execute(targetPort);
-                //    new DynamoModel.MakeConnectionCommand(sourceNode.Id, sourcePort., PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
-                //    new DynamoModel.MakeConnectionCommand(unexistingNodeGuid, 0, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
-                });
+                    ClusterResultItem.Topology.Connections.ToList().ForEach(connection =>
+                    {
+                        // Connect the nodes
+                        var sourceNode = clusterMapping[connection.StartNode.NodeId];
+                        var targetNode = clusterMapping[connection.EndNode.NodeId];
+                        var sourcePort = sourceNode.OutPorts.FirstOrDefault(p => p.PortModel.Index == connection.StartNode.PortIndex-1);
+                        var targetPort = targetNode.InPorts.FirstOrDefault(p => p.PortModel.Index == connection.EndNode.PortIndex-1);
+                        sourcePort.connectCommand.Execute(targetPort);
+                        //    new DynamoModel.MakeConnectionCommand(sourceNode.Id, sourcePort., PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
+                        //    new DynamoModel.MakeConnectionCommand(unexistingNodeGuid, 0, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
+                    });
+                }
 
                 // Display the cluster info in the right side panel
                 // wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
