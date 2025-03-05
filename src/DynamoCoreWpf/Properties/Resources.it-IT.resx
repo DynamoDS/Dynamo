@@ -2680,7 +2680,7 @@ Questo pacchetto viene caricato ed è pronto per essere utilizzato.</value>
     <value>Pubblica un pacchetto</value>
   </data>
   <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
-    <value>Scansione antivirus in corso. La ricerca del pacchetto sarà possibile in circa 15 minuti.</value>
+    <value>Virus scan in progress. Your package will be searchable in a few minutes.</value>
   </data>
   <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
     <value>Pacchetti installati</value>
@@ -3728,6 +3728,9 @@ Per trasformare questo file in un nuovo modello, salvarlo in un'altra cartella e
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Scarica Autodesk Identity Manager</value>
+  </data>
+  <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
+    <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

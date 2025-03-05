@@ -2704,7 +2704,7 @@ Ce package sera déchargé après le prochain redémarrage de Dynamo.</value>
     <value>Publier un package</value>
   </data>
   <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
-    <value>Analyse antivirus en cours. Votre package pourra apparaître dans les recherches d'ici environ 15 minutes.</value>
+    <value>Virus scan in progress. Your package will be searchable in a few minutes.</value>
   </data>
   <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
     <value>Packages installés</value>
@@ -3748,6 +3748,9 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Télécharger Autodesk Identity Manager</value>
+  </data>
+  <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
+    <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
