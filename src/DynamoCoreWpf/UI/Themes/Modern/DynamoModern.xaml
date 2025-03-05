@@ -4127,7 +4127,8 @@
         </Setter>
     </Style>
 
-    <Style x:Key="PackageManagerContextMenuItemStyle" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource ContextMenuItemStyle}">
+    <!--  This context menu style is similar to the ContextMenuItemStyle and the only difference is the background at IsMouseOve = False  -->
+    <Style x:Key="DarkContextMenuItemStyle" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource ContextMenuItemStyle}">
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type MenuItem}">
@@ -4370,13 +4371,13 @@
         </Style.Resources>
     </Style>
 
-    <Style x:Key="PackageManagerContextMenuStyle" TargetType="{x:Type ContextMenu}" BasedOn="{StaticResource ContextMenuStyle}">
+    <Style x:Key="DarkContextMenuStyle" TargetType="{x:Type ContextMenu}" BasedOn="{StaticResource ContextMenuStyle}">
         <Style.Resources>
             <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}"
                BasedOn="{StaticResource ContextMenuSeparatorStyle}"
                TargetType="Separator" />
             <Style x:Key="{x:Type MenuItem}"
-               BasedOn="{StaticResource PackageManagerContextMenuItemStyle}"
+               BasedOn="{StaticResource DarkContextMenuItemStyle}"
                TargetType="MenuItem" />
         </Style.Resources>
     </Style>
