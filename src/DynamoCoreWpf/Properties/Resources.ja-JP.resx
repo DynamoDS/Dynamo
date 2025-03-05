@@ -2706,7 +2706,7 @@ Dynamo を再起動してアンインストールを完了します。
     <value>パッケージをパブリッシュ</value>
   </data>
   <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
-    <value>ウイルス スキャンが進行中です。パッケージは約 15 分で検索できます。</value>
+    <value>Virus scan in progress. Your package will be searchable in a few minutes.</value>
   </data>
   <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
     <value>インストール済みパッケージ</value>
@@ -3754,6 +3754,9 @@ Dynamo を再起動してアンインストールを完了します。
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Autodesk Identity Manager をダウンロードする</value>
+  </data>
+  <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
+    <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

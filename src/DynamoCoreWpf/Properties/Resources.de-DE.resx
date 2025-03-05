@@ -2704,7 +2704,7 @@ Dieses Paket wird nach dem nächsten Neustart von Dynamo entfernt.</value>
     <value>Paket publizieren</value>
   </data>
   <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
-    <value>Virenprüfung wird durchgeführt. Ihr Paket kann in ca. 15 Minuten durchsucht werden.</value>
+    <value>Virus scan in progress. Your package will be searchable in a few minutes.</value>
   </data>
   <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
     <value>Installierte Pakete</value>
@@ -3752,6 +3752,9 @@ Führen Sie #Download und Installation=https://manage.autodesk.com/products/upda
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Autodesk Identity Manager herunterladen</value>
+  </data>
+  <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
+    <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
