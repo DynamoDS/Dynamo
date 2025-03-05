@@ -58,8 +58,8 @@ namespace Dynamo.UI
             }
         }
 
-        public string FileName 
-        { 
+        public string FileName
+        {
             get { return _fileName; }
         }
 
@@ -75,32 +75,40 @@ namespace Dynamo.UI
             _dialog = new NativeFileOpenDialog();
             if (!enableCustomDialog) return;
             IFileDialogCustomize customize = (IFileDialogCustomize) _dialog;
-            customize.AddCheckButton(RunManualCheckboxId, 
+            customize.AddCheckButton(RunManualCheckboxId,
                 Dynamo.Wpf.Properties.Resources.FileDialogManualMode,
                 model.PreferenceSettings.OpenFileInManualExecutionMode);
         }
 
         public DialogResult ShowDialog()
         {
-            int result = _dialog.Show(GetActiveWindow());
-            if (result < 0)
+            try
             {
-                if ((uint) result == (uint) HRESULT.E_CANCELLED)
-                    return DialogResult.Cancel;
-                throw Marshal.GetExceptionForHR(result);
+                int result = _dialog.Show(GetActiveWindow());
+                if (result < 0)
+                {
+                    if ((uint)result == (uint)HRESULT.E_CANCELLED)
+                        return DialogResult.Cancel;
+                    throw Marshal.GetExceptionForHR(result);
+                }
+
+                IShellItem dialogResult;
+                _dialog.GetResult(out dialogResult);
+                dialogResult.GetDisplayName(SIGDN.SIGDN_DESKTOPABSOLUTEEDITING, out _fileName);
+
+                IFileDialogCustomize customize = (IFileDialogCustomize)_dialog;
+                if (!enableCustomDialog) return DialogResult.OK;
+
+                customize.GetCheckButtonState(RunManualCheckboxId, out _runManualMode);
+                model.PreferenceSettings.OpenFileInManualExecutionMode = _runManualMode;
+
+                return DialogResult.OK;
             }
-
-            IShellItem dialogResult;
-            _dialog.GetResult(out dialogResult);
-            dialogResult.GetDisplayName(SIGDN.SIGDN_FILESYSPATH, out _fileName);
-
-            IFileDialogCustomize customize = (IFileDialogCustomize) _dialog;
-            if (!enableCustomDialog) return DialogResult.OK;
-
-            customize.GetCheckButtonState(RunManualCheckboxId, out _runManualMode);
-            model.PreferenceSettings.OpenFileInManualExecutionMode = _runManualMode;
-
-            return DialogResult.OK;
+            catch(Exception ex)
+            {
+                model.Model.Logger.Log(ex.Message);
+                return DialogResult.Cancel;
+            }
         }
         /// <summary>
         /// The method is used to get the last accessed path by the user
@@ -206,9 +214,9 @@ namespace Dynamo.UI
             try
             {
                 // If the caller did not specify a starting path, or set it to null,
-                // it is not healthy as it causes SHCreateItemFromParsingName to 
+                // it is not healthy as it causes SHCreateItemFromParsingName to
                 // throw E_INVALIDARG (0x80070057). Setting it to an empty string.
-                // 
+                //
                 if (SelectedPath == null)
                     SelectedPath = string.Empty;
 
@@ -243,7 +251,7 @@ namespace Dynamo.UI
 
                 return DialogResult.OK;
             }
-            finally 
+            finally
             {
                 if (dialog != null)
                     Marshal.FinalReleaseComObject(dialog);

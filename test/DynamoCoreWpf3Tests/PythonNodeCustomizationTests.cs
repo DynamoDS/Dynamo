@@ -263,6 +263,75 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
+        /// The test to validate that the editor window will not retain changes
+        /// and revert to the last saved state when the editor is closed without saving.
+        /// The test will execute the events:
+        /// CloseWarningBarButton_OnClick(object sender, RoutedEventArgs e)
+        /// CloseButton_OnClick(object sender, RoutedEventArgs e)
+        /// EditScriptContent(object sender, EventArgs e)
+        /// </summary>
+        [Test]
+        public void OnCloseWithoutSaveShouldRevertEventsTest()
+        {
+            Open(@"core\python\python_check_output.dyn");
+            ViewModel.HomeSpace.Run();
+
+            var nodeView = NodeViewWithGuid("3bcad14e-d086-4278-9e08-ed2759ef92f3");
+            var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeBase;
+            Assert.NotNull(nodeModel);
+
+            //Get the Watch node so we can check the content later
+            var watchOUT = Model.CurrentWorkspace.NodeFromWorkspace<Watch>("714838b43a114f5f93cfe2f1d26092cf");
+
+            var scriptWindow = EditPythonCode(nodeView, View);
+            var codeEditor = FindCodeEditor(scriptWindow);
+
+            //Replace dictionary values so we can use the Revert and Run buttons
+            codeEditor.Text = codeEditor.Text.Replace("Autodesk", "Softdesk").Replace("1982", "1997");
+            codeEditor.Focus();
+
+            //This will get the buttons from the WPF xaml code
+            var closeButton = scriptWindow.FindName("CloseButton") as Button;
+            var resumeButton = scriptWindow.FindName("ResumeButton") as Button;
+
+            //Press the close button without saving
+            closeButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            DispatcherUtil.DoEvents();
+
+            var unsavedChangesStatusBar = scriptWindow.FindName("UnsavedChangesStatusBar") as Grid;
+
+            //Check that the warning bar is visible
+            Assert.That(unsavedChangesStatusBar.Visibility, Is.EqualTo(Visibility.Visible));
+
+            //Pressing the Resume button
+            resumeButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            DispatcherUtil.DoEvents();
+
+            //Check that the warning bar is not visible
+            Assert.That(unsavedChangesStatusBar.Visibility, Is.EqualTo(Visibility.Collapsed));
+
+            //Press the close button without saving
+            closeButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            DispatcherUtil.DoEvents();
+
+            //Check that the warning bar is visible again
+            Assert.That(unsavedChangesStatusBar.Visibility, Is.EqualTo(Visibility.Visible));
+
+            var closeWarningBarButton = scriptWindow.FindName("CloseWarningBarButton") as Button;
+
+            //Pressing the close button on the warning bar
+            closeWarningBarButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
+            DispatcherUtil.DoEvents();
+
+            //Open python editor window again
+            scriptWindow = EditPythonCode(nodeView, View);
+            codeEditor = FindCodeEditor(scriptWindow);
+
+            //Validate that the changes were reverted
+            Assert.That(codeEditor.Text.Contains("Autodesk"), Is.True);
+        }
+
+        /// <summary>
         /// This test method will validate that the OnMoreInfoEvent was executed correctly
         /// </summary>
         [Test]

@@ -1,10 +1,12 @@
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using Dynamo.ViewModels;
-using System;
+using System.Windows.Input;
+using System.Windows.Threading;
 using CoreNodeModels;
-using System.Linq;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
 
 namespace Dynamo.Controls
 {
@@ -34,6 +36,7 @@ namespace Dynamo.Controls
             DataContext = vm;
             this.Loaded += WatchTree_Loaded;
             this.Unloaded += WatchTree_Unloaded;
+
         }
 
         internal static double DefaultWidthSize { get { return defaultWidthSize; } }
@@ -167,10 +170,25 @@ namespace Dynamo.Controls
             e.Handled = true; 
         }
 
-        private void treeviewItem_KeyUp(object sender, System.Windows.Input.KeyEventArgs e)
+        private void treeviewItem_KeyDown(object sender, System.Windows.Input.KeyEventArgs e)
         {
             if (prevWatchViewModel != null)
             {
+                // Perform Ctrl+C 
+                if (e.Key == Key.C && (Keyboard.Modifiers & System.Windows.Input.ModifierKeys.Control) == System.Windows.Input.ModifierKeys.Control)
+                {
+                    if (sender is TreeViewItem tvi)
+                    {
+                        var textBlock = WpfUtilities.ChildOfType<TextBlock>(tvi, "NodeValue");
+                        if (textBlock != null)
+                        {
+                            Clipboard.SetText(textBlock.Text);
+                            e.Handled = true; // Prevents further propagation
+                            return;
+                        }
+                    }
+                }
+
                 if (e.Key == System.Windows.Input.Key.Up || e.Key == System.Windows.Input.Key.Down)
                 {
                     TreeViewItem tvi = sender as TreeViewItem;

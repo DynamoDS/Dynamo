@@ -3032,7 +3032,7 @@ This package will be unloaded after the next Dynamo restart.</value>
     <value>Publish a Package</value>
   </data>
   <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
-    <value>Virus scan in progress. Your package will be searchable in approximately 15 minutes.</value>
+    <value>Virus scan in progress. Your package will be searchable in a few minutes.</value>
   </data>
   <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
     <value>Installed Packages</value>
@@ -4114,5 +4114,8 @@ To make this file into a new template, save it to a different folder, then move 
   </data>
   <data name="IDSDKErrorMessageTitle" xml:space="preserve">
     <value>Download Autodesk Identity Manager</value>
+  </data>
+  <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
+    <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
   </data>
 </root>
