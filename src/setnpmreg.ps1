@@ -28,4 +28,5 @@ try {
 catch {
     Write-Host "An error occurred: $_" -ForegroundColor Red
     createNpmrcFile -registry $npmRegistry
+    exit 0
 }
