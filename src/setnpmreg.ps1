@@ -26,5 +26,6 @@ try {
     }
 }
 catch {
+    Write-Host "adsk npm registry is not reachable" -ForegroundColor Red
     createNpmrcFile -registry $npmRegistry
 }
