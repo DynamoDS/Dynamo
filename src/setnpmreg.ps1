@@ -1,5 +1,6 @@
 # This script checks if the adsk network is reachable
 # and creates .npmrc file with appropriate value for the npm registry
+$ErrorActionPreference = "Stop"
 
 $npmRegistry = "https://registry.npmjs.org"
 $adskNpmRegistry = "https://npm.autodesk.com/artifactory/api/npm/autodesk-npm-virtual/"
