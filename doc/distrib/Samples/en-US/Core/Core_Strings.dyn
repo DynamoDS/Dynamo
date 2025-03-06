@@ -1082,7 +1082,7 @@
       "Inputs": [],
       "Outputs": [
         {
-          "Id": "403815873dff448ab63db7cb067ea0cb",
+          "Id": "fab5937bb10941eb80bf74aed13e17ae",
           "Name": "",
           "Description": "Value of expression at line 1",
           "UsingDefaultValue": false,
@@ -1097,8 +1097,8 @@
     },
     {
       "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
-      "WatchWidth": 192.0,
-      "WatchHeight": 38.0,
+      "WatchWidth": 200.0,
+      "WatchHeight": 200.0,
       "Id": "d2063f860cfb4ad69a9bcdfba549d40f",
       "NodeType": "ExtensionNode",
       "Inputs": [
@@ -1960,7 +1960,7 @@
       "IsHidden": "False"
     },
     {
-      "Start": "403815873dff448ab63db7cb067ea0cb",
+      "Start": "fab5937bb10941eb80bf74aed13e17ae",
       "End": "7fa0d7568aa54440bfc69ebaf1eabb4f",
       "Id": "85b4c1c488a44de299c2ec344764b398",
       "IsHidden": "False"
@@ -2100,7 +2100,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "3.1.0.3411",
+      "Version": "3.4.1.7055",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },
@@ -2119,13 +2119,13 @@
     "ConnectorPins": [
       {
         "Left": -1988.2797979624493,
-        "Top": -3679.1943564289545,
+        "Top": -3689.1942564289543,
         "IsHidden": false,
         "ConnectorGuid": "8e45410c-55e9-4fd7-9bd7-788e447b0499"
       },
       {
         "Left": -1582.9066880150635,
-        "Top": -3475.0584608034164,
+        "Top": -3485.0583608034162,
         "IsHidden": false,
         "ConnectorGuid": "4862f67e-bf05-4d98-8e4c-01fa1fa14bb0"
       }
@@ -2448,8 +2448,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": -5244.362910818655,
-        "Y": -3010.432884477469
+        "X": -5245.676608332919,
+        "Y": -3011.6754777057577
       },
       {
         "Id": "d2063f860cfb4ad69a9bcdfba549d40f",
@@ -2892,13 +2892,13 @@
           "8ca82044b6ac4821a29686f5f764c8d7"
         ],
         "HasNestedGroups": false,
-        "Left": -5254.362910818655,
-        "Top": -3170.432884477469,
-        "Width": 668.1972839579921,
-        "Height": 293.34058810052966,
+        "Left": -5255.676608332919,
+        "Top": -3171.6754777057577,
+        "Width": 669.5109814722564,
+        "Height": 294.5831813288182,
         "FontSize": 36.0,
         "GroupStyleId": "883066aa-1fe2-44a4-9bd1-c3df86bfe9f6",
-        "InitialTop": -3097.432884477469,
+        "InitialTop": -3098.6754777057577,
         "InitialHeight": 232.0,
         "TextblockHeight": 63.0,
         "Background": "#FFFFB8D8"
@@ -3078,7 +3078,7 @@
         "FontSize": 36.0,
         "GroupStyleId": "4d68be4a-a04d-4945-9dd5-cdf61079d790",
         "InitialTop": -2627.231294172227,
-        "InitialHeight": 563.8093064272684,
+        "InitialHeight": 334.3665771365636,
         "TextblockHeight": 63.0,
         "Background": "#FFB9F9E1"
       },
@@ -3335,15 +3335,15 @@
       },
       {
         "Id": "8ca82044b6ac4821a29686f5f764c8d7",
-        "Title": "If the string includes a \" character, use an escape character \\ before \" to treat it as a part of the string and not the ",
+        "Title": "If the string includes a \" character, use an escape character \\ before \" to treat it as a part of the string and not the end of the string.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": -5240.862910818655,
-        "Top": -3089.432884477469,
+        "Left": -5242.176608332919,
+        "Top": -3090.6754777057577,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -3544,8 +3544,8 @@
         "PinnedNode": "782c996283764ae4a632a0d79d4f59f9"
       }
     ],
-    "X": 1374.7889955730402,
-    "Y": 923.64916511488,
-    "Zoom": 0.21200113385487884
+    "X": 2320.160058103607,
+    "Y": 1464.3751568760626,
+    "Zoom": 0.3702454802453802
   }
 }
