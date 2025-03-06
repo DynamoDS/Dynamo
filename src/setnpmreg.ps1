@@ -1,6 +1,6 @@
 # This script checks if the adsk network is reachable
 # and creates .npmrc file with appropriate value for the npm registry
-$ErrorActionPreference = "Stop"
+$ErrorActionPreference = "SilentlyContinue"
 
 $npmRegistry = "https://registry.npmjs.org"
 $adskNpmRegistry = "https://npm.autodesk.com/artifactory/api/npm/autodesk-npm-virtual/"
@@ -16,6 +16,7 @@ function createNpmrcFile {
 try {
     Write-Host "Checking if adsk npm registry is reachable..." -ForegroundColor Blue
     $request = [System.Net.WebRequest]::Create($adskNpmRegistry)
+    $request.Timeout = 5000
     $response = $request.GetResponse()
     $statusCode = [int]$response.StatusCode
 
