@@ -136,7 +136,7 @@
                             <ContextMenu Width="Auto"
                                          MinWidth="180"
                                          Background="{StaticResource GenericBorderBackgroundColorBrush}"
-                                         Style="{StaticResource ContextMenuStyle}">
+                                         Style="{StaticResource DarkContextMenuStyle}">
 
                                 <!--  Sub-Title 'SORT BY'  -->
                                 <Separator>
@@ -152,6 +152,7 @@
                                 <!--  Sort By Package Name  -->
                                 <MenuItem Command="{Binding Path=SetSortingKeyCommand}"
                                           CommandParameter="Name"
+                                          Style="{StaticResource DarkContextMenuItemStyle}"
                                           Header="{x:Static p:Resources.PackageSearchViewContextMenuSortByName}"
                                           IsCheckable="True"
                                           IsChecked="{Binding Path=SortingKey, Converter={StaticResource EnumToBoolConverter}, ConverterParameter=Name, Mode=TwoWay}" />
@@ -254,9 +255,9 @@
                                          DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Mode=Self}}"
                                          DisplayMemberPath="FilterName"
                                          StaysOpen="True"
-                                         Style="{StaticResource ContextMenuStyle}">
+                                         Style="{StaticResource DarkContextMenuStyle}">
                                 <ContextMenu.Resources>
-                                    <Style BasedOn="{StaticResource ContextMenuItemStyle}" TargetType="{x:Type MenuItem}">
+                                    <Style BasedOn="{StaticResource DarkContextMenuItemStyle}" TargetType="{x:Type MenuItem}">
                                         <Setter Property="IsCheckable" Value="True" />
                                         <Setter Property="StaysOpenOnClick" Value="True" />
                                         <Setter Property="Command" Value="{Binding FilterCommand}" />
