@@ -92,7 +92,7 @@
         <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
     </Target>
 
-    <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
+    <Target Name="NpmRunBuildPMWizard" BeforeTargets="BeforeBuild">
         <PropertyGroup>
             <PackageVersion>0.0.1</PackageVersion>
             <PackageName>PackageManagerWizard</PackageName>
@@ -107,7 +107,7 @@
         <Exec Command="npm pack @dynamods/dynamo-pm-wizard@$(PackageVersion)" Condition="$(ShouldInstall)" />
     </Target>
 
-    <Target Name="ExtractTGZFile" DependsOnTargets="NpmRunBuild" BeforeTargets="BeforeBuild" Condition="$(ShouldInstall)">
+    <Target Name="ExtractTGZFilePMWizard" DependsOnTargets="NpmRunBuild" BeforeTargets="BeforeBuild" Condition="$(ShouldInstall)">
         <!--Locates the .tgz files-->
         <ItemGroup>
             <TGZFiles Include="./dynamods-dynamo-pm-wizard-*.tgz" />
