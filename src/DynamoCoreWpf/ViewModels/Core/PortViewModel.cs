@@ -511,28 +511,7 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            // Put a C# timer here to test the cluster placement mock
-            //Stopwatch stopwatch = Stopwatch.StartNew();
-
-            // Create mock nodes, currently Watch nodes (to avoid potential memory leak from Python Editor), and connect them to the input port
-            //var targetNodeSearchEle = wsViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.ToList()[5];
-            //targetNodeSearchEle.CreateAndConnectCommand.Execute(wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel);
-
-            //var sizeOfMockCluster = 3;
-            //var n = 1;
-            //while (n < sizeOfMockCluster)
-            //{
-            //    // Get the last node and connect a new node to it
-            //    var node1 = wsViewModel.Nodes.LastOrDefault();
-            //    node1.IsTransient = true;
-            //    targetNodeSearchEle.CreateAndConnectCommand.Execute(node1.InPorts.FirstOrDefault().PortModel);
-            //    n++;
-            //}
-
-            //wsViewModel.Nodes.LastOrDefault().IsTransient = true;
-
-            //stopwatch.Stop(); // Stop the stopwatch
-            //wsViewModel.DynamoViewModel.Model.Logger.Log($"Cluster Placement Execution Time: {stopwatch.ElapsedMilliseconds} ms");
+            // CreateMockCluster();
 
             try
             {
@@ -541,8 +520,9 @@ namespace Dynamo.ViewModels
                 // Process the results and display the preview of the cluster with the highest confidence level
                 var ClusterResultItem = results.Results.FirstOrDefault();
                 {
+                    // A map of the cluster result v.s. actual nodes created for node connection look up
                     var clusterMapping = new Dictionary<string, NodeViewModel>();
-                    // Leverage some API here to convert topology to actual cluster
+                    // Convert topology to actual cluster
                     ClusterResultItem.Topology.Nodes.ToList().ForEach(node =>
                     {
                         // Retreive assembly name and node full name from type.id.
@@ -583,6 +563,35 @@ namespace Dynamo.ViewModels
             {
                 // Log the exception and show a notification to the user
             }
+        }
+
+        /// <summary>
+        /// Create a mock cluster. This is test only and should be removed when Cluster AutoComplete is in production
+        /// </summary>
+        private void CreateMockCluster()
+        {
+            // Put a C# timer here to test the cluster placement mock
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
+            // Create mock nodes, currently Watch nodes (to avoid potential memory leak from Python Editor), and connect them to the input port
+            var targetNodeSearchEle = wsViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.ToList()[5];
+            targetNodeSearchEle.CreateAndConnectCommand.Execute(wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel);
+
+            var sizeOfMockCluster = 3;
+            var n = 1;
+            while (n < sizeOfMockCluster)
+            {
+                // Get the last node and connect a new node to it
+                var node1 = wsViewModel.Nodes.LastOrDefault();
+                node1.IsTransient = true;
+                targetNodeSearchEle.CreateAndConnectCommand.Execute(node1.InPorts.FirstOrDefault().PortModel);
+                n++;
+            }
+
+            wsViewModel.Nodes.LastOrDefault().IsTransient = true;
+
+            stopwatch.Stop(); // Stop the stopwatch
+            wsViewModel.DynamoViewModel.Model.Logger.Log($"Cluster Placement Execution Time: {stopwatch.ElapsedMilliseconds} ms");
         }
 
         private void NodePortContextMenu(object obj)
