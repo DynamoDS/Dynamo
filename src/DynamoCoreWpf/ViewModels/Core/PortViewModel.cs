@@ -560,9 +560,19 @@ namespace Dynamo.ViewModels
                         var targetNode = clusterMapping[connection.EndNode.NodeId];
                         var sourcePort = sourceNode.OutPorts.FirstOrDefault(p => p.PortModel.Index == connection.StartNode.PortIndex-1);
                         var targetPort = targetNode.InPorts.FirstOrDefault(p => p.PortModel.Index == connection.EndNode.PortIndex-1);
-                        sourcePort.connectCommand.Execute(targetPort);
-                        //    new DynamoModel.MakeConnectionCommand(sourceNode.Id, sourcePort., PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
-                        //    new DynamoModel.MakeConnectionCommand(unexistingNodeGuid, 0, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
+                        var commands = new List<DynamoModel.ModelBasedRecordableCommand>
+                        {
+                            new DynamoModel.MakeConnectionCommand(sourceNode.Id.ToString(), connection.StartNode.PortIndex-1, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
+                            new DynamoModel.MakeConnectionCommand(targetNode.Id.ToString(), connection.EndNode.PortIndex-1, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
+                        };
+                        commands.ForEach(c =>
+                        {
+                            try
+                            {
+                                wsViewModel.DynamoViewModel.Model.ExecuteCommand(c);
+                            }
+                            catch (Exception) { }
+                        });
                     });
                 }
 
