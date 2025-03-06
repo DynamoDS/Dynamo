@@ -1,0 +1,334 @@
+{
+  "Uuid": "1135519f-dd2a-4ec6-a028-e8a30dd39cc6",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "connectorsRemainCollapsedAfterUndo",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "1ffbaf75bf12424b8f6f55fdcea208dc",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [
+        {
+          "Id": "e3c9f8e5c6884ca7a9a566a2b20b5e0f",
+          "Name": "input",
+          "Description": "input",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4b433e69391b4a00a89541fbb711cb09",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "input;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "3a8039e80d984ae19f1a4dfd08a49289",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [
+        {
+          "Id": "44456d35326e4e9b81658cfa63b39feb",
+          "Name": "out",
+          "Description": "out",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ad74601e3e674c86b0a5e64a968a44af",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "out;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "64d897c190f243c69b8c0dbd31a91406",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [
+        {
+          "Id": "a869a7a8ace94e578e168c25086c0f9c",
+          "Name": "groupedInput",
+          "Description": "groupedInput",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "89165bcb25b446a587d3a874746ec447",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "groupedInput;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "1dab3860fa534ab9b3a6b46772bc8e08",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [
+        {
+          "Id": "3719e6edac2c43f1883b2466d29563a8",
+          "Name": "groupedOut",
+          "Description": "groupedOut",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3934351dc20a49a7a167f0b2fdba2f29",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "groupedOut;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "04aba113a75141acb85f2e7f1c50f6b1",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "057c3c09f5934685bd03e061ff9a6fc3",
+          "Name": "centerPoint",
+          "Description": "Center point of circle\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d27f7c994c974d7d8654e10381a24ec7",
+          "Name": "radius",
+          "Description": "Radius\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3d1864b0ab2c4615993fa3a45f18deac",
+          "Name": "Circle",
+          "Description": "Circle created with center point and radius",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Circle.ByCenterPointRadius@Autodesk.DesignScript.Geometry.Point,double",
+      "Replication": "Auto",
+      "Description": "Creates a Circle with input center Point and radius in the world XY plane, with world Z as normal.\n\nCircle.ByCenterPointRadius (centerPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), radius: double = 1): Circle"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "4b433e69391b4a00a89541fbb711cb09",
+      "End": "44456d35326e4e9b81658cfa63b39feb",
+      "Id": "212315b25bb44ce6ab94686183071d77",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "89165bcb25b446a587d3a874746ec447",
+      "End": "3719e6edac2c43f1883b2466d29563a8",
+      "Id": "9ad3d9c203de49c9baa13aca2a75df67",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.1.0.3411",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "1ffbaf75bf12424b8f6f55fdcea208dc",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 330.7649303960278,
+        "Y": 1269.7376087671043
+      },
+      {
+        "Id": "3a8039e80d984ae19f1a4dfd08a49289",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 738.0263349041237,
+        "Y": 1273.2613514905916
+      },
+      {
+        "Id": "64d897c190f243c69b8c0dbd31a91406",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 294.1921520475055,
+        "Y": 1546.8484729708966
+      },
+      {
+        "Id": "1dab3860fa534ab9b3a6b46772bc8e08",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 684.7869262485606,
+        "Y": 1541.912452766753
+      },
+      {
+        "Id": "04aba113a75141acb85f2e7f1c50f6b1",
+        "Name": "Circle.ByCenterPointRadius",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1030.9682193163105,
+        "Y": 2334.6598334862274
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "1997f3c83f764260a3f2f10cc73f802d",
+        "Title": "nestedGroup",
+        "DescriptionText": "<Click here to edit the group description>",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "64d897c190f243c69b8c0dbd31a91406",
+          "1dab3860fa534ab9b3a6b46772bc8e08"
+        ],
+        "HasNestedGroups": false,
+        "Left": 284.1921520475055,
+        "Top": 1468.912452766753,
+        "Width": 671.5947742010551,
+        "Height": 209.9360202041437,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 1541.912452766753,
+        "InitialHeight": 149.9360202041437,
+        "TextblockHeight": 63.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "7fbc02d54b664e38b37a639e6c9d9663",
+        "Title": "parentGroup",
+        "DescriptionText": "<Click here to edit the group description>",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "1ffbaf75bf12424b8f6f55fdcea208dc",
+          "3a8039e80d984ae19f1a4dfd08a49289",
+          "1997f3c83f764260a3f2f10cc73f802d"
+        ],
+        "HasNestedGroups": true,
+        "Left": 274.1921520475055,
+        "Top": 1196.7376087671043,
+        "Width": 691.5947742010551,
+        "Height": 497.1108642037923,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 1269.7376087671043,
+        "InitialHeight": 437.1108642037923,
+        "TextblockHeight": 63.0,
+        "Background": "#FFC1D676"
+      }
+    ],
+    "X": -3.4325479558795564,
+    "Y": -496.2966393404944,
+    "Zoom": 0.5586167050917005
+  }
+}

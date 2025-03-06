@@ -361,7 +361,7 @@
                         <MenuItem Header="{x:Static p:Resources.RecommendedNodes}"
                                   x:Name="miMLRecommendation"
                                   Click="OnSuggestion_Click"
-                                  IsCheckable="True"
+                                  IsCheckable="{Binding Path=IsMLAutocompleteTOUApproved, Mode=OneWay}"
                                   IsChecked="{Binding Path=IsDisplayingMLRecommendation, Mode=OneWay, Converter={StaticResource BinaryRadioButtonCheckedConverter},ConverterParameter=True}"
                                   Visibility="{Binding HideAutocompleteMethodOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"/>
                         <MenuItem Header="{x:Static p:Resources.ObjectType}"

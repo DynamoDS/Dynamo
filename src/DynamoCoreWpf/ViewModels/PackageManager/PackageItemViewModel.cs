@@ -40,6 +40,7 @@ namespace Dynamo.PackageManager.UI
             this.Items.Add(elem);
         }
 
+
         /// <summary>
         /// Whether the item is visible or not
         /// </summary>

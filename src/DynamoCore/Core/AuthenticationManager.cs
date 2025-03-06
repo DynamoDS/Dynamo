@@ -126,5 +126,20 @@ namespace Dynamo.Core
             }
         }
 
+        /// <summary>
+        /// Returns whether the IDSDK is initialized or not for Dynamo Sandbox, in host environment defaults to true.
+        /// </summary>
+        internal bool IsIDSDKInitialized()
+        {
+            if (authProvider is IDSDKManager idsdkProvider)
+            {
+                if (!idsdkProvider.IsIDSDKInitialized)
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+
     }
 }

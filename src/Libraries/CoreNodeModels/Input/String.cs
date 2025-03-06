@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using ProtoCore.AST.AssociativeAST;
@@ -13,11 +13,6 @@ namespace CoreNodeModels.Input
 
         protected String(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
-        }
-
-        public override string PrintExpression()
-        {
-            return "\"" + base.PrintExpression() + "\"";
         }
 
         protected override bool UpdateValueCore(UpdateValueParams updateValueParams)

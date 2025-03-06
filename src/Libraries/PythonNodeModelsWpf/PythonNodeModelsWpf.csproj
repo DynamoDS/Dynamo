@@ -32,6 +32,8 @@
     <None Remove="Resources\reset_hover.png" />
     <None Remove="Resources\save.png" />
     <None Remove="Resources\save_hover.png" />
+    <None Remove="Resources\tabs.png" />
+    <None Remove="Resources\tabs_hover.png" />
     <None Remove="Resources\undo.png" />
     <None Remove="Resources\undo_hover.png" />
     <None Remove="Resources\zoom-in.png" />
@@ -85,6 +87,8 @@
     <Resource Include="Resources\reset_hover.png" />
     <Resource Include="Resources\save.png" />
     <Resource Include="Resources\save_hover.png" />
+    <Resource Include="Resources\tabs.png" />
+    <Resource Include="Resources\tabs_hover.png" />
     <Resource Include="Resources\undo.png" />
     <Resource Include="Resources\undo_hover.png" />
     <Resource Include="Resources\zoom-in.png" />

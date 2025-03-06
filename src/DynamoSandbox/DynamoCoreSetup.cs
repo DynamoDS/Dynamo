@@ -9,7 +9,6 @@ using Dynamo.Core;
 using Dynamo.DynamoSandbox.Properties;
 using Dynamo.Logging;
 using Dynamo.Models;
-using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.Watch3D;
@@ -25,6 +24,7 @@ namespace DynamoSandbox
         private readonly string ASMPath;
         private readonly HostAnalyticsInfo analyticsInfo;
         private readonly bool noNetworkMode;
+        private readonly string CLILocale;
         private const string sandboxWikiPage = @"https://github.com/DynamoDS/Dynamo/wiki/How-to-Utilize-Dynamo-Builds";
         private DynamoViewModel viewModel = null;
 
@@ -51,7 +51,16 @@ namespace DynamoSandbox
             commandFilePath = cmdLineArgs.CommandFilePath;
             ASMPath = cmdLineArgs.ASMPath;
             analyticsInfo = cmdLineArgs.AnalyticsInfo;
+            // Uncomment the following block to test Sandbox with different host and host version
+            //analyticsInfo = new HostAnalyticsInfo
+            //{
+            //    HostName = "Dynamo Revit",
+            //    HostProductName = "Revit",
+            //    HostProductVersion = new Version(2025, 0, 0),
+            //    HostVersion = new Version(3, 3, 0),
+            //};
             noNetworkMode = cmdLineArgs.NoNetworkMode;
+            CLILocale = cmdLineArgs.Locale;
         }
 
         public void RunApplication(Application app)
@@ -133,7 +142,7 @@ namespace DynamoSandbox
         private void LoadDynamoView()
         {
             DynamoModel model;
-            model = StartupUtils.MakeModel(false, noNetworkMode, ASMPath ?? string.Empty, analyticsInfo);
+            model = StartupUtils.MakeModel(false, CLILocale, noNetworkMode, ASMPath ?? string.Empty, analyticsInfo);
             model.CERLocation = CERLocation;
 
             viewModel = DynamoViewModel.Start(

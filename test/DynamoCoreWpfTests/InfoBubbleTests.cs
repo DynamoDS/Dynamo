@@ -57,7 +57,7 @@ namespace DynamoCoreWpfTests
             const string i = "href=";
             var goodLink = "ExcelNotInstalled.html";
             var badWhitespaceLink = " ";
-            var partialDotLink = " . ";
+            var partialDotLink = ". ";
             var goodRemoteLink = "https://dictionary.dynamobim.org/#/";
             var partialRemoteLink = ".com";
             var badIdentifierIncomplete = "href";
@@ -364,6 +364,11 @@ namespace DynamoCoreWpfTests
                 InfoBubbleViewModel.Direction.Top);
 
             Assert.AreEqual(expectedLink, packet.Link?.ToString());
+            if (expectedLink != null)
+            {
+                Assert.IsTrue(!packet.Text?.Contains("href="));
+                Assert.IsTrue(!packet.Text?.Contains(expectedLink));
+            }
         }
 
         private string NullIfSystemUriCannotParseValue(string link)

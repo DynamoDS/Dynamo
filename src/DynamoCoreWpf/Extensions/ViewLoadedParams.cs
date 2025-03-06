@@ -86,12 +86,6 @@ namespace Dynamo.Wpf.Extensions
             DynamoSelection.Instance.Selection.CollectionChanged += OnSelectionCollectionChanged;
         }
 
-        [Obsolete("Method will be deprecated in Dynamo 3.0, please use AddExtensionMenuItem")]
-        public void AddMenuItem(MenuBarType type, MenuItem menuItem, int index = -1)
-        {
-            AddItemToMenu(type, menuItem, index);
-        }
-
         /// <summary>
         /// Adds a menu item to the extensions menu
         /// Items will be ordered alphabetically
@@ -124,20 +118,21 @@ namespace Dynamo.Wpf.Extensions
 
             if (added)
             {
-                dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.ExtensionAdded);
+                dynamoViewModel.Model.Logger.Log($"{viewExtension.Name} : {Wpf.Properties.Resources.ExtensionAdded}");
             }
             else
             {
-                dynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.ExtensionAlreadyPresent);
+                dynamoViewModel.Model.Logger.Log($"{viewExtension.Name} : {Wpf.Properties.Resources.ExtensionAlreadyPresent}");
+
             }
         }
 
-        /// <summary>
-        /// Close the tab for extension UI control element in the extensions side bar.
-        /// </summary>
-        /// <param name="viewExtension">Instance of the view extension object that is being added to the extensions side bar.</param>
-        /// <returns></returns>
-        public void CloseExtensioninInSideBar(IViewExtension viewExtension)
+            /// <summary>
+            /// Close the tab for extension UI control element in the extensions side bar.
+            /// </summary>
+            /// <param name="viewExtension">Instance of the view extension object that is being added to the extensions side bar.</param>
+            /// <returns></returns>
+            public void CloseExtensioninInSideBar(IViewExtension viewExtension)
         {
             dynamoView.CloseExtensionControl(viewExtension);
         }

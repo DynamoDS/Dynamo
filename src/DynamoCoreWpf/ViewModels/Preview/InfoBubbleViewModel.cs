@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 using Dynamo.Logging;
 using Dynamo.Wpf.ViewModels.Core;
@@ -1038,6 +1039,7 @@ namespace Dynamo.ViewModels
     public struct InfoBubbleDataPacket : IEquatable<InfoBubbleDataPacket>
     {
         private const string externalLinkIdentifier = "href=";
+        private static readonly Regex externalLinkMatcher = new($@"({Regex.Escape(externalLinkIdentifier)}[^ \r\n]*?)([ \r\n]|$)", RegexOptions.Compiled);
         public InfoBubbleViewModel.Style Style;
         public Point TopLeft;
         public Point BotRight;
@@ -1086,9 +1088,8 @@ namespace Dynamo.ViewModels
             // if there is no link, we do nothing
             if (!text.Contains(externalLinkIdentifier)) return text;
 
-            // return the text without the link or identifier
-            string[] split = text.Split(new string[] { externalLinkIdentifier }, StringSplitOptions.None);
-            return String.Concat(split);
+            // remove all links from the text (marked as starting with externalLinkIdentifier)
+            return externalLinkMatcher.Replace(text, "$2").Trim();
         }
 
         private static Uri ParseLinkFromText(string text)

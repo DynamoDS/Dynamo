@@ -29,7 +29,7 @@ Check these if you believe they are true
 
 ### Release Notes
 
-(FILL ME IN) Brief description of the fix / enhancement. **Mandatory section**
+(FILL ME IN) Brief description of the fix / enhancement. Use N/A to indicate that the changes in this pull request do not apply to Release Notes. **Mandatory section**
 
 ### Reviewers
 

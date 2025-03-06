@@ -105,15 +105,14 @@ namespace Dynamo.Services
         private void ShowUsageReportingPrompt(Window ownerWindow)
         {
             // If an owner window is not supplied, then we will fallback onto 
-            // using the application's main window. In native host application
-            // scenario (e.g. Revit), the "Application.Current" will be "null".
+            // using the application's main window.
             // The owner window is important so that usage report window always 
             // get shown on top of the owner window, otherwise it is possible 
             // for usage report window to show up in the background (behind all
             // other full screen windows), and Dynamo main window will appear 
             // to be frozen because control cannot return to it.
             // 
-            if (ownerWindow == null && (null != Application.Current))
+            if (ownerWindow == null && string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
                 ownerWindow = Application.Current.MainWindow;
 
             var usageReportingPrompt = new UsageReportingAgreementPrompt(resourceProvider, dynamoViewModel)

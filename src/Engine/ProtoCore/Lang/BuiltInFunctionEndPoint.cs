@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -373,8 +373,26 @@ namespace ProtoCore.Lang
                 case BuiltInMethods.MethodID.ToString:
                 case BuiltInMethods.MethodID.ToStringFromObject:
                 case BuiltInMethods.MethodID.ToStringFromArray:
-                    ret = StringUtils.ConvertToString(formalParameters[0], runtimeCore, rmem);
-                    break;
+                    {
+                        ret = StringUtils.ConvertToString(formalParameters[0], runtimeCore, rmem);
+                        break;
+                    }
+                case BuiltInMethods.MethodID.ToStringFromObjectAndFormat:
+                case BuiltInMethods.MethodID.ToStringFromArrayAndFormat:
+                    {
+                        try
+                        {
+                            ret = StringUtils.ConvertToString(formalParameters, runtimeCore, rmem);
+                        }
+                        catch(System.FormatException fe)
+                        {
+                            runtimeCore.RuntimeStatus.LogWarning(WarningID.InvalidArguments, fe.Message);
+                            //TODO reuse this string instead of allocating a new one each time?
+                            //the message could be different...
+                            ret = StackValue.BuildString(fe.Message,runtimeCore.Heap);
+                        }
+                        break;
+                    }
                 case BuiltInMethods.MethodID.ImportData:
                     ret = ContextDataBuiltIns.ImportData(formalParameters[0], formalParameters[1], runtimeCore, interpreter, c);
                     break;

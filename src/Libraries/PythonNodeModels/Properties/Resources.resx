@@ -206,6 +206,9 @@
   <data name="PythonScriptEditorMigrationAssistantButtonTooltip" xml:space="preserve">
     <value>Convert script to Python 3...</value>
   </data>
+  <data name="PythonScriptEditorConvertTabsToSpacesButtonTooltip" xml:space="preserve">
+    <value>Convert indentation tabs to spaces...</value>
+  </data>
   <data name="PythonSearchTags" xml:space="preserve">
     <value>IronPython;CPython;</value>
   </data>

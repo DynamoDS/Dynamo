@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.Serialization;
 using Dynamo.Engine.CodeCompletion;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Engine.NodeToCode;
@@ -10,6 +9,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Scheduler;
+using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM.Mirror;
 using ProtoCore.Mirror;
@@ -43,6 +43,11 @@ namespace Dynamo.Engine
         /// The event notifies client that the VMLibraries have been reset and the VM is now ready to run the new code. 
         /// </summary>
         internal static event Action VMLibrariesReset;
+
+        /// <summary>
+        /// Dynamo version in which the current workspace was last created or modified.
+        /// </summary>
+        internal Version CurrentWorkspaceVersion { get; set; }
 
         /// <summary>
         /// This event is fired when <see cref="UpdateGraphAsyncTask"/> is completed.
@@ -153,6 +158,8 @@ namespace Dynamo.Engine
             syncDataManager = new SyncDataManager();
 
             VerboseLogging = verboseLogging;
+
+            CurrentWorkspaceVersion = AssemblyHelper.GetDynamoVersion();
         }
 
         /// <summary>
@@ -167,6 +174,7 @@ namespace Dynamo.Engine
 
             liveRunnerServices.Dispose();
             codeCompletionServices = null;
+            CompilationServices = null;
         }
 
         /// <summary>
@@ -382,7 +390,6 @@ namespace Dynamo.Engine
         /// </summary>
         /// <param name="scheduler">The scheduler on which custom node compilation 
         /// task can be scheduled.</param>
-        /// 
         internal void ProcessPendingCustomNodeSyncData(IScheduler scheduler)
         {
             while (pendingCustomNodeSyncData.Count > 0)
@@ -431,7 +438,8 @@ namespace Dynamo.Engine
 
             foreach (var node in nodes)
             {
-                if (!node.IsInputNode) continue;
+                //Ignore inputs, nodes with input ports, and nodes derived from custom nodes.
+                if (!node.IsInputNode || node.InPorts.Any() || node.IsCustomFunction) continue;
 
                 // Only one or the other of the two lists, Added or Modified, will match the node GUID if they do. 
                 bool isAdded = false;
@@ -526,14 +534,14 @@ namespace Dynamo.Engine
             var callsiteToOrphanMap = new Dictionary<Guid, List<string>>();
             foreach (var cs in liveRunnerServices.RuntimeCore.RuntimeData.CallsiteCache.Values)
             {
-                var orphanedSerializables = cs.GetOrphanedSerializables().ToList();
-                if (callsiteToOrphanMap.ContainsKey(cs.CallSiteID))
+                var orphanedSerializables = cs.GetOrphanedSerializables();
+                if (callsiteToOrphanMap.TryGetValue(cs.CallSiteID, out var serializablesForCallsite))
                 {
-                    callsiteToOrphanMap[cs.CallSiteID].AddRange(orphanedSerializables);
+                    serializablesForCallsite.AddRange(orphanedSerializables);
                 }
                 else
                 {
-                    callsiteToOrphanMap.Add(cs.CallSiteID, orphanedSerializables);
+                    callsiteToOrphanMap.Add(cs.CallSiteID, orphanedSerializables.ToList());
                 }
             }
 
@@ -646,17 +654,6 @@ namespace Dynamo.Engine
         {
             compilationCore = libraryServices.LibraryManagementCore;
             priorNames = libraryServices.GetPriorNames();
-        }
-
-        /// <summary>
-        /// Pre-compiles Design script code in code block node.
-        /// </summary>
-        /// <param name="parseParams">Container for compilation related parameters</param>
-        /// <returns>true if code compilation succeeds, false otherwise</returns>
-        [Obsolete("This method is deprecated and will be removed in Dynamo 3.0")]
-        public bool PreCompileCodeBlock(ref ParseParam parseParams)
-        {
-            return CompilerUtils.PreCompileCodeBlock(compilationCore, parseParams, priorNames);
         }
 
         /// <summary>

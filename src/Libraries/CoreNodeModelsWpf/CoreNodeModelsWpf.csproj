@@ -26,8 +26,8 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
-    <PackageReference Include="LiveChartsCore" Version="2.0.0-beta.855" />
-    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-beta.855" />
+    <PackageReference Include="LiveChartsCore" Version="2.0.0-rc3.3" />
+    <PackageReference Include="LiveChartsCore.SkiaSharpView.WPF" Version="2.0.0-rc3.3" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCoreWpf\DynamoCoreWpf.csproj">
@@ -84,6 +84,7 @@
     <None Remove="Charts\Controls\PieChartControl.xaml" />
     <None Remove="Charts\Controls\ScatterPlotControl.xaml" />
     <None Remove="Charts\Controls\XYLineChartControl.xaml" />
+    <None Remove="Controls\DefineDataControl.xaml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\CoreNodeModelWpfResources.Designer.cs">

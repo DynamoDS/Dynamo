@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
@@ -32,7 +33,7 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
 
             writer.WriteStartObject();
 
-            writer.WritePropertyName("Dynamo");
+            writer.WritePropertyName(Configurations.DynamoAsString);
             serializer.Serialize(writer, workspaceView.DynamoPreferences);
 
             writer.WritePropertyName("Camera");

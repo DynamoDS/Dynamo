@@ -10,6 +10,11 @@ end_of_line = lf
 charset = utf-8
 trim_trailing_whitespace = true
 insert_final_newline = true
+dotnet_diagnostic.CA2327.severity = error
+dotnet_diagnostic.CA2329.severity = error
+dotnet_diagnostic.CA2330.severity = error
+dotnet_diagnostic.CA2328.severity = error
+dotnet_diagnostic.CA2326.severity = warning
 
 [*.tt]
 insert_final_newline = false

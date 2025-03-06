@@ -94,6 +94,22 @@ namespace Dynamo.Nodes
         private void OnPinRightMouseButtonDown(object sender, MouseButtonEventArgs e)
         {
             ViewModel.IsHoveredOver = true;
+
+            if (!ViewModel.Model.IsSelected)
+            {
+                if (!Keyboard.IsKeyDown(Key.LeftShift) && !Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    DynamoSelection.Instance.ClearSelection();
+                }
+                DynamoSelection.Instance.Selection.AddUnique(ViewModel.Model);
+            }
+            else
+            {
+                if (Keyboard.IsKeyDown(Key.LeftShift) || Keyboard.IsKeyDown(Key.RightShift))
+                {
+                    DynamoSelection.Instance.Selection.Remove(ViewModel.Model);
+                }
+            }
         }
 
         private void OnPinRightMouseButtonUp(object sender, MouseButtonEventArgs e)

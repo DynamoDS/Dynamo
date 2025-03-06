@@ -1,15 +1,26 @@
 <Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
-        <Platforms>AnyCPU;NET60_Linux;</Platforms>
+        <Platforms>AnyCPU</Platforms>
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
         <PlatformTarget>x64</PlatformTarget>
-        <TargetFramework>net6.0</TargetFramework>
+        <TargetFramework>net8.0-windows</TargetFramework>
+        <UseWPF>true</UseWPF>
+        <UseWindowsForms>true</UseWindowsForms>
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <OutputType>Exe</OutputType>
         <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
         <OutputPath Condition=" '$(OutputPath)' == '' ">$(SolutionDir)\bin\$(Platform)\$(Configuration)</OutputPath>
     </PropertyGroup>
     
     <ItemGroup>
+        <Reference Include="BenchmarkDotNet">
+            <HintPath>$(SolutionDir)\extern\BenchmarkDotNet.dll</HintPath>
+        </Reference>
+        <Reference Include="BenchmarkDotNet.Annotations">
+            <HintPath>$(SolutionDir)\extern\BenchmarkDotNet.Annotations.dll</HintPath>
+        </Reference>
         <Reference Include="DynamoCore">
             <HintPath>..\..\..\bin\$(Platform)\$(Configuration)\DynamoCore.dll</HintPath>
         </Reference>
@@ -22,6 +33,12 @@
         <Reference Include="DynamoCoreWpfTests">
             <HintPath>..\..\..\bin\$(Platform)\$(Configuration)\DynamoCoreWpfTests.dll</HintPath>
         </Reference>
+        <Reference Include="DynamoServices">
+            <HintPath>..\..\..\bin\$(Platform)\$(Configuration)\DynamoServices.dll</HintPath>
+        </Reference>
+        <Reference Include="SystemTestServices">
+            <HintPath>..\..\..\bin\$(Platform)\$(Configuration)\SystemTestServices.dll</HintPath>
+        </Reference>
     </ItemGroup>
     <ItemGroup>
         <Compile Include="..\..\..\src\AssemblySharedInfoGenerator\AssemblySharedInfo.cs">
@@ -30,20 +47,25 @@
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="BenchmarkDotNet" Version="0.11.4" />
-        <PackageReference Include="CommandLineParser" Version="2.8.0" />
-        <PackageReference Include="Microsoft.CodeAnalysis" Version="4.6.0" />
+        <PackageReference Include="Microsoft.DotNet.PlatformAbstractions" Version="3.1.6" />
+        <PackageReference Include="Perfolizer" Version="0.2.1" />
+        <PackageReference Include="CommandLineParser" Version="2.9.1" />
+        <PackageReference Include="Microsoft.CodeAnalysis" Version="4.8.0" />
         <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
         <PackageReference Include="Microsoft.VisualBasic" Version="10.3.0" />
-        <PackageReference Include="System.ComponentModel.Composition" Version="7.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+        <PackageReference Include="System.ComponentModel.Composition" Version="8.0.0" />
         <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
-        <PackageReference Include="System.Management" Version="7.0.1" />
+        <PackageReference Include="System.Management" Version="8.0.0" />
     </ItemGroup>
 
     <PropertyGroup>
         <PreBuildEvent>
-            robocopy ..\..\..\..\..\..\..\bin\$(Platform)\$(Configuration)\ . /s /xd fallback_docs
-            if %25ERRORLEVEL%25 GTR 3 ( exit 1 ) else ( exit 0 )
+            if exist ..\..\..\..\..\..\bin\$(Platform)\$(Configuration)\ (robocopy ..\..\..\..\..\..\bin\$(Platform)\$(Configuration)\ . /s /xd fallback_docs)
+            if exist ..\..\..\..\..\..\bin\$(Platform)\$(Configuration)\ (if %25ERRORLEVEL%25 GTR 3 ( exit 1 ) else ( exit 0 ))
+            if exist ..\..\..\..\..\..\..\..\..\..\bin\$(Platform)\$(Configuration)\ (robocopy ..\..\..\..\..\..\..\..\..\..\bin\$(Platform)\$(Configuration)\ . /s /xd fallback_docs)
+            if exist ..\..\..\..\..\..\..\..\..\..\bin\$(Platform)\$(Configuration)\ (if %25ERRORLEVEL%25 GTR 3 ( exit 1 ) else ( exit 0 ))
         </PreBuildEvent>
+        <StartupObject>DynamoPerformanceTests.Program</StartupObject>
     </PropertyGroup>
 </Project>

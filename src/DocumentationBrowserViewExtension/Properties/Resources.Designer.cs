@@ -124,6 +124,15 @@ namespace Dynamo.DocumentationBrowser.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to default value.
+        /// </summary>
+        public static string InputDefaultValue {
+            get {
+                return ResourceManager.GetString("InputDefaultValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Inserted Dynamo graph.
         /// </summary>
         public static string InsertedGroupSubTitle {

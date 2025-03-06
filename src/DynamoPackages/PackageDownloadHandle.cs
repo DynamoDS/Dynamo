@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.IO;
 using Dynamo.Core;
 using Dynamo.Models;
@@ -40,20 +40,15 @@ namespace Dynamo.PackageManager
             }
         }
 
-        [Obsolete("No longer used. Remove in 3.0")]
-        public Greg.Responses.PackageHeader Header { get; private set; }
-
-        private string _name;
         /// <summary>
         /// Name of the package
         /// </summary>
-        public string Name { get { return Header != null ? Header.name : _name; } set { _name = value; } }
+        public string Name { get; set; }
 
-        private string _id;
         /// <summary>
         /// Identifier of the package
         /// </summary>
-        public string Id { get { return Header != null ? Header._id : _id; } set { _id = value; } }
+        public string Id { get; set; }
 
         private string _downloadPath;
         /// <summary>
@@ -66,14 +61,6 @@ namespace Dynamo.PackageManager
         /// Version of the package
         /// </summary>
         public string VersionName { get { return _versionName; } set { _versionName = value; RaisePropertyChanged("VersionName"); } }
-
-        [Obsolete("No longer used. Remove in 3.0")]
-        public PackageDownloadHandle(Greg.Responses.PackageHeader header, PackageVersion version)
-        {
-            this.Header = header;
-            this.DownloadPath = "";
-            this.VersionName = version.version;
-        }
 
         /// <summary>
         /// Creates an empty view model for a package installation 
@@ -128,10 +115,7 @@ namespace Dynamo.PackageManager
             }
 
             // provide handle to installed package 
-            if (Header != null)
-                pkg = new Package(unzipPath, Header.name, VersionName, Header.license);
-            else
-                pkg = Package.FromDirectory(unzipPath, dynamoModel.Logger);
+            pkg = Package.FromDirectory(unzipPath, dynamoModel.Logger);
 
             if (pkg == null)
             {

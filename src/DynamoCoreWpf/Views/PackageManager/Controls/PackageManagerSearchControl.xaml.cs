@@ -36,8 +36,9 @@ namespace Dynamo.PackageManager.UI
 
                 this.loadingAnimationSearchControlScreen.SetBinding(UIElement.VisibilityProperty, binding);
             }
-        }
 
+            this.Loaded -= InitializeContext;
+        }
 
         private void OnShowFilterContextMenuFromLeftClicked(object sender, RoutedEventArgs e)
         {
@@ -83,6 +84,12 @@ namespace Dynamo.PackageManager.UI
             PkgSearchVM.ViewPackageDetailsCommand.Execute(packageManagerSearchElementViewModel.SearchElementModel);
         }
 
+        private void CompatibilityItem_OnFilter(object sender, FilterEventArgs e)
+        {
+            var item = e.Item as PackageManagerSearchViewModel.FilterEntry;
+            e.Accepted = item.GroupName.Equals(Wpf.Properties.Resources.PackageFilterByCompatibility);
+        }
+
         private void StatusItem_OnFilter(object sender, FilterEventArgs e)
         {
             var item = e.Item as PackageManagerSearchViewModel.FilterEntry;
@@ -93,6 +100,13 @@ namespace Dynamo.PackageManager.UI
         {
             var item = e.Item as PackageManagerSearchViewModel.FilterEntry;
             e.Accepted = item.GroupName.Equals(Wpf.Properties.Resources.PackageFilterByDependency);
+        }
+
+        internal void Dispose()
+        {
+            PkgSearchVM = null;
+
+            this.Loaded -= InitializeContext;
         }
     }
 }

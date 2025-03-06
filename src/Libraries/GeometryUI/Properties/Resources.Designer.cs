@@ -151,6 +151,15 @@ namespace GeometryUI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to A drop down node that allow easy access to PanelSurface BoundaryCondition possible values.
+        /// </summary>
+        public static string PanelSurfaceBoundaryConditionDropDownDesc {
+            get {
+                return ResourceManager.GetString("PanelSurfaceBoundaryConditionDropDownDesc", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Loaded geometry.
         /// </summary>
         public static string SABSATGeoDesc {

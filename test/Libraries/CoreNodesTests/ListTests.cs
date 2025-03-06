@@ -179,7 +179,7 @@ namespace DSCoreNodesTests
         public static void ListIndexOf()
         {
             Assert.AreEqual(1, List.IndexOf(new ArrayList { "x", "y", 1 }, "y"));
-            Assert.AreEqual(-1, List.IndexOf(new ArrayList { 3, 4, 6, 8 }, 9));
+            Assert.AreEqual(null, List.IndexOf(new ArrayList { 3, 4, 6, 8 }, 9));
         }
 
         [Test]
@@ -275,6 +275,19 @@ namespace DSCoreNodesTests
             Assert.AreEqual(List.ReplaceItemAtIndex(new ArrayList { 5, 4, 3, 2, 1 }, -1, 20), new ArrayList { 5, 4, 3, 2, 20 });
 
             Assert.Throws<IndexOutOfRangeException>(() => List.ReplaceItemAtIndex(new ArrayList { 5, 4, 3, 2, 1 }, 12, 20));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void ReplaceItemAtIndices()
+        {
+            Assert.AreEqual(List.ReplaceItemAtIndices(new ArrayList { 5, 4, 3, 2, 1 }, new List<int> { 0 }, 20), new ArrayList { 20, 4, 3, 2, 1 });
+            Assert.AreEqual(List.ReplaceItemAtIndices(new ArrayList { 5, 4, 3, 2, 1 }, new List<int> { 1, 4}, 20), new ArrayList { 5, 20, 3, 2, 20 });
+            Assert.AreEqual(List.ReplaceItemAtIndices(new ArrayList { 5, 4, 3, 2, 1 }, new List<int> { 0, -2 }, 20), new ArrayList { 20, 4, 3, 20, 1 });
+
+            Assert.Throws<IndexOutOfRangeException>(() => List.ReplaceItemAtIndices(new ArrayList { 5, 4, 3, 2, 1 }, new List<int> { 0, 2, 9 }, 20));
+            Assert.Throws<ArgumentException>(() => List.ReplaceItemAtIndices(new ArrayList {  }, new List<int> { 0 }, 20));
+            Assert.Throws<ArgumentException>(() => List.ReplaceItemAtIndices(new ArrayList { 5, 4, 3, 2, 1 }, new List<int> { }, 20));
         }
 
         [Test]
@@ -498,6 +511,35 @@ namespace DSCoreNodesTests
         public static void GetFromList()
         {
             Assert.AreEqual(2, List.GetItemAtIndex(new List<int> { 0, 1, 2, 3 }, 2));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void GetNegtiveIndexItemFromList()
+        {
+            Assert.AreEqual(3, List.GetItemAtIndex(new List<int> { 0, 1, 2, 3 }, -1));
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void GetNegtiveIndexItemFromListCouldThrow()
+        {
+            Assert.Throws<IndexOutOfRangeException>(() =>
+            {
+                // -7 as index argument will cause exception.
+                List.GetItemAtIndex(new List<int> { 0, 1, 2, 3 }, -7);
+            });
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void GetPositiveIndexItemFromListCouldThrow()
+        {
+            Assert.Throws<IndexOutOfRangeException>(() =>
+            {
+                // 7 as index argument will cause exception.
+                List.GetItemAtIndex(new List<int> { 0, 1, 2, 3 }, 7);
+            });
         }
 
         [Test]

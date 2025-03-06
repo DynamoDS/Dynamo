@@ -1,4 +1,5 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following 
@@ -15,3 +16,4 @@ using System.Runtime.InteropServices;
 "a71ab26a84ef057963dbe6889a22e04196066cb4d7ca3eeb52adb110d0a14bf39a786acf7f4b50" +
 "b26155bc")]
 */
+[assembly: InternalsVisibleTo("ProtoTest")]

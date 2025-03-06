@@ -108,5 +108,36 @@ namespace DynamoCoreWpfTests
             // Assert
             Assert.That(groupContent.All(x => x.IsCollapsed == false));
         }
+
+        [Test]
+        public void AddConnectorPinsToGroups()
+        {
+            // Arrange
+            Open(@"core\annotationViewModelTests\groupsTestFile.dyn");
+
+            var groupGuid = new Guid("8324afb7-2d77-4a75-aa5e-f10e59964c2b");
+            var connectorGuid = new Guid("17318da5-dd19-4962-a7b7-51344001f14b");
+
+            // Act
+            var ws = this.Model.CurrentWorkspace;
+            var group1 = ws.Annotations.FirstOrDefault(annotation => annotation.GUID == groupGuid);
+            var connector = ws.Connectors.FirstOrDefault(connector => connector.GUID == connectorGuid);
+            var connectorPin = connector.ConnectorPinModels.FirstOrDefault();
+
+            // Assert
+            Assert.IsNotNull(group1, $"Expected to find annotation group with GUID {groupGuid}, but it was not found.");
+            Assert.IsNotNull(connector, $"Expected to find connector with GUID {connectorGuid}, but it was not found.");
+            Assert.IsNotNull(connectorPin, "Expected to find a ConnectorPinModel associated with the connector, but it was not found.");
+
+            var initialNodeCount = group1.Nodes.Count();
+            Assert.AreEqual(2, initialNodeCount, $"Expected the group to contain 2 nodes initially, but found {initialNodeCount}.");
+
+            // Act: Add the connectorPin to the group
+            group1.AddToTargetAnnotationModel(connectorPin);
+
+            // Assert
+            var finalNodeCount = group1.Nodes.Count();
+            Assert.AreEqual(3, finalNodeCount, $"Expected the group to contain 3 nodes after adding the connector pin, but found {finalNodeCount}.");
+        }
     }
 }

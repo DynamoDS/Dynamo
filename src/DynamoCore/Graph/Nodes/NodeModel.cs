@@ -2,17 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.Serialization;
 using System.Xml;
-using Autodesk.DesignScript.Runtime;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes.CustomNodes;
+using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Migration;
 using Dynamo.Scheduler;
@@ -404,28 +405,6 @@ namespace Dynamo.Graph.Nodes
         public bool PreviewPinned { get; internal set; }
 
         /// <summary>
-        ///     Text that is displayed as this Node's tooltip.
-        /// </summary>
-        [JsonIgnore]
-        [Obsolete("This property is deprecated and will be removed in a future version of Dynamo.")]
-        public string ToolTipText
-        {
-            get 
-            {
-                var builder = new System.Text.StringBuilder();
-                foreach(var info in Infos)
-                {
-                    builder.AppendLine(info.ToString());
-                }
-                return builder.ToString();
-            }
-            set
-            {
-                RaisePropertyChanged(nameof(ToolTipText));
-            }
-        }
-
-        /// <summary>
         /// Collection of warnings, errors and info items applied to the NodeModel.
         /// </summary>
         internal ObservableHashSet<Info> Infos
@@ -433,6 +412,10 @@ namespace Dynamo.Graph.Nodes
             get { return infos; }
         }
 
+        /// <summary>
+        /// BlockInfoBubbleUpdates is flag used to block InfoBubble updates during (or immediately after) graph execution.
+        /// </summary>
+        internal bool BlockInfoBubbleUpdates = false;
 
         /// <summary>
         /// A publicly accessible collector of all Info/Warning/Error data
@@ -476,12 +459,6 @@ namespace Dynamo.Graph.Nodes
         public ObservableCollection<PortModel> InPorts
         {
             get { return inPorts; }
-            [IsObsolete("Property setter will be deprecated in Dynamo 3.0")]
-            set
-            {
-                inPorts = value;
-                RaisePropertyChanged("InPorts");
-            }
         }
 
         /// <summary>
@@ -491,12 +468,6 @@ namespace Dynamo.Graph.Nodes
         public ObservableCollection<PortModel> OutPorts
         {
             get { return outPorts; }
-            [IsObsolete("Property setter will be deprecated in Dynamo 3.0")]
-            set
-            {
-                outPorts = value;
-                RaisePropertyChanged("OutPorts");
-            }
         }
 
         [JsonIgnore]
@@ -1025,6 +996,17 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
+        /// A flag indicating whether the node is in transient mode.
+        /// When a node is in transient mode, the node will not participate in execution,
+        /// Or saved to the graph. It is only used for previewing the AutoComplete result in the canvas.
+        /// </summary>
+        internal bool IsTransient
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// The default behavior for ModelBase objects is to not serialize the X and Y
         /// properties. This overload allows the serialization of the X property
         /// for NodeModel.
@@ -1250,6 +1232,19 @@ namespace Dynamo.Graph.Nodes
             ArgumentLacing = LacingStrategy.Disabled;
 
             RaisesModificationEvents = true;
+        }
+
+
+        internal protected AssemblyName NameOfAssemblyReferencedByNode = null;
+
+        /// <summary>
+        /// The method returns the assembly name from which the node originated.
+        /// </summary>
+        /// <returns>Assembly Name</returns>
+        internal virtual AssemblyName GetNameOfAssemblyReferencedByNode()
+        {
+            NameOfAssemblyReferencedByNode ??= GetType().Assembly.GetName();
+            return NameOfAssemblyReferencedByNode;
         }
 
         /// <summary>
@@ -1794,16 +1789,31 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        /// Selects all neighboring nodes ans connector pins to this node
+        /// </summary>
         public void SelectNeighbors()
         {
             IEnumerable<ConnectorModel> outConnectors = outPorts.SelectMany(x => x.Connectors);
             IEnumerable<ConnectorModel> inConnectors = inPorts.SelectMany(x => x.Connectors);
 
             foreach (var c in outConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.End.Owner)))
+            {
                 DynamoSelection.Instance.Selection.Add(c.End.Owner);
+                foreach (var p in c.ConnectorPinModels)
+                {
+                    DynamoSelection.Instance.Selection.Add(p);
+                }
+            }                
 
             foreach (var c in inConnectors.Where(c => !DynamoSelection.Instance.Selection.Contains(c.Start.Owner)))
+            {
                 DynamoSelection.Instance.Selection.Add(c.Start.Owner);
+                foreach (var p in c.ConnectorPinModels)
+                {
+                    DynamoSelection.Instance.Selection.Add(p);
+                }
+            }
         }
 
         /// <summary>
@@ -1868,18 +1878,6 @@ namespace Dynamo.Graph.Nodes
         {
             State = ElementState.Error;
             infos.Add(new Info(p, ElementState.Error));
-        }
-
-        /// <summary>
-        /// Set an info on a node.
-        /// </summary>
-        /// <param name="p">The info text.</param>
-        [Obsolete("Info(string p) is deprecated, please use Info(string p, bool isPersistent = false) instead.")]
-
-        public void Info(string p)
-        {
-            State = ElementState.Info;
-            infos.Add(new Info(p, ElementState.Info));
         }
 
         /// <summary>
@@ -1987,6 +1985,7 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         ///     Reads inputs list and adds ports for each input.
+        ///     TODO: DYN-6445 - evaluate if this API can be removed.
         /// </summary>
         [Obsolete("RegisterInputPorts is deprecated, please use the InPortNamesAttribute, InPortDescriptionsAttribute, and InPortTypesAttribute instead.")]
         public void RegisterInputPorts(IEnumerable<PortData> portDatas)
@@ -2012,6 +2011,7 @@ namespace Dynamo.Graph.Nodes
 
         /// <summary>
         ///     Reads outputs list and adds ports for each output
+        ///     TODO: DYN-6445 - evaluate if this API can be removed.
         /// </summary>
         [Obsolete("RegisterOutputPorts is deprecated, please use the OutPortNamesAttribute, OutPortDescriptionsAttribute, and OutPortTypesAttribute instead.")]
         public void RegisterOutputPorts(IEnumerable<PortData> portDatas)
@@ -2252,54 +2252,6 @@ namespace Dynamo.Graph.Nodes
         }
 
         #endregion
-
-        #endregion
-
-        #region Code Serialization
-
-        /// <summary>
-        ///     Creates a Scheme representation of this dynNode and all connected dynNodes.
-        /// </summary>
-        /// <returns>S-Expression</returns>
-        [Obsolete("PrintExpression is deprecated and will be removed, please refer to the Node2Code functionality instead for conversion to DesignScript code.")]
-        public virtual string PrintExpression()
-        {
-            string nick = Name.Replace(' ', '_');
-
-            if (!InPorts.Any(p => p.IsConnected))
-                return nick;
-
-            string s = "";
-
-            if (InPorts.All(p => p.IsConnected))
-            {
-                s += "(" + nick;
-                foreach (int data in Enumerable.Range(0, InPorts.Count))
-                {
-                    Tuple<int, NodeModel> input;
-                    TryGetInput(data, out input);
-                    s += " " + input.Item2.PrintExpression();
-                }
-                s += ")";
-            }
-            else
-            {
-                s += "(lambda (" + string.Join(" ", InPorts.Where((_, i) => !InPorts[i].IsConnected).Select(x => x.Name))
-                     + ") (" + nick;
-                foreach (int data in Enumerable.Range(0, InPorts.Count))
-                {
-                    s += " ";
-                    Tuple<int, NodeModel> input;
-                    if (TryGetInput(data, out input))
-                        s += input.Item2.PrintExpression();
-                    else
-                        s += InPorts[data].Name;
-                }
-                s += "))";
-            }
-
-            return s;
-        }
 
         #endregion
 
@@ -2928,6 +2880,22 @@ namespace Dynamo.Graph.Nodes
 
         protected bool ShouldDisplayPreviewCore { get; set; }
 
+        [Experimental("NM_ISEXPERIMENTAL_GLPYH")]
+        internal bool IsExperimental
+        {
+            get
+            {
+                //TODO switch on model type?
+                if (this is DSFunction ztnm)
+                {
+                    return ztnm.Controller.Definition.IsExperimental;
+                }
+                else
+                {
+                    return TypeLoadData.CheckExperimentalFromAttribute(GetType());
+                }
+            }
+        }
         public event Action<NodeModel, RenderPackageCache> RenderPackagesUpdated;
 
         private void OnRenderPackagesUpdated(RenderPackageCache packages)

@@ -6,8 +6,7 @@ namespace Dynamo.Logging
     /// Defines analytics session interface. This interface is defined for
     /// internal use and mocking the tests only.
     /// </summary>
-    [Obsolete("Interface should be Internal, do not use.")]
-    public interface IAnalyticsSession : IDisposable
+    internal interface IAnalyticsSession : IDisposable
     {
         /// <summary>
         /// Get unique user id.
@@ -24,9 +23,5 @@ namespace Dynamo.Logging
         /// The Session is closed when Dispose() is called.
         /// </summary>
         void Start();
-        /// <summary>
-        /// Returns a logger to record usage.
-        /// </summary>
-        ILogger Logger { get; }
     }
 }

@@ -1,0 +1,246 @@
+Dynamo.Scheduler.Disposable
+Dynamo.Utilities.AssemblyConfiguration
+Dynamo.Utilities.AssemblyConfiguration.GetAppSetting(string key) -> string
+Dynamo.Utilities.AssemblyHelper
+Dynamo.Utilities.AssemblyHelper.AssemblyHelper(string moduleRootFolder, System.Collections.Generic.IEnumerable<string> additionalResolutionPaths, bool testMode = false) -> void
+Dynamo.Utilities.AssemblyHelper.ResolveAssembly(object sender, System.ResolveEventArgs args) -> System.Reflection.Assembly
+Dynamo.Utilities.DataMarshaler
+Dynamo.Utilities.DataMarshaler.DataMarshaler() -> void
+Dynamo.Utilities.DataMarshaler.Marshal(object obj) -> object
+Dynamo.Utilities.DataMarshaler.RegisterMarshaler(System.Type t, System.Converter<object, object> marshaler) -> void
+Dynamo.Utilities.DataMarshaler.RegisterMarshaler<T>(System.Converter<T, object> marshaler) -> void
+Dynamo.Utilities.DataMarshaler.UnregisterMarshalerOfType(System.Type t) -> void
+Dynamo.Utilities.DataMarshaler.UnregisterMarshalerOfType<T>() -> void
+Dynamo.Utilities.Either
+Dynamo.Utilities.ExtensionMethods
+Dynamo.Utilities.ExtensionMethods.IIndexed<T>
+Dynamo.Utilities.ExtensionMethods.IIndexed<T>.Element.get -> T
+Dynamo.Utilities.ExtensionMethods.IIndexed<T>.Index.get -> int
+Dynamo.Utilities.GuidUtility
+Dynamo.Utilities.IEither<TLeft, TRight>
+Dynamo.Utilities.IEither<TLeft, TRight>.BindLeft<TNewLeft>(System.Func<TLeft, Dynamo.Utilities.IEither<TNewLeft, TRight>> selector) -> Dynamo.Utilities.IEither<TNewLeft, TRight>
+Dynamo.Utilities.IEither<TLeft, TRight>.BindRight<TNewRight>(System.Func<TRight, Dynamo.Utilities.IEither<TLeft, TNewRight>> selector) -> Dynamo.Utilities.IEither<TLeft, TNewRight>
+Dynamo.Utilities.IEither<TLeft, TRight>.IsLeft.get -> bool
+Dynamo.Utilities.IEither<TLeft, TRight>.LeftValue.get -> TLeft
+Dynamo.Utilities.IEither<TLeft, TRight>.Match<T>(System.Func<TLeft, T> leftCase, System.Func<TRight, T> rightCase) -> T
+Dynamo.Utilities.IEither<TLeft, TRight>.RightValue.get -> TRight
+Dynamo.Utilities.IEither<TLeft, TRight>.Select<TNewLeft, TNewRight>(System.Func<TLeft, TNewLeft> leftSelector, System.Func<TRight, TNewRight> rightSelector) -> Dynamo.Utilities.IEither<TNewLeft, TNewRight>
+Dynamo.Utilities.IOption<T>
+Dynamo.Utilities.IOption<T>.Bind<U>(System.Func<T, Dynamo.Utilities.IOption<U>> selector) -> Dynamo.Utilities.IOption<U>
+Dynamo.Utilities.IOption<T>.Match<U>(System.Func<T, U> someCase, System.Func<U> noneCase) -> U
+Dynamo.Utilities.IOption<T>.Value.get -> T
+Dynamo.Utilities.IRecursiveGrouping<T>
+Dynamo.Utilities.ITree<TNodeTag, TLeaf>
+Dynamo.Utilities.ITree<TNodeTag, TLeaf>.Leaves.get -> System.Collections.Generic.IEnumerable<TLeaf>
+Dynamo.Utilities.ITree<TNodeTag, TLeaf>.SubTrees.get -> System.Collections.Generic.IEnumerable<Dynamo.Utilities.ITree<TNodeTag, TLeaf>>
+Dynamo.Utilities.ITree<TNodeTag, TLeaf>.Tag.get -> TNodeTag
+Dynamo.Utilities.ModifierKeys
+Dynamo.Utilities.ModifierKeys.Alt = 1 -> Dynamo.Utilities.ModifierKeys
+Dynamo.Utilities.ModifierKeys.Control = 2 -> Dynamo.Utilities.ModifierKeys
+Dynamo.Utilities.ModifierKeys.None = 0 -> Dynamo.Utilities.ModifierKeys
+Dynamo.Utilities.ModifierKeys.Shift = 4 -> Dynamo.Utilities.ModifierKeys
+Dynamo.Utilities.ModifierKeys.Windows = 8 -> Dynamo.Utilities.ModifierKeys
+Dynamo.Utilities.Option
+Dynamo.Utilities.OrderedSet<T>
+Dynamo.Utilities.OrderedSet<T>.Add(T item) -> bool
+Dynamo.Utilities.OrderedSet<T>.Clear() -> void
+Dynamo.Utilities.OrderedSet<T>.Contains(T item) -> bool
+Dynamo.Utilities.OrderedSet<T>.CopyTo(T[] array, int arrayIndex) -> void
+Dynamo.Utilities.OrderedSet<T>.Count.get -> int
+Dynamo.Utilities.OrderedSet<T>.ExceptWith(System.Collections.Generic.IEnumerable<T> other) -> void
+Dynamo.Utilities.OrderedSet<T>.GetEnumerator() -> System.Collections.Generic.IEnumerator<T>
+Dynamo.Utilities.OrderedSet<T>.IntersectWith(System.Collections.Generic.IEnumerable<T> other) -> void
+Dynamo.Utilities.OrderedSet<T>.IsProperSubsetOf(System.Collections.Generic.IEnumerable<T> other) -> bool
+Dynamo.Utilities.OrderedSet<T>.IsProperSupersetOf(System.Collections.Generic.IEnumerable<T> other) -> bool
+Dynamo.Utilities.OrderedSet<T>.IsReadOnly.get -> bool
+Dynamo.Utilities.OrderedSet<T>.IsSubsetOf(System.Collections.Generic.IEnumerable<T> other) -> bool
+Dynamo.Utilities.OrderedSet<T>.IsSupersetOf(System.Collections.Generic.IEnumerable<T> other) -> bool
+Dynamo.Utilities.OrderedSet<T>.OrderedSet() -> void
+Dynamo.Utilities.OrderedSet<T>.Overlaps(System.Collections.Generic.IEnumerable<T> other) -> bool
+Dynamo.Utilities.OrderedSet<T>.Remove(T item) -> bool
+Dynamo.Utilities.OrderedSet<T>.SetEquals(System.Collections.Generic.IEnumerable<T> other) -> bool
+Dynamo.Utilities.OrderedSet<T>.SymmetricExceptWith(System.Collections.Generic.IEnumerable<T> other) -> void
+Dynamo.Utilities.OrderedSet<T>.UnionWith(System.Collections.Generic.IEnumerable<T> other) -> void
+Dynamo.Utilities.Point2D
+Dynamo.Utilities.Point2D.Equals(Dynamo.Utilities.Point2D value) -> bool
+Dynamo.Utilities.Point2D.Point2D() -> void
+Dynamo.Utilities.Point2D.Point2D(double x, double y) -> void
+Dynamo.Utilities.Point2D.ToString(System.IFormatProvider provider) -> string
+Dynamo.Utilities.Point2D.X.get -> double
+Dynamo.Utilities.Point2D.X.set -> void
+Dynamo.Utilities.Point2D.Y.get -> double
+Dynamo.Utilities.Point2D.Y.set -> void
+Dynamo.Utilities.Rect2D
+Dynamo.Utilities.Rect2D.Bottom.get -> double
+Dynamo.Utilities.Rect2D.BottomLeft.get -> Dynamo.Utilities.Point2D
+Dynamo.Utilities.Rect2D.BottomRight.get -> Dynamo.Utilities.Point2D
+Dynamo.Utilities.Rect2D.Contains(double x, double y) -> bool
+Dynamo.Utilities.Rect2D.Contains(Dynamo.Utilities.Point2D point) -> bool
+Dynamo.Utilities.Rect2D.Contains(Dynamo.Utilities.Rect2D rect) -> bool
+Dynamo.Utilities.Rect2D.Equals(Dynamo.Utilities.Rect2D value) -> bool
+Dynamo.Utilities.Rect2D.Height.get -> double
+Dynamo.Utilities.Rect2D.Height.set -> void
+Dynamo.Utilities.Rect2D.Intersect(Dynamo.Utilities.Rect2D rect) -> void
+Dynamo.Utilities.Rect2D.IntersectsWith(Dynamo.Utilities.Rect2D rect) -> bool
+Dynamo.Utilities.Rect2D.IsEmpty.get -> bool
+Dynamo.Utilities.Rect2D.Left.get -> double
+Dynamo.Utilities.Rect2D.Location.get -> Dynamo.Utilities.Point2D
+Dynamo.Utilities.Rect2D.Location.set -> void
+Dynamo.Utilities.Rect2D.Rect2D() -> void
+Dynamo.Utilities.Rect2D.Rect2D(double x, double y, double width, double height) -> void
+Dynamo.Utilities.Rect2D.Rect2D(Dynamo.Utilities.Point2D point1, Dynamo.Utilities.Point2D point2) -> void
+Dynamo.Utilities.Rect2D.Right.get -> double
+Dynamo.Utilities.Rect2D.Scale(double scaleX, double scaleY) -> void
+Dynamo.Utilities.Rect2D.Top.get -> double
+Dynamo.Utilities.Rect2D.TopLeft.get -> Dynamo.Utilities.Point2D
+Dynamo.Utilities.Rect2D.TopRight.get -> Dynamo.Utilities.Point2D
+Dynamo.Utilities.Rect2D.ToString(System.IFormatProvider provider) -> string
+Dynamo.Utilities.Rect2D.Width.get -> double
+Dynamo.Utilities.Rect2D.Width.set -> void
+Dynamo.Utilities.Rect2D.X.get -> double
+Dynamo.Utilities.Rect2D.X.set -> void
+Dynamo.Utilities.Rect2D.Y.get -> double
+Dynamo.Utilities.Rect2D.Y.set -> void
+Dynamo.Utilities.Thickness
+Dynamo.Utilities.Thickness.Bottom.get -> double
+Dynamo.Utilities.Thickness.Bottom.set -> void
+Dynamo.Utilities.Thickness.Left.get -> double
+Dynamo.Utilities.Thickness.Left.set -> void
+Dynamo.Utilities.Thickness.Right.get -> double
+Dynamo.Utilities.Thickness.Right.set -> void
+Dynamo.Utilities.Thickness.Thickness() -> void
+Dynamo.Utilities.Thickness.Thickness(double left, double top, double right, double bottom) -> void
+Dynamo.Utilities.Thickness.Thickness(double thickness) -> void
+Dynamo.Utilities.Thickness.Top.get -> double
+Dynamo.Utilities.Thickness.Top.set -> void
+Dynamo.Utilities.TypeExtensions
+Dynamo.Utilities.VersionUtilities
+Dynamo.Utilities.XmlElementHelper
+Dynamo.Utilities.XmlElementHelper.HasAttribute(string attribName) -> bool
+Dynamo.Utilities.XmlElementHelper.ReadBoolean(string attribName) -> bool
+Dynamo.Utilities.XmlElementHelper.ReadBoolean(string attribName, bool defaultValue) -> bool
+Dynamo.Utilities.XmlElementHelper.ReadDouble(string attribName) -> double
+Dynamo.Utilities.XmlElementHelper.ReadDouble(string attribName, double defaultValue) -> double
+Dynamo.Utilities.XmlElementHelper.ReadEnum<TEnum>(string attribName, TEnum defaultValue) -> TEnum
+Dynamo.Utilities.XmlElementHelper.ReadGuid(string attribName) -> System.Guid
+Dynamo.Utilities.XmlElementHelper.ReadGuid(string attribName, System.Guid defaultValue) -> System.Guid
+Dynamo.Utilities.XmlElementHelper.ReadInteger(string attribName) -> int
+Dynamo.Utilities.XmlElementHelper.ReadInteger(string attribName, int defaultValue) -> int
+Dynamo.Utilities.XmlElementHelper.ReadString(string attribName) -> string
+Dynamo.Utilities.XmlElementHelper.ReadString(string attribName, string defaultValue) -> string
+Dynamo.Utilities.XmlElementHelper.SetAttribute(string name, bool value) -> void
+Dynamo.Utilities.XmlElementHelper.SetAttribute(string name, bool? value) -> void
+Dynamo.Utilities.XmlElementHelper.SetAttribute(string name, double value) -> void
+Dynamo.Utilities.XmlElementHelper.SetAttribute(string name, int value) -> void
+Dynamo.Utilities.XmlElementHelper.SetAttribute(string name, string value) -> void
+Dynamo.Utilities.XmlElementHelper.SetAttribute(string name, System.Guid value) -> void
+Dynamo.Utilities.XmlElementHelper.SetAttribute(string name, System.Type value) -> void
+Dynamo.Utilities.XmlElementHelper.XmlElementHelper(System.Xml.XmlElement xmlElement) -> void
+DynamoUtilities.CertificateVerification
+DynamoUtilities.CertificateVerification.AssemblyCertificateCheckException
+DynamoUtilities.CertificateVerification.AssemblyCertificateCheckException.AssemblyCertificateCheckException(string assemblyPath) -> void
+DynamoUtilities.CertificateVerification.CertificateVerification() -> void
+DynamoUtilities.CertificateVerification.UnTrustedAssemblyException
+DynamoUtilities.CertificateVerification.UnTrustedAssemblyException.UnTrustedAssemblyException(string assemblyPath) -> void
+DynamoUtilities.PathHelper
+DynamoUtilities.PathHelper.PathHelper() -> void
+DynamoUtilities.StringUtilities
+DynamoUtilities.StringUtilities.StringUtilities() -> void
+DynamoUtilities.SmartObservableCollection<T>
+DynamoUtilities.SmartObservableCollection<T>.SmartObservableCollection() -> void
+DynamoUtilities.SmartObservableCollection<T>.SmartObservableCollection(System.Collections.Generic.IEnumerable<T> collection) -> void
+DynamoUtilities.SmartObservableCollection<T>.SmartObservableCollection(System.Collections.Generic.List<T> list) -> void
+DynamoUtilities.TypeSwitch
+DynamoUtilities.TypeSwitch.CaseInfo
+DynamoUtilities.TypeSwitch.CaseInfo.Action.get -> System.Action<object>
+DynamoUtilities.TypeSwitch.CaseInfo.Action.set -> void
+DynamoUtilities.TypeSwitch.CaseInfo.CaseInfo() -> void
+DynamoUtilities.TypeSwitch.CaseInfo.IsDefault.get -> bool
+DynamoUtilities.TypeSwitch.CaseInfo.IsDefault.set -> void
+DynamoUtilities.TypeSwitch.CaseInfo.Target.get -> System.Type
+DynamoUtilities.TypeSwitch.CaseInfo.Target.set -> void
+DynamoUtilities.XmlHelper
+DynamoUtilities.XmlHelper.XmlHelper() -> void
+override Dynamo.Utilities.Point2D.Equals(object o) -> bool
+override Dynamo.Utilities.Point2D.GetHashCode() -> int
+override Dynamo.Utilities.Point2D.ToString() -> string
+override Dynamo.Utilities.Rect2D.Equals(object o) -> bool
+override Dynamo.Utilities.Rect2D.GetHashCode() -> int
+override Dynamo.Utilities.Rect2D.ToString() -> string
+override DynamoUtilities.SmartObservableCollection<T>.ClearItems() -> void
+override DynamoUtilities.SmartObservableCollection<T>.OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs e) -> void
+override DynamoUtilities.SmartObservableCollection<T>.OnPropertyChanged(System.ComponentModel.PropertyChangedEventArgs e) -> void
+static Dynamo.Scheduler.Disposable.Create(System.Action disposeAction) -> System.IDisposable
+static Dynamo.Utilities.AssemblyConfiguration.Instance.get -> Dynamo.Utilities.AssemblyConfiguration
+static Dynamo.Utilities.AssemblyHelper.GetDynamoVersion(bool includeRevisionNumber = true) -> System.Version
+static Dynamo.Utilities.Either.Left<TLeft, TRight>(TLeft value) -> Dynamo.Utilities.IEither<TLeft, TRight>
+static Dynamo.Utilities.Either.Match<TLeft, TRight>(this Dynamo.Utilities.IEither<TLeft, TRight> either, System.Action<TLeft> leftAction, System.Action<TRight> rightAction) -> void
+static Dynamo.Utilities.Either.Right<TLeft, TRight>(TRight value) -> Dynamo.Utilities.IEither<TLeft, TRight>
+static Dynamo.Utilities.Either.SelectLeft<TOldLeft, TNewLeft, TRight>(this Dynamo.Utilities.IEither<TOldLeft, TRight> either, System.Func<TOldLeft, TNewLeft> selector) -> Dynamo.Utilities.IEither<TNewLeft, TRight>
+static Dynamo.Utilities.Either.SelectRight<TLeft, TOldRight, TNewRight>(this Dynamo.Utilities.IEither<TLeft, TOldRight> either, System.Func<TOldRight, TNewRight> selector) -> Dynamo.Utilities.IEither<TLeft, TNewRight>
+static Dynamo.Utilities.ExtensionMethods.AddRange<T>(this System.Collections.ObjectModel.Collection<T> collection, System.Collections.Generic.IEnumerable<T> items) -> System.Collections.ObjectModel.Collection<T>
+static Dynamo.Utilities.ExtensionMethods.AsSingleton<T>(this T o) -> System.Collections.Generic.IEnumerable<T>
+static Dynamo.Utilities.ExtensionMethods.CartesianProduct<T>(this System.Collections.Generic.IEnumerable<System.Collections.Generic.IEnumerable<T>> sequences) -> System.Collections.Generic.IEnumerable<System.Collections.Generic.IEnumerable<T>>
+static Dynamo.Utilities.ExtensionMethods.Enumerate<T>(this System.Collections.Generic.IEnumerable<T> seq) -> System.Collections.Generic.IEnumerable<Dynamo.Utilities.ExtensionMethods.IIndexed<T>>
+static Dynamo.Utilities.ExtensionMethods.GetAllTags<TNodeTag, TLeaf>(this Dynamo.Utilities.ITree<TNodeTag, TLeaf> tree) -> System.Collections.Generic.IEnumerable<TNodeTag>
+static Dynamo.Utilities.ExtensionMethods.GetChildNodeDoubleValue(System.Xml.XmlNode nodeElement) -> string
+static Dynamo.Utilities.ExtensionMethods.GetChildNodeStringValue(System.Xml.XmlNode nodeElement) -> string
+static Dynamo.Utilities.ExtensionMethods.GetFullName(this System.Delegate del) -> string
+static Dynamo.Utilities.ExtensionMethods.GroupByRecursive<TLeaf, TNodeKey, TTree>(this System.Collections.Generic.IEnumerable<TLeaf> allLeaves, System.Func<TLeaf, System.Collections.Generic.ICollection<TNodeKey>> keySelector, System.Func<TNodeKey, System.Collections.Generic.IEnumerable<TTree>, System.Collections.Generic.IEnumerable<TLeaf>, TTree> treeCreator, TNodeKey rootKey) -> TTree
+static Dynamo.Utilities.ExtensionMethods.GroupByRecursive<TLeaf, TNodeKey>(this System.Collections.Generic.IEnumerable<TLeaf> allLeaves, System.Func<TLeaf, System.Collections.Generic.ICollection<TNodeKey>> keySelector) -> System.Collections.Generic.IEnumerable<Dynamo.Utilities.IRecursiveGrouping<Dynamo.Utilities.IEither<TNodeKey, System.Collections.Generic.IEnumerable<TLeaf>>>>
+static Dynamo.Utilities.ExtensionMethods.IndexOf<T>(this System.Collections.Generic.IEnumerable<T> source, T value) -> int
+static Dynamo.Utilities.ExtensionMethods.LongestSet<T>(this System.Collections.Generic.IEnumerable<System.Collections.Generic.IEnumerable<T>> sequences) -> System.Collections.Generic.IEnumerable<System.Collections.Generic.IEnumerable<T>>
+static Dynamo.Utilities.ExtensionMethods.RemoveAll<T>(this System.Collections.ObjectModel.ObservableCollection<T> coll, System.Predicate<T> predicate) -> System.Collections.ObjectModel.ObservableCollection<T>
+static Dynamo.Utilities.ExtensionMethods.RemoveRange<T>(this System.Collections.ObjectModel.ObservableCollection<T> coll, int index, int count) -> System.Collections.ObjectModel.ObservableCollection<T>
+static Dynamo.Utilities.ExtensionMethods.ShortestSet<T>(this System.Collections.Generic.IEnumerable<System.Collections.Generic.IEnumerable<T>> sequences) -> System.Collections.Generic.IEnumerable<System.Collections.Generic.IEnumerable<T>>
+static Dynamo.Utilities.ExtensionMethods.SingleSet<T>(this System.Collections.Generic.IEnumerable<System.Collections.Generic.IEnumerable<T>> sequences) -> System.Collections.Generic.IEnumerable<System.Collections.Generic.IEnumerable<T>>
+static Dynamo.Utilities.ExtensionMethods.ToObservableCollection<T>(this System.Collections.Generic.IEnumerable<T> coll) -> System.Collections.ObjectModel.ObservableCollection<T>
+static Dynamo.Utilities.ExtensionMethods.ToTree<TNodeTag, TLeaf>(this System.Collections.Generic.IEnumerable<TLeaf> entries, System.Func<TLeaf, System.Collections.Generic.ICollection<TNodeTag>> categorySelector, TNodeTag rootTag) -> Dynamo.Utilities.ITree<TNodeTag, TLeaf>
+static Dynamo.Utilities.GuidUtility.Create(System.Guid namespaceId, string name) -> System.Guid
+static Dynamo.Utilities.GuidUtility.Create(System.Guid namespaceId, string name, int version) -> System.Guid
+static Dynamo.Utilities.GuidUtility.tryParseOrCreateGuid(string idstring) -> System.Guid
+static Dynamo.Utilities.Option.HasValue<T>(this Dynamo.Utilities.IOption<T> option) -> bool
+static Dynamo.Utilities.Option.None<T>() -> Dynamo.Utilities.IOption<T>
+static Dynamo.Utilities.Option.Select<T, U>(this Dynamo.Utilities.IOption<T> option, System.Func<T, U> selector) -> Dynamo.Utilities.IOption<U>
+static Dynamo.Utilities.Option.Some<T>(T value) -> Dynamo.Utilities.IOption<T>
+static Dynamo.Utilities.Rect2D.Empty.get -> Dynamo.Utilities.Rect2D
+static Dynamo.Utilities.Rect2D.Equals(Dynamo.Utilities.Rect2D rect1, Dynamo.Utilities.Rect2D rect2) -> bool
+static Dynamo.Utilities.Rect2D.Intersect(Dynamo.Utilities.Rect2D rect1, Dynamo.Utilities.Rect2D rect2) -> Dynamo.Utilities.Rect2D
+static Dynamo.Utilities.TypeExtensions.GetDefaultConstructor<T>() -> System.Func<T>
+static Dynamo.Utilities.TypeExtensions.GetDefaultConstructor<T>(this System.Type type) -> System.Func<T>
+static Dynamo.Utilities.TypeExtensions.GetInstance(this System.Type type) -> object
+static Dynamo.Utilities.TypeExtensions.GetInstance<TArg1, TArg2, TArg3>(this System.Type type, TArg1 argument1, TArg2 argument2, TArg3 argument3) -> object
+static Dynamo.Utilities.TypeExtensions.GetInstance<TArg1, TArg2>(this System.Type type, TArg1 argument1, TArg2 argument2) -> object
+static Dynamo.Utilities.TypeExtensions.GetInstance<TArg>(this System.Type type, TArg argument) -> object
+static Dynamo.Utilities.TypeExtensions.ImplementsGeneric(System.Type generic, System.Type toCheck) -> bool
+static Dynamo.Utilities.VersionUtilities.Parse(string version) -> System.Version
+static Dynamo.Utilities.VersionUtilities.PartialParse(string versionString, int numberOfFields = 3) -> System.Version
+static Dynamo.Utilities.VersionUtilities.WildCardParse(string version) -> System.Version
+static DynamoUtilities.CertificateVerification.CheckAssemblyForValidCertificate(string assemblyPath) -> bool
+static DynamoUtilities.PathHelper.CreateFolderIfNotExist(string folderPath) -> System.Exception
+static DynamoUtilities.PathHelper.ExtractAndSaveEmbeddedFont(string resourcePath, string outputPath, string outputFileName, System.Reflection.Assembly assembly) -> void
+static DynamoUtilities.PathHelper.FileInfoAtPath(string path, out bool fileExists, out string size) -> void
+static DynamoUtilities.PathHelper.GetDateModified(string filePath) -> string
+static DynamoUtilities.PathHelper.GetFileSize(string path) -> string
+static DynamoUtilities.PathHelper.GetScreenCaptureNameFromPath(string filePath, bool isTimeStampIncluded) -> string
+static DynamoUtilities.PathHelper.GetServiceBackendAddress(object o, string serviceKey) -> string
+static DynamoUtilities.PathHelper.getServiceConfigValues(object o, string serviceKey) -> string
+static DynamoUtilities.PathHelper.HasWritePermissionOnDir(string folderPath) -> bool
+static DynamoUtilities.PathHelper.isFileContentsValidJson(string fileContents, out System.Exception ex) -> bool
+static DynamoUtilities.PathHelper.IsFileNameInValid(string fileName) -> bool
+static DynamoUtilities.PathHelper.IsReadOnlyPath(string filePath) -> bool
+static DynamoUtilities.PathHelper.isValidJson(string path, out string fileContents, out System.Exception ex) -> bool
+static DynamoUtilities.PathHelper.IsValidPath(string filePath) -> bool
+static DynamoUtilities.PathHelper.isValidXML(string path, out System.Xml.XmlDocument xmlDoc, out System.Exception ex) -> bool
+static DynamoUtilities.PathHelper.LoadEmbeddedResourceAsString(string resourcePath, System.Reflection.Assembly assembly) -> string
+static DynamoUtilities.StringUtilities.CapitalizeFirstLetter(string word) -> string
+static DynamoUtilities.TypeSwitch.Case<T>(System.Action action) -> DynamoUtilities.TypeSwitch.CaseInfo
+static DynamoUtilities.TypeSwitch.Case<T>(System.Action<T> action) -> DynamoUtilities.TypeSwitch.CaseInfo
+static DynamoUtilities.TypeSwitch.Default(System.Action action) -> DynamoUtilities.TypeSwitch.CaseInfo
+static DynamoUtilities.TypeSwitch.Do(object source, params DynamoUtilities.TypeSwitch.CaseInfo[] cases) -> void
+static DynamoUtilities.XmlHelper.AddAttribute(System.Xml.XmlNode parent, string name, string value) -> void
+static DynamoUtilities.XmlHelper.AddNode(System.Xml.XmlNode parent, string name, string value = null) -> System.Xml.XmlNode
+static DynamoUtilities.XmlHelper.CreateDocument(string rootName) -> System.Xml.XmlDocument
+static readonly Dynamo.Utilities.GuidUtility.DnsNamespace -> System.Guid
+static readonly Dynamo.Utilities.GuidUtility.IsoOidNamespace -> System.Guid
+static readonly Dynamo.Utilities.GuidUtility.UrlNamespace -> System.Guid

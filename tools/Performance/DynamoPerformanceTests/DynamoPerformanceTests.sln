@@ -8,19 +8,19 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
-		Debug|NET60_Linux = Debug|NET60_Linux
+		Debug|NET_Linux = Debug|NET_Linux
 		Release|Any CPU = Release|Any CPU
-		Release|NET60_Linux = Release|NET60_Linux
+		Release|NET_Linux = Release|NET_Linux
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Debug|NET60_Linux.ActiveCfg = Debug|NET60_Linux
-		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Debug|NET60_Linux.Build.0 = Debug|NET60_Linux
+		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Debug|NET_Linux.ActiveCfg = Debug|NET_Linux
+		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Debug|NET_Linux.Build.0 = Debug|NET_Linux
 		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Release|NET60_Linux.ActiveCfg = Release|NET60_Linux
-		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Release|NET60_Linux.Build.0 = Release|NET60_Linux
+		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Release|NET_Linux.ActiveCfg = Release|NET_Linux
+		{F30253B6-6F68-4E56-9358-0832E4F38A0F}.Release|NET_Linux.Build.0 = Release|NET_Linux
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

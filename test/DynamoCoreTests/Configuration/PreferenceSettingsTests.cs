@@ -1,13 +1,13 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
-using Dynamo.Configuration;
-using Dynamo.Models;
-using NUnit.Framework;
 using System.Linq;
-using System;
-using Dynamo.Interfaces;
 using System.Reflection;
+using Dynamo.Configuration;
+using Dynamo.Interfaces;
+using Dynamo.Models;
 using Dynamo.Utilities;
+using NUnit.Framework;
 
 namespace Dynamo.Tests.Configuration
 {
@@ -358,18 +358,6 @@ namespace Dynamo.Tests.Configuration
                             propertiesWithDifferentValue.Add(destinationPi.Name);
                         }
                     }
-                    else if (destinationPi.PropertyType == typeof(List<GraphChecksumItem>))
-                    {
-                        if (((List<GraphChecksumItem>)sourcePi.GetValue(newGeneralSettings, null)).Count ==
-                            ((List<GraphChecksumItem>)destinationPi.GetValue(defaultSettings, null)).Count)
-                        {
-                            propertiesWithSameValue.Add(destinationPi.Name);
-                        }
-                        else
-                        {
-                            propertiesWithDifferentValue.Add(destinationPi.Name);
-                        }
-                    }
                     else
                     {
                         if (newValue?.ToString() == oldValue?.ToString())
@@ -490,6 +478,27 @@ namespace Dynamo.Tests.Configuration
             }
 
             Assert.IsTrue(allTheGroupStylesHaveAValidFontSize, $"All the GroupStyles have a valid Font size : {allTheGroupStylesHaveAValidFontSize}");
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public void TestSerializingHomePageSettings()
+        {
+            string tempPath = System.IO.Path.GetTempPath();
+            tempPath = Path.Combine(tempPath, "homePagePreference.xml");
+
+            PreferenceSettings settings = new PreferenceSettings();
+
+            // Assert defaults
+            Assert.IsEmpty(settings.HomePageSettings);
+
+            settings.HomePageSettings = new List<string> { { String.Concat("greeting", "Hello World") } };
+
+            // Save
+            settings.Save(tempPath);
+            settings = PreferenceSettings.Load(tempPath);
+
+            Assert.IsTrue(settings.HomePageSettings.Contains(String.Concat("greeting", "Hello World")));
         }
     }
 }

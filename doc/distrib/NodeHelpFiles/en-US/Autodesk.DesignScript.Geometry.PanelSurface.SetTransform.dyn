@@ -1,0 +1,354 @@
+{
+  "Uuid": "3e605d1c-2d2f-40cb-a51b-35f6d5d1a8ad",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.PanelSurface.ByCustomOrthogonalLattice",
+  "ElementResolver": {
+    "ResolutionMap": {
+      "Cylinder": {
+        "Key": "Autodesk.DesignScript.Geometry.Cylinder",
+        "Value": "ProtoGeometry.dll"
+      },
+      "CoordinateSystem": {
+        "Key": "Autodesk.DesignScript.Geometry.CoordinateSystem",
+        "Value": "ProtoGeometry.dll"
+      },
+      "Point": {
+        "Key": "Autodesk.DesignScript.Geometry.Point",
+        "Value": "ProtoGeometry.dll"
+      },
+      "PanelSurface": {
+        "Key": "Autodesk.DesignScript.Geometry.PanelSurface",
+        "Value": "ProtoGeometry.dll"
+      }
+    }
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "217b9d291f8a48b482ae43175e234b95",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "cc3f117606124218b9a6f00d322208f2",
+          "Name": "",
+          "Description": "cylinder",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "bb397e87412a42c6a6042cf30485dcff",
+          "Name": "",
+          "Description": "explodedCyl",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "cylinder = Cylinder.ByRadiusHeight(CoordinateSystem.ByOrigin(0, 0, 0), 5, 10);\nexplodedCyl = cylinder.Explode();"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "e8a36f47e2e34935b7f1536f86d35a50",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [
+        {
+          "Id": "2ef4112f62644ebdb7bdabc5eaa9ab9d",
+          "Name": "explodedCyl",
+          "Description": "explodedCyl",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "0d2ab50caedc462dae3b60d90192d1fb",
+          "Name": "x",
+          "Description": "x",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "734312a6990e482c9ac3742905ed183d",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "PanelSurface.ByDiagonallySplitSquares(explodedCyl[0], 10, 10, x);"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "5176488566504db597d0a2d94f450787",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "56ee5432fa704067b5aa8503cb200bec",
+          "Name": "",
+          "Description": "point1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ccb9827aa43d407aa22ff22f08d672c5",
+          "Name": "",
+          "Description": "Value of expression at line 2",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "point1 = Point.ByCoordinates(0, 0);\n10;"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "965c888d76d84d1bbd6fab35e49b92fb",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f409bfae231e41899b3bcff729729287",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": true
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "7d7efca1e8e442d1a08386630c78b6c8",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "ec24f6a2e3a34e12b93904c9975a69d7",
+          "Name": "panelSurface",
+          "Description": "Autodesk.DesignScript.Geometry.PanelSurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e5cf6fcc1b6c4224854961f22bcfa20f",
+          "Name": "scale",
+          "Description": "Uniform UV scaling factor.\n\ndouble\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "ba493ad028774419a5cb01da07f6a8a6",
+          "Name": "uOffset",
+          "Description": "Offset in U direction used to translate panels.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "90a991ecf2054f17b3d89851227ba4fc",
+          "Name": "vOffset",
+          "Description": "Offset in V direction used to translate panels.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3db9d1b3f6464374803f1c2d89fad2e8",
+          "Name": "rotation",
+          "Description": "Angle of rotation of panels in degrees.\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cf66dd30ca1f4715b775ae846d890699",
+          "Name": "rotationPoint",
+          "Description": "2D point about which to rotate all panels.\n\nPoint\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a34072734cc7489dbcedc4587087ca3d",
+          "Name": "PanelSurface",
+          "Description": "Transformed PanelSurface.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.PanelSurface.SetTransform@double,double,double,double,Autodesk.DesignScript.Geometry.Point",
+      "Replication": "Auto",
+      "Description": "Applies a uniform scaling, translation and rotation transformation to the given PanelSurface.\n\nPanelSurface.SetTransform (scale: double = 1, uOffset: double = 0, vOffset: double = 0, rotation: double = 0, rotationPoint: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)): PanelSurface"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "bb397e87412a42c6a6042cf30485dcff",
+      "End": "2ef4112f62644ebdb7bdabc5eaa9ab9d",
+      "Id": "a2e6c6eb747b4a9f9d9fca225233737d",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "734312a6990e482c9ac3742905ed183d",
+      "End": "ec24f6a2e3a34e12b93904c9975a69d7",
+      "Id": "8a18564209344f1ca12b943090080492",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "56ee5432fa704067b5aa8503cb200bec",
+      "End": "cf66dd30ca1f4715b775ae846d890699",
+      "Id": "2b75df21e6994ea3b939979084a73dd0",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "ccb9827aa43d407aa22ff22f08d672c5",
+      "End": "3db9d1b3f6464374803f1c2d89fad2e8",
+      "Id": "3456f92b62cb4daa8dc65cbb886d6136",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "f409bfae231e41899b3bcff729729287",
+      "End": "0d2ab50caedc462dae3b60d90192d1fb",
+      "Id": "1cd42c894e394c6b8c9ddd2163f3651d",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.3.0.5104",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": 23.10748291015625,
+      "EyeY": 21.02083396911621,
+      "EyeZ": 16.502294540405273,
+      "LookX": -26.22793960571289,
+      "LookY": -16.8648624420166,
+      "LookZ": -23.52413558959961,
+      "UpX": -0.1699918508529663,
+      "UpY": 0.9735790491104126,
+      "UpZ": -0.1524689793586731
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "217b9d291f8a48b482ae43175e234b95",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": -1067.182205321596,
+        "Y": -822.184655910783
+      },
+      {
+        "Id": "e8a36f47e2e34935b7f1536f86d35a50",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": -229.0918478659231,
+        "Y": -826.021179483851
+      },
+      {
+        "Id": "5176488566504db597d0a2d94f450787",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 507.24900788443904,
+        "Y": -883.9156743554859
+      },
+      {
+        "Id": "965c888d76d84d1bbd6fab35e49b92fb",
+        "Name": "Boolean",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": -467.4659891922795,
+        "Y": -570.7345307393848
+      },
+      {
+        "Id": "7d7efca1e8e442d1a08386630c78b6c8",
+        "Name": "PanelSurface.SetTransform",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1150.8102298491067,
+        "Y": -920.9047188311538
+      }
+    ],
+    "Annotations": [],
+    "X": 14.497262299704062,
+    "Y": 585.3861138869149,
+    "Zoom": 0.6180157756162641
+  }
+}

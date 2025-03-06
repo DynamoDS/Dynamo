@@ -681,26 +681,6 @@ namespace DynamoCoreWpfTests
 
         [Test]
         [Category("UnitTests")]
-        public void ZoomToVisibilityConverterTest()
-        {
-            object visibility;
-            ZoomToVisibilityConverter converter = new ZoomToVisibilityConverter();
-
-            visibility = converter.Convert("1.0", typeof(string), null, new CultureInfo("en-US"));
-            Assert.AreEqual(visibility, Visibility.Visible);
-
-            visibility = converter.Convert("1,0", typeof(string), null, new CultureInfo("de-DE"));
-            Assert.AreEqual(visibility, Visibility.Visible);
-
-            visibility = converter.Convert(1.0, typeof(double), null, new CultureInfo("en-US"));
-            Assert.AreEqual(visibility, Visibility.Visible);
-
-            visibility = converter.Convert(1.0, typeof(double), null, new CultureInfo("de-DE"));
-            Assert.AreEqual(visibility, Visibility.Visible);
-        }
-
-        [Test]
-        [Category("UnitTests")]
         public void MenuItemCheckConverterTest()
         {
             object result;

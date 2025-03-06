@@ -1,0 +1,7 @@
+## In profondità
+MaxValue restituirà il valore massimo che un TimeSpan può avere. Nell'esempio seguente, viene restituito un TimeSpan di 10.675.199 giorni, 2 ore, 28 minuti, 5 secondi, 477 millisecondi.
+___
+## File di esempio
+
+![MaxValue](./DSCore.DateTime.MaxValue_img.jpg)
+

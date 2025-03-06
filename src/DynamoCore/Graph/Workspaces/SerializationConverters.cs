@@ -77,22 +77,6 @@ namespace Dynamo.Graph.Workspaces
             return codeBlockNode;
         }
 
-        
-
-        [Obsolete("This constructor will be removed in Dynamo 3.0, please use new NodeReadConverter constructor with additional parameters to support node migration.")]
-        public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices, bool isTestMode = false)
-        {
-            this.manager = manager;
-            this.libraryServices = libraryServices;
-            this.isTestMode = isTestMode;
-            // We only do this in test mode because it should not be required-
-            // see comment below in NodeReadConverter.ReadJson - and it could be slow.
-            if (this.isTestMode)
-            {
-                this.loadedAssemblies = this.buildMapOfLoadedAssemblies();
-            }
-        }
-
         public NodeReadConverter(CustomNodeManager manager, LibraryServices libraryServices, NodeFactory nodeFactory, bool isTestMode = false)
         {
             this.manager = manager;
@@ -293,11 +277,6 @@ namespace Dynamo.Graph.Workspaces
             {
                 node = (NodeModel)obj.ToObject(type);
                 
-                // if node is an customNode input symbol - assign the element resolver.
-                if(node is Nodes.CustomNodes.Symbol)
-                {
-                    (node as Nodes.CustomNodes.Symbol).ElementResolver = ElementResolver;
-                }
                 // We don't need to remap ports for any nodes with json constructors which pass ports
                 remapPorts = false;
             }
@@ -679,27 +658,38 @@ namespace Dynamo.Graph.Workspaces
             #region Restore trace data
             // Trace Data
             Dictionary<Guid, List<CallSite.RawTraceData>> loadedTraceData = new Dictionary<Guid, List<CallSite.RawTraceData>>();
+            bool containsLegacyTraceData = false;
             // Restore trace data if bindings are present in json
             if (obj["Bindings"] != null && obj["Bindings"].Children().Count() > 0)
             {
-                JEnumerable<JToken> bindings = obj["Bindings"].Children();
+                var wrc = serializer.Converters.First(c => c is WorkspaceReadConverter) as WorkspaceReadConverter;
 
-                // Iterate through bindings to extract nodeID's and bindingData (callsiteId & traceData)
-                foreach (JToken entity in bindings)
+                if (wrc.engine.CurrentWorkspaceVersion < new Version(3, 0, 0))
                 {
-                    Guid nodeId = Guid.Parse(entity["NodeId"].ToString());
-                    string bindingString = entity["Binding"].ToString();
+                    containsLegacyTraceData = true;
+                }
+                else
+                {
+                    JEnumerable<JToken> bindings = obj["Bindings"].Children();
 
-                    // Key(callsiteId) : Value(traceData)
-                    Dictionary<string, string> bindingData = JsonConvert.DeserializeObject<Dictionary<string, string>>(bindingString);
-                    List<CallSite.RawTraceData> callsiteTraceData = new List<CallSite.RawTraceData>();
-
-                    foreach (KeyValuePair<string, string> pair in bindingData)
+                    // Iterate through bindings to extract nodeID's and bindingData (callsiteId & traceData)
+                    foreach (JToken entity in bindings)
                     {
-                        callsiteTraceData.Add(new CallSite.RawTraceData(pair.Key, pair.Value));
-                    }
+                        Guid nodeId = Guid.Parse(entity["NodeId"].ToString());
+                        string bindingString = entity["Binding"].ToString();
 
-                    loadedTraceData.Add(nodeId, callsiteTraceData);
+                        // Key(callsiteId) : Value(traceData)
+                        Dictionary<string, string> bindingData =
+                            JsonConvert.DeserializeObject<Dictionary<string, string>>(bindingString);
+                        List<CallSite.RawTraceData> callsiteTraceData = new List<CallSite.RawTraceData>();
+
+                        foreach (KeyValuePair<string, string> pair in bindingData)
+                        {
+                            callsiteTraceData.Add(new CallSite.RawTraceData(pair.Key, pair.Value));
+                        }
+
+                        loadedTraceData.Add(nodeId, callsiteTraceData);
+                    }
                 }
             }
             #endregion
@@ -725,7 +715,7 @@ namespace Dynamo.Graph.Workspaces
                 if (obj.TryGetValue(nameof(HomeWorkspaceModel.Thumbnail), StringComparison.OrdinalIgnoreCase, out JToken thumbnail))
                     homeWorkspace.Thumbnail = thumbnail.ToString();
 
-                // GraphDocumentaionLink
+                // GraphDocumentationLink
                 if (obj.TryGetValue(nameof(HomeWorkspaceModel.GraphDocumentationURL), StringComparison.OrdinalIgnoreCase, out JToken helpLink))
                 {
                     if (Uri.TryCreate(helpLink.ToString(), UriKind.Absolute, out Uri uri))
@@ -738,6 +728,7 @@ namespace Dynamo.Graph.Workspaces
                 // If there is a active linter serialized in the graph we set it to the active linter else set the default None.
                 SetActiveLinter(obj);
 
+
                 ws = homeWorkspace;
             }
 
@@ -746,7 +737,9 @@ namespace Dynamo.Graph.Workspaces
             ws.ExternalFiles = externalFiles;
             if (obj.TryGetValue(nameof(WorkspaceModel.Author), StringComparison.OrdinalIgnoreCase, out JToken author))
                 ws.Author = author.ToString();
-
+            
+            ws.ContainsLegacyTraceData = containsLegacyTraceData;
+            
             return ws;
         }
 
@@ -869,9 +862,9 @@ namespace Dynamo.Graph.Workspaces
                 .Select(outputNode => outputNode.OutputData).ToList();
             serializer.Serialize(writer, outputNodeDatas);
 
-            // Nodes
+            // Nodes except for nodes in Transient state
             writer.WritePropertyName("Nodes");
-            serializer.Serialize(writer, ws.Nodes);
+            serializer.Serialize(writer, ws.Nodes.Where(x => x.IsTransient != true));
 
             // Connectors
             writer.WritePropertyName("Connectors");
@@ -1270,8 +1263,8 @@ namespace Dynamo.Graph.Workspaces
             var startId = obj["Start"].Value<string>();
             var endId = obj["End"].Value<string>();
             var isHiddenExists = obj[nameof(ConnectorModel.IsHidden)];
-
-            var isHidden = isHiddenExists != null && obj[nameof(ConnectorModel.IsHidden)].Value<bool>();
+            // final connector visibility would respect current setting first, if visible then fallback to serialized value
+            var isHidden = !PreferenceSettings.Instance.ShowConnector || isHiddenExists != null && obj[nameof(ConnectorModel.IsHidden)].Value<bool>();
 
             var resolver = (IdReferenceResolver)serializer.ReferenceResolver;
 

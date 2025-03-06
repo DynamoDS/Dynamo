@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -19,6 +18,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
+using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
@@ -172,8 +172,9 @@ namespace Dynamo.ViewModels
 
         internal event Action<ShowHideFlags> RequestNodeAutoCompleteSearch;
         internal event Action<ShowHideFlags, PortViewModel> RequestPortContextMenu;
+        internal static event Action<MLNodeClusterAutoCompletionResponse> RequestNodeAutoCompleteViewExtension;
 
-        internal void OnRequestNodeAutoCompleteSearch(ShowHideFlags flag)
+        internal void OnRequestNodeAutoCompleteSearch(ShowHideFlags flag, bool ClusterNodeAutocomplete = false)
         {
             RequestNodeAutoCompleteSearch?.Invoke(flag);
         }
@@ -181,6 +182,11 @@ namespace Dynamo.ViewModels
         internal void OnRequestPortContextMenu(ShowHideFlags flag, PortViewModel viewModel)
         {
             RequestPortContextMenu?.Invoke(flag, viewModel);
+        }
+
+        internal void OnRequestNodeAutoCompleteViewExtension(MLNodeClusterAutoCompletionResponse clusterNodeAutoComplete)
+        {
+            RequestNodeAutoCompleteViewExtension?.Invoke(clusterNodeAutoComplete);
         }
 
         #endregion
@@ -363,8 +369,11 @@ namespace Dynamo.ViewModels
         [JsonIgnore]
         internal JObject JsonRepresentation { get; set; }
 
+        [JsonIgnore]
+        internal string CurrentCheckSum { get; set; }
+
         /// <summary>
-        /// Returns the stringified representation of the connected nodes
+        /// Returns the stringified representation of the node connections in the workspace.
         /// </summary>
         [JsonIgnore]
         public string Checksum
@@ -372,48 +381,29 @@ namespace Dynamo.ViewModels
             get
             {
                 List<string> nodeInfoConnections = new List<string>();
-                JObject jsonWorkspace = JsonRepresentation;
-                var nodes = jsonWorkspace["Nodes"];                
 
-                List<string> nodeIds = new List<string>();
-                foreach (JObject node in nodes)
+                foreach (var connector in Connectors)
                 {
-                    var nodeProperties = node.Children<JProperty>();
-                    JProperty id = nodeProperties.FirstOrDefault(x => x.Name == "Id");
-                    nodeIds.Add(id.Value.ToString());
+                    var connectorModel = connector.ConnectorModel;
+
+                    var startingPort= connectorModel.Start;
+                    var endingPort = connectorModel.End;
+
+                    // node info connections has a unique id in the format: startnodeid[outputindex]endnodeid[outputindex].
+                    nodeInfoConnections.Add(startingPort.Owner.AstIdentifierGuid + "[" + startingPort.Index.ToString() + "]" + endingPort.Owner.AstIdentifierGuid + "[" + endingPort.Index.ToString() + "]");
                 }
 
-                nodeIds.Sort();
-
-                foreach (string nodeId in nodeIds)
+                if (nodeInfoConnections.Count > 0)
                 {
-                    List<string> outputIds = new List<string>();
-                    var node = jsonWorkspace["Nodes"].Where(t => t.Value<string>("Id") == nodeId).Select(t => t).FirstOrDefault();
-                    var outputsProperty = node.Children<JProperty>().FirstOrDefault(x => x.Name == "Outputs");
-                    var outputs = (JArray)outputsProperty.Value;
-                    int outputIndex = 1;
-
-                    foreach (JObject output in outputs)
-                    {
-                        var outputProperties = output.Children<JProperty>();
-                        JProperty outputId = outputProperties.FirstOrDefault(x => x.Name == "Id");
-                        outputIds.Add(outputId.Value.ToString());
-
-                        var connectorsProperty = jsonWorkspace["Connectors"].Where(t => t.Value<string>("Start") == outputId.Value.ToString());
-
-                        foreach (var connector in connectorsProperty)
-                        {
-                            var connectorProperties = connector.Children<JProperty>();
-                            JProperty endProperty = connectorProperties.FirstOrDefault(x => x.Name == "End");
-                            string inputId = (String)endProperty.Value;
-
-                            var outputConnectedNode = GetNodeByInputId(inputId, jsonWorkspace);
-                            nodeInfoConnections.Add(nodeId + "|[" + outputIndex.ToString() + "|" + outputConnectedNode.Item1 + "|" + outputConnectedNode.Item2.ToString() + "]");
-                        }
-                        outputIndex++;
-                    }
+                    var checksumhash = Hash.ToSha256String(String.Join(",", nodeInfoConnections));
+                    CurrentCheckSum = checksumhash;
+                    return checksumhash;
                 }
-                return nodeInfoConnections.Count > 0 ? string.Join(",", nodeInfoConnections) : string.Empty;
+                else
+                {
+                    CurrentCheckSum = string.Empty;
+                    return string.Empty;
+                }
             }            
         }
 
@@ -488,6 +478,33 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged("Zoom");
             }
         }
+
+       /// <summary>
+       /// When enabled, some child wpf framework elements will not animate opacity changes.
+       /// Useful for improving performance during zoom.
+       /// TODO DYN-8193 a future optimiztion if found to be neccesary is to modify the styles this flag controls
+       /// to set visibility instead of opacity, this will likely lead to many fewers elements in the visual tree to
+       /// layout and render.
+       /// </summary>
+        [JsonIgnore]
+        public bool StopNodeViewOpacityAnimations
+        {
+            get => stopNodeViewOpacityAnimations;
+            set
+            {
+                if (stopNodeViewOpacityAnimations != value)
+                {
+                    stopNodeViewOpacityAnimations = value;
+                    RaisePropertyChanged(nameof(StopNodeViewOpacityAnimations));
+                }
+            }
+        }
+        private  bool stopNodeViewOpacityAnimations = false;
+
+        private int zoomAnimationThresholdFeatureFlagVal = 0;
+
+
+
 
         [JsonIgnore]
         public bool CanZoomIn
@@ -616,15 +633,42 @@ namespace Dynamo.ViewModels
             foreach (NoteModel note in Model.Notes) Model_NoteAdded(note);
             foreach (AnnotationModel annotation in Model.Annotations) Model_AnnotationAdded(annotation);
             foreach (ConnectorModel connector in Model.Connectors) Connectors_ConnectorAdded(connector);
-            
-            NodeAutoCompleteSearchViewModel = new NodeAutoCompleteSearchViewModel(DynamoViewModel)
-            {
-                Visible = true
-            };
 
             geoScalingViewModel = new GeometryScalingViewModel(this.DynamoViewModel);
-            geoScalingViewModel.ScaleValue = this.DynamoViewModel.ScaleFactorLog;
+            geoScalingViewModel.ScaleValue = Convert.ToInt32(Math.Log10(Model.ScaleFactor));
+
+            DynamoFeatureFlagsManager.FlagsRetrieved += OnFlagsRetrieved;
+            //if we've already retrieved flags, grab the value,
+            zoomAnimationThresholdFeatureFlagVal = (int)(DynamoModel.FeatureFlags?.CheckFeatureFlag<long>("zoom_opacity_animation_nodenum_threshold", 0) ?? 0);
+            SetStopNodeZoomAnimationBehavior(zoomAnimationThresholdFeatureFlagVal);
         }
+
+        private void OnFlagsRetrieved()
+        {
+            zoomAnimationThresholdFeatureFlagVal = (int)(DynamoModel.FeatureFlags?.CheckFeatureFlag<long>("zoom_opacity_animation_nodenum_threshold", 0) ?? 0);
+            SetStopNodeZoomAnimationBehavior(zoomAnimationThresholdFeatureFlagVal);
+            DynamoFeatureFlagsManager.FlagsRetrieved -= OnFlagsRetrieved;
+        }
+
+        private void SetStopNodeZoomAnimationBehavior(int featureFlagValue)
+        {
+            //threshold mode so we can tune the cutoff.
+            if (featureFlagValue>0)
+            {
+                StopNodeViewOpacityAnimations = Nodes.Count > featureFlagValue;
+            }
+            //always enable animations (ie, disable the feature flag)
+            else if (featureFlagValue == 0)
+            {
+                StopNodeViewOpacityAnimations = false;
+            }
+            //always disable animations
+            else if (featureFlagValue<0)
+            {
+                StopNodeViewOpacityAnimations = true;
+            }
+        }
+
         /// <summary>
         /// This event is triggered from Workspace Model. Used in instrumentation
         /// </summary>
@@ -658,6 +702,8 @@ namespace Dynamo.ViewModels
 
             DynamoViewModel.CopyCommand.CanExecuteChanged -= CopyPasteChanged;
             DynamoViewModel.PasteCommand.CanExecuteChanged -= CopyPasteChanged;
+
+            DynamoFeatureFlagsManager.FlagsRetrieved -= OnFlagsRetrieved;
 
             var nodeViewModels = Nodes.ToList();
             nodeViewModels.ForEach(nodeViewModel => nodeViewModel.Dispose());
@@ -710,7 +756,7 @@ namespace Dynamo.ViewModels
         /// <param name="engine"></param>
         /// <param name="saveContext"></param>
         /// <exception cref="ArgumentNullException">Thrown when the file path is null.</exception>
-        internal void Save(string filePath, bool isBackup = false, EngineController engine = null, SaveContext saveContext = SaveContext.None)
+        internal bool Save(string filePath, bool isBackup = false, EngineController engine = null, SaveContext saveContext = SaveContext.None)
         {
             if (String.IsNullOrEmpty(filePath))
             {
@@ -748,7 +794,7 @@ namespace Dynamo.ViewModels
 
                             if (result == MessageBoxResult.Cancel)
                             {
-                                return;
+                                return false;
                             }
                         }
                     }
@@ -791,6 +837,8 @@ namespace Dynamo.ViewModels
                 throw ex;
 #pragma warning restore CA2200 // Rethrow to preserve stack details
             }
+
+            return true;
         }
         /// <summary>
         /// This function appends view block to the model json
@@ -894,13 +942,15 @@ namespace Dynamo.ViewModels
             nodeViewModel.NodeLogic.Modified -= OnNodeModified;
         }
 
+
         void Model_NodeRemoved(NodeModel node)
         {
             NodeViewModel nodeViewModel;
             lock (Nodes)
             {
                 nodeViewModel = Nodes.First(x => x.NodeLogic == node);
-                Errors.Remove(nodeViewModel.ErrorBubble);
+                if (nodeViewModel.ErrorBubble != null)
+                    Errors.Remove(nodeViewModel.ErrorBubble);
                 Nodes.Remove(nodeViewModel);
             }
             //unsub the events we attached below in NodeAdded.
@@ -908,6 +958,8 @@ namespace Dynamo.ViewModels
             nodeViewModel.Dispose();
 
             PostNodeChangeActions();
+
+            SetStopNodeZoomAnimationBehavior(zoomAnimationThresholdFeatureFlagVal);
         }
 
         void Model_NodeAdded(NodeModel node)
@@ -919,9 +971,12 @@ namespace Dynamo.ViewModels
             {
                 Nodes.Add(nodeViewModel);
             }
-            Errors.Add(nodeViewModel.ErrorBubble);
-            
+            if (nodeViewModel.ErrorBubble != null)
+                Errors.Add(nodeViewModel.ErrorBubble);
+
             PostNodeChangeActions();
+
+            SetStopNodeZoomAnimationBehavior(zoomAnimationThresholdFeatureFlagVal);
         }
 
         void PostNodeChangeActions()
@@ -1169,7 +1224,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMinX()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.X)
                            .Min();
@@ -1177,7 +1232,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMinY()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.Y)
                            .Min();
@@ -1185,7 +1240,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMaxX()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.X + x.Width)
                            .Max();
@@ -1201,7 +1256,7 @@ namespace Dynamo.ViewModels
 
         public double GetSelectionMaxY()
         {
-            return DynamoSelection.Instance.Selection.Where((x) => !(x is AnnotationModel) && x is ILocatable)
+            return DynamoSelection.Instance.Selection.Where((x) => x is ILocatable)
                            .Cast<ILocatable>()
                            .Select((x) => x.Y + x.Height)
                            .Max();
@@ -1514,9 +1569,9 @@ namespace Dynamo.ViewModels
         /// <summary>
         ///     Zoom around current selection
         ///     _fitViewActualZoomToggle is used internally to toggle
-        /// between the default 1.0 zoom level and the intended zoom around selection
+        ///     between the default 1.0 zoom level and the intended zoom around selection
         ///     The optional toggle boolean is introduced to avoid this behavior and only zoom around the selection
-        /// no matter how many times the operation is performed
+        ///     no matter how many times the operation is performed.
         /// </summary>
         /// <param name="toggle"></param>
         internal void FitViewInternal(bool toggle = true)
@@ -1556,13 +1611,31 @@ namespace Dynamo.ViewModels
                     maxX = Math.Max(model.X + model.Width, maxX);
                     minY = Math.Min(model.Y, minY);
                     maxY = Math.Max(model.Y + model.Height, maxY);
-                }
-                
+                }   
             }
 
-            var offset = new Point2D(minX, minY);
-            double focusWidth = maxX - minX;
-            double focusHeight = maxY - minY;
+            double focusWidth;
+            double focusHeight;
+
+            //  If toggle is true, zoom to fit in the whole workspace view,
+            //  else zoom around the selected element by adding a padding factor.
+            if (toggle)
+            {
+                focusWidth = maxX - minX;
+                focusHeight = maxY - minY;
+            }
+            else
+            {
+                // Add padding to the calculated bounding box for better visibility
+                focusWidth = (maxX - minX) * Configurations.ZoomToFitPaddingFactor;
+                focusHeight = (maxY - minY) * Configurations.ZoomToFitPaddingFactor;
+
+            }
+
+            // Adjust offset to ensure the view is centered with the padding
+            double offsetX = minX - (focusWidth - (maxX - minX)) / 2.0;
+            double offsetY = minY - (focusHeight - (maxY - minY)) / 2.0;
+            var offset = new Point2D(offsetX, offsetY);
 
             ZoomEventArgs zoomArgs;
 
@@ -1659,6 +1732,25 @@ namespace Dynamo.ViewModels
             {
                 DynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToFindNodeById);
             }
+
+            try
+            {
+                var group = DynamoViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault(x => x.GUID.ToString() == id.ToString());
+
+                if (group != null)
+                {
+                    //select the element
+                    DynamoSelection.Instance.ClearSelection();
+                    DynamoSelection.Instance.Selection.Add(group);
+
+                    //focus on the element
+                    DynamoViewModel.ShowElement(group);
+                }
+            }
+            catch
+            {
+                DynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.MessageFailedToFindGroupById);
+            }
         }
 
         private static bool CanFindById(object id)
@@ -1735,6 +1827,23 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public event ViewEventHandler UnpinAllPreviewBubblesTriggered;
+        /// <summary>
+        /// Triggers unpinning of all preview bubbles in the workspace
+        /// </summary>
+        /// <param name="o"></param>
+        internal void UnpinAllPreviewBubbles(object o)
+        {
+            RaisePropertyChanged("UnpinAllPreviewBubbles");
+
+            UnpinAllPreviewBubblesTriggered?.Invoke(this, EventArgs.Empty);
+        }
+
+        internal bool CanUnpinAllPreviewBubbles(object o)
+        {
+            return true;
+        }
+
         /// <summary>
         /// Collapse a set of nodes and notes currently selected in workspace
         /// </summary>
@@ -1776,7 +1885,8 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("HasSelection");
             RaisePropertyChanged("IsGeometryOperationEnabled");
             RaisePropertyChanged("AnyNodeVisible");
-            RaisePropertyChanged("SelectionArgumentLacing");            
+            RaisePropertyChanged("SelectionArgumentLacing");
+            RaisePropertyChanged("CanUpdatePythonEngine");
         }
 
         /// <summary>
@@ -1824,4 +1934,5 @@ namespace Dynamo.ViewModels
             ViewModel = vm;
         }
     }
-}
+
+    }

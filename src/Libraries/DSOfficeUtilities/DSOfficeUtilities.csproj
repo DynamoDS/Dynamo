@@ -31,7 +31,7 @@
         <Isolated>False</Isolated>
         <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
-	  <PackageReference Include="DocumentFormat.OpenXml" Version="2.12.3" CopyXML="true" />
+	  <PackageReference Include="DocumentFormat.OpenXml" Version="2.12.3" CopyXML="false" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\DynamoCore\DynamoCore.csproj">

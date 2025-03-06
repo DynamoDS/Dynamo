@@ -76,12 +76,6 @@ namespace Dynamo.Extensions
         }
 
         /// <summary>
-        /// HostInfo object, Useful to determine what host context Dynamo is running in.
-        /// </summary>
-        internal HostAnalyticsInfo HostInfo => DynamoModel.HostAnalyticsInfo;
-
-
-        /// <summary>
         /// Event that is raised when the Dynamo Logger logs a notification.
         /// This event passes the notificationMessage to any subscribers
         /// </summary>

@@ -1,0 +1,431 @@
+{
+  "Uuid": "3c9d0464-8643-5ffe-96e5-ab1769818209",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.DeserializeFromTSM",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "918a5d12fdc14f68bf98a99e6e7531ce",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "fa37ae43e6c74f319d4e14f513294ac4",
+          "Name": "file",
+          "Description": "var",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "52b48d2c939447c581a3a532d3846fc3",
+          "Name": "inSmoothMode",
+          "Description": "Show T-Spline Surface in box or smooth visualization\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cfd7bb6bf1a14cd3988097e440c16a8f",
+          "Name": "TSplineSurface[]..[]",
+          "Description": "Newly loaded T-Spline surface in list",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.ImportFromTSM@var,bool",
+      "Replication": "Auto",
+      "Description": "Load a T-Spline Surface from given T-Spline Mesh file\n\nTSplineSurface.ImportFromTSM (file: var, inSmoothMode: bool = false): TSplineSurface[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "Id": "e9f0b0a3b3a9484aa26b64040c68abfa",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "40c6fc0449104a0bb7ea17d9684a7283",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path",
+      "HintPath": "P:\\Shared\\Archilizer\\Clients\\Autodesk\\Projects\\23 - Q4\\Nodes Documentation\\TSplines\\TSM TSS\\EX_TSM.tsm",
+      "InputValue": "P:\\Shared\\Archilizer\\Clients\\Autodesk\\Projects\\23 - Q4\\Nodes Documentation\\TSplines\\TSM TSS\\EX_TSM.tsm"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "288509ea3e5a41edbf33ef024c55b25a",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "bdd3d3061955486c8624852dc1c5c19b",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": true
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "cd1cbd66dfec43c9b983406b0acb413c",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "9576d96770f54c13aa781dfd67fd8107",
+          "Name": "tSplineSurface",
+          "Description": "T-Spline surface to serialize\n\nTSplineSurface",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0cc435ac54f34f9192114dc0107fa8f3",
+          "Name": "string",
+          "Description": "String where T-Spline Surface is being serialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.SerializeAsTSM@Autodesk.DesignScript.Geometry.TSpline.TSplineSurface",
+      "Replication": "Auto",
+      "Description": "Write T-Spline Surface into a string in T-Spline Mesh format.\n\nTSplineSurface.SerializeAsTSM (tSplineSurface: TSplineSurface): string"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 420.0,
+      "WatchHeight": 38.0,
+      "Id": "e7b31b317f0543b397d09dd07a3296e5",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "d4ce2cc78e6e4b41aeb1a8a512ba4f08",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "4714815fd22b4c76bde2eec78db70f04",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "76e84f9badf84be5906dbf4ccc7fc357",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "a63bd4c1af7941e5ade325b2ffce1ddd",
+          "Name": "content",
+          "Description": "String representation of T-Spline Mesh file\n\nstring",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "3fac0de68e31424ca98db15100323fee",
+          "Name": "inSmoothMode",
+          "Description": "Show T-Spline Surface in box or smooth visualization\n\nbool\nDefault value : false",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ab07a689a3e94857adad85becb7d1541",
+          "Name": "TSplineSurface[]..[]",
+          "Description": "Newly loaded T-Spline surface in list",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.DeserializeFromTSM@string,bool",
+      "Replication": "Auto",
+      "Description": "Create a T-Spline Surface from the string in T-Spline Mesh format.\n\nTSplineSurface.DeserializeFromTSM (content: string, inSmoothMode: bool = false): TSplineSurface[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "af0ebe187e4b4588b9357f5f3695efa2",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "050c6779bda34476af4d822d5dd15f74",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": true
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 420.0,
+      "WatchHeight": 38.0,
+      "Id": "403d33fa0303461a860a07c04f975ae6",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "32cc3b294711447a8377707b71683aae",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "bed90b95f7654905a5d1e61c09ad5c0d",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "cfd7bb6bf1a14cd3988097e440c16a8f",
+      "End": "32cc3b294711447a8377707b71683aae",
+      "Id": "d6ff2ac3363448109dba1c99c829a600",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cfd7bb6bf1a14cd3988097e440c16a8f",
+      "End": "9576d96770f54c13aa781dfd67fd8107",
+      "Id": "78dfc530a468421087962848083c0ac9",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "40c6fc0449104a0bb7ea17d9684a7283",
+      "End": "fa37ae43e6c74f319d4e14f513294ac4",
+      "Id": "e845c21bd9204823ba07fac2be8786ed",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "bdd3d3061955486c8624852dc1c5c19b",
+      "End": "52b48d2c939447c581a3a532d3846fc3",
+      "Id": "5d61cc2f0a584ebfbd519e5426fcdc03",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "0cc435ac54f34f9192114dc0107fa8f3",
+      "End": "d4ce2cc78e6e4b41aeb1a8a512ba4f08",
+      "Id": "f44837a7113e440e94ca7fdd7444812c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "0cc435ac54f34f9192114dc0107fa8f3",
+      "End": "a63bd4c1af7941e5ade325b2ffce1ddd",
+      "Id": "6e8be3b0eacb42689d58b2fafaaf9105",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "050c6779bda34476af4d822d5dd15f74",
+      "End": "3fac0de68e31424ca98db15100323fee",
+      "Id": "fdc1c64940254b829c7a85f12837c560",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "EX_TSM.tsm",
+      "ReferenceType": "External",
+      "Nodes": [
+        "e9f0b0a3b3a9484aa26b64040c68abfa"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.13",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "2.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.19.3.6543",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -22.278469085693359,
+      "EyeY": 32.41584587097168,
+      "EyeZ": 13.859949111938477,
+      "LookX": 30.610368728637695,
+      "LookY": -19.77000617980957,
+      "LookZ": -26.901992797851563,
+      "UpX": 0.17534993588924408,
+      "UpY": 0.97237002849578857,
+      "UpZ": -0.15410692989826202
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "918a5d12fdc14f68bf98a99e6e7531ce",
+        "Name": "TSplineSurface.ImportFromTSM",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 511.32622934302992,
+        "Y": 85.0114772266715
+      },
+      {
+        "Id": "e9f0b0a3b3a9484aa26b64040c68abfa",
+        "Name": "File Path",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 79.2000000000001,
+        "Y": 68.79999999999994
+      },
+      {
+        "Id": "288509ea3e5a41edbf33ef024c55b25a",
+        "Name": "Boolean",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 203.2000000000001,
+        "Y": 213.60000000000002
+      },
+      {
+        "Id": "cd1cbd66dfec43c9b983406b0acb413c",
+        "Name": "TSplineSurface.SerializeAsTSM",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 939.90110765325153,
+        "Y": 23.774863061118481
+      },
+      {
+        "Id": "e7b31b317f0543b397d09dd07a3296e5",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1331.0468949542183,
+        "Y": -184.1635554168376
+      },
+      {
+        "Id": "76e84f9badf84be5906dbf4ccc7fc357",
+        "Name": "TSplineSurface.DeserializeFromTSM",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1429.5409999874375,
+        "Y": 89.082115682215658
+      },
+      {
+        "Id": "af0ebe187e4b4588b9357f5f3695efa2",
+        "Name": "Boolean",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1065.1435382271125,
+        "Y": 201.15488475605298
+      },
+      {
+        "Id": "403d33fa0303461a860a07c04f975ae6",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 767.450896805056,
+        "Y": -218.41242409734593
+      }
+    ],
+    "Annotations": [],
+    "X": 124.28514896517265,
+    "Y": 207.24843127018516,
+    "Zoom": 0.56844821103482734
+  }
+}

@@ -1,12 +1,11 @@
-﻿using System.Linq;
+using System;
+using System.IO;
+using System.Linq;
 using Dynamo.Selection;
-using NUnit.Framework;
-using static Dynamo.Models.DynamoModel;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
-using System;
-using System.Xml;
-using System.IO;
+using NUnit.Framework;
+using static Dynamo.Models.DynamoModel;
 
 namespace DynamoCoreWpfTests
 {
@@ -14,6 +13,23 @@ namespace DynamoCoreWpfTests
     {
 
         #region Regular Connector Tests
+        /// <summary>
+        /// Check to see if a connector is visible after in session preferences is set to hide connectors
+        /// </summary>
+        [Test]
+        public void ConnectorVisibilityWithPrefrencesTest()
+        {
+            Model.PreferenceSettings.ShowConnector = false;
+
+            Open(@"UI/ConnectorPinTests.dyn");
+
+            var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
+
+            // Although default IsHidden state should be false when opening legacy graph,
+            // if current preferences are set to hide connectors, the connector should be hidden
+            Assert.AreEqual(connectorViewModel.IsHidden, true);
+        }
+
         /// <summary>
         /// Check to see if a connector is visible after pre 2.13 graph open
         /// </summary>

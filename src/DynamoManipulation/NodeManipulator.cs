@@ -1,4 +1,4 @@
-﻿using Autodesk.DesignScript.Geometry;
+using Autodesk.DesignScript.Geometry;
 using CoreNodeModels.Input;
 using Dynamo.Extensions;
 using Dynamo.Graph.Nodes;
@@ -646,13 +646,6 @@ namespace Dynamo.Manipulation
             }
 
             return active;
-        }
-
-        // TODO: Remove in 3.0
-        [Obsolete("This method will be removed in 3.0 and will no longer be available as a public API.")]
-        public bool IsNodeValueNull()
-        {
-            return IsNodeNull(Node.CachedValue);
         }
 
         private static bool IsNodeNull(MirrorData data)

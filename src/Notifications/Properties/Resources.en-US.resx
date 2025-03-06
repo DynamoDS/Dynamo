@@ -135,6 +135,12 @@
   <data name="ExtensionName" xml:space="preserve">
     <value>Notifications</value>
   </data>
+  <data name="NoNotificationsMsg" xml:space="preserve">
+    <value>You currently have no notifications. New notifications will appear above</value>
+  </data>
+  <data name="NoNotificationsTitle" xml:space="preserve">
+    <value>No notifications</value>
+  </data>
   <data name="NotificationCenterDisabledMsg" xml:space="preserve">
     <value>Notification Center feature is disabled. Enable it in preference panel to see latest news.</value>
   </data>

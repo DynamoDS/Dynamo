@@ -7,8 +7,8 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using Dynamo.Utilities;
 using Dynamo.Wpf.UI.GuidedTour;
+using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels.GuidedTour;
-using Microsoft.Web.WebView2.Wpf;
 
 namespace Dynamo.Wpf.Views.GuidedTour
 {
@@ -27,7 +27,7 @@ namespace Dynamo.Wpf.Views.GuidedTour
         //Field that indicates wheter popups are left-aligned or right-aligned
         private const string menuDropAligment = "_menuDropAlignment";
 
-        internal WebView2 webBrowserComponent;
+        internal DynamoWebView2 webBrowserComponent;
         //Assembly path to the Font file
         private const string mainFontStylePath = "Dynamo.Wpf.Views.GuidedTour.HtmlPages.Resources.ArtifaktElement-Regular.woff";
         //Assembly path to the Resources folder
@@ -93,7 +93,6 @@ namespace Dynamo.Wpf.Views.GuidedTour
                 webBrowserComponent.Visibility = Visibility.Collapsed;
             }
 
-
             if (isClosingTour)
             {
                 Opened -= PopupWindow_Opened;
@@ -105,14 +104,17 @@ namespace Dynamo.Wpf.Views.GuidedTour
         {
             if (hostControlInfo.HtmlPage != null && !string.IsNullOrEmpty(hostControlInfo.HtmlPage.FileName))
             {
-                ContentRichTextBox.Visibility = Visibility.Hidden;            
+                ContentRichTextBox.Visibility = Visibility.Hidden;
+
+                // Opened event ensures the webview2 will be visible when added to the popup layout tree.
                 InitWebView2Component();
             }
         }
 
         private async void InitWebView2Component()
         {
-            webBrowserComponent = new WebView2();
+            webBrowserComponent = new DynamoWebView2();
+
             webBrowserComponent.Margin = new System.Windows.Thickness(popupBordersOffSet, 0, 0, 0);
             webBrowserComponent.Width = popupViewModel.Width;
             //The height is subtracted by a const that sums the height of the header and footer of the popup

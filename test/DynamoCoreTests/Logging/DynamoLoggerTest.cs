@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Dynamo.Configuration;
 using Dynamo.Core;
@@ -31,7 +31,7 @@ namespace Dynamo.Tests.Loggings
                 VerboseLogging = true
             };
 
-            var logger = new DynamoLogger(debugSettings, pathManager.LogDirectory, false);
+            var logger = new DynamoLogger(debugSettings, pathManager.LogDirectory, false, false, false);
 
             return logger;
         }

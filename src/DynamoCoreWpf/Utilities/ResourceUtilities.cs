@@ -1,7 +1,9 @@
 using Dynamo.Logging;
+using Dynamo.Models;
 using Dynamo.Wpf.Properties;
 using Dynamo.Wpf.UI.GuidedTour;
 using Dynamo.Wpf.Utilities;
+using DynamoUtilities;
 using Microsoft.Web.WebView2.Wpf;
 using System;
 using System.Collections.Generic;
@@ -578,12 +580,12 @@ namespace Dynamo.Utilities
         /// Loads HTML file from resource assembly and replace it's key values by base64 files
         /// </summary>
         /// <param name="htmlPage">Contains filename and resources to be loaded in page</param>
-        /// <param name="webBrowserComponent">WebView2 instance that will be initialized</param>
+        /// <param name="webBrowserComponent">DynamoWebView2 instance that will be initialized</param>
         /// <param name="resourcesPath">Path of the resources that will be loaded into the HTML page</param>
         /// <param name="fontStylePath">Path to the Font Style that will be used in some part of the HTML page</param>
         /// <param name="localAssembly">Local Assembly in which the resource will be loaded</param>
         /// <param name="userDataFolder">the folder that WebView2 will use for storing cache info</param>
-        internal static async void LoadWebBrowser(HtmlPage htmlPage, WebView2 webBrowserComponent, string resourcesPath, string fontStylePath, Assembly localAssembly, string userDataFolder = default(string))
+        internal static async void LoadWebBrowser(HtmlPage htmlPage, DynamoWebView2 webBrowserComponent, string resourcesPath, string fontStylePath, Assembly localAssembly, string userDataFolder = default(string))
         {
             try
             {
@@ -597,17 +599,25 @@ namespace Dynamo.Utilities
                     //This indicates in which location will be created the WebView2 cache folder
                     webBrowserComponent.CreationProperties = new CoreWebView2CreationProperties()
                     {
-                        UserDataFolder = userDataFolder
+                        UserDataFolder = DynamoModel.IsTestMode ? TestUtilities.UserDataFolderDuringTests(nameof(ResourceUtilities)) : userDataFolder
                     };
                 }
 
-                await webBrowserComponent.EnsureCoreWebView2Async();
-                // Context menu disabled
-                webBrowserComponent.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
-                webBrowserComponent.NavigateToString(bodyHtmlPage);
+                try
+                {
+                    await webBrowserComponent.Initialize();
 
-                webBrowserComponent.CoreWebView2.Settings.IsZoomControlEnabled = false;
-                webBrowserComponent.CoreWebView2.Settings.IsPinchZoomEnabled = false;
+                    // Context menu disabled
+                    webBrowserComponent.CoreWebView2.Settings.AreDefaultContextMenusEnabled = false;
+                    webBrowserComponent.NavigateToString(bodyHtmlPage);
+
+                    webBrowserComponent.CoreWebView2.Settings.IsZoomControlEnabled = false;
+                    webBrowserComponent.CoreWebView2.Settings.IsPinchZoomEnabled = false;
+                }
+                catch (ObjectDisposedException ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
             }
             catch (Exception ex)
             {

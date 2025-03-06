@@ -4,7 +4,6 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Core;
-using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.PackageManager;
@@ -22,7 +21,7 @@ namespace Dynamo.WorkspaceDependency
     public class WorkspaceDependencyViewExtension : ViewExtensionBase, IViewExtension, ILogSource
     {
         internal MenuItem workspaceReferencesMenuItem;
-        private readonly String extensionName = Properties.Resources.ExtensionName;
+        private readonly String extensionName = Resources.ExtensionName;
         private readonly string customNodeExtension = ".dyf";
 
         internal WorkspaceDependencyView DependencyView
@@ -74,11 +73,6 @@ namespace Dynamo.WorkspaceDependency
             externalFilesDataRows = null;
         }
 
-
-        [Obsolete("This method is not implemented and will be removed.")]
-        public void Ready(ReadyParams readyParams)
-        {
-        }
 
         public override void Startup(ViewStartupParams viewStartupParams)
         {
@@ -150,7 +144,7 @@ namespace Dynamo.WorkspaceDependency
             viewLoadedParams.AddExtensionMenuItem(workspaceReferencesMenuItem);
         }
 
-                /// <summary>
+        /// <summary>
         /// Regenerate dependency table
         /// </summary>
         /// <param name="ws">workspace model</param>
@@ -159,7 +153,7 @@ namespace Dynamo.WorkspaceDependency
         {
             DependencyView.RestartBanner.Visibility = Visibility.Hidden;
             ws.ForceComputeWorkspaceReferences = forceCompute;
-
+            // Dependency infos for each category
             var packageDependencies = ws.NodeLibraryDependencies?.Where(d => d is PackageDependencyInfo).ToList();
             var localDefinitions = ws.NodeLocalDefinitions?.Where(d => d is DependencyInfo).ToList();
             var externalFiles = ws.ExternalFiles?.Where(d => d is DependencyInfo).ToList();
@@ -183,9 +177,8 @@ namespace Dynamo.WorkspaceDependency
                 }
                 catch (Exception ex)
                 {
-                    OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
+                    OnMessageLogged(LogMessage.Info(string.Format(Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
                 }
-
                 HasDependencyIssue = string.IsNullOrEmpty(info.Path);
             }
 
@@ -203,11 +196,11 @@ namespace Dynamo.WorkspaceDependency
                 HasDependencyIssue = true;
             }
 
-            if (packageDependencies.Any())
+            if (packageDependencies.Count != 0)
             {
                 Boolean hasPackageMarkedForUninstall = false;
                 // If package is set to uninstall state, update the package info
-                foreach (var package in pmExtension.PackageLoader.LocalPackages.Where(x => 
+                foreach (var package in pmExtension.PackageLoader.LocalPackages.Where(x =>
                 x.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForDeletion || x.LoadState.ScheduledState == PackageLoadState.ScheduledTypes.ScheduledForUnload))
                 {
                     try
@@ -218,11 +211,11 @@ namespace Dynamo.WorkspaceDependency
                     }
                     catch (Exception ex)
                     {
-                        OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, $"failure to set package uninstall state |{ ex.ToString()}")));
+                        OnMessageLogged(LogMessage.Info(string.Format(Resources.DependencyViewExtensionErrorTemplate, $"failure to set package uninstall state |{ex.ToString()}")));
                     }
                 }
 
-                DependencyView.RestartBanner.Visibility = hasPackageMarkedForUninstall ? Visibility.Visible: Visibility.Hidden;
+                DependencyView.RestartBanner.Visibility = hasPackageMarkedForUninstall ? Visibility.Visible : Visibility.Hidden;
             }
 
             if (pmExtension != null)
@@ -239,24 +232,30 @@ namespace Dynamo.WorkspaceDependency
                     }
                     catch (Exception ex)
                     {
-                        OnMessageLogged(LogMessage.Info(string.Format(Properties.Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
+                        OnMessageLogged(LogMessage.Info(string.Format(Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
                     }
                 }
             }
+            try
+            {
+                dataRows = packageDependencies?.Select(d => new PackageDependencyRow(d as PackageDependencyInfo));
+                localDefinitionDataRows = localDefinitions?.Select(d => new DependencyRow(d as DependencyInfo));
+                externalFilesDataRows = externalFiles?.Select(d => new DependencyRow(d as DependencyInfo));
 
-            dataRows = packageDependencies.Select(d => new PackageDependencyRow(d as PackageDependencyInfo));
-            localDefinitionDataRows = localDefinitions.Select(d => new DependencyRow(d as DependencyInfo));
-            externalFilesDataRows = externalFiles.Select(d => new DependencyRow(d as DependencyInfo));
+                DependencyView.Packages.IsExpanded = dataRows.Any();
+                DependencyView.LocalDefinitions.IsExpanded = localDefinitionDataRows.Any();
+                DependencyView.ExternalFiles.IsExpanded = externalFilesDataRows.Any();
 
-            DependencyView.Packages.IsExpanded = dataRows.Count() > 0;
-            DependencyView.LocalDefinitions.IsExpanded = localDefinitionDataRows.Count() > 0;
-            DependencyView.ExternalFiles.IsExpanded = externalFilesDataRows.Count() > 0;
+                ws.ForceComputeWorkspaceReferences = false;
 
-            ws.ForceComputeWorkspaceReferences = false;
-
-            DependencyView.PackageDependencyTable.ItemsSource = dataRows;
-            DependencyView.LocalDefinitionsTable.ItemsSource = localDefinitionDataRows;
-            DependencyView.ExternalFilesTable.ItemsSource = externalFilesDataRows;
+                DependencyView.PackageDependencyTable.ItemsSource = dataRows;
+                DependencyView.LocalDefinitionsTable.ItemsSource = localDefinitionDataRows;
+                DependencyView.ExternalFilesTable.ItemsSource = externalFilesDataRows;
+            }
+            catch(Exception ex)
+            {
+                OnMessageLogged(LogMessage.Info(string.Format(Resources.DependencyViewExtensionErrorTemplate, ex.ToString())));
+            }
         }
 
         public override void Closed()

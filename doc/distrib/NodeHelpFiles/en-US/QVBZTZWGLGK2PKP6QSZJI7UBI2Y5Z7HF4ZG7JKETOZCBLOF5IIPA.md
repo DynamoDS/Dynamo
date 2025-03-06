@@ -1,0 +1,11 @@
+<!--- Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.DuplicateFaces --->
+<!--- QVBZTZWGLGK2PKP6QSZJI7UBI2Y5Z7HF4ZG7JKETOZCBLOF5IIPA --->
+## In Depth
+The node `TSplineSurface.DuplicateFaces` creates a new T-Spline surface made of selected copied faces only. 
+
+In the example below, a T-Spline surface is created through `TSplineSurface.ByRevolve`, using a NURBS curve as a profile. 
+A set of faces on the surface is then selected using `TSplineTopology.FaceByIndex`. These faces are duplicated using `TSplineSurface.DuplicateFaces` and the resulting surface is shifted to the side for a better visualization.
+___
+## Example File
+
+![TSplineSurface.DuplicateFaces](./QVBZTZWGLGK2PKP6QSZJI7UBI2Y5Z7HF4ZG7JKETOZCBLOF5IIPA_img.jpg)    

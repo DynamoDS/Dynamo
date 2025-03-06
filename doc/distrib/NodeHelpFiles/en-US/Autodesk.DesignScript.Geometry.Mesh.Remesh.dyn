@@ -1,0 +1,582 @@
+{
+  "Uuid": "ec80dac8-d374-4c48-87de-f80b83e0fda2",
+  "IsCustomNode": false,
+  "Description": null,
+  "Name": "Autodesk.DesignScript.Geometry.Mesh.Remesh",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.ImportFile@string",
+      "Id": "384acbe5ede847e093548480ce139132",
+      "Inputs": [
+        {
+          "Id": "11c43e8f215a4debb7b1f6ef52b0dcf7",
+          "Name": "fileName",
+          "Description": "string",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "56e2edcf21de4588a234d28351dbd672",
+          "Name": "Mesh[]",
+          "Description": "Mesh[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Imports a file, parsing it into a number of Meshes. Currently supported formats are: .mix -- Meshmixer .obj -- Wavefront\n\nMesh.ImportFile (fileName: string): Mesh[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "HintPath": "C:\\Users\\Daria\\Downloads\\toyplane_obj\\toyplane.obj",
+      "InputValue": "C:\\Users\\Daria\\Downloads\\toyplane_obj\\toyplane.obj",
+      "NodeType": "ExtensionNode",
+      "Id": "6ffb62ec45094d56bcc9ff2606f08d5a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a180b060512046be9e3a3018e970efa7",
+          "Name": "",
+          "Description": "Filename",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system to get its filename"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.Edges",
+      "Id": "5e050c34971c472f8e2767dc01b73fd2",
+      "Inputs": [
+        {
+          "Id": "0a435399d168496e91fc467dc5c29331",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b456db36f5e342df9e6d3918e904f7df",
+          "Name": "Line[]",
+          "Description": "Line[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Converts the Mesh edges to Lines, and returns them\n\nMesh.Edges ( ): Line[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.Rotate@Autodesk.DesignScript.Geometry.Vector,double",
+      "Id": "8a8a9521285943c08dc56927fb4e29f8",
+      "Inputs": [
+        {
+          "Id": "660a083a65f0466785c6294667d60467",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "c8984fca459d4f198fdb50491399ded1",
+          "Name": "axis",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f34ccada267843bcb65ad08103c051b7",
+          "Name": "degrees",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1195b155d1c74049b5b75d62303cf2ee",
+          "Name": "Mesh",
+          "Description": "Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Rotate the Mesh around the input axis by input degrees. Rotation is centered at the origin\n\nMesh.Rotate (axis: Vector, degrees: double = 0): Mesh"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.XAxis",
+      "Id": "050c86867a294fb0a81f8a2ddd4b1896",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "103574bf7e4141f0b0a22fd0d7d5b097",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the canonical X axis Vector (1,0,0)\n\nVector.XAxis ( ): Vector"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "90;",
+      "Id": "7296646093e64e86864c6c0f25b772a8",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "f0434cd9c0814250bfd5441b43440628",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.Remesh",
+      "Id": "15cb0137ae5e4827a8bec2844f0ca5cf",
+      "Inputs": [
+        {
+          "Id": "4feedc40a24944ee8b9740539653dd74",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "006706e99be34753b212b25558804585",
+          "Name": "mesh",
+          "Description": "mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns a new Mesh distributing triangles more evenly over the whole of the selection regardless of any change in triangle normals across the given selection.\n\nMesh.Remesh ( ): Mesh"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.Translate@Autodesk.DesignScript.Geometry.Vector,double",
+      "Id": "1da99b4b0a164a859dcb7bbdb6bef9fe",
+      "Inputs": [
+        {
+          "Id": "26a7c827435a44679ace19d31b5fb6af",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "32a502f3d0c547a4a7977258f2ad72b8",
+          "Name": "vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "57033239442e495ba0c9cd08ff9e9158",
+          "Name": "distance",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "1d493abfb3c94cd590236028d6265a8e",
+          "Name": "Mesh",
+          "Description": "Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Translate the Mesh in the direction of the input Vector by the input distance\n\nMesh.Translate (vector: Vector, distance: double = 0): Mesh"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "50;",
+      "Id": "cea829f3df044c1bb210463759fb9e1a",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "d3de31065b9840a6a7a1af4f6abe8198",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.Edges",
+      "Id": "3b800d1eaf8e49969e17924440e09875",
+      "Inputs": [
+        {
+          "Id": "9d7877e38c3842d3bb344da7e21872ad",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "812de75b2558491094959c3f327deece",
+          "Name": "Line[]",
+          "Description": "Line[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Converts the Mesh edges to Lines, and returns them\n\nMesh.Edges ( ): Line[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "DSCore.List.FirstItem@var[]..[]",
+      "Id": "cecae7833c604341ad9bb17418ca9d71",
+      "Inputs": [
+        {
+          "Id": "3753bc8a49ad45c886c5041767320bbf",
+          "Name": "list",
+          "Description": "List to get the first item from.\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "2a0b59d09c48461cb43d7992c5451dbb",
+          "Name": "item",
+          "Description": "First item in the list.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the first item in a list.\n\nList.FirstItem (list: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Vector.XAxis",
+      "Id": "e470f3dc90cf45179dc2c48ea97e4399",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "61d77f927d864ccab0464bcbf629efe8",
+          "Name": "Vector",
+          "Description": "Vector",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Get the canonical X axis Vector (1,0,0)\n\nVector.XAxis ( ): Vector"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "56e2edcf21de4588a234d28351dbd672",
+      "End": "3753bc8a49ad45c886c5041767320bbf",
+      "Id": "86ee283e2c6c4486a5e4c58abbfe3ea8"
+    },
+    {
+      "Start": "a180b060512046be9e3a3018e970efa7",
+      "End": "11c43e8f215a4debb7b1f6ef52b0dcf7",
+      "Id": "020306df1506493685c964373d4b90ae"
+    },
+    {
+      "Start": "1195b155d1c74049b5b75d62303cf2ee",
+      "End": "0a435399d168496e91fc467dc5c29331",
+      "Id": "3794e41173164c4fadd891a3e6bced74"
+    },
+    {
+      "Start": "1195b155d1c74049b5b75d62303cf2ee",
+      "End": "26a7c827435a44679ace19d31b5fb6af",
+      "Id": "4c43c30ecc0048a28ba2f1acfea19612"
+    },
+    {
+      "Start": "103574bf7e4141f0b0a22fd0d7d5b097",
+      "End": "c8984fca459d4f198fdb50491399ded1",
+      "Id": "2ed31d0c1db043d897560c03ece28c37"
+    },
+    {
+      "Start": "f0434cd9c0814250bfd5441b43440628",
+      "End": "f34ccada267843bcb65ad08103c051b7",
+      "Id": "28ae3ff48fe2421d8dcfd079413c5b84"
+    },
+    {
+      "Start": "006706e99be34753b212b25558804585",
+      "End": "9d7877e38c3842d3bb344da7e21872ad",
+      "Id": "652aa2d8892845b69f8263505c086725"
+    },
+    {
+      "Start": "1d493abfb3c94cd590236028d6265a8e",
+      "End": "4feedc40a24944ee8b9740539653dd74",
+      "Id": "b0dc035d828d4fa197173ba33b9ada9b"
+    },
+    {
+      "Start": "d3de31065b9840a6a7a1af4f6abe8198",
+      "End": "57033239442e495ba0c9cd08ff9e9158",
+      "Id": "c01daaacd5cf4533a755bf3ea337668f"
+    },
+    {
+      "Start": "2a0b59d09c48461cb43d7992c5451dbb",
+      "End": "660a083a65f0466785c6294667d60467",
+      "Id": "dd64ba798d7840f3a6b4760aace16696"
+    },
+    {
+      "Start": "61d77f927d864ccab0464bcbf629efe8",
+      "End": "32a502f3d0c547a4a7977258f2ad72b8",
+      "Id": "187ce4b02cac4abc9a1c3f6c0df36383"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "MeshToolkit",
+      "Version": "3.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "384acbe5ede847e093548480ce139132",
+        "5e050c34971c472f8e2767dc01b73fd2",
+        "8a8a9521285943c08dc56927fb4e29f8",
+        "15cb0137ae5e4827a8bec2844f0ca5cf",
+        "1da99b4b0a164a859dcb7bbdb6bef9fe",
+        "3b800d1eaf8e49969e17924440e09875"
+      ]
+    }
+  ],
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.6.1.8786",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": 38.830537397170012,
+      "EyeY": 28.793055368747844,
+      "EyeZ": 56.292729037755066,
+      "LookX": 6.2479896165469242,
+      "LookY": -33.512149338730516,
+      "LookZ": -68.79526517842227,
+      "UpX": 0.0211146194335624,
+      "UpY": 0.97236992039772019,
+      "UpZ": -0.23248851746268348
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": false,
+        "Name": "Mesh.ImportFile",
+        "Id": "384acbe5ede847e093548480ce139132",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 291.85710904151688,
+        "Y": 460.39333333333332
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "File Path",
+        "Id": "6ffb62ec45094d56bcc9ff2606f08d5a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": -73.142890958483122,
+        "Y": 460.39333333333332
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.Edges",
+        "Id": "5e050c34971c472f8e2767dc01b73fd2",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1108.0589537222779,
+        "Y": 462.24565183266907
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.Rotate",
+        "Id": "8a8a9521285943c08dc56927fb4e29f8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 870.85710904151688,
+        "Y": 528.39333333333332
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Vector.XAxis",
+        "Id": "050c86867a294fb0a81f8a2ddd4b1896",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 600.713324137543,
+        "Y": 666.463277486975
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "7296646093e64e86864c6c0f25b772a8",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 607.85710904151688,
+        "Y": 568.60666666666668
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.Remesh",
+        "Id": "15cb0137ae5e4827a8bec2844f0ca5cf",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1822.617597259416,
+        "Y": 581.67570767902725
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "Mesh.Translate",
+        "Id": "1da99b4b0a164a859dcb7bbdb6bef9fe",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1529.76138216339,
+        "Y": 571.67440881346386
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "cea829f3df044c1bb210463759fb9e1a",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1375.2083232620728,
+        "Y": 674.31909685871892
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.Edges",
+        "Id": "3b800d1eaf8e49969e17924440e09875",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 2115.3326251825956,
+        "Y": 597.3920344677698
+      },
+      {
+        "ShowGeometry": false,
+        "Name": "List.FirstItem",
+        "Id": "cecae7833c604341ad9bb17418ca9d71",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 607.85710904151688,
+        "Y": 460.39333333333332
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Vector.XAxis",
+        "Id": "e470f3dc90cf45179dc2c48ea97e4399",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1376.2252085143975,
+        "Y": 577.87514921544516
+      }
+    ],
+    "Annotations": [],
+    "X": 305.74545334778753,
+    "Y": -313.53503980536692,
+    "Zoom": 1.2059988786994931
+  }
+}

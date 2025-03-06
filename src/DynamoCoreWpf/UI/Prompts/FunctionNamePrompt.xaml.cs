@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -32,6 +32,7 @@ namespace Dynamo.Nodes
                 categoryBox.Items.Add(item);
             }
         }
+       
 
         void OK_Click(object sender, RoutedEventArgs e)
         {

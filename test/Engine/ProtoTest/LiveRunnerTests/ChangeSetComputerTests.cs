@@ -24,13 +24,6 @@ namespace ProtoTest.LiveRunner
             runtimeCore = new RuntimeCore(new Heap());
         }
 
-        private Subtree CreateSubTreeFromCode(Guid guid, string code)
-        {
-            var cbn = ProtoCore.Utils.ParserUtils.Parse(code);
-            var subtree = null == cbn ? new Subtree(null, guid) : new Subtree(cbn.Body, guid);
-            return subtree;
-        }
-
         [Test]
         public void TestAddedNodes01()
         {

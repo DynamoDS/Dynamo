@@ -1,0 +1,259 @@
+{
+  "Uuid": "6c68174c-0d10-4c6f-8242-859c528f8659",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "CoreNodeModels.Input.CustomSelection",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.CustomSelection, CoreNodeModels",
+      "IsVisibleDropDownTextBlock": true,
+      "SerializedItems": [
+        {
+          "Name": "One",
+          "Item": "1"
+        },
+        {
+          "Name": "Two",
+          "Item": "2"
+        },
+        {
+          "Name": "Three",
+          "Item": "3"
+        }
+      ],
+      "SelectedIndex": 1,
+      "SelectedString": "Two",
+      "Id": "c9e9572249d6468ba64c011d04c2fc27",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "3a219657ecac427aa08ebfaa23048a4d",
+          "Name": "Value",
+          "Description": "The selected Value",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A dropdown menu with customizable values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NumberType": "Double",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "Id": "052858ea06d54cad91d5f0f9442e9da0",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "9e02181aa5234ed6ae3468b67ac31f2c",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Produces numeric values",
+      "InputValue": 15.0
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "7fff5f84e8b7441a854f7bdb98117365",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "de90646522e04ed894d2f3ea6c08679e",
+          "Name": "x",
+          "Description": "Integer or double value\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "8fdda69ef6614ca3bf5554717f8de471",
+          "Name": "y",
+          "Description": "Integer or double value\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c1c1feb9818146f199ee9033b5cea7be",
+          "Name": "number",
+          "Description": "The product of the two input numbers",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "*@var[]..[],var[]..[]",
+      "Replication": "Auto",
+      "Description": "Returns multiplication of x times y\n\n* (x: var[]..[], y: var[]..[]): var[]..[]"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 34.666666666666664,
+      "WatchHeight": 38.0,
+      "Id": "65205449e23b43d3b3f60f83009dca2e",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "cc61a4f4e4d04a4e835ef38f4b78346b",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "3ce6e4cd2d204ad6adc4eb16a2c8084e",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "3a219657ecac427aa08ebfaa23048a4d",
+      "End": "de90646522e04ed894d2f3ea6c08679e",
+      "Id": "13e3e922ac6c45d1b472240e5c5c5f8e",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "9e02181aa5234ed6ae3468b67ac31f2c",
+      "End": "8fdda69ef6614ca3bf5554717f8de471",
+      "Id": "65b6aadb9637429bbfefd6e9ff902ce3",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c1c1feb9818146f199ee9033b5cea7be",
+      "End": "cc61a4f4e4d04a4e835ef38f4b78346b",
+      "Id": "00786ef930a84c7cb1a7cdd305ab4d2d",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": null,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.2",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "8.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.2.1.5376",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "c9e9572249d6468ba64c011d04c2fc27",
+        "Name": "Custom Selection",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 367.66666666666674,
+        "Y": 456.33333333333337
+      },
+      {
+        "Id": "052858ea06d54cad91d5f0f9442e9da0",
+        "Name": "Number Slider",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 365.66666666666674,
+        "Y": 846.3333333333333
+      },
+      {
+        "Id": "7fff5f84e8b7441a854f7bdb98117365",
+        "Name": "*",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 803.6666666666665,
+        "Y": 455.66666666666663
+      },
+      {
+        "Id": "65205449e23b43d3b3f60f83009dca2e",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1087.0,
+        "Y": 455.66666666666663
+      }
+    ],
+    "Annotations": [],
+    "X": -643.581216931217,
+    "Y": -686.2510582010581,
+    "Zoom": 1.842063492063492
+  }
+}

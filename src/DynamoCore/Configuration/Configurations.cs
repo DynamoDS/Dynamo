@@ -39,16 +39,34 @@ namespace Dynamo.Configuration
         public static readonly double IntegerSliderTextBoxWidth = 30.0;
 
         /// <summary>
-        /// Maximum width of Watch Node
+        /// Const string of Autodesk
         /// </summary>
-        [Obsolete("This property is no longer used. Remove in Dynamo 3.0")]
-        public static readonly double MaxWatchNodeWidth = 280.0;
+        public static readonly string AutodeskAsString = "Autodesk";
 
         /// <summary>
-        /// Maximum height of Watch Node
+        /// Const string of Dynamo
         /// </summary>
-        [Obsolete("This property is no longer used. Remove in Dynamo 3.0")]
-        public static readonly double MaxWatchNodeHeight = 310.0;
+        public static readonly string DynamoAsString = "Dynamo";
+
+        /// <summary>
+        /// Const string for Dynamo Node Help Docs
+        /// </summary>
+        public static readonly string DynamoNodeHelpDocs = "NodeHelpSharedDocs";
+
+        /// <summary>
+        /// Const used for zoom-to-fit calculations for nodes and groups in the workspace.
+        /// </summary>
+        public static readonly double ZoomToFitPaddingFactor = 3.5;
+
+        /// <summary>
+        /// Const used to define the interaction or hit area thickness for connectors in the workspace.
+        /// </summary>
+        public static readonly double ConnectorBaseThickness = 3;
+
+        /// <summary>
+        /// Const defining the scaling factor for adjusting connector stroke thickness based on zoom level.
+        /// </summary>
+        public const double ConnectorZoomScalingFactor = 2.0;
 
         #endregion
 
@@ -251,12 +269,6 @@ namespace Dynamo.Configuration
         #endregion
 
         #region CodeBlockNode
-
-        /// <summary>
-        ///     Default height of CodeBlock's port. Now obsolete.
-        ///     Inputs height are set in the normal way, outputs height is set to CodeBlockOutputPortHeightInPixels
-        /// </summary>
-        [Obsolete] public static readonly double CodeBlockPortHeightInPixels = 17.573333333333336;
 
         /// <summary>
         ///     Code Block outputs have a condensed port height

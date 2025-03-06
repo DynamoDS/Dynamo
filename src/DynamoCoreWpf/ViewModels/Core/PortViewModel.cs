@@ -1,9 +1,11 @@
 using System;
+using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
-using Dynamo.Models;
+using Dynamo.Search.SearchElements;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
 
@@ -22,6 +24,7 @@ namespace Dynamo.ViewModels
         private DelegateCommand keepListStructureCommand;
         private bool showUseLevelMenu;
         private const double autocompletePopupSpacing = 2.5;
+        private const double proxyPortContextMenuOffset = 20;
         internal bool inputPortDisconnectedByConnectCommand = false;
         protected static readonly SolidColorBrush PortBackgroundColorPreviewOff = new SolidColorBrush(Color.FromRgb(102, 102, 102));
         protected static readonly SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
@@ -122,19 +125,10 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Returns whether this port has a default value that can be used.
-        /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public bool DefaultValueEnabled
-        {
-            get { return port.DefaultValue != null; }
-        }
-        
-        /// <summary>
         /// Returns whether the port is using its default value, or whether this been disabled
         /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public bool UsingDefaultValue
+        [Obsolete("This method will be removed in a future version of Dynamo - please use the InPortViewModel")]
+        internal bool UsingDefaultValue
         {
             get { return port.UsingDefaultValue; }
             set
@@ -143,7 +137,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
         /// IsHitTestVisible property gets a value that declares whether 
         /// a Snapping rectangle can possibly be returned as a hit test result.
         /// When FirstActiveConnector is not null, Snapping rectangle handles click events.
@@ -168,8 +161,8 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// If should display Use Levels popup menu. 
         /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public bool ShowUseLevelMenu
+        [Obsolete("This method will be removed in a future version of Dynamo - please use the InPortViewModel")]
+        internal bool ShowUseLevelMenu
         {
             get
             {
@@ -179,56 +172,6 @@ namespace Dynamo.ViewModels
             {
                 showUseLevelMenu = value;
                 RaisePropertyChanged(nameof(ShowUseLevelMenu));
-            }
-        }
-
-        /// <summary>
-        /// If UseLevel is enabled on this port.
-        /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public bool UseLevels
-        {
-            get { return port.UseLevels; }
-        }
-
-        /// <summary>
-        /// If should keep list structure on this port.
-        /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public bool ShouldKeepListStructure
-        {
-            get { return port.KeepListStructure; }
-        }
-
-        /// <summary>
-        /// Levle of list.
-        /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public int Level
-        {
-            get { return port.Level; }
-            set
-            {
-                ChangeLevel(value);
-            }
-        }
-
-        /// <summary>
-        /// The visibility of Use Levels menu.
-        /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public Visibility UseLevelVisibility
-        {
-            get
-            {
-                if (node.ArgumentLacing != LacingStrategy.Disabled)
-                {
-                    return Visibility.Visible;
-                }
-                else
-                {
-                    return Visibility.Collapsed;
-                }
             }
         }
 
@@ -298,6 +241,33 @@ namespace Dynamo.ViewModels
             return new PortViewModel(node, portModel);
         }
 
+        private UIElement FindProxyPortUIElement(PortViewModel proxyPortViewModel)
+        {
+            var mainWindow = Application.Current.MainWindow;
+
+            return FindChild<UIElement>(mainWindow, e =>
+                e is FrameworkElement fe && fe.DataContext == proxyPortViewModel);
+        }
+
+        private T FindChild<T>(DependencyObject parent, Func<T, bool> predicate) where T : DependencyObject
+        {
+            if (parent == null) return null;
+
+            for (int i = 0; i < VisualTreeHelper.GetChildrenCount(parent); i++)
+            {
+                var child = VisualTreeHelper.GetChild(parent, i);
+                if (child is T t && predicate(t))
+                {
+                    return t;
+                }
+
+                var foundChild = FindChild(child, predicate);
+                if (foundChild != null)
+                    return foundChild;
+            }
+            return null;
+        }
+
         /// <summary>
         /// Sets up the node autocomplete window to be placed relative to the node.
         /// </summary>
@@ -314,8 +284,45 @@ namespace Dynamo.ViewModels
         /// <param name="popup">Node context menu popup.</param>
         internal void SetupPortContextMenuPlacement(Popup popup)
         {
+            var zoom = node.WorkspaceViewModel.Zoom;
+
+            if (PortModel.IsProxyPort)
+            {
+                // Find the UI element associated with the proxy port
+                var proxyPortElement = FindProxyPortUIElement(this);
+                if (proxyPortElement != null)
+                {
+                    popup.PlacementTarget = proxyPortElement;
+                    ConfigurePopupPlacement(popup, zoom);
+                    return;
+                }
+            }
+
             node.OnRequestPortContextMenuPlacementTarget(popup);
             popup.CustomPopupPlacementCallback = PlacePortContextMenu;
+        }
+
+        /// <summary>
+        /// Configures the custom placement of the proxyport context menu popup.
+        /// </summary>
+        private void ConfigurePopupPlacement(Popup popup, double zoom)
+        {
+            popup.CustomPopupPlacementCallback = (popupSize, targetSize, offset) =>
+            {
+                double x;
+                double y = (targetSize.Height - popupSize.Height) / 2;
+
+                if (this is InPortViewModel)
+                {
+                    x = -popupSize.Width + proxyPortContextMenuOffset * zoom;                    
+                }
+                else
+                {
+                    x = targetSize.Width - proxyPortContextMenuOffset * zoom;
+                }
+
+                return new[] { new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None) };
+            };
         }
 
         private CustomPopupPlacement[] PlaceAutocompletePopup(Size popupSize, Size targetSize, Point offset)
@@ -365,7 +372,7 @@ namespace Dynamo.ViewModels
                 x = scaledWidth + targetSize.Width;
             }
             // Important - while zooming in and out, Node elements are scaled, while popup is not
-            // Calculate absolute popup halfheight to deduct from the overal y pos
+            // Calculate absolute popup halfheight to deduct from the overall y pos
             // Then add the header, port height and port index position
             var popupHeightOffset = - popupSize.Height * 0.5;
             var headerHeightOffset = 2 * NodeModel.HeaderHeight * zoom;
@@ -446,47 +453,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
-        /// UseLevels command
-        /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public DelegateCommand UseLevelsCommand
-        {
-            get
-            {
-                if (useLevelsCommand == null)
-                {
-                    useLevelsCommand = new DelegateCommand(null, p => true);
-                }
-                return useLevelsCommand;
-            }
-        }
-
-        /// <summary>
-        /// ShouldKeepListStructure command
-        /// </summary>
-        [Obsolete("This method will be removed in Dynamo 3.0 - please use the InPortViewModel")]
-        public DelegateCommand KeepListStructureCommand
-        {
-            get
-            {
-                if (keepListStructureCommand == null)
-                {
-                    keepListStructureCommand = new DelegateCommand(null, p => true);
-                }
-                return keepListStructureCommand;
-            }
-        }
-
-        //Todo remove in 2.13
-        private void ChangeLevel(int level)
-        {
-            var command = new DynamoModel.UpdateModelValueCommand(
-                Guid.Empty, node.NodeLogic.GUID, "ChangeLevel", string.Format("{0}:{1}", port.Index, level));
-
-            node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(command);
-        }
-        
+       
         private void Connect(object parameter)
         {
             DynamoViewModel dynamoViewModel = this.node.DynamoViewModel;
@@ -513,7 +480,80 @@ namespace Dynamo.ViewModels
 
             // Bail out from connect state
             wsViewModel.CancelActiveState();
+
+            if (PortModel != null && !PortModel.CanAutoCompleteInput())
+            {
+                return;
+            }
+
+
             wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+        }
+
+        // Handler to invoke Node autocomplete cluster
+        private void AutoCompleteCluster(object parameter)
+        {
+            // Put a C# timer here to test the cluster placement mock
+            Stopwatch stopwatch = Stopwatch.StartNew();
+            var wsViewModel = node.WorkspaceViewModel;
+            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
+
+            // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
+            if (this.inputPortDisconnectedByConnectCommand)
+            {
+                wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
+            }
+
+            // Bail out from connect state
+            wsViewModel.CancelActiveState();
+
+            if (PortModel != null && !PortModel.CanAutoCompleteInput())
+            {
+                return;
+            }
+            
+            // Create mock nodes, currently Watch nodes (to avoid potential memory leak from Python Editor), and connect them to the input port
+            var targetNodeSearchEle = wsViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.ToList()[5];
+            targetNodeSearchEle.CreateAndConnectCommand.Execute(wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel);
+
+            var sizeOfMockCluster = 3;
+            var n = 1;
+            while (n < sizeOfMockCluster)
+            {
+                // Get the last node and connect a new node to it
+                var node1 = wsViewModel.Nodes.LastOrDefault();
+                node1.IsTransient = true;
+                targetNodeSearchEle.CreateAndConnectCommand.Execute(node1.InPorts.FirstOrDefault().PortModel);
+                n++;
+            }
+
+            wsViewModel.Nodes.LastOrDefault().IsTransient = true;
+
+            stopwatch.Stop(); // Stop the stopwatch
+            wsViewModel.DynamoViewModel.Model.Logger.Log($"Cluster Placement Execution Time: {stopwatch.ElapsedMilliseconds} ms");
+
+            // cluster info display in right side panel
+            if (wsViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled)
+            {
+                try
+                {
+                    MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
+
+                    // Process the results and display the preview of the cluster with the highest confidence level
+                    // Leverage some API here to convert topology to actual cluster
+                    results.Results.FirstOrDefault().Topology.Nodes.ToList().ForEach(node =>
+                    {
+                        // nothing for now
+                    });
+
+                    // Display the cluster info in the right side panel
+                    // wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
+                }
+                catch (Exception e)
+                {
+                    // Log the exception and show a notification to the user
+                }
+            }
         }
 
         private void NodePortContextMenu(object obj)

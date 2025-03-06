@@ -29,23 +29,41 @@ namespace Dynamo.PackageDetails
             if (e.Handled) return;
             
             e.Handled = true;
-            var eventArg = new MouseWheelEventArgs(e.MouseDevice, e.Timestamp, e.Delta)
+
+            var parentScrollViewer = this.MainScrollViewer;
+            if (parentScrollViewer != null)
             {
-                RoutedEvent = MouseWheelEvent,
-                Source = sender
-            };
-            var parent = ((Control)sender).Parent as UIElement;
-            parent?.RaiseEvent(eventArg);
+                parentScrollViewer.ScrollToVerticalOffset(parentScrollViewer.VerticalOffset - e.Delta);
+            }
+         
         }
 
+        /// <summary>
+        /// The DataContext of this control is an individual PackageDetailItem
+        /// Scroll up to the start of the item's info page when we assign a new PackageDetailItem
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void FrameworkElement_OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            MainScrollViewer.ScrollToTop();
+            this.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                MainScrollViewer.ScrollToTop();
+            }), System.Windows.Threading.DispatcherPriority.Loaded);
         }
 
         private void Hyperlink_RequestNavigate(object sender, RequestNavigateEventArgs e)
         {
-            System.Diagnostics.Process.Start(new ProcessStartInfo(e.Uri.ToString()) { UseShellExecute = true });
+            try
+            {
+                System.Diagnostics.Process.Start(new ProcessStartInfo(e.Uri.ToString()) { UseShellExecute = true });
+            }
+            catch (Exception ex)
+            {
+                // Have to make packageManagerClientViewModel internal in order to get to the DynamoViewModel/Model/Logger
+                var dataContext = this.DataContext as PackageDetailsViewModel;
+                dataContext?.packageManagerClientViewModel?.DynamoViewModel?.Model.Logger.Log("Error navigating to package url: " + ex.StackTrace);
+            }
             e.Handled = true;
         }
 
@@ -53,5 +71,12 @@ namespace Dynamo.PackageDetails
         {
             Closed?.Invoke(this, EventArgs.Empty);
         }
+
+        // Disables DataGrid interactions on mousedown (selection)
+        private void DataGrid_PreviewMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            e.Handled = true;
+        }
     }
+    
 }

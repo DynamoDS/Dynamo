@@ -1,0 +1,23 @@
+{
+    "license": "MIT",
+    "file_hash": null,
+    "name": "TestCP311",
+    "version": "1.0.8",
+    "description": "***This is a test package ***",
+    "group": "",
+    "keywords": [],
+    "dependencies": [],
+    "host_dependencies": [],
+    "contents": "",
+    "engine_version": "3.3.0.6046",
+    "engine": "dynamo",
+    "engine_metadata": "",
+    "site_url": "https://dynamobim.org/",
+    "repository_url": "https://github.com/DynamoDS/Dynamo",
+    "contains_binaries": true,
+    "node_libraries": [
+        "DSPythonNet3Empty, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null"
+    ],
+    "copyright_holder": "DynamoTeam",
+    "copyright_year": "2024"
+}

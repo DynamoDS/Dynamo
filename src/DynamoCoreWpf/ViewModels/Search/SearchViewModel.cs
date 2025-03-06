@@ -5,6 +5,8 @@ using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using Dynamo.Configuration;
@@ -18,7 +20,9 @@ using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Services;
+using Dynamo.Wpf.Utilities;
 using Dynamo.Wpf.ViewModels;
+using DynamoUtilities;
 
 namespace Dynamo.ViewModels
 {
@@ -73,7 +77,15 @@ namespace Dynamo.ViewModels
             set { browserVisibility = value; RaisePropertyChanged("BrowserVisibility"); }
         }
 
-        private string searchText;
+        internal int searchDelayTimeout = 150;
+        // Feature flags activated debouncer for the search UI.
+        internal ActionDebouncer searchDebouncer = null;
+        // Cancel token source used for the node search operations.
+        internal CancellationTokenSource searchCancelToken;
+        // Enable running Search on a thread pool thread.
+        private bool enableSearchThreading;
+
+        private string searchText = string.Empty;
         /// <summary>
         ///     SearchText property
         /// </summary>
@@ -86,10 +98,28 @@ namespace Dynamo.ViewModels
             set
             {
                 searchText = value;
-                OnSearchTextChanged(this, EventArgs.Empty);
+
                 RaisePropertyChanged("SearchText");
                 RaisePropertyChanged("BrowserRootCategories");
                 RaisePropertyChanged("CurrentMode");
+
+                // The searchText is set multiple times before the control becomes visible and interactable.
+                // To prevent any debounces from triggering at some unexpected point before or after the control
+                // becomes visible, this flag is only set once the searchText value is set by the user
+                // (unless it somehow gets set somewhere else)
+                //
+                // pinzart: The search text is set multiple times with an empty value. Seems sufficient to only use the debouncer
+                // if we get a non-empty value.
+                if (!string.IsNullOrEmpty(searchText) && searchDebouncer != null)
+                {
+                    searchDebouncer.Debounce(searchDelayTimeout, () => OnSearchTextChanged(this, EventArgs.Empty));
+                }
+                else
+                {
+                    // Make sure any previously scheduled debounces are cancelled
+                    searchDebouncer?.Cancel();
+                    OnSearchTextChanged(this, EventArgs.Empty);
+                }
             }
         }
 
@@ -374,7 +404,22 @@ namespace Dynamo.ViewModels
 
             iconServices = new IconServices(pathManager);
 
+            DynamoFeatureFlagsManager.FlagsRetrieved += TryInitializeSearchFlags;
+
             InitializeCore();
+        }
+
+        private void TryInitializeSearchFlags()
+        {
+            if (DynamoModel.FeatureFlags?.CheckFeatureFlag("searchbar_debounce", false) ?? false)
+            {
+                searchDebouncer ??= new ActionDebouncer(dynamoViewModel?.Model?.Logger);
+            }
+
+            if (DynamoModel.FeatureFlags?.CheckFeatureFlag("searchbar_separate_thread", false) ?? false)
+            {
+                enableSearchThreading = true;
+            }
         }
 
         // Just for tests. Please refer to LibraryTests.cs
@@ -407,6 +452,9 @@ namespace Dynamo.ViewModels
             Model.EntryUpdated -= UpdateEntry;
             Model.EntryRemoved -= RemoveEntry;
 
+            searchDebouncer?.Dispose();
+            DynamoFeatureFlagsManager.FlagsRetrieved -= TryInitializeSearchFlags;
+
             base.Dispose();
         }
 
@@ -434,6 +482,9 @@ namespace Dynamo.ViewModels
 
             DefineFullCategoryNames(LibraryRootCategories, "");
             InsertClassesIntoTree(LibraryRootCategories);
+
+            // If feature flags are already cached, try to initialize the debouncer
+            TryInitializeSearchFlags();
         }
 
         private void AddEntry(NodeSearchElement entry)
@@ -871,28 +922,69 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged("IsAnySearchResult");
         }
 
+        internal Task SearchAndUpdateResultsTask(string query)
+        {
+            if (Visible != true)
+                return Task.CompletedTask;
+
+            // if the search query is empty, go back to the default treeview
+            if (string.IsNullOrEmpty(query))
+                return Task.CompletedTask;
+
+            // A new search should cancel any existing searches.
+            searchCancelToken?.Cancel();
+            searchCancelToken?.Dispose();
+
+            searchCancelToken = new();
+
+            // The TaskScheduler.FromCurrentSynchronizationContext() exists only if there is a valid SyncronizationContex/
+            // Calling this method from a non UI thread could have a null SyncronizationContex.Current,
+            // so in that case we use the default TaskScheduler which uses the thread pool.
+            var taskScheduler = SynchronizationContext.Current != null ? TaskScheduler.FromCurrentSynchronizationContext() : TaskScheduler.Default;
+
+            // We run the searches on the thread pool to reduce the impact on the UI thread.
+            return Task.Run(() =>
+            {
+                return Search(query, searchCancelToken.Token);
+
+            }, searchCancelToken.Token).ContinueWith((t, o) =>
+            {
+                // This continuation will execute on the UI thread (forced by using FromCurrentSynchronizationContext())
+                searchResults = new List<NodeSearchElementViewModel>(t.Result);
+
+                FilteredResults = searchResults;
+                UpdateSearchCategories();
+            }, taskScheduler, TaskContinuationOptions.OnlyOnRanToCompletion);
+        }
+
         /// <summary>
         ///     Performs a search and updates searchResults.
         /// </summary>
         /// <param name="query"> The search query </param>
+        [Obsolete(@"This method will be removed in a future release. The internal search operation is done asyncronously, so when this method call exits, the search operation might not be done yet.
+                    Please use the task based method SearchAndUpdateResultsTask instead.")]
         public void SearchAndUpdateResults(string query)
         {
-            if (Visible != true)
-                return;
+            if (enableSearchThreading)
+            {
+                SearchAndUpdateResultsTask(query);
+            }
+            else
+            {
+                if (Visible != true)
+                    return;
 
-            // if the search query is empty, go back to the default treeview
-            if (string.IsNullOrEmpty(query))
-                return;
+                // if the search query is empty, go back to the default treeview
+                if (string.IsNullOrEmpty(query))
+                    return;
 
-            //Passing the second parameter as true will search using Lucene.NET
-            var foundNodes = Search(query);
-            searchResults = new List<NodeSearchElementViewModel>(foundNodes);
+                //Passing the second parameter as true will search using Lucene.NET
+                var foundNodes = Search(query);
+                searchResults = new List<NodeSearchElementViewModel>(foundNodes);
 
-            FilteredResults = searchResults;
-
-            UpdateSearchCategories();
-
-            RaisePropertyChanged("FilteredResults");
+                FilteredResults = searchResults;
+                UpdateSearchCategories();
+            }
         }
 
         /// <summary>
@@ -932,11 +1024,12 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
         /// <param name="search"> The search query </param>
-        internal IEnumerable<NodeSearchElementViewModel> Search(string search)
+        /// <param name="ctk">A cancellation token for this operation.</param>
+        internal IEnumerable<NodeSearchElementViewModel> Search(string search, CancellationToken ctk = default)
         {
             if (LuceneUtility != null)
             {
-                var searchElements = Model.Search(search, LuceneUtility);
+                var searchElements = Model.Search(search, LuceneUtility, ctk);
                 if (searchElements != null)
                 {
                     return searchElements.Select(MakeNodeSearchElementVM);

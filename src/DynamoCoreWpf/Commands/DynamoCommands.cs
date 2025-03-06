@@ -249,7 +249,7 @@ namespace Dynamo.ViewModels
                         nodeId, command.PortIndex, command.Type);
                     break;
 
-                // TODO - can be removed in Dynamo 3.0 - DYN-1729
+                // TODO - can be removed in a future version of Dynamo - DYN-1729
                 case DynamoModel.MakeConnectionCommand.Mode.EndAndStartCtrlConnection:
                     CurrentSpaceViewModel.BeginCreateConnections(
                         nodeId, command.PortIndex, command.Type);

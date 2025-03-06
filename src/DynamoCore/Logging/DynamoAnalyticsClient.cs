@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Autodesk.Analytics.ADP;
 using Autodesk.Analytics.Core;
 using Autodesk.Analytics.Events;
+using Dynamo.Configuration;
 using Dynamo.Models;
 using Microsoft.Win32;
 
@@ -35,8 +38,6 @@ namespace Dynamo.Logging
         public string UserId { get; private set; }
 
         public string SessionId { get; private set; }
-        [Obsolete("Do not use, will be removed, was only used by legacy instrumentation.")]
-        public ILogger Logger => throw new NotImplementedException();
 
         public static String GetUserID()
         {
@@ -96,6 +97,10 @@ namespace Dynamo.Logging
 
         public virtual IAnalyticsSession Session { get; private set; }
 
+        private DateTime LastMachineHBLogTime;
+        private DateTime LastUserHBLogTime;
+        private readonly int HeartBeatInterval = 4;
+
         /// <summary>
         /// Return if Analytics Client is allowed to send any analytics information
         /// </summary>
@@ -118,10 +123,8 @@ namespace Dynamo.Logging
             //Setup Analytics service, and StabilityCookie.
             Session.Start();
 
-            //Dynamo app version.
-            var appversion = DynamoModel.AppVersion;
-
-            var hostName = string.IsNullOrEmpty(hostAnalyticsInfo.HostName) ? "Dynamo" : hostAnalyticsInfo.HostName;
+            var hostName = string.IsNullOrEmpty(hostAnalyticsInfo.HostName) ? Configurations.DynamoAsString : hostAnalyticsInfo.HostName;
+            var appversion = hostAnalyticsInfo.HostVersion?.ToString();
 
             hostInfo = new HostContextInfo() { ParentId = hostAnalyticsInfo.ParentId, SessionId = hostAnalyticsInfo.SessionId };
 
@@ -131,7 +134,7 @@ namespace Dynamo.Logging
                 buildId = $"{version.Major}.{version.Minor}.{version.Build}"; // BuildId has the following format major.minor.build, ex: 2.5.1
                 releaseId = $"{version.Major}.{version.Minor}.0"; // ReleaseId has the following format: major.minor.0; ex: 2.5.0
             }
-            product = new ProductInfo() { Id = "DYN", Name = hostName, VersionString = appversion, AppVersion = appversion, BuildId = buildId, ReleaseId = releaseId };
+            product = new ProductInfo() { Id = "DYN", Name = hostName, VersionString = "", AppVersion = appversion, BuildId = buildId, ReleaseId = releaseId };
         }
 
         private void RegisterADPTracker(Service service)
@@ -190,7 +193,7 @@ namespace Dynamo.Logging
             {
                 serviceInitialized.Wait();
 
-                lock(trackEventLockObj)
+                lock (trackEventLockObj)
                 {
                     if (!ReportingAnalytics) return;
 
@@ -258,6 +261,55 @@ namespace Dynamo.Logging
                 }
             });
         }
+        /// <summary>
+        /// This API is used to track user/machine's activity status.
+        /// Note: This will not trigger the API at each call, instead it will
+        /// send out one call for every 4(HeartBeatInterval) minutes for each user and machine type activity.
+        /// For example, if the method gets called 100 times in 8 minutes, then it will only
+        /// trigger the HeartBeat API twice. This is to avoid sending out too many calls
+        /// as the API expects a call every 5 minutes, to mark the user/machine active.
+        /// </summary>
+        /// <param name="activityType">Value must be either Machine or User. If no value is provided the API will default to user activity type.</param>
+        public void TrackActivityStatus(string activityType)
+        {
+            if (Analytics.DisableAnalytics) return;
+
+            Task.Run(() =>
+            {
+                serviceInitialized.Wait();
+
+                lock (trackEventLockObj)
+                {
+                    if (!ReportingAnalytics) return;
+
+                    var hbType = (new[] { HeartBeatType.Machine.ToString(), HeartBeatType.User.ToString() }).Contains(activityType) ? activityType : HeartBeatType.User.ToString();
+                    LogHeartBeat(hbType);
+                }
+            });
+        }
+
+        private void LogHeartBeat(string activityType)
+        {
+            if (activityType == HeartBeatType.Machine.ToString())
+            {
+                //Only send log if atleast 4 minutes have been passed since the last log.
+                if (LastMachineHBLogTime != null && DateTime.UtcNow > LastMachineHBLogTime.AddMinutes(HeartBeatInterval))
+                {
+                    LastMachineHBLogTime = DateTime.UtcNow;
+                    var e = new HeartBeatEvent(activityType);
+                    e.Track();
+                }
+            }
+            else
+            {
+                if (LastUserHBLogTime != null && DateTime.UtcNow > LastUserHBLogTime.AddMinutes(HeartBeatInterval))
+                {
+                    LastUserHBLogTime = DateTime.UtcNow;
+                    var e = new HeartBeatEvent(activityType);
+                    e.Track();
+                }
+            }
+        }
 
         public void TrackException(Exception ex, bool isFatal)
         {
@@ -304,8 +356,13 @@ namespace Dynamo.Logging
             return Task.Run(() => CreateTimedEvent(category, variable, description, value));
         }
 
-        [Obsolete("Property will become private in Dynamo 4.0, please use CreateTaskCommandEvent")]
+        [Obsolete("Property will be removed in Dynamo 4.0, please use CreateTaskCommandEvent")]
         public IDisposable CreateCommandEvent(string name, string description, int? value)
+        {
+            return CreateCommandEvent(name, description, value, null);
+        }
+
+        private IDisposable CreateCommandEvent(string name, string description, int? value, IDictionary<string, object> parameters = null)
         {
             serviceInitialized.Wait();
 
@@ -313,17 +370,31 @@ namespace Dynamo.Logging
             {
                 if (!ReportingAnalytics) return Disposable;
 
-                var e = new CommandEvent(name) { Description = description, Value = value };
+                var e = new CommandEvent(name) { Description = description };
+
+                if (value != null)
+                {
+                    e.Value = value;
+                }
+                
+                if (parameters != null)
+                {
+                    foreach (var item in parameters)
+                    {
+                        e[item.Key] = item.Value;
+                    }
+                }    
+
                 e.Track();
                 return e;
             }
         }
 
-        public Task<IDisposable> CreateTaskCommandEvent(string name, string description, int? value)
+        public Task<IDisposable> CreateTaskCommandEvent(string name, string description, int? value, IDictionary<string, object> parameters = null)
         {
             if (Analytics.DisableAnalytics) return Task.FromResult(Disposable);
 
-            return Task.Run(() => CreateCommandEvent(name, description, value));
+            return Task.Run(() => CreateCommandEvent(name, description, null, parameters));
         }
 
         public void EndEventTask(Task<IDisposable> taskToEnd)
@@ -332,7 +403,7 @@ namespace Dynamo.Logging
 
             Task.Run(() =>
             {
-                lock(trackEventLockObj)
+                lock (trackEventLockObj)
                 {
                     taskToEnd.Wait();
                     taskToEnd.Result.Dispose();
@@ -346,7 +417,7 @@ namespace Dynamo.Logging
             serviceInitialized.Wait();
             if (!ReportingAnalytics) return Disposable;
 
-            lock(trackEventLockObj)
+            lock (trackEventLockObj)
             {
                 var e = new FileOperationEvent()
                 {
@@ -393,17 +464,18 @@ namespace Dynamo.Logging
             throw new ArgumentException("Invalid action for FileOperation.");
         }
 
-        [Obsolete("Function will be removed in Dynamo 3.0 as Dynamo will no longer support GA instrumentation.")]
-        public void LogPiiInfo(string tag, string data)
-        {
-        }
-
         public void Dispose()
         {
             // If the Analytics Client was initialized, shut it down.
             // Otherwise skip this step because it would cause an exception.
             if (Service.IsInitialized)
-                Service.ShutDown();
+            {
+                // Lock shutdown sequence in case other tracking calls might be executing concurently.
+                lock (trackEventLockObj)
+                {
+                    Service.ShutDown();
+                }
+            }
 
             if (Session != null)
             {

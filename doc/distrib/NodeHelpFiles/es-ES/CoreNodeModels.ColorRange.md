@@ -1,0 +1,7 @@
+## En detalle:
+"ColorRange" creará un degradado entre un conjunto de colores de entrada y permitirá que los colores de ese degradado se seleccionen mediante una lista de valores de entrada. La primera entrada, "colors", es una lista de colores que se utilizarán en el degradado. La segunda entrada, "indices", determinará la ubicación relativa de los colores de entrada en el degradado. Esta lista debe corresponderse con la lista de colores; cada valor se encuentra en el rango de 0 a 1. El valor exacto no es importante, solo la posición relativa de los valores. El color correspondiente al valor más bajo estará a la izquierda del degradado y el color correspondiente al valor más alto estará a la derecha del degradado. La entrada de valores finales permite al usuario seleccionar puntos a lo largo del degradado del rango de 0 a 1 para generar la salida. En el ejemplo siguiente, se crean primero estos dos colores: rojo y azul. El orden de estos colores en el degradado viene determinado por una lista creada con un bloque de código. Se utiliza un tercer bloque de código para crear un rango de números entre 0 y 1 que determinará los colores de salida del degradado. Se genera un conjunto de cubos a lo largo del eje X y estos cubos se colorean finalmente según el degradado mediante un nodo "Display.ByGeometryColor".
+___
+## Archivo de ejemplo
+
+![Color Range](./CoreNodeModels.ColorRange_img.jpg)
+

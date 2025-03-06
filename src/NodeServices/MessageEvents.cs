@@ -66,9 +66,16 @@ namespace DynamoServices
     {
         public static event Action<string> LogMessageToDynamoConsole;
 
+        public static event Action<string> LogErrorToDynamoConsole;
+
         public static void OnLogMessageToDynamoConsole(string message)
         {
             LogMessageToDynamoConsole?.Invoke(message);
+        }
+
+        public static void OnLogErrorToDynamoConsole(string message)
+        {
+            LogErrorToDynamoConsole?.Invoke(message);
         }
     }
 }

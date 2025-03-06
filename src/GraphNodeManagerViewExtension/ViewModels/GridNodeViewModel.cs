@@ -48,7 +48,8 @@ namespace Dynamo.GraphNodeManager.ViewModels
         private string topLevelItemsNumber = string.Empty;
         private Guid nodeGuid;
         private bool isRenamed = false;
-        
+        private int topLevelItemsNumberAsInt = 0;
+
         public delegate void EventHandler(object sender, EventArgs args);
         public event EventHandler BubbleUpdate = delegate { };
 
@@ -191,6 +192,23 @@ namespace Dynamo.GraphNodeManager.ViewModels
                 if (topLevelItemsNumber == value) return;
                 topLevelItemsNumber = value;
                 RaisePropertyChanged(nameof(TopLevelItemsNumber));
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of top-level items in list
+        /// </summary>
+        public int TopLevelItemsNumberAsInt
+        {
+            get
+            {
+                return GetTopLevelItemsNumberAsInt(NodeModel.CachedValue);
+            }
+            internal set
+            {
+                if (topLevelItemsNumberAsInt == value) return;
+                topLevelItemsNumberAsInt = value;
+                RaisePropertyChanged(nameof(TopLevelItemsNumberAsInt));
             }
         }
 
@@ -527,6 +545,23 @@ namespace Dynamo.GraphNodeManager.ViewModels
         }
 
         /// <summary>
+        /// Returns the number of list items in the top level of the node output as integer.
+        /// </summary>
+        public int GetTopLevelItemsNumberAsInt(MirrorData mirrorData)
+        {
+            if (mirrorData == null) return 0;
+            if (mirrorData.IsCollection)
+            {
+                try
+                {
+                    return mirrorData.GetElements().ToList().Count();
+                }
+                catch (Exception) { return 0; }
+            }
+            return 0;
+        }
+
+        /// <summary>
         /// Returns true if the Node contains ANY (nested) null values
         /// </summary>
         /// <param name="mirrorData"></param>
@@ -704,5 +739,52 @@ namespace Dynamo.GraphNodeManager.ViewModels
 
         #endregion
 
+        #region Sort
+
+        /// <summary>
+        /// Provides sort keys for the Type, State, Issues, and Output columns, calculated based on each column's specific attributes. 
+        /// Each SortKey uses a combination of count (number of relevant attributes) and priority (relative importance).
+        /// </summary>
+        private string CalculateSortKey((bool condition, int priority)[] conditions, int priorityFormatLength)
+        {
+            int count = conditions.Count(c => c.condition);
+            int priority = conditions.Where(c => c.condition).Sum(c => c.priority);
+            return $"{count:D1}-{priority.ToString($"D{priorityFormatLength}")}";
+        }
+
+        public string TypeSortKey => CalculateSortKey(
+            new (bool, int)[]
+            {
+                (StateIsFunction, 100),
+                (StateIsInput, 10),
+                (StateIsOutput, 1)
+            }, 3);
+
+        public string StateSortKey => CalculateSortKey(
+            new (bool, int)[]
+            {
+                (StatusIsFrozen, 100),
+                (StatusIsHidden, 10),
+                (IsInfo, 1)
+            }, 3);
+
+        public string IssueSortKey => CalculateSortKey(
+            new (bool, int)[]
+            {
+                (IssuesHasError, 10000),
+                (IsDummyNode, 1000),
+                (IssuesHasWarning, 100),
+                (DismissedAlertsCount > 0, DismissedAlertsCount)
+            }, 5);
+
+        public string OutputSortKey => CalculateSortKey(
+            new (bool, int)[]
+            {
+                (IsOutputSingleItem || TopLevelItemsNumberAsInt > 0, 100 * TopLevelItemsNumberAsInt),
+                (IsEmptyList, 10),
+                (IsNull, 1)
+            }, 3);
+
+        #endregion
     }
 }

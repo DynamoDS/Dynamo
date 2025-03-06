@@ -22,6 +22,7 @@ namespace Dynamo.ViewModels
         private readonly DynamoViewModel dynamoViewModel;
         private readonly PackageManagerClient packageManagerClient;
         private readonly DynamoModel dynamoModel;
+        private readonly PackageManagerClientViewModel packageManagerClientViewModel;
 
         public Package Model { get; private set; }
 
@@ -159,10 +160,6 @@ namespace Dynamo.ViewModels
 
         public bool CanPublish => dynamoModel.AuthenticationManager.HasAuthProvider;
 
-        [Obsolete("Do not use. This command will be removed. It does nothing.")]
-        public DelegateCommand ToggleTypesVisibleInManagerCommand { get; set; }
-        [Obsolete("Do not use. This command will be removed. It does nothing.")]
-        public DelegateCommand GetLatestVersionCommand { get; set; }
         public DelegateCommand PublishNewPackageVersionCommand { get; set; }
         public DelegateCommand UninstallCommand { get; set; }
         public DelegateCommand UnmarkForUninstallationCommand { get; set; }
@@ -176,19 +173,18 @@ namespace Dynamo.ViewModels
         {
             this.dynamoViewModel = dynamoViewModel;
             this.dynamoModel = dynamoViewModel.Model;
+            this.packageManagerClientViewModel = dynamoViewModel.PackageManagerClientViewModel;
 
             var pmExtension = dynamoModel.GetPackageManagerExtension();
             this.packageManagerClient = pmExtension.PackageManagerClient;
             Model = model;
 
-            ToggleTypesVisibleInManagerCommand = new DelegateCommand(() => { }, () => true);
-            GetLatestVersionCommand = new DelegateCommand(() => { }, () => false);
             PublishNewPackageVersionCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackageVersion), IsOwner);
-            PublishNewPackageCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackage), () => CanPublish);
+            PublishNewPackageCommand = new DelegateCommand(() => ExecuteWithTou(PublishNewPackage), CanSubmitNewPackage);
             UninstallCommand = new DelegateCommand(Uninstall, CanUninstall);
             UnmarkForUninstallationCommand = new DelegateCommand(UnmarkForUninstallation, CanUnmarkForUninstallation);
             LoadCommand = new DelegateCommand(Load, CanLoad);
-            DeprecateCommand = new DelegateCommand(Deprecate, IsOwner);
+            DeprecateCommand = new DelegateCommand(Deprecate, CanDeprecate);
             UndeprecateCommand = new DelegateCommand(Undeprecate, CanUndeprecate);
             GoToRootDirectoryCommand = new DelegateCommand(GoToRootDirectory, () => true);
 
@@ -414,6 +410,27 @@ namespace Dynamo.ViewModels
             return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoModel.AuthenticationManager.Username);
         }
 
+        /// <summary>
+        /// You should only be able to use this if you have an installed local package and submit for the first time
+        /// If a package with such name already exists, the process will fail during the API call, here we are not checking for that
+        /// </summary>
+        /// <returns></returns>
+        private bool CanSubmitNewPackage()
+        {
+            if (!CanPublish) return false;
+            // This is a round-about way to say, if we can publish a version,
+            // then the publish has already been published,
+            // so only allow 'Publish version'
+            return !packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoModel.AuthenticationManager.Username);
+        }
+
+        private bool CanDeprecate()
+        {
+            var isDeprecated = IsPackageDeprecated(Model.Name);
+
+            return IsOwner() && !isDeprecated;
+        }
+
         private void Undeprecate()
         {
             var res = MessageBoxService.Show(String.Format(Resources.MessageToUndeprecatePackage, this.Model.Name),
@@ -425,14 +442,15 @@ namespace Dynamo.ViewModels
 
         private bool CanUndeprecate()
         {
-            if (!CanPublish) return false;
-            return packageManagerClient.DoesCurrentUserOwnPackage(Model, dynamoModel.AuthenticationManager.Username);
+            var isDeprecated = IsPackageDeprecated(Model.Name);
+
+            return IsOwner() && isDeprecated;
         }
 
         private void PublishNewPackageVersion()
         {
             Model.RefreshCustomNodesFromDirectory(dynamoModel.CustomNodeManager, DynamoModel.IsTestMode);
-            var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model);
+            var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model, true);
             vm.IsNewVersion = true;
 
             dynamoViewModel.OnRequestPackagePublishDialog(vm);
@@ -441,7 +459,7 @@ namespace Dynamo.ViewModels
         private void PublishNewPackage()
         {
             Model.RefreshCustomNodesFromDirectory(dynamoModel.CustomNodeManager, DynamoModel.IsTestMode);
-            var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model);
+            var vm = PublishPackageViewModel.FromLocalPackage(dynamoViewModel, Model, false);
             vm.IsNewVersion = false;
 
             dynamoViewModel.OnRequestPackagePublishDialog(vm);
@@ -449,6 +467,7 @@ namespace Dynamo.ViewModels
 
         private void ExecuteWithTou(Action acceptanceCallback)
         {
+            if (!dynamoViewModel.IsIDSDKInitialized(true, packageManagerClientViewModel.ViewModelOwner)) return;
             // create TermsOfUseHelper object to check asynchronously whether the Terms of Use has 
             // been accepted, and if so, continue to execute the provided Action.
             var termsOfUseCheck = new TermsOfUseHelper(new TermsOfUseHelperParams
@@ -456,10 +475,25 @@ namespace Dynamo.ViewModels
                 PackageManagerClient = dynamoModel.GetPackageManagerExtension().PackageManagerClient,
                 AuthenticationManager = dynamoModel.AuthenticationManager,
                 ResourceProvider = dynamoViewModel.BrandingResourceProvider,
-                AcceptanceCallback = acceptanceCallback
+                AcceptanceCallback = acceptanceCallback,
+                Parent = packageManagerClientViewModel.ViewModelOwner ?? dynamoViewModel.Owner,
             });
 
             termsOfUseCheck.Execute(false);
+        }
+
+        private PackageManagerSearchElement GetPackageVersionInformationFromCached(string packageName)
+        {
+            var package = this.packageManagerClientViewModel.CachedPackageList.FirstOrDefault(x => x.Name == packageName);
+
+            return package;
+        }
+
+        private bool IsPackageDeprecated(string packageName)
+        {
+            var package = GetPackageVersionInformationFromCached(packageName);
+
+            return package != null ? package.IsDeprecated : false;
         }
     }
 }

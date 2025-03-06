@@ -339,22 +339,18 @@ namespace Dynamo.Tests.ModelsTest
             //Arrange
             //This will subscribe our local method to the RequestsCrashPrompt event
             CurrentDynamoModel.RequestsCrashPrompt += CurrentDynamoModel_RequestsCrashPrompt;
-            var crashArgs = new Dynamo.Core.CrashPromptArgs("Crash Event", "Test Message");
 
             var e = new Exception("Test");
             var cerArgs = new Dynamo.Core.CrashErrorReportArgs(e);
-            var cArgs = new Dynamo.Core.CrashPromptArgs(e);
 
             //Act
-            CurrentDynamoModel.OnRequestsCrashPrompt(null, cerArgs);
-            CurrentDynamoModel.OnRequestsCrashPrompt(null, cArgs);
-            CurrentDynamoModel.OnRequestsCrashPrompt(this, crashArgs);
+            CurrentDynamoModel.OnRequestsCrashPrompt(cerArgs);
 
             //Assert
             //Unsubcribe from event
             CurrentDynamoModel.RequestsCrashPrompt -= CurrentDynamoModel_RequestsCrashPrompt;
             //This will validate that the local handler was executed and set the flag in true
-            Assert.AreEqual(3, requestsCrashPrompt);
+            Assert.AreEqual(1, requestsCrashPrompt);
         }
 
      

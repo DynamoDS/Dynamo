@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
@@ -8,7 +10,7 @@ namespace CoreNodeModels
 {
     /// <summary>
     /// Base class to represent a single input string node. It supports 
-    /// partiallied applied function. 
+    /// partially applied function. 
     /// </summary>
     public class ToStringNodeBase : NodeModel
     {
@@ -48,7 +50,7 @@ namespace CoreNodeModels
                 rhs = AstFactory.BuildFunctionCall("__CreateFunctionObject", inputParams);
             }
             else
-            {
+            {  
                 rhs = AstFactory.BuildFunctionCall(functionName, inputAstNodes);
             }
 
@@ -56,6 +58,45 @@ namespace CoreNodeModels
             {
                AstFactory.BuildAssignment(GetAstIdentifierForOutputIndex(0), rhs)
             };
+        }
+    }
+
+    [NodeName("Formatted String from Object")]
+    [NodeDescription("StringfromObjectDescription", typeof(Resources))]
+    [NodeCategory("Core.String.Actions")]
+    [NodeSearchTags("FromObjectSearchTags", typeof(Resources))]
+    [IsDesignScriptCompatible]
+    [System.Diagnostics.CodeAnalysis.Experimental("NEWNODE_FormattedStringFromObject")]
+    [InPortNames("object","formatSpecifier")]
+    [InPortTypes("var", "string")]
+    [InPortDescriptions(typeof(Resources), "FromObjectPortDataObjToolTip", "FromObjectPortDataFormatToolTip")]
+    [OutPortNames("string")]
+    [OutPortTypes("string")]
+    [OutPortDescriptions(typeof(Resources),"FromObjectPortDataResultToolTip")]
+    public class FormattedStringFromObject : ToStringNodeBase
+    {
+        [JsonConstructor]
+        private FormattedStringFromObject(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :
+            base("__ToStringFromObjectAndFormat", inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+            if (inPorts?.Count() > 1)
+            {   
+                inPorts.ElementAt(1).DefaultValue = AstFactory.BuildStringNode("G");
+            }
+        }
+
+        public FormattedStringFromObject() : base("__ToStringFromObjectAndFormat")
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+            RegisterAllPorts();
+            //TODO figure out how to add an inportDefaultValue attribute.
+            //it's not straightforward because ideally we'd have accesss to the parser.
+            if (InPorts?.Count() > 1)
+            {
+                InPorts.ElementAt(1).DefaultValue = AstFactory.BuildStringNode("G");
+                InPorts.ElementAt(1).UsingDefaultValue = true;
+            }
         }
     }
 
@@ -74,13 +115,51 @@ namespace CoreNodeModels
         {
             ArgumentLacing = LacingStrategy.Disabled;
         }
-
         public FromObject() : base("__ToStringFromObject")
         {
             ArgumentLacing = LacingStrategy.Disabled;
             InPorts.Add(new PortModel(PortType.Input, this, new PortData("object", Resources.FromObjectPortDataObjToolTip)));
             OutPorts.Add(new PortModel(PortType.Output, this, new PortData("string", Resources.FromObjectPortDataResultToolTip)));
             RegisterAllPorts();
+        }
+    }
+
+    [NodeName("Formatted String from Array")]
+    [NodeDescription("StringfromArrayDescription", typeof(Resources))]
+    [NodeCategory("Core.String.Actions")]
+    [NodeSearchTags("FromArraySearchTags", typeof(Resources))]
+    [IsDesignScriptCompatible]
+    [System.Diagnostics.CodeAnalysis.Experimental("NEWNODE_FormattedStringFromArray")]
+    [InPortNames("object", "formatSpecifier")]
+    [InPortTypes("var", "string")]
+    [InPortDescriptions(typeof(Resources), "FromArrayPortDataArrayToolTip", "FromObjectPortDataFormatToolTip")]
+    [OutPortNames("string")]
+    [OutPortTypes("string")]
+    [OutPortDescriptions(typeof(Resources),"FromArrayPortDataResultToolTip")]
+    public class FormattedStringFromArray : ToStringNodeBase
+    {
+        [JsonConstructor]
+        private FormattedStringFromArray(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) :
+            base("__ToStringFromArrayAndFormat", inPorts, outPorts)
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+            if (inPorts?.Count() > 1)
+            {
+                inPorts.ElementAt(1).DefaultValue = AstFactory.BuildStringNode("G");
+            }
+        }
+
+        public FormattedStringFromArray() : base("__ToStringFromArrayAndFormat")
+        {
+            ArgumentLacing = LacingStrategy.Disabled;
+            RegisterAllPorts();
+            //TODO figure out how to add an inportDefaultValue attribute.
+            //it's not straightforward because ideally we'd have accesss to the parser.
+            if (InPorts?.Count() > 1)
+            {
+                InPorts.ElementAt(1).DefaultValue = AstFactory.BuildStringNode("G");
+                InPorts.ElementAt(1).UsingDefaultValue = true;
+            }
         }
     }
 

@@ -3,14 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
-using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Notes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
-using Dynamo.Nodes;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.Wpf.Utilities;
@@ -176,8 +174,17 @@ namespace Dynamo.ViewModels
         {
             bool isInPort = portType == PortType.Input;
 
-            if (!(Model.GetModelInternal(nodeId) is NodeModel node)) return;
-            PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
+            if (Model.GetModelInternal(nodeId) is not NodeModel node) return;
+            PortModel portModel;
+            try
+            {
+                portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
+            }
+            catch(Exception ex)
+            {
+                this.DynamoViewModel.Model.Logger.Log("Failed to make connection: " + ex.Message);
+                return;
+            }
 
             // Test if port already has a connection, if so grab it and begin connecting 
             // to somewhere else (we don't allow the grabbing of the start connector).
@@ -199,7 +206,7 @@ namespace Dynamo.ViewModels
                 }
                 catch (Exception ex)
                 {
-                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                    this.DynamoViewModel.Model.Logger.Log(ex.Message);
                 }
             }
         }
@@ -763,7 +770,7 @@ namespace Dynamo.ViewModels
                             .ToList();
 
                         // AddModelsToGroupModelCommand adds models to the selected group
-                        // therefor we add the dropGroup to the selection before calling
+                        // therefore we add the dropGroup to the selection before calling
                         // the command.
                         DynamoSelection.Instance.Selection.AddUnique(dropGroup.AnnotationModel);
 
@@ -796,7 +803,9 @@ namespace Dynamo.ViewModels
                             owningWorkspace.DynamoViewModel.AddModelsToGroupModelCommand.Execute(null);
                         }
                         dropGroup.NodeHoveringState = false;
-                        dropGroup.SelectAll();
+                        //select only those models which were added to the group
+                        DynamoSelection.Instance.ClearSelection();
+                        DynamoSelection.Instance.Selection.AddRange(modelsToAdd);
                     }
 
                     SetCurrentState(State.None); // Dragging operation ended.

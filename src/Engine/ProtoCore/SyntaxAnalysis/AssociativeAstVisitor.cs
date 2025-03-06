@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using ProtoCore.AST;
@@ -143,12 +143,6 @@ namespace ProtoCore.SyntaxAnalysis
         }
 
         public virtual bool VisitFunctionDefinitionNode(FunctionDefinitionNode node)
-        {
-            return DefaultVisit(node);
-        }
-
-        [Obsolete("VisitIfStatementNode method is deprecated and not used. To be remove in 3.0")]
-        public virtual bool VisitIfStatementNode(IfStatementNode node)
         {
             return DefaultVisit(node);
         }
@@ -366,12 +360,6 @@ namespace ProtoCore.SyntaxAnalysis
         }
 
         public virtual TResult VisitFunctionDefinitionNode(FunctionDefinitionNode node)
-        {
-            return DefaultVisit(node);
-        }
-
-        [Obsolete("VisitIfStatementNode method is deprecated and not used. To be remove in 3.0")]
-        public virtual TResult VisitIfStatementNode(IfStatementNode node)
         {
             return DefaultVisit(node);
         }

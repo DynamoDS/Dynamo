@@ -1,4 +1,4 @@
-﻿using System.IO;
+using System.IO;
 using System.Xml;
 using Dynamo.Models;
 using Dynamo.Utilities;

@@ -1,0 +1,445 @@
+{
+  "Uuid": "a161e887-368b-43e6-922d-242d40758fea",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.Mesh.TriangleCount",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.Cone@Autodesk.DesignScript.Geometry.Point,double,double,double,int,bool",
+      "Id": "c41c48286e16438bb0dc392c612073a4",
+      "Inputs": [
+        {
+          "Id": "51bbac3228b0403d975e1b8f084a92e1",
+          "Name": "origin",
+          "Description": "Point\nDefault value : Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0)",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f266309536484356b1998383b1e3a171",
+          "Name": "baseRadius",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "49ae0c9575f848aa9bbe94e83cd804fb",
+          "Name": "topRadius",
+          "Description": "double\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "72af53ac835a41c7babca87302cc7eab",
+          "Name": "height",
+          "Description": "double\nDefault value : 1",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f3d8a5bb8c9e412d97c40e0007ef4142",
+          "Name": "divisions",
+          "Description": "int\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f928b04c30b04f4b948d443c30c89934",
+          "Name": "cap",
+          "Description": "bool\nDefault value : true",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8890d41f7bd847a29b1057a646945213",
+          "Name": "mesh",
+          "Description": "mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Create a mesh cone based on the current settings.\n\nMesh.Cone (origin: Point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(0, 0, 0), baseRadius: double = 1, topRadius: double = 0, height: double = 1, divisions: int = 0, cap: bool = true): Mesh"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "NodeType": "ExtensionNode",
+      "Id": "fb4c4621234340ca89275194b527ae61",
+      "Inputs": [
+        {
+          "Id": "b385c175108c4e188fc285990a6ba8b9",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "517ae5b131d14902adc28cfad0b278b9",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualize the node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 20.0,
+      "Id": "a0e4679b883941fdbe2755df45bb515d",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "503b47b3282f4b3d850700e3cf20d91e",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 6.2,
+      "Id": "f6464a0eccd74e09b2d187db5182da29",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "fa9fd67589e34aa39bba9549a7f5ec6e",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleSlider, CoreNodeModels",
+      "NodeType": "NumberInputNode",
+      "NumberType": "Double",
+      "MaximumValue": 100.0,
+      "MinimumValue": 0.0,
+      "StepValue": 0.1,
+      "InputValue": 14.200000000000001,
+      "Id": "32d962b9a7c045439858b5b38c0a90cd",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "28aa8b8e55934205803304246d2597d4",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "A slider that produces numeric values."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "NodeType": "CodeBlockNode",
+      "Code": "10;",
+      "Id": "02a80bec376d4ca3bae1680acb24c605",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "390f3fce8f09487f90e54941c44dd8eb",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.TriangleCount",
+      "Id": "cfc70fa3a53a4ccda32d699c5cb9e888",
+      "Inputs": [
+        {
+          "Id": "ecdb4f7161644d128b658a04d56020e1",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e36373370379421995467fae90c97e77",
+          "Name": "int",
+          "Description": "int",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Returns the number of triangles in the Mesh\n\nMesh.TriangleCount: int"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "NodeType": "FunctionNode",
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Mesh.Triangles",
+      "Id": "5e4049b524924415ba933f65c9beee33",
+      "Inputs": [
+        {
+          "Id": "a17ca76e895342c985bedea4233e5a8f",
+          "Name": "mesh",
+          "Description": "Autodesk.DesignScript.Geometry.Mesh",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "cbfee8079fff4bc98dafb6166febce4e",
+          "Name": "Surface[]",
+          "Description": "Surface[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Converts the Mesh faces to Surface patches, and returns them. Note: this method can generate A LOT of heavy Surfaces, and may slow down Dynamo with large meshes.\n\nMesh.Triangles ( ): Surface[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "8890d41f7bd847a29b1057a646945213",
+      "End": "ecdb4f7161644d128b658a04d56020e1",
+      "Id": "c0f931fa01c9479bab9890b435dd7789"
+    },
+    {
+      "Start": "8890d41f7bd847a29b1057a646945213",
+      "End": "a17ca76e895342c985bedea4233e5a8f",
+      "Id": "f5a5e581ccb446538e4f57ca5fdf1af4"
+    },
+    {
+      "Start": "503b47b3282f4b3d850700e3cf20d91e",
+      "End": "72af53ac835a41c7babca87302cc7eab",
+      "Id": "2b36a681f3a1464f80a866db6a94277f"
+    },
+    {
+      "Start": "fa9fd67589e34aa39bba9549a7f5ec6e",
+      "End": "49ae0c9575f848aa9bbe94e83cd804fb",
+      "Id": "17567702ed934b058cfd56727fa8c1ef"
+    },
+    {
+      "Start": "28aa8b8e55934205803304246d2597d4",
+      "End": "f266309536484356b1998383b1e3a171",
+      "Id": "ea56c9d269344af9bf94779854d49d76"
+    },
+    {
+      "Start": "390f3fce8f09487f90e54941c44dd8eb",
+      "End": "f3d8a5bb8c9e412d97c40e0007ef4142",
+      "Id": "f215313729704a179da1d4cb09ccdfd7"
+    },
+    {
+      "Start": "e36373370379421995467fae90c97e77",
+      "End": "b385c175108c4e188fc285990a6ba8b9",
+      "Id": "67216a0d6a8b4436b9252c6dfdc8db8c"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "MeshToolkit",
+      "Version": "3.0.0",
+      "ReferenceType": "Package",
+      "Nodes": [
+        "c41c48286e16438bb0dc392c612073a4",
+        "cfc70fa3a53a4ccda32d699c5cb9e888",
+        "5e4049b524924415ba933f65c9beee33"
+      ]
+    }
+  ],
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "2.12",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "2.12.0.5650",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "Background Preview",
+      "EyeX": -2.4644336700439453,
+      "EyeY": 79.306365966796875,
+      "EyeZ": 71.999984741210938,
+      "LookX": 0.27409553527832031,
+      "LookY": -64.518020629882813,
+      "LookZ": -82.9377670288086,
+      "UpX": 0.0014228411018848419,
+      "UpY": 0.90258544683456421,
+      "UpZ": -0.430508553981781
+    },
+    "NodeViews": [
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.Cone",
+        "Id": "c41c48286e16438bb0dc392c612073a4",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 487.23340828025073,
+        "Y": 123.65641443417462
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Watch",
+        "Id": "fb4c4621234340ca89275194b527ae61",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 1052.4424374177918,
+        "Y": 108.52339240363312
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "a0e4679b883941fdbe2755df45bb515d",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 141.60174212923965,
+        "Y": 280.39806004496825
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "f6464a0eccd74e09b2d187db5182da29",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 141.125375911755,
+        "Y": 206.139019998656
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Number Slider",
+        "Id": "32d962b9a7c045439858b5b38c0a90cd",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 140.25995276355781,
+        "Y": 135.64760451456212
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Code Block",
+        "Id": "02a80bec376d4ca3bae1680acb24c605",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 355.26159436151261,
+        "Y": 397.41193321028743
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.TriangleCount",
+        "Id": "cfc70fa3a53a4ccda32d699c5cb9e888",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 816.89637550949953,
+        "Y": 108.58579840685553
+      },
+      {
+        "ShowGeometry": true,
+        "Name": "Mesh.Triangles",
+        "Id": "5e4049b524924415ba933f65c9beee33",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "X": 755.455514427187,
+        "Y": -41.2777642722817
+      }
+    ],
+    "Annotations": [],
+    "X": -333.046876561303,
+    "Y": 165.77527325430404,
+    "Zoom": 0.70417783173835424
+  }
+}

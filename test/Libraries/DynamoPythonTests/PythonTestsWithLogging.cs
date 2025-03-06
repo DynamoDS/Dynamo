@@ -33,16 +33,18 @@ namespace DynamoPythonTests
         [Test]
         public void DynamoPrintLogsToConsole()
         {
-            var expectedOutput = ".*Greeting CPython node: Hello from Python3!!!" + Environment.NewLine
-                + ".*Greeting CPython String node: Hello from Python3!!!" + Environment.NewLine
-                + ".*Greeting CPython String node: Hello from Python3!!!" + Environment.NewLine
-                + ".*Multiple print parameter node: Hello Dynamo Print !!!" + Environment.NewLine
-                + ".*Print separator parameter node: Hello_Dynamo_Print_!!!" + Environment.NewLine
-                + ".*`!\"£\\$%\\^&\\*\\(\\)_\\+-\\[\\{\\]\\}#~'@;:\\|\\\\,<\\.>/\\? Special character node: Lot's of special characters!!!" + Environment.NewLine
-                + ".*";
+            var expectedOutput1 = "Greeting CPython node: Hello from Python3!!!" + Environment.NewLine;
+            var expectedOutput2 = "Greeting CPython String node: Hello from Python3!!!" + Environment.NewLine;
+            var expectedOutput3 = "Multiple print parameter node: Hello Dynamo Print !!!" + Environment.NewLine;
+            var expectedOutput4 = "Print separator parameter node: Hello_Dynamo_Print_!!!" + Environment.NewLine;
+            var expectedOutput5 = @"!£$%^&*()_+-[{]}#~'@;:|\,<.>/? Special character node: Lot's of special characters!!!";
 
             CurrentDynamoModel.OpenFileFromPath(Path.Combine(TestDirectory, "core", "python", "DynamoPrint.dyn"));
-            StringAssert.IsMatch(expectedOutput, CurrentDynamoModel.Logger.LogText);
+            StringAssert.Contains(expectedOutput1, CurrentDynamoModel.Logger.LogText);
+            StringAssert.Contains(expectedOutput2, CurrentDynamoModel.Logger.LogText);
+            StringAssert.Contains(expectedOutput3, CurrentDynamoModel.Logger.LogText);
+            StringAssert.Contains(expectedOutput4, CurrentDynamoModel.Logger.LogText);
+            StringAssert.Contains(expectedOutput5, CurrentDynamoModel.Logger.LogText);
         }
 
         [Test]

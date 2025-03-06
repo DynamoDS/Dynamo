@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -18,7 +19,6 @@ using Dynamo.PackageManager;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
-using Dynamo.Updates;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
@@ -34,6 +34,33 @@ using Thickness = System.Windows.Thickness;
 
 namespace Dynamo.Controls
 {
+    /// <summary>
+    /// selects from one of two styles based on a boolean value.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("ApiDesign",
+        "RS0016:Add public types and members to the declared API",
+        Justification = "Converters are not part of the API")]
+    public class BooleanToStyleConverter : IValueConverter
+    {
+        public Style TrueStyle { get; set; }
+        public Style FalseStyle { get; set; }
+
+        public object Convert(object value, Type targetType, object parameter,CultureInfo culture)
+        {
+            if (value is bool v && v)
+            {
+                return TrueStyle;
+            }
+
+            return FalseStyle;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class ToolTipFirstLineOnly : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -45,7 +72,7 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 
@@ -60,7 +87,7 @@ namespace Dynamo.Controls
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            throw new NotSupportedException();
         }
     }
 
@@ -170,21 +197,37 @@ namespace Dynamo.Controls
         }
     }
 
-
     /// <summary>
-    /// Controls the visibility of tooltip that displays python dependency in Package manager for each package version
+    /// Returns Visibility.Visible if the collection is empty, otherwise returns Visibility.Collapsed.
     /// </summary>
-    [Obsolete("This class will be removed in Dynamo 3.0")]
-    public class EmptyDepStringToCollapsedConverter : IValueConverter
+    public class NullOrEmptyListToVisibilityVisibleConverter : IValueConverter
     {
-        public object Convert(object value, Type targetType, object parameter,
-          CultureInfo culture)
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return Visibility.Collapsed;
+            if (!(value is ICollection collection)) return Visibility.Visible;
+
+            return collection.Count == 0 ? Visibility.Visible : Visibility.Collapsed;
         }
 
-        public object ConvertBack(object value, Type targetType, object parameter,
-          CultureInfo culture)
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Returns Visible if the collection is not empty, otherwise returns Collapsed
+    /// </summary>
+    public class InverseEmptyListToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (!(value is ICollection collection)) return Visibility.Collapsed;
+
+            return collection.Count == 0 ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
             return null;
         }
@@ -368,6 +411,30 @@ namespace Dynamo.Controls
             CultureInfo culture)
         {
             return value is string && !string.IsNullOrEmpty(value.ToString());
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+
+    /// <summary>
+    /// Given a string, returns to upper  case
+    /// </summary>
+    public class ToTitleCaseStringConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            if (value is string text)
+            {
+                var textInfo = culture.TextInfo;
+                return textInfo.ToTitleCase(text);
+            }
+            return value;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
@@ -565,6 +632,24 @@ namespace Dynamo.Controls
         {
             double height = (double)value;
             return new System.Windows.Thickness(0, -1 * height - 3, 0, 0);
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// A custom converter to 'pin' the location of the Home button in place when the slider goes under a certain value
+    /// Do not use for other purposes, and please, do not change
+    /// </summary>
+    public class LeftMarginConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            double offset = (double)value;
+            return new System.Windows.Thickness(offset * 1, 0, offset * -1, 0);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1416,6 +1501,27 @@ namespace Dynamo.Controls
     }
 
     /// <summary>
+    /// Converts 0 Collapsed state, otherwise returns Visible
+    /// </summary>
+    public class ZeroToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is int zero)
+            {
+                return zero == 0 ? Visibility.Collapsed : Visibility.Visible;   
+            }
+
+            return Visibility.Collapsed; // If not int or int not zero, return collapsed.
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
     /// Takes a value and if the value is not null returns Unity Type Auto (*) as a length value
     /// Returns 0 length if the value is null
     /// To be used in Grid Column/Row width 
@@ -1516,6 +1622,40 @@ namespace Dynamo.Controls
                 return difference.TotalDays >= 30 ? "" : Resources.PackageManagerPackageUpdated;
             }
             return Resources.PackageManagerPackageNew;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
+    /// <summary>
+    /// Used to determine the tooltip which appears next to a package when it's either
+    /// brand new, recently updated, or deprecated.
+    /// If the package was updated in the last 30 days it says 'Updated'.
+    /// If the package is brand new (only has 1 version) and is less than 30 days it says 'New'.
+    /// </summary>
+    public class DateToPackageTooltipConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (!(value is Dynamo.PackageManager.PackageManagerSearchElement packageManagerSearchElement)) return String.Empty;
+            if (packageManagerSearchElement.IsDeprecated) return Resources.PackageDeprecatedTooltip;
+
+            DateTime.TryParse(packageManagerSearchElement.LatestVersionCreated, out DateTime dateLastUpdated);
+
+            // For testing purposes
+            var test = DateTime.TryParse((string)parameter, out DateTime testDate);
+            TimeSpan difference = test ? testDate - dateLastUpdated : DateTime.Now - dateLastUpdated;
+
+            int numberVersions = packageManagerSearchElement.Header.num_versions;
+
+            if (numberVersions > 1)
+            {
+                return difference.TotalDays >= 30 ? "" : Resources.PackageFilterUpdatedTooltip;
+            }
+            return Resources.PackageFilterNewTooltip;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -1706,38 +1846,6 @@ namespace Dynamo.Controls
             }
 
             return "?";
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            throw new NotSupportedException();
-        }
-    }
-
-    //TODO remove(this is not used anywhere) in Dynamo 3.0
-    public class ZoomToVisibilityConverter : IValueConverter
-    {
-        /// <summary>
-        /// Returns hidden for small zoom sizes - appears unused.
-        /// </summary>
-        /// <param name="value">zoom size</param>
-        /// <param name="targetType">unused</param>
-        /// <param name="parameter">unused</param>
-        /// <param name="culture">unused</param>
-        /// <returns></returns>
-        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
-        {
-            try
-            {
-                double zoom = System.Convert.ToDouble(value, CultureInfo.InvariantCulture);
-                if (zoom < .5)
-                    return Visibility.Hidden;
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"problem attempting to parse zoomsize or param {value}{ e.Message}");
-            }
-            return Visibility.Visible;
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
@@ -2048,6 +2156,28 @@ namespace Dynamo.Controls
         }
     }
 
+    public sealed class NullOrEmptyStringToVisibiltyCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            bool invert = parameter as string == "invert";
+
+            if (String.IsNullOrEmpty((string)value))
+            {
+                return invert ? Visibility.Visible : Visibility.Collapsed;
+            }
+            else
+            {
+                return invert ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     public sealed class NullToPinWidthConverter : IValueConverter
     {
         public const double PIN_WIDTH = 4;
@@ -2057,6 +2187,53 @@ namespace Dynamo.Controls
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class CopyrightInfoTooltipConverter : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values[0] == DependencyProperty.UnsetValue || values[1] == DependencyProperty.UnsetValue)
+            {
+                return null;
+            }
+            if (values != null && values.Count() > 0)
+            {
+                var cph = string.IsNullOrEmpty((string)values[0]) ? "N/A" : (string)values[0];
+                var cpy = string.IsNullOrEmpty((string)values[1]) ? "N/A" : (string)values[1];
+                var tooltip = Resources.PackageDetailsCopyRightHolder + ": " + cph + Environment.NewLine +
+                    Resources.PackageDetailsCopyRightYear + ": " + cpy;
+                return tooltip;
+            }
+            return "";
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class PackageDetailsLinkCollapseOnEmpty : IMultiValueConverter
+    {
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (values[0] == DependencyProperty.UnsetValue || values[1] == DependencyProperty.UnsetValue)
+            {
+                return null;
+            }
+            if (values != null && values.Count() > 0)
+            {
+                if (!string.IsNullOrEmpty((string)values[0]) || !string.IsNullOrEmpty((string)values[1]))
+                return Visibility.Visible; ;
+            }
+            return Visibility.Collapsed;
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
         {
             throw new NotImplementedException();
         }
@@ -2156,8 +2333,8 @@ namespace Dynamo.Controls
         }
     }
 
-    [Obsolete("This class will be removed in Dynamo 3.0 - please use the ForgeUnit SDK based methods")]
-    public class MeasureConverter : IValueConverter
+    [Obsolete("This class will be removed in a future version of Dynamo - please use the ForgeUnit SDK based methods")]
+    internal class MeasureConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
@@ -2169,48 +2346,6 @@ namespace Dynamo.Controls
             var measure = (SIUnit)parameter;
             measure.SetValueFromString(value.ToString());
             return measure.Value;
-        }
-    }
-
-    public class IsUpdateAvailableToTextConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            var um = value as IUpdateManager;
-            if (um == null)
-                return Resources.AboutWindowCannotGetVersion;
-
-            if (!um.IsUpdateAvailable)
-                return Resources.AboutWindowUpToDate;
-
-            var latest = um.AvailableVersion;
-
-            return latest != null ? latest.ToString() : Resources.AboutWindowCannotGetVersion;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
-        }
-    }
-
-    public class IsUpdateAvailableBrushConverter : IValueConverter
-    {
-        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            SolidColorBrush brush;
-
-            brush = (bool)value
-                ? (SolidColorBrush)
-                    SharedDictionaryManager.DynamoColorsAndBrushesDictionary["UpdateManagerUpdateAvailableBrush"]
-                : (SolidColorBrush)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["UpdateManagerUpToDateBrush"];
-
-            return brush;
-        }
-
-        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
-        {
-            return null;
         }
     }
 
@@ -3351,6 +3486,40 @@ namespace Dynamo.Controls
         }
     }
 
+    public class Base64ToImageConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value == null) return null;
+
+            string s = string.Empty;
+            if (value is string)
+            {
+                s = value as string;
+            }
+
+            if (string.IsNullOrEmpty(s)) return null;
+
+            BitmapImage loadedBitM = null;
+            using (MemoryStream ms = new MemoryStream(System.Convert.FromBase64String(s)))
+            {
+                BitmapImage bi = new BitmapImage();
+                bi.BeginInit();
+                bi.StreamSource = ms;
+                bi.CacheOption = BitmapCacheOption.OnLoad;
+                bi.EndInit();
+                loadedBitM = bi;
+            }
+
+            return loadedBitM;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
     /// <summary>
     /// Converter is used in WatchTree.xaml 
     /// It converts the boolean value of WatchViewModel.IsCollection to determine the margin of the listnode textblock
@@ -3793,6 +3962,192 @@ namespace Dynamo.Controls
                 return ((SolidColorBrush)value).Color;
 
             return value;
+        }
+    }
+
+    public class SumConverter : IMultiValueConverter
+    {
+        /// <summary>
+        /// Calculates and returns the sum of the values provided
+        /// </summary>
+        public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
+        {
+            return values.Cast<double>().Sum();
+        }
+
+        public object[] ConvertBack(object value, Type[] targetTypes, object parameter, CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+
+    /// <summary>
+    /// Convers PackageUploadHandle UploadType enum value to visibility
+    /// </summary>
+    public class PackageUploadHandleUploadTypeToVisibilityConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is PackageUploadHandle.UploadType uploadType)
+            {
+                if (parameter != null && parameter.ToString().ToLower() == "invert")
+                {
+                    return uploadType != PackageUploadHandle.UploadType.Submit ? Visibility.Visible : Visibility.Hidden;
+                }
+                else
+                {
+                    return uploadType == PackageUploadHandle.UploadType.Submit ? Visibility.Visible : Visibility.Hidden;
+                }
+            }
+
+            return Visibility.Hidden;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// ReadyToPublish message to visibility converter
+    /// </summary>
+    public class ReadyToPublishToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string errorMessage && errorMessage.Equals(Resources.PackageManagerReadyToPublish))
+            {
+                return Visibility.Visible;
+            }
+
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Given a string, returns to upper  case
+    /// </summary>
+    public class StringEqualsZeroToVisibilityCollapsedConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            if (value is string nullOrEmptyString && String.IsNullOrEmpty(nullOrEmptyString)) return Visibility.Visible;
+            
+            return Visibility.Collapsed;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+            CultureInfo culture)
+        {
+            return null;
+        }
+    }
+
+    public class BooleanNegationConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool booleanValue)
+            {
+                return !booleanValue;
+            }
+            return false;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is bool booleanValue)
+            {
+                return !booleanValue;
+            }
+            return false;
+        }
+    }
+
+    /// <summary>
+    /// Returns "2019.10.x" from "2019.10.*" input
+    /// </summary>
+    public class VersionStringAsteriskToXConverter : IValueConverter
+    {
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string version && !string.IsNullOrEmpty(version))
+            {
+                return version.Replace("*", "x");
+            }
+
+            return value;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            if (value is string version && !string.IsNullOrEmpty(version))
+            {
+                return version.Replace("x", "*");
+            }
+
+            return value;
+        }
+    }
+
+    /// <summary>
+    /// Evaluates whether the contrast ratio of a background color against a predefined dark color is sufficient (>= 4.5).
+    /// Returns true if the contrast is below the threshold, otherwise false.
+    /// </summary>
+    public class BackgroundConditionEvaluator : IValueConverter
+    {
+        private const double ContrastRatioThreshold = 4.5;
+
+        public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
+        {
+            var darkColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["DarkerGrey"];
+
+            var backgroundColor = (System.Windows.Media.Color)value;
+
+            var contrastRatio = GetContrastRatio(darkColor, backgroundColor);
+
+            var c1 = contrastRatio;
+            var c2 = ContrastRatioThreshold;
+            var result = contrastRatio < ContrastRatioThreshold;
+
+            return contrastRatio < ContrastRatioThreshold;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter,
+          CultureInfo culture)
+        {
+            return null;
+        }
+        private double GetContrastRatio(System.Windows.Media.Color foreground, System.Windows.Media.Color background)
+        {
+            double L1 = GetRelativeLuminance(foreground);
+            double L2 = GetRelativeLuminance(background);
+
+            return L1 > L2 ? (L1 + 0.05) / (L2 + 0.05) : (L2 + 0.05) / (L1 + 0.05);
+        }
+
+        private double GetRelativeLuminance(System.Windows.Media.Color color)
+        {
+            var R = color.R / 255.0;
+            var G = color.G / 255.0;
+            var B = color.B / 255.0;
+
+            // Apply luminance formula
+            R = R < 0.03928 ? R / 12.92 : Math.Pow((R + 0.055) / 1.055, 2.4);
+            G = G < 0.03928 ? G / 12.92 : Math.Pow((G + 0.055) / 1.055, 2.4);
+            B = B < 0.03928 ? B / 12.92 : Math.Pow((B + 0.055) / 1.055, 2.4);
+
+            return 0.2126 * R + 0.7152 * G + 0.0722 * B;
         }
     }
 }

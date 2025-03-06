@@ -10,6 +10,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Effects;
 using System.Windows.Shapes;
 using Dynamo.Controls;
+using Dynamo.PackageManager.UI;
 using Dynamo.UI.Views;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -607,7 +608,9 @@ namespace Dynamo.Wpf.UI.GuidedTour
 
                             if (ownedWindow != null)
                             {
-                                viewModel = ownedWindow.DataContext as PackageManager.PackageManagerSearchViewModel;
+                                var packageManager = (ownedWindow as PackageManagerView);
+                                if (packageManager == null) return;
+                                viewModel = packageManager.PackageManagerViewModel.PackageSearchViewModel;
                             }
 
                             parametersArray = new object[] { viewModel };
