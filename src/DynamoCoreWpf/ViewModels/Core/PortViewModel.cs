@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
@@ -554,6 +555,8 @@ namespace Dynamo.ViewModels
                             catch (Exception) { }
                         });
                     });
+
+                    // AutoLayout should be called after all nodes are connected
                 }
 
                 // Display the cluster info in the right side panel
@@ -574,24 +577,24 @@ namespace Dynamo.ViewModels
             Stopwatch stopwatch = Stopwatch.StartNew();
 
             // Create mock nodes, currently Watch nodes (to avoid potential memory leak from Python Editor), and connect them to the input port
-            var targetNodeSearchEle = wsViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.ToList()[5];
-            targetNodeSearchEle.CreateAndConnectCommand.Execute(wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel);
+            var targetNodeSearchEle = node.WorkspaceViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.ToList()[5];
+            targetNodeSearchEle.CreateAndConnectCommand.Execute(node.WorkspaceViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel);
 
             var sizeOfMockCluster = 3;
             var n = 1;
             while (n < sizeOfMockCluster)
             {
                 // Get the last node and connect a new node to it
-                var node1 = wsViewModel.Nodes.LastOrDefault();
+                var node1 = node.WorkspaceViewModel.Nodes.LastOrDefault();
                 node1.IsTransient = true;
                 targetNodeSearchEle.CreateAndConnectCommand.Execute(node1.InPorts.FirstOrDefault().PortModel);
                 n++;
             }
 
-            wsViewModel.Nodes.LastOrDefault().IsTransient = true;
+            node.WorkspaceViewModel.Nodes.LastOrDefault().IsTransient = true;
 
             stopwatch.Stop(); // Stop the stopwatch
-            wsViewModel.DynamoViewModel.Model.Logger.Log($"Cluster Placement Execution Time: {stopwatch.ElapsedMilliseconds} ms");
+            node.WorkspaceViewModel.DynamoViewModel.Model.Logger.Log($"Cluster Placement Execution Time: {stopwatch.ElapsedMilliseconds} ms");
         }
 
         private void NodePortContextMenu(object obj)
