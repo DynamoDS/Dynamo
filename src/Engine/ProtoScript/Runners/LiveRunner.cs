@@ -1734,7 +1734,7 @@ namespace ProtoScript.Runners
                 {
                     var nodes = runnerCore.CodeBlockList[(int)Language.Associative].instrStream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidPC, Constants.kInvalidPC);
                     //delete all nodes which were redefined. For those nodes that were defined for the first time, this will be a no-op
-                    nodes.RemoveAll(x=>pendingUIDsForDeletion.Contains(x.guid));
+                    nodes.RemoveAll(x=>!x.isActive || pendingUIDsForDeletion.Contains(x.guid));
                 }
             }
         }
