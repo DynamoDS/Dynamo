@@ -1710,16 +1710,11 @@ namespace ProtoScript.Runners
                 var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
 
                 //nodes which will be defined or redefined after compilation and execution
-                var pendingUIDsForDeletion = new HashSet<int>();
-                if (runnerCore.CodeBlockList.Any())
-                {
-                    var nodes = runnerCore.CodeBlockList[(int)Language.Associative].instrStream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidPC, Constants.kInvalidPC);
-                    var deletedGuids = finalDeltaAstList
-                        .Select(x => (x as BinaryExpressionNode)?.guid)
-                        .Where(x => x != null)
-                        .Select(x => x.Value).ToHashSet();
-                    pendingUIDsForDeletion = nodes.Where(x => deletedGuids.Contains(x.guid)).Select(x => x.UID).ToHashSet();
-                }
+                var pendingUIDsForDeletion = changeSetComputer.csData.DeletedBinaryExprASTNodes
+                    .Select(x => (x as BinaryExpressionNode)?.guid)
+                    .Where(x => x != null)
+                    .Select(x => x.Value)
+                    .ToHashSet();
 
                 // Prior to execution, apply state modifications to the VM given the delta AST's
                 bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
@@ -1739,7 +1734,7 @@ namespace ProtoScript.Runners
                 {
                     var nodes = runnerCore.CodeBlockList[(int)Language.Associative].instrStream.dependencyGraph.GetGraphNodesAtScope(Constants.kInvalidPC, Constants.kInvalidPC);
                     //delete all nodes which were redefined. For those nodes that were defined for the first time, this will be a no-op
-                    nodes.RemoveAll(x=>pendingUIDsForDeletion.Contains(x.UID));
+                    nodes.RemoveAll(x=>pendingUIDsForDeletion.Contains(x.guid));
                 }
             }
         }
