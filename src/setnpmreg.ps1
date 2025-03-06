@@ -14,7 +14,7 @@ function createNpmrcFile {
 
 try {
     Write-Host "Checking if adsk npm registry is reachable..." -ForegroundColor Blue
-    $response = Invoke-WebRequest -Uri $adskNpmRegistry -ConnectionTimeoutSeconds 20 -ErrorAction Stop
+    $response = Invoke-WebRequest -Uri $adskNpmRegistry -TimeoutSec 20 -ErrorAction Stop
 
     if ($response.StatusCode -eq 200) {
         Write-Host "adsk npm registry is reachable" -ForegroundColor Green
