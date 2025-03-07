@@ -92,7 +92,43 @@
         <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
     </Target>
 
+    <Target Name="NpmRunBuildPMWizard" BeforeTargets="BeforeBuild">
+        <PropertyGroup>
+            <PackageVersion>0.0.1</PackageVersion>
+            <PackageName>PackageManagerWizard</PackageName>
+        </PropertyGroup>
+        <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)pkgexist.ps1&quot; &quot;$(PackageName)&quot; &quot;$(PackageVersion)&quot;" ConsoleToMSBuild="true">
+            <Output TaskParameter="ConsoleOutput" PropertyName="ShouldInstall" />
+        </Exec>
+        <Message Text="Skipping Install for $(PackageName) $(PackageVersion), package up to date." Condition="!$(ShouldInstall)" Importance="high" />
+        <!--This command updates the npm registry configuration if necessary-->
+        <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)setnpmreg.ps1&quot;" Condition="$(ShouldInstall)" />
+        <!--This command gets a specific splash screen build from npm-->
+        <Exec Command="npm pack @dynamods/dynamo-pm-wizard@$(PackageVersion)" Condition="$(ShouldInstall)" />
+    </Target>
+
+    <Target Name="ExtractTGZFilePMWizard" DependsOnTargets="NpmRunBuild" BeforeTargets="BeforeBuild" Condition="$(ShouldInstall)">
+        <!--Locates the .tgz files-->
+        <ItemGroup>
+            <TGZFiles Include="./dynamods-dynamo-pm-wizard-*.tgz" />
+        </ItemGroup>
+
+        <PropertyGroup>
+            <Last>%(TGZFiles.Filename)</Last>
+        </PropertyGroup>
+
+        <!--Creates the folder for the package-->
+        <MakeDir Directories="Packages/PackageManagerWizard" />
+
+        <!--Extracts the file to /package-->
+        <Exec Command="tar -xzf &quot;$(MSBuildProjectDirectory)\$(Last).tgz&quot; --strip-components=1 --directory=&quot;Packages/PackageManagerWizard&quot;" />
+
+        <!--Deletes the tgz file-->
+        <Delete Files="$(MSBuildProjectDirectory)\$(Last).tgz" />
+    </Target>
+
     <ItemGroup>
+    <None Remove="Packages\PackageManagerWizard\dist\index.html" />
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="Packages\DynamoHome\build\index.bundle.js" />
@@ -124,6 +160,7 @@
     <None Remove="Views\PackageManager\Controls\NumericUpDownControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagerPublishControl.xaml" />
+    <None Remove="Views\PackageManager\Controls\PackageManagerPublishHost.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml" />
     <None Remove="Views\PackageManager\Controls\PackageManagerSearchControl.xaml" />
     <None Remove="Views\PackageManager\Controls\SearchBoxControl.xaml" />
@@ -191,7 +228,7 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.3546"/>
+      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.3546" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="3.0.2.6533" />
@@ -502,6 +539,7 @@
     </Compile>
     <Compile Include="Views\HomePage\HomePage.xaml.cs" />
     <Compile Include="Views\Input\ParameterEditor.cs" />
+    <Compile Include="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\CustomBrowserControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\FilterTagControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\LoadingAnimationStripeControl.xaml.cs" />
@@ -509,6 +547,7 @@
     <Compile Include="Views\PackageManager\Controls\PackageManagePackageAnimationControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagerPackagesControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagerPublishControl.xaml.cs" />
+    <Compile Include="Views\PackageManager\Controls\PackageManagerPublishHost.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\PackageManagerSearchControl.xaml.cs" />
     <Compile Include="Views\PackageManager\Controls\SearchBoxControl.xaml.cs" />
     <Compile Include="Views\PackageManager\PackageManagerView.xaml.cs" />
@@ -586,6 +625,9 @@
     </Compile>
     <Compile Include="Views\Core\WorkspaceView.xaml.cs">
       <DependentUpon>WorkspaceView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml.cs">
+        <DependentUpon>PackageManagerWizard.xaml</DependentUpon>
     </Compile>
     <Compile Include="Utilities\WpfUtilities.cs" />
     <Compile Include="Controls\ZoomBorder.cs" />
@@ -754,6 +796,10 @@
         <Generator>MSBuild:Compile</Generator>
         <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\PackageManager\Controls\PackageManagerPublishHost.xaml">
+        <Generator>MSBuild:Compile</Generator>
+        <SubType>Designer</SubType>
+    </Page>
     <Page Include="Windows\ExtensionWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -876,6 +922,7 @@
     <EmbeddedResource Include="UI\GuidedTour\DynamoOnboardingGuide_HouseCreationDS.dyn">
 	</EmbeddedResource>
     <None Include="ViewModels\Watch3D\shaderSource\CompileShaders.bat" />
+    <Resource Include="Packages\PackageManagerWizard\dist\index.html" />
     <Resource Include="UI\Images\AboutWindow\logo_about_dark.png">
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Resource>
@@ -1630,6 +1677,12 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\DynamoCore\DynamoCore.csproj">
       <Project>{7858fa8c-475f-4b8e-b468-1f8200778cf8}</Project>
       <Name>DynamoCore</Name>
@@ -1844,6 +1897,9 @@
     <None Update="Views\HomePage\HomePage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
+    <None Update="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
     <None Update="Views\PackageManager\Controls\CustomBrowserControl.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
@@ -1865,6 +1921,9 @@
     <None Update="Views\PackageManager\Pages\PublishPackageSelectPage.xaml">
       <Generator>MSBuild:Compile</Generator>
     </None>
+    <None Update="Views\PackageManager\Components\PackageManagerWizard\PackageManagerWizard.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </None>
   </ItemGroup>
  <Target Name="AfterBuildOps" AfterTargets="Build">
     <ItemGroup>
@@ -1872,5 +1931,11 @@
     </ItemGroup>
     <MakeDir Directories="$(OutputPath)\viewExtensions\" />
     <Copy SourceFiles="@(ExternTuneUpPkg)" DestinationFolder="$(OutputPath)\Built-In Packages\packages\TuneUp\%(RecursiveDir)" />
+  </Target>
+  <Target Name="CopyPMWizardHtmlFiles" AfterTargets="Build">
+    <ItemGroup>
+      <HtmlAndBundleFiles Include="Packages\PackageManagerWizard\dist\index.html" />
+    </ItemGroup>
+    <Copy SourceFiles="@(HtmlAndBundleFiles)" DestinationFolder="$(OutputPath)\PackageManager\" />
   </Target>
 </Project>

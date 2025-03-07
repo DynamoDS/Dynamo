@@ -46,7 +46,7 @@ namespace Dynamo.PackageManager
             this.builder = builder;
             this.fileCompressor = fileCompressor;
         }
-         
+
         #region Public Operational Class Methods
 
         public static PackageUploadRequestBody NewRequestBody(Package package)
@@ -55,11 +55,14 @@ namespace Dynamo.PackageManager
 
             var version = engineVersion ?? Assembly.GetExecutingAssembly().GetName().Version.ToString();
             var engineMetadata = "";
+            var release_notes_url = package.Header == null ? string.Empty : package.Header.release_notes_url;
+            var compatibility_matrix = package.Header == null ? new List<PackageCompatibility>() : package.Header.compatibility_matrix;
 
             return new PackageUploadRequestBody(package.Name, package.VersionName, package.Description, package.Keywords, package.License, package.Contents, PackageManagerClient.PackageEngineName,
                                                          version, engineMetadata, package.Group, package.Dependencies,
-                                                         package.SiteUrl, package.RepositoryUrl, package.ContainsBinaries, 
-                                                         package.NodeLibraries.Select(x => x.FullName), package.HostDependencies, package.CopyrightHolder, package.CopyrightYear);
+                                                         package.SiteUrl, package.RepositoryUrl, package.ContainsBinaries,
+                                                         package.NodeLibraries.Select(x => x.FullName), package.HostDependencies, package.CopyrightHolder, package.CopyrightYear,
+                                                         release_notes_url, compatibility_matrix);
         }
 
         /// <summary>

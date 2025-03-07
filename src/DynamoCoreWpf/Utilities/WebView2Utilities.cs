@@ -26,6 +26,7 @@ namespace Dynamo.Wpf.Utilities
         public DynamoWebView2() : base()
         {
             tag = TestUtilities.WebView2Tag;
+            DefaultBackgroundColor = System.Drawing.Color.FromArgb(0, 0, 0, 0); // Transparent background to prevent flickering on load
         }
 
         /// <summary>
