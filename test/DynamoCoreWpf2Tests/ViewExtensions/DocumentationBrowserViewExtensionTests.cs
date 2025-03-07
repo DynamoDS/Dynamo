@@ -802,6 +802,13 @@ namespace DynamoCoreWpfTests
             //Validates that we have 5 nodes the CurrentWorkspace (after the graph was added)
             Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Nodes.Count(), 5);
             DispatcherUtil.DoEvents();
+
+            //Validates that we have 1 group added containing the inserted graph
+            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Annotations.Count(), 1);
+
+            //Validates that correct group name and description was set
+            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault().AnnotationText, "BasicAddition");
+            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault().AnnotationDescriptionText, "Inserted Dynamo graph");
         }
 
         [Test]
