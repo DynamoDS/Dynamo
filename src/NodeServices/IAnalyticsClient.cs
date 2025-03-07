@@ -462,6 +462,21 @@ namespace Dynamo.Logging
         /// Export event, e.g. tracks the ExportSettings event
         /// </summary>
         Export,
+
+        /// <summary>
+        /// Timed event: tracks startup time
+        /// </summary>
+        Startup,
+
+        /// <summary>
+        /// Timed event: tracks view startup time
+        /// </summary>
+        ViewStartup,
+
+        /// <summary>
+        /// Timed event: tracks graph execution time
+        /// </summary>
+        UpdateGraphAsyncTask
     }
 
     public enum HeartBeatType
