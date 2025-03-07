@@ -1,7 +1,10 @@
 ## In Depth
-Fillet will return a new solid with rounded edges. The edges input specifies which edges to fillet, while the offset input determines the radius of the fillet. In the example below, we start with a cube using the default inputs. To get the appropriate edges of the cube, we first explode the cube to get the faces as a list of surfaces. We then use a Face.Edges node to extract the edges of the cube. We extract the first edge of each face with GetItemAtIndex. A number slider controls the radius for each fillet.
+`PolySurface.Fillet` creates a fillet (rounded edge) between the edges of the given PolySurface. 
+
+This node is particularly useful for smoothing out sharp edges in a polysurface model, enhancing the visual and physical properties of the geometry.
+
+In the example below, a cuboid is created, converted to a PolySurface and finally rounded off with `PolySurface.Fillet`.
 ___
 ## Example File
 
-
-
+![PolySurface.Fillet](./Autodesk.DesignScript.Geometry.PolySurface.Fillet_img.jpg)
