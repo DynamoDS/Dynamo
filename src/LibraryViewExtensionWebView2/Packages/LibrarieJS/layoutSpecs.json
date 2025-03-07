@@ -725,17 +725,6 @@
                 }
               ],
               "childElements": []
-            },
-            {
-              "text": "Graph",
-              "iconUrl": "",
-              "elementType": "group",
-              "include": [
-                {
-                  "path": "Math.Graph.Curve Mapper"
-                }
-              ],
-              "childElements": []
             }
           ]
         },
