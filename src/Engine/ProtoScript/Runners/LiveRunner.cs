@@ -1710,11 +1710,7 @@ namespace ProtoScript.Runners
                 var finalDeltaAstList = changeSetComputer.GetDeltaASTList(syncData);
 
                 //nodes which will be defined or redefined after compilation and execution
-                var pendingUIDsForDeletion = changeSetComputer.csData.DeletedBinaryExprASTNodes
-                    .Select(x => (x as BinaryExpressionNode)?.guid)
-                    .Where(x => x != null)
-                    .Select(x => x.Value)
-                    .ToHashSet();
+                var pendingUIDsForDeletion = syncData.DeletedNodeIDs.ToHashSet();
 
                 // Prior to execution, apply state modifications to the VM given the delta AST's
                 bool anyForcedExecutedNodes = changeSetComputer.csData.ForceExecuteASTList.Any();
