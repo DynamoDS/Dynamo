@@ -526,6 +526,50 @@ namespace DSCore
         }
 
         /// <summary>
+        ///     Group items into sub-lists based on their adjacent values
+        /// </summary>
+        /// <param name="list">List of items to group as sublists</param>
+        /// <param name="threshold">Threshold value for grouping items</param>
+        /// <returns name="groups">list of sublists, with items grouped by same adjacent values</returns>
+        /// <search>list;group;adjacent;groupbyadjacency;groupadjacentitems;cluster</search>
+        [IsVisibleInDynamoLibrary(true)]
+        public static IList GroupAdjacentItems(IList list, int threshold = 1)
+        {
+            //Validate input
+            if (list == null || list.Count == 0)
+                throw new ArgumentException("Need at least one item in the list of items.", nameof(list));
+            if (threshold < 1)
+                throw new ArgumentException("Invalid threshold provided, value cannot be less than 1.", nameof(list));
+
+            if (list.Count == 1)
+            {
+                var singleItemResult = new ArrayList(new ArrayList { list[0] });
+                return singleItemResult;
+            }
+
+            var result = new ArrayList();
+
+            int start = 0;
+
+            // One pass through the list
+            for (int i = 1; i < list.Count; i++)
+            {
+                if (!Object.Equals(list[i], list[start]))
+                {
+                    // Use Enumerable.Repeat to create a group with the repeated value
+                    var group = new ArrayList(Enumerable.Repeat(list[start], i - start).Cast<object>().ToArray());
+                    result.Add(group);
+                    start = i;
+                }
+            }
+
+            // Add the final group using Enumerable.Repeat
+            var finalGroup = new ArrayList(Enumerable.Repeat(list[start], list.Count - start).Cast<object>().ToArray());
+            result.Add(finalGroup);
+
+            return result;
+        }
+        /// <summary>
         ///     Adds an item to the beginning of a list.
         /// </summary>
         /// <param name="item">Item to be added. Item could be an object or a list.</param>
