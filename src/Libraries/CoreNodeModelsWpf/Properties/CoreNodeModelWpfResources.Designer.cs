@@ -522,6 +522,69 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Coordinates.
+        /// </summary>
+        public static string CurveMapperControlPointCoordinatesLabel {
+            get {
+                return ResourceManager.GetString("CurveMapperControlPointCoordinatesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Drag to modify the curve..
+        /// </summary>
+        public static string CurveMapperControlPointToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperControlPointToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Curve Type.
+        /// </summary>
+        public static string CurveMapperCurveTypesLabel {
+            get {
+                return ResourceManager.GetString("CurveMapperCurveTypesLabel", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The curve has been locked and cannot be reset. Please unlock the curve first..
+        /// </summary>
+        public static string CurveMapperLockedResetToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperLockedResetToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Click to lock the curve..
+        /// </summary>
+        public static string CurveMapperLockToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperLockToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Reset the curve..
+        /// </summary>
+        public static string CurveMapperResetToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperResetToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Curve cannot be modified. Click to unlock..
+        /// </summary>
+        public static string CurveMapperUnlockToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperUnlockToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Enter time and date in the format &apos;MMMM dd, yyyy h:mm tt&apos;.
         /// </summary>
         public static string DateTimeInputToolTip {

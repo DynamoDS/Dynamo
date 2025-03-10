@@ -1,4 +1,5 @@
 using CoreNodeModels;
+using Dynamo.Wpf.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -427,15 +428,15 @@ namespace Dynamo.Wpf.CurveMapper
                 if (LockButton.ToolTip is ToolTip lockTooltip)
                 {
                     lockTooltip.Content = curveMapperNodeModel.IsLocked
-                        ? "Curve cannot be modified. Click to unlock."
-                        : "Click to lock the curve.";
+                        ? CoreNodeModelWpfResources.CurveMapperUnlockToolTip
+                        : CoreNodeModelWpfResources.CurveMapperLockToolTip;
                 }
                 ResetButton.Tag = curveMapperNodeModel.IsLocked ? "Locked" : "Unlocked";
                 if (ResetButton.ToolTip is ToolTip resetTooltip)
                 {
                     resetTooltip.Content = curveMapperNodeModel.IsLocked
-                        ? "The curve has been locked and cannot be reset. Please unlock the curve first."
-                        : "Reset the curve.";
+                        ? CoreNodeModelWpfResources.CurveMapperLockedResetToolTip
+                        : CoreNodeModelWpfResources.CurveMapperResetToolTip;
                 }
             }
         }
