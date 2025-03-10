@@ -57,7 +57,12 @@ namespace ProtoCore.AssociativeEngine
             {
                 return;
             }
-
+            for (int i = 0; i < graphNodesInScope.Count; ++i)
+            {
+                AssociativeGraph.GraphNode currentNode = graphNodesInScope[i];
+                currentNode.ParentNodes.Clear();
+                currentNode.ChildrenNodes.Clear();
+            }
             // Get the current graphnode to check against the list
             //  [a = 10]  -> this one
             //  c = 1
@@ -967,33 +972,31 @@ namespace ProtoCore.AssociativeGraph
             Stack<GraphNode> stack = new Stack<GraphNode>();
             stack.Push(this);
 
-            var visited = graphNodes.ToDictionary(node => node, node => false);
+            var visited = new HashSet<int>();
 
-            var guids = new List<Guid>();
+            var guids = new HashSet<Guid>();
             while(stack.Any())
             {
                 var node = stack.Pop();
-                if (!visited[node])
+                if (visited.Add(node.UID))
                 {
                     guids.Add(node.guid);
                     if (node.isCyclic)
                     {
                         node.isCyclic = false;
                         node.isActive = true;
-
                     }
-                    visited[node] = true;
                 }
 
                 foreach(var cNode in node.ChildrenNodes)
                 {
-                    if (!visited[cNode])
+                    if (!visited.Contains(cNode.UID))
                     {
                         stack.Push(cNode);
                     }
                 }
             }
-            return guids;
+            return guids.ToList();
         }
 
         public void PushDependent(GraphNode dependent)
