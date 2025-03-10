@@ -1005,6 +1005,8 @@ Dynamo.PackageManager.PublishPackageViewModel.BuildVersion.set -> void
 Dynamo.PackageManager.PublishPackageViewModel.CancelCommand.get -> Prism.Commands.DelegateCommand
 Dynamo.PackageManager.PublishPackageViewModel.CanEditName.get -> bool
 Dynamo.PackageManager.PublishPackageViewModel.ClearMarkdownDirectoryCommand.get -> Prism.Commands.DelegateCommand
+Dynamo.PackageManager.PublishPackageViewModel.CompatibilityMatrix.get -> System.Collections.Generic.ICollection<Greg.Requests.PackageCompatibility>
+Dynamo.PackageManager.PublishPackageViewModel.CompatibilityMatrix.set -> void
 Dynamo.PackageManager.PublishPackageViewModel.CopyrightHolder.get -> string
 Dynamo.PackageManager.PublishPackageViewModel.CopyrightHolder.set -> void
 Dynamo.PackageManager.PublishPackageViewModel.CopyrightYear.get -> string
@@ -1066,9 +1068,13 @@ Dynamo.PackageManager.PublishPackageViewModel.PackageContents.get -> System.Coll
 Dynamo.PackageManager.PublishPackageViewModel.PackageContents.set -> void
 Dynamo.PackageManager.PublishPackageViewModel.PreviewPackageContents.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.PackageManager.UI.PackageItemRootViewModel>
 Dynamo.PackageManager.PublishPackageViewModel.PreviewPackageContents.set -> void
+Dynamo.PackageManager.PublishPackageViewModel.PublishDirectory.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.PublishDirectory.set -> void
 Dynamo.PackageManager.PublishPackageViewModel.PublishLocallyCommand.get -> Prism.Commands.DelegateCommand
 Dynamo.PackageManager.PublishPackageViewModel.PublishPackageViewModel(Dynamo.ViewModels.DynamoViewModel dynamoViewModel) -> void
 Dynamo.PackageManager.PublishPackageViewModel.PublishSuccess -> Dynamo.PackageManager.PublishSuccessHandler
+Dynamo.PackageManager.PublishPackageViewModel.ReleaseNotesUrl.get -> string
+Dynamo.PackageManager.PublishPackageViewModel.ReleaseNotesUrl.set -> void
 Dynamo.PackageManager.PublishPackageViewModel.RemoveItemCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.PackageManager.PublishPackageViewModel.RepositoryUrl.get -> string
 Dynamo.PackageManager.PublishPackageViewModel.RepositoryUrl.set -> void
@@ -1259,6 +1265,11 @@ Dynamo.PackageManager.UI.PackageManagerPublishControl.Owner.set -> void
 Dynamo.PackageManager.UI.PackageManagerPublishControl.PackageManagerPublishControl() -> void
 Dynamo.PackageManager.UI.PackageManagerPublishControl.PublishPackageViewModel.get -> Dynamo.PackageManager.PublishPackageViewModel
 Dynamo.PackageManager.UI.PackageManagerPublishControl.PublishPackageViewModel.set -> void
+Dynamo.PackageManager.UI.PackageManagerPublishHost
+Dynamo.PackageManager.UI.PackageManagerPublishHost.InitializeComponent() -> void
+Dynamo.PackageManager.UI.PackageManagerPublishHost.PackageManagerPublishHost() -> void
+Dynamo.PackageManager.UI.PackageManagerPublishHost.PublishPackageViewModel.get -> Dynamo.PackageManager.PublishPackageViewModel
+Dynamo.PackageManager.UI.PackageManagerPublishHost.PublishPackageViewModel.set -> void
 Dynamo.PackageManager.UI.PackageManagerSearchControl
 Dynamo.PackageManager.UI.PackageManagerSearchControl.InitializeComponent() -> void
 Dynamo.PackageManager.UI.PackageManagerSearchControl.PackageManagerSearchControl() -> void
@@ -1270,6 +1281,7 @@ Dynamo.PackageManager.UI.PackageManagerSearchView.PackageManagerSearchView(Dynam
 Dynamo.PackageManager.UI.PackageManagerSearchView.ViewModel.get -> Dynamo.PackageManager.PackageManagerSearchViewModel
 Dynamo.PackageManager.UI.PackageManagerView
 Dynamo.PackageManager.UI.PackageManagerView.InitializeComponent() -> void
+Dynamo.PackageManager.UI.PackageManagerView.IsNewPMPublishWizardEnabled.get -> bool
 Dynamo.PackageManager.UI.PackageManagerView.PackageManagerView(Dynamo.Controls.DynamoView dynamoView, Dynamo.PackageManager.PackageManagerViewModel packageManagerViewModel) -> void
 Dynamo.PackageManager.UI.PackageManagerView.PackageManagerViewModel.get -> Dynamo.PackageManager.PackageManagerViewModel
 Dynamo.PackageManager.UI.PackageManagerView.PackageManagerViewModel.set -> void
@@ -1619,6 +1631,39 @@ Dynamo.UI.Views.HomePage.InitializeComponent() -> void
 Dynamo.UI.Views.LibraryView
 Dynamo.UI.Views.LibraryView.InitializeComponent() -> void
 Dynamo.UI.Views.LibraryView.LibraryView() -> void
+Dynamo.UI.Views.PackageManagerWizard
+Dynamo.UI.Views.PackageManagerWizard.Dispose() -> void
+Dynamo.UI.Views.PackageManagerWizard.InitializeComponent() -> void
+Dynamo.UI.Views.PackageManagerWizard.PackageManagerWizard() -> void
+Dynamo.UI.Views.PackageUpdateRequest
+Dynamo.UI.Views.PackageUpdateRequest.CopyrightHolder.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.CopyrightHolder.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.CopyrightYear.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.CopyrightYear.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.Description.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.Description.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.Equals(Dynamo.UI.Views.PackageUpdateRequest other) -> bool
+Dynamo.UI.Views.PackageUpdateRequest.Group.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.Group.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.Keywords.get -> System.Collections.Generic.List<string>
+Dynamo.UI.Views.PackageUpdateRequest.Keywords.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.License.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.License.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.Major.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.Major.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.Minor.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.Minor.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.Name.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.Name.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.PackageUpdateRequest() -> void
+Dynamo.UI.Views.PackageUpdateRequest.Patch.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.Patch.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.ReleaseNotesUrl.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.ReleaseNotesUrl.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.RepositoryUrl.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.RepositoryUrl.set -> void
+Dynamo.UI.Views.PackageUpdateRequest.SiteUrl.get -> string
+Dynamo.UI.Views.PackageUpdateRequest.SiteUrl.set -> void
 Dynamo.UI.Views.ScriptHomeObject
 Dynamo.UI.Views.ScriptHomeObject.ApplicationLoaded() -> void
 Dynamo.UI.Views.ScriptHomeObject.NewCustomNodeWorkspace() -> void
@@ -1638,6 +1683,21 @@ Dynamo.UI.Views.ScriptObject.LaunchDynamo(bool showScreenAgain) -> void
 Dynamo.UI.Views.ScriptObject.ScriptObject(System.Action<bool> requestLaunchDynamo, System.Action<string> requestImportSettings, System.Func<bool> requestSignIn, System.Func<bool> requestSignOut) -> void
 Dynamo.UI.Views.ScriptObject.SignIn() -> bool
 Dynamo.UI.Views.ScriptObject.SignOut() -> bool
+Dynamo.UI.Views.ScriptWizardObject
+Dynamo.UI.Views.ScriptWizardObject.AddFileOrFolder(string fileOrFolder) -> void
+Dynamo.UI.Views.ScriptWizardObject.ClearMarkdownContent() -> void
+Dynamo.UI.Views.ScriptWizardObject.LoadMarkdownContent() -> void
+Dynamo.UI.Views.ScriptWizardObject.LogMessage(string message) -> void
+Dynamo.UI.Views.ScriptWizardObject.OpenFolder(string path) -> void
+Dynamo.UI.Views.ScriptWizardObject.Publish() -> void
+Dynamo.UI.Views.ScriptWizardObject.RemoveFileOrFolder(string name) -> void
+Dynamo.UI.Views.ScriptWizardObject.Reset() -> void
+Dynamo.UI.Views.ScriptWizardObject.ScriptWizardObject(System.Action<string> requestAddFileOrFolder, System.Action<string> requestRemoveFileOrFolder, System.Action<bool> requestRetainFolderStructure, System.Action<string> requestUpdatePackageDetails, System.Action requestSubmit, System.Action requestPublish, System.Action requestReset, System.Action<string> requestToggleNodeLibraryOnItem, System.Action<string> requestOpenFolder, System.Action<string> requestUpdateCompatibilityMatrix, System.Action requestLoadMarkdownContent, System.Action requestClearMarkdownContent, System.Action<string> requestLogMessage) -> void
+Dynamo.UI.Views.ScriptWizardObject.Submit() -> void
+Dynamo.UI.Views.ScriptWizardObject.ToggleNodeLibraryOnItem(string name) -> void
+Dynamo.UI.Views.ScriptWizardObject.ToggleRetainFolderStructure(bool flag) -> void
+Dynamo.UI.Views.ScriptWizardObject.UpdateCompatibilityMatrix(string jsonPayload) -> void
+Dynamo.UI.Views.ScriptWizardObject.UpdatePackageDetails(string jsonPayload) -> void
 Dynamo.UI.Views.SplashScreen
 Dynamo.UI.Views.SplashScreen.CloseWasExplicit.get -> bool
 Dynamo.UI.Views.SplashScreen.DynamicSplashScreenReady -> Dynamo.UI.Views.SplashScreen.DynamicSplashScreenReadyHandler
@@ -4242,6 +4302,8 @@ override Dynamo.UI.Controls.UseLevelSpinner.OnIsKeyboardFocusWithinChanged(Syste
 override Dynamo.UI.Controls.UseLevelSpinner.OnMouseWheel(System.Windows.Input.MouseWheelEventArgs e) -> void
 override Dynamo.UI.Prompts.UsageReportingAgreementPrompt.OnClosed(System.EventArgs e) -> void
 override Dynamo.UI.Views.HandlingEventTrigger.OnEvent(System.EventArgs eventArgs) -> void
+override Dynamo.UI.Views.PackageUpdateRequest.Equals(object obj) -> bool
+override Dynamo.UI.Views.PackageUpdateRequest.GetHashCode() -> int
 override Dynamo.UI.Views.SplashScreen.OnClosed(System.EventArgs e) -> void
 override Dynamo.UI.Views.SplashScreen.OnClosing(System.ComponentModel.CancelEventArgs e) -> void
 override Dynamo.UI.Views.SplashScreen.OnContentRendered(System.EventArgs e) -> void
@@ -5735,6 +5797,7 @@ virtual Dynamo.UI.Controls.UseLevelSpinner.OnIncrease() -> void
 virtual Dynamo.UI.Controls.UseLevelSpinner.OnLevelChanged(System.Windows.RoutedPropertyChangedEventArgs<int> args) -> void
 virtual Dynamo.UI.Prompts.DynamoMessageBox.OnPropertyChanged(string propertyName = null) -> void
 virtual Dynamo.UI.Views.HomePage.Dispose(bool disposing) -> void
+virtual Dynamo.UI.Views.PackageManagerWizard.Dispose(bool disposing) -> void
 virtual Dynamo.ViewModels.ConnectorAnchorViewModel.OnRequestDispose(object sender, System.EventArgs e) -> void
 virtual Dynamo.ViewModels.ConnectorContextMenuViewModel.OnRequestDispose(object sender, System.EventArgs e) -> void
 virtual Dynamo.ViewModels.ConnectorPinViewModel.OnRequestRedraw(object sender, System.EventArgs e) -> void
