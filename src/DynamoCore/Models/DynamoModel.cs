@@ -2747,7 +2747,7 @@ namespace Dynamo.Models
                     }
                 }
 
-                if (annotation.Nodes.Any() && !annotation.Nodes.Except(modelsToDelete).Any())
+                if (annotation.Nodes.Any() && !annotation.Nodes.Except(modelsToDelete).Any(n => n is not ConnectorPinModel))
                 {
                     //Annotation Model has to be serialized first - before the nodes.
                     //so, store the Annotation model as first object. This will serialize the
