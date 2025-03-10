@@ -141,11 +141,8 @@ namespace Dynamo.PackageManager.UI
         // Handles the direct input of text (via keyboard)
         private void inputField_TextChanged(object sender, TextChangedEventArgs e)
         {
-            var val = Int32.TryParse(inputField.Text, out int value);
-            if(val || value == 0)
-            {
-                Value = value.ToString();
-            }
+            Int32.TryParse(inputField.Text, out int value);
+            Value = value.ToString();
         }
 
         // When user clicks on the watermark label at first, hide the watermark and pass the focus to the input textbox
