@@ -161,10 +161,25 @@ namespace Dynamo.Controls
             // of the available monitors.
             if (CheckVirtualScreenSize())
             {
+                System.Windows.Forms.Screen[] screens = System.Windows.Forms.Screen.AllScreens;
+                int leftLimit = 0;
+                int topLimit = 0;
+                foreach (var screen in screens)
+                {
+                    leftLimit += screen.Bounds.Width;
+                    topLimit += screen.Bounds.Height;
+                }   
+
                 Left = dynamoViewModel.Model.PreferenceSettings.WindowX;
                 Top = dynamoViewModel.Model.PreferenceSettings.WindowY;
                 Width = dynamoViewModel.Model.PreferenceSettings.WindowW;
                 Height = dynamoViewModel.Model.PreferenceSettings.WindowH;
+
+                //When the previous location was in a secondary screen then the next time Dynamo is launched will try to use the same location, then we need to added this validations to show Dynamo in the right place
+                if (Left > leftLimit)
+                    Left = 0;
+                if (Top > topLimit)
+                    Top = 0;
             }
             else
             {
