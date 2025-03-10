@@ -230,6 +230,10 @@ namespace PythonNodeModelsWpf
                     {
                         editWindow.Activate();
                         dynamoView = editWindow.Owner as DynamoView;
+                        if (editWindow.WindowState == WindowState.Minimized)
+                        {
+                            editWindow.WindowState = WindowState.Normal;
+                        }
                     }
                     else
                     {
