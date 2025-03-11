@@ -1,0 +1,67 @@
+﻿<!--
+    Dynamo: https://github.com/DynamoDS/Dynamo
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code  .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h3>Package Manager</h3>
+    <p>Le Package Manager Dynamo est un point d'accès unique pour la navigation, l'installation et la publication de packages. Accédez-y à partir de la navigation supérieure sous Packages  Package Manager.</p>
+    <h4>Que sont les packages ?</h4>
+    <p>Dynamo offre un grand nombre de fonctionnalités prêtes à l'emploi et dispose également d'une bibliothèque de packages complète qui permet d'étendre considérablement les capacités de Dynamo. Un package est un ensemble de noeuds personnalisés ou de fonctionnalités supplémentaires.Le Package Manager Dynamo est un portail permettant à la communauté de télécharger tout package publié en ligne. Ces jeux d'outils sont développés par des tiers pour étendre les fonctionnalités clés de Dynamo, accessibles à tous, et prêts à être téléchargés en un clic.</p>
+    <h4>Installation des packages Dynamo</h4>
+    <p>Vous pouvez parcourir et installer les packages dans l'onglet Rechercher des packages du Package Manager. Utilisez le champ de recherche pour localiser des packages spécifiques. Vous pouvez également appliquer des filtres et des options de tri pour affiner la liste selon vos critères, par exemple un programme hôte ou un manque de dépendances.</p>
+    <p>Pour afficher plus d'informations sur un package, cliquez sur Afficher les détails. Un panneau s'ouvre, dans lequel vous pouvez lire une description du package, rechercher des informations sur la version et la licence, et plus encore.</p>
+    <p>Pour installer un package, cliquez sur Installer dans la vue de recherche ou dans le volet d'informations.Vous pouvez spécifier une version à installer dans la vue de recherche en cliquant sur la liste déroulante et en sélectionnant une version. Dans le cas contraire, la version la plus récente sera installée.Dans le volet d'informations sur le package, cliquez sur Installer sous une version spécifique dans le tableau des versions et de la configuration requise pour installer cette version.</p>
+    <p>Vous trouverez la liste des packages installés dans l'onglet Packages installés du Package Manager. Cet onglet permet d'afficher les fichiers de package, de désinstaller des packages, etc.</p>
+    <h4>Publication de packages Dynamo</h4>
+    <p>Le Package Manager vous permet de publier des packages dans Dynamo. Ouvrez l'onglet Publier un package pour commencer.L'onglet Publier un package vous demande toutes les informations obligatoires et facultatives relatives au package que vous souhaitez publier.</p>
+
+    <h4>Ajout de détails sur le package</h4>
+
+    <p><b>Nom du package :</b><br/>Nom du package que vous souhaitez publier. Il apparaîtra dans la bibliothèque, dans la recherche de package et sur le site Web du Package Manager. Les noms de package doivent comporter au moins 3 caractères.</p>
+    <p><b>Description:</b><br/> La description est un excellent endroit pour ajouter plus de détails sur votre package, y compris la liste des exceptions et des conditions préalables. Elle peut également être utilisée pour informer les utilisateurs sur le fonctionnement du package et sur la manière dont il peut être utilisé dans leurs espaces de travail.</p>
+    <p><b>Version:</b><br/> Le champ Version est divisé en trois sections : Major, minor et build, ce qui vous permet, en tant qu'auteur du package, de charger de nouvelles versions de votre package qui suivent la sémantique du contrôle des versions. Les auteurs de packages peuvent vouloir publier plus de versions pour leurs packages avec des fonctionnalités nouvelles et améliorées, peaufiner certains coins qui ont été laissés dans la première version, ou réparer un bogue.</p>
+    <p><b>Hôte :</b><br/>Si votre package repose sur un programme hôte, tel que Revit, Civil 3D, Alias ou d'autres, vous pouvez sélectionner un ou plusieurs hôtes dans la liste déroulante.Lors de la recherche de packages, les utilisateurs peuvent filtrer les résultats en fonction de l'hôte pour les aider à localiser les packages conçus pour fonctionner avec leurs programmes préférés.</p>
+    <p><b>Mots-clés (facultatif):</b><br/> Mots-clés pouvant être utilisés comme balises associées à votre package, par exemple Generative Design, ML, etc. Vous pouvez entrer plusieurs mots-clés dans le champ à la fois en les séparant par la touche espace, puis en appuyant sur la touche Entrée.</p>
+    <p><b>Groupe (facultatif) :</b><br/> Ce champ peut servir à spécifier le groupe auquel un package appartient, tel que la société/l'organisation qui l'a développé.</p>
+    <p><b>Site Web (facultatif) :</b><br/> Lien vers un site Web qui peut fournir à l'utilisateur des détails supplémentaires sur le package ou l'organisation/auteur.</p>
+    <p><b>URL du référentiel (facultatif):</b><br/> Un lien vers le répertoire du package qui permet aux utilisateurs de voir ou de contribuer au développement du package.</p>
+    <p><b>Licence (facultatif) :</b><br/> Licence sous laquelle le package est publié. Licence par défaut: MIT.</p>
+    <p><b>Détenteur du copyright (facultatif) :</b><br/> Nom de la personne détenant le copyright du package. Si ce champ n'est pas renseigné, le nom d'utilisateur par défaut est votre nom.</p>
+    <p><b>Année de copyright (facultatif) :</b><br/> Année de copyright du package. Si cette zone n'est pas renseignée, le package est défini par défaut sur son année de publication.</p>
+
+    <h4>Ajout de fichiers de package</h4>
+
+    <p><b>Contenu du package :</b><br/> Cette section, située dans la barre latérale droite de l'onglet Publier un package, vous permet d'organiser le contenu de votre package avant sa publication.</p>
+    <p><b>Ajouter des fichiers/répertoires :</b><br/><p>Sélectionnez et ajoutez tous les fichiers associés à votre package. En règle générale, le dossier bin, les fichiers binaires et les dépendances sont ajoutés.Vous pouvez ajouter des fichiers ou des dossiers individuels.</p>
+    <p>Après avoir sélectionné les fichiers ou les dossiers à ajouter, vous pouvez afficher, supprimer ou ajouter des fichiers sur la page Sélectionner le contenu du package. Vous pouvez afficher la structure de dossiers des fichiers sélectionnés dans le volet de gauche et le contenu de chaque dossier dans le volet de droite.</p>
+    <p><b>Sélectionner les bibliothèques de noeuds:</b><br/><p>Sélectionnez les fichiers que vous avez ajoutés au package qui sont les bibliothèques de noeuds en cochant la case dans la colonne Bibliothèque de noeuds.Les bibliothèques de noeuds contiennent les types et méthodes que Dynamo importera en tant que noeuds. En général, vous devez marquer un ensemble comme bibliothèque de noeuds contenant les types que vous souhaitez importer dans Dynamo.Les ensembles ZeroTouch, NodeModel ou NodeViewCustomization doivent être marqués comme bibliothèque de noeuds.</p>
+    <p>Pour charger les personnalisations NodeViewCustomizations de l’interface utilisateur, elles doivent être définies dans le même ensemble contenant les définitions NodeModel correspondantes OU définies dans un ensemble distinct.Dans les deux cas, l'ensemble doit être étiqueté en tant que bibliothèque de noeuds. Actuellement, pour les ensembles marqués comme bibliothèque de noeuds contenant les types NodeModel ou NodeCustomization, tous les autres types seront ignorés. Pour cette raison, il est important de séparer les types NodeModel/NodeViewCustomization des types que vous souhaitez importer à l'aide de l'importation ZeroTouch.</p>
+    </p>
+    <p><b>Conserver la structure des dossiers :</b><br/><p>Les auteurs de packages gérant des structures de dossiers de package complexes peuvent activer le bouton bascule Conserver la structure des dossiers sous le panneau d'aperçu du contenu du package. Ce paramètre est activé par défaut lorsqu'un utilisateur publie une nouvelle version d'un package existant. Dans ce cas, Dynamo n'apporte pas de modifications à la structure de dossiers de votre package et le package est chargé en l'état.</p>
+        <p>Si vous avez besoin que votre package soit configuré d'une certaine manière pour vous assurer qu'il fonctionne et éviter tout problème, activez le paramètre. En cas de doute ou de publication d'un nouveau module, désactivez le paramètre pour permettre à Dynamo de configurer la structure de dossiers.</p>
+    </p>
+    <p><b>Aperçu du contenu du package :</b><br/>Lorsque vous êtes satisfait du contenu de votre package, cliquez sur Suivant pour afficher un aperçu de la configuration des fichiers de package une fois qu'ils ont été publiés.Cette page est en lecture seule ; pour apporter des modifications supplémentaires au contenu du module, revenez à la page précédente.Cliquez sur Terminer pour revenir à la page des détails du package.</p>
+    <p><b>Ajouter un chemin de fichier de marquage (facultatif) :</b><br/>Vous avez la possibilité de spécifier un chemin de fichier qui héberge la documentation de marquage (.md) pour votre package dans la section Chemin des fichiers de marquage.</p>
+    <p><b>Publication de votre package</b><br/> Une fois que vous avez renseigné tous les détails requis, vous pouvez publier le package localement ou en ligne. Lors d'une publication locale, le package est publié dans le répertoire racine local, tandis que lors d'une publication en ligne, le package est téléchargé dans le Package Manager.</p>
+
+    <hr />
+
+    <h3>Analyses antivirus</h3>
+    <p>Pour fournir un environnement sécurisé à tous les utilisateurs du package Dynamo, nous avons introduit des analyses antivirus pour les nouveaux packages. Lorsqu'un utilisateur charge un package, il est analysé à la recherche de virus et n'est disponible publiquement que lorsqu'il est marqué comme étant sûr. L'analyse se produit pendant le processus de chargement du package et ne s'ajoute pas à la durée habituelle de 10 à 15 minutes pour que le nouveau package soit disponible en ligne. Si votre package est signalé comme infecté, la page de recherche du Package Manager affiche une notification indiquant que le package téléchargé est infecté et ne sera pas publié en ligne. Pour rendre le package accessible au public, vérifiez les fichiers inclus dans le package et chargez une nouvelle version via le Package Manager.</p>
+    <h3>Gestion de vos packages</h3>
+    <p>Vous pouvez trouver une liste de vos packages publiés dans l'onglet Mes packages du Package Manager, où vous pouvez les supprimer, publier une nouvelle version, etc.</p>
+    <h3>Paramètres de package</h3>
+    <p>Vous pouvez afficher les paramètres relatifs au package dans l'onglet Paramètres du package du Package Manager, y compris les nouveaux chemins de téléchargement et de recherche de package/bibliothèque. Pour modifier vos paramètres, cliquez sur le lien Préférences dans l'onglet Paramètres de package pour accéder au volet Préférences.</p>
+</body>

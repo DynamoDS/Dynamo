@@ -1,0 +1,131 @@
+﻿<!--
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.
+
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code  .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } .questionmark:after { content: '?'; display: inline-block; font-family: sans-serif; font-weight: bold; text-align: center; font-size: 0.8em; line-height: 0.8em; border-radius: 50%; margin-left: 6px; padding: 0.13em 0.2em 0.09em 0.2em; color: inherit; border: 1px solid; text-decoration: none; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <form action="https://forum.dynamobim.com/t/new-feature-preview-python-3-support-issue-thread/51649"><input type="submit" class="button" value="Python 3 노드 문제 보고" style="font-size:medium;"/></form>
+    <h2>Python 2에서 Python 3으로 전환</h2>
+    <p>Python Software Foundation(PSF)은 2020년 1월 1일에 Python 2에 대한 지원을 공식적으로 중단했습니다. Dynamo는 버전 2.7부터 Dynamo 내에서 Python 3에 대한 액세스를 제공하는 Python 엔진인 CPython3으로 전환되었습니다.</p>
+   
+    <h3>Python 버전을 변경한 이유는 무엇일까요?</h3>
+    <p>다른 많은 C# 기반 환경과 마찬가지로 Dynamo는 IronPython이라는 도구를 사용하여 .NET 객체와 Python 스크립트 간에 데이터를 이동합니다. IronPython이 Python 3으로 업데이트되지 않았기 때문에 Dynamo는 표준 기본 Python 인터프리터인 CPython을 사용하도록 전환되었습니다.</p>
+    <p>Dynamo를 Python 3으로 전환하면 Dynamo 사용자는 널리 사용되는 최신 라이브러리에 액세스하고 새로운 플랫폼 기능, 필수 유지보수 및 보안 패치를 계속 이용할 수 있습니다. 또한 Dynamo 그래프에서 이전에는 액세스할 수 없었던 기본 확장이 포함된 Python 라이브러리(예: NumPy, SciPy, Padas)를 활용할 수 있습니다.</p>
+
+    <h3>이전 버전과의 호환성</h3>
+    <p>CPython3 환경에서 작성된 코드가 이전 버전의 Dynamo에서 작동한다는 보장은 없습니다.코드 작성자는 필요에 따라 IronPython2 및 CPython3 버전이 모두 이전 버전과 호환되는지 확인해야 합니다.</p>
+    
+    <h3>이는 여러분과 Python이 포함된 그래프에 무엇을 의미할까요?</h3>
+    <p>그래프나 그래프에 포함된 Python 노드의 작성자가 아닌 경우 작성자에게 이러한 변경 사항을 알려 필요한 경우 변경할 수 있도록 하십시오.</p>
+    <p>그래프 작성자인 경우 아래 지침을 읽어 이러한 변경 사항이 Python 노드에 미칠 수 있는 영향과 업데이트 방법을 확인하십시오.</p>
+
+    <p>Python 3은 기본적으로 Python 2와 언어가 동일합니다. Python 3에서는 구문 및 코어 라이브러리가 변경되어 Python의 일관성과 학습 용이성이 향상되었으며 유니코드 지원이 개선되었습니다.</p>
+    <p>일부 Python 2 프로그램은 Python 3에서 정상적으로 실행되지만, 일반적으로 사용되는 많은 구성은 print 문을 포함하여 약간의 변경이 필요합니다. 다행히도 그중 대부분은 자동화할 수 있습니다.</p>
+
+    <h3>Python 3용 Python 노드를 업데이트하는 방법 </h3>
+    <p>일반적으로 Python 스크립트는 IronPython2 또는 CPython3 엔진을 사용하여 실행할 수 있습니다. 버전 간에 변경된 구문이 스크립트에 포함되어 있는 경우 마이그레이션 보조 도구라는 Python 노드에 자동 코드 변환기를 포함시켜 스크립트를 더욱 쉽게 업데이트할 수 있도록 했습니다.</p>
+    <p>마이그레이션 보조 도구로 스크립트를 업데이트하려면 Python 노드 편집기를 열고 드롭다운을 사용하여 CPython3 엔진으로 전환한 다음 2-3 아이콘을 클릭합니다. Dynamo에서 필요한 변경 사항을 알려 주고 변환을 거부하거나 수락할 수 있는 옵션을 제공합니다.</p>
+    <p>Python Script From String 노드는 Python 코드 입력을 실행하기만 하고 문자 편집기 환경을 제공하지 않으므로 마이그레이션 보조 도구에 액세스할 수 없습니다. 이 기능을 사용하려면 코드를 복사하여 Python 노드에 일시적으로 붙여넣은 후 코드를 복사하여 코드 블록 노드에 다시 붙여넣어야 합니다.</p>
+
+    <h3>자세히 알아보기</h3>
+    <p>두 Python 버전 간의 차이점에 대해 자세히 알아보려면 다음 두 개의 외부 링크를 참고하십시오.<ul>
+            <li><a href="https://docs.python.org/3/howto/pyporting.html">공식 &quot;Python 2 코드를 Python 3으로 포팅하기&quot; 가이드</a></li>
+            <li><a href="http://python3porting.com/">&quot;Python 3 지원: 심화 가이드&quot; 가이드</a></li>
+        </ul>
+    </p>
+
+    <h3>Python 3의 주요 구문 변경 사항</h3>
+    <p>아래 리스트에서는 Python 2와 Python 3 간의 몇 가지 주요 구문 변경 사항에 대해 설명합니다. 이는 영향을 받은 기능 중 가장 널리 사용되는 기능 중 일부를 선택한 것으로, 전체 목록이 아닙니다.</p>
+
+
+    <h4><b>인쇄 기능</b></h4>
+    <p>print 구문은 가장 널리 알려진 변경 사항일 것입니다. Dynamo에서 자주 사용되지는 않지만 다음은 <code>print</code> 문이 어떻게 변경되었는지 보여주는 예입니다.</p>
+
+    <table>
+        <tr>
+            <th>Python 2</th>
+            <th class="hidden-sm">Python 3</th>
+        </tr>
+        <tr>
+            <td><code><span class="k">print</span> <span class="s">'Hello, Dynamo!'</span></code> <samp>// Hello, Dynamo!</samp></td>
+            <th class="hidden-lg" style="border-top: 1px solid white;">Python 3</th>
+            <td><code><span class="k">print</span>(<span class="s">'Hello, Dynamo!'</span>)</code> <samp>// Hello, Dynamo!</samp></td>
+        </tr>
+    </table>
+
+    <h4><b>정수 나누기</b></h4>
+    <p>이 변경으로 인해 스크립트에서 예외가 증가하지는 않지만 출력에는 영향을 줄 수 있습니다. 정수 피연산자가 표시된 경우 Python 2.x의 기본 나누기 연산자 동작에서는 소수점 이하의 자릿수를 버리고 정수를 반환하는 classic division을 사용합니다. 부동 소수점 피연산자 쌍을 지정하면 실제 부동 소수점 몫이 반환됩니다(true division이라고 함).</p>
+
+    <table>
+        <tr>
+            <th>Python 2</th>
+            <th class="hidden-sm">Python 3</th>
+        </tr>
+        <tr>
+            <td><code><span class="v">1</span>/<span class="v">2</span></code> <samp>// 0</samp></td>
+            <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
+            <td><code><span class="v">1</span>/<span class="v">2</span></code> <samp>// 0.5</samp></td>
+        </tr>
+        <tr class="spaced-sm">
+            <td class="hidden-lg">Python 2</td>
+            <td><code><span class="v">1.0</span>/<span class="v">2.0</span></code> <samp>// 0.5</samp></td>
+            <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
+            <td><code><span class="v">1.0</span>/<span class="v">2.0</span></code> <samp>// 0.5</samp></td>
+        </tr>
+    </table>
+
+    <h4><b>xrange</b></h4>
+    <p><code>xrange</code>는 일반적으로 for-loop 문 또는 list-comprehensive 문과 함께 사용됩니다. 한 번만 반복해야 할 경우에는 일반적으로 <code>range()</code>에 비해 <code>xrange()</code>를 반복하는 것이 더 빠릅니다. Python 3에서는 <code>range()</code>가 <code>range()</code> 함수와 동일한 방식으로 구현되었으므로 전용 <code>xrange()</code> 함수는 더 이상 존재하지 않습니다. 대신 xrange()가 NameError를 발생시킵니다.</p>
+
+    <table>
+        <tr>
+            <th>Python 2</th>
+            <th class="hidden-sm">Python 3</th>
+        </tr>
+        <tr>
+            <td><code> <span class="nl">n = <span class="v">1000000</span></span> <span class="nl"> <span class="o">for</span> i <span class="i">in</span> <span class="b">xrange</span>(n): <span class="nl"><span class="k">print</span> i</span> </span> </code> <samp>// 1,2,3,4,5...</samp></td>
+            <th class="hidden-lg" style="border-top: 1px solid white;">Python 3</th>
+            <td><code> <span class="nl">n = <span class="v">1000000</span></span> <span class="nl"> <span class="o">for</span> i <span class="i">in</span> <span class="k">range</span>(n): <span class="nl"><span class="k">print</span>(i)</span> </span> </code> <samp>// 1,2,3,4,5...</samp></td>
+        </tr>
+    </table>
+
+    <h4><b>예외 발생 및 처리</b></h4>
+    <p>여기서 Python 2는 표기법('이전' 구문과 '새' 구문)을 모두 허용합니다. Python 3은 예외 인수를 괄호 안에 포함하지 않으면 SyntaxError를 발생시킵니다. 예외 처리도 Python 3에서 약간 변경되었으므로 이제 Python 3에서는 “as” 키워드를 포함해야 합니다.</p>
+
+    <table>
+        <tr>
+            <th>Python 2</th>
+            <th class="hidden-sm">Python 3</th>
+        </tr>
+        <tr>
+            <td><code> <span class="o">raise</span> <span class="e">IOError</span>, <span class="s">&quot;file error&quot;</span> </code> <samp>// IOError: file error</samp></td>
+            <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
+            <td><code> <span class="o">raise</span> <span class="e">IOError</span>(<span class="s">&quot;file error&quot;</span>) </code> <samp>// OSError: file error</samp></td>
+        </tr>
+        <tr class="spaced-sm">
+            <td class="hidden-lg">Python 2</td>
+            <td><code> <span class="nl"> <span class="o">try:</span> <span class="nl">let_us_cause_a_NameError</span> </span> <span class="nl"> <span class="o">except</span> <span class="e">NameError</span>, err: <span class="nl"><span class="k">print</span> err, <span class="s">'-- our error message'</span></span> </span> </code> <samp>// IOError: file error</samp></td>
+            <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
+            <td><code> <span class="nl"> <span class="o">try:</span> <span class="nl">let_us_cause_a_NameError</span> </span> <span class="nl"> <span class="o">except</span> <span class="e">NameError</span> <span class="o">as</span> err: <span class="nl"><span class="k">print</span>(err, <span class="s">'-- our error message'</span>)</span> </span> </code> <samp>// OSError: file error</samp></td>
+        </tr>
+    </table>
+</body>
