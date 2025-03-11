@@ -2842,6 +2842,14 @@ namespace Dynamo.Controls
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
             var text = value == null ? String.Empty : value.ToString();
+
+            bool showDefault = Dynamo.Configuration.PreferenceSettings.Instance.ShowDefaultGroupDescription;
+
+            if (!showDefault && text == Resources.GroupDefaultText)
+            {
+                return string.Empty;
+            }
+
             return text;
         }
 

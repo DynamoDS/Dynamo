@@ -2248,6 +2248,7 @@ Dynamo.ViewModels.DynamoViewModel.UngroupAnnotationCommand.get -> Dynamo.UI.Comm
 Dynamo.ViewModels.DynamoViewModel.UngroupAnnotationCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.UngroupModelCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UngroupModelCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.RefreshAnnotationDescriptions() -> void
 Dynamo.ViewModels.DynamoViewModel.UpdateAllPythonEngineCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UpdateAllPythonEngineCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.UpdateGraphicHelpersScale(object parameter) -> void
@@ -2884,6 +2885,8 @@ Dynamo.ViewModels.PreferencesViewModel.SelectedUnits.get -> string
 Dynamo.ViewModels.PreferencesViewModel.SelectedUnits.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowCodeBlockLineNumber.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowCodeBlockLineNumber.set -> void
+Dynamo.ViewModels.PreferencesViewModel.ShowDefaultGroupDescription.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.ShowDefaultGroupDescription.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowEdges.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowEdges.set -> void
 Dynamo.ViewModels.PreferencesViewModel.UseRenderInstancing.get -> bool
@@ -5356,6 +5359,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsGeoScaling.
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsRun.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsTemplate.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralTab.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewGroupStylesHeader.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewIncludeTimestampExportPathTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageSwitchHelp.get -> string
@@ -5372,6 +5376,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewSavedChangesTooltip.get ->
 static Dynamo.Wpf.Properties.Resources.PreferencesViewSelectedPackagePathForDownload.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewSettingIncludeTimestampExportPath.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowCodeBlockNodeLineNumber.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewShowDefaultGroupDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowPreviewBubbles.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowRunPreviewTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowStaticSplashScreenTooltip.get -> string
