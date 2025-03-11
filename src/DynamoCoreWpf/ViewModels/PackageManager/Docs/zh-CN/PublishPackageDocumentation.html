@@ -1,0 +1,67 @@
+﻿<!--
+    Dynamo: https://github.com/DynamoDS/Dynamo
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code  .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h3>Package Manager</h3>
+    <p>Dynamo Package Manager 是一个一站式工具集，可用于浏览、安装和发布软件包。 从顶部导航中的“软件包”&gt;“Package Manager”下访问它。</p>
+    <h4>什么是软件包？</h4>
+    <p>Dynamo 提供了大量即时可用的功能，还维护了一个可显著扩展 Dynamo 功能的丰富软件包库。 软件包是自定义节点或附加功能的集合。 Dynamo Package Manager 是社区的门户，可用于下载任何已联机发布的软件包。 这些工具集是第三方为扩展 Dynamo 的核心功能而开发的，可供所有人访问，只需单击相应按钮即可下载。</p>
+    <h4>正在安装 Dynamo 软件包</h4>
+    <p>可以在 Package Manager 的“搜索软件包”选项卡中浏览和安装软件包。 使用搜索字段查找特定软件包。 还可以应用过滤器和排序来缩小列表范围以满足您的条件，例如主机程序或缺少依存关系。</p>
+    <p>要查看有关软件包的详细信息，请单击“查看详细信息”。 这将打开一个面板，在其中可以阅读软件包的说明、查找版本和许可信息等。</p>
+    <p>要安装软件包，请在搜索视图或详细信息面板中单击“安装”。 在搜索视图中，可以通过单击下拉列表并选择一个版本来指定要安装的版本；否则，将安装最新版本。 在软件包详细信息面板中，单击“版本和软件包要求”表中特定版本下方的“安装”以安装该版本。</p>
+    <p>可以在 Package Manager 的“已安装软件包”选项卡中找到已安装软件包的列表。 在此选项卡上，可以查看软件包文件、卸载软件包等。</p>
+    <h4>正在发布 Dynamo 软件包</h4>
+    <p>Package Manager 允许在 Dynamo 中发布软件包。 打开“发布软件包”选项卡以开始操作。 “发布软件包”选项卡将要求您提供与要发布的软件包相关的所有必需和可选信息。</p>
+
+    <h4>正在添加软件包详细信息</h4>
+
+    <p><b>软件包名称:</b><br/> 要发布的软件包的名称。 此名称将显示在库、软件包搜索中和 Package Manager 网站上。 软件包名称的长度必须至少为 3 个字符。</p>
+    <p><b>说明:</b><br/> 说明是一个用于添加有关软件包的更多详细信息(包括列出任何例外和先决条件)的理想之处。 它还可用于向用户介绍软件包的功能以及如何在用户工作空间中使用软件包。</p>
+    <p><b>版本:</b><br/> 版本字段分为三个部分: 主版本、次版本、内部版本，它允许您以软件包作者的身份上传遵循版本控制语义的软件包的新版本。 软件包作者可能希望发布包含新功能和改进功能的软件包的更多版本、对第一个版本中留下的一些不足之处进行完善，或者修复错误。</p>
+    <p><b>主机:</b><br/> 如果软件包依赖于主机程序(例如 Revit、Civil3D、Alias 或其他程序)，则可以从下拉列表中选择一个或多个主机。 搜索软件包时，用户可以基于主机过滤结果，以帮助他们找到设计用于其首选程序的软件包。</p>
+    <p><b>关键字(可选):</b><br/> 可以用作与软件包相关标记的关键字，例如 Generative Design、ML 等。可以一次在字段中键入多个关键字，方法是使用空格键分隔它们，然后按 Enter 键。</p>
+    <p><b>组(可选):</b><br/> 此字段可用于指定某个软件包所属的组，例如公司/组织。</p>
+    <p><b>网站(可选):</b><br/> 指向网站的链接，可为用户提供有关软件包或组织/作者的详细信息。</p>
+    <p><b>储存库 URL (可选):</b><br/>指向软件包存储库的链接，允许用户查看或参与软件包开发。</p>
+    <p><b>许可证(可选):</b><br/> 用于发布软件包的许可。 默认许可证: MIT。</p>
+    <p><b>版权所有者(可选):</b><br/>拥有软件包版权的人员的姓名。 如果保留为空，则此字段默认为您的用户名。</p>
+    <p><b>版权年份(可选):</b><br/>软件包的版权年份。 如果保留为空，则此字段默认为发布软件包的年份。</p>
+
+    <h4>正在添加软件包文件</h4>
+
+    <p><b>软件包内容:</b><br/> 此部分位于“发布软件包”选项卡的右侧侧栏中，允许在发布之前组织软件包内容。</p>
+    <p><b>添加文件/目录:</b><br/><p>选择并添加与软件包有关的所有文件。 通常，添加 bin 文件夹、二进制文件和依存关系。 可以添加单个文件或文件夹。</p>
+    <p>选择要添加的文件或文件夹后，可以在“选择软件包内容”页面上查看、删除或添加文件。可以在左侧面板中查看选定文件的文件夹结构，在右侧面板中查看每个文件夹的内容。</p>
+    <p><b>选择节点库:</b><br/><p>通过选中“节点库”列中的框，来指定添加到软件包中的哪些文件是节点库。 节点库包含 Dynamo 将作为节点输入的类型和方法。 通常，应该将任何组件标记为节点库，其中包含要输入到 Dynamo 中的类型。 ZeroTouch、NodeModel 或 NodeViewCustomization 组件应标记为节点库。</p>
+    <p>要加载 UI NodeViewCustomizations，它们应该在包含相应 NodeModel 定义的同一组件中进行定义，或者在单独的组件中进行定义。 在任一情况下，该组件都必须标记为节点库。 当前，对于标记为包含 NodeModel 或 NodeCustomization 类型的节点库的组件，将忽略所有其他类型。 因此，请务必将 NodeModel/NodeViewCustomization 类型与要使用 ZeroTouch 输入进行输入的类型分开。</p>
+    </p>
+    <p><b>保留文件夹结构:</b><br/><p>具有复杂软件包文件夹结构的软件包作者可能希望启用软件包内容预览面板下的“保留文件夹结构”开关。 当用户发布现有软件包的新版本时，此设置默认处于打开状态；在这种情况下，Dynamo 不会更改软件包文件夹结构，而是将按原样上传软件包。</p>
+        <p>如果您需要以特定方式设置软件包以确保它们能够正常工作并避免出现任何问题，请打开该设置。 如果有疑问或发布新软件包，请关闭该设置以允许 Dynamo 设置文件夹结构。</p>
+    </p>
+    <p><b>预览软件包内容:</b><br/> 如果您对软件包内容感到满意，请单击“下一步”以查看软件包文件发布后的设置预览。 此页面仅供查看；要对软件包内容进行其他更改，请返回到上一页。 单击“完成”以返回到软件包详细信息页面。</p>
+    <p><b>添加 Markdown 文件路径(可选):</b><br/> 可以选择在“Markdown 文件路径”部分中指定托管软件包的 Markdown (.md)文档的文件路径。</p>
+    <p><b>发布软件包</b><br/> 填写所有必需详细信息后，可以本地或联机发布软件包。 本地发布时，软件包将发布在本地根目录中；而联机发布时，软件包将上传到 Package Manager。</p>
+
+    <hr />
+
+    <h3>防病毒扫描</h3>
+    <p>为了向所有 Dynamo 软件包用户提供安全的环境，我们已针对新软件包引入了防病毒扫描。 当用户上传软件包时，将扫描软件包以查找病毒，并且仅在软件包标记为安全后才会公开提供。 该扫描会在软件包上传过程中进行，不会增加到新软件包常规的 10-15 分钟持续扫描时间，以便新软件包联机可用。 如果软件包标记为被感染，则 Package Manager 搜索页面会显示一条通知，指出上传的软件包发现被感染，无法联机发布。 要使软件包公开可用，请检查软件包中包含的文件，然后通过 Package Manager 上传新版本。</p>
+    <h3>管理软件包</h3>
+    <p>可以在 Package Manager 的“我的软件包”选项卡中找到已发布软件包的列表，在其中可以弃用它们、发布新版本等。</p>
+    <h3>软件包设置</h3>
+    <p>可以在 Package Manager 的“软件包设置”选项卡中查看与软件包有关的设置，包括新的软件包下载路径和软件包/库搜索路径。 要编辑设置，请单击“软件包设置”选项卡中的“首选项”链接以访问“首选项”面板。</p>
+</body>
