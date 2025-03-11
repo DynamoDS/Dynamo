@@ -232,8 +232,7 @@ namespace Dynamo.Wpf.ViewModels.Core
 
             foreach (Guid t in nodeGuids)
             {
-                var nodeViewModel = Nodes.FirstOrDefault(x => x.NodeModel.GUID == t);
-                if (nodeViewModel != null)
+                if (FindNode(t) is NodeViewModel nodeViewModel)
                 {
                     nodeViewModel.ShowExecutionPreview = nodeViewModel.DynamoViewModel.ShowRunPreview;
                     nodeViewModel.IsNodeAddedRecently = false;
@@ -358,7 +357,7 @@ namespace Dynamo.Wpf.ViewModels.Core
 
             foreach (var messageID in evalargs.MessageKeys)
             {
-                var node = Nodes.FirstOrDefault(n => n.Id == messageID);
+                var node = FindNode(messageID);
                 if (node == null) continue;
 
                 node.UpdateBubbleContent();
