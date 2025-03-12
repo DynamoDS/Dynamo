@@ -14,7 +14,7 @@ namespace CoreNodeModels
     [IsDesignScriptCompatible]
     [NodeName("Curve Mapper")]
     [NodeCategory("Math.Graph.Create")]
-    [NodeDescription("Generates a list of values mapped from a curve.")] // TODO: Add to resources
+    [NodeDescription("CurveMapperDescription", typeof(Properties.Resources))]
     [NodeSearchTags("graph;curve;mapper;math")]
     public class CurveMapperNodeModel : NodeModel
     {
