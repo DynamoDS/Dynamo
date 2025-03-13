@@ -1835,6 +1835,10 @@ Note: Incorrect folder structure may affect the functionality of packages that r
     <value>Your package must contain at least one file.</value>
     <comment>ErrorString</comment>
   </data>
+  <data name="PackageCompatibilityMatrixMissing" xml:space="preserve">
+    <value>Provide compatibility information for the package..</value>
+    <comment>ErrorString</comment>
+  </data>
   <data name="UpdateMessage" xml:space="preserve">
     <value>An update is available for Dynamo.
 Installing the latest update requires Dynamo and any host applications to close.
