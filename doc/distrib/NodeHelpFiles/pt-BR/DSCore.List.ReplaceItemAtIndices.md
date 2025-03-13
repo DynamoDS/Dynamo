@@ -1,6 +1,6 @@
 ## Em profundidade
-'List.ReplaceItemAtIndices' replaces items on the input list at given indices.
-In the example below, we start with a range of numbers from 0 to 5. We then use a 'List.ReplaceItemAtIndices' node to replace the items at index 3 and index 5 with a new item, in this case the integer 10.
+'List.ReplaceItemAtIndices' substitui os itens na lista de entradas em determinados índices.
+No exemplo abaixo, começamos com um intervalo de números de 0 a 5. Em seguida, usamos um nó 'List.ReplaceItemAtIndices' para substituir os itens no índice 3 e no índice 5 por um novo item. Neste caso, o inteiro 10.
 ___
 ## Arquivo de exemplo
 
