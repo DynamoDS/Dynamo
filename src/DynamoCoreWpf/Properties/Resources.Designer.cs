@@ -5594,6 +5594,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Provide compatibility information for the package...
+        /// </summary>
+        public static string PackageCompatibilityMatrixMissing {
+            get {
+                return ResourceManager.GetString("PackageCompatibilityMatrixMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Compatible.
         /// </summary>
         public static string PackageCompatible {
@@ -6351,7 +6360,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Virus scan in progress. Your package will be searchable in approximately 15 minutes..
+        ///   Looks up a localized string similar to Virus scan in progress. Your package will be searchable in a few minutes..
         /// </summary>
         public static string PackageManagerPublishOnlineFinishedMessage {
             get {

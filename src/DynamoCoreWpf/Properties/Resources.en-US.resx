@@ -1587,6 +1587,10 @@ Next assemblies were loaded several times:
     <value>Your package must contain at least one file.</value>
     <comment>ErrorString</comment>
   </data>
+  <data name="PackageCompatibilityMatrixMissing" xml:space="preserve">
+    <value>Provide compatibility information for the package..</value>
+    <comment>ErrorString</comment>
+  </data>
   <data name="PackageNotExisted" xml:space="preserve">
     <value>The root directory of the package does not exist. Please try and re-install the package.</value>
   </data>
