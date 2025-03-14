@@ -601,6 +601,7 @@ namespace Dynamo.Controls
             if (tabItem != null)
             {
                 tabDynamic.SelectedItem = tabItem;
+                if (ExtensionsCollapsed) ToggleExtensionBarCollapseStatus();
                 return tabItem;
             }
 
