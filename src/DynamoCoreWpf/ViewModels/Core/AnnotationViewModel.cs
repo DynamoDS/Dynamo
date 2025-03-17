@@ -469,14 +469,9 @@ namespace Dynamo.ViewModels
         {
             if (annotationModel.IsSelected)
             {
-                var selectedModels = DynamoSelection.Instance.Selection.OfType<ModelBase>();
-                foreach (var model in selectedModels)
-                {
-                    if (!(model is AnnotationModel))
-                    {
-                        this.AnnotationModel.AddToTargetAnnotationModel(model, true);
-                    }
-                }
+                var selectedModels = DynamoSelection.Instance.Selection.OfType<ModelBase>().Where(m => !(m is AnnotationModel));
+                AnnotationModel.AddToTargetAnnotationModel(selectedModels, true);
+
                 Analytics.TrackEvent(Actions.AddedTo, Categories.GroupOperations, "Node");
             }
         }
@@ -625,7 +620,7 @@ namespace Dynamo.ViewModels
             //https://jira.autodesk.com/browse/QNTM-3770
             //Notes and Groups are serialized as annotations. Do not unselect the node selection during
             //Notes serialization
-            if (model.Nodes.Count() > 0)
+            if (model.Nodes.Any())
             {
                 // Group is created already.So just populate it.
                 var selectNothing = new DynamoModel.SelectModelCommand(Guid.Empty, System.Windows.Input.ModifierKeys.None.AsDynamoType());
