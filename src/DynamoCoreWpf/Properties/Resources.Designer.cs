@@ -1352,6 +1352,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Discard.
+        /// </summary>
+        public static string DiscardButton {
+            get {
+                return ResourceManager.GetString("DiscardButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Discard changes?.
         /// </summary>
         public static string DiscardChangesWarningPopupCaption {
@@ -6351,7 +6360,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Virus scan in progress. Your package will be searchable in approximately 15 minutes..
+        ///   Looks up a localized string similar to Virus scan in progress. Your package will be searchable in a few minutes..
         /// </summary>
         public static string PackageManagerPublishOnlineFinishedMessage {
             get {
@@ -9534,6 +9543,15 @@ namespace Dynamo.Wpf.Properties {
         public static string Save {
             get {
                 return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string SaveButton {
+            get {
+                return ResourceManager.GetString("SaveButton", resourceCulture);
             }
         }
         
