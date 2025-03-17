@@ -3642,6 +3642,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Freeze Group.
+        /// </summary>
+        public static string GroupContextMenuFreezeGroup {
+            get {
+                return ResourceManager.GetString("GroupContextMenuFreezeGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cleanup Node Layout.
         /// </summary>
         public static string GroupContextMenuGraphLayout {

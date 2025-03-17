@@ -607,6 +607,13 @@ namespace Dynamo.ViewModels
         /// </summary>
         [JsonIgnore]
         public DelegateCommand ToggleIsVisibleGroupCommand { get; private set; }
+
+        /// <summary>
+        /// Command to toggle this group's frozen state.
+        /// When executed, it will freeze or unfreeze all nodes within the group.
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand ToggleIsFrozenGroupCommand { get; private set; }
         #endregion
 
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
@@ -619,6 +626,7 @@ namespace Dynamo.ViewModels
             model.RemovedFromGroup += OnModelRemovedFromGroup;
             model.AddedToGroup += OnModelAddedToGroup;
             ToggleIsVisibleGroupCommand = new DelegateCommand(ToggleIsVisibleGroup, CanToggleIsVisibleGroup);
+            ToggleIsFrozenGroupCommand = new DelegateCommand(ToggleIsFrozenGroup, CanToggleIsFrozenGroup);
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
 
@@ -1402,6 +1410,27 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanToggleIsVisibleGroup(object parameters)
+        {
+            return true;
+        }
+
+        internal void ToggleIsFrozenGroup(object parameters)
+        {
+            DynamoSelection.Instance.ClearSelection();
+            var nodesInGroup = this.AnnotationModel.Nodes.Select(n => n.GUID).ToList();
+
+            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
+            nodesInGroup, nameof(this.AnnotationModel.IsFrozen), (!this.AnnotationModel.IsFrozen).ToString());
+
+            this.AnnotationModel.IsFrozen = !this.AnnotationModel.IsFrozen;
+            WorkspaceViewModel.DynamoViewModel.Model.ExecuteCommand(command);
+            WorkspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
+            WorkspaceViewModel.HasUnsavedChanges = true;
+
+            Analytics.TrackEvent(Actions.Preview, Categories.GroupOperations, this.AnnotationModel.IsFrozen.ToString());
+        }
+
+        internal bool CanToggleIsFrozenGroup(object parameters)
         {
             return true;
         }
