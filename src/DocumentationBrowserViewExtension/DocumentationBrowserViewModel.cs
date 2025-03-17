@@ -438,7 +438,7 @@ namespace Dynamo.DocumentationBrowser
             {
                 if (GraphPath != null)
                 {
-                    var graphName = string.IsNullOrEmpty(CurrentPackageName) ? Path.GetFileNameWithoutExtension(GraphPath) : CurrentPackageName;
+                    var graphName = string.IsNullOrEmpty(CurrentPackageName) ? CurrentGraphName : CurrentPackageName;
                     raiseInsertGraph(this, new InsertDocumentationLinkEventArgs(GraphPath, graphName));
                 }
                 else
