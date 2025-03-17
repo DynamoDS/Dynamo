@@ -2543,10 +2543,15 @@ namespace ProtoImperative
             //AppendInstruction(instr);
         }
 
-        protected override void EmitReturnNull()
+        protected override void EmitReturnNull(Guid? guid = null)
         {
             EmitPushNull();
             EmitReturnToRegister();
+        }
+
+        protected override void EmitReturnNull()
+        {
+            EmitReturnNull(null);
         }
 
         protected void EmitGropuExpressionNode(ImperativeNode node, ref ProtoCore.Type inferedType)

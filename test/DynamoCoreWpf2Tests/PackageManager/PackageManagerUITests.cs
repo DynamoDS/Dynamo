@@ -204,6 +204,18 @@ namespace DynamoCoreWpfTests.PackageManager
 
             isValidOutput = updownControl.IsValidInput("1");
             Assert.IsTrue(isValidOutput, "Should allow positive integers in numeric input.");
+
+            // Arrange
+            var inputField = updownControl.inputField;
+
+            // Act & Assert
+            Assert.AreEqual("0", updownControl.Value);
+
+            inputField.Text = "1";
+            Assert.AreEqual("1", updownControl.Value);
+
+            inputField.Text = "";
+            Assert.AreEqual("0", updownControl.Value);
         }
 
         [Test]
