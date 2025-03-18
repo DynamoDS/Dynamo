@@ -465,51 +465,81 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        private Dictionary<string, object> DeserializeJsonFile(string filePath)
+        private readonly string[] jsonKeys = { "Description", "Thumbnail", "Author" };
+        private readonly Dictionary<string, object> propertyLookup = [];
+        private static DefaultJsonNameTable propertyTable = null;
+
+        private class GraphData
         {
-            if (DynamoUtilities.PathHelper.isValidJson(filePath, out string jsonString, out Exception ex))
+            public string Author = "";
+            public string Description = "";
+            public string Thumbnail = "";
+        }
+
+        private GraphData DeserializeJsonFileTest(string filePath)
+        {
+            return JsonConvert.DeserializeObject<GraphData>(File.ReadAllText(filePath));
+        }
+
+        private Dictionary<string, string> DeserializeJsonFile(string filePath)
+        {
+            if (propertyTable == null)
             {
-                return JsonConvert.DeserializeObject<Dictionary<string, object>>(jsonString);
+                propertyTable = new DefaultJsonNameTable();
+                foreach (var pn in jsonKeys)
+                {
+                    propertyLookup[pn] = propertyTable.Add(pn);
+                }
             }
-            else
+
+            try
             {
-                if(ex is JsonReaderException)
+                var data = new Dictionary<string, string>();
+                // JsonTextRead will automatically dispose of the stream reader
+                using (var fs = new FileStream(filePath, FileMode.Open, FileAccess.Read))
+                using (var jr = new JsonTextReader(new StreamReader(fs)) { PropertyNameTable = propertyTable })
                 {
-                    DynamoViewModel.Model.Logger.Log("File is not a valid json format.");
+                    while(jr.Read())
+                    {
+                        if (data.Count == jsonKeys.Length)
+                        {
+                            break;
+                        }
+
+                        if (jr.Depth != 1)
+                        {
+                            continue;
+                        }
+
+                        if (jr.TokenType == JsonToken.PropertyName)
+                        {
+                            foreach (var prop in propertyLookup)
+                            {
+                                if (jr.Value == prop.Value)
+                                {
+                                    data[prop.Key] = jr.ReadAsString() ?? "";
+                                    break;
+                                }
+                            }
+                        }
+                    }
                 }
-                else
-                {
-                    DynamoViewModel.Model.Logger.Log("File is not valid: " + ex.StackTrace);
-                }
+
+                return data;
+            }
+            catch
+            {
+                DynamoViewModel.Model.Logger.Log("File is not a valid json format.");
                 return null;
             }
         }
 
         private const string BASE64PREFIX = "data:image/png;base64,";
 
-        private string GetGraphThumbnail(Dictionary<string, object> jsonObject)
+        private string GetGraphThumbnail(Dictionary<string, string> jsonObject)
         {
-            jsonObject.TryGetValue("Thumbnail", out object thumbnail);
-
-            if (string.IsNullOrEmpty(thumbnail as string)) return string.Empty;
-
-            var base64 = String.Format("{0}{1}", BASE64PREFIX, thumbnail as string);
-
-            return base64;
-        }
-
-        private string GetGraphDescription(Dictionary<string, object> jsonObject)
-        {
-            jsonObject.TryGetValue("Description", out object description);
-
-            return description as string;
-        }
-
-        private string GetGraphAuthor(Dictionary<string, object> jsonObject)
-        {
-            jsonObject.TryGetValue("Author", out object author);
-
-            return author as string;
+            jsonObject.TryGetValue("Thumbnail", out var thumbnail);
+            return string.IsNullOrEmpty(thumbnail) ? string.Empty : $"{BASE64PREFIX}{thumbnail}";
         }
 
         private void HandleRegularCommand(StartPageListItem item)
@@ -559,9 +589,12 @@ namespace Dynamo.UI.Controls
             try
             {
                 var jsonObject = DeserializeJsonFile(filePath);
-                var description = jsonObject != null ? GetGraphDescription(jsonObject) : string.Empty;
+                //var test = DeserializeJsonFileTest(filePath);
+                var description = jsonObject?.TryGetValue("Description", out var description_) == true ?
+                    description_ : string.Empty;
+                var author = jsonObject?.TryGetValue("Author", out var author_) == true ?
+                    author_ : Resources.DynamoXmlFileFormat;
                 var thumbnail = jsonObject != null ? GetGraphThumbnail(jsonObject) : string.Empty;
-                var author = jsonObject != null ? GetGraphAuthor(jsonObject) : Resources.DynamoXmlFileFormat;
                 var date = DynamoUtilities.PathHelper.GetDateModified(filePath);
 
                 return (description, thumbnail, author, date);

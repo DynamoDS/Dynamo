@@ -819,28 +819,46 @@ namespace Dynamo.Graph.Workspaces
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
             var ws = (WorkspaceModel)value;
-            bool isCustomNode = value is CustomNodeWorkspaceModel;
+            var customWorkspace = ws as CustomNodeWorkspaceModel;
+            var isCustomNode = customWorkspace != null;
+            var homeWorkspace = ws as HomeWorkspaceModel;
+            var isHomeWsModel = homeWorkspace != null;
             writer.WriteStartObject();
-            writer.WritePropertyName("Uuid");
+
+            // Write the start page graph properties first
+
+            // Graph Author
+            writer.WritePropertyName(nameof(WorkspaceModel.Author));
+            writer.WriteValue(ws.Author);
+
+            // Description
+            writer.WritePropertyName("Description");
             if (isCustomNode)
-                writer.WriteValue((ws as CustomNodeWorkspaceModel).CustomNodeId.ToString());
+                writer.WriteValue(customWorkspace.Description);
             else
-                writer.WriteValue(ws.Guid.ToString());
+                writer.WriteValue(ws.Description);
+
+            // Thumbnail
+            if (!isCustomNode && isHomeWsModel)
+            {
+                writer.WritePropertyName(nameof(HomeWorkspaceModel.Thumbnail));
+                writer.WriteValue(homeWorkspace.Thumbnail);
+            }
+
+            writer.WritePropertyName("Uuid");
+            writer.WriteValue(isCustomNode ?
+                customWorkspace.CustomNodeId.ToString():
+                ws.Guid.ToString());
+
             // TODO: revisit IsCustomNode during DYN/DYF convergence
             writer.WritePropertyName("IsCustomNode");
-            writer.WriteValue(value is CustomNodeWorkspaceModel ? true : false);
+            writer.WriteValue(isCustomNode);
             if (isCustomNode)
             {
                 writer.WritePropertyName("Category");
                 writer.WriteValue(((CustomNodeWorkspaceModel)value).Category);
             }
 
-            // Description
-            writer.WritePropertyName("Description");
-            if (isCustomNode)
-                writer.WriteValue(((CustomNodeWorkspaceModel)ws).Description);
-            else
-                writer.WriteValue(ws.Description);
             writer.WritePropertyName("Name");
             writer.WriteValue(ws.Name);
 
@@ -884,7 +902,7 @@ namespace Dynamo.Graph.Workspaces
             }
             writer.WriteEndArray();
 
-            // Join NodeLibraryDependencies & NodeLocalDefinitions and serialze them.
+            // Join NodeLibraryDependencies & NodeLocalDefinitions and serialize them.
             writer.WritePropertyName(WorkspaceReadConverter.NodeLibraryDependenciesPropString);
 
             IEnumerable<INodeLibraryDependencyInfo> referencesList = ws.NodeLibraryDependencies;
@@ -915,28 +933,20 @@ namespace Dynamo.Graph.Workspaces
 
             serializer.Serialize(writer, referencesList);
 
-            if (!isCustomNode && ws is HomeWorkspaceModel hws)
+            if (!isCustomNode && isHomeWsModel)
             {
                 // EnableLegacyPolyCurveBehavior
                 writer.WritePropertyName(nameof(HomeWorkspaceModel.EnableLegacyPolyCurveBehavior));
-                serializer.Serialize(writer, hws.EnableLegacyPolyCurveBehavior);
-
-                // Thumbnail
-                writer.WritePropertyName(nameof(HomeWorkspaceModel.Thumbnail));
-                writer.WriteValue(hws.Thumbnail);
+                serializer.Serialize(writer, homeWorkspace.EnableLegacyPolyCurveBehavior);
 
                 // GraphDocumentaionLink
                 writer.WritePropertyName(nameof(HomeWorkspaceModel.GraphDocumentationURL));
-                writer.WriteValue(hws.GraphDocumentationURL);
+                writer.WriteValue(homeWorkspace.GraphDocumentationURL);
 
                 // ExtensionData
                 writer.WritePropertyName(WorkspaceReadConverter.EXTENSION_WORKSPACE_DATA);
-                serializer.Serialize(writer, hws.ExtensionData);
+                serializer.Serialize(writer, homeWorkspace.ExtensionData);
             }
-
-            // Graph Author
-            writer.WritePropertyName(nameof(WorkspaceModel.Author));
-            writer.WriteValue(ws.Author);
 
             // Linter
             if(!(ws.linterManager is null))
