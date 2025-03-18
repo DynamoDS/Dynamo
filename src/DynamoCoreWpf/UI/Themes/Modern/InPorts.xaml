@@ -200,6 +200,31 @@
                     CornerRadius="0,11,11,0"
                     IsHitTestVisible="True"
                     SnapsToDevicePixels="True" />
+
+            <Border x:Name="PortBorderHighlight"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="7"
+                    BorderBrush="Purple"
+                    Height="29px"
+                    Margin="-7,0,0,0"
+                    BorderThickness="3,3,3,3"
+                    CornerRadius="0,11,11,0"
+                    Visibility="{Binding Highlight, UpdateSourceTrigger=PropertyChanged}"
+                    SnapsToDevicePixels="True">
+
+                <Border.Triggers>
+                    <EventTrigger RoutedEvent="Border.Loaded">
+                        <BeginStoryboard>
+                            <Storyboard RepeatBehavior="Forever" AutoReverse="True">
+                                <ColorAnimation Storyboard.TargetProperty="(Border.BorderBrush).(SolidColorBrush.Color)"
+                                    From="Purple" To="Transparent"
+                                    Duration="0:0:1"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </Border.Triggers>
+
+            </Border>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>

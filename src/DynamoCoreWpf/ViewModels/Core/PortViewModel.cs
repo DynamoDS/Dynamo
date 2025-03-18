@@ -31,6 +31,8 @@ namespace Dynamo.ViewModels
         protected static readonly SolidColorBrush PortBorderBrushColorDefault = new SolidColorBrush(Color.FromRgb(161, 161, 161));
         private SolidColorBrush portBorderBrushColor = PortBorderBrushColorDefault;
         private SolidColorBrush portBackgroundColor = PortBackgroundColorDefault;
+        private Visibility highlight = Visibility.Collapsed;
+        
         /// <summary>
         /// Port model.
         /// </summary>
@@ -190,6 +192,19 @@ namespace Dynamo.ViewModels
             {
                 portBorderBrushColor = value;
                 RaisePropertyChanged(nameof(PortBorderBrushColor));
+            }
+        }
+
+        /// <summary>
+        /// Highlight or clear highlight of the port.
+        /// </summary>
+        public Visibility Highlight
+        {
+            get => highlight;
+            set
+            {
+                highlight = value;
+                RaisePropertyChanged(nameof(Highlight));
             }
         }
 

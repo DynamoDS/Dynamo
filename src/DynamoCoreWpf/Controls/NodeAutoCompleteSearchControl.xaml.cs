@@ -196,9 +196,14 @@ namespace Dynamo.UI.Controls
 
         private void OnNodeAutoCompleteSearchControlVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            bool visible = (bool)e.NewValue;
+
+            ViewModel.PortViewModel.Highlight = visible ? Visibility.Visible : Visibility.Collapsed;
             // If visibility  is false, then stop processing it.
-            if (!(bool)e.NewValue)
+            if (!visible)
+            {
                 return;
+            }
 
             // When launching this control, always start with clear search term.
             SearchTextBox.Clear();
