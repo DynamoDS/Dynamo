@@ -2251,7 +2251,12 @@ namespace Dynamo.Models
                 {
                     annotationText = Resources.GroupNameDefaultText;
                 }
-                if (string.IsNullOrEmpty(annotationDescriptionText))
+
+                if (!PreferenceSettings.Instance.ShowDefaultGroupDescription)
+                {
+                    annotationDescriptionText = string.Empty;
+                }
+                else if (string.IsNullOrEmpty(annotationDescriptionText))
                 {
                     annotationDescriptionText = Resources.GroupDefaultText;
                 }
