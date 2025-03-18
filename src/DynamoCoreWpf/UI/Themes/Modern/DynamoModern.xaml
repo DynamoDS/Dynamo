@@ -4115,6 +4115,103 @@
                             <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource GenericMouseOverBackgroundColorBrush}" />
                         </Trigger>
                         <Trigger Property="IsMouseOver" Value="False">
+                            <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource NodeContextMenuBackground}" />
+                        </Trigger>
+                        <Trigger Property="IsChecked" Value="True">
+                            <Setter TargetName="checkBox" Property="Visibility" Value="Visible" />
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.FontFamily" Value="{StaticResource ArtifaktElementBold}" />
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  This context menu style is similar to the ContextMenuItemStyle and the only difference is the background at IsMouseOve = False  -->
+    <Style x:Key="DarkContextMenuItemStyle" TargetType="{x:Type MenuItem}" BasedOn="{StaticResource ContextMenuItemStyle}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type MenuItem}">
+                    <DockPanel x:Name="dockPanel"
+                           HorizontalAlignment="Stretch"
+                           Background="Transparent"
+                           SnapsToDevicePixels="true">
+                        <Label x:Name="checkBox"
+                           Margin="0,0,-20,0"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           HorizontalContentAlignment="Center"
+                           VerticalContentAlignment="Center"
+                           Content="✓"
+                           DockPanel.Dock="Left"
+                           FontSize="9px"
+                           Foreground="{StaticResource PreferencesWindowButtonColor}"
+                           Visibility="Collapsed" />
+                        <ContentPresenter x:Name="ContentPresenter"
+                                      Margin="{TemplateBinding Padding}"
+                                      VerticalAlignment="Center"
+                                      ContentSource="Header"
+                                      DockPanel.Dock="Left"
+                                      RecognizesAccessKey="True"
+                                      SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}"
+                                      TextBlock.Foreground="{StaticResource NodeContextMenuForeground}" />
+                        <Label x:Name="subMenuArrow"
+                           Margin="0,0,15,7"
+                           Padding="0"
+                           VerticalAlignment="Center"
+                           Content="&gt;"
+                           DockPanel.Dock="Right"
+                           FontFamily="{StaticResource ArtifaktElementRegular}"
+                           FontSize="13px"
+                           Foreground="{StaticResource Blue300Brush}">
+                            <Label.RenderTransform>
+                                <ScaleTransform ScaleX="1" ScaleY="1.5" />
+                            </Label.RenderTransform>
+                            <Label.Style>
+                                <Style TargetType="{x:Type Label}">
+                                    <Setter Property="Visibility" Value="Hidden" />
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type MenuItem}}, Path=HasItems}" Value="True">
+                                            <Setter Property="Visibility" Value="Visible" />
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Label.Style>
+                        </Label>
+                        <Popup x:Name="PART_Popup"
+                           AllowsTransparency="true"
+                           Focusable="false"
+                           HorizontalOffset="0"
+                           IsOpen="{Binding IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}"
+                           Placement="Right"
+                           VerticalOffset="-2">
+                            <Border Background="{TemplateBinding Background}"
+                                BorderBrush="Transparent"
+                                BorderThickness="0">
+                                <ScrollViewer x:Name="SubMenuScrollViewer"
+                                          CanContentScroll="true"
+                                          Style="{DynamicResource {ComponentResourceKey ResourceId=MenuScrollViewer,
+                                                                                        TypeInTargetAssembly={x:Type FrameworkElement}}}">
+                                    <Grid RenderOptions.ClearTypeHint="Enabled">
+                                        <ItemsPresenter x:Name="ItemsPresenter"
+                                                    Grid.IsSharedSizeScope="true"
+                                                    KeyboardNavigation.DirectionalNavigation="Cycle"
+                                                    KeyboardNavigation.TabNavigation="Cycle"
+                                                    SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
+                                    </Grid>
+                                </ScrollViewer>
+                            </Border>
+                        </Popup>
+                    </DockPanel>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="False">
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.Opacity" Value="0.5" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="True">
+                            <Setter TargetName="ContentPresenter" Property="TextBlock.Foreground" Value="White" />
+                            <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource GenericMouseOverBackgroundColorBrush}" />
+                        </Trigger>
+                        <Trigger Property="IsMouseOver" Value="False">
                             <Setter TargetName="dockPanel" Property="Background" Value="{StaticResource GenericBorderBackgroundColorBrush}" />
                         </Trigger>
                         <Trigger Property="IsChecked" Value="True">
@@ -4271,6 +4368,17 @@
             <Style x:Key="{x:Type MenuItem}"
                    BasedOn="{StaticResource ContextMenuItemStyle}"
                    TargetType="MenuItem" />
+        </Style.Resources>
+    </Style>
+
+    <Style x:Key="DarkContextMenuStyle" TargetType="{x:Type ContextMenu}" BasedOn="{StaticResource ContextMenuStyle}">
+        <Style.Resources>
+            <Style x:Key="{x:Static MenuItem.SeparatorStyleKey}"
+               BasedOn="{StaticResource ContextMenuSeparatorStyle}"
+               TargetType="Separator" />
+            <Style x:Key="{x:Type MenuItem}"
+               BasedOn="{StaticResource DarkContextMenuItemStyle}"
+               TargetType="MenuItem" />
         </Style.Resources>
     </Style>
 
