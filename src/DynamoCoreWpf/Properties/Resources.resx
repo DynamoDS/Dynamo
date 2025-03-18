@@ -4105,6 +4105,12 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
   </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="DiscardButton" xml:space="preserve">
+    <value>Discard</value>
+  </data>
   <data name="PreferencesViewGroupStylesHeader" xml:space="preserve">
     <value>Group Styles</value>
   </data>

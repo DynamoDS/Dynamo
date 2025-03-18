@@ -1270,6 +1270,7 @@ Dynamo.PackageManager.UI.PackageManagerPublishHost.InitializeComponent() -> void
 Dynamo.PackageManager.UI.PackageManagerPublishHost.PackageManagerPublishHost() -> void
 Dynamo.PackageManager.UI.PackageManagerPublishHost.PublishPackageViewModel.get -> Dynamo.PackageManager.PublishPackageViewModel
 Dynamo.PackageManager.UI.PackageManagerPublishHost.PublishPackageViewModel.set -> void
+Dynamo.PackageManager.UI.PackageManagerPublishHost.Wizard.get -> Dynamo.UI.Views.PackageManagerWizard
 Dynamo.PackageManager.UI.PackageManagerSearchControl
 Dynamo.PackageManager.UI.PackageManagerSearchControl.InitializeComponent() -> void
 Dynamo.PackageManager.UI.PackageManagerSearchControl.PackageManagerSearchControl() -> void
@@ -4619,6 +4620,7 @@ static Dynamo.Wpf.Properties.Resources.DirectoryNotFound.get -> string
 static Dynamo.Wpf.Properties.Resources.DisableBuiltInPackageToggleInfo.get -> string
 static Dynamo.Wpf.Properties.Resources.DisableCustomPackageToggleInfo.get -> string
 static Dynamo.Wpf.Properties.Resources.DisablePackageInstallIconTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.DiscardButton.get -> string
 static Dynamo.Wpf.Properties.Resources.DiscardChangesWarningPopupCaption.get -> string
 static Dynamo.Wpf.Properties.Resources.DiscardChangesWarningPopupMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.DownloadWarningMessageBoxTitle.get -> string
@@ -5523,6 +5525,7 @@ static Dynamo.Wpf.Properties.Resources.RunTypeToolTipManually.get -> string
 static Dynamo.Wpf.Properties.Resources.RunTypeToolTipPeriodicallyDisabled.get -> string
 static Dynamo.Wpf.Properties.Resources.RunTypeToolTipPeriodicallyEnabled.get -> string
 static Dynamo.Wpf.Properties.Resources.Save.get -> string
+static Dynamo.Wpf.Properties.Resources.SaveButton.get -> string
 static Dynamo.Wpf.Properties.Resources.SaveModelToSTLDialogTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.SaveWorkbenToImageDialogTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.ScalingExtraLargeButton.get -> string
