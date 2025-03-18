@@ -1417,17 +1417,35 @@ namespace Dynamo.ViewModels
         internal void ToggleIsFrozenGroup(object parameters)
         {
             DynamoSelection.Instance.ClearSelection();
-            var nodesInGroup = this.AnnotationModel.Nodes.Select(n => n.GUID).ToList();
+            bool newFrozenState = !this.AnnotationModel.IsFrozen;
 
-            var command = new DynamoModel.UpdateModelValueCommand(Guid.Empty,
-            nodesInGroup, nameof(this.AnnotationModel.IsFrozen), (!this.AnnotationModel.IsFrozen).ToString());
+            // Collect all nodes inside this group
+            var nodesInGroup = this.AnnotationModel.Nodes.
+                OfType<NodeModel>()
+                .Select(n => n.GUID)
+                .ToList();
 
-            this.AnnotationModel.IsFrozen = !this.AnnotationModel.IsFrozen;
+            // Collect all nodes inside the nested groups
+            var nestedGroups = this.AnnotationModel.Nodes.OfType<AnnotationModel>();
+            foreach (var nestedGroup in nestedGroups)
+            {
+                nestedGroup.IsFrozen = newFrozenState;
+                nodesInGroup.AddRange(nestedGroup.Nodes.OfType<NodeModel>().Select(n => n.GUID));
+            }
+
+            var command = new DynamoModel.UpdateModelValueCommand(
+                Guid.Empty,
+                nodesInGroup,
+                nameof(this.AnnotationModel.IsFrozen),
+                newFrozenState.ToString());
+
+            this.AnnotationModel.IsFrozen = newFrozenState;
+
             WorkspaceViewModel.DynamoViewModel.Model.ExecuteCommand(command);
             WorkspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
             WorkspaceViewModel.HasUnsavedChanges = true;
 
-            Analytics.TrackEvent(Actions.Preview, Categories.GroupOperations, this.AnnotationModel.IsFrozen.ToString());
+            Analytics.TrackEvent(Actions.Preview, Categories.GroupOperations, newFrozenState.ToString());
         }
 
         internal bool CanToggleIsFrozenGroup(object parameters)
