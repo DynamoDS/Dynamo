@@ -4018,7 +4018,7 @@ namespace Dynamo.Controls
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is string errorMessage && errorMessage.Equals(Resources.PackageManagerReadyToPublish))
+            if (value is string errorMessage && errorMessage.Equals(Resources.PackageManagerNoValidationErrors))
             {
                 return Visibility.Visible;
             }

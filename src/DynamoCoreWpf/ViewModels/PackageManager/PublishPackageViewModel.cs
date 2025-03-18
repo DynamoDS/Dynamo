@@ -2789,7 +2789,7 @@ namespace Dynamo.PackageManager
 
             if (Uploading) return false;
 
-            this.ErrorString = Resources.PackageManagerReadyToPublish;
+            this.ErrorString = Resources.PackageManagerNoValidationErrors;
             return true;
         }
 

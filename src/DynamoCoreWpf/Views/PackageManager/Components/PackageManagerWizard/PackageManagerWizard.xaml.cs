@@ -343,7 +343,7 @@ namespace Dynamo.UI.Views
             // We only want to surface actual publish Errors to the front end,
             // and 'Ready to publish' is triggered multiple times during the publishing process
             // preventing us to report an actual Error.
-            if (error.Equals(Wpf.Properties.Resources.PackageManagerReadyToPublish))
+            if (error.Equals(Wpf.Properties.Resources.PackageManagerNoValidationErrors))
                 error = string.Empty;
 
             var payload = new { errorString = error };
