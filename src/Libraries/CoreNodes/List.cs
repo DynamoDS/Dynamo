@@ -526,49 +526,161 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     Group items into sub-lists based on their adjacent values
+        ///     This node clusters elements in a list based on the adjacency of their indices and the similarity of their values.
+        ///     It can handle list of numbers as well as list of strings.
+        ///     The boolean input allows the user to specify whether adjacency should be considered when grouping the elements.
+        ///     The tolerance input allows the user to specify the threshold value for grouping similar elements. In case of integers, the tolerance value is the difference between the two integers.
+        ///     And in case of strings, the tolerance value is the number of characters that can be different between the two strings.
         /// </summary>
-        /// <param name="list">List of items to group as sublists</param>
-        /// <param name="threshold">Threshold value for grouping items</param>
-        /// <returns name="groups">list of sublists, with items grouped by same adjacent values</returns>
-        /// <search>list;group;adjacent;groupbyadjacency;groupadjacentitems;cluster</search>
+        /// <param name="list">List of items to group as sublists based on adjacency and similarity</param>
+        /// <param name="tolerance">Threshold value for grouping similar items</param>
+        /// <param name="considerAdjacency">Boolean value to control if the node should consider adjacency of not.</param>
+        /// <returns name="groupedValues">list of sublists, with items grouped by same adjacent values</returns>
+        /// <returns name="groupedIndices">list of sublists, with items grouped by same adjacent indices</returns>
+        /// <search>list;group;similar;adjacent;adjacency;groupbyadjacency;groupadjacentitems;groupsimilaritems;cluster;tolerance</search>
+        [MultiReturn(new[] { "groupedValues", "groupedIndices" })]
         [IsVisibleInDynamoLibrary(true)]
-        public static IList GroupAdjacentItems(IList list, int threshold = 1)
+        public static IDictionary GroupBySimilarity(IList list, int tolerance = 0, bool considerAdjacency = true)
         {
-            //Validate input
+            // Validate input
             if (list == null || list.Count == 0)
                 throw new ArgumentException("Need at least one item in the list of items.", nameof(list));
-            if (threshold < 1)
-                throw new ArgumentException("Invalid threshold provided, value cannot be less than 1.", nameof(list));
+            if (tolerance < 0)
+                throw new ArgumentException("Invalid tolerance provided, value cannot be less than 0.", nameof(list));
 
             if (list.Count == 1)
             {
                 var singleItemResult = new ArrayList(new ArrayList { list[0] });
-                return singleItemResult;
+                return new Dictionary<object, object>
+                {
+                    { "groupedValues", singleItemResult },
+                    { "groupedIndices",  new ArrayList(new ArrayList { 0 })}
+                };
             }
 
             var result = new ArrayList();
+            var idxResult = new ArrayList();
+            var currentGroup = new ArrayList { list[0] };
 
-            int start = 0;
-
-            // One pass through the list
-            for (int i = 1; i < list.Count; i++)
+            if (considerAdjacency)
             {
-                if (!Object.Equals(list[i], list[start]))
+                var start = 0;
+                for (int i = 1; i < list.Count; i++)
                 {
-                    // Use Enumerable.Repeat to create a group with the repeated value
-                    var group = new ArrayList(Enumerable.Repeat(list[start], i - start).Cast<object>().ToArray());
+                    if (AreItemsSimilar(list[i - 1], list[i], tolerance))
+                    {
+                        currentGroup.Add(list[i]);
+                    }
+                    else
+                    {
+                        result.Add(currentGroup);
+                        idxResult.Add(Enumerable.Range(start, currentGroup.Count).ToList());
+                        currentGroup = new ArrayList { list[i] };
+                        start = i;
+                    }
+                }
+                result.Add(currentGroup);
+                idxResult.Add(Enumerable.Range(start, currentGroup.Count).ToList());
+            }
+            else
+            {
+                var groupedItems = new List<ArrayList>();
+                var itemGroups = new List<object>();
+                var indexGroups = new List<ArrayList>();
+
+                for (int i = 0; i < list.Count; i++)
+                {
+                    var item = list[i];
+                    bool added = false;
+                    for (int j = 0; j < itemGroups.Count; j++)
+                    {
+                        if (AreItemsSimilar(itemGroups[j], item, tolerance))
+                        {
+                            groupedItems[j].Add(item);
+                            indexGroups[j].Add(i);
+                            added = true;
+                            break;
+                        }
+                    }
+
+                    if (!added)
+                    {
+                        itemGroups.Add(item);
+                        groupedItems.Add(new ArrayList { item });
+                        indexGroups.Add(new ArrayList { i });
+                    }
+                }
+
+                foreach (var group in groupedItems)
+                {
                     result.Add(group);
-                    start = i;
+                }
+
+                foreach (var group in indexGroups)
+                {
+                    idxResult.Add(group);
                 }
             }
 
-            // Add the final group using Enumerable.Repeat
-            var finalGroup = new ArrayList(Enumerable.Repeat(list[start], list.Count - start).Cast<object>().ToArray());
-            result.Add(finalGroup);
-
-            return result;
+            return new Dictionary<object, object>
+            {
+                { "groupedValues", result },
+                { "groupedIndices", idxResult }
+            };
         }
+
+        private static bool AreItemsSimilar(object item1, object item2, int tolerance)
+        {
+            if (item1 is string str1 && item2 is string str2)
+            {
+                if(tolerance > 5)
+                    throw new ArgumentException("Tolerance value for string comparison cannot be greater than 5.", nameof(tolerance));
+                return LevenshteinDistance(str1, str2) <= tolerance;
+            }
+            else if (item1 is IComparable comp1 && item2 is IComparable comp2)
+            {
+                try
+                {
+                    return Math.Abs(Convert.ToDouble(comp1) - Convert.ToDouble(comp2)) <= tolerance;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return Object.Equals(item1, item2);
+            }
+        }
+
+        private static int LevenshteinDistance(string a, string b)
+        {
+            if (string.IsNullOrEmpty(a)) return b.Length;
+            if (string.IsNullOrEmpty(b)) return a.Length;
+
+            int lenA = a.Length;
+            int lenB = b.Length;
+            var costs = new int[lenB + 1];
+
+            for (int j = 0; j <= lenB; j++)
+                costs[j] = j;
+
+            for (int i = 1; i <= lenA; i++)
+            {
+                int prevCost = costs[0];
+                costs[0] = i;
+                for (int j = 1; j <= lenB; j++)
+                {
+                    int currentCost = costs[j];
+                    costs[j] = (int)Math.Min(Math.Min(costs[j - 1] + 1, costs[j] + 1), prevCost + (a[i - 1] == b[j - 1] ? 0 : 1));
+                    prevCost = currentCost;
+                }
+            }
+
+            return costs[lenB];
+        }
+
         /// <summary>
         ///     Adds an item to the beginning of a list.
         /// </summary>
