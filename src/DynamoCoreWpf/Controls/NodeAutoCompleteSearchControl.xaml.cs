@@ -198,7 +198,11 @@ namespace Dynamo.UI.Controls
         {
             bool visible = (bool)e.NewValue;
 
-            ViewModel.PortViewModel.Highlight = visible ? Visibility.Visible : Visibility.Collapsed;
+            if (ViewModel?.PortViewModel != null)
+            {
+                ViewModel.PortViewModel.Highlight = visible ? Visibility.Visible : Visibility.Collapsed;
+            }
+                
             // If visibility  is false, then stop processing it.
             if (!visible)
             {
