@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI.Commands;
@@ -535,7 +536,6 @@ namespace Dynamo.ViewModels
                         nodeFromCluster.IsTransient = true;
                         clusterMapping.Add(node.Id, nodeFromCluster);
                         // Add the node to the selection to prepare for autolayout later
-                        wsViewModel.DynamoViewModel.Model.AddToSelection(nodeFromCluster);
                         if (index == ClusterResultItem.EntryNodeIndex)
                         {
                             // This is the target node from cluster that should connect to the query node
@@ -581,7 +581,13 @@ namespace Dynamo.ViewModels
                         }
                         catch (Exception) { }
                     });
+
                     // AutoLayout should be called after all nodes are connected
+                    foreach(var node in clusterMapping.Values)
+                    {
+                        wsViewModel.DynamoViewModel.Model.AddToSelection(node.NodeModel);
+                    }
+                    wsViewModel.Model.DoGraphAutoLayout(false, true, node.Id);
                 }
 
                 // Display the cluster info in the right side panel
