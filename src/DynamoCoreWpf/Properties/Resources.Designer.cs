@@ -8100,6 +8100,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Group Styles.
+        /// </summary>
+        public static string PreferencesViewGroupStylesHeader {
+            get {
+                return ResourceManager.GetString("PreferencesViewGroupStylesHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to When toggled on, file names of exported images include date and time of export..
         /// </summary>
         public static string PreferencesViewIncludeTimestampExportPathTooltip {
@@ -8244,6 +8253,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show default group description.
+        /// </summary>
+        public static string PreferencesViewShowDefaultGroupDescription {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowDefaultGroupDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Preview Bubbles.
         /// </summary>
         public static string PreferencesViewShowPreviewBubbles {
@@ -8334,7 +8352,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Group Styles.
+        ///   Looks up a localized string similar to Groups.
         /// </summary>
         public static string PreferencesViewVisualSettingsGroupStyles {
             get {

@@ -3677,7 +3677,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "3.1.0.3411",
+      "Version": "3.4.1.7055",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },
@@ -6053,15 +6053,15 @@
       },
       {
         "Id": "48b10f5b91ed46d0b5dda59e32d479ea",
-        "Title": "Multiple variables are defined within the same code block and a list is ",
+        "Title": "Multiple variables are defined in this code block, and at the end, a list is created containing all of them.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 1724.432352015569,
-        "Top": -2243.085156559914,
+        "Left": 1723.432352015569,
+        "Top": -2257.085156559914,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -6094,8 +6094,8 @@
         "PinnedNode": "8abf1aba83174c3d872cbd5cdb9c4437"
       }
     ],
-    "X": -1040.4433766526004,
-    "Y": 5113.380799475012,
-    "Zoom": 0.7418323047017593
+    "X": 250.04723266959417,
+    "Y": 1153.6778111637072,
+    "Zoom": 0.16318736607140552
   }
 }
