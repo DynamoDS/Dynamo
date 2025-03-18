@@ -13,4 +13,4 @@ For example, to redistribute 80 points along a sine curve, set Min X to 0, Max X
 ___
 ## Example File
 
-
+![Example](./GV5KUSHDGL7YVBZAR4HEGY5NIXFIG3XTV6ZQPHC5MWWGEVOSRJ4Q_img.jpg)
