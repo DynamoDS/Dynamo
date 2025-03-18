@@ -4871,6 +4871,7 @@ static Dynamo.Wpf.Properties.Resources.GroupContextMenuBackground.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuColor.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuDeleteGroup.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuFont.get -> string
+static Dynamo.Wpf.Properties.Resources.GroupContextMenuFreezeGroup.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuGraphLayout.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuPreview.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuUngroup.get -> string
