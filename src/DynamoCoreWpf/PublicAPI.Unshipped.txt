@@ -1685,6 +1685,7 @@ Dynamo.UI.Views.ScriptObject.SignIn() -> bool
 Dynamo.UI.Views.ScriptObject.SignOut() -> bool
 Dynamo.UI.Views.ScriptWizardObject
 Dynamo.UI.Views.ScriptWizardObject.AddFileOrFolder(string fileOrFolder) -> void
+Dynamo.UI.Views.ScriptWizardObject.ApplicationLoaded() -> void
 Dynamo.UI.Views.ScriptWizardObject.ClearMarkdownContent() -> void
 Dynamo.UI.Views.ScriptWizardObject.LoadMarkdownContent() -> void
 Dynamo.UI.Views.ScriptWizardObject.LogMessage(string message) -> void
