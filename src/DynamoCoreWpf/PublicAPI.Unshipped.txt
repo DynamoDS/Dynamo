@@ -5088,6 +5088,7 @@ static Dynamo.Wpf.Properties.Resources.OnboardingWorkspaceTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.OneAssemblyWasLoadedSeveralTimesErrorMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.OnlyTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.OpenDynamoDefinitionDialogTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageCompatibilityMatrixMissing.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageCompatible.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageCompatibleFilterTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageContextMenuDeletePackageCustomNodesInUseTooltip.get -> string
