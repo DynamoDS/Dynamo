@@ -21,6 +21,11 @@ namespace Dynamo.Interfaces
         bool ShowPreviewBubbles { get; set; }
 
         /// <summary>
+        /// Indicates if groups should display the default description.
+        /// </summary>
+        public bool ShowDefaultGroupDescription { get; set; }
+
+        /// <summary>
         /// Returns height of console
         /// </summary>
         int ConsoleHeight { get; set; }

@@ -61,14 +61,13 @@ namespace Dynamo.UI.Views
         internal Action RequestClearMarkdownContent;
         internal Action<string> RequestLogMessage;
 
+        private PackageUpdateRequest previousPackageDetails;
         #endregion
 
         /// <summary>
         /// The WebView2 Browser instance used to display splash screen
         /// </summary>
         internal DynamoWebView2 dynWebView;
-
-        private PackageUpdateRequest previousPackageDetails;
 
         public PackageManagerWizard()
         {
@@ -195,6 +194,15 @@ namespace Dynamo.UI.Views
             }
         }
 
+        internal void NavigateToPage(int number)
+        {
+            SendNavigateToPage(number);
+        }
+
+        internal void ResetProgress()
+        {
+            SendResetProgress();
+        }
 
         #region ViewModel EventHandlers
 
@@ -376,6 +384,25 @@ namespace Dynamo.UI.Views
             if (dynWebView?.CoreWebView2 != null)
             {
                 await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveDependencyNames({jsonPayload});");
+            }
+        }
+
+        private async void SendNavigateToPage(int number)
+        {
+            var payload = new { pageNumber = number };
+            string jsonPayload = JsonSerializer.Serialize(payload);
+
+            if (dynWebView?.CoreWebView2 != null)
+            {
+                await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveNavigateToPage({jsonPayload});");
+            }
+        }
+
+        private async void SendResetProgress()
+        {
+            if (dynWebView?.CoreWebView2 != null)
+            {
+                await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveResetProgress();");
             }
         }
 
