@@ -296,7 +296,6 @@ namespace Dynamo.PackageManager
                     BeginInvoke(() =>
                     {
                         SubmitCommand.RaiseCanExecuteChanged();
-                        PublishLocallyCommand.RaiseCanExecuteChanged();
                     });
                 }
             }
@@ -379,7 +378,6 @@ namespace Dynamo.PackageManager
                     BeginInvoke(() =>
                     {
                         SubmitCommand.RaiseCanExecuteChanged();
-                        PublishLocallyCommand.RaiseCanExecuteChanged();
                     });
                 }
             }
@@ -406,7 +404,6 @@ namespace Dynamo.PackageManager
                     BeginInvoke(() =>
                     {
                         SubmitCommand.RaiseCanExecuteChanged();
-                        PublishLocallyCommand.RaiseCanExecuteChanged();
                     });
                 }
             }
@@ -433,7 +430,6 @@ namespace Dynamo.PackageManager
                     BeginInvoke(() =>
                     {
                         SubmitCommand.RaiseCanExecuteChanged();
-                        PublishLocallyCommand.RaiseCanExecuteChanged();
                     });
                 }
             }
@@ -543,7 +539,6 @@ namespace Dynamo.PackageManager
                     BeginInvoke(() =>
                     {
                         SubmitCommand.RaiseCanExecuteChanged();
-                        PublishLocallyCommand.RaiseCanExecuteChanged();
                     });
 
                     RaisePropertyChanged(nameof(HasChanges));
@@ -683,6 +678,10 @@ namespace Dynamo.PackageManager
             {
                 compatibilityMatrix = value;
                 RaisePropertyChanged(nameof(CompatibilityMatrix));
+                BeginInvoke(() =>
+                {
+                    SubmitCommand.RaiseCanExecuteChanged();
+                });
             }
         }
 
@@ -1416,7 +1415,6 @@ namespace Dynamo.PackageManager
             {
                 CanSubmit();
                 SubmitCommand.RaiseCanExecuteChanged();
-                PublishLocallyCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -2781,11 +2779,17 @@ namespace Dynamo.PackageManager
                 return false;
             }
 
+            if (CompatibilityMatrix == null || !CompatibilityMatrix.Any())
+            {
+                ErrorString = Resources.PackageCompatibilityMatrixMissing;
+                return false;
+            }
+
             if (UploadState != PackageUploadHandle.State.Error) ErrorString = "";
 
             if (Uploading) return false;
 
-            this.ErrorString = Resources.PackageManagerReadyToPublish;
+            this.ErrorString = Resources.PackageManagerNoValidationErrors;
             return true;
         }
 

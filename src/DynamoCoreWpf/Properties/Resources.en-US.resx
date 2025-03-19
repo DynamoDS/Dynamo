@@ -1531,8 +1531,8 @@ To avoid unintended behavior, uninstall the conflicting loaded package(s), resta
 Next assemblies were loaded several times:
 </value>
   </data>
-  <data name="PackageManagerReadyToPublish" xml:space="preserve">
-    <value>Ready to publish</value>
+  <data name="PackageManagerNoValidationErrors" xml:space="preserve">
+    <value>No validation errors</value>
   </data>
   <data name="OnlyTitle" xml:space="preserve">
     <value>only</value>
@@ -1585,6 +1585,10 @@ Next assemblies were loaded several times:
   </data>
   <data name="PackageNeedAtLeastOneFile" xml:space="preserve">
     <value>Your package must contain at least one file.</value>
+    <comment>ErrorString</comment>
+  </data>
+  <data name="PackageCompatibilityMatrixMissing" xml:space="preserve">
+    <value>Provide compatibility information for the package..</value>
     <comment>ErrorString</comment>
   </data>
   <data name="PackageNotExisted" xml:space="preserve">
@@ -2531,7 +2535,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <comment>Expander Header Name</comment>
   </data>
   <data name="PreferencesViewVisualSettingsGroupStyles" xml:space="preserve">
-    <value>Group Styles</value>
+    <value>Groups</value>
     <comment>Expander Header Name</comment>
   </data>
   <data name="PreferencesViewVisualSettingsRenderPrecision" xml:space="preserve">
@@ -4117,5 +4121,20 @@ To make this file into a new template, save it to a different folder, then move 
   </data>
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
+  </data>
+  <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
+    <value>Freeze Group</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="DiscardButton" xml:space="preserve">
+    <value>Discard</value>
+  </data>
+  <data name="PreferencesViewGroupStylesHeader" xml:space="preserve">
+    <value>Group Styles</value>
+  </data>
+  <data name="PreferencesViewShowDefaultGroupDescription" xml:space="preserve">
+    <value>Show default group description</value>
   </data>
 </root>

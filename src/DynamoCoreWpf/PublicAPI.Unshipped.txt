@@ -1270,6 +1270,7 @@ Dynamo.PackageManager.UI.PackageManagerPublishHost.InitializeComponent() -> void
 Dynamo.PackageManager.UI.PackageManagerPublishHost.PackageManagerPublishHost() -> void
 Dynamo.PackageManager.UI.PackageManagerPublishHost.PublishPackageViewModel.get -> Dynamo.PackageManager.PublishPackageViewModel
 Dynamo.PackageManager.UI.PackageManagerPublishHost.PublishPackageViewModel.set -> void
+Dynamo.PackageManager.UI.PackageManagerPublishHost.Wizard.get -> Dynamo.UI.Views.PackageManagerWizard
 Dynamo.PackageManager.UI.PackageManagerSearchControl
 Dynamo.PackageManager.UI.PackageManagerSearchControl.InitializeComponent() -> void
 Dynamo.PackageManager.UI.PackageManagerSearchControl.PackageManagerSearchControl() -> void
@@ -1685,6 +1686,7 @@ Dynamo.UI.Views.ScriptObject.SignIn() -> bool
 Dynamo.UI.Views.ScriptObject.SignOut() -> bool
 Dynamo.UI.Views.ScriptWizardObject
 Dynamo.UI.Views.ScriptWizardObject.AddFileOrFolder(string fileOrFolder) -> void
+Dynamo.UI.Views.ScriptWizardObject.ApplicationLoaded() -> void
 Dynamo.UI.Views.ScriptWizardObject.ClearMarkdownContent() -> void
 Dynamo.UI.Views.ScriptWizardObject.LoadMarkdownContent() -> void
 Dynamo.UI.Views.ScriptWizardObject.LogMessage(string message) -> void
@@ -1692,7 +1694,7 @@ Dynamo.UI.Views.ScriptWizardObject.OpenFolder(string path) -> void
 Dynamo.UI.Views.ScriptWizardObject.Publish() -> void
 Dynamo.UI.Views.ScriptWizardObject.RemoveFileOrFolder(string name) -> void
 Dynamo.UI.Views.ScriptWizardObject.Reset() -> void
-Dynamo.UI.Views.ScriptWizardObject.ScriptWizardObject(System.Action<string> requestAddFileOrFolder, System.Action<string> requestRemoveFileOrFolder, System.Action<bool> requestRetainFolderStructure, System.Action<string> requestUpdatePackageDetails, System.Action requestSubmit, System.Action requestPublish, System.Action requestReset, System.Action<string> requestToggleNodeLibraryOnItem, System.Action<string> requestOpenFolder, System.Action<string> requestUpdateCompatibilityMatrix, System.Action requestLoadMarkdownContent, System.Action requestClearMarkdownContent, System.Action<string> requestLogMessage) -> void
+Dynamo.UI.Views.ScriptWizardObject.ScriptWizardObject(System.Action<string> requestAddFileOrFolder, System.Action<string> requestRemoveFileOrFolder, System.Action<bool> requestRetainFolderStructure, System.Action<string> requestUpdatePackageDetails, System.Action requestSubmit, System.Action requestPublish, System.Action requestReset, System.Action<string> requestToggleNodeLibraryOnItem, System.Action<string> requestOpenFolder, System.Action<string> requestUpdateCompatibilityMatrix, System.Action requestLoadMarkdownContent, System.Action requestClearMarkdownContent, System.Action<string> requestLogMessage, System.Action requestApplicationLoaded) -> void
 Dynamo.UI.Views.ScriptWizardObject.Submit() -> void
 Dynamo.UI.Views.ScriptWizardObject.ToggleNodeLibraryOnItem(string name) -> void
 Dynamo.UI.Views.ScriptWizardObject.ToggleRetainFolderStructure(bool flag) -> void
@@ -1762,6 +1764,7 @@ Dynamo.ViewModels.AnnotationViewModel.Nodes.get -> System.Collections.Generic.IE
 Dynamo.ViewModels.AnnotationViewModel.OutPorts.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.PortViewModel>
 Dynamo.ViewModels.AnnotationViewModel.PreviewState.get -> Dynamo.ViewModels.PreviewState
 Dynamo.ViewModels.AnnotationViewModel.RemoveGroupFromGroupCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.AnnotationViewModel.ToggleIsFrozenGroupCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.AnnotationViewModel.ToggleIsVisibleGroupCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.AnnotationViewModel.Top.get -> double
 Dynamo.ViewModels.AnnotationViewModel.Top.set -> void
@@ -2248,6 +2251,7 @@ Dynamo.ViewModels.DynamoViewModel.UngroupAnnotationCommand.get -> Dynamo.UI.Comm
 Dynamo.ViewModels.DynamoViewModel.UngroupAnnotationCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.UngroupModelCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UngroupModelCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.RefreshAnnotationDescriptions() -> void
 Dynamo.ViewModels.DynamoViewModel.UpdateAllPythonEngineCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UpdateAllPythonEngineCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.UpdateGraphicHelpersScale(object parameter) -> void
@@ -2884,6 +2888,8 @@ Dynamo.ViewModels.PreferencesViewModel.SelectedUnits.get -> string
 Dynamo.ViewModels.PreferencesViewModel.SelectedUnits.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowCodeBlockLineNumber.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowCodeBlockLineNumber.set -> void
+Dynamo.ViewModels.PreferencesViewModel.ShowDefaultGroupDescription.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.ShowDefaultGroupDescription.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowEdges.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowEdges.set -> void
 Dynamo.ViewModels.PreferencesViewModel.UseRenderInstancing.get -> bool
@@ -4616,6 +4622,7 @@ static Dynamo.Wpf.Properties.Resources.DirectoryNotFound.get -> string
 static Dynamo.Wpf.Properties.Resources.DisableBuiltInPackageToggleInfo.get -> string
 static Dynamo.Wpf.Properties.Resources.DisableCustomPackageToggleInfo.get -> string
 static Dynamo.Wpf.Properties.Resources.DisablePackageInstallIconTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.DiscardButton.get -> string
 static Dynamo.Wpf.Properties.Resources.DiscardChangesWarningPopupCaption.get -> string
 static Dynamo.Wpf.Properties.Resources.DiscardChangesWarningPopupMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.DownloadWarningMessageBoxTitle.get -> string
@@ -4870,6 +4877,7 @@ static Dynamo.Wpf.Properties.Resources.GroupContextMenuBackground.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuColor.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuDeleteGroup.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuFont.get -> string
+static Dynamo.Wpf.Properties.Resources.GroupContextMenuFreezeGroup.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuGraphLayout.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuPreview.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuUngroup.get -> string
@@ -5081,6 +5089,7 @@ static Dynamo.Wpf.Properties.Resources.OnboardingWorkspaceTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.OneAssemblyWasLoadedSeveralTimesErrorMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.OnlyTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.OpenDynamoDefinitionDialogTitle.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageCompatibilityMatrixMissing.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageCompatible.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageCompatibleFilterTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageContextMenuDeletePackageCustomNodesInUseTooltip.get -> string
@@ -5155,6 +5164,7 @@ static Dynamo.Wpf.Properties.Resources.PackageManagerMyPackagesControlName.get -
 static Dynamo.Wpf.Properties.Resources.PackageManagerMyPackagesPublishVersion.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerMyPackagesTab.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerNoInstalledPackagesSubMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageManagerNoValidationErrors.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerPackageDeprecated.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerPackageNew.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerPackageSettingsTab.get -> string
@@ -5168,7 +5178,6 @@ static Dynamo.Wpf.Properties.Resources.PackageManagerProvideVersionAndFiles.get 
 static Dynamo.Wpf.Properties.Resources.PackageManagerPublishOnlineFinishedMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerPublishPackageButton.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerPublishTab.get -> string
-static Dynamo.Wpf.Properties.Resources.PackageManagerReadyToPublish.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerSearchPackagesButton.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerSearchTab.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerSettingsHyperlink.get -> string
@@ -5356,6 +5365,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsGeoScaling.
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsRun.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsTemplate.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralTab.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewGroupStylesHeader.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewIncludeTimestampExportPathTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageSwitchHelp.get -> string
@@ -5372,6 +5382,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewSavedChangesTooltip.get ->
 static Dynamo.Wpf.Properties.Resources.PreferencesViewSelectedPackagePathForDownload.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewSettingIncludeTimestampExportPath.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowCodeBlockNodeLineNumber.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewShowDefaultGroupDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowPreviewBubbles.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowRunPreviewTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowStaticSplashScreenTooltip.get -> string
@@ -5518,6 +5529,7 @@ static Dynamo.Wpf.Properties.Resources.RunTypeToolTipManually.get -> string
 static Dynamo.Wpf.Properties.Resources.RunTypeToolTipPeriodicallyDisabled.get -> string
 static Dynamo.Wpf.Properties.Resources.RunTypeToolTipPeriodicallyEnabled.get -> string
 static Dynamo.Wpf.Properties.Resources.Save.get -> string
+static Dynamo.Wpf.Properties.Resources.SaveButton.get -> string
 static Dynamo.Wpf.Properties.Resources.SaveModelToSTLDialogTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.SaveWorkbenToImageDialogTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.ScalingExtraLargeButton.get -> string
