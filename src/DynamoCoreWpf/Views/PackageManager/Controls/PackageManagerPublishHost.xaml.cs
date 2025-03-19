@@ -1,18 +1,7 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Views.PackageManager.Pages;
+using Dynamo.UI.Views;
 
 namespace Dynamo.PackageManager.UI
 {
@@ -23,7 +12,8 @@ namespace Dynamo.PackageManager.UI
     {
         //public Window Owner { get; set; }
         public PublishPackageViewModel PublishPackageViewModel { get; set; }
-        internal Dynamo.UI.Views.PackageManagerWizard wizard;
+        public PackageManagerWizard Wizard => wizard;
+        private PackageManagerWizard wizard;
 
         public PackageManagerPublishHost()
         {

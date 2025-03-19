@@ -2793,12 +2793,19 @@ namespace Dynamo.Models
                             CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                             if (list.Remove(model))
                             {
-                                if (model is ConnectorPinModel pinModel)
+                                if (!list.Any(n => n is not ConnectorPinModel))
                                 {
-                                    annotation.MarkPinAsRemoved(pinModel);
+                                    emptyGroup.Add(annotation);
                                 }
-                                annotation.Nodes = list;
-                                annotation.UpdateBoundaryFromSelection();                               
+                                else
+                                {
+                                    if (model is ConnectorPinModel pinModel)
+                                    {
+                                        annotation.MarkPinAsRemoved(pinModel);
+                                    }
+                                    annotation.Nodes = list;
+                                    annotation.UpdateBoundaryFromSelection();
+                                }
                             }
                         }
                         else

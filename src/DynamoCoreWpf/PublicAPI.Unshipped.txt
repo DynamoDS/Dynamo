@@ -1270,6 +1270,7 @@ Dynamo.PackageManager.UI.PackageManagerPublishHost.InitializeComponent() -> void
 Dynamo.PackageManager.UI.PackageManagerPublishHost.PackageManagerPublishHost() -> void
 Dynamo.PackageManager.UI.PackageManagerPublishHost.PublishPackageViewModel.get -> Dynamo.PackageManager.PublishPackageViewModel
 Dynamo.PackageManager.UI.PackageManagerPublishHost.PublishPackageViewModel.set -> void
+Dynamo.PackageManager.UI.PackageManagerPublishHost.Wizard.get -> Dynamo.UI.Views.PackageManagerWizard
 Dynamo.PackageManager.UI.PackageManagerSearchControl
 Dynamo.PackageManager.UI.PackageManagerSearchControl.InitializeComponent() -> void
 Dynamo.PackageManager.UI.PackageManagerSearchControl.PackageManagerSearchControl() -> void
@@ -2249,6 +2250,7 @@ Dynamo.ViewModels.DynamoViewModel.UngroupAnnotationCommand.get -> Dynamo.UI.Comm
 Dynamo.ViewModels.DynamoViewModel.UngroupAnnotationCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.UngroupModelCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UngroupModelCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.RefreshAnnotationDescriptions() -> void
 Dynamo.ViewModels.DynamoViewModel.UpdateAllPythonEngineCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UpdateAllPythonEngineCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.UpdateGraphicHelpersScale(object parameter) -> void
@@ -2885,6 +2887,8 @@ Dynamo.ViewModels.PreferencesViewModel.SelectedUnits.get -> string
 Dynamo.ViewModels.PreferencesViewModel.SelectedUnits.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowCodeBlockLineNumber.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowCodeBlockLineNumber.set -> void
+Dynamo.ViewModels.PreferencesViewModel.ShowDefaultGroupDescription.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.ShowDefaultGroupDescription.set -> void
 Dynamo.ViewModels.PreferencesViewModel.ShowEdges.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.ShowEdges.set -> void
 Dynamo.ViewModels.PreferencesViewModel.UseRenderInstancing.get -> bool
@@ -4617,6 +4621,7 @@ static Dynamo.Wpf.Properties.Resources.DirectoryNotFound.get -> string
 static Dynamo.Wpf.Properties.Resources.DisableBuiltInPackageToggleInfo.get -> string
 static Dynamo.Wpf.Properties.Resources.DisableCustomPackageToggleInfo.get -> string
 static Dynamo.Wpf.Properties.Resources.DisablePackageInstallIconTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.DiscardButton.get -> string
 static Dynamo.Wpf.Properties.Resources.DiscardChangesWarningPopupCaption.get -> string
 static Dynamo.Wpf.Properties.Resources.DiscardChangesWarningPopupMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.DownloadWarningMessageBoxTitle.get -> string
@@ -5357,6 +5362,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsGeoScaling.
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsRun.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsTemplate.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralTab.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewGroupStylesHeader.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewIncludeTimestampExportPathTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageSwitchHelp.get -> string
@@ -5373,6 +5379,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewSavedChangesTooltip.get ->
 static Dynamo.Wpf.Properties.Resources.PreferencesViewSelectedPackagePathForDownload.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewSettingIncludeTimestampExportPath.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowCodeBlockNodeLineNumber.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewShowDefaultGroupDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowPreviewBubbles.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowRunPreviewTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewShowStaticSplashScreenTooltip.get -> string
@@ -5519,6 +5526,7 @@ static Dynamo.Wpf.Properties.Resources.RunTypeToolTipManually.get -> string
 static Dynamo.Wpf.Properties.Resources.RunTypeToolTipPeriodicallyDisabled.get -> string
 static Dynamo.Wpf.Properties.Resources.RunTypeToolTipPeriodicallyEnabled.get -> string
 static Dynamo.Wpf.Properties.Resources.Save.get -> string
+static Dynamo.Wpf.Properties.Resources.SaveButton.get -> string
 static Dynamo.Wpf.Properties.Resources.SaveModelToSTLDialogTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.SaveWorkbenToImageDialogTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.ScalingExtraLargeButton.get -> string

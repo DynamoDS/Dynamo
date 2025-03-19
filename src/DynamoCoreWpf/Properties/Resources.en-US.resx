@@ -2531,7 +2531,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <comment>Expander Header Name</comment>
   </data>
   <data name="PreferencesViewVisualSettingsGroupStyles" xml:space="preserve">
-    <value>Group Styles</value>
+    <value>Groups</value>
     <comment>Expander Header Name</comment>
   </data>
   <data name="PreferencesViewVisualSettingsRenderPrecision" xml:space="preserve">
@@ -4117,5 +4117,17 @@ To make this file into a new template, save it to a different folder, then move 
   </data>
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Save</value>
+  </data>
+  <data name="DiscardButton" xml:space="preserve">
+    <value>Discard</value>
+  </data>
+  <data name="PreferencesViewGroupStylesHeader" xml:space="preserve">
+    <value>Group Styles</value>
+  </data>
+  <data name="PreferencesViewShowDefaultGroupDescription" xml:space="preserve">
+    <value>Show default group description</value>
   </data>
 </root>
