@@ -13,40 +13,26 @@
 
 <head>
     
-    <meta charset="UTF-8" />
+    <meta charset="utf-8" />
 </head>
 
-<style>
-body {
-    color: white;
-    font-size: 14px;
-    font-family: "Artifakt Element";
-    src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
-    padding: 1%;
-}
-
-a {
-    color: lightgray;
-    cursor: pointer;
-    background-color: transparent;
-}
-</style>
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
 
 <!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
 <!-- and custom styling in Dynamo sidepanel. -->
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
-<h2>List indices must be numeric</h2>
-<p> This error message indicates that you are trying to access an element in a list by using an index value that is not an integer (i.e., a whole number). </p>
+<h2>Indeksy list muszą być liczbami</h2>
+<p> Ten komunikat o błędzie wskazuje, że próbujesz uzyskać dostęp do elementu na liście, używając wartości indeksu, która nie jest liczbą całkowitą. </p>
 
-<p>Starting with Dynamo 2.0, lists are collections of values where each value in the list can be accessed using only integer index values (index values range from 0 to list size minus 1). </p>
+<p>Od wersji dodatku Dynamo 2.0 listy są kolekcjami wartości. Dostęp do każdej z tych wartości można uzyskać tylko za pomocą wartości indeksu będącej liczbą całkowitą (pierwszy indeks to 0, a ostatni to rozmiar listy pomniejszony o 1). </p>
 
-<p>Read more about differences between Dynamo 1.X and Dynamo 2.X (including how accessing elements in a list has changed) here. </p>
+<p>Więcej informacji na temat różnic między wersjami Dynamo 1.X i Dynamo 2.X (w tym zmian w sposobie uzyskiwania dostępu do elementów na liście) można znaleźć tutaj. </p>
 
-<h4>How to fix</h4>
-<p>Make sure the index value you use to access list elements is strictly an integer (e.g., 2 and not “2” or 2.0). </p>
+<h4>Jak to naprawić</h4>
+<p>Zadbaj o to, aby wartości indeksów używane do uzyskiwania dostępu do elementów listy były tylko liczbami całkowitymi (np. 2, a nie „2” czy 2.0). </p>
 
-<h4>More information</h4>
+<h4>Więcej informacji</h4>
 <p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=list%20indices%20must%20be%20numeric"><span> posts on the Dynamobim forum discussing "<strong>list indices must be numeric</strong>"</span></a>.</p>
 
 </body>

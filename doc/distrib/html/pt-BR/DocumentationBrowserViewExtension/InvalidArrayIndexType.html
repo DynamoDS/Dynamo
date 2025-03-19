@@ -13,40 +13,26 @@
 
 <head>
     
-    <meta charset="UTF-8" />
+    <meta charset="utf-8" />
 </head>
 
-<style>
-body {
-    color: white;
-    font-size: 14px;
-    font-family: "Artifakt Element";
-    src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
-    padding: 1%;
-}
-
-a {
-    color: lightgray;
-    cursor: pointer;
-    background-color: transparent;
-}
-</style>
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
 
 <!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
 <!-- and custom styling in Dynamo sidepanel. -->
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
-<h2>List indices must be numeric</h2>
-<p> This error message indicates that you are trying to access an element in a list by using an index value that is not an integer (i.e., a whole number). </p>
+<h2>Os índices da lista devem ser numéricos</h2>
+<p> Essa mensagem de erro indica que você está tentando acessar um elemento em uma lista usando um valor de índice que não é um número inteiro. </p>
 
-<p>Starting with Dynamo 2.0, lists are collections of values where each value in the list can be accessed using only integer index values (index values range from 0 to list size minus 1). </p>
+<p>A partir do Dynamo 2.0, as listas são coleções de valores nas quais cada valor na lista pode ser acessado usando somente valores de índice inteiros (os valores de índice variam entre 0 e o tamanho da lista menos 1). </p>
 
-<p>Read more about differences between Dynamo 1.X and Dynamo 2.X (including how accessing elements in a list has changed) here. </p>
+<p>Leia mais sobre as diferenças entre o Dynamo 1.X e o Dynamo 2.X (incluindo como acessar elementos em uma lista foi alterado) aqui. </p>
 
-<h4>How to fix</h4>
-<p>Make sure the index value you use to access list elements is strictly an integer (e.g., 2 and not “2” or 2.0). </p>
+<h4>Como corrigir</h4>
+<p>Assegure-se de que o valor de índice usado para acessar os elementos da lista seja estritamente um inteiro (por exemplo, 2 e não “2” ou 2,0). </p>
 
-<h4>More information</h4>
+<h4>Mais informações</h4>
 <p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=list%20indices%20must%20be%20numeric"><span> posts on the Dynamobim forum discussing "<strong>list indices must be numeric</strong>"</span></a>.</p>
 
 </body>

@@ -625,4 +625,7 @@ W procesach roboczych projektowania generatywnego ten węzeł powinien służyć
     <value>Specyfikator formatu dla wartości liczbowych, zobacz rozszerzoną pomoc węzła, aby uzyskać więcej informacji.
 Wartość domyślna: G</value>
   </data>
+  <data name="CurveMapperDescription" xml:space="preserve">
+    <value>The Curve Mapper Node redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+  </data>
 </root>

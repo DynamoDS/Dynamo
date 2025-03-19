@@ -625,4 +625,7 @@ En los flujos de trabajo de diseño generativo, este nodo se debe utilizar para 
     <value>Especificador de formato para valores numéricos; consulte la ayuda ampliada del nodo para obtener más información.
 Valor por defecto: G</value>
   </data>
+  <data name="CurveMapperDescription" xml:space="preserve">
+    <value>The Curve Mapper Node redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+  </data>
 </root>

@@ -13,40 +13,26 @@
 
 <head>
     
-    <meta charset="UTF-8" />
+    <meta charset="utf-8" />
 </head>
 
-<style>
-body {
-    color: white;
-    font-size: 14px;
-    font-family: "Artifakt Element";
-    src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
-    padding: 1%;
-}
-
-a {
-    color: lightgray;
-    cursor: pointer;
-    background-color: transparent;
-}
-</style>
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
 
 <!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
 <!-- and custom styling in Dynamo sidepanel. -->
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
-<h2>List indices must be numeric</h2>
-<p> This error message indicates that you are trying to access an element in a list by using an index value that is not an integer (i.e., a whole number). </p>
+<h2>清單索引必須為數字</h2>
+<p> 此錯誤訊息表示您嘗試使用不是整數 (非負整數) 的索引值來存取清單中的元素。</p>
 
-<p>Starting with Dynamo 2.0, lists are collections of values where each value in the list can be accessed using only integer index values (index values range from 0 to list size minus 1). </p>
+<p>從 Dynamo 2.0 開始，清單是值的集合，其中清單中的每個值都可以只使用整數索引值 (索引值範圍從 0 到清單大小減 1) 來存取。</p>
 
-<p>Read more about differences between Dynamo 1.X and Dynamo 2.X (including how accessing elements in a list has changed) here. </p>
+<p>請在此深入瞭解 Dynamo 1.X 和 Dynamo 2.X 之間的差異 (包括存取清單元素的方式已變更)。</p>
 
-<h4>How to fix</h4>
-<p>Make sure the index value you use to access list elements is strictly an integer (e.g., 2 and not “2” or 2.0). </p>
+<h4>如何修正</h4>
+<p>請確保您用來存取清單元素的索引值是嚴格的整數 (例如 2，不是 “2” 或 2.0)。</p>
 
-<h4>More information</h4>
+<h4>更多資訊</h4>
 <p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=list%20indices%20must%20be%20numeric"><span> posts on the Dynamobim forum discussing "<strong>list indices must be numeric</strong>"</span></a>.</p>
 
 </body>

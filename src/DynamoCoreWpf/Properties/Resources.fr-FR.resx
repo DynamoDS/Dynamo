@@ -2226,7 +2226,7 @@ Voulez-vous désinstaller {1}? Redémarrez {2} pour finaliser la désinstallatio
     <value>Paramètres de sauvegarde</value>
   </data>
   <data name="PreferencesViewVisualSettingsGroupStyles" xml:space="preserve">
-    <value>Styles de groupes</value>
+    <value>Groupes</value>
   </data>
   <data name="PreferencesViewVisualSettingsRenderPrecision" xml:space="preserve">
     <value>Précision du rendu</value>
@@ -3751,6 +3751,12 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
   </data>
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
+  </data>
+  <data name="PreferencesViewGroupStylesHeader" xml:space="preserve">
+    <value>Styles de groupes</value>
+  </data>
+  <data name="PreferencesViewShowDefaultGroupDescription" xml:space="preserve">
+    <value>Show default group description</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

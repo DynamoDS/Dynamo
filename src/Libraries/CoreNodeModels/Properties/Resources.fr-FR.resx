@@ -625,4 +625,7 @@ Dans les workflows de Generative Design, ce noeud doit être utilisé pour contr
     <value>Spécificateur de format pour les valeurs numériques, reportez-vous à l'aide sur les noeuds étendus pour plus d'informations.
 Valeur par défaut: G</value>
   </data>
+  <data name="CurveMapperDescription" xml:space="preserve">
+    <value>The Curve Mapper Node redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+  </data>
 </root>

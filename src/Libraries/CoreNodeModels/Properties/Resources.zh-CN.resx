@@ -625,4 +625,7 @@
     <value>数字值的格式说明符，请参见扩展节点帮助以获取详细信息。
 默认值: G</value>
   </data>
+  <data name="CurveMapperDescription" xml:space="preserve">
+    <value>The Curve Mapper Node redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+  </data>
 </root>

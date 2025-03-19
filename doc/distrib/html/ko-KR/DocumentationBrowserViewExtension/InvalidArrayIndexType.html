@@ -13,40 +13,26 @@
 
 <head>
     
-    <meta charset="UTF-8" />
+    <meta charset="utf-8" />
 </head>
 
-<style>
-body {
-    color: white;
-    font-size: 14px;
-    font-family: "Artifakt Element";
-    src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
-    padding: 1%;
-}
-
-a {
-    color: lightgray;
-    cursor: pointer;
-    background-color: transparent;
-}
-</style>
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
 
 <!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
 <!-- and custom styling in Dynamo sidepanel. -->
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
-<h2>List indices must be numeric</h2>
-<p> This error message indicates that you are trying to access an element in a list by using an index value that is not an integer (i.e., a whole number). </p>
+<h2>리스트 색인은 숫자여야 함</h2>
+<p> 이 오류 메시지는 정수(예: 범자연수)가 아닌 색인 값을 사용하여 리스트의 요소에 액세스하려고 함을 나타냅니다. </p>
 
-<p>Starting with Dynamo 2.0, lists are collections of values where each value in the list can be accessed using only integer index values (index values range from 0 to list size minus 1). </p>
+<p>Dynamo 2.0부터 리스트는 값의 집합으로, 각 값은 정수 색인 값(색인 값의 범위는 0부터 리스트 크기-1까지의 값)을 사용해서만 액세스할 수 있습니다. </p>
 
-<p>Read more about differences between Dynamo 1.X and Dynamo 2.X (including how accessing elements in a list has changed) here. </p>
+<p>Dynamo 1.X와 Dynamo 2.X 간의 차이점(리스트 요소에 액세스하는 방식이 어떻게 변경되었는지 포함)에 대해 더 읽어 보십시오. </p>
 
-<h4>How to fix</h4>
-<p>Make sure the index value you use to access list elements is strictly an integer (e.g., 2 and not “2” or 2.0). </p>
+<h4>수정 방법</h4>
+<p>리스트 요소에 액세스하는 데 사용하는 색인 값이 정확히 정수(예: 2, "2" 또는 2.0 아님)여야 합니다. </p>
 
-<h4>More information</h4>
+<h4>추가 정보</h4>
 <p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=list%20indices%20must%20be%20numeric"><span> posts on the Dynamobim forum discussing "<strong>list indices must be numeric</strong>"</span></a>.</p>
 
 </body>

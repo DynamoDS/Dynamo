@@ -2226,7 +2226,7 @@
     <value>備份設定</value>
   </data>
   <data name="PreferencesViewVisualSettingsGroupStyles" xml:space="preserve">
-    <value>群組型式</value>
+    <value>群組</value>
   </data>
   <data name="PreferencesViewVisualSettingsRenderPrecision" xml:space="preserve">
     <value>彩現精確度</value>
@@ -3756,6 +3756,12 @@
   </data>
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
+  </data>
+  <data name="PreferencesViewGroupStylesHeader" xml:space="preserve">
+    <value>群組型式</value>
+  </data>
+  <data name="PreferencesViewShowDefaultGroupDescription" xml:space="preserve">
+    <value>Show default group description</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

@@ -6192,7 +6192,7 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "3.1.0.3411",
+      "Version": "3.4.1.7055",
       "RunType": "Automatic",
       "RunPeriod": "100"
     },
@@ -8453,12 +8453,12 @@
         ],
         "HasNestedGroups": false,
         "Left": 1181.2538292878362,
-        "Top": -2042.0086356917095,
-        "Width": 322.0501816091603,
-        "Height": 554.1505448274809,
+        "Top": -2042.339455312745,
+        "Width": 323.0501816091603,
+        "Height": 554.4813644485164,
         "FontSize": 36.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
-        "InitialTop": -1917.0086356917095,
+        "InitialTop": -1917.339455312745,
         "InitialHeight": 510.15054482748087,
         "TextblockHeight": 115.0,
         "Background": "#FFA4E1FF"
@@ -8971,8 +8971,8 @@
         "HasNestedGroups": false,
         "Left": 5332.666252692627,
         "Top": -521.5401109400768,
-        "Width": 313.0,
-        "Height": 180.0,
+        "Width": 319.0,
+        "Height": 194.0,
         "FontSize": 36.0,
         "GroupStyleId": "bc688959-ce34-4bf5-90f8-6ddd23f80989",
         "InitialTop": -448.54011094007683,
@@ -10186,7 +10186,7 @@
       },
       {
         "Id": "355c40ca31c5437db2855da2afac623d",
-        "Title": "此示例演示了处理数学函数的四种不同方法。以下每个示例都从一个点栅格开始、计算点 Z 坐标，然后生成曲面。这些方法都解决相同的问题，只是计算方法有所不同。\r\n\r\n1. 节点。数学节点位于 Core/Math/ 中\r\n\r\n2. Python。\r\n\r\n3. 代码块节点。双击画布中的任意位置可创建代码块节点。每个函数的语法都与 Dynamo 中节点的名称匹配。\r\n\r\n** 注意: 可以通过“设置”菜单调整几何图形预览的分辨率。",
+        "Title": "This example shows four different ways to approach dealing with Math functions.  Each of these examples starts with a grid of points, calculates z-coordinates for the points and then makes a surface.  Only the calculation method differs; these methods all solve the same.\n\n1. Nodes. Math nodes are in the Math section of the Library which is further split into Functions, Logic and Operators.\n\n2. Python.\n\n3. Code Block Node.  Double-click anywhere in the canvas to create a code block node.  Syntax for each function matches the name of the node in Dynamo.\n\n** Note: You can adjust the resolution of the geometry preview by navigating to the Render Precision settings: Dynamo -> Preferences -> Visual Settings -> Render Precision",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10194,7 +10194,7 @@
         "Nodes": [],
         "HasNestedGroups": false,
         "Left": 1194.3040108969965,
-        "Top": -1909.0086356917095,
+        "Top": -1909.339455312745,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -10454,7 +10454,7 @@
       },
       {
         "Id": "488aa4f143a34f18bc197a2677f80fb6",
-        "Title": "提示: 调整背景预览中几何图形的渲染精度。在“设置”菜单上，选择“渲染精度”。较高值会使曲面看起来更平滑，但需要更多系统处理能力进行绘制。",
+        "Title": "Tip: Adjust how precisely the geometry in the background preview is rendered by navigating to Dynamo -> Preferences -> Visual Settings -> Render Precision.  A higher value will make curved surfaces look smoother, but it will take more processing power to draw.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10720,8 +10720,8 @@
         "PinnedNode": "71cb8f97deb648bb8e7824547b43f3aa"
       }
     ],
-    "X": -71.98682450110687,
-    "Y": 2008.3459017897544,
-    "Zoom": 0.28542192141810496
+    "X": 51.34875002226386,
+    "Y": 800.7886260085731,
+    "Zoom": 0.19068736946261172
   }
 }
