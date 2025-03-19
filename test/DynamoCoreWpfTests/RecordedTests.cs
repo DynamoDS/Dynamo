@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Xml;
 using System.Threading;
 using CoreNodeModels.Input;
@@ -24,10 +23,6 @@ using NUnit.Framework;
 using ProtoCore;
 using PythonNodeModels;
 using SystemTestServices;
-using System.Windows.Threading;
-using DynamoCoreWpfTests.Utility;
-using System.Diagnostics;
-using System.Threading.Tasks;
 
 namespace DynamoCoreWpfTests
 {
@@ -54,7 +49,7 @@ namespace DynamoCoreWpfTests
 
         public override void Setup()
         {
-            testDiagnostics.SetupStartupDiagnostics();
+            testDiagnostics.StartupDiagnostics();
 
             base.Setup();
             // Fixed seed randomizer for predictability.
@@ -63,10 +58,10 @@ namespace DynamoCoreWpfTests
 
         public override void Cleanup()
         {
-            testDiagnostics.SetupBeforeCleanupDiagnostics();
+            testDiagnostics.BeforeCleanupDiagnostics();
             commandCallback = null;
             base.Cleanup();
-            testDiagnostics.SetupAfterCleanupDiagnostics();
+            testDiagnostics.AfterCleanupDiagnostics();
         }
 
         #endregion

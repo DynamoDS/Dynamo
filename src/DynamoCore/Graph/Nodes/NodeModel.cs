@@ -996,6 +996,17 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
+        /// A flag indicating whether the node is in transient mode.
+        /// When a node is in transient mode, the node will not participate in execution,
+        /// Or saved to the graph. It is only used for previewing the AutoComplete result in the canvas.
+        /// </summary>
+        internal bool IsTransient
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// The default behavior for ModelBase objects is to not serialize the X and Y
         /// properties. This overload allows the serialization of the X property
         /// for NodeModel.
@@ -1223,18 +1234,17 @@ namespace Dynamo.Graph.Nodes
             RaisesModificationEvents = true;
         }
 
+
+        internal protected AssemblyName NameOfAssemblyReferencedByNode = null;
+
         /// <summary>
         /// The method returns the assembly name from which the node originated.
         /// </summary>
         /// <returns>Assembly Name</returns>
         internal virtual AssemblyName GetNameOfAssemblyReferencedByNode()
         {
-            AssemblyName assemblyName = null;
-            
-            var assembly = this.GetType().Assembly;
-            assemblyName = AssemblyName.GetAssemblyName(assembly.Location);
-            
-            return assemblyName;
+            NameOfAssemblyReferencedByNode ??= GetType().Assembly.GetName();
+            return NameOfAssemblyReferencedByNode;
         }
 
         /// <summary>

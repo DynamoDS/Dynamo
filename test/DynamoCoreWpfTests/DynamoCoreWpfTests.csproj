@@ -212,9 +212,6 @@
   <ItemGroup>
     <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Resources\DocumentationBrowserScriptsTest.html" />
-  </ItemGroup>
 
     <Target Name="CopyRoslynToTestDepsFolder" AfterTargets="Build">
         <Message Importance="High" Text="copying test dependencies to test dependencies folder" />
