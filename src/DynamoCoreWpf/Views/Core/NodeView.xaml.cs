@@ -508,13 +508,16 @@ namespace Dynamo.Controls
             // so, wait while ShowPreviewBubbles binding updates value
             Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
 
-            //show the node autocomplete marker if available
-            if (ViewModel.DynamoViewModel.EnableNodeAutoComplete)
+            //show the node autocomplete marker if available, skip codeblocks and watch nodes
+            if (IsAutoCompleteMarkerDisabled())
+            {
+                return;
+            }
+
+            if (ViewModel.DynamoViewModel.EnableNodeAutoComplete && ViewModel.NodeModel is not CodeBlockNodeModel && ViewModel.NodeModel is not CoreNodeModels.Watch)
             {
                 foreach (PortViewModel port in ViewModel.OutPorts)
                 {
-                    //skip code blocks
-                    if (port.PortName.Equals(">")) continue;
                     port.NodeAutoCompleteMarkerVisible = !port.IsConnected;
                 }
             }
@@ -527,7 +530,7 @@ namespace Dynamo.Controls
 
             // Always set old ZIndex to the last value, even if mouse is not over the node.
             oldZIndex = NodeViewModel.StaticZIndex;
-
+            
             // There is no need run further.
             if (IsPreviewDisabled()) return;
 
@@ -559,10 +562,26 @@ namespace Dynamo.Controls
                 ViewModel.WorkspaceViewModel.IsSelecting || !previewEnabled ||
                 !ViewModel.IsPreviewInsetVisible || ViewModel.IsFrozen || viewModel.IsTransient;
         }
-
+        private bool IsAutoCompleteMarkerDisabled()
+        {
+            // True if autocomplete is turned off globally
+            // Or a connector is being created now
+            // Or node is frozen.
+            // Or node is transient state.
+            return !ViewModel.DynamoViewModel.EnableNodeAutoComplete ||
+                   ViewModel.WorkspaceViewModel.IsConnecting ||
+                   ViewModel.IsFrozen ||
+                   viewModel.IsTransient;
+        }
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
             ViewModel.ZIndex = oldZIndex;
+
+            //hide the node autocomplete marker
+            foreach (PortViewModel port in ViewModel.OutPorts)
+            {
+                port.NodeAutoCompleteMarkerVisible = false;
+            }
 
             //Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
             if (ViewModel.NodeModel != null && ViewModel.NodeModel is CoreNodeModels.Watch) return;
@@ -580,14 +599,6 @@ namespace Dynamo.Controls
             if (PreviewControl.IsCondensed && Mouse.Captured == null)
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Hidden);
-            }
-
-            //hide the node autocomplete marker
-            foreach (PortViewModel port in ViewModel.OutPorts)
-            {
-                //skip code blocks
-                if (port.PortName.Equals(">")) continue;
-                port.NodeAutoCompleteMarkerVisible = false;
             }
         }
 
