@@ -206,11 +206,11 @@
                 </Border>
             </Grid>
 
-
+            <!--  Grid that allows for node autocomplete interaction  -->
             <Grid
                 Grid.Column="0"
                 Grid.ColumnSpan="2">
-                <!--  Bind NodeAutoComplete to double left click  -->
+                <!--  Bind NodeAutoComplete marker to left click  -->
                 <Grid.InputBindings>
                     <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}" MouseAction="LeftClick" />
                 </Grid.InputBindings>
@@ -234,7 +234,7 @@
                     >✨</TextBlock>
                 </Border>
             </Grid>
-               
+
         </Grid>
     </DataTemplate>
 </ResourceDictionary>
