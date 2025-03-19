@@ -1381,5 +1381,318 @@ namespace DSCoreNodesTests
 
             Assert.Throws<ArgumentException>(() => List.GroupByKey(list, keys));
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void GroupBySimilarity()
+        {
+            var list = new ArrayList { 0,1,1,0,0,2,2,2,4,5,1 };
+
+            var result = List.GroupBySimilarity(list);
+            var expected = new Dictionary<string, object>
+            {
+                { "groupedValues",
+                    new object[]
+                    {
+                        new object[] { 0 },
+                        new object[] { 1,1 },
+                        new object[] { 0,0 },
+                        new object[] { 2,2,2 },
+                        new object[] { 4 },
+                        new object[] { 5 },
+                        new object[] { 1 },
+                    } },
+                { "groupedIndices",
+                    new object[]
+                    {
+                        new object[] { 0 },
+                        new object[] { 1,2 },
+                        new object[] { 3,4 },
+                        new object[] { 5,6,7 },
+                        new object[] { 8 },
+                        new object[] { 9 },
+                        new object[] { 10 },
+                    } }
+            };
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public static void GroupBySimilarity_WithStrings()
+        {
+            var list = new ArrayList { "apple", "appl", "banana", "banan", "cherry", "cherr" };
+            var result = List.GroupBySimilarity(list, 1);
+            var expected = new Dictionary<string, object>
+            {
+                { "groupedValues",
+                    new object[]
+                    {
+                        new object[] { "apple", "appl" },
+                        new object[] { "banana", "banan" },
+                        new object[] { "cherry", "cherr" }
+                    } },
+                { "groupedIndices",
+                    new object[]
+                    {
+                        new object[] { 0, 1 },
+                        new object[] { 2, 3 },
+                        new object[] { 4, 5 }
+                    } }
+            };
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public static void GroupBySimilarity_WithDecimals()
+        {
+            var list = new ArrayList { 1.1, 1.1, 2.1, 2.1, 3.1 };
+            var result = List.GroupBySimilarity(list);
+            var expected = new Dictionary<string, object>
+            {
+                { "groupedValues",
+                    new object[]
+                    {
+                        new object[] { 1.1, 1.1 },
+                        new object[] { 2.1, 2.1 },
+                        new object[] { 3.1 }
+                    } },
+                { "groupedIndices",
+                    new object[]
+                    {
+                        new object[] { 0, 1 },
+                        new object[] { 2, 3 },
+                        new object[] { 4 }
+                    } }
+            };
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public static void GroupBySimilarity_WithNegativeIntegers()
+        {
+            var list = new ArrayList { -1, -1, -2, -2, -3, -1 };
+            var result = List.GroupBySimilarity(list);
+            var expected = new Dictionary<string, object>
+            {
+                { "groupedValues",
+                    new object[]
+                    {
+                        new object[] { -1, -1 },
+                        new object[] { -2, -2 },
+                        new object[] { -3 },
+                        new object[] { -1 }
+                    } },
+                { "groupedIndices",
+                    new object[]
+                    {
+                        new object[] { 0, 1 },
+                        new object[] { 2, 3 },
+                        new object[] { 4 },
+                        new object[] { 5 }
+                    } }
+            };
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public static void GroupBySimilarity_WithMixedList()
+        {
+            var list = new ArrayList { 1, "1", 2, "2", 3, "3" };
+            var result = List.GroupBySimilarity(list);
+            var expected = new Dictionary<string, object>
+            {
+                { "groupedValues",
+                    new object[]
+                    {
+                        new object[] { 1, "1"},
+                        new object[] { 2, "2"},
+                        new object[] { 3, "3" },
+                    } },
+                { "groupedIndices",
+                    new object[]
+                    {
+                        new object[] { 0, 1 },
+                        new object[] { 2, 3 },
+                        new object[] { 4, 5 },
+                    } }
+            };
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public static void GroupBySimilarity_WithNulls()
+        {
+            var list = new ArrayList { null, null, 1, 1, "a", "a" };
+            var result = List.GroupBySimilarity(list);
+            var expected = new Dictionary<string, object>
+            {
+                { "groupedValues",
+                    new object[]
+                    {
+                        new object[] { null, null },
+                        new object[] { 1, 1 },
+                        new object[] { "a", "a" }
+                    } },
+                { "groupedIndices",
+                    new object[]
+                    {
+                        new object[] { 0, 1 },
+                        new object[] { 2, 3 },
+                        new object[] { 4, 5 }
+                    } }
+            };
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public static void GroupBySimilarity_WithEmptyItems()
+        {
+            var list = new ArrayList { "", "", "a", "a", 1, 1 };
+            var result = List.GroupBySimilarity(list);
+            var expected = new Dictionary<string, object>
+            {
+                { "groupedValues",
+                    new object[]
+                    {
+                        new object[] { "", "" },
+                        new object[] { "a", "a" },
+                        new object[] { 1, 1 }
+                    } },
+                { "groupedIndices",
+                    new object[]
+                    {
+                        new object[] { 0, 1 },
+                        new object[] { 2, 3 },
+                        new object[] { 4, 5 }
+                    } }
+            };
+            Assert.AreEqual(expected, result);
+        }
+        [Test]
+        public static void GroupBySimilarity_WithStrings_Tolerance2()
+        {
+            var list = new ArrayList { "apple", "appl", "aple", "banana", "banan", "cherry", "cherr" };
+            var result = List.GroupBySimilarity(list, 2);
+            var expected = new Dictionary<string, object>
+            {
+                { "groupedValues",
+                    new object[]
+                    {
+                        new object[] { "apple", "appl", "aple" },
+                        new object[] { "banana", "banan" },
+                        new object[] { "cherry", "cherr" }
+                    } },
+                { "groupedIndices",
+                    new object[]
+                    {
+                        new object[] { 0, 1, 2 },
+                        new object[] { 3, 4 },
+                        new object[] { 5, 6 }
+                    } }
+            };
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public static void GroupBySimilarity_WithIntegers_Tolerance1()
+        {
+            var list = new ArrayList { 1, 2, 3, 10, 11, 20, 21 };
+            var result = List.GroupBySimilarity(list, 1);
+            var expected = new Dictionary<string, object>
+            {
+                { "groupedValues",
+                    new object[]
+                    {
+                        new object[] { 1, 2, 3 },
+                        new object[] { 10, 11 },
+                        new object[] { 20, 21 }
+                    } },
+                { "groupedIndices",
+                    new object[]
+                    {
+                        new object[] { 0, 1, 2 },
+                        new object[] { 3, 4 },
+                        new object[] { 5, 6 }
+                    } }
+            };
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public static void GroupBySimilarity_WithIntegers_Tolerance2()
+        {
+            var list = new ArrayList { 1, 2, 3, 10, 11, 20, 21 };
+            var result = List.GroupBySimilarity(list, 2);
+            var expected = new Dictionary<string, object>
+            {
+                { "groupedValues",
+                    new object[]
+                    {
+                        new object[] { 1, 2, 3 },
+                        new object[] { 10, 11 },
+                        new object[] { 20, 21 }
+                    } },
+                { "groupedIndices",
+                    new object[]
+                    {
+                        new object[] { 0, 1, 2 },
+                        new object[] { 3, 4 },
+                        new object[] { 5, 6 }
+                    } }
+            };
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public static void GroupBySimilarity_WithStrings_ConsiderAdjacencyFalse()
+        {
+            var list = new ArrayList { "apple", "appl", "banana", "banan", "cherry", "cherr" };
+            var result = List.GroupBySimilarity(list, 1, false);
+            var expected = new Dictionary<string, object>
+            {
+                { "groupedValues",
+                    new object[]
+                    {
+                        new object[] { "apple", "appl" },
+                        new object[] { "banana", "banan" },
+                        new object[] { "cherry", "cherr" }
+                    } },
+                { "groupedIndices",
+                    new object[]
+                    {
+                        new object[] { 0, 1 },
+                        new object[] { 2, 3 },
+                        new object[] { 4, 5 }
+                    } }
+            };
+            Assert.AreEqual(expected, result);
+        }
+
+        [Test]
+        public static void GroupBySimilarity_WithIntegers_ConsiderAdjacencyFalse()
+        {
+            var list = new ArrayList { 1, 2, 3, 10, 11, 20, 21, 1, 2 };
+            var result = List.GroupBySimilarity(list, 1, false);
+            var expected = new Dictionary<string, object>
+            {
+                { "groupedValues",
+                    new object[]
+                    {
+                        new object[] { 1, 2, 1, 2 },
+                        new object[] { 3 },
+                        new object[] { 10, 11 },
+                        new object[] { 20, 21 }
+                    } },
+                { "groupedIndices",
+                    new object[]
+                    {
+                        new object[] { 0, 1, 7, 8 },
+                        new object[] { 2 },
+                        new object[] { 3, 4 },
+                        new object[] { 5, 6 }
+                    } }
+            };
+            Assert.AreEqual(expected, result);
+        }
     }
 }
