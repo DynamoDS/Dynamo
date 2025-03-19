@@ -25,12 +25,12 @@
             </Grid.ColumnDefinitions>
 
             <!--  Grid that allows for port interaction  -->
-            <Grid
-                Grid.Column="0"
-                Grid.ColumnSpan="2"
-                Background="Transparent"
-                HorizontalAlignment="Right"
-                IsHitTestVisible="True">
+            <Grid Name="PortInteractionGrid"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="2"
+                  Background="Transparent"
+                  HorizontalAlignment="Right"
+                  IsHitTestVisible="True">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Name="PortNameColumn" Width="*"/>
                     <ColumnDefinition Name="ValueMarkerColumn" Width="5px"/>
@@ -207,9 +207,9 @@
             </Grid>
 
             <!--  Grid that allows for node autocomplete interaction  -->
-            <Grid
-                Grid.Column="0"
-                Grid.ColumnSpan="2">
+            <Grid Name="AutoCompleteGrid"
+                  Grid.Column="0"
+                  Grid.ColumnSpan="2">
                 <!--  Bind NodeAutoComplete marker to left click  -->
                 <Grid.InputBindings>
                     <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}" MouseAction="LeftClick" />
