@@ -1764,6 +1764,7 @@ Dynamo.ViewModels.AnnotationViewModel.Nodes.get -> System.Collections.Generic.IE
 Dynamo.ViewModels.AnnotationViewModel.OutPorts.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.PortViewModel>
 Dynamo.ViewModels.AnnotationViewModel.PreviewState.get -> Dynamo.ViewModels.PreviewState
 Dynamo.ViewModels.AnnotationViewModel.RemoveGroupFromGroupCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.AnnotationViewModel.ToggleIsFrozenGroupCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.AnnotationViewModel.ToggleIsVisibleGroupCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.AnnotationViewModel.Top.get -> double
 Dynamo.ViewModels.AnnotationViewModel.Top.set -> void
@@ -4876,6 +4877,7 @@ static Dynamo.Wpf.Properties.Resources.GroupContextMenuBackground.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuColor.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuDeleteGroup.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuFont.get -> string
+static Dynamo.Wpf.Properties.Resources.GroupContextMenuFreezeGroup.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuGraphLayout.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuPreview.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuUngroup.get -> string
