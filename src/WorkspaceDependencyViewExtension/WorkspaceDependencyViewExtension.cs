@@ -187,10 +187,6 @@ namespace Dynamo.WorkspaceDependency
                 HasDependencyIssue = string.IsNullOrEmpty(info.Path);
             }
 
-            var pythonPackageDependencies = ws.OnRequestPackageDependencies();
-            if (pythonPackageDependencies != null)
-                packageDependencies.AddRange(pythonPackageDependencies);
-
             if (packageDependencies.Any(d => d.State != PackageDependencyState.Loaded))
             {
                 HasDependencyIssue = true;
