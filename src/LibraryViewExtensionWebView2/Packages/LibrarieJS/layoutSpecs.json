@@ -115,124 +115,130 @@
               "text": "Modify",
               "iconUrl": "",
               "elementType": "group",
-              "include": [
-                {
-                  "path": "BuiltIn.List.RemoveIfNot"
-                },
-                {
-                  "path": "Core.List.List.Reduce"
-                },
-                {
-                  "path": "Core.List.List.Scan"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.RemoveItemAtIndex"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.RestOfItems"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.Flatten"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.Deconstruct"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.Sublists"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.Chop"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.Slice"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.TakeItems"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.Clean"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.DropEveryNthItem"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.DropItems"
-                },
-                {
-                  "path": "Core.List.List.Filter"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.FilterByBoolMask"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.TakeEveryNthItem"
-                },
-                {
-                  "path": "Core.List.ReplaceByCondition"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.ReplaceItemAtIndex"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.Insert"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.AddItemToEnd"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.AddItemToFront"
-                }
-              ],
+                "include": [
+                    {
+                        "path": "BuiltIn.List.RemoveIfNot"
+                    },
+                    {
+                        "path": "Core.List.List.Reduce"
+                    },
+                    {
+                        "path": "Core.List.List.Scan"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.RemoveItemAtIndex"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.RestOfItems"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.Flatten"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.Deconstruct"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.Sublists"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.Chop"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.Slice"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.TakeItems"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.Clean"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.DropEveryNthItem"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.DropItems"
+                    },
+                    {
+                        "path": "Core.List.List.Filter"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.FilterByBoolMask"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.TakeEveryNthItem"
+                    },
+                    {
+                        "path": "Core.List.ReplaceByCondition"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.ReplaceItemAtIndex"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.ReplaceItemAtIndices"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.Insert"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.AddItemToEnd"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.AddItemToFront"
+                    }
+                ],
               "childElements": []
             },
             {
               "text": "Organize",
               "iconUrl": "",
               "elementType": "group",
-              "include": [
-                {
-                  "path": "DSCoreNodes.DSCore.List.GroupByKey"
-                },
-                {
-                  "path": "BuiltIn.List.GroupByFunction"
-                },
-                {
-                  "path": "BuiltIn.List.MaximumItemByKey"
-                },
-                {
-                  "path": "BuiltIn.List.MinimumItemByKey"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.NormalizeDepth"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.Reverse"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.Reorder"
-                },
-                {
-                  "path": "BuiltIn.List.SortByFunction"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.SortByKey"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.SortIndexByValue"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.ShiftIndices"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.Shuffle"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.Sort"
-                },
-                {
-                  "path": "DSCoreNodes.DSCore.List.Transpose"
-                }
-              ],
+                "include": [
+                    {
+                        "path": "BuiltIn.List.GroupByFunction"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.GroupByKey"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.GroupBySimilarity"
+                    },
+                    {
+                        "path": "BuiltIn.List.MaximumItemByKey"
+                    },
+                    {
+                        "path": "BuiltIn.List.MinimumItemByKey"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.NormalizeDepth"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.Reverse"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.Reorder"
+                    },
+                    {
+                        "path": "BuiltIn.List.SortByFunction"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.SortByKey"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.SortIndexByValue"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.ShiftIndices"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.Shuffle"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.Sort"
+                    },
+                    {
+                        "path": "DSCoreNodes.DSCore.List.Transpose"
+                    }
+                ],
               "childElements": []
             },
             {
