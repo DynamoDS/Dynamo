@@ -365,6 +365,18 @@ namespace Dynamo.PackageManager
             return compatibilityMap;
         }
 
+        // Store the full compatibility map
+        private static List<JObject> compatibilityMapList;
+        /// <summary>
+        /// A static access to the full Compatibility Matrix list (including Dynamo)
+        /// Used to extract hosts information
+        /// </summary>
+        /// <returns></returns>
+        internal static List<JObject> CompatibilityMapList()
+        {
+            return compatibilityMapList;
+        }
+
         /// <summary>
         /// Method to load the map once, making it accessible to all elements
         /// </summary>
@@ -373,7 +385,9 @@ namespace Dynamo.PackageManager
             if (compatibilityMap == null)  // Load only if not already loaded
             {
                 compatibilityMap = new Dictionary<string, Dictionary<string, string>>();
+
                 var compatibilityMapList = this.CompatibilityMap();
+                PackageManagerClient.compatibilityMapList = compatibilityMapList;    // Loads the full CompatibilityMap as a side-effect
 
                 foreach (var host in compatibilityMapList)
                 {

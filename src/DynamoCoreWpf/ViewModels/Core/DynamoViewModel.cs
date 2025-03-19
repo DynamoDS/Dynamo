@@ -61,7 +61,7 @@ namespace Dynamo.ViewModels
 {
     public interface IDynamoViewModel : INotifyPropertyChanged
     {
-        ObservableCollection<WorkspaceViewModel> Workspaces { get; set; } 
+        ObservableCollection<WorkspaceViewModel> Workspaces { get; set; }
     }
 
     public partial class DynamoViewModel : ViewModelBase, IDynamoViewModel
@@ -73,7 +73,7 @@ namespace Dynamo.ViewModels
         private bool showStartPage = false;
         private PreferencesViewModel preferencesViewModel;
         private string dynamoMLDataPath = string.Empty;
-        private const string dynamoMLDataFileName = "DynamoMLDataPipeline.json"; 
+        private const string dynamoMLDataFileName = "DynamoMLDataPipeline.json";
 
         // Can the user run the graph
         private bool CanRunGraph => HomeSpace.RunSettings.RunEnabled && !HomeSpace.GraphRunInProgress;
@@ -271,7 +271,7 @@ namespace Dynamo.ViewModels
                 var index = workspaces.IndexOf(viewModel);
 
                 // As the getter could aslo be triggered by the change of model,
-                // we need to update currentWorkspaceViewModel here. 
+                // we need to update currentWorkspaceViewModel here.
                 if (currentWorkspaceViewModel != viewModel)
                     currentWorkspaceViewModel = viewModel;
 
@@ -279,8 +279,8 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                // It happens when current workspace is home workspace, and we 
-                // open a new home workspace. At this moment, the old homework 
+                // It happens when current workspace is home workspace, and we
+                // open a new home workspace. At this moment, the old homework
                 // space is removed, before new home workspace is added, Dynamo
                 // has no idea about what is selected tab index.
                 if (value < 0)
@@ -293,7 +293,7 @@ namespace Dynamo.ViewModels
 
                     // Keep DynamoModel.CurrentWorkspace update-to-date
                     int modelIndex = model.Workspaces.IndexOf(currentWorkspaceViewModel.Model);
-                    ExecuteCommand(new DynamoModel.SwitchTabCommand(modelIndex));                   
+                    ExecuteCommand(new DynamoModel.SwitchTabCommand(modelIndex));
                     (HomeSpaceViewModel as HomeWorkspaceViewModel)?.UpdateRunStatusMsgBasedOnStates();
                 }
             }
@@ -332,10 +332,10 @@ namespace Dynamo.ViewModels
 
             set
             {
-                // If the caller attempts to show the start page, but we are 
+                // If the caller attempts to show the start page, but we are
                 // currently in playback mode, then this will not be allowed
                 // (i.e. the start page will never be shown during a playback).
-                // 
+                //
                 if ((value == true) && (null != automationSettings))
                 {
                     if (automationSettings.IsInPlaybackMode)
@@ -378,7 +378,7 @@ namespace Dynamo.ViewModels
 
         private double minLeftMarignOffset;
         /// <summary>
-        /// The 
+        /// The
         /// </summary>
         public double MinLeftMarginOffset
         {
@@ -588,7 +588,7 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         ///     Whether sign in should be shown in Dynamo.  In instances where Dynamo obtains
-        ///     authentication capabilities from a host, Dynamo's sign in should generally be 
+        ///     authentication capabilities from a host, Dynamo's sign in should generally be
         ///     hidden to avoid inconsistencies in state.
         /// </summary>
         public bool ShowLogin { get; private set; }
@@ -601,7 +601,7 @@ namespace Dynamo.ViewModels
             {
                 showRunPreview = value;
                 HomeSpace.GetExecutingNodes(showRunPreview);
-                RaisePropertyChanged("ShowRunPreview");              
+                RaisePropertyChanged("ShowRunPreview");
             }
         }
 
@@ -609,14 +609,14 @@ namespace Dynamo.ViewModels
 
         public bool EnablePresetOptions
         {
-            get { return this.Model.CurrentWorkspace.Presets.Any(); }            
+            get { return this.Model.CurrentWorkspace.Presets.Any(); }
         }
 
         /// <summary>
-        /// A collection of <see cref="DefaultWatch3DViewModel"/> objects. 
-        /// 
+        /// A collection of <see cref="DefaultWatch3DViewModel"/> objects.
+        ///
         /// Each DefaultWatch3DViewModel object is responsible for converting
-        /// data for visualization in a different context. For example, the 
+        /// data for visualization in a different context. For example, the
         /// <see cref="HelixWatch3DViewModel"/> provides the geometry for the
         /// background preview.
         /// </summary>
@@ -648,7 +648,7 @@ namespace Dynamo.ViewModels
             {
                 return editTextOptions;
             }
-        } 
+        }
 
 
         /// <summary>
@@ -703,14 +703,14 @@ namespace Dynamo.ViewModels
             public IBrandingResourceProvider BrandingResourceProvider { get; set; }
 
             /// <summary>
-            /// If true, Analytics and Usage options are hidden from UI 
+            /// If true, Analytics and Usage options are hidden from UI
             /// </summary>
             public bool HideReportOptions { get; set; }
         }
 
         public static DynamoViewModel Start(StartConfiguration startConfiguration = new StartConfiguration())
         {
-            if (startConfiguration.DynamoModel == null) 
+            if (startConfiguration.DynamoModel == null)
                 startConfiguration.DynamoModel = DynamoModel.Start();
 
             if(startConfiguration.WatchHandler == null)
@@ -718,10 +718,10 @@ namespace Dynamo.ViewModels
 
             if (startConfiguration.Watch3DViewModel == null)
             {
-                startConfiguration.Watch3DViewModel = 
+                startConfiguration.Watch3DViewModel =
                     HelixWatch3DViewModel.TryCreateHelixWatch3DViewModel(
                         null,
-                        new Watch3DViewModelStartupParams(startConfiguration.DynamoModel), 
+                        new Watch3DViewModelStartupParams(startConfiguration.DynamoModel),
                         startConfiguration.DynamoModel.Logger);
             }
 
@@ -792,24 +792,24 @@ namespace Dynamo.ViewModels
             // commands should be initialized before adding any WorkspaceViewModel
             InitializeDelegateCommands();
 
-            //add the initial workspace and register for future 
+            //add the initial workspace and register for future
             //updates to the workspaces collection
             if(!Model.IsServiceMode)
             {
                 SearchDefaultNodeAutocompleteCandidates();
             }
-            
+
             var homespaceViewModel = new HomeWorkspaceViewModel(model.CurrentWorkspace as HomeWorkspaceModel, this);
             workspaces.Add(homespaceViewModel);
             currentWorkspaceViewModel = homespaceViewModel;
-           
+
             model.WorkspaceAdded += WorkspaceAdded;
             model.WorkspaceRemoved += WorkspaceRemoved;
             if (model.LinterManager != null)
             {
                 model.LinterManager.RuleEvaluationResults.CollectionChanged += OnRuleEvaluationResultsCollectionChanged;
             }
-             
+
             SubscribeModelCleaningUpEvent();
             SubscribeModelUiEvents();
             SubscribeModelChangedHandlers();
@@ -922,8 +922,8 @@ namespace Dynamo.ViewModels
                 {
                     exceptionAssembly = ex.InnerException?.TargetSite?.Module?.Assembly;
                 }
-                
-                // Do not crash if the exception is coming from a 3d party package; 
+
+                // Do not crash if the exception is coming from a 3d party package;
                 if (!fatal && exceptionAssembly != null)
                 {
                     // Check if the exception might be coming from a loaded package assembly.
@@ -989,7 +989,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Sets up the provided <see cref="DefaultWatch3DViewModel"/> object and 
+        /// Sets up the provided <see cref="DefaultWatch3DViewModel"/> object and
         /// adds it to the Watch3DViewModels collection.
         /// </summary>
         /// <param name="watch3DViewModel"></param>
@@ -1043,7 +1043,7 @@ namespace Dynamo.ViewModels
             switch (e.PropertyName)
             {
                 case "Active":
-                    RaisePropertyChanged("BackgroundPreviewActive");                 
+                    RaisePropertyChanged("BackgroundPreviewActive");
                     break;
                 case "CanNavigateBackground":
                     if (!BackgroundPreviewViewModel.CanNavigateBackground)
@@ -1278,7 +1278,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Opens a new browser window pointing to the Dynamo repo new issue page, pre-filling issue 
+        /// Opens a new browser window pointing to the Dynamo repo new issue page, pre-filling issue
         /// title and content based on crash details. Uses system default browser.
         /// </summary>
         /// <param name="bodyContent">Crash details body. If null, nothing will be filled-in.</param>
@@ -1394,10 +1394,10 @@ namespace Dynamo.ViewModels
                 MainGuideManager.ExitTour();
         }
 
-        // TODO(Sriram): This method is currently not used, but it should really 
-        // be. It watches property change notifications coming from the current 
+        // TODO(Sriram): This method is currently not used, but it should really
+        // be. It watches property change notifications coming from the current
         // WorkspaceModel, and then enables/disables 'set timer' button on the UI.
-        // 
+        //
         //void CurrentWorkspace_PropertyChanged(object sender, PropertyChangedEventArgs e)
         //{
         //    switch (e.PropertyName)
@@ -1441,7 +1441,7 @@ namespace Dynamo.ViewModels
 
             return true;
         }
-       
+
         private void Paste(object parameter)
         {
             OnRequestPaste();
@@ -1593,14 +1593,14 @@ namespace Dynamo.ViewModels
             return wg ?? null;
         }
         /// <summary>
-        /// After command framework is implemented, this method should now be only 
+        /// After command framework is implemented, this method should now be only
         /// called from a menu item (i.e. Ctrl + W). It should not be used as a way
         /// for any other code paths to create a note programmatically. For that we
         /// now have AddNoteInternal which takes in more configurable arguments.
         /// </summary>
         /// <param name="parameters">This is not used and should always be null,
         /// otherwise an ArgumentException will be thrown.</param>
-        /// 
+        ///
         public void AddNote(object parameters)
         {
             if (null != parameters) // See above for details of this exception.
@@ -1674,7 +1674,7 @@ namespace Dynamo.ViewModels
                 if (!group.IsExpanded)
                 {
                     // If the group is not expanded we expanded
-                    // and show the group content before deleting 
+                    // and show the group content before deleting
                     // the group.
                     var viewModel = this.CurrentSpaceViewModel.Annotations
                         .FirstOrDefault(x => x.AnnotationModel == group);
@@ -1687,7 +1687,7 @@ namespace Dynamo.ViewModels
 
                 var command = new DynamoModel.DeleteModelCommand(group.GUID);
                 this.ExecuteCommand(command);
-            }            
+            }
         }
 
         internal bool CanUngroupAnnotation(object parameter)
@@ -1735,7 +1735,7 @@ namespace Dynamo.ViewModels
                     var command = new DynamoModel.UngroupModelCommand(guids);
                     this.ExecuteCommand(command);
                 }
-            }  
+            }
         }
 
         internal bool CanUngroupModel(object parameter)
@@ -1745,7 +1745,7 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanAddModelsToGroup(object obj)
-        {          
+        {
             return DynamoSelection.Instance.Selection.OfType<AnnotationModel>().Any();
         }
 
@@ -1759,13 +1759,13 @@ namespace Dynamo.ViewModels
             //Check for multiple groups - Delete the group and not the nodes.
             foreach (var modelb in DynamoSelection.Instance.Selection.OfType<ModelBase>())
             {
-                if (!(modelb is AnnotationModel) && 
-                    !CurrentSpace.Annotations.ContainsModel(modelb)) 
+                if (!(modelb is AnnotationModel) &&
+                    !CurrentSpace.Annotations.ContainsModel(modelb))
                 {
                     var command = new DynamoModel.AddModelToGroupCommand(modelb.GUID);
                     this.ExecuteCommand(command);
                 }
-            }  
+            }
         }
 
         internal void AddGroupToGroup(object hostGroupGuid)
@@ -1789,10 +1789,10 @@ namespace Dynamo.ViewModels
                 var newVm = new HomeWorkspaceViewModel(item as HomeWorkspaceModel, this);
                 workspaces.Insert(0, newVm);
 
-                // The RunSettings control is a child of the DynamoView, 
-                // but has its DataContext set to the RunSettingsViewModel 
+                // The RunSettings control is a child of the DynamoView,
+                // but has its DataContext set to the RunSettingsViewModel
                 // on the HomeWorkspaceViewModel. When the home workspace is changed,
-                // we need to raise a property change notification for the 
+                // we need to raise a property change notification for the
                 // homespace view model, so the RunSettingsControl's bindings
                 // get updated.
                 RaisePropertyChanged("HomeSpaceViewModel");
@@ -1988,7 +1988,7 @@ namespace Dynamo.ViewModels
             {
                 if (AskUserToSaveWorkspaceOrCancel(HomeSpace))
                 {
-                    filePath = command.FilePath;                    
+                    filePath = command.FilePath;
                     ExecuteCommand(command);
                     ShowStartPage = false;
                 }
@@ -2010,7 +2010,7 @@ namespace Dynamo.ViewModels
         /// <param name="parameters"></param>
         private void OpenFromJson(object parameters)
         {
-            // try catch for exceptions thrown while opening files, say from a future version, 
+            // try catch for exceptions thrown while opening files, say from a future version,
             // that can't be handled reliably
             filePath = string.Empty;
             fileContents = string.Empty;
@@ -2046,9 +2046,9 @@ namespace Dynamo.ViewModels
                     model.Logger.LogNotification(Configurations.DynamoAsString, commandString, errorMsgString, e.ToString());
                     MessageBoxService.Show(
                         Owner,
-                        errorMsgString, 
-                        Properties.Resources.FileLoadFailureMessageBoxTitle, 
-                        MessageBoxButton.OK, 
+                        errorMsgString,
+                        Properties.Resources.FileLoadFailureMessageBoxTitle,
+                        MessageBoxButton.OK,
                         MessageBoxImage.Exclamation);
                 }
                 else
@@ -2079,7 +2079,7 @@ namespace Dynamo.ViewModels
                     return;
             }
 
-            // try catch for exceptions thrown while opening files, say from a future version, 
+            // try catch for exceptions thrown while opening files, say from a future version,
             // that can't be handled reliably
             filePath = string.Empty;
             fileContents = string.Empty;
@@ -2114,6 +2114,10 @@ namespace Dynamo.ViewModels
                 RunSettings.ForceBlockRun = displayTrustWarning;
                 // Execute graph open command
                 ExecuteCommand(new DynamoModel.OpenFileCommand(filePath, forceManualMode, isTemplate));
+
+                // Apply annotation updates based on the preference setting
+                RefreshAnnotationDescriptions();
+
                 // Only show trust warning popop when current opened workspace is homeworkspace and not custom node workspace
                 if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
                 {
@@ -2174,7 +2178,7 @@ namespace Dynamo.ViewModels
         /// <param name="parameters"></param>
         private void Insert(object parameters)
         {
-            // try catch for exceptions thrown while opening files, say from a future version, 
+            // try catch for exceptions thrown while opening files, say from a future version,
             // that can't be handled reliably
             filePath = string.Empty;
             fileContents = string.Empty;
@@ -2203,7 +2207,7 @@ namespace Dynamo.ViewModels
                 // Execute graph open command
                 ExecuteCommand(new DynamoModel.InsertFileCommand(filePath, forceManualMode));
 
-                this.FitViewCommand.Execute(null); 
+                this.FitViewCommand.Execute(null);
 
                 // Only show trust warning popup when current opened workspace is homeworkspace and not custom node workspace
                 if (displayTrustWarning && (currentWorkspaceViewModel?.IsHomeSpace ?? false))
@@ -2249,15 +2253,24 @@ namespace Dynamo.ViewModels
         }
 
         internal void OpenOnboardingGuideFile()
-        {  
+        {
             var jsonDynFile = ResourceUtilities.LoadContentFromResources(GuidesManager.OnboardingGuideWorkspaceEmbeededResource, Assembly.GetExecutingAssembly(), false, false);
             OpenFromJson(new Tuple<string, bool>(jsonDynFile, true));
         }
 
         private bool CanOpen(object parameters)
         {
+
             var filePath = parameters as string;
-            return PathHelper.IsValidPath(filePath);
+
+            if (!PathHelper.IsValidPath(filePath))
+            {
+                DynamoMessageBox.Show(Owner, string.Format(WpfResources.MessageErrorOpeningInvalidPath.Replace("\\n", Environment.NewLine), filePath), WpfResources.MessageErrorOpeningFileGeneral,
+                        MessageBoxButton.OK, MessageBoxImage.Error);
+                return false;
+            }
+
+            return true;
         }
 
         private bool CanOpenFromJson(object parameters)
@@ -2267,10 +2280,29 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Forces all annotations in the workspace to refresh their description text,
+        /// ensuring that UI updates when the ShowDefaultGroupDescription setting changes.
+        /// </summary>
+        public void RefreshAnnotationDescriptions()
+        {
+            foreach (var workspace in Model.Workspaces)
+            {
+                if (workspace.Annotations.Any())
+                {
+                    foreach (var group in workspace.Annotations)
+                    {
+                        var temp = group.AnnotationDescriptionText;
+                        group.AnnotationDescriptionText = temp;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Read the contents of the file and set the view parameters for that current workspace
         /// </summary>
         private void model_ComputeModelDeserialized()
-        {            
+        {
             try
             {
                 string fileContentsInUse = String.IsNullOrEmpty(filePath) ? fileContents : File.ReadAllText(filePath);
@@ -2354,7 +2386,7 @@ namespace Dynamo.ViewModels
                     _fileDialog.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyComputer);
                 }
             }
-            else if (string.IsNullOrEmpty(LastSavedLocation)) //If there is no last saved location, use the samples directory(if it exists) 
+            else if (string.IsNullOrEmpty(LastSavedLocation)) //If there is no last saved location, use the samples directory(if it exists)
             {
                 Assembly dynamoAssembly = Assembly.GetExecutingAssembly();
                 string location = Path.GetDirectoryName(dynamoAssembly.Location);
@@ -2370,7 +2402,7 @@ namespace Dynamo.ViewModels
                     SetDefaultInitialDirectory(_fileDialog);
                 }
             }
-                
+
             if (_fileDialog.ShowDialog() == DialogResult.OK)
             {
                 if (CanOpen(_fileDialog.FileName))
@@ -2516,9 +2548,9 @@ namespace Dynamo.ViewModels
                 if (this.CurrentSpace.IsReadOnly)
                     ShowSaveDialogAndSaveResult(parameter);
                 else
-                    InternalSaveAs(Model.CurrentWorkspace.FileName, SaveContext.Save);      
+                    InternalSaveAs(Model.CurrentWorkspace.FileName, SaveContext.Save);
             }
-                
+
         }
 
         private bool CanSave(object parameter)
@@ -2573,7 +2605,7 @@ namespace Dynamo.ViewModels
                 differentialChecksum = true;
             }
 
-            // if the checksum is different from previous hashes, serialize this new info. 
+            // if the checksum is different from previous hashes, serialize this new info.
             if (differentialChecksum)
             {
                 try
@@ -2613,7 +2645,7 @@ namespace Dynamo.ViewModels
                 if (!isBackup && hasSaved)
                 {
                     AddToRecentFiles(path);
-                }                           
+                }
             }
             catch (Exception ex)
             {
@@ -2662,7 +2694,7 @@ namespace Dynamo.ViewModels
         /// Save the current workspace to a specific file path. If the file path is null or empty, an
         /// exception is written to the console.
         /// </summary>
-        /// <param name="id">Indicate the id of target workspace view model instead of defaulting to 
+        /// <param name="id">Indicate the id of target workspace view model instead of defaulting to
         /// current workspace view model. This is critical in crash cases.</param>
         /// <param name="path">The path to the file.</param>
         /// <param name="isBackup">Indicates if an automated backup save has called this function.</param>
@@ -2695,7 +2727,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        ///     Attempts to save a given workspace.  Shows a save as dialog if the 
+        ///     Attempts to save a given workspace.  Shows a save as dialog if the
         ///     workspace does not already have a path associated with it
         /// </summary>
         /// <param name="workspace">The workspace for which to show the dialog</param>
@@ -2712,7 +2744,7 @@ namespace Dynamo.ViewModels
             {
                 var fd = this.GetSaveDialog(workspace);
                 // Since the workspace file directory is null, we set the initial directory
-                // for the file to be MyDocument folder in the local computer. 
+                // for the file to be MyDocument folder in the local computer.
                 fd.InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
                 if (fd.ShowDialog() == DialogResult.OK)
                 {
@@ -2756,7 +2788,7 @@ namespace Dynamo.ViewModels
                 {
                     var param = (string)parameters;
                     OnRequestPackageManagerDialog(this, new OpenPackageManagerEventArgs(param));
-                }              
+                }
             }
         }
 
@@ -2842,7 +2874,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="parameter"></param>
         private void ShowNewFunctionDialogAndMakeFunction(object parameter)
-        {           
+        {
             var args = new FunctionNamePromptEventArgs();
             this.Model.OnRequestsFunctionNamePrompt(this, args);
 
@@ -2863,7 +2895,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Present the new preset dialogue and add a new presetModel 
+        /// Present the new preset dialogue and add a new presetModel
         /// to the preset set on this graph
         /// </summary>
         [Obsolete("The preset functionality is deprecated, DO NOT USE, will be removed in future version.")]
@@ -2889,11 +2921,11 @@ namespace Dynamo.ViewModels
                 {
                     this.ExecuteCommand(new DynamoModel.AddPresetCommand(args.Name, args.Description, ids));
                 }
-                
+
                 //Presets created - this will enable the Restore / Delete presets
-                RaisePropertyChanged("EnablePresetOptions");     
+                RaisePropertyChanged("EnablePresetOptions");
             }
-          
+
         }
         private bool CanShowNewPresetStateDialog(object parameter)
         {
@@ -2913,8 +2945,8 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Returns the selected nodes that are "input" nodes, and makes an 
-        /// exception for CodeBlockNodes and Filename nodes as these are marked 
+        /// Returns the selected nodes that are "input" nodes, and makes an
+        /// exception for CodeBlockNodes and Filename nodes as these are marked
         /// false so they do not expose a IsInput checkbox
         /// </summary>
         /// <returns></returns>
@@ -2927,8 +2959,8 @@ namespace Dynamo.ViewModels
 
                     // NOTE: The Filename node is being matched by name due to the node definition
                     //       being in the CoreNodeModels project instead of the DynamoCore project.
-                    //       After some discussions it was decided that this was the least bad way to 
-                    //       make this check (versus either adding a new, overridable property to 
+                    //       After some discussions it was decided that this was the least bad way to
+                    //       make this check (versus either adding a new, overridable property to
                     //       NodeModel, or moving Filename and the associated classes into DynamoCore).
                     x.GetType().Name == "Filename");
         }
@@ -3022,7 +3054,7 @@ namespace Dynamo.ViewModels
 
         private bool ShowWarningDialogOnSaveWithUnresolvedIssues()
         {
-            if (Model.LinterManager is null || 
+            if (Model.LinterManager is null ||
                 Model.LinterManager.RuleEvaluationResults.Count <= 0)
             {
                 return true;
@@ -3030,9 +3062,9 @@ namespace Dynamo.ViewModels
 
             string imageUri = "/DynamoCoreWpf;component/UI/Images/task_dialog_future_file.png";
             var args = new TaskDialogEventArgs(
-                new Uri(imageUri, UriKind.Relative), 
+                new Uri(imageUri, UriKind.Relative),
                 WpfResources.GraphIssuesOnSave_Title,
-                WpfResources.GraphIssuesOnSave_Summary, 
+                WpfResources.GraphIssuesOnSave_Summary,
                 WpfResources.GraphIssuesOnSave_Description);
 
             args.AddRightAlignedButton((int)DynamoModel.ButtonId.Proceed, WpfResources.GraphIssuesOnSave_ProceedBtn);
@@ -3053,7 +3085,7 @@ namespace Dynamo.ViewModels
 
             dialog.ShowDialog();
 
-            // If cancel ('x' in top right corner) is pressed the ClickedButtonId on the 
+            // If cancel ('x' in top right corner) is pressed the ClickedButtonId on the
             // GenericTaskDialog is 0
             if (args.ClickedButtonId == (int)DynamoModel.ButtonId.Cancel ||
                 args.ClickedButtonId == 0)
@@ -3203,7 +3235,7 @@ namespace Dynamo.ViewModels
         public void MakeNewHomeWorkspace(object parameter)
         {
             if (ClearHomeWorkspaceInternal())
-            {   
+            {
                 var t = new DelegateBasedAsyncTask(model.Scheduler, () => model.ResetEngine());
                 model.Scheduler.ScheduleForExecution(t);
 
@@ -3246,7 +3278,7 @@ namespace Dynamo.ViewModels
 
             if (ClearHomeWorkspaceInternal())
             {
-                // If after closing the HOME workspace, and there are no other custom 
+                // If after closing the HOME workspace, and there are no other custom
                 // workspaces opened at the time, then we should show the start page.
                 this.ShowStartPage = (Model.Workspaces.Count() <= 1);
                 if (this.ShowStartPage)
@@ -3264,18 +3296,18 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// TODO(Ben): Both "CloseHomeWorkspace" and "MakeNewHomeWorkspace" are 
-        /// quite close in terms of functionality, but because their callers 
-        /// have different expectations in different scenarios, they remain 
-        /// separate now. A new task has been scheduled for them to be unified 
+        /// TODO(Ben): Both "CloseHomeWorkspace" and "MakeNewHomeWorkspace" are
+        /// quite close in terms of functionality, but because their callers
+        /// have different expectations in different scenarios, they remain
+        /// separate now. A new task has been scheduled for them to be unified
         /// into one consistent way of handling.
-        /// 
+        ///
         ///     http://adsk-oss.myjetbrains.com/youtrack/issue/MAGN-3813
-        /// 
+        ///
         /// </summary>
-        /// <returns>Returns true if the home workspace has been saved and 
+        /// <returns>Returns true if the home workspace has been saved and
         /// cleared, or false otherwise.</returns>
-        /// 
+        ///
         internal bool ClearHomeWorkspaceInternal()
         {
             // if the workspace is unsaved, prompt to save
@@ -3436,7 +3468,7 @@ namespace Dynamo.ViewModels
 
         public void ValidateWorkSpaceBeforeToExportAsImage(object parameter)
         {
-            OnRequestExportWorkSpaceAsImage(parameter);       
+            OnRequestExportWorkSpaceAsImage(parameter);
         }
 
         internal bool CanValidateWorkSpaceBeforeToExportAsImage(object parameter)
@@ -3635,7 +3667,7 @@ namespace Dynamo.ViewModels
 
         internal void ZoomIn(object parameter)
         {
-            if (BackgroundPreviewViewModel != null && 
+            if (BackgroundPreviewViewModel != null &&
                 BackgroundPreviewViewModel.CanNavigateBackground)
             {
                 var op = ViewOperationEventArgs.Operation.ZoomIn;
@@ -3677,7 +3709,7 @@ namespace Dynamo.ViewModels
 
         private void ZoomOut(object parameter)
         {
-            if (BackgroundPreviewViewModel != null && 
+            if (BackgroundPreviewViewModel != null &&
                 BackgroundPreviewViewModel.CanNavigateBackground)
             {
                 var op = ViewOperationEventArgs.Operation.ZoomOut;
@@ -3807,13 +3839,13 @@ namespace Dynamo.ViewModels
         internal string GetInputNames(NodeModel node)
         {
             var inputNames = node.InPorts.Select(x => x.Name).ToArray();
-            // Match https://github.com/DynamoDS/Dynamo/blame/master/src/DynamoCore/Search/SearchElements/ZeroTouchSearchElement.cs#L51 
+            // Match https://github.com/DynamoDS/Dynamo/blame/master/src/DynamoCore/Search/SearchElements/ZeroTouchSearchElement.cs#L51
             return string.Join(", ", inputNames);
         }
 
         public void ImportLibrary(object parameter)
         {
-            string[] fileFilter = {string.Format(Resources.FileDialogLibraryFiles, "*.dll; *.ds" ), string.Format(Resources.FileDialogAssemblyFiles, "*.dll"), 
+            string[] fileFilter = {string.Format(Resources.FileDialogLibraryFiles, "*.dll; *.ds" ), string.Format(Resources.FileDialogAssemblyFiles, "*.dll"),
                                    string.Format(Resources.FileDialogDesignScriptFiles, "*.ds"), string.Format(Resources.FileDialogAllFiles,"*.*")};
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = String.Join("|", fileFilter);
@@ -3837,9 +3869,9 @@ namespace Dynamo.ViewModels
                             string shortMessage = Resources.PackagePathAutoAddNotificationShortDescription;
                             string detailedMessage = Resources.PackagePathAutoAddNotificationDetailedDescription;
                             this.Model.Logger.LogNotification(
-                                "Dynamo", 
+                                "Dynamo",
                                 title,
-                                shortMessage, 
+                                shortMessage,
                                 string.Format(detailedMessage, file));
                         }
                     }
@@ -4225,7 +4257,7 @@ namespace Dynamo.ViewModels
         /// This struct represents parameters for PerformShutdownSequence call.
         /// It exposes several properties to control the way shutdown process goes.
         /// </summary>
-        /// 
+        ///
         public struct ShutdownParams
         {
             public ShutdownParams(
@@ -4245,7 +4277,7 @@ namespace Dynamo.ViewModels
             }
 
             /// <summary>
-            /// The call to PerformShutdownSequence results in the host 
+            /// The call to PerformShutdownSequence results in the host
             /// application being shutdown if this property is set to true.
             /// </summary>
             internal bool ShutdownHost { get; private set; }
@@ -4257,11 +4289,11 @@ namespace Dynamo.ViewModels
             internal bool AllowCancellation { get; private set; }
 
             /// <summary>
-            /// Set this to true to close down DynamoView as part of shutdown 
-            /// process. This is typically desirable for calls originated from 
-            /// within the DynamoViewModel layer to shutdown Dynamo. If the 
-            /// shutdown is initiated by DynamoView when it is being closed, 
-            /// then this should be set to false since DynamoView is already 
+            /// Set this to true to close down DynamoView as part of shutdown
+            /// process. This is typically desirable for calls originated from
+            /// within the DynamoViewModel layer to shutdown Dynamo. If the
+            /// shutdown is initiated by DynamoView when it is being closed,
+            /// then this should be set to false since DynamoView is already
             /// being closed.
             /// </summary>
             internal bool CloseDynamoView { get; private set; }
@@ -4273,31 +4305,31 @@ namespace Dynamo.ViewModels
         /// Call this method to initiate DynamoModel shutdown sequence.
         /// See the definition of ShutdownParams structure for more details.
         /// </summary>
-        /// <param name="shutdownParams">A set of parameters that control the 
+        /// <param name="shutdownParams">A set of parameters that control the
         /// way in which shutdown sequence is to be performed. See ShutdownParams
         /// for more details.</param>
-        /// <returns>Returns true if the shutdown sequence is started, or false 
-        /// otherwise (i.e. when user chooses not to proceed with shutting down 
+        /// <returns>Returns true if the shutdown sequence is started, or false
+        /// otherwise (i.e. when user chooses not to proceed with shutting down
         /// Dynamo).</returns>
-        /// 
+        ///
         public bool PerformShutdownSequence(ShutdownParams shutdownParams)
         {
             if (shutdownSequenceInitiated)
             {
                 // There was a prior call to shutdown. This could happen for example
-                // when user presses 'ALT + F4' to close the DynamoView, the 'Exit' 
-                // handler calls this method to close Dynamo, which in turn closes 
+                // when user presses 'ALT + F4' to close the DynamoView, the 'Exit'
+                // handler calls this method to close Dynamo, which in turn closes
                 // the DynamoView ('OnRequestClose' below). When DynamoView closes,
-                // its "Window.Closing" event fires and "DynamoView.WindowClosing" 
+                // its "Window.Closing" event fires and "DynamoView.WindowClosing"
                 // gets called before 'PerformShutdownSequence' is called again.
-                // 
+                //
                 return true;
             }
 
             if (!AskUserToSaveWorkspacesOrCancel(shutdownParams.AllowCancellation))
                 return false;
 
-            // 'shutdownSequenceInitiated' is marked as true here indicating 
+            // 'shutdownSequenceInitiated' is marked as true here indicating
             // that the shutdown may not be stopped.
             shutdownSequenceInitiated = true;
 
@@ -4306,7 +4338,7 @@ namespace Dynamo.ViewModels
             TaskScheduler.UnobservedTaskException -= TaskScheduler_UnobservedTaskException;
             this.Model.RequestsCrashPrompt -= CrashReportTool.ShowCrashWindow;
 
-            // Request the View layer to close its window (see 
+            // Request the View layer to close its window (see
             // ShutdownParams.CloseDynamoView member for details).
             if (shutdownParams.CloseDynamoView)
             {
@@ -4328,7 +4360,7 @@ namespace Dynamo.ViewModels
             BackgroundPreviewViewModel.PropertyChanged -= Watch3DViewModelPropertyChanged;
             WatchHandler.RequestSelectGeometry -= BackgroundPreviewViewModel.AddLabelForPath;
             model.ComputeModelDeserialized -= model_ComputeModelDeserialized;
-            model.RequestNotification -= model_RequestNotification;            
+            model.RequestNotification -= model_RequestNotification;
 
             return true;
         }
@@ -4337,18 +4369,18 @@ namespace Dynamo.ViewModels
         /// Ask the user if they want to save any unsaved changes.
         /// </summary>
         /// <param name="allowCancel">Whether to show cancel button to user. </param>
-        /// <returns>Returns true if the cleanup is completed and that the shutdown 
+        /// <returns>Returns true if the cleanup is completed and that the shutdown
         /// can proceed, or false if the user chooses to cancel the operation.</returns>
-        /// 
+        ///
         private bool AskUserToSaveWorkspacesOrCancel(bool allowCancel = true)
         {
             if (automationSettings != null)
             {
-                // In an automation run, Dynamo should not be asking user to save 
-                // the modified file. Instead it should be shutting down, leaving 
-                // behind unsaved changes (if saving is desired, then the save command 
+                // In an automation run, Dynamo should not be asking user to save
+                // the modified file. Instead it should be shutting down, leaving
+                // behind unsaved changes (if saving is desired, then the save command
                 // should have been recorded for the test case to it can be replayed).
-                // 
+                //
                 if (automationSettings.IsInPlaybackMode)
                     return true; // In playback mode, just exit without saving.
             }

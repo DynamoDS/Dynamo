@@ -353,6 +353,11 @@
                 <MenuItem Name="DeleteAnnotation"
                           Click="OnDeleteAnnotation"
                           Header="{x:Static p:Resources.GroupContextMenuDeleteGroup}" />
+                <MenuItem Name="FreezeAnnotation"
+                          Command="{Binding Path=ToggleIsFrozenGroupCommand}"
+                          Header="{x:Static p:Resources.GroupContextMenuFreezeGroup}"
+                          IsCheckable="true"
+                          IsChecked="{Binding Path=AnnotationModel.IsFrozen, Mode=OneWay}"/>
                 <MenuItem Name="UngroupAnnotation"
                           Click="OnUngroupAnnotation"
                           Header="{x:Static p:Resources.GroupContextMenuUngroup}" />

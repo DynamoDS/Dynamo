@@ -242,6 +242,8 @@ Dynamo.Configuration.PreferenceSettings.ShowConnector.get -> bool
 Dynamo.Configuration.PreferenceSettings.ShowConnector.set -> void
 Dynamo.Configuration.PreferenceSettings.ShowConnectorToolTip.get -> bool
 Dynamo.Configuration.PreferenceSettings.ShowConnectorToolTip.set -> void
+Dynamo.Configuration.PreferenceSettings.ShowDefaultGroupDescription.get -> bool
+Dynamo.Configuration.PreferenceSettings.ShowDefaultGroupDescription.set -> void
 Dynamo.Configuration.PreferenceSettings.ShowDetailedLayout.get -> bool
 Dynamo.Configuration.PreferenceSettings.ShowDetailedLayout.set -> void
 Dynamo.Configuration.PreferenceSettings.ShowEdges.get -> bool
@@ -704,6 +706,7 @@ Dynamo.Graph.Annotations.AnnotationModel.InitialTop.get -> double
 Dynamo.Graph.Annotations.AnnotationModel.InitialTop.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.IsExpanded.get -> bool
 Dynamo.Graph.Annotations.AnnotationModel.IsExpanded.set -> void
+Dynamo.Graph.Annotations.AnnotationModel.IsFrozen.get -> bool
 Dynamo.Graph.Annotations.AnnotationModel.IsVisible.get -> bool
 Dynamo.Graph.Annotations.AnnotationModel.loadFromXML.get -> bool
 Dynamo.Graph.Annotations.AnnotationModel.loadFromXML.set -> void
@@ -1588,6 +1591,8 @@ Dynamo.Interfaces.IPreferences.Save(string filePath) -> bool
 Dynamo.Interfaces.IPreferences.SetIsBackgroundPreviewActive(string name, bool value) -> void
 Dynamo.Interfaces.IPreferences.ShowConnector.get -> bool
 Dynamo.Interfaces.IPreferences.ShowConnector.set -> void
+Dynamo.Interfaces.IPreferences.ShowDefaultGroupDescription.get -> bool
+Dynamo.Interfaces.IPreferences.ShowDefaultGroupDescription.set -> void
 Dynamo.Interfaces.IPreferences.ShowEdges.get -> bool
 Dynamo.Interfaces.IPreferences.ShowEdges.set -> void
 Dynamo.Interfaces.IPreferences.ShowPreviewBubbles.get -> bool

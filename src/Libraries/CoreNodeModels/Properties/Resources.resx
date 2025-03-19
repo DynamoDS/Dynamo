@@ -680,4 +680,7 @@ In Generative Design workflows, this node should be used to control and block th
     <value>Format specifier for numeric values, see extended node help for more info.
 default value: G</value>
   </data>
+  <data name="CurveMapperDescription" xml:space="preserve">
+    <value>Redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution</value>
+  </data>
 </root>

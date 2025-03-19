@@ -2747,7 +2747,7 @@ namespace Dynamo.Models
                     }
                 }
 
-                if (annotation.Nodes.Any() && !annotation.Nodes.Except(modelsToDelete).Any())
+                if (annotation.Nodes.Any() && !annotation.Nodes.Except(modelsToDelete).Any(n => n is not ConnectorPinModel))
                 {
                     //Annotation Model has to be serialized first - before the nodes.
                     //so, store the Annotation model as first object. This will serialize the
@@ -2793,12 +2793,19 @@ namespace Dynamo.Models
                             CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                             if (list.Remove(model))
                             {
-                                if (model is ConnectorPinModel pinModel)
+                                if (!list.Any(n => n is not ConnectorPinModel))
                                 {
-                                    annotation.MarkPinAsRemoved(pinModel);
+                                    emptyGroup.Add(annotation);
                                 }
-                                annotation.Nodes = list;
-                                annotation.UpdateBoundaryFromSelection();                               
+                                else
+                                {
+                                    if (model is ConnectorPinModel pinModel)
+                                    {
+                                        annotation.MarkPinAsRemoved(pinModel);
+                                    }
+                                    annotation.Nodes = list;
+                                    annotation.UpdateBoundaryFromSelection();
+                                }
                             }
                         }
                         else
