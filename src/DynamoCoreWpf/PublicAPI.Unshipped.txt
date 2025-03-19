@@ -5160,6 +5160,7 @@ static Dynamo.Wpf.Properties.Resources.PackageManagerMyPackagesControlName.get -
 static Dynamo.Wpf.Properties.Resources.PackageManagerMyPackagesPublishVersion.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerMyPackagesTab.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerNoInstalledPackagesSubMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageManagerNoValidationErrors.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerPackageDeprecated.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerPackageNew.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerPackageSettingsTab.get -> string
@@ -5173,7 +5174,6 @@ static Dynamo.Wpf.Properties.Resources.PackageManagerProvideVersionAndFiles.get 
 static Dynamo.Wpf.Properties.Resources.PackageManagerPublishOnlineFinishedMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerPublishPackageButton.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerPublishTab.get -> string
-static Dynamo.Wpf.Properties.Resources.PackageManagerReadyToPublish.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerSearchPackagesButton.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerSearchTab.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageManagerSettingsHyperlink.get -> string
