@@ -807,7 +807,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Annotations.Count(), 1);
 
             //Validates that correct group name and description was set
-            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault().AnnotationText, "BasicAddition");
+            Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault().AnnotationText, "CoreNodeModels.Input.DoubleInput");
             Assert.AreEqual(ViewModel.Model.CurrentWorkspace.Annotations.FirstOrDefault().AnnotationDescriptionText, "Inserted Dynamo graph");
         }
 

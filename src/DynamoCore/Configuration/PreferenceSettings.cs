@@ -186,6 +186,11 @@ namespace Dynamo.Configuration
         public bool ShowPreviewBubbles { get; set; }
 
         /// <summary>
+        /// Indicates if groups should display the default description.
+        /// </summary>
+        public bool ShowDefaultGroupDescription { get; set; }
+
+        /// <summary>
         /// Indicates if Host units should be used for graphic helpers for Dynamo Revit
         /// </summary>
         public bool UseHostScaleUnits { get; set; }
@@ -956,6 +961,7 @@ namespace Dynamo.Configuration
             NamespacesToExcludeFromLibrary = new List<string>();
             DefaultRunType = RunType.Automatic;
             DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+            ShowDefaultGroupDescription = true;
 
             BackupInterval = DefaultBackupInterval;
             BackupFilesCount = 1;

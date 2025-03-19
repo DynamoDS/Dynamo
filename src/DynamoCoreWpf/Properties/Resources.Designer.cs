@@ -1352,6 +1352,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Discard.
+        /// </summary>
+        public static string DiscardButton {
+            get {
+                return ResourceManager.GetString("DiscardButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Discard changes?.
         /// </summary>
         public static string DiscardChangesWarningPopupCaption {
@@ -6360,7 +6369,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Virus scan in progress. Your package will be searchable in approximately 15 minutes..
+        ///   Looks up a localized string similar to Virus scan in progress. Your package will be searchable in a few minutes..
         /// </summary>
         public static string PackageManagerPublishOnlineFinishedMessage {
             get {
@@ -8100,6 +8109,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Group Styles.
+        /// </summary>
+        public static string PreferencesViewGroupStylesHeader {
+            get {
+                return ResourceManager.GetString("PreferencesViewGroupStylesHeader", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to When toggled on, file names of exported images include date and time of export..
         /// </summary>
         public static string PreferencesViewIncludeTimestampExportPathTooltip {
@@ -8244,6 +8262,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Show default group description.
+        /// </summary>
+        public static string PreferencesViewShowDefaultGroupDescription {
+            get {
+                return ResourceManager.GetString("PreferencesViewShowDefaultGroupDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Show Preview Bubbles.
         /// </summary>
         public static string PreferencesViewShowPreviewBubbles {
@@ -8334,7 +8361,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Group Styles.
+        ///   Looks up a localized string similar to Groups.
         /// </summary>
         public static string PreferencesViewVisualSettingsGroupStyles {
             get {
@@ -9543,6 +9570,15 @@ namespace Dynamo.Wpf.Properties {
         public static string Save {
             get {
                 return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Save.
+        /// </summary>
+        public static string SaveButton {
+            get {
+                return ResourceManager.GetString("SaveButton", resourceCulture);
             }
         }
         
