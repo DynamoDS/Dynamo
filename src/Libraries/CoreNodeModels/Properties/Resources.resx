@@ -681,6 +681,6 @@ In Generative Design workflows, this node should be used to control and block th
 default value: G</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
-    <value>The Curve Mapper Node redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+    <value>Redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution</value>
   </data>
 </root>
