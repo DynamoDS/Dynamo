@@ -1686,6 +1686,7 @@ Dynamo.UI.Views.ScriptObject.SignIn() -> bool
 Dynamo.UI.Views.ScriptObject.SignOut() -> bool
 Dynamo.UI.Views.ScriptWizardObject
 Dynamo.UI.Views.ScriptWizardObject.AddFileOrFolder(string fileOrFolder) -> void
+Dynamo.UI.Views.ScriptWizardObject.ApplicationLoaded() -> void
 Dynamo.UI.Views.ScriptWizardObject.ClearMarkdownContent() -> void
 Dynamo.UI.Views.ScriptWizardObject.LoadMarkdownContent() -> void
 Dynamo.UI.Views.ScriptWizardObject.LogMessage(string message) -> void
@@ -1693,7 +1694,7 @@ Dynamo.UI.Views.ScriptWizardObject.OpenFolder(string path) -> void
 Dynamo.UI.Views.ScriptWizardObject.Publish() -> void
 Dynamo.UI.Views.ScriptWizardObject.RemoveFileOrFolder(string name) -> void
 Dynamo.UI.Views.ScriptWizardObject.Reset() -> void
-Dynamo.UI.Views.ScriptWizardObject.ScriptWizardObject(System.Action<string> requestAddFileOrFolder, System.Action<string> requestRemoveFileOrFolder, System.Action<bool> requestRetainFolderStructure, System.Action<string> requestUpdatePackageDetails, System.Action requestSubmit, System.Action requestPublish, System.Action requestReset, System.Action<string> requestToggleNodeLibraryOnItem, System.Action<string> requestOpenFolder, System.Action<string> requestUpdateCompatibilityMatrix, System.Action requestLoadMarkdownContent, System.Action requestClearMarkdownContent, System.Action<string> requestLogMessage) -> void
+Dynamo.UI.Views.ScriptWizardObject.ScriptWizardObject(System.Action<string> requestAddFileOrFolder, System.Action<string> requestRemoveFileOrFolder, System.Action<bool> requestRetainFolderStructure, System.Action<string> requestUpdatePackageDetails, System.Action requestSubmit, System.Action requestPublish, System.Action requestReset, System.Action<string> requestToggleNodeLibraryOnItem, System.Action<string> requestOpenFolder, System.Action<string> requestUpdateCompatibilityMatrix, System.Action requestLoadMarkdownContent, System.Action requestClearMarkdownContent, System.Action<string> requestLogMessage, System.Action requestApplicationLoaded) -> void
 Dynamo.UI.Views.ScriptWizardObject.Submit() -> void
 Dynamo.UI.Views.ScriptWizardObject.ToggleNodeLibraryOnItem(string name) -> void
 Dynamo.UI.Views.ScriptWizardObject.ToggleRetainFolderStructure(bool flag) -> void

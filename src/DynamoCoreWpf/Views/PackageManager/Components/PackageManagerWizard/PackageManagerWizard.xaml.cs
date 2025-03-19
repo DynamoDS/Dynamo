@@ -25,6 +25,9 @@ using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
 using System.Runtime.InteropServices.JavaScript;
 using Greg.Requests;
+using Newtonsoft.Json.Linq;
+using Dynamo.Models;
+using System.Globalization;
 
 namespace Dynamo.UI.Views
 {
@@ -60,6 +63,7 @@ namespace Dynamo.UI.Views
         internal Action RequestLoadMarkdownContent;
         internal Action RequestClearMarkdownContent;
         internal Action<string> RequestLogMessage;
+        internal Action RequestApplicationLoaded;
 
         private PackageUpdateRequest previousPackageDetails;
         #endregion
@@ -95,12 +99,21 @@ namespace Dynamo.UI.Views
             RequestLoadMarkdownContent = LoadMarkdownContent;
             RequestClearMarkdownContent = ClearMarkdownContent;
             RequestLogMessage = LogMessage;
+            RequestApplicationLoaded = ApplicationLoaded;
 
             DataContextChanged += OnDataContextChanged;
 
-            // TODO - handle no internet
-            var compatibilityMap = PackageManagerClient.GetCompatibilityMap();
-            SendCompatibilityMap(compatibilityMap);
+        }
+
+        internal void ApplicationLoaded()
+        { 
+            LoadingDone();
+            Logging.Analytics.TrackEvent(Logging.Actions.Load, Logging.Categories.PackageManagerOperations);
+        }
+
+        private void LoadingDone()
+        {
+            CompatibilityMap();
         }
 
         private async void UserControl_Loaded(object sender, RoutedEventArgs e)
@@ -180,7 +193,9 @@ namespace Dynamo.UI.Views
                             RequestUpdateCompatibilityMatrix,
                             RequestLoadMarkdownContent,
                             RequestClearMarkdownContent,
-                            RequestLogMessage));
+                            RequestLogMessage,
+                            RequestApplicationLoaded));
+
                 }
                 catch (Exception ex)
                 {
@@ -267,13 +282,13 @@ namespace Dynamo.UI.Views
 
         #region Upstream API calls
 
-        private async void SendCompatibilityMap(object frontendData)
+        private async void SendCompatibilityMap(List<JObject> compatibilityMapList, string dynamoVersion, object host)
         {
-            if (frontendData != null)
+            if (compatibilityMapList != null)
             {
-                var payload = new { jsonData = frontendData };
+                var payload = new { jsonData = compatibilityMapList, dynamo = dynamoVersion, host };
 
-                string jsonPayload = JsonSerializer.Serialize(payload);
+                string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(payload, Formatting.None);
 
                 if (dynWebView?.CoreWebView2 != null)
                 {
@@ -558,6 +573,19 @@ namespace Dynamo.UI.Views
             }
         }
 
+        internal void CompatibilityMap()
+        {
+            var compatibilityMapList = PackageManagerClient.CompatibilityMapList(); // Fetch full compatibility map
+            var dynamoVersion = VersionUtilities.Parse(DynamoModel.Version).ToString();
+            var host = new
+            {
+                name = DynamoModel.HostAnalyticsInfo.HostProductName,
+                version = DynamoModel.HostAnalyticsInfo.HostProductVersion
+            };
+
+            SendCompatibilityMap(compatibilityMapList, dynamoVersion, host);
+        }
+
         internal void Submit()
         {
             if (publishPackageViewModel == null) return;
@@ -808,6 +836,7 @@ namespace Dynamo.UI.Views
         readonly Action RequestLoadMarkdownContent;
         readonly Action RequestClearMarkdownContent;
         readonly Action<string> RequestLogMessage;
+        readonly Action RequestApplicationLoaded;
 
         public ScriptWizardObject(
             Action<string> requestAddFileOrFolder,
@@ -822,7 +851,8 @@ namespace Dynamo.UI.Views
             Action<string> requestUpdateCompatibilityMatrix,
             Action requestLoadMarkdownContent,
             Action requestClearMarkdownContent,
-            Action<string> requestLogMessage)
+            Action<string> requestLogMessage,
+            Action requestApplicationLoaded)
         {
             RequestAddFileOrFolder = requestAddFileOrFolder;
             RequestRemoveFileOrFolder = requestRemoveFileOrFolder;
@@ -837,6 +867,13 @@ namespace Dynamo.UI.Views
             RequestLoadMarkdownContent = requestLoadMarkdownContent;
             RequestClearMarkdownContent = requestClearMarkdownContent;
             RequestLogMessage = requestLogMessage;
+            RequestApplicationLoaded = requestApplicationLoaded;
+        }
+
+        [DynamoJSInvokable]
+        public void ApplicationLoaded()
+        {
+            RequestApplicationLoaded();
         }
 
         [DynamoJSInvokable]
