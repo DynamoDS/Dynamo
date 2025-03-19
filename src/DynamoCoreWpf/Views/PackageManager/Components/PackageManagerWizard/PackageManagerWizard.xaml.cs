@@ -131,6 +131,7 @@ namespace Dynamo.UI.Views
             if (publishPackageViewModel != null)
             {
                 publishPackageViewModel.PropertyChanged += PublishPackageViewModel_PropertyChanged;
+                publishPackageViewModel.PublishSuccess += PublishPackageViewModel_PublishSuccess;
             }
 
             SendPackageDependencies(publishPackageViewModel.DependencyNames);
@@ -218,7 +219,7 @@ namespace Dynamo.UI.Views
             SendResetProgress();
         }
 
-        #region View Model PropertyChanged
+        #region ViewModel EventHandlers
 
         /// <summary>
         /// The main PublishPackageViewModel PropertyChanged reference 
@@ -277,6 +278,15 @@ namespace Dynamo.UI.Views
             {
                 SendErrorString(publishPackageViewModel.ErrorString);
             }
+        }
+
+        /// <summary>
+        /// Subscribes to PublishSuccess event and notifies the front end
+        /// </summary>
+        /// <param name="sender"></param>
+        private void PublishPackageViewModel_PublishSuccess(PublishPackageViewModel sender)
+        {
+            SendPublishSuccess();
         }
         #endregion
 
@@ -353,7 +363,11 @@ namespace Dynamo.UI.Views
 
         private async void SendErrorString(string error)
         {
-            if (string.IsNullOrEmpty(error)) return;
+            // We only want to surface actual publish Errors to the front end,
+            // and 'Ready to publish' is triggered multiple times during the publishing process
+            // preventing us to report an actual Error.
+            if (error.Equals(Wpf.Properties.Resources.PackageManagerNoValidationErrors))
+                error = string.Empty;
 
             var payload = new { errorString = error };
             string jsonPayload = JsonSerializer.Serialize(payload);
@@ -361,6 +375,17 @@ namespace Dynamo.UI.Views
             if (dynWebView?.CoreWebView2 != null)
             {
                 await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveErrorString({jsonPayload});");
+            }
+        }
+
+        private async void SendPublishSuccess()
+        {
+            var payload = new { publishSuccess = true };
+            string jsonPayload = JsonSerializer.Serialize(payload);
+
+            if (dynWebView?.CoreWebView2 != null)
+            {
+                await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receivePublishSuccess({jsonPayload});");
             }
         }
 
@@ -805,6 +830,7 @@ namespace Dynamo.UI.Views
                     if (this.publishPackageViewModel != null)
                     {
                         this.publishPackageViewModel.PropertyChanged -= PublishPackageViewModel_PropertyChanged;
+                        this.publishPackageViewModel.PublishSuccess -= PublishPackageViewModel_PublishSuccess;
                     }
 
                     if (this.dynWebView != null && this.dynWebView.CoreWebView2 != null)
