@@ -509,12 +509,16 @@ namespace Dynamo.Controls
             Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
 
             //show the node autocomplete marker if available
-            foreach (PortViewModel port in ViewModel.OutPorts)
+            if (ViewModel.DynamoViewModel.EnableNodeAutoComplete)
             {
-                //skip code blocks
-                if (port.PortName.Equals(">")) continue;
-                port.NodeAutoCompleteMarkerVisible = !port.IsConnected;
+                foreach (PortViewModel port in ViewModel.OutPorts)
+                {
+                    //skip code blocks
+                    if (port.PortName.Equals(">")) continue;
+                    port.NodeAutoCompleteMarkerVisible = !port.IsConnected;
+                }
             }
+            
         }
 
         private void TryShowPreviewBubbles()
