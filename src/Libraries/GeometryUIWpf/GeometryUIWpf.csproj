@@ -21,7 +21,7 @@
 	</ReferenceCopyLocalPaths>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.4375"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.4435"/>
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\ExportWithUnitsControl.xaml">
