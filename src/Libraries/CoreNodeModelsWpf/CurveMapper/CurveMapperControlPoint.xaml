@@ -3,8 +3,6 @@
        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-       xmlns:local="clr-namespace:Dynamo.Wpf.CurveMapper"
-       xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
        xmlns:rexs="clr-namespace:Dynamo.Wpf.Properties"
        d:DesignHeight="12"
        d:DesignWidth="12"
