@@ -223,7 +223,11 @@ namespace Dynamo.PackageManager.UI
 
             if (prevTab.Name.Equals("publishTab") && !selectedTab.Name.Equals("publishTab"))
             {
-                if (!PackageManagerViewModel.PublishPackageViewModel.AnyUserChanges())
+                var isPublishing = PackageManagerViewModel.PublishPackageViewModel.UploadState.Equals(PackageUploadHandle.State.Uploading) ||
+                    PackageManagerViewModel.PublishPackageViewModel.UploadState.Equals(PackageUploadHandle.State.Copying) ||
+                    PackageManagerViewModel.PublishPackageViewModel.UploadState.Equals(PackageUploadHandle.State.Compressing);
+
+                if (!PackageManagerViewModel.PublishPackageViewModel.AnyUserChanges() || isPublishing)
                 {
                     selectedTab.IsSelected = true;
                     return;
