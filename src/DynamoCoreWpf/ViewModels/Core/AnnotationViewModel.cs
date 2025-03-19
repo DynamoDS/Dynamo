@@ -607,6 +607,13 @@ namespace Dynamo.ViewModels
         /// </summary>
         [JsonIgnore]
         public DelegateCommand ToggleIsVisibleGroupCommand { get; private set; }
+
+        /// <summary>
+        /// Command to toggle this group's frozen state.
+        /// When executed, it will freeze or unfreeze all nodes within the group.
+        /// </summary>
+        [JsonIgnore]
+        public DelegateCommand ToggleIsFrozenGroupCommand { get; private set; }
         #endregion
 
         public AnnotationViewModel(WorkspaceViewModel workspaceViewModel, AnnotationModel model)
@@ -619,6 +626,7 @@ namespace Dynamo.ViewModels
             model.RemovedFromGroup += OnModelRemovedFromGroup;
             model.AddedToGroup += OnModelAddedToGroup;
             ToggleIsVisibleGroupCommand = new DelegateCommand(ToggleIsVisibleGroup, CanToggleIsVisibleGroup);
+            ToggleIsFrozenGroupCommand = new DelegateCommand(ToggleIsFrozenGroup, CanToggleIsFrozenGroup);
 
             DynamoSelection.Instance.Selection.CollectionChanged += SelectionOnCollectionChanged;
 
@@ -1402,6 +1410,45 @@ namespace Dynamo.ViewModels
         }
 
         internal bool CanToggleIsVisibleGroup(object parameters)
+        {
+            return true;
+        }
+
+        internal void ToggleIsFrozenGroup(object parameters)
+        {
+            DynamoSelection.Instance.ClearSelection();
+            bool newFrozenState = !this.AnnotationModel.IsFrozen;
+
+            // Collect all nodes inside this group
+            var nodesInGroup = this.AnnotationModel.Nodes.
+                OfType<NodeModel>()
+                .Select(n => n.GUID)
+                .ToList();
+
+            // Collect all nodes inside the nested groups
+            var nestedGroups = this.AnnotationModel.Nodes.OfType<AnnotationModel>();
+            foreach (var nestedGroup in nestedGroups)
+            {
+                nestedGroup.IsFrozen = newFrozenState;
+                nodesInGroup.AddRange(nestedGroup.Nodes.OfType<NodeModel>().Select(n => n.GUID));
+            }
+
+            var command = new DynamoModel.UpdateModelValueCommand(
+                Guid.Empty,
+                nodesInGroup,
+                nameof(this.AnnotationModel.IsFrozen),
+                newFrozenState.ToString());
+
+            this.AnnotationModel.IsFrozen = newFrozenState;
+
+            WorkspaceViewModel.DynamoViewModel.Model.ExecuteCommand(command);
+            WorkspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
+            WorkspaceViewModel.HasUnsavedChanges = true;
+
+            Analytics.TrackEvent(Actions.Freeze, Categories.GroupOperations, newFrozenState.ToString());
+        }
+
+        internal bool CanToggleIsFrozenGroup(object parameters)
         {
             return true;
         }
