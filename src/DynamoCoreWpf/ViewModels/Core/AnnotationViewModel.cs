@@ -1445,7 +1445,7 @@ namespace Dynamo.ViewModels
             WorkspaceViewModel.DynamoViewModel.RaiseCanExecuteUndoRedo();
             WorkspaceViewModel.HasUnsavedChanges = true;
 
-            Analytics.TrackEvent(Actions.Preview, Categories.GroupOperations, newFrozenState.ToString());
+            Analytics.TrackEvent(Actions.Freeze, Categories.GroupOperations, newFrozenState.ToString());
         }
 
         internal bool CanToggleIsFrozenGroup(object parameters)
