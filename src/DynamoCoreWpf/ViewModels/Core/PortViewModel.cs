@@ -26,6 +26,7 @@ namespace Dynamo.ViewModels
         private const double autocompletePopupSpacing = 2.5;
         private const double proxyPortContextMenuOffset = 20;
         internal bool inputPortDisconnectedByConnectCommand = false;
+        private bool nodeAutoCompleteMarkerVisible;
         protected static readonly SolidColorBrush PortBackgroundColorPreviewOff = new SolidColorBrush(Color.FromRgb(102, 102, 102));
         protected static readonly SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
         protected static readonly SolidColorBrush PortBorderBrushColorDefault = new SolidColorBrush(Color.FromRgb(161, 161, 161));
@@ -98,6 +99,19 @@ namespace Dynamo.ViewModels
         public bool IsEnabled
         {
             get { return port.IsEnabled; }
+        }
+
+        /// <summary>
+        /// Controls whether the node autocomplete marker is visible
+        /// </summary>
+        public bool NodeAutoCompleteMarkerVisible
+        {
+            get => nodeAutoCompleteMarkerVisible;
+            set
+            {
+                nodeAutoCompleteMarkerVisible = value;
+                RaisePropertyChanged(nameof(NodeAutoCompleteMarkerVisible));
+            }
         }
 
         /// <summary>

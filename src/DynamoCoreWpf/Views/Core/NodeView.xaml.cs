@@ -507,6 +507,14 @@ namespace Dynamo.Controls
             // ViewModel.DynamoViewModel.ShowPreviewBubbles will be updated AFTER node mouse enter event occurs
             // so, wait while ShowPreviewBubbles binding updates value
             Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
+
+            //show the node autocomplete marker if available
+            foreach (PortViewModel port in ViewModel.OutPorts)
+            {
+                //skip code blocks
+                if (port.PortName.Equals(">")) continue;
+                port.NodeAutoCompleteMarkerVisible = !port.IsConnected;
+            }
         }
 
         private void TryShowPreviewBubbles()
@@ -568,6 +576,14 @@ namespace Dynamo.Controls
             if (PreviewControl.IsCondensed && Mouse.Captured == null)
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Hidden);
+            }
+
+            //hide the node autocomplete marker
+            foreach (PortViewModel port in ViewModel.OutPorts)
+            {
+                //skip code blocks
+                if (port.PortName.Equals(">")) continue;
+                port.NodeAutoCompleteMarkerVisible = false;
             }
         }
 
