@@ -534,33 +534,41 @@ namespace DSCore
         /// </summary>
         /// <param name="list">List of items to group as sublists based on adjacency and similarity</param>
         /// <param name="tolerance">Threshold value for grouping similar items</param>
-        /// <param name="considerAdjacency">Boolean value to control if the node should consider adjacency of not.</param>
-        /// <returns name="groupedValues">list of sublists, with items grouped by same adjacent values</returns>
-        /// <returns name="groupedIndices">list of sublists, with items grouped by same adjacent indices</returns>
+        /// <param name="considerAdjacency">Boolean value to control if the node should consider adjacency or not.</param>
+        /// <returns name="groupedValues">list of sublists with items grouped by similar values</returns>
+        /// <returns name="groupedIndices">list of sublists containing the original indices of grouped values</returns>
         /// <search>list;group;similar;adjacent;adjacency;groupbyadjacency;groupadjacentitems;groupsimilaritems;cluster;tolerance</search>
         [MultiReturn(new[] { "groupedValues", "groupedIndices" })]
         [IsVisibleInDynamoLibrary(true)]
-        public static IDictionary GroupBySimilarity(IList list, int tolerance = 0, bool considerAdjacency = true)
+        public static Dictionary<string, object> GroupBySimilarity(IList list, double tolerance = 0, bool considerAdjacency = true)
         {
             // Validate input
-            if (list == null || list.Count == 0)
+            if (list == null)
                 throw new ArgumentException("Need at least one item in the list of items.", nameof(list));
-            if (tolerance < 0)
-                throw new ArgumentException("Invalid tolerance provided, value cannot be less than 0.", nameof(list));
+            if(list.Count == 0)
+                return new Dictionary<string, object>
+                {
+                    { "groupedValues", new List<object>() },
+                    { "groupedIndices", new List<object>() }
+                };
+
+            //reset tolerance to 0 if it is negative
+            tolerance = tolerance < 0 ? 0 : tolerance;
+
 
             if (list.Count == 1)
             {
-                var singleItemResult = new ArrayList(new ArrayList { list[0] });
-                return new Dictionary<object, object>
+                var singleItemResult = new List<object>(new List<object> { list[0] });
+                return new Dictionary<string, object>
                 {
                     { "groupedValues", singleItemResult },
-                    { "groupedIndices",  new ArrayList(new ArrayList { 0 })}
+                    { "groupedIndices",  new List<object>(new List<object> { 0 })}
                 };
             }
 
-            var result = new ArrayList();
-            var idxResult = new ArrayList();
-            var currentGroup = new ArrayList { list[0] };
+            var result = new List<object>();
+            var idxResult = new List<object>();
+            var currentGroup = new List<object> { list[0] };
 
             if (considerAdjacency)
             {
@@ -575,7 +583,7 @@ namespace DSCore
                     {
                         result.Add(currentGroup);
                         idxResult.Add(Enumerable.Range(start, currentGroup.Count).ToList());
-                        currentGroup = new ArrayList { list[i] };
+                        currentGroup = new List<object> { list[i] };
                         start = i;
                     }
                 }
@@ -584,9 +592,9 @@ namespace DSCore
             }
             else
             {
-                var groupedItems = new List<ArrayList>();
+                var groupedItems = new List<List<object>>();
                 var itemGroups = new List<object>();
-                var indexGroups = new List<ArrayList>();
+                var indexGroups = new List<List<object>>();
 
                 for (int i = 0; i < list.Count; i++)
                 {
@@ -606,8 +614,8 @@ namespace DSCore
                     if (!added)
                     {
                         itemGroups.Add(item);
-                        groupedItems.Add(new ArrayList { item });
-                        indexGroups.Add(new ArrayList { i });
+                        groupedItems.Add(new List<object> { item });
+                        indexGroups.Add(new List<object> { i });
                     }
                 }
 
@@ -622,18 +630,19 @@ namespace DSCore
                 }
             }
 
-            return new Dictionary<object, object>
+            return new Dictionary<string, object>
             {
                 { "groupedValues", result },
                 { "groupedIndices", idxResult }
             };
         }
 
-        private static bool AreItemsSimilar(object item1, object item2, int tolerance)
+        private static bool AreItemsSimilar(object item1, object item2, double tolerance)
         {
             if (item1 is string str1 && item2 is string str2)
             {
-                if(tolerance > 5)
+                tolerance = Math.Round(tolerance);
+                if (tolerance > 5)
                     throw new ArgumentException("Tolerance value for string comparison cannot be greater than 5.", nameof(tolerance));
                 return LevenshteinDistance(str1, str2) <= tolerance;
             }
