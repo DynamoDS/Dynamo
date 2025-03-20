@@ -544,7 +544,7 @@ namespace Dynamo.Controls
                 return;
             }
 
-            if (ViewModel.DynamoViewModel.EnableNodeAutoComplete && ViewModel.NodeModel is not CodeBlockNodeModel && ViewModel.NodeModel is not CoreNodeModels.Watch)
+            if (ViewModel.NodeModel is not CodeBlockNodeModel && ViewModel.NodeModel is not CoreNodeModels.Watch)
             {
                 foreach (PortViewModel port in ViewModel.OutPorts)
                 {
