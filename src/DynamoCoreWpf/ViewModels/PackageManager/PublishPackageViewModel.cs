@@ -2157,14 +2157,13 @@ namespace Dynamo.PackageManager
             if (fileType.Equals(DependencyType.Assembly))
             {
                 Assemblies.Remove(Assemblies
-                    .First(x => x.Name == fileName));
+                    .FirstOrDefault(x => x.Name == fileName));
             }
             else if (fileName.ToLower().EndsWith(".dll"))
             {
                 fileName = vm.FilePath;
                 AdditionalFiles.Remove(AdditionalFiles
-                    .First(x => x == fileName));
-
+                    .FirstOrDefault(x => x == fileName));
             }
             else if (fileType.Equals(DependencyType.CustomNode) || fileType.Equals(DependencyType.CustomNodePreview))
             {
@@ -2198,7 +2197,7 @@ namespace Dynamo.PackageManager
             {
                 fileName = vm.FilePath;
                 AdditionalFiles.Remove(AdditionalFiles
-                    .First(x => x == fileName));
+                    .FirstOrDefault(x => x == fileName));
             }
         }
 
