@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
 using Dynamo.Search.SearchElements;
@@ -588,6 +589,9 @@ namespace Dynamo.ViewModels
 
         private bool CanAutoComplete(object parameter)
         {
+            MouseButtonEventArgs evArgs = parameter as MouseButtonEventArgs;
+            evArgs.Handled = true;
+
             DynamoViewModel dynamoViewModel = node.DynamoViewModel;
             // If user trying to trigger Node AutoComplete from proxy ports, display notification
             // telling user it is not available that way

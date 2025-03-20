@@ -499,7 +499,7 @@ namespace Dynamo.Controls
         }
 
 
-    #region Preview Control Related Event Handlers
+        #region Preview Control Related Event Handlers
 
         private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
         {
@@ -508,20 +508,8 @@ namespace Dynamo.Controls
             // so, wait while ShowPreviewBubbles binding updates value
             Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
 
-            //show the node autocomplete marker if available, skip codeblocks and watch nodes
-            if (IsAutoCompleteMarkerDisabled())
-            {
-                return;
-            }
 
-            if (ViewModel.DynamoViewModel.EnableNodeAutoComplete && ViewModel.NodeModel is not CodeBlockNodeModel && ViewModel.NodeModel is not CoreNodeModels.Watch)
-            {
-                foreach (PortViewModel port in ViewModel.OutPorts)
-                {
-                    port.NodeAutoCompleteMarkerVisible = !port.IsConnected;
-                }
-            }
-            
+            Dispatcher.BeginInvoke(new Action(TryShowAutoCompleteMarker), DispatcherPriority.Loaded);
         }
 
         private void TryShowPreviewBubbles()
@@ -530,7 +518,7 @@ namespace Dynamo.Controls
 
             // Always set old ZIndex to the last value, even if mouse is not over the node.
             oldZIndex = NodeViewModel.StaticZIndex;
-            
+
             // There is no need run further.
             if (IsPreviewDisabled()) return;
 
@@ -546,6 +534,23 @@ namespace Dynamo.Controls
             }
 
             Dispatcher.DelayInvoke(previewDelay, BringToFront);
+        }
+
+        private void TryShowAutoCompleteMarker()
+        {
+            //show the node autocomplete marker if available, skip codeblocks and watch nodes
+            if (IsAutoCompleteMarkerDisabled())
+            {
+                return;
+            }
+
+            if (ViewModel.DynamoViewModel.EnableNodeAutoComplete && ViewModel.NodeModel is not CodeBlockNodeModel && ViewModel.NodeModel is not CoreNodeModels.Watch)
+            {
+                foreach (PortViewModel port in ViewModel.OutPorts)
+                {
+                    port.NodeAutoCompleteMarkerVisible = !port.IsConnected;
+                }
+            }
         }
 
         private bool IsPreviewDisabled()
@@ -577,11 +582,12 @@ namespace Dynamo.Controls
         {
             ViewModel.ZIndex = oldZIndex;
 
-            //hide the node autocomplete marker
+            //hide the node autocomplete marker if mouse leaves the node
             foreach (PortViewModel port in ViewModel.OutPorts)
             {
                 port.NodeAutoCompleteMarkerVisible = false;
             }
+
 
             //Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
             if (ViewModel.NodeModel != null && ViewModel.NodeModel is CoreNodeModels.Watch) return;
@@ -806,7 +812,7 @@ namespace Dynamo.Controls
 
                 // We don't stash the same MenuItem multiple times.
                 if (NodeViewCustomizationMenuItems.Contains(menuItem.Header.ToString())) continue;
-                
+
                 // The MenuItem gets stashed.
                 NodeViewCustomizationMenuItems.Add(menuItem.Header.ToString(), menuItem);
             }
@@ -834,7 +840,7 @@ namespace Dynamo.Controls
             // Clearing any existing items in the node's ContextMenu.
             contextMenu.Items.Clear();
             NodeContextMenuBuilder.Build(contextMenu, viewModel, NodeViewCustomizationMenuItems);
-            
+
             contextMenu.DataContext = viewModel;
             contextMenu.IsOpen = true;
 
