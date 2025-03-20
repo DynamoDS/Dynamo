@@ -11,9 +11,9 @@
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
-    
+
     <DataTemplate DataType="{x:Type viewModels:OutPortViewModel}">
-    
+
         <!--  Grid that contains the entire port  -->
         <Grid Name="MainGrid"
               Background="Transparent"
@@ -33,11 +33,6 @@
                     <interactivity:InvokeCommandAction Command="{Binding Path=NodePortContextMenuCommand}" CommandParameter="{Binding}" />
                 </views:HandlingEventTrigger>
             </interactivity:Interaction.Triggers>
-
-            <!--  Bind NodeAutoComplete to double left click  -->
-            <Grid.InputBindings>
-                <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}" MouseAction="LeftDoubleClick" />
-            </Grid.InputBindings>
 
             <Grid.Style>
                 <Style>
@@ -157,7 +152,7 @@
                     </Style>
                 </Grid.Style>
             </Grid>
-    
+
             <!--  A semi-transparent border, which displays when the user's mouse moves over the port  -->
             <Border x:Name="BorderHighlightOverlay"
                     Grid.Column="0"
