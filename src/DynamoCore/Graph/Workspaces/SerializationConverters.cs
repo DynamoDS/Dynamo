@@ -621,7 +621,7 @@ namespace Dynamo.Graph.Workspaces
 
             foreach(INodeLibraryDependencyInfo depInfo in workspaceReferences) 
             {
-                if (depInfo is PackageDependencyInfo)
+                if (depInfo is PackageDependencyInfo packageDependencyInfo && !packageDependencyInfo.Name.ToLower().Contains("python"))
                 {
                     nodeLibraryDependencies.Add(depInfo);
                 }
