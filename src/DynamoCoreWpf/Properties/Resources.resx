@@ -1835,6 +1835,10 @@ Note: Incorrect folder structure may affect the functionality of packages that r
     <value>Your package must contain at least one file.</value>
     <comment>ErrorString</comment>
   </data>
+  <data name="PackageCompatibilityMatrixMissing" xml:space="preserve">
+    <value>Provide compatibility information for the package..</value>
+    <comment>ErrorString</comment>
+  </data>
   <data name="UpdateMessage" xml:space="preserve">
     <value>An update is available for Dynamo.
 Installing the latest update requires Dynamo and any host applications to close.
@@ -2423,8 +2427,8 @@ Do you want to install the latest Dynamo update?</value>
 Next assemblies were loaded several times:
 </value>
   </data>
-  <data name="PackageManagerReadyToPublish" xml:space="preserve">
-    <value>Ready to publish</value>
+  <data name="PackageManagerNoValidationErrors" xml:space="preserve">
+    <value>No validation errors</value>
   </data>
   <data name="MessageFailedToAddFile" xml:space="preserve">
     <value>Failed to add file: {0}</value>
@@ -4104,6 +4108,9 @@ To make this file into a new template, save it to a different folder, then move 
   </data>
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
+  </data>
+  <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
+    <value>Freeze Group</value>
   </data>
   <data name="SaveButton" xml:space="preserve">
     <value>Save</value>

@@ -1508,7 +1508,7 @@ namespace Dynamo.Controls
                     .Select(p => string.Format("{0} {1}", p.Name, p.VersionName))
                     .Aggregate(String.Empty, (x, y) => string.Format("{0}, {1}", x, y));
             }
-            Analytics.TrackTimedEvent(Categories.Performance, "ViewStartup", dynamoViewModel.Model.stopwatch.Elapsed, packages);
+            Analytics.TrackTimedEvent(Categories.Performance, Actions.ViewStartup.ToString(), dynamoViewModel.Model.stopwatch.Elapsed, packages);
         }
 
         /// <summary>

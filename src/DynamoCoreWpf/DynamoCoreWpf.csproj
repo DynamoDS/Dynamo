@@ -59,7 +59,7 @@
 
     <Target Name="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
         <PropertyGroup>
-            <PackageVersion>1.0.21</PackageVersion>
+            <PackageVersion>1.0.23</PackageVersion>
             <PackageName>DynamoHome</PackageName>
         </PropertyGroup>
         <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)pkgexist.ps1&quot; &quot;$(PackageName)&quot; &quot;$(PackageVersion)&quot;" ConsoleToMSBuild="true">
@@ -94,7 +94,7 @@
 
     <Target Name="NpmRunBuildPMWizard" BeforeTargets="BeforeBuild">
         <PropertyGroup>
-            <PackageVersion>0.0.1</PackageVersion>
+            <PackageVersion>0.0.11</PackageVersion>
             <PackageName>PackageManagerWizard</PackageName>
         </PropertyGroup>
         <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)pkgexist.ps1&quot; &quot;$(PackageName)&quot; &quot;$(PackageVersion)&quot;" ConsoleToMSBuild="true">
@@ -234,7 +234,7 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.4375" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.4435" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="3.0.2.6533" />

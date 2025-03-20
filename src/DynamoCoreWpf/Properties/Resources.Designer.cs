@@ -3651,6 +3651,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Freeze Group.
+        /// </summary>
+        public static string GroupContextMenuFreezeGroup {
+            get {
+                return ResourceManager.GetString("GroupContextMenuFreezeGroup", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Cleanup Node Layout.
         /// </summary>
         public static string GroupContextMenuGraphLayout {
@@ -5603,6 +5612,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Provide compatibility information for the package...
+        /// </summary>
+        public static string PackageCompatibilityMatrixMissing {
+            get {
+                return ResourceManager.GetString("PackageCompatibilityMatrixMissing", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Compatible.
         /// </summary>
         public static string PackageCompatible {
@@ -6270,6 +6288,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to No validation errors.
+        /// </summary>
+        public static string PackageManagerNoValidationErrors {
+            get {
+                return ResourceManager.GetString("PackageManagerNoValidationErrors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Deprecated.
         /// </summary>
         public static string PackageManagerPackageDeprecated {
@@ -6383,15 +6410,6 @@ namespace Dynamo.Wpf.Properties {
         public static string PackageManagerPublishTab {
             get {
                 return ResourceManager.GetString("PackageManagerPublishTab", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Ready to publish.
-        /// </summary>
-        public static string PackageManagerReadyToPublish {
-            get {
-                return ResourceManager.GetString("PackageManagerReadyToPublish", resourceCulture);
             }
         }
         

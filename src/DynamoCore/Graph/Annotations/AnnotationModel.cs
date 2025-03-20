@@ -422,6 +422,28 @@ namespace Dynamo.Graph.Annotations
                 }
             }
         }
+
+        private bool isFrozen = false;
+        /// <summary>
+        /// Returns whether or not all nodes in the group are frozen.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsFrozen
+        {
+            get
+            {
+                return isFrozen;
+            }
+            internal set
+            {
+                if (value != isFrozen)
+                {
+                    isFrozen = value;
+                    RaisePropertyChanged(nameof(IsFrozen));
+                }
+            }
+        }
+
         #endregion
 
         /// <summary>
