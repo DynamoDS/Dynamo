@@ -259,11 +259,171 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.
+        ///   Looks up a localized string similar to count
+        ///
+        ///int.
+        /// </summary>
+        public static string CurveMapperCountInputPortName {
+            get {
+                return ResourceManager.GetString("CurveMapperCountInputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Number of values to generate.
+        ///
+        ///int.
+        /// </summary>
+        public static string CurveMapperCountInputPortToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperCountInputPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution..
         /// </summary>
         public static string CurveMapperDescription {
             get {
                 return ResourceManager.GetString("CurveMapperDescription", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to graph;curve;mapper;math.
+        /// </summary>
+        public static string CurveMapperSearchTags {
+            get {
+                return ResourceManager.GetString("CurveMapperSearchTags", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The provided original values cannot be redistributed using the curve equation..
+        /// </summary>
+        public static string CurveMapperWarningMessage {
+            get {
+                return ResourceManager.GetString("CurveMapperWarningMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to x-MaxLimit.
+        /// </summary>
+        public static string CurveMapperXMaxLimitInputPortName {
+            get {
+                return ResourceManager.GetString("CurveMapperXMaxLimitInputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum value for the X-axis domain.
+        ///
+        ///double.
+        /// </summary>
+        public static string CurveMapperXMaxLimitInputPortToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperXMaxLimitInputPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to x-MinLimit.
+        /// </summary>
+        public static string CurveMapperXMinLimitInputPortName {
+            get {
+                return ResourceManager.GetString("CurveMapperXMinLimitInputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimum value for the X-axis domain.
+        ///
+        ///double.
+        /// </summary>
+        public static string CurveMapperXMinLimitInputPortToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperXMinLimitInputPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to x-Values.
+        /// </summary>
+        public static string CurveMapperXValuesOutputPortName {
+            get {
+                return ResourceManager.GetString("CurveMapperXValuesOutputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to X values derived from the curve.
+        ///
+        ///double[].
+        /// </summary>
+        public static string CurveMapperXValuesOutputPortToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperXValuesOutputPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to y-MaxLimit.
+        /// </summary>
+        public static string CurveMapperYMaxLimitInputPortName {
+            get {
+                return ResourceManager.GetString("CurveMapperYMaxLimitInputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Maximum value for the Y-axis domain.
+        ///
+        ///double.
+        /// </summary>
+        public static string CurveMapperYMaxLimitInputPortToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperYMaxLimitInputPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to y-MinLimit.
+        /// </summary>
+        public static string CurveMapperYMinLimitInputPortName {
+            get {
+                return ResourceManager.GetString("CurveMapperYMinLimitInputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Minimum value for the Y-axis domain.
+        ///
+        ///double.
+        /// </summary>
+        public static string CurveMapperYMinLimitInputPortToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperYMinLimitInputPortToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to y-Values.
+        /// </summary>
+        public static string CurveMapperYValuesOutputPortName {
+            get {
+                return ResourceManager.GetString("CurveMapperYValuesOutputPortName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Y values derived from the curve.
+        ///
+        ///double[].
+        /// </summary>
+        public static string CurveMapperYValuesOutputPortToolTip {
+            get {
+                return ResourceManager.GetString("CurveMapperYValuesOutputPortToolTip", resourceCulture);
             }
         }
         

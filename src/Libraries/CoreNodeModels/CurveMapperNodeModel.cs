@@ -15,7 +15,7 @@ namespace CoreNodeModels
     [NodeName("Curve Mapper")]
     [NodeCategory("Math.Graph.Create")]
     [NodeDescription("CurveMapperDescription", typeof(Properties.Resources))]
-    [NodeSearchTags("graph;curve;mapper;math")]
+    [NodeSearchTags("CurveMapperSearchTags", typeof(Properties.Resources))]
     public class CurveMapperNodeModel : NodeModel
     {
         private double minLimitX = 0;
@@ -34,6 +34,10 @@ namespace CoreNodeModels
         private readonly IntNode minLimitYDefaultValue = new IntNode(0);
         private readonly IntNode maxLimitYDefaultValue = new IntNode(1);
         private readonly IntNode pointsCountDefaultValue = new IntNode(10);
+
+        private const string gaussianCurveControlPointData2Tag = "GaussianCurveControlPointData2";
+        private const string gaussianCurveControlPointData3Tag = "GaussianCurveControlPointData3";
+        private const string gaussianCurveControlPointData4Tag = "GaussianCurveControlPointData4";
 
         private ControlPointData DefaultLinearCurvePoint1 => new ControlPointData(0, DynamicCanvasSize);
         private ControlPointData DefaultLinearCurvePoint2 => new ControlPointData(DynamicCanvasSize, 0);
@@ -54,9 +58,9 @@ namespace CoreNodeModels
         private ControlPointData DefaultSquareRootCurvePoint1 => new ControlPointData(0, DynamicCanvasSize);
         private ControlPointData DefaultSquareRootCurvePoint2 => new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5);
         private ControlPointData DefaultGaussianCurvePoint1 => new ControlPointData(0, DynamicCanvasSize * 0.8);
-        private ControlPointData DefaultGaussianCurvePoint2 => new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5, "GaussianCurveControlPointData2");
-        private ControlPointData DefaultGaussianCurvePoint3 => new ControlPointData(DynamicCanvasSize * 0.4, DynamicCanvasSize, "GaussianCurveControlPointData3");
-        private ControlPointData DefaultGaussianCurvePoint4 => new ControlPointData(DynamicCanvasSize * 0.6, DynamicCanvasSize, "GaussianCurveControlPointData4");
+        private ControlPointData DefaultGaussianCurvePoint2 => new ControlPointData(DynamicCanvasSize * 0.5, DynamicCanvasSize * 0.5, gaussianCurveControlPointData2Tag);
+        private ControlPointData DefaultGaussianCurvePoint3 => new ControlPointData(DynamicCanvasSize * 0.4, DynamicCanvasSize, gaussianCurveControlPointData3Tag);
+        private ControlPointData DefaultGaussianCurvePoint4 => new ControlPointData(DynamicCanvasSize * 0.6, DynamicCanvasSize, gaussianCurveControlPointData4Tag);
 
 
         private GraphTypes selectedGraphType;
@@ -353,26 +357,42 @@ namespace CoreNodeModels
         {
             if (InPorts.Count == 0)
             {
-                InPorts.Add(new PortModel(PortType.Input, this, new PortData("x-MinLimit",
-                    "Minimum value for the X-axis domain.",
-                    minLimitXDefaultValue)));
-                InPorts.Add(new PortModel(PortType.Input, this, new PortData("x-MaxLimit",
-                    "Maximum value for the X-axis domain.",
-                    maxLimitXDefaultValue)));
-                InPorts.Add(new PortModel(PortType.Input, this, new PortData("y-MinLimit",
-                    "Minimum value for the Y-axis domain.",
-                    minLimitYDefaultValue)));
-                InPorts.Add(new PortModel(PortType.Input, this, new PortData("y-MaxLimit",
-                    "Maximum value for the Y-axis domain.",
-                    maxLimitYDefaultValue)));
-                InPorts.Add(new PortModel(PortType.Input, this, new PortData("count",
-                    "Number of values to generate.",
-                    pointsCountDefaultValue)));
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData(
+                    Properties.Resources.CurveMapperXMinLimitInputPortName,
+                    Properties.Resources.CurveMapperXMinLimitInputPortToolTip,
+                    minLimitXDefaultValue
+                    )));
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData(
+                    Properties.Resources.CurveMapperXMaxLimitInputPortName,
+                    Properties.Resources.CurveMapperXMaxLimitInputPortToolTip,
+                    maxLimitXDefaultValue
+                    )));
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData(
+                    Properties.Resources.CurveMapperYMinLimitInputPortName,
+                    Properties.Resources.CurveMapperYMinLimitInputPortToolTip,
+                    minLimitYDefaultValue
+                    )));
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData(
+                    Properties.Resources.CurveMapperYMaxLimitInputPortName,
+                    Properties.Resources.CurveMapperYMaxLimitInputPortToolTip,
+                    maxLimitYDefaultValue
+                    )));
+                InPorts.Add(new PortModel(PortType.Input, this, new PortData(
+                    Properties.Resources.CurveMapperCountInputPortName,
+                    Properties.Resources.CurveMapperCountInputPortToolTip,
+                    pointsCountDefaultValue
+                    )));
             }
             if (OutPorts.Count == 0)
             {
-                OutPorts.Add(new PortModel(PortType.Output, this, new PortData("y-Values", "Values derived from the curve.")));
-                OutPorts.Add(new PortModel(PortType.Output, this, new PortData("x-Values", "Values derived from the curve.")));
+                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(
+                    Properties.Resources.CurveMapperYValuesOutputPortName,
+                    Properties.Resources.CurveMapperYValuesOutputPortToolTip
+                    )));
+                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(
+                    Properties.Resources.CurveMapperXValuesOutputPortName,
+                    Properties.Resources.CurveMapperXValuesOutputPortToolTip
+                    )));
             }
 
             RegisterAllPorts();
@@ -430,7 +450,7 @@ namespace CoreNodeModels
             if (!IsValidCurve())
             {
                 ClearErrorsAndWarnings();
-                Warning("The provided original values cannot be redistributed using the curve equation.", isPersistent: true); // TODO: add to resources
+                Warning(Properties.Resources.CurveMapperWarningMessage, isPersistent: true);
 
                 RenderValuesX = RenderValuesY = null;
                 return;
@@ -609,37 +629,37 @@ namespace CoreNodeModels
         {
             switch (tag)
             {
-                case "GaussianCurveControlPointData2":
+                case gaussianCurveControlPointData2Tag:
                     GaussianCurveControlPointData3 = new ControlPointData(
                         GaussianCurveControlPointData3.X + deltaX,
                         GaussianCurveControlPointData3.Y,
-                        "GaussianCurveControlPointData3");
+                        gaussianCurveControlPointData3Tag);
                     GaussianCurveControlPointData4 = new ControlPointData(
                         GaussianCurveControlPointData4.X + deltaX,
                         GaussianCurveControlPointData4.Y,
-                        "GaussianCurveControlPointData4");
+                        gaussianCurveControlPointData4Tag);
                     break;
 
-                case "GaussianCurveControlPointData3":
+                case gaussianCurveControlPointData3Tag:
                     GaussianCurveControlPointData3 = new ControlPointData(
                         GaussianCurveControlPointData3.X + deltaX,
                         GaussianCurveControlPointData3.Y,
-                        "GaussianCurveControlPointData3");
+                        gaussianCurveControlPointData3Tag);
                     GaussianCurveControlPointData4 = new ControlPointData(
                         GaussianCurveControlPointData4.X - deltaX,
                         GaussianCurveControlPointData4.Y,
-                        "GaussianCurveControlPointData4");
+                        gaussianCurveControlPointData4Tag);
                     break;
 
-                case "GaussianCurveControlPointData4":
+                case gaussianCurveControlPointData4Tag:
                     GaussianCurveControlPointData4 = new ControlPointData(
                         GaussianCurveControlPointData4.X + deltaX,
                         GaussianCurveControlPointData4.Y,
-                        "GaussianCurveControlPointData4");
+                        gaussianCurveControlPointData4Tag);
                     GaussianCurveControlPointData3 = new ControlPointData(
                         GaussianCurveControlPointData3.X - deltaX,
                         GaussianCurveControlPointData3.Y,
-                        "GaussianCurveControlPointData3");
+                        gaussianCurveControlPointData3Tag);
 
                     break;
             }
@@ -780,7 +800,7 @@ namespace CoreNodeModels
 
             if (!IsValidInput())
             {
-                Warning("The provided original values cannot be redistributed using the curve equation.", isPersistent: true); // TODO: add to resources
+                Warning(Properties.Resources.CurveMapperWarningMessage, isPersistent: true);
             }
         }
 
@@ -855,7 +875,7 @@ namespace CoreNodeModels
                 );
 
             // Handle input values with fall-back defaults
-            var inputValues = new List<AssociativeNode> // TODO: Try to rationalize
+            var inputValues = new List<AssociativeNode>
             {
                 InPorts[0].IsConnected ? inputAstNodes[0] : minLimitXDefaultValue,
                 InPorts[1].IsConnected ? inputAstNodes[1] : maxLimitXDefaultValue,
