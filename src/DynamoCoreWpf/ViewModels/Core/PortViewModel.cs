@@ -549,13 +549,13 @@ namespace Dynamo.ViewModels
                         // Connect the nodes
                         var sourceNode = clusterMapping[connection.StartNode.NodeId];
                         var targetNode = clusterMapping[connection.EndNode.NodeId];
-                        // The port index is 1-based (currently a hack and not expected from service)
+                        // The port index is 1- based (currently a hack and not expected from service)
                         var sourcePort = sourceNode.OutPorts.FirstOrDefault(p => p.PortModel.Index == connection.StartNode.PortIndex - 1);
-                        var targetPort = targetNode.InPorts.FirstOrDefault(p => p.PortModel.Index == connection.EndNode.PortIndex);
+                        var targetPort = targetNode.InPorts.FirstOrDefault(p => p.PortModel.Index == connection.EndNode.PortIndex - 1);
                         var commands = new List<DynamoModel.ModelBasedRecordableCommand>
                         {
-                            new DynamoModel.MakeConnectionCommand(sourceNode.Id.ToString(), connection.StartNode.PortIndex-1, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
-                            new DynamoModel.MakeConnectionCommand(targetNode.Id.ToString(), connection.EndNode.PortIndex, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
+                            new DynamoModel.MakeConnectionCommand(sourceNode.Id.ToString(), connection.StartNode.PortIndex - 1, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
+                            new DynamoModel.MakeConnectionCommand(targetNode.Id.ToString(), connection.EndNode.PortIndex - 1, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
                         };
                         commands.ForEach(c =>
                         {
