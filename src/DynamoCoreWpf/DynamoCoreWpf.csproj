@@ -458,8 +458,6 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.3546" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.4375" />
       <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.4435" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
@@ -2377,6 +2375,7 @@
 	<Copy SourceFiles="@(HTMLPythonNodeModelsRuRUFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\ru-RU" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLPythonNodeModelsZhCNFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\zh-CN" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLPythonNodeModelsZhTWFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\zh-TW" SkipUnchangedFiles="True" />
+  </Target>
   <Target Name="CopyPMWizardHtmlFiles" AfterTargets="Build">
     <ItemGroup>
       <HtmlAndBundleFiles Include="Packages\PackageManagerWizard\dist\index.html" />
