@@ -227,9 +227,8 @@
                         <interactivity:InvokeCommandAction Command="{Binding NodeAutoCompleteCommand}" PassEventArgsToCommand="True"/>
                     </interactivity:EventTrigger>
                 </interactivity:Interaction.Triggers>
-
-
             </Border>
+
         </Grid>
     </DataTemplate>
 </ResourceDictionary>
