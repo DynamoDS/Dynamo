@@ -207,10 +207,11 @@
                     Width="20px"
                     VerticalAlignment="Center"
                     HorizontalAlignment="Right"
-                    Background="#D5BCF7"
+                    Background="{StaticResource NodeTransientOverlayColor}"
                     IsHitTestVisible="True"
                     SnapsToDevicePixels="True"
                     Visibility="{Binding NodeAutoCompleteMarkerVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+
                 <Border.Effect>
                     <DropShadowEffect BlurRadius="10"
                                       ShadowDepth="0" 
