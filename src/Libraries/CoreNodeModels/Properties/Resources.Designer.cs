@@ -281,7 +281,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Generates a list of values mapped from a curve..
+        ///   Looks up a localized string similar to Redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution..
         /// </summary>
         public static string CurveMapperDescription {
             get {
