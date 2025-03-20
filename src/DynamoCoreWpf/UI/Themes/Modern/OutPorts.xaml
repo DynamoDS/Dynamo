@@ -118,6 +118,7 @@
                     </Style>
                 </Rectangle.Style>
             </Rectangle>
+
             <!--  Grid containing the Port Name TextBox  -->
             <Grid Name="PortNameGrid"
                   Grid.Column="0"
@@ -156,6 +157,7 @@
                     </Style>
                 </Grid.Style>
             </Grid>
+
             <!--  A semi-transparent border, which displays when the user's mouse moves over the port  -->
             <Border x:Name="BorderHighlightOverlay"
                     Grid.Column="0"
