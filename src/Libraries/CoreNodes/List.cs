@@ -661,7 +661,10 @@ namespace DSCore
                 return Object.Equals(item1, item2);
             }
         }
-
+        /// <summary>
+        /// Levenshtein Distance is the algorithm used to get the distance between 2 strings
+        /// | <see href="https://gist.github.com/Davidblkx/e12ab0bb2aff7fd8072632b396538560">Source</see>
+        /// </summary>
         private static int LevenshteinDistance(string a, string b)
         {
             if (string.IsNullOrEmpty(a)) return b.Length;
