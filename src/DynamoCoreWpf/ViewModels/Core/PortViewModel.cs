@@ -484,11 +484,22 @@ namespace Dynamo.ViewModels
         // Handler to invoke node Auto Complete
         private void AutoComplete(object parameter)
         {
-            var wsViewModel = node.WorkspaceViewModel;
+            var wsViewModel = node?.WorkspaceViewModel;
+            if (wsViewModel is null || wsViewModel.NodeAutoCompleteSearchViewModel is null)
+            {
+                return;
+            }
+
+            var existingPort = wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel;
+            if (existingPort != null)
+            {
+                existingPort.Highlight = Visibility.Collapsed;
+            }
+
             wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
 
             // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
-            if (this.inputPortDisconnectedByConnectCommand)
+            if (inputPortDisconnectedByConnectCommand)
             {
                 wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
             }
