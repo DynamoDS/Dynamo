@@ -70,7 +70,7 @@ namespace Dynamo.Logging
             {
                 var desc = string.IsNullOrEmpty(description)
                     ? productName : string.Format("{0}: {1}", productName, description);
-                client.TrackTimedEvent(Categories.Performance, "Startup", time, desc);
+                client.TrackTimedEvent(Categories.Performance, Actions.Startup.ToString(), time, desc);
             }
         }
 
