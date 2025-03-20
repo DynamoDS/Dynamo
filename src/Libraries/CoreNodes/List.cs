@@ -539,6 +539,7 @@ namespace DSCore
         /// <returns name="groupedIndices">list of sublists containing the original indices of grouped values</returns>
         /// <search>list;group;similar;adjacent;adjacency;groupbyadjacency;groupadjacentitems;groupsimilaritems;cluster;tolerance</search>
         [MultiReturn(new[] { "groupedValues", "groupedIndices" })]
+        [IsVisibleInDynamoLibrary(true)]
         public static Dictionary<string, object> GroupBySimilarity(IList list, double tolerance = 0, bool considerAdjacency = true)
         {
             // Validate input
