@@ -11,9 +11,9 @@
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
-
+    
     <DataTemplate DataType="{x:Type viewModels:OutPortViewModel}">
-
+    
         <!--  Grid that contains the entire port  -->
         <Grid Name="MainGrid"
               Background="Transparent"
@@ -118,7 +118,7 @@
                     </Style>
                 </Rectangle.Style>
             </Rectangle>
-
+    
             <!--  Grid containing the Port Name TextBox  -->
             <Grid Name="PortNameGrid"
                   Grid.Column="0"
@@ -157,7 +157,7 @@
                     </Style>
                 </Grid.Style>
             </Grid>
-
+    
             <!--  A semi-transparent border, which displays when the user's mouse moves over the port  -->
             <Border x:Name="BorderHighlightOverlay"
                     Grid.Column="0"
