@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -546,9 +547,14 @@ namespace Dynamo.Controls
 
             if (ViewModel.NodeModel is not CodeBlockNodeModel && ViewModel.NodeModel is not CoreNodeModels.Watch)
             {
-                foreach (PortViewModel port in ViewModel.OutPorts)
+                var ports = new List<PortViewModel>(ViewModel.InPorts);
+                ports.AddRange(ViewModel.OutPorts);
+
+                foreach (PortViewModel port in ports)
                 {
-                    port.NodeAutoCompleteMarkerVisible = !port.IsConnected;
+                    //if there are connectors present, do not show marker.
+                    //We check for connector count because 'IsConnected' returns true for use of default value
+                    port.NodeAutoCompleteMarkerVisible = port.PortModel.Connectors.Count < 1;
                 }
             }
         }
@@ -583,12 +589,14 @@ namespace Dynamo.Controls
             ViewModel.ZIndex = oldZIndex;
 
             //hide the node autocomplete marker if mouse leaves the node
-            foreach (PortViewModel port in ViewModel.OutPorts)
+            var ports = new List<PortViewModel>(ViewModel.InPorts);
+            ports.AddRange(ViewModel.OutPorts);
+
+            foreach (PortViewModel port in ports)
             {
                 port.NodeAutoCompleteMarkerVisible = false;
             }
-
-
+            
             //Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
             if (ViewModel.NodeModel != null && ViewModel.NodeModel is CoreNodeModels.Watch) return;
 

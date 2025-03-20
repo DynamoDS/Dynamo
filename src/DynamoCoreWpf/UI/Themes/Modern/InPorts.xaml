@@ -200,6 +200,41 @@
                     CornerRadius="0,11,11,0"
                     IsHitTestVisible="True"
                     SnapsToDevicePixels="True" />
+
+            <!--  A border, to initiate the node autocomplete command -->
+            <Border x:Name="NodeAutoCompleteMarker"
+                    Grid.Column="0"
+                    Margin="-18,0,0,0"
+                    Cursor="Hand"
+                    CornerRadius="10"
+                    Height="20px"
+                    Width="20px"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Left"
+                    Background="{StaticResource NodeTransientOverlayColor}"
+                    IsHitTestVisible="True"
+                    SnapsToDevicePixels="True"
+                    Visibility="{Binding NodeAutoCompleteMarkerVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+
+                <Border.Effect>
+                    <DropShadowEffect BlurRadius="10"
+                                      ShadowDepth="0" 
+                                      Color="#D5BCF7"
+                                      Opacity="0.75"/>
+                </Border.Effect>
+                <TextBlock
+                    TextAlignment="Center"
+                    FontSize="12"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                >✨</TextBlock>
+
+                <interactivity:Interaction.Triggers>
+                    <interactivity:EventTrigger EventName="PreviewMouseDown">
+                        <interactivity:InvokeCommandAction Command="{Binding NodeAutoCompleteCommand}" PassEventArgsToCommand="True"/>
+                    </interactivity:EventTrigger>
+                </interactivity:Interaction.Triggers>
+            </Border>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>
