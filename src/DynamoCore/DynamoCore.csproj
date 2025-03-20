@@ -32,9 +32,9 @@
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.2.4" />
     <PackageReference Include="Greg" Version="3.0.2.6533" />
-    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.7226" GeneratePathProperty="true" ExcludeAssets="all"/>
-    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.4375" Condition=" '$(Configuration)' == 'Release' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
-    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0_debug" Version="3.4.0.4375" Condition=" '$(Configuration)' == 'Debug' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.8085" GeneratePathProperty="true" ExcludeAssets="all"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.4435" Condition=" '$(Configuration)' == 'Release' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0_debug" Version="3.4.0.4435" Condition=" '$(Configuration)' == 'Debug' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" CopyXML="true" />
     <PackageReference Include="RestSharp" Version="112.0.0" CopyXML="true" />
     <PackageReference Include="Lucene.Net" Version="4.8.0-beta00016" />

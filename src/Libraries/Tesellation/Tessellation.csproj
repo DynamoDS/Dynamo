@@ -14,7 +14,7 @@
     <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.4375"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.4435"/>
     <PackageReference Include="MIConvexHull" version="1.1.17.411" CopyPDB="true" />
 	  <PackageReference Include="StarMath" version="2.0.17.1019" CopyPDB="true" />
     <PackageReference Include="System.Resources.Extensions" Version="5.0.0" />

@@ -17,7 +17,7 @@
 	 </ReferenceCopyLocalPaths>
 	</ItemDefinitionGroup>
   <ItemGroup>
-    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.4375"/>
+    <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.4435"/>
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
   <ItemGroup>
