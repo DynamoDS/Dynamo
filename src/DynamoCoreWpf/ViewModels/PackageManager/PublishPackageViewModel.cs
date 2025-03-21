@@ -2778,11 +2778,11 @@ namespace Dynamo.PackageManager
                 return false;
             }
 
-            if (CompatibilityMatrix == null || !CompatibilityMatrix.Any())
-            {
-                ErrorString = Resources.PackageCompatibilityMatrixMissing;
-                return false;
-            }
+            //if (CompatibilityMatrix == null || !CompatibilityMatrix.Any())
+            //{
+            //    ErrorString = Resources.PackageCompatibilityMatrixMissing;
+            //    return false;
+            //}
 
             if (UploadState != PackageUploadHandle.State.Error) ErrorString = "";
 
