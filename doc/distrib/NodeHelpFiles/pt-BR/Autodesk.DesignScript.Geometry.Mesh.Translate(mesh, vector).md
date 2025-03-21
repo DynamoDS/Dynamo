@@ -3,4 +3,4 @@ O nó 'Mesh.Translate' (vetor) converte qualquer tipo de malha na direção e ma
 
 ## Arquivo de exemplo
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh.vector)_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh,%20vector)_img.jpg)

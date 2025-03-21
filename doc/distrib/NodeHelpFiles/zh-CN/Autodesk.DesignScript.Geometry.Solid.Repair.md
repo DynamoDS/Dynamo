@@ -1,10 +1,12 @@
 ## 详细
-“Repair”将尝试修复存在无效几何图形的实体，还可能会执行优化。该修复节点将返回一个新的实体对象。
+`Solid.Repair` attempts to repair solids which have invalid geometry, as well as potentially performing optimizations. `Solid.Repair` will return a new solid object.
+
 如果在对输入的几何图形或转换的几何图形执行操作时遇到错误，则此节点非常有用。
 
-例如，如果您从主体上下文(如**Revit**)或**.SAT**文件输入数据，并发现执行布尔或修剪操作时意外失败，则您可能会发现修复操作会清除任何导致失败的*无效几何图形*。
+In the example below, `Solid.Repair` is used to repair geometry from an **.SAT** file. The geometry in the file fails to boolean or trim, and `Solid.Repair` cleans up any *invalid geometry* that is causing the failure.
 
-通常，您不需要对在 Dynamo 中创建的几何图形使用此功能，而仅对来自外部源的几何图形使用此功能。如果您发现情况并非如此，请向 Dynamo 团队 GitHub 报告错误！
+In general, you should not need to use this functionality on geometry you create in Dynamo, only on geometry from external sources. If you find that is not the case, please report a bug to the Dynamo team Github
 ___
+## 示例文件
 
-
+![Solid.Repair](./Autodesk.DesignScript.Geometry.Solid.Repair_img.jpg)
