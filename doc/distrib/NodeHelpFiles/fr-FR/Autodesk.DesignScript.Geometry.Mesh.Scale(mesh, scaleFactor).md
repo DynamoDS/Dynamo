@@ -3,4 +3,4 @@ Le noeud 'Mesh.Scale' (scaleFactor) met à l'échelle le maillage selon la quant
 
 ## Exemple de fichier
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.Scale(mesh.scaleFactor)_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.Scale(mesh,%20scaleFactor)_img.jpg)

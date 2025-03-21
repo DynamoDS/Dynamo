@@ -1,10 +1,12 @@
 ## Informacje szczegółowe
-Węzeł Repair próbuje naprawić bryły, które mają nieprawidłową geometrię, jak również potencjalnie wykonać optymalizację. Węzeł Repair zwraca nowy obiekt bryły.
+`Solid.Repair` attempts to repair solids which have invalid geometry, as well as potentially performing optimizations. `Solid.Repair` will return a new solid object.
+
 Ten węzeł jest przydatny w przypadku wystąpienia błędów podczas wykonywania operacji na zaimportowanej lub przekonwertowanej geometrii.
 
-Jeśli na przykład dane zostaną zaimportowane z kontekstu nadrzędnego, takiego jak program **Revit**, lub z pliku **.SAT** i okaże się, że nieoczekiwanie nie można wykonać operacji logicznej lub operacji przycięcia, operacja naprawy może oczyścić *nieprawidłową geometrię*, która powoduje błąd.
+In the example below, `Solid.Repair` is used to repair geometry from an **.SAT** file. The geometry in the file fails to boolean or trim, and `Solid.Repair` cleans up any *invalid geometry* that is causing the failure.
 
-Z reguły nie trzeba używać tej funkcji w przypadku geometrii utworzonej w dodatku Dynamo, a jedynie w przypadku geometrii ze źródeł zewnętrznych. Jeśli okaże się, że tak nie jest, zgłoś błąd zespołowi dodatku Dynamo w serwisie GitHub.
+In general, you should not need to use this functionality on geometry you create in Dynamo, only on geometry from external sources. If you find that is not the case, please report a bug to the Dynamo team Github
 ___
+## Plik przykładowy
 
-
+![Solid.Repair](./Autodesk.DesignScript.Geometry.Solid.Repair_img.jpg)

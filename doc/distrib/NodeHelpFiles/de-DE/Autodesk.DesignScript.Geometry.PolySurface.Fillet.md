@@ -1,7 +1,10 @@
 ## Im Detail
-Fillet gibt einen neuen Volumenkörper mit abgerundeten Kanten zurück. Die Kanteneingabe gibt an, welche Kanten abgerundet werden sollen, während die Versatzeingabe den Radius der Abrundung bestimmt. Im folgenden Beispiel beginnen Sie mit einem Würfel unter Verwendung der Vorgabeeingaben. Um die entsprechenden Kanten des Würfels zu erhalten, lösen Sie den Würfel zunächst auf, um die Flächen als Liste von Oberflächen zu erhalten. Anschließend extrahieren Sie die Kanten des Würfels mithilfe eines Face.Edges-Blocks. Extrahieren Sie die erste Kante der einzelnen Flächen mit GetItemAtIndex. Ein Zahlen-Schieberegler steuert den Radius für jede Abrundung.
+`PolySurface.Fillet` creates a fillet (rounded edge) between the edges of the given PolySurface.
+
+This node is particularly useful for smoothing out sharp edges in a polysurface model, enhancing the visual and physical properties of the geometry.
+
+In the example below, a cuboid is created, converted to a PolySurface and finally rounded off with `PolySurface.Fillet`.
 ___
 ## Beispieldatei
 
-
-
+![PolySurface.Fillet](./Autodesk.DesignScript.Geometry.PolySurface.Fillet_img.jpg)

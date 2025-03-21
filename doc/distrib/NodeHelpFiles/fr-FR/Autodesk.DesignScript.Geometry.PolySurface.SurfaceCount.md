@@ -1,7 +1,8 @@
 ## Description approfondie
-SurfaceCount renvoie le nombre de surfaces dans une PolySurface sous la forme d'un nombre entier. Dans l'exemple ci-dessous, un hexagone extrudé renvoie un nombre de 8. Le nœud prend une seule PolySurface comme entrée, de sorte qu'un ensemble de surfaces doit être joint avant le comptage.
+`PolySurface.SurfaceCount` returns the number of surface within the given PolySurface object.
+
+In the example below, a PolySurface is created from a cuboid and the surface count is provided with `PolySurface.SurfaceCount`.
 ___
 ## Exemple de fichier
 
-
-
+![PolySurface.SurfaceCount](./Autodesk.DesignScript.Geometry.PolySurface.SurfaceCount_img.jpg)

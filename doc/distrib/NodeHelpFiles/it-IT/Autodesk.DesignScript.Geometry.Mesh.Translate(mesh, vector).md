@@ -3,4 +3,4 @@ Il nodo `Mesh.Translate` (vector) trasla qualsiasi tipo di mesh in base alla dir
 
 ## File di esempio
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh.vector)_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh,%20vector)_img.jpg)

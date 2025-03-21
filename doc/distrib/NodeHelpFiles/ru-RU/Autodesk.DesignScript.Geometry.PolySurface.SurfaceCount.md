@@ -1,7 +1,8 @@
 ## Подробности
-SurfaceCount возвращает количество поверхностей в объекте PolySurface в виде целого числа. В примере ниже выдавленный шестиугольник возвращает количество, равное 8. Узел принимает в качестве входного элемента один объект PolySurface, поэтому перед подсчетом коллекцию поверхностей необходимо объединить.
+`PolySurface.SurfaceCount` returns the number of surface within the given PolySurface object.
+
+In the example below, a PolySurface is created from a cuboid and the surface count is provided with `PolySurface.SurfaceCount`.
 ___
 ## Файл примера
 
-
-
+![PolySurface.SurfaceCount](./Autodesk.DesignScript.Geometry.PolySurface.SurfaceCount_img.jpg)

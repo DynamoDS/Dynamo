@@ -5,4 +5,4 @@ Im folgenden Beispiel wird ein einfaches Netz in eine Richtung verschoben, die d
 
 ## Beispieldatei
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh.vector.distance)_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh,%20vector,%20distance)_img.jpg)

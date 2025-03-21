@@ -3,4 +3,4 @@ Der Block `Mesh.Scale` (scaleFactor) skaliert das Netz um den eingegebenen Betra
 
 ## Beispieldatei
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.Scale(mesh.scaleFactor)_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.Scale(mesh,%20scaleFactor)_img.jpg)

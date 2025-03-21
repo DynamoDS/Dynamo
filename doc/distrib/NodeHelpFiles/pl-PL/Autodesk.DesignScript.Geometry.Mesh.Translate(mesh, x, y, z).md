@@ -3,4 +3,4 @@ Węzeł `Mesh.Translate(x, y, z)` przekształca dowolną siatkę o podane przemi
 
 ## Plik przykładowy
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh.x.y.z)_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh,%20x,%20y,%20z)_img.jpg)
