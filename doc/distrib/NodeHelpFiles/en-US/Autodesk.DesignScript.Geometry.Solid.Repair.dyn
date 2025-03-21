@@ -1,0 +1,418 @@
+{
+  "Uuid": "f0b23ace-b069-4b30-8d8f-4358eafe42a9",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "Autodesk.DesignScript.Geometry.Solid.Repair",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "Id": "254e818b4f834928a7b1a0b32f67240e",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "47756ecb2aa844af9f4ca58323159323",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path",
+      "HintPath": "C:\\Users\\piersoj\\Downloads\\Solid.Repair\\invalid.sat",
+      "InputValue": ".\\invalid.sat"
+    },
+    {
+      "ConcreteType": "GeometryUI.ImportFromSATWithUnits, GeometryUI",
+      "Id": "5c77955e28324c46969b8933b0822eb9",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "903ddb98a5bc46efa4c8eef95ee4090f",
+          "Name": "file|filePath",
+          "Description": "Filepath or File object to import .SAT from.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "daf6fad7d1e0405d8c01c157a8a19bf1",
+          "Name": "dynamoUnit",
+          "Description": "A forge unit length, if left null, geometry will be imported as unitless.",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c8465d9244394ab8a2e13874336d13cf",
+          "Name": "geometry",
+          "Description": "Loaded geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.Filename, CoreNodeModels",
+      "Id": "f3b95a487aa5402590dc18c57a4bb082",
+      "NodeType": "ExtensionNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "71fbb5a4a9cd4b858a49dc77c2cdbcf0",
+          "Name": "",
+          "Description": "File Path",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows you to select a file on the system and returns its file path",
+      "HintPath": "C:\\Users\\piersoj\\Downloads\\Solid.Repair\\cut-tools.sat",
+      "InputValue": ".\\cut-tools.sat"
+    },
+    {
+      "ConcreteType": "GeometryUI.ImportFromSATWithUnits, GeometryUI",
+      "Id": "aa9106de2891449cb61a51b08a2af8fb",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "f8ae5e88c02741ad9ee26df730a17b2c",
+          "Name": "file|filePath",
+          "Description": "Filepath or File object to import .SAT from.",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "4972238eb2ba411f85dc5a3dba581478",
+          "Name": "dynamoUnit",
+          "Description": "A forge unit length, if left null, geometry will be imported as unitless.",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "842b34dad79545e7ab3b3f27af03a4e4",
+          "Name": "geometry",
+          "Description": "Loaded geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Auto",
+      "Description": "Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file."
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "f1d0909212234b01a1d6a661ee0a028f",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "ce960d7b25e94a05b6433c697078fc67",
+          "Name": "solid",
+          "Description": "Autodesk.DesignScript.Geometry.Solid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "876660b3985541f588864681360ebe0c",
+          "Name": "others",
+          "Description": "Solid[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a243d9ee02a7462491df83e87bfaa9c9",
+          "Name": "Solid",
+          "Description": "Solid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Solid.DifferenceAll@Autodesk.DesignScript.Geometry.Solid[]",
+      "Replication": "Auto",
+      "Description": "The boolean difference of this Solid and the union of input Solids\n\nSolid.DifferenceAll (others: Solid[]): Solid"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "73097ddf13a94b3098d31a768af70fe3",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "c842da2087734bc29d477a952c3a2600",
+          "Name": "solid",
+          "Description": "Autodesk.DesignScript.Geometry.Solid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e2462157f3754b5c8fd8e3f00e8da857",
+          "Name": "Geometry",
+          "Description": "Geometry",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Solid.Repair",
+      "Replication": "Auto",
+      "Description": "Attempts to repair the solid.\n\nSolid.Repair ( ): Geometry"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "ec9dd2e311824d14aaecc077299fafb7",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "41da77d93f8b4fdcb1332edeec15b77f",
+          "Name": "solid",
+          "Description": "Autodesk.DesignScript.Geometry.Solid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "d0091416f1154d85a7fa93f54c411594",
+          "Name": "others",
+          "Description": "Solid[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "d1fb04dcb48c45929052495c591d759d",
+          "Name": "Solid",
+          "Description": "Solid",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "Autodesk.DesignScript.Geometry.Solid.DifferenceAll@Autodesk.DesignScript.Geometry.Solid[]",
+      "Replication": "Auto",
+      "Description": "The boolean difference of this Solid and the union of input Solids\n\nSolid.DifferenceAll (others: Solid[]): Solid"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "47756ecb2aa844af9f4ca58323159323",
+      "End": "903ddb98a5bc46efa4c8eef95ee4090f",
+      "Id": "d2df81001b8d47bc86561e267ff26830",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c8465d9244394ab8a2e13874336d13cf",
+      "End": "c842da2087734bc29d477a952c3a2600",
+      "Id": "4900090ef8ea4075af9da70e46d8baff",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "c8465d9244394ab8a2e13874336d13cf",
+      "End": "ce960d7b25e94a05b6433c697078fc67",
+      "Id": "9e8c07663e4847f9b38acecb7a7730cf",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "71fbb5a4a9cd4b858a49dc77c2cdbcf0",
+      "End": "f8ae5e88c02741ad9ee26df730a17b2c",
+      "Id": "fb3fdc2ef31346fb85decbef65467183",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "842b34dad79545e7ab3b3f27af03a4e4",
+      "End": "876660b3985541f588864681360ebe0c",
+      "Id": "72c9b5e39b784f0c9f4575c14f9d9eb3",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "842b34dad79545e7ab3b3f27af03a4e4",
+      "End": "d0091416f1154d85a7fa93f54c411594",
+      "Id": "023584c939e5411f95f62628ad59fd2a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "e2462157f3754b5c8fd8e3f00e8da857",
+      "End": "41da77d93f8b4fdcb1332edeec15b77f",
+      "Id": "88dcc2b284cb413fb840beef8896da77",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [
+    {
+      "Name": "invalid.sat",
+      "ReferenceType": "External",
+      "Nodes": [
+        "254e818b4f834928a7b1a0b32f67240e"
+      ]
+    },
+    {
+      "Name": "cut-tools.sat",
+      "ReferenceType": "External",
+      "Nodes": [
+        "f3b95a487aa5402590dc18c57a4bb082"
+      ]
+    }
+  ],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.0",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 10000.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.4.1.7055",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -80.63690948486328,
+      "EyeY": 129.6620635986328,
+      "EyeZ": 216.3792724609375,
+      "LookX": 74.46736907958984,
+      "LookY": -108.91444396972656,
+      "LookZ": -265.11419677734375,
+      "UpX": 0.04323546588420868,
+      "UpY": 0.9871362447738647,
+      "UpZ": -0.15392446517944336
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "254e818b4f834928a7b1a0b32f67240e",
+        "Name": "File Path",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 203.2000000000001,
+        "Y": 60.78802605744775
+      },
+      {
+        "Id": "5c77955e28324c46969b8933b0822eb9",
+        "Name": "Geometry.ImportFromSATWithUnits",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 757.2,
+        "Y": 60.78802605744775
+      },
+      {
+        "Id": "f3b95a487aa5402590dc18c57a4bb082",
+        "Name": "File Path",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 203.2000000000001,
+        "Y": 278.00000000000006
+      },
+      {
+        "Id": "aa9106de2891449cb61a51b08a2af8fb",
+        "Name": "Geometry.ImportFromSATWithUnits",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 757.2,
+        "Y": 278.00000000000006
+      },
+      {
+        "Id": "f1d0909212234b01a1d6a661ee0a028f",
+        "Name": "Solid.DifferenceAll",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1448.3547851081044,
+        "Y": 527.5894258870951
+      },
+      {
+        "Id": "73097ddf13a94b3098d31a768af70fe3",
+        "Name": "Solid.Repair",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": false,
+        "X": 1303.5117437349081,
+        "Y": 9.239911936647104
+      },
+      {
+        "Id": "ec9dd2e311824d14aaecc077299fafb7",
+        "Name": "Solid.DifferenceAll",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1721.9037001556915,
+        "Y": 236.96125974590865
+      }
+    ],
+    "Annotations": [],
+    "X": -228.27898815426238,
+    "Y": 92.39388232335801,
+    "Zoom": 0.9826423113679653
+  }
+}

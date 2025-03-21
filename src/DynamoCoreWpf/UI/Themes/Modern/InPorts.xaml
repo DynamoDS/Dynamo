@@ -201,6 +201,7 @@
                     IsHitTestVisible="True"
                     SnapsToDevicePixels="True" />
 
+
             <!--  A border, to initiate the node autocomplete command -->
             <Border x:Name="NodeAutoCompleteMarker"
                     Grid.Column="0"
@@ -227,6 +228,19 @@
                         <interactivity:InvokeCommandAction Command="{Binding NodeAutoCompleteCommand}" PassEventArgsToCommand="True"/>
                     </interactivity:EventTrigger>
                 </interactivity:Interaction.Triggers>
+
+            <Border x:Name="PortBorderHighlight"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="7"
+                    BorderBrush="{StaticResource NodeTransientOverlayColor}"
+                    Height="29px"
+                    Margin="-7,0,0,0"
+                    BorderThickness="3,3,3,3"
+                    CornerRadius="0,11,11,0"
+                    Visibility="{Binding Highlight, UpdateSourceTrigger=PropertyChanged}"
+                    SnapsToDevicePixels="True">
+
+
             </Border>
         </Grid>
     </DataTemplate>
