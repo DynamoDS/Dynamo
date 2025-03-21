@@ -98,6 +98,7 @@ namespace DynamoCoreWpfTests
             var item1 = new PackageItemRootViewModel("Geometry.Curve.dyf", "C:\\test\\Geometry.Curve.dyf");
             var item2 = new PackageItemRootViewModel("Building.Curve.dyf", "C:\\test\\Building.Curve.dyf");
             var item3 = new PackageItemRootViewModel("Curve.dyf", "C:\\test\\Curve.dyf");
+            var item4 = new PackageItemRootViewModel("Curve.dll", "C:\\dummy\\Curve.dll");
 
             // Assert
             vm.RemoveSingleItem(item1, DependencyType.CustomNodePreview);
@@ -108,6 +109,9 @@ namespace DynamoCoreWpfTests
 
             vm.RemoveSingleItem(item3, DependencyType.CustomNodePreview);
             Assert.AreEqual(0, vm.CustomNodeDefinitions.Count);
+
+            //assert that the method does not throw exception when the item is not found
+            Assert.DoesNotThrow(() => { vm.RemoveSingleItem(item4, DependencyType.Assembly); });
         }
 
         [Test]
