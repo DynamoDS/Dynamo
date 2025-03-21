@@ -71,9 +71,11 @@ namespace Dynamo.UI.Controls
 
         private void OnNodeAutoCompleteSearchControlVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            // If visibility  is false, then stop processing it.
-            if (!(bool)e.NewValue)
+            // If visibility  is false, then remove all transient nodes and return.
+            if (!(bool)e.NewValue) {
+                ViewModel.DeleteTransientNodes();
                 return;
+            }
 
             // When launching this control, always start with clear search term.
             //SearchTextBox.Clear(); TODO
@@ -140,8 +142,15 @@ namespace Dynamo.UI.Controls
             }
         }
 
+        internal void ConfirmAutocompletionWindow(object sender, RoutedEventArgs e)
+        {
+            ViewModel?.ConsolidateTransientNodes();
+            CloseAutoCompletion();
+        }
+
         internal void CloseAutocompletionWindow(object sender, RoutedEventArgs e)
         {
+            ViewModel?.DeleteTransientNodes();
             CloseAutoCompletion();
         }
 

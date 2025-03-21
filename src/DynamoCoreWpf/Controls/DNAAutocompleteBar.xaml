@@ -296,6 +296,7 @@
                     </Button.Style>
                 </Button>
                 <Button x:Name="btnCheck"
+                        Click="ConfirmAutocompletionWindow"
                         Grid.Column="6">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">

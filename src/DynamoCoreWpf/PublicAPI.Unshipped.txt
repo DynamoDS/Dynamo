@@ -2457,8 +2457,8 @@ Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.AutocompleteMLMessage.get -> s
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.AutocompleteMLMessage.set -> void
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.AutocompleteMLTitle.get -> string
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.AutocompleteMLTitle.set -> void
-Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.CloseSource.get -> string
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.ClusterResults.set -> void
+Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.ConsolidateTransientNodes() -> void
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.DisplayAutocompleteMLStaticPage.get -> bool
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.DisplayAutocompleteMLStaticPage.set -> void
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.DisplayLowConfidence.get -> bool
