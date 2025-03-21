@@ -1,7 +1,10 @@
 ## Подробности
-Fillet возвращает новое тело со скругленными ребрами. Входные значения ребер определяют, какие ребра сопрягать, а входное значения смещения — радиус сопряжения. В примере ниже представлен куб с входными значениями по умолчанию. Чтобы получить соответствующие ребра куба, сначала необходимо расчленить куб и получить грани в виде списка поверхностей. Затем ребра куба извлекаются с помощью узла Face.Edges. С помощью GetItemAtIndex извлекается первое ребро каждой грани. Числовой регулятор позволяет управлять радиусом каждого сопряжения.
+`PolySurface.Fillet` creates a fillet (rounded edge) between the edges of the given PolySurface.
+
+This node is particularly useful for smoothing out sharp edges in a polysurface model, enhancing the visual and physical properties of the geometry.
+
+In the example below, a cuboid is created, converted to a PolySurface and finally rounded off with `PolySurface.Fillet`.
 ___
 ## Файл примера
 
-
-
+![PolySurface.Fillet](./Autodesk.DesignScript.Geometry.PolySurface.Fillet_img.jpg)

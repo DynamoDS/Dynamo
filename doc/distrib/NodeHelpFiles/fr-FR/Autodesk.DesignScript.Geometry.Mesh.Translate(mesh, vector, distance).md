@@ -5,4 +5,4 @@ Dans l'exemple ci-dessous, un maillage simple est transposé dans une direction 
 
 ## Exemple de fichier
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh.vector.distance)_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh,%20vector,%20distance)_img.jpg)

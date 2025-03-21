@@ -5,4 +5,4 @@ No exemplo abaixo, uma malha simples é convertida em uma direção definida por
 
 ## Arquivo de exemplo
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh.vector.distance)_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh,%20vector,%20distance)_img.jpg)

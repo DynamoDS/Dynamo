@@ -1,5 +1,8 @@
-## ParseJSON – dokumentace
-Tento soubor dokumentace je automaticky generován funkcí NodeDocumentationMarkdownGenerator, Version=2.14.0.3986, Culture=neutral, PublicKeyToken=null.
+## Podrobnosti
+`Data.ParseJSON` converts values from JSON format. JSON file format is a convention for structuring data you want to store. In fact, Dynamo's own file format is structured as JSON.
 
-Další informace o přidávání dokumentace k uzlům naleznete na stránce https://github.com/DynamoDS/Dynamo/wiki/Create-and-Add-Custom-Documentation-to-Nodes
+In the example below, a dictionary (in JSON formatting) is deserialized into a Dynamo dictionary.
+___
+## Vzorový soubor
 
+![Data.ParseJSON](./DSCore.Data.ParseJSON_img.jpg)

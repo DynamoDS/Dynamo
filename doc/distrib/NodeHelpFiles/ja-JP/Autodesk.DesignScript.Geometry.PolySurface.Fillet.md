@@ -1,7 +1,10 @@
 ## 詳細
-Fillet は丸めたエッジを持つ新しいソリッドを返します。エッジの入力はフィレットするエッジを指定し、オフセットの入力はフィレットの半径を決定します。次の例では、まず既定の入力を使用して立方体を作成します。立方体の適切なエッジを取得するために、立方体を分解して面をサーフェスのリストとして取得します。次に、Face.Edges ノードを使用して立方体のエッジを抽出します。GetItemAtIndex で各面の最初のエッジを抽出します。数値スライダで各フィレットの半径をコントロールします。
+`PolySurface.Fillet` creates a fillet (rounded edge) between the edges of the given PolySurface.
+
+This node is particularly useful for smoothing out sharp edges in a polysurface model, enhancing the visual and physical properties of the geometry.
+
+In the example below, a cuboid is created, converted to a PolySurface and finally rounded off with `PolySurface.Fillet`.
 ___
 ## サンプル ファイル
 
-
-
+![PolySurface.Fillet](./Autodesk.DesignScript.Geometry.PolySurface.Fillet_img.jpg)

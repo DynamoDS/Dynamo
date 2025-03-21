@@ -1,7 +1,10 @@
 ## In profondità
-Fillet restituirà un nuovo solido con bordi arrotondati. L'input edges specifica quali bordi raccordare, mentre l'input offset determina il raggio del raccordo. Nell'esempio seguente, si inizia con un cubo utilizzando gli input di default. Per ottenere i bordi appropriati del cubo, si esplode prima il cubo per ottenere le facce come elenco di superfici. Si utilizza quindi un nodo Face.Edges per estrarre i bordi del cubo. Si estrae il primo bordo di ciascuna faccia con GetItemAtIndex. Un Number Slider controlla il raggio di ciascun raccordo.
+`PolySurface.Fillet` creates a fillet (rounded edge) between the edges of the given PolySurface.
+
+This node is particularly useful for smoothing out sharp edges in a polysurface model, enhancing the visual and physical properties of the geometry.
+
+In the example below, a cuboid is created, converted to a PolySurface and finally rounded off with `PolySurface.Fillet`.
 ___
 ## File di esempio
 
-
-
+![PolySurface.Fillet](./Autodesk.DesignScript.Geometry.PolySurface.Fillet_img.jpg)

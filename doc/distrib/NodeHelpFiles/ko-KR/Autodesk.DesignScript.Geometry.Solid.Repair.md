@@ -1,10 +1,12 @@
 ## 상세
-Repair는 형상이 유효하지 않고 최적화를 수행할 수 있는 솔리드를 복구하려고 시도합니다. Repair 노드는 새 솔리드 객체를 반환합니다.
+`Solid.Repair` attempts to repair solids which have invalid geometry, as well as potentially performing optimizations. `Solid.Repair` will return a new solid object.
+
 이 노드는 가져오거나 변환된 형상에서 작업을 수행하는 중 오류가 발생하는 경우에 유용합니다.
 
-예를 들어, **Revit***과 같은 호스트 컨텍스트 또는 **.SAT** 파일에서 데이터를 가져오는데 예기치 않게 부울 또는 자르기에 실패하는 경우 실패의 원인이 된 *잘못된 형상*을 정리하는 복구 작업을 알게 될 수 있습니다.
+In the example below, `Solid.Repair` is used to repair geometry from an **.SAT** file. The geometry in the file fails to boolean or trim, and `Solid.Repair` cleans up any *invalid geometry* that is causing the failure.
 
-일반적으로 이 기능은 Dynamo에서 작성하는 형상에 대해 사용할 필요는 없으며 외부 소스의 형상에만 사용해야 합니다. 그렇지 않은 경우에는 Dynamo 팀 github에 버그를 보고하십시오.
+In general, you should not need to use this functionality on geometry you create in Dynamo, only on geometry from external sources. If you find that is not the case, please report a bug to the Dynamo team Github
 ___
+## 예제 파일
 
-
+![Solid.Repair](./Autodesk.DesignScript.Geometry.Solid.Repair_img.jpg)

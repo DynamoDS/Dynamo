@@ -1312,7 +1312,7 @@ namespace Dynamo.ViewModels
         private static SolidColorBrush warningColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FAA21B"));
         private static SolidColorBrush infoColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#6AC0E7"));
         private static SolidColorBrush noPreviewColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BBBBBB"));
-        private static SolidColorBrush nodeCustomColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#B385F2"));
+        private static SolidColorBrush nodeCustomColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#32BCAD"));
         private static SolidColorBrush nodePreviewGeometryColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BBBBBB"));
         private static SolidColorBrush nodeFrozenOverlayColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BCD3EE"));
         private static SolidColorBrush nodeTransientOverlayColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#D5BCF7"));
