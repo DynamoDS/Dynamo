@@ -263,6 +263,49 @@ namespace DynamoCoreWpfTests
         }
 
         /// <summary>
+        /// The next test validate that the script editor is
+        /// restored from a minimized state, when triggered again.
+        /// </summary>
+        [Test]
+        public void RestoreWindowOnEditorOpenTest()
+        {
+            Open(@"core\python\python_check_output.dyn");
+            ViewModel.HomeSpace.Run();
+
+            var nodeView = NodeViewWithGuid("3bcad14e-d086-4278-9e08-ed2759ef92f3");
+            var nodeModel = nodeView.ViewModel.NodeModel as PythonNodeBase;
+            Assert.NotNull(nodeModel);
+
+            var scriptWindow = EditPythonCode(nodeView, View);
+            Assert.IsTrue(scriptWindow.WindowState == WindowState.Normal);
+
+            //minimize editor
+            scriptWindow.WindowState = WindowState.Minimized;
+            Assert.IsTrue(scriptWindow.WindowState == WindowState.Minimized);
+
+            //reopen editor
+            EditPythonCode(nodeView, View);
+
+            //assert that window was restored
+            Assert.IsTrue(scriptWindow.WindowState == WindowState.Normal);
+
+            //dock editor
+            scriptWindow.DockWindow();
+            Assert.IsTrue(ViewModel.DockedNodeWindows.Contains(nodeModel.GUID.ToString()));
+            Assert.IsFalse(this.View.ExtensionsCollapsed);
+
+            //collapse right sidebar
+            this.View.ToggleExtensionBarCollapseStatus();
+            Assert.IsTrue(this.View.ExtensionsCollapsed);
+
+            //reopen editor
+            EditPythonCode(nodeView, View);
+
+            //assert that docked sidebar was restored
+            Assert.IsFalse(this.View.ExtensionsCollapsed);
+        }
+
+        /// <summary>
         /// The test to validate that the editor window will not retain changes
         /// and revert to the last saved state when the editor is closed without saving.
         /// The test will execute the events:
@@ -593,7 +636,7 @@ namespace DynamoCoreWpfTests
 
             editMenuItem.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             DispatcherUtil.DoEvents();
-            return window.GetChildrenWindowsOfType<ScriptEditorWindow>().First();
+            return window.GetChildrenWindowsOfType<ScriptEditorWindow>().FirstOrDefault();
         }
 
         private static void SetTextEditorText(ScriptEditorWindow view,string code)

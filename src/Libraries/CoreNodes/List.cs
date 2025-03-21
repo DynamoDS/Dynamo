@@ -526,6 +526,174 @@ namespace DSCore
         }
 
         /// <summary>
+        ///     This node clusters elements in a list based on the adjacency of their indices and the similarity of their values.
+        ///     It can handle list of numbers as well as list of strings.
+        ///     The boolean input allows the user to specify whether adjacency should be considered when grouping the elements.
+        ///     The tolerance input allows the user to specify the threshold value for grouping similar elements. In case of integers, the tolerance value is the difference between the two integers.
+        ///     And in case of strings, the tolerance value is the number of characters that can be different between the two strings.
+        /// </summary>
+        /// <param name="list">List of items to group as sublists based on adjacency and similarity</param>
+        /// <param name="tolerance">Threshold value for grouping similar items</param>
+        /// <param name="considerAdjacency">Boolean value to control if the node should consider adjacency or not.</param>
+        /// <returns name="groupedValues">list of sublists with items grouped by similar values</returns>
+        /// <returns name="groupedIndices">list of sublists containing the original indices of grouped values</returns>
+        /// <search>list;group;similar;adjacent;adjacency;groupbyadjacency;groupadjacentitems;groupsimilaritems;cluster;tolerance</search>
+        [MultiReturn(new[] { "groupedValues", "groupedIndices" })]
+        [IsVisibleInDynamoLibrary(true)]
+        public static Dictionary<string, object> GroupBySimilarity(IList list, double tolerance = 0, bool considerAdjacency = true)
+        {
+            // Validate input
+            if (list == null)
+                throw new ArgumentException("Need at least one item in the list of items.", nameof(list));
+            if(list.Count == 0)
+                return new Dictionary<string, object>
+                {
+                    { "groupedValues", new List<object>() },
+                    { "groupedIndices", new List<object>() }
+                };
+
+            //reset tolerance to 0 if it is negative
+            tolerance = tolerance < 0 ? 0 : tolerance;
+
+
+            if (list.Count == 1)
+            {
+                var singleItemResult = new List<object>(new List<object> { list[0] });
+                return new Dictionary<string, object>
+                {
+                    { "groupedValues", singleItemResult },
+                    { "groupedIndices",  new List<object>(new List<object> { 0 })}
+                };
+            }
+
+            var result = new List<object>();
+            var idxResult = new List<object>();
+            var currentGroup = new List<object> { list[0] };
+
+            if (considerAdjacency)
+            {
+                var start = 0;
+                for (int i = 1; i < list.Count; i++)
+                {
+                    if (AreItemsSimilar(list[i - 1], list[i], tolerance))
+                    {
+                        currentGroup.Add(list[i]);
+                    }
+                    else
+                    {
+                        result.Add(currentGroup);
+                        idxResult.Add(Enumerable.Range(start, currentGroup.Count).ToList());
+                        currentGroup = new List<object> { list[i] };
+                        start = i;
+                    }
+                }
+                result.Add(currentGroup);
+                idxResult.Add(Enumerable.Range(start, currentGroup.Count).ToList());
+            }
+            else
+            {
+                var groupedItems = new List<List<object>>();
+                var itemGroups = new List<object>();
+                var indexGroups = new List<List<object>>();
+
+                for (int i = 0; i < list.Count; i++)
+                {
+                    var item = list[i];
+                    bool added = false;
+                    for (int j = 0; j < itemGroups.Count; j++)
+                    {
+                        if (AreItemsSimilar(itemGroups[j], item, tolerance))
+                        {
+                            groupedItems[j].Add(item);
+                            indexGroups[j].Add(i);
+                            added = true;
+                            break;
+                        }
+                    }
+
+                    if (!added)
+                    {
+                        itemGroups.Add(item);
+                        groupedItems.Add(new List<object> { item });
+                        indexGroups.Add(new List<object> { i });
+                    }
+                }
+
+                foreach (var group in groupedItems)
+                {
+                    result.Add(group);
+                }
+
+                foreach (var group in indexGroups)
+                {
+                    idxResult.Add(group);
+                }
+            }
+
+            return new Dictionary<string, object>
+            {
+                { "groupedValues", result },
+                { "groupedIndices", idxResult }
+            };
+        }
+
+        private static bool AreItemsSimilar(object item1, object item2, double tolerance)
+        {
+            if (item1 is string str1 && item2 is string str2)
+            {
+                tolerance = Math.Round(tolerance);
+                if (tolerance > 5)
+                    throw new ArgumentException("Tolerance value for string comparison cannot be greater than 5.", nameof(tolerance));
+                return LevenshteinDistance(str1, str2) <= tolerance;
+            }
+            else if (item1 is IComparable comp1 && item2 is IComparable comp2)
+            {
+                try
+                {
+                    return Math.Abs(Convert.ToDouble(comp1) - Convert.ToDouble(comp2)) <= tolerance;
+                }
+                catch
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return Object.Equals(item1, item2);
+            }
+        }
+        /// <summary>
+        /// Levenshtein Distance is the algorithm used to get the distance between 2 strings
+        /// | <see href="https://gist.github.com/Davidblkx/e12ab0bb2aff7fd8072632b396538560">Source</see>
+        /// </summary>
+        private static int LevenshteinDistance(string a, string b)
+        {
+            if (string.IsNullOrEmpty(a)) return b.Length;
+            if (string.IsNullOrEmpty(b)) return a.Length;
+
+            int lenA = a.Length;
+            int lenB = b.Length;
+            var costs = new int[lenB + 1];
+
+            for (int j = 0; j <= lenB; j++)
+                costs[j] = j;
+
+            for (int i = 1; i <= lenA; i++)
+            {
+                int prevCost = costs[0];
+                costs[0] = i;
+                for (int j = 1; j <= lenB; j++)
+                {
+                    int currentCost = costs[j];
+                    costs[j] = (int)Math.Min(Math.Min(costs[j - 1] + 1, costs[j] + 1), prevCost + (a[i - 1] == b[j - 1] ? 0 : 1));
+                    prevCost = currentCost;
+                }
+            }
+
+            return costs[lenB];
+        }
+
+        /// <summary>
         ///     Adds an item to the beginning of a list.
         /// </summary>
         /// <param name="item">Item to be added. Item could be an object or a list.</param>

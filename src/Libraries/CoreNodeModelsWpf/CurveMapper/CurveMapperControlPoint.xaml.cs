@@ -1,4 +1,5 @@
 using CoreNodeModels;
+using Dynamo.Wpf.Properties;
 using Newtonsoft.Json;
 using System;
 using System.ComponentModel;
@@ -46,7 +47,7 @@ namespace Dynamo.Wpf.CurveMapper
                                  (1 - (controlPointData.Y / CanvasSize)) *
                                  (curveMapperNodeModel.MaxLimitY - curveMapperNodeModel.MinLimitY);
 
-                return $"Coordinates: ({scaledX:F2}, {scaledY:F2})";
+                return $"{CoreNodeModelWpfResources.CurveMapperControlPointCoordinatesLabel}: ({scaledX:F2}, {scaledY:F2})";
             }
         }
 

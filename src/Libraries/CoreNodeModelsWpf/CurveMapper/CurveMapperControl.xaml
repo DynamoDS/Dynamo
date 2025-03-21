@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             xmlns:resx="clr-namespace:Dynamo.Wpf.Properties"
              Width="310"
              Height="340"
              MinWidth="310"
@@ -145,7 +146,7 @@
                        FontSize="14px"
                        FontFamily="{StaticResource ArtifaktElementRegular}"
                        Foreground="{StaticResource DefaultFontColorBrush}"
-                       Text="Curve Types:" />
+                       Text="{x:Static resx:CoreNodeModelWpfResources.CurveMapperCurveTypesLabel}" />
                 <ComboBox Grid.Column="1"
                           MinWidth="160"
                           Margin="10,0,0,0"
@@ -172,9 +173,7 @@
                         UseLayoutRounding="True"
                         Click="LockButton_Click">
                     <Button.ToolTip>
-                        <ToolTip x:Name="lockToolTip"
-                             Content="Click to lock the curve."
-                             Style="{StaticResource GenericToolTipLight}" />
+                        <ToolTip Style="{StaticResource GenericToolTipLight}" />
                     </Button.ToolTip>
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
@@ -216,8 +215,7 @@
                         SnapsToDevicePixels="True"
                         UseLayoutRounding="True">
                     <Button.ToolTip>
-                        <ToolTip Content="Reset the curve."
-                                 Style="{StaticResource GenericToolTipLight}" />
+                        <ToolTip Style="{StaticResource GenericToolTipLight}" />
                     </Button.ToolTip>
                     <Button.Template>
                         <ControlTemplate TargetType="Button">
@@ -254,7 +252,8 @@
            DragDelta="ThumbResizeThumbOnDragDeltaHandler"
            Style="{StaticResource ChartsThumb}">
             <Thumb.ToolTip>
-                <ToolTip Content="x:Static p:CoreNodeModelWpfResources.ResizeThumbToolTip" Style="{StaticResource GenericToolTipLight}" />
+                <ToolTip Content="{x:Static resx:CoreNodeModelWpfResources.ResizeThumbToolTip}"
+                         Style="{StaticResource GenericToolTipLight}" />
             </Thumb.ToolTip>
         </Thumb>
     </Grid>
