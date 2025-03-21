@@ -485,6 +485,10 @@ namespace Dynamo.ViewModels
         // Handler to invoke node Auto Complete
         private void AutoComplete(object parameter)
         {
+            //handle the mouse event to prevent connection from starting
+            MouseButtonEventArgs evArgs = parameter as MouseButtonEventArgs;
+            evArgs.Handled = true;
+
             var wsViewModel = node.WorkspaceViewModel;
             wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
 
@@ -509,6 +513,10 @@ namespace Dynamo.ViewModels
         // Handler to invoke Node autocomplete cluster
         private void AutoCompleteCluster(object parameter)
         {
+            //handle the mouse event to prevent connection from starting
+            MouseButtonEventArgs evArgs = parameter as MouseButtonEventArgs;
+            evArgs.Handled = true;
+
             // Put a C# timer here to test the cluster placement mock
             Stopwatch stopwatch = Stopwatch.StartNew();
             var wsViewModel = node.WorkspaceViewModel;
@@ -590,9 +598,6 @@ namespace Dynamo.ViewModels
 
         private bool CanAutoComplete(object parameter)
         {
-            MouseButtonEventArgs evArgs = parameter as MouseButtonEventArgs;
-            evArgs.Handled = true;
-
             DynamoViewModel dynamoViewModel = node.DynamoViewModel;
             // If user trying to trigger Node AutoComplete from proxy ports, display notification
             // telling user it is not available that way
