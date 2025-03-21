@@ -105,7 +105,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Controls whether the node autocomplete marker is visible
         /// </summary>
-        internal bool NodeAutoCompleteMarkerVisible
+        public bool NodeAutoCompleteMarkerVisible
         {
             get => nodeAutoCompleteMarkerVisible;
             set
