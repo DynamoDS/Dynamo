@@ -86,7 +86,7 @@
     <SolidColorBrush x:Key="NodeWarningColor" Color="{StaticResource YellowOrange500}" />
     <SolidColorBrush x:Key="NodeErrorColor" Color="{StaticResource Red500}" />
     <SolidColorBrush x:Key="NodePreviewColor" Color="#BBBBBB" />
-    <SolidColorBrush x:Key="NodeCustomColor" Color="#B385F2" />
+    <SolidColorBrush x:Key="NodeCustomColor" Color="#32BCAD" />
 
     <SolidColorBrush x:Key="NodeOptionsButtonBackground" Color="#282828" />
     <SolidColorBrush x:Key="NodeDismissedWarningsGlyphForeground" Color="#4B4B4B" />
