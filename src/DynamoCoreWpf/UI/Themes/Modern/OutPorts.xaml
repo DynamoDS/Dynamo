@@ -11,9 +11,9 @@
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoModernDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
-        
+
     <DataTemplate DataType="{x:Type viewModels:OutPortViewModel}">
-        
+
         <!--  Grid that contains the entire port  -->
         <Grid Name="MainGrid"
               Background="Transparent"
@@ -34,11 +34,6 @@
                 </views:HandlingEventTrigger>
             </interactivity:Interaction.Triggers>
 
-            <!--  Bind NodeAutoComplete to double left click  -->
-            <Grid.InputBindings>
-                <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}" MouseAction="LeftDoubleClick" />
-            </Grid.InputBindings>
-
             <Grid.Style>
                 <Style>
                     <Setter Property="Grid.Height" Value="34px" />
@@ -54,8 +49,8 @@
             <!--  Transparent rectangle used for port snapping, overhangs the edge of the port  -->
             <Rectangle Grid.Column="0"
                        x:Name="PortSnapping"
-                       Margin="-25,0,0,0"
-                       Grid.ColumnSpan="7"
+                       Margin="0,0,-25,0"
+                       Grid.ColumnSpan="3"
                        Canvas.ZIndex="1"
                        Fill="Transparent"
                        IsHitTestVisible="{Binding IsHitTestVisible}"
@@ -118,7 +113,7 @@
                     </Style>
                 </Rectangle.Style>
             </Rectangle>
-       
+    
             <!--  Grid containing the Port Name TextBox  -->
             <Grid Name="PortNameGrid"
                   Grid.Column="0"
@@ -157,7 +152,7 @@
                     </Style>
                 </Grid.Style>
             </Grid>
-            
+
             <!--  A semi-transparent border, which displays when the user's mouse moves over the port  -->
             <Border x:Name="BorderHighlightOverlay"
                     Grid.Column="0"
@@ -197,6 +192,35 @@
                     </dynui:DynamoToolTip>
                 </Border.ToolTip>
 
+            </Border>
+
+            <!--  A border, to initiate the node autocomplete command -->
+            <Border x:Name="NodeAutoCompleteMarker"
+                    Grid.Column="2"
+                    Margin="0,0,-18,0"
+                    Cursor="Hand"
+                    CornerRadius="10"
+                    Height="20px"
+                    Width="20px"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Right"
+                    Background="{StaticResource NodeTransientOverlayColor}"
+                    IsHitTestVisible="True"
+                    SnapsToDevicePixels="True"
+                    Visibility="{Binding NodeAutoCompleteMarkerVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                <Label
+                    Name="NodeAutoCompleteMarkerLabel"
+                    FontSize="12"
+                    Width="25"
+                    Height="25"
+                    Margin="-3,-3,0,0"
+                >✨</Label>
+
+                <interactivity:Interaction.Triggers>
+                    <interactivity:EventTrigger EventName="PreviewMouseDown">
+                        <interactivity:InvokeCommandAction Command="{Binding NodeAutoCompleteCommand}" PassEventArgsToCommand="True"/>
+                    </interactivity:EventTrigger>
+                </interactivity:Interaction.Triggers>
             </Border>
 
             <Border x:Name="PortBorderHighlight"
