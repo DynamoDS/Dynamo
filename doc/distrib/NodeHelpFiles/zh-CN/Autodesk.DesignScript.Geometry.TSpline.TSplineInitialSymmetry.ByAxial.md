@@ -1,7 +1,7 @@
 ## 详细
-`TSplineInitialSymmetry.ByAxial` defines if the T-Spline geometry has symmetry along a chosen axis (x, y, z). Symmetry can occur on one, two, or all three axes. Once established at the creation of the T-Spline geometry, symmetry influences all subsequent operations and alterations.
+“TSplineInitialSymmetry.ByAxial”定义 T-Spline 几何图形是否沿所选轴 (x, y, z) 对称。对称可以发生在一个轴、两个轴或全部三个轴上。在创建 T-Spline 几何图形时建立对称后，对称将影响所有后续操作和更改。
 
-In the example below, `TSplineSurface.ByBoxCorners` is used to create a T-Spline surface. Among the inputs of this node, `TSplineInitialSymmetry.ByAxial` is used to define the initial symmetry in the surface. `TSplineTopology.RegularFaces` and `TSplineSurface.ExtrudeFaces` are then used to respectively select and extrude a face of the T-Spline surface. The extrude operation is then mirrored around the symmetry axes defined with the `TSplineInitialSymmetry.ByAxial` node.
+在下面的示例中，“TSplineSurface.ByBoxCorners”用于创建 T-Spline 曲面。在此节点的输入中，“TSplineInitialSymmetry.ByAxial”用于定义曲面中的初始对称。然后，“TSplineTopology.RegularFaces”和“TSplineSurface.ExtrudeFaces”分别用于选择和拉伸 T-Spline 曲面的面。然后，拉伸操作将围绕使用“TSplineInitialSymmetry.ByAxial”节点定义的对称轴进行镜像。
 
 ## 示例文件
 

@@ -1,7 +1,7 @@
-## Aprofundado
-`TSplineInitialSymmetry.ByAxial` defines if the T-Spline geometry has symmetry along a chosen axis (x, y, z). Symmetry can occur on one, two, or all three axes. Once established at the creation of the T-Spline geometry, symmetry influences all subsequent operations and alterations.
+## Em profundidade
+`TSplineInitialSymmetry.ByAxial` define se a geometria da T-Spline tem simetria ao longo de um eixo selecionado (x, y, z). A simetria pode ocorrer em um, dois ou todos os três eixos. Depois de estabelecida na criação da geometria da T-Spline, a simetria influencia todas as operações e alterações subsequentes.
 
-In the example below, `TSplineSurface.ByBoxCorners` is used to create a T-Spline surface. Among the inputs of this node, `TSplineInitialSymmetry.ByAxial` is used to define the initial symmetry in the surface. `TSplineTopology.RegularFaces` and `TSplineSurface.ExtrudeFaces` are then used to respectively select and extrude a face of the T-Spline surface. The extrude operation is then mirrored around the symmetry axes defined with the `TSplineInitialSymmetry.ByAxial` node.
+No exemplo abaixo, `TSplineSurface.ByBoxCorners` é usado para criar uma superfície da T-Spline. Entre as entradas desse nó, `TSplineInitialSymmetry.ByAxial` é usado para definir a simetria inicial na superfície. `TSplineTopology.RegularFaces` e `TSplineSurface.ExtrudeFaces` são usados para selecionar e efetuar a extrusão, respectivamente, de uma face da superfície da T-Spline. Em seguida, a operação de extrusão é espelhada em torno dos eixos de simetria definidos com o nó `TSplineInitialSymmetry.ByAxial`.
 
 ## Arquivo de exemplo
 
