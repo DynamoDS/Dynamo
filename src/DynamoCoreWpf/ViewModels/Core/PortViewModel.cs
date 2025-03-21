@@ -105,7 +105,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Controls whether the node autocomplete marker is visible
         /// </summary>
-        public bool NodeAutoCompleteMarkerVisible
+        internal bool NodeAutoCompleteMarkerVisible
         {
             get => nodeAutoCompleteMarkerVisible;
             set
@@ -152,6 +152,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
         /// IsHitTestVisible property gets a value that declares whether 
         /// a Snapping rectangle can possibly be returned as a hit test result.
         /// When FirstActiveConnector is not null, Snapping rectangle handles click events.
