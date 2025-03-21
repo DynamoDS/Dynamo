@@ -490,14 +490,6 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            var existingPort = wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel;
-            if (existingPort != null)
-            {
-                existingPort.Highlight = Visibility.Collapsed;
-            }
-
-            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
-
             // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
             if (inputPortDisconnectedByConnectCommand)
             {
@@ -512,6 +504,13 @@ namespace Dynamo.ViewModels
                 return;
             }
 
+            var existingPort = wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel;
+            if (existingPort != null)
+            {
+                existingPort.Highlight = Visibility.Collapsed;
+            }
+
+            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
 
             wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
         }
