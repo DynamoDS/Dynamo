@@ -545,7 +545,7 @@ namespace Dynamo.Controls
                 return;
             }
 
-            if (ViewModel.NodeModel is not CodeBlockNodeModel && ViewModel.NodeModel is not CoreNodeModels.Watch)
+            if (ViewModel.NodeModel is not CodeBlockNodeModel && ViewModel.NodeModel is not CoreNodeModels.Watch && ViewModel.NodeModel is not PythonNodeModels.PythonNode && ViewModel.NodeModel is not PythonNodeModels.PythonStringNode)
             {
                 var ports = new List<PortViewModel>(ViewModel.InPorts);
                 ports.AddRange(ViewModel.OutPorts);
