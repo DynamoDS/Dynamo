@@ -559,6 +559,18 @@ namespace Dynamo.Controls
             }
         }
 
+        private void TryHideAutoCompleteMaker()
+        {
+            //hide the node autocomplete marker if mouse leaves the node
+            var ports = new List<PortViewModel>(ViewModel.InPorts);
+            ports.AddRange(ViewModel.OutPorts);
+
+            foreach (PortViewModel port in ports)
+            {
+                port.NodeAutoCompleteMarkerVisible = false;
+            }
+        }
+
         private bool IsPreviewDisabled()
         {
             // True if preview bubbles are turned off globally 
@@ -589,13 +601,7 @@ namespace Dynamo.Controls
             ViewModel.ZIndex = oldZIndex;
 
             //hide the node autocomplete marker if mouse leaves the node
-            var ports = new List<PortViewModel>(ViewModel.InPorts);
-            ports.AddRange(ViewModel.OutPorts);
-
-            foreach (PortViewModel port in ports)
-            {
-                port.NodeAutoCompleteMarkerVisible = false;
-            }
+           TryHideAutoCompleteMaker();
             
             //Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
             if (ViewModel.NodeModel != null && ViewModel.NodeModel is CoreNodeModels.Watch) return;
@@ -724,6 +730,8 @@ namespace Dynamo.Controls
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Hidden);
             }
+
+            TryHideAutoCompleteMaker();
         }
 
         /// <summary>
