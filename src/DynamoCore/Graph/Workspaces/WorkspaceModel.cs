@@ -290,6 +290,7 @@ namespace Dynamo.Graph.Workspaces
         private Dictionary<Guid, DependencyInfo> localDefinitionsDictionary = new Dictionary<Guid, DependencyInfo>();
         private Dictionary<Guid, DependencyInfo> externalFilesDictionary = new Dictionary<Guid, DependencyInfo>();
         private readonly string customNodeExtension = ".dyf";
+        private readonly string pythonNodeNamespace = "PythonNodeModels.PythonNode";
 
         /// <summary>
         /// Whether or not to delay graph execution.
@@ -803,6 +804,18 @@ namespace Dynamo.Graph.Workspaces
             foreach (var node in Nodes)
             {
                 var collected = GetNodePackage(node);
+
+                // Handle python nodes explicitly and use the collected node package for those node type.
+                if (node.ToString().Equals(pythonNodeNamespace) && collected != null)
+                {
+                    if (!packageDependencies.ContainsKey(collected))
+                    {
+                        packageDependencies[collected] = new PackageDependencyInfo(collected);
+                    }
+                    packageDependencies[collected].AddDependent(node.GUID);
+                    packageDependencies[collected].State = PackageDependencyState.Loaded;
+                    continue;
+                }
 
                 if (nodePackageDictionary.ContainsKey(node.GUID))
                 {

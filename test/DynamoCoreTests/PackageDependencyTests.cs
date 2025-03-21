@@ -130,12 +130,18 @@ namespace Dynamo.Tests
             Assert.IsNotNull(pyNode);
             Assert.AreEqual(pyNode.EngineName, PythonEngineManager.CPython3EngineName);
             Assert.AreEqual(PythonEngineManager.Instance.AvailableEngines.Count, 2);
+
+            currentws.ForceComputeWorkspaceReferences = true;
+            var packageDependencies = currentws.NodeLibraryDependencies;
+            // Since Cpython is inbuilt and not loaded as a package, it shouldn't show up in package dependencies.
+            Assert.AreEqual(0, packageDependencies.Count);
+
+            // Change engine to PythonNet3, which is loaded as a package.
             UpdatePythonEngineAndRun(pyNode, "PythonNet3");
             currentws.ForceComputeWorkspaceReferences = true;
 
-
             //assert that python engine imported from a package gets added to NodeLibraryDependencies
-            var packageDependencies = currentws.NodeLibraryDependencies;
+            packageDependencies = currentws.NodeLibraryDependencies;
             Assert.AreEqual(1, packageDependencies.Count);
             var package = packageDependencies.First();
             Assert.AreEqual(new PackageDependencyInfo("TestCP311", new Version("1.0.8")), package);
