@@ -2226,7 +2226,7 @@ Chcete odinstalovat verzi {1}? Restartujte {2}, aby se dokončila odinstalace, a
     <value>Nastavení zálohy</value>
   </data>
   <data name="PreferencesViewVisualSettingsGroupStyles" xml:space="preserve">
-    <value>Styly skupiny</value>
+    <value>Skupiny</value>
   </data>
   <data name="PreferencesViewVisualSettingsRenderPrecision" xml:space="preserve">
     <value>Přesnost rendrování</value>
@@ -3756,6 +3756,12 @@ Chcete-li vytvořit z tohoto souboru novou šablonu, uložte ho do jiné složky
   </data>
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
     <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
+  </data>
+  <data name="PreferencesViewGroupStylesHeader" xml:space="preserve">
+    <value>Styly skupiny</value>
+  </data>
+  <data name="PreferencesViewShowDefaultGroupDescription" xml:space="preserve">
+    <value>Show default group description</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

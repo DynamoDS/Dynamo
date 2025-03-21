@@ -625,4 +625,7 @@
     <value>如需數值的格式指定字，請參閱延伸的節點說明以取得更多資訊。
 預設值: G</value>
   </data>
+  <data name="CurveMapperDescription" xml:space="preserve">
+    <value>The Curve Mapper Node redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+  </data>
 </root>

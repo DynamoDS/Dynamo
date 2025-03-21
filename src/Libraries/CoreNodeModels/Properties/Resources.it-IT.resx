@@ -625,4 +625,7 @@ Nei workflow di Progettazione generativa, questo nodo deve essere utilizzato per
     <value>Identificatore di formato per i valori numerici. Per ulteriori informazioni, vedere la Guida estesa del nodo.
 Valore di default: G</value>
   </data>
+  <data name="CurveMapperDescription" xml:space="preserve">
+    <value>The Curve Mapper Node redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+  </data>
 </root>

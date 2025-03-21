@@ -625,4 +625,7 @@
     <value>数値の書式指定子の詳細については、拡張ノードのヘルプを参照してください。
 既定値: G</value>
   </data>
+  <data name="CurveMapperDescription" xml:space="preserve">
+    <value>The Curve Mapper Node redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+  </data>
 </root>

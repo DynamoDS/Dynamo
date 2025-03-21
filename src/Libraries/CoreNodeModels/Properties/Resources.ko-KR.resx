@@ -625,4 +625,7 @@
     <value>숫자 값에 대한 형식 지정자에 대한 자세한 내용은 확장 노드 도움말을 참조하십시오.
 기본값: G</value>
   </data>
+  <data name="CurveMapperDescription" xml:space="preserve">
+    <value>The Curve Mapper Node redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+  </data>
 </root>

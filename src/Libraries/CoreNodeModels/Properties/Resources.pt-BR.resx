@@ -625,4 +625,7 @@ Nos fluxos de trabalho do Projeto generativo, esse nó deve ser usado para contr
     <value>Especificador de formato para valores numéricos, consulte a ajuda do nó estendido para obter mais informações.
 valor padrão: G</value>
   </data>
+  <data name="CurveMapperDescription" xml:space="preserve">
+    <value>The Curve Mapper Node redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+  </data>
 </root>

@@ -13,40 +13,26 @@
 
 <head>
     
-    <meta charset="UTF-8" />
+    <meta charset="utf-8" />
 </head>
 
-<style>
-body {
-    color: white;
-    font-size: 14px;
-    font-family: "Artifakt Element";
-    src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
-    padding: 1%;
-}
-
-a {
-    color: lightgray;
-    cursor: pointer;
-    background-color: transparent;
-}
-</style>
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
 
 <!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
 <!-- and custom styling in Dynamo sidepanel. -->
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
-<h2>List indices must be numeric</h2>
-<p> This error message indicates that you are trying to access an element in a list by using an index value that is not an integer (i.e., a whole number). </p>
+<h2>Список индексов должен быть числовым</h2>
+<p> Это сообщение об ошибке появляется при попытке получить доступ к элементу в списке с помощью индекса, значение которого не является целым числом. </p>
 
-<p>Starting with Dynamo 2.0, lists are collections of values where each value in the list can be accessed using only integer index values (index values range from 0 to list size minus 1). </p>
+<p>После выхода версии Dynamo 2.0 списки представляют собой наборы значений, доступ к которым возможен только с помощью целочисленных значений индексов (с диапазоном значений индексов от 0 до размера списка минус 1). </p>
 
-<p>Read more about differences between Dynamo 1.X and Dynamo 2.X (including how accessing elements in a list has changed) here. </p>
+<p>Подробнее о различиях между Dynamo 1.X и Dynamo 2.X (включая сведения об изменении правил доступа к элементам в списке) можно узнать здесь. </p>
 
-<h4>How to fix</h4>
-<p>Make sure the index value you use to access list elements is strictly an integer (e.g., 2 and not “2” or 2.0). </p>
+<h4>Устранение проблемы</h4>
+<p>Убедитесь, что значение индекса, которое используется для доступа к элементам списка, является целым числом (например, 2, а не &quot;2&quot; или 2,0). </p>
 
-<h4>More information</h4>
+<h4>Дополнительные сведения</h4>
 <p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=list%20indices%20must%20be%20numeric"><span> posts on the Dynamobim forum discussing "<strong>list indices must be numeric</strong>"</span></a>.</p>
 
 </body>
