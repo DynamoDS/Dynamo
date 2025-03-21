@@ -526,11 +526,7 @@ namespace DSCore
         }
 
         /// <summary>
-        ///     This node clusters elements in a list based on the adjacency of their indices and the similarity of their values.
-        ///     It can handle list of numbers as well as list of strings.
-        ///     The boolean input allows the user to specify whether adjacency should be considered when grouping the elements.
-        ///     The tolerance input allows the user to specify the threshold value for grouping similar elements. In case of integers, the tolerance value is the difference between the two integers.
-        ///     And in case of strings, the tolerance value is the number of characters that can be different between the two strings.
+        ///     Clusters list elements based on the adjacency of their indices and the similarity of their values
         /// </summary>
         /// <param name="list">List of items to group as sublists based on adjacency and similarity</param>
         /// <param name="tolerance">Threshold value for grouping similar items</param>
