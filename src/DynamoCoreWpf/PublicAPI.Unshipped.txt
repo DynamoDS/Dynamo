@@ -2762,6 +2762,8 @@ Dynamo.ViewModels.PortViewModel.ConnectCommand.get -> Dynamo.UI.Commands.Delegat
 Dynamo.ViewModels.PortViewModel.EventType.get -> Dynamo.Graph.Nodes.PortEventType
 Dynamo.ViewModels.PortViewModel.EventType.set -> void
 Dynamo.ViewModels.PortViewModel.Height.get -> double
+Dynamo.ViewModels.PortViewModel.Highlight.get -> System.Windows.Visibility
+Dynamo.ViewModels.PortViewModel.Highlight.set -> void
 Dynamo.ViewModels.PortViewModel.IsConnected.get -> bool
 Dynamo.ViewModels.PortViewModel.IsEnabled.get -> bool
 Dynamo.ViewModels.PortViewModel.IsHitTestVisible.get -> bool

@@ -1,5 +1,8 @@
-## ParseJSON: ドキュメント
-このドキュメント ファイルは、NodeDocumentationMarkdownGenerator (Version=2.14.0.3986、Culture=neutral、PublicKeyToken=null)によって自動的に生成されています。
+## 詳細
+`Data.ParseJSON` converts values from JSON format. JSON file format is a convention for structuring data you want to store. In fact, Dynamo's own file format is structured as JSON.
 
-ノードにドキュメントを追加する詳細情報については、https://github.com/DynamoDS/Dynamo/wiki/Create-and-Add-Custom-Documentation-to-Nodes を参照してください
+In the example below, a dictionary (in JSON formatting) is deserialized into a Dynamo dictionary.
+___
+## サンプル ファイル
 
+![Data.ParseJSON](./DSCore.Data.ParseJSON_img.jpg)

@@ -1,10 +1,12 @@
 ## In profondità
-Repair tenterà di riparare solidi con geometria non valida, nonché di eseguire potenzialmente ottimizzazioni. Il nodo Repair restituirà un nuovo oggetto solido.
+`Solid.Repair` attempts to repair solids which have invalid geometry, as well as potentially performing optimizations. `Solid.Repair` will return a new solid object.
+
 Questo nodo è utile quando si verificano errori durante l'esecuzione di operazioni su geometria importata o convertita.
 
-Ad esempio, se si importano dati da un contesto host come **Revit** o da un file **.SAT** e si rileva che in maniera imprevista non riesce l'operazione booleana o di ritaglio, è possibile che un'operazione di correzione corregga qualsiasi *geometria non valida* che causa l'errore.
+In the example below, `Solid.Repair` is used to repair geometry from an **.SAT** file. The geometry in the file fails to boolean or trim, and `Solid.Repair` cleans up any *invalid geometry* that is causing the failure.
 
-In generale, non è necessario utilizzare questa funzionalità sulla geometria creata in Dynamo, solo sulla geometria proveniente da origini esterne. Se non è così, segnalare un bug al team di Dynamo su github.
+In general, you should not need to use this functionality on geometry you create in Dynamo, only on geometry from external sources. If you find that is not the case, please report a bug to the Dynamo team Github
 ___
+## File di esempio
 
-
+![Solid.Repair](./Autodesk.DesignScript.Geometry.Solid.Repair_img.jpg)

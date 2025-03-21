@@ -1,10 +1,12 @@
 ## 詳細
-Repair は、無効なジオメトリを持つソリッドの修復を試みます。最適化を実行する可能性もあります。この修復のノードは新しいソリッド オブジェクトを返します。
+`Solid.Repair` attempts to repair solids which have invalid geometry, as well as potentially performing optimizations. `Solid.Repair` will return a new solid object.
+
 このノードは、読み込まれたジオメトリまたは変換されたジオメトリの操作でエラーが発生した場合に役に立ちます。
 
-たとえば、**Revit** などのホスト コンテキストや **.SAT** ファイルからデータを読み込み、ブール演算やトリムが予期せずに失敗した場合に、修復操作によってエラーの原因となっている *無効なジオメトリ* がクリーンアップされる場合があります。
+In the example below, `Solid.Repair` is used to repair geometry from an **.SAT** file. The geometry in the file fails to boolean or trim, and `Solid.Repair` cleans up any *invalid geometry* that is causing the failure.
 
-一般的に、この機能は外部ソースから読み込んだジオメトリに対してのみ使用し、Dynamo で作成したジオメトリに使用する必要はありません。Dynamo で作成したジオメトリでエラーが発生した場合は、Dynamo チームの GitHub にバグをレポートしてください。
+In general, you should not need to use this functionality on geometry you create in Dynamo, only on geometry from external sources. If you find that is not the case, please report a bug to the Dynamo team Github
 ___
+## サンプル ファイル
 
-
+![Solid.Repair](./Autodesk.DesignScript.Geometry.Solid.Repair_img.jpg)

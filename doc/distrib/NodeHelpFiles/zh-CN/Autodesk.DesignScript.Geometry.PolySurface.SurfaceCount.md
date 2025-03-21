@@ -1,7 +1,8 @@
 ## 详细
-“SurfaceCount”会将多重曲面中的曲面数返回为一个整数。在下例中，拉伸的六边形返回计数 8。该节点将单个多重曲面作为输入，因此在计数之前需要连接曲面集。
+`PolySurface.SurfaceCount` returns the number of surface within the given PolySurface object.
+
+In the example below, a PolySurface is created from a cuboid and the surface count is provided with `PolySurface.SurfaceCount`.
 ___
 ## 示例文件
 
-
-
+![PolySurface.SurfaceCount](./Autodesk.DesignScript.Geometry.PolySurface.SurfaceCount_img.jpg)

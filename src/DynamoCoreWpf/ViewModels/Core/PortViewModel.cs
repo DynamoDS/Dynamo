@@ -1,10 +1,13 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
@@ -31,6 +34,8 @@ namespace Dynamo.ViewModels
         protected static readonly SolidColorBrush PortBorderBrushColorDefault = new SolidColorBrush(Color.FromRgb(161, 161, 161));
         private SolidColorBrush portBorderBrushColor = PortBorderBrushColorDefault;
         private SolidColorBrush portBackgroundColor = PortBackgroundColorDefault;
+        private Visibility highlight = Visibility.Collapsed;
+        
         /// <summary>
         /// Port model.
         /// </summary>
@@ -190,6 +195,19 @@ namespace Dynamo.ViewModels
             {
                 portBorderBrushColor = value;
                 RaisePropertyChanged(nameof(PortBorderBrushColor));
+            }
+        }
+
+        /// <summary>
+        /// Highlight or clear highlight of the port.
+        /// </summary>
+        public Visibility Highlight
+        {
+            get => highlight;
+            set
+            {
+                highlight = value;
+                RaisePropertyChanged(nameof(Highlight));
             }
         }
 
@@ -494,11 +512,14 @@ namespace Dynamo.ViewModels
         // Handler to invoke node Auto Complete
         private void AutoComplete(object parameter)
         {
-            var wsViewModel = node.WorkspaceViewModel;
-            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
+            var wsViewModel = node?.WorkspaceViewModel;
+            if (wsViewModel is null || wsViewModel.NodeAutoCompleteSearchViewModel is null)
+            {
+                return;
+            }
 
             // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
-            if (this.inputPortDisconnectedByConnectCommand)
+            if (inputPortDisconnectedByConnectCommand)
             {
                 wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
             }
@@ -511,6 +532,13 @@ namespace Dynamo.ViewModels
                 return;
             }
 
+            var existingPort = wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel;
+            if (existingPort != null)
+            {
+                existingPort.Highlight = Visibility.Collapsed;
+            }
+
+            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
 
             wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
         }
@@ -518,8 +546,6 @@ namespace Dynamo.ViewModels
         // Handler to invoke Node autocomplete cluster
         private void AutoCompleteCluster(object parameter)
         {
-            // Put a C# timer here to test the cluster placement mock
-            Stopwatch stopwatch = Stopwatch.StartNew();
             var wsViewModel = node.WorkspaceViewModel;
             wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
 
@@ -536,50 +562,120 @@ namespace Dynamo.ViewModels
             {
                 return;
             }
-            
+
+            // CreateMockCluster();
+
+            try
+            {
+                MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
+                NodeViewModel targetNodeFromCluster = null;
+
+                // Process the results and display the preview of the cluster with the highest confidence level
+                var ClusterResultItem = results.Results.FirstOrDefault();
+                {
+                    var index = 0;
+                    // A map of the cluster result v.s. actual nodes created for node connection look up
+                    var clusterMapping = new Dictionary<string, NodeViewModel>();
+                    // Convert topology to actual cluster
+                    ClusterResultItem.Topology.Nodes.ToList().ForEach(node =>
+                    {
+                        // Retreive assembly name and node full name from type.id.
+                        var typeInfo = wsViewModel.NodeAutoCompleteSearchViewModel.GetInfoFromTypeId(node.Type.Id);
+                        wsViewModel.DynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, 0, 0, false, false));
+                        var nodeFromCluster = wsViewModel.Nodes.LastOrDefault();
+                        nodeFromCluster.IsTransient = true;
+                        clusterMapping.Add(node.Id, nodeFromCluster);
+                        // Add the node to the selection to prepare for autolayout later
+                        if (index == ClusterResultItem.EntryNodeIndex)
+                        {
+                            // This is the target node from cluster that should connect to the query node
+                            targetNodeFromCluster = nodeFromCluster;
+                        }
+                        index++;
+                    });
+
+                    ClusterResultItem.Topology.Connections.ToList().ForEach(connection =>
+                    {
+                        // Connect the nodes
+                        var sourceNode = clusterMapping[connection.StartNode.NodeId];
+                        var targetNode = clusterMapping[connection.EndNode.NodeId];
+                        // The port index is 1- based (currently a hack and not expected from service)
+                        var sourcePort = sourceNode.OutPorts.FirstOrDefault(p => p.PortModel.Index == connection.StartNode.PortIndex - 1);
+                        var targetPort = targetNode.InPorts.FirstOrDefault(p => p.PortModel.Index == connection.EndNode.PortIndex - 1);
+                        var commands = new List<DynamoModel.ModelBasedRecordableCommand>
+                        {
+                            new DynamoModel.MakeConnectionCommand(sourceNode.Id.ToString(), connection.StartNode.PortIndex - 1, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
+                            new DynamoModel.MakeConnectionCommand(targetNode.Id.ToString(), connection.EndNode.PortIndex - 1, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
+                        };
+                        commands.ForEach(c =>
+                        {
+                            try
+                            {
+                                wsViewModel.DynamoViewModel.Model.ExecuteCommand(c);
+                            }
+                            catch (Exception) { }
+                        });
+                    });
+
+                    // Connect the cluster to the original node and port
+                    var finalCommands = new List<DynamoModel.ModelBasedRecordableCommand>
+                    {
+                        new DynamoModel.MakeConnectionCommand(node.Id.ToString(), 0, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
+                        new DynamoModel.MakeConnectionCommand(targetNodeFromCluster?.Id.ToString(), ClusterResultItem.EntryNodeInPort, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
+                    };
+                    finalCommands.ForEach(c =>
+                    {
+                        try
+                        {
+                            wsViewModel.DynamoViewModel.Model.ExecuteCommand(c);
+                        }
+                        catch (Exception) { }
+                    });
+
+                    // AutoLayout should be called after all nodes are connected
+                    foreach(var node in clusterMapping.Values)
+                    {
+                        wsViewModel.DynamoViewModel.Model.AddToSelection(node.NodeModel);
+                    }
+                    wsViewModel.Model.DoGraphAutoLayout(false, true, node.Id);
+                }
+
+                // Display the cluster info in the right side panel
+                // wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
+            }
+            catch (Exception)
+            {
+                // Log the exception and show a notification to the user
+            }
+        }
+
+        /// <summary>
+        /// Create a mock cluster. This is test only and should be removed when Cluster AutoComplete is in production
+        /// </summary>
+        private void CreateMockCluster()
+        {
+            // Put a C# timer here to test the cluster placement mock
+            Stopwatch stopwatch = Stopwatch.StartNew();
+
             // Create mock nodes, currently Watch nodes (to avoid potential memory leak from Python Editor), and connect them to the input port
-            var targetNodeSearchEle = wsViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.ToList()[5];
-            targetNodeSearchEle.CreateAndConnectCommand.Execute(wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel);
+            var targetNodeSearchEle = node.WorkspaceViewModel.NodeAutoCompleteSearchViewModel.DefaultResults.ToList()[5];
+            targetNodeSearchEle.CreateAndConnectCommand.Execute(node.WorkspaceViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.PortModel);
 
             var sizeOfMockCluster = 3;
             var n = 1;
             while (n < sizeOfMockCluster)
             {
                 // Get the last node and connect a new node to it
-                var node1 = wsViewModel.Nodes.LastOrDefault();
+                var node1 = node.WorkspaceViewModel.Nodes.LastOrDefault();
                 node1.IsTransient = true;
                 targetNodeSearchEle.CreateAndConnectCommand.Execute(node1.InPorts.FirstOrDefault().PortModel);
                 n++;
             }
 
-            wsViewModel.Nodes.LastOrDefault().IsTransient = true;
+            node.WorkspaceViewModel.Nodes.LastOrDefault().IsTransient = true;
 
             stopwatch.Stop(); // Stop the stopwatch
-            wsViewModel.DynamoViewModel.Model.Logger.Log($"Cluster Placement Execution Time: {stopwatch.ElapsedMilliseconds} ms");
-
-            // cluster info display in right side panel
-            if (wsViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled)
-            {
-                /*try
-                {
-                    MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
-
-                    // Process the results and display the preview of the cluster with the highest confidence level
-                    // Leverage some API here to convert topology to actual cluster
-                    results.Results.FirstOrDefault().Topology.Nodes.ToList().ForEach(node =>
-                    {
-                        // nothing for now
-                    });
-
-                    // Display the cluster info in the right side panel
-                    // wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
-                }
-                catch (Exception e)
-                {
-                    // Log the exception and show a notification to the user
-                }*/
-               wsViewModel.OnRequestDNAAutocompleteBar(ShowHideFlags.Show);
-            }
+            node.WorkspaceViewModel.DynamoViewModel.Model.Logger.Log($"Cluster Placement Execution Time: {stopwatch.ElapsedMilliseconds} ms");
         }
 
         private void NodePortContextMenu(object obj)

@@ -3,4 +3,4 @@ Węzeł `Mesh.Scale` (scaleFactor) skaluje siatkę o wartość wejściową równ
 
 ## Plik przykładowy
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.Scale(mesh.scaleFactor)_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.Scale(mesh,%20scaleFactor)_img.jpg)
