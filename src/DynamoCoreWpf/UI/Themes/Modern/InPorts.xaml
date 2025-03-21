@@ -216,12 +216,13 @@
                     IsHitTestVisible="True"
                     SnapsToDevicePixels="True"
                     Visibility="{Binding NodeAutoCompleteMarkerVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                <TextBlock
-                    TextAlignment="Center"
+                <Label
+                    Name="NodeAutoCompleteMarkerLabel"
                     FontSize="12"
-                    VerticalAlignment="Center"
-                    HorizontalAlignment="Center"
-                >✨</TextBlock>
+                    Width="25"
+                    Height="25"
+                    Margin="-3,-3,0,0"
+                >✨</Label>
 
                 <interactivity:Interaction.Triggers>
                     <interactivity:EventTrigger EventName="PreviewMouseDown">
