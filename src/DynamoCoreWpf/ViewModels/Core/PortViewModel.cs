@@ -31,6 +31,8 @@ namespace Dynamo.ViewModels
         protected static readonly SolidColorBrush PortBorderBrushColorDefault = new SolidColorBrush(Color.FromRgb(161, 161, 161));
         private SolidColorBrush portBorderBrushColor = PortBorderBrushColorDefault;
         private SolidColorBrush portBackgroundColor = PortBackgroundColorDefault;
+        private Visibility highlight = Visibility.Collapsed;
+        
         /// <summary>
         /// Port model.
         /// </summary>
@@ -190,6 +192,19 @@ namespace Dynamo.ViewModels
             {
                 portBorderBrushColor = value;
                 RaisePropertyChanged(nameof(PortBorderBrushColor));
+            }
+        }
+
+        /// <summary>
+        /// Highlight or clear highlight of the port.
+        /// </summary>
+        public Visibility Highlight
+        {
+            get => highlight;
+            set
+            {
+                highlight = value;
+                RaisePropertyChanged(nameof(Highlight));
             }
         }
 
@@ -469,11 +484,14 @@ namespace Dynamo.ViewModels
         // Handler to invoke node Auto Complete
         private void AutoComplete(object parameter)
         {
-            var wsViewModel = node.WorkspaceViewModel;
-            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
+            var wsViewModel = node?.WorkspaceViewModel;
+            if (wsViewModel is null || wsViewModel.NodeAutoCompleteSearchViewModel is null)
+            {
+                return;
+            }
 
             // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
-            if (this.inputPortDisconnectedByConnectCommand)
+            if (inputPortDisconnectedByConnectCommand)
             {
                 wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
             }
@@ -486,6 +504,13 @@ namespace Dynamo.ViewModels
                 return;
             }
 
+            var existingPort = wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel;
+            if (existingPort != null)
+            {
+                existingPort.Highlight = Visibility.Collapsed;
+            }
+
+            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
 
             wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
         }

@@ -200,6 +200,19 @@
                     CornerRadius="0,11,11,0"
                     IsHitTestVisible="True"
                     SnapsToDevicePixels="True" />
+
+            <Border x:Name="PortBorderHighlight"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="7"
+                    BorderBrush="{StaticResource NodeTransientOverlayColor}"
+                    Height="29px"
+                    Margin="-7,0,0,0"
+                    BorderThickness="3,3,3,3"
+                    CornerRadius="0,11,11,0"
+                    Visibility="{Binding Highlight, UpdateSourceTrigger=PropertyChanged}"
+                    SnapsToDevicePixels="True">
+
+            </Border>
         </Grid>
     </DataTemplate>
 </ResourceDictionary>
