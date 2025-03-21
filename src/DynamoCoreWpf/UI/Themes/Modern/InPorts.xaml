@@ -215,13 +215,6 @@
                     IsHitTestVisible="True"
                     SnapsToDevicePixels="True"
                     Visibility="{Binding NodeAutoCompleteMarkerVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-
-                <Border.Effect>
-                    <DropShadowEffect BlurRadius="10"
-                                      ShadowDepth="0" 
-                                      Color="#D5BCF7"
-                                      Opacity="0.75"/>
-                </Border.Effect>
                 <TextBlock
                     TextAlignment="Center"
                     FontSize="12"
