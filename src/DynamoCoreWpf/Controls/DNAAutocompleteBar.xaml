@@ -7,6 +7,8 @@
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
+             xmlns:local="clr-namespace:Dynamo.PackageManager.UI"
+             xmlns:dynconverters="clr-namespace:Dynamo.Controls"
              mc:Ignorable="d"
              MinWidth="500"
              MaxWidth="500"
@@ -32,52 +34,9 @@
             </Style>
             <Style x:Key="RectangleStyle" TargetType="Rectangle">
                 <Setter Property="Opacity" Value="0" />
-                <Style.Triggers>
-                    <DataTrigger Binding="{Binding ElementName=VersionComboBox, Path=IsMouseOver}" Value="True">
-                        <Setter Property="Fill" Value="DimGray" />
-                        <DataTrigger.EnterActions>
-                            <BeginStoryboard>
-                                <Storyboard SpeedRatio="2">
-                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                     To="0.75"
-                                                     Duration="0:0:1" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </DataTrigger.EnterActions>
-                        <DataTrigger.ExitActions>
-                            <BeginStoryboard>
-                                <Storyboard SpeedRatio="2">
-                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                     To="0"
-                                                     Duration="0:0:1" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </DataTrigger.ExitActions>
-                    </DataTrigger>
-                    <DataTrigger Binding="{Binding ElementName=VersionComboBox, Path=IsDropDownOpen}" Value="True">
-                        <Setter Property="Fill" Value="{StaticResource MidDarkBlueBrush}" />
-                        <DataTrigger.EnterActions>
-                            <BeginStoryboard>
-                                <Storyboard SpeedRatio="2">
-                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                     To="0.75"
-                                                     Duration="0:0:1" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </DataTrigger.EnterActions>
-                        <DataTrigger.ExitActions>
-                            <BeginStoryboard>
-                                <Storyboard SpeedRatio="2">
-                                    <DoubleAnimation Storyboard.TargetProperty="Opacity"
-                                                     To="0"
-                                                     Duration="0:0:1" />
-                                </Storyboard>
-                            </BeginStoryboard>
-                        </DataTrigger.ExitActions>
-                    </DataTrigger>
-                </Style.Triggers>
             </Style>
-            <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <dynconverters:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
+            <dynconverters:InverseBoolToVisibilityConverter  x:Key="InverseBooleanToVisibilityConverter"/>
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -216,6 +175,7 @@
                             SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
                             Width="240"
                             ItemsSource="{Binding ClusterResults, NotifyOnTargetUpdated=True}"
+                            Visibility="{Binding ResultsLoaded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}" 
                         >
                             <ComboBox.Style>
                                 <Style BasedOn="{StaticResource PackageManagerSmallComboBox}" TargetType="ComboBox">
@@ -231,10 +191,19 @@
                                                Margin="0,0,0,0"/>
                                         <TextBlock Text="{Binding Description}" FontSize="12" Foreground="White" Height="15"/>
                                     </StackPanel>
-                                </DataTemplate>
+                                </DataTemplate> 
                             </ComboBox.ItemTemplate>
                         </ComboBox>
                         <Rectangle Height="5" Style="{StaticResource RectangleStyle}" />
+                        <local:LoadingAnimationStripeControl
+                            x:Name="AutocompleteComboboxLoading"
+                            Grid.Column="0"
+                            VerticalAlignment="Center"
+                            Width="240"
+                            Height="30"
+                            AnimationSpeed="5"
+                            Visibility="{Binding ResultsLoaded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBooleanToVisibilityConverter}}" 
+                        />
                     </Grid>
                 </Border>
                 <Button x:Name="btnPrev"
@@ -338,7 +307,7 @@
                                                     Background="Transparent"
                                                     CornerRadius="2" />
                                             <Image x:Name="DotsImage"
-                                                   Source="/DynamoCoreWpf;component/UI/Images/check.png"
+                                                   Source="{Binding ConfirmSource}"
                                                    Width="16px"
                                                    Height="16px"
                                                    Margin="5"

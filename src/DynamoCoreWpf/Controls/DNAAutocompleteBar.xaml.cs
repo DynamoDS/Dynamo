@@ -81,6 +81,7 @@ namespace Dynamo.UI.Controls
             Analytics.TrackEvent(
             Dynamo.Logging.Actions.Open,
             Dynamo.Logging.Categories.NodeAutoCompleteOperations);
+            ViewModel.ClusterResults = null;
 
             // Visibility of textbox changed, but text box has not been initialized(rendered) yet.
             // Call asynchronously focus, when textbox will be ready.
@@ -132,7 +133,7 @@ namespace Dynamo.UI.Controls
                 case Key.Enter:
                     if (HighlightedItem != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
                     {
-                        //...
+                        //TODO: consolidate transient nodes
                         OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
                     }
                     break;

@@ -4,6 +4,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
+using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Engine;
@@ -100,6 +102,93 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private IEnumerable<ClusterAutocompleteResult> clusterResults;
+        /// <summary>
+        /// Cluster autocomplete search results.
+        /// </summary>
+        public IEnumerable<ClusterAutocompleteResult> ClusterResults
+        {
+            get
+            {
+                return clusterResults;
+            }
+            set
+            {
+                clusterResults = value;
+                RaisePropertyChanged(nameof(ClusterResults));
+                RaisePropertyChanged(nameof(NthofTotal));
+                RaisePropertyChanged(nameof(ResultsLoaded));
+                RaisePropertyChanged(nameof(ConfirmSource));
+                RaisePropertyChanged(nameof(PreviousSource));
+                RaisePropertyChanged(nameof(NextSource));
+            }
+        }
+
+        public bool ResultsLoaded => ClusterResults != null;
+
+        private int ClusterResultsCount => ClusterResults == null ? 0 : ClusterResults.Count();
+
+        private int selectedIndex = 0;
+        /// <summary>
+        /// Cluster autocomplete search results.
+        /// </summary>
+        public int SelectedIndex
+        {
+            get
+            {
+                return selectedIndex;
+            }
+            set
+            {
+                selectedIndex = value;
+                RaisePropertyChanged(nameof(SelectedIndex));
+                RaisePropertyChanged(nameof(NthofTotal));
+                RaisePropertyChanged(nameof(PreviousSource));
+                RaisePropertyChanged(nameof(NextSource));
+            }
+        }
+
+
+        /// <summary>
+        /// Bitmap Source for left caret
+        /// </summary>
+        public string PreviousSource
+        {
+            get
+            {
+                return selectedIndex == 0 ? "/DynamoCoreWpf;component/UI/Images/caret-left-disabled.png" : "/DynamoCoreWpf;component/UI/Images/caret-left-default.png";
+            }
+        }
+        /// <summary>
+        /// Bitmap Source for right caret
+        /// </summary>
+        public string NextSource
+        {
+            get
+            {
+                return selectedIndex >= ClusterResultsCount - 1 ? "/DynamoCoreWpf;component/UI/Images/caret-right-disabled.png" : "/DynamoCoreWpf;component/UI/Images/caret-right-default.png";
+            }
+        }
+        /// <summary>
+        /// Bitmap Source for right caret
+        /// </summary>
+        public string ConfirmSource
+        {
+            get
+            {
+                return ResultsLoaded ? "/DynamoCoreWpf;component/UI/Images/check.png" : "/DynamoCoreWpf;component/UI/Images/check-disabled.png";
+            }
+        }
+        /// <summary>
+        /// Language agnostic way of showing current result ordinal
+        /// </summary>
+        public string NthofTotal
+        {
+            get
+            {
+                return $"{selectedIndex + 1} / {ClusterResultsCount}";
+            }
+        }
 
         /// <summary>
         /// The No Recommendations or Low Confidence Title
@@ -632,8 +721,15 @@ namespace Dynamo.ViewModels
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
             ResetAutoCompleteSearchViewState();
 
-            ClusterResults = GetMLNodeClusterAutocompleteResults().Results.Select( x => new ClusterAutocompleteResult { Description = x.Description});
             SelectedIndex = 0;
+            Task.Run(() =>
+            {
+                var results = GetMLNodeClusterAutocompleteResults().Results.Select(x => new ClusterAutocompleteResult { Description = x.Description });
+                dynamoViewModel.UIDispatcher.BeginInvoke(() =>
+                {
+                    ClusterResults = results;
+                });
+            });
             /*
             foreach (var result in GetMLNodeClusterAutocompleteResults().Results)
             {
