@@ -1,7 +1,7 @@
 ## Подробности
-`TSplineInitialSymmetry.ByAxial` defines if the T-Spline geometry has symmetry along a chosen axis (x, y, z). Symmetry can occur on one, two, or all three axes. Once established at the creation of the T-Spline geometry, symmetry influences all subsequent operations and alterations.
+`TSplineInitialSymmetry.ByAxial` определяет, симметрична ли геометрия Т-сплайна вдоль выбранной оси (x, y, z). Симметрия может быть по одной, двум или всем трем осям. Симметрия, однажды заданная при создании геометрии Т-сплайна, влияет на все последующие операции и изменения.
 
-In the example below, `TSplineSurface.ByBoxCorners` is used to create a T-Spline surface. Among the inputs of this node, `TSplineInitialSymmetry.ByAxial` is used to define the initial symmetry in the surface. `TSplineTopology.RegularFaces` and `TSplineSurface.ExtrudeFaces` are then used to respectively select and extrude a face of the T-Spline surface. The extrude operation is then mirrored around the symmetry axes defined with the `TSplineInitialSymmetry.ByAxial` node.
+В приведенном ниже примере узел `TSplineSurface.ByBoxCorners` используется для создания Т-сплайновой поверхности. Среди входных параметров этого узла используется параметр `TSplineInitialSymmetry.ByAxial` для определения исходной симметрии поверхности. Затем параметры `TSplineTopology.RegularFaces` и `TSplineSurface.ExtrudeFaces` используются для выбора и выдавливания грани Т-сплайновой поверхности соответственно. После этого операция выдавливания зеркально отражается вокруг осей симметрии, заданных с помощью узла `TSplineInitialSymmetry.ByAxial`.
 
 ## Файл примера
 
