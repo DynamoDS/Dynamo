@@ -1,5 +1,5 @@
 ## 詳細
-このノードはオブジェクトを文字列に変換します。2 番目の入力 `format specifier` は、数値入力を文字列表現に変換する方法をコントロールします。
+This node will convert an array to a string. The second input `format specifier` controls how numeric inputs are converted to their string representations.
 この `format specifier` 入力は、C# 標準書式の数値指定子の 1 つである必要があります。
 
 書式指定子は次の形式にする必要があります。
@@ -15,3 +15,7 @@ N : 数値 N2 1000 -> "1,000.00"
 このノードの既定は `G` で、コンパクトな可変表現を出力します。
 
 [詳細については、Microsoft のドキュメントを参照してください。] (https://learn.microsoft.com/ja-jp/dotnet/standard/base-types/standard-numeric-format-strings#standard-format-specifiers)
+___
+## サンプル ファイル
+
+![Formatted String from Array](./CoreNodeModels.FormattedStringFromArray_img.jpg)

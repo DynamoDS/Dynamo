@@ -5,4 +5,4 @@ V níže uvedeném příkladu je jednoduchá síť přesunuta ve směru definova
 
 ## Vzorový soubor
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh.vector.distance)_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh,%20vector,%20distance)_img.jpg)

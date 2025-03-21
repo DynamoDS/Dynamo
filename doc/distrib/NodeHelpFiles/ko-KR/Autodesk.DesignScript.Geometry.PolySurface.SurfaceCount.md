@@ -1,7 +1,8 @@
 ## 상세
-SurfaceCount는 PolySurface의 표면 수를 정수로 반환합니다. 아래 예에서 돌출된 육각형은 개수 8을 반환합니다. 이 노드는 단일 PolySurface를 입력으로 사용하므로 계산하기 전에 표면 모음을 결합해야 합니다.
+`PolySurface.SurfaceCount` returns the number of surface within the given PolySurface object.
+
+In the example below, a PolySurface is created from a cuboid and the surface count is provided with `PolySurface.SurfaceCount`.
 ___
 ## 예제 파일
 
-
-
+![PolySurface.SurfaceCount](./Autodesk.DesignScript.Geometry.PolySurface.SurfaceCount_img.jpg)

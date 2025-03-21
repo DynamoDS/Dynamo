@@ -1,10 +1,12 @@
 ## Im Detail
-Repair versucht, Volumenkörper mit ungültiger Geometrie zu reparieren und möglicherweise Optimierungen vorzunehmen. Der Repair-Block gibt ein neues Volumenkörperobjekt zurück.
+`Solid.Repair` attempts to repair solids which have invalid geometry, as well as potentially performing optimizations. `Solid.Repair` will return a new solid object.
+
 Dieser Block ist hilfreich, wenn Sie Fehler beim Ausführen von Vorgängen mit importierter oder konvertierter Geometrie feststellen.
 
-Wenn Sie beispielsweise Daten aus einem Basisbauteil-Kontext wie **Revit** oder aus einer **SAT**-Datei importieren und feststellen, dass boolesche Operationen oder das Stutzen unerwartet fehlschlagen, kann es vorkommen, dass durch einen Reparaturvorgang die *ungültige Geometrie* bereinigt werden kann, die den Fehler verursacht.
+In the example below, `Solid.Repair` is used to repair geometry from an **.SAT** file. The geometry in the file fails to boolean or trim, and `Solid.Repair` cleans up any *invalid geometry* that is causing the failure.
 
-Im Allgemeinen sollten Sie diese Funktion nicht für Geometrie verwenden müssen, die Sie in Dynamo erstellen, sondern nur für Geometrie aus externen Quellen. Wenn Sie feststellen, dass dies nicht der Fall ist, melden Sie dem Dynamo-GitHub-Team einen Fehler!
+In general, you should not need to use this functionality on geometry you create in Dynamo, only on geometry from external sources. If you find that is not the case, please report a bug to the Dynamo team Github
 ___
+## Beispieldatei
 
-
+![Solid.Repair](./Autodesk.DesignScript.Geometry.Solid.Repair_img.jpg)

@@ -1,5 +1,5 @@
 ## Im Detail
-Dieser Block konvertiert ein Objekt in eine Zeichenfolge. Die zweite Eingabe `format specifier` steuert, wie numerische Eingaben in ihre Zeichenfolgendarstellungen konvertiert werden.
+This node will convert an array to a string. The second input `format specifier` controls how numeric inputs are converted to their string representations.
 Diese Eingaben für `format specifier` sollten numerische C#-Standardformatspezifizierer sein.
 
 Formatspezifizierer sollten die folgende Form haben:
@@ -15,3 +15,7 @@ N: Anzahl N2 1000 -> "1,000.00"
 Die Vorgabe für diesen Block ist `G`, wodurch eine kompakte, aber variable Darstellung ausgegeben wird.
 
 [Weitere Informationen finden Sie in der Microsoft-Dokumentation.](https://learn.microsoft.com/de-de/dotnet/standard/base-types/standard-numeric-format-strings#standard-format-specifiers)
+___
+## Beispieldatei
+
+![Formatted String from Array](./CoreNodeModels.FormattedStringFromArray_img.jpg)
