@@ -622,6 +622,32 @@ namespace Dynamo.ViewModels
             // Save the filtered results for search.
             searchElementsCache = FilteredResults.ToList();
         }
+        /// <summary>
+        /// Key function to populate node autocomplete results to display
+        /// </summary>
+        internal void PopulateClusterAutoComplete()
+        {
+            if (PortViewModel == null) return;
+
+            dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
+            ResetAutoCompleteSearchViewState();
+
+            ClusterResults = GetMLNodeClusterAutocompleteResults().Results.Select( x => new ClusterAutocompleteResult { Description = x.Description});
+            SelectedIndex = 0;
+            /*
+            foreach (var result in GetMLNodeClusterAutocompleteResults().Results)
+            {
+                ClusterResults.Add(result);
+            }*/
+            //Tracking Analytics when raising Node Autocomplete with the Recommended Nodes option selected (Machine Learning)
+            Analytics.TrackEvent(
+                Actions.Show,
+                Categories.NodeAutoCompleteOperations,
+                nameof(NodeAutocompleteSuggestion.MLRecommendation));
+
+            // Save the filtered results for search.
+            searchElementsCache = FilteredResults.ToList();
+        }
 
         internal void PopulateDefaultAutoCompleteCandidates()
         {

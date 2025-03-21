@@ -377,6 +377,15 @@
                DataContext="{Binding NodeAutoCompleteSearchViewModel}">
             <ui:NodeAutoCompleteSearchControl RequestShowNodeAutoCompleteSearch="ShowHideNodeAutoCompleteControl" />
         </Popup>
+
+        <Popup Name="DNAAutocompleteBar"
+               StaysOpen="True"
+               AllowsTransparency="True"
+               IsOpen="False"
+               Placement="Custom"
+               DataContext="{Binding NodeAutoCompleteSearchViewModel}">
+            <ui:DNAAutocompleteBar RequestShowNodeAutoCompleteSearch="ShowHideDNAAutocompleteBar" />
+        </Popup>
        
         <Popup Name="ContextMenuPopup"
                AllowsTransparency="True"

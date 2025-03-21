@@ -131,6 +131,7 @@ namespace Dynamo.Views
             ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
             ViewModel.RequestHideAllPopup -= HideAllPopUp;
             ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
+            ViewModel.RequestDNAAutocompleteBar -= ShowHideDNAAutocompleteBar;
             ViewModel.RequestPortContextMenu -= ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged -= ViewModel_PropertyChanged;
 
@@ -160,6 +161,7 @@ namespace Dynamo.Views
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
             ViewModel.RequestHideAllPopup += HideAllPopUp;
             ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
+            ViewModel.RequestDNAAutocompleteBar += ShowHideDNAAutocompleteBar;
             ViewModel.RequestPortContextMenu += ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
@@ -183,6 +185,11 @@ namespace Dynamo.Views
         private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
         {
             ShowHidePopup(flag, NodeAutoCompleteSearchBar);
+        }
+
+        private void ShowHideDNAAutocompleteBar(ShowHideFlags flag)
+        {
+            ShowHidePopup(flag, DNAAutocompleteBar);
         }
 
         private void ShowHidePortContextMenu(ShowHideFlags flag, PortViewModel portViewModel)
@@ -221,7 +228,7 @@ namespace Dynamo.Views
 
                     if (displayPopup)
                     {
-                        if (popup == NodeAutoCompleteSearchBar)
+                        if (popup == NodeAutoCompleteSearchBar || popup == DNAAutocompleteBar)
                         {
                             if (ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel == null) return;
                             // if the MLRecommendation is default but user not accepting TOU, display notification
@@ -235,7 +242,16 @@ namespace Dynamo.Views
                             // 2. Dynamo rely on child visibility change hander to setup Node AutoComplete control
                             // 3. This should not be set to in canvas search control
                             popup.Child.Visibility = Visibility.Collapsed;
-                            ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
+                            if(popup == NodeAutoCompleteSearchBar)
+                            {
+
+                                ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
+                            }
+                            else
+                            {
+
+                                ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupPlaceDNAAutocompletePlacement(popup);
+                            }
                         }
 
                         else if (popup == PortContextMenu)

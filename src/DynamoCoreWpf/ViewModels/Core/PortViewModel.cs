@@ -279,6 +279,17 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Sets up the node autocomplete window to be placed relative to the node.
+        /// </summary>
+        /// <param name="popup">Node autocomplete popup.</param>
+        internal void SetupPlaceDNAAutocompletePlacement(Popup popup)
+        {
+            node.OnRequestAutoCompletePopupPlacementTarget(popup);
+            popup.CustomPopupPlacementCallback = PlaceDNAAutocompletePopup;
+        }
+
+
+        /// <summary>
         /// Sets up the PortContextMenu window to be placed relative to the port.
         /// </summary>
         /// <param name="popup">Node context menu popup.</param>
@@ -346,6 +357,20 @@ namespace Dynamo.ViewModels
             var scaledHeight = targetSize.Height / node.ActualHeight;
             var absoluteHeight = NodeModel.HeaderHeight + (PortModel.Index * PortModel.Height);
             var y = absoluteHeight * scaledHeight;
+
+            var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);
+
+            return new[] { placement };
+        }
+
+        private CustomPopupPlacement[] PlaceDNAAutocompletePopup(Size popupSize, Size targetSize, Point offset)
+        {
+            var zoom = node.WorkspaceViewModel.Zoom;
+
+            double x = 0;
+            // Scale the spaacing by the target height (passed to the callback) and the actual height of the node.
+            var scaledSpacing = autocompletePopupSpacing * targetSize.Height / node.ActualHeight;
+            var y = scaledSpacing + targetSize.Height;
 
             var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);
 
@@ -535,7 +560,7 @@ namespace Dynamo.ViewModels
             // cluster info display in right side panel
             if (wsViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled)
             {
-                try
+                /*try
                 {
                     MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
 
@@ -552,7 +577,8 @@ namespace Dynamo.ViewModels
                 catch (Exception e)
                 {
                     // Log the exception and show a notification to the user
-                }
+                }*/
+               wsViewModel.OnRequestDNAAutocompleteBar(ShowHideFlags.Show);
             }
         }
 

@@ -129,6 +129,7 @@
 
     <ItemGroup>
     <None Remove="Packages\PackageManagerWizard\dist\index.html" />
+    <None Remove="Controls\DNAAutocompleteBar.xaml" />
     <None Remove="Packages\SplashScreen\build\index.bundle.js" />
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="Packages\DynamoHome\build\index.bundle.js" />
@@ -235,6 +236,8 @@
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
       <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.4435" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.3546"/>
+      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.3231" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="3.0.2.6533" />
@@ -265,6 +268,7 @@
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\DNAAutocompleteBar.xaml.cs" />
     <Compile Include="Controls\InstalledPackagesControl.xaml.cs">
       <DependentUpon>InstalledPackagesControl.xaml</DependentUpon>
     </Compile>
@@ -480,6 +484,7 @@
     <Compile Include="Utilities\ActionDebouncer.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
+    <Compile Include="ViewModels\Search\ClusterAutocompleteResult.cs" />
     <Compile Include="ViewModels\Search\NodeAutoCompleteSearchViewModel.cs" />
     <Compile Include="ViewModels\Search\NodeSearchElementViewModel.cs" />
     <Compile Include="ViewModels\Core\StateMachine.cs" />
@@ -670,6 +675,9 @@
     <Compile Include="Windows\ModelessChildWindow.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\DNAAutocompleteBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\InstalledPackagesControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1078,6 +1086,16 @@
     <Resource Include="UI\Images\closetab_hover.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\gripper-default.png" />
+    <Resource Include="UI\Images\gripper-hover.png" />
+    <Resource Include="UI\Images\caret-left-disabled.png" />
+    <Resource Include="UI\Images\caret-right-disabled.png" />
+    <Resource Include="UI\Images\caret-left-default.png" />
+    <Resource Include="UI\Images\caret-right-default.png" />
+    <Resource Include="UI\Images\dock_32px_default.png" />
+    <Resource Include="UI\Images\check.png" />
+    <Resource Include="UI\Images\close.png" />
+    <Resource Include="UI\Images\ai_sparkle.png" />
     <Resource Include="UI\Images\closetab_normal.png" />
     <Resource Include="UI\Images\dynamonotext.png" />
     <Resource Include="UI\Images\error_48px.png" />
