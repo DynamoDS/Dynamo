@@ -228,7 +228,7 @@
                         <interactivity:InvokeCommandAction Command="{Binding NodeAutoCompleteCommand}" PassEventArgsToCommand="True"/>
                     </interactivity:EventTrigger>
                 </interactivity:Interaction.Triggers>
-
+            </Border>
             <Border x:Name="PortBorderHighlight"
                     Grid.Column="1"
                     Grid.ColumnSpan="7"
@@ -239,7 +239,6 @@
                     CornerRadius="0,11,11,0"
                     Visibility="{Binding Highlight, UpdateSourceTrigger=PropertyChanged}"
                     SnapsToDevicePixels="True">
-
 
             </Border>
         </Grid>
