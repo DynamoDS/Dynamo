@@ -73,9 +73,11 @@ namespace Dynamo.UI.Controls
         {
             // If visibility  is false, then remove all transient nodes and return.
             if (!(bool)e.NewValue) {
+                ViewModel.Visible = false;
                 ViewModel.DeleteTransientNodes();
                 return;
             }
+            ViewModel.Visible = true;
 
             // When launching this control, always start with clear search term.
             //SearchTextBox.Clear(); TODO
@@ -89,7 +91,6 @@ namespace Dynamo.UI.Controls
             // Call asynchronously focus, when textbox will be ready.
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                //SearchTextBox.Focus(); TODO
                 ViewModel.PopulateClusterAutoComplete();
                 //ViewModel.PopulateAutoCompleteCandidates();
             }), DispatcherPriority.Loaded);

@@ -141,7 +141,7 @@ namespace Dynamo.ViewModels
             }
             set
             {
-                if(selectedIndex != value)
+                if(selectedIndex != value && value >= 0)
                 {
                     ReAddNode(value);
                 }
@@ -155,6 +155,10 @@ namespace Dynamo.ViewModels
 
         private void ReAddNode(int index)
         {
+            if(fullResults == null)
+            {
+                return;
+            }
             var results = fullResults.Results.ToList();
             if(index >=  0 && index  < results.Count)
             {
@@ -832,6 +836,7 @@ namespace Dynamo.ViewModels
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
             ResetAutoCompleteSearchViewState();
 
+            fullResults = null;
             SelectedIndex = 0;
             Task.Run(() =>
             {
@@ -839,7 +844,14 @@ namespace Dynamo.ViewModels
                 var comboboxResults = fullResults.Results.Select(x => new ClusterAutocompleteResult { Description = x.Description });
                 dynamoViewModel.UIDispatcher.BeginInvoke(() =>
                 {
-                    ClusterResults = comboboxResults;// Process the results and display the preview of the cluster with the highest confidence level
+                    if (!Visible)
+                    {
+                        // view dissapeared while the background thread was waiting for the server response.
+                        // Ignore the results are we're no longer interested.
+                        return;
+                    }
+                    // this runs synchronously on the UI thread, so the UI can't dissapear during execution
+                    ClusterResults = comboboxResults;
                     if(fullResults.Results.Any())
                     {
                         var ClusterResultItem = fullResults.Results.First();
