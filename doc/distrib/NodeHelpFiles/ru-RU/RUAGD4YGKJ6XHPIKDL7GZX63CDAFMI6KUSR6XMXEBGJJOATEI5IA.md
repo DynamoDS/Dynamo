@@ -1,7 +1,7 @@
 <!--- Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySphereBestFit --->
 <!--- RUAGD4YGKJ6XHPIKDL7GZX63CDAFMI6KUSR6XMXEBGJJOATEI5IA --->
 ## Подробности
-In the example below, a T-Spline sphere primitive surface is created using the `TSplineSurface.BySphereBestFit` node from a provided list of random points. `radiusSpans` and `heightSpans` inputs control the number of faces along the height and radial spans (or meridians). The `symmetry` input controls if the shape has initial symmetry and, finally, `inSmoothMode` defines if the preview is in smooth or box mode.
+В приведенном ниже примере Т-сплайновая поверхность-примитив сферы создается с помощью узла `TSplineSurface.BySphereBestFit` из предоставленного списка случайных точек. Входные параметры `radiusSpans` и `heightSpans` определяют количество граней вдоль вертикальных и радиальных пролетов (меридианов). Входной параметр `symmetry` определяет, имеет ли форма исходную симметрию, и, наконец, входной параметр `inSmoothMode` определяет, как выполняется предварительный просмотр — в режиме сглаживания или рамки.
 
 ## Файл примера
 
