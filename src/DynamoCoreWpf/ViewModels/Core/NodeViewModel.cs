@@ -629,7 +629,11 @@ namespace Dynamo.ViewModels
         [JsonIgnore]
         public bool IsTransient
         {
-            set { NodeModel.IsTransient = value; }
+            set
+            {
+                NodeModel.IsTransient = value;
+                RaisePropertyChanged("IsTransient");
+            }
             get { return NodeModel.IsTransient; }
         }
 
