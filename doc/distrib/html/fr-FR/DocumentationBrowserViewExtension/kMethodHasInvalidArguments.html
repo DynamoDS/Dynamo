@@ -23,14 +23,14 @@
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
 <h2>Possède plusieurs arguments non valides</h2>
-<p>This error message indicates that the node you are using is expecting a certain type of input data but received a type of input it cannot use. It is similar to the “Expects argument type(s) but was called with” error, and usually displays additional information that can help you identify what argument types you need to pass into the node you are using. </p>
+<p>Ce message d'erreur indique que le noeud que vous utilisez attend un certain type de données d'entrée mais qu'il a reçu un type d'entrée qu'il ne peut pas utiliser. Il est semblable à l'erreur &quot;attend le ou les types d'argument, mais a été appelé avec&quot;, et affiche généralement des informations supplémentaires qui peuvent vous aider à identifier les types d'argument à transmettre au noeud que vous utilisez. </p>
 
 <h4>Comment corriger cette erreur?</h4>
 <p>En général, vérifiez les types d'entrée attendus par le noeud que vous utilisez, et essayez de déterminer (a) si le type d'entrée correct est transmis au noeud ou (b) si vous pouvez modifier le type d'entrée pour qu'il puisse être utilisé par le noeud (par exemple, en changeant l'entrée en un type différent, comme indiqué dans <a href="https://forum.dynamobim.com/t/springs-number-tostring/35562/2">cet exemple</a>).</p>
 
-<p>As an example, when you see something like <code>Warning: Element.SetParameterByName operation failed. The best overloaded method match for ‘Revit.Elements.InternalUtilities.ElementUtils.SetParameterValue(Autodesk.Revit.DB.Parameter, double)’ has some invalid arguments</code> the additional information in parentheses can help you understand what the problem is. In this case <code>SetParameterValue(Autodesk.Revit.DB.Parameter, double)</code> shows that the node you are using is expecting an input of type <code>double</code>, so any other type of input will not work.</p>
+<p>Par exemple, lorsque vous voyez un message tel que <code>Warning: Element.SetParameterByName operation failed. The best overloaded method match for ‘Revit.Elements.InternalUtilities.ElementUtils.SetParameterValue(Autodesk.Revit.DB.Parameter, double)’ has some invalid arguments</code>, les informations supplémentaires entre parenthèses peuvent vous aider à comprendre le problème. Dans ce cas, <code>SetParameterValue(Autodesk.Revit.DB.Parameter, double)</code> indique que le noeud que vous utilisez est une entrée de type <code>double</code>. Ainsi, tout autre type d'entrée ne fonctionnera pas.</p>
 
 <h4>Plus d'informations</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=has%20some%20invalid%20arguments"><span> posts on the Dynamobim forum discussing "<strong>has some invalid arguments</strong>"</span></a>.</p>
+<p>Pour en savoir plus, consultez les <a href="https://forum.dynamobim.com/search?q=has%20some%20invalid%20arguments"><span>billets publiés sur le forum Dynamobim sur le sujet <strong>&quot;has some invalid arguments&quot; (possède des arguments non valides)</strong></span></a>.</p>
 
 </body>

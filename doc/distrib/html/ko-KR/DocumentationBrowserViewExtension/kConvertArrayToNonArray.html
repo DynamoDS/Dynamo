@@ -23,12 +23,12 @@
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
 <h2>배열을 변환하면 배열 순위가 감소함</h2>
-<p> This error message indicates that you are using list of lists which is not formatted correctly. For example, using a list like <code>[1,2,3,[4,5,6],7]</code> where the elements are at different levels will trigger this error, but using a list like <code>[[1,2,3],[4,5,6,7]]</code> will not because it is consistently two levels deep.  </p>
+<p> 이 오류 메시지는 형식이 제대로 지정되지 않은 리스트 중 하나를 사용 중임을 나타냅니다. 예를 들어 요소가 서로 다른 레벨에 있는 <code>[1,2,3,[4,5,6],7]</code> 같은 리스트를 사용하면 이 오류가 트리거되지만 <code>[[1,2,3],[4,5,6,7]]</code> 같은 리스트를 사용하면 두 레벨의 깊이가 일관되므로 이 오류가 발생하지 않습니다.  </p>
 
 <h4>수정 방법</h4>
-<p>To resolve this issue, make sure the list you are passing as an input to your node has consistent levels (i.e., each element can be accessed using the same level of your list). Another option is to use <a href="https://dictionary.dynamobim.com/2/#/List/Organize/Action/NormalizeDepth"><code>List.NormalizeDepth</code></a> which can make your list levels consistent but might not format the list exactly as you want it. </p>
+<p>이 문제를 해결하려면 노드에 대한 입력으로 전달하는 리스트의 레벨이 일관적이어야 합니다(즉, 각 요소에는 동일한 레벨의 리스트를 사용하여 액세스할 수 있음). 또 다른 옵션은 리스트 레벨을 일관되게 만들 수 있지만 리스트 형식을 원하는 대로 정확하게 지정할 수 없는 <a href="https://dictionary.dynamobim.com/2/#/List/Organize/Action/NormalizeDepth"><code>List.NormalizeDepth</code></a>를 사용하는 것입니다. </p>
 
 <h4>추가 정보</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=array%20rank%20reduction"><span> posts on the Dynamobim forum discussing "<strong>array rank reduction</strong>"</span></a>.</p>
+<p>자세한 내용을 보려면 <a href="https://forum.dynamobim.com/search?q=array%20rank%20reduction"><span>&quot;<strong>array rank reduction</strong>&quot;에 대해 논의하는 Dynamobim 포럼의 게시물</span></a>을 확인하십시오.</p>
 
 </body>

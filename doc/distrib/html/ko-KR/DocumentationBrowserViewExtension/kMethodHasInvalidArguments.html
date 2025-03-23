@@ -23,14 +23,14 @@
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
 <h2>일부 인수가 잘못됨</h2>
-<p>This error message indicates that the node you are using is expecting a certain type of input data but received a type of input it cannot use. It is similar to the “Expects argument type(s) but was called with” error, and usually displays additional information that can help you identify what argument types you need to pass into the node you are using. </p>
+<p>이 오류 메시지는 사용 중인 노드가 특정 유형의 입력 데이터를 예상하고 있지만 사용할 수 없는 입력 유형을 받았음을 나타냅니다. 이는 &quot;인수 유형을 예상하지만 다음으로 호출됨&quot; 오류와 유사하며, 일반적으로 사용 중인 노드로 전달해야 하는 인수 유형을 식별하는 데 도움이 될 수 있는 추가 정보를 표시합니다. </p>
 
 <h4>수정 방법</h4>
 <p>일반적으로, 사용 중인 노드에서 예상하는 입력 유형을 확인하고 (a) 올바른 유형의 입력이 노드에 전달되는지 또는 (b) 입력 유형을 노드에서 사용할 수 있는 유형으로 변경(예: <a href="https://forum.dynamobim.com/t/springs-number-tostring/35562/2">이 예</a>에 나와 있듯이 다른 유형으로 입력 변경)할 수 있는지 확인하십시오.</p>
 
-<p>As an example, when you see something like <code>Warning: Element.SetParameterByName operation failed. The best overloaded method match for ‘Revit.Elements.InternalUtilities.ElementUtils.SetParameterValue(Autodesk.Revit.DB.Parameter, double)’ has some invalid arguments</code> the additional information in parentheses can help you understand what the problem is. In this case <code>SetParameterValue(Autodesk.Revit.DB.Parameter, double)</code> shows that the node you are using is expecting an input of type <code>double</code>, so any other type of input will not work.</p>
+<p>예를 들어, <code>Warning: Element.SetParameterByName operation failed. The best overloaded method match for ‘Revit.Elements.InternalUtilities.ElementUtils.SetParameterValue(Autodesk.Revit.DB.Parameter, double)’ has some invalid arguments</code>와 같은 메시지가 표시되는 경우 괄호 안의 추가 정보는 문제가 무엇인지 이해하는 데 도움이 될 수 있습니다. 이 경우 <code>SetParameterValue(Autodesk.Revit.DB.Parameter, double)</code>는 사용 중인 노드가 <code>double</code> 유형의 입력을 예상함을 나타내므로 다른 모든 유형의 입력이 작동하지 않습니다.</p>
 
 <h4>추가 정보</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=has%20some%20invalid%20arguments"><span> posts on the Dynamobim forum discussing "<strong>has some invalid arguments</strong>"</span></a>.</p>
+<p>자세한 내용을 보려면 <a href="https://forum.dynamobim.com/search?q=has%20some%20invalid%20arguments"><span>&quot;<strong>has some invalid arguments</strong>&quot;에 대해 논의하는 Dynamobim 포럼의 게시물</span></a>을 확인하십시오.</p>
 
 </body>

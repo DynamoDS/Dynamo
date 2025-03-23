@@ -26,11 +26,11 @@
 <p>此错误消息指示由 PolyCurve 节点输出的线未形成闭合曲线。</p>
 
 <h4>如何修复</h4>
-<p>This might be because the output of the Polycurve node contains null values. Check to see within each list output by the Polycurve node if the curves connect in one continuous line. One way to do this is to hide the geometry preview of all nodes (right click the node or selection of nodes to hide geometry preview) and then <a href="https://dictionary.dynamobim.com/2/#/List/Inspect/Action/GetItemAtIndex"><code>List.GetItemAtIndex</code></a> one list at a time to see. </p>
+<p>这可能是因为 PolyCurve 节点的输出包含空值。 如果曲线在一条连续直线中连接，则选中以查看 PolyCurve 节点输出的每个列表。 执行此操作的一种方法是隐藏所有节点的几何图形预览(在节点或所选节点上单击鼠标右键以隐藏几何图形预览)，然后使用 <a href="https://dictionary.dynamobim.com/2/#/List/Inspect/Action/GetItemAtIndex"><code>List.GetItemAtIndex</code></a> 以一次列出一个要查看的列表。 </p>
 
 <p>此外，此错误通常由房间边界导致 - 尝试使用 <a href="https://dictionary.dynamobim.com/2/#/Revit/Elements/Room/Query/CenterBoundary"><code>Room.CenterBoundary</code></a> 以改为提取曲线。</p>
 
 <h4>更多信息</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=curve%20join%20produced%20more%20than%20one%20WIRE%20in%20Polycurve"><span> posts on the Dynamobim forum discussing "<strong>curve join produced more than one wire in polycurve</strong>"</span></a>.</p>
+<p>要了解更多信息，请查看 <a href="https://forum.dynamobim.com/search?q=curve%20join%20produced%20more%20than%20one%20WIRE%20in%20Polycurve"><span>Dynamobim 论坛上讨论“<strong>curve join produced more than one wire in polycurve</strong>”的帖子</span></a>。</p>
 
 </body>

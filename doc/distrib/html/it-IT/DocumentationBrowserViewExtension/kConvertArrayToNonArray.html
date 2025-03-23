@@ -23,12 +23,12 @@
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
 <h2>La conversione della matrice provocherebbe la riduzione dell'ordine della matrice</h2>
-<p> This error message indicates that you are using list of lists which is not formatted correctly. For example, using a list like <code>[1,2,3,[4,5,6],7]</code> where the elements are at different levels will trigger this error, but using a list like <code>[[1,2,3],[4,5,6,7]]</code> will not because it is consistently two levels deep.  </p>
+<p> Questo messaggio di errore indica che si sta utilizzando un elenco di elenchi che non sono formattati correttamente. Ad esempio, se si utilizza un elenco come <code>[1,2,3,[4,5,6],7]</code> dove gli elementi si trovano a livelli diversi, si verificherà questo errore, ma se si utilizza un elenco come <code>[[1,2,3],[4,5,6,7]]</code>, ciò non accadrà poiché gli elementi presentano in modo coerente due livelli.  </p>
 
 <h4>Come risolvere questo problema</h4>
-<p>To resolve this issue, make sure the list you are passing as an input to your node has consistent levels (i.e., each element can be accessed using the same level of your list). Another option is to use <a href="https://dictionary.dynamobim.com/2/#/List/Organize/Action/NormalizeDepth"><code>List.NormalizeDepth</code></a> which can make your list levels consistent but might not format the list exactly as you want it. </p>
+<p>Per risolvere questo problema, assicurarsi che l'elenco che si sta trasferendo come input al nodo abbia livelli coerenti (ossia, è possibile accedere a ciascun elemento utilizzando lo stesso livello dell'elenco). Un'altra opzione consiste nell'utilizzare <a href="https://dictionary.dynamobim.com/2/#/List/Organize/Action/NormalizeDepth"><code>List.NormalizeDepth</code></a>, che può rendere coerenti i livelli dell'elenco ma potrebbe non formattare l'elenco esattamente come desiderato. </p>
 
 <h4>Ulteriori informazioni</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=array%20rank%20reduction"><span> posts on the Dynamobim forum discussing "<strong>array rank reduction</strong>"</span></a>.</p>
+<p>Per saperne di più, consultare i <a href="https://forum.dynamobim.com/search?q=array%20rank%20reduction"><span>post nel forum di discussione di Dynamobim &quot;<strong>array rank reduction</strong>&quot;</span></a>.</p>
 
 </body>

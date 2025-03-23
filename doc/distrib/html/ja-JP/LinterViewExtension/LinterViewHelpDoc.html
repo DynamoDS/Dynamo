@@ -25,13 +25,13 @@
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
     <h3>グラフ ステータス</h3>
     <h4>概要</h4>
-    <p>The Graph Status extension is where you can find information about issues that Dynamo has detected in your graph. The issues that are shown in the Graph Status panel are separate from warnings and errors that are displayed on individual Dynamo nodes in the workspace. Instead, these are derived from custom rules that can be defined by Dynamo extensions.</p>
+    <p>グラフ ステータス拡張機能では、Dynamo がグラフ内で検出した問題に関する情報を参照できます。 [グラフ ステータス]パネルに表示される問題は、ワークスペース内の個々の Dynamo ノードに表示される警告やエラーとは別のものです。 それらは、Dynamo 拡張機能で定義可能な、カスタム ルールに由来した問題です。</p>
     <h4>グラフ タイプ</h4>
-    <p>When a Dynamo extensions utilizes Dynamo's Linting API to register a custom set of rules, the name of that extension will appear as an option in the dropdown labeled <i>Graph Type</i>. Dynamo will check to see if those rules have been broken whenever changes are made to the graph.</p>
-    <p>For example, the Generative Design extension for Dynamo uses this feature to ensure that Dynamo graphs designed for use with Generative Design have the necessary properties required for the graph to work correctly in the Generative Design app. Generative Design requires that graphs have at least one input and one output node, and this is enforced using the rules registered by the Dynamo extension.</p>
+    <p>Dynamo の拡張機能で Dynamo のリンティング API を使用してカスタムのルール セットを登録すると、その拡張機能の名前が<i></i>[グラフ タイプ]ドロップダウンのオプションとして表示されます。 グラフに変更が加えられるたびに、Dynamo はこれらのルールが破られていないか確認します。</p>
+    <p>たとえば Dynamo のジェネレーティブ デザイン拡張機能は、この機能を使用して、ジェネレーティブ デザインで使用するために設計された Dynamo グラフに、ジェネレーティブ デザイン アプリケーションで正しく動作するために必要なプロパティがあるかを確認します。 ジェネレーティブ デザインでは、グラフに少なくとも 1 つの入力ノードと 1 つの出力ノードが必要です。これは、Dynamo 拡張機能で登録されたルールを使用して適用されます。</p>
     <h4>ノードの問題とグラフの問題</h4>
-    <p>Rules defined by an extension are registered as one of two types: Graph rules, or Node rules.  If Dynamo detects that one of those rules has been broken in the current graph, a warning with information on how to fix the issue, and a link to where the issue was detected will be shown in one of these two sections.</p>
+    <p>拡張機能によって定義されたルールは、グラフ ルールまたはノード ルールのいずれかとして登録されます。  現在のグラフでルールが破られていることを Dynamo が検出すると、問題の修正方法を記載した警告と、問題が検出された場所へのリンクが、これら 2 つのセクションのいずれかに表示されます。</p>
     <h4>その他の情報</h4>
     <p>グラフが保存されるたびに、グラフ ステータス拡張機能は、選択したグラフ タイプや、グラフを最後に保存したときに問題が存在していたかどうかなどのメタデータを Dynamo ファイルに保存します。</p>
-    <p>When a new Dynamo graph is created, the Graph Status extension doesn't check for any specific rules automatically. The default selection for the Graph Type will be <i>None</i>. Currently, only one Graph Type can be selected at a time in the Graph Status view.</p>
+    <p>新しい Dynamo グラフを作成する時に、グラフ ステータス拡張機能が特定のルールを自動的にチェックすることはありません。 グラフ タイプの既定の選択は[なし]<i></i>です。 現在、グラフ ステータス ビューでは、一度に 1 つのグラフ タイプのみを選択できます。</p>
 </body>

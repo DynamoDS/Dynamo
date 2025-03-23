@@ -24,12 +24,12 @@
 
 <h2>Mehrere Definitionen gefunden</h2>
 <p>Diese Fehlermeldung weist darauf hin, dass dieselbe Methode oder derselbe Klassenname in DynamoCore und verschiedenen Dynamo-Paketen verwendet wird, die Sie für Ihr Diagramm laden. Dynamo kann nicht erkennen, welche Methode oder Klasse (d. h. von welchem Paket) Sie verwenden möchten.</p>  
-<p>This warning usually happens when using DesignScript in a CodeBlock. For example, if you are trying to Flatten a list in a CodeBlock, you would use <code>List.Flatten()</code>. If one of the 3rd party packages you are loading also have a class called <code>List</code>, you will see this warning.</p>
+<p>Diese Warnung wird in der Regel angezeigt, wenn Sie DesignScript in einem CodeBlock verwenden. Wenn Sie beispielsweise versuchen, eine Liste in einem CodeBlock abzuflachen, verwenden Sie <code>List.Flatten()</code>. Wenn eines der von Ihnen geladenen Drittanbieterpakete ebenfalls eine Klasse namens <code>List</code> enthält, wird diese Warnung angezeigt.</p>
 
 <h4>So beheben Sie Fehler</h4>
-<p>To fix this error include the full namespace of the function you are trying to use. For example, if you are running <code>List.Flatten()</code> and seeing this error message, try to use <code>DSCore.List.Flatten()</code> instead (DSCore stands for “Design Script Core” and is one of the default packages that comes with Dynamo).</p>
+<p>Um diesen Fehler zu beheben, schließen Sie den vollständigen Namensbereich der Funktion ein, die Sie verwenden möchten. Wenn Sie beispielsweise <code>List.Flatten()</code> ausführen und diese Fehlermeldung angezeigt wird, versuchen Sie, stattdessen <code>DSCore.List.Flatten()</code> zu verwenden (DSCore steht für &quot;Design Script Core&quot; und ist eines der vorgegebenen Pakete, die mit Dynamo geliefert werden).</p>
 
 <h4>Weitere Informationen</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=multiple%20definitions%20for%20found"><span> posts on the Dynamobim forum discussing "<strong>multiple definitions found</strong>"</span></a>.</p>
+<p>Weitere Informationen finden Sie in den <a href="https://forum.dynamobim.com/search?q=multiple%20definitions%20for%20found"><span>Beiträgen im DynamoBIM-Forum zum Thema <strong>multiple definitions found</strong></span></a>.</p>
 
 </body>

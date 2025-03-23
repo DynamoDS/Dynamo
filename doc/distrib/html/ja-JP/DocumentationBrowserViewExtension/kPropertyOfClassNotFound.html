@@ -25,14 +25,14 @@
 <h2>プロパティが見つかりません</h2>
 <p>このエラー メッセージは、使用しているノードでオブジェクトのプロパティにアクセスしているが、そのオブジェクトには該当するプロパティがないことを示しています。 </p>
 
-<p>Properties are values stored in an object. For example, in Dynamo a point object has properties X, Y and Z which represent coordinate values of that given point. A line object has different properties like Length which represents the length of the given line. The line object does not have the <code>X</code>, <code>Y</code> and <code>Z</code> property that the point object does, and the point object does not have the Length property that the line object does.</p>
+<p>プロパティは、オブジェクトに保存される値です。 たとえば Dynamo では、点オブジェクトには、その特定の点の座標値を表すプロパティ X、Y、Z があります。 線分オブジェクトには、その特定の線分の長さを表す Length などの異なるプロパティがあります。 線分オブジェクトには点オブジェクトが持つ <code>X</code>、<code>Y</code>、<code>Z</code> プロパティはなく、点オブジェクトには線分オブジェクトが持つ Length プロパティはありません。</p>
 
-<p>This error will therefore occur if you try to access a specific property on an object that does not have that property. If you for example try to access the Length property on the point object, you would get a <code>“No property called Length on Point could be found”</code>, as the point object does not contain the property Length.  </p>
+<p>つまりこのエラーは、特定のプロパティを持たないオブジェクトでそのプロパティにアクセスしようとした場合に発生します。 たとえば、点オブジェクトで Length プロパティにアクセスしようとすると、点オブジェクトに Length プロパティが含まれていないため、「<code>Length というプロパティが Point に見つかりません</code>」と表示されます。  </p>
 
 <h4>修正方法</h4>
 <p>ノードへの入力として使用しているオブジェクトに、アクセスするプロパティがあることを確認してください。</p>
 
 <h4>詳細情報</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=no%20property%20called%20could%20be%20found"><span> posts on the Dynamobim forum discussing "<strong>no property called could be found</strong>"</span></a>.</p>
+<p>詳細については、<a href="https://forum.dynamobim.com/search?q=no%20property%20called%20could%20be%20found"><span>DynamoBIM のフォーラムで「<strong>no property called could be found</strong>」に関する投稿</span></a>を参照してください。</p>
 
 </body>

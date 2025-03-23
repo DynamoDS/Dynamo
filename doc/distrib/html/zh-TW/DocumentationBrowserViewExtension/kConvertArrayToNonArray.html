@@ -23,12 +23,12 @@
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
 <h2>轉換陣列將導致陣列等級降低</h2>
-<p> This error message indicates that you are using list of lists which is not formatted correctly. For example, using a list like <code>[1,2,3,[4,5,6],7]</code> where the elements are at different levels will trigger this error, but using a list like <code>[[1,2,3],[4,5,6,7]]</code> will not because it is consistently two levels deep.  </p>
+<p> 此錯誤訊息表示您使用的清單格式不正確。 例如，使用如 <code>[1,2,3,[4,5,6],7]</code> 的清單 (其中元素位於不同層級) 將會觸發此錯誤，但使用如 <code>[[1,2,3],[4,5,6,7]]</code> 的清單則否，因為它同樣是兩個層級。 </p>
 
 <h4>如何修正</h4>
-<p>To resolve this issue, make sure the list you are passing as an input to your node has consistent levels (i.e., each element can be accessed using the same level of your list). Another option is to use <a href="https://dictionary.dynamobim.com/2/#/List/Organize/Action/NormalizeDepth"><code>List.NormalizeDepth</code></a> which can make your list levels consistent but might not format the list exactly as you want it. </p>
+<p>若要解決此問題，請確保您傳遞為節點輸入的清單有一致的層級 (亦即可以使用相同的清單層級存取每個元素)。 另一個選項是使用 <a href="https://dictionary.dynamobim.com/2/#/List/Organize/Action/NormalizeDepth"><code>List.ConversionDepth</code></a>，它可以讓清單層級變成一致，但清單格式不一定能符合您的需求。</p>
 
 <h4>更多資訊</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=array%20rank%20reduction"><span> posts on the Dynamobim forum discussing "<strong>array rank reduction</strong>"</span></a>.</p>
+<p>如欲瞭解更多資訊，請查看 <a href="https://forum.dynamobim.com/search?q=array%20rank%20reduction"><span>Dynamobim 論壇上討論「<strong>array rank reduction</strong>」的貼文</span></a>。</p>
 
 </body>

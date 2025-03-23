@@ -23,12 +23,12 @@
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
 <h2>配列を変換すると配列のランクが減ります</h2>
-<p> This error message indicates that you are using list of lists which is not formatted correctly. For example, using a list like <code>[1,2,3,[4,5,6],7]</code> where the elements are at different levels will trigger this error, but using a list like <code>[[1,2,3],[4,5,6,7]]</code> will not because it is consistently two levels deep.  </p>
+<p> このエラー メッセージは、正しくフォーマットされていないリストのリストを使用していることを示しています。 たとえば、<code>[1,2,3,[4,5,6],7]</code>のようなリストを使用すると、要素が異なるレベルにあるためこのエラーが発生しますが、<code>[[1,2,3],[4,5,6,7]]</code>のようなリストを使用すると、2 つのレベルの深さが一致しているためエラーは発生しません。  </p>
 
 <h4>修正方法</h4>
-<p>To resolve this issue, make sure the list you are passing as an input to your node has consistent levels (i.e., each element can be accessed using the same level of your list). Another option is to use <a href="https://dictionary.dynamobim.com/2/#/List/Organize/Action/NormalizeDepth"><code>List.NormalizeDepth</code></a> which can make your list levels consistent but might not format the list exactly as you want it. </p>
+<p>この問題を解決するには、ノードへの入力として渡すリストのレベルが一致していることを確認してください(つまり、リストの同じレベルを使用すると各要素にアクセスすることができます)。 また、<a href="https://dictionary.dynamobim.com/2/#/List/Organize/Action/NormalizeDepth"><code>List.NormalizeDepth</code></a> を使用する方法もあります。この方法では、リスト レベルを一致させることができますが、リストが希望どおりにフォーマットされない可能性があります。 </p>
 
 <h4>詳細情報</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=array%20rank%20reduction"><span> posts on the Dynamobim forum discussing "<strong>array rank reduction</strong>"</span></a>.</p>
+<p>詳細については、<a href="https://forum.dynamobim.com/search?q=array%20rank%20reduction"><span>DynamoBIM のフォーラムで「<strong>array rank reduction</strong>」に関する投稿</span></a>を参照してください。</p>
 
 </body>

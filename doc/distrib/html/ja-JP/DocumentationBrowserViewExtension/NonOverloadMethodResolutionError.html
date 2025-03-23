@@ -23,17 +23,17 @@
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
 <h2>引数タイプが必要ですが、次で呼び出されました</h2>
-<p>This error message indicates that the node you are using is expecting a certain type of input(s) but has received a type of input it cannot use. It is typically followed by additional information regarding what types were passed into the node you are using and what types the node expected to receive. Some of the most common operations that trigger this error are:</p>
+<p>このエラー メッセージは、使用しているノードに特定のタイプの入力が必要であるが、使用できないタイプの入力を受け取ったことを示しています。 通常このメッセージの後には、使用しているノードに渡されたタイプと、ノードが受け取る必要があるタイプに関する情報も表示されます。 このエラーの原因となる最も一般的な操作には次のようなものがあります。</p>
 
 <ul>
-    <li><code>Element.SetParameterByName</code> - try using use the node Element.Parameters to check the parameters in the element. Read more <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20setparameter">posts on the Dynamobim forum discussing "expects argument type setparameter"</a>.</li>
-    <li><code>Geometry.BoundingBox</code> - try using Element.BoundingBox instead, as discussed <a href="https://forum.dynamobim.com/t/geometry-boundingbox-1-3-vs-2-0/21995/3">here</a>. Read more <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20geometry">posts on the Dynamobim forum discussing "expects argument type geometry"</a>.</li>
+    <li><code>Element.SetParameterByName</code> - 要素のパラメータの確認には、ノード Element.Parameters を使用してください。 詳細は、<a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20setparameter">DynamoBIM のフォーラムで「expects argument type setparameter」に関する投稿</a>を参照してください。</li>
+    <li><code>Geometry.BoundingBox</code> - <a href="https://forum.dynamobim.com/t/geometry-boundingbox-1-3-vs-2-0/21995/3">こちら</a>で説明されているように、代わりに Element.BoundingBox を使用してください。 詳細は、<a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20geometry">DynamoBIM のフォーラムで「expects argument type geometry」に関する投稿</a>を参照してください。</li>
 </ul>
 
 <h4>修正方法</h4>
-<p>The section above mentions some approaches you can take to recover from this error. In general, check what input types the node you are using expects. If possible, change the inputs passed into the node to their expected types or check to see if other nodes can be used to achieve the functionality you want. Note that input types can be checked using the <a href="https://dictionary.dynamobim.com/2/#/Input/Object/Action/Type">Object.Type</a> node.</p>
+<p>上記のセクションでは、このエラーを修復するために必要な方法についていくつか説明しています。 一般的には、使用しているノードに必要な入力タイプを確認します。 可能な場合は、ノードに渡される入力を必要なタイプに変更するか、他のノードを使用して目的の機能を実現できるかどうかを確認します。 入力タイプは、<a href="https://dictionary.dynamobim.com/2/#/Input/Object/Action/Type">Object.Type</a> ノードを使用して確認できます。</p>
 
 <h4>詳細情報</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type"><span> posts on the Dynamobim forum discussing "<strong>expects argument type</strong>"</span></a>.</p>
+<p>詳細については、<a href="https://forum.dynamobim.com/search?q=expects%20argument%20type"><span>DynamoBIM のフォーラムで「<strong>expects argument type</strong>」に関する投稿</span></a>を参照してください。</p>
 
 </body>

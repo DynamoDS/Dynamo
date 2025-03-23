@@ -23,12 +23,12 @@
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
 <h2>Převod pole by způsobil snížení dimenze pole</h2>
-<p> This error message indicates that you are using list of lists which is not formatted correctly. For example, using a list like <code>[1,2,3,[4,5,6],7]</code> where the elements are at different levels will trigger this error, but using a list like <code>[[1,2,3],[4,5,6,7]]</code> will not because it is consistently two levels deep.  </p>
+<p> Tato chybová zpráva naznačuje, že používáte seznam seznamů, které nejsou ve správném formátu. Seznam lze použít například takto: <code>[1,2,3,[4,5,6],7]</code>. Prvky se zde nacházejí v různých úrovních, což způsobí chybu. Pokud však seznam použijete takto: <code>[[1,2,3][4,5,6,7]]</code>, k chybě nedojde, protože jsou prvky vždy dvě úrovně hluboko.  </p>
 
 <h4>Jak provést opravu</h4>
-<p>To resolve this issue, make sure the list you are passing as an input to your node has consistent levels (i.e., each element can be accessed using the same level of your list). Another option is to use <a href="https://dictionary.dynamobim.com/2/#/List/Organize/Action/NormalizeDepth"><code>List.NormalizeDepth</code></a> which can make your list levels consistent but might not format the list exactly as you want it. </p>
+<p>Chcete-li tento problém vyřešit, ujistěte se, že seznam, který jste odeslali jako vstup do vašeho uzlu, má konzistentní úrovně (tj. k jednotlivým prvkům lze získat přístup pomocí stejné úrovně seznamu). Další možností je příkaz <a href="https://dictionary.dynamobim.com/2/#/List/Organize/Action/NormalizeDepth"><code>List.NormalizeDepth</code></a>, který umožňuje získat seznam s konzistentními úrovněmi, ale seznam nemusí být ve správném formátu. </p>
 
 <h4>Další informace</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=array%20rank%20reduction"><span> posts on the Dynamobim forum discussing "<strong>array rank reduction</strong>"</span></a>.</p>
+<p>Další informace naleznete v <a href="https://forum.dynamobim.com/search?q=array%20rank%20reduction"><span> příspěvcích na fóru Dynamobim na téma &quot;<strong>array rank reduction</strong>&quot;</span></a>.</p>
 
 </body>

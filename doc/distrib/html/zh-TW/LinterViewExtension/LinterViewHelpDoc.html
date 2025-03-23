@@ -25,13 +25,13 @@
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
     <h3>圖表狀態</h3>
     <h4>概述</h4>
-    <p>The Graph Status extension is where you can find information about issues that Dynamo has detected in your graph. The issues that are shown in the Graph Status panel are separate from warnings and errors that are displayed on individual Dynamo nodes in the workspace. Instead, these are derived from custom rules that can be defined by Dynamo extensions.</p>
+    <p>「圖表狀態」延伸可讓您尋找 Dynamo 在圖表中偵測到之問題的相關資訊。「圖表狀態」面板中展示的問題與工作區中個別 Dynamo 節點顯示的警告和錯誤不同。這些問題是從可由 Dynamo 延伸定義的自訂規則衍生。</p>
     <h4>圖表類型</h4>
-    <p>When a Dynamo extensions utilizes Dynamo's Linting API to register a custom set of rules, the name of that extension will appear as an option in the dropdown labeled <i>Graph Type</i>. Dynamo will check to see if those rules have been broken whenever changes are made to the graph.</p>
-    <p>For example, the Generative Design extension for Dynamo uses this feature to ensure that Dynamo graphs designed for use with Generative Design have the necessary properties required for the graph to work correctly in the Generative Design app. Generative Design requires that graphs have at least one input and one output node, and this is enforced using the rules registered by the Dynamo extension.</p>
+    <p>當 Dynamo 延伸使用 Dynamo 的 Lint 分析 API 註冊自訂規則集時，該延伸的名稱在標示為<i>圖表類型</i>的下拉式清單中會顯示為一個選項。每當圖表發生變更時，Dynamo 會檢查是否違反了這些規則。</p>
+    <p>例如，Dynamo 的「衍生式設計」延伸會使用此功能，確保針對「衍生式設計」而設計的 Dynamo 圖表有必要的性質，以便圖表能在「衍生式設計」應用程式中正常運作。「衍生式設計」要求圖表至少要有一個輸入節點和一個輸出節點，這會利用 Dynamo 延伸所註冊的規則強制執行。</p>
     <h4>節點問題和圖表問題</h4>
-    <p>Rules defined by an extension are registered as one of two types: Graph rules, or Node rules.  If Dynamo detects that one of those rules has been broken in the current graph, a warning with information on how to fix the issue, and a link to where the issue was detected will be shown in one of these two sections.</p>
+    <p>由延伸定義的規則會註冊為兩種類型之一: 圖表規則或節點規則。 如果 Dynamo 偵測到目前圖表違反了其中一個規則，則會在這兩個區段中的其中一個顯示警告，其中包含如何修正問題的資訊，以及一個連結導向偵測到問題的位置。</p>
     <h4>其他資訊</h4>
     <p>每當儲存圖表時，「圖表狀態」延伸會將某些詮釋資料儲存在 Dynamo 檔案中，例如選取的圖表類型，以及上次儲存圖表時是否出現問題。</p>
-    <p>When a new Dynamo graph is created, the Graph Status extension doesn't check for any specific rules automatically. The default selection for the Graph Type will be <i>None</i>. Currently, only one Graph Type can be selected at a time in the Graph Status view.</p>
+    <p>建立新 Dynamo 圖表時，「圖表狀態」延伸不會自動檢查任何特定規則。「圖表類型」的預設選項為<i>無</i>。「圖表狀態」視圖中目前一次只能選取一個圖表類型。</p>
 </body>

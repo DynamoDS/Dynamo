@@ -26,11 +26,11 @@
 <p>Este mensaje de error indica que las líneas generadas por un nodo de PolyCurve no forman una curva cerrada.</p>
 
 <h4>Cómo solucionar este error</h4>
-<p>This might be because the output of the Polycurve node contains null values. Check to see within each list output by the Polycurve node if the curves connect in one continuous line. One way to do this is to hide the geometry preview of all nodes (right click the node or selection of nodes to hide geometry preview) and then <a href="https://dictionary.dynamobim.com/2/#/List/Inspect/Action/GetItemAtIndex"><code>List.GetItemAtIndex</code></a> one list at a time to see. </p>
+<p>Esto puede deberse a que la salida del nodo de PolyCurve contiene valores nulos. Compruebe si, en cada lista generada por el nodo de PolyCurve, las curvas se conectan en una línea continua. Un método consiste en ocultar la vista preliminar de la geometría de todos los nodos (haga clic con el botón derecho en el nodo o la selección de nodos para ocultar la vista preliminar de la geometría) y, a continuación, aplicar <a href="https://dictionary.dynamobim.com/2/#/List/Inspect/Action/GetItemAtIndex"><code>List.GetItemAtIndex</code></a> en una lista cada vez para su visualización. </p>
 
 <p>Además, este error suele aparecer con los contornos de habitación; pruebe a utilizar <a href="https://dictionary.dynamobim.com/2/#/Revit/Elements/Room/Query/CenterBoundary"><code>Room.CenterBoundary</code></a> para extraer las curvas en su lugar.</p>
 
 <h4>Más información</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=curve%20join%20produced%20more%20than%20one%20WIRE%20in%20Polycurve"><span> posts on the Dynamobim forum discussing "<strong>curve join produced more than one wire in polycurve</strong>"</span></a>.</p>
+<p>Para obtener más información, consulte las <a href="https://forum.dynamobim.com/search?q=curve%20join%20produced%20more%20than%20one%20WIRE%20in%20Polycurve"><span>publicaciones del foro de Dynamobim sobre &quot;<strong>curve join produced more than one wire in polycurve</strong>&quot;</span></a>.</p>
 
 </body>

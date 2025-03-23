@@ -26,11 +26,11 @@
 <p>Diese Fehlermeldung weist darauf hin, dass die von einem Polykurvenblock ausgegebenen Linien keine geschlossene Kurve bilden.</p>
 
 <h4>So beheben Sie Fehler</h4>
-<p>This might be because the output of the Polycurve node contains null values. Check to see within each list output by the Polycurve node if the curves connect in one continuous line. One way to do this is to hide the geometry preview of all nodes (right click the node or selection of nodes to hide geometry preview) and then <a href="https://dictionary.dynamobim.com/2/#/List/Inspect/Action/GetItemAtIndex"><code>List.GetItemAtIndex</code></a> one list at a time to see. </p>
+<p>Dies kann daran liegen, dass die Ausgabe des Polykurvenblocks Nullwerte enthält. Aktivieren Sie diese Option, um in jeder Liste, die vom Polykurven-Block ausgegeben wird, zu sehen, ob die Kurven in einer fortlaufenden Linie verbunden sind. Eine Möglichkeit dazu ist das Ausblenden der Geometrievorschau aller Blöcke. (Klicken Sie mit der rechten Maustaste auf den Block oder die Auswahl der Blöcke, um die Geometrievorschau auszublenden). Verwenden Sie dann <a href="https://dictionary.dynamobim.com/2/#/List/Inspect/Action/GetItemAtIndex"><code>List.GetItemAtIndex</code></a> für eine Liste nach der anderen. </p>
 
 <p>Dieser Fehler tritt auch häufig bei Raumbegrenzungen auf. Versuchen Sie, die Kurven stattdessen mit <a href="https://dictionary.dynamobim.com/2/#/Revit/Elements/Room/Query/CenterBoundary"><code>Room.CenterBoundary</code></a> zu extrahieren.</p>
 
 <h4>Weitere Informationen</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=curve%20join%20produced%20more%20than%20one%20WIRE%20in%20Polycurve"><span> posts on the Dynamobim forum discussing "<strong>curve join produced more than one wire in polycurve</strong>"</span></a>.</p>
+<p>Weitere Informationen finden Sie in den <a href="https://forum.dynamobim.com/search?q=curve%20join%20produced%20more%20than%20one%20WIRE%20in%20Polycurve"><span>Beiträgen im DynamoBIM-Forum zum Thema <strong>curve join produced more than one wire in polycurve</strong></span></a>.</p>
 
 </body>

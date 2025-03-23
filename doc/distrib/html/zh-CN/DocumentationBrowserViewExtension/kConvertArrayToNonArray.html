@@ -23,12 +23,12 @@
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
 <h2>转换数组会导致数组维数减少</h2>
-<p> This error message indicates that you are using list of lists which is not formatted correctly. For example, using a list like <code>[1,2,3,[4,5,6],7]</code> where the elements are at different levels will trigger this error, but using a list like <code>[[1,2,3],[4,5,6,7]]</code> will not because it is consistently two levels deep.  </p>
+<p>此错误消息表示您使用的列表格式不正确。 例如，使用诸如 <code>[1,2,3,[4,5,6],7]</code> 之类的列表(其中元素位于不同的级别)将触发此错误，但使用诸如 <code>[[1,2,3],[4,5,6,7]]</code> 之类的列表将不会触发此错误，因为该列表始终是两个级别的深度。  </p>
 
 <h4>如何修复</h4>
-<p>To resolve this issue, make sure the list you are passing as an input to your node has consistent levels (i.e., each element can be accessed using the same level of your list). Another option is to use <a href="https://dictionary.dynamobim.com/2/#/List/Organize/Action/NormalizeDepth"><code>List.NormalizeDepth</code></a> which can make your list levels consistent but might not format the list exactly as you want it. </p>
+<p>要解决此问题，请确保要作为输入传递到节点的列表具有一致的级别(即，可以使用列表的相同级别访问每个元素)。 另一个选项是使用 <a href="https://dictionary.dynamobim.com/2/#/List/Organize/Action/NormalizeDepth"><code>List.NormalizeDepth</code></a>，这可使列表级别保持一致，但可能不会完全按照您的需要设置列表的格式。 </p>
 
 <h4>更多信息</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=array%20rank%20reduction"><span> posts on the Dynamobim forum discussing "<strong>array rank reduction</strong>"</span></a>.</p>
+<p>要了解更多信息，请查看 <a href="https://forum.dynamobim.com/search?q=array%20rank%20reduction"><span>Dynamobim 论坛上讨论“<strong>array rank reduction</strong>”的帖子</span></a>。</p>
 
 </body>
