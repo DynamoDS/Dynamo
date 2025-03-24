@@ -63,7 +63,7 @@
                 Width="12"
                 Height="12"
                 Fill="#ffffff"
-                Stroke="#B385F2"
+                Stroke="#5BC9BD"
                 StrokeThickness="3">
                 <Ellipse.ToolTip>
                     <ToolTip Style="{StaticResource GenericToolTipLight}">
