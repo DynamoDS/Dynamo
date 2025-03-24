@@ -31,7 +31,7 @@ namespace Dynamo.Controls
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
         private const int previewDelay = 1000;
-        private const int autoCompleteMarkerDelay = 750;
+        private const int autoCompleteMarkerDelay = 500;
 
         /// <summary>
         /// If false - hides preview control until it will be explicitly shown.
@@ -562,7 +562,7 @@ namespace Dynamo.Controls
 
         private void TryHideAutoCompleteMaker()
         {
-            if (IsMouseOver) return;
+            if (TopControl.IsMouseOver) return;
 
             //hide the node autocomplete marker if mouse leaves the node
             var ports = new List<PortViewModel>(ViewModel.InPorts);
