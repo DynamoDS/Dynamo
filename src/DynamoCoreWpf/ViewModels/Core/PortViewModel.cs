@@ -12,6 +12,7 @@ using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
+using static Dynamo.ViewModels.SearchViewModel;
 
 namespace Dynamo.ViewModels
 {
@@ -115,21 +116,36 @@ namespace Dynamo.ViewModels
             get => nodeAutoCompleteMarkerVisible;
             set
             {
-                if (!NodeViewModel.DynamoViewModel.EnableNodeAutoComplete ||
-                    NodeViewModel.WorkspaceViewModel.IsConnecting ||
-                    NodeViewModel.IsFrozen ||
-                    NodeViewModel.IsTransient || PortModel.Connectors.Count > 0)
+                if (!IsAutoCompleteMarkerDisabled() && CanHaveAutoCompleteMarker())
                 {
-                    nodeAutoCompleteMarkerVisible = false;
+                    nodeAutoCompleteMarkerVisible = value;
                 }
                 else
                 {
-                    nodeAutoCompleteMarkerVisible = value;
+                    nodeAutoCompleteMarkerVisible = false;
                 }
                 RaisePropertyChanged(nameof(NodeAutoCompleteMarkerVisible));
             }
         }
-
+        private bool IsAutoCompleteMarkerDisabled()
+        {
+            // True if autocomplete is turned off globally
+            // Or a connector is being created now
+            // Or node is frozen.
+            // Or node is transient state.
+            return !NodeViewModel.DynamoViewModel.EnableNodeAutoComplete ||
+                   NodeViewModel.WorkspaceViewModel.IsConnecting ||
+                   NodeViewModel.IsFrozen ||
+                   NodeViewModel.IsTransient;
+        }
+        private bool CanHaveAutoCompleteMarker()
+        {
+            return PortModel.Connectors.Count == 0
+                   && NodeViewModel.NodeModel is not CodeBlockNodeModel
+                   && NodeViewModel.NodeModel is not CoreNodeModels.Watch
+                   && NodeViewModel.NodeModel is not PythonNodeModels.PythonNode
+                   && NodeViewModel.NodeModel is not PythonNodeModels.PythonStringNode;
+        }
         /// <summary>
         /// The height of port.
         /// </summary>
