@@ -547,14 +547,17 @@ namespace Dynamo.Controls
 
             if (ViewModel.NodeModel is not CodeBlockNodeModel && ViewModel.NodeModel is not CoreNodeModels.Watch && ViewModel.NodeModel is not PythonNodeModels.PythonNode && ViewModel.NodeModel is not PythonNodeModels.PythonStringNode)
             {
-                var ports = new List<PortViewModel>(ViewModel.InPorts);
-                ports.AddRange(ViewModel.OutPorts);
-
-                foreach (PortViewModel port in ports)
+                //For input ports, if there are connectors present, do not show marker.
+                foreach (PortViewModel port in ViewModel.InPorts)
                 {
-                    //if there are connectors present, do not show marker.
                     //We check for connector count because 'IsConnected' returns true for use of default value
                     port.NodeAutoCompleteMarkerVisible = port.PortModel.Connectors.Count < 1;
+                }
+
+                //For output ports, we always show the marker.
+                foreach (PortViewModel port in ViewModel.OutPorts)
+                {
+                    port.NodeAutoCompleteMarkerVisible = true;
                 }
             }
         }
