@@ -23,42 +23,42 @@
 <!-- and custom styling in Dynamo sidepanel. -->
 
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
-    <form action="https://forum.dynamobim.com/t/new-feature-preview-python-3-support-issue-thread/51649"><input type="submit" class="button" value="Report Python 3 node issue" style="font-size:medium;" /></form>
+    <form action="https://forum.dynamobim.com/t/new-feature-preview-python-3-support-issue-thread/51649"><input type="submit" class="button" value="Сообщить о проблеме с узлом Python 3" style="font-size:medium;"/></form>
     <h2>Преобразование из Python 2 в Python 3</h2>
-    <p>The Python Software Foundation (PSF) officially ended support for Python 2 on January 1, 2020. Since version 2.7, Dynamo has switched to CPython3, a Python engine that provides access to Python 3 inside of Dynamo.</p>
+    <p>С 1 января 2020 г. компания Python Software Foundation (PSF) официально прекратила поддержку Python 2. Начиная с версии 2.7, в Dynamo используется CPython3 — механизм Python, который обеспечивает доступ к Python 3 в Dynamo.</p>
    
     <h3>Почему мы изменили версию Python?</h3>
-    <p>Dynamo, like many other C#-based environments, uses a tool called IronPython to move data between .NET objects and Python scripts. As IronPython has not been updated to Python 3, Dynamo has transitioned to use CPython, the standard native Python interpreter.</p>
-    <p>Moving Dynamo to Python 3 allows Dynamo users to access popular modern libraries and continue to access new platform features, essential maintenance, and security patches. In addition, Dynamo graphs can benefit from Python libraries with native extensions that were previously not accessible, such as NumPy, SciPy, and Pandas.</p>
+    <p>Как и многие другие среды на языке C#, Dynamo использует инструмент IronPython для переноса данных между объектами .NET и сценариями Python. Поскольку инструмент IronPython не был обновлен до версии Python 3, в Dynamo теперь используется CPython — стандартный интерпретатор языка Python.</p>
+    <p>Переход на Python 3 позволяет пользователям Dynamo получать доступ к популярным современным библиотекам, новым возможностям платформы, обслуживанию и исправлениям системы безопасности. Кроме того, для графиков Dynamo можно использовать библиотеки Python с собственными расширениями, которые ранее были недоступны, например NumPy, SciPy и Pandas.</p>
 
     <h3>Совместимость с предыдущими версиями</h3>
-    <p>There is no guarantee that any code written in the CPython3 environment will work in previous versions of Dynamo. Code authors should ensure backwards compatibility with both the IronPython2 and CPython3 versions as desired.</p>
+    <p>Возможность использования кода, написанного в среде CPython3, в предыдущих версиях Dynamo не гарантируется. При необходимости разработчики кода должны обеспечить совместимость версий IronPython2 и CPython3 с предыдущими версиями среды разработки.</p>
     
     <h3>Последствия изменений для пользователей и графиков с элементами на языке Python</h3>
     <p>Если вы не являетесь разработчиком графика или узлов Python, которые он содержит, обратитесь к разработчику и сообщите ему об этих нововведениях, чтобы он мог внести необходимые изменения.</p>
     <p>Если вы разработчик графиков, ознакомьтесь с приведенными ниже инструкциями, чтобы узнать, как эти изменения могут повлиять на узлы Python и как выполнить обновление.</p>
 
     <p>Язык Python 3 в основном похож на Python 2; отличается синтаксис и основная библиотека, что позволяет сделать Python более последовательным и доступным языком для изучения, а также обеспечивает улучшенную поддержку Unicode.</p>
-    <p>Some Python 2 programs will run as normal on Python 3, but a lot of common constructs will require small changes, including the print statement. Luckily, many of these can be automated.</p>
+    <p>Некоторые программы, написанные на Python 2, будут свободно работать на Python 3, однако многие часто используемые конструкции, в том числе оператор печати, потребуют внесения небольших изменений. К счастью, в большинстве случаев процесс можно автоматизировать.</p>
 
     <h3>Обновление узлов Python до версии Python 3 </h3>
-    <p>Typically, Python scripts can run using either the IronPython2 or CPython3 engines. For any cases where your script contains syntax that has changed between versions, we have made it easier for you to update your script by including an automatic code converter in the Python node called the Migration Assistant.</p>
-    <p>To update your script with the Migration Assistant, open the Python Node editor, switch to the CPython3 engine using the drop-down, and click the 2->3 icon. Dynamo will let you know which changes are needed and give you the option to decline or accept the conversion.</p>
-    <p>As the Python Script From String node simply executes the Python code input into it and does not provide a text editor environment, it does not have access to the Migration Assistant. If you wish to use this feature, you will need to copy and paste your code into a Python node temporarily before copying and pasting it back into your code block node.</p>
+    <p>Обычно сценарии Python можно запустить с помощью механизмов IronPython2 или CPython3. В узел Python добавлен автоматический преобразователь кода под названием Migration Assistant, чтобы вы могли легко обновить сценарий, если он содержит синтаксис, который был изменен в новой версии.</p>
+    <p>Чтобы обновить сценарий с помощью Migration Assistant, откройте редактор узлов Python, перейдите к CPython3 с помощью раскрывающегося списка и щелкните значок «2-3». Dynamo сообщит, какие изменения необходимы, и предложит отклонить или принять преобразование.</p>
+    <p>Поскольку узел Python Script From String просто выполняет ввод кода Python и не предоставляет среду текстового редактора, у него нет доступа к расширению Migration Assistant. Если требуется использовать эту функцию, временно скопируйте и вставьте код в узел Python перед копированием и вставкой кода обратно в узел Code Block.</p>
 
     <h3>Подробнее</h3>
     <p>Чтобы подробнее узнать о различиях между двумя версиями Python, начните с изучения двух следующих внешних ссылок:<ul>
-            <li><a href="https://docs.python.org/3/howto/pyporting.html">The official "Porting Python 2 Code to Python 3" guide</a></li>
-            <li><a href="http://python3porting.com/">Supporting Python 3: An in-depth guide" guide</a></li>
+            <li><a href="https://docs.python.org/3/howto/pyporting.html">Официальное руководство по переносу кода Python 2 в Python 3</a></li>
+            <li><a href="http://python3porting.com/">Поддержка Python 3: подробное руководство</a></li>
         </ul>
     </p>
 
     <h3>Основные изменения синтаксиса в Python 3</h3>
-    <p>The list below explains some of the key syntax changes between Python 2 and Python 3. This is selection of some of the most widely used features that have been affected, not an exhaustive list.</p>
+    <p>Ниже приведен список основных изменений в синтаксисе Python 2 и Python 3. Это лишь некоторые из часто используемых функций, которые были затронуты, список ими не исчерпывается.</p>
 
 
     <h4><b>Функция печати</b></h4>
-    <p>The print syntax is probably the most widely-known change. Even though it is not often used in Dynamo, here is an example showing how the <code>print</code> statement has changed.</p>
+    <p>Наиболее значительные изменения внесены в синтаксис печати. Хотя оператор <code>print</code> в Dynamo используется не часто, приведем пример, демонстрирующий его изменение.</p>
 
     <table>
         <tr>
@@ -73,7 +73,7 @@
     </table>
 
     <h4><b>Деление целых чисел</b></h4>
-    <p>This change will not raise any exceptions in your script, but it might affect the output. When presented with integer operands, the default division operator behavior in Python 2.x is to use classic division which truncates the decimal place and returns an integer. When given a pair of floating-point operands, it returns the actual floating-point quotient (aka true division).</p>
+    <p>Это изменение не приведет к появлению исключений в сценарии, но может повлиять на вывод. При наличии целочисленных операндов в Python 2.x используется оператор деления по умолчанию, который усекает десятичный знак и возвращает целое число. При наличии пары операндов с плавающей запятой возвращается фактическое частное с плавающей запятой (также используется термин True Division («истинное деление»)).</p>
 
     <table>
         <tr>
@@ -94,7 +94,7 @@
     </table>
 
     <h4><b>xrange</b></h4>
-    <p><code>xrange</code> is usually used in combination with a for-loop or list-comprehensive statements. When you only need to iterate once, it is generally faster to iterate over <code>xrange()</code> compared with <code>range()</code>. In Python 3, the <code>range()</code> was implemented in the same way as the <code>xrange()</code> function, so that a dedicated <code>xrange()</code> function no longer exists. Instead, xrange() raises a NameError.</p>
+    <p>Функция <code>xrange</code> обычно используется в сочетании с операторами циклов for или генерирования списков. Если требуется выполнить итерацию только один раз, это можно сделать быстрее с помощью функции <code>xrange()</code>, а не <code>range()</code>. В Python 3 функция <code>range()</code> реализована таким же образом, как и <code>xrange()</code>, поэтому <code>xrange()</code> как отдельная функция более не существует. При использовании функции xrange() появится ошибка NameError.</p>
 
     <table>
         <tr>
@@ -109,7 +109,7 @@
     </table>
 
     <h4><b>Вызов и обработка исключений</b></h4>
-    <p>Where Python 2 accepts both notations - the ‘old’ and the ‘new’ syntax - Python 3 raises a SyntaxError if we don’t enclose the exception argument in parentheses. The handling of exceptions has also slightly changed in Python 3, where we now need to include the “as” keyword.</p>
+    <p>В Python 2 допускаются записи с использованием «старого» и «нового» синтаксиса, а в Python 3, если не заключить аргумент исключения в круглые скобки, появится ошибка SyntaxError. Обработка исключений также незначительно изменилась в Python 3: теперь необходимо добавить ключевое слово as.</p>
 
     <table>
         <tr>
@@ -117,15 +117,15 @@
             <th class="hidden-sm">Python 3</th>
         </tr>
         <tr>
-            <td><code> <span class="o">raise</span> <span class="e">IOError</span>, <span class="s">"file error"</span> </code> <samp>// IOError: file error</samp></td>
+            <td><code> <span class="o">raise</span> <span class="e">IOError</span>, <span class="s">&quot;file error&quot;</span> </code> <samp>// IOError: file error</samp></td>
             <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
-            <td><code> <span class="o">raise</span> <span class="e">IOError</span>(<span class="s">"file error"</span>) </code> <samp>// OSError: file error</samp></td>
+            <td><code> <span class="o">raise</span> <span class="e">IOError</span>(<span class="s">&quot;file error&quot;</span>) </code> <samp>// OSError: file error</samp></td>
         </tr>
         <tr class="spaced-sm">
             <td class="hidden-lg">Python 2</td>
-            <td><code> <span class="nl"> <span class="o">try:</span> <span class="nl">let_us_cause_a_NameError</span> </span> <span class="nl"> <span class="o">except</span> <span class="e">NameError</span>, err: <span class="nl"><span class="k">print</span> err, <span class="s">'--> our error message'</span></span> </span> </code> <samp>// IOError: file error</samp></td>
+            <td><code> <span class="nl"> <span class="o">try:</span> <span class="nl">let_us_cause_a_NameError</span> </span> <span class="nl"> <span class="o">except</span> <span class="e">NameError</span>, err: <span class="nl"><span class="k">print</span> err, <span class="s">'-- our error message'</span></span> </span> </code> <samp>// IOError: file error</samp></td>
             <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
-            <td><code> <span class="nl"> <span class="o">try:</span> <span class="nl">let_us_cause_a_NameError</span> </span> <span class="nl"> <span class="o">except</span> <span class="e">NameError</span> <span class="o">as</span> err: <span class="nl"><span class="k">print</span>(err, <span class="s">'--> our error message'</span>)</span> </span> </code> <samp>// OSError: file error</samp></td>
+            <td><code> <span class="nl"> <span class="o">try:</span> <span class="nl">let_us_cause_a_NameError</span> </span> <span class="nl"> <span class="o">except</span> <span class="e">NameError</span> <span class="o">as</span> err: <span class="nl"><span class="k">print</span>(err, <span class="s">'-- our error message'</span>)</span> </span> </code> <samp>// OSError: file error</samp></td>
         </tr>
     </table>
 </body>

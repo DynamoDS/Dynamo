@@ -24,12 +24,12 @@
 
 <h2>Múltiplas definições encontradas</h2>
 <p>Essa mensagem de erro significa que o mesmo método ou nome de classe é usado no DynamoCore e em diferentes pacotes do Dynamo que você está carregando para o gráfico, e o Dynamo não sabe qual método ou classe (ou seja, de qual pacote) usar.</p>  
-<p>This warning usually happens when using DesignScript in a CodeBlock. For example, if you are trying to Flatten a list in a CodeBlock, you would use <code>List.Flatten()</code>. If one of the 3rd party packages you are loading also have a class called <code>List</code>, you will see this warning.</p>
+<p>Esse aviso normalmente ocorre ao usar o DesignScript em um CodeBlock. Por exemplo, se você estivesse tentando aplainar uma lista em um CodeBlock, você usaria <code>List.Flatten()</code>. Se um dos pacotes de terceiros que você está carregando também tiver uma classe denominada <code>List</code>, você verá esse aviso.</p>
 
 <h4>Como corrigir</h4>
-<p>To fix this error include the full namespace of the function you are trying to use. For example, if you are running <code>List.Flatten()</code> and seeing this error message, try to use <code>DSCore.List.Flatten()</code> instead (DSCore stands for “Design Script Core” and is one of the default packages that comes with Dynamo).</p>
+<p>Para corrigir esse erro, inclua o espaço de nome completo da função que você está tentando usar. Por exemplo, se você estiver executando <code>List.Flatten()</code> e vendo essa mensagem de erro, tente usar <code>DSCore.List.Flatten()</code> em vez disso (DSCore significa “Design Script Core” e é um dos pacotes padrão fornecidos com o Dynamo).</p>
 
 <h4>Mais informações</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=multiple%20definitions%20for%20found"><span> posts on the Dynamobim forum discussing "<strong>multiple definitions found</strong>"</span></a>.</p>
+<p>Para saber mais, consulte as <a href="https://forum.dynamobim.com/search?q=multiple%20definitions%20for%20found"><span> publicações no fórum Dynamobim que abordam “<strong>multiple definitions found</strong>”</span></a>.</p>
 
 </body>

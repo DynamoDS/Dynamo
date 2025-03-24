@@ -24,12 +24,12 @@
 
 <h2>Найдено несколько определений</h2>
 <p>Это сообщение об ошибке означает, что в DynamoCore и других пакетах Dynamo, загружаемых для графика, используется одинаковое имя метода или класса, в результате чего Dynamo не может определить, какой метод или класс (т. е. из какого пакета) следует использовать.</p>  
-<p>This warning usually happens when using DesignScript in a CodeBlock. For example, if you are trying to Flatten a list in a CodeBlock, you would use <code>List.Flatten()</code>. If one of the 3rd party packages you are loading also have a class called <code>List</code>, you will see this warning.</p>
+<p>Это предупреждение обычно появляется при использовании DesignScript в узле CodeBlock. Например, при попытке выровнять список в блоке кода используется команда <code>List.Flatten()</code>. Если в загружаемом пакете стороннего разработчика также имеется класс с именем <code>List</code>, появится это предупреждение.</p>
 
 <h4>Устранение проблемы</h4>
-<p>To fix this error include the full namespace of the function you are trying to use. For example, if you are running <code>List.Flatten()</code> and seeing this error message, try to use <code>DSCore.List.Flatten()</code> instead (DSCore stands for “Design Script Core” and is one of the default packages that comes with Dynamo).</p>
+<p>Для устранения этой ошибки используйте полное пространство имен используемой функции. Например, если это сообщение об ошибке появляется при попытке запустить функцию <code>List.Flatten()</code>, попробуйте вместо нее использовать функцию <code>DSCore.List.Flatten()</code> (DSCore расшифровывается как Design Script Core — пакет, поставляемый с Dynamo по умолчанию).</p>
 
 <h4>Дополнительные сведения</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=multiple%20definitions%20for%20found"><span> posts on the Dynamobim forum discussing "<strong>multiple definitions found</strong>"</span></a>.</p>
+<p>Дополнительные сведения можно найти в <a href="https://forum.dynamobim.com/search?q=multiple%20definitions%20for%20found"><span>публикациях на форуме Dynamobim с обсуждением ошибки <strong>multiple definitions found</strong></span></a>.</p>
 
 </body>

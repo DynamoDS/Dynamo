@@ -24,12 +24,12 @@
 
 <h2>複数の設定が見つかりました</h2>
 <p>このエラー メッセージは、グラフにロードしている DynamoCore などの各種の Dynamo パッケージで、同じメソッドまたはクラス名が使用されており、Dynamo でどのメソッドまたはクラスを使用するか(つまり、どのパッケージから使用するか)を判断できないことを意味しています。</p>  
-<p>This warning usually happens when using DesignScript in a CodeBlock. For example, if you are trying to Flatten a list in a CodeBlock, you would use <code>List.Flatten()</code>. If one of the 3rd party packages you are loading also have a class called <code>List</code>, you will see this warning.</p>
+<p>通常この警告は、CodeBlock 内で DesignScript を使用しているときに発生します。 たとえば、CodeBlock 内のリストをフラット化する場合は、<code>List.Flatten()</code>を使用します。 ロードしているサード パーティ製パッケージのいずれかに <code>List</code> というクラスがあると、この警告が表示されます。</p>
 
 <h4>修正方法</h4>
-<p>To fix this error include the full namespace of the function you are trying to use. For example, if you are running <code>List.Flatten()</code> and seeing this error message, try to use <code>DSCore.List.Flatten()</code> instead (DSCore stands for “Design Script Core” and is one of the default packages that comes with Dynamo).</p>
+<p>このエラーを修正するには、使用する関数の完全な名前空間を含めます。 たとえば、<code>List.Flatten()</code>の実行中にこのエラー メッセージが表示される場合は、代わりに <code>DSCore.List.Flatten()</code>を使用します(DSCore は「Design Script Core」を表し、Dynamo に付属の既定のパッケージの 1 つです)。</p>
 
 <h4>詳細情報</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=multiple%20definitions%20for%20found"><span> posts on the Dynamobim forum discussing "<strong>multiple definitions found</strong>"</span></a>.</p>
+<p>詳細については、<a href="https://forum.dynamobim.com/search?q=multiple%20definitions%20for%20found"><span>DynamoBIM のフォーラムで「<strong>multiple definitions found</strong>」に関する投稿</span></a>を参照してください。</p>
 
 </body>

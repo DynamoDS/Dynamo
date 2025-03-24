@@ -24,12 +24,12 @@
 
 <h2>Znaleziono wiele definicji</h2>
 <p>Ten komunikat o błędzie oznacza, że ta sama nazwa metody lub klasy jest używana w pakiecie DynamoCore oraz w innych pakietach dodatku Dynamo wczytywanych dla używanego wykresu i dodatek Dynamo nie wie, której metody lub klasy (z którego pakietu) użyć.</p>  
-<p>This warning usually happens when using DesignScript in a CodeBlock. For example, if you are trying to Flatten a list in a CodeBlock, you would use <code>List.Flatten()</code>. If one of the 3rd party packages you are loading also have a class called <code>List</code>, you will see this warning.</p>
+<p>To ostrzeżenie jest zazwyczaj zwracane w przypadku używania języka DesignScript w węźle CodeBlock. Jeśli przykładowo chcesz spłaszczyć listę w węźle CodeBlock, użyj <code>List.Flatten()</code>. Jeśli jeden z wczytywanych pakietów dostawców zewnętrznych również zawiera klasę o nazwie <code>List</code>, pojawi się to ostrzeżenie.</p>
 
 <h4>Jak to naprawić</h4>
-<p>To fix this error include the full namespace of the function you are trying to use. For example, if you are running <code>List.Flatten()</code> and seeing this error message, try to use <code>DSCore.List.Flatten()</code> instead (DSCore stands for “Design Script Core” and is one of the default packages that comes with Dynamo).</p>
+<p>Aby naprawić ten błąd, dołącz pełną przestrzeń nazw funkcji, której chcesz użyć. Jeśli na przykład uruchomisz metodę <code>List.Flatten()</code> i pojawi się ten komunikat o błędzie, spróbuj zamiast tego użyć metody <code>DSCore.List.Flatten()</code> (DSCore to skrót od „Design Script Core” — jest on jednym z domyślnych pakietów dostarczanych z dodatkiem Dynamo).</p>
 
 <h4>Więcej informacji</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=multiple%20definitions%20for%20found"><span> posts on the Dynamobim forum discussing "<strong>multiple definitions found</strong>"</span></a>.</p>
+<p>Aby dowiedzieć się więcej, sprawdź <a href="https://forum.dynamobim.com/search?q=multiple%20definitions%20for%20found"><span>wpisy na forum Dynamobim z frazą „<strong>multiple definitions found</strong>”</span></a>.</p>
 
 </body>

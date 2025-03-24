@@ -23,12 +23,12 @@
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
 <h2>Преобразование массива в приведет к снижению ранга массива</h2>
-<p> This error message indicates that you are using list of lists which is not formatted correctly. For example, using a list like <code>[1,2,3,[4,5,6],7]</code> where the elements are at different levels will trigger this error, but using a list like <code>[[1,2,3],[4,5,6,7]]</code> will not because it is consistently two levels deep.  </p>
+<p> Это сообщение об ошибке указывает, что используется неправильно отформатированный список списков. Например, эта ошибка возникнет при использовании списка <code>[1,2,3,[4,5,6],7]</code> с элементами на различных уровнях, однако при использовании списка <code>[[1,2,3],[4,5,6,7]]</code> она не появится, так как список состоит из двух уровней, расположенных последовательно.  </p>
 
 <h4>Устранение проблемы</h4>
-<p>To resolve this issue, make sure the list you are passing as an input to your node has consistent levels (i.e., each element can be accessed using the same level of your list). Another option is to use <a href="https://dictionary.dynamobim.com/2/#/List/Organize/Action/NormalizeDepth"><code>List.NormalizeDepth</code></a> which can make your list levels consistent but might not format the list exactly as you want it. </p>
+<p>Для устранения этой проблемы убедитесь, что в списке, передаваемом в качестве входного значения, уровни расположены последовательно (то есть, для доступа к каждому элементу используется один и тот же уровень списка). Кроме этого, можно воспользоваться узлом <a href="https://dictionary.dynamobim.com/2/#/List/Organize/Action/NormalizeDepth"><code>List.NormalizeDepth</code></a>, который позволит расположить уровни списка последовательно, хотя при этом может быть нарушено желаемое форматирование. </p>
 
 <h4>Дополнительные сведения</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=array%20rank%20reduction"><span> posts on the Dynamobim forum discussing "<strong>array rank reduction</strong>"</span></a>.</p>
+<p>Дополнительные сведения можно найти в <a href="https://forum.dynamobim.com/search?q=array%20rank%20reduction"><span>публикациях на форуме Dynamobim с обсуждением ошибки <strong>array rank reduction</strong></span></a>.</p>
 
 </body>

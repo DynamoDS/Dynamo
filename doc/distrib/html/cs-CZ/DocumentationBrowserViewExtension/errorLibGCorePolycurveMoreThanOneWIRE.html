@@ -26,11 +26,11 @@
 <p>Tato chybová zpráva naznačuje, že úsečky na výstupu uzlu PolyCurve neutvářejí uzavřenou křivku.</p>
 
 <h4>Jak provést opravu</h4>
-<p>This might be because the output of the Polycurve node contains null values. Check to see within each list output by the Polycurve node if the curves connect in one continuous line. One way to do this is to hide the geometry preview of all nodes (right click the node or selection of nodes to hide geometry preview) and then <a href="https://dictionary.dynamobim.com/2/#/List/Inspect/Action/GetItemAtIndex"><code>List.GetItemAtIndex</code></a> one list at a time to see. </p>
+<p>K tomu může dojít, pokud výstup uzlu PolyCurve obsahuje hodnoty null. Zkontrolujte u každého seznamu uzlu PolyCurve, zda jsou křivky souvisle propojeny. To lze například provést skrytím náhledu geometrie všech uzlů (náhled skryjete kliknutím pravým tlačítkem na uzel nebo výběr uzlů) a následnou kontrolou jednotlivých seznamů pomocí uzlu <a href="https://dictionary.dynamobim.com/2/#/List/Inspect/Action/GetItemAtIndex"><code>List.GetItemAtIndex</code></a>. </p>
 
 <p>Tato chyba také často vzniká u hranic místnosti – zkuste místo nich získat křivky uzlem <a href="https://dictionary.dynamobim.com/2/#/Revit/Elements/Room/Query/CenterBoundary"><code>Room.CenterBoundary</code></a>.</p>
 
 <h4>Další informace</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=curve%20join%20produced%20more%20than%20one%20WIRE%20in%20Polycurve"><span> posts on the Dynamobim forum discussing "<strong>curve join produced more than one wire in polycurve</strong>"</span></a>.</p>
+<p>Další informace naleznete v <a href="https://forum.dynamobim.com/search?q=curve%20join%20produced%20more%20than%20one%20WIRE%20in%20Polycurve"><span> příspěvcích na fóru Dynamobim na téma &quot;<strong>curve join produced more than one wire in polycurve</strong>&quot;</span></a>.</p>
 
 </body>

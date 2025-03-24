@@ -26,11 +26,11 @@
 <p>Ce message d'erreur indique que les lignes générées par un noeud de polycourbe ne forment pas une courbe fermée.</p>
 
 <h4>Comment corriger cette erreur?</h4>
-<p>This might be because the output of the Polycurve node contains null values. Check to see within each list output by the Polycurve node if the curves connect in one continuous line. One way to do this is to hide the geometry preview of all nodes (right click the node or selection of nodes to hide geometry preview) and then <a href="https://dictionary.dynamobim.com/2/#/List/Inspect/Action/GetItemAtIndex"><code>List.GetItemAtIndex</code></a> one list at a time to see. </p>
+<p>Cela peut être dû au fait que la sortie du noeud contient des valeurs NULL. Vérifiez dans chaque sortie de liste du noeud de polycourbe si les courbes se rejoignent en une ligne continue. Pour ce faire, vous pouvez masquer l'aperçu de la géométrie de tous les noeuds (cliquez avec le bouton droit de la souris sur le noeud ou la sélection de noeuds pour masquer l'aperçu de la géométrie), puis exécuter <a href="https://dictionary.dynamobim.com/2/#/List/Inspect/Action/GetItemAtIndex"><code>List.GetItemAtIndex</code></a> sur une liste à la fois pour l'afficher. </p>
 
 <p>En outre, cette erreur survient souvent avec les limites de pièce. Essayez plutôt d'utiliser <a href="https://dictionary.dynamobim.com/2/#/Revit/Elements/Room/Query/CenterBoundary"><code>Room.CenterBoundary</code></a> pour extraire les courbes.</p>
 
 <h4>Plus d'informations</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=curve%20join%20produced%20more%20than%20one%20WIRE%20in%20Polycurve"><span> posts on the Dynamobim forum discussing "<strong>curve join produced more than one wire in polycurve</strong>"</span></a>.</p>
+<p>Pour en savoir plus, consultez les <a href="https://forum.dynamobim.com/search?q=curve%20join%20produced%20more%20than%20one%20WIRE%20in%20Polycurve"><span>billets publiés sur le forum Dynamobim sur le sujet <strong>&quot;curve join produced more than one wire in polycurve&quot; (la jonction des courbes a produit plusieurs fils dans la polycourbe)</strong></span></a>.</p>
 
 </body>

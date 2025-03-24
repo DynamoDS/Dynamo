@@ -25,13 +25,13 @@
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
     <h3>图形状态</h3>
     <h4>概述</h4>
-    <p>The Graph Status extension is where you can find information about issues that Dynamo has detected in your graph. The issues that are shown in the Graph Status panel are separate from warnings and errors that are displayed on individual Dynamo nodes in the workspace. Instead, these are derived from custom rules that can be defined by Dynamo extensions.</p>
+    <p>在“图形状态”扩展中，可以找到 Dynamo 在图形中检测到的问题的相关信息。 “图形状态”面板中显示的问题与工作空间中各个 Dynamo 节点上显示的警告和错误是分开的。 相反，它们源自可以由 Dynamo 扩展定义的自定义规则。</p>
     <h4>图形类型</h4>
-    <p>When a Dynamo extensions utilizes Dynamo's Linting API to register a custom set of rules, the name of that extension will appear as an option in the dropdown labeled <i>Graph Type</i>. Dynamo will check to see if those rules have been broken whenever changes are made to the graph.</p>
-    <p>For example, the Generative Design extension for Dynamo uses this feature to ensure that Dynamo graphs designed for use with Generative Design have the necessary properties required for the graph to work correctly in the Generative Design app. Generative Design requires that graphs have at least one input and one output node, and this is enforced using the rules registered by the Dynamo extension.</p>
+    <p>当 Dynamo 扩展利用 Dynamo 的验证 API 注册一组自定义规则时，该扩展的名称将作为选项显示在标有<i>“图形类型”</i>的下拉列表中。 每当对图形进行更改时，Dynamo 都会检查这些规则是否已被破坏。</p>
+    <p>例如，适用于 Dynamo 的衍生式设计扩展使用此功能，来确保设计用于衍生式设计的 Dynamo 图形具有该图形在衍生式设计应用程序中正常工作所需的必要特性。 衍生式设计要求图形至少有一个输入节点和一个输出节点，这是使用 Dynamo 扩展注册的规则强制执行的。</p>
     <h4>节点问题和图形问题</h4>
-    <p>Rules defined by an extension are registered as one of two types: Graph rules, or Node rules.  If Dynamo detects that one of those rules has been broken in the current graph, a warning with information on how to fix the issue, and a link to where the issue was detected will be shown in one of these two sections.</p>
+    <p>由扩展定义的规则注册为以下两种类型之一: 图形规则或节点规则。  如果 Dynamo 在当前图形中检测到这些规则之一已被破坏，则会在这两个部分之一中显示警告(其中包含有关如何解决问题的信息)以及指向检测到问题所在位置的链接。</p>
     <h4>其他信息</h4>
     <p>每当保存图形时，“图形状态”扩展都会将一些元数据存储在 Dynamo 文件中，例如选定的图形类型以及上次保存图形时是否存在问题。</p>
-    <p>When a new Dynamo graph is created, the Graph Status extension doesn't check for any specific rules automatically. The default selection for the Graph Type will be <i>None</i>. Currently, only one Graph Type can be selected at a time in the Graph Status view.</p>
+    <p>创建一个新 Dynamo 图形时，“图形状态”扩展不会自动检查任何特定规则。 “图形类型”的默认选择将为<i>“无”</i>。 当前，在“图形状态”视图中一次只能选择一个图形类型。</p>
 </body>

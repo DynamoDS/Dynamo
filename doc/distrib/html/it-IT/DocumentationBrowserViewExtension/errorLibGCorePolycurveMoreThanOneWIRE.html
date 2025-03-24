@@ -26,11 +26,11 @@
 <p>Questo messaggio di errore indica che le linee generate da un nodo PolyCurve non formano una curva chiusa.</p>
 
 <h4>Come risolvere questo problema</h4>
-<p>This might be because the output of the Polycurve node contains null values. Check to see within each list output by the Polycurve node if the curves connect in one continuous line. One way to do this is to hide the geometry preview of all nodes (right click the node or selection of nodes to hide geometry preview) and then <a href="https://dictionary.dynamobim.com/2/#/List/Inspect/Action/GetItemAtIndex"><code>List.GetItemAtIndex</code></a> one list at a time to see. </p>
+<p>Ciò potrebbe essere dovuto al fatto che l'output del nodo PolyCurve contiene valori null. Verificare in ogni elenco generato dal nodo PolyCurve se le curve si collegano in una linea continua. Per eseguire questa operazione, nascondere l'anteprima della geometria di tutti i nodi (fare clic con il pulsante destro del mouse sul nodo o sulla selezione di nodi per nascondere l'anteprima della geometria), quindi utilizzare <a href="https://dictionary.dynamobim.com/2/#/List/Inspect/Action/GetItemAtIndex"><code>List.GetItemAtIndex</code></a> per un elenco alla volta da visualizzare. </p>
 
 <p>Inoltre, questo errore spesso si verifica con i contorni del locale. Provare ad utilizzare <a href="https://dictionary.dynamobim.com/2/#/Revit/Elements/Room/Query/CenterBoundary"><code>Room.CenterBoundary</code></a> per estrarre le curve.</p>
 
 <h4>Ulteriori informazioni</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=curve%20join%20produced%20more%20than%20one%20WIRE%20in%20Polycurve"><span> posts on the Dynamobim forum discussing "<strong>curve join produced more than one wire in polycurve</strong>"</span></a>.</p>
+<p>Per saperne di più, consultare i <a href="https://forum.dynamobim.com/search?q=curve%20join%20produced%20more%20than%20one%20WIRE%20in%20Polycurve"><span>post nel forum di discussione di Dynamobim &quot;<strong>curve join produced more than one wire in polycurve</strong>&quot;</span></a>.</p>
 
 </body>

@@ -23,17 +23,17 @@
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
 <h2>Prevede i tipi di argomento, ma è stato chiamato con</h2>
-<p>This error message indicates that the node you are using is expecting a certain type of input(s) but has received a type of input it cannot use. It is typically followed by additional information regarding what types were passed into the node you are using and what types the node expected to receive. Some of the most common operations that trigger this error are:</p>
+<p>Questo messaggio di errore indica che il nodo in uso prevede un determinato tipo di input, ma ha ricevuto un tipo di input che non può utilizzare. In genere, viene seguito da informazioni aggiuntive relative ai tipi trasferiti al nodo in uso e ai tipi che il nodo ha previsto di ricevere. Alcune delle operazioni più comuni che causano questo errore sono:</p>
 
 <ul>
-    <li><code>Element.SetParameterByName</code> - try using use the node Element.Parameters to check the parameters in the element. Read more <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20setparameter">posts on the Dynamobim forum discussing "expects argument type setparameter"</a>.</li>
-    <li><code>Geometry.BoundingBox</code> - try using Element.BoundingBox instead, as discussed <a href="https://forum.dynamobim.com/t/geometry-boundingbox-1-3-vs-2-0/21995/3">here</a>. Read more <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20geometry">posts on the Dynamobim forum discussing "expects argument type geometry"</a>.</li>
+    <li><code>Element.SetParameterByName</code>: provare ad utilizzare il nodo Element.Parameters per verificare i parametri dell'elemento. Per ulteriori <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20setparameter">post, vedere il forum di discussione di Dynamobim &quot;expects argument type setparameter&quot;</a>.</li>
+    <li><code>Geometry.BoundingBox</code>: provare ad utilizzare Element.BoundingBox, come descritto <a href="https://forum.dynamobim.com/t/geometry-boundingbox-1-3-vs-2-0/21995/3">qui</a>. Per ulteriori <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20geometry">post, vedere il forum di discussione di Dynamobim &quot;expects argument type geometry&quot;</a>.</li>
 </ul>
 
 <h4>Come risolvere questo problema</h4>
-<p>The section above mentions some approaches you can take to recover from this error. In general, check what input types the node you are using expects. If possible, change the inputs passed into the node to their expected types or check to see if other nodes can be used to achieve the functionality you want. Note that input types can be checked using the <a href="https://dictionary.dynamobim.com/2/#/Input/Object/Action/Type">Object.Type</a> node.</p>
+<p>Nella sezione precedente sono descritti alcuni approcci che è possibile adottare per il ripristino in seguito a questo errore. In generale, verificare i tipi di input previsti per il nodo in uso. Se possibile, modificare gli input trasferiti al nodo nei tipi previsti o verificare se altri nodi possono essere utilizzati per ottenere la funzionalità desiderata. Si noti che i tipi di input possono essere controllati utilizzando il nodo <a href="https://dictionary.dynamobim.com/2/#/Input/Object/Action/Type">Object.Type</a>.</p>
 
 <h4>Ulteriori informazioni</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type"><span> posts on the Dynamobim forum discussing "<strong>expects argument type</strong>"</span></a>.</p>
+<p>Per saperne di più, consultare i <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type"><span>post nel forum di discussione di Dynamobim &quot;<strong>expects argument type</strong>&quot;</span></a>.</p>
 
 </body>

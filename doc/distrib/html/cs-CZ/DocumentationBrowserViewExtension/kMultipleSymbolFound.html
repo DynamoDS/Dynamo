@@ -24,12 +24,12 @@
 
 <h2>Bylo nalezeno více definic</h2>
 <p>Tato chybová zpráva znamená, že v jádře aplikace Dynamo a v různých balíčcích se používá metoda nebo třída se stejným názvem a aplikace Dynamo neví, kterou metodu nebo třídu (tj. z kterého balíčku) použít.</p>  
-<p>This warning usually happens when using DesignScript in a CodeBlock. For example, if you are trying to Flatten a list in a CodeBlock, you would use <code>List.Flatten()</code>. If one of the 3rd party packages you are loading also have a class called <code>List</code>, you will see this warning.</p>
+<p>Toto upozornění se obvykle zobrazuje při použití jazyka DesignScript v uzlu CodeBlock. Pokud například chcete vyrovnat seznam v bloku kódu, použijte metodu <code>List.Flatten()</code>. Pokud jeden z načtených balíčků třetích stran obsahuje také třídu s názvem <code>List</code>, zobrazí se toto upozornění.</p>
 
 <h4>Jak provést opravu</h4>
-<p>To fix this error include the full namespace of the function you are trying to use. For example, if you are running <code>List.Flatten()</code> and seeing this error message, try to use <code>DSCore.List.Flatten()</code> instead (DSCore stands for “Design Script Core” and is one of the default packages that comes with Dynamo).</p>
+<p>K opravě této chyby je třeba uvést celý jmenný prostor používané funkce. Pokud například voláte metodu <code>List.Flatten()</code> a dojde k této chybě, zkuste místo ní použít <code>DSCore.List.Flatten()</code> (DSCore znamená &quot;Design Script Core&quot;, jádro jazyka DesignScript, a je jedním z výchozích balíčků, které jsou součástí aplikace Dynamo).</p>
 
 <h4>Další informace</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=multiple%20definitions%20for%20found"><span> posts on the Dynamobim forum discussing "<strong>multiple definitions found</strong>"</span></a>.</p>
+<p>Další informace naleznete v <a href="https://forum.dynamobim.com/search?q=multiple%20definitions%20for%20found"><span> příspěvcích na fóru Dynamobim na téma &quot;<strong>multiple definitions found</strong>&quot;</span></a>.</p>
 
 </body>

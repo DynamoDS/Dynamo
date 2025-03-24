@@ -23,17 +23,17 @@
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
 <h2>Oczekuje typu/typów argumentu, a został wywołany z</h2>
-<p>This error message indicates that the node you are using is expecting a certain type of input(s) but has received a type of input it cannot use. It is typically followed by additional information regarding what types were passed into the node you are using and what types the node expected to receive. Some of the most common operations that trigger this error are:</p>
+<p>Ten komunikat o błędzie wskazuje, że używany węzeł oczekuje określonego typu danych wejściowych, ale odebrał typ danych wejściowych, którego nie może użyć. Zazwyczaj do komunikatu dołączone są dodatkowe informacje dotyczące typów przekazanych do używanego węzła oraz typów, których węzeł oczekiwał. Niektóre z najczęściej wykonywanych operacji, które powodują ten błąd:</p>
 
 <ul>
-    <li><code>Element.SetParameterByName</code> - try using use the node Element.Parameters to check the parameters in the element. Read more <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20setparameter">posts on the Dynamobim forum discussing "expects argument type setparameter"</a>.</li>
-    <li><code>Geometry.BoundingBox</code> - try using Element.BoundingBox instead, as discussed <a href="https://forum.dynamobim.com/t/geometry-boundingbox-1-3-vs-2-0/21995/3">here</a>. Read more <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20geometry">posts on the Dynamobim forum discussing "expects argument type geometry"</a>.</li>
+    <li><code>Element.SetParameterByName</code> — spróbuj użyć węzła Element.Parameters, aby sprawdzić parametry w elemencie. Przeczytaj więcej we <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20setparameter">wpisach na forum Dynamobim dotyczących tematu „expects argument type setparameter”</a>.</li>
+    <li><code>Geometry.BoundingBox</code> — zamiast tego spróbuj użyć węzła Element.BoundingBox, jak opisano <a href="https://forum.dynamobim.com/t/geometry-boundingbox-1-3-vs-2-0/21995/3">tutaj</a>. Przeczytaj więcej we <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20geometry">wpisach na forum Dynamobim dotyczących tematu „expects argument type geometry”</a>.</li>
 </ul>
 
 <h4>Jak to naprawić</h4>
-<p>The section above mentions some approaches you can take to recover from this error. In general, check what input types the node you are using expects. If possible, change the inputs passed into the node to their expected types or check to see if other nodes can be used to achieve the functionality you want. Note that input types can be checked using the <a href="https://dictionary.dynamobim.com/2/#/Input/Object/Action/Type">Object.Type</a> node.</p>
+<p>W sekcji powyżej wspomniano o pewnych podejściach, które można zastosować, aby naprawić ten błąd. Sprawdź, jakiego typu danych wejściowych oczekuje używany węzeł. Jeśli to możliwe, zmień dane wejściowe przekazywane do węzła na typy przez niego oczekiwane lub sprawdź, czy danej funkcji nie można wykonać za pomocą innych węzłów. Uwaga: typy danych wejściowych można sprawdzić za pomocą węzła <a href="https://dictionary.dynamobim.com/2/#/Input/Object/Action/Type">Object.Type</a>.</p>
 
 <h4>Więcej informacji</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type"><span> posts on the Dynamobim forum discussing "<strong>expects argument type</strong>"</span></a>.</p>
+<p>Aby dowiedzieć się więcej, sprawdź <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type"><span>wpisy na forum Dynamobim z frazą „<strong>expects argument type</strong>”</span></a>.</p>
 
 </body>

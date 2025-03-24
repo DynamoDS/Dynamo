@@ -26,11 +26,11 @@
 <p>このエラー メッセージは、Polycurve ノードによって出力された線分が閉じた曲線を形成していないことを示しています。</p>
 
 <h4>修正方法</h4>
-<p>This might be because the output of the Polycurve node contains null values. Check to see within each list output by the Polycurve node if the curves connect in one continuous line. One way to do this is to hide the geometry preview of all nodes (right click the node or selection of nodes to hide geometry preview) and then <a href="https://dictionary.dynamobim.com/2/#/List/Inspect/Action/GetItemAtIndex"><code>List.GetItemAtIndex</code></a> one list at a time to see. </p>
+<p>Polycurve ノードの出力に NULL 値が含まれていることが原因となっている可能性があります。 Polycurve ノードによって出力される各リスト内で、曲線が接続して 1 本の連続した線となっているか確認します。 確認する方法の 1 つは、すべてのノードのジオメトリのプレビューを非表示(ノードまたは選択した複数のノードを右クリックして、ジオメトリのプレビューを非表示)にして、<a href="https://dictionary.dynamobim.com/2/#/List/Inspect/Action/GetItemAtIndex"><code>List.GetItemAtIndex</code></a> で一度に 1 つのリストを確認することです。 </p>
 
 <p>また、このエラーは部屋の境界でもよく発生します。曲線を抽出する別の方法として、<a href="https://dictionary.dynamobim.com/2/#/Revit/Elements/Room/Query/CenterBoundary"><code>Room.CenterBoundary</code></a> を使用してみてください。</p>
 
 <h4>詳細情報</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=curve%20join%20produced%20more%20than%20one%20WIRE%20in%20Polycurve"><span> posts on the Dynamobim forum discussing "<strong>curve join produced more than one wire in polycurve</strong>"</span></a>.</p>
+<p>詳細については、<a href="https://forum.dynamobim.com/search?q=curve%20join%20produced%20more%20than%20one%20WIRE%20in%20Polycurve"><span>DynamoBIM のフォーラムで「<strong>curve join produced more than one wire in polycurve</strong>」に関する投稿</span></a>を参照してください。</p>
 
 </body>

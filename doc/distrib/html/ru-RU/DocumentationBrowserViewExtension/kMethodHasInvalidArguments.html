@@ -23,14 +23,14 @@
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
 <h2>Содержит недопустимые аргументы</h2>
-<p>This error message indicates that the node you are using is expecting a certain type of input data but received a type of input it cannot use. It is similar to the “Expects argument type(s) but was called with” error, and usually displays additional information that can help you identify what argument types you need to pass into the node you are using. </p>
+<p>Это сообщение об ошибке указывает, что узел предусматривает входные данные определенного типа, но полученный им тип данных невозможно использовать. Эта ошибка аналогична другой ошибке — «ожидает аргументы типа, а вызов выполнен с использованием» — и обычно сопровождается дополнительной информацией, которая поможет определить, какие типы аргументов необходимо передать в используемый узел. </p>
 
 <h4>Устранение проблемы</h4>
 <p>Как правило, необходимо проверить, какие типы входных данных используются узлом, и попытаться определить, (а) передается ли в узел допустимый тип входных данных и (б) можно ли заменить тип входных данных, чтобы он поддерживался данным узлом (как показано в <a href="https://forum.dynamobim.com/t/springs-number-tostring/35562/2">этом примере</a>).</p>
 
-<p>As an example, when you see something like <code>Warning: Element.SetParameterByName operation failed. The best overloaded method match for ‘Revit.Elements.InternalUtilities.ElementUtils.SetParameterValue(Autodesk.Revit.DB.Parameter, double)’ has some invalid arguments</code> the additional information in parentheses can help you understand what the problem is. In this case <code>SetParameterValue(Autodesk.Revit.DB.Parameter, double)</code> shows that the node you are using is expecting an input of type <code>double</code>, so any other type of input will not work.</p>
+<p>Например, может появиться примерно следующее сообщение <code>Предупреждение. Не удалось выполнить операцию Element.SetParameterByName. Наилучшее соответствие перегруженного метода Revit.Elements.InternalUtilities.ElementUtils.SetParameterValue(Autodesk.Revit.DB.Parameter, double) содержит недопустимые аргументы</code> — дополнительная информация в скобках поможет понять, в чем проблема. В этом случае <code>SetParameterValue(Autodesk.Revit.DB.Parameter, double)</code> означает, что используемый узел предусматривает входные данные типа <code>double</code> и другие входные данные не поддерживаются.</p>
 
 <h4>Дополнительные сведения</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=has%20some%20invalid%20arguments"><span> posts on the Dynamobim forum discussing "<strong>has some invalid arguments</strong>"</span></a>.</p>
+<p>Дополнительные сведения можно найти в <a href="https://forum.dynamobim.com/search?q=has%20some%20invalid%20arguments"><span>публикациях на форуме Dynamobim с обсуждением ошибки <strong>has some invalid arguments</strong></span></a>.</p>
 
 </body>

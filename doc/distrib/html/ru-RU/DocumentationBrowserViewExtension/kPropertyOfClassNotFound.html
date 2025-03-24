@@ -25,14 +25,14 @@
 <h2>Невозможно найти свойство</h2>
 <p>Это сообщение об ошибке указывает, что в используемом узле выполняется попытка доступа к свойству объекта, у которого нет этого свойства. </p>
 
-<p>Properties are values stored in an object. For example, in Dynamo a point object has properties X, Y and Z which represent coordinate values of that given point. A line object has different properties like Length which represents the length of the given line. The line object does not have the <code>X</code>, <code>Y</code> and <code>Z</code> property that the point object does, and the point object does not have the Length property that the line object does.</p>
+<p>Свойства представляют собой значения, которые хранятся в объекте. Например, в Dynamo объект-точка имеет свойства X, Y и Z, которые соответствуют значениям координат заданной точки. Линейный объект имеет другие свойства, такие как Length, указывающее длину заданной линии. Линейный объект не имеет свойств <code>X</code>, <code>Y</code> и <code>Z</code>, которые есть у объекта-точки, а у объекта-точки нет свойства длины, как у линейного объекта.</p>
 
-<p>This error will therefore occur if you try to access a specific property on an object that does not have that property. If you for example try to access the Length property on the point object, you would get a <code>“No property called Length on Point could be found”</code>, as the point object does not contain the property Length.  </p>
+<p>Таким образом, эта ошибка возникает при попытке доступа к свойству объекта, которое у него отсутствует. Например, если попытаться получить доступ к свойству Length объекта-точки, то появится сообщение <code>«Не удалось найти свойство Length точки»</code>, так у этого объекта отсутствует свойство длины.  </p>
 
 <h4>Устранение проблемы</h4>
 <p>Убедитесь, что объект, используемый в качестве элемента входных данных узла, обладает требуемым свойством.</p>
 
 <h4>Дополнительные сведения</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=no%20property%20called%20could%20be%20found"><span> posts on the Dynamobim forum discussing "<strong>no property called could be found</strong>"</span></a>.</p>
+<p>Дополнительные сведения можно найти в <a href="https://forum.dynamobim.com/search?q=no%20property%20called%20could%20be%20found"><span>публикациях на форуме Dynamobim с обсуждением ошибки <strong>no property called could be found</strong></span></a>.</p>
 
 </body>

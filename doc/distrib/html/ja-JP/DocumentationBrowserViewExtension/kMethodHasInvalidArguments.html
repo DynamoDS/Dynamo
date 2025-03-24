@@ -23,14 +23,14 @@
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
 <h2>無効な引数があります</h2>
-<p>This error message indicates that the node you are using is expecting a certain type of input data but received a type of input it cannot use. It is similar to the “Expects argument type(s) but was called with” error, and usually displays additional information that can help you identify what argument types you need to pass into the node you are using. </p>
+<p>このエラー メッセージは、使用しているノードに特定のタイプの入力データが必要であるが、使用できないタイプの入力を受け取ったことを示しています。 「引数タイプが必要ですが、次で呼び出されました」というエラーに似ていますが、通常は、使用しているノードに渡す必要がある引数タイプを特定できる情報も表示されます。 </p>
 
 <h4>修正方法</h4>
 <p>一般的には、使用しているノードで必要な入力タイプを確認し、(a)正しいタイプの入力がノードに渡されるか、(b)入力のタイプをそのノードで使用できるタイプに変更(たとえば、<a href="https://forum.dynamobim.com/t/springs-number-tostring/35562/2">この例</a>のように入力を別のタイプに変更)できるかを判断します。</p>
 
-<p>As an example, when you see something like <code>Warning: Element.SetParameterByName operation failed. The best overloaded method match for ‘Revit.Elements.InternalUtilities.ElementUtils.SetParameterValue(Autodesk.Revit.DB.Parameter, double)’ has some invalid arguments</code> the additional information in parentheses can help you understand what the problem is. In this case <code>SetParameterValue(Autodesk.Revit.DB.Parameter, double)</code> shows that the node you are using is expecting an input of type <code>double</code>, so any other type of input will not work.</p>
+<p>たとえば、「<code>警告: Element.SetParameterByName 操作が失敗しました。 &quot;Revit.Elements.InternalUtilities.ElementUtils.SetParameterValue(Autodesk.Revit.DB.Parameter, double)&quot; のオーバーロードされたメソッド一致に無効な引数があります</code>」のような警告が表示された場合、括弧内の追加情報が問題の把握に役立ちます。 この場合、<code>SetParameterValue(Autodesk.Revit.DB.Paramm, double)</code>は、使用しているノードで必要な入力のタイプが <code>double</code> であることを示しているため、他のタイプの入力では動作しません。</p>
 
 <h4>詳細情報</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=has%20some%20invalid%20arguments"><span> posts on the Dynamobim forum discussing "<strong>has some invalid arguments</strong>"</span></a>.</p>
+<p>詳細については、<a href="https://forum.dynamobim.com/search?q=has%20some%20invalid%20arguments"><span>DynamoBIM のフォーラムで「<strong>has some invalid arguments</strong>」に関する投稿</span></a>を参照してください。</p>
 
 </body>

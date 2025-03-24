@@ -23,12 +23,12 @@
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
 <h2>A conversão da matriz causará a redução da classificação da matriz</h2>
-<p> This error message indicates that you are using list of lists which is not formatted correctly. For example, using a list like <code>[1,2,3,[4,5,6],7]</code> where the elements are at different levels will trigger this error, but using a list like <code>[[1,2,3],[4,5,6,7]]</code> will not because it is consistently two levels deep.  </p>
+<p> Essa mensagem de erro indica que você está usando uma lista de listas que não está formatada corretamente. Por exemplo, usar uma lista como <code>[1,2,3,[4,5,6],7]</code> em que os elementos estão em diferentes níveis acionará esse erro, mas usar uma lista como <code>[[1,2,3],[4,5,6,7]]</code> não acionará, porque ela tem consistentemente dois níveis de profundidade.  </p>
 
 <h4>Como corrigir</h4>
-<p>To resolve this issue, make sure the list you are passing as an input to your node has consistent levels (i.e., each element can be accessed using the same level of your list). Another option is to use <a href="https://dictionary.dynamobim.com/2/#/List/Organize/Action/NormalizeDepth"><code>List.NormalizeDepth</code></a> which can make your list levels consistent but might not format the list exactly as you want it. </p>
+<p>Para solucionar esse problema, assegure-se de que a lista que você esteja passando como uma entrada para o nó tem níveis consistentes (ou seja, cada elemento pode ser acessado usando o mesmo nível da lista). Outra opção é usar <a href="https://dictionary.dynamobim.com/2/#/List/Organize/Action/NormalizeDepth"><code>List.NormalizeDepth</code></a>, o que pode tornar os níveis de lista consistentes, mas pode não formatar a lista exatamente como você deseja. </p>
 
 <h4>Mais informações</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=array%20rank%20reduction"><span> posts on the Dynamobim forum discussing "<strong>array rank reduction</strong>"</span></a>.</p>
+<p>Para saber mais, consulte as <a href="https://forum.dynamobim.com/search?q=array%20rank%20reduction"><span> publicações no fórum Dynamobim que abordam a “<strong>array rank reduction</strong>֨”</span></a>.</p>
 
 </body>

@@ -23,17 +23,17 @@
 <body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
 
 <h2>預期引數類型，卻使用...呼叫</h2>
-<p>This error message indicates that the node you are using is expecting a certain type of input(s) but has received a type of input it cannot use. It is typically followed by additional information regarding what types were passed into the node you are using and what types the node expected to receive. Some of the most common operations that trigger this error are:</p>
+<p>此錯誤訊息表示您使用的節點預期收到某種類型的輸入，卻收到無法使用的輸入類型。後面通常會接哪些類型傳遞至您使用的節點，以及節點預期收到哪些類型的相關資訊。最常觸發此錯誤的作業包括:</p>
 
 <ul>
-    <li><code>Element.SetParameterByName</code> - try using use the node Element.Parameters to check the parameters in the element. Read more <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20setparameter">posts on the Dynamobim forum discussing "expects argument type setparameter"</a>.</li>
-    <li><code>Geometry.BoundingBox</code> - try using Element.BoundingBox instead, as discussed <a href="https://forum.dynamobim.com/t/geometry-boundingbox-1-3-vs-2-0/21995/3">here</a>. Read more <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20geometry">posts on the Dynamobim forum discussing "expects argument type geometry"</a>.</li>
+    <li><code>Element.SetParameterByName</code> - 嘗試使用 Element.Parameters 節點檢查元素中的參數。 請閱讀更多 <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20setparameter">Dynamobim 論壇上討論「expects argument type setparameter」的貼文</a>。</li>
+    <li><code>Geometry.BoundingBox</code> - 請依照<a href="https://forum.dynamobim.com/t/geometry-boundingbox-1-3-vs-2-0/21995/3">這裡</a>的討論，嘗試改用 Element.BoundingBox。 請閱讀更多 <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20geometry">Dynamobim 論壇上討論「expects argument type geometry」的貼文</a>。</li>
 </ul>
 
 <h4>如何修正</h4>
-<p>The section above mentions some approaches you can take to recover from this error. In general, check what input types the node you are using expects. If possible, change the inputs passed into the node to their expected types or check to see if other nodes can be used to achieve the functionality you want. Note that input types can be checked using the <a href="https://dictionary.dynamobim.com/2/#/Input/Object/Action/Type">Object.Type</a> node.</p>
+<p>上一段提及一些您可以採取而從此錯誤恢復的方法。一般而言，請查看您使用的節點預期收到哪些輸入類型。如果可以，請將傳入節點的輸入變更為其預期的類型，或查看是否可以使用其他節點來實現您想要的功能。請注意，您可以使用 <a href="https://dictionary.dynamobim.com/2/#/Input/Object/Action/Type">Object.Type</a> 節點檢查輸入類型。</p>
 
 <h4>更多資訊</h4>
-<p>To find out more, please check <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type"><span> posts on the Dynamobim forum discussing "<strong>expects argument type</strong>"</span></a>.</p>
+<p>如欲瞭解更多資訊，請查看 <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type"><span>Dynamobim 論壇上討論「<strong>expects argument type</strong>」的貼文</span></a>。</p>
 
 </body>
