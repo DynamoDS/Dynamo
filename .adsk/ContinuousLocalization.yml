@@ -27,5 +27,7 @@ common:
       lang: [csy, deu, esp, fra, ita, jpn, kor, plk, ptb, rus, chs, cht]
       file_rules:
         - doc\distrib\NodeHelpFiles\en-US\*.md, doc\distrib\NodeHelpFiles\%langMsNet%\*.md
-        # - doc\distrib\Samples\en-US\**.dyn, doc\distrib\Samples\%langMsNet%\**.dyn
-        # - src\**en-US.resx, src\**%langMsNet%.resx
+        - doc\distrib\Samples\en-US\**.dyn, doc\distrib\Samples\%langMsNet%\**.dyn
+        - src\**en-US.resx, src\**%langMsNet%.resx
+        - doc\distrib\html\en-US\**.html, doc\distrib\html\%langMsNet%\**.html
+        - doc\distrib\xml\en-US\*.xml, doc\distrib\xml\%langMsNet%\*.xml
