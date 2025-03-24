@@ -38,11 +38,6 @@
                 </views:HandlingEventTrigger>
             </interactivity:Interaction.Triggers>
 
-            <!--  Bind NodeAutoComplete to double left click  -->
-            <Grid.InputBindings>
-                <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}" MouseAction="LeftDoubleClick" />
-            </Grid.InputBindings>
-
             <!--  Enables Port Snapping  -->
             <Rectangle x:Name="PortSnapping"
                        Grid.Column="0"
