@@ -1,4 +1,4 @@
-@DYNAMO v.3.5.0 © 2025 Autodesk, Inc.  All rights reserved.
+@DYNAMO v.3.6.0 © 2025 Autodesk, Inc.  All rights reserved.
 
 Dynamo License
 
