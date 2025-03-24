@@ -4124,19 +4124,4 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="PreferencesViewShowDefaultGroupDescription" xml:space="preserve">
     <value>Show default group description</value>
   </data>
-  <data name="PublishPackageViewPublisherWebiSite" xml:space="preserve">
-    <value />
-  </data>
-  <data name="PackageStatePendingUnload" xml:space="preserve">
-    <value />
-  </data>
-  <data name="PublishPackageViewRepositoryUrlWatermark" xml:space="preserve">
-    <value />
-  </data>
-  <data name="PublishPackageViewPublisherWebSiteWatermark" xml:space="preserve">
-    <value />
-  </data>
-  <data name="NodeAutoCompleteToolTip" xml:space="preserve">
-    <value>Click to get Node Autocomplete suggestions</value>
-  </data>
 </root>

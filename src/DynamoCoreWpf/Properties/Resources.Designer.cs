@@ -5084,15 +5084,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Click to get Node Autocomplete suggestions.
-        /// </summary>
-        public static string NodeAutoCompleteToolTip {
-            get {
-                return ResourceManager.GetString("NodeAutoCompleteToolTip", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Enable Periodic Update.
         /// </summary>
         public static string NodeContextMenuEnablePeriodicUpdate {
@@ -9259,11 +9250,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Website Url (optional).
         /// </summary>
-        public static string PublishPackageViewPublisherWebiSite {
+        public static string PublishPackageViewPublisherWebSite {
             get {
-                return ResourceManager.GetString("PublishPackageViewPublisherWebiSite", resourceCulture);
+                return ResourceManager.GetString("PublishPackageViewPublisherWebSite", resourceCulture);
             }
         }
         
@@ -9277,15 +9268,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
-        public static string PublishPackageViewPublisherWebSiteWatermark {
-            get {
-                return ResourceManager.GetString("PublishPackageViewPublisherWebSiteWatermark", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Removes this item from the package contents list..
         /// </summary>
         public static string PublishPackageViewRemoveItemToolTip {
@@ -9295,11 +9277,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to .
+        ///   Looks up a localized string similar to Repository Url (optional).
         /// </summary>
-        public static string PublishPackageViewRepositoryUrlWatermark {
+        public static string PublishPackageViewRepositoryUrl {
             get {
-                return ResourceManager.GetString("PublishPackageViewRepositoryUrlWatermark", resourceCulture);
+                return ResourceManager.GetString("PublishPackageViewRepositoryUrl", resourceCulture);
             }
         }
         
@@ -9318,6 +9300,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackageViewResetMarkdownDirectoryButtonToolTip {
             get {
                 return ResourceManager.GetString("PublishPackageViewResetMarkdownDirectoryButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Publish a {0} Package.
+        /// </summary>
+        public static string PublishPackageViewTitle {
+            get {
+                return ResourceManager.GetString("PublishPackageViewTitle", resourceCulture);
             }
         }
         
