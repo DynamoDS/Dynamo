@@ -5035,6 +5035,7 @@ static Dynamo.Wpf.Properties.Resources.NextGuideText.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutocomplete.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutoCompleteNotAvailableForCollapsedGroups.get -> string
+static Dynamo.Wpf.Properties.Resources.NodeAutoCompleteToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuEnablePeriodicUpdate.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuHelp.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuIsInput.get -> string

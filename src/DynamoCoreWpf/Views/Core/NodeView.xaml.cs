@@ -508,9 +508,6 @@ namespace Dynamo.Controls
             // ViewModel.DynamoViewModel.ShowPreviewBubbles will be updated AFTER node mouse enter event occurs
             // so, wait while ShowPreviewBubbles binding updates value
             Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
-
-
-            Dispatcher.BeginInvoke(new Action(TryShowAutoCompleteMarker), DispatcherPriority.Loaded);
         }
 
         private void TryShowPreviewBubbles()
@@ -537,43 +534,6 @@ namespace Dynamo.Controls
             Dispatcher.DelayInvoke(previewDelay, BringToFront);
         }
 
-        private void TryShowAutoCompleteMarker()
-        {
-            //show the node autocomplete marker if available, skip codeblocks and watch nodes
-            if (IsAutoCompleteMarkerDisabled())
-            {
-                return;
-            }
-
-            if (ViewModel.NodeModel is not CodeBlockNodeModel && ViewModel.NodeModel is not CoreNodeModels.Watch && ViewModel.NodeModel is not PythonNodeModels.PythonNode && ViewModel.NodeModel is not PythonNodeModels.PythonStringNode)
-            {
-                //For input ports, if there are connectors present, do not show marker.
-                foreach (PortViewModel port in ViewModel.InPorts)
-                {
-                    //We check for connector count because 'IsConnected' returns true for use of default value
-                    port.NodeAutoCompleteMarkerVisible = port.PortModel.Connectors.Count < 1;
-                }
-
-                //For output ports, we always show the marker.
-                foreach (PortViewModel port in ViewModel.OutPorts)
-                {
-                    port.NodeAutoCompleteMarkerVisible = true;
-                }
-            }
-        }
-
-        private void TryHideAutoCompleteMaker()
-        {
-            //hide the node autocomplete marker if mouse leaves the node
-            var ports = new List<PortViewModel>(ViewModel.InPorts);
-            ports.AddRange(ViewModel.OutPorts);
-
-            foreach (PortViewModel port in ports)
-            {
-                port.NodeAutoCompleteMarkerVisible = false;
-            }
-        }
-
         private bool IsPreviewDisabled()
         {
             // True if preview bubbles are turned off globally 
@@ -588,23 +548,9 @@ namespace Dynamo.Controls
                 ViewModel.WorkspaceViewModel.IsSelecting || !previewEnabled ||
                 !ViewModel.IsPreviewInsetVisible || ViewModel.IsFrozen || viewModel.IsTransient;
         }
-        private bool IsAutoCompleteMarkerDisabled()
-        {
-            // True if autocomplete is turned off globally
-            // Or a connector is being created now
-            // Or node is frozen.
-            // Or node is transient state.
-            return !ViewModel.DynamoViewModel.EnableNodeAutoComplete ||
-                   ViewModel.WorkspaceViewModel.IsConnecting ||
-                   ViewModel.IsFrozen ||
-                   viewModel.IsTransient;
-        }
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
             ViewModel.ZIndex = oldZIndex;
-
-            //hide the node autocomplete marker if mouse leaves the node
-           TryHideAutoCompleteMaker();
             
             //Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
             if (ViewModel.NodeModel != null && ViewModel.NodeModel is CoreNodeModels.Watch) return;
@@ -733,8 +679,6 @@ namespace Dynamo.Controls
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Hidden);
             }
-
-            TryHideAutoCompleteMaker();
         }
 
         /// <summary>
@@ -742,7 +686,7 @@ namespace Dynamo.Controls
         /// So we can't use MouseLeave/MouseEnter events.
         /// In this case, when we want to ensure, that mouse really left node, we use HitTest.
         /// </summary>
-        /// <param name="mousePosition">Currect position of mouse</param>
+        /// <param name="mousePosition">Correct position of mouse</param>
         /// <returns>bool</returns>
         private bool IsMouseInsideNodeOrPreview(Point mousePosition)
         {
