@@ -4124,4 +4124,7 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="PreferencesViewShowDefaultGroupDescription" xml:space="preserve">
     <value>Show default group description</value>
   </data>
+  <data name="NodeAutoCompleteToolTip" xml:space="preserve">
+    <value>Click to get Node Autocomplete suggestions</value>
+  </data>
 </root>
