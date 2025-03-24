@@ -217,7 +217,7 @@
                 >✨</Label>
 
                 <interactivity:Interaction.Triggers>
-                    <interactivity:EventTrigger EventName="PreviewMouseDown">
+                    <interactivity:EventTrigger EventName="PreviewMouseLeftButtonDown">
                         <interactivity:InvokeCommandAction Command="{Binding NodeAutoCompleteCommand}" PassEventArgsToCommand="True"/>
                     </interactivity:EventTrigger>
                 </interactivity:Interaction.Triggers>

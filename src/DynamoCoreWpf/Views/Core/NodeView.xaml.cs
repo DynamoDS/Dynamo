@@ -31,6 +31,7 @@ namespace Dynamo.Controls
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
         private const int previewDelay = 1000;
+        private const int autoCompleteMarkerDelay = 750;
 
         /// <summary>
         /// If false - hides preview control until it will be explicitly shown.
@@ -561,6 +562,8 @@ namespace Dynamo.Controls
 
         private void TryHideAutoCompleteMaker()
         {
+            if (IsMouseOver) return;
+
             //hide the node autocomplete marker if mouse leaves the node
             var ports = new List<PortViewModel>(ViewModel.InPorts);
             ports.AddRange(ViewModel.OutPorts);
@@ -601,8 +604,16 @@ namespace Dynamo.Controls
             ViewModel.ZIndex = oldZIndex;
 
             //hide the node autocomplete marker if mouse leaves the node
-           TryHideAutoCompleteMaker();
-            
+            if (IsAutoCompleteMarkerDisabled()) return;
+            if (Mouse.Captured is DragCanvas)
+            {
+                Dispatcher.BeginInvoke(new Action(TryHideAutoCompleteMaker), DispatcherPriority.Loaded);
+            }
+            else
+            {
+                Dispatcher.DelayInvoke(autoCompleteMarkerDelay, TryHideAutoCompleteMaker);
+            }
+
             //Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
             if (ViewModel.NodeModel != null && ViewModel.NodeModel is CoreNodeModels.Watch) return;
 
@@ -739,7 +750,7 @@ namespace Dynamo.Controls
         /// So we can't use MouseLeave/MouseEnter events.
         /// In this case, when we want to ensure, that mouse really left node, we use HitTest.
         /// </summary>
-        /// <param name="mousePosition">Currect position of mouse</param>
+        /// <param name="mousePosition">Correct position of mouse</param>
         /// <returns>bool</returns>
         private bool IsMouseInsideNodeOrPreview(Point mousePosition)
         {
