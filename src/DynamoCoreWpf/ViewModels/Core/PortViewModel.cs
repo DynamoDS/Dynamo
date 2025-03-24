@@ -115,7 +115,17 @@ namespace Dynamo.ViewModels
             get => nodeAutoCompleteMarkerVisible;
             set
             {
-                nodeAutoCompleteMarkerVisible = value;
+                if (!NodeViewModel.DynamoViewModel.EnableNodeAutoComplete ||
+                    NodeViewModel.WorkspaceViewModel.IsConnecting ||
+                    NodeViewModel.IsFrozen ||
+                    NodeViewModel.IsTransient || PortModel.Connectors.Count > 0)
+                {
+                    nodeAutoCompleteMarkerVisible = false;
+                }
+                else
+                {
+                    nodeAutoCompleteMarkerVisible = value;
+                }
                 RaisePropertyChanged(nameof(NodeAutoCompleteMarkerVisible));
             }
         }
@@ -438,6 +448,7 @@ namespace Dynamo.ViewModels
             {
                 case nameof(IsSelected):
                     RaisePropertyChanged(nameof(IsSelected));
+                    NodeAutoCompleteMarkerVisible = IsSelected;
                     break;
                 case nameof(State):
                     RaisePropertyChanged(nameof(State));

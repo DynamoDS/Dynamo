@@ -31,7 +31,6 @@ namespace Dynamo.Controls
         private NodeViewModel viewModel = null;
         private PreviewControl previewControl = null;
         private const int previewDelay = 1000;
-        private const int autoCompleteMarkerDelay = 500;
 
         /// <summary>
         /// If false - hides preview control until it will be explicitly shown.
@@ -509,9 +508,6 @@ namespace Dynamo.Controls
             // ViewModel.DynamoViewModel.ShowPreviewBubbles will be updated AFTER node mouse enter event occurs
             // so, wait while ShowPreviewBubbles binding updates value
             Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
-
-
-            Dispatcher.BeginInvoke(new Action(TryShowAutoCompleteMarker), DispatcherPriority.Loaded);
         }
 
         private void TryShowPreviewBubbles()
@@ -538,42 +534,6 @@ namespace Dynamo.Controls
             Dispatcher.DelayInvoke(previewDelay, BringToFront);
         }
 
-        private void TryShowAutoCompleteMarker()
-        {
-            //show the node autocomplete marker if available, skip codeblocks and watch nodes
-            if (IsAutoCompleteMarkerDisabled())
-            {
-                return;
-            }
-
-            if (ViewModel.NodeModel is not CodeBlockNodeModel && ViewModel.NodeModel is not CoreNodeModels.Watch && ViewModel.NodeModel is not PythonNodeModels.PythonNode && ViewModel.NodeModel is not PythonNodeModels.PythonStringNode)
-            {
-                var ports = new List<PortViewModel>(ViewModel.InPorts);
-                ports.AddRange(ViewModel.OutPorts);
-
-                foreach (PortViewModel port in ports)
-                {
-                    //if there are connectors present, do not show marker.
-                    //We check for connector count because 'IsConnected' returns true for use of default value
-                    port.NodeAutoCompleteMarkerVisible = port.PortModel.Connectors.Count < 1;
-                }
-            }
-        }
-
-        private void TryHideAutoCompleteMaker()
-        {
-            if (TopControl.IsMouseOver) return;
-
-            //hide the node autocomplete marker if mouse leaves the node
-            var ports = new List<PortViewModel>(ViewModel.InPorts);
-            ports.AddRange(ViewModel.OutPorts);
-
-            foreach (PortViewModel port in ports)
-            {
-                port.NodeAutoCompleteMarkerVisible = false;
-            }
-        }
-
         private bool IsPreviewDisabled()
         {
             // True if preview bubbles are turned off globally 
@@ -588,33 +548,9 @@ namespace Dynamo.Controls
                 ViewModel.WorkspaceViewModel.IsSelecting || !previewEnabled ||
                 !ViewModel.IsPreviewInsetVisible || ViewModel.IsFrozen || viewModel.IsTransient;
         }
-        private bool IsAutoCompleteMarkerDisabled()
-        {
-            // True if autocomplete is turned off globally
-            // Or a connector is being created now
-            // Or node is frozen.
-            // Or node is transient state.
-            return !ViewModel.DynamoViewModel.EnableNodeAutoComplete ||
-                   ViewModel.WorkspaceViewModel.IsConnecting ||
-                   ViewModel.IsFrozen ||
-                   viewModel.IsTransient;
-        }
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
             ViewModel.ZIndex = oldZIndex;
-
-            //hide the node autocomplete marker if mouse leaves the node
-            if (!IsAutoCompleteMarkerDisabled())
-            {
-                if (Mouse.Captured is DragCanvas)
-                {
-                    Dispatcher.BeginInvoke(new Action(TryHideAutoCompleteMaker), DispatcherPriority.Loaded);
-                }
-                else
-                {
-                    Dispatcher.DelayInvoke(autoCompleteMarkerDelay, TryHideAutoCompleteMaker);
-                }
-            }
             
             //Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
             if (ViewModel.NodeModel != null && ViewModel.NodeModel is CoreNodeModels.Watch) return;
@@ -743,8 +679,6 @@ namespace Dynamo.Controls
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Hidden);
             }
-
-            TryHideAutoCompleteMaker();
         }
 
         /// <summary>
