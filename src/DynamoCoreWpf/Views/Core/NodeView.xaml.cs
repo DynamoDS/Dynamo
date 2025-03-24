@@ -604,16 +604,18 @@ namespace Dynamo.Controls
             ViewModel.ZIndex = oldZIndex;
 
             //hide the node autocomplete marker if mouse leaves the node
-            if (IsAutoCompleteMarkerDisabled()) return;
-            if (Mouse.Captured is DragCanvas)
+            if (!IsAutoCompleteMarkerDisabled())
             {
-                Dispatcher.BeginInvoke(new Action(TryHideAutoCompleteMaker), DispatcherPriority.Loaded);
+                if (Mouse.Captured is DragCanvas)
+                {
+                    Dispatcher.BeginInvoke(new Action(TryHideAutoCompleteMaker), DispatcherPriority.Loaded);
+                }
+                else
+                {
+                    Dispatcher.DelayInvoke(autoCompleteMarkerDelay, TryHideAutoCompleteMaker);
+                }
             }
-            else
-            {
-                Dispatcher.DelayInvoke(autoCompleteMarkerDelay, TryHideAutoCompleteMaker);
-            }
-
+            
             //Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
             if (ViewModel.NodeModel != null && ViewModel.NodeModel is CoreNodeModels.Watch) return;
 
