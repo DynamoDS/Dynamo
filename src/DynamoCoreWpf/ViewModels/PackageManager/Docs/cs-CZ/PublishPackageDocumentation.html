@@ -1,0 +1,67 @@
+﻿<!--
+    Dynamo: https://github.com/DynamoDS/Dynamo
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code  .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h3>Nástroj Package Manager</h3>
+    <p>Nástroj Package Manager aplikace Dynamo představuje jediné místo pro procházení, instalaci a publikování balíčků. Nástroj můžete spustit z horního navigačního panelu Balíčky – Package Manager.</p>
+    <h4>Co jsou balíčky?</h4>
+    <p>Aplikace Dynamo nabízí velké množství předdefinovaných funkcí a také spravuje rozsáhlou knihovnu balíčků, která může podstatně rozšířit možnosti aplikace Dynamo. Balíček je kolekce vlastních uzlů nebo dalších funkcí. Nástroj Package Manager aplikace Dynamo je portál pro komunitu, kde lze stáhnout všechny balíčky, které byly publikovány online. Tyto sady nástrojů jsou vyvinuty třetími stranami k rozšíření základních funkcí aplikace Dynamo. Jsou přístupné všem uživatelům a mohou být staženy kliknutím na tlačítko.</p>
+    <h4>Instalace balíčků aplikace Dynamo</h4>
+    <p>Balíčky můžete procházet a instalovat na kartě Vyhledat balíčky v nástroji Package Manager. Pomocí vyhledávacího pole vyhledejte konkrétní balíčky. Seznam můžete také zúžit pomocí filtrů a řazení, aby odpovídal vašim kritériím, například podle programu hostitele nebo chybějících závislostí.</p>
+    <p>Chcete-li zobrazit další informace o balíčku, klepněte na možnost Zobrazit podrobnosti. Tím se otevře panel, kde najdete popis balíčku, verzi, licenci a další informace.</p>
+    <p>Chcete-li balíček nainstalovat, klikněte na tlačítko Instalovat buď v zobrazení vyhledávání, nebo na panelu podrobností. Verzi, kterou chcete nainstalovat, můžete určit v pohledu vyhledávání kliknutím a výběrem z rozevíracího seznamu. Pokud nic nevyberete, bude nainstalována nejnovější verze. Na panelu podrobností o balíčku klikněte na tlačítko Instalovat pod konkrétní verzí v tabulce Verze a požadavky na balíček. Tím nainstalujete příslušnou verzi.</p>
+    <p>Seznam balíčků, které jste nainstalovali, naleznete na kartě Nainstalované balíčky v nástroji Package Manager. Na této kartě můžete prohlížet soubory balíčku, odinstalovat balíčky apod.</p>
+    <h4>Publikování balíčků aplikace Dynamo</h4>
+    <p>Pomocí nástroje Package Manager lze publikovat balíčky v aplikaci Dynamo. Začněte otevřením karty Publikovat balíček. Na kartě Publikovat balíček se zobrazí dotaz na všechny požadované a volitelné informace týkající se balíčku, který chcete publikovat.</p>
+
+    <h4>Přidávání podrobností o balíčku</h4>
+
+    <p><b>Název balíčku:</b> <br/> Název balíčku, který chcete publikovat. Tento název se zobrazí v knihovně, při vyhledávání balíčku a na webu Package Manager. Názvy balíčků musí mít nejméně 3 znaky.</p>
+    <p><b>Popis:</b><br/> Popis je ideálním místem, kde můžete přidat další podrobnosti o balíčku, včetně uvedení všech výjimek a nezbytných předpokladů. Může být také použita k tomu, aby uživatelé získali informace o tom, co balíček dělá a jak jej lze použít v jejich pracovních prostorech.</p>
+    <p><b>Verze:</b><br/> Pole verze je rozděleno do tří částí (hlavní, vedlejší a sestavení), takže vám jako tvůrci balíčku umožňuje odeslat nové verze balíčku podle požadavků sémantiky. Autoři balíčků mohou chtít publikovat více verzí pro své balíčky s novými a vylepšenými funkcemi, vyladit některé detaily, které byly vynechány v první verzi, nebo opravit nalezenou chybu.</p>
+    <p><b>Hostitel:</b> <br/> Pokud váš balíček vyžaduje určitý hostitelský program, například Revit, Civil 3D, Alias nebo jiných, můžete v rozevíracím seznamu vybrat jednoho nebo více hostitelů. Při vyhledávání balíčků mohou uživatelé filtrovat výsledky podle hostitele a najít balíčky, které jsou navrženy pro práci s jejich preferovanými programy.</p>
+    <p><b>Klíčová slova (volitelné):</b><br/> Klíčová slova, která lze použít jako štítky související s balíčkem, například Generativní návrh, ML atd. Do pole můžete zadat více klíčových slov najednou tak, že je oddělíte mezerníkem a pak stisknete klávesu Enter.</p>
+    <p><b>Skupina (volitelné):</b> <br/> Toto pole lze použít k určení skupiny, do které balíček patří, například společnosti nebo organizace.</p>
+    <p><b>Webová stránka (volitelné):</b><br/> Odkaz na webovou stránku, která může uživateli poskytnout další informace týkající se balíčku nebo organizace/autora.</p>
+    <p><b>Adresa URL úložiště (volitelné):</b><br/> Odkaz na úložiště balíčku, který umožňuje uživatelům zobrazit vývoj balíčku nebo k němu přispět.</p>
+    <p><b>Licence (volitelné):</b><br/> Licence, pod kterou je balíček vydán. Výchozí licence: MIT.</p>
+    <p><b>Držitel autorských práv (volitelné):</b> <br/> Jméno osoby, která má autorské právo na balíček. Pokud je ponecháno prázdné, použije se ve výchozím nastavení vaše uživatelské jméno.</p>
+    <p><b>Rok autorského práva (volitelné):</b> <br/> Rok autorského práva pro balíček. Pokud je tato možnost ponechána prázdná, bude použita výchozí hodnota pro rok publikování balíčku.</p>
+
+    <h4>Přidávání souborů balíčku</h4>
+
+    <p><b>Obsah balíčku:</b> <br/> Tato část, která se nachází na pravém bočním panelu karty Publikovat balíček, umožňuje uspořádat obsah balíčku před publikováním.</p>
+    <p><b>Přidat soubory/adresář:</b> <br/><p>Vyberte a přidejte všechny soubory, které se vztahují k vašemu balíčku. Obecně platí, že se přidává složka přihrádek, binární soubory a závislosti. Můžete přidat jednotlivé soubory nebo složky.</p>
+    <p>Po výběru souborů nebo složek, které chcete přidat, můžete soubory zobrazit, odebrat nebo přidat na stránce Vybrat obsah balíčku. Strukturu složek vybraných souborů můžete zobrazit v levém panelu a obsah jednotlivých složek v pravém panelu.</p>
+    <p><b>Vyberte knihovny uzlů:</b><br/><p>Zaškrtnutím políčka ve sloupci Knihovna uzlů určete, které soubory přidané do balíčku budou knihovnami uzlů. Knihovny uzlů obsahují typy a metody, které aplikace Dynamo importuje jako uzly. Obecně byste měli označit libovolnou sestavu jako knihovnu uzlů obsahující typy, které chcete importovat do aplikace Dynamo. Sestavy ZeroTouch, NodeModel nebo NodeViewCustomisation by měly být označeny jako knihovna uzlů.</p>
+    <p>Chcete-li načíst uživatelské rozhraní sestavy NodeViewCustomizations, je nutné je definovat ve stejné sestavě, která obsahuje odpovídající definice NodeModel NEBO je definovat v samostatné sestavě. V obou případech musí být sestava označena jako knihovna uzlů. Aktuálně budou u sestav označených jako knihovna uzlů, které obsahují typy NodeModel nebo NodeCustomisation, ignorovány všechny ostatní typy. Z tohoto důvodu je důležité oddělit typy uživatelského rozhraní sestav íNodeModel/NodeViewCustomisation od typů, které chcete importovat pomocí importu ZeroTouch.</p>
+    </p>
+    <p><b>Zachovat strukturu složek:</b> <br/><p>Autoři balíčků se složitými strukturami složek by mohli chtít, abyste zapnuli přepínač Zachovat strukturu složek pod panelem náhledu obsahu balíčku. Toto nastavení je ve výchozím nastavení zapnuto, když uživatel publikuje novou verzi existujícího balíčku, aplikace Dynamo v takovém případě neprovede změny ve struktuře složek balíčku a místo toho bude balíček odeslán tak, jak je.</p>
+        <p>Pokud potřebujete, aby byl balíček určitým způsobem nastaven kvůli zajištění fungování a zabránění problémům, zapněte toto nastavení. Pokud si nejste jisti nebo publikujete nový balíček, vypněte toto nastavení, aby aplikace Dynamo mohla nastavit strukturu složek.</p>
+    </p>
+    <p><b>Náhled obsahu balíčku:</b> <br/> Až budete spokojeni s obsahem balíčku, kliknutím na tlačítko Další si zobrazíte náhled nastavení souborů balíčku po jejich publikování. Tato stránka je pouze pro čtení. Chcete-li provést nějaké změny v obsahu balíčku, vraťte se na předchozí stránku. Kliknutím na tlačítko Dokončit se vrátíte na stránku s podrobnostmi o balíčku.</p>
+    <p><b>Přidat cestu k souboru připomínek (volitelné):</b> <br/> V části Cesta k souborům připomínek můžete určit cestu k souboru, který bude hostovat dokumentaci připomínek (.md) pro váš balíček.</p>
+    <p><b>Publikování balíčku</b><br/> Po vyplnění všech požadovaných údajů můžete balíček publikovat místně nebo online. Při místním publikování bude balíček publikován v místním kořenovém adresáři, při publikování online bude balíček odeslán do nástroje Package Manager.</p>
+
+    <hr />
+
+    <h3>Antivirové skeny</h3>
+    <p>Abychom všem uživatelům balíčku aplikace Dynamo poskytli zabezpečené prostředí, přidali jsme antivirové skeny pro nové balíčky. Když uživatel odešle balíček, bude prohledán, zda neobsahuje viry. Jakmile bude označen jako bezpečný, bude dostupný veřejně. Prohledávání proběhne během odesílání balíčku a neprodlouží obvyklou dobu 10–15 minut, po níž bude nový balíček dostupný online. Pokud je balíček označen jako nakažený, na vyhledávací stránce nástroje Package Manager se zobrazí upozornění, že byl nalezen nakažený balíček, který nebude publikován online. Chcete-li balíček zpřístupnit veřejnosti, zkontrolujte soubory obsažené v balíčku a odešlete novou verzi pomocí aplikace Package Manager.</p>
+    <h3>Správa balíčků</h3>
+    <p>Seznam publikovaných balíčků najdete na kartě Moje balíčky v nástroji Package Manager. Zde je můžete odmítnout, publikovat novou verzi atd.</p>
+    <h3>Nastavení balíčku</h3>
+    <p>Nastavení související s balíčkem můžete zobrazit na kartě Nastavení balíčku v nástroji Package Manager, včetně nových cest stažení balíčku a vyhledávacích cest balíčku/knihovny. Chcete-li upravit nastavení, klepněte na odkaz Předvolby na kartě Nastavení balíčku, abyste získali přístup k panelu Předvolby.</p>
+</body>
