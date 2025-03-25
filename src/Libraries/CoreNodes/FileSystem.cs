@@ -74,7 +74,7 @@ namespace DSCore.IO
         public static string ReadText(FileInfo file)
         {
             Analytics.TrackTaskFileOperationEvent(
-                                  file.FullName,
+                                  file.Name,
                                   Actions.Read,
                                   Convert.ToInt32(file.Length));
 
@@ -103,7 +103,7 @@ namespace DSCore.IO
         public static void DeleteFile(string path)
         {
             Analytics.TrackTaskFileOperationEvent(
-                      path,
+                      Path.GetFileName(path),
                       Actions.Delete,
                       Convert.ToInt32(path.Length));
 
@@ -161,7 +161,7 @@ namespace DSCore.IO
         public static void WriteText(string filePath, string text)
         {
             Analytics.TrackTaskFileOperationEvent(
-                                  filePath,
+                                  Path.GetFileName(filePath),
                                   Actions.Write,
                                   Convert.ToInt32(filePath.Length));
 
@@ -415,7 +415,7 @@ namespace DSCore.IO
         public static Bitmap ReadFromFile(FileInfo file)
         {
             Analytics.TrackTaskFileOperationEvent(
-                                  file.FullName,
+                                  file.Name,
                                   Actions.Read,
                                   Convert.ToInt32(file.Length));
 
@@ -537,7 +537,7 @@ namespace DSCore.IO
         public static Bitmap WriteToFile(string path, Bitmap image)
         {
             Analytics.TrackTaskFileOperationEvent(
-                                 path,
+                                 Path.GetFileName(path),
                                  Actions.Write,
                                  Convert.ToInt32(path.Length));
 

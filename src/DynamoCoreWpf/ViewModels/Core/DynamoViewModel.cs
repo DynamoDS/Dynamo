@@ -2627,14 +2627,14 @@ namespace Dynamo.ViewModels
                     if (saveContext.Equals(SaveContext.Save))
                     {
                         Analytics.TrackTaskFileOperationEvent(
-                                  path,
+                                  Path.GetFileName(path),
                                   Logging.Actions.Save,
                                   Model.CurrentWorkspace.Nodes.Count());
                     }
                     else if (saveContext.Equals(SaveContext.SaveAs))
                     {
                         Analytics.TrackTaskFileOperationEvent(
-                                  path,
+                                  Path.GetFileName(path),
                                   Logging.Actions.SaveAs,
                                   Model.CurrentWorkspace.Nodes.Count());
                     }
@@ -3250,7 +3250,7 @@ namespace Dynamo.ViewModels
         {
             // Tracking analytics for workspace file close operation.
             Analytics.TrackTaskFileOperationEvent(
-                                     model.CurrentWorkspace.FileName,
+                                     Path.GetFileName(model.CurrentWorkspace.FileName),
                                      Logging.Actions.Close,
                                      model.CurrentWorkspace.Nodes.Count());
 

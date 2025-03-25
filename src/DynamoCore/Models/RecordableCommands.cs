@@ -499,7 +499,7 @@ namespace Dynamo.Models
             {
                 // Log file open action and the number of nodes in the opened workspace
                 Dynamo.Logging.Analytics.TrackTaskFileOperationEvent(
-                    FilePath,
+                    Path.GetFileName(FilePath),
                     Logging.Actions.Open,
                     dynamoModel.CurrentWorkspace.Nodes.Count());
 
@@ -599,7 +599,7 @@ namespace Dynamo.Models
             {
                 // Log file open action and the number of nodes in the opened workspace
                 Dynamo.Logging.Analytics.TrackTaskFileOperationEvent(
-                    FilePath,
+                    Path.GetFileName(FilePath),
                     Logging.Actions.Open,
                     dynamoModel.CurrentWorkspace.Nodes.Count());
 
