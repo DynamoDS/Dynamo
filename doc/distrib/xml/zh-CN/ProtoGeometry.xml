@@ -5100,6 +5100,9 @@
         <member name="F:Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.RemoveVertices">
             <summary>删除不位于输入 FACE 上的顶点。</summary>
         </member>
+        <member name="F:Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Trim">
+            <summary>Trim overlapping panels to surface boundary.</summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.ToString">
             <summary>获取 PanelSurface 的字符串表示。</summary>
         </member>
