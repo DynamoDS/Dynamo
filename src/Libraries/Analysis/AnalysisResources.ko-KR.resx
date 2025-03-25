@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="EmptyColorsMessage" xml:space="preserve">
-    <value>색상이 지정되지 않았습니다.</value>
+    <value>There are no colors specified.</value>
   </data>
   <data name="EmptyPointsMessage" xml:space="preserve">
-    <value>점이 지정되지 않았습니다.</value>
+    <value>There are no points specified.</value>
   </data>
   <data name="EmptyUVsMessage" xml:space="preserve">
-    <value>UV가 지정되지 않았습니다.</value>
+    <value>There are no UVs specified.</value>
   </data>
   <data name="EmptyValuesMessage" xml:space="preserve">
-    <value>값이 지정되지 않았습니다.</value>
+    <value>There are no values specified.</value>
   </data>
   <data name="InputsNotEquivalentMessage" xml:space="preserve">
-    <value>동일한 수의 점 및 값을 제공해야 합니다.</value>
+    <value>You must supply an equivalent number of points and values.</value>
   </data>
 </root>
