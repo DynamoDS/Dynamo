@@ -1949,6 +1949,7 @@
       <HtmlAndBundleFiles Include="Packages\PackageManagerWizard\dist\index.html" />
     </ItemGroup>
     <Copy SourceFiles="@(HtmlAndBundleFiles)" DestinationFolder="$(OutputPath)\PackageManager\" />
+  </Target>
     <Target Name="CopyDocXML" AfterTargets="AfterBuildOps">
       <ItemGroup>
         <DocXMLFiles Include="$(OutputPath)\en-US\**\*.xml"/>
@@ -1982,6 +1983,5 @@
 	  <Copy SourceFiles="@(DocXMLRuRUFiles)" DestinationFolder="$(OutputPath)\ru-RU\" SkipUnchangedFiles="True"/>
 	  <Copy SourceFiles="@(DocXMLZhCNFiles)" DestinationFolder="$(OutputPath)\zh-CN\" SkipUnchangedFiles="True"/>
 	  <Copy SourceFiles="@(DocXMLZhTWFiles)" DestinationFolder="$(OutputPath)\zh-TW\" SkipUnchangedFiles="True"/>
-    </Target>
   </Target>
 </Project>
