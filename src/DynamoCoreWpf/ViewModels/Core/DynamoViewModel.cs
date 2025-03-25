@@ -3248,7 +3248,7 @@ namespace Dynamo.ViewModels
 
         private void CloseHomeWorkspace(object parameter)
         {
-            //Tracking analytics for workspace file close operation.
+            // Tracking analytics for workspace file close operation.
             Analytics.TrackTaskFileOperationEvent(
                                      Path.GetFileName(model.CurrentWorkspace.FileName),
                                      Logging.Actions.Close,
