@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,120 +118,120 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BitmapOverflowError" xml:space="preserve">
-    <value>The supplied color data is too large to fit in the image bounds.</value>
+    <value>提供的顏色資料太大，無法佈滿影像邊界。</value>
   </data>
   <data name="EnumDateOfWeekFriday" xml:space="preserve">
-    <value>Friday</value>
+    <value>星期五</value>
   </data>
   <data name="EnumDateOfWeekMonday" xml:space="preserve">
-    <value>Monday</value>
+    <value>星期一</value>
   </data>
   <data name="EnumDateOfWeekSaturday" xml:space="preserve">
-    <value>Saturday</value>
+    <value>星期六</value>
   </data>
   <data name="EnumDateOfWeekSunday" xml:space="preserve">
-    <value>Sunday</value>
+    <value>星期日</value>
   </data>
   <data name="EnumDateOfWeekThursday" xml:space="preserve">
-    <value>Thursday</value>
+    <value>星期四</value>
   </data>
   <data name="EnumDateOfWeekTuesday" xml:space="preserve">
-    <value>Tuesday</value>
+    <value>星期二</value>
   </data>
   <data name="EnumDateOfWeekWednesday" xml:space="preserve">
-    <value>Wednesday</value>
+    <value>星期三</value>
   </data>
   <data name="Exception_Deserialize_Bad_Format" xml:space="preserve">
-    <value>The json for the type {0} was not formatted correctly</value>
+    <value>類型 {0} 的 json 格式不正確</value>
   </data>
   <data name="Exception_Deserialize_Unsupported_Cache" xml:space="preserve">
-    <value>The stored data can not be loaded.</value>
+    <value>無法載入儲存的資料。</value>
   </data>
   <data name="Exception_Serialize_Depth_Unsupported" xml:space="preserve">
-    <value>Depth {0} Exceeds MaxDepth {1} at path "{2}"</value>
+    <value>深度 {0} 超過路徑「{2}」的最大深度 {1}</value>
   </data>
   <data name="Exception_Serialize_DesignScript_Unsupported" xml:space="preserve">
-    <value>This type of Geometry is not able to be serialized.</value>
+    <value>此類型的幾何圖形無法序列化。</value>
   </data>
   <data name="Exception_Serialize_Unsupported_Type" xml:space="preserve">
-    <value>Cannot store data of type {0}.</value>
+    <value>無法儲存類型為 {0} 的資料。</value>
   </data>
   <data name="ExportToCSVObsolete" xml:space="preserve">
-    <value>Use Data.ExportCSV node instead</value>
+    <value>請改用 Data.ExportCSV 節點</value>
   </data>
   <data name="FactorialNegativeInt" xml:space="preserve">
-    <value>The input value of Math.Factorial cannot be negative.</value>
+    <value>Math.Factorial 的輸入值不可為負值。</value>
   </data>
   <data name="FactorialOverflow" xml:space="preserve">
-    <value>The return value of Math.Factorial is out of range.</value>
+    <value>Math.Factorial 的傳回值超出範圍。</value>
   </data>
   <data name="FindPointsWithinRadiusNullPointMessage" xml:space="preserve">
-    <value>You must provide a center point.</value>
+    <value>您必須提供一個中心點。</value>
   </data>
   <data name="FindPointsWithinRadiusSearchRadiusMessage" xml:space="preserve">
-    <value>The search radius cannot be zero.</value>
+    <value>搜尋半徑不能為零。</value>
   </data>
   <data name="FromObjectObsolete" xml:space="preserve">
-    <value>This node is obsolete, please use "String from Object"</value>
+    <value>此為舊型節點，請使用「來自物件的字串」</value>
   </data>
   <data name="IntegerOverflow" xml:space="preserve">
-    <value>The operation resulted in an integer overflow. Its result may be unexpected.</value>
+    <value>作業造成整數溢位。可能會產生非預期的結果。</value>
   </data>
   <data name="InvalidDestinationPathErrorMessage" xml:space="preserve">
-    <value>Invalid destination file path used as copy path.</value>
+    <value>用作複製路徑的目標檔案路徑無效。</value>
   </data>
   <data name="InvalidKeysErrorMessage" xml:space="preserve">
-    <value>One or more input types are not matching. Lists as keys are not supported.</value>
+    <value>一個或多個輸入類型不相符。列示為「關鍵字」不受支援。</value>
   </data>
   <data name="InvalidKeysLenghtErrorMessage" xml:space="preserve">
-    <value>Number of items does not match the number of keys. href=InvalidKeysLenghtErrorMessage.html</value>
+    <value>項目數目與鍵的數目不相符。href=InvalidKeysLenghtErrorMessage.html</value>
   </data>
   <data name="LoadImageFromPathObsolete" xml:space="preserve">
-    <value>Use File.FromPath -&gt;  Image.ReadFromFile nodes instead</value>
+    <value>使用 File.FromPath -&gt;  Image.ReadFromFile 節點</value>
   </data>
   <data name="MissingPythonEngine" xml:space="preserve">
-    <value>The selected Python engine could not be found</value>
+    <value>找不到選取的 Python 引擎</value>
   </data>
   <data name="ObjectArgumentExceptionMessage" xml:space="preserve">
-    <value>Object cannot be null, please provide appropriate value.</value>
+    <value>物件不能為空，請提供適當的值。</value>
   </data>
   <data name="QuadtreeConstructionEmptyUVSetMessage" xml:space="preserve">
-    <value>You cannot construct a quadtree from an empty set of points.</value>
+    <value>您無法從空白點集建構建置四元樹狀目錄。</value>
   </data>
   <data name="QuadtreeConstructionNullUVSetMessage" xml:space="preserve">
-    <value>A Quadtree cannot be constructed from a null set of UVs.</value>
+    <value>無法從空值的 UV 集建置四元樹狀目錄。</value>
   </data>
   <data name="ReadImageObsolete" xml:space="preserve">
-    <value>Use File.FromPath -&gt; Image.ReadFromFile -&gt;  Image.Pixels nodes instead</value>
+    <value>使用 File.FromPath -&gt;  Image.ReadFromFile -&gt;  Image.Pixels 節點</value>
   </data>
   <data name="ReadTextObsolete" xml:space="preserve">
-    <value>Use File.FromPath -&gt;  File.ReadText nodes instead.</value>
+    <value>使用 File.FromPath -&gt;  File.ReadText 節點。</value>
   </data>
   <data name="StringRemoveCountOutOfRangeMessage" xml:space="preserve">
-    <value>Count is out of range!</value>
+    <value>Count 超出範圍 ！</value>
   </data>
   <data name="StringRemoveStartIndexOutOfRangeMessage" xml:space="preserve">
-    <value>StartIndex is out of range!</value>
+    <value>startIndex 超出範圍 ！</value>
   </data>
   <data name="StringToNumberInvalidNumberMessage" xml:space="preserve">
-    <value>Not a valid number.</value>
+    <value>不是一個有效數字。</value>
   </data>
   <data name="WebRequestNullUrlMessage" xml:space="preserve">
-    <value>The url cannot be null.</value>
+    <value>URL 不能為空。</value>
   </data>
   <data name="WriteImageObsolete" xml:space="preserve">
-    <value>Use Image.WriteToFile node instead</value>
+    <value>使用 Image.WriteToFile 節點</value>
   </data>
   <data name="DefineDataUnexpectedInputExceptionMessage" xml:space="preserve">
-    <value>This node expected a {0} input but received a {1} input. Please provide the expected input, or pick a new type in the node’s drop-down menu.</value>
+    <value>此節點應為 {0} 輸入，但收到 {1} 輸入。請提供預期的輸入，或在節點的下拉式功能表中點選新類型。</value>
   </data>
   <data name="DefineDataUnsupportedCombinationOfDataTypesExceptionMessage" xml:space="preserve">
-    <value>This node does not support the combination of data types in the current input list {0}. Ensure the input list contains items of the same data type, or a mix of types with a common parent type</value>
+    <value>此節點不支援在目前輸入清單 {0} 中結合不同資料類型。請確保輸入清單的項目屬於相同資料類型，或是混合共同父系類型的類型</value>
   </data>
   <data name="DefineDataUnsupportedDataTypeExceptionMessage" xml:space="preserve">
-    <value>This node does not support the current input data type ({0}). View the supported data types in the drop-down menu.</value>
+    <value>此節點不支援目前的輸入資料類型 ({0})。請在下拉式功能表中檢視支援的資料類型。</value>
   </data>
   <data name="DefineDataSupportedInputValueExceptionMessage" xml:space="preserve">
-    <value>Input must be a single value or a non-nested list.</value>
+    <value>輸入必須是單一值或非巢狀清單。</value>
   </data>
 </root>

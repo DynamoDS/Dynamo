@@ -1,0 +1,112 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>GeometryColor</name>
+    </assembly>
+    <members>
+        <member name="M:Modifiers.GeometryColor.ByGeometryColor(Autodesk.DesignScript.Geometry.Geometry,DSCore.Color)">
+            <summary>使用一种颜色显示几何图形。</summary>
+            <param name="geometry">要对其应用颜色的几何图形。</param>
+            <param name="color">颜色。</param>
+            <returns>“显示”对象。</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.BySurfaceColors(Autodesk.DesignScript.Geometry.Surface,DSCore.Color[][])">
+             <summary>在表面上显示颜色值。
+            
+            提供的颜色会在内部转换为映射
+            到表面的图像纹理。</summary>
+             <param name="surface">要应用颜色的表面。</param>
+             <param name="colors">二维颜色列表。
+            
+            颜色列表必须是方形。试图传递锯齿状阵列
+            将导致异常。</param>
+             <returns>“显示”对象。</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ByPointsColors(Autodesk.DesignScript.Geometry.Point[],DSCore.Color[])">
+             <summary>使用点和颜色创建彩色网格。
+            
+             提供的点列表用于构建具有非连接顶点的
+            三角化网格。</summary>
+             <param name="points">点列表。
+            
+            当前仅支持三角形网格。列表中每三个点会形成
+            网格中的一个三角形。应该按逆时针方向排列点。
+            尝试传递顶点数无法被 3 整除的顶点列表将引发异常。</param>
+             <param name="colors">颜色列表。
+            
+            颜色数量必须与顶点数量匹配。尝试传递颜色数与点列表的点数不同的
+            颜色列表将引发异常。</param>
+             <returns>“显示”对象。</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
+            <summary>按单一颜色、逐面颜色、逐顶点颜色或逐面顶点颜色显示网格。</summary>
+            <param name="mesh"/>The Mesh on which to apply the colors
+            <param name="colors">颜色计数必须等于 1 (单色)，或等于面数(逐面颜色)，或等于顶点计数(逐顶点颜色)，或等于三角形计数乘以 3 (逐三角形顶点颜色)</param>
+            <param name="smoothShading">如果为 true，着色将看起来平滑而不是有面，这对于可视化平滑的连续曲面很有用</param>
+            <returns>显示对象。</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ComputeColorMap(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},DSCore.Color[],System.Int32,System.Int32)">
+            <summary>基于一组 SurfaceData 对象来计算一组颜色贴图。</summary>
+            <returns/>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ComputeSamplesFromNormalizedValue(System.Double,System.Int32,System.Int32)">
+            <summary>此方法将 0.0 和 1.0 之间的数字重新映射为介于 lowestPower 和 highestPower 之间的整数值</summary>
+        </member>
+        <member name="T:Autodesk.DesignScript.Geometry.ImportHelpers">
+            <summary>几何图形输入节点具有我们不希望将其引入到 Protogeometry 的依存关系。
+            这些方法进一步包裹在 NodeModel 节点中，以便我们可以准确获取命名和库
+            位置。</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.ImportFromSATWithUnits(System.String,DynamoUnits.Unit)">
+            <summary>从 SAT 文件路径输入几何图形。设置 dynamoUnit 输入以匹配
+            您解释 Dynamo 文件中其他数字的方式。</summary>
+            <param name="filePath">.SAT 文件的字符串文件路径。</param>
+            <param name="dynamoUnit">Forge 单位长度；如果保留为空，则 sat 文件将以无单位形式输入</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.ImportFromSATWithUnits(System.IO.FileInfo,DynamoUnits.Unit)">
+            <summary>从 SAT 文件路径输入几何图形。设置 dynamoUnit 输入以匹配
+            您解释 Dynamo 文件中其他数字的方式。</summary>
+            <param name="file">指向 .SAT 文件的文件对象。</param>
+            <param name="dynamoUnit">Forge 单位长度；如果保留为空，则 sat 文件将以无单位形式输入</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.DeserializeFromSABWithUnits(System.Byte[],DynamoUnits.Unit)">
+            <summary>从 SAB 字节数组输入几何图形。设置 dynamoUnit 输入以匹配
+            您解释 Dynamo 文件中其他数字的方式。</summary>
+            <param name="buffer">SAB 字节数组</param>
+            <param name="dynamoUnit">Forge 单位长度；如果保留为空，则 sat 文件将以无单位形式输入</param>
+            <returns/>
+        </member>
+        <member name="T:GeometryColor.Properties.Resources">
+            <summary>强类型资源类别，用于查找本地化字符串等。</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.ResourceManager">
+            <summary>返回该类别所用的缓存 ResourceManager 实例。</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.Culture">
+            <summary>使用该强类型资源类别，替换用于查找所有资源的
+              当前线程的 CurrentUICulture 特性。</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.ByMeshColorsInvalidColorCountMessage">
+            <summary>查找与“颜色计数无效。”类似的本地化字符串。它必须等于 1 (单色)，或等于面数(逐面颜色)，或等于顶点计数(逐顶点颜色)，或等于三角形计数乘以 3 (逐三角形顶点颜色)。如果要为多个网格着色，可能需要使用“列表级别”。</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.JaggedListExceptionMessage">
+            <summary>查找类似于“颜色列表不能为锯齿状列表..”的本地化字符串</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.NoColorsExceptionMessage">
+            <summary>查找类似于“您必须提供一些颜色..”的本地化字符串</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.NoVertexExceptionMessage">
+            <summary>查找类似于“您必须提供一些顶点..”的本地化字符串</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.TwoDimensionalListExceptionMessage">
+            <summary>查找类似于“您必须提供二维颜色列表..”的本地化字符串</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.VertexColorCountMismatchExceptionMessage">
+            <summary>查找类似于“提供的颜色的数量必须与顶点的数量匹配..”的本地化字符串</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.VerticesDivisibleByThreeExceptionMessage">
+            <summary>查找类似于“提供的顶点的数量必须能被 3 整除..”的本地化字符串</summary>
+        </member>
+    </members>
+</doc>

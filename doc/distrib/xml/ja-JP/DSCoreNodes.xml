@@ -1,0 +1,1863 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>DSCoreNodes</name>
+    </assembly>
+    <members>
+        <member name="P:DSCore.Color.Red">
+            <summary>色の赤色成分の値(0 ～ 255)を取得します。</summary>
+            <returns name="int">RGB カラー モデルの赤色成分の値、整数、0 以上 255 以下。</returns>
+        </member>
+        <member name="P:DSCore.Color.Green">
+            <summary>色の緑色成分の値(0 ～ 255)を取得します。</summary>
+            <returns name="int">RGB カラー モデルの緑色成分の値、整数、0 以上 255 以下。</returns>
+        </member>
+        <member name="P:DSCore.Color.Blue">
+            <summary>色の青色成分の値(0 ～ 255)を取得します。</summary>
+            <returns name="int">RGB カラー モデルの青色成分の値、整数、0 以上 255 以下。</returns>
+        </member>
+        <member name="P:DSCore.Color.Alpha">
+            <summary>色のアルファ成分の値(0 ～ 255)を取得します。</summary>
+            <returns name="int">アルファ成分の値、整数、0 以上 255 以下。</returns>
+        </member>
+        <member name="M:DSCore.Color.ByARGB(System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>アルファ、赤、緑、青の各成分から色を作成します。</summary>
+            <param name="alpha">アルファ成分の値(0 以上 255 以下)</param>
+            <param name="red">RGB カラー モデルの赤色成分の値(0 以上 255 以下)</param>
+            <param name="green">RGB カラー モデルの緑色成分の値(0 以上 255 以下)</param>
+            <param name="blue">RGB カラー モデルの青色成分の値(0 以上 255 以下)</param>
+            <returns name="color">ARGB から作成された色</returns>
+            <search>color</search>
+        </member>
+        <member name="M:DSCore.Color.Brightness(DSCore.Color)">
+            <summary>色の明度の値を返します。</summary>
+            <param name="color">明度のクエリーを実行する色</param>
+            <returns name="double">明度の値(0 以上 1 以下)</returns>
+        </member>
+        <member name="M:DSCore.Color.Saturation(DSCore.Color)">
+            <summary>色の彩度の値を返します。</summary>
+            <returns name="double">彩度の値、倍精度浮動小数点数、0 以上 1 以下。</returns>
+        </member>
+        <member name="M:DSCore.Color.Hue(DSCore.Color)">
+            <summary>色の色相の値を返します。</summary>
+            <param name="color">カラー オブジェクト</param> 
+            <returns name="double">色の色相値、倍精度浮動小数点数、0 以上 1 以下。</returns>
+            <search>hues</search>
+        </member>
+        <member name="M:DSCore.Color.Components(DSCore.Color)">
+            <summary>色の各成分を、アルファ、赤、緑、青の順のリストとして返します。</summary>
+            <param name="color">カラー オブジェクト</param> 
+            <returns name="alpha">アルファ成分の値、整数、0 以上 255 以下。</returns>
+            <returns name="red">RGB カラー モデルの赤色成分の値、整数、0 以上 255 以下。</returns>
+            <returns name="green">RGB カラー モデルの緑色成分の値、整数、0 以上 255 以下。</returns>
+            <returns name="blue">RGB カラー モデルの青色成分の値、整数、0 以上 255 以下。</returns>
+            <search>alpha,red,green,blue</search>
+        </member>
+        <member name="M:DSCore.Color.BuildColorFrom1DRange(System.Collections.Generic.List{DSCore.Color},System.Collections.Generic.List{System.Double},System.Double)">
+            <summary>開始色と終了色間の色のグラデーションから色を取得します。</summary>
+            <param name="colors"/>
+            <param name="parameters">色をサンプリングするの範囲に沿った 0 から 1 の間の値。</param>
+            <param name="parameter"/>
+            <returns name="colors">指定した色域内の色。</returns>
+            <search>color,range,gradient</search>
+        </member>
+        <member name="M:DSCore.Color.Lerp(DSCore.Color,DSCore.Color,System.Double)">
+            <summary>2 つの色を線形的に補間します。</summary>
+            <param name="start">開始色。</param>
+            <param name="end">終了色。</param>
+            <param name="t">0.0 と 1.0 の間のパラメータ。</param>
+            <returns>補間された色または白。</returns>
+        </member>
+        <member name="M:DSCore.Color.Blerp(System.Collections.Generic.IList{DSCore.Color.IndexedColor2D},Autodesk.DesignScript.Geometry.UV)">
+            <summary>一連の色の間のバイリニア補完。</summary>
+            <param name="colors"/>
+            <param name="parameter"/>
+            <returns>補間された色または白。</returns>
+            This algorithm is not the same as the solution found from wikipedia 
+            (reference: https://en.wikipedia.org/wiki/Bilinear_interpolation)
+        </member>
+        <member name="M:DSCore.Color.Add(DSCore.Color,DSCore.Color)">
+            <summary>2 つの既存の色の ARGB 値を組み合わせて 1 つの色を作成します。</summary>
+            <param name="color">追加する色</param>
+            <param name="otherColor">追加するもう一方の色</param>
+            <returns name="color">2 つの色の追加による色の結果</returns>
+        </member>
+        <member name="M:DSCore.Color.Multiply(DSCore.Color,System.Double)">
+            <summary>入力された色を数値の乗数で乗算し、より暗い色を作成します。入力される色のアルファ成分の値は 255 未満でなければなりません。</summary>
+            <param name="color">乗算する色</param>
+            <param name="multiplier">乗数の値</param>
+            <returns name="color">乗算による色の結果</returns>
+        </member>
+        <member name="M:DSCore.Color.Divide(DSCore.Color,System.Double)">
+            <summary>入力された色を数値の除数で除算し、より明るい色を作成して、色の彩度を下げます</summary>
+            <param name="color">除算する色</param>
+            <param name="dividend">除数の値</param>
+            <returns name="color">除算による色の結果</returns>
+        </member>
+        <member name="M:DSCore.ColorRange1D.ByColorsAndParameters(System.Collections.Generic.List{DSCore.Color},System.Collections.Generic.List{System.Double})">
+            <summary>色とパラメータのリストを指定して ColorRange1D を作成します。</summary>
+            <param name="colors">色のリスト。</param>
+            <param name="parameters">0.0 と 1.0 の間のパラメータのリスト。</param>
+            <returns>ColorRange1D オブジェクト。</returns>
+        </member>
+        <member name="M:DSCore.ColorRange1D.GetColorAtParameter(DSCore.ColorRange1D,System.Double)">
+            <summary>指定したパラメータでこの色域内の色を返します。</summary>
+            <param name="colorRange"/>
+            <param name="parameter">0.0 と 1.0 の間の値。</param>
+            <returns>色。</returns>
+        </member>
+        <member name="M:DSCore.ColorRange1D.Default">
+            <summary>既定のカラースキームを使用して ColorRange1D を作成します。</summary>
+            <returns/>
+        </member>
+        <member name="M:DSCore.ColorRange.ByColorsAndParameters(System.Collections.Generic.IList{DSCore.Color},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.UV})">
+            <summary>色と UV のリストを指定して ColorRange を作成します。</summary>
+            <param name="colors">色のリスト。</param>
+            <param name="parameters">パラメータのリスト、(0.0,0.0)～(1.0,1.0)。</param>
+            <returns>ColorRange オブジェクト。</returns>
+        </member>
+        <member name="M:DSCore.ColorRange.GetColorAtParameter(Autodesk.DesignScript.Geometry.UV)">
+            <summary>この色域内から、指定されたパラメータの位置にある色を返します。</summary>
+            <param name="parameter">UV、(0.0,0.0)～(1.0,1.0)。</param>
+            <returns>色。</returns>
+        </member>
+        <member name="T:DSCore.Compare">
+            <summary>比較メソッド。</summary>
+        </member>
+        <member name="M:DSCore.Compare.GreaterThan(System.Object,System.Object)">
+            <summary>a が b より大きい場合に true を返します。</summary>
+            <param name="a">同等のオブジェクト。</param>
+            <param name="b">同等のオブジェクト。</param>
+            <returns name="bool">ブール演算の結果。</returns>
+            <search>larger,bigger</search>
+        </member>
+        <member name="M:DSCore.Compare.GreaterThanOrEqual(System.Object,System.Object)">
+            <summary>a が b 以上の場合に true を返します。</summary>
+            <param name="a">同等のオブジェクト。</param>
+            <param name="b">同等のオブジェクト。</param>
+            <returns name="bool">ブール演算の結果。</returns>
+            <search>larger,bigger,equal</search>
+        </member>
+        <member name="M:DSCore.Compare.LessThan(System.Object,System.Object)">
+            <summary>a が b より小さい場合に true を返します。</summary>
+            <param name="a">同等のオブジェクト。</param>
+            <param name="b">同等のオブジェクト。</param>
+            <returns name="bool">ブール演算の結果。</returns>
+            <search>less,smaller</search>
+        </member>
+        <member name="M:DSCore.Compare.LessThanOrEqual(System.Object,System.Object)">
+            <summary>a が b 以下の場合に true を返します。</summary>
+            <param name="a">同等のオブジェクト。</param>
+            <param name="b">同等のオブジェクト。</param>
+            <returns name="bool">ブール演算の結果。</returns>
+            <search>smaller,equal</search>
+        </member>
+        <member name="M:DSCore.Data.ParseJSON(System.String)">
+            <summary>Parse は、任意の JSON 文字列を値に変換します。これは、JSON.Stringify の逆になります。</summary>
+            <param name="json">JSON 文字列</param>
+            <returns name="result">結果タイプは、入力文字列のコンテンツに依存します。結果タイプは、プリミティブ値(たとえば、文字列、ブール、倍精度浮動小数点数)、リスト、またはディクショナリにすることができます。</returns>
+        </member>
+        <member name="M:DSCore.Data.ToNative(Newtonsoft.Json.Linq.JToken)">
+            <summary>JToken タイプをネイティブ .NET オブジェクトに変換するための実装を解析します。</summary>
+            <param name="token">N に解析する JToken</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.DynamoJObjectToNative(Newtonsoft.Json.Linq.JObject)">
+            <summary>JObject タイプを特定の Dynamo オブジェクト(ジオメトリ、カラー、イメージなど)に変換するための実装を解析します</summary>
+            <param name="jObject"/>
+            <returns/>
+            <exception cref="T:System.Exception"></exception>
+        </member>
+        <member name="M:DSCore.Data.StringifyJSON(System.Object)">
+            <summary>Stringify は、任意の値または任意の値のリストを JSON に変換します。複製は、リスト上の操作に適用するために使用でき、JSON 文字列のリストを生成します。</summary>
+            <param name="values">値のリスト</param>
+            <returns name="json">JSON 文字列は、プリミティブ型(たとえば、倍精度浮動小数点数、整数、ブール)、リスト、ディクショナリが関連付けられた JSON 型に変換されます。</returns>
+        </member>
+        <member name="T:DSCore.Data.MaxDepthJsonTextWriter">
+            <summary>任意の .NET オブジェクト タイプをシリアル化するときに循環参照がクラッシュしないように、サポートされるオブジェクトの最大の深さを制限する JsonTextWriter のサブクラスです。</summary>
+        </member>
+        <member name="T:DSCore.Data.DictConverter">
+            <summary>IDictionary を意図的に実装していない DesignScript.Builtin.Dictionary が JSON オブジェクトに変換されるようにします。</summary>
+        </member>
+        <member name="M:DSCore.Data.CanObjectBeCached(System.Object)">
+            <summary>オブジェクトをキャッシュできるかどうか、またはオブジェクトが null、「null」文字列、空のリストのいずれかであることを判断するヘルパー関数です。</summary>
+            <param name="inputObject">確認するオブジェクト</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.Remember(System.Object,System.String)">
+            <summary>Data.Remember ノードのキャッシングを処理する関数です。</summary>
+            <param name="inputObject">キャッシュするオブジェクト</param>
+            <param name="cachedJson">オプションの既存キャッシュ JSON</param>
+            <returns/>
+        </member>
+        <member name="T:DSCore.Data.DataNodeDynamoType">
+            <summary>Dynamo でサポートされる DataType を表すクラス</summary>
+        </member>
+        <member name="M:DSCore.Data.DataNodeDynamoType.#ctor(System.Type,System.String)">
+            <summary>Dynamo でサポートされる DataType を表すクラス</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Type">
+            <summary>基本のタイプ</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Name">
+            <summary>タイプ名を上書きする任意の名前(「長整数型」ではなく「数字」)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Level">
+            <summary>UI に表示される階層レベル</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.IsLastChild">
+            <summary>タイプが階層の最後の子である場合(UI 用)</summary>
+        </member>
+        <member name="P:DSCore.Data.DataNodeDynamoType.Parent">
+            <summary>タイプの親(ある場合)</summary>
+        </member>
+        <member name="F:DSCore.Data.DataNodeDynamoTypeList">
+            <summary>Dynamo がサポートしているすべてのデータ タイプの静的なリスト</summary>
+            <returns>サポートされているデータ タイプを含むリスト</returns>
+        </member>
+        <member name="M:DSCore.Data.#cctor">
+            <summary>静的コンストラクタ</summary>
+        </member>
+        <member name="M:DSCore.Data.SafeExtractDictionaryValue(System.Collections.Generic.Dictionary{System.String,System.Object},System.String)">
+            <summary>ディクショナリの値を安全に抽出するためのヘルパー関数</summary>
+            <param name="dict">値を抽出するディクショナリ</param>
+            <param name="key">キー/値ペアのキー</param>
+        </member>
+        <member name="M:DSCore.Data.EvaluateDefineDataNode(System.Object,System.String,System.Boolean,System.Boolean,System.String)">
+            <summary>これは、AST が DefineData ノードを評価するために使用する関数です。
+            検証の実行中にノード ロジックの一部を処理します</summary>
+            <param name="inputValue">上流の入力値</param>
+            <param name="typeString">文字列タイプ(Todo: 直接の型比較には 'Type' タイプのオブジェクトを渡す方が良い)</param>
+            <param name="isList">入力値が `ArrayList` 型の場合</param>
+            <param name="isAutoMode">ノードが自動モードの場合</param>
+            <param name="playerValue">Dynamo プレーヤによってノードに投入される値(ある場合)。</param>
+        </member>
+        <member name="M:DSCore.Data.FindCommonAncestor(System.Collections.ArrayList)">
+            <summary>AutoMode でオブジェクトの ArrayList が渡された場合に、その型を見つけるのに役立つ関数</summary>
+            <param name="list">入力値です。ArrayList 型である必要があります</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.LikelyAncestor(System.Collections.Generic.List{DSCore.Data.DataNodeDynamoType})">
+            <summary>DataNodeDynamoType ノードのリストから最下位ノードを返すヘルパー関数</summary>
+            <param name="nodes">評価する DataNodeDynamoType のリスト</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.FindClosestCommonAncestor(System.Collections.Generic.List{DSCore.Data.DataNodeDynamoType})">
+            <summary>データ タイプのリスト内の共通の先祖を特定するためのヘルパー関数</summary>
+            <param name="nodes">評価する DataType ノードのリスト</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.FindCommonAncestorBetweenTwoNodes(DSCore.Data.DataNodeDynamoType,DSCore.Data.DataNodeDynamoType)">
+            <summary>2 つの Dynamo タイプ間で共通の先祖を検索する再帰関数です
+            その先祖が見つかるまで、likelyAncestor の階層ツリーを上に移動します</summary>
+            <param name="node">このノードが推定先祖から派生しているかどうかを確認します</param>
+            <param name="likelyAncestor">ノードの派生元である可能性が高い推定先祖</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.GetListFromTypes(System.Collections.ArrayList)">
+            <summary>オブジェクトの ArrayList から DataNodeDynamoTypes のリストを返します</summary>
+            <param name="list">再形式化するオブジェクトの ArrayList</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsSingleValueOrSingleLevelArrayList(System.Object)">
+            <summary>入力オブジェクトが単一の値または単一レベルの ArrayList かを確認します。</summary>
+            <param name="obj">評価する入力オブジェクトです</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsSupportedDataNodeDynamoType(System.Object,System.Type,System.Boolean)">
+            <summary>サポートされている Dynamo の入力タイプに対して入力値を検証する関数</summary>
+            <param name="inputValue">検証する入力データ</param>
+            <param name="type">ユーザが指定する入力タイプです。inputValue タイプと一致する必要があります</param>
+            <param name="isList">このブール値は、入力が単一のオブジェクトかリストかを決定します。</param>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Data.IsItemOfType(System.Object,System.Type)">
+            <summary>この方法は、項目が Dynamo で要求される DataType であるかどうかを確認します。
+            'IsInstanceOfType' は上位への継承を再帰的に確認します</summary>
+            <param name="item">データ タイプをチェックする項目</param>
+            <param name="dataType">照合する DataType</param>
+            <returns>チェック検証に基づく真または偽の結果</returns>
+        </member>
+        <member name="M:DSCore.Data.IsDerivedFrom(System.Type,System.Type)">
+            <summary>このメソッドは、型が基本型から派生しているかどうかをチェックします</summary>
+            <param name="derivedType">アサートする型です</param>
+            <param name="baseType">比較対象の基本型</param>
+            <returns/>
+        </member>
+        <member name="T:DSCore.DateTime">
+            <summary>特定の日付と時刻を表すオブジェクト。</summary>
+        </member>
+        <member name="P:DSCore.DateTime.MinValue">
+            <summary>表現可能な最も古い日付と時刻です。</summary>
+            <returns name="dateTime">DateTime 表現として可能な最小値</returns>
+        </member>
+        <member name="P:DSCore.DateTime.MaxValue">
+            <summary>表現可能な最新の日付と時刻です。</summary>
+            <returns name="dateTime">DateTime 表現として可能な最大値</returns>
+        </member>
+        <member name="P:DSCore.DateTime.Now">
+            <summary>現在のシステムの日付と時刻です。</summary>
+            <returns name="dateTime">現在の時刻を表現する DateTime</returns>
+        </member>
+        <member name="P:DSCore.DateTime.Today">
+            <summary>現在のシステムの日付です。時刻は午前 0 時に設定されます。</summary>
+            <returns name="dateTime">今日を表現する DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.Format(System.DateTime,System.String)">
+             <summary>指定した日時が、指定した形式の文字列で返されます。</summary>
+             <param name="dateTime">形式設定する DateTime</param>
+             <param name="format">日付形式の文字列表記。InvariantCulture が使用されるため、ユーザのオペレーティング システムとは出力形式が異なります。
+既定では標準形式の「F」が使用され、「2017 年 2 月 21 日(火) 23:02:43」のように出力されます。
+すべての形式指定子を一覧表示するには、「MSDN·カスタム日時形式文字列」を検索してください。</param>
+             <returns name="string">文字列で表現された DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.ByDate(System.Int32,System.Int32,System.Int32)">
+            <summary>正確な日付で新しい DateTime を作成します。</summary>
+            <param name="year">正確な年(1 ～ 9999)</param>
+            <param name="month">正確な月(1～12)</param>
+            <param name="day">正確な日(1～[月の日数])</param>
+            <returns name="dateTime">日付から作成された DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.ByDateAndTime(System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32,System.Int32)">
+            <summary>正確な日時で新しい DateTime を作成します。</summary>
+            <param name="year">正確な年(1 ～ 9999)</param>
+            <param name="month">正確な月(1～12)</param>
+            <param name="day">正確な日(1～[月の日数])</param>
+            <param name="hour">正確な時間(0～23)</param>
+            <param name="minute">正確な分(0 ～ 59)</param>
+            <param name="second">正確な秒(0 ～ 59)</param>
+            <param name="millisecond">正確なミリ秒(0～999)</param>
+            <returns name="dateTime">日時から作成された DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.SubtractTimeSpan(System.DateTime,System.TimeSpan)">
+            <summary>DateTime から TimeSpan を減算し、新しい DateTime を作成します。</summary>
+            <param name="dateTime">計算前の DateTime</param>
+            <param name="timeSpan">減算する時間の長さ</param>
+            <returns name="dateTime">減算後の DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.AddTimeSpan(System.DateTime,System.TimeSpan)">
+            <summary>TimeSpan を DateTime に加算し、新しい DateTime を作成します。</summary>
+            <param name="dateTime">計算前の DateTime</param>
+            <param name="timeSpan">DateTime に加算する時間の長さ</param>
+            <returns name="dateTime">TimeSpan 加算後の DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.DaysInMonth(System.Int32,System.Int32)">
+            <summary>指定した年の指定した月の日数を計算します。</summary>
+            <param name="year">正確な年(1 ～ 9999)</param>
+            <param name="month">正確な月(1～12)</param>
+            <returns name="int">月の日数</returns>
+        </member>
+        <member name="M:DSCore.DateTime.IsDaylightSavingsTime(System.DateTime)">
+            <summary>指定した DateTime が夏時間であるかどうかを判断します。</summary>
+            <param name="dateTime">夏時間であるかどうかの判断に使用される DateTime</param>
+            <returns name="bool">DateTime が夏時間の場合は true、違う場合は false</returns>
+        </member>
+        <member name="M:DSCore.DateTime.IsLeapYear(System.Int32)">
+            <summary>指定した年がうるう年かどうかを判断します。</summary>
+            <param name="year">正確な年(1 ～ 9999)</param>
+            <returns name="bool">うるう年の場合は true、違う場合は false</returns>
+        </member>
+        <member name="M:DSCore.DateTime.FromString(System.String)">
+            <summary>文字列から DateTime の解析を試みます</summary>
+            <param name="string">DateTime の文字列表現</param>
+            <returns name="dateTime">解析された文字列からの DateTime</returns>
+        </member>
+        <member name="M:DSCore.DateTime.Date(System.DateTime)">
+            <summary>DateTime から日付のみを抽出します。Time コンポーネントは 0 (ゼロ)に設定されます。</summary>
+            <param name="dateTime">DateTime。</param>
+            <returns name="date">DateTime からの日付</returns>
+            <search>Date</search>
+        </member>
+        <member name="M:DSCore.DateTime.Components(System.DateTime)">
+            <summary>DateTime の個々のコンポーネントを抽出します。</summary>
+            <param name="dateTime">コンポーネントの取得元の DateTime</param>
+            <returns name="year">年の数値表現(1 ～ 9999)</returns>
+            <returns name="month">月の数値表現(1 ～ 12)</returns>
+            <returns name="day">日付の数値表現(1 ～ [月の日数])</returns>
+            <returns name="hour">時間の数値表現(0 ～ 23)</returns>
+            <returns name="minute">分の数値表現(0 ～ 59)</returns>
+            <returns name="second">秒の数値表現(0 ～ 59)</returns>
+            <returns name="millisecond">ミリ秒の数値表現(0 ～ 999)</returns>
+        </member>
+        <member name="M:DSCore.DateTime.DayOfWeek(System.DateTime)">
+            <summary>指定した DateTime から曜日を返します。</summary>
+            <param name="dateTime">曜日の取得元の DateTime オブジェクト</param>
+            <returns name="dayOfWeek">曜日</returns>
+        </member>
+        <member name="M:DSCore.DateTime.DayOfYear(System.DateTime)">
+            <summary>その年の何日目(0～366)かを返します</summary>
+            <param name="dateTime">その年の何日目かを取得する DateTime</param>
+            <returns name="int">その年の初日からの日数</returns>
+        </member>
+        <member name="M:DSCore.DateTime.TimeOfDay(System.DateTime)">
+            <summary>指定した DateTime の午前 0 時からの経過時間を表す新しい TimeSpan を生成します。</summary>
+            <param name="dateTime">DateTime。</param>
+            <returns name="timeSpan">午前 0 時からの TimeSpan</returns>
+        </member>
+        <member name="T:DSCore.DayOfWeek">
+            <summary>週の日数</summary>
+        </member>
+        <member name="T:DSCore.TimeSpan">
+            <summary>経過した期間を表すオブジェクト。特定の開始日や終了日は持ちません。</summary>
+        </member>
+        <member name="M:DSCore.TimeSpan.ByDateDifference(System.DateTime,System.DateTime)">
+            <summary>2 つの DateTime の時間の差から計算した新しい TimeSpan を生成します</summary>
+            <param name="dateTime">減算元の DateTime</param>
+            <param name="otherDateTime">減算する DateTime</param>
+            <returns name="timeSpan">2 つの日付の差を表す TimeSpan</returns>
+        </member>
+        <member name="P:DSCore.TimeSpan.Zero">
+            <summary>ゼロの経過時間を表す TimeSpan。</summary>
+            <returns name="timeSpan">ゼロの経過時間を表す TimeSpan</returns>
+        </member>
+        <member name="P:DSCore.TimeSpan.MaxValue">
+            <summary>表現可能な最長 TimeSpan。</summary>
+            <returns name="timeSpan">TimeSpan 表現として可能な最長値</returns>
+        </member>
+        <member name="P:DSCore.TimeSpan.MinValue">
+            <summary>表現可能な最短 TimeSpan。</summary>
+            <returns name="timeSpan">TimeSpan 表現として可能な最短値</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Create(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>時間の範囲から新しい TimeSpan を作成します。</summary>
+            <param name="days">日の範囲。</param>
+            <param name="hours">時間の範囲。</param>
+            <param name="minutes">分の範囲。</param>
+            <param name="seconds">秒の範囲。</param>
+            <param name="milliseconds">ミリ秒の範囲。</param>
+            <returns name="timeSpan">作成された TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Scale(System.TimeSpan,System.Double)">
+            <summary>TimeSpan をスケール係数で乗算します</summary>
+            <param name="timeSpan">乗算する TimeSpan</param>
+            <param name="scaleFactor">TimeSpan のスケールを変更する量。たとえば、スケール係数を 2 に設定すると、
+           時間の範囲が 2 倍になります。</param>
+            <returns name="timeSpan">TimeSpan の積</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Negate(System.TimeSpan)">
+            <summary>TimeSpan を反転します</summary>
+            <param name="timeSpan">反転する TimeSpan</param>
+            <returns name="timeSpan">負の TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Add(System.TimeSpan,System.TimeSpan)">
+            <summary>2 つの TimeSpan を加算します</summary>
+            <param name="timeSpan1">加算する TimeSpan</param>
+            <param name="timeSpan2">加算するもう一方の TimeSpan</param>
+            <returns name="timeSpan">加算後の TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Subtract(System.TimeSpan,System.TimeSpan)">
+            <summary>2 つの TimeSpan を減算します</summary>
+            <param name="timeSpan1">減算元の TimeSpan</param>
+            <param name="timeSpan2">減算する TimeSpan</param>
+            <returns name="timeSpan">減算後の TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.FromString(System.String)">
+            <summary>文字列から TimeSpan の解析を試みます</summary>
+            <param name="string">TimeSpan の文字列表現。</param>
+            <returns name="timeSpan">解析された文字列からの TimeSpan</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.Components(System.TimeSpan)">
+            <summary>TimeSpan の個々のコンポーネントを抽出します。</summary>
+            <param name="timeSpan">コンポーネントの取得元の TimeSpan</param>
+            <returns name="days">日数(整数型)</returns>
+            <returns name="hours">時間数(整数型)</returns>
+            <returns name="minutes">分数(ふんすう、整数型)</returns>
+            <returns name="seconds">秒数(整数型)</returns>
+            <returns name="milliseconds">ミリ秒数(整数型)</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalDays(System.TimeSpan)">
+            <summary>TimeSpan で表される合計時間をおおよその日数に
+                変換します。</summary>
+            <param name="timeSpan">合計日数のクエリーを実行する TimeSpan</param>
+            <returns name="double">合計日数</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalHours(System.TimeSpan)">
+            <summary>TimeSpan で表される合計時間をおおよその時間数に
+                変換します。</summary>
+            <param name="timeSpan">合計時間のクエリーを実行する TimeSpan</param>
+            <returns name="double">合計時間</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalMinutes(System.TimeSpan)">
+            <summary>TimeSpan で表される合計時間をおおよその分数(ふんすう)に
+                変換します。</summary>
+            <param name="timeSpan">合計分数(ふんすう)のクエリーを実行する TimeSpan</param>
+            <returns name="double">合計分数(ふんすう)</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalSeconds(System.TimeSpan)">
+            <summary>TimeSpan で表される合計時間をおおよその秒数に
+                変換します。</summary>
+            <param name="timeSpan">合計秒数のクエリーを実行する TimeSpan</param>
+            <returns name="double">合計秒数</returns>
+        </member>
+        <member name="M:DSCore.TimeSpan.TotalMilliseconds(System.TimeSpan)">
+            <summary>TimeSpan で表される合計時間をおおよそのミリ秒数に
+                変換します。</summary>
+            <param name="timeSpan">合計ミリ秒数のクエリーを実行する TimeSpan</param>
+            <returns name="double">合計ミリ秒数</returns>
+        </member>
+        <member name="T:DSCore.IO.FileSystem">
+            <summary>ファイルを操作するためのメソッド。</summary>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.AbsolutePath(System.String,System.String)">
+            <summary>指定したパスの絶対パスを返します。 指定したパスが
+            相対パスである場合は、現在のワークスペースに基づいて
+            パスを解決します。ファイルが相対パスではなく指定した
+           hintPath に存在する場合は、その hintPath を返します。</summary>
+            <param name="path">相対パスまたは絶対パス</param>
+            <param name="hintPath">最後に解決されたパス</param>
+            <returns>絶対パス</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileFromPath(System.String)">
+            <summary>指定したファイル パスからファイル オブジェクトを作成します。</summary>
+            <param name="path"/>
+            <returns/>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.ReadText(System.IO.FileInfo)">
+            <summary>テキスト ファイルを読み込み、コンテンツを文字列として返します。</summary>
+            <param name="file">テキストの読み込み元のファイル オブジェクト</param>
+            <returns name="string">テキスト ファイルの内容。</returns>
+            <search>read file,text,file</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.MoveFile(System.String,System.String,System.Boolean)">
+            <summary>新しい場所に指定したファイルを移動します</summary>
+            <param name="path">既存のパスの文字列表現</param>
+            <param name="newPath">新しいパスの文字列表現</param>
+            <param name="overwrite">既存のファイルを上書きするかどうかを切り替え</param>
+            <returns name="void">ノードはタスクを実行しますが、出力は生成しません</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DeleteFile(System.String)">
+            <summary>指定したファイルを削除します。</summary>
+            <param name="path">削除するファイル パス</param>
+            <returns name="void">ノードはタスクを実行しますが、出力は生成しません</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.CopyFile(System.IO.FileInfo,System.String,System.Boolean)">
+            <summary>ファイルをコピーします。</summary>
+            <param name="file">コピーするファイル オブジェクト</param>
+            <param name="destinationPath">コピー先ファイル パスの文字列表現</param>
+            <param name="overwrite">既存のファイルを上書きするかどうかを切り替え</param>
+            <returns name="bool">ノードはタスクを実行し、コピー アクション成功の True を返します。</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileExists(System.String)">
+            <summary>指定したパスにファイルが存在するかどうかを判断します。</summary>
+            <param name="path">ファイル パスを表す文字列</param>
+            <returns name="bool">ファイルが存在する場合は true、存在しない場合は false</returns>
+            <search>filepath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.WriteText(System.String,System.String)">
+            <summary>パスで指定されたファイルに文字コンテンツを書き込みます</summary>
+            <param name="filePath">書き込み先のパス</param>
+            <param name="text">文字コンテンツ</param>
+            <returns name="void">出力なし</returns>
+            <search>write file,text,file,filepath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.AppendText(System.String,System.String)">
+            <summary>パスで指定されたファイルに文字コンテンツを追加します</summary>
+            <param name="filePath">書き込み先のパス</param>
+            <param name="text">文字コンテンツ</param>
+            <returns name="void">ノードはタスクを実行しますが、出力は生成しません</returns>
+            <search>append file,write file,text,file,filepath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.CombinePath(System.String[])">
+            <summary>複数の文字列を 1 つのファイル パスに組み合わせます。</summary>
+            <param name="strings">組み合わせてパスにする文字列</param>
+            <returns name="string">組み合わされたファイル パス</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileExtension(System.String)">
+            <summary>ファイル パスの拡張子を返します。</summary>
+            <param name="path">拡張子を取得するパス</param>
+            <returns name="string">ファイルの拡張子</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.ChangePathExtension(System.String,System.String)">
+            <summary>ファイル パスの拡張子を変更します。</summary>
+            <param name="path">拡張子を変更するパス</param>
+            <param name="newExtension">新しい拡張子の文字列表現</param>
+            <returns name="string">拡張子が変更されたファイル パス</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DirectoryName(System.String)">
+            <summary>ファイル パスのフォルダ名を返します。</summary>
+            <param name="path">フォルダ情報を取得するパス</param>
+            <returns name="string">ファイル パスのフォルダ名</returns>
+            <search>directorypath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileName(System.String,System.Boolean)">
+            <summary>ファイル パスのファイル名を返します。</summary>
+            <param name="path">ファイル名を取得するパス</param>
+            <param name="withExtension">結果に拡張子を含めるかどうかを切り替え</param>
+            <returns name="string">ファイル パスから取得されたファイル名</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.FileHasExtension(System.String)">
+            <summary>ファイル パスに拡張子が含まれているかどうかを判断します。</summary>
+            <param name="path">拡張子があるか確認するパス</param>
+            <returns name="bool">ファイル パスに拡張子が含まれている場合は true、含まれていない場合は false</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.GetDirectoryContents(System.IO.DirectoryInfo,System.String,System.Boolean)">
+            <summary>指定したフォルダ内に含まれるファイルとフォルダのリストを返します。オプションの searchString を使用すると、結果をフィルタできます。</summary>
+            <param name="directory">コンテンツを取得するフォルダ</param>
+            <param name="searchString">結果をフィルタするために使用される検索文字列</param>
+            <param name="includeSubdirectories">サブフォルダ内のファイルとフォルダを含める(再帰的)には true に設定し、指定したフォルダの最上位レベルの結果のみを含める場合は false に設定します。</param>
+            <returns name="files">クエリーの結果のファイル</returns>
+            <returns name="directories">クエリーの結果のフォルダ</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.CopyDirectory(System.IO.DirectoryInfo,System.String,System.Boolean)">
+            <summary>目的の場所にフォルダをコピーします。</summary>
+            <param name="directory">コピーするフォルダ</param>
+            <param name="destinationPath">ディスク上のコピー先</param>
+            <param name="overwriteFiles">既存のフォルダを上書きするかどうかを切り替え</param>
+            <returns name="void">ノードはタスクを実行しますが、出力は生成しません</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DeleteDirectory(System.String,System.Boolean)">
+            <summary>フォルダを削除します。</summary>
+            <param name="path">ディスク上のフォルダへのパス</param>
+            <param name="recursive">フォルダのコンテンツをすべて削除するかどうか。既定は false です。</param>
+            <returns name="void">ノードはタスクを実行しますが、出力は生成しません</returns>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.DirectoryExists(System.String)">
+            <summary>指定したパスにフォルダが存在するかどうかを判断します。</summary>
+            <param name="path">ディスク上のフォルダへのパス</param>
+            <returns name="bool">フォルダが存在する場合は true、存在しない場合は false</returns>
+            <search>directorypath</search>
+        </member>
+        <member name="M:DSCore.IO.FileSystem.MoveDirectory(System.String,System.String,System.Boolean)">
+            <summary>新しい場所にフォルダを移動します。</summary>
+            <param name="path">既存のパスの文字列表現</param>
+            <param name="newPath">新しいパスの文字列表現</param>
+            <param name="overwriteFiles">既存のファイルを上書きするかどうかを切り替え</param>
+            <returns name="void">ノードはタスクを実行しますが、出力は生成しません</returns>
+        </member>
+        <member name="T:DSCore.IO.Image">
+            <summary>イメージのビットマップを操作するためのメソッド。</summary>
+        </member>
+        <member name="M:DSCore.IO.Image.ReadFromFile(System.IO.FileInfo)">
+            <summary>ファイルをビットマップとしてロードします。</summary>
+            <param name="file">イメージのロード元のファイル オブジェクト</param>
+            <returns name="image">ファイルのイメージ オブジェクト</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.Pixels(System.Drawing.Bitmap,System.Nullable{System.Int32},System.Nullable{System.Int32})">
+            <summary>イメージ ファイルを読み込み、指定の通芯位置の色の値を返します。</summary>
+            <param name="image">ピクセルの色の取得元のイメージ オブジェクト</param>
+            <param name="xSamples">X 方向のサンプルの通芯の点の数。</param>
+            <param name="ySamples">Y 方向のサンプルの通芯の点の数。</param>
+            <returns name="colors">指定した通芯の点の色</returns>
+            <search>read,image,bitmap,png,jpg,jpeg</search>
+        </member>
+        <member name="M:DSCore.IO.Image.FromPixels(DSCore.Color[][])">
+            <summary>ピクセルの 2D リストからイメージを作成します。</summary>
+            <param name="colors">ピクセルを表す色の 2 次元の長方形のリスト</param>
+            <returns name="image">ピクセルの 2D リストから作成されたイメージ</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.FromPixels(DSCore.Color[],System.Int32,System.Int32)">
+            <summary>ピクセル、幅、高さのフラット リストからイメージを作成します。</summary>
+            <param name="colors">ピクセルを表す色のリスト</param>
+            <param name="width">新しいイメージの幅(ピクセル単位)</param>
+            <param name="height">新しいイメージの高さ(ピクセル単位)</param>
+            <returns name="image">ピクセルのリストから作成されたイメージ</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.Dimensions(System.Drawing.Bitmap)">
+            <summary>画像の幅と高さを返します。</summary>
+            <param name="image">寸法を取得するイメージ。</param>
+            <returns name="width">イメージの幅(ピクセル単位)</returns>
+            <returns name="height">イメージの高さ(ピクセル単位)</returns>
+        </member>
+        <member name="M:DSCore.IO.Image.WriteToFile(System.String,System.Drawing.Bitmap)">
+            <summary>ファイル名を指定して、イメージをパスに書き込みます。</summary>
+            <param name="path"/>
+            <param name="image">書き込むイメージ</param>
+            <returns name="image">作成されたイメージ オブジェクト</returns>
+            <search>write image,image,file,filepath</search>
+        </member>
+        <member name="T:DSCore.List">
+            <summary>リストを作成および操作するメソッド。</summary>
+        </member>
+        <member name="P:DSCore.List.Empty">
+            <summary>空のリストを返します。</summary>
+            <returns name="list">空のリスト。</returns>
+            <search>empty list, emptylist,[]</search>
+        </member>
+        <member name="M:DSCore.List.UniqueItems(System.Collections.IList)">
+            <summary>指定したリスト内のすべてのユニークな項目を含む新しいリストを作成します。</summary>
+            <param name="list">重複をフィルタして除外するリスト。</param>
+            <returns name="list">フィルタされたリスト。</returns>
+            <search>removes,duplicates,remove duplicates,cull duplicates,distinct,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.Contains(System.Collections.IList,System.Object)">
+            <summary>指定のリストに指定の項目が含まれているかどうかを判断します。この関数では、指定のリストに含まれているすべてのサブリストが検索されます。</summary>
+            <param name="list">検索対象のリスト</param>
+            <param name="item">検索する項目</param>
+            <returns name="bool">リストに項目が含まれている場合は true、含まれていない場合は false</returns>
+            <search>item,search,in,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.IsHomogeneous(System.Collections.IList)">
+            <summary>リスト内の項目のタイプが同じであるかどうかを確認します。</summary>
+            <param name="list">均一であるかどうかを確認するリスト。</param>
+            <returns name="bool">リストが均一であるかどうか。</returns>
+            <search>homogeneous,allequal,same,type</search>
+        </member>
+        <member name="M:DSCore.List.IsRectangular(System.Collections.IList)">
+            <summary>リスト内のすべての行に含まれている項目の数が同じであるかどうかを確認します。</summary>
+            <param name="list">行に含まれている項目の数が同じであるかどうかを確認するリスト。</param>
+            <returns name="bool">リスト内のすべての行に含まれている項目の数が同じであるかどうか。</returns>
+            <search>rectangular,isrectangular,same,sublist,row</search>
+        </member>
+        <member name="M:DSCore.List.IsUniformDepth(System.Collections.IList)">
+            <summary>リスト内の項目の深さが一致しているかどうかを確認します。</summary>
+            <param name="list">項目の深さが一致しているかどうかを確認するリスト。</param>
+            <returns name="bool">リスト内の項目の深さが一致しているかどうか。</returns>
+            <search>depth,uniform,isuniformdepth,sublist,jagged</search>
+        </member>
+        <member name="M:DSCore.List.SetDifference(System.Collections.Generic.IList{System.Object},System.Collections.Generic.IList{System.Object})">
+            <summary>リスト 1 のオブジェクトを格納し、リスト 2 のオブジェクトを除外する新しいリストを返します。</summary>
+            <param name="list1">新しいリストに格納するオブジェクトが含まれているリスト</param>
+            <param name="list2">新しいリストから除外するオブジェクトが含まれているリスト</param>
+            <returns name="list">リスト 1 のオブジェクトが含まれ、リスト 2 のオブジェクトは含まれていない新しいリスト</returns>
+            <search>difference,setdifference,set</search>
+        </member>
+        <member name="M:DSCore.List.SetIntersection(System.Collections.Generic.IList{System.Object},System.Collections.Generic.IList{System.Object})">
+            <summary>リスト 1 とリスト 2 の両方に含まれているオブジェクトを格納する新しいリストを返します。</summary>
+            <param name="list1">リスト 2 と比較するオブジェクトが含まれているリスト</param>
+            <param name="list2">リスト 1 と比較するオブジェクトが含まれているリスト</param>
+            <returns name="list">リスト 1 とリスト 2 の両方に含まれているオブジェクトが含まれている新しいリスト</returns>
+            <search>intersection,setintersection,set,overlap</search>
+        </member>
+        <member name="M:DSCore.List.SetUnion(System.Collections.Generic.IList{System.Object},System.Collections.Generic.IList{System.Object})">
+            <summary>リスト 1 とリスト 2 のいずれか一方だけに含まれているオブジェクトを格納する新しいリストを返します。</summary>
+            <param name="list1">格納するオブジェクトが含まれているリスト</param>
+            <param name="list2">リスト 1 に格納するオブジェクトが含まれているリスト</param>
+            <returns name="list">リスト 1 とリスト 2 のいずれか一方にのみ含まれているオブジェクトが含まれている新しいリスト</returns>
+            <search>union,setunion,set</search>
+        </member>
+        <member name="M:DSCore.List.IndexOf(System.Collections.IList,System.Object)">
+            <summary>指定されたリスト内の要素のインデックスを返します。指定されたリストとターゲット要素は正確に一致している必要があります(すなわち、整数と整数、倍精度浮動小数点数と倍精度浮動小数点数、文字列と文字列、オブジェクトとオブジェクトなど)。</summary>
+            <param name="list">検索対象の要素が含まれているリスト。</param>
+            <param name="element">返されるインデックスを持つ要素。</param>
+            <returns name="int">リスト内の要素のインデックス。正確な一致が見つからない場合は、無効なインデックス -1 を返します。</returns>
+            <search>index,indexof</search>
+        </member>
+        <member name="M:DSCore.List.CountFalse(System.Collections.IList)">
+            <summary>指定されたリストに含まれている false ブール値の数を返します。</summary>
+            <param name="list">検索対象の false ブール値が含まれているリスト。</param>
+            <returns name="int">リストに含まれている false ブール値の数。</returns>
+            <search>false,count</search>
+        </member>
+        <member name="M:DSCore.List.CountTrue(System.Collections.IList)">
+            <summary>指定されたリストに含まれている true ブール値の数を返します。</summary>
+            <param name="list">検索対象の true ブール値が含まれているリスト。</param>
+            <returns name="int">リスト内の true ブール値の数。</returns>
+            <search>true,count</search>
+        </member>
+        <member name="M:DSCore.List.Insert(System.Collections.IList,System.Object,System.Int32)">
+            <summary>指定されたインデックス位置で、リスト内に要素を挿入します。</summary>
+            <param name="list">要素の挿入先となるリスト</param>
+            <param name="element">挿入する要素</param>
+            <param name="index">リスト内での要素の挿入位置を指定します</param>
+            <returns name="list">要素が挿入されたリスト</returns>
+            <search>insert,add</search>
+        </member>
+        <member name="M:DSCore.List.Reorder(System.Collections.IList,System.Collections.IList)">
+            <summary>指定されたインデックス リストに基づいて、入力リスト内の項目の順序を変更します。</summary>
+            <param name="list">順序を変更する項目が含まれているリスト</param>
+            <param name="indices">リスト内の項目の順序を変更するためのインデックス</param>
+            <returns name="list">項目の順序が変更されたリスト</returns>
+            <search>reorder,index,indices</search>
+        </member>
+        <member name="M:DSCore.List.SortIndexByValue(System.Collections.Generic.List{System.Double})">
+            <summary>リスト内の項目を並べ替え、それらの項目のインデックスを返します。</summary>
+            <param name="list">並べ替える項目が含まれているリスト</param>
+            <returns name="int[]">リスト内で並べ替えられた項目のインデックス</returns>
+            <search>sort,index,value</search>
+        </member>
+        <member name="M:DSCore.List.NormalizeDepth(System.Collections.IList,System.Int32)">
+            <summary>指定されたランクに従って多次元のリストを返します。</summary>
+            <param name="list">ランクに基づいて正規化される深さを持つリスト。</param>
+            <param name="rank">リストを正規化するためのランク。既定値は 1 です。</param>
+            <returns name="list">ランクが正規化されたリスト。</returns>
+            <search>depth,normalize</search>
+        </member>
+        <member name="M:DSCore.List.Reverse(System.Collections.IList)">
+            <summary>指定されたリスト内の項目を逆順で含む新しいリストを作成します。</summary>
+            <param name="list">反転するリスト。</param>
+            <returns name="list">反転されたリスト</returns>
+            <search>flip,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.__Create(System.Collections.IList)">
+            <summary>指定した項目を含む新しいリストを作成します。</summary>
+            <param name="items">新しいリストに格納する項目。</param>
+        </member>
+        <member name="M:DSCore.List.Sublists(System.Collections.IList,System.Collections.IList,System.Int32)">
+            <summary>DesignScript 範囲構文を使用してリストからサブリストを作成します。</summary>
+            <param name="list">サブリストの作成元となるリスト。</param>
+            <param name="ranges">サブリストの要素のインデックス範囲。
+                例: \"{0..3,5,2}\"</param>
+            <param name="offset">サブリストに適用するオフセット。
+                例: 範囲 \"0..3\"、オフセットが 2 の場合、生成される
+                サブリストは {0,1,2,3}{2,3,4,5}{4,5,6,7}... となります</param>
+            <returns name="lists">タイプ: var[]..[]</returns>
+            <search>sublists,build sublists,subset,</search>
+        </member>
+        <member name="M:DSCore.List.Sort(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>組み込みの通常の順序を使用してリストを並べ替えます。</summary>
+            <param name="list">並べ替えるリスト</param>
+            <returns name="list">並べ替えられたリスト</returns>
+            <search>sort,order,sorted</search>
+        </member>
+        <member name="M:DSCore.List.MinimumItem(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>リストの最小値を返します。</summary>
+            <param name="list">最小値の取得元となる、比較可能な項目のリスト</param>
+            <returns name="item">リストの最小項目。</returns>
+            <search>least,smallest,find min</search>
+        </member>
+        <member name="M:DSCore.List.MaximumItem(System.Collections.Generic.IEnumerable{System.Object})">
+            <summary>リストの最大値を返します。</summary>
+            <param name="list">最大値の取得元となる、比較可能な項目のリスト</param>
+            <returns name="item">リストの最大項目。</returns>
+            <search>greatest,largest,biggest,find max</search>
+        </member>
+        <member name="M:DSCore.List.FilterByBoolMask(System.Collections.IList,System.Collections.IList)">
+            <summary>別個のブール値を要素に持つリスト内で対応するインデックスを検索して、
+                シーケンスをフィルタします。</summary>
+            <param name="list">フィルタするリスト。</param>
+            <param name="mask">マスクを表すブール値のリスト。</param>
+            <returns name="in">マスク インデックスが true の項目。</returns>
+            <returns name="out">マスク インデックスが false の項目。</returns>
+            <search>filter,in,out,mask,dispatch,bool filter,boolfilter,bool filter</search>
+        </member>
+        <member name="M:DSCore.List.Deconstruct(System.Collections.IList)">
+            <summary>リストの場合、リストに最初の項目を作成し、最初の項目を除くすべての項目を含む
+                新しいリストが作成されます。</summary>
+            <param name="list">分割するリスト。</param>
+            <returns name="first">リスト内の最初の項目(タイプ: var[]..[])</returns>
+            <returns name="rest">リストの残りの項目(タイプ: var[]..[])</returns>
+            <search>first,rest,list split,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.SortByKey(System.Collections.IList,System.Collections.IList)">
+            <summary>キーに基づいてリストを並べ替え</summary>
+            <param name="list">並べ替えるリスト</param>
+            <param name="keys">キーのリスト。キーは並べ替え可能である必要があります(たとえば、数値、文字列など)</param>
+            <returns name="sortedList">タイプ: var[]..[]</returns>
+            <returns name="sortedKeys">タイプ: var[]..[]</returns>
+            <search>sort;key</search>
+        </member>
+        <member name="M:DSCore.List.GroupByKey(System.Collections.IList,System.Collections.IList)">
+            <summary>類似のキーの値に基づいて項目をサブリストにグループ化</summary>
+            <param name="list">サブリストとしてグループ化する項目のリスト</param>
+            <param name="keys">キーの値。入力リスト内の項目ごとに 1 つ。項目のグループ化に使用</param>
+            <returns name="groups">サブリストのリスト。同様のキーの値で項目をグループ化</returns>
+            <returns name="uniqueKeys">各グループに対応するキーの値</returns>
+            <search>list;group;groupbykey;</search>
+        </member>
+        <member name="M:DSCore.List.AddItemToFront(System.Object,System.Collections.IList)">
+            <summary>リストの先頭に項目を追加します。</summary>
+            <param name="item">追加する項目。 項目にはオブジェクトまたはリストを指定できます。</param>
+            <param name="list">項目を追加するリスト。</param>
+            <returns name="list">項目を追加したリスト</returns>
+            <search>insert,add,item,front,start,begin</search>
+        </member>
+        <member name="M:DSCore.List.AddItemToEnd(System.Object,System.Collections.IList)">
+            <summary>リストの最後に項目を追加します。</summary>
+            <param name="item">追加する項目。項目にはオブジェクトまたはリストを指定できます。</param>
+            <param name="list">項目を追加するリスト。</param>
+            <returns name="list">項目を追加したリスト</returns>
+            <search>insert,add,item,end</search>
+        </member>
+        <member name="M:DSCore.List.TakeItems(System.Collections.IList,System.Int32)">
+            <summary>リストの最初から一定の項目を取得します。</summary>
+            <param name="list">項目を取得するリスト。</param>
+            <param name="amount">取得する項目の数。負の値を指定すると、項目はリストの末尾から取得されます。</param>
+            <returns name="list">抽出された項目のリスト。</returns>
+            <search>get,sub,sublist,extract</search>
+        </member>
+        <member name="M:DSCore.List.DropItems(System.Collections.IList,System.Int32)">
+            <summary>リストの先頭から一定の数だけ項目を削除します。数量が負の値の場合は、
+                リストの末尾から項目が削除されます。</summary>
+            <param name="list">項目を削除するリスト。</param>
+            <param name="amount">削除する項目の数です。負の値を指定すると、項目はリストの末尾から削除されます。</param>
+            <returns name="list">残りの項目のリスト。</returns>
+            <search>drop,remove,shorten</search>
+        </member>
+        <member name="M:DSCore.List.ShiftIndices(System.Collections.IList,System.Int32)">
+            <summary>スト内のインデックスを、指定された量だけ右に移動します。</summary>
+            <param name="list">移動するリスト。</param>
+            <param name="amount">インデックスを移動する量。負の値を指定すると、インデックスは左に移動します。</param>
+            <returns name="list">移動したリスト。</returns>
+            <search>shift,offset</search>
+        </member>
+        <member name="M:DSCore.List.GetItemAtIndex(System.Collections.IList,System.Int32)">
+            <summary>リストの、指定されたインデックスにある項目を取得します。</summary>
+            <param name="list">項目を取得するリスト。</param>
+            <param name="index">取得する項目のインデックス。</param>
+            <returns name="item">リスト内の特定のインデックスの項目。</returns>
+            <search>get,item,index,fetch,at,getfrom,get from,extract</search>
+        </member>
+        <member name="M:DSCore.List.ReplaceItemAtIndex(System.Collections.IList,System.Int32,System.Object)">
+            <summary>リストの、指定されたインデックスにある項目を置き換えます。</summary>
+            <param name="list">項目を置換するリスト。</param>
+            <param name="index">置換する項目のインデックス。</param>
+            <param name="item">挿入する項目。</param>
+            <returns name="list">項目を置き換えた新しいリスト。</returns>
+            <search>replace,switch</search>
+        </member>
+        <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">
+            <summary>指定されたインデックスの開始値、終了値、ステップ値に基づいて、リストから
+                単一のサブリストを返します。</summary>
+            <param name="list">スライスを実行するリスト。</param>
+            <param name="start">スライスを開始する位置のインデックス。</param>
+            <param name="end">スライスを終了する位置のインデックス。</param>
+            <param name="step">元のリストで項目のインデックスが分割される単位。</param>
+            <returns name="items">指定したリストのスライス内の項目。</returns>
+            <search>list,sub,sublist,subrange,get sublist</search>
+        </member>
+        <member name="M:DSCore.List.RemoveItemAtIndex(System.Collections.IList,System.Int32[])">
+            <summary>指定したインデックスで特定のリストから項目を削除します。</summary>
+            <param name="list">項目を削除するリスト。</param>
+            <param name="indices">削除する項目のインデックス。</param>
+            <returns name="list">項目を削除したリスト。</returns>
+            <search>index,indices,cull,remove,item</search>
+        </member>
+        <member name="M:DSCore.List.DropEveryNthItem(System.Collections.IList,System.Int32,System.Int32)">
+            <summary>指定されたオフセットの後、指定された値の倍数である
+                インデックスの項目を、指定されたリストから削除します。</summary>
+            <param name="list">項目を削除するリスト。</param>
+            <param name="n">この引数の倍数であるインデックスは削除されます。</param>
+            <param name="offset">リストの最初から無視する項目の数。</param>
+            <returns name="list">項目を削除したリスト。</returns>
+            <search>nth,remove,cull,every</search>
+        </member>
+        <member name="M:DSCore.List.TakeEveryNthItem(System.Collections.IList,System.Int32,System.Int32)">
+            <summary>指定されたオフセットの後、指定された値の倍数である
+                インデックスの項目を、指定されたリストから取得します。</summary>
+            <param name="list">項目を取得するリスト。</param>
+            <param name="n">この数の倍数であるインデックスが(オフセット後に)
+                取得されます。</param>
+            <param name="offset">リストの最初から無視する項目の数。</param>
+            <returns name="items">リストからの項目。</returns>
+            <search>fetch,take,every,nth</search>
+        </member>
+        <member name="M:DSCore.List.IsEmpty(System.Collections.IList)">
+            <summary>指定したリストが空かどうかを判断します。</summary>
+            <param name="list">空かどうかを確認するリスト</param>
+            <returns name="bool">リストが空の場合は true、違う場合は false</returns>
+            <search>test,is,empty,null,count</search>
+        </member>
+        <member name="M:DSCore.List.AllTrue(System.Collections.IList)">
+            <summary>指定されたリスト内のすべての項目が true ブール値になっているかどうかを判断します。</summary>
+            <param name="list">すべての項目が true になっているかどうかを確認するリスト。</param>
+            <returns name="bool">リストのすべての項目が true の場合は true、true ではない項目が 1 つ以上ある場合は false</returns>
+            <search>test,all,true,istrue</search>
+        </member>
+        <member name="M:DSCore.List.AllFalse(System.Collections.IList)">
+            <summary>指定されたリスト内のすべての項目が false ブール値になっているかどうかを判断します。</summary>
+            <param name="list">すべての項目が false になっているかどうかを確認するリスト。</param>
+            <returns name="bool">リストのすべての項目が false の場合は true、false ではない項目が 1 つ以上ある場合は false</returns>
+            <search>test,all,false,isfalse</search>
+        </member>
+        <member name="M:DSCore.List.AnyTrue(System.Collections.IList)">
+            <summary>指定されたリスト内に true ブール値となっている項目があるかどうかを判断します。</summary>
+            <param name="list">true になっている項目があるかどうかを確認するリスト。</param>
+            <returns name="bool">true になっている項目があるかどうか。</returns>
+            <search>test,any,true,istrue</search>
+        </member>
+        <member name="M:DSCore.List.AnyFalse(System.Collections.IList)">
+            <summary>指定されたリスト内に false ブール値となっている項目があるかどうかを判断します。</summary>
+            <param name="list">false になっている項目があるかどうかを確認するリスト。</param>
+            <returns name="bool">false になっている項目があるかどうか。</returns>
+            <search>test,any,false,isfalse</search>
+        </member>
+        <member name="M:DSCore.List.Count(System.Collections.IList)">
+            <summary>定されたリストに格納されている項目の数を返します。</summary>
+            <param name="list">項目の数を取得するリスト。</param>
+            <returns name="int">リストの長さ。</returns>
+            <search>listlength,list length,count,size,sizeof</search>
+        </member>
+        <member name="M:DSCore.List.Join(System.Collections.IList[])">
+            <summary>指定したすべてのリストを 1 つのリストに連結します。</summary>
+            <param name="lists">1 つのリストに結合するリスト。</param>
+            <returns name="list">結合されたリスト。</returns>
+            <search>join lists,merge,concatenate</search>
+        </member>
+        <member name="M:DSCore.List.FirstItem(System.Collections.IList)">
+            <summary>リスト内の最初の項目を返します。</summary>
+            <param name="list">最初の項目を取得するリスト。</param>
+            <returns name="item">リスト内の最初の項目。</returns>
+            <search>get,fetch,first,item,start</search>
+        </member>
+        <member name="M:DSCore.List.RestOfItems(System.Collections.IList)">
+            <summary>特定のリストの最初の項目を削除します。</summary>
+            <param name="list">残りの項目を取得するリスト。</param>
+            <returns name="rest">リストの残りの項目。</returns>
+            <search>get,fetch,rest,end,rest of list</search>
+        </member>
+        <member name="M:DSCore.List.Chop(System.Collections.IList,System.Collections.Generic.List{System.Int32})">
+            <summary>指定した長さで一連の連続したサブリストにリストを分割します。リストの分割はリストの一番上から開始されます。</summary>
+            <param name="list">サブリストに分割するリスト</param>
+            <param name="lengths">入力リストから作成する連続したサブリストの長さ</param>
+            <returns name="lists">リストから作成したサブリスト</returns>
+            <search>sublists,build sublists,slices,partitions,cut,listcontains,chop</search>
+        </member>
+        <member name="M:DSCore.List.DiagonalRight(System.Collections.IList,System.Int32)">
+            <summary>マトリックスの各対角線に沿って左下から右上に要素をリスト化します。</summary>
+            <param name="list">フラット リスト</param>
+            <param name="subLength">個々の新しいサブリストの長さ。</param>
+            <returns name="diagonals">マトリックスの対角線に沿った要素のリスト。</returns>
+            <search>diagonal,right,matrix,get diagonals,diagonal sublists</search>
+        </member>
+        <member name="M:DSCore.List.DiagonalLeft(System.Collections.IList,System.Int32)">
+            <summary>マトリックスの各対角線に沿って左上から右下に要素をリスト化します。</summary>
+            <param name="list">フラット リスト。</param>
+            <param name="rowLength">新しい各サブリストの長さ。</param>
+            <returns name="diagonals">マトリックスの対角線に沿った要素のリスト。</returns>
+            <search>diagonal,left,matrix,get diagonals,diagonal sublists</search>
+        </member>
+        <member name="M:DSCore.List.Transpose(System.Collections.IList)">
+            <summary>リストのリストの行と列を入れ替えます。 
+                他の行よりも短い行がある場合は、作成される配列が
+                常に長方形になるように、プレースホルダーとして 
+                NULL 値が挿入されます。</summary>
+            <param name="lists">転置するリストのリスト</param>
+            <returns name="lists">転置されたリストのリスト</returns>
+            <search>transpose,flip matrix,matrix,swap,rows,columns</search>
+        </member>
+        <member name="M:DSCore.List.Clean(System.Collections.IList,System.Boolean)">
+            <summary>任意の次元の特定のリストから NULL のデータや空のリストを取り除きます</summary>
+            <param name="list">取り除く NULL や空のサブリストを含むリスト</param>
+            <param name="preserveIndices">末尾以外の NULL がフィルタで除外されないように
+            <returns name="list">転置されたリストのリスト</returns>
+            データのインデックスを保持するオプションを提供します</param>
+            <returns>NULL や空のリストを取り除いたリスト</returns>
+        </member>
+        <member name="M:DSCore.List.OfRepeatedItem(System.Object,System.Int32)">
+            <summary>指定した項目を指定した回数含むリストを作成します。</summary>
+            <param name="item">繰り返す項目。</param>
+            <param name="amount">繰り返す回数。</param>
+            <returns name="list">繰り返された項目のリスト。</returns>
+            <search>repeat,repeated,duplicate,list of item,fill list,copies,listcontains</search>
+        </member>
+        <member name="M:DSCore.List.Cycle(System.Collections.IList,System.Int32)">
+            <summary>指定したリストのコピーを連結して新しいリストを作成します。</summary>
+            <param name="list">繰り返すリスト。</param>
+            <param name="amount">繰り返しの回数。</param>
+            <returns name="list">繰り返されたリストのリスト(タイプ: var[]..[])</returns>
+            <search>repeat,repeated,duplicate,repeated list,concat list</search>
+        </member>
+        <member name="M:DSCore.List.LastItem(System.Collections.IList)">
+            <summary>リスト内の最後の項目を取得します。</summary>
+            <param name="list">最後の項目を取得するリスト</param>
+            <returns name="item">リスト内の最後の項目</returns>
+            <search>get,fetch,last,item,end of list</search>
+        </member>
+        <member name="M:DSCore.List.Shuffle(System.Collections.IList)">
+            <summary>項目の順番をランダムに設定し、リストを並べ替えます。</summary>
+            <param name="list">シャッフルするリスト。</param>
+            <returns name="list">ランダム化されたリスト。</returns>
+            <search>random,randomize,shuffle,jitter,randomness</search>
+        </member>
+        <member name="M:DSCore.List.Shuffle(System.Collections.IList,System.Int32)">
+            <summary>項目の順番を初期シード値に基づいてランダムに設定し、リストを並べ替えます。</summary>
+            <param name="list">シャッフルするリスト。</param>
+            <param name="seed">ランダム数ジェネレータのシード値。</param>
+            <returns name="list">ランダム化されたリスト。</returns>
+            <search>random,randomize,shuffle,jitter,randomness,seed</search>
+        </member>
+        <member name="M:DSCore.List.Permutations(System.Collections.IList,System.Nullable{System.Int32})">
+            <summary>指定したリストの指定した長さのすべての順列を生成します。</summary>
+            <param name="list">順番を変えるリスト。</param>
+            <param name="length">各順列の長さ。</param>
+            <returns name="permutations">指定した長さのリストの順列(タイプ: var[]..[])</returns>
+            <search>permutation,permutations</search>
+        </member>
+        <member name="M:DSCore.List.Combinations(System.Collections.IList,System.Int32,System.Boolean)">
+            <summary>指定したリストの指定した長さのすべての組み合わせを生成します。</summary>
+            <param name="list">組み合わせを生成するリスト</param>
+            <param name="length">各組み合わせの長さ</param>
+            <param name="replace">組み合わせに選択した項目を削除するかどうか。既定は false です。</param>
+            <returns name="lists">特定の長さのリストの組み合わせ</returns>
+            <search>combo</search>
+        </member>
+        <member name="M:DSCore.List.FirstIndexOf(System.Collections.IList,System.Object)">
+            <summary>項目を指定し、リストに最初に出現した項目のゼロから始まるインデックス
+                を返します。リスト内に項目がない場合は、-1 を返します。</summary>
+            <param name="list">検索対象のリスト。この引数が NULL の場合、-1 が返されます。</param>
+            <param name="item">検索する項目。</param>
+            <returns>リスト内の項目のゼロから始まるインデックス。項目が見つからない場合は -1。</returns>
+        </member>
+        <member name="M:DSCore.List.AllIndicesOf(System.Collections.IList,System.Object)">
+            <summary>項目を指定し、リストに出現するすべての項目のゼロから始まるインデックス
+                を返します。リスト内に項目がない場合は、空のリストを返します。</summary>
+            <param name="list">検索対象のリスト。この引数が NULL の場合、空のリストが返されます。</param>
+            <param name="item">検索する項目。</param>
+            <returns name="indices">項目があった場合は、見つかったすべての項目のゼロから始まる
+            インデックスのリスト。項目がリストにない場合は空のリスト。</returns>
+        </member>
+        <member name="M:DSCore.List.Flatten(System.Collections.IList,System.Int32)">
+            <summary>ネストされたリストのリストを、指定された量だけフラットにします。</summary>
+            <param name="list">フラットにするリスト。</param>
+            <param name="amount">削除するリストのネストのレイヤ(-1 でリストのネストをすべて削除)</param>
+            <returns name="list">量を指定してフラットにされたリスト</returns>
+            <search>flatten,completely</search>
+        </member>
+        <member name="M:DSCore.List.IndexInList(System.Collections.IList,System.Object)">
+            <summary>IList.Contains は、対象の項目が配列である場合に、Enumerable.SequenceEqual を使用して
+                その項目がリストに含まれているかどうかを確認します。これとは別の方法で対象の項目を検索し、
+                見つかった場合はその項目のインデックスを返し、見つからなかった場合は -1 を返します。</summary>
+            <param name="list">対象の項目が含まれているかどうかを確認するリスト。</param>
+            <param name="item">検索対象の項目。</param>
+            <returns name="index">リスト内の項目のインデックス。</returns>
+        </member>
+        <member name="M:DSCore.List.GetDepth(System.Object)">
+            <summary>指定されたリストの最大の深さを取得します。</summary>
+            <param name="list">深さの取得元となる入力リスト。</param>
+            <returns name="depth">指定されたリストの深さ。</returns>
+        </member>
+        <member name="M:DSCore.List.CountBool(System.Collections.IList,System.Boolean)">
+            <summary>対象となるリスト内で指定されたブール値の数を返します。</summary>
+            <param name="list">検索対象のブール値が含まれているリスト。</param>
+            <param name="value">検索対象のブール値。</param>
+            <returns name="int">リスト内で指定されているブール値の数。</returns>
+        </member>
+        <member name="M:DSCore.List.IncreaseDepth(System.Collections.IList,System.Int32)">
+            <summary>指定された値を使用して、対象となるリストの深さの値を大きくします。対象となるリストを
+                格納する新しいリストを作成することにより、深さの値が大きくなります。</summary>
+            <param name="list">深さの値を大きくするリスト。</param>
+            <param name="amt">現在の深さの値を大きくするための値。</param>
+            <returns name="list">指定された値によって深さの値が大きくなった新しいリスト。</returns>
+        </member>
+        <member name="M:DSCore.List.DoubleConverter(System.Object)">
+            <summary>整数を double に変換し、その他の場合は入力オブジェクトを返します。</summary>
+        </member>
+        <member name="T:DSCore.ObjectComparer">
+            <summary>次のルールを使用して 2 つのオブジェクトの Compare 関数を実装します。
+                1. 数値は最小であると仮定され、次にブール値、文字列、ポインタであると仮定されます。
+                2. 2 つのオブジェクトが IComparable で同じタイプである場合は、ネイティブの
+                比較メカニズムを使用します。
+                3. 両方の入力が値タイプで、どちらかがブール値の場合、ブール値の方が大きくなります
+                4. どちらもブール値でない場合、すべてを double に変換して比較します。
+                5. 上記に当てはまらず、1 つのオブジェクトのみが値タイプの場合、値タイプオブジェクトの方が小さくなります
+                6. 上記に当てはまらず、1 つのオブジェクトのみが文字列の場合、文字列の方が他の値より小さくなります
+                7. 上記に当てはまらない場合、比較方法を判断できず、ハッシュ値に基づいた比較が最適になります。</summary>
+        </member>
+        <member name="T:DSCore.Math">
+            <summary>数学的演算を実行するためのメソッド。</summary>
+        </member>
+        <member name="M:DSCore.Math.Random(System.Nullable{System.Int32})">
+            <summary>[0, 1)の範囲内のランダムな double 値を生成します。</summary>
+            <param name="seed">ランダム数ジェネレータのシード値。</param>
+            <returns name="number">ランダムな数値(0～1)。</returns>
+            <search>random,seed</search>
+        </member>
+        <member name="M:DSCore.Math.Random(System.Double,System.Double)">
+            <summary>範囲[lower_number, higher_number)でランダムな数値を生成します。</summary>
+            <param name="value1">ランダムな数値の範囲の下端。</param>
+            <param name="value2">ランダムな数値の範囲の上端。</param>
+            <returns name="number">範囲[lower_number, higher_number)のランダムな数値。</returns>
+            <search>random,numberrange</search>
+        </member>
+        <member name="M:DSCore.Math.Random(System.Double,System.Double,System.Int32)">
+            <summary>初期シード値に基づいて、範囲[lower_number, higher_number)のランダムな数値を生成します。</summary>
+            <param name="value1">ランダムな数値の範囲の下端。</param>
+            <param name="value2">ランダムな数値の範囲の上端。</param>
+            <param name="seed">ランダム数ジェネレータのシード値。</param>
+            <returns name="number">範囲[lower_number, higher_number)のランダムな数値。</returns>
+            <search>random,numberrange,seed</search>
+        </member>
+        <member name="M:DSCore.Math.RandomList(System.Int32)">
+            <summary>特定の数量の[0, 1)の範囲のランダムな double 値を含むリストを作成
+                します。</summary>
+            <param name="amount">結果のリストに含まれるランダムな数値の量。</param>
+            <returns name="number">ランダムな数値(0～1)のリスト。</returns>
+            <search>random,listcontains</search>
+        </member>
+        <member name="M:DSCore.Math.RandomList(System.Int32,System.Double,System.Double,System.Int32)">
+            <summary>初期シード値に基づいて、定義された範囲[lower_number, higher_number)における
+                特定の数量のランダムな double 値を含むリストを作成します。</summary>
+            <param name="amount">結果のリストに含まれるランダムな数値の量。</param>
+            <param name="value1">ランダムな数値の範囲の下端。</param>
+            <param name="value2">ランダムな数値の範囲の上端。</param>
+            <param name="seed">ランダム数ジェネレータのシード値。</param>
+            <returns name="number">範囲[lower_number, higher_number)のランダムな数値のリスト。</returns>
+            <search>random,listcontains,seed</search>
+        </member>
+        <member name="P:DSCore.Math.PiTimes2">
+            <summary>2 倍した Pi 定数</summary>
+            <returns name="double">2 倍の PI です。</returns>
+            <search>2pi,2*pi,twopi,two*pi</search>
+        </member>
+        <member name="M:DSCore.Math.Average(System.Collections.Generic.IList{System.Double})">
+            <summary>数値のリストを平均化します。</summary>
+            <param name="numbers">平均化する数値のリスト。</param>
+            <returns name="double">数値のリストの平均。</returns>
+            <search>avg,mean</search>
+        </member>
+        <member name="M:DSCore.Math.Map(System.Double,System.Double,System.Double)">
+            <summary>入力範囲に基づき、入力値を 0 から 1 までの範囲内の数値にマッピングします。</summary>
+            <param name="rangeMin">入力範囲の最小値。</param>
+            <param name="rangeMax">入力範囲の最大値。</param>
+            <param name="inputValue">マッピングされる数値。</param>
+            <returns name="double">マッピング後の値。</returns>
+            <search>map,range,minimum,maximum,normalize,scale,remap</search>
+        </member>
+        <member name="M:DSCore.Math.MapTo(System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>入力値を targetRangeMin から targetRangeMax までの範囲内の値にマッピングします。</summary>
+            <param name="rangeMin">入力範囲の最小値。</param>
+            <param name="rangeMax">入力範囲の最大値。</param>
+            <param name="inputValue">マッピングされる数値。</param>
+            <param name="targetRangeMin">新しい範囲の最小値。</param>
+            <param name="targetRangeMax">新しい範囲の最大値。</param>
+            <returns name="double">マッピング後の値。</returns>
+            <search>map,range,mapto,minimum,maximum,normalize,scale,remap</search>
+        </member>
+        <member name="M:DSCore.Math.RemapRange(System.Collections.Generic.IList{System.Double},System.Double,System.Double)">
+            <summary>分配比率を保持しながら数値のリストの範囲を
+                調整します。</summary>
+            <param name="numbers">範囲を調整するための数値のリスト。</param>
+            <param name="newMin">範囲の新しい最小値。</param>
+            <param name="newMax">範囲の新しい最大値</param>
+            <returns name="list">新しい範囲に再マッピングされるリスト。</returns>
+            <search>remap range</search>
+        </member>
+        <member name="F:DSCore.Math.kRadiansToDegrees">
+            <summary>Math.dll から DSCoreNode.dll に関数/メソッドを移動</summary>
+        </member>
+        <member name="P:DSCore.Math.PI">
+            <summary>数学上の定数 Pi, 3.14159...</summary>
+            <returns name="double">定数 Pi</returns>
+            <search>3.141592653589793</search>
+        </member>
+        <member name="P:DSCore.Math.E">
+            <summary>数学上の定数 e、2.71828...</summary>
+            <returns name="double">定数 e</returns>
+            <search>exp,2.718281828459045</search>
+        </member>
+        <member name="P:DSCore.Math.GoldenRatio">
+            <summary>黄金比、(1 + sqrt(5))/2 = 1.61803...</summary>
+            <returns name="double">黄金比</returns>
+            <search>golden,ratio,divine,phi,tau,1.61803398875</search>
+        </member>
+        <member name="M:DSCore.Math.RadiansToDegrees(System.Double)">
+            <summary>ラジアン単位の角度を度単位の角度に変換します。</summary>
+            <param name="radians">角度(ラジアン単位)。</param>
+            <returns name="degrees">角度(度単位)。</returns>
+            <search>radians,degrees,angle</search>
+        </member>
+        <member name="M:DSCore.Math.DegreesToRadians(System.Double)">
+            <summary>度単位の角度をラジアン単位の角度に変換します。</summary>
+            <param name="degrees">角度(度単位)。</param>
+            <returns name="radians">角度(ラジアン単位)。</returns>
+            <search>degrees,radians,angle</search>
+        </member>
+        <member name="M:DSCore.Math.Abs(System.Double)">
+            <summary>数値の絶対値を検出します。</summary>
+            <param name="number">絶対値にする数値</param>
+            <returns name="number">数値の絶対値</returns>
+            <search>absolute value,magnitude</search>
+        </member>
+        <member name="M:DSCore.Math.Equals(System.Double,System.Double,System.Double)">
+            <summary>このメソッドは、Equals (許容差と等しい) NodeModel ノードでのみ使用されます。</summary>
+            <param name="lhs"/>
+            <param name="rhs"/>
+            <param name="tol"/>
+            <returns/>
+        </member>
+        <member name="M:DSCore.Math.Abs(System.Int64)">
+            <summary>数値の絶対値を検出します。</summary>
+            <param name="integer">数値。</param>
+            <returns name="absoluteValue">数値の絶対値。</returns>
+            <search>absolute value,magnitude</search>
+        </member>
+        <member name="M:DSCore.Math.Acos(System.Double)">
+            <summary>余弦が指定した比率になる角度の、逆余弦を求めます。</summary>
+            <param name="ratio">角度の余弦。[-1, 1]の範囲の数値。</param>
+            <returns name="double">余弦が入力比率となる角度。</returns>
+            <search>acosine,arccosine</search>
+        </member>
+        <member name="M:DSCore.Math.Asin(System.Double)">
+            <summary>正弦が指定した比率になる角度の、逆正弦を求めます。</summary>
+            <param name="ratio">角度の正弦。[-1, 1]の範囲の数値。</param>
+            <returns name="double">正弦が入力比率となる角度</returns>
+            <search>asine,arcsin</search>
+        </member>
+        <member name="M:DSCore.Math.Atan(System.Double)">
+            <summary>正接が指定した比率になる、逆正接を求めます。</summary>
+            <param name="ratio">角度の正接。</param>
+            <returns name="double">正接が入力比率となる角度</returns>
+            <search>atangent,arctangent</search>
+        </member>
+        <member name="M:DSCore.Math.Atan2(System.Double,System.Double)">
+            <summary>2 つの数値の商の逆正接を求めます。比率が分子/分母の正接の角度を
+                返します。</summary>
+            <param name="numerator">角度の接線の分子。</param>
+            <param name="denominator">角度の接線の分母。</param>
+            <returns name="double">正接が分子/分母となる角度</returns>
+            <search>atangent,arctangent</search>
+        </member>
+        <member name="M:DSCore.Math.Ceiling(System.Double)">
+            <summary>数値よりも大きい最初の整数を返します</summary>
+            <param name="number">切り上げる数値。</param>
+            <returns name="int">数値よりも大きい最初の整数</returns>
+            <search>ceiling,round</search>
+        </member>
+        <member name="M:DSCore.Math.Cos(System.Double)">
+            <summary>角度の余弦を求めます。</summary>
+            <param name="angle">余弦を取得する角度(度単位)。</param>
+            <returns name="double">角度の余弦</returns>
+            <search>cosine</search>
+        </member>
+        <member name="M:DSCore.Math.Cosh(System.Double)">
+            <summary>角度(ラジアン単位)の双曲線余弦を求めます。</summary>
+            <param name="angle">角度(ラジアン単位)。</param>
+            <returns name="double">角度の双曲線余弦</returns>
+            <search>hyperbolic cosine</search>
+        </member>
+        <member name="M:DSCore.Math.DivRem(System.Int64,System.Int64)">
+            <summary>被除数を除数で割って、その余りを求めます。</summary>
+            <param name="dividend">被除数(割られる数値)。</param>
+            <param name="divisor">除数(割る数値)。</param>
+            <returns name="int">除算の余り</returns>
+            <search>remainder</search>
+        </member>
+        <member name="M:DSCore.Math.EvaluateFormula(System.String,System.String[],System.Object[])">
+            <summary>指定されたパラメータ マッピングで NCalc 式を評価します。</summary>
+            <param name="formulaString">NCalc 式</param>
+            <param name="parameters">変数名</param>
+            <param name="arguments">変数のバインド</param>
+            <returns name="result">タイプ: var[]..[] (計算式の結果)</returns>
+        </member>
+        <member name="M:DSCore.Math.Exp(System.Double)">
+            <summary>数値の指数を返します。値の数値に累乗する定数 e です。</summary>
+            <param name="number">数値。</param>
+            <returns name="double">数値の指数。</returns>
+            <search>exponential</search>
+        </member>
+        <member name="M:DSCore.Math.Floor(System.Double)">
+            <summary>数値よりも小さい最初の整数を返します。</summary>
+            <param name="number">切り捨てる数値</param>
+            <returns name="int">数値よりも小さい最初の整数</returns>
+            <search>round</search>
+        </member>
+        <member name="M:DSCore.Math.Log(System.Double)">
+            <summary>範囲(0, ∞)内の数の自然対数を求めます。</summary>
+            <param name="number">0 より大きな数値。</param>
+            <returns name="double">数値の自然対数。</returns>
+            <search>natural,logarithm,ln</search>
+        </member>
+        <member name="M:DSCore.Math.Log(System.Double,System.Double)">
+            <summary>指定した底で数値の対数を求めます。</summary>
+            <param name="number">0 より大きな数値。</param>
+            <param name="logBase">範囲 [0,1),(1, ∞) の対数の底。</param>
+            <returns name="double">数値の対数。</returns>
+            <search>logarithm,ld,lg</search>
+        </member>
+        <member name="M:DSCore.Math.Log10(System.Double)">
+            <summary>数値の 10 を底とする対数を求めます。</summary>
+            <param name="number">0 より大きな数値。</param>
+            <returns name="double">数値の対数。</returns>
+            <search>logarithm</search>
+        </member>
+        <member name="M:DSCore.Math.Max(System.Double,System.Double)">
+            <summary>2 つの数値の大きい方の値を返します。</summary>
+            <param name="value1">比較する数値。</param>
+            <param name="value2">比較する数値。</param>
+            <returns name="max">2 つの数値のうち大きなもの。</returns>
+            <search>maximum,greater,larger</search>
+        </member>
+        <member name="M:DSCore.Math.Max(System.Int64,System.Int64)">
+            <summary>2 つの数値の大きい方の値を返します。</summary>
+            <param name="int1">比較する数値。</param>
+            <param name="int2">比較する数値。</param>
+            <returns name="max">2 つの数値のうち大きなもの。</returns>
+            <search>maximum,greater,larger</search>
+        </member>
+        <member name="M:DSCore.Math.Min(System.Double,System.Double)">
+            <summary>2 つの数字のうち小さい方を返します。</summary>
+            <param name="value1">比較する数値。</param>
+            <param name="value2">比較する数値。</param>
+            <returns name="min">2 つの数値のうち小さなもの。</returns>
+            <search>minimum,lesser,smaller</search>
+        </member>
+        <member name="M:DSCore.Math.Min(System.Int64,System.Int64)">
+            <summary>2 つの数字のうち小さい方を返します。</summary>
+            <param name="int1">比較する数値。</param>
+            <param name="int2">比較する数値。</param>
+            <returns name="min">2 つの数値のうち小さなもの。</returns>
+            <search>minimum,lesser,smaller</search>
+        </member>
+        <member name="M:DSCore.Math.Pow(System.Double,System.Double)">
+            <summary>指定された指数に対して値を累乗します。</summary>
+            <param name="number">累乗する数値。</param>
+            <param name="power">数値の累乗。</param>
+            <returns name="result">累乗した数値。</returns>
+            <search>^,power,raise,exponent</search>
+        </member>
+        <member name="M:DSCore.Math.Rand">
+            <summary>範囲[0, 1)でランダムな数値を生成します。</summary>
+            <returns name="number">範囲[0, 1]のランダムな数値。</returns>
+            <search>random,numberrange</search>
+        </member>
+        <member name="M:DSCore.Math.Round(System.Double)">
+            <summary>数値を四捨五入して最も近い整数値にします。
+            このメソッドは、整数型の代わりに倍精度浮動小数点数を返します。</summary>
+            <param name="number">四捨五入する数値。</param>
+            <returns name="number">数値に最も近似している整数値。</returns>
+        </member>
+        <member name="M:DSCore.Math.Round(System.Double,System.Int32)">
+            <summary>数値を四捨五入して小数点以下の指定された桁数にします。</summary>
+            <param name="number">四捨五入する数値</param>
+            <param name="digits">戻り値の小数点以下の桁数</param>
+            <returns name="number">指定された数に等しい小数点以下の桁数を含む値に最も近い数値</returns>
+        </member>
+        <member name="M:DSCore.Math.Sign(System.Double)">
+            <summary>数値の符号(-1、0、1)を返します。</summary>
+            <param name="number">符号の取得元の数値</param>
+            <returns name="int">数値の符号(-1、0、1)</returns>
+        </member>
+        <member name="M:DSCore.Math.Sign(System.Int64)">
+            <summary>数値の符号(-1、0、1)を返します。</summary>
+            <param name="int">符号の取得元の整数</param>
+            <returns name="int">数値の符号(-1、0、1)</returns>
+        </member>
+        <member name="M:DSCore.Math.Sin(System.Double)">
+            <summary>角度の正弦を求めます。</summary>
+            <param name="angle">正弦を取得する角度(度単位)。</param>
+            <returns name="double">角度の正弦。</returns>
+            <search>sine</search>
+        </member>
+        <member name="M:DSCore.Math.Sinh(System.Double)">
+            <summary>角度(ラジアン単位)の双曲線正弦を求めます。</summary>
+            <param name="angle">角度(ラジアン単位)。</param>
+            <returns name="double">角度の双曲線正弦。</returns>
+            <search>hyperbolic</search>
+        </member>
+        <member name="M:DSCore.Math.Sqrt(System.Double)">
+            <summary>範囲[0, ∞)の数値の正の平方根を求めます。</summary>
+            <param name="number">[0, ∞)の範囲の数。</param>
+            <returns name="double">数値の正の平方根。</returns>
+            <search>square,root,radical</search>
+        </member>
+        <member name="M:DSCore.Math.Tan(System.Double)">
+            <summary>角度の正接を検索します。</summary>
+            <param name="angle">角度(ラジアン単位)</param>
+            <returns name="double">角度の正接</returns>
+            <search>tangent</search>
+        </member>
+        <member name="M:DSCore.Math.Tanh(System.Double)">
+            <summary>角度(ラジアン単位)の双曲線正接を求めます。</summary>
+            <param name="angle">角度(ラジアン単位)</param>
+            <returns name="double">角度の双曲線正接</returns>
+            <search>hyperbolic,tanh</search>
+        </member>
+        <member name="M:DSCore.Math.Sum(System.Collections.Generic.IEnumerable{System.Double})">
+            <summary>一連の数値の合計を検索</summary>
+            <param name="values">追加して合計する数値</param>
+            <returns name="double">値の合計</returns>
+            <search>mass addition,massadd</search>
+        </member>
+        <member name="M:DSCore.Math.Factorial(System.Int64)">
+            <summary>正の整数の階乗の結果を求めます。</summary>
+            <param name="number">正の整数</param>
+            <returns name="number">整数の階乗の結果。</returns>
+            <search>!</search>
+        </member>
+        <member name="M:DSCore.Math.Xor(System.Boolean,System.Boolean)">
+            <summary>ブール演算 XOR: 入力のいずれか 1 つが true の場合に true を返します。</summary>
+            <param name="bool">ブール値</param>
+            <param name="otherBool">もう一方のブール値</param>
+            <returns name="bool">ブール演算の結果</returns>
+            <search>xor,exclusive,or</search>
+        </member>
+        <member name="M:DSCore.Math.DoCheckedCast(System.Double)">
+            <summary>チェックされたコンテキストで long 型への変換を行います。演算の結果オーバーフローが発生した場合は、
+            警告が生成され、オーバーフローした結果が返されます。</summary>
+            <param name="value">実行する演算</param>
+            <returns>演算の結果</returns>
+        </member>
+        <member name="T:DSCore.Object">
+            <summary>すべてのデータを操作する一般的な関数。</summary>
+        </member>
+        <member name="M:DSCore.Object.IsNull(System.Object)">
+            <summary>指定したオブジェクトが null であるかどうかを判断します。</summary>
+            <param name="object">テストするオブジェクト。</param>
+            <returns name="bool">オブジェクトが null であるかどうか。</returns>
+            <search>is null</search>
+        </member>
+        <member name="M:DSCore.Object.Identity(System.Object)">
+            <summary>渡したものを返します。それ以外の操作は行いません。</summary>
+            <param name="object">オブジェクト。</param>
+            <returns name="object">同一オブジェクト</returns>
+        </member>
+        <member name="M:DSCore.Object.Type(System.Object)">
+            <summary>文字列として表されるオブジェクトのタイプを返します。</summary>
+            <param name="object">タイプをクエリーするオブジェクト</param>
+            <returns>オブジェクトのタイプ。</returns>
+        </member>
+        <member name="T:DSCore.Properties.Resources">
+            <summary>ローカライズされた文字列などを検索するための、厳密に型指定されたリソース クラス。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ResourceManager">
+            <summary>このクラスが使用する、キャッシュされた ResourceManager インスタンスを返します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Culture">
+            <summary>厳密に型指定されたリソース クラスを使用して、すべてのリソース検索で
+              現在のスレッドの CurrentUICulture プロパティを変更します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.BitmapOverflowError">
+            <summary>「指定されたカラー データは大きすぎるため、イメージの境界に収まりません」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
+            <summary>「入力は単一の値またはネストされていないリストである必要があります」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataUnexpectedInputExceptionMessage">
+            <summary>「このノードは {0} 入力を要求しましたが、{1} 入力を受け取りました。必要な入力を提供するか、ノードのドロップダウン メニューで新しい型を選択してください」に類似するローカライズされた文字列を検索しま’す。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataUnsupportedCombinationOfDataTypesExceptionMessage">
+            <summary>「このノードは、現在の入力リスト {0} 内のデータ タイプの組み合わせをサポートしていません。入力リストに同じデータ タイプの項目が含まれるようにするか、共通の親タイプを持つ型の組み合わせになるようにしてください」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.DefineDataUnsupportedDataTypeExceptionMessage">
+            <summary>「このノードは現在の入力データ タイプ({0})をサポートしていません。ドロップダウン メニューでサポートされているデータ タイプを確認してください」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekFriday">
+            <summary>「金曜日」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekMonday">
+            <summary>「月曜日」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekSaturday">
+            <summary>「土曜日」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekSunday">
+            <summary>「日曜日」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekThursday">
+            <summary>「木曜日」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekTuesday">
+            <summary>「火曜日」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.EnumDateOfWeekWednesday">
+            <summary>「水曜日」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Deserialize_Bad_Format">
+            <summary>「タイプ {0} の JSON の形式が正しくありません。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Deserialize_Unsupported_Cache">
+            <summary>「格納されたデータをロードできません。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Serialize_Depth_Unsupported">
+            <summary>「深さ {0} がパス "{2}" の MaxDepth {1} を超えています」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Serialize_DesignScript_Unsupported">
+            <summary>「このタイプのジオメトリはシリアル化できません。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.Exception_Serialize_Unsupported_Type">
+            <summary>「タイプ {0} のデータを格納できません。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ExportToCSVObsolete">
+            <summary>「代わりに Data.ExportCSV ノードを使用」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FactorialNegativeInt">
+            <summary>「Math.Factorial に負の値を入力することはできません」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FactorialOverflow">
+            <summary>「Math.Factorial の戻り値が範囲外です」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FindPointsWithinRadiusNullPointMessage">
+            <summary>「中心点を指定する必要があります。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FindPointsWithinRadiusSearchRadiusMessage">
+            <summary>「検索半径の値をゼロにすることはできません。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.FromObjectObsolete">
+            <summary>「このノードは使用されなくなりました。"String from Object" を使用してください」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.IntegerOverflow">
+            <summary>「演算の結果、整数オーバーフローが発生しました。予期しない結果になる可能性があります。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.InvalidDestinationPathErrorMessage">
+            <summary>「コピー パスとして使用されたコピー先のファイル パスが無効です。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.InvalidKeysErrorMessage">
+            <summary>「1 つまたは複数の入力タイプが一致しません。リストをキーとして使用することはできません。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.InvalidKeysLenghtErrorMessage">
+            <summary>「項目数がキーの数に一致しません。href=InvalidKeysLenghtErrorMessage.html」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.LoadImageFromPathObsolete">
+            <summary>「代わりに File.FromPath -&gt;  Image.ReadFromFile ノードを使用します」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.MissingPythonEngine">
+            <summary>「選択した Python エンジンは見つかりませんでした」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ObjectArgumentExceptionMessage">
+            <summary>「オブジェクトを NULL にできません。適切な値を指定してください。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.QuadtreeConstructionEmptyUVSetMessage">
+            <summary>「空の点のセットからはクアッドツリーを作成できません。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.QuadtreeConstructionNullUVSetMessage">
+            <summary>「UV の NULL セットから Quadtree を作成することはできません。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ReadImageObsolete">
+            <summary>「代わりに File.FromPath -&gt;  Image.ReadFromFile -&gt;  Image.Pixels ノードを使用します」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.ReadTextObsolete">
+            <summary>「代わりに File.FromPath -&gt;  File.ReadText ノードを使用します。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.StringRemoveCountOutOfRangeMessage">
+            <summary>「Count が範囲外です。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.StringRemoveStartIndexOutOfRangeMessage">
+            <summary>「startIndex が範囲外です。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.StringToNumberInvalidNumberMessage">
+            <summary>「有効な数値ではありません。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.WebRequestNullUrlMessage">
+            <summary>「URL を null にすることはできません。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.WriteImageObsolete">
+            <summary>「代わりに Image.WriteToFile ノードを使用します」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="T:DSCore.PythonEvaluator">
+            <summary>任意の Python エンジンの Python コードを評価します。VM でのみ使用する必要があります</summary>
+        </member>
+        <member name="M:DSCore.Quadtree.ByUVs(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
+            <summary>(0,0)-&gt;(1,1)ドメインを囲む Quadtree を作成します。</summary>
+            <param name="uvs">(0,0)-&amp;gt;(1,1) ドメインの UV のセット。</param>
+            <returns>Quadtree オブジェクト。</returns>
+        </member>
+        <member name="M:DSCore.Quadtree.FindPointsWithinRadius(Autodesk.DesignScript.Geometry.UV,System.Double)">
+            <summary>指定した UV 位置の半径内にあるクアッドツリーのすべてのクアッドツリー ポイント(UV)を見つけます。</summary>
+            <param name="center">検索領域の中心にある UV。</param>
+            <param name="radius">検索領域の半径。</param>
+            <returns>UV のリスト。</returns>
+        </member>
+        <member name="M:DSCore.Node.Split">
+            <summary>ノードを 4 つの四分円に分割します。</summary>
+            <returns/>
+        </member>
+        <member name="T:DSCore.UVRect">
+            <summary>最小値と最大値の UV で説明する Rectangle を設定
+            するために使用するヘルパー クラス。</summary>
+        </member>
+        <member name="T:DSCore.UVExtensions">
+            <summary>UV の拡張メソッド。</summary>
+        </member>
+        <member name="T:DSCore.Sorting">
+            <summary>キーで並べ替えるためのユーティリティ メソッド。これらのメソッドはノードに変更しないようにし、代わりに
+            キー マッピング関数を受け入れる DS 実装でラップします。</summary>
+        </member>
+        <member name="T:DSCore.String">
+            <summary>文字列を管理するためのメソッド。</summary>
+        </member>
+        <member name="M:DSCore.String.ToNumber(System.String)">
+            <summary>文字列を整数または倍精度浮動小数点数に変換します。</summary>
+            <param name="string">変換する文字列</param>
+            <returns name="number">整数または Double 型の数値</returns>
+            <search>2number,str2number,strtonumber,string2number,stringtonumber,int,double,cast</search>
+        </member>
+        <member name="M:DSCore.String.GetNumber(System.String)">
+            <summary>ターゲット文字列からすべての数値文字列を文字列として取得します</summary>
+            <param name="string">取得するターゲット文字列</param>
+            <returns name="str">文字列としての数値</returns>
+            <search>getnumber,tonumber,strtonumber,numberinstring,string2number,stringtonumber,int,double,cast</search> 
+        </member>
+        <member name="M:DSCore.String.Concat(System.String[])">
+            <summary>複数の文字列を 1 つの文字列に連結します。</summary>
+            <param name="strings">連結する文字列のリスト。</param>
+            <returns name="string">文字列のリストから作成した文字列。</returns>
+            <search>concatenate,join,combine strings</search>
+        </member>
+        <member name="M:DSCore.String.Length(System.String)">
+            <summary>指定した文字列に含まれる文字の数を返します。</summary>
+            <param name="string">長さを調べる文字列</param>
+            <returns name="int">文字列内の文字の数</returns>
+            <search>count,size,characters,chars,length,sizeof</search>
+        </member>
+        <member name="M:DSCore.String.Split(System.String,System.String[])">
+            <summary>1 つの文字列を文字列のリストに分割します。
+                指定の区切り文字によって分割場所が決定されます。</summary>
+            <param name="string">分割する文字列</param>
+            <param name="separators">分割の終了と開始を指定する文字列。</param>
+            <returns name="strings">入力文字列から作成した文字列のリスト</returns>
+            <search>divide,separator,delimiter,cut,csv,comma,</search>
+        </member>
+        <member name="M:DSCore.String.Join(System.String,System.String[])">
+            <summary>複数の文字列を 1 つの文字列に連結し、結合されるそれぞれの
+                文字列の間に区切り文字を挿入します。</summary>
+            <param name="separator">結合した文字列の間に挿入する文字列。</param>
+            <param name="strings">単一の文字列に結合する文字。</param>
+            <returns name="string">列区切り文字を含む文字列のリストから作成した文字列。</returns>
+            <search>join,separator,build csv,concat,construct</search>
+        </member>
+        <member name="M:DSCore.String.ToUpper(System.String)">
+            <summary>指定した文字列をすべて大文字に変換します。</summary>
+            <param name="string">大文字に変換する文字列</param>
+            <returns name="string">大文字の文字列</returns>
+            <search>2uppercase,to uppercase,touppercase,uppercase</search>
+        </member>
+        <member name="M:DSCore.String.ToLower(System.String)">
+            <summary>指定した文字列をすべて小文字に変換します。</summary>
+            <param name="string">小文字に変換する文字列</param>
+            <returns name="string">小文字の文字列</returns>
+            <search>2lowercase,to lowercase,tolowercase,lowercase</search>
+        </member>
+        <member name="M:DSCore.String.ToTitle(System.String)">
+            <summary>指定した文字列の頭文字のみ大文字に変換します。</summary>
+            <param name="str">頭文字のみを大文字にする文字列</param>
+            <returns name="str">頭文字のみが大文字の文字列</returns>
+            <search>2titlecase,to titlecase,to title case,totitlecase,titlecase</search>
+        </member>
+        <member name="M:DSCore.String.ChangeCase(System.String,System.Boolean)">
+            <summary>指定した文字列を、ブール パラメータに基づいて、すべて大文字
+                またはすべて小文字に変換します。</summary>
+            <param name="string">大文字または小文字に変換する文字列。</param>
+            <param name="upper">true の場合は大文字に変換し、false の場合は小文字に変換します。</param>
+            <returns name="string">大文字/小文字に変換した文字列。</returns>
+            <search>
+                2lowercase,to lowercase,tolowercase,lowercase,
+                2uppercase,to uppercase,touppercase,uppercase
+            </search>
+        </member>
+        <member name="M:DSCore.String.Substring(System.String,System.Int32,System.Int32)">
+            <summary>指定した文字列からサブストリングを取得します。サブストリングは指定した文字位置
+                から始まり、指定した長さを持ちます。</summary>
+            <param name="string">サブストリングを取得する文字列</param>
+            <param name="startIndex">元の文字列内のサブストリングの開始文字の位置</param>
+            <param name="length">サブストリング内の文字の数</param>
+            <returns name="string">元の文字列から作成されたサブストリング</returns>
+             <search>subset,get string,part,smaller string</search>
+        </member>
+        <member name="M:DSCore.String.Contains(System.String,System.String,System.Boolean)">
+            <summary>指定された文字列に、指定されたサブストリングが含まれているかどうかを判断します。</summary>
+            <param name="string">検索対象の文字列</param>
+            <param name="searchFor">検索するサブストリング</param>
+            <param name="ignoreCase">比較で大文字と小文字の区別を考慮するかどうか</param>
+            <returns name="bool">文字列がサブストリングを含むかどうか</returns>
+            <search>test,within,in,is in,part of</search>
+        </member>
+        <member name="M:DSCore.String.CountOccurrences(System.String,System.String,System.Boolean)">
+            <summary>指定した文字列内での重複しないサブストリングの出現回数をカウントします。</summary>
+            <param name="string">検索対象の文字列</param>
+            <param name="searchFor">検索するサブストリング</param>
+            <param name="ignoreCase">比較で大文字と小文字の区別を考慮するかどうか</param>
+            <returns name="int">文字列内のサブストリングの重複なしの出現数</returns>
+            <search>count,substring,count occurrences,numberof,search,find,within</search>
+        </member>
+        <member name="M:DSCore.String.Replace(System.String,System.String,System.String)">
+            <summary>文字列内に出現するすべての文字を別の文字に置き換えます。</summary>
+            <param name="string">サブストリングを置き換える文字列。</param>
+            <param name="searchFor">置き換えられる文字。</param>
+            <param name="replaceWith">置き換える文字。</param>
+            <returns name="string">置き換えを行った文字列。</returns>
+            <search>replace,overwrite,override,find and replace</search>
+        </member>
+        <member name="M:DSCore.String.EndsWith(System.String,System.String,System.Boolean)">
+            <summary>指定した文字列が指定したサブストリングで終わるかどうかを判断します。</summary>
+            <param name="string">末尾が検索対象となる文字列</param>
+            <param name="searchFor">末尾を検索するサブストリング</param>
+            <param name="ignoreCase">比較で大文字と小文字の区別を無視する場合は true、考慮する場合は false</param>
+            <returns name="bool">文字列がサブストリングで終わっている場合は true、違う場合は false</returns>
+            <search>test,does end,last,str end,terminated</search>
+        </member>
+        <member name="M:DSCore.String.StartsWith(System.String,System.String,System.Boolean)">
+            <summary>指定した文字列が指定したサブストリングで始まるかどうかを判断します。</summary>
+            <param name="string">先頭が検索対象となる文字列</param>
+            <param name="searchFor">先頭を検索するサブストリング。</param>
+            <param name="ignoreCase">比較で大文字と小文字の区別を無視する場合は true、考慮する場合は false</param>
+            <returns name="bool">文字列がサブストリングで始まっている場合は true、違う場合は false</returns>
+            <search>test,beginswith,start,string start,front</search>
+        </member>
+        <member name="M:DSCore.String.TrimWhitespace(System.String)">
+            <summary>指定した文字列の先頭と末尾の空白スペースをすべて削除します。</summary>
+            <param name="string">トリムする文字列。</param>
+            <returns name="string">先頭と末尾の空白スペースを削除した文字列。</returns>
+            <search>trimstring,cleanstring,whitespace,blanks,spaces,string trim</search>
+        </member>
+        <member name="M:DSCore.String.TrimLeadingWhitespace(System.String)">
+            <summary>指定した文字列の先頭の空白スペースをすべて削除します。</summary>
+            <param name="string">トリムする文字列。</param>
+            <returns name="string">先頭の空白スペースを削除した文字列。</returns>
+            <search>trim string,clean string,trim leading whitespaces,string trim</search>
+        </member>
+        <member name="M:DSCore.String.TrimTrailingWhitespace(System.String)">
+            <summary>指定した文字列の末尾の空白スペースをすべて削除します。</summary>
+            <param name="string">トリムする文字列。</param>
+            <returns name="string">末尾の空白スペースを削除した文字列。</returns>
+            <search>trim string,clean string,trim trailing whitespaces,string trim</search>
+        </member>
+        <member name="M:DSCore.String.IndexOf(System.String,System.String,System.Boolean)">
+            <summary>文字列内のサブストリングの最初の出現のゼロから始まるインデックスを求めます。
+                インデックスが見つからない場合は -1 を返します。</summary>
+            <param name="string">検索対象の文字列</param>
+            <param name="searchFor">検索するサブストリング</param>
+            <param name="ignoreCase">比較で大文字と小文字の区別を考慮するかどうか</param>
+            <returns name="int">最初に出現したサブストリングのインデックス。見つからない場合は -1</returns>
+            <search>index of,find substring,where,search</search>
+        </member>
+        <member name="M:DSCore.String.AllIndicesOf(System.String,System.String,System.Boolean)">
+            <summary>文字列内でサブストリングが表示されるインデックスのリストを検索します。</summary>
+            <param name="string">検索する文字列。</param>
+            <param name="searchFor">検索するサブストリング。</param>
+            <param name="ignoreCase">比較で大文字、小文字の区別を考慮するかどうか。</param>
+            <returns name="indexList">サブストリングが見つかったインデックスのリスト(タイプ: int[])</returns>
+            <search>all indices of,find substring,where,search</search>
+        </member>
+        <member name="M:DSCore.String.LastIndexOf(System.String,System.String,System.Boolean)">
+            <summary>文字列内のサブストリングの最後の出現のゼロから始まるインデックスを求めます。
+                インデックスが見つからない場合は -1 を返します。</summary>
+            <param name="string">検索対象の文字列。</param>
+            <param name="searchFor">検索するサブストリング。</param>
+            <param name="ignoreCase">比較で大文字、小文字の区別を考慮するかどうか。</param>
+            <returns name="int">最後に出現したサブストリングのインデックス。見つからない場合は -1。</returns>
+            <search>last index of,find substring,where,search</search>
+        </member>
+        <member name="M:DSCore.String.PadLeft(System.String,System.Int32,System.String)">
+            <summary>指定した合計長さになるように、左側にスペースを追加して、指定した文字列の文字を右に
+                位置合わせします。</summary>
+            <param name="string">スペースを追加する文字列</param>
+            <param name="newLength">追加後の文字列の合計長さ</param>
+            <param name="padChars">追加する文字(既定はスペース)</param>
+            <returns name="string">指定した合計長さになるように空白スペースを追加して右に位置合わせした文字列。</returns>
+            <search>pad left,right align,right-align,pad,string space,whitespace</search>
+        </member>
+        <member name="M:DSCore.String.PadRight(System.String,System.Int32,System.String)">
+            <summary>指定した合計長さになるように、右側にスペースを追加して、指定した文字列の文字を左に
+                位置合わせします。</summary>
+            <param name="string">スペースを追加する文字列</param>
+            <param name="newLength">追加後の文字列の合計長さ</param>
+            <param name="padChars">追加する文字(既定はスペース)</param>
+            <returns name="string">指定した合計長さになるように空白スペースを追加して左に位置合わせした文字列</returns>
+            <search>pad right,left align,left-align,pad string space,whitespace</search>
+        </member>
+        <member name="M:DSCore.String.Center(System.String,System.Int32,System.String)">
+            <summary>両側にスペースを追加して元の文字を囲み、文字列の長さを増やします。</summary>
+            <param name="string">中心に配置する文字列</param>
+            <param name="newLength">中心に位置合わせした後の文字列の合計長さ</param>
+            <param name="padChars">中心に位置合わせするために追加する文字(既定はスペース)</param>
+            <returns name="string">指定した合計長さになるように先頭と末尾に空白スペースを追加して
+                中央に位置合わせした文字列。</returns>
+            <search>center align,center-align,centered,whitespace,expand string,surround</search>
+        </member>
+        <member name="M:DSCore.String.Insert(System.String,System.Int32,System.String)">
+            <summary>インデックスを指定し、文字列を別の文字列に挿入します。</summary>
+            <param name="string">挿入する文字列。</param>
+            <param name="index">挿入位置のインデックス。</param>
+            <param name="toInsert">挿入する文字列。</param>
+            <returns name="string">サブストリングを挿入した文字列。</returns>
+            <search>insertstring,insert string</search>
+        </member>
+        <member name="M:DSCore.String.Remove(System.String,System.Int32,System.Nullable{System.Int32})">
+            <summary>文字列から文字を削除します。</summary>
+            <param name="string">文字を削除する文字列。</param>
+            <param name="startIndex">削除を開始するインデックス。</param>
+            <param name="count">削除する文字数です。
+                注: Count が負の値である場合、削除の処理は右から左に向かって実行されます。</param>
+            <returns name="string">文字を削除した文字列。</returns>
+            <search>delete,rem,shorten</search>
+        </member>
+        <member name="T:DSCore.Thread">
+            <summary>評価スレッドを操作するための関数。</summary>
+        </member>
+        <member name="M:DSCore.Thread.Pause(System.Object,System.Int32)">
+            <summary>指定した時間の長さ、現在の評価スレッドを一時停止します。</summary>
+            <param name="object">渡すオブジェクト。</param>
+            <param name="msTimeout">スレッドを一時停止する時間の長さ(ミリ秒単位)。</param>
+            <returns name="object">渡されたオブジェクト。</returns>
+        </member>
+    </members>
+</doc>

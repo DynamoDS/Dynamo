@@ -118,30 +118,30 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ByPointsAndValueObsolete" xml:space="preserve">
-    <value>Use Point nodes and Number nodes as direct inputs to nodes which previously used PointData nodes</value>
+    <value>이전에 PointData 노드를 사용한 노드에 대한 직접 입력으로 Point 노드와 Number 노드를 사용합니다.</value>
   </data>
   <data name="BySurfacePointObsolete" xml:space="preserve">
-    <value>Use Surface and UV nodes as direct inputs to nodes which previously used SurfaceData nodes</value>
+    <value>이전에 SurfaceData 노드를 사용한 노드에 대한 직접 입력으로 Surface 노드와 UV 노드를 사용합니다.</value>
   </data>
   <data name="BySurfacePointsAndValues" xml:space="preserve">
-    <value>Use Surface, UV, and Number nodes as direct inputs to nodes which previously used SurfaceData nodes</value>
+    <value>이전에 SurfaceData 노드를 사용한 노드에 대한 직접 입력으로 Surface 노드, UV 노드, Number 노드를 사용합니다.</value>
   </data>
   <data name="SurfaceObsolete" xml:space="preserve">
-    <value>Use the Surface available elsewhere in your graph</value>
+    <value>그래프의 모든 위치에서 사용 가능한 Surface를 사용합니다.</value>
   </data>
   <data name="ValueLocationObsolete" xml:space="preserve">
-    <value>Use the Points available elsewhere in your graph</value>
+    <value>그래프의 모든 위치에서 사용 가능한 Points를 사용합니다.</value>
   </data>
   <data name="ValueLocationsObsolete" xml:space="preserve">
-    <value>Use the UV locations available elsewhere in your graph.</value>
+    <value>그래프의 모든 위치에서 사용 가능한 UV 위치를 사용합니다.</value>
   </data>
   <data name="ValuesObsolete" xml:space="preserve">
-    <value>Use the values provided by the node conducting the analysis.</value>
+    <value>해석 수행 시 노드에서 제공한 값을 사용합니다.</value>
   </data>
   <data name="ValueSurfaceObsolete" xml:space="preserve">
-    <value>Use the values provided by the node conducting the analysis</value>
+    <value>해석 수행 시 노드에서 제공한 값 사용</value>
   </data>
   <data name="VectorValueObsolete" xml:space="preserve">
-    <value>Use Vector nodes and Number nodes as direct inputs to nodes which previously used VectorData nodes</value>
+    <value>이전에 VectorData 노드를 사용한 노드에 대한 직접 입력으로 Vector 노드와 Number 노드를 사용합니다.</value>
   </data>
 </root>

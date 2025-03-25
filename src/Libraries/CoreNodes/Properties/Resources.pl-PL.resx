@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,120 +118,120 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BitmapOverflowError" xml:space="preserve">
-    <value>The supplied color data is too large to fit in the image bounds.</value>
+    <value>Podane dane kolorów są zbyt duże, aby zmieściły się w granicach obrazu.</value>
   </data>
   <data name="EnumDateOfWeekFriday" xml:space="preserve">
-    <value>Friday</value>
+    <value>Piątek</value>
   </data>
   <data name="EnumDateOfWeekMonday" xml:space="preserve">
-    <value>Monday</value>
+    <value>Poniedziałek</value>
   </data>
   <data name="EnumDateOfWeekSaturday" xml:space="preserve">
-    <value>Saturday</value>
+    <value>Sobota</value>
   </data>
   <data name="EnumDateOfWeekSunday" xml:space="preserve">
-    <value>Sunday</value>
+    <value>Niedziela</value>
   </data>
   <data name="EnumDateOfWeekThursday" xml:space="preserve">
-    <value>Thursday</value>
+    <value>Czwartek</value>
   </data>
   <data name="EnumDateOfWeekTuesday" xml:space="preserve">
-    <value>Tuesday</value>
+    <value>Wtorek</value>
   </data>
   <data name="EnumDateOfWeekWednesday" xml:space="preserve">
-    <value>Wednesday</value>
+    <value>Środa</value>
   </data>
   <data name="Exception_Deserialize_Bad_Format" xml:space="preserve">
-    <value>The json for the type {0} was not formatted correctly</value>
+    <value>Obiekt json dla typu {0} nie jest poprawnie sformatowany</value>
   </data>
   <data name="Exception_Deserialize_Unsupported_Cache" xml:space="preserve">
-    <value>The stored data can not be loaded.</value>
+    <value>Nie można wczytać przechowywanych danych.</value>
   </data>
   <data name="Exception_Serialize_Depth_Unsupported" xml:space="preserve">
-    <value>Depth {0} Exceeds MaxDepth {1} at path "{2}"</value>
+    <value>Głębokość {0} przekracza wartość MaxDepth {1} w ścieżce „{2}”</value>
   </data>
   <data name="Exception_Serialize_DesignScript_Unsupported" xml:space="preserve">
-    <value>This type of Geometry is not able to be serialized.</value>
+    <value>Nie można serializować tego typu geometrii.</value>
   </data>
   <data name="Exception_Serialize_Unsupported_Type" xml:space="preserve">
-    <value>Cannot store data of type {0}.</value>
+    <value>Nie można zapisać danych typu {0}.</value>
   </data>
   <data name="ExportToCSVObsolete" xml:space="preserve">
-    <value>Use Data.ExportCSV node instead</value>
+    <value>Zamiast tego użyj węzła Data.ExportCSV</value>
   </data>
   <data name="FactorialNegativeInt" xml:space="preserve">
-    <value>The input value of Math.Factorial cannot be negative.</value>
+    <value>Wartość danych wejściowych z Math. Factorial nie może być ujemna.</value>
   </data>
   <data name="FactorialOverflow" xml:space="preserve">
-    <value>The return value of Math.Factorial is out of range.</value>
+    <value>Zwracana wartość Math. Factorial jest poza zakresem.</value>
   </data>
   <data name="FindPointsWithinRadiusNullPointMessage" xml:space="preserve">
-    <value>You must provide a center point.</value>
+    <value>Należy podać punkt środkowy.</value>
   </data>
   <data name="FindPointsWithinRadiusSearchRadiusMessage" xml:space="preserve">
-    <value>The search radius cannot be zero.</value>
+    <value>Promień wyszukiwania nie może być równy zeru.</value>
   </data>
   <data name="FromObjectObsolete" xml:space="preserve">
-    <value>This node is obsolete, please use "String from Object"</value>
+    <value>Węzeł ten jest przestarzały, należy użyć polecenia „Ciąg z obiektu"</value>
   </data>
   <data name="IntegerOverflow" xml:space="preserve">
-    <value>The operation resulted in an integer overflow. Its result may be unexpected.</value>
+    <value>Operacja spowodowała przepełnienie liczby całkowitej. Jej wynik może być nieoczekiwany.</value>
   </data>
   <data name="InvalidDestinationPathErrorMessage" xml:space="preserve">
-    <value>Invalid destination file path used as copy path.</value>
+    <value>Jako ścieżki kopii użyto niewłaściwej ścieżki pliku docelowego.</value>
   </data>
   <data name="InvalidKeysErrorMessage" xml:space="preserve">
-    <value>One or more input types are not matching. Lists as keys are not supported.</value>
+    <value>Brak zgodności jednego typu danych wejściowych lub większej ich liczby. Listy jako klucze nie są obsługiwane.</value>
   </data>
   <data name="InvalidKeysLenghtErrorMessage" xml:space="preserve">
-    <value>Number of items does not match the number of keys. href=InvalidKeysLenghtErrorMessage.html</value>
+    <value>Liczba elementów nie odpowiada liczbie kluczy. href=InvalidKeysLenghtErrorMessage.html</value>
   </data>
   <data name="LoadImageFromPathObsolete" xml:space="preserve">
-    <value>Use File.FromPath -&gt;  Image.ReadFromFile nodes instead</value>
+    <value>Zamiast tego należy użyć węzłów File.FromPath -&gt; Image.ReadFromFile</value>
   </data>
   <data name="MissingPythonEngine" xml:space="preserve">
-    <value>The selected Python engine could not be found</value>
+    <value>Nie można znaleźć wybranego silnika w języku Python</value>
   </data>
   <data name="ObjectArgumentExceptionMessage" xml:space="preserve">
-    <value>Object cannot be null, please provide appropriate value.</value>
+    <value>Obiekt nie może być pusty, należy podać odpowiednią wartość.</value>
   </data>
   <data name="QuadtreeConstructionEmptyUVSetMessage" xml:space="preserve">
-    <value>You cannot construct a quadtree from an empty set of points.</value>
+    <value>Nie można zbudować drzewa czwórkowego z pustego zbioru punktów.</value>
   </data>
   <data name="QuadtreeConstructionNullUVSetMessage" xml:space="preserve">
-    <value>A Quadtree cannot be constructed from a null set of UVs.</value>
+    <value>Drzewo czwórkowe nie może być utworzone z pustego zestawu UV.</value>
   </data>
   <data name="ReadImageObsolete" xml:space="preserve">
-    <value>Use File.FromPath -&gt; Image.ReadFromFile -&gt;  Image.Pixels nodes instead</value>
+    <value>Zamiast tego należy użyć węzłów File.FromPath -&gt; Image.ReadFromFile -&gt; Image.Pixels</value>
   </data>
   <data name="ReadTextObsolete" xml:space="preserve">
-    <value>Use File.FromPath -&gt;  File.ReadText nodes instead.</value>
+    <value>Zamiast tego należy użyć węzłów File.FromPath -&gt; File.ReadText.</value>
   </data>
   <data name="StringRemoveCountOutOfRangeMessage" xml:space="preserve">
-    <value>Count is out of range!</value>
+    <value>Liczba jest poza zakresem!</value>
   </data>
   <data name="StringRemoveStartIndexOutOfRangeMessage" xml:space="preserve">
-    <value>StartIndex is out of range!</value>
+    <value>startIndex znajduje się poza zakresem!</value>
   </data>
   <data name="StringToNumberInvalidNumberMessage" xml:space="preserve">
-    <value>Not a valid number.</value>
+    <value>Nie jest prawidłową liczbą.</value>
   </data>
   <data name="WebRequestNullUrlMessage" xml:space="preserve">
-    <value>The url cannot be null.</value>
+    <value>URL nie może być pusty.</value>
   </data>
   <data name="WriteImageObsolete" xml:space="preserve">
-    <value>Use Image.WriteToFile node instead</value>
+    <value>Zamiast tego należy użyć węzła Image.WriteToFile</value>
   </data>
   <data name="DefineDataUnexpectedInputExceptionMessage" xml:space="preserve">
-    <value>This node expected a {0} input but received a {1} input. Please provide the expected input, or pick a new type in the node’s drop-down menu.</value>
+    <value>Ten węzeł oczekiwał danych wejściowych {0}, ale przekazano do niego dane wejściowe {1}. Podaj oczekiwane dane wejściowe lub wybierz nowy typ z menu rozwijanego węzła.</value>
   </data>
   <data name="DefineDataUnsupportedCombinationOfDataTypesExceptionMessage" xml:space="preserve">
-    <value>This node does not support the combination of data types in the current input list {0}. Ensure the input list contains items of the same data type, or a mix of types with a common parent type</value>
+    <value>Ten węzeł nie obsługuje kombinacji typów danych na bieżącej liście wejściowej {0}. Upewnij się, że lista wejściowa zawiera elementy tego samego typu danych lub kombinację typów ze wspólnym typem nadrzędnym</value>
   </data>
   <data name="DefineDataUnsupportedDataTypeExceptionMessage" xml:space="preserve">
-    <value>This node does not support the current input data type ({0}). View the supported data types in the drop-down menu.</value>
+    <value>Ten węzeł nie obsługuje bieżącego typu danych wejściowych ({0}). Sprawdź obsługiwane typy danych w menu rozwijanym.</value>
   </data>
   <data name="DefineDataSupportedInputValueExceptionMessage" xml:space="preserve">
-    <value>Input must be a single value or a non-nested list.</value>
+    <value>Dane wejściowe muszą być pojedynczą wartością lub listą niezagnieżdżoną.</value>
   </data>
 </root>

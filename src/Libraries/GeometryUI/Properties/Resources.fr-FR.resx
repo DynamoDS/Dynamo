@@ -118,40 +118,39 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExportToSATDescripiton" xml:space="preserve">
-    <value>Exports the given geometry to the given SAT file path</value>
+    <value>Exporte la géométrie donnée vers le chemin d'accès au fichier SAT indiqué</value>
   </data>
   <data name="ExportToSatFilePathDescription" xml:space="preserve">
-    <value>File to export the geometry to.</value>
+    <value>Fichier vers lequel exporter la géométrie.</value>
   </data>
   <data name="ExportToSatFilePathOutputDescription" xml:space="preserve">
-    <value>The file path of the exported file. Note this may change from the input in it contains non-ASCII characters.</value>
+    <value>Chemin d'accès au fichier exporté. Notez qu'il peut changer si l'entrée contient des caractères non-ASCII.</value>
   </data>
   <data name="ExportToSatGeometryInputDescription" xml:space="preserve">
-    <value>Geometry to export into a SAT file.</value>
+    <value>Géométrie à exporter vers un fichier SAT.</value>
   </data>
   <data name="ExportWithUnitsSearchTags" xml:space="preserve">
     <value>Export;SAT</value>
-    <comment>Search tags for ExportWithUnits node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
   <data name="ImportSABByteArrayDesc" xml:space="preserve">
-    <value>SAB byte array.</value>
+    <value>Tableau d'octets SAB.</value>
   </data>
   <data name="ImportSATDynamoUnitDesc" xml:space="preserve">
-    <value>A forge unit length, if left null, geometry will be imported as unitless.</value>
+    <value>Une longueur d'unité de forge, si elle est nulle, la géométrie est importée comme étant sans unité.</value>
   </data>
   <data name="ImportSATFilePathDesc" xml:space="preserve">
-    <value>Filepath or File object to import .SAT from.</value>
+    <value>Chemin d'accès au fichier ou objet fichier à partir duquel importer le fichier .SAT.</value>
   </data>
   <data name="ImportToSABUnitsDesc" xml:space="preserve">
-    <value>Imports geometry from SAB byte array. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file.</value>
+    <value>Importe la géométrie à partir d'un tableau d'octets SAB. Définissez l'entrée dynamoUnit pour qu'elle corresponde à la façon dont vous interprétez les autres nombres dans votre fichier Dynamo.</value>
   </data>
   <data name="ImportToSATUnitsDesc" xml:space="preserve">
-    <value>Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file.</value>
+    <value>Importe la géométrie à partir du chemin d'accès au fichier SAT. Définissez l'entrée dynamoUnit pour qu'elle corresponde à la façon dont vous interprétez les autres nombres dans votre fichier Dynamo.</value>
   </data>
   <data name="PanelSurfaceBoundaryConditionDropDownDesc" xml:space="preserve">
-    <value>A drop down node that allow easy access to PanelSurface BoundaryCondition possible values</value>
+    <value>Noeud déroulant qui permet d'accéder facilement aux valeurs possibles de PanelSurface BoundaryCondition</value>
   </data>
   <data name="SABSATGeoDesc" xml:space="preserve">
-    <value>Loaded geometry</value>
+    <value>Géométrie chargée</value>
   </data>
 </root>

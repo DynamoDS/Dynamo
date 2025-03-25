@@ -118,10 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SandboxBuildsPageDialogMessage" xml:space="preserve">
-    <value>Go to the Dynamo builds wiki site({0}) for more information.</value>
-    <comment>message directing user to wiki page</comment>
+    <value>Aby uzyskać więcej informacji, przejdź na stronę wiki kompilacji dodatku Dynamo ({0}).</value>
   </data>
   <data name="SandboxCrashMessage" xml:space="preserve">
-    <value>Could not start Dynamo Sandbox, unhandled exception.</value>
+    <value>Nie można uruchomić trybu Dynamo Sandbox, nieobsługiwany wyjątek.</value>
   </data>
 </root>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="MismatchedAssemblyList" xml:space="preserve">
-    <value>It is likely one of the following assemblies loaded the incompatible version:</value>
+    <value>É provável que uma das seguintes montagens carregou a versão incompatível:</value>
   </data>
   <data name="MismatchedAssemblyVersion" xml:space="preserve">
-    <value>While loading assembly {0}, Dynamo detected that the dependency {1} was already loaded with an incompatible version. It is likely that another Revit Addin has loaded this assembly, please try uninstalling other Addins, and starting Dynamo again. Dynamo may be unstable in this state.</value>
+    <value>Ao carregar a montagem {0}, o Dynamo detectou que a dependência {1} já estava carregada com uma versão incompatível. É provável que outro complemento do Revit tenha carregado esta montagem. Tente desinstalar outros complementos e inicie o Dynamo novamente. O Dynamo pode estar instável nesse estado.</value>
   </data>
   <data name="MismatchedAssemblyVersionShortMessage" xml:space="preserve">
-    <value>Dynamo has detected a conflict with a dependency and may be unstable. If any issues are detected, please uninstall addins or packages and contact the provider.</value>
+    <value>O Dynamo detectou um conflito com uma dependência e pode estar instável. Se qualquer problema for detectado, desinstale os complementos ou pacotes e entre em contato com o provedor.</value>
   </data>
   <data name="MismatchedAssemblyVersionTitle" xml:space="preserve">
-    <value>Error Loading A Dependency</value>
+    <value>Erro ao carregar uma dependência</value>
   </data>
   <data name="SplashScreenPreLoadingAsm" xml:space="preserve">
-    <value>Preloading Geometry library</value>
+    <value>Pré-carregando a biblioteca de geometria</value>
   </data>
 </root>

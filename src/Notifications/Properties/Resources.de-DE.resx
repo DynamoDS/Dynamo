@@ -118,36 +118,36 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ButtonDetails" xml:space="preserve">
-    <value>Show Details</value>
+    <value>Details anzeigen</value>
   </data>
   <data name="ButtonHideDetails" xml:space="preserve">
-    <value>Hide Details</value>
+    <value>Details ausblenden</value>
   </data>
   <data name="ButtonOK" xml:space="preserve">
     <value>OK</value>
   </data>
   <data name="Dismiss" xml:space="preserve">
-    <value>Dismiss All Notifications</value>
+    <value>Alle Benachrichtigungen schließen</value>
   </data>
   <data name="Display" xml:space="preserve">
-    <value>Display All Notifications</value>
+    <value>Alle Benachrichtigungen anzeigen</value>
   </data>
   <data name="ExtensionName" xml:space="preserve">
-    <value>Notifications</value>
+    <value>Benachrichtigungen</value>
   </data>
   <data name="NoNotificationsMsg" xml:space="preserve">
     <value>You currently have no notifications. New notifications will appear above</value>
   </data>
   <data name="NoNotificationsTitle" xml:space="preserve">
-    <value>No notifications</value>
+    <value>Keine Benachrichtigungen</value>
   </data>
   <data name="NotificationCenterDisabledMsg" xml:space="preserve">
-    <value>Notification Center feature is disabled. Enable it in preference panel to see latest news.</value>
+    <value>Die Funktion Benachrichtigungscenter ist deaktiviert. Aktivieren Sie sie im Fenster Einstellungen, um die neuesten Nachrichten anzuzeigen.</value>
   </data>
   <data name="NotificationsCenterBottomButtonText" xml:space="preserve">
-    <value>Mark all as read</value>
+    <value>Alle als gelesen markieren</value>
   </data>
   <data name="NotificationsCenterTitle" xml:space="preserve">
-    <value>Notifications</value>
+    <value>Benachrichtigungen</value>
   </data>
 </root>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,19 +118,19 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DeletingPythonNodeWithOpenEditorMessage" xml:space="preserve">
-    <value>The Python node "{0}" still has a script editor window open. Are you sure you want to close the editor and delete the node?</value>
+    <value>Python 节点“{0}”仍然有一个打开的脚本编辑器窗口。是否确定要关闭编辑器并删除节点？</value>
   </data>
   <data name="DeletingPythonNodeWithOpenEditorTitle" xml:space="preserve">
-    <value>Script Editor Open</value>
+    <value>脚本编辑器处于打开状态</value>
   </data>
   <data name="EditHeader" xml:space="preserve">
-    <value>Edit...</value>
+    <value>编辑...</value>
   </data>
   <data name="PythonMigrationWarningUriString" xml:space="preserve">
     <value>PythonNodeModels;PythonMigrationWarning.html</value>
   </data>
   <data name="PythonNodeContextMenuEngineSwitcher" xml:space="preserve">
-    <value>Python Engine Version</value>
+    <value>Python 引擎版本</value>
   </data>
   <data name="PythonNodeContextMenuEngineVersionThree" xml:space="preserve">
     <value>CPython3</value>
@@ -139,82 +139,78 @@
     <value>IronPython2</value>
   </data>
   <data name="PythonNodeContextMenuLearnMoreButton" xml:space="preserve">
-    <value>Learn more about Python</value>
+    <value>了解有关 Python 的更多信息</value>
   </data>
   <data name="PythonNodePortDataOutputToolTip" xml:space="preserve">
-    <value>Result of the python script</value>
+    <value>Python 脚本结果</value>
   </data>
   <data name="PythonScriptDescription" xml:space="preserve">
-    <value>Runs an embedded Python script.</value>
-    <comment>Description for Python Script</comment>
+    <value>运行嵌入 Python 脚本。</value>
   </data>
   <data name="PythonScriptEditorCaption" xml:space="preserve">
-    <value>Edit Python Script...</value>
+    <value>编辑 Python 脚本...</value>
   </data>
   <data name="PythonScriptEditorCodeComment" xml:space="preserve">
-    <value>Place your code below this line</value>
+    <value>将代码放在该行下面</value>
   </data>
   <data name="PythonScriptEditorImports" xml:space="preserve">
-    <value>Load the Python Standard and DesignScript Libraries</value>
+    <value>加载 Python Standard 和 DesignScript 库</value>
   </data>
   <data name="PythonScriptEditorInputComment" xml:space="preserve">
-    <value>The inputs to this node will be stored as a list in the IN variables.</value>
-    <comment>It is comment in the code. IN shouldn't be translated.</comment>
+    <value>该节点的输入内容将存储为 IN 变量中的一个列表。</value>
   </data>
   <data name="PythonScriptEditorMoreInfoButtonTooltip" xml:space="preserve">
-    <value>Learn about the Python 2 to Python 3 conversion</value>
+    <value>了解 Python 2 到 Python 3 转换</value>
   </data>
   <data name="PythonScriptEditorOutputComment" xml:space="preserve">
-    <value>Assign your output to the OUT variable.</value>
-    <comment>It is comment in the code. OUT shouldn't be translated.</comment>
+    <value>将输出内容指定给 OUT 变量。</value>
   </data>
   <data name="PythonScriptEditorRevertButtonTooltip" xml:space="preserve">
-    <value>Revert the changes made to current Python node editor.</value>
+    <value>还原对当前 Python 节点编辑器所做的更改。</value>
   </data>
   <data name="PythonScriptEditorUndoButtonTooltip" xml:space="preserve">
-    <value>Undo</value>
+    <value>撤消</value>
   </data>
   <data name="PythonScriptEditorRedoButtonTooltip" xml:space="preserve">
-    <value>Redo</value>
+    <value>重做</value>
   </data>
   <data name="PythonScriptEditorZoomInButtonTooltip" xml:space="preserve">
-    <value>Zoom in</value>
+    <value>放大</value>
   </data>
   <data name="PythonScriptEditorZoomOutButtonTooltip" xml:space="preserve">
-    <value>Zoom out</value>
+    <value>缩小</value>
   </data>
   <data name="PythonScriptEditorRunButton" xml:space="preserve">
-    <value>Save and run</value>
+    <value>保存并运行</value>
   </data>
   <data name="PythonScriptEditorRunButtonTooltip" xml:space="preserve">
-    <value>Save Python script and run it with the graph</value>
+    <value>保存 Python 脚本并与图形一起运行</value>
   </data>
   <data name="PythonScriptEditorSaveChangesButtonTooltip" xml:space="preserve">
-    <value>Save changes made in Python Script editor</value>
+    <value>保存在 Python 脚本编辑器中所做的更改</value>
   </data>
   <data name="PythonScriptFromStringDescription" xml:space="preserve">
-    <value>Runs a Python script from a string.</value>
-    <comment>Description for Python Script From String</comment>
+    <value>运行字符串中的 Python 脚本。</value>
   </data>
   <data name="PythonStringPortDataScriptToolTip" xml:space="preserve">
-    <value>Python script to run.</value>
+    <value>要运行的 Python 脚本。</value>
   </data>
   <data name="PythonScriptEditorEngineDropdownTooltip" xml:space="preserve">
-    <value>Select the Python version/engine to execute the script</value>
+    <value>选择执行脚本的 Python 版本/引擎</value>
   </data>
   <data name="PythonScriptEditorConvertTabsToSpacesButtonTooltip" xml:space="preserve">
-    <value>Convert indentation tabs to spaces...</value>
+    <value>将缩进制表符转换为空格...</value>
   </data>
   <data name="PythonScriptEditorMigrationAssistantButtonTooltip" xml:space="preserve">
-    <value>Convert script to Python 3...</value>
+    <value>转换脚本为 Python 3...</value>
   </data>
   <data name="PythonSearchTags" xml:space="preserve">
     <value>IronPython;CPython;</value>
   </data>
   <data name="PythonScriptUnsavedChangesPromptText" xml:space="preserve">
-    <value>It looks like you are still working on this. You may lose any unsaved changes if you leave now</value>
+    <value>您似乎仍在处理此脚本。如果现在退出，可能会丢失任何未保存的更改。</value>
   </data>
   <data name="PythonScriptUnsavedChangesPromptTitle" xml:space="preserve">
-    <value>Are you sure you want to leave?</value>
+    <value>是否确定要离开？</value>
   </data>
 </root>

@@ -5489,7 +5489,7 @@
       },
       {
         "Id": "68e41793387f43a4b617b1f9da07e298",
-        "Title": "Los bloques de código pueden utilizarse para llamar a cualquier otro nodo de la biblioteca. Los nodos de la biblioteca suelen ser de tres tipos:\r\n\r\n    Crear:\t\tcrear algo\r\n    Acción:\trealizar una acción en algo\r\n    Consulta:\tobtener una propiedad de algo\r\n\t\tque ya existe\r\n\r\nLos métodos (o nodos) de estos tres tipos se tratan de forma diferente cuando se llama a ellos dentro de un bloque de código.",
+        "Title": "Los bloques de código pueden utilizarse para llamar a cualquier otro nodo de la biblioteca. Los nodos de la biblioteca suelen ser de tres tipos:\r\n\r\n    Crear:\tcrear algo\r\n    Acción:\trealizar una acción en algo\r\n    Consulta:\t\tobtener una propiedad de algo\r\n\t\tque ya existe\r\n\r\nLos métodos (o nodos) de estos tres tipos se tratan de forma diferente cuando se llama a ellos dentro de un bloque de código.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

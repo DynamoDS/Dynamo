@@ -118,30 +118,30 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ByPointsAndValueObsolete" xml:space="preserve">
-    <value>Use Point nodes and Number nodes as direct inputs to nodes which previously used PointData nodes</value>
+    <value>使用點節點和號碼節點作為直接輸入至先前使用 PointData 節點的節點</value>
   </data>
   <data name="BySurfacePointObsolete" xml:space="preserve">
-    <value>Use Surface and UV nodes as direct inputs to nodes which previously used SurfaceData nodes</value>
+    <value>使用曲面和 UV 節點作為直接輸入至先前使用 SurfaceData 節點的節點</value>
   </data>
   <data name="BySurfacePointsAndValues" xml:space="preserve">
-    <value>Use Surface, UV, and Number nodes as direct inputs to nodes which previously used SurfaceData nodes</value>
+    <value>使用表面、UV 和號碼節點作為直接輸入至先前使用 SurfaceData 節點的節點</value>
   </data>
   <data name="SurfaceObsolete" xml:space="preserve">
-    <value>Use the Surface available elsewhere in your graph</value>
+    <value>使用在圖表中其他位置可用的曲面</value>
   </data>
   <data name="ValueLocationObsolete" xml:space="preserve">
-    <value>Use the Points available elsewhere in your graph</value>
+    <value>使用在圖表中其他位置可用的點</value>
   </data>
   <data name="ValueLocationsObsolete" xml:space="preserve">
-    <value>Use the UV locations available elsewhere in your graph.</value>
+    <value>使用 UV 可用位置中的圖表。</value>
   </data>
   <data name="ValuesObsolete" xml:space="preserve">
-    <value>Use the values provided by the node conducting the analysis.</value>
+    <value>使用由進行分析的節點所提供的值。</value>
   </data>
   <data name="ValueSurfaceObsolete" xml:space="preserve">
-    <value>Use the values provided by the node conducting the analysis</value>
+    <value>使用由進行分析的節點所提供的值。</value>
   </data>
   <data name="VectorValueObsolete" xml:space="preserve">
-    <value>Use Vector nodes and Number nodes as direct inputs to nodes which previously used VectorData nodes</value>
+    <value>使用向量節點和號碼節點作為直接輸入至先前使用 VectorData 節點的節點</value>
   </data>
 </root>

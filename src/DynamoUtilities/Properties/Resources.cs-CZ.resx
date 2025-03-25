@@ -118,11 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Md2HtmlCantCommunicateError" xml:space="preserve">
-    <value>&lt;p&gt;&lt;b&gt;Internal error, please report: Can't communicate with {0}.&lt;/b&gt;&lt;/p&gt;</value>
-    <comment>Internal error, please report:  Can't comminicate with C:\Dynamo\Md2Html.exe</comment>
+    <value>&lt;p&gt;&lt;b&gt;Interní chyba. Nahlaste ji prosím: Nelze komunikovat s {0}.&lt;/b&gt;&lt;/p&gt;</value>
   </data>
   <data name="Md2HtmlCantStartError" xml:space="preserve">
-    <value>&lt;p&gt;&lt;b&gt;Internal error, please report: Can't start {0}.&lt;/b&gt;&lt;/p&gt;</value>
-    <comment>Internal error, please report:  Can't start C:\Dynamo\Md2Html.exe</comment>
+    <value>&lt;p&gt;&lt;b&gt;Interní chyba. Nahlaste ji prosím: Nelze spustit {0}.&lt;/b&gt;&lt;/p&gt;</value>
   </data>
 </root>

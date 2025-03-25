@@ -118,9 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="FailedToUnmarshalOutput" xml:space="preserve">
-    <value>Output could not be converted to a .NET value</value>
+    <value>Výstup nebylo možné převést na hodnotu .NET.</value>
   </data>
   <data name="InternalErrorTraceBackInfo" xml:space="preserve">
-    <value>Internal error, please report: Trace back information could not be extracted</value>
+    <value>Vnitřní chyba: Nahlaste tuto chybu: Informace o zpětném trasování nebylo možné extrahovat.</value>
   </data>
 </root>
