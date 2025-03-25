@@ -2381,4 +2381,5 @@
 	<Copy SourceFiles="@(HTMLPythonNodeModelsZhCNFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\zh-CN" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLPythonNodeModelsZhTWFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\zh-TW" SkipUnchangedFiles="True" />
   </Target>
+  </Target>
 </Project>
