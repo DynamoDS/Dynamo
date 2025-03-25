@@ -48,7 +48,7 @@
                 Panel.ZIndex="1"
                 IsHitTestVisible="False" />
 
-        <Grid PreviewKeyDown="OnInCanvasSearchKeyDown">
+        <Grid PreviewKeyDown="OnDNAAutocompleteKeyDown">
             <Grid.RowDefinitions>
                 <RowDefinition Height="45" />
             </Grid.RowDefinitions>
@@ -62,7 +62,7 @@
                         CornerRadius="8,8,8,8">
                 </Border>
             </Grid>
-            <Grid Name="SearchText"
+            <Grid Name="HorizontalContainerGrid"
                   Background="Transparent"
                   Grid.Row="0">
                 <Grid.ColumnDefinitions>
@@ -136,7 +136,7 @@
                                                     Background="Transparent"
                                                     />
                                             <Image x:Name="DotsImage"
-                                                   Source="/DynamoCoreWpf;component/UI/Images/ai_sparkle.png"
+                                                   Source="/DynamoCoreWpf;component/UI/Images/NodeStates/transient-64px.png"
                                                    Width="24px"
                                                    Height="24px"
                                                    Margin="5"

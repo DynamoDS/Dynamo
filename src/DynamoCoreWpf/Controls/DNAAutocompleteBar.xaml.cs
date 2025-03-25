@@ -124,7 +124,7 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        private void OnInCanvasSearchKeyDown(object sender, KeyEventArgs e)
+        private void OnDNAAutocompleteKeyDown(object sender, KeyEventArgs e)
         {
             var key = e.Key;
 
