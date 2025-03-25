@@ -2308,7 +2308,6 @@
 	<Copy SourceFiles="@(HTMLPackageManagerZhCNFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\zh-CN" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLPackageManagerZhTWFiles)" DestinationFolder="$(SolutionDir)\DynamoCoreWpf\ViewModels\PackageManager\Docs\zh-TW" SkipUnchangedFiles="True" />
   </Target>
-  
   <Target Name="CopyLintingViewExtensionHTMLFiles" AfterTargets="CopyPackageManagerHTMLFiles">
     <ItemGroup>
 		<HTMLLintingViewExtensionEnUSFiles Include="$(SolutionDir)..\doc\distrib\html\en-US\LinterViewExtension\**\*.html" />
