@@ -670,6 +670,7 @@
             Grid.ColumnSpan="3"
             Canvas.ZIndex="7"
             IsHitTestVisible="False"
+            MinWidth="48"
             Margin="0 5 0 0"
             HorizontalAlignment="Stretch"
             VerticalAlignment="Stretch"
@@ -677,55 +678,50 @@
             Visibility="{Binding Path=DataContext.Zoom, 
                                  RelativeSource={RelativeSource FindAncestor, 
                                  AncestorType={x:Type controls:WorkspaceView}}, 
-                                 Converter={StaticResource ZoomToVisibilityCollapsedConverter}}"
-            MinWidth="48">
-            <Grid.RowDefinitions>
-                <RowDefinition
-                    Height="{Binding ImgGlyphThreeSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
-                <RowDefinition></RowDefinition>
-            </Grid.RowDefinitions>
+                                 Converter={StaticResource ZoomToVisibilityCollapsedConverter}}">
 
-            <UniformGrid  Grid.Row="0"
-                Margin="0 10 0 -10"
-                             Columns="1" Rows="1" Name="ZoomGlyphRowZero" 
-                          HorizontalAlignment="Center" VerticalAlignment="Bottom"
-                          Visibility="{Binding ImgGlyphThreeSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}">
-                <Image Stretch="Uniform"  HorizontalAlignment="Center" VerticalAlignment="Bottom" 
-                x:Name="ZoomStateImgOne"
-                Width="64"
-                Source="{Binding ImgGlyphThreeSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
-                Visibility="{Binding ImgGlyphThreeSource,Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
-            </UniformGrid>
-            <Grid Grid.Row="1" 
-                  Margin="0 0 0 0"
-                  Name="ZoomGlyphRowOne" 
-                  HorizontalAlignment="Center" VerticalAlignment="Stretch">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="{Binding ImgGlyphOneSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
-                    <ColumnDefinition Width="{Binding ImgGlyphTwoSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
-                </Grid.ColumnDefinitions>
-                <Image Grid.Column="0"
-          
-                    x:Name="ZoomStateImgTwo"
-                    Stretch="Uniform"
-                                              HorizontalAlignment="Left" VerticalAlignment="Center"
-
-
-                    Margin="5 0 "
-                    Width="64"
-                    Source="{Binding ImgGlyphOneSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
-                    Visibility="{Binding ImgGlyphOneSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
-
-                <Image Grid.Column="1"
-                       x:Name="ZoomStateImgThree"
-                    Stretch="Uniform"
-                    HorizontalAlignment="Right"
-                    VerticalAlignment="Center"
-                    Margin="5 0"
-                    Width="64"
-                    Source="{Binding ImgGlyphTwoSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
-                    Visibility="{Binding ImgGlyphTwoSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
-            </Grid>
+            <StackPanel VerticalAlignment="Center"
+                        HorizontalAlignment="Center">
+                <UniformGrid Name="ZoomGlyphRowZero"
+                             Grid.Row="0"
+                             Margin="0 10 0 10"
+                             Columns="1"
+                             Rows="1"
+                             HorizontalAlignment="Center" VerticalAlignment="Bottom"
+                             Visibility="{Binding ImgGlyphThreeSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}">
+                    <Image x:Name="ZoomStateImgOne"
+                           Stretch="Uniform"
+                           HorizontalAlignment="Center"
+                           VerticalAlignment="Bottom"
+                           Width="64"
+                           Source="{Binding ImgGlyphThreeSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
+                           Visibility="{Binding ImgGlyphThreeSource,Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                </UniformGrid>
+                <Grid Name="ZoomGlyphRowOne">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="{Binding ImgGlyphOneSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                        <ColumnDefinition Width="{Binding ImgGlyphTwoSource, Mode=OneWay, Converter={StaticResource EmptyToZeroLengthConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                    </Grid.ColumnDefinitions>
+                    <Image x:Name="ZoomStateImgTwo"
+                           Grid.Column="0"
+                           Stretch="Uniform"
+                           HorizontalAlignment="Left"
+                           VerticalAlignment="Center"
+                           Margin="0 10 5 0 "
+                           Width="64"
+                           Source="{Binding ImgGlyphOneSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
+                           Visibility="{Binding ImgGlyphOneSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                    <Image x:Name="ZoomStateImgThree"
+                           Grid.Column="1"
+                           Stretch="Uniform"
+                           HorizontalAlignment="Right"
+                           VerticalAlignment="Center"
+                           Margin="5 10 0 0"
+                           Width="64"
+                           Source="{Binding ImgGlyphTwoSource, UpdateSourceTrigger=PropertyChanged, TargetNullValue={x:Null}}"
+                           Visibility="{Binding ImgGlyphTwoSource, Converter={StaticResource EmptyToVisibilityCollapsedConverter}, UpdateSourceTrigger=PropertyChanged}" />
+                </Grid>
+            </StackPanel>
         </Grid>
         <!--  Displays when the node is selected  -->
         <Border Name="selectionBorder"
