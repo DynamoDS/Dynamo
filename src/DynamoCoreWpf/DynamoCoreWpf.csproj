@@ -314,18 +314,6 @@
     <EmbeddedResource Include="Controls\Docs\zh-TW\NodeAutocompleteDocumentation.html" />
     <EmbeddedResource Include="Packages\SplashScreen\build\index.bundle.js" />
     <EmbeddedResource Include="Packages\SplashScreen\build\index.html" />
-    <EmbeddedResource Include="Properties\Resources.cs-CZ.resx" />
-    <EmbeddedResource Include="Properties\Resources.de-DE.resx" />
-    <EmbeddedResource Include="Properties\Resources.es-ES.resx" />
-    <EmbeddedResource Include="Properties\Resources.fr-FR.resx" />
-    <EmbeddedResource Include="Properties\Resources.it-IT.resx" />
-    <EmbeddedResource Include="Properties\Resources.ja-JP.resx" />
-    <EmbeddedResource Include="Properties\Resources.ko-KR.resx" />
-    <EmbeddedResource Include="Properties\Resources.pl-PL.resx" />
-    <EmbeddedResource Include="Properties\Resources.pt-BR.resx" />
-    <EmbeddedResource Include="Properties\Resources.ru-RU.resx" />
-    <EmbeddedResource Include="Properties\Resources.zh-CN.resx" />
-    <EmbeddedResource Include="Properties\Resources.zh-TW.resx" />
     <EmbeddedResource Include="ViewModels\PackageManager\Docs\cs-CZ\PublishPackageDocumentation.html" />
     <EmbeddedResource Include="ViewModels\PackageManager\Docs\de-DE\PublishPackageDocumentation.html" />
     <EmbeddedResource Include="ViewModels\PackageManager\Docs\en-US\PublishPackageDocumentation.html" />
@@ -2381,7 +2369,6 @@
 	<Copy SourceFiles="@(HTMLPythonNodeModelsRuRUFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\ru-RU" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLPythonNodeModelsZhCNFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\zh-CN" SkipUnchangedFiles="True" />
 	<Copy SourceFiles="@(HTMLPythonNodeModelsZhTWFiles)" DestinationFolder="$(SolutionDir)\Libraries\PythonNodeModels\Docs\zh-TW" SkipUnchangedFiles="True" />
-  </Target>
   </Target>
     <Target Name="CopyDocXML" AfterTargets="AfterBuildOps">
       <ItemGroup>
