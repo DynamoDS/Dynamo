@@ -351,6 +351,10 @@ namespace CoreNodeModels
             }
         }
 
+        /// <summary> Indicates that this node supports resizing via UI. </summary>
+        [JsonIgnore]
+        public override bool IsResizable => true;
+
         #region Constructors
 
         public CurveMapperNodeModel()
