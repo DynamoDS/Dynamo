@@ -30,12 +30,16 @@ jobs:
         id: check_constants
         run: |
           echo "${{github.event_name}}"
-          echo "${{github.event}}"
+          echo "${{github.event.pull_request.merged}}"
+          echo "${{github.event.pull_request.milestone}}"
+          echo "${{github.event.issue.pull_request}}"
+          echo "${{github.event.comment.user.id}}"
+          echo "${{github.event.comment.body}}"
         shell: bash
       - name: Check if RC branch exists for the milestone
         id: check_branch
         run: |
-          BRANCH_NAME="RC${{ github.event.pull_request.number }}.0_master"
+          BRANCH_NAME="RC${{ github.event.pull_request.milestone }}.0_master"
           RESPONSE=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" https://api.github.com/repos/${{ github.repository }}/branches/$BRANCH_NAME)
           if [ $RESPONSE -eq 200 ]; then
             echo "Branch exists"
