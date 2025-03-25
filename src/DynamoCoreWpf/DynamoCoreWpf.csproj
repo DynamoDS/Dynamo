@@ -2165,6 +2165,7 @@
       <HtmlAndBundleFiles Include="Packages\PackageManagerWizard\dist\index.html" />
     </ItemGroup>
     <Copy SourceFiles="@(HtmlAndBundleFiles)" DestinationFolder="$(OutputPath)\PackageManager\" />
+  </Target>
   <Target Name="CopyGuidedTourHTMLFiles" AfterTargets="AfterBuildOps">
     <ItemGroup>
 		<HTMLEnUSFiles Include="$(SolutionDir)..\doc\distrib\html\en-US\GuidedTour\**\*.html" />
