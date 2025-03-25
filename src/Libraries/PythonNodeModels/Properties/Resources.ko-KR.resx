@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,19 +118,19 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="DeletingPythonNodeWithOpenEditorMessage" xml:space="preserve">
-    <value>The Python node "{0}" still has a script editor window open. Are you sure you want to close the editor and delete the node?</value>
+    <value>Python 노드 "{0}"에 아직 열린 스크립트 편집기 창이 있습니다. 편집기를 닫고 노드를 삭제하시겠습니까?</value>
   </data>
   <data name="DeletingPythonNodeWithOpenEditorTitle" xml:space="preserve">
-    <value>Script Editor Open</value>
+    <value>스크립트 편집기 열기</value>
   </data>
   <data name="EditHeader" xml:space="preserve">
-    <value>Edit...</value>
+    <value>편집...</value>
   </data>
   <data name="PythonMigrationWarningUriString" xml:space="preserve">
     <value>PythonNodeModels;PythonMigrationWarning.html</value>
   </data>
   <data name="PythonNodeContextMenuEngineSwitcher" xml:space="preserve">
-    <value>Python Engine Version</value>
+    <value>Python 엔진 버전</value>
   </data>
   <data name="PythonNodeContextMenuEngineVersionThree" xml:space="preserve">
     <value>CPython3</value>
@@ -139,82 +139,78 @@
     <value>IronPython2</value>
   </data>
   <data name="PythonNodeContextMenuLearnMoreButton" xml:space="preserve">
-    <value>Learn more about Python</value>
+    <value>Python에 대해 자세히 알아보기</value>
   </data>
   <data name="PythonNodePortDataOutputToolTip" xml:space="preserve">
-    <value>Result of the python script</value>
+    <value>Python 스크립트의 결과</value>
   </data>
   <data name="PythonScriptDescription" xml:space="preserve">
-    <value>Runs an embedded Python script.</value>
-    <comment>Description for Python Script</comment>
+    <value>포함된 Python 스크립트를 실행합니다.</value>
   </data>
   <data name="PythonScriptEditorCaption" xml:space="preserve">
-    <value>Edit Python Script...</value>
+    <value>Python 스크립트 편집...</value>
   </data>
   <data name="PythonScriptEditorCodeComment" xml:space="preserve">
-    <value>Place your code below this line</value>
+    <value>코드를 이 선 아래에 배치</value>
   </data>
   <data name="PythonScriptEditorImports" xml:space="preserve">
-    <value>Load the Python Standard and DesignScript Libraries</value>
+    <value>Python 표준 및 DesignScript 라이브러리 로드</value>
   </data>
   <data name="PythonScriptEditorInputComment" xml:space="preserve">
-    <value>The inputs to this node will be stored as a list in the IN variables.</value>
-    <comment>It is comment in the code. IN shouldn't be translated.</comment>
+    <value>이 노드에 대한 입력값은 IN 변수에 리스트로 저장됩니다.</value>
   </data>
   <data name="PythonScriptEditorMoreInfoButtonTooltip" xml:space="preserve">
-    <value>Learn about the Python 2 to Python 3 conversion</value>
+    <value>Python2에서 Python3로 변환하는 방법에 대해 알아보기</value>
   </data>
   <data name="PythonScriptEditorOutputComment" xml:space="preserve">
-    <value>Assign your output to the OUT variable.</value>
-    <comment>It is comment in the code. OUT shouldn't be translated.</comment>
+    <value>출력을 OUT 변수에 지정합니다.</value>
   </data>
   <data name="PythonScriptEditorRevertButtonTooltip" xml:space="preserve">
-    <value>Revert the changes made to current Python node editor.</value>
+    <value>현재 Python 노드 편집기에 대한 변경 사항을 되돌립니다.</value>
   </data>
   <data name="PythonScriptEditorUndoButtonTooltip" xml:space="preserve">
-    <value>Undo</value>
+    <value>실행취소</value>
   </data>
   <data name="PythonScriptEditorRedoButtonTooltip" xml:space="preserve">
-    <value>Redo</value>
+    <value>재실행</value>
   </data>
   <data name="PythonScriptEditorZoomInButtonTooltip" xml:space="preserve">
-    <value>Zoom in</value>
+    <value>줌 확대</value>
   </data>
   <data name="PythonScriptEditorZoomOutButtonTooltip" xml:space="preserve">
-    <value>Zoom out</value>
+    <value>줌 축소</value>
   </data>
   <data name="PythonScriptEditorRunButton" xml:space="preserve">
-    <value>Save and run</value>
+    <value>저장 및 실행</value>
   </data>
   <data name="PythonScriptEditorRunButtonTooltip" xml:space="preserve">
-    <value>Save Python script and run it with the graph</value>
+    <value>Python 스크립트를 저장하고 그래프로 실행</value>
   </data>
   <data name="PythonScriptEditorSaveChangesButtonTooltip" xml:space="preserve">
-    <value>Save changes made in Python Script editor</value>
+    <value>Python 스크립트 편집기에서 변경한 내용 저장</value>
   </data>
   <data name="PythonScriptFromStringDescription" xml:space="preserve">
-    <value>Runs a Python script from a string.</value>
-    <comment>Description for Python Script From String</comment>
+    <value>문자열에서 Python 스크립트를 실행합니다.</value>
   </data>
   <data name="PythonStringPortDataScriptToolTip" xml:space="preserve">
-    <value>Python script to run.</value>
+    <value>실행할 Python 스크립트.</value>
   </data>
   <data name="PythonScriptEditorEngineDropdownTooltip" xml:space="preserve">
-    <value>Select the Python version/engine to execute the script</value>
+    <value>스크립트를 실행할 Python 버전/엔진 선택</value>
   </data>
   <data name="PythonScriptEditorConvertTabsToSpacesButtonTooltip" xml:space="preserve">
-    <value>Convert indentation tabs to spaces...</value>
+    <value>들여쓰기 탭을 공백으로 변환...</value>
   </data>
   <data name="PythonScriptEditorMigrationAssistantButtonTooltip" xml:space="preserve">
-    <value>Convert script to Python 3...</value>
+    <value>스크립트를 Python 3로 변환...</value>
   </data>
   <data name="PythonSearchTags" xml:space="preserve">
     <value>IronPython;CPython;</value>
   </data>
   <data name="PythonScriptUnsavedChangesPromptText" xml:space="preserve">
-    <value>It looks like you are still working on this. You may lose any unsaved changes if you leave now</value>
+    <value>아직 이 작업을 수행하고 있는 것 같습니다. 지금 종료하면 저장되지 않은 변경 사항이 손실될 수 있습니다.</value>
   </data>
   <data name="PythonScriptUnsavedChangesPromptTitle" xml:space="preserve">
-    <value>Are you sure you want to leave?</value>
+    <value>나가시겠습니까?</value>
   </data>
 </root>

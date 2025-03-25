@@ -1,0 +1,85 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>DesignScriptBuiltin</name>
+    </assembly>
+    <members>
+        <member name="M:DesignScript.Builtin.Dictionary.CustomKeyComparer.GetHashCode(System.String)">
+            <summary>このコードは、決定性ハッシュ アルゴリズムを使用する .NET framework 4.8 の String.GetHashCode() 
+            からコピーされました。具体的には String.GetLegacyNonRandomizedHashCode() 関数であり、
+            https://referencesource.microsoft.com/mscorlib/R/42c2b7ffc7c3111f.html にあります。</summary>
+            <param name="obj"/>
+            <returns/>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ByKeysValues(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>指定されたキーと値のディクショナリを生成します。エントリの数は
+                キーまたは値よりも短くなります。</summary>
+            <param name="keys">ディクショナリのキー</param>
+            <param name="values">ディクショナリの値</param>
+            <returns name="dictionary">キーと値から生成されたディクショナリ</returns>
+            <search>map,{},table</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.Components">
+            <summary>ディクショナリのコンポーネントを生成します。Dictionary.ByKeysValues の逆です。</summary>
+            <returns name="keys">ディクショナリのキー</returns>
+            <returns name="values">ディクショナリの値</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Keys">
+            <summary>ディクショナリ内にキーを生成します。</summary>
+            <returns name="keys">ディクショナリのキー</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Values">
+            <summary>ディクショナリ内に値を生成します。</summary>
+            <returns name="values">ディクショナリの値</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Count">
+            <summary>ディクショナリ内のキーと値のペアの数です。</summary> 
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.SetValueAtKeys(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>新しい値に設定したキーのリストを持つ新しいディクショナリが生成され、既存のキーと値のペアが上書きされる可能性があります。
+                これらの 2 つのリストの長さは同じにする必要があります。そうでない場合は、2 つのうちの短い方が挿入の数をバインドします。</summary>
+            <param name="keys">設定するディクショナリ内のキーです。同じキーが既に存在している場合、そのキーの値が変更されます。</param>
+            <param name="values">挿入に対応する値です。</param>
+            <returns name="dictionary">エントリが挿入された新しいディクショナリ</returns>
+            <search>insert,add</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.RemoveKeys(System.Collections.Generic.IList{System.String})">
+            <summary>指定されたキーが削除された新しいディクショナリを生成します。</summary>
+            <param name="keys">削除するディクショナリ内のキー</param>
+            <returns name="dictionary">キーが削除された新しいディクショナリ</returns>
+            <search>drop,delete</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ValueAtKey(System.String)">
+            <summary>指定したキーの値を取得</summary>
+            <param name="key">値を取得するディクショナリ内のキー</param>
+            <returns name="value">指定されたキーの値。設定されていない場合は NULL</returns>
+            <search>lookup,valueatkey,find</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ToString">
+            <summary>ディクショナリの分かりやすい文字列表現を返します。</summary>
+            <returns>ディクショナリの文字列表現。</returns>
+        </member>
+        <member name="T:DesignScript.Builtin.BuiltinNullReferenceException">
+            <summary>null DS 埋め込みタイプを使用することで発生する null 参照の例外:
+            リスト、ディクショナリ、および文字列。</summary>
+        </member>
+        <member name="T:Builtin.Properties.DesignScriptBuiltin">
+            <summary>ローカライズされた文字列などを検索するための、厳密に型指定されたリソース クラス。</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.ResourceManager">
+            <summary>このクラスが使用する、キャッシュされた ResourceManager インスタンスを返します。</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.Culture">
+            <summary>厳密に型指定されたこのリソース クラスを使用して、すべてのリソース検索で
+              現在のスレッドの CurrentUICulture プロパティを上書きします。</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.IndexOutOfRangeExceptionMessage">
+            <summary>「インデックスが範囲外でした。負以外の場合、リストのサイズよりも小さくする必要があります。href=kIndexOutOfRange.html」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.NullReferenceExceptionMessage">
+            <summary>「null のリスト、ディクショナリ、または文字列内にインデックスを設定することはできません。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.StringOverIndexingExceptionMessage">
+            <summary>「インデックスが範囲外でした。負以外の場合、文字列のサイズよりも小さくする必要があります。href=kIndexOutOfRange.html」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+    </members>
+</doc>

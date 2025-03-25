@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,18 +118,18 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="MismatchedAssemblyList" xml:space="preserve">
-    <value>It is likely one of the following assemblies loaded the incompatible version:</value>
+    <value>次のアセンブリのうちいずれかが互換性のないバージョンをロードした可能性があります。</value>
   </data>
   <data name="MismatchedAssemblyVersion" xml:space="preserve">
-    <value>While loading assembly {0}, Dynamo detected that the dependency {1} was already loaded with an incompatible version. It is likely that another Revit Addin has loaded this assembly, please try uninstalling other Addins, and starting Dynamo again. Dynamo may be unstable in this state.</value>
+    <value>アセンブリ {0} のロード中に、依存関係 {1} が互換性のないバージョンですでにロードされていたことが Dynamo によって検出されました。このアセンブリは他の Revit アドインによってロードされた可能性があります。他のアドインをアンインストールし、Dynamo を再起動してください。この状態では Dynamo は不安定になるおそれがあります。</value>
   </data>
   <data name="MismatchedAssemblyVersionShortMessage" xml:space="preserve">
-    <value>Dynamo has detected a conflict with a dependency and may be unstable. If any issues are detected, please uninstall addins or packages and contact the provider.</value>
+    <value>Dynamo によって従属関係の競合が検出されました。Dynamo の動作が不安定になる可能性があります。問題が検出される場合は、アドインまたはパッケージをアンインストールし、そのプロバイダに連絡してください。</value>
   </data>
   <data name="MismatchedAssemblyVersionTitle" xml:space="preserve">
-    <value>Error Loading A Dependency</value>
+    <value>依存関係のロード中にエラーが発生しました</value>
   </data>
   <data name="SplashScreenPreLoadingAsm" xml:space="preserve">
-    <value>Preloading Geometry library</value>
+    <value>ジオメトリ ライブラリを事前ロードしています...</value>
   </data>
 </root>
