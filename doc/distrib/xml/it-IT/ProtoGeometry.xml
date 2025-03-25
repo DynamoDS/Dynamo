@@ -5086,6 +5086,9 @@
         <member name="F:Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.RemoveVertices">
             <summary>Rimuovere i vertici che non giacciono sulla FACCIA di input.</summary>
         </member>
+        <member name="F:Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Trim">
+            <summary>Trim overlapping panels to surface boundary.</summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.ToString">
             <summary>Ottiene una rappresentazione stringa di PanelSurface.</summary>
         </member>

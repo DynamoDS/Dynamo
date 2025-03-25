@@ -5099,6 +5099,9 @@
         <member name="F:Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.RemoveVertices">
             <summary>Usuń wierzchołki, które nie leżą na POWIERZCHNI wejściowej.</summary>
         </member>
+        <member name="F:Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Trim">
+            <summary>Trim overlapping panels to surface boundary.</summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.ToString">
             <summary>Pobierz reprezentację obiektu PanelSurface w postaci ciągu znaków</summary>
         </member>
