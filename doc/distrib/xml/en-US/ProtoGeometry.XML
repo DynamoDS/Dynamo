@@ -6615,6 +6615,11 @@
             Remove vertices that do not lie on the input FACE.
             </summary>
         </member>
+        <member name="F:Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Trim">
+            <summary>
+            Trim overlapping panels to surface boundary.
+            </summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.ToString">
             <summary>
             Get a string representation of the PanelSurface
