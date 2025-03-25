@@ -1,0 +1,36 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>곡선 결합에서 Polycurve에 두 개 이상의 WIRE를 생성함 </h2>
+<p>이 오류 메시지는 Polycurve 노드에서 출력한 선이 닫힌 곡선을 형성하지 않음을 나타냅니다.</p>
+
+<h4>수정 방법</h4>
+<p>이는 Polycurve 노드의 출력에 null 값이 포함되어 있기 때문일 수 있습니다. 곡선이 하나의 연속 선으로 연결된 경우 Polycurve 노드를 사용해 각 리스트 출력 내부를 확인합니다. 이 작업을 수행하는 한 가지 방법은 모든 노드의 형상 미리보기를 숨긴(형상 미리보기를 숨기려면 노드를 마우스 오른쪽 버튼으로 클릭하거나 노드를 선택) 다음, 한 번에 하나의 리스트를 <a href="https://dictionary.dynamobim.com/2/#/List/Inspect/Action/GetItemAtIndex"><code>List.GetItemAtIndex</code></a>하여 보는 것입니다. </p>
+
+<p>또한 이 오류는 흔히 룸 경계에서 발생합니다. 대신 <a href="https://dictionary.dynamobim.com/2/#/Revit/Elements/Room/Query/CenterBoundary"><code>Room.CenterBoundary</code></a>를 사용하여 곡선을 추출해 보십시오.</p>
+
+<h4>추가 정보</h4>
+<p>자세한 내용을 보려면 <a href="https://forum.dynamobim.com/search?q=curve%20join%20produced%20more%20than%20one%20WIRE%20in%20Polycurve"><span>&quot;<strong>curve join produced more than one wire in polycurve</strong>&quot;에 대해 논의하는 Dynamobim 포럼의 게시물</span></a>을 확인하십시오.</p>
+
+</body>
