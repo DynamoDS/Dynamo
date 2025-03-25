@@ -1,0 +1,3798 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutWindowCannotGetVersion" xml:space="preserve">
+    <value>Не удалось получить версию.</value>
+  </data>
+  <data name="AboutWindowDynamoWebsiteButton" xml:space="preserve">
+    <value>Веб-сайт {0}</value>
+  </data>
+  <data name="AboutWindowTitle" xml:space="preserve">
+    <value>О программе {0}</value>
+  </data>
+  <data name="AboutWindowUpToDate" xml:space="preserve">
+    <value>(Последняя версия)</value>
+  </data>
+  <data name="ActionMember" xml:space="preserve">
+    <value>Действие</value>
+  </data>
+  <data name="AddButton" xml:space="preserve">
+    <value>Добавить</value>
+  </data>
+  <data name="AddCustomFileToPackageDialogTitle" xml:space="preserve">
+    <value>Добавить пользовательский узел, библиотеку или файл XML в пакет...</value>
+  </data>
+  <data name="AddFileToPackageDialogTitle" xml:space="preserve">
+    <value>Добавить файл в пакет...</value>
+  </data>
+  <data name="AddToLibraryButton" xml:space="preserve">
+    <value>Добавить</value>
+  </data>
+  <data name="SignInButtonContentToolTip" xml:space="preserve">
+    <value>Войдите в систему, чтобы получить доступ к онлайн-службам, которые интегрируются с классическими программами.</value>
+  </data>
+  <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
+    <value>Autodesk A360</value>
+  </data>
+  <data name="AutodeskSignIn" xml:space="preserve">
+    <value>Вход в систему Autodesk</value>
+  </data>
+  <data name="Automatic" xml:space="preserve">
+    <value>Автоматически</value>
+  </data>
+  <data name="BackgroundPreviewCreationFailureMessage" xml:space="preserve">
+    <value>Ошибка при создании режима фонового просмотра в Dynamo. Возможной причиной может служить нехватка ресурсов графической подсистемы на компьютере. Дополнительные сведения приведены в журнале.</value>
+  </data>
+  <data name="BackgroundPreviewDefaultName" xml:space="preserve">
+    <value>Фоновый просмотр по умолчанию</value>
+  </data>
+  <data name="BackgroundPreviewName" xml:space="preserve">
+    <value>_Фоновый просмотр</value>
+  </data>
+  <data name="BrowserNodeButtonLabel" xml:space="preserve">
+    <value>Обзор...</value>
+  </data>
+  <data name="BrowserNodeNoFileSelected" xml:space="preserve">
+    <value>Файл не выбран.</value>
+  </data>
+  <data name="BrowserWindowLoading" xml:space="preserve">
+    <value>Загрузка...</value>
+  </data>
+  <data name="BuildVersionNonNegative" xml:space="preserve">
+    <value>Необходимо ввести версию сборки в виде целого числа, не являющегося отрицательным.</value>
+  </data>
+  <data name="CameraDataLoadError" xml:space="preserve">
+    <value>Невозможно загрузить информацию о положении камеры из файла.</value>
+  </data>
+  <data name="CameraDataSaveError" xml:space="preserve">
+    <value>Невозможно сохранить информацию о положении камеры.</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="CannotDownloadPackageMessageBoxTitle" xml:space="preserve">
+    <value>Не удается загрузить пакет</value>
+  </data>
+  <data name="BuiltInPackageConflictMessageBoxTitle" xml:space="preserve">
+    <value>Пакет конфликтует с одним или несколькими встроенными пакетами.</value>
+  </data>
+  <data name="PackagesInUseConflictMessageBoxTitle" xml:space="preserve">
+    <value>Пакет конфликтует с одним или несколькими используемыми пакетами.</value>
+  </data>
+  <data name="LoadedPackagesConflictMessageBoxTitle" xml:space="preserve">
+    <value>Пакет конфликтует с одним или несколькими загруженными пакетами.</value>
+  </data>
+  <data name="CannotSubmitPackage" xml:space="preserve">
+    <value>Невозможно отправить пакет в этой версии {0}. Для этого требуется основное приложение, например Revit.</value>
+  </data>
+  <data name="ChangeScaleFactorPromptCaptionText" xml:space="preserve">
+    <value>Чтобы обеспечить высокое качество визуализации и расчета геометрии, выберите диапазон размеров геометрии, с которым вы работаете:</value>
+  </data>
+  <data name="ChangeScaleFactorPromptDescriptionBox" xml:space="preserve">
+    <value>Числа в данном числовом диапазоне приведены в следующих единицах:</value>
+  </data>
+  <data name="ChangeScaleFactorPromptDescriptionContent" xml:space="preserve">
+    <value>Используйте этот рабочий диапазон для моделирования в значениях, которые находятся в диапазоне от {0} до {1}</value>
+  </data>
+  <data name="ChangeScaleFactorPromptDescriptionDefaultSetting" xml:space="preserve">
+    <value>Значение по умолчанию:</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitCm" xml:space="preserve">
+    <value>Сантиметры (см)</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitM" xml:space="preserve">
+    <value>Метры (м)</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitMm" xml:space="preserve">
+    <value>Миллиметры (мм)</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitsNumberFormatCm" xml:space="preserve">
+    <value>{0} см</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitsNumberFormatM" xml:space="preserve">
+    <value>{0} м</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitsNumberFormatMm" xml:space="preserve">
+    <value>{0} мм</value>
+  </data>
+  <data name="ChangeScaleFactorPromptWindowTitle" xml:space="preserve">
+    <value>Рабочий диапазон геометрии</value>
+  </data>
+  <data name="CompactLayoutTitle" xml:space="preserve">
+    <value>Компактный</value>
+  </data>
+  <data name="ConsentFormADPAnalyticsCheckBoxContent" xml:space="preserve">
+    <value>Я соглашаюсь на сбор данных в версиях программ для ПК в рамках анализа использования продуктов Autodesk.</value>
+  </data>
+  <data name="ContextAddGroupFromSelection" xml:space="preserve">
+    <value>Добавить узел в группу</value>
+  </data>
+  <data name="ContextCreateGroupFromSelection" xml:space="preserve">
+    <value>Создать группу</value>
+  </data>
+  <data name="ContextMenuCopy" xml:space="preserve">
+    <value>Копировать содержимое</value>
+  </data>
+  <data name="ContextMenuDelete" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="ContextMenuEditCustomNode" xml:space="preserve">
+    <value>Редактировать пользовательский узел...</value>
+  </data>
+  <data name="ContextMenuEditCustomNodeProperty" xml:space="preserve">
+    <value>Редактирование пользовательских свойств узла...</value>
+  </data>
+  <data name="ContextMenuFitToScreen" xml:space="preserve">
+    <value>_Вписать в экран</value>
+  </data>
+  <data name="ContextMenuGeometryView" xml:space="preserve">
+    <value>Перейти к _Виду геометрии</value>
+  </data>
+  <data name="ContextMenuHideGeometry" xml:space="preserve">
+    <value>Скрыть предварительный просмотр геометрии</value>
+  </data>
+  <data name="ContextMenuHideAllTextBubble" xml:space="preserve">
+    <value>Скрыть все текстовые марки</value>
+  </data>
+  <data name="ContextMenuInsertCodeBlock" xml:space="preserve">
+    <value>Вставить блок кода</value>
+  </data>
+  <data name="ContextMenuLacing" xml:space="preserve">
+    <value>Переплетение</value>
+  </data>
+  <data name="ContextMenuLacingAuto" xml:space="preserve">
+    <value>Авто</value>
+  </data>
+  <data name="ContextMenuLacingCrossProduct" xml:space="preserve">
+    <value>Векторное произведение</value>
+  </data>
+  <data name="ContextMenuLacingFirst" xml:space="preserve">
+    <value>Первый</value>
+  </data>
+  <data name="ContextMenuLacingLongest" xml:space="preserve">
+    <value>Самый длинный</value>
+  </data>
+  <data name="ContextMenuLacingShortest" xml:space="preserve">
+    <value>Кратчайший</value>
+  </data>
+  <data name="ContextMenuNodesFromGeometry" xml:space="preserve">
+    <value>Узлы из _выбранной геометрии</value>
+  </data>
+  <data name="ContextMenuNodesFromSelection" xml:space="preserve">
+    <value>Создание пользовательского узла</value>
+  </data>
+  <data name="ContextMenuNodeToCode" xml:space="preserve">
+    <value>Узел для _кодировки</value>
+  </data>
+  <data name="ContextMenuPan" xml:space="preserve">
+    <value>П_анорамировать</value>
+  </data>
+  <data name="ContextMenuPaste" xml:space="preserve">
+    <value>Вставить</value>
+  </data>
+  <data name="ContextMenuPublishCustomNode" xml:space="preserve">
+    <value>Опубликовать данный пользовательский узел...</value>
+  </data>
+  <data name="ContextMenuShowGeometry" xml:space="preserve">
+    <value>Показать предварительный просмотр геометрии</value>
+  </data>
+  <data name="ContextMenuShowAllTextBubble" xml:space="preserve">
+    <value>Показать весь всплывающий текст</value>
+  </data>
+  <data name="ContextUnGroupFromSelection" xml:space="preserve">
+    <value>Исключить из группы</value>
+  </data>
+  <data name="ContinueButton" xml:space="preserve">
+    <value>Продолжить</value>
+  </data>
+  <data name="ConverterMessageCurrentOffset" xml:space="preserve">
+    <value>Текущее смещение по X: {0}, Y: {1}</value>
+  </data>
+  <data name="ConverterMessageTransformOrigin" xml:space="preserve">
+    <value>Преобразование начала координат X: {0}, Y: {1}</value>
+  </data>
+  <data name="ConverterMessageZoom" xml:space="preserve">
+    <value>Зумирование: {0}</value>
+  </data>
+  <data name="CrashPromptDialogCopyButton" xml:space="preserve">
+    <value>Копировать</value>
+  </data>
+  <data name="CrashPromptDialogCrashMessage" xml:space="preserve">
+    <value>Произошло непредвиденное завершение работы программы Dynamo.
+
+Не волнуйтесь, у вас есть возможность сохранить данные.</value>
+  </data>
+  <data name="CrashPromptDialogDetailButton" xml:space="preserve">
+    <value>Подробности</value>
+  </data>
+  <data name="CrashPromptDialogOpenFolderButton" xml:space="preserve">
+    <value>Открыть папку</value>
+  </data>
+  <data name="CrashPromptDialogSubmitBugButton" xml:space="preserve">
+    <value>Отправить ошибку в GitHub</value>
+  </data>
+  <data name="CrashPromptDialogTitle" xml:space="preserve">
+    <value>Непредвиденное завершение работы {0}</value>
+  </data>
+  <data name="CreateMember" xml:space="preserve">
+    <value>Создать</value>
+  </data>
+  <data name="CustomNodePromptDescriptionTooltip" xml:space="preserve">
+    <value>Описание, которое помогает пользователям понять, в каких целях может использоваться узел.</value>
+  </data>
+  <data name="CustomNodePromptNameTooltip" xml:space="preserve">
+    <value>Уникальное имя узла.</value>
+  </data>
+  <data name="CustomNodePropertyErrorMessageBoxTitle" xml:space="preserve">
+    <value>Ошибка свойства</value>
+  </data>
+  <data name="CustomNodePropertyWindowCategory" xml:space="preserve">
+    <value>Категория «Надстройки»</value>
+  </data>
+  <data name="CustomNodePropertyWindowDescription" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="CustomNodePropertyWindowDescriptionHint" xml:space="preserve">
+    <value>Описание пользовательского узла</value>
+  </data>
+  <data name="CustomNodePropertyWindowName" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="CustomNodePropertyWindowNameHint" xml:space="preserve">
+    <value>Имя пользовательского узла</value>
+  </data>
+  <data name="CustomNodePropertyWindowLocationNote" xml:space="preserve">
+    <value>Пользовательские узлы будут размещены в библиотеке в разделе «Надстройки».</value>
+  </data>
+  <data name="CustomNodePropertyWindowTitle" xml:space="preserve">
+    <value>Свойства пользовательского узла</value>
+  </data>
+  <data name="CustomNodeTypeShortString" xml:space="preserve">
+    <value>DS</value>
+  </data>
+  <data name="DeprecatingPackageMessageBoxTitle" xml:space="preserve">
+    <value>Исключенный пакет</value>
+  </data>
+  <data name="DescriptionNeedMoreCharacters" xml:space="preserve">
+    <value>Текст описания должен содержать больше 10 символов.</value>
+  </data>
+  <data name="DetailedLayoutTitle" xml:space="preserve">
+    <value>Подробный</value>
+  </data>
+  <data name="DirectoryNotFound" xml:space="preserve">
+    <value>Папка не найдена</value>
+  </data>
+  <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
+    <value>Предупреждение о загрузке</value>
+  </data>
+  <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
+    <value>Доступно обновление для Dynamo. Нажмите, чтобы установить его.</value>
+  </data>
+  <data name="DynamoViewCancelButtonTooltip" xml:space="preserve">
+    <value>Отмена выполнения (Shift + F5)</value>
+  </data>
+  <data name="DynamoViewContextMenuClearLog" xml:space="preserve">
+    <value>Очистить</value>
+  </data>
+  <data name="DynamoViewDebugMenu" xml:space="preserve">
+    <value>О_тладка</value>
+  </data>
+  <data name="DynamoViewDebugMenuCheckDailyBuild" xml:space="preserve">
+    <value>Проверка _ежедневных сборок</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpLibrary" xml:space="preserve">
+    <value>_Библиотека дампов</value>
+  </data>
+  <data name="DynamoViewDebugMenuForceReExecute" xml:space="preserve">
+    <value>_Принудительное повторное выполнение</value>
+  </data>
+  <data name="DynamoViewDebugMenuForceUpdate" xml:space="preserve">
+    <value>Пр_инудительное обновление</value>
+  </data>
+  <data name="DynamoViewDebugMenuRunMutationTest" xml:space="preserve">
+    <value>Выполнить проверку _мутаций</value>
+  </data>
+  <data name="DynamoViewDebugMenuShowDebugAST" xml:space="preserve">
+    <value>Показать _AST отладки</value>
+  </data>
+  <data name="DynamoViewDebugMenuVerboseLogging" xml:space="preserve">
+    <value>_Расширенная регистрация</value>
+  </data>
+  <data name="DynamoViewDebugMenuDebugModes" xml:space="preserve">
+    <value>Режимы от_ладки</value>
+  </data>
+  <data name="DynamoViewEditMenu" xml:space="preserve">
+    <value>_Редактировать</value>
+  </data>
+  <data name="DynamoViewEditMenuAlighBottom" xml:space="preserve">
+    <value>_Вниз</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignLeft" xml:space="preserve">
+    <value>В_лево</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignRight" xml:space="preserve">
+    <value>Впр_аво</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignSelection" xml:space="preserve">
+    <value>В_ыбор Выравнивания</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignTop" xml:space="preserve">
+    <value>Вв_ерх</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignXAverage" xml:space="preserve">
+    <value>_Среднее значение по оси X</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignXDistribute" xml:space="preserve">
+    <value>Распределение по оси _X</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignYAverage" xml:space="preserve">
+    <value>Среднее значение по оси _Y</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignYDistribute" xml:space="preserve">
+    <value>Р_аспределение по оси Y</value>
+  </data>
+  <data name="DynamoViewEditMenuCleanupLayout" xml:space="preserve">
+    <value>Оч_истить компоновку узла</value>
+  </data>
+  <data name="DynamoViewEditMenuCopy" xml:space="preserve">
+    <value>_Копия</value>
+  </data>
+  <data name="DynamoViewEditMenuCreateCustomNode" xml:space="preserve">
+    <value>Создать пользовательский узе_л</value>
+  </data>
+  <data name="DynamoViewEditMenuCreateGroup" xml:space="preserve">
+    <value>Со_здать группу</value>
+  </data>
+  <data name="DynamoViewEditMenuCreateNote" xml:space="preserve">
+    <value>Созда_ть примечание</value>
+  </data>
+  <data name="DynamoViewEditMenuCreatePreset" xml:space="preserve">
+    <value>Создание набора параметров на основе выбранных объектов</value>
+  </data>
+  <data name="DynamoViewEditMenuDeletePreset" xml:space="preserve">
+    <value>Удалить набор параметров</value>
+  </data>
+  <data name="DynamoViewEditMenuDeleteSelected" xml:space="preserve">
+    <value>_Удалить выбранные объекты</value>
+  </data>
+  <data name="DynamoViewEditMenuPaste" xml:space="preserve">
+    <value>_Вставить</value>
+  </data>
+  <data name="DynamoViewEditMenuPresetsMenu" xml:space="preserve">
+    <value>Наборы параметров</value>
+  </data>
+  <data name="DynamoViewEditMenuRedo" xml:space="preserve">
+    <value>_Повторить</value>
+  </data>
+  <data name="DynamoViewEditMenuRestorePreset" xml:space="preserve">
+    <value>Восстановить параметры по умолчанию</value>
+  </data>
+  <data name="DynamoViewEditMenuSelectAll" xml:space="preserve">
+    <value>Вы_делить все</value>
+  </data>
+  <data name="DynamoViewEditMenuUnpinAllPreviewBubbles" xml:space="preserve">
+    <value>_Открепить все выноски предварительного просмотра</value>
+  </data>
+  <data name="DynamoViewEditMenuSelectNeighbours" xml:space="preserve">
+    <value>_Выделить соседние объекты</value>
+  </data>
+  <data name="DynamoViewEditMenuUndo" xml:space="preserve">
+    <value>_Отменить</value>
+  </data>
+  <data name="DynamoViewDynamoMenuExit" xml:space="preserve">
+    <value>_Выход из Dynamo</value>
+  </data>
+  <data name="DynamoViewFileMenu" xml:space="preserve">
+    <value>_Файл</value>
+  </data>
+  <data name="DynamoViewFileMenuExport3DAsImage" xml:space="preserve">
+    <value>Э_кспорт фонового 3D-просмотра как изображения...</value>
+  </data>
+  <data name="DynamoViewFileMenuExportAsImage" xml:space="preserve">
+    <value>Экспорт рабочего _пространства в виде изображения...</value>
+  </data>
+  <data name="DynamoViewFileMenuExportToSTL" xml:space="preserve">
+    <value>Эк_спорт модели в формат STL...</value>
+  </data>
+  <data name="DynamoViewFileMenuImport" xml:space="preserve">
+    <value>_Импорт библиотеки...</value>
+  </data>
+  <data name="DynamoViewFileMenuNew" xml:space="preserve">
+    <value>_Создать</value>
+  </data>
+  <data name="DynamoViewFileMenuNewCustomNode" xml:space="preserve">
+    <value>_Пользовательский узел...</value>
+  </data>
+  <data name="DynamoViewFileMenuNewHomeWorkSpace" xml:space="preserve">
+    <value>_Начальная страница рабочего пространства</value>
+  </data>
+  <data name="DynamoViewFileMenuOpen" xml:space="preserve">
+    <value>_Открыть...</value>
+  </data>
+  <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
+    <value>Откры_ть последние файлы</value>
+  </data>
+  <data name="DynamoViewFileMenuSave" xml:space="preserve">
+    <value>Со_хранить</value>
+  </data>
+  <data name="DynamoViewFileMenuSaveAs" xml:space="preserve">
+    <value>Сохра_нить как...</value>
+  </data>
+  <data name="DynamoViewHelpDictionary" xml:space="preserve">
+    <value>С_ловарь Dynamo</value>
+  </data>
+  <data name="DynamoViewHelpMenu" xml:space="preserve">
+    <value>_Справка</value>
+  </data>
+  <data name="DynamoViewHelpMenuDisplayStartPage" xml:space="preserve">
+    <value>_Показ начальной страницы</value>
+  </data>
+  <data name="DynamoViewHelpMenuGotoWebsite" xml:space="preserve">
+    <value>_Веб-сайт Dynamo</value>
+  </data>
+  <data name="DynamoViewHelpMenuGotoRepo" xml:space="preserve">
+    <value>_Репозиторий Dynamo</value>
+  </data>
+  <data name="DynamoViewHelpMenuGotoWiki" xml:space="preserve">
+    <value>Проект Dynamo _Wiki</value>
+  </data>
+  <data name="DynamoViewHelpMenuReportBug" xml:space="preserve">
+    <value>_Отчет об ошибке</value>
+  </data>
+  <data name="DynamoViewHelpMenuShowInFolder" xml:space="preserve">
+    <value>Показать в папке</value>
+  </data>
+  <data name="DynamoViewHepMenuSamples" xml:space="preserve">
+    <value>О_бразцы</value>
+  </data>
+  <data name="DynamoViewPackageMenu" xml:space="preserve">
+    <value>Па_кеты</value>
+  </data>
+  <data name="DynamoViewPackageMenuManagePackage" xml:space="preserve">
+    <value>Управление па_кетами...</value>
+  </data>
+  <data name="DynamoViewPackageMenuPublishNodes" xml:space="preserve">
+    <value>Опу_бликовать выбранные узлы...</value>
+  </data>
+  <data name="DynamoViewPackageMenuPublishWorkspace" xml:space="preserve">
+    <value>Опубликовать _текущее рабочее пространство...</value>
+  </data>
+  <data name="DynamoViewPackageMenuSearchPackage" xml:space="preserve">
+    <value>_Поиск пакета...</value>
+  </data>
+  <data name="DynamoViewPackageMenuPackageManager" xml:space="preserve">
+    <value>_Package Manager...</value>
+  </data>
+  <data name="DynamoViewRunAutomaticallyOption" xml:space="preserve">
+    <value>Автоматическое выполнение процесса</value>
+  </data>
+  <data name="DynamoViewRunButton" xml:space="preserve">
+    <value>Запуск</value>
+  </data>
+  <data name="DynamoViewRunButtonTooltip" xml:space="preserve">
+    <value>Выполнить рабочий процесс (F5)</value>
+  </data>
+  <data name="DynamoViewRunButtonToolTipDisabled" xml:space="preserve">
+    <value>Выполнение процесса недоступно, если включен параметр «Автоматически» или «Периодически».</value>
+  </data>
+  <data name="DynamoViewSamplesMenuShowInFolder" xml:space="preserve">
+    <value>Показать в папке</value>
+  </data>
+  <data name="PreferencesViewEnableTSplineNodes" xml:space="preserve">
+    <value>Включить узлы Т-сплайна</value>
+  </data>
+  <data name="PreferencesViewExperimentalLabel" xml:space="preserve">
+    <value>Экспериментальный</value>
+  </data>
+  <data name="DynamoViewSettingMenu" xml:space="preserve">
+    <value>_Параметры</value>
+  </data>
+  <data name="DynamoViewSettingMenuAreaUnits" xml:space="preserve">
+    <value>Отображаемые единицы площади</value>
+  </data>
+  <data name="DynamoViewSettingMenuCentimeter" xml:space="preserve">
+    <value>Сантиметр</value>
+  </data>
+  <data name="DynamoViewSettingMenuCubicCentimeter" xml:space="preserve">
+    <value>Кубический сантиметр</value>
+  </data>
+  <data name="DynamoViewSettingMenuCubicFoot" xml:space="preserve">
+    <value>Кубический фут</value>
+  </data>
+  <data name="DynamoViewSettingMenuCubicInch" xml:space="preserve">
+    <value>Кубический дюйм</value>
+  </data>
+  <data name="DynamoViewSettingMenuCubicMeter" xml:space="preserve">
+    <value>Кубический метр</value>
+  </data>
+  <data name="DynamoViewSettingMenuCubicMillimeter" xml:space="preserve">
+    <value>Кубический миллиметр</value>
+  </data>
+  <data name="DynamoViewSettingMenuDecimalFoot" xml:space="preserve">
+    <value>Десятичный фут</value>
+  </data>
+  <data name="DynamoViewSettingMenuDecimalInch" xml:space="preserve">
+    <value>Десятичный дюйм</value>
+  </data>
+  <data name="DynamoViewSettingMenuShowDataReportingDialog" xml:space="preserve">
+    <value>Соглашения для сбора _данных</value>
+  </data>
+  <data name="DynamoViewSettingMenuFractionalFoot" xml:space="preserve">
+    <value>Дробный фут</value>
+  </data>
+  <data name="DynamoViewSettingMenuFractionalInch" xml:space="preserve">
+    <value>Дробный дюйм</value>
+  </data>
+  <data name="DynamoViewSettingMenuHighRenderPrecision" xml:space="preserve">
+    <value>Высокая</value>
+  </data>
+  <data name="DynamoViewSettingMenuLengthUnits" xml:space="preserve">
+    <value>Отображаемые единицы длины</value>
+  </data>
+  <data name="DynamoViewSettingMenuLowRenderPrecision" xml:space="preserve">
+    <value>Низкая</value>
+  </data>
+  <data name="DynamoViewSettingMenuManagePackagePath" xml:space="preserve">
+    <value>Управление путями к узлу и пакету...</value>
+  </data>
+  <data name="DynamoViewSettingMenuMeter" xml:space="preserve">
+    <value>Метр</value>
+  </data>
+  <data name="DynamoViewSettingMenuMillimeter" xml:space="preserve">
+    <value>Миллиметр</value>
+  </data>
+  <data name="DynamoViewSettingMenuNumber0" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="DynamoViewSettingMenuNumber00" xml:space="preserve">
+    <value>0,0</value>
+  </data>
+  <data name="DynamoViewSettingMenuNumber000" xml:space="preserve">
+    <value>0.00</value>
+  </data>
+  <data name="DynamoViewSettingMenuNumber0000" xml:space="preserve">
+    <value>0.000</value>
+  </data>
+  <data name="DynamoViewSettingMenuNumber00000" xml:space="preserve">
+    <value>0.0000</value>
+  </data>
+  <data name="DynamoViewSettingMenuNumberFormat" xml:space="preserve">
+    <value>Формат чисел</value>
+  </data>
+  <data name="PreferencesViewSelectedPackagePathForDownload" xml:space="preserve">
+    <value>Выбранный путь к пакету для скачивания</value>
+  </data>
+  <data name="PreferencesViewDisableBuiltInPackages" xml:space="preserve">
+    <value>Отключить загрузку встроенных пакетов</value>
+  </data>
+  <data name="PreferencesViewDisableCustomPackages" xml:space="preserve">
+    <value>Отключить загрузку пользовательских пакетов</value>
+  </data>
+  <data name="DynamoViewSettingMenuSquareCentimeter" xml:space="preserve">
+    <value>Квадратный сантиметр</value>
+  </data>
+  <data name="DynamoViewSettingMenuSquareFoot" xml:space="preserve">
+    <value>Квадратный фут</value>
+  </data>
+  <data name="DynamoViewSettingMenuSquareInch" xml:space="preserve">
+    <value>Квадратный дюйм</value>
+  </data>
+  <data name="DynamoViewSettingMenuSquareMeter" xml:space="preserve">
+    <value>Квадратный метр</value>
+  </data>
+  <data name="DynamoViewSettingMenuSquareMillimeter" xml:space="preserve">
+    <value>Квадратный миллиметр</value>
+  </data>
+  <data name="DynamoViewSettingMenuVolumeUnits" xml:space="preserve">
+    <value>Отображаемые единицы объема</value>
+  </data>
+  <data name="DynamoViewSettingShowRunPreview" xml:space="preserve">
+    <value>Предварительный просмотр запуска</value>
+  </data>
+  <data name="DynamoViewSettingsMenuChangeScaleFactor" xml:space="preserve">
+    <value>Масштабирование геометрии...</value>
+  </data>
+  <data name="DynamoViewSettingsMenuVisualizationSettings" xml:space="preserve">
+    <value>Параметры визуализации</value>
+  </data>
+  <data name="DynamoViewToolbarExport3DButtonTooltip" xml:space="preserve">
+    <value>Экспорт фонового просмотра как изображения</value>
+  </data>
+  <data name="DynamoViewToolbarExportButtonTooltip" xml:space="preserve">
+    <value>Экспорт рабочего пространства в виде изображения</value>
+  </data>
+  <data name="DynamoViewToolbarNewButtonTooltip" xml:space="preserve">
+    <value>Создать [Ctrl + N]</value>
+  </data>
+  <data name="DynamoViewToolbarOpenButtonTooltip" xml:space="preserve">
+    <value>Открыть (Ctrl + O]</value>
+  </data>
+  <data name="DynamoViewToolbarRedoButtonTooltip" xml:space="preserve">
+    <value>Повторить [Ctrl + Y]</value>
+  </data>
+  <data name="DynamoViewToolbarSaveButtonTooltip" xml:space="preserve">
+    <value>Сохранить [Ctrl + S]</value>
+  </data>
+  <data name="DynamoViewToolbarUndoButtonTooltip" xml:space="preserve">
+    <value>Отменить [Ctrl + Z]</value>
+  </data>
+  <data name="DynamoViewViewMenu" xml:space="preserve">
+    <value>_Просмотреть</value>
+  </data>
+  <data name="DynamoViewViewMenu3DPreview" xml:space="preserve">
+    <value>_Фоновый предпросмотр в 3D</value>
+  </data>
+  <data name="DynamoViewViewMenuAlternateContextGeometry" xml:space="preserve">
+    <value>Показать геометрию в {0}</value>
+  </data>
+  <data name="DynamoViewViewMenuAvailablePreviews" xml:space="preserve">
+    <value>_Доступные предварительные версии</value>
+  </data>
+  <data name="DynamoViewViewMenuConnector" xml:space="preserve">
+    <value>_Соединители</value>
+  </data>
+  <data name="DynamoViewViewMenuConnectorType" xml:space="preserve">
+    <value>Тип _соединителя</value>
+  </data>
+  <data name="DynamoViewViewMenuConnectorTypeCurve" xml:space="preserve">
+    <value>Кривые</value>
+  </data>
+  <data name="DynamoViewViewMenuConnectorTypePolylines" xml:space="preserve">
+    <value>Полилинии</value>
+  </data>
+  <data name="DynamoViewViewMenuHideConsole" xml:space="preserve">
+    <value>Скрыть консоль</value>
+  </data>
+  <data name="DynamoViewViewMenuPan" xml:space="preserve">
+    <value>_Панорамирование</value>
+  </data>
+  <data name="DynamoViewViewMenuPanDown" xml:space="preserve">
+    <value>Панорамировать вниз (перетаскивание курсора колесиком мыши вниз)</value>
+  </data>
+  <data name="DynamoViewViewMenuPanLeft" xml:space="preserve">
+    <value>Панорамировать влево (перетаскивание курсора колесиком мыши влево)</value>
+  </data>
+  <data name="DynamoViewViewMenuPanRight" xml:space="preserve">
+    <value>Панорамировать вправо (перетаскивание курсора колесиком мыши вправо)</value>
+  </data>
+  <data name="DynamoViewViewMenuPanUp" xml:space="preserve">
+    <value>Панорамировать вверх (перетаскивание курсора колесиком мыши вверх)</value>
+  </data>
+  <data name="DynamoViewViewMenuPreviewNavigate" xml:space="preserve">
+    <value>_Навигация по фоновому 3D-просмотру</value>
+  </data>
+  <data name="DynamoViewViewMenuShowBackground3DPreview" xml:space="preserve">
+    <value>Отображение 3D-просмотра фона</value>
+  </data>
+  <data name="DynamoViewViewMenuShowConnectors" xml:space="preserve">
+    <value>Показать _соединители</value>
+  </data>
+  <data name="DynamoViewViewMenuShowConsole" xml:space="preserve">
+    <value>П_оказать консоль</value>
+  </data>
+  <data name="DynamoViewViewMenuShowGrid" xml:space="preserve">
+    <value>_Показать вспомогательные элементы</value>
+  </data>
+  <data name="DynamoViewViewMenuZoom" xml:space="preserve">
+    <value>_Зумировать</value>
+  </data>
+  <data name="DynamoViewViewMenuZoomIn" xml:space="preserve">
+    <value>Увеличить (колесико мыши вниз)</value>
+  </data>
+  <data name="DynamoViewViewMenuZoomOut" xml:space="preserve">
+    <value>Уменьшить (колесико мыши вверх)</value>
+  </data>
+  <data name="EditAnnotationTitle" xml:space="preserve">
+    <value>Редактировать заголовок группы</value>
+  </data>
+  <data name="EditNodeWindowTitle" xml:space="preserve">
+    <value>Изменить имя узла</value>
+  </data>
+  <data name="EditWindowAcceptButton" xml:space="preserve">
+    <value>Принять</value>
+  </data>
+  <data name="EditWindowTitle" xml:space="preserve">
+    <value>Задать значение...</value>
+  </data>
+  <data name="FileDialogAllFiles" xml:space="preserve">
+    <value>Все файлы ({0})|{0}</value>
+  </data>
+  <data name="FileDialogAssemblyFiles" xml:space="preserve">
+    <value>Файлы библиотеки сборок ({0})|{0}</value>
+  </data>
+  <data name="FileDialogCustomNodeDLLXML" xml:space="preserve">
+    <value>Пользовательский узел, DLL, XML ({0})|{0}</value>
+  </data>
+  <data name="FileDialogDefaultPNGName" xml:space="preserve">
+    <value>Capture.png</value>
+  </data>
+  <data name="FileDialogDefaultSTLModelName" xml:space="preserve">
+    <value>model.stl</value>
+  </data>
+  <data name="FileDialogDesignScriptFiles" xml:space="preserve">
+    <value>Файлы DesignScript ({0})|{0}</value>
+  </data>
+  <data name="FileDialogDynamoCustomNode" xml:space="preserve">
+    <value>Пользовательский узел {0} ({1})|{1}</value>
+  </data>
+  <data name="FileDialogDynamoDefinitions" xml:space="preserve">
+    <value>Определения {0} ({1})|{1}</value>
+  </data>
+  <data name="FileDialogDynamoWorkspace" xml:space="preserve">
+    <value>Рабочее пространство {0} ({1})|{1}</value>
+  </data>
+  <data name="FileDialogLibraryFiles" xml:space="preserve">
+    <value>Файлы библиотеки ({0})|{0}</value>
+  </data>
+  <data name="FileDialogManualMode" xml:space="preserve">
+    <value>Открыть в режиме ручного выполнения</value>
+  </data>
+  <data name="FileDialogPNGFiles" xml:space="preserve">
+    <value>Изображение PNG |{0}</value>
+  </data>
+  <data name="FileDialogSTLModels" xml:space="preserve">
+    <value>Модели STL|{0}</value>
+  </data>
+  <data name="FileNotPublishCaption" xml:space="preserve">
+    <value>Сбой при публикации!</value>
+  </data>
+  <data name="FileNotPublishMessage" xml:space="preserve">
+    <value>Файл не найдены или содержатся в пакете. Следует добавлять только те файлы, которые находятся вне пакетов.
+
+Не удалось опубликовать файлы:
+{0}</value>
+  </data>
+  <data name="FilePathConverterNoFileSelected" xml:space="preserve">
+    <value>Файл не выбран.</value>
+  </data>
+  <data name="FilterIconTooltip" xml:space="preserve">
+    <value>Фильтрация результатов</value>
+  </data>
+  <data name="FolderNotWritableError" xml:space="preserve">
+    <value>У вас отсутствуют права на запись в {0}.</value>
+  </data>
+  <data name="GenericTaskDialogSampleLeftButton" xml:space="preserve">
+    <value>Пример кнопки «Влево»</value>
+  </data>
+  <data name="GenericTaskDialogSampleRightButton" xml:space="preserve">
+    <value>Пример кнопки «Вправо»</value>
+  </data>
+  <data name="GenericTaskDialogTitle" xml:space="preserve">
+    <value>Диалоговое окно «Типовое задание»</value>
+  </data>
+  <data name="GroupContextMenuBackground" xml:space="preserve">
+    <value>Выбор фона</value>
+  </data>
+  <data name="GroupContextMenuDeleteGroup" xml:space="preserve">
+    <value>Удалить группу</value>
+  </data>
+  <data name="GroupContextMenuFont" xml:space="preserve">
+    <value>Размер шрифта</value>
+  </data>
+  <data name="GroupContextMenuGraphLayout" xml:space="preserve">
+    <value>Очистить компоновку узла</value>
+  </data>
+  <data name="GroupContextMenuUngroup" xml:space="preserve">
+    <value>Р_азгруппировать</value>
+  </data>
+  <data name="HideClassicNodeLibrary" xml:space="preserve">
+    <value>Скрыть классическую библиотеки узлов</value>
+  </data>
+  <data name="ImportLibraryDialogTitle" xml:space="preserve">
+    <value>Импорт библиотеки</value>
+  </data>
+  <data name="InCanvasFitViewButtonToolTip" xml:space="preserve">
+    <value>Вписать</value>
+  </data>
+  <data name="InCanvasGeomButtonToolTip" xml:space="preserve">
+    <value>Включить навигацию в фоновом 3D-просмотре (CTRL+B)</value>
+  </data>
+  <data name="InCanvasNodeButtonToolTip" xml:space="preserve">
+    <value>Включение вида графика «Навигация» (CTRL+B)</value>
+  </data>
+  <data name="InCanvasOrbitButtonToolTip" xml:space="preserve">
+    <value>Орбита</value>
+  </data>
+  <data name="InCanvasPanButtonToolTip" xml:space="preserve">
+    <value>Панорамирование</value>
+  </data>
+  <data name="InCanvasZoomInButtonToolTip" xml:space="preserve">
+    <value>Увеличить</value>
+  </data>
+  <data name="InCanvasZoomOutButtonToolTip" xml:space="preserve">
+    <value>Уменьшить</value>
+  </data>
+  <data name="InfoBubbleError" xml:space="preserve">
+    <value>Ошибка:</value>
+  </data>
+  <data name="InfoBubbleWarning" xml:space="preserve">
+    <value>Предупреждение:</value>
+  </data>
+  <data name="InstalledPackageViewAdditionalFileLabel" xml:space="preserve">
+    <value>Дополнительные файлы</value>
+  </data>
+  <data name="InstalledPackageViewAdditionalLabel" xml:space="preserve">
+    <value>Дополнительные библиотеки</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuDeprecate" xml:space="preserve">
+    <value>Исключить</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuDeprecateTooltip" xml:space="preserve">
+    <value>Исключение пакета. Действие разрешено только для разработчиков данного пакета.</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuGetLatest" xml:space="preserve">
+    <value>Получить последнюю версию</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuGetLatestTooltip" xml:space="preserve">
+    <value>Установите флажок, если имеется более новая версия этого пакета, и загрузите его.</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuPublish" xml:space="preserve">
+    <value>Публикация...</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuPublishTooltip" xml:space="preserve">
+    <value>Публикация данного пакета, если он еще не опубликован.</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuPublishVersion" xml:space="preserve">
+    <value>Публикация версии...</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuPublishVersionTooltip" xml:space="preserve">
+    <value>Публикация новой версии данного пакета (предполагается, что он уже был опубликован ранее). Действие разрешено, если вы в данный момент являетесь разработчиком этого пакета.</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuRemoveDeprecation" xml:space="preserve">
+    <value>Отменить исключение</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuRemoveDeprecationTooltip" xml:space="preserve">
+    <value>Отмена исключения пакета. Действие разрешено только для разработчиков данного пакета.</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuShowRootDir" xml:space="preserve">
+    <value>Показать корневую папку</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuShowRootDirTooltip" xml:space="preserve">
+    <value>Перейти к корневой папке данного пакета</value>
+  </data>
+  <data name="InstalledPackageViewCustomNodesLabel" xml:space="preserve">
+    <value>Пользовательские узлы</value>
+  </data>
+  <data name="InstalledPackageViewNodeLibrariesLabel" xml:space="preserve">
+    <value>Библиотеки узлов</value>
+  </data>
+  <data name="InstalledPackageViewPendingInstallButton" xml:space="preserve">
+    <value>Удаление отложено</value>
+  </data>
+  <data name="InstalledPackageViewTitle" xml:space="preserve">
+    <value>Установленные пакеты</value>
+  </data>
+  <data name="InstalledPackagePartialTextMessage" xml:space="preserve">
+    <value>Просмотрите установленные пакеты в </value>
+  </data>
+  <data name="InstalledPackagePartialHyperlinkMessage" xml:space="preserve">
+    <value>Package Manager</value>
+  </data>
+  <data name="InstallMessageCaption" xml:space="preserve">
+    <value>Установка Dynamo</value>
+  </data>
+  <data name="InvalidLoginUrl" xml:space="preserve">
+    <value>Недопустимый URL страницы входа в систему!</value>
+  </data>
+  <data name="InvalidTimeZoneMessage" xml:space="preserve">
+    <value>Не удалось войти в систему. Проверьте настройки даты, времени, часового пояса и повторите попытку.</value>
+  </data>
+  <data name="LacingAutoToolTip" xml:space="preserve">
+    <value>Руководство по репликации не будет добавлено.</value>
+  </data>
+  <data name="LacingCrossProductToolTip" xml:space="preserve">
+    <value>Для двух списков [a,b,c][1,2,3] возвращается результат [a1,a2,a3][b1,b2,b3][c1,c2,c3].</value>
+  </data>
+  <data name="LacingDisabledToolTip" xml:space="preserve">
+    <value>Переплетение аргументов отключено для данного узла.</value>
+  </data>
+  <data name="LacingFirstToolTip" xml:space="preserve">
+    <value>Для двух списков [a,b,c][1,2,3] возвращается результат {a1}.</value>
+  </data>
+  <data name="LacingLongestToolTip" xml:space="preserve">
+    <value>Для двух списков [a,b,c][1,2] возвращается результат [a1,b2,c2].</value>
+  </data>
+  <data name="LacingShortestToolTip" xml:space="preserve">
+    <value>Для двух списков [a,b,c][1,2] возвращается результат [a1,b2].</value>
+  </data>
+  <data name="LayoutIconTooltip" xml:space="preserve">
+    <value>Показать компоновку</value>
+  </data>
+  <data name="LearnMore" xml:space="preserve">
+    <value>Подробнее</value>
+  </data>
+  <data name="LibraryViewContextMenuEditNode" xml:space="preserve">
+    <value>Редактировать...</value>
+  </data>
+  <data name="LibraryViewNoMatchesFound" xml:space="preserve">
+    <value>Совпадений не найдено</value>
+  </data>
+  <data name="LibraryViewSearchText" xml:space="preserve">
+    <value>Поиск</value>
+  </data>
+  <data name="LibraryViewTitle" xml:space="preserve">
+    <value>Библиотека</value>
+  </data>
+  <data name="MajorVersionNonNegative" xml:space="preserve">
+    <value>Укажите основную, вспомогательную версию и номер сборки.</value>
+  </data>
+  <data name="Manual" xml:space="preserve">
+    <value>Вручную</value>
+  </data>
+  <data name="MessageAlreadyInstallDynamo" xml:space="preserve">
+    <value>Пакет {1} уже установлен.
+
+В {0} будет предпринята попытка удаления данного пакета перед установкой {2}.</value>
+  </data>
+  <data name="MessageConfirmToInstallPackage" xml:space="preserve">
+    <value>Вы уверены, что хотите установить {0} {1}?</value>
+  </data>
+  <data name="MessageConfirmToInstallPackageToFolder" xml:space="preserve">
+    <value>Вы уверены, что хотите установить {0} {1} в {2} ?</value>
+  </data>
+  <data name="MessageConfirmToSaveCustomNode" xml:space="preserve">
+    <value>Имеются несохраненные изменения в рабочем пространстве пользовательского узла: «{0}».
+
+Сохранить изменения?</value>
+  </data>
+  <data name="MessageConfirmToSaveHomeWorkSpace" xml:space="preserve">
+    <value>Имеются несохраненные изменения на начальной странице рабочего пространства.
+
+Сохранить изменения?</value>
+  </data>
+  <data name="MessageFileInUseByApplication" xml:space="preserve">
+    <value>В настоящий момент файл используется другим приложением.
+	
+Закройте файл, прежде чем пытаться перезаписать его.</value>
+  </data>
+  <data name="TitleFileInUse" xml:space="preserve">
+    <value>Файл используется</value>
+  </data>
+  <data name="MessageConfirmToSaveNamedHomeWorkSpace" xml:space="preserve">
+    <value>Имеются несохраненные изменения в {0}.
+
+Сохранить изменения?</value>
+  </data>
+  <data name="MessageConfirmToSaveReadOnlyCustomNode" xml:space="preserve">
+    <value>Не удалось сохранить файл «{0}», поскольку он доступен только для чтения либо содержит необработанные или недопустимые узлы. Использовать функцию «Сохранить как...» с указанием другого имени или пути для сохранения изменений?</value>
+  </data>
+  <data name="MessageConfirmToDeletePackage" xml:space="preserve">
+    <value>Удалить {0}? Корневой каталог пакета будет удален.
+
+Пакет можно всегда скачать повторно.</value>
+  </data>
+  <data name="MessageExcessiveLoadTime" xml:space="preserve">
+    <value>Загрузка пакетов занимает больше времени, чем ожидалось. Выберите требуемое действие.</value>
+  </data>
+  <data name="MessageExcessiveLoadTimeTitle" xml:space="preserve">
+    <value>Идет загрузка</value>
+  </data>
+  <data name="MessageCustomNodeNameExist" xml:space="preserve">
+    <value>Встроенный узел с данным именем уже существует.</value>
+  </data>
+  <data name="MessageCustomNodeNeedNewCategory" xml:space="preserve">
+    <value>Необходимо ввести имя новой категории или выбрать одну из имеющихся.</value>
+  </data>
+  <data name="MessageCustomNodeNoName" xml:space="preserve">
+    <value>Необходимо указать имя.</value>
+  </data>
+  <data name="MessageCustomNodeNameInvalid" xml:space="preserve">
+    <value>Имя пользовательского узла не должно содержать следующие специальные символы:
+    # % * ? \ : или любые непечатаемые символы.</value>
+  </data>
+  <data name="MessageErrorOpeningFileGeneral" xml:space="preserve">
+    <value>Ошибка при открытии файла</value>
+  </data>
+  <data name="MessageFailedToAddFile" xml:space="preserve">
+    <value>Не удалось добавить файл: {0}</value>
+  </data>
+  <data name="MessageFailedToApplyCustomization" xml:space="preserve">
+    <value>Не удалось применить NodeViewCustomization для {0}</value>
+  </data>
+  <data name="MessageFailedToAttachToRowColumn" xml:space="preserve">
+    <value>В случае 'AttachmentToRowColumnConverter' для параметра 'ConverterParameter' ожидается значение «Строка» или «Столбец»</value>
+  </data>
+  <data name="MessageFailedToDownloadPackage" xml:space="preserve">
+    <value>Не удалось загрузить пакет с идентификатором: {0}.  Попробуйте еще раз и отправьте отчет касательно пакета, если не удается решить проблему.</value>
+  </data>
+  <data name="MessageInvalidPackage" xml:space="preserve">
+    <value>Не удалось загрузить недопустимый пакет.</value>
+  </data>
+  <data name="MessageFailedToFindNodeById" xml:space="preserve">
+    <value>Не удается найти узел с таким идентификатором.</value>
+  </data>
+  <data name="MessageFailedToFindGroupById" xml:space="preserve">
+    <value>Не удается найти группу с таким идентификатором.</value>
+  </data>
+  <data name="MessageFailedToOpenCorruptedFile" xml:space="preserve">
+    <value>Ошибка при открытии поврежденного файла: {0}</value>
+  </data>
+  <data name="MessageFailedToSaveAsImage" xml:space="preserve">
+    <value>Не удалось сохранить рабочее пространство в виде изображения.</value>
+  </data>
+  <data name="MessageFailedToDelete" xml:space="preserve">
+    <value>{0} не удалось удалить пакет. Возможно, потребуется удалить корневую папку пакета вручную.</value>
+  </data>
+  <data name="MessageFailToUninstallPackage" xml:space="preserve">
+    <value>{0} не удалось удалить пакет: {1}. Возможно, потребуется повторно установить пакет вручную.</value>
+  </data>
+  <data name="MessageGettingNodeError" xml:space="preserve">
+    <value>Возникла проблема при извлечении узла из рабочего пространства.</value>
+  </data>
+  <data name="MessageLoadingTime" xml:space="preserve">
+    <value>Затрачено {0} на загрузку главного окна {1}.</value>
+  </data>
+  <data name="MessageNeedToRestartAfterDelete" xml:space="preserve">
+    <value>Удаление вступит в силу после перезапуска {0} и основного приложения.</value>
+  </data>
+  <data name="MessageNodeWithNullFunction" xml:space="preserve">
+    <value>Для данного узла имеется определение нулевой функции.</value>
+  </data>
+  <data name="MessageNoNodeDescription" xml:space="preserve">
+    <value>Описание не предоставлено</value>
+  </data>
+  <data name="MessagePackageContainPythonScript" xml:space="preserve">
+    <value>В пакете или в одной из его зависимостей содержатся сценарии или двоичные коды Python. Вы хотите продолжить?</value>
+  </data>
+  <data name="MessagePackageNewerDynamo" xml:space="preserve">
+    <value>Этот пакет или одна из его зависимостей были созданы для более поздней версии Dynamo. Они могут не работать в этой версии. Продолжить?</value>
+  </data>
+  <data name="MessageSelectAtLeastOneNode" xml:space="preserve">
+    <value>Необходимо выбрать хотя бы один пользовательский узел.</value>
+  </data>
+  <data name="MessageSelectSymbolNotFound" xml:space="preserve">
+    <value>Выбранное обозначение не найдено в рабочем пространстве</value>
+  </data>
+  <data name="MessageSubmitSameNamePackage" xml:space="preserve">
+    <value>Узел является частью пакета {0} с именем «{1}». Отправить новую версию этого пакета?
+
+При отказе данный узел будет перемещен в новый пакет, создаваемый в данный момент.</value>
+  </data>
+  <data name="MessageToDeprecatePackage" xml:space="preserve">
+    <value>Вы действительно хотите исключить {0}? Этот запрос будет отклонен, если вы не являетесь разработчиком пакета. Это означает, что вы больше не будете обслуживать данный пакет, несмотря на то что он все равно будет отображаться в результатах поиска. 
+
+Всегда можно отменить исключение пакета.</value>
+  </data>
+  <data name="MessageToUndeprecatePackage" xml:space="preserve">
+    <value>Вы действительно хотите отменить исключение {0}? Этот запрос будет отклонен, если вы не являетесь разработчиком этого пакета. Это означает, что вы продолжите обслуживать данный пакет, и он будет отображаться при просмотре пользователями пакетов. 
+
+Всегда можно исключить пакет повторно.</value>
+  </data>
+  <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
+    <value>Пакет {0} имеет одну или несколько зависимостей, которые конфликтуют со следующими пакетами, используемыми в рабочем пространстве: {1}. Конфликты зависимостей могут привести к непредвиденному поведению.
+    
+Продолжить установку, не удаляя уже установленные пакеты?
+
+В противном случае {2} необходимо удалить {1} для продолжения работы, однако это невозможно, так как они используются. Попробуйте перезапустить {2}, а затем повторно скачайте {0}.</value>
+  </data>
+  <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
+    <value>Пакет {0} имеет одну или несколько зависимостей, конфликтующих со следующими пакетами:
+
+{1}
+
+Дальнейшая установка пакета может привести к непредвиденному поведению.
+
+Во избежание такой ситуации удалите загруженные конфликтующие пакеты, перезапустите Dynamo и повторно скачайте {0}.</value>
+  </data>
+  <data name="MessageUnkownErrorOpeningFile" xml:space="preserve">
+    <value>Неизвестная ошибка при открытии файла: {0}</value>
+  </data>
+  <data name="MessageUnsavedChanges0" xml:space="preserve">
+    <value>Следующие рабочие пространства не были сохранены:</value>
+  </data>
+  <data name="MessageUnsavedChanges1" xml:space="preserve">
+    <value>. Сохраните их и повторите попытку.</value>
+  </data>
+  <data name="MinorVersionNonNegative" xml:space="preserve">
+    <value>Необходимо ввести вспомогательную версию в виде целого числа, не являющегося отрицательным.</value>
+  </data>
+  <data name="MoreButton" xml:space="preserve">
+    <value>Больше</value>
+  </data>
+  <data name="NameNeedMoreCharacters" xml:space="preserve">
+    <value>Должно быть не менее 3 символов</value>
+  </data>
+  <data name="PackageManagerProvidePackageName" xml:space="preserve">
+    <value>Укажите имя пакета</value>
+  </data>
+  <data name="PackageManagerProvidePackageNameAndFiles" xml:space="preserve">
+    <value>Укажите имя пакета и выберите файлы</value>
+  </data>
+  <data name="PackageManagerProvidePackageNameAndVersion" xml:space="preserve">
+    <value>Укажите имя пакета и номер версии</value>
+  </data>
+  <data name="PackageManagerProvideVersion" xml:space="preserve">
+    <value>Укажите номер версии</value>
+  </data>
+  <data name="PackageManagerProvideVersionAndFiles" xml:space="preserve">
+    <value>Укажите номер версии и выберите файлы</value>
+  </data>
+  <data name="PackageManagerProvideFiles" xml:space="preserve">
+    <value>Выберите файлы</value>
+  </data>
+  <data name="NodeContextMenuEnablePeriodicUpdate" xml:space="preserve">
+    <value>Включить периодическое обновление</value>
+  </data>
+  <data name="NodeContextMenuHelp" xml:space="preserve">
+    <value>Справка...</value>
+  </data>
+  <data name="NodeContextMenuIsInput" xml:space="preserve">
+    <value>Является вводом</value>
+  </data>
+  <data name="NodeContextMenuIsOutput" xml:space="preserve">
+    <value>Является выводом</value>
+  </data>
+  <data name="NodeContextMenuPreview" xml:space="preserve">
+    <value>Предварительный просмотр геометрии</value>
+  </data>
+  <data name="NodeContextMenuRenameNode" xml:space="preserve">
+    <value>Переименовать</value>
+  </data>
+  <data name="NodeContextMenuShowLabels" xml:space="preserve">
+    <value>Показать метки</value>
+  </data>
+  <data name="NodeHelpWindowNodeCategory" xml:space="preserve">
+    <value>КАТЕГОРИЯ</value>
+  </data>
+  <data name="NodeHelpWindowNodeDescription" xml:space="preserve">
+    <value>ОПИСАНИЕ</value>
+  </data>
+  <data name="NodeHelpWindowNodeInput" xml:space="preserve">
+    <value>ВХОДНЫЕ ДАННЫЕ</value>
+  </data>
+  <data name="NodeHelpWindowNodeOutput" xml:space="preserve">
+    <value>ВЫВОДЫ</value>
+  </data>
+  <data name="NodeHelpWindowNodeType" xml:space="preserve">
+    <value>ТИП УЗЛА</value>
+  </data>
+  <data name="NodesRunStatus" xml:space="preserve">
+    <value>Заморозить</value>
+  </data>
+  <data name="NodeViewCustomizationFindErrorMessage" xml:space="preserve">
+    <value>Ошибка при поиске адаптаций вида узла для {0}. Обратитесь к автору этой сборки для получения дополнительной информации.</value>
+  </data>
+  <data name="NoneString" xml:space="preserve">
+    <value>нет</value>
+  </data>
+  <data name="NoteViewContextMenuDelete" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="NoteViewContextMenuEdit" xml:space="preserve">
+    <value>Редактировать...</value>
+  </data>
+  <data name="NullString" xml:space="preserve">
+    <value>ноль</value>
+  </data>
+  <data name="OKButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="OneAssemblyWasLoadedSeveralTimesErrorMessage" xml:space="preserve">
+    <value>Каждую сборку следует загружать только один раз.
+Следующие сборки были загружены несколько раз:
+</value>
+  </data>
+  <data name="PackageManagerNoValidationErrors" xml:space="preserve">
+    <value>No validation errors</value>
+  </data>
+  <data name="OnlyTitle" xml:space="preserve">
+    <value>только</value>
+  </data>
+  <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
+    <value>Открыть определение {0}...</value>
+  </data>
+  <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
+    <value>Подтверждение загрузки пакета</value>
+  </data>
+  <data name="PackageDownloadErrorMessageBoxTitle" xml:space="preserve">
+    <value>Ошибка загрузки пакета</value>
+  </data>
+  <data name="PackageDownloadMessageBoxTitle" xml:space="preserve">
+    <value>Загрузка пакета</value>
+  </data>
+  <data name="PackageDownloadStateDownloaded" xml:space="preserve">
+    <value>Загружено</value>
+  </data>
+  <data name="PackageDownloadStateDownloading" xml:space="preserve">
+    <value>Загрузка</value>
+  </data>
+  <data name="PackageDownloadStateError" xml:space="preserve">
+    <value>Ошибка</value>
+  </data>
+  <data name="PackageDownloadStateInstalled" xml:space="preserve">
+    <value>Установлено</value>
+  </data>
+  <data name="PackageDownloadStateInstalling" xml:space="preserve">
+    <value>Установка</value>
+  </data>
+  <data name="PackageDownloadStateStarting" xml:space="preserve">
+    <value>Запуск</value>
+  </data>
+  <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
+    <value>Из-за ограничений в .NET Framework невозможно обновить сборку пакета, поскольку он уже загружен. Закройте {0}, обновите сборку и повторите попытку.</value>
+  </data>
+  <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
+    <value>Не удалось обновить сборку</value>
+  </data>
+  <data name="PackageFolderNotAccessible" xml:space="preserve">
+    <value>При установке пакета произошла ошибка. Dynamo не удалось получить доступ на чтение/запись к
+{0}</value>
+  </data>
+  <data name="PackageNameCannotContainTheseCharacters" xml:space="preserve">
+    <value>Имя пакета не может содержать</value>
+  </data>
+  <data name="PackageNeedAtLeastOneFile" xml:space="preserve">
+    <value>Пакет должен содержать хотя бы один файл.</value>
+  </data>
+  <data name="PackageCompatibilityMatrixMissing" xml:space="preserve">
+    <value>Provide compatibility information for the package..</value>
+  </data>
+  <data name="PackageNotExisted" xml:space="preserve">
+    <value>Корневая папка пакета не существует. Выполните переустановку пакета.</value>
+  </data>
+  <data name="PackagePathViewAccept" xml:space="preserve">
+    <value>Принять изменения</value>
+  </data>
+  <data name="PackagePathViewHeading" xml:space="preserve">
+    <value>Пути:</value>
+  </data>
+  <data name="PackagePathViewSummary1" xml:space="preserve">
+    <value>Добавить пути для отображения узлов и пакетов в библиотеке.</value>
+  </data>
+  <data name="PackagePathViewTitle" xml:space="preserve">
+    <value>Управление путями узла и пакета</value>
+  </data>
+  <data name="PackagePathViewToolTipDown" xml:space="preserve">
+    <value>Переместить выбранный путь вниз</value>
+  </data>
+  <data name="PackagePathViewToolTipMinus" xml:space="preserve">
+    <value>Удалить выбранный путь из списка</value>
+  </data>
+  <data name="PackagePathViewToolTipPlus" xml:space="preserve">
+    <value>Добавить новый путь в список</value>
+  </data>
+  <data name="PackagePathViewToolTipUp" xml:space="preserve">
+    <value>Переместить выбранный путь вверх</value>
+  </data>
+  <data name="PackageManagerFinishedPackagePackagePath" xml:space="preserve">
+    <value>Путь к пакету</value>
+  </data>
+  <data name="PackageManagerFinishedPackageFilesUploadedMessage" xml:space="preserve">
+    <value> файла(ов) выгружено</value>
+  </data>
+  <data name="PackageManagerFinishedPackageFilesPublishedMessage" xml:space="preserve">
+    <value> файла(ов) опубликовано</value>
+  </data>
+  <data name="PackagePathAutoAddNotificationTitle" xml:space="preserve">
+    <value>Добавлен путь к пакету</value>
+  </data>
+  <data name="PackagePathAutoAddNotificationShortDescription" xml:space="preserve">
+    <value>Библиотека (*.dll, *.ds) была недавно импортирована в Dynamo. Путь к ней автоматически добавлен в раздел «Настройки» &gt; «Пути к узлу и пакету...»</value>
+  </data>
+  <data name="PackagePathAutoAddNotificationDetailedDescription" xml:space="preserve">
+    <value>Путь для импорта «{0}» добавлен в раздел «Пути к узлу и пакету». Чтобы обновить или удалить этот путь, выберите Dynamo &gt; «Настройки» &gt; Package Manager &gt; «Пути к узлу и пакету...»</value>
+  </data>
+  <data name="PackageSearchStateNoResult" xml:space="preserve">
+    <value>Поиск не дал результатов!</value>
+  </data>
+  <data name="PackageSearchStateSearching" xml:space="preserve">
+    <value>Поиск...</value>
+  </data>
+  <data name="PackageSearchStateSyncingWithServer" xml:space="preserve">
+    <value>Синхронизация с сервером...</value>
+  </data>
+  <data name="PackageSearchViewClearButton" xml:space="preserve">
+    <value>Очистить</value>
+  </data>
+  <data name="PackageSearchViewClearButtonTooltip" xml:space="preserve">
+    <value>Очистить загруженные файлы</value>
+  </data>
+  <data name="PackageSearchViewContextMenuOrderAscending" xml:space="preserve">
+    <value>По возрастанию</value>
+  </data>
+  <data name="PackageSearchViewContextMenuOrderDescending" xml:space="preserve">
+    <value>По убыванию</value>
+  </data>
+  <data name="PackageSearchViewContextMenuSortByAuthor" xml:space="preserve">
+    <value>Автор</value>
+  </data>
+  <data name="PackageSearchViewContextMenuSortByDownloads" xml:space="preserve">
+    <value>Загрузка</value>
+  </data>
+  <data name="PackageSearchViewContextMenuSortByName" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="PackageSearchViewContextMenuSortByVotes" xml:space="preserve">
+    <value>Голоса</value>
+  </data>
+  <data name="PackageSearchViewContextMenuSortyByUpdate" xml:space="preserve">
+    <value>Самые последние обновления</value>
+  </data>
+  <data name="PackageManagerPackageDeprecated" xml:space="preserve">
+    <value>Исключено</value>
+  </data>
+  <data name="PackageSearchViewDeprecatedTooltip" xml:space="preserve">
+    <value>Разработчики данного пакета завершили его обслуживание, и обновления больше поступать не будут. Используйте на свой страх и риск!</value>
+  </data>
+  <data name="PackageSearchViewDescription" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="PackageSearchViewInstallButton" xml:space="preserve">
+    <value>⇓ Установить</value>
+  </data>
+  <data name="PackageSearchViewInstallLatestVersion" xml:space="preserve">
+    <value>Установить последнюю версию</value>
+  </data>
+  <data name="PackageSearchViewInstallLatestVersionTo" xml:space="preserve">
+    <value>Установить в папку...</value>
+  </data>
+  <data name="PackageSearchViewInstallThisVersion" xml:space="preserve">
+    <value>Установить эту версию</value>
+  </data>
+  <data name="PackageSearchViewInstallThisVersionTo" xml:space="preserve">
+    <value>Установить эту версию в папку...</value>
+  </data>
+  <data name="PackageSearchViewKeywords" xml:space="preserve">
+    <value>Ключевые слова</value>
+  </data>
+  <data name="PackageSearchViewSearchTextBox" xml:space="preserve">
+    <value>Поиск...</value>
+  </data>
+  <data name="PackageSearchViewSortByButton" xml:space="preserve">
+    <value>Сортировать по</value>
+  </data>
+  <data name="PackageSearchViewTitle" xml:space="preserve">
+    <value>Поиск пакета в Интернете</value>
+  </data>
+  <data name="PackageSearchViewUpvoteButtonTooltip" xml:space="preserve">
+    <value>Проголосовать в поддержку этого пакета</value>
+  </data>
+  <data name="PackageSearchViewVersions" xml:space="preserve">
+    <value>Версии</value>
+  </data>
+  <data name="PackageSearchViewVisitRepositoryBuutton" xml:space="preserve">
+    <value>Посетите хранилище пакетов</value>
+  </data>
+  <data name="PackageSearchViewVisitWebSiteButton" xml:space="preserve">
+    <value>Посетите веб-сайт пакета</value>
+  </data>
+  <data name="PackageStateUnknown" xml:space="preserve">
+    <value>Неизвестно</value>
+  </data>
+  <data name="PackageTypeShortString" xml:space="preserve">
+    <value>PKG</value>
+  </data>
+  <data name="PackageUploadNoDependency" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="PackageUploadStateCompressing" xml:space="preserve">
+    <value>Сжатие...</value>
+  </data>
+  <data name="PackageUploadStateCopying" xml:space="preserve">
+    <value>Копирование...</value>
+  </data>
+  <data name="PackageUploadStateError" xml:space="preserve">
+    <value>Ошибка!</value>
+  </data>
+  <data name="PackageUploadStateReady" xml:space="preserve">
+    <value>Готово</value>
+  </data>
+  <data name="PackageUploadStateUploaded" xml:space="preserve">
+    <value>Выгружено</value>
+  </data>
+  <data name="PackageUploadStateUploading" xml:space="preserve">
+    <value>Загрузка на сервер...</value>
+  </data>
+  <data name="PackageFilterByHost" xml:space="preserve">
+    <value>ОСНОВА</value>
+  </data>
+  <data name="PackageFilterByStatus" xml:space="preserve">
+    <value>СТАТУС</value>
+  </data>
+  <data name="PackageFilterNewTooltip" xml:space="preserve">
+    <value>Опубликовано за последние 30 дней</value>
+  </data>
+  <data name="PackageFilterUpdatedTooltip" xml:space="preserve">
+    <value>Обновлено за последние 30 дней</value>
+  </data>
+  <data name="PackageFilterDeprecatedTooltip" xml:space="preserve">
+    <value>Исключенные пакеты</value>
+  </data>
+  <data name="PackageFilterByDependency" xml:space="preserve">
+    <value>ЗАВИСИМОСТЬ</value>
+  </data>
+  <data name="PackageFilterHasDependenciesTooltip" xml:space="preserve">
+    <value>Пакеты, для которых требуется установка других пакетов</value>
+  </data>
+  <data name="PackageFilterHasNoDependenciesTooltip" xml:space="preserve">
+    <value>Автономные пакеты</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterActive" xml:space="preserve">
+    <value>Активный</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterDeprecated" xml:space="preserve">
+    <value>Исключено</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterDependencies" xml:space="preserve">
+    <value>Есть зависимости</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterNoDependencies" xml:space="preserve">
+    <value>Нет зависимостей</value>
+  </data>
+  <data name="PackageUseNewerDynamoMessageBoxTitle" xml:space="preserve">
+    <value>Пакет может не работать в этой версии {0}.</value>
+  </data>
+  <data name="PackageWarningMessageBoxTitle" xml:space="preserve">
+    <value>Предупреждение о пакете</value>
+  </data>
+  <data name="PackageManagerClearAllButtonText" xml:space="preserve">
+    <value>Очистить все</value>
+  </data>
+  <data name="Periodic" xml:space="preserve">
+    <value>Периодически</value>
+  </data>
+  <data name="PortViewContextMenuUserDefaultValue" xml:space="preserve">
+    <value>Использовать значение по умолчанию</value>
+  </data>
+  <data name="PresetOverwrite" xml:space="preserve">
+    <value>Набор с таким именем уже существует. Заменить его?</value>
+  </data>
+  <data name="PresetPromptDescriptionTooltip" xml:space="preserve">
+    <value>Описание заданной конфигурации.</value>
+  </data>
+  <data name="PresetPromptNameTooltip" xml:space="preserve">
+    <value>Уникальное имя набора параметров.</value>
+  </data>
+  <data name="PresetsWindowDescription" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="PresetsWindowDescriptionHint" xml:space="preserve">
+    <value>Введите описание для данного набора параметров.</value>
+  </data>
+  <data name="PresetsWindowName" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="PresetsWindowTitle" xml:space="preserve">
+    <value>Стандартные свойства конфигурации</value>
+  </data>
+  <data name="PresetTextRemaining" xml:space="preserve">
+    <value>Символов осталось</value>
+  </data>
+  <data name="PresetWarningMessage" xml:space="preserve">
+    <value>Не выбраны узлы ввода. Для создания набора параметров выберите по крайней мере один узел ввода.</value>
+  </data>
+  <data name="PreviewListLabel" xml:space="preserve">
+    <value>Список</value>
+  </data>
+  <data name="PublishPackage" xml:space="preserve">
+    <value>Публикация в Интернете</value>
+  </data>
+  <data name="PublishPackageDialogCaption" xml:space="preserve">
+    <value>Публикация выполнена успешно</value>
+  </data>
+  <data name="PublishPackageSelectPackageContentsMessage" xml:space="preserve">
+    <value>Выберите содержимое пакета</value>
+  </data>
+  <data name="PublishPackagePreviewPackageContentsMessage" xml:space="preserve">
+    <value>Проверьте содержимое пакета (только чтение)</value>
+  </data>
+  <data name="PublishPackageLocally" xml:space="preserve">
+    <value>Опубликовать локально</value>
+  </data>
+  <data name="PublishPackageResetButton" xml:space="preserve">
+    <value>Сбросить</value>
+  </data>
+  <data name="PublishPackageMessage" xml:space="preserve">
+    <value>Пакет успешно опубликован. 
+Опубликовать другой пакет?</value>
+  </data>
+  <data name="PublishPackagePackageContent" xml:space="preserve">
+    <value>Содержимое пакета</value>
+  </data>
+  <data name="PublishPackageViewAddFileButton" xml:space="preserve">
+    <value>Добавить файлы</value>
+  </data>
+  <data name="PublishPackageViewAddFileButtonTooltip" xml:space="preserve">
+    <value>Добавить файл</value>
+  </data>
+  <data name="PublishPackageRemoveFromPacakgeTooltip" xml:space="preserve">
+    <value>Удалить из пакета</value>
+  </data>
+  <data name="PublishPackageViewContextMenuIsNodeLibrary" xml:space="preserve">
+    <value>Библиотека узлов</value>
+  </data>
+  <data name="PublishPackageViewLicense" xml:space="preserve">
+    <value>Лицензия (необязательно)</value>
+  </data>
+  <data name="PublishPackageViewPackageDependencies" xml:space="preserve">
+    <value>Зависимости</value>
+  </data>
+  <data name="PublishPackageViewPackageDescriptionTooltip" xml:space="preserve">
+    <value>Описание, которое помогает пользователям понять, в каких целях может использоваться пакет.</value>
+  </data>
+  <data name="PublishPackageViewPackageGroup" xml:space="preserve">
+    <value>Группа (необязательно)</value>
+  </data>
+  <data name="PublishPackageViewPackageGroupTooltip" xml:space="preserve">
+    <value>Группа для сортировки данного пакета по категориям. Может оказаться полезным для коллекции пакетов, связанных с фирмой, учебным заведением, и т. д.</value>
+  </data>
+  <data name="PublishPackageViewPackageKeywords" xml:space="preserve">
+    <value>Ключевые слова (необязательно)</value>
+  </data>
+  <data name="PublishPackageViewPackageKeywordsTooltip" xml:space="preserve">
+    <value>Ключевые слова служат для поиска требуемого пакета в базе данных. Ключевые слова разделяются при помощи пробелов.</value>
+  </data>
+  <data name="PublishPackageViewPackageName" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="PublishPackageViewPackageNameTooltip" xml:space="preserve">
+    <value>Уникальное имя пакета.</value>
+  </data>
+  <data name="PublishPackageViewPackageVersion" xml:space="preserve">
+    <value>Версия</value>
+  </data>
+  <data name="PublishPackageViewMajorPackageVersionLabel" xml:space="preserve">
+    <value>Основная</value>
+  </data>
+  <data name="PublishPackageViewMinorPackageVersionLabel" xml:space="preserve">
+    <value>Вспомогательная</value>
+  </data>
+  <data name="PublishPackageViewBuildPackageVersionLabel" xml:space="preserve">
+    <value>Сборка</value>
+  </data>
+  <data name="PublishPackageViewPackageVersionTooltip" xml:space="preserve">
+    <value>Имя версии помогает отправителю отслеживать обновления пакета. Когда добавляется новая версия пакета, номер версии следует увеличить.</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebsiteTooltip" xml:space="preserve">
+    <value>Ссылка на веб-сайт для пакета.</value>
+  </data>
+  <data name="PublishPackageViewGithubLinkTooltip" xml:space="preserve">
+    <value>Ссылка на репозиторий GitHub для пакета.</value>
+  </data>
+  <data name="PublishPackageViewLicenceTooltip" xml:space="preserve">
+    <value>Лицензия пакета.</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderTooltip" xml:space="preserve">
+    <value>Правообладатель пакета.</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearTooltip" xml:space="preserve">
+    <value>Год авторского права для пакета.</value>
+  </data>
+  <data name="PublishPackageViewPublish" xml:space="preserve">
+    <value>Публикация пакета</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebiSite" xml:space="preserve">
+    <value>Адрес веб-сайта (необязательно)</value>
+  </data>
+  <data name="PublishPackageViewRepositoryUrl" xml:space="preserve">
+    <value>URL-адрес хранилища (необязательно)</value>
+  </data>
+  <data name="PublishPackageViewTitle" xml:space="preserve">
+    <value>Публикация пакета {0}</value>
+  </data>
+  <data name="QueryMember" xml:space="preserve">
+    <value>Запрос</value>
+  </data>
+  <data name="RerunButton" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="RunCompletedMessage" xml:space="preserve">
+    <value>Процесс завершен.</value>
+  </data>
+  <data name="RunCompletedWithScaleChangeAndWarningsMessage" xml:space="preserve">
+    <value>Прогон завершен с предупреждениями о настройке нового рабочего диапазона.</value>
+  </data>
+  <data name="RunCompletedWithScaleChangeMessage" xml:space="preserve">
+    <value>Прогон завершен с новым рабочим диапазоном.</value>
+  </data>
+  <data name="RunCompletedWithWarningsMessage" xml:space="preserve">
+    <value>Выполнение процесса завершено с предупреждениями.</value>
+  </data>
+  <data name="RunStartedMessage" xml:space="preserve">
+    <value>Процесс запущен...</value>
+  </data>
+  <data name="RunStartedWithScaleChangeMessage" xml:space="preserve">
+    <value>Прогон запущен с новым рабочим диапазоном...</value>
+  </data>
+  <data name="RunTypeToolTipAutomatically" xml:space="preserve">
+    <value>Изменения графиков выполняются в реальном времени. Рекомендуется использовать для небольших, известных графиков и Dynamo Sandbox.</value>
+  </data>
+  <data name="RunTypeToolTipManually" xml:space="preserve">
+    <value>Изменения графика выполняются при нажатии кнопки «Запуск». Этот режим используется при работе с большими и незнакомыми графиками и основными программами.</value>
+  </data>
+  <data name="RunTypeToolTipPeriodicallyDisabled" xml:space="preserve">
+    <value>Периодическое выполнение недоступно при отсутствии поддерживающих его узлов в графике.</value>
+  </data>
+  <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
+    <value>Изменения графика выполняются с заданным интервалом. Доступно, только если график содержит определенные узлы, такие как DateTime.Now или WebRequest.</value>
+  </data>
+  <data name="UnsavedChangesMessageBoxTitle" xml:space="preserve">
+    <value>Несохраненные изменения</value>
+  </data>
+  <data name="SaveModelToSTLDialogTitle" xml:space="preserve">
+    <value>Сохранение модели в формате STL.</value>
+  </data>
+  <data name="SaveWorkbenToImageDialogTitle" xml:space="preserve">
+    <value>Сохранить инструментарий в виде изображения</value>
+  </data>
+  <data name="ScalingExtraLargeButton" xml:space="preserve">
+    <value>Очень большой</value>
+  </data>
+  <data name="ScalingLargeButton" xml:space="preserve">
+    <value>Большой</value>
+  </data>
+  <data name="ScalingMediumButton" xml:space="preserve">
+    <value>Средний</value>
+  </data>
+  <data name="ScalingSmallButton" xml:space="preserve">
+    <value>Маленький</value>
+  </data>
+  <data name="ScreenShotFrom3DParameter" xml:space="preserve">
+    <value>screenshot_3D</value>
+  </data>
+  <data name="ScreenShotFrom3DShortcutParameter" xml:space="preserve">
+    <value>screenshot_3D_shortcut</value>
+  </data>
+  <data name="SearchViewTopResult" xml:space="preserve">
+    <value>Верхний результат</value>
+  </data>
+  <data name="SelectAllTitle" xml:space="preserve">
+    <value>Выбрать все</value>
+  </data>
+  <data name="SelectionErrorMessageBoxTitle" xml:space="preserve">
+    <value>Ошибка при выборе</value>
+  </data>
+  <data name="SelectNodeButtonChange" xml:space="preserve">
+    <value>Изменить</value>
+  </data>
+  <data name="SelectNodeButtonSelect" xml:space="preserve">
+    <value>Выбрать</value>
+  </data>
+  <data name="ShowClassicNodeLibrary" xml:space="preserve">
+    <value>Показать классическую библиотеку узлов</value>
+  </data>
+  <data name="ShowHideLibraryIconTooltip" xml:space="preserve">
+    <value>Показать/скрыть</value>
+  </data>
+  <data name="ShowRunPreviewDisableToolTip" xml:space="preserve">
+    <value>Предварительный просмотр рабочего состояния графика. Назначенные для работы узлы подсвечиваются на графике.</value>
+  </data>
+  <data name="ShowRunPreviewEnableToolTip" xml:space="preserve">
+    <value>Предварительный просмотр выполнения недоступен при автоматическом запуске процесса</value>
+  </data>
+  <data name="SolutionToFolderNotWritatbleError" xml:space="preserve">
+    <value>Обновите права или выберите «Настройки &gt; Пути к узлу и пакету...», чтобы изменить каталог по умолчанию.</value>
+  </data>
+  <data name="StartPageAdvancedTutorials" xml:space="preserve">
+    <value>Улучшенные учебные пособия</value>
+  </data>
+  <data name="StartPageAsk" xml:space="preserve">
+    <value>ОБСУЖДЕНИЯ</value>
+  </data>
+  <data name="StartPageBackupLocation" xml:space="preserve">
+    <value>Папка с копиями</value>
+  </data>
+  <data name="StartPageBackupNoCrash" xml:space="preserve">
+    <value>РЕЗЕРВНОЕ КОПИРОВАНИЕ</value>
+  </data>
+  <data name="StartPageBackupOnCrash" xml:space="preserve">
+    <value>ВОССТАН. ИЗ РЕЗ. КОПИИ</value>
+  </data>
+  <data name="StartPageCode" xml:space="preserve">
+    <value>КОД</value>
+  </data>
+  <data name="StartPageDiscussionForum" xml:space="preserve">
+    <value>Форум для обсуждения</value>
+  </data>
+  <data name="StartPageDynamoDictionary" xml:space="preserve">
+    <value>Словарь Dynamo</value>
+  </data>
+  <data name="StartPageDynamoPrimer" xml:space="preserve">
+    <value>Dynamo Primer</value>
+  </data>
+  <data name="StartPageFiles" xml:space="preserve">
+    <value>ФАЙЛЫ</value>
+  </data>
+  <data name="StartPageGithubRepository" xml:space="preserve">
+    <value>Хранилище Github</value>
+  </data>
+  <data name="StartPageMoreSamples" xml:space="preserve">
+    <value>Больше образцов</value>
+  </data>
+  <data name="StartPageNewCustomNode" xml:space="preserve">
+    <value>Пользовательский узел</value>
+  </data>
+  <data name="StartPageNewFile" xml:space="preserve">
+    <value>Создать</value>
+  </data>
+  <data name="StartPageOpenFile" xml:space="preserve">
+    <value>Открыть</value>
+  </data>
+  <data name="StartPageRecent" xml:space="preserve">
+    <value>ПОСЛЕДНИЕ</value>
+  </data>
+  <data name="StartPageReference" xml:space="preserve">
+    <value>СПРАВКА</value>
+  </data>
+  <data name="StartPageSamples" xml:space="preserve">
+    <value>ОБРАЗЦЫ</value>
+  </data>
+  <data name="StartPageSendIssues" xml:space="preserve">
+    <value>Отправить проблемы</value>
+  </data>
+  <data name="StartPageShowSamples" xml:space="preserve">
+    <value>Показать образцы в папке</value>
+  </data>
+  <data name="StartPageVideoTutorials" xml:space="preserve">
+    <value>Учебные видеоролики</value>
+  </data>
+  <data name="StartPageVisitWebsite" xml:space="preserve">
+    <value>Веб-сайт {0}</value>
+  </data>
+  <data name="StartPageWhatsNew" xml:space="preserve">
+    <value>Начало работы</value>
+  </data>
+  <data name="StringInputNodeEditMenu" xml:space="preserve">
+    <value>Редактировать...</value>
+  </data>
+  <data name="TabFileNameReadOnlyPrefix" xml:space="preserve">
+    <value>[Только для чтения] </value>
+  </data>
+  <data name="TermsOfUseAcceptButton" xml:space="preserve">
+    <value>Я принимаю</value>
+  </data>
+  <data name="TermsOfUseDeclineButton" xml:space="preserve">
+    <value>Я не принимаю</value>
+  </data>
+  <data name="TermsOfUseViewTitle" xml:space="preserve">
+    <value>Условия использования Package Manager</value>
+  </data>
+  <data name="TooltipCurrentIndex" xml:space="preserve">
+    <value>{0} из {1}</value>
+  </data>
+  <data name="UnableToAccessPackageDirectory" xml:space="preserve">
+    <value>Не удалось получить доступ к папке пакета</value>
+  </data>
+  <data name="UndeprecatingPackageMessageBoxTitle" xml:space="preserve">
+    <value>Отмена исключения пакета</value>
+  </data>
+  <data name="DeleteFailureMessageBoxTitle" xml:space="preserve">
+    <value>Сбой при удалении</value>
+  </data>
+  <data name="MessageNeedToRestartAfterDeleteTitle" xml:space="preserve">
+    <value>Удаление пакета</value>
+  </data>
+  <data name="UnitAcres" xml:space="preserve">
+    <value>Акры</value>
+  </data>
+  <data name="UnitArea" xml:space="preserve">
+    <value>Площадь</value>
+  </data>
+  <data name="UnitCentimeters" xml:space="preserve">
+    <value>Сантиметры</value>
+  </data>
+  <data name="UnitCubicCentimeter" xml:space="preserve">
+    <value>КубСантиметры</value>
+  </data>
+  <data name="UnitCubicFoot" xml:space="preserve">
+    <value>КубФуты</value>
+  </data>
+  <data name="UnitCubicInches" xml:space="preserve">
+    <value>КубДюймы</value>
+  </data>
+  <data name="UnitCubicMeters" xml:space="preserve">
+    <value>КубМетры</value>
+  </data>
+  <data name="UnitCubicMillimeter" xml:space="preserve">
+    <value>КубМиллиметры</value>
+  </data>
+  <data name="UnitCubicYards" xml:space="preserve">
+    <value>КубЯрды</value>
+  </data>
+  <data name="UnitDecimeters" xml:space="preserve">
+    <value>Дециметры</value>
+  </data>
+  <data name="UnitFeet" xml:space="preserve">
+    <value>Футы</value>
+  </data>
+  <data name="UnitHectares" xml:space="preserve">
+    <value>Гектары</value>
+  </data>
+  <data name="UnitInches" xml:space="preserve">
+    <value>Дюймы</value>
+  </data>
+  <data name="UnitLength" xml:space="preserve">
+    <value>Длина</value>
+  </data>
+  <data name="UnitLitres" xml:space="preserve">
+    <value>Литры</value>
+  </data>
+  <data name="UnitMeters" xml:space="preserve">
+    <value>Метры</value>
+  </data>
+  <data name="UnitMillimeters" xml:space="preserve">
+    <value>Миллиметры</value>
+  </data>
+  <data name="Units" xml:space="preserve">
+    <value>Единицы:</value>
+  </data>
+  <data name="UnitSquareCentimeter" xml:space="preserve">
+    <value>КвСантиметры</value>
+  </data>
+  <data name="UnitSquareFoot" xml:space="preserve">
+    <value>КвФуты</value>
+  </data>
+  <data name="UnitSquareInch" xml:space="preserve">
+    <value>КвДюймы</value>
+  </data>
+  <data name="UnitSquareMeter" xml:space="preserve">
+    <value>КвМетры</value>
+  </data>
+  <data name="UnitSquareMillimeter" xml:space="preserve">
+    <value>КвМиллиметры</value>
+  </data>
+  <data name="UnitUSGallons" xml:space="preserve">
+    <value>Американские галлоны</value>
+  </data>
+  <data name="UnitVolume" xml:space="preserve">
+    <value>Объем</value>
+  </data>
+  <data name="UnknowDateFormat" xml:space="preserve">
+    <value>Неизвестный формат даты</value>
+  </data>
+  <data name="UpdateMessage" xml:space="preserve">
+    <value>Доступны обновления для Dynamo.
+Для установки обновлений требуется закрыть Dynamo и все основные приложения.
+Вы хотите установить последние обновления Dynamo?</value>
+  </data>
+  <data name="UsageReportPromptDialogTitle" xml:space="preserve">
+    <value>Соглашения для сбора данных</value>
+  </data>
+  <data name="AgreeToMLAutocompleteTOUText" xml:space="preserve">
+    <value>Я хочу участвовать в сборе данных для программ машинного обучения</value>
+  </data>
+  <data name="UseLevelKeepListStructureHint" xml:space="preserve">
+    <value>Сохранить 1 вложение списка ввода</value>
+  </data>
+  <data name="UseLevelKeepListStructurePopupMenuItem" xml:space="preserve">
+    <value>Сохранить структуру списков</value>
+  </data>
+  <data name="UseLevelPopupMenuItem" xml:space="preserve">
+    <value>Используйте уровни</value>
+  </data>
+  <data name="VersionValueGreaterThan0" xml:space="preserve">
+    <value>Значение хотя бы одной версии должно быть больше 0.</value>
+  </data>
+  <data name="Watch3DViewContextMenuPan" xml:space="preserve">
+    <value>_Панорамирование</value>
+  </data>
+  <data name="Watch3DViewContextMenuRotate" xml:space="preserve">
+    <value>_Повернуть</value>
+  </data>
+  <data name="Watch3DViewContextMenuSwitchView" xml:space="preserve">
+    <value>Перейти к _Виду узла</value>
+  </data>
+  <data name="Watch3DViewContextMenuZoomToFit" xml:space="preserve">
+    <value>_Зумировать и вписать</value>
+  </data>
+  <data name="WatchNodeRawDataMenu" xml:space="preserve">
+    <value>Показать исходные данные</value>
+  </data>
+  <data name="ZeroTouchTypeShortString" xml:space="preserve">
+    <value>DLL</value>
+  </data>
+  <data name="RerunButtonToolTip" xml:space="preserve">
+    <value>Повторный прогон графика.</value>
+  </data>
+  <data name="PackageSearchViewSearchTextBoxSyncing" xml:space="preserve">
+    <value>Подождите...</value>
+  </data>
+  <data name="EditNoteWindowTitle" xml:space="preserve">
+    <value>Запись примечания</value>
+  </data>
+  <data name="SideBarPanelViewTitle" xml:space="preserve">
+    <value>Боковое меню</value>
+  </data>
+  <data name="ExtensionAdded" xml:space="preserve">
+    <value>Вкладка расширения добавлена на боковую панель расширений.</value>
+  </data>
+  <data name="ExtensionAlreadyPresent" xml:space="preserve">
+    <value>Новая вкладка не добавляется, т. к. расширение уже присутствует на боковой панели расширений.</value>
+  </data>
+  <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
+    <value>Невозможно загрузить {1}. 
+Установка приведет к конфликту с одним или несколькими определениями узлов, которые уже существуют в загруженном данный момент пакете {0}.
+Для установки {1} Dynamo требуется сначала удалить {0}.
+Для завершения удаления перезапустите Dynamo.
+
+Удалить следующие пакеты: {0}?</value>
+  </data>
+  <data name="PreviewText" xml:space="preserve">
+    <value> Данная функция доступна в предварительной версии. </value>
+  </data>
+  <data name="PackageHostDependencyTooltip" xml:space="preserve">
+    <value>Пакет содержит узлы, для которых требуются приложения за пределами Dynamo. Чтобы полностью использовать эти узлы, необходимо установить внешние приложения.</value>
+  </data>
+  <data name="PackageHostDependencyFilter" xml:space="preserve">
+    <value>Фильтровать пакеты, для которых требуются приложения за пределами Dynamo. В настоящее время с помощью этой функции можно фильтровать только те пакеты, которые помечены вручную разработчиками во время публикации.</value>
+  </data>
+  <data name="PackageHostDependencyFilterContextItem" xml:space="preserve">
+    <value>Пакеты, для которых требуется определенное внешнее приложение</value>
+  </data>
+  <data name="MessageUninstallSamePackage" xml:space="preserve">
+    <value>«Пакет {0} уже установлен. Для выполнения переустановки сначала удалите его и перезапустите программу для завершения удаления. Пометить {0} для удаления?»</value>
+  </data>
+  <data name="MessagePackageNotFound" xml:space="preserve">
+    <value>Пакет {0} не найден, и его невозможно скачать.</value>
+  </data>
+  <data name="MessagePackageVersionNotFound" xml:space="preserve">
+    <value>Не удалось найти версию {0} {1}.</value>
+  </data>
+  <data name="PublishPackageViewPackageHostDependency" xml:space="preserve">
+    <value>Основа (необязательно)</value>
+  </data>
+  <data name="PublishPackageViewPackageHostDependencyTooltip" xml:space="preserve">
+    <value>Указание того, какие приложения за пределами Dynamo требуются для пакета, например Revit, Civil 3D или Photoshop. Пользователям нужно будет установить их, чтобы иметь возможность полностью использовать пакет.</value>
+  </data>
+  <data name="InfoBubbleDocumentationLinkText" xml:space="preserve">
+    <value>Подробнее...</value>
+  </data>
+  <data name="PackageSearchViewFilterByButton" xml:space="preserve">
+    <value>Фильтровать по</value>
+  </data>
+  <data name="PreferencesViewShowCodeBlockNodeLineNumber" xml:space="preserve">
+    <value>Показать номера линий CodeBlockNode</value>
+  </data>
+  <data name="MessageFailedToDownloadPackageVersion" xml:space="preserve">
+    <value>Не удалось скачать версию {0} пакета с идентификатором {1}. Повторите попытку и сообщите о проблемах с пакетом, если они не будут устранены.</value>
+  </data>
+  <data name="NodeTooltipDescription" xml:space="preserve">
+    <value>Описание: </value>
+  </data>
+  <data name="NodeTooltipOriginalName" xml:space="preserve">
+    <value>Исходное имя узла: </value>
+  </data>
+  <data name="NodeTooltipPackage" xml:space="preserve">
+    <value>Пакет: </value>
+  </data>
+  <data name="RenderingMemoryOutageDescription" xml:space="preserve">
+    <value>Проверьте, требуется ли визуализировать этот объем геометрии. Отключите предварительный просмотр других узлов в графике, чтобы сократить количество геометрии для визуализации, или уменьшите точность визуализации.</value>
+  </data>
+  <data name="RenderingMemoryOutageSummary" xml:space="preserve">
+    <value>При попытке визуализировать геометрию закончилась память для Dynamo. Предварительный просмотр геометрии отключен.</value>
+  </data>
+  <data name="PreferencesViewShowWhitespaceInPythonEditor" xml:space="preserve">
+    <value>Показывать пробелы в редакторе Python</value>
+  </data>
+  <data name="PreferencesViewDefaultPythonEngine" xml:space="preserve">
+    <value>Механизм Python по умолчанию</value>
+  </data>
+  <data name="PreferencesViewPackageDownloadDirectory" xml:space="preserve">
+    <value>Новый путь для скачивания пакетов</value>
+  </data>
+  <data name="PreferencesPackageDownloadDirectoryTooltip" xml:space="preserve">
+    <value>Выберите путь к пакету из этого списка, в который будут скачиваться новые пакеты.</value>
+  </data>
+  <data name="DefaultPythonEngineNone" xml:space="preserve">
+    <value>Использовать настройки системы по умолчанию</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoComplete" xml:space="preserve">
+    <value>Включить автозаполнение узла</value>
+  </data>
+  <data name="ErrorLoadingIcon" xml:space="preserve">
+    <value>Ошибка при загрузке значка приложения: {0}</value>
+  </data>
+  <data name="PublishPackageSelectNodeLibraries" xml:space="preserve">
+    <value>Выбор библиотек узлов</value>
+  </data>
+  <data name="PublishPackageMoreInfoFile" xml:space="preserve">
+    <value>DynamoCoreWpf;PublishPackageDocumentation.html</value>
+  </data>
+  <data name="DynamoViewDynamoMenu" xml:space="preserve">
+    <value>_Dynamo</value>
+  </data>
+  <data name="DynamoViewDynamoMenuAbout" xml:space="preserve">
+    <value>_О программе</value>
+  </data>
+  <data name="DynamoViewDynamoMenuPreferences" xml:space="preserve">
+    <value>_Настройки...</value>
+  </data>
+  <data name="DynamoViewFileMenuExport" xml:space="preserve">
+    <value>_Экспорт</value>
+  </data>
+  <data name="PublishPackageDocTooltipText" xml:space="preserve">
+    <value>Подробнее о пакетах</value>
+  </data>
+  <data name="PreferencesViewFeaturesTab" xml:space="preserve">
+    <value>Возможности</value>
+  </data>
+  <data name="PreferencesViewGeneralTab" xml:space="preserve">
+    <value>Общие</value>
+  </data>
+  <data name="PreferencesViewTitle" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsTab" xml:space="preserve">
+    <value>Параметры отображения</value>
+  </data>
+  <data name="PreferencesViewFontSizeLabel" xml:space="preserve">
+    <value>Размер шрифта узла</value>
+  </data>
+  <data name="PreferencesViewLanguageLabel" xml:space="preserve">
+    <value>Язык</value>
+  </data>
+  <data name="PreferencesViewRunSettingsLabel" xml:space="preserve">
+    <value>Параметры выполнения по умолчанию</value>
+  </data>
+  <data name="PreferencesNodeAutocompleteMethod" xml:space="preserve">
+    <value>Метод ранжирования по умолчанию</value>
+  </data>
+  <data name="ConfidenceToolTipTitle" xml:space="preserve">
+    <value>Надежность</value>
+  </data>
+  <data name="ConfidenceToolTipDescription" xml:space="preserve">
+    <value>Демонстрация приблизительной вероятности того, что данный узел окажется подходящим. Рекомендуемые узлы перечислены в порядке снижения надежности. Процентное выражение надежности для всех рекомендуемых узлов в сумме составляет около 100 %.</value>
+  </data>
+  <data name="ConfidenceToolTipoLearnMore" xml:space="preserve">
+    <value>Подробнее</value>
+  </data>
+  <data name="ObjectType" xml:space="preserve">
+    <value>Соответствие типа узла</value>
+  </data>
+  <data name="RecommendedNodes" xml:space="preserve">
+    <value>Рекомендуемые узлы</value>
+  </data>
+  <data name="DynamoViewExtensionsMenu" xml:space="preserve">
+    <value>Рас_ширения</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderBreakConnection" xml:space="preserve">
+    <value>Разорвать соединение</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderShowConnector" xml:space="preserve">
+    <value>Показать провод</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderSelectConnected" xml:space="preserve">
+    <value>Выбрать соединенные</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderUnpinConnector" xml:space="preserve">
+    <value>Открепить провод</value>
+  </data>
+  <data name="PreferencesViewPython" xml:space="preserve">
+    <value>Python</value>
+  </data>
+  <data name="PreferencesViewRequiresRelaunchOfDynamo" xml:space="preserve">
+    <value>Требуется перезапуск Dynamo</value>
+  </data>
+  <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
+    <value>{0} имеет зависимости, которые конфликтуют со следующими встроенными пакетами: {1}. Конфликты зависимостей могут привести к непредвиденному поведению.
+    
+Продолжить установку {0}?</value>
+  </data>
+  <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
+    <value>Невозможно установить {0}, так как эта версия конфликтует с другой уже установленной версией встроенного пакета {1}.
+    
+Можно попробовать отключить загрузку пакетов из путей встроенных пакетов или выгрузить конфликтующий пакет, а затем перезапустить {2} и скачать {0} еще раз.</value>
+  </data>
+  <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
+    <value>The same version of package {0} is already installed as a built-in package and does not need to be installed again.</value>
+  </data>
+  <data name="MessageSamePackageSameVersInLocalPackages" xml:space="preserve">
+    <value>Эта же версия {0} уже установлена и не требует повторной установки.</value>
+  </data>
+  <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
+    <value>Невозможно установить пакет {0}, так как он конфликтует с другой уже установленной версией {1}. 
+
+Удалить {1}? Перезапустите {2}, чтобы завершить удаление, и попробуйте повторно скачать {0}.</value>
+  </data>
+  <data name="PreferencesViewGeneralSettingsRun" xml:space="preserve">
+    <value>Параметры запуска</value>
+  </data>
+  <data name="PreferencesViewGeneralSettingsGeoScaling" xml:space="preserve">
+    <value>Масштабирование геометрии по умолчанию</value>
+  </data>
+  <data name="PreferencesViewGeneralSettingsBackup" xml:space="preserve">
+    <value>Параметры резервного копирования</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsGroupStyles" xml:space="preserve">
+    <value>Группы</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsRenderPrecision" xml:space="preserve">
+    <value>Точность визуализации</value>
+  </data>
+  <data name="PreferencesViewAlreadyExistingStyleWarning" xml:space="preserve">
+    <value>Имя стиля уже используется</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsDisplaySettings" xml:space="preserve">
+    <value>Параметры отображения</value>
+  </data>
+  <data name="PreferencesViewVisualSettingShowEdges" xml:space="preserve">
+    <value>Показать ребра</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsIsolateSelectedGeo" xml:space="preserve">
+    <value>Изолировать выбранную геометрию</value>
+  </data>
+  <data name="PackagePathViewModel_BuiltInPackages" xml:space="preserve">
+    <value>Встроенные пакеты Dynamo</value>
+  </data>
+  <data name="PreferencesViewSavedChangesLabel" xml:space="preserve">
+    <value>Все изменения сохраняются автоматически</value>
+  </data>
+  <data name="PreferencesViewSavedChangesTooltip" xml:space="preserve">
+    <value>Последнее сохранение:</value>
+  </data>
+  <data name="NodeAutocompleteDocumentationUriString" xml:space="preserve">
+    <value>DynamoCoreWpf;NodeAutocompleteDocumentation.html</value>
+  </data>
+  <data name="FileTrustWarningDocumentationUriString" xml:space="preserve">
+    <value>DynamoCoreWpf;FileTrustWarningDocumentation.html</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteTooltipText" xml:space="preserve">
+    <value>Подробнее о функции автозаполнения узлов.</value>
+  </data>
+  <data name="AddStyleButton" xml:space="preserve">
+    <value>Доб. стиль</value>
+  </data>
+  <data name="ResetCPythonButtonText" xml:space="preserve">
+    <value>Сбросить CPython</value>
+  </data>
+  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
+    <value>Сброс среды CPython путем перезагрузки модулей.</value>
+  </data>
+  <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
+    <value>Отменить и показать проблемы</value>
+  </data>
+  <data name="GraphIssuesOnSave_Description" xml:space="preserve">
+    <value>Имеются неустраненные проблемы, связанные с типом графика. Если этот график предназначен для использования вне Dynamo, устраните все проблемы и сохраните его повторно.</value>
+  </data>
+  <data name="GraphIssuesOnSave_ProceedBtn" xml:space="preserve">
+    <value>Сохранить с проблемами</value>
+  </data>
+  <data name="GraphIssuesOnSave_Summary" xml:space="preserve">
+    <value>Вы пытаетесь сохранить график с неустраненными проблемами</value>
+  </data>
+  <data name="GraphIssuesOnSave_Title" xml:space="preserve">
+    <value>Обнаружены проблемы в типе графика</value>
+  </data>
+  <data name="PackagePathsExpanderName" xml:space="preserve">
+    <value>Пути к узлу и файлу пакета</value>
+  </data>
+  <data name="PreferencesPackageManagerSettingsTab" xml:space="preserve">
+    <value>Параметры пакета</value>
+  </data>
+  <data name="PackagePathAddPathButtonName" xml:space="preserve">
+    <value>Добавить путь</value>
+  </data>
+  <data name="PackagePathPreferencesTitle" xml:space="preserve">
+    <value>Пути поиска пакетов/библиотек</value>
+  </data>
+  <data name="PreferencesViewShowRunPreviewTooltip" xml:space="preserve">
+    <value>Для предварительного просмотра рабочего состояния графика провода, которые подсоединены к портам и задействуются в графике, выделяются оранжевым цветом. Функция доступна, только если текущее рабочее пространство находится в режиме запуска вручную.</value>
+  </data>
+  <data name="PersistentVisualStatusOfLinterIssues" xml:space="preserve">
+    <value>Найдены проблемы</value>
+  </data>
+  <data name="ContextSelectConnectedDownstream" xml:space="preserve">
+    <value>Последующий</value>
+  </data>
+  <data name="ContextSelectConnectedHeader" xml:space="preserve">
+    <value>Выбрать соединенные</value>
+  </data>
+  <data name="ContextSelectConnectedUpstream" xml:space="preserve">
+    <value>Предшествующий</value>
+  </data>
+  <data name="ContextSelectConnectedUpstreamDownstream" xml:space="preserve">
+    <value>В обоих направлениях</value>
+  </data>
+  <data name="NodeRenamedLabel" xml:space="preserve">
+    <value>Переименовано</value>
+  </data>
+  <data name="PackagePathProtected" xml:space="preserve">
+    <value>Этот встроенный путь, и его нельзя изменить.</value>
+  </data>
+  <data name="PackagePathUpdatePathTooltip" xml:space="preserve">
+    <value>Редактировать путь</value>
+  </data>
+  <data name="GetStartedGuide" xml:space="preserve">
+    <value>_Обзор пользовательского интерфейса</value>
+  </data>
+  <data name="GetStartedGuideDescription" xml:space="preserve">
+    <value>Начните изучение визуального программирования с этого краткого руководства. В нем представлены основные сведения об интерфейсе и функциях Dynamo.</value>
+  </data>
+  <data name="OnboardingGuideDescription" xml:space="preserve">
+    <value>Узнайте об основных компоновочных блоках Dynamo. Выполните практикум по работе с графиком.</value>
+  </data>
+  <data name="PackagesGuideDescription" xml:space="preserve">
+    <value>Пакет представляет собой комплект утилит, позволяющих выполнять задачи с помощью Dynamo за пределами представленных в программе основных функций. В этом руководстве показано, как искать, устанавливать и использовать пакеты. При этом устанавливается образец пакета Autodesk, который можно изучить.</value>
+  </data>
+  <data name="InteractiveGuides" xml:space="preserve">
+    <value>_Интерактивные руководства</value>
+  </data>
+  <data name="GetStartedGuideLibraryText" xml:space="preserve">
+    <value>Библиотека содержит все функции Dynamo по умолчанию #(узлы)=https://primer2.dynamobim.org/v/ru/4_nodes_and_wires , а также пользовательские узлы, которые вы могли загрузить. \n\nЧтобы найти узел, выполните поиск в библиотеке или по категориям.</value>
+  </data>
+  <data name="GetStartedGuideLibraryTitle" xml:space="preserve">
+    <value>Библиотека</value>
+  </data>
+  <data name="GetStartedGuidePreferencesText" xml:space="preserve">
+    <value>Используйте палитру настроек, чтобы адаптировать интерфейс Dynamo. \n\n Можно менять настройки языка и часового пояса, корректировать визуальный стиль рабочего пространства и выполнять многое другое.</value>
+  </data>
+  <data name="GetStartedGuidePreferencesTitle" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="GetStartedGuideResourcesText" xml:space="preserve">
+    <value>Используйте меню «Справка» для доступа к инструментам и ресурсам, которые помогут начать работу. \n\nМожно изучить примеры сценариев, найти словарь Dynamo, выполнить поиск других руководств и т.д.</value>
+  </data>
+  <data name="GetStartedGuideResourcesTitle" xml:space="preserve">
+    <value>Ресурсы</value>
+  </data>
+  <data name="GetStartedGuideRunStatusBarText" xml:space="preserve">
+    <value>Используйте строку состояния запуска для выполнения графика Dynamo (сценария, в котором содержится логика или алгоритм). \n\nМожно выбрать желаемый тип запуска: -«Автоматически»: график будет запускаться каждый раз при внесении изменения.- -«Вручную»: график будет запущен только при нажатии кнопки «Запуск».-</value>
+  </data>
+  <data name="GetStartedGuideRunStatusBarTitle" xml:space="preserve">
+    <value>Строка состояния запуска</value>
+  </data>
+  <data name="GetStartedGuideToolbarText" xml:space="preserve">
+    <value>На панели инструментов можно выполнить следующие действия: -открыть новое рабочее пространство;- -открыть сохраненный файл Dynamo;- -сохранить текущий файл Dynamo;- -отменить или повторить изменения.-</value>
+  </data>
+  <data name="GetStartedGuideToolbarTitle" xml:space="preserve">
+    <value>Панель инструментов</value>
+  </data>
+  <data name="GetStartedGuideWelcomeText" xml:space="preserve">
+    <value>Начните изучение визуального программирования с этого краткого руководства. \n\nВ нем представлены основные сведения о работе с интерфейсом и функциях Dynamo.</value>
+  </data>
+  <data name="GetStartedGuideWelcomeTitle" xml:space="preserve">
+    <value>Добро пожаловать в Dynamo</value>
+  </data>
+  <data name="ContextMenuGroups" xml:space="preserve">
+    <value>Группы</value>
+  </data>
+  <data name="ContextPinToNode" xml:space="preserve">
+    <value>Закрепить в узле</value>
+  </data>
+  <data name="GetStartedGuideRatingTextTitle" xml:space="preserve">
+    <value>Оценить это руководство</value>
+  </data>
+  <data name="GetStartedGuideSurveyText" xml:space="preserve">
+    <value>Дополнительные сведения о работе с Dynamo см. в #онлайн-справке=https://primer2.dynamobim.org/v/ru/</value>
+  </data>
+  <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
+    <value>Завершено</value>
+  </data>
+  <data name="GroupDefaultText" xml:space="preserve">
+    <value>Описание &lt;Дважды нажмите здесь, чтобы изменить описание группы&gt;</value>
+  </data>
+  <data name="GroupNameDefaultText" xml:space="preserve">
+    <value>Title &lt;Click here to edit the group title&gt;</value>
+  </data>
+  <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
+    <value>Добавить группу в эту группу</value>
+  </data>
+  <data name="NodeInformationalStateDismiss" xml:space="preserve">
+    <value>Закрыть</value>
+  </data>
+  <data name="NodeInformationalStateShowAllInfo" xml:space="preserve">
+    <value>Показать всю информацию</value>
+  </data>
+  <data name="NodeInformationalStateShowAllWarnings" xml:space="preserve">
+    <value>Показать все предупреждения</value>
+  </data>
+  <data name="NodeInformationalStateShowAllErrors" xml:space="preserve">
+    <value>Показать все ошибки</value>
+  </data>
+  <data name="NodeInformationalStateShowLess" xml:space="preserve">
+    <value>Меньше</value>
+  </data>
+  <data name="NodeInformationalStateDismissAll" xml:space="preserve">
+    <value>Закрыть все</value>
+  </data>
+  <data name="NodeInfoDismissButtonToolTip" xml:space="preserve">
+    <value>Закрытие информационных сообщений для этого узла. Используется при разработке ошибок графика. В противном случае информационное сообщение будет неактуально при выполнении графика.</value>
+  </data>
+  <data name="NodeWarningDismissButtonToolTip" xml:space="preserve">
+    <value>Закрытие предупреждений для этого узла. Используется при разработке ошибок графика. В противном случае предупреждение будет неактуально при выполнении графика.</value>
+  </data>
+  <data name="BreakConnectionsPopupMenuItem" xml:space="preserve">
+    <value>Разорвать соединения</value>
+  </data>
+  <data name="RenamePortPopupMenuItem" xml:space="preserve">
+    <value>Редактировать свойства порта</value>
+  </data>
+  <data name="HideWiresPopupMenuItem" xml:space="preserve">
+    <value>Скрыть провода</value>
+  </data>
+  <data name="ShowWiresPopupMenuItem" xml:space="preserve">
+    <value>Показать провода</value>
+  </data>
+  <data name="ExitTourWindowContent" xml:space="preserve">
+    <value>К этому руководству можно вернуться позже из меню «Справка».</value>
+  </data>
+  <data name="PackageStatePendingUnload" xml:space="preserve">
+    <value>Запланировано к выгрузке</value>
+  </data>
+  <data name="PackageStateError" xml:space="preserve">
+    <value>Ошибка</value>
+  </data>
+  <data name="PackageStateLoaded" xml:space="preserve">
+    <value>Загружено</value>
+  </data>
+  <data name="PackageStateUnloaded" xml:space="preserve">
+    <value>Выгружено</value>
+  </data>
+  <data name="PackageStateScheduledForDeletion" xml:space="preserve">
+    <value>Запланировано удаление</value>
+  </data>
+  <data name="PackageStateScheduledForUnload" xml:space="preserve">
+    <value>Запланирована выгрузка</value>
+  </data>
+  <data name="PackageStateErrorTooltip" xml:space="preserve">
+    <value>Ошибка.
+Этот пакет не был загружен из-за следующей ошибки:
+{0}.</value>
+  </data>
+  <data name="PackageStateLoadedTooltip" xml:space="preserve">
+    <value>Загружено.
+Этот пакет загружен и готов к использованию.</value>
+  </data>
+  <data name="PackageStateUnloadedTooltip" xml:space="preserve">
+    <value>Выгружено.
+Этот пакет помечен как выгруженный.</value>
+  </data>
+  <data name="PackageStateScheduledForDeletionTooltip" xml:space="preserve">
+    <value>Запланировано удаление.
+Этот пакет будет удален после следующего перезапуска Dynamo.</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageText" xml:space="preserve">
+    <value>Удалить</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageTooltip" xml:space="preserve">
+    <value>Удалите этот пакет из папок пакетов Dynamo. После удаления он не будет загружаться в Dynamo до тех пор, пока не будет переустановлен</value>
+  </data>
+  <data name="PackageContextMenuUnloadPackageText" xml:space="preserve">
+    <value>Выгрузить</value>
+  </data>
+  <data name="PackageContextMenuUnloadPackageTooltip" xml:space="preserve">
+    <value>Выгрузите этот пакет, чтобы он не загружался в Dynamo. Он не будет удален из папок пакетов Dynamo</value>
+  </data>
+  <data name="PackageContextMenuUnmarkDeletePackageText" xml:space="preserve">
+    <value>Отменить удаление</value>
+  </data>
+  <data name="PackageContextMenuUnmarkDeletePackageTooltip" xml:space="preserve">
+    <value>Удалить статус запланированного удаления</value>
+  </data>
+  <data name="PackageContextMenuUnmarkUnloadPackageText" xml:space="preserve">
+    <value>Отменить выгрузку</value>
+  </data>
+  <data name="PackageContextMenuUnmarkUnloadPackageTooltip" xml:space="preserve">
+    <value>Удалить статус запланированной выгрузки</value>
+  </data>
+  <data name="PackageViewContextMenuLoadText" xml:space="preserve">
+    <value>Загрузка</value>
+  </data>
+  <data name="PackageViewContextMenuLoadTooltip" xml:space="preserve">
+    <value>Загрузите этот пакет в Dynamo. Другие пакеты с таким же именем будут автоматически удалены.</value>
+  </data>
+  <data name="CannotLoadPackageMessageBoxTitle" xml:space="preserve">
+    <value>Не удалось загрузить пакет</value>
+  </data>
+  <data name="MessageLoadBuiltInPackage" xml:space="preserve">
+    <value>Для загрузки встроенного пакета {1} приложению {0} необходимо сначала удалить все конфликтующие пакеты.
+
+Удалить следующие пакеты: {2}?</value>
+  </data>
+  <data name="MessageLoadBuiltInWithRestartPackage" xml:space="preserve">
+    <value>Для загрузки встроенного пакета {1} приложению {0} необходимо сначала удалить все конфликтующие пакеты.
+Перезапустите {0} для завершения удаления, а затем попробуйте снова загрузить встроенный пакет.
+
+Удалить следующие пакеты: {2}?
+    </value>
+  </data>
+  <data name="GraphIssuesOnSavePath_Description" xml:space="preserve">
+    <value>Слишком длинный путь к выбранной для сохранения папке. Измените папку и повторите попытку.</value>
+  </data>
+  <data name="GraphIssuesOnSavePath_Summary" xml:space="preserve">
+    <value>Слишком длинный путь сохраняемого графика.</value>
+  </data>
+  <data name="GraphIssuesOnSavePath_Title" xml:space="preserve">
+    <value>Обнаружены ошибки при сохранении пути</value>
+  </data>
+  <data name="MessageNeedToRestartAfterUnload" xml:space="preserve">
+    <value>Выгрузка вступит в силу после перезапуска {0} и основного приложения.</value>
+  </data>
+  <data name="MessageNeedToRestartAfterUnloadTitle" xml:space="preserve">
+    <value>Выгрузка пакета</value>
+  </data>
+  <data name="MessageFailedToUnload" xml:space="preserve">
+    <value>{0} не удалось выгрузить пакет.</value>
+  </data>
+  <data name="UnloadFailureMessageBoxTitle" xml:space="preserve">
+    <value>Сбой при выгрузке</value>
+  </data>
+  <data name="DynamoViewViewMenuConnectorShowTooltip" xml:space="preserve">
+    <value>Показать п_одсказку</value>
+  </data>
+  <data name="NodeInformationalStateDismissedAlerts" xml:space="preserve">
+    <value>Закрытые оповещения</value>
+  </data>
+  <data name="ContextMenu" xml:space="preserve">
+    <value>Параметры узла</value>
+  </data>
+  <data name="NodeAutocomplete" xml:space="preserve">
+    <value>Сортировать результаты по</value>
+  </data>
+  <data name="PackageFilter_Name_All" xml:space="preserve">
+    <value>Все</value>
+  </data>
+  <data name="PackageSearchHeader" xml:space="preserve">
+    <value>Поиск пакетов</value>
+  </data>
+  <data name="DisablePackageInstallIconTooltip" xml:space="preserve">
+    <value>Все пользовательские пути к пакетам были отключены в настройках. Пакеты нельзя установить, если они не включены повторно.</value>
+  </data>
+  <data name="DisableBuiltInPackageToggleInfo" xml:space="preserve">
+    <value>Если переключатель включен, встроенные пакеты не загружаются при перезапуске. Встроенные пакеты, загруженные в данный момент, будут выгружены при перезапуске. 
+Если переключатель отключен, встроенные пакеты, которые еще не загружены, будут загружены после закрытия диалогового окна настроек.</value>
+  </data>
+  <data name="DisableCustomPackageToggleInfo" xml:space="preserve">
+    <value>Если переключатель включен, пользовательские пакеты не загружаются при перезапуске. Пользовательские пакеты, загруженные в данный момент, будут выгружены при перезапуске. 
+Если переключатель отключен, пользовательские пакеты, которые еще не загружены, будут загружены после закрытия диалогового окна настроек.</value>
+  </data>
+  <data name="PackageSearchSortBy" xml:space="preserve">
+    <value>СОРТИРОВАТЬ ПО</value>
+  </data>
+  <data name="PackageSearchResultViewDetails" xml:space="preserve">
+    <value>Сведения</value>
+  </data>
+  <data name="PackageSearchResultRequirements" xml:space="preserve">
+    <value>Требования</value>
+  </data>
+  <data name="PackageSearchOrder" xml:space="preserve">
+    <value>ПОРЯДОК</value>
+  </data>
+  <data name="PreferencesViewShowPreviewBubbles" xml:space="preserve">
+    <value>Показать марки предварительного просмотра</value>
+  </data>
+  <data name="PreferencesUseHostScaleUnits" xml:space="preserve">
+    <value>Использование Revit для масштабирования вспомогательных элементов фоновой графики</value>
+  </data>
+  <data name="PreferencesUseHostScaleUnitsToolTip" xml:space="preserve">
+    <value>When toggled on, the current Host document units will be used to scale the background graphic helpers (grids, axes). Otherwise, the Graphic Elements Scale drop-down will determine scale.</value>
+  </data>
+  <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="PublishPackageVersionMinorWatermark" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="PublishPackageVersionBuildWatermark" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="PublishPackageViewPackageDescription" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="PublishPackageViewPackageNameWatermark" xml:space="preserve">
+    <value>Имя пакета</value>
+  </data>
+  <data name="PackageStateScheduledForUnloadTooltip" xml:space="preserve">
+    <value>Запланирована выгрузка.
+Этот пакет будет выгружен после следующего перезапуска Dynamo.</value>
+  </data>
+  <data name="PublishPackageGroupWatermark" xml:space="preserve">
+    <value>Сгруппировать</value>
+  </data>
+  <data name="PublishPackageKeywordsWatermark" xml:space="preserve">
+    <value>Ключевые слова</value>
+  </data>
+  <data name="PublishPackageViewLicenseSubLabel" xml:space="preserve">
+    <value>Applies to the latest package version. If blank, the package will be licensed under </value>
+  </data>
+  <data name="PublishPackageViewLicenseWatermark" xml:space="preserve">
+    <value>Лицензия</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolder" xml:space="preserve">
+    <value>Правообладатель (необязательно)</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderWatermark" xml:space="preserve">
+    <value>Имя разработчика</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderSubLabel" xml:space="preserve">
+    <value>Если поле не заполнено, по умолчанию используется имя пользователя</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYear" xml:space="preserve">
+    <value>Год авторского права (необязательно)</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearWatermark" xml:space="preserve">
+    <value>Год публикации</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearSubLabel" xml:space="preserve">
+    <value>Если поле не заполнено, по умолчанию используется год публикации</value>
+  </data>
+  <data name="PublishPackageViewRepositoryUrlWatermark" xml:space="preserve">
+    <value>URL-адрес</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebSite" xml:space="preserve">
+    <value>Адрес веб-сайта (необязательно)</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebSiteWatermark" xml:space="preserve">
+    <value>URL-адрес</value>
+  </data>
+  <data name="PublishPackageViewAddDirectoryButton" xml:space="preserve">
+    <value>Добавить папку</value>
+  </data>
+  <data name="PublishPackageViewAddDirectoryButtonTooltip" xml:space="preserve">
+    <value>Добавить папку</value>
+  </data>
+  <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
+    <value>Путь к файлам разметки (необязательно)</value>
+  </data>
+  <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
+    <value>Необязательная папка для документирования пакета в формате пометки.</value>
+  </data>
+  <data name="PublishPackageViewResetMarkdownDirectoryButton" xml:space="preserve">
+    <value>Сбросить</value>
+  </data>
+  <data name="PublishPackageViewResetMarkdownDirectoryButtonToolTip" xml:space="preserve">
+    <value>Очистка каталога разметки для этого пакета.</value>
+  </data>
+  <data name="PublishPackageViewRemoveItemToolTip" xml:space="preserve">
+    <value>Удаление элемента из списка содержимого пакета.</value>
+  </data>
+  <data name="PublishPackageExternalPackageDependencies" xml:space="preserve">
+    <value>Зависимости внешнего пакета</value>
+  </data>
+  <data name="PreferencesViewMarkdownDirectoryTooltip" xml:space="preserve">
+    <value>В пакет можно добавить документацию по разметке, которая будет использовать обозреватель документации для отображения информации, созданной автором проекта, на основе узлов.</value>
+  </data>
+  <data name="PublishPackageViewPublisherURLWatermark" xml:space="preserve">
+    <value>URL-адрес</value>
+  </data>
+  <data name="PackagesGuide" xml:space="preserve">
+    <value>_Пакеты</value>
+  </data>
+  <data name="PackagesGuideLearnAbout" xml:space="preserve">
+    <value>Подробнее о пакетах</value>
+  </data>
+  <data name="NodeAutoCompleteNotAvailableForCollapsedGroups" xml:space="preserve">
+    <value>Автозавершение узла недоступно на портах, принадлежащих свернутым группам.</value>
+  </data>
+  <data name="PackageManagerInstall" xml:space="preserve">
+    <value>Установить</value>
+  </data>
+  <data name="PackageManagerPackageUpdated" xml:space="preserve">
+    <value>Обновлено</value>
+  </data>
+  <data name="PackageManagerPackageNew" xml:space="preserve">
+    <value>Создать</value>
+  </data>
+  <data name="PackageManagerMyPackagesControlName" xml:space="preserve">
+    <value>packageManagerMyPackages</value>
+  </data>
+  <data name="PackageManagerSearchTab" xml:space="preserve">
+    <value>Поиск пакетов</value>
+  </data>
+  <data name="PackageManagerPublishTab" xml:space="preserve">
+    <value>Публикация пакета</value>
+  </data>
+  <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
+    <value>Virus scan in progress. Your package will be searchable in a few minutes.</value>
+  </data>
+  <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
+    <value>Установленные пакеты</value>
+  </data>
+  <data name="PackageManagerMyPackagesTab" xml:space="preserve">
+    <value>Мои пакеты</value>
+  </data>
+  <data name="PackageManagerPackageSettingsTab" xml:space="preserve">
+    <value>Параметры пакета</value>
+  </data>
+  <data name="PackageManagerTitle" xml:space="preserve">
+    <value>Package Manager</value>
+  </data>
+  <data name="PackageManagerLoadingTimedOutWarningMessage" xml:space="preserve">
+    <value>Загрузка пакетов занимает больше времени, чем ожидалось. Подождите или перезапустите Package Manager.</value>
+  </data>
+  <data name="PackagerManageNoInstalledPackagesMessage" xml:space="preserve">
+    <value>У вас еще нет установленных пакетов.</value>
+  </data>
+  <data name="PackageManagerNoInstalledPackagesSubMessage" xml:space="preserve">
+    <value>Пакет будет отображаться здесь после публикации.</value>
+  </data>
+  <data name="PackagerManageUserNotSignedPackagesMessage" xml:space="preserve">
+    <value>Войдите в учетную запись Dynamo для просмотра опубликованных пакетов.</value>
+  </data>
+  <data name="PackageManagerUserNotSignedPackagesSubMessage" xml:space="preserve">
+    <value>После входа в систему здесь отобразятся опубликованные пакеты.</value>
+  </data>
+  <data name="PackageManagerSearchPackagesButton" xml:space="preserve">
+    <value>Поиск пакетов</value>
+  </data>
+  <data name="PackagerManageNoPublishedPackagesMessage" xml:space="preserve">
+    <value>Вы еще не опубликовали ни одного пакета.</value>
+  </data>
+  <data name="PackagerManageNoPublishedPackagesSubMessage" xml:space="preserve">
+    <value>Пакет будет отображаться здесь после публикации.</value>
+  </data>
+  <data name="PackageManagerPublishPackageButton" xml:space="preserve">
+    <value>Публикация пакета</value>
+  </data>
+  <data name="PackageManagerSettingsRunPrefix" xml:space="preserve">
+    <value>Измените параметры пакета в </value>
+  </data>
+  <data name="PackageManagerSettingsHyperlink" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
+  <data name="PackageDetailsDescription" xml:space="preserve">
+    <value>ОПИСАНИЕ</value>
+  </data>
+  <data name="PackageDetailsLicense" xml:space="preserve">
+    <value>ЛИЦЕНЗИЯ НА ПОСЛЕДНИЙ ПАКЕТ</value>
+  </data>
+  <data name="PackageDetailsVersionsAndPackageRequirements" xml:space="preserve">
+    <value>ТРЕБОВАНИЯ К ВЕРСИЯМ И ПАКЕТУ</value>
+  </data>
+  <data name="PackageDetailsVersions" xml:space="preserve">
+    <value>Версии</value>
+  </data>
+  <data name="PackageDetailsHost" xml:space="preserve">
+    <value>Основа</value>
+  </data>
+  <data name="PackageDetailsPython" xml:space="preserve">
+    <value>Python</value>
+  </data>
+  <data name="PackageDetailsCopyRightHolder" xml:space="preserve">
+    <value>Владелец авторских прав</value>
+  </data>
+  <data name="PackageDetailsCopyRightYear" xml:space="preserve">
+    <value>Год авторских прав</value>
+  </data>
+  <data name="PackageDetailsPackage" xml:space="preserve">
+    <value>Пакет</value>
+  </data>
+  <data name="PackageSortToolTip" xml:space="preserve">
+    <value>Сортировка пакетов.</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderHideConnector" xml:space="preserve">
+    <value>Скрыть провод</value>
+  </data>
+  <data name="PackagesGuideFindPackageText" xml:space="preserve">
+    <value>Пакеты предоставляют дополнительные функции, которые можно использовать в Dynamo. \n\nДля просмотра пакета или доступных компонентов \n**щелкните «Пакеты» &gt; Package Manager...**.</value>
+  </data>
+  <data name="PackagesGuideFindPackageTitle" xml:space="preserve">
+    <value>Найти пакет</value>
+  </data>
+  <data name="PackagesGuideSearchFilterText" xml:space="preserve">
+    <value>\nМожно найти пакеты, в названии, авторе или ключевых словах которых содержится искомая фраза. Для фильтрации и сортировки результатов используйте значки рядом с строкой поиска.</value>
+  </data>
+  <data name="PackagesGuideSearchFilterTitle" xml:space="preserve">
+    <value>Поиск, фильтрация и сортировка</value>
+  </data>
+  <data name="PackagesGuideTermsOfServiceText" xml:space="preserve">
+    <value>\nПакеты могут поступать от третьих лиц. Обратите внимание, что пакеты могут представлять угрозу безопасности. #Дополнительная информация=https://dynamobim.org/issues/extend-dynamo-with-packages  \n\n**Нажмите кнопку «Я принимаю»** в Условиях обслуживания, чтобы принять условия и продолжить работу с этим руководством.</value>
+  </data>
+  <data name="PackagesGuideTermsOfServiceTitle" xml:space="preserve">
+    <value>Принять условия обслуживания</value>
+  </data>
+  <data name="PackagesGuideThirdPartyText" xml:space="preserve">
+    <value>\nПакеты могут поступать от третьих лиц.\n\nОбратите внимание, что пакеты могут представлять угрозу безопасности. #Дополнительная информация=https://dynamobim.org/issues/extend-dynamo-with-packages/</value>
+  </data>
+  <data name="PackagesGuideThirdPartyTitle" xml:space="preserve">
+    <value>Пакеты сторонних разработчиков</value>
+  </data>
+  <data name="GenericTaskDialogOptionYes" xml:space="preserve">
+    <value>Да</value>
+  </data>
+  <data name="GenericTaskDialogOptionNo" xml:space="preserve">
+    <value>Нет</value>
+  </data>
+  <data name="GenericTaskDialogOptionOK" xml:space="preserve">
+    <value>ОК</value>
+  </data>
+  <data name="GenericTaskDialogOptionCancel" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="WorkspaceTabSavingUnnecessary" xml:space="preserve">
+    <value>Сохранение не требуется.</value>
+  </data>
+  <data name="WorkspaceTabSavingNecessary" xml:space="preserve">
+    <value>Сохраните обновления в этом файле.</value>
+  </data>
+  <data name="WorkspaceTabSavingBrandNewFile" xml:space="preserve">
+    <value>Это совершенно новый файл.</value>
+  </data>
+  <data name="WorkspaceTabNotSavedYet" xml:space="preserve">
+    <value>Вы еще не сохранили этот файл.</value>
+  </data>
+  <data name="ScriptTagsRemovalWarning" xml:space="preserve">
+    <value>Удалены теги сценариев, обнаруженные в документе справки.</value>
+  </data>
+  <data name="PackagesGuideContinueButton" xml:space="preserve">
+    <value>Продолжить</value>
+  </data>
+  <data name="PackagesGuideExitButton" xml:space="preserve">
+    <value>Выход</value>
+  </data>
+  <data name="ShortcutExportAsImageMainMenu" xml:space="preserve">
+    <value>Экспортировать как изображение</value>
+  </data>
+  <data name="ShortcutExportBackground3DPreview" xml:space="preserve">
+    <value>Фоновый 3D-просмотр</value>
+  </data>
+  <data name="ShortcutExportWorkspace" xml:space="preserve">
+    <value>Рабочее пространство</value>
+  </data>
+  <data name="PackagesGuideExitAcceptTerms" xml:space="preserve">
+    <value>Чтобы продолжить работу с руководством и установить образец пакета, необходимо принять «Условия обслуживания». \n\n **Нажмите кнопку «Продолжить».** Затем **щелкните «Я принимаю».** \n</value>
+  </data>
+  <data name="PackagesGuideExitTitle" xml:space="preserve">
+    <value>Закончить работу с руководством?</value>
+  </data>
+  <data name="InfoBubbleInfo" xml:space="preserve">
+    <value>Сведения</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="PackagesGuideInstallAPackageText" xml:space="preserve">
+    <value>Установка пакетов обычно выполняется быстро в зависимости от их размера и других факторов. \n\n**Нажмите кнопку «Установить»** чтобы установить последнюю версию примера пакета Autodesk и продолжить работу с этим руководством.</value>
+  </data>
+  <data name="PackagesGuideInstallAPackageTitle" xml:space="preserve">
+    <value>Установка пакета</value>
+  </data>
+  <data name="PackagesGuideInstalledPackageText" xml:space="preserve">
+    <value>Установка пакетов обычно выполняется быстро в зависимости от их размера и других факторов. \n
+Чтобы установить последнюю версию пакета, нажмите кнопку «Установить». \n
+%./UI/Images/alert.png% Образец пакета Autodesk уже установлен на компьютере.</value>
+  </data>
+  <data name="PackagesGuideDependenciesText" xml:space="preserve">
+    <value>\nЕсли для использования этого пакета вам нужно другое программное обеспечение или инструменты, они перечислены в разделе «Требования к версиям и пакету».</value>
+  </data>
+  <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
+    <value>Зависимости пакета</value>
+  </data>
+  <data name="PackagesGuideSearchResultsText" xml:space="preserve">
+    <value>\nВ результатах поиска отображается сводная информация по каждому пакету: -автор- -количество отметок «нравится» и скачиваний- -дата выхода последней версии- \n**Нажмите кнопку «Показать подробности»** чтобы просмотреть дополнительные сведения о пакете.</value>
+  </data>
+  <data name="PackagesGuideSearchResultsTitle" xml:space="preserve">
+    <value>Результаты поиска</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
+    <value>Этот пакет содержит пользовательские узлы, которые используются. Их необходимо удалить или закрыть график перед удалением пакета.</value>
+  </data>
+  <data name="PackagesGuideNavigatePackagesText" xml:space="preserve">
+    <value>\nWhen you install a package, it appears in the library under Add-ons.  \n\n**Click to expand the package** so you can see its nodes (functions).</value>
+  </data>
+  <data name="PackagesGuideNavigatePackagesTitle" xml:space="preserve">
+    <value>Перейти к пакетам</value>
+  </data>
+  <data name="PackagesGuideSurveyText" xml:space="preserve">
+    <value>Дополнительные сведения о пакетах см. в #онлайн-справке=https://dynamobim.org/issues/extend-dynamo-with-packages</value>
+  </data>
+  <data name="PackagesGuideSurveyTitle" xml:space="preserve">
+    <value>Завершено</value>
+  </data>
+  <data name="PackagesGuideUsePackageText" xml:space="preserve">
+    <value>Чтобы узнать, как использовать узлы в пакете, наведите курсор на узел и ознакомьтесь с описанием. Чтобы добавить узел в рабочее пространство, щелкните его имя в списке.</value>
+  </data>
+  <data name="PackagesGuideUsePackageTitle" xml:space="preserve">
+    <value>Использовать узлы пакета</value>
+  </data>
+  <data name="ConfigureADPButtonText" xml:space="preserve">
+    <value>Настройка анализа использования продуктов Autodesk</value>
+  </data>
+  <data name="ContinueInstall" xml:space="preserve">
+    <value>Продолжить установку</value>
+  </data>
+  <data name="UninstallLoadedPackages" xml:space="preserve">
+    <value>Удаление загруженных пакетов</value>
+  </data>
+  <data name="UninstallLoadedPackage" xml:space="preserve">
+    <value>Удаление загруженного пакета</value>
+  </data>
+  <data name="PackagesGuidePackagesNodeTitle" xml:space="preserve">
+    <value>Использовать узлы пакета</value>
+  </data>
+  <data name="PublishPackageViewFilePath" xml:space="preserve">
+    <value>Путь к файлу</value>
+  </data>
+  <data name="PublishPackageViewNodeLibrary" xml:space="preserve">
+    <value>Библиотека узлов</value>
+  </data>
+  <data name="PublishPackageRetainFolderStructureTooltip" xml:space="preserve">
+    <value>Если этот параметр включен, структура папок выгружаемых файлов будет сохранена. В ином случае файлы будут помещены в стандартные папки.
+
+Примечание. Неправильная структура папок может повлиять на работу пакетов, для которых требуется правильная организация файлов. Если сомневаетесь, не включайте этот параметр.
+    </value>
+  </data>
+  <data name="PublishPackageNodeLibraryTooltip" xml:space="preserve">
+    <value>Файл DLL, содержащий типы и методы, которые Dynamo импортирует как узлы. Пометьте библиотеки DLL ZeroTouch, NodeModel или NodeViewCustomization и типы, которые требуется импортировать в Dynamo в качестве библиотек узлов.</value>
+  </data>
+  <data name="NodeTooltipRenamed" xml:space="preserve">
+    <value>Переименовано из {0}</value>
+  </data>
+  <data name="WorkspaceTabTooltipHeaderUnsaved" xml:space="preserve">
+    <value>Не сохранено</value>
+  </data>
+  <data name="TourLabelProgressText" xml:space="preserve">
+    <value>из</value>
+  </data>
+  <data name="StartTourButtonText" xml:space="preserve">
+    <value>Начать обзор</value>
+  </data>
+  <data name="ContextUnpinFromNode" xml:space="preserve">
+    <value>Открепить от узла</value>
+  </data>
+  <data name="UnpinNodeTooltip" xml:space="preserve">
+    <value>Открепить это примечание от узла</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsGroupStyleInput" xml:space="preserve">
+    <value>Имя стиля</value>
+  </data>
+  <data name="PreferencesViewEmptyStyleWarning" xml:space="preserve">
+    <value>Введите допустимое имя</value>
+  </data>
+  <data name="GroupStyleContextAnnotation" xml:space="preserve">
+    <value>Стиль группы</value>
+  </data>
+  <data name="ContextPinToNodeTooltip" xml:space="preserve">
+    <value>Выберите узел для прикрепления к этому примечанию.</value>
+  </data>
+  <data name="GroupStylesCancelButtonText" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="GroupStylesSaveButtonText" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="OnboardingGuide" xml:space="preserve">
+    <value>_Руководство по началу работы</value>
+  </data>
+  <data name="OnboardingGuideWelcomeTitle" xml:space="preserve">
+    <value>Начало работы с Dynamo</value>
+  </data>
+  <data name="OnboardingGuideSurveyText" xml:space="preserve">
+    <value>Вы изучили руководство по началу работы.</value>
+  </data>
+  <data name="OnboardingWorkspaceText" xml:space="preserve">
+    <value>Это рабочее пространство для разработки визуальных программ и предварительного просмотра результатов. \n\nКаждая визуальная программа основана на **графике** . Графики обрабатывают данные, создают геометрию и выполняют другие действия. В этом руководстве работе ведется с примером графика.</value>
+  </data>
+  <data name="OnboardingWorkspaceTitle" xml:space="preserve">
+    <value>Рабочее пространство</value>
+  </data>
+  <data name="GetStartedLinkText" xml:space="preserve">
+    <value>Начало работы</value>
+  </data>
+  <data name="NextGuideText" xml:space="preserve">
+    <value>Следующее руководство: </value>
+  </data>
+  <data name="GroupContextMenuColor" xml:space="preserve">
+    <value>Цвет</value>
+  </data>
+  <data name="RunCompletedWithErrorsMessage" xml:space="preserve">
+    <value>Выполнение завершено с ошибками.</value>
+  </data>
+  <data name="RunCompletedWithScaleChangeAndErrorsMessage" xml:space="preserve">
+    <value>Выполнение завершено с ошибками при задании нового рабочего диапазона.</value>
+  </data>
+  <data name="RunReady" xml:space="preserve">
+    <value>Готово к выполнению.</value>
+  </data>
+  <data name="PreferencesSecuritySettingsTab" xml:space="preserve">
+    <value>Безопасность</value>
+  </data>
+  <data name="PreferencesViewTrustWarningHeader" xml:space="preserve">
+    <value>Предупреждение о доверии</value>
+  </data>
+  <data name="PreferencesViewTrustWarningLabel" xml:space="preserve">
+    <value>Отключить предупреждение о доверии</value>
+  </data>
+  <data name="PreferencesViewTrustWarningTooltipText" xml:space="preserve">
+    <value>Применимо к Dynamo, проигрывателю Dynamo и проигрывателю Generative Design. Рекомендуется не включать этот параметр во избежание открытия файла из ненадежной папки.</value>
+  </data>
+  <data name="SecurityPathAddPathButtonName" xml:space="preserve">
+    <value>Добавить путь</value>
+  </data>
+  <data name="SecurityWarningExpanderName" xml:space="preserve">
+    <value>Предупреждение</value>
+  </data>
+  <data name="TrustedPathsExpanderName" xml:space="preserve">
+    <value>Доверенные расположения файлов</value>
+  </data>
+  <data name="ZoomLevel" xml:space="preserve">
+    <value>0.4</value>
+  </data>
+  <data name="OnboardingNodesText" xml:space="preserve">
+    <value>Узлы являются компоновочными блоками графиков. Узлы выполняют операции, такие как сохранение номера или создание геометрии.\n\nЧтобы узнать больше об узле, наведите указатель на его элементы. В этом узле отсутствует входной параметр.\n\nНаведите указатель на порт ввода, чтобы узнать, какие типы данных он поддерживает.</value>
+  </data>
+  <data name="OnboardingNodesTitle" xml:space="preserve">
+    <value>Узлы</value>
+  </data>
+  <data name="OnboardingGuideWelcomeText" xml:space="preserve">
+    <value>Узнайте об основных компоновочных блоках Dynamo. Выполните практикум по работе с графиком.</value>
+  </data>
+  <data name="OnboardingPlaceNodeText" xml:space="preserve">
+    <value>Библиотека содержит узлы, используемые для построения графиков. Чтобы найти узел, выполните поиск в библиотеке или по категории.
+
+Для размещения узла из библиотеки в рабочем пространстве щелкните узел.
+
+Попробуйте разместить выделенный узел **ByOrigin** .</value>
+  </data>
+  <data name="OnboardingPlaceNodeTitle" xml:space="preserve">
+    <value>Размещение узлов</value>
+  </data>
+  <data name="OnboardingGuideConnectNodesText" xml:space="preserve">
+    <value>Этот новый узел необходимо соединить с другим, чтобы включить его в график. Попробуйте, а затем нажмите стрелку «Далее».</value>
+  </data>
+  <data name="OnboardingGuideConnectNodesTitle" xml:space="preserve">
+    <value>Соединение узлов</value>
+  </data>
+  <data name="OnboardingGuideRunGraphText" xml:space="preserve">
+    <value>Запустите график и посмотрите результаты внесенных изменений. Нажмите «Запуск».</value>
+  </data>
+  <data name="OnboardingGuideRunGraphTitle" xml:space="preserve">
+    <value>Выполнение графика</value>
+  </data>
+  <data name="FileTrustWarningCheckBoxText" xml:space="preserve">
+    <value>Доверять этому расположению файла в будущем.</value>
+  </data>
+  <data name="FileTrustWarningPopupNoCloseFile" xml:space="preserve">
+    <value>Нет, закрыть файл</value>
+  </data>
+  <data name="DiscardChangesWarningPopupCaption" xml:space="preserve">
+    <value>Отменить изменения?</value>
+  </data>
+  <data name="DiscardChangesWarningPopupMessage" xml:space="preserve">
+    <value>Если вы покинете экран выгрузки пакетов, изменения будут утеряны.</value>
+  </data>
+  <data name="FileTrustWarningPopupSettings" xml:space="preserve">
+    <value>Параметры</value>
+  </data>
+  <data name="FileTrustWarningPopupText" xml:space="preserve">
+    <value>Этот файл сохранен в ненадежной папке. Открыть файл?</value>
+  </data>
+  <data name="FileTrustWarningPopupTitle" xml:space="preserve">
+    <value>Открыть внешний файл?</value>
+  </data>
+  <data name="FileTrustWarningPopupTooltip1" xml:space="preserve">
+    <value>Внешнее содержимое может угрожать безопасности системы.</value>
+  </data>
+  <data name="FileTrustWarningPopupTooltip2" xml:space="preserve">
+    <value>Текущее расположение файла будет добавлено в список доверенных.
+Для управления выберите «Настройки» &gt; «Безопасность».</value>
+  </data>
+  <data name="FileTrustWarningPopupYes" xml:space="preserve">
+    <value>Да</value>
+  </data>
+  <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
+    <value>Выполнение графика приостановлено до устранения предупреждения</value>
+  </data>
+  <data name="DynamoShowFileTrustWarning" xml:space="preserve">
+    <value>Показывать предупреждение о доверии файлу</value>
+  </data>
+  <data name="DynamoViewRunTypesComboBoxToolTipDisabled" xml:space="preserve">
+    <value>Режим выполнения нельзя изменить до устранения предупреждения</value>
+  </data>
+  <data name="BubbleDismissAllButtonTooltip" xml:space="preserve">
+    <value>Временно закрыть все предупреждения для этого узла</value>
+  </data>
+  <data name="RunCompletedWithWarningsDismissedMessage" xml:space="preserve">
+    <value>Выполнение завершено с пропущенными предупреждениями.</value>
+  </data>
+  <data name="PackageRepositoryLabel" xml:space="preserve">
+    <value>Репозиторий</value>
+  </data>
+  <data name="PackageWebsiteLabel" xml:space="preserve">
+    <value>Веб-сайт</value>
+  </data>
+  <data name="OnboardingSuccessText" xml:space="preserve">
+    <value>Отлично! Вы только что выполнили свой первый график в Dynamo. \n\nСледите за выходом других руководств по основам работы с Dynamo. А пока продолжайте обучение с помощью #Dynamo Primer=https://primer2.dynamobim.org/v/ru/ .</value>
+  </data>
+  <data name="OnboardingSuccessTitle" xml:space="preserve">
+    <value>Успешно</value>
+  </data>
+  <data name="MessagePackageTargetOtherHosts" xml:space="preserve">
+    <value>Пакет или одна из его зависимостей предназначены для другой среды, например Revit, Civil 3D, Advance Steel, Alias или FormIt. Это может привести к нестабильной работе и возникновению непредвиденных проблем. Продолжить?</value>
+  </data>
+  <data name="RunBlockedMessage" xml:space="preserve">
+    <value>Выполнение заблокировано.</value>
+  </data>
+  <data name="FooterNotificationErrorImage" xml:space="preserve">
+    <value>/DynamoCoreWpf;component/UI/Images/error.png</value>
+  </data>
+  <data name="FooterNotificationErrorTooltip" xml:space="preserve">
+    <value>Нажимайте для циклического перебора узлов с ошибками.</value>
+  </data>
+  <data name="FooterNotificationInfoImage" xml:space="preserve">
+    <value>/DynamoCoreWpf;component/UI/Images/info.png</value>
+  </data>
+  <data name="FooterNotificationInfoTooltip" xml:space="preserve">
+    <value>Нажимайте для циклического перебора узлов с информационными состояниями.</value>
+  </data>
+  <data name="FooterNotificationWarningImage" xml:space="preserve">
+    <value>/DynamoCoreWpf;component/UI/Images/warning_16px.png</value>
+  </data>
+  <data name="FooterNotificationWarningTooltip" xml:space="preserve">
+    <value>Нажимайте для циклического перебора узлов с предупреждениями.</value>
+  </data>
+  <data name="TrustLocationAddedNotification" xml:space="preserve">
+    <value>Доверенные расположения файла:
+{0}</value>
+  </data>
+  <data name="TrustLocationSkippedNotification" xml:space="preserve">
+    <value>Расположение файла не было добавлено в список доверенных расположений.</value>
+  </data>
+  <data name="MessagePackageTargetOtherHosts2" xml:space="preserve">
+    <value>Пакет или одна из его зависимостей предназначены для другой среды, например Revit, Civil 3D, Advance Steel, Alias или FormIt. Это может привести к нестабильной работе и возникновению непредвиденных проблем.</value>
+  </data>
+  <data name="MessagePackageTargetOtherHostShort" xml:space="preserve">
+    <value>Пакет предназначен для основы, отличной от текущего основного приложения.</value>
+  </data>
+  <data name="TitlePackageTargetOtherHost" xml:space="preserve">
+    <value>Ошибка основы пакета</value>
+  </data>
+  <data name="TrustedLocationNotAccessible" xml:space="preserve">
+    <value>A problem occurred when trying to access the trusted location. Dynamo is unable to obtain read/write access to
+{0}</value>
+  </data>
+  <data name="UnableToAccessTrustedDirectory" xml:space="preserve">
+    <value>Unable To Access Trusted Directory</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
+    <value>Закрепить провод</value>
+  </data>
+  <data name="ContextMenuConnectionsHideAll" xml:space="preserve">
+    <value>Скрыть все провода</value>
+  </data>
+  <data name="ContextMenuConnectionsShowAll" xml:space="preserve">
+    <value>Показать все провода</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderStartNode" xml:space="preserve">
+    <value>Перейти к предшествующему</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
+    <value>Navigate Downtream</value>
+  </data>
+  <data name="ContextMenuNodeConnections" xml:space="preserve">
+    <value>Соединения узлов</value>
+  </data>
+  <data name="InvalidDraggingOperationMessgae" xml:space="preserve">
+    <value>Нет перетаскиваемых элементов. Если отображается это сообщение, не рекомендуется работать с программой Dynamo, как при последнем взаимодействии с ней.</value>
+  </data>
+  <data name="UngroupParentGroupWarning" xml:space="preserve">
+    <value>Dynamo не может выполнить разгруппировку, если отсутствует родительская группа.</value>
+  </data>
+  <data name="PreferencesViewEnableNotificationCenter" xml:space="preserve">
+    <value>Уведомление о получении</value>
+  </data>
+  <data name="PreferencesViewNotificationCenter" xml:space="preserve">
+    <value>Центр уведомлений</value>
+  </data>
+  <data name="NotificationCenterButtonTooltip" xml:space="preserve">
+    <value>Щелкните, чтобы посмотреть последние новости от разработчиков Dynamo.</value>
+  </data>
+  <data name="InfectedPackageMessageString" xml:space="preserve">
+    <value>Это зараженный пакет. Выгрузите безопасную версию.</value>
+  </data>
+  <data name="InfectedPackageErrorString" xml:space="preserve">
+    <value>Ошибка выгрузки</value>
+  </data>
+  <data name="PrePackagePublishMessage" xml:space="preserve">
+    <value>Пакет будет проверен на наличие вирусов и станет доступен для скачивания после успешного завершения проверки.</value>
+  </data>
+  <data name="PrePackagePublishTitle" xml:space="preserve">
+    <value>Сканирование выгружаемого пакета</value>
+  </data>
+  <data name="ImportPreferencesInfo" xml:space="preserve">
+    <value>Здесь можно импортировать пользовательские параметры, которые перезапишут текущие параметры. Если необходимо сохранить копию текущих параметров, экспортируйте их перед экспортом новых параметров. Те параметры, которые не отображаются на панели «Настройки», будут применены после перезапуска Dynamo и любой основной программы.</value>
+  </data>
+  <data name="PreferencesMustBeClosedMessage" xml:space="preserve">
+    <value>Перед продолжением необходимо закрыть настройки. Все изменения сохраняются автоматически.</value>
+  </data>
+  <data name="PreferencesViewNodeAutocomplete" xml:space="preserve">
+    <value>Автозаполнение узла</value>
+  </data>
+  <data name="PreferredConfidenceLevel" xml:space="preserve">
+    <value>Предпочтительный уровень надежности</value>
+  </data>
+  <data name="PreferredConfidenceLevelInfo" xml:space="preserve">
+    <value>Уровень надежности отображается рядом с каждым рекомендуемым узлом и представляет собой предполагаемую вероятность удачного выбора узла. При включении этого параметра рекомендуемые узлы, которые не соответствуют заданному уровню надежности, скрываются. Для отображения узлов можно щелкнуть заголовок «Низкая надежность».</value>
+  </data>
+  <data name="MLRecommendationNumberOfResults" xml:space="preserve">
+    <value>Количество результатов</value>
+  </data>
+  <data name="ImportPreferencesText" xml:space="preserve">
+    <value>Импорт</value>
+  </data>
+  <data name="ExportPreferencesText" xml:space="preserve">
+    <value>Экспорт</value>
+  </data>
+  <data name="ExportSettingsDialogTitle" xml:space="preserve">
+    <value>Выберите папку для экспорта</value>
+  </data>
+  <data name="FileDialogImportSettingsFiles" xml:space="preserve">
+    <value>Файлы параметров ({0})|{0}</value>
+  </data>
+  <data name="ImportSettingsDialogTitle" xml:space="preserve">
+    <value>Параметры импорта</value>
+  </data>
+  <data name="ImportSettingsSuccessMessage" xml:space="preserve">
+    <value>Импорт выполнен успешно</value>
+  </data>
+  <data name="ImportSettingsFailedMessage" xml:space="preserve">
+    <value>Сбой при импорте</value>
+  </data>
+  <data name="PreferencesSettingHardwareAcceleration" xml:space="preserve">
+    <value>Использовать аппаратное ускорение</value>
+  </data>
+  <data name="PreferencesSettingCustomPythomTemplate" xml:space="preserve">
+    <value>Путь к пользовательскому файлу шаблона Python</value>
+  </data>
+  <data name="PreferencesSettingBackupInterval" xml:space="preserve">
+    <value>Интервал автом. Рез. копирования</value>
+  </data>
+  <data name="PreferencesSettingDefaultBackupLocation" xml:space="preserve">
+    <value>Расположение резервной копии по умолчанию</value>
+  </data>
+  <data name="PreferencesSettingUpdateBackupLocationTooltip" xml:space="preserve">
+    <value>Изменить расположение резервной копии</value>
+  </data>
+  <data name="PreferencesSettingResetBackupLocationTooltip" xml:space="preserve">
+    <value>Сбросить расположение резервной копии</value>
+  </data>
+  <data name="PreferencesSettingsBackupLocationDialogTitle" xml:space="preserve">
+    <value>Выбрать папку для резервного копирования</value>
+  </data>
+  <data name="PreferencesSettingsBackupFailedTitle" xml:space="preserve">
+    <value>Сбой настройки расположения резервной копии</value>
+  </data>
+  <data name="PreferencesSettingsBackupFailedMessage" xml:space="preserve">
+    <value>Недопустимое расположение резервной копии</value>
+  </data>
+  <data name="PreferencesSettingMaxRecentFiles" xml:space="preserve">
+    <value>Макс. кол-во последних файлов</value>
+  </data>
+  <data name="BackupInternalUnit" xml:space="preserve">
+    <value>мин. между операциями рез. коп.</value>
+  </data>
+  <data name="PythonTemplateAddPathTooltip" xml:space="preserve">
+    <value>Добавление пути к файлу для шаблона узла Python</value>
+  </data>
+  <data name="AddFilePathButtonName" xml:space="preserve">
+    <value>Добавить путь к файлу</value>
+  </data>
+  <data name="PackageDeprecatedTooltip" xml:space="preserve">
+    <value>Этот пакет устарел и не может быть установлен.</value>
+  </data>
+  <data name="PackageManagerMyPackagesPublishVersion" xml:space="preserve">
+    <value>Опубликовать версию</value>
+  </data>
+  <data name="SplashScreenViewExtensions" xml:space="preserve">
+    <value>Загрузка расширений видов...</value>
+  </data>
+  <data name="DynamoViewSettingShowStaticSplashScreen" xml:space="preserve">
+    <value>Приостановить вывод экрана-заставки</value>
+  </data>
+  <data name="PreferencesViewShowStaticSplashScreenTooltip" xml:space="preserve">
+    <value>Приостановка вывода экрана-заставки по завершении загрузки, позволяющая запустить Dynamo вручную, выполнить вход в учетную запись на портале Autodesk Account или импортировать настройки.</value>
+  </data>
+  <data name="LogoutMenuItemText" xml:space="preserve">
+    <value>Выход</value>
+  </data>
+  <data name="SignInButtonText" xml:space="preserve">
+    <value>Вход</value>
+  </data>
+  <data name="SigningInButtonText" xml:space="preserve">
+    <value>Выполняется вход</value>
+  </data>
+  <data name="RecentFileNumberInfo" xml:space="preserve">
+    <value>При уменьшении этого числа будут удалены все последние файлы, выходящие за рамки указанного значения.</value>
+  </data>
+  <data name="WebView2RequiredMessage" xml:space="preserve">
+    <value>Для Dynamo требуется автоматически обновляемая среда выполнения WebView2, которая не установлена на компьютере. Перейдите по указанной ниже ссылке, чтобы скачать установщик однопользовательской автоматически обновляемой программы и установить ее. Затем перезапустите Dynamo. \n\n#Установщик среды выполнения WebView2=https://developer.microsoft.com/ru-ru/microsoft-edge/webview2/#download-sectionedge/webview2/#download-section</value>
+  </data>
+  <data name="WebView2RequiredTitle" xml:space="preserve">
+    <value>Требуется WebView2</value>
+  </data>
+  <data name="DynamoViewFileMenuInsert" xml:space="preserve">
+    <value>Вставить...</value>
+  </data>
+  <data name="DynamoViewRunTypesAutomaticToolTip" xml:space="preserve">
+    <value>Изменения графиков выполняются в реальном времени. Рекомендуется использовать для небольших, известных графиков и Dynamo Sandbox.</value>
+  </data>
+  <data name="DynamoViewRunTypesComboBoxToolTipEnabled" xml:space="preserve">
+    <value>Режим запуска\n\nОпределение того, когда следует выполнить изменения графика.</value>
+  </data>
+  <data name="DynamoViewRunTypesManualToolTip" xml:space="preserve">
+    <value>Изменения графика выполняются при нажатии кнопки «Запуск». Этот режим используется при работе с большими и незнакомыми графиками и основными программами.</value>
+  </data>
+  <data name="DynamoViewRunTypesPeriodicToolTip" xml:space="preserve">
+    <value>Изменения графика выполняются с заданным интервалом. Доступно, только если график содержит определенные узлы, такие как DateTime.Now или WebRequest.</value>
+  </data>
+  <data name="PreferencesViewDefaultRunSettingsInfoTooltip" xml:space="preserve">
+    <value>Выбор режима запуска по умолчанию для графиков. В режиме «Вручную» изменения графика выполняются при нажатии кнопки «Запуск». Этот режим используется при работе с большими или незнакомыми графиками и основными программами.
+
+В режиме «Автоматически» изменения графика выполняются в реальном времени. Этот режим обеспечивает мгновенную обратную связь. 
+
+В некоторых сложных графиках или сценариях основных программ автоматический режим может приводить к нестабильной работе или другим проблемам. В этом случае попробуйте переключиться в ручной режим.</value>
+  </data>
+  <data name="GroupStyleFontSizeToolTip" xml:space="preserve">
+    <value>Размер шрифта</value>
+  </data>
+  <data name="SplashScreenImportSettings" xml:space="preserve">
+    <value>Параметры импорта</value>
+  </data>
+  <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
+    <value>При импорте файла пользовательских параметров произошла ошибка. Повторите попытку или используйте параметры по умолчанию.</value>
+  </data>
+  <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
+    <value>Запуск вида Dynamo...</value>
+  </data>
+  <data name="SplashScreenLaunchTitle" xml:space="preserve">
+    <value>Запуск Dynamo</value>
+  </data>
+  <data name="SplashScreenLoadingTimeLabel" xml:space="preserve">
+    <value>Время загрузки</value>
+  </data>
+  <data name="SplashScreenShowScreenAgainLabel" xml:space="preserve">
+    <value>Больше не показывать</value>
+  </data>
+  <data name="SplashScreenSignIn" xml:space="preserve">
+    <value>Вход</value>
+  </data>
+  <data name="SplashScreenSignOut" xml:space="preserve">
+    <value>Выход</value>
+  </data>
+  <data name="SplashScreenWelcomeToDynamo" xml:space="preserve">
+    <value>Добро пожаловать в Dynamo!</value>
+  </data>
+  <data name="SplashScreenTotalLoadingTimeLabel" xml:space="preserve">
+    <value>Общее время загрузки:</value>
+  </data>
+  <data name="ExportSettingsFailedMessage" xml:space="preserve">
+    <value>Ошибка экспорта</value>
+  </data>
+  <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
+    <value>Если этот параметр включен, то в Dynamo используется аппаратное ускорение для более плавного отображения графики и повышения производительности в целом, так как работа переносится с центральных процессоров на графические.</value>
+  </data>
+  <data name="PreferencesWindowIsolateSelectedGeoTooltip" xml:space="preserve">
+    <value>Если этот параметр включен, то при выборе узла геометрии будет выделена геометрия, воспроизводимая в фоновом режиме 3D-просмотра.</value>
+  </data>
+  <data name="PreferencesWindowShowCodeBlockNodeLineNumberTooltip" xml:space="preserve">
+    <value>Если этот параметр включен, номера строк отображаются в редакторе узлов Code Block.</value>
+  </data>
+  <data name="PreferencesWindowShowEdgesTooltip" xml:space="preserve">
+    <value>Если этот параметр включен, ребра для геометрии из подтипов топологии будут отображаться более детально.</value>
+  </data>
+  <data name="PreferencesWindowShowPreviewBubblesTooltip" xml:space="preserve">
+    <value>Если этот параметр включен, при наведении курсора на нижнюю часть узла отображается предварительный просмотр выходных данных узла.</value>
+  </data>
+  <data name="PreferencesViewBetaTag" xml:space="preserve">
+    <value>Beta</value>
+  </data>
+  <data name="SplashScreenSigningIn" xml:space="preserve">
+    <value>Выполняется вход</value>
+  </data>
+  <data name="InCanvasGeometryScalingToolTip" xml:space="preserve">
+    <value>Масштабирование геометрии рабочего пространства</value>
+  </data>
+  <data name="GroupContextMenuPreview" xml:space="preserve">
+    <value>Предварительный просмотр геометрии</value>
+  </data>
+  <data name="LibraryZoomScaleTooltipText" xml:space="preserve">
+    <value>Перетащите бегунок между значениями 25 и 300 %, чтобы настроить масштаб в библиотеке. Это также можно сделать, нажав клавишу CTRL и прокрутив колесико мыши.</value>
+  </data>
+  <data name="PreferencesViewZoomScalingSettings" xml:space="preserve">
+    <value>Масштабирование</value>
+  </data>
+  <data name="DynamoViewSettingLibraryZoomScale" xml:space="preserve">
+    <value>Библиотека</value>
+  </data>
+  <data name="PortPropertiesPromptInputWindowTitle" xml:space="preserve">
+    <value>Свойства порта ввода</value>
+  </data>
+  <data name="PortPropertiesPromptOutputWindowTitle" xml:space="preserve">
+    <value>Свойства порта вывода</value>
+  </data>
+  <data name="PortPropertiesPromptDescriptionTooltip" xml:space="preserve">
+    <value>Описание порта</value>
+  </data>
+  <data name="PortPropertiesPromptWindowDescription" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="PortPropertiesPromptNameTooltip" xml:space="preserve">
+    <value>Имя порта</value>
+  </data>
+  <data name="PortPropertiesPromptWindowName" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="RemovePythonPortWarningMessageBoxTitle" xml:space="preserve">
+    <value>Удалить порт?</value>
+  </data>
+  <data name="MessageRemovePythonPort" xml:space="preserve">
+    <value>Пользовательские свойства порта будут утеряны после его удаления.</value>
+  </data>
+  <data name="MessagePortNameInvalid" xml:space="preserve">
+    <value>Не может содержать специальные символы (# % * ? \ : [ ])</value>
+  </data>
+  <data name="PreferencesViewEnablePersistExtensions" xml:space="preserve">
+    <value>При запуске исп. открытые панели расширений из посл. Сеанса</value>
+  </data>
+  <data name="PreferencesViewExtensions" xml:space="preserve">
+    <value>Расширения</value>
+  </data>
+  <data name="PythonZoomScaleTooltipText" xml:space="preserve">
+    <value>Перетащите бегунок между значениями 25 и 300 %, чтобы настроить масштаб зумирования в редакторе Python. Это также можно сделать, нажав клавишу CTRL и прокрутив колесико мыши.</value>
+  </data>
+  <data name="PreferencesViewLanguageSwitchHelp" xml:space="preserve">
+    <value>Для применения выбранного языка необходимо перезапустить Dynamo.</value>
+  </data>
+  <data name="CustomColorPickerApplyBtn" xml:space="preserve">
+    <value>Применить</value>
+  </data>
+  <data name="CustomColorPickerBasicColors" xml:space="preserve">
+    <value>Основные цвета:</value>
+  </data>
+  <data name="CustomColorPickerCancelBtn" xml:space="preserve">
+    <value>Отмена</value>
+  </data>
+  <data name="CustomColorPickerCustomColorBtn" xml:space="preserve">
+    <value>Задать пользовательские цвета</value>
+  </data>
+  <data name="CustomColorPickerCustomColors" xml:space="preserve">
+    <value>Пользовательские цвета:</value>
+  </data>
+  <data name="CustomColorPickerTitle" xml:space="preserve">
+    <value>Цвет</value>
+  </data>
+  <data name="PreferencesViewZoomScaling0Percent" xml:space="preserve">
+    <value>0 %</value>
+  </data>
+  <data name="PreferencesViewZoomScaling100Percent" xml:space="preserve">
+    <value>100 %</value>
+  </data>
+  <data name="PreferencesViewZoomScaling25Percent" xml:space="preserve">
+    <value>25 %</value>
+  </data>
+  <data name="PreferencesViewZoomScaling300Percent" xml:space="preserve">
+    <value>300 %</value>
+  </data>
+  <data name="PreferencesViewPythonEditorLable" xml:space="preserve">
+    <value>Редактор Python</value>
+  </data>
+  <data name="CustomColorsPopupTitle" xml:space="preserve">
+    <value>Настраиваемый</value>
+  </data>
+  <data name="PreferencesGrahicHelpersScale" xml:space="preserve">
+    <value>Масштаб графических элементов</value>
+  </data>
+  <data name="PreferencesGrahicHelpersScaleTooltip" xml:space="preserve">
+    <value>Выберите масштаб вспомогательных элементов фоновой графики (сеток, осей).</value>
+  </data>
+  <data name="LibraryLoadFailureMessageSuffix" xml:space="preserve">
+    <value>Подробные сведения о сбое импорта см. в журнале консоли.</value>
+  </data>
+  <data name="PreferencesHostGenericScaleImperialUnits" xml:space="preserve">
+    <value>Британские</value>
+  </data>
+  <data name="PreferencesHostGenericScaleMetricUnits" xml:space="preserve">
+    <value>Метрические</value>
+  </data>
+  <data name="CantExportWorkspaceAsImageEmptyMessage" xml:space="preserve">
+    <value>Пустое рабочее пространство нельзя экспортировать как изображение.</value>
+  </data>
+  <data name="CantExportWorkspaceAsImageNotValidMessage" xml:space="preserve">
+    <value>Рабочее пространство нельзя экспортировать как изображение, так как в нем содержатся узлы, расположенные слишком далеко друг от друга.</value>
+  </data>
+  <data name="PreferencesViewSettingIncludeTimestampExportPath" xml:space="preserve">
+    <value>Включить метку времени в путь к экспорт. Изображению</value>
+  </data>
+  <data name="PreferencesViewIncludeTimestampExportPathTooltip" xml:space="preserve">
+    <value>Если этот параметр включен, имена файлов экспортируемых изображений будут содержать дату и время экспорта.</value>
+  </data>
+  <data name="ElementBindingWarningMessage" xml:space="preserve">
+    <value>Команда «Сохранить как» создает рабочее пространство, которое Dynamo считает совершенно новым файлом, а существующие данные привязки элементов будут утеряны. При запуске этого файла новые данные привязки элементов будут созданы обычным образом. Используйте команду «Сохранить», если требуется сохранить привязку элемента к главному документу.</value>
+  </data>
+  <data name="ElementBindingWarningTitle" xml:space="preserve">
+    <value>Предупреждение о привязке элемента</value>
+  </data>
+  <data name="ElementBindingDesc" xml:space="preserve">
+    <value>Привязка элементов обеспечивает двустороннее взаимодействие между Dynamo и главным приложением, например Revit или Civil 3D. Пользователь выбирает элемент в главном документе, и в Dynamo этот элемент связывается с узлом в рабочем пространстве.</value>
+  </data>
+  <data name="PreferencesViewVisualSettingUseInstancing" xml:space="preserve">
+    <value>Использовать создание экземпляров (бета-версия)</value>
+  </data>
+  <data name="PreferencesWindowUseInstancingTooltip" xml:space="preserve">
+    <value>Если включено, визуализация некоторых типов симметричной геометрии, например кубов, прямоугольников или сфер, будет выполняться быстрее благодаря одновременному созданию сразу нескольких копий вместо последовательного.</value>
+  </data>
+  <data name="NotificationToAgreeMLNodeautocompleteTOU" xml:space="preserve">
+    <value>Для доступа к функции «Рекомендуемые узлы» прочитайте и примите условия, выбрав Dynamo &gt; «Соглашения для сбора данных».</value>
+  </data>
+  <data name="GESUnitCentimeters" xml:space="preserve">
+    <value>Сантиметры</value>
+  </data>
+  <data name="GESUnitFeet" xml:space="preserve">
+    <value>Футы</value>
+  </data>
+  <data name="GESUnitInches" xml:space="preserve">
+    <value>Дюймы</value>
+  </data>
+  <data name="GESUnitKilometers" xml:space="preserve">
+    <value>Километры</value>
+  </data>
+  <data name="GESUnitMeters" xml:space="preserve">
+    <value>Метры</value>
+  </data>
+  <data name="GESUnitMiles" xml:space="preserve">
+    <value>Мили</value>
+  </data>
+  <data name="GESUnitMillimeters" xml:space="preserve">
+    <value>Миллиметры</value>
+  </data>
+  <data name="SignOutConfirmationDialogText" xml:space="preserve">
+    <value>При выходе из Dynamo будет выполнен выход из всех классических программ Autodesk.</value>
+  </data>
+  <data name="SignOutConfirmationDialogTitle" xml:space="preserve">
+    <value>Выход из Dynamo</value>
+  </data>
+  <data name="PackageDetailsGroup" xml:space="preserve">
+    <value>ГРУППА</value>
+  </data>
+  <data name="PackageDetailsKeywords" xml:space="preserve">
+    <value>КЛЮЧЕВЫЕ СЛОВА</value>
+  </data>
+  <data name="PackageDetailsSize" xml:space="preserve">
+    <value>Размер</value>
+  </data>
+  <data name="PackageDetailsLinks" xml:space="preserve">
+    <value>ССЫЛКИ</value>
+  </data>
+  <data name="ResetChangesWarningPopupMessage" xml:space="preserve">
+    <value>Если продолжить, изменения будут утеряны.</value>
+  </data>
+  <data name="DynamoViewFileMenuOpenFile" xml:space="preserve">
+    <value>_Файл</value>
+  </data>
+  <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
+    <value>_Шаблон</value>
+  </data>
+  <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
+    <value>Рабочие пространства невозможно сохранить непосредственно в папке шаблонов. Выберите другую папку для сохранения файла.
+Чтобы сделать этот файл новым шаблоном, сохраните его в другую папку, а затем переместите в папку шаблонов.</value>
+  </data>
+  <data name="WorkspaceSaveTemplateDirectoryBlockTitle" xml:space="preserve">
+    <value>Недопустимый путь для сохранения</value>
+  </data>
+  <data name="PublishPackageRetainFolderStructureToggleButtonText" xml:space="preserve">
+    <value>Сохранить структуру папок</value>
+  </data>
+  <data name="UpdateNodeIconsDebugMenu" xml:space="preserve">
+    <value>Обновить значки узлов</value>
+  </data>
+  <data name="PreferencesViewEnablePanelingNodes" xml:space="preserve">
+    <value>Включить узлы панелей</value>
+  </data>
+  <data name="PreferencesSettingTemplateLocationLabel" xml:space="preserve">
+    <value>Путь к шаблонам</value>
+  </data>
+  <data name="PreferencesSettingResetTemplateLocationTooltip" xml:space="preserve">
+    <value>Сбросить расположение шаблона</value>
+  </data>
+  <data name="PreferencesSettingsTemplateFailedMessage" xml:space="preserve">
+    <value>Не удалось обновить расположение шаблона</value>
+  </data>
+  <data name="PreferencesSettingsTemplateFailedTitle" xml:space="preserve">
+    <value>Недопустимое расположение шаблона</value>
+  </data>
+  <data name="PreferencesSettingsTemplateLocationDialogTitle" xml:space="preserve">
+    <value>Выбор папки для шаблонов</value>
+  </data>
+  <data name="PreferencesSettingUpdateTemplateLocationTooltip" xml:space="preserve">
+    <value>Редактировать расположение шаблона</value>
+  </data>
+  <data name="PreferencesViewGeneralSettingsTemplate" xml:space="preserve">
+    <value>Шаблоны</value>
+  </data>
+  <data name="DynamoXmlFileFormat" xml:space="preserve">
+    <value>Формат файлов Dynamo 1.x</value>
+  </data>
+  <data name="DataInputNodeModeLockTooltip" xml:space="preserve">
+    <value>Если этот узел заблокирован, он принимает в качестве входных данных только выбранный тип данных. Если разблокирован, то входные данные могут быть любого поддерживаемого типа.</value>
+  </data>
+  <data name="DataInputNodeInformationTooltip" xml:space="preserve">
+    <value>Включите, если входные данные содержат список.</value>
+  </data>
+  <data name="DataInputAutoDetectTypeTooltip" xml:space="preserve">
+    <value>Включите параметр, чтобы узел Define Data автоматически определял тип данных узла ввода. Отключите, чтобы самостоятельно задавать требуемый тип данных</value>
+  </data>
+  <data name="DataInputAutoDetectTypeLabel" xml:space="preserve">
+    <value>Автоопределение типа</value>
+  </data>
+  <data name="DataInputTypeLabel" xml:space="preserve">
+    <value>Тип</value>
+  </data>
+  <data name="DataInputListLabel" xml:space="preserve">
+    <value>Список</value>
+  </data>
+  <data name="MessagePackageOlderDynamo" xml:space="preserve">
+    <value>Этот пакет или одна из его зависимостей были созданы для предыдущей версии Dynamo. Они могут не работать в этой версии. Продолжить?</value>
+  </data>
+  <data name="PackageUseOlderDynamoMessageBoxTitle" xml:space="preserve">
+    <value>Пакет может не работать в этой версии {0}.</value>
+  </data>
+  <data name="MessagePackOlderDynamoLink" xml:space="preserve">
+    <value>#Подробнее=https://primer2.dynamobim.org/v/ru/1_developer_primer_intro/3_developing_for_dynamo/updating-your-packages-and-dynamo-libraries-for-dynamo-3x-net8</value>
+  </data>
+  <data name="DuplicateFilesInPublishWarningMessage" xml:space="preserve">
+    <value>Файлы с одинаковыми именами будут перезаписаны в финальном пакете. Чтобы избежать этого, переименуйте или удалите дубликаты файлов либо включите параметр «Сохранить структуру папок».\n\nНайдены дублирующиеся файлы ({0}):\n{1}</value>
+  </data>
+  <data name="DuplicateFilesInPublishWarningTitle" xml:space="preserve">
+    <value>Дубликаты файлов</value>
+  </data>
+  <data name="NodeInCanvasSearchCreationError" xml:space="preserve">
+    <value>Не удалось создать узел: </value>
+  </data>
+  <data name="InstancingRenderFailureDescription" xml:space="preserve">
+    <value>Отключите параметр «Использовать создание экземпляров» в разделе «Параметры отображения» окна «Параметры отображения».</value>
+  </data>
+  <data name="PartialRenderFailureTitle" xml:space="preserve">
+    <value>Не удалось выполнить фоновый просмотр</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpData" xml:space="preserve">
+    <value>_Дамп данных</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeHelpData" xml:space="preserve">
+    <value>_Дамп данных справки по узлу</value>
+  </data>
+  <data name="NodeHelpIsDumped" xml:space="preserve">
+    <value>Node Help Data is dumped to \"{0}\".</value>
+  </data>
+  <data name="UpdateAllPythonEngineWarning" xml:space="preserve">
+    <value>Update all {0} python nodes in the current workspace to use {1} engine?</value>
+  </data>
+  <data name="UpdateAllPythonEngineWarningTitle" xml:space="preserve">
+    <value>Обновить все узлы Python</value>
+  </data>
+  <data name="UpdateAllPythonEngineMainMenuHeader" xml:space="preserve">
+    <value>Задать механизм Python</value>
+  </data>
+  <data name="PackageDetailsReleaseNotes" xml:space="preserve">
+    <value>Примечания к выпуску</value>
+  </data>
+  <data name="PackageDetailsDependsOn" xml:space="preserve">
+    <value>Зависит от</value>
+  </data>
+  <data name="PackageDetailsCompatibility" xml:space="preserve">
+    <value>СОВМЕСТИМОСТЬ</value>
+  </data>
+  <data name="PackageDetailsCompatibilityWithSetup" xml:space="preserve">
+    <value>Совместима с текущей установкой</value>
+  </data>
+  <data name="PackageDetailsIncompatibilityWithSetup" xml:space="preserve">
+    <value>Несовместимо с текущей установкой</value>
+  </data>
+  <data name="PackageDetailsXCompatibilityWithSetup" xml:space="preserve">
+    <value>Совместимость с текущей установкой неизвестна</value>
+  </data>
+  <data name="PackageDetailsCompatibleVersionTooltip" xml:space="preserve">
+    <value>Эта версия должна быть совместима с текущей установкой</value>
+  </data>
+  <data name="PackageDetailsUnknownCompatibilityVersionTooltip" xml:space="preserve">
+    <value>Совместимость этой версии не проверена. Она может быть совместима или не совместима с текущей установкой</value>
+  </data>
+  <data name="PackageDetailsIncompatibileVersionTooltip" xml:space="preserve">
+    <value>Эта версия может быть несовместима с текущей установкой</value>
+  </data>
+  <data name="PackageManagerIncompatibleVersionDownloadMsg" xml:space="preserve">
+    <value>Эта версия несовместима с текущей установкой (версией Dynamo и главного компонента, если применимо). Программа может работать некорректно. Все равно установить ее?</value>
+  </data>
+  <data name="PackageManagerIncompatibleVersionDownloadTitle" xml:space="preserve">
+    <value>Несовместимая версия</value>
+  </data>
+  <data name="PackageFilterByCompatibility" xml:space="preserve">
+    <value>СОВМЕСТИМОСТЬ ВЕРСИЙ</value>
+  </data>
+  <data name="PackageCompatible" xml:space="preserve">
+    <value>Совместима</value>
+  </data>
+  <data name="PackageCompatibleFilterTooltip" xml:space="preserve">
+    <value>Версии, совместимые с текущей установкой</value>
+  </data>
+  <data name="PackageUnknownCompatibility" xml:space="preserve">
+    <value>Нет данных о совместимости</value>
+  </data>
+  <data name="PackageUnknownCompatibilityFilterTooltip" xml:space="preserve">
+    <value>Невозможно проверить совместимость версии пакета</value>
+  </data>
+  <data name="PackageIncompatible" xml:space="preserve">
+    <value>Не совместима</value>
+  </data>
+  <data name="PackageIncompatibleFilterTooltip" xml:space="preserve">
+    <value>Версии могут быть несовместимы с текущей установкой</value>
+  </data>
+  <data name="PackageVersionTooltip" xml:space="preserve">
+    <value>Версии с пометкой «.x» включают все версии из указанного основного или вспомогательного выпуска</value>
+  </data>
+  <data name="CannotAddNodeToWorkspace" xml:space="preserve">
+    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
+  </data>
+  <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
+    <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
+  </data>
+  <data name="IDSDKErrorMessage" xml:space="preserve">
+    <value>Возможно, в системе не настроен компонент Autodesk Identity Manager. Чтобы обеспечить полный доступ ко всем функциям, войдите в учетную запись на портале Autodesk Account с помощью Autodesk Identity Manager.
+#Скачайте и установите=https://manage.autodesk.com/products/updates этот компонент здесь или через Autodesk Access, а затем войдите в систему.</value>
+  </data>
+  <data name="IDSDKErrorMessageTitle" xml:space="preserve">
+    <value>Скачивание Autodesk Identity Manager</value>
+  </data>
+  <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
+    <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
+  </data>
+  <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
+    <value>Freeze Group</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Сохранить</value>
+  </data>
+  <data name="DiscardButton" xml:space="preserve">
+    <value>Отклонить</value>
+  </data>
+  <data name="PreferencesViewGroupStylesHeader" xml:space="preserve">
+    <value>Стили групп</value>
+  </data>
+  <data name="PreferencesViewShowDefaultGroupDescription" xml:space="preserve">
+    <value>Show default group description</value>
+  </data>
+  <data name="NodeAutoCompleteToolTip" xml:space="preserve">
+    <value>Click to get Node Autocomplete suggestions</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="vsDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\vsDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="vsDynamoPointLine" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\vsDynamoPointLine;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="psDynamoLine" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoLine;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="psDynamoPoint" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoPoint;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+</root>

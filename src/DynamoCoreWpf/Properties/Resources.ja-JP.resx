@@ -1,0 +1,3798 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutWindowCannotGetVersion" xml:space="preserve">
+    <value>バージョンを取得できませんでした。</value>
+  </data>
+  <data name="AboutWindowDynamoWebsiteButton" xml:space="preserve">
+    <value>{0} Web サイト</value>
+  </data>
+  <data name="AboutWindowTitle" xml:space="preserve">
+    <value>{0} について</value>
+  </data>
+  <data name="AboutWindowUpToDate" xml:space="preserve">
+    <value>(最新)</value>
+  </data>
+  <data name="ActionMember" xml:space="preserve">
+    <value>アクション</value>
+  </data>
+  <data name="AddButton" xml:space="preserve">
+    <value>追加</value>
+  </data>
+  <data name="AddCustomFileToPackageDialogTitle" xml:space="preserve">
+    <value>カスタム ノード、ライブラリ、XML ファイルをパッケージに追加...</value>
+  </data>
+  <data name="AddFileToPackageDialogTitle" xml:space="preserve">
+    <value>パッケージにファイルを追加...</value>
+  </data>
+  <data name="AddToLibraryButton" xml:space="preserve">
+    <value>追加</value>
+  </data>
+  <data name="SignInButtonContentToolTip" xml:space="preserve">
+    <value>サインインして、デスクトップソフトウェアに統合されるオンラインサービスにアクセスします。</value>
+  </data>
+  <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
+    <value>Autodesk A360</value>
+  </data>
+  <data name="AutodeskSignIn" xml:space="preserve">
+    <value>Autodesk サイン イン</value>
+  </data>
+  <data name="Automatic" xml:space="preserve">
+    <value>自動</value>
+  </data>
+  <data name="BackgroundPreviewCreationFailureMessage" xml:space="preserve">
+    <value>Dynamo に背景プレビューを作成中にエラーが発生しました。これは、コンピュータのグラフィックス リソースが不足しているために起こる可能性があります。詳細については、ログを参照してください。</value>
+  </data>
+  <data name="BackgroundPreviewDefaultName" xml:space="preserve">
+    <value>既定の背景プレビュー</value>
+  </data>
+  <data name="BackgroundPreviewName" xml:space="preserve">
+    <value>背景プレビュー(_B)</value>
+  </data>
+  <data name="BrowserNodeButtonLabel" xml:space="preserve">
+    <value>参照...</value>
+  </data>
+  <data name="BrowserNodeNoFileSelected" xml:space="preserve">
+    <value>ファイルが選択されていません。</value>
+  </data>
+  <data name="BrowserWindowLoading" xml:space="preserve">
+    <value>ロード中...</value>
+  </data>
+  <data name="BuildVersionNonNegative" xml:space="preserve">
+    <value>ビルド バージョンを負ではない整数で指定する必要があります。</value>
+  </data>
+  <data name="CameraDataLoadError" xml:space="preserve">
+    <value>カメラの位置情報をファイルからロードできませんでした。</value>
+  </data>
+  <data name="CameraDataSaveError" xml:space="preserve">
+    <value>カメラの位置情報を保存できませんでした。</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="CannotDownloadPackageMessageBoxTitle" xml:space="preserve">
+    <value>パッケージをダウンロードできません</value>
+  </data>
+  <data name="BuiltInPackageConflictMessageBoxTitle" xml:space="preserve">
+    <value>パッケージは 1 つ以上の組み込みパッケージと競合しています。</value>
+  </data>
+  <data name="PackagesInUseConflictMessageBoxTitle" xml:space="preserve">
+    <value>パッケージは使用中の 1 つ以上のパッケージと競合しています。</value>
+  </data>
+  <data name="LoadedPackagesConflictMessageBoxTitle" xml:space="preserve">
+    <value>パッケージは、ロードされた 1 つ以上のパッケージと競合しています。</value>
+  </data>
+  <data name="CannotSubmitPackage" xml:space="preserve">
+    <value>{0} のこのバージョンでは、パッケージを送信できません。パッケージを送信するには、Revit などのホスト アプリケーションが必要です。</value>
+  </data>
+  <data name="ChangeScaleFactorPromptCaptionText" xml:space="preserve">
+    <value>ジオメトリのレンダリングと計算を正確に実行するため、操作するジオメトリ サイズの範囲を選択してください。</value>
+  </data>
+  <data name="ChangeScaleFactorPromptDescriptionBox" xml:space="preserve">
+    <value>ここに表示されている数値範囲は、次の単位の数値を示しています:</value>
+  </data>
+  <data name="ChangeScaleFactorPromptDescriptionContent" xml:space="preserve">
+    <value>この動作範囲を使用して、 {0} 単位から {1} 単位までの範囲内の値でモデリングを行います</value>
+  </data>
+  <data name="ChangeScaleFactorPromptDescriptionDefaultSetting" xml:space="preserve">
+    <value>既定の設定:</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitCm" xml:space="preserve">
+    <value>センチメートル(cm)</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitM" xml:space="preserve">
+    <value>メートル(m)</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitMm" xml:space="preserve">
+    <value>ミリメートル(mm)</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitsNumberFormatCm" xml:space="preserve">
+    <value>{0} cm</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitsNumberFormatM" xml:space="preserve">
+    <value>{0} m</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitsNumberFormatMm" xml:space="preserve">
+    <value>{0} mm</value>
+  </data>
+  <data name="ChangeScaleFactorPromptWindowTitle" xml:space="preserve">
+    <value>ジオメトリの動作範囲</value>
+  </data>
+  <data name="CompactLayoutTitle" xml:space="preserve">
+    <value>コンパクト</value>
+  </data>
+  <data name="ConsentFormADPAnalyticsCheckBoxContent" xml:space="preserve">
+    <value>オートデスクの解析プログラムがデスクトップ製品でデータを収集することに同意します。</value>
+  </data>
+  <data name="ContextAddGroupFromSelection" xml:space="preserve">
+    <value>グループにノードを追加</value>
+  </data>
+  <data name="ContextCreateGroupFromSelection" xml:space="preserve">
+    <value>グループを作成</value>
+  </data>
+  <data name="ContextMenuCopy" xml:space="preserve">
+    <value>コンテンツをコピー</value>
+  </data>
+  <data name="ContextMenuDelete" xml:space="preserve">
+    <value>削除</value>
+  </data>
+  <data name="ContextMenuEditCustomNode" xml:space="preserve">
+    <value>カスタム ノードを編集...</value>
+  </data>
+  <data name="ContextMenuEditCustomNodeProperty" xml:space="preserve">
+    <value>カスタム ノード プロパティを編集...</value>
+  </data>
+  <data name="ContextMenuFitToScreen" xml:space="preserve">
+    <value>画面に合わせて表示(_F)</value>
+  </data>
+  <data name="ContextMenuGeometryView" xml:space="preserve">
+    <value>ジオメトリ ビューに切り替える(_V)</value>
+  </data>
+  <data name="ContextMenuHideGeometry" xml:space="preserve">
+    <value>ジオメトリのプレビューを非表示</value>
+  </data>
+  <data name="ContextMenuHideAllTextBubble" xml:space="preserve">
+    <value>すべての文字バルーンを非表示</value>
+  </data>
+  <data name="ContextMenuInsertCodeBlock" xml:space="preserve">
+    <value>コード ブロックを挿入</value>
+  </data>
+  <data name="ContextMenuLacing" xml:space="preserve">
+    <value>レーシング</value>
+  </data>
+  <data name="ContextMenuLacingAuto" xml:space="preserve">
+    <value>自動</value>
+  </data>
+  <data name="ContextMenuLacingCrossProduct" xml:space="preserve">
+    <value>外積</value>
+  </data>
+  <data name="ContextMenuLacingFirst" xml:space="preserve">
+    <value>最初</value>
+  </data>
+  <data name="ContextMenuLacingLongest" xml:space="preserve">
+    <value>最長</value>
+  </data>
+  <data name="ContextMenuLacingShortest" xml:space="preserve">
+    <value>最短</value>
+  </data>
+  <data name="ContextMenuNodesFromGeometry" xml:space="preserve">
+    <value>選択したジオメトリからのノード(_S)</value>
+  </data>
+  <data name="ContextMenuNodesFromSelection" xml:space="preserve">
+    <value>カスタム ノードを作成</value>
+  </data>
+  <data name="ContextMenuNodeToCode" xml:space="preserve">
+    <value>ノードをコード化(_C)</value>
+  </data>
+  <data name="ContextMenuPan" xml:space="preserve">
+    <value>画面移動(_N)</value>
+  </data>
+  <data name="ContextMenuPaste" xml:space="preserve">
+    <value>貼り付け</value>
+  </data>
+  <data name="ContextMenuPublishCustomNode" xml:space="preserve">
+    <value>このカスタム ノードをパブリッシュ...</value>
+  </data>
+  <data name="ContextMenuShowGeometry" xml:space="preserve">
+    <value>ジオメトリのプレビューを表示</value>
+  </data>
+  <data name="ContextMenuShowAllTextBubble" xml:space="preserve">
+    <value>すべての文字バブルを表示</value>
+  </data>
+  <data name="ContextUnGroupFromSelection" xml:space="preserve">
+    <value>グループから削除</value>
+  </data>
+  <data name="ContinueButton" xml:space="preserve">
+    <value>続行</value>
+  </data>
+  <data name="ConverterMessageCurrentOffset" xml:space="preserve">
+    <value>現在のオフセット X: {0}, Y: {1}</value>
+  </data>
+  <data name="ConverterMessageTransformOrigin" xml:space="preserve">
+    <value>基準点 X: {0}、Y: {1} を変換</value>
+  </data>
+  <data name="ConverterMessageZoom" xml:space="preserve">
+    <value>ズーム: {0}</value>
+  </data>
+  <data name="CrashPromptDialogCopyButton" xml:space="preserve">
+    <value>コピー</value>
+  </data>
+  <data name="CrashPromptDialogCrashMessage" xml:space="preserve">
+    <value>問題が発生し、Dynamo は予期せず終了しました。
+
+しかし、作業内容を保存するためのオプションがありますのでご安心ください。</value>
+  </data>
+  <data name="CrashPromptDialogDetailButton" xml:space="preserve">
+    <value>詳細</value>
+  </data>
+  <data name="CrashPromptDialogOpenFolderButton" xml:space="preserve">
+    <value>フォルダを開く</value>
+  </data>
+  <data name="CrashPromptDialogSubmitBugButton" xml:space="preserve">
+    <value>バグを GitHub に送信</value>
+  </data>
+  <data name="CrashPromptDialogTitle" xml:space="preserve">
+    <value>{0} が予期せず終了しました</value>
+  </data>
+  <data name="CreateMember" xml:space="preserve">
+    <value>作成</value>
+  </data>
+  <data name="CustomNodePromptDescriptionTooltip" xml:space="preserve">
+    <value>ユーザがノードの使用目的を理解するのに役立つ説明です。</value>
+  </data>
+  <data name="CustomNodePromptNameTooltip" xml:space="preserve">
+    <value>ノードのユニークな名前。</value>
+  </data>
+  <data name="CustomNodePropertyErrorMessageBoxTitle" xml:space="preserve">
+    <value>カスタム ノード プロパティ エラー</value>
+  </data>
+  <data name="CustomNodePropertyWindowCategory" xml:space="preserve">
+    <value>アドオンのカテゴリ</value>
+  </data>
+  <data name="CustomNodePropertyWindowDescription" xml:space="preserve">
+    <value>説明</value>
+  </data>
+  <data name="CustomNodePropertyWindowDescriptionHint" xml:space="preserve">
+    <value>カスタム ノードの説明</value>
+  </data>
+  <data name="CustomNodePropertyWindowName" xml:space="preserve">
+    <value>名前</value>
+  </data>
+  <data name="CustomNodePropertyWindowNameHint" xml:space="preserve">
+    <value>カスタム ノードの名前</value>
+  </data>
+  <data name="CustomNodePropertyWindowLocationNote" xml:space="preserve">
+    <value>カスタム ノードはライブラリ内のアドオン セクションに配置されます。</value>
+  </data>
+  <data name="CustomNodePropertyWindowTitle" xml:space="preserve">
+    <value>カスタム ノード プロパティ</value>
+  </data>
+  <data name="CustomNodeTypeShortString" xml:space="preserve">
+    <value>DS</value>
+  </data>
+  <data name="DeprecatingPackageMessageBoxTitle" xml:space="preserve">
+    <value>パッケージの廃止</value>
+  </data>
+  <data name="DescriptionNeedMoreCharacters" xml:space="preserve">
+    <value>説明は 10 文字より長くする必要があります。</value>
+  </data>
+  <data name="DetailedLayoutTitle" xml:space="preserve">
+    <value>詳細</value>
+  </data>
+  <data name="DirectoryNotFound" xml:space="preserve">
+    <value>フォルダが見つかりません</value>
+  </data>
+  <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
+    <value>ダウンロードの警告</value>
+  </data>
+  <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
+    <value>Dynamo 更新プログラムを利用できます。インストールするにはクリックします。</value>
+  </data>
+  <data name="DynamoViewCancelButtonTooltip" xml:space="preserve">
+    <value>実行をキャンセル([Shift] + [F5])</value>
+  </data>
+  <data name="DynamoViewContextMenuClearLog" xml:space="preserve">
+    <value>クリア</value>
+  </data>
+  <data name="DynamoViewDebugMenu" xml:space="preserve">
+    <value>デバッグ(_B)</value>
+  </data>
+  <data name="DynamoViewDebugMenuCheckDailyBuild" xml:space="preserve">
+    <value>毎日のビルドを確認(_C)</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpLibrary" xml:space="preserve">
+    <value>ライブラリをダンプ(_D)</value>
+  </data>
+  <data name="DynamoViewDebugMenuForceReExecute" xml:space="preserve">
+    <value>強制再実行(_F)</value>
+  </data>
+  <data name="DynamoViewDebugMenuForceUpdate" xml:space="preserve">
+    <value>強制更新(_U)</value>
+  </data>
+  <data name="DynamoViewDebugMenuRunMutationTest" xml:space="preserve">
+    <value>ミューテーション テストを実行(_R)</value>
+  </data>
+  <data name="DynamoViewDebugMenuShowDebugAST" xml:space="preserve">
+    <value>デバッグ AST を表示(_S)</value>
+  </data>
+  <data name="DynamoViewDebugMenuVerboseLogging" xml:space="preserve">
+    <value>冗長ログ(_V)</value>
+  </data>
+  <data name="DynamoViewDebugMenuDebugModes" xml:space="preserve">
+    <value>デバッグ モード(_M)</value>
+  </data>
+  <data name="DynamoViewEditMenu" xml:space="preserve">
+    <value>編集(_E)</value>
+  </data>
+  <data name="DynamoViewEditMenuAlighBottom" xml:space="preserve">
+    <value>下(_B)</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignLeft" xml:space="preserve">
+    <value>左(_L)</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignRight" xml:space="preserve">
+    <value>右(_R)</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignSelection" xml:space="preserve">
+    <value>選択項目を位置合わせ(_A)</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignTop" xml:space="preserve">
+    <value>上(_T)</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignXAverage" xml:space="preserve">
+    <value>X 平均(_X)</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignXDistribute" xml:space="preserve">
+    <value>X 分配(_D)</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignYAverage" xml:space="preserve">
+    <value>Y 平均(_Y)</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignYDistribute" xml:space="preserve">
+    <value>Y 分配(_S)</value>
+  </data>
+  <data name="DynamoViewEditMenuCleanupLayout" xml:space="preserve">
+    <value>ノードのレイアウトをクリーンアップ(_L)</value>
+  </data>
+  <data name="DynamoViewEditMenuCopy" xml:space="preserve">
+    <value>コピー(_C)</value>
+  </data>
+  <data name="DynamoViewEditMenuCreateCustomNode" xml:space="preserve">
+    <value>カスタム ノードを作成(_T)</value>
+  </data>
+  <data name="DynamoViewEditMenuCreateGroup" xml:space="preserve">
+    <value>グループを作成(_G)</value>
+  </data>
+  <data name="DynamoViewEditMenuCreateNote" xml:space="preserve">
+    <value>ノートを作成(_N)</value>
+  </data>
+  <data name="DynamoViewEditMenuCreatePreset" xml:space="preserve">
+    <value>選択からプリセットを作成</value>
+  </data>
+  <data name="DynamoViewEditMenuDeletePreset" xml:space="preserve">
+    <value>プリセットを削除</value>
+  </data>
+  <data name="DynamoViewEditMenuDeleteSelected" xml:space="preserve">
+    <value>選択項目を削除(_D)</value>
+  </data>
+  <data name="DynamoViewEditMenuPaste" xml:space="preserve">
+    <value>貼り付け(_P)</value>
+  </data>
+  <data name="DynamoViewEditMenuPresetsMenu" xml:space="preserve">
+    <value>プリセット</value>
+  </data>
+  <data name="DynamoViewEditMenuRedo" xml:space="preserve">
+    <value>やり直し(_R)</value>
+  </data>
+  <data name="DynamoViewEditMenuRestorePreset" xml:space="preserve">
+    <value>プリセットを復元</value>
+  </data>
+  <data name="DynamoViewEditMenuSelectAll" xml:space="preserve">
+    <value>すべてを選択(_S)</value>
+  </data>
+  <data name="DynamoViewEditMenuUnpinAllPreviewBubbles" xml:space="preserve">
+    <value>すべてのプレビュー バルーンを固定解除(_U)</value>
+  </data>
+  <data name="DynamoViewEditMenuSelectNeighbours" xml:space="preserve">
+    <value>隣接を選択(_S)</value>
+  </data>
+  <data name="DynamoViewEditMenuUndo" xml:space="preserve">
+    <value>元に戻す(_U)</value>
+  </data>
+  <data name="DynamoViewDynamoMenuExit" xml:space="preserve">
+    <value>Dynamo を終了(_E)</value>
+  </data>
+  <data name="DynamoViewFileMenu" xml:space="preserve">
+    <value>ファイル(_F)</value>
+  </data>
+  <data name="DynamoViewFileMenuExport3DAsImage" xml:space="preserve">
+    <value>背景 3D プレビューをイメージとして書き出し(_B)...</value>
+  </data>
+  <data name="DynamoViewFileMenuExportAsImage" xml:space="preserve">
+    <value>ワークスペースをイメージとして書き出し(_W)...</value>
+  </data>
+  <data name="DynamoViewFileMenuExportToSTL" xml:space="preserve">
+    <value>モデルを STL に書き出し(_M)...</value>
+  </data>
+  <data name="DynamoViewFileMenuImport" xml:space="preserve">
+    <value>ライブラリを読み込む(_I)...</value>
+  </data>
+  <data name="DynamoViewFileMenuNew" xml:space="preserve">
+    <value>新規作成(_N)</value>
+  </data>
+  <data name="DynamoViewFileMenuNewCustomNode" xml:space="preserve">
+    <value>カスタム ノード(_C)...</value>
+  </data>
+  <data name="DynamoViewFileMenuNewHomeWorkSpace" xml:space="preserve">
+    <value>ホーム ワークスペース(_H)</value>
+  </data>
+  <data name="DynamoViewFileMenuOpen" xml:space="preserve">
+    <value>開く(_O)...</value>
+  </data>
+  <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
+    <value>最近使用したファイルを開く(_R)</value>
+  </data>
+  <data name="DynamoViewFileMenuSave" xml:space="preserve">
+    <value>保存(_S)</value>
+  </data>
+  <data name="DynamoViewFileMenuSaveAs" xml:space="preserve">
+    <value>名前を付けて保存(_A)...</value>
+  </data>
+  <data name="DynamoViewHelpDictionary" xml:space="preserve">
+    <value>Dynamo ディクショナリ(_C)</value>
+  </data>
+  <data name="DynamoViewHelpMenu" xml:space="preserve">
+    <value>ヘルプ(_H)</value>
+  </data>
+  <data name="DynamoViewHelpMenuDisplayStartPage" xml:space="preserve">
+    <value>開始ページを表示(_D)</value>
+  </data>
+  <data name="DynamoViewHelpMenuGotoWebsite" xml:space="preserve">
+    <value>Dynamo Web サイト(_W)</value>
+  </data>
+  <data name="DynamoViewHelpMenuGotoRepo" xml:space="preserve">
+    <value>Dynamo リポジトリ(_R)</value>
+  </data>
+  <data name="DynamoViewHelpMenuGotoWiki" xml:space="preserve">
+    <value>Dynamo プロジェクト Wiki (_P)</value>
+  </data>
+  <data name="DynamoViewHelpMenuReportBug" xml:space="preserve">
+    <value>バグをレポート(_R)</value>
+  </data>
+  <data name="DynamoViewHelpMenuShowInFolder" xml:space="preserve">
+    <value>フォルダ内を表示</value>
+  </data>
+  <data name="DynamoViewHepMenuSamples" xml:space="preserve">
+    <value>サンプル(_S)</value>
+  </data>
+  <data name="DynamoViewPackageMenu" xml:space="preserve">
+    <value>パッケージ(_P)</value>
+  </data>
+  <data name="DynamoViewPackageMenuManagePackage" xml:space="preserve">
+    <value>パッケージを管理(_M)...</value>
+  </data>
+  <data name="DynamoViewPackageMenuPublishNodes" xml:space="preserve">
+    <value>選択したノードをパブリッシュ(_S)...</value>
+  </data>
+  <data name="DynamoViewPackageMenuPublishWorkspace" xml:space="preserve">
+    <value>現在のワークスペースをパブリッシュ(_C)...</value>
+  </data>
+  <data name="DynamoViewPackageMenuSearchPackage" xml:space="preserve">
+    <value>パッケージの検索(_S)...</value>
+  </data>
+  <data name="DynamoViewPackageMenuPackageManager" xml:space="preserve">
+    <value>Package Manager(_P)...</value>
+  </data>
+  <data name="DynamoViewRunAutomaticallyOption" xml:space="preserve">
+    <value>自動実行</value>
+  </data>
+  <data name="DynamoViewRunButton" xml:space="preserve">
+    <value>実行</value>
+  </data>
+  <data name="DynamoViewRunButtonTooltip" xml:space="preserve">
+    <value>ワークフローを実行([F5])</value>
+  </data>
+  <data name="DynamoViewRunButtonToolTipDisabled" xml:space="preserve">
+    <value>自動的または定期的に実行する場合は、実行を使用できません。</value>
+  </data>
+  <data name="DynamoViewSamplesMenuShowInFolder" xml:space="preserve">
+    <value>フォルダ内を表示</value>
+  </data>
+  <data name="PreferencesViewEnableTSplineNodes" xml:space="preserve">
+    <value>T スプライン ノードを有効にする</value>
+  </data>
+  <data name="PreferencesViewExperimentalLabel" xml:space="preserve">
+    <value>サンプル</value>
+  </data>
+  <data name="DynamoViewSettingMenu" xml:space="preserve">
+    <value>設定(_S)</value>
+  </data>
+  <data name="DynamoViewSettingMenuAreaUnits" xml:space="preserve">
+    <value>面積表示単位</value>
+  </data>
+  <data name="DynamoViewSettingMenuCentimeter" xml:space="preserve">
+    <value>センチメートル</value>
+  </data>
+  <data name="DynamoViewSettingMenuCubicCentimeter" xml:space="preserve">
+    <value>立方センチメートル</value>
+  </data>
+  <data name="DynamoViewSettingMenuCubicFoot" xml:space="preserve">
+    <value>立方フィート</value>
+  </data>
+  <data name="DynamoViewSettingMenuCubicInch" xml:space="preserve">
+    <value>立方インチ</value>
+  </data>
+  <data name="DynamoViewSettingMenuCubicMeter" xml:space="preserve">
+    <value>立方メートル</value>
+  </data>
+  <data name="DynamoViewSettingMenuCubicMillimeter" xml:space="preserve">
+    <value>立方ミリメートル</value>
+  </data>
+  <data name="DynamoViewSettingMenuDecimalFoot" xml:space="preserve">
+    <value>十進数フィート</value>
+  </data>
+  <data name="DynamoViewSettingMenuDecimalInch" xml:space="preserve">
+    <value>十進数インチ</value>
+  </data>
+  <data name="DynamoViewSettingMenuShowDataReportingDialog" xml:space="preserve">
+    <value>データ収集に関する契約(_D)</value>
+  </data>
+  <data name="DynamoViewSettingMenuFractionalFoot" xml:space="preserve">
+    <value>分数フィート</value>
+  </data>
+  <data name="DynamoViewSettingMenuFractionalInch" xml:space="preserve">
+    <value>分数インチ</value>
+  </data>
+  <data name="DynamoViewSettingMenuHighRenderPrecision" xml:space="preserve">
+    <value>高</value>
+  </data>
+  <data name="DynamoViewSettingMenuLengthUnits" xml:space="preserve">
+    <value>長さ表示単位</value>
+  </data>
+  <data name="DynamoViewSettingMenuLowRenderPrecision" xml:space="preserve">
+    <value>低</value>
+  </data>
+  <data name="DynamoViewSettingMenuManagePackagePath" xml:space="preserve">
+    <value>ノードとパッケージのパスを管理...</value>
+  </data>
+  <data name="DynamoViewSettingMenuMeter" xml:space="preserve">
+    <value>メートル</value>
+  </data>
+  <data name="DynamoViewSettingMenuMillimeter" xml:space="preserve">
+    <value>ミリメートル</value>
+  </data>
+  <data name="DynamoViewSettingMenuNumber0" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="DynamoViewSettingMenuNumber00" xml:space="preserve">
+    <value>0.0</value>
+  </data>
+  <data name="DynamoViewSettingMenuNumber000" xml:space="preserve">
+    <value>0.00</value>
+  </data>
+  <data name="DynamoViewSettingMenuNumber0000" xml:space="preserve">
+    <value>0.000</value>
+  </data>
+  <data name="DynamoViewSettingMenuNumber00000" xml:space="preserve">
+    <value>0.0000</value>
+  </data>
+  <data name="DynamoViewSettingMenuNumberFormat" xml:space="preserve">
+    <value>数値形式</value>
+  </data>
+  <data name="PreferencesViewSelectedPackagePathForDownload" xml:space="preserve">
+    <value>ダウンロード用に選択したパッケージのパス</value>
+  </data>
+  <data name="PreferencesViewDisableBuiltInPackages" xml:space="preserve">
+    <value>組み込みパッケージのロードを無効にする</value>
+  </data>
+  <data name="PreferencesViewDisableCustomPackages" xml:space="preserve">
+    <value>カスタム パッケージのロードを無効にする</value>
+  </data>
+  <data name="DynamoViewSettingMenuSquareCentimeter" xml:space="preserve">
+    <value>平方センチメートル</value>
+  </data>
+  <data name="DynamoViewSettingMenuSquareFoot" xml:space="preserve">
+    <value>平方フィート</value>
+  </data>
+  <data name="DynamoViewSettingMenuSquareInch" xml:space="preserve">
+    <value>平方インチ</value>
+  </data>
+  <data name="DynamoViewSettingMenuSquareMeter" xml:space="preserve">
+    <value>平方メートル</value>
+  </data>
+  <data name="DynamoViewSettingMenuSquareMillimeter" xml:space="preserve">
+    <value>平方ミリメートル</value>
+  </data>
+  <data name="DynamoViewSettingMenuVolumeUnits" xml:space="preserve">
+    <value>容積表示単位</value>
+  </data>
+  <data name="DynamoViewSettingShowRunPreview" xml:space="preserve">
+    <value>実行のプレビューを表示</value>
+  </data>
+  <data name="DynamoViewSettingsMenuChangeScaleFactor" xml:space="preserve">
+    <value>ジオメトリのスケーリング...</value>
+  </data>
+  <data name="DynamoViewSettingsMenuVisualizationSettings" xml:space="preserve">
+    <value>ビジュアライゼーション設定</value>
+  </data>
+  <data name="DynamoViewToolbarExport3DButtonTooltip" xml:space="preserve">
+    <value>背景プレビューをイメージとして書き出します</value>
+  </data>
+  <data name="DynamoViewToolbarExportButtonTooltip" xml:space="preserve">
+    <value>ワークスペースをイメージとして書き出します</value>
+  </data>
+  <data name="DynamoViewToolbarNewButtonTooltip" xml:space="preserve">
+    <value>新規作成[Ctrl + N]</value>
+  </data>
+  <data name="DynamoViewToolbarOpenButtonTooltip" xml:space="preserve">
+    <value>開く[Ctrl + O]</value>
+  </data>
+  <data name="DynamoViewToolbarRedoButtonTooltip" xml:space="preserve">
+    <value>やり直し[Ctrl + Y]</value>
+  </data>
+  <data name="DynamoViewToolbarSaveButtonTooltip" xml:space="preserve">
+    <value>保存[Ctrl + S]</value>
+  </data>
+  <data name="DynamoViewToolbarUndoButtonTooltip" xml:space="preserve">
+    <value>元に戻す[Ctrl + Z]</value>
+  </data>
+  <data name="DynamoViewViewMenu" xml:space="preserve">
+    <value>表示(_V)</value>
+  </data>
+  <data name="DynamoViewViewMenu3DPreview" xml:space="preserve">
+    <value>背景 3D プレビュー(_B)</value>
+  </data>
+  <data name="DynamoViewViewMenuAlternateContextGeometry" xml:space="preserve">
+    <value>{0} のジオメトリを表示</value>
+  </data>
+  <data name="DynamoViewViewMenuAvailablePreviews" xml:space="preserve">
+    <value>使用可能なプレビュー(_A)</value>
+  </data>
+  <data name="DynamoViewViewMenuConnector" xml:space="preserve">
+    <value>コネクタ(_C)</value>
+  </data>
+  <data name="DynamoViewViewMenuConnectorType" xml:space="preserve">
+    <value>コネクタ タイプ(_C)</value>
+  </data>
+  <data name="DynamoViewViewMenuConnectorTypeCurve" xml:space="preserve">
+    <value>曲線</value>
+  </data>
+  <data name="DynamoViewViewMenuConnectorTypePolylines" xml:space="preserve">
+    <value>ポリライン</value>
+  </data>
+  <data name="DynamoViewViewMenuHideConsole" xml:space="preserve">
+    <value>Console を非表示</value>
+  </data>
+  <data name="DynamoViewViewMenuPan" xml:space="preserve">
+    <value>画面移動(_P)</value>
+  </data>
+  <data name="DynamoViewViewMenuPanDown" xml:space="preserve">
+    <value>画面を下に移動(マウス ホイールを押したまま下にドラッグ)</value>
+  </data>
+  <data name="DynamoViewViewMenuPanLeft" xml:space="preserve">
+    <value>画面を左に移動(マウス ホイールを押したまま左にドラッグ)</value>
+  </data>
+  <data name="DynamoViewViewMenuPanRight" xml:space="preserve">
+    <value>画面を右に移動(マウス ホイールを押したまま右にドラッグ)</value>
+  </data>
+  <data name="DynamoViewViewMenuPanUp" xml:space="preserve">
+    <value>画面を上に移動(マウス ホイールを押したまま上にドラッグ)</value>
+  </data>
+  <data name="DynamoViewViewMenuPreviewNavigate" xml:space="preserve">
+    <value>背景 3D プレビューをナビゲート(_N)</value>
+  </data>
+  <data name="DynamoViewViewMenuShowBackground3DPreview" xml:space="preserve">
+    <value>背景 3D プレビューの表示</value>
+  </data>
+  <data name="DynamoViewViewMenuShowConnectors" xml:space="preserve">
+    <value>コネクタを表示(_C)</value>
+  </data>
+  <data name="DynamoViewViewMenuShowConsole" xml:space="preserve">
+    <value>コンソールを表示(_S)</value>
+  </data>
+  <data name="DynamoViewViewMenuShowGrid" xml:space="preserve">
+    <value>ヘルパーを表示(_S)</value>
+  </data>
+  <data name="DynamoViewViewMenuZoom" xml:space="preserve">
+    <value>ズーム(_Z)</value>
+  </data>
+  <data name="DynamoViewViewMenuZoomIn" xml:space="preserve">
+    <value>拡大(マウス ホイールを下に)</value>
+  </data>
+  <data name="DynamoViewViewMenuZoomOut" xml:space="preserve">
+    <value>縮小(マウス ホイールを上に)</value>
+  </data>
+  <data name="EditAnnotationTitle" xml:space="preserve">
+    <value>グループ タイトルを編集</value>
+  </data>
+  <data name="EditNodeWindowTitle" xml:space="preserve">
+    <value>ノード名を編集</value>
+  </data>
+  <data name="EditWindowAcceptButton" xml:space="preserve">
+    <value>適用</value>
+  </data>
+  <data name="EditWindowTitle" xml:space="preserve">
+    <value>値を設定...</value>
+  </data>
+  <data name="FileDialogAllFiles" xml:space="preserve">
+    <value>すべてのファイル({0})|{0}</value>
+  </data>
+  <data name="FileDialogAssemblyFiles" xml:space="preserve">
+    <value>アセンブリ ライブラリ ファイル({0})|{0}</value>
+  </data>
+  <data name="FileDialogCustomNodeDLLXML" xml:space="preserve">
+    <value>カスタム ノード、DLL、XML ({0})|{0}</value>
+  </data>
+  <data name="FileDialogDefaultPNGName" xml:space="preserve">
+    <value>Capture.png</value>
+  </data>
+  <data name="FileDialogDefaultSTLModelName" xml:space="preserve">
+    <value>model.stl</value>
+  </data>
+  <data name="FileDialogDesignScriptFiles" xml:space="preserve">
+    <value>DesignScript ファイル({0})|{0}</value>
+  </data>
+  <data name="FileDialogDynamoCustomNode" xml:space="preserve">
+    <value>{0} カスタム ノード({1})|{1}</value>
+  </data>
+  <data name="FileDialogDynamoDefinitions" xml:space="preserve">
+    <value>{0} 設定({1})|{1}</value>
+  </data>
+  <data name="FileDialogDynamoWorkspace" xml:space="preserve">
+    <value>{0} ワークスペース({1})|{1}</value>
+  </data>
+  <data name="FileDialogLibraryFiles" xml:space="preserve">
+    <value>ライブラリ ファイル({0})|{0}</value>
+  </data>
+  <data name="FileDialogManualMode" xml:space="preserve">
+    <value>Manual Execution Mode で開く</value>
+  </data>
+  <data name="FileDialogPNGFiles" xml:space="preserve">
+    <value>PNG イメージ|{0}</value>
+  </data>
+  <data name="FileDialogSTLModels" xml:space="preserve">
+    <value>STL モデル|{0}</value>
+  </data>
+  <data name="FileNotPublishCaption" xml:space="preserve">
+    <value>パブリッシュに失敗しました</value>
+  </data>
+  <data name="FileNotPublishMessage" xml:space="preserve">
+    <value>ファイルが見つからないか、パッケージ内部に含まれています。パッケージの外部に置かれているファイルのみを追加してください。
+
+ファイルのパブリッシュに失敗しました:
+{0}</value>
+  </data>
+  <data name="FilePathConverterNoFileSelected" xml:space="preserve">
+    <value>ファイルが選択されていません。</value>
+  </data>
+  <data name="FilterIconTooltip" xml:space="preserve">
+    <value>フィルタ結果</value>
+  </data>
+  <data name="FolderNotWritableError" xml:space="preserve">
+    <value>{0} への書き込み権限がありません。</value>
+  </data>
+  <data name="GenericTaskDialogSampleLeftButton" xml:space="preserve">
+    <value>サンプルの左ボタン</value>
+  </data>
+  <data name="GenericTaskDialogSampleRightButton" xml:space="preserve">
+    <value>サンプルの右ボタン</value>
+  </data>
+  <data name="GenericTaskDialogTitle" xml:space="preserve">
+    <value>一般的なタスク ダイアログ</value>
+  </data>
+  <data name="GroupContextMenuBackground" xml:space="preserve">
+    <value>背景を選択</value>
+  </data>
+  <data name="GroupContextMenuDeleteGroup" xml:space="preserve">
+    <value>グループを削除</value>
+  </data>
+  <data name="GroupContextMenuFont" xml:space="preserve">
+    <value>フォント サイズ</value>
+  </data>
+  <data name="GroupContextMenuGraphLayout" xml:space="preserve">
+    <value>ノードのレイアウトをクリーンアップ</value>
+  </data>
+  <data name="GroupContextMenuUngroup" xml:space="preserve">
+    <value>グループ解除(_O)</value>
+  </data>
+  <data name="HideClassicNodeLibrary" xml:space="preserve">
+    <value>Classic Node Library を非表示</value>
+  </data>
+  <data name="ImportLibraryDialogTitle" xml:space="preserve">
+    <value>Library を読み込む</value>
+  </data>
+  <data name="InCanvasFitViewButtonToolTip" xml:space="preserve">
+    <value>全体表示</value>
+  </data>
+  <data name="InCanvasGeomButtonToolTip" xml:space="preserve">
+    <value>背景 3D プレビュー ナビゲーションを有効にする([Ctrl]+[B])</value>
+  </data>
+  <data name="InCanvasNodeButtonToolTip" xml:space="preserve">
+    <value>グラフ ビュー ナビゲーションを有効にする([Ctrl]+[B])</value>
+  </data>
+  <data name="InCanvasOrbitButtonToolTip" xml:space="preserve">
+    <value>オービット</value>
+  </data>
+  <data name="InCanvasPanButtonToolTip" xml:space="preserve">
+    <value>画面移動</value>
+  </data>
+  <data name="InCanvasZoomInButtonToolTip" xml:space="preserve">
+    <value>拡大</value>
+  </data>
+  <data name="InCanvasZoomOutButtonToolTip" xml:space="preserve">
+    <value>縮小</value>
+  </data>
+  <data name="InfoBubbleError" xml:space="preserve">
+    <value>エラー:</value>
+  </data>
+  <data name="InfoBubbleWarning" xml:space="preserve">
+    <value>警告:</value>
+  </data>
+  <data name="InstalledPackageViewAdditionalFileLabel" xml:space="preserve">
+    <value>追加ファイル</value>
+  </data>
+  <data name="InstalledPackageViewAdditionalLabel" xml:space="preserve">
+    <value>追加のライブラリ</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuDeprecate" xml:space="preserve">
+    <value>廃止</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuDeprecateTooltip" xml:space="preserve">
+    <value>このパッケージを廃止に設定します。現在、ユーザがパッケージを保持している場合にのみ実行可能です。</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuGetLatest" xml:space="preserve">
+    <value>最新バージョンを取得</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuGetLatestTooltip" xml:space="preserve">
+    <value>このパッケージの新しいバージョンがあるかどうかを確認し、ダウンロードします。</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuPublish" xml:space="preserve">
+    <value>パブリッシュ...</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuPublishTooltip" xml:space="preserve">
+    <value>パブリッシュが必要な場合は、このパッケージをパブリッシュします。</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuPublishVersion" xml:space="preserve">
+    <value>パブリッシュ バージョン...</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuPublishVersionTooltip" xml:space="preserve">
+    <value>パッケージが既にパブリッシュ済みであると仮定して、このパッケージの新しいバージョンをパブリッシュします。現在、ユーザがパッケージを保持している場合にのみ実行可能です。</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuRemoveDeprecation" xml:space="preserve">
+    <value>廃止を削除</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuRemoveDeprecationTooltip" xml:space="preserve">
+    <value>パッケージの廃止を削除します。現在、ユーザがパッケージを保持している場合にのみ実行可能です。</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuShowRootDir" xml:space="preserve">
+    <value>ルート フォルダを表示</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuShowRootDirTooltip" xml:space="preserve">
+    <value>このパッケージのルート フォルダに移動</value>
+  </data>
+  <data name="InstalledPackageViewCustomNodesLabel" xml:space="preserve">
+    <value>カスタム ノード</value>
+  </data>
+  <data name="InstalledPackageViewNodeLibrariesLabel" xml:space="preserve">
+    <value>ノード ライブラリ</value>
+  </data>
+  <data name="InstalledPackageViewPendingInstallButton" xml:space="preserve">
+    <value>保留中のアンインストール</value>
+  </data>
+  <data name="InstalledPackageViewTitle" xml:space="preserve">
+    <value>インストール済みパッケージ</value>
+  </data>
+  <data name="InstalledPackagePartialTextMessage" xml:space="preserve">
+    <value>インストール済みパッケージを表示する場所 </value>
+  </data>
+  <data name="InstalledPackagePartialHyperlinkMessage" xml:space="preserve">
+    <value>Package Manager</value>
+  </data>
+  <data name="InstallMessageCaption" xml:space="preserve">
+    <value>Dynamo をインストール</value>
+  </data>
+  <data name="InvalidLoginUrl" xml:space="preserve">
+    <value>ログイン ページの URL が無効です!</value>
+  </data>
+  <data name="InvalidTimeZoneMessage" xml:space="preserve">
+    <value>サイン インできませんでした。 日付、時刻、タイム ゾーンの設定を確認してから、再度サイン インしてください。</value>
+  </data>
+  <data name="LacingAutoToolTip" xml:space="preserve">
+    <value>追加される複製ガイドはありません。</value>
+  </data>
+  <data name="LacingCrossProductToolTip" xml:space="preserve">
+    <value>2 つのリスト[a,b,c][1,2,3]の場合は、[a1,a2,a3][b1,b2,b3][c1,c2,c3]を返します。</value>
+  </data>
+  <data name="LacingDisabledToolTip" xml:space="preserve">
+    <value>このノードでは引数のレーシングは無効になっています。</value>
+  </data>
+  <data name="LacingFirstToolTip" xml:space="preserve">
+    <value>2 つのリスト[a,b,c][1,2,3]の場合は、{a1}を返します。</value>
+  </data>
+  <data name="LacingLongestToolTip" xml:space="preserve">
+    <value>2 つのリスト[a,b,c][1,2]の場合は、[a1,b2,c2]を返します。</value>
+  </data>
+  <data name="LacingShortestToolTip" xml:space="preserve">
+    <value>2 つのリスト[a,b,c][1,2]の場合は、[a1,b2]を返します。</value>
+  </data>
+  <data name="LayoutIconTooltip" xml:space="preserve">
+    <value>ビュー レイアウト</value>
+  </data>
+  <data name="LearnMore" xml:space="preserve">
+    <value>詳細</value>
+  </data>
+  <data name="LibraryViewContextMenuEditNode" xml:space="preserve">
+    <value>編集...</value>
+  </data>
+  <data name="LibraryViewNoMatchesFound" xml:space="preserve">
+    <value>一致するものが見つかりませんでした</value>
+  </data>
+  <data name="LibraryViewSearchText" xml:space="preserve">
+    <value>検索</value>
+  </data>
+  <data name="LibraryViewTitle" xml:space="preserve">
+    <value>ライブラリ</value>
+  </data>
+  <data name="MajorVersionNonNegative" xml:space="preserve">
+    <value>メジャー、マイナー、ビルドのバージョン番号を指定します。</value>
+  </data>
+  <data name="Manual" xml:space="preserve">
+    <value>手動</value>
+  </data>
+  <data name="MessageAlreadyInstallDynamo" xml:space="preserve">
+    <value>パッケージ {1} は既にインストールされています。
+
+{0} は、{2} をインストールする前にこのパッケージのアンインストールを試みます。</value>
+  </data>
+  <data name="MessageConfirmToInstallPackage" xml:space="preserve">
+    <value>{0} {1} をインストールしてもよろしいですか?</value>
+  </data>
+  <data name="MessageConfirmToInstallPackageToFolder" xml:space="preserve">
+    <value>{0} {1} を {2} にインストールしてよろしいですか?</value>
+  </data>
+  <data name="MessageConfirmToSaveCustomNode" xml:space="preserve">
+    <value>カスタム ノード ワークスペース "{0}" への変更が保存されていません。
+
+変更を保存しますか?</value>
+  </data>
+  <data name="MessageConfirmToSaveHomeWorkSpace" xml:space="preserve">
+    <value>ホーム ワークスペースへの変更が保存されていません。
+
+変更を保存しますか?</value>
+  </data>
+  <data name="MessageFileInUseByApplication" xml:space="preserve">
+    <value>このファイルは、他のアプリケーションで現在使用中です。
+	
+上書きする前にファイルを閉じてください。</value>
+  </data>
+  <data name="TitleFileInUse" xml:space="preserve">
+    <value>使用中のファイル</value>
+  </data>
+  <data name="MessageConfirmToSaveNamedHomeWorkSpace" xml:space="preserve">
+    <value>{0} への変更が保存されていません。
+
+変更を保存しますか?</value>
+  </data>
+  <data name="MessageConfirmToSaveReadOnlyCustomNode" xml:space="preserve">
+    <value>ファイルが読み取り専用であるか、未解決または無効なノードを含むため、"{0}" を保存できません。変更を保持するために、[名前を付けて保存]で別の名前またはパスに保存しますか?</value>
+  </data>
+  <data name="MessageConfirmToDeletePackage" xml:space="preserve">
+    <value>{0} を削除しますか? 削除すると、パッケージのルート フォルダが削除されます。
+
+パッケージはいつでも再ダウンロードできます。</value>
+  </data>
+  <data name="MessageExcessiveLoadTime" xml:space="preserve">
+    <value>パッケージのロードに予想以上に時間がかかっています。どのようにしますか?</value>
+  </data>
+  <data name="MessageExcessiveLoadTimeTitle" xml:space="preserve">
+    <value>まだロード中です</value>
+  </data>
+  <data name="MessageCustomNodeNameExist" xml:space="preserve">
+    <value>指定した名前の組み込みノードは既に存在しています。</value>
+  </data>
+  <data name="MessageCustomNodeNeedNewCategory" xml:space="preserve">
+    <value>新しいカテゴリを入力するか、既存のカテゴリから 1 つ選択する必要があります。</value>
+  </data>
+  <data name="MessageCustomNodeNoName" xml:space="preserve">
+    <value>名前を指定する必要があります。</value>
+  </data>
+  <data name="MessageCustomNodeNameInvalid" xml:space="preserve">
+    <value>カスタム ノードの名前に次の特殊文字を含めることはできません:
+    # % * ? \ : または印刷できない文字</value>
+  </data>
+  <data name="MessageErrorOpeningFileGeneral" xml:space="preserve">
+    <value>ファイルを開いているときにエラーが発生しました</value>
+  </data>
+  <data name="MessageFailedToAddFile" xml:space="preserve">
+    <value>ファイル {0} を追加できませんでした。</value>
+  </data>
+  <data name="MessageFailedToApplyCustomization" xml:space="preserve">
+    <value>{0} への NodeViewCustomization の適用に失敗しました</value>
+  </data>
+  <data name="MessageFailedToAttachToRowColumn" xml:space="preserve">
+    <value>'AttachmentToRowColumnConverter' の 'ConverterParameter' の値は 'Row' または 'Column' のいずれかにする必要があります</value>
+  </data>
+  <data name="MessageFailedToDownloadPackage" xml:space="preserve">
+    <value>ID: {0} のパッケージのダウンロードに失敗しました。再度実行しても問題が発生する場合は、パッケージを報告してください。</value>
+  </data>
+  <data name="MessageInvalidPackage" xml:space="preserve">
+    <value>無効なパッケージのロードに失敗しました。</value>
+  </data>
+  <data name="MessageFailedToFindNodeById" xml:space="preserve">
+    <value>この ID のノードが見つかりませんでした。</value>
+  </data>
+  <data name="MessageFailedToFindGroupById" xml:space="preserve">
+    <value>その ID を持つグループが見つかりませんでした。</value>
+  </data>
+  <data name="MessageFailedToOpenCorruptedFile" xml:space="preserve">
+    <value>次の破損ファイルを開くときにエラーが発生しました: {0}</value>
+  </data>
+  <data name="MessageFailedToSaveAsImage" xml:space="preserve">
+    <value>Workspace をイメージとして保存できませんでした。</value>
+  </data>
+  <data name="MessageFailedToDelete" xml:space="preserve">
+    <value>{0} はパッケージの削除に失敗しました。パッケージのルート フォルダを手動で削除する必要がある可能性があります。</value>
+  </data>
+  <data name="MessageFailToUninstallPackage" xml:space="preserve">
+    <value>{0} はパッケージ {1} のアンインストールに失敗しました。パッケージの手動による再インストールが必要になる場合があります。</value>
+  </data>
+  <data name="MessageGettingNodeError" xml:space="preserve">
+    <value>ワークスペースからのノードの取得中に問題が発生しました。</value>
+  </data>
+  <data name="MessageLoadingTime" xml:space="preserve">
+    <value>{1} メイン ウィンドウのロードに {0} が経過しました。</value>
+  </data>
+  <data name="MessageNeedToRestartAfterDelete" xml:space="preserve">
+    <value>{0} とそのホスト アプリケーションは、削除を有効にする前に再起動する必要があります。</value>
+  </data>
+  <data name="MessageNodeWithNullFunction" xml:space="preserve">
+    <value>このノードに null 関数設定があります。</value>
+  </data>
+  <data name="MessageNoNodeDescription" xml:space="preserve">
+    <value>説明は提供されていません</value>
+  </data>
+  <data name="MessagePackageContainPythonScript" xml:space="preserve">
+    <value>パッケージまたはその依存関係の 1 つに Python スクリプトまたはバイナリが含まれています。続行しますか?</value>
+  </data>
+  <data name="MessagePackageNewerDynamo" xml:space="preserve">
+    <value>このパッケージまたはその依存関係の 1 つは、新バージョンの Dynamo 用に作成されています。このバージョンでは動作しない可能性があります。続行しますか?</value>
+  </data>
+  <data name="MessageSelectAtLeastOneNode" xml:space="preserve">
+    <value>少なくとも 1 つのカスタム ノードを選択する必要があります。</value>
+  </data>
+  <data name="MessageSelectSymbolNotFound" xml:space="preserve">
+    <value>選択した記号がワークスペース内に見つかりませんでした</value>
+  </data>
+  <data name="MessageSubmitSameNamePackage" xml:space="preserve">
+    <value>このノードは "{1}" という名前で、{0} パッケージの一部です。このパッケージの新しいバージョンを送信しますか?
+
+送信しない場合、このノードは作成中の新しいパッケージに移動します。」</value>
+  </data>
+  <data name="MessageToDeprecatePackage" xml:space="preserve">
+    <value>{0} を廃止してもよろしいですか?  あなたがパッケージを保持していない場合は、この要求は拒否されます。廃止すると、明示的に検索すればパッケージは表示されますが、パッケージはサポートされなくなります。 
+
+パッケージの廃止はいつでも解除できます。</value>
+  </data>
+  <data name="MessageToUndeprecatePackage" xml:space="preserve">
+    <value>{0} の廃止を解除してもよろしいですか?  あなたがパッケージを保持していない場合は、この要求は拒否されます。廃止を解除すると、引き続きパッケージをサポートすることができ、ユーザがパッケージを参照するとパッケージが表示されます。 
+
+パッケージはいつでも再廃止できます。</value>
+  </data>
+  <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
+    <value>パッケージ {0} には、ワークスペースで使用中のパッケージ {1} と競合する依存関係が 1 つ以上あります。依存関係の競合により、予期しない動作が発生する可能性があります。
+    
+既にインストールされているパッケージを保持したままインストールを続行しますか?
+
+続行しない場合は {1} をアンインストールする必要がありますが、使用中のためできません。{2} を再起動して、{0} を再度ダウンロードしてください。</value>
+  </data>
+  <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
+    <value>パッケージ {0} には、以下のパッケージと競合する 1 つ以上の依存関係があります: 
+
+{1}
+
+このパッケージのインストールを続行すると、予期しない動作が発生する可能性があります。
+
+予期しない動作を回避するには、ロード済みの競合するパッケージをアンインストールし、Dynamo を再起動して、再度 {0} をダウンロードします。</value>
+  </data>
+  <data name="MessageUnkownErrorOpeningFile" xml:space="preserve">
+    <value>ファイルを開いているときに次の不明なエラーが発生しました: {0}</value>
+  </data>
+  <data name="MessageUnsavedChanges0" xml:space="preserve">
+    <value>次のワークスペースが保存されていません。</value>
+  </data>
+  <data name="MessageUnsavedChanges1" xml:space="preserve">
+    <value>保存して再度実行してください。</value>
+  </data>
+  <data name="MinorVersionNonNegative" xml:space="preserve">
+    <value>マイナー バージョンを負ではない整数で指定する必要があります。</value>
+  </data>
+  <data name="MoreButton" xml:space="preserve">
+    <value>詳細</value>
+  </data>
+  <data name="NameNeedMoreCharacters" xml:space="preserve">
+    <value>3 文字以上にする必要があります</value>
+  </data>
+  <data name="PackageManagerProvidePackageName" xml:space="preserve">
+    <value>パッケージ名を指定</value>
+  </data>
+  <data name="PackageManagerProvidePackageNameAndFiles" xml:space="preserve">
+    <value>パッケージ名とファイルを指定</value>
+  </data>
+  <data name="PackageManagerProvidePackageNameAndVersion" xml:space="preserve">
+    <value>パッケージ名とバージョン番号を指定</value>
+  </data>
+  <data name="PackageManagerProvideVersion" xml:space="preserve">
+    <value>バージョン番号を指定</value>
+  </data>
+  <data name="PackageManagerProvideVersionAndFiles" xml:space="preserve">
+    <value>バージョン番号とファイルを指定</value>
+  </data>
+  <data name="PackageManagerProvideFiles" xml:space="preserve">
+    <value>ファイルを提供</value>
+  </data>
+  <data name="NodeContextMenuEnablePeriodicUpdate" xml:space="preserve">
+    <value>定期的な更新を有効にする</value>
+  </data>
+  <data name="NodeContextMenuHelp" xml:space="preserve">
+    <value>ヘルプ...</value>
+  </data>
+  <data name="NodeContextMenuIsInput" xml:space="preserve">
+    <value>入力</value>
+  </data>
+  <data name="NodeContextMenuIsOutput" xml:space="preserve">
+    <value>出力</value>
+  </data>
+  <data name="NodeContextMenuPreview" xml:space="preserve">
+    <value>ジオメトリをプレビュー</value>
+  </data>
+  <data name="NodeContextMenuRenameNode" xml:space="preserve">
+    <value>名前変更</value>
+  </data>
+  <data name="NodeContextMenuShowLabels" xml:space="preserve">
+    <value>ラベルを表示</value>
+  </data>
+  <data name="NodeHelpWindowNodeCategory" xml:space="preserve">
+    <value>カテゴリ</value>
+  </data>
+  <data name="NodeHelpWindowNodeDescription" xml:space="preserve">
+    <value>説明</value>
+  </data>
+  <data name="NodeHelpWindowNodeInput" xml:space="preserve">
+    <value>入力</value>
+  </data>
+  <data name="NodeHelpWindowNodeOutput" xml:space="preserve">
+    <value>出力</value>
+  </data>
+  <data name="NodeHelpWindowNodeType" xml:space="preserve">
+    <value>ノード タイプ</value>
+  </data>
+  <data name="NodesRunStatus" xml:space="preserve">
+    <value>フリーズ</value>
+  </data>
+  <data name="NodeViewCustomizationFindErrorMessage" xml:space="preserve">
+    <value>{0} のノード ビューのカスタマイズの検索中にエラーが発生しました。詳細については、このアセンブリの作成者に問い合わせてください。</value>
+  </data>
+  <data name="NoneString" xml:space="preserve">
+    <value>なし</value>
+  </data>
+  <data name="NoteViewContextMenuDelete" xml:space="preserve">
+    <value>削除</value>
+  </data>
+  <data name="NoteViewContextMenuEdit" xml:space="preserve">
+    <value>編集...</value>
+  </data>
+  <data name="NullString" xml:space="preserve">
+    <value>null</value>
+  </data>
+  <data name="OKButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="OneAssemblyWasLoadedSeveralTimesErrorMessage" xml:space="preserve">
+    <value>アセンブリのロードは一回だけ実行するようにしてください。
+次のアセンブリは複数回ロードされました:
+</value>
+  </data>
+  <data name="PackageManagerNoValidationErrors" xml:space="preserve">
+    <value>No validation errors</value>
+  </data>
+  <data name="OnlyTitle" xml:space="preserve">
+    <value>のみ</value>
+  </data>
+  <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
+    <value>{0} 設定を開く...</value>
+  </data>
+  <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
+    <value>パッケージのダウンロードの確認</value>
+  </data>
+  <data name="PackageDownloadErrorMessageBoxTitle" xml:space="preserve">
+    <value>パッケージのダウンロード エラー</value>
+  </data>
+  <data name="PackageDownloadMessageBoxTitle" xml:space="preserve">
+    <value>パッケージのダウンロード</value>
+  </data>
+  <data name="PackageDownloadStateDownloaded" xml:space="preserve">
+    <value>ダウンロード済み</value>
+  </data>
+  <data name="PackageDownloadStateDownloading" xml:space="preserve">
+    <value>ダウンロード中</value>
+  </data>
+  <data name="PackageDownloadStateError" xml:space="preserve">
+    <value>エラー</value>
+  </data>
+  <data name="PackageDownloadStateInstalled" xml:space="preserve">
+    <value>インストール済み</value>
+  </data>
+  <data name="PackageDownloadStateInstalling" xml:space="preserve">
+    <value>インストール中</value>
+  </data>
+  <data name="PackageDownloadStateStarting" xml:space="preserve">
+    <value>開始中</value>
+  </data>
+  <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
+    <value>.NET フレームワークの制限により、既にロードされている場合は、パッケージ アセンブリを更新できません。{0} が実行されていないときにアセンブリを更新して、再度実行してください。</value>
+  </data>
+  <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
+    <value>アセンブリを更新できません</value>
+  </data>
+  <data name="PackageFolderNotAccessible" xml:space="preserve">
+    <value>パッケージのインストール試行中に問題が発生しました。Dynamo で次のフォルダの読み取り/書き込み権限を取得できません。
+{0}</value>
+  </data>
+  <data name="PackageNameCannotContainTheseCharacters" xml:space="preserve">
+    <value>パッケージの名前に使用できない文字は次のとおりです</value>
+  </data>
+  <data name="PackageNeedAtLeastOneFile" xml:space="preserve">
+    <value>パッケージには少なくとも 1 つのファイルが必要です。</value>
+  </data>
+  <data name="PackageCompatibilityMatrixMissing" xml:space="preserve">
+    <value>Provide compatibility information for the package..</value>
+  </data>
+  <data name="PackageNotExisted" xml:space="preserve">
+    <value>パッケージのルート フォルダが存在しません。パッケージを再インストールした後でもう一度試してください。</value>
+  </data>
+  <data name="PackagePathViewAccept" xml:space="preserve">
+    <value>変更を適用</value>
+  </data>
+  <data name="PackagePathViewHeading" xml:space="preserve">
+    <value>パス:</value>
+  </data>
+  <data name="PackagePathViewSummary1" xml:space="preserve">
+    <value>ノードとパッケージをライブラリに表示するためのパスを追加します。</value>
+  </data>
+  <data name="PackagePathViewTitle" xml:space="preserve">
+    <value>ノードとパッケージのパスを管理</value>
+  </data>
+  <data name="PackagePathViewToolTipDown" xml:space="preserve">
+    <value>選択したパスを下に移動</value>
+  </data>
+  <data name="PackagePathViewToolTipMinus" xml:space="preserve">
+    <value>選択したパスをリストから削除</value>
+  </data>
+  <data name="PackagePathViewToolTipPlus" xml:space="preserve">
+    <value>リストに新しいパスを追加</value>
+  </data>
+  <data name="PackagePathViewToolTipUp" xml:space="preserve">
+    <value>選択したパスを上に移動</value>
+  </data>
+  <data name="PackageManagerFinishedPackagePackagePath" xml:space="preserve">
+    <value>パッケージのパス</value>
+  </data>
+  <data name="PackageManagerFinishedPackageFilesUploadedMessage" xml:space="preserve">
+    <value> アップロードされたファイル</value>
+  </data>
+  <data name="PackageManagerFinishedPackageFilesPublishedMessage" xml:space="preserve">
+    <value> パブリッシュされたファイル</value>
+  </data>
+  <data name="PackagePathAutoAddNotificationTitle" xml:space="preserve">
+    <value>追加されたパッケージのパス</value>
+  </data>
+  <data name="PackagePathAutoAddNotificationShortDescription" xml:space="preserve">
+    <value>ライブラリ(*.dll、*.ds)は最近 Dynamo に読み込まれました。パスは[基本設定] &gt; [ノードとパッケージのパス]に自動的に追加されました</value>
+  </data>
+  <data name="PackagePathAutoAddNotificationDetailedDescription" xml:space="preserve">
+    <value>読み込みパス "{0}" は[ノードとパッケージのパス]に追加されました。このパスを更新または削除する場合は、[Dynamo] &gt; [基本設定] &gt; [Package Manager]  &gt; [ノードとパッケージのパス]を開いてください</value>
+  </data>
+  <data name="PackageSearchStateNoResult" xml:space="preserve">
+    <value>返された検索結果はありません!</value>
+  </data>
+  <data name="PackageSearchStateSearching" xml:space="preserve">
+    <value>検索中...</value>
+  </data>
+  <data name="PackageSearchStateSyncingWithServer" xml:space="preserve">
+    <value>サーバと同期中...</value>
+  </data>
+  <data name="PackageSearchViewClearButton" xml:space="preserve">
+    <value>クリア</value>
+  </data>
+  <data name="PackageSearchViewClearButtonTooltip" xml:space="preserve">
+    <value>ダウンロードをクリア</value>
+  </data>
+  <data name="PackageSearchViewContextMenuOrderAscending" xml:space="preserve">
+    <value>昇順</value>
+  </data>
+  <data name="PackageSearchViewContextMenuOrderDescending" xml:space="preserve">
+    <value>降順</value>
+  </data>
+  <data name="PackageSearchViewContextMenuSortByAuthor" xml:space="preserve">
+    <value>作成者</value>
+  </data>
+  <data name="PackageSearchViewContextMenuSortByDownloads" xml:space="preserve">
+    <value>ダウンロード</value>
+  </data>
+  <data name="PackageSearchViewContextMenuSortByName" xml:space="preserve">
+    <value>名前</value>
+  </data>
+  <data name="PackageSearchViewContextMenuSortByVotes" xml:space="preserve">
+    <value>投票</value>
+  </data>
+  <data name="PackageSearchViewContextMenuSortyByUpdate" xml:space="preserve">
+    <value>最新の更新</value>
+  </data>
+  <data name="PackageManagerPackageDeprecated" xml:space="preserve">
+    <value>廃止済み</value>
+  </data>
+  <data name="PackageSearchViewDeprecatedTooltip" xml:space="preserve">
+    <value>このパッケージを保有するユーザは、このパッケージを今後更新しないと表明しています。自分の責任で使用してください。</value>
+  </data>
+  <data name="PackageSearchViewDescription" xml:space="preserve">
+    <value>説明</value>
+  </data>
+  <data name="PackageSearchViewInstallButton" xml:space="preserve">
+    <value>⇓ インストール</value>
+  </data>
+  <data name="PackageSearchViewInstallLatestVersion" xml:space="preserve">
+    <value>最新バージョンをインストール</value>
+  </data>
+  <data name="PackageSearchViewInstallLatestVersionTo" xml:space="preserve">
+    <value>フォルダにインストール...</value>
+  </data>
+  <data name="PackageSearchViewInstallThisVersion" xml:space="preserve">
+    <value>このバージョンをインストール</value>
+  </data>
+  <data name="PackageSearchViewInstallThisVersionTo" xml:space="preserve">
+    <value>このバージョンをフォルダにインストール...</value>
+  </data>
+  <data name="PackageSearchViewKeywords" xml:space="preserve">
+    <value>キーワード</value>
+  </data>
+  <data name="PackageSearchViewSearchTextBox" xml:space="preserve">
+    <value>検索...</value>
+  </data>
+  <data name="PackageSearchViewSortByButton" xml:space="preserve">
+    <value>並べ替え</value>
+  </data>
+  <data name="PackageSearchViewTitle" xml:space="preserve">
+    <value>オンライン パッケージ検索</value>
+  </data>
+  <data name="PackageSearchViewUpvoteButtonTooltip" xml:space="preserve">
+    <value>このパッケージのサポートにプラス評価をする</value>
+  </data>
+  <data name="PackageSearchViewVersions" xml:space="preserve">
+    <value>バージョン</value>
+  </data>
+  <data name="PackageSearchViewVisitRepositoryBuutton" xml:space="preserve">
+    <value>パッケージのリポジトリにアクセス</value>
+  </data>
+  <data name="PackageSearchViewVisitWebSiteButton" xml:space="preserve">
+    <value>パッケージの Web サイトにアクセス</value>
+  </data>
+  <data name="PackageStateUnknown" xml:space="preserve">
+    <value>不明</value>
+  </data>
+  <data name="PackageTypeShortString" xml:space="preserve">
+    <value>パッケージ</value>
+  </data>
+  <data name="PackageUploadNoDependency" xml:space="preserve">
+    <value>なし</value>
+  </data>
+  <data name="PackageUploadStateCompressing" xml:space="preserve">
+    <value>圧縮中...</value>
+  </data>
+  <data name="PackageUploadStateCopying" xml:space="preserve">
+    <value>コピー中...</value>
+  </data>
+  <data name="PackageUploadStateError" xml:space="preserve">
+    <value>エラー!</value>
+  </data>
+  <data name="PackageUploadStateReady" xml:space="preserve">
+    <value>準備完了</value>
+  </data>
+  <data name="PackageUploadStateUploaded" xml:space="preserve">
+    <value>アップロード</value>
+  </data>
+  <data name="PackageUploadStateUploading" xml:space="preserve">
+    <value>アップロード中...</value>
+  </data>
+  <data name="PackageFilterByHost" xml:space="preserve">
+    <value>ホスト</value>
+  </data>
+  <data name="PackageFilterByStatus" xml:space="preserve">
+    <value>ステータス</value>
+  </data>
+  <data name="PackageFilterNewTooltip" xml:space="preserve">
+    <value>過去 30 日間にパブリッシュ済み</value>
+  </data>
+  <data name="PackageFilterUpdatedTooltip" xml:space="preserve">
+    <value>過去 30 日間に更新済み</value>
+  </data>
+  <data name="PackageFilterDeprecatedTooltip" xml:space="preserve">
+    <value>廃止にしたパッケージ</value>
+  </data>
+  <data name="PackageFilterByDependency" xml:space="preserve">
+    <value>依存関係</value>
+  </data>
+  <data name="PackageFilterHasDependenciesTooltip" xml:space="preserve">
+    <value>他のパッケージをインストールする必要があるパッケージ</value>
+  </data>
+  <data name="PackageFilterHasNoDependenciesTooltip" xml:space="preserve">
+    <value>スタンドアロン パッケージ</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterActive" xml:space="preserve">
+    <value>アクティブ</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterDeprecated" xml:space="preserve">
+    <value>廃止済み</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterDependencies" xml:space="preserve">
+    <value>依存関係があります</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterNoDependencies" xml:space="preserve">
+    <value>依存関係がありません</value>
+  </data>
+  <data name="PackageUseNewerDynamoMessageBoxTitle" xml:space="preserve">
+    <value>{0}! のこのバージョンではパッケージが機能しない可能性があります。</value>
+  </data>
+  <data name="PackageWarningMessageBoxTitle" xml:space="preserve">
+    <value>パッケージの警告</value>
+  </data>
+  <data name="PackageManagerClearAllButtonText" xml:space="preserve">
+    <value>すべてクリア</value>
+  </data>
+  <data name="Periodic" xml:space="preserve">
+    <value>周期的</value>
+  </data>
+  <data name="PortViewContextMenuUserDefaultValue" xml:space="preserve">
+    <value>既定値を使用</value>
+  </data>
+  <data name="PresetOverwrite" xml:space="preserve">
+    <value>この名前のプリセットは既に存在しています。上書きしますか?</value>
+  </data>
+  <data name="PresetPromptDescriptionTooltip" xml:space="preserve">
+    <value>プリセット状態の説明。</value>
+  </data>
+  <data name="PresetPromptNameTooltip" xml:space="preserve">
+    <value>プリセットのユニークな名前。</value>
+  </data>
+  <data name="PresetsWindowDescription" xml:space="preserve">
+    <value>説明</value>
+  </data>
+  <data name="PresetsWindowDescriptionHint" xml:space="preserve">
+    <value>このプリセットの説明を入力します。</value>
+  </data>
+  <data name="PresetsWindowName" xml:space="preserve">
+    <value>名前</value>
+  </data>
+  <data name="PresetsWindowTitle" xml:space="preserve">
+    <value>プリセット状態プロパティ</value>
+  </data>
+  <data name="PresetTextRemaining" xml:space="preserve">
+    <value>残りの文字数</value>
+  </data>
+  <data name="PresetWarningMessage" xml:space="preserve">
+    <value>入力ノードが選択されていません。プリセットを作成するには、少なくとも 1 つの入力ノードを選択します。</value>
+  </data>
+  <data name="PreviewListLabel" xml:space="preserve">
+    <value>リスト</value>
+  </data>
+  <data name="PublishPackage" xml:space="preserve">
+    <value>オンラインでパブリッシュ</value>
+  </data>
+  <data name="PublishPackageDialogCaption" xml:space="preserve">
+    <value>正常にパブリッシュされました</value>
+  </data>
+  <data name="PublishPackageSelectPackageContentsMessage" xml:space="preserve">
+    <value>パッケージの内容を選択</value>
+  </data>
+  <data name="PublishPackagePreviewPackageContentsMessage" xml:space="preserve">
+    <value>パッケージの内容をプレビューする(読み取り専用)</value>
+  </data>
+  <data name="PublishPackageLocally" xml:space="preserve">
+    <value>ローカルにパブリッシュ</value>
+  </data>
+  <data name="PublishPackageResetButton" xml:space="preserve">
+    <value>リセット</value>
+  </data>
+  <data name="PublishPackageMessage" xml:space="preserve">
+    <value>パッケージは正常にパブリッシュされました。 
+続けて他のパッケージをパブリッシュしますか?</value>
+  </data>
+  <data name="PublishPackagePackageContent" xml:space="preserve">
+    <value>パッケージの内容</value>
+  </data>
+  <data name="PublishPackageViewAddFileButton" xml:space="preserve">
+    <value>ファイルを追加</value>
+  </data>
+  <data name="PublishPackageViewAddFileButtonTooltip" xml:space="preserve">
+    <value>ファイルを追加</value>
+  </data>
+  <data name="PublishPackageRemoveFromPacakgeTooltip" xml:space="preserve">
+    <value>パッケージから削除</value>
+  </data>
+  <data name="PublishPackageViewContextMenuIsNodeLibrary" xml:space="preserve">
+    <value>ノード ライブラリ</value>
+  </data>
+  <data name="PublishPackageViewLicense" xml:space="preserve">
+    <value>ライセンス(省略可能)</value>
+  </data>
+  <data name="PublishPackageViewPackageDependencies" xml:space="preserve">
+    <value>依存関係</value>
+  </data>
+  <data name="PublishPackageViewPackageDescriptionTooltip" xml:space="preserve">
+    <value>ユーザがパッケージの使用目的を理解するのに役立つ説明です。</value>
+  </data>
+  <data name="PublishPackageViewPackageGroup" xml:space="preserve">
+    <value>グループ(省略可能)</value>
+  </data>
+  <data name="PublishPackageViewPackageGroupTooltip" xml:space="preserve">
+    <value>このパッケージを分類するためのグループ。会社、学校などに関連するパッケージの収集に便利です</value>
+  </data>
+  <data name="PublishPackageViewPackageKeywords" xml:space="preserve">
+    <value>キーワード(省略可能)</value>
+  </data>
+  <data name="PublishPackageViewPackageKeywordsTooltip" xml:space="preserve">
+    <value>キーワードはデータベースでパッケージを検索する際に便利です。キーワードは スペースで区切ります。</value>
+  </data>
+  <data name="PublishPackageViewPackageName" xml:space="preserve">
+    <value>名前</value>
+  </data>
+  <data name="PublishPackageViewPackageNameTooltip" xml:space="preserve">
+    <value>パッケージのユニークな名前。</value>
+  </data>
+  <data name="PublishPackageViewPackageVersion" xml:space="preserve">
+    <value>バージョン</value>
+  </data>
+  <data name="PublishPackageViewMajorPackageVersionLabel" xml:space="preserve">
+    <value>メジャー</value>
+  </data>
+  <data name="PublishPackageViewMinorPackageVersionLabel" xml:space="preserve">
+    <value>マイナー</value>
+  </data>
+  <data name="PublishPackageViewBuildPackageVersionLabel" xml:space="preserve">
+    <value>ビルド</value>
+  </data>
+  <data name="PublishPackageViewPackageVersionTooltip" xml:space="preserve">
+    <value>バージョン名があると、提出者がパッケージの更新を追跡するときに便利です。パッケージの新しいバージョンが追加された場合は、バージョン番号を上げる必要があります。</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebsiteTooltip" xml:space="preserve">
+    <value>パッケージの Web サイト リンクです。</value>
+  </data>
+  <data name="PublishPackageViewGithubLinkTooltip" xml:space="preserve">
+    <value>パッケージの GitHub リポジトリ リンクです。</value>
+  </data>
+  <data name="PublishPackageViewLicenceTooltip" xml:space="preserve">
+    <value>パッケージのライセンスです。</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderTooltip" xml:space="preserve">
+    <value>パッケージの著作権保有者です。</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearTooltip" xml:space="preserve">
+    <value>パッケージの著作権期間です。</value>
+  </data>
+  <data name="PublishPackageViewPublish" xml:space="preserve">
+    <value>パッケージをパブリッシュ</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebiSite" xml:space="preserve">
+    <value>Web サイトの URL (省略可能)</value>
+  </data>
+  <data name="PublishPackageViewRepositoryUrl" xml:space="preserve">
+    <value>リポジトリ URL (省略可能)</value>
+  </data>
+  <data name="PublishPackageViewTitle" xml:space="preserve">
+    <value>{0} パッケージをパブリッシュ</value>
+  </data>
+  <data name="QueryMember" xml:space="preserve">
+    <value>クエリー</value>
+  </data>
+  <data name="RerunButton" xml:space="preserve">
+    <value>変更を適用</value>
+  </data>
+  <data name="RunCompletedMessage" xml:space="preserve">
+    <value>実行が終了しました。</value>
+  </data>
+  <data name="RunCompletedWithScaleChangeAndWarningsMessage" xml:space="preserve">
+    <value>実行は終了しましたが、新しい動作範囲の設定に関する警告が表示されました。</value>
+  </data>
+  <data name="RunCompletedWithScaleChangeMessage" xml:space="preserve">
+    <value>新しい動作範囲での実行が終了しました。</value>
+  </data>
+  <data name="RunCompletedWithWarningsMessage" xml:space="preserve">
+    <value>実行が終了し、警告が表示されました。</value>
+  </data>
+  <data name="RunStartedMessage" xml:space="preserve">
+    <value>実行が開始されました...</value>
+  </data>
+  <data name="RunStartedWithScaleChangeMessage" xml:space="preserve">
+    <value>新しい動作範囲での実行が開始されました...</value>
+  </data>
+  <data name="RunTypeToolTipAutomatically" xml:space="preserve">
+    <value>グラフの変更はリアルタイムで実行されます。小さいグラフ、既知のグラフ、DynamoSandbox に最適です。</value>
+  </data>
+  <data name="RunTypeToolTipManually" xml:space="preserve">
+    <value>グラフの変更は、[実行]をクリックしたときに実行されます。このモードは、大きなグラフ、不明なグラフ、またはホスト アプリケーションで作業するときに使用します。</value>
+  </data>
+  <data name="RunTypeToolTipPeriodicallyDisabled" xml:space="preserve">
+    <value>グラフに定期的な実行をサポートするノードがない場合は、定期的な実行は無効になります。</value>
+  </data>
+  <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
+    <value>グラフの変更は指定した間隔で実行されます。グラフに DateTime.Now や WebRequest などの特定のノードが含まれている場合にのみ使用できます。</value>
+  </data>
+  <data name="UnsavedChangesMessageBoxTitle" xml:space="preserve">
+    <value>未保存の変更</value>
+  </data>
+  <data name="SaveModelToSTLDialogTitle" xml:space="preserve">
+    <value>STL にモデルを保存します。</value>
+  </data>
+  <data name="SaveWorkbenToImageDialogTitle" xml:space="preserve">
+    <value>ワークベンチをイメージに保存</value>
+  </data>
+  <data name="ScalingExtraLargeButton" xml:space="preserve">
+    <value>特大</value>
+  </data>
+  <data name="ScalingLargeButton" xml:space="preserve">
+    <value>大</value>
+  </data>
+  <data name="ScalingMediumButton" xml:space="preserve">
+    <value>中</value>
+  </data>
+  <data name="ScalingSmallButton" xml:space="preserve">
+    <value>小</value>
+  </data>
+  <data name="ScreenShotFrom3DParameter" xml:space="preserve">
+    <value>screenshot_3D</value>
+  </data>
+  <data name="ScreenShotFrom3DShortcutParameter" xml:space="preserve">
+    <value>screenshot_3D_shortcut</value>
+  </data>
+  <data name="SearchViewTopResult" xml:space="preserve">
+    <value>上位の結果</value>
+  </data>
+  <data name="SelectAllTitle" xml:space="preserve">
+    <value>すべて選択</value>
+  </data>
+  <data name="SelectionErrorMessageBoxTitle" xml:space="preserve">
+    <value>選択エラー</value>
+  </data>
+  <data name="SelectNodeButtonChange" xml:space="preserve">
+    <value>変更</value>
+  </data>
+  <data name="SelectNodeButtonSelect" xml:space="preserve">
+    <value>選択</value>
+  </data>
+  <data name="ShowClassicNodeLibrary" xml:space="preserve">
+    <value>クラシック ノード ライブラリを表示</value>
+  </data>
+  <data name="ShowHideLibraryIconTooltip" xml:space="preserve">
+    <value>表示/非表示</value>
+  </data>
+  <data name="ShowRunPreviewDisableToolTip" xml:space="preserve">
+    <value>グラフの実行状態をプレビューします。実行するようにスケジュール設定されているノードは、グラフ内でハイライト表示されます</value>
+  </data>
+  <data name="ShowRunPreviewEnableToolTip" xml:space="preserve">
+    <value>自動実行中は、実行プレビューを使用できません</value>
+  </data>
+  <data name="SolutionToFolderNotWritatbleError" xml:space="preserve">
+    <value>権限を更新するか、[基本設定] &gt; [ノードとパッケージのパス]に移動して既定のフォルダを変更してください。</value>
+  </data>
+  <data name="StartPageAdvancedTutorials" xml:space="preserve">
+    <value>高度なチュートリアル</value>
+  </data>
+  <data name="StartPageAsk" xml:space="preserve">
+    <value>ラーニング</value>
+  </data>
+  <data name="StartPageBackupLocation" xml:space="preserve">
+    <value>バックアップの場所</value>
+  </data>
+  <data name="StartPageBackupNoCrash" xml:space="preserve">
+    <value>バックアップ</value>
+  </data>
+  <data name="StartPageBackupOnCrash" xml:space="preserve">
+    <value>バックアップから復元</value>
+  </data>
+  <data name="StartPageCode" xml:space="preserve">
+    <value>コード</value>
+  </data>
+  <data name="StartPageDiscussionForum" xml:space="preserve">
+    <value>ディスカッション フォーラム</value>
+  </data>
+  <data name="StartPageDynamoDictionary" xml:space="preserve">
+    <value>Dynamo ディクショナリ</value>
+  </data>
+  <data name="StartPageDynamoPrimer" xml:space="preserve">
+    <value>Dynamo Primer</value>
+  </data>
+  <data name="StartPageFiles" xml:space="preserve">
+    <value>ファイル</value>
+  </data>
+  <data name="StartPageGithubRepository" xml:space="preserve">
+    <value>GitHub リポジトリ</value>
+  </data>
+  <data name="StartPageMoreSamples" xml:space="preserve">
+    <value>その他のサンプル</value>
+  </data>
+  <data name="StartPageNewCustomNode" xml:space="preserve">
+    <value>カスタム ノード</value>
+  </data>
+  <data name="StartPageNewFile" xml:space="preserve">
+    <value>新規作成</value>
+  </data>
+  <data name="StartPageOpenFile" xml:space="preserve">
+    <value>開く</value>
+  </data>
+  <data name="StartPageRecent" xml:space="preserve">
+    <value>最近使用したファイル</value>
+  </data>
+  <data name="StartPageReference" xml:space="preserve">
+    <value>参考資料</value>
+  </data>
+  <data name="StartPageSamples" xml:space="preserve">
+    <value>サンプル</value>
+  </data>
+  <data name="StartPageSendIssues" xml:space="preserve">
+    <value>問題を送信</value>
+  </data>
+  <data name="StartPageShowSamples" xml:space="preserve">
+    <value>フォルダ内のサンプルを表示</value>
+  </data>
+  <data name="StartPageVideoTutorials" xml:space="preserve">
+    <value>ビデオ チュートリアル</value>
+  </data>
+  <data name="StartPageVisitWebsite" xml:space="preserve">
+    <value>{0} Web サイト</value>
+  </data>
+  <data name="StartPageWhatsNew" xml:space="preserve">
+    <value>スタートアップ ガイド</value>
+  </data>
+  <data name="StringInputNodeEditMenu" xml:space="preserve">
+    <value>編集...</value>
+  </data>
+  <data name="TabFileNameReadOnlyPrefix" xml:space="preserve">
+    <value>[読み取り専用]</value>
+  </data>
+  <data name="TermsOfUseAcceptButton" xml:space="preserve">
+    <value>同意する</value>
+  </data>
+  <data name="TermsOfUseDeclineButton" xml:space="preserve">
+    <value>同意しない</value>
+  </data>
+  <data name="TermsOfUseViewTitle" xml:space="preserve">
+    <value>Package Manager の利用規約</value>
+  </data>
+  <data name="TooltipCurrentIndex" xml:space="preserve">
+    <value>{0} / {1}</value>
+  </data>
+  <data name="UnableToAccessPackageDirectory" xml:space="preserve">
+    <value>パッケージ フォルダにアクセスできません</value>
+  </data>
+  <data name="UndeprecatingPackageMessageBoxTitle" xml:space="preserve">
+    <value>パッケージの廃止の削除</value>
+  </data>
+  <data name="DeleteFailureMessageBoxTitle" xml:space="preserve">
+    <value>削除失敗</value>
+  </data>
+  <data name="MessageNeedToRestartAfterDeleteTitle" xml:space="preserve">
+    <value>パッケージを削除中</value>
+  </data>
+  <data name="UnitAcres" xml:space="preserve">
+    <value>エーカー</value>
+  </data>
+  <data name="UnitArea" xml:space="preserve">
+    <value>面積</value>
+  </data>
+  <data name="UnitCentimeters" xml:space="preserve">
+    <value>センチメートル</value>
+  </data>
+  <data name="UnitCubicCentimeter" xml:space="preserve">
+    <value>立方センチメートル</value>
+  </data>
+  <data name="UnitCubicFoot" xml:space="preserve">
+    <value>立方フィート</value>
+  </data>
+  <data name="UnitCubicInches" xml:space="preserve">
+    <value>立方インチ</value>
+  </data>
+  <data name="UnitCubicMeters" xml:space="preserve">
+    <value>立方メートル</value>
+  </data>
+  <data name="UnitCubicMillimeter" xml:space="preserve">
+    <value>立方ミリメートル</value>
+  </data>
+  <data name="UnitCubicYards" xml:space="preserve">
+    <value>立方ヤード</value>
+  </data>
+  <data name="UnitDecimeters" xml:space="preserve">
+    <value>デシメートル</value>
+  </data>
+  <data name="UnitFeet" xml:space="preserve">
+    <value>フィート</value>
+  </data>
+  <data name="UnitHectares" xml:space="preserve">
+    <value>ヘクタール</value>
+  </data>
+  <data name="UnitInches" xml:space="preserve">
+    <value>インチ</value>
+  </data>
+  <data name="UnitLength" xml:space="preserve">
+    <value>長さ</value>
+  </data>
+  <data name="UnitLitres" xml:space="preserve">
+    <value>リットル</value>
+  </data>
+  <data name="UnitMeters" xml:space="preserve">
+    <value>メートル</value>
+  </data>
+  <data name="UnitMillimeters" xml:space="preserve">
+    <value>ミリメートル</value>
+  </data>
+  <data name="Units" xml:space="preserve">
+    <value>単位:</value>
+  </data>
+  <data name="UnitSquareCentimeter" xml:space="preserve">
+    <value>平方センチメートル</value>
+  </data>
+  <data name="UnitSquareFoot" xml:space="preserve">
+    <value>平方フィート</value>
+  </data>
+  <data name="UnitSquareInch" xml:space="preserve">
+    <value>平方インチ</value>
+  </data>
+  <data name="UnitSquareMeter" xml:space="preserve">
+    <value>平方メートル</value>
+  </data>
+  <data name="UnitSquareMillimeter" xml:space="preserve">
+    <value>平方ミリメートル</value>
+  </data>
+  <data name="UnitUSGallons" xml:space="preserve">
+    <value>米国ガロン</value>
+  </data>
+  <data name="UnitVolume" xml:space="preserve">
+    <value>容積</value>
+  </data>
+  <data name="UnknowDateFormat" xml:space="preserve">
+    <value>不明な日付形式</value>
+  </data>
+  <data name="UpdateMessage" xml:space="preserve">
+    <value>Dynamo の更新プログラムを利用できます。
+最新の更新プログラムをインストールするには、Dynamo とすべてのホスト アプリケーションを終了する必要があります。
+最新の Dynamo 更新プログラムをインストールしますか?</value>
+  </data>
+  <data name="UsageReportPromptDialogTitle" xml:space="preserve">
+    <value>データ収集に関する契約</value>
+  </data>
+  <data name="AgreeToMLAutocompleteTOUText" xml:space="preserve">
+    <value>機械学習プログラムのためのデータ収集に参加します</value>
+  </data>
+  <data name="UseLevelKeepListStructureHint" xml:space="preserve">
+    <value>リストでネストされている 1 個の入力を保持</value>
+  </data>
+  <data name="UseLevelKeepListStructurePopupMenuItem" xml:space="preserve">
+    <value>リスト構造を保持</value>
+  </data>
+  <data name="UseLevelPopupMenuItem" xml:space="preserve">
+    <value>レベルを使用</value>
+  </data>
+  <data name="VersionValueGreaterThan0" xml:space="preserve">
+    <value>バージョンの値の少なくとも 1 つを 0 より大きくする必要があります。</value>
+  </data>
+  <data name="Watch3DViewContextMenuPan" xml:space="preserve">
+    <value>画面移動(_P)</value>
+  </data>
+  <data name="Watch3DViewContextMenuRotate" xml:space="preserve">
+    <value>回転(_R)</value>
+  </data>
+  <data name="Watch3DViewContextMenuSwitchView" xml:space="preserve">
+    <value>ノード ビューに切り替える(_V)</value>
+  </data>
+  <data name="Watch3DViewContextMenuZoomToFit" xml:space="preserve">
+    <value>全体表示(_Z)</value>
+  </data>
+  <data name="WatchNodeRawDataMenu" xml:space="preserve">
+    <value>未処理データを表示</value>
+  </data>
+  <data name="ZeroTouchTypeShortString" xml:space="preserve">
+    <value>DLL</value>
+  </data>
+  <data name="RerunButtonToolTip" xml:space="preserve">
+    <value>グラフを再実行します。</value>
+  </data>
+  <data name="PackageSearchViewSearchTextBoxSyncing" xml:space="preserve">
+    <value>お待ちください...</value>
+  </data>
+  <data name="EditNoteWindowTitle" xml:space="preserve">
+    <value>ここに注記を記入</value>
+  </data>
+  <data name="SideBarPanelViewTitle" xml:space="preserve">
+    <value>サイドバー</value>
+  </data>
+  <data name="ExtensionAdded" xml:space="preserve">
+    <value>[拡張]サイド バーに拡張タブが追加されました。</value>
+  </data>
+  <data name="ExtensionAlreadyPresent" xml:space="preserve">
+    <value>[拡張]サイド バーに既に拡張が存在するため、新しいタブは追加されません。</value>
+  </data>
+  <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
+    <value>{1} をロードできません。
+これをインストールすると、現在ロードされている {0} に既に存在する 1 つまたは複数のノードの定義と競合します。 
+{1} をインストールするには、事前に Dynamo で {0} をアンインストールする必要があります。 
+Dynamo を再起動してアンインストールを完了します。
+
+次のパッケージをアンインストールしますか?: {0}</value>
+  </data>
+  <data name="PreviewText" xml:space="preserve">
+    <value> このフィーチャはプレビューです。 </value>
+  </data>
+  <data name="PackageHostDependencyTooltip" xml:space="preserve">
+    <value>このパッケージには Dynamo 以外のアプリケーションに依存するノード(複数可)が含まれています。このパッケージのノードを完全に使用するには、これらの外部アプリケーションがインストールされている必要があります。</value>
+  </data>
+  <data name="PackageHostDependencyFilter" xml:space="preserve">
+    <value>Dynamo 以外のアプリケーションに依存するパッケージをフィルタします。現在この機能でフィルタできるのは、パッケージの作成者がパブリッシュ中に手動でマークしたパッケージのみです。</value>
+  </data>
+  <data name="PackageHostDependencyFilterContextItem" xml:space="preserve">
+    <value>選択した外部アプリケーションに依存するパッケージ</value>
+  </data>
+  <data name="MessageUninstallSamePackage" xml:space="preserve">
+    <value>"パッケージ {0} は既にインストールされています。これを再インストールするには、まずこれをアンインストールし、再起動してアンインストールを完了します。{0} をアンインストール対象としてマークしますか?"</value>
+  </data>
+  <data name="MessagePackageNotFound" xml:space="preserve">
+    <value>{0} が見つからず、ダウンロードできませんでした。</value>
+  </data>
+  <data name="MessagePackageVersionNotFound" xml:space="preserve">
+    <value>{1} のバージョン {0} が見つかりませんでした。</value>
+  </data>
+  <data name="PublishPackageViewPackageHostDependency" xml:space="preserve">
+    <value>ホスト(省略可能)</value>
+  </data>
+  <data name="PublishPackageViewPackageHostDependencyTooltip" xml:space="preserve">
+    <value>Revit、Civil 3D、Photoshop など、パッケージが依存する Dynamo 以外のアプリケーションの指示。パッケージのユーザは、パッケージを完全に使用するためにこれらのアプリケーションをインストールする必要があります。</value>
+  </data>
+  <data name="InfoBubbleDocumentationLinkText" xml:space="preserve">
+    <value>詳細を表示...</value>
+  </data>
+  <data name="PackageSearchViewFilterByButton" xml:space="preserve">
+    <value>フィルタ</value>
+  </data>
+  <data name="PreferencesViewShowCodeBlockNodeLineNumber" xml:space="preserve">
+    <value>CodeBlockNode の線分の数を表示</value>
+  </data>
+  <data name="MessageFailedToDownloadPackageVersion" xml:space="preserve">
+    <value>ID が {1} のパッケージのバージョン {0} をダウンロードできませんでした。再度実行し、問題が解決しない場合は当該パッケージについて報告してください。</value>
+  </data>
+  <data name="NodeTooltipDescription" xml:space="preserve">
+    <value>説明: </value>
+  </data>
+  <data name="NodeTooltipOriginalName" xml:space="preserve">
+    <value>元のノード名: </value>
+  </data>
+  <data name="NodeTooltipPackage" xml:space="preserve">
+    <value>パッケージ: </value>
+  </data>
+  <data name="RenderingMemoryOutageDescription" xml:space="preserve">
+    <value>この量のジオメトリを本当にレンダリングするのか確認し、グラフ内の他のノードのプレビューをオフにしたり、レンダリングするジオメトリの量を減らしたり、レンダリング精度を下げることなどを検討してください。</value>
+  </data>
+  <data name="RenderingMemoryOutageSummary" xml:space="preserve">
+    <value>ジオメトリのレンダリング中に Dynamo がメモリ不足になりました。ジオメトリのプレビューは無効になっています。</value>
+  </data>
+  <data name="PreferencesViewShowWhitespaceInPythonEditor" xml:space="preserve">
+    <value>Python エディタに空白スペースを表示</value>
+  </data>
+  <data name="PreferencesViewDefaultPythonEngine" xml:space="preserve">
+    <value>既定の Python エンジン</value>
+  </data>
+  <data name="PreferencesViewPackageDownloadDirectory" xml:space="preserve">
+    <value>新しいパッケージのダウンロード用パス</value>
+  </data>
+  <data name="PreferencesPackageDownloadDirectoryTooltip" xml:space="preserve">
+    <value>新しいパッケージをダウンロードするパッケージ パスを、このリストから選択します。</value>
+  </data>
+  <data name="DefaultPythonEngineNone" xml:space="preserve">
+    <value>システムの既定を使用</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoComplete" xml:space="preserve">
+    <value>ノード オートコンプリートを有効にする</value>
+  </data>
+  <data name="ErrorLoadingIcon" xml:space="preserve">
+    <value>アプリケーション アイコンのロード中にエラーが発生しました: {0}</value>
+  </data>
+  <data name="PublishPackageSelectNodeLibraries" xml:space="preserve">
+    <value>ノード ライブラリを選択</value>
+  </data>
+  <data name="PublishPackageMoreInfoFile" xml:space="preserve">
+    <value>DynamoCoreWpf;PublishPackageDocumentation.html</value>
+  </data>
+  <data name="DynamoViewDynamoMenu" xml:space="preserve">
+    <value>Dynamo(_D)</value>
+  </data>
+  <data name="DynamoViewDynamoMenuAbout" xml:space="preserve">
+    <value>バージョン情報(_A)</value>
+  </data>
+  <data name="DynamoViewDynamoMenuPreferences" xml:space="preserve">
+    <value>基本設定(_P)...</value>
+  </data>
+  <data name="DynamoViewFileMenuExport" xml:space="preserve">
+    <value>書き出し(_E)</value>
+  </data>
+  <data name="PublishPackageDocTooltipText" xml:space="preserve">
+    <value>パッケージに関する詳細を表示</value>
+  </data>
+  <data name="PreferencesViewFeaturesTab" xml:space="preserve">
+    <value>フィーチャ</value>
+  </data>
+  <data name="PreferencesViewGeneralTab" xml:space="preserve">
+    <value>一般</value>
+  </data>
+  <data name="PreferencesViewTitle" xml:space="preserve">
+    <value>基本設定</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsTab" xml:space="preserve">
+    <value>表示設定</value>
+  </data>
+  <data name="PreferencesViewFontSizeLabel" xml:space="preserve">
+    <value>ノードのフォント サイズ</value>
+  </data>
+  <data name="PreferencesViewLanguageLabel" xml:space="preserve">
+    <value>言語</value>
+  </data>
+  <data name="PreferencesViewRunSettingsLabel" xml:space="preserve">
+    <value>既定の実行設定</value>
+  </data>
+  <data name="PreferencesNodeAutocompleteMethod" xml:space="preserve">
+    <value>既定のランク付け方法</value>
+  </data>
+  <data name="ConfidenceToolTipTitle" xml:space="preserve">
+    <value>信頼度の評価</value>
+  </data>
+  <data name="ConfidenceToolTipDescription" xml:space="preserve">
+    <value>指定されたノードが適切な選択である推定確率を示します。推奨ノードは、信頼度レベルを最高から順に一覧表示します。すべての推奨ノードの信頼度レベルのパーセンテージを合計すると、約 100% になります。</value>
+  </data>
+  <data name="ConfidenceToolTipoLearnMore" xml:space="preserve">
+    <value>詳細</value>
+  </data>
+  <data name="ObjectType" xml:space="preserve">
+    <value>ノード タイプ一致</value>
+  </data>
+  <data name="RecommendedNodes" xml:space="preserve">
+    <value>推奨ノード</value>
+  </data>
+  <data name="DynamoViewExtensionsMenu" xml:space="preserve">
+    <value>拡張機能(_X)</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderBreakConnection" xml:space="preserve">
+    <value>接続を解除</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderShowConnector" xml:space="preserve">
+    <value>ワイヤを表示</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderSelectConnected" xml:space="preserve">
+    <value>接続済みを選択</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderUnpinConnector" xml:space="preserve">
+    <value>ワイヤを固定解除</value>
+  </data>
+  <data name="PreferencesViewPython" xml:space="preserve">
+    <value>Python</value>
+  </data>
+  <data name="PreferencesViewRequiresRelaunchOfDynamo" xml:space="preserve">
+    <value>Dynamo の再起動が必要です</value>
+  </data>
+  <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
+    <value>{0} には組み込みパッケージ {1} と競合する依存関係があります。依存関係の競合により、予期しない動作が発生する可能性があります。
+    
+{0} のインストールを続行しますか?</value>
+  </data>
+  <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
+    <value>既にインストールされている別のバージョンの組み込みパッケージ {1} と競合するため、{0} はインストールできません。
+    
+組み込みパッケージのパスからのパッケージのロードを無効にするか、競合しているパッケージのロード解除を行ってから {2} を再起動し、{0} を再度ダウンロードしてみてください。</value>
+  </data>
+  <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
+    <value>The same version of package {0} is already installed as a built-in package and does not need to be installed again.</value>
+  </data>
+  <data name="MessageSamePackageSameVersInLocalPackages" xml:space="preserve">
+    <value>同じバージョンの {0} が既にインストールされているため、再インストールする必要はありません。</value>
+  </data>
+  <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
+    <value>パッケージ {0} は、既にインストールされている別のバージョン {1} と競合するためインストールできません。
+
+{1} をアンインストールしますか? その場合は {2} を再起動してアンインストールを完了してから {0} を再度ダウンロードしてみてください。</value>
+  </data>
+  <data name="PreferencesViewGeneralSettingsRun" xml:space="preserve">
+    <value>実行設定</value>
+  </data>
+  <data name="PreferencesViewGeneralSettingsGeoScaling" xml:space="preserve">
+    <value>既定のジオメトリのスケーリング</value>
+  </data>
+  <data name="PreferencesViewGeneralSettingsBackup" xml:space="preserve">
+    <value>バックアップの設定</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsGroupStyles" xml:space="preserve">
+    <value>グループ</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsRenderPrecision" xml:space="preserve">
+    <value>レンダリング精度</value>
+  </data>
+  <data name="PreferencesViewAlreadyExistingStyleWarning" xml:space="preserve">
+    <value>スタイル名は既に使用されています</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsDisplaySettings" xml:space="preserve">
+    <value>表示設定</value>
+  </data>
+  <data name="PreferencesViewVisualSettingShowEdges" xml:space="preserve">
+    <value>エッジを表示</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsIsolateSelectedGeo" xml:space="preserve">
+    <value>選択したジオメトリを選択表示</value>
+  </data>
+  <data name="PackagePathViewModel_BuiltInPackages" xml:space="preserve">
+    <value>Dynamo 組み込みパッケージ</value>
+  </data>
+  <data name="PreferencesViewSavedChangesLabel" xml:space="preserve">
+    <value>すべての変更は自動的に保存されました</value>
+  </data>
+  <data name="PreferencesViewSavedChangesTooltip" xml:space="preserve">
+    <value>最終保存日時:</value>
+  </data>
+  <data name="NodeAutocompleteDocumentationUriString" xml:space="preserve">
+    <value>DynamoCoreWpf;NodeAutocompleteDocumentation.html</value>
+  </data>
+  <data name="FileTrustWarningDocumentationUriString" xml:space="preserve">
+    <value>DynamoCoreWpf;FileTrustWarningDocumentation.html</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteTooltipText" xml:space="preserve">
+    <value>ノード オートコンプリート機能の詳細を確認します。</value>
+  </data>
+  <data name="AddStyleButton" xml:space="preserve">
+    <value>スタイルを追加</value>
+  </data>
+  <data name="ResetCPythonButtonText" xml:space="preserve">
+    <value>CPython をリセット</value>
+  </data>
+  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
+    <value>モジュールを再ロードして CPython 環境をリセットします。</value>
+  </data>
+  <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
+    <value>キャンセルして問題を表示</value>
+  </data>
+  <data name="GraphIssuesOnSave_Description" xml:space="preserve">
+    <value>グラフ タイプに未解決の問題がいくつかあります。このグラフが Dynamo の外部で使用するように設計されている場合は、すべての問題を解決して、グラフを再度保存してください。</value>
+  </data>
+  <data name="GraphIssuesOnSave_ProceedBtn" xml:space="preserve">
+    <value>問題を含めて保存</value>
+  </data>
+  <data name="GraphIssuesOnSave_Summary" xml:space="preserve">
+    <value>未解決の問題があるグラフを保存しようとしています</value>
+  </data>
+  <data name="GraphIssuesOnSave_Title" xml:space="preserve">
+    <value>グラフ タイプの問題が見つかりました</value>
+  </data>
+  <data name="PackagePathsExpanderName" xml:space="preserve">
+    <value>ノードとパッケージ ファイルの場所</value>
+  </data>
+  <data name="PreferencesPackageManagerSettingsTab" xml:space="preserve">
+    <value>パッケージの設定</value>
+  </data>
+  <data name="PackagePathAddPathButtonName" xml:space="preserve">
+    <value>パスを追加</value>
+  </data>
+  <data name="PackagePathPreferencesTitle" xml:space="preserve">
+    <value>パッケージ/ライブラリ検索パス</value>
+  </data>
+  <data name="PreferencesViewShowRunPreviewTooltip" xml:space="preserve">
+    <value>グラフの実行状態をプレビューするには、グラフ実行の影響を受けるポートに接続されているワイヤをオレンジ色でハイライト表示します。現在のワークスペースが手動実行モードの場合にのみ使用できます。</value>
+  </data>
+  <data name="PersistentVisualStatusOfLinterIssues" xml:space="preserve">
+    <value>問題が見つかりました</value>
+  </data>
+  <data name="ContextSelectConnectedDownstream" xml:space="preserve">
+    <value>下流</value>
+  </data>
+  <data name="ContextSelectConnectedHeader" xml:space="preserve">
+    <value>接続済みを選択</value>
+  </data>
+  <data name="ContextSelectConnectedUpstream" xml:space="preserve">
+    <value>上流</value>
+  </data>
+  <data name="ContextSelectConnectedUpstreamDownstream" xml:space="preserve">
+    <value>両方</value>
+  </data>
+  <data name="NodeRenamedLabel" xml:space="preserve">
+    <value>名前変更されました</value>
+  </data>
+  <data name="PackagePathProtected" xml:space="preserve">
+    <value>このパスは組み込みパスであり、修正できません。</value>
+  </data>
+  <data name="PackagePathUpdatePathTooltip" xml:space="preserve">
+    <value>パスを編集</value>
+  </data>
+  <data name="GetStartedGuide" xml:space="preserve">
+    <value>ユーザ インタフェース ツアー(_U)</value>
+  </data>
+  <data name="GetStartedGuideDescription" xml:space="preserve">
+    <value>この簡易ガイドを使用して、ビジュアル プログラミングを始めましょう。ここでは、Dynamo のインタフェースと機能の基礎について学習します。</value>
+  </data>
+  <data name="OnboardingGuideDescription" xml:space="preserve">
+    <value>Dynamo の基本的な構成要素について学習します。グラフを使用して実践的な練習を行います。</value>
+  </data>
+  <data name="PackagesGuideDescription" xml:space="preserve">
+    <value>パッケージは、Dynamo の主要機能以上に Dynamo で多くの作業を行うことができる実用的なツールキットです。このガイドでは、パッケージを検索、インストール、使用する方法を説明します。参照できるサンプルの Autodesk パッケージがインストールされます。</value>
+  </data>
+  <data name="InteractiveGuides" xml:space="preserve">
+    <value>インタラクティブ ガイド(_I)</value>
+  </data>
+  <data name="GetStartedGuideLibraryText" xml:space="preserve">
+    <value>ライブラリには、Dynamo のすべての既定の関数 #(ノード)=https://primer2.dynamobim.org/v/ja/4_nodes_and_wires やロードしたカスタム ノードが含まれています。\n\nノードを探すには、ライブラリを検索したりカテゴリを参照します。</value>
+  </data>
+  <data name="GetStartedGuideLibraryTitle" xml:space="preserve">
+    <value>ライブラリ</value>
+  </data>
+  <data name="GetStartedGuidePreferencesText" xml:space="preserve">
+    <value>[基本設定]では Dynamo の操作性をカスタマイズできます。\n\n言語やタイムゾーンの設定を変更したり、ワークスペースの表示スタイルを調整することなどが可能です。</value>
+  </data>
+  <data name="GetStartedGuidePreferencesTitle" xml:space="preserve">
+    <value>基本設定</value>
+  </data>
+  <data name="GetStartedGuideResourcesText" xml:space="preserve">
+    <value>[ヘルプ]メニューには Dynamo の使用開始に役立つツールやリソースが多数あります。\n\nサンプル スクリプトを入手したり、Dynamo ディクショナリを参照したり、さまざまな参考情報にアクセスすることなどができます。</value>
+  </data>
+  <data name="GetStartedGuideResourcesTitle" xml:space="preserve">
+    <value>リソース</value>
+  </data>
+  <data name="GetStartedGuideRunStatusBarText" xml:space="preserve">
+    <value>[ステータス バーを実行]ボタンは、Dynamo グラフ(ロジックまたはアルゴリズムを含んだスクリプト)を実行するために使用します。\n\n自動か手動のいずれかの実行タイプを選択できます。 -自動: グラフは変更を加えるたびに実行されます- -手動: グラフは[実行]をクリックしたときにのみ実行されます-</value>
+  </data>
+  <data name="GetStartedGuideRunStatusBarTitle" xml:space="preserve">
+    <value>ステータス バーを実行</value>
+  </data>
+  <data name="GetStartedGuideToolbarText" xml:space="preserve">
+    <value>ツールバーから次の操作が可能です。 -新しいワークスペースを開く- -保存した Dynamo ファイルを開く- -現在の Dynamo ファイルを保存する- -変更を元に戻す、またはやり直す-</value>
+  </data>
+  <data name="GetStartedGuideToolbarTitle" xml:space="preserve">
+    <value>ツールバー</value>
+  </data>
+  <data name="GetStartedGuideWelcomeText" xml:space="preserve">
+    <value>この短いガイドを参考にビジュアル プログラミングを始めましょう。\n\nこのガイドでは、Dynamo のインタフェースと機能の基礎を学習できます。</value>
+  </data>
+  <data name="GetStartedGuideWelcomeTitle" xml:space="preserve">
+    <value>Dynamo へようこそ</value>
+  </data>
+  <data name="ContextMenuGroups" xml:space="preserve">
+    <value>グループ</value>
+  </data>
+  <data name="ContextPinToNode" xml:space="preserve">
+    <value>ノードに固定</value>
+  </data>
+  <data name="GetStartedGuideRatingTextTitle" xml:space="preserve">
+    <value>このガイドを評価</value>
+  </data>
+  <data name="GetStartedGuideSurveyText" xml:space="preserve">
+    <value>Dynamo の詳細については、オンライン #ヘルプ=https://primer2.dynamobim.org/v/ja/ を参照してください。</value>
+  </data>
+  <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
+    <value>完了</value>
+  </data>
+  <data name="GroupDefaultText" xml:space="preserve">
+    <value>説明&lt;グループの説明を編集するにはここをダブル クリック&gt;</value>
+  </data>
+  <data name="GroupNameDefaultText" xml:space="preserve">
+    <value>Title &lt;Click here to edit the group title&gt;</value>
+  </data>
+  <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
+    <value>このグループにグループを追加</value>
+  </data>
+  <data name="NodeInformationalStateDismiss" xml:space="preserve">
+    <value>却下</value>
+  </data>
+  <data name="NodeInformationalStateShowAllInfo" xml:space="preserve">
+    <value>すべての情報を表示</value>
+  </data>
+  <data name="NodeInformationalStateShowAllWarnings" xml:space="preserve">
+    <value>すべての警告を表示</value>
+  </data>
+  <data name="NodeInformationalStateShowAllErrors" xml:space="preserve">
+    <value>すべてのエラーを表示</value>
+  </data>
+  <data name="NodeInformationalStateShowLess" xml:space="preserve">
+    <value>簡易表示</value>
+  </data>
+  <data name="NodeInformationalStateDismissAll" xml:space="preserve">
+    <value>すべて却下</value>
+  </data>
+  <data name="NodeInfoDismissButtonToolTip" xml:space="preserve">
+    <value>このノードの情報メッセージを却下します。グラフのエラーで設計する場合や、グラフの実行中に情報メッセージが関係しない場合に利用します。</value>
+  </data>
+  <data name="NodeWarningDismissButtonToolTip" xml:space="preserve">
+    <value>このノードの警告メッセージを却下します。グラフのエラーで設計する場合や、グラフの実行中に警告メッセージが関係しない場合に利用します。</value>
+  </data>
+  <data name="BreakConnectionsPopupMenuItem" xml:space="preserve">
+    <value>接続を解除</value>
+  </data>
+  <data name="RenamePortPopupMenuItem" xml:space="preserve">
+    <value>ポート プロパティを編集</value>
+  </data>
+  <data name="HideWiresPopupMenuItem" xml:space="preserve">
+    <value>ワイヤを非表示</value>
+  </data>
+  <data name="ShowWiresPopupMenuItem" xml:space="preserve">
+    <value>ワイヤを表示</value>
+  </data>
+  <data name="ExitTourWindowContent" xml:space="preserve">
+    <value>このガイドには、後で[ヘルプ]メニューから戻ることができます。</value>
+  </data>
+  <data name="PackageStatePendingUnload" xml:space="preserve">
+    <value>ロード解除をスケジュール済み</value>
+  </data>
+  <data name="PackageStateError" xml:space="preserve">
+    <value>エラー</value>
+  </data>
+  <data name="PackageStateLoaded" xml:space="preserve">
+    <value>ロード済み</value>
+  </data>
+  <data name="PackageStateUnloaded" xml:space="preserve">
+    <value>ロード解除済み</value>
+  </data>
+  <data name="PackageStateScheduledForDeletion" xml:space="preserve">
+    <value>削除をスケジュール済み</value>
+  </data>
+  <data name="PackageStateScheduledForUnload" xml:space="preserve">
+    <value>ロード解除をスケジュール済み</value>
+  </data>
+  <data name="PackageStateErrorTooltip" xml:space="preserve">
+    <value>エラー。
+このパッケージは次のエラーのためロードされていません:
+{0}</value>
+  </data>
+  <data name="PackageStateLoadedTooltip" xml:space="preserve">
+    <value>ロード済みです。
+このパッケージはロードされており、使用準備が整っています。</value>
+  </data>
+  <data name="PackageStateUnloadedTooltip" xml:space="preserve">
+    <value>ロード解除済み。
+このパッケージはロード解除済みとマークされています。</value>
+  </data>
+  <data name="PackageStateScheduledForDeletionTooltip" xml:space="preserve">
+    <value>削除がスケジュール設定されています。
+このパッケージは、次に Dynamo を再起動した後に削除されます。</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageText" xml:space="preserve">
+    <value>削除</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageTooltip" xml:space="preserve">
+    <value>このパッケージを Dynamo パッケージの場所から削除します。削除すると、再インストールするまで Dynamo にロードされなくなります</value>
+  </data>
+  <data name="PackageContextMenuUnloadPackageText" xml:space="preserve">
+    <value>ロード解除</value>
+  </data>
+  <data name="PackageContextMenuUnloadPackageTooltip" xml:space="preserve">
+    <value>このパッケージをロード解除して Dynamo にロードされないようにします。パッケージは Dynamo パッケージの場所から削除されません</value>
+  </data>
+  <data name="PackageContextMenuUnmarkDeletePackageText" xml:space="preserve">
+    <value>削除をキャンセル</value>
+  </data>
+  <data name="PackageContextMenuUnmarkDeletePackageTooltip" xml:space="preserve">
+    <value>スケジュール済み削除の設定を解除します</value>
+  </data>
+  <data name="PackageContextMenuUnmarkUnloadPackageText" xml:space="preserve">
+    <value>ロード解除をキャンセル</value>
+  </data>
+  <data name="PackageContextMenuUnmarkUnloadPackageTooltip" xml:space="preserve">
+    <value>スケジュール済みロード解除の設定を解除します</value>
+  </data>
+  <data name="PackageViewContextMenuLoadText" xml:space="preserve">
+    <value>ロード</value>
+  </data>
+  <data name="PackageViewContextMenuLoadTooltip" xml:space="preserve">
+    <value>このパッケージを Dynamo にロードします。同じ名前を持つ他のパッケージは自動的に削除されます</value>
+  </data>
+  <data name="CannotLoadPackageMessageBoxTitle" xml:space="preserve">
+    <value>パッケージをロードできません</value>
+  </data>
+  <data name="MessageLoadBuiltInPackage" xml:space="preserve">
+    <value>組み込みパッケージ {1} をロードするには、まず {0} で競合するパッケージをすべて削除する必要があります。
+
+次のパッケージを削除しますか: {2}?</value>
+  </data>
+  <data name="MessageLoadBuiltInWithRestartPackage" xml:space="preserve">
+    <value>組み込みパッケージ {1} をロードするには、まず {0} で競合するパッケージをすべて削除する必要があります。
+{0} を再起動して削除を完了してから、組み込みパッケージを再ロードしてみてください。
+
+次のパッケージを削除しますか: {2}?
+    </value>
+  </data>
+  <data name="GraphIssuesOnSavePath_Description" xml:space="preserve">
+    <value>選択した保存場所のパスが長すぎます。保存場所を変更して、もう一度試してください。</value>
+  </data>
+  <data name="GraphIssuesOnSavePath_Summary" xml:space="preserve">
+    <value>長すぎるパスを使用してグラフを保存しようとしています。</value>
+  </data>
+  <data name="GraphIssuesOnSavePath_Title" xml:space="preserve">
+    <value>保存パスの問題が見つかりました</value>
+  </data>
+  <data name="MessageNeedToRestartAfterUnload" xml:space="preserve">
+    <value>{0} とそのホスト アプリケーションは、ロード解除を有効にする前に再起動する必要があります。</value>
+  </data>
+  <data name="MessageNeedToRestartAfterUnloadTitle" xml:space="preserve">
+    <value>パッケージをロード解除中</value>
+  </data>
+  <data name="MessageFailedToUnload" xml:space="preserve">
+    <value>{0} はパッケージのロード解除に失敗しました。</value>
+  </data>
+  <data name="UnloadFailureMessageBoxTitle" xml:space="preserve">
+    <value>ロード解除失敗</value>
+  </data>
+  <data name="DynamoViewViewMenuConnectorShowTooltip" xml:space="preserve">
+    <value>ツールチップを表示(_T)</value>
+  </data>
+  <data name="NodeInformationalStateDismissedAlerts" xml:space="preserve">
+    <value>却下された警告</value>
+  </data>
+  <data name="ContextMenu" xml:space="preserve">
+    <value>ノード オプション</value>
+  </data>
+  <data name="NodeAutocomplete" xml:space="preserve">
+    <value>結果のソート基準</value>
+  </data>
+  <data name="PackageFilter_Name_All" xml:space="preserve">
+    <value>すべて</value>
+  </data>
+  <data name="PackageSearchHeader" xml:space="preserve">
+    <value>パッケージを検索</value>
+  </data>
+  <data name="DisablePackageInstallIconTooltip" xml:space="preserve">
+    <value>すべてのカスタム パッケージ パスが[基本設定]で無効になっています。再び有効にしない限り、パッケージはインストールできません。</value>
+  </data>
+  <data name="DisableBuiltInPackageToggleInfo" xml:space="preserve">
+    <value>オンの場合、組み込みパッケージは再起動時にロードされません。現在ロードされている組み込みパッケージは、再起動時にロード解除されます。
+オフの場合、まだロードされていない組み込みパッケージは、[基本設定]ダイアログを閉じるとロードされます。</value>
+  </data>
+  <data name="DisableCustomPackageToggleInfo" xml:space="preserve">
+    <value>オンの場合、カスタム パッケージは再起動時にロードされません。現在ロードされているカスタム パッケージは再起動時にロード解除されます。
+オフの場合、まだロードされていないカスタム パッケージは、[基本設定]ダイアログを閉じるとロードされます。</value>
+  </data>
+  <data name="PackageSearchSortBy" xml:space="preserve">
+    <value>並べ替え基準:</value>
+  </data>
+  <data name="PackageSearchResultViewDetails" xml:space="preserve">
+    <value>情報</value>
+  </data>
+  <data name="PackageSearchResultRequirements" xml:space="preserve">
+    <value>要件</value>
+  </data>
+  <data name="PackageSearchOrder" xml:space="preserve">
+    <value>順序</value>
+  </data>
+  <data name="PreferencesViewShowPreviewBubbles" xml:space="preserve">
+    <value>プレビュー バルーンを表示</value>
+  </data>
+  <data name="PreferencesUseHostScaleUnits" xml:space="preserve">
+    <value>Revit を使用してバックグラウンド グラフィックス ヘルパーのスケールを変更</value>
+  </data>
+  <data name="PreferencesUseHostScaleUnitsToolTip" xml:space="preserve">
+    <value>When toggled on, the current Host document units will be used to scale the background graphic helpers (grids, axes). Otherwise, the Graphic Elements Scale drop-down will determine scale.</value>
+  </data>
+  <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="PublishPackageVersionMinorWatermark" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="PublishPackageVersionBuildWatermark" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="PublishPackageViewPackageDescription" xml:space="preserve">
+    <value>説明</value>
+  </data>
+  <data name="PublishPackageViewPackageNameWatermark" xml:space="preserve">
+    <value>パッケージ名</value>
+  </data>
+  <data name="PackageStateScheduledForUnloadTooltip" xml:space="preserve">
+    <value>ロード解除をスケジュール済み。
+このパッケージは、次回 Dynamo を再起動した後にロード解除されます。</value>
+  </data>
+  <data name="PublishPackageGroupWatermark" xml:space="preserve">
+    <value>グループ</value>
+  </data>
+  <data name="PublishPackageKeywordsWatermark" xml:space="preserve">
+    <value>キーワード</value>
+  </data>
+  <data name="PublishPackageViewLicenseSubLabel" xml:space="preserve">
+    <value>Applies to the latest package version. If blank, the package will be licensed under </value>
+  </data>
+  <data name="PublishPackageViewLicenseWatermark" xml:space="preserve">
+    <value>ライセンス</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolder" xml:space="preserve">
+    <value>著作権保有者(省略可能)</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderWatermark" xml:space="preserve">
+    <value>作成者の名前</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderSubLabel" xml:space="preserve">
+    <value>空白の場合の既定はユーザ名です</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYear" xml:space="preserve">
+    <value>著作権期間(省略可能)</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearWatermark" xml:space="preserve">
+    <value>発行年</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearSubLabel" xml:space="preserve">
+    <value>空白の場合の既定は発行年です</value>
+  </data>
+  <data name="PublishPackageViewRepositoryUrlWatermark" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebSite" xml:space="preserve">
+    <value>Web サイトの URL (省略可能)</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebSiteWatermark" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="PublishPackageViewAddDirectoryButton" xml:space="preserve">
+    <value>フォルダを追加</value>
+  </data>
+  <data name="PublishPackageViewAddDirectoryButtonTooltip" xml:space="preserve">
+    <value>フォルダを追加</value>
+  </data>
+  <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
+    <value>Markdown ファイル パス(省略可能)</value>
+  </data>
+  <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
+    <value>Markdown 形式でパッケージをドキュメント化するためのオプションの場所です。</value>
+  </data>
+  <data name="PublishPackageViewResetMarkdownDirectoryButton" xml:space="preserve">
+    <value>リセット</value>
+  </data>
+  <data name="PublishPackageViewResetMarkdownDirectoryButtonToolTip" xml:space="preserve">
+    <value>このパッケージの Markdown フォルダをクリアします。</value>
+  </data>
+  <data name="PublishPackageViewRemoveItemToolTip" xml:space="preserve">
+    <value>パッケージの内容リストからこの項目を削除します。</value>
+  </data>
+  <data name="PublishPackageExternalPackageDependencies" xml:space="preserve">
+    <value>外部パッケージの依存関係</value>
+  </data>
+  <data name="PreferencesViewMarkdownDirectoryTooltip" xml:space="preserve">
+    <value>Markdown ドキュメントをパッケージに追加して、ドキュメント ブラウザを使用して作成者が生成した情報をノード単位で表示することができます。</value>
+  </data>
+  <data name="PublishPackageViewPublisherURLWatermark" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="PackagesGuide" xml:space="preserve">
+    <value>パッケージ(_P)</value>
+  </data>
+  <data name="PackagesGuideLearnAbout" xml:space="preserve">
+    <value>パッケージの詳細</value>
+  </data>
+  <data name="NodeAutoCompleteNotAvailableForCollapsedGroups" xml:space="preserve">
+    <value>ノード オートコンプリートは、集約されたグループに属するポートでは使用できません。</value>
+  </data>
+  <data name="PackageManagerInstall" xml:space="preserve">
+    <value>インストール</value>
+  </data>
+  <data name="PackageManagerPackageUpdated" xml:space="preserve">
+    <value>更新済み</value>
+  </data>
+  <data name="PackageManagerPackageNew" xml:space="preserve">
+    <value>新規作成</value>
+  </data>
+  <data name="PackageManagerMyPackagesControlName" xml:space="preserve">
+    <value>packageManagerMyPackages</value>
+  </data>
+  <data name="PackageManagerSearchTab" xml:space="preserve">
+    <value>パッケージを検索</value>
+  </data>
+  <data name="PackageManagerPublishTab" xml:space="preserve">
+    <value>パッケージをパブリッシュ</value>
+  </data>
+  <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
+    <value>Virus scan in progress. Your package will be searchable in a few minutes.</value>
+  </data>
+  <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
+    <value>インストール済みパッケージ</value>
+  </data>
+  <data name="PackageManagerMyPackagesTab" xml:space="preserve">
+    <value>マイ パッケージ</value>
+  </data>
+  <data name="PackageManagerPackageSettingsTab" xml:space="preserve">
+    <value>パッケージの設定</value>
+  </data>
+  <data name="PackageManagerTitle" xml:space="preserve">
+    <value>Package Manager</value>
+  </data>
+  <data name="PackageManagerLoadingTimedOutWarningMessage" xml:space="preserve">
+    <value>パッケージのロードに予想以上に時間がかかっています。このまま待つか、Package Manager を再起動してください。</value>
+  </data>
+  <data name="PackagerManageNoInstalledPackagesMessage" xml:space="preserve">
+    <value>まだインストール済みパッケージはありません。</value>
+  </data>
+  <data name="PackageManagerNoInstalledPackagesSubMessage" xml:space="preserve">
+    <value>パッケージをインストールすると、ここでそのパッケージを確認できます。</value>
+  </data>
+  <data name="PackagerManageUserNotSignedPackagesMessage" xml:space="preserve">
+    <value>Dynamo アカウントにサインインして、パブリッシュされたパッケージを表示します。</value>
+  </data>
+  <data name="PackageManagerUserNotSignedPackagesSubMessage" xml:space="preserve">
+    <value>サインインすると、パブリッシュされたパッケージを見つけることができます。</value>
+  </data>
+  <data name="PackageManagerSearchPackagesButton" xml:space="preserve">
+    <value>パッケージを検索</value>
+  </data>
+  <data name="PackagerManageNoPublishedPackagesMessage" xml:space="preserve">
+    <value>まだパッケージをパブリッシュしていません。</value>
+  </data>
+  <data name="PackagerManageNoPublishedPackagesSubMessage" xml:space="preserve">
+    <value>パッケージをパブリッシュすると、ここでそのパッケージを確認できます。</value>
+  </data>
+  <data name="PackageManagerPublishPackageButton" xml:space="preserve">
+    <value>パッケージをパブリッシュ</value>
+  </data>
+  <data name="PackageManagerSettingsRunPrefix" xml:space="preserve">
+    <value>パッケージの設定を編集する場所 </value>
+  </data>
+  <data name="PackageManagerSettingsHyperlink" xml:space="preserve">
+    <value>基本設定</value>
+  </data>
+  <data name="PackageDetailsDescription" xml:space="preserve">
+    <value>説明</value>
+  </data>
+  <data name="PackageDetailsLicense" xml:space="preserve">
+    <value>最新パッケージのライセンス</value>
+  </data>
+  <data name="PackageDetailsVersionsAndPackageRequirements" xml:space="preserve">
+    <value>バージョンとパッケージの要件</value>
+  </data>
+  <data name="PackageDetailsVersions" xml:space="preserve">
+    <value>バージョン</value>
+  </data>
+  <data name="PackageDetailsHost" xml:space="preserve">
+    <value>ホスト</value>
+  </data>
+  <data name="PackageDetailsPython" xml:space="preserve">
+    <value>Python</value>
+  </data>
+  <data name="PackageDetailsCopyRightHolder" xml:space="preserve">
+    <value>著作権保有者</value>
+  </data>
+  <data name="PackageDetailsCopyRightYear" xml:space="preserve">
+    <value>著作権取得年</value>
+  </data>
+  <data name="PackageDetailsPackage" xml:space="preserve">
+    <value>パッケージ</value>
+  </data>
+  <data name="PackageSortToolTip" xml:space="preserve">
+    <value>パッケージを並べ替えます。</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderHideConnector" xml:space="preserve">
+    <value>ワイヤを非表示</value>
+  </data>
+  <data name="PackagesGuideFindPackageText" xml:space="preserve">
+    <value>パッケージには、Dynamo で使用できる追加機能が用意されています。\n\nパッケージを探したり、使用可能なパッケージについて確認するには、\n**[パッケージ] &gt; [Package Manager...]** をクリックしてください。</value>
+  </data>
+  <data name="PackagesGuideFindPackageTitle" xml:space="preserve">
+    <value>パッケージを検索</value>
+  </data>
+  <data name="PackagesGuideSearchFilterText" xml:space="preserve">
+    <value>\nタイトル、作成者、またはキーワードに検索語句が含まれているパッケージを検索できます。結果をフィルタして並べ替えるには、検索バーの横にあるアイコンを使用します。</value>
+  </data>
+  <data name="PackagesGuideSearchFilterTitle" xml:space="preserve">
+    <value>検索、フィルタ、並べ替え</value>
+  </data>
+  <data name="PackagesGuideTermsOfServiceText" xml:space="preserve">
+    <value>\nパッケージはサード パーティ製である場合があります。パッケージがセキュリティ上のリスクを引き起こす可能性があることに注意してください。 #詳細情報=https://dynamobim.org/issues/extend-dynamo-with-packages \n\nこのガイドを参照するには、まずサービス利用規約で **[同意する]をクリック** して同意してください。</value>
+  </data>
+  <data name="PackagesGuideTermsOfServiceTitle" xml:space="preserve">
+    <value>サービス利用規約に同意する</value>
+  </data>
+  <data name="PackagesGuideThirdPartyText" xml:space="preserve">
+    <value>\nパッケージはサード パーティ製である場合があります。\n\nパッケージがセキュリティ上のリスクを引き起こす可能性があることに注意してください。 #詳細情報=https://dynamobim.org/issues/extend-dynamo-with-packages/</value>
+  </data>
+  <data name="PackagesGuideThirdPartyTitle" xml:space="preserve">
+    <value>サードパーティ製パッケージ</value>
+  </data>
+  <data name="GenericTaskDialogOptionYes" xml:space="preserve">
+    <value>はい</value>
+  </data>
+  <data name="GenericTaskDialogOptionNo" xml:space="preserve">
+    <value>いいえ</value>
+  </data>
+  <data name="GenericTaskDialogOptionOK" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="GenericTaskDialogOptionCancel" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="WorkspaceTabSavingUnnecessary" xml:space="preserve">
+    <value>保存する必要はありません。</value>
+  </data>
+  <data name="WorkspaceTabSavingNecessary" xml:space="preserve">
+    <value>このファイルに更新を保存する必要があります。</value>
+  </data>
+  <data name="WorkspaceTabSavingBrandNewFile" xml:space="preserve">
+    <value>これは新しいファイルです。</value>
+  </data>
+  <data name="WorkspaceTabNotSavedYet" xml:space="preserve">
+    <value>このファイルはまだ保存されていません。</value>
+  </data>
+  <data name="ScriptTagsRemovalWarning" xml:space="preserve">
+    <value>ヘルプ ドキュメントで検出されたスクリプト タグは削除されました。</value>
+  </data>
+  <data name="PackagesGuideContinueButton" xml:space="preserve">
+    <value>続行</value>
+  </data>
+  <data name="PackagesGuideExitButton" xml:space="preserve">
+    <value>終了</value>
+  </data>
+  <data name="ShortcutExportAsImageMainMenu" xml:space="preserve">
+    <value>イメージとして書き出し</value>
+  </data>
+  <data name="ShortcutExportBackground3DPreview" xml:space="preserve">
+    <value>背景 3D プレビュー</value>
+  </data>
+  <data name="ShortcutExportWorkspace" xml:space="preserve">
+    <value>ワークスペース</value>
+  </data>
+  <data name="PackagesGuideExitAcceptTerms" xml:space="preserve">
+    <value>ガイドを続けてサンプル パッケージをインストールするには、サービス利用規約に同意する必要があります。\n\n**[続行]をクリック** し、利用規約の中で **[同意する]をクリック** してください。\n\n\n\n</value>
+  </data>
+  <data name="PackagesGuideExitTitle" xml:space="preserve">
+    <value>ガイドを終了しますか?</value>
+  </data>
+  <data name="InfoBubbleInfo" xml:space="preserve">
+    <value>情報</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="PackagesGuideInstallAPackageText" xml:space="preserve">
+    <value>パッケージのインストールは、サイズやその他の要因に応じて通常は迅速に行われます。 \n\n最新バージョンのオートデスクのサンプルパッケージをインストールするには、 **[インストール]をクリック** して、このガイドを参考に作業を進めてください。</value>
+  </data>
+  <data name="PackagesGuideInstallAPackageTitle" xml:space="preserve">
+    <value>パッケージをインストールする</value>
+  </data>
+  <data name="PackagesGuideInstalledPackageText" xml:space="preserve">
+    <value>通常、パッケージのインストールは、サイズやその他の要因に応じて迅速に行われます。\n
+最新バージョンのパッケージをインストールするには、[インストール]をクリックします。\n
+%./UI/Images/alert.png% オートデスクのサンプル パッケージは既にコンピュータにインストールされています。</value>
+  </data>
+  <data name="PackagesGuideDependenciesText" xml:space="preserve">
+    <value>\nこのパッケージを使用するために他のソフトウェアまたはツールが必要な場合は、「バージョンとパッケージの要件」に一覧表示されます。</value>
+  </data>
+  <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
+    <value>パッケージの依存関係</value>
+  </data>
+  <data name="PackagesGuideSearchResultsText" xml:space="preserve">
+    <value>\n検索結果に各パッケージの概要情報が表示されます: -作成者- -いいねとダウンロード- -最新バージョンの日付- \n**[詳細を表示]をクリック** するとパッケージの詳細を確認できます。</value>
+  </data>
+  <data name="PackagesGuideSearchResultsTitle" xml:space="preserve">
+    <value>検索結果</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
+    <value>このパッケージには使用中のカスタム ノードが含まれています。パッケージを削除する前に、使用中のカスタム ノードを削除するか、グラフを閉じる必要があります。</value>
+  </data>
+  <data name="PackagesGuideNavigatePackagesText" xml:space="preserve">
+    <value>\nWhen you install a package, it appears in the library under Add-ons.  \n\n**Click to expand the package** so you can see its nodes (functions).</value>
+  </data>
+  <data name="PackagesGuideNavigatePackagesTitle" xml:space="preserve">
+    <value>パッケージに移動</value>
+  </data>
+  <data name="PackagesGuideSurveyText" xml:space="preserve">
+    <value>パッケージの詳細については、以下の #オンライン ヘルプ=https://dynamobim.org/issues/extend-dynamo-with-packages を参照してください</value>
+  </data>
+  <data name="PackagesGuideSurveyTitle" xml:space="preserve">
+    <value>完了済み</value>
+  </data>
+  <data name="PackagesGuideUsePackageText" xml:space="preserve">
+    <value>パッケージ内のノードの使用方法を知るには、ノードにカーソルを合わせて説明を表示します。ワークスペースにノードを追加するには、リスト内でその名前をクリックします。</value>
+  </data>
+  <data name="PackagesGuideUsePackageTitle" xml:space="preserve">
+    <value>パッケージ ノードを使用</value>
+  </data>
+  <data name="ConfigureADPButtonText" xml:space="preserve">
+    <value>Autodesk 解析プログラムを設定</value>
+  </data>
+  <data name="ContinueInstall" xml:space="preserve">
+    <value>インストールを続ける</value>
+  </data>
+  <data name="UninstallLoadedPackages" xml:space="preserve">
+    <value>ロードされたパッケージをアンインストール</value>
+  </data>
+  <data name="UninstallLoadedPackage" xml:space="preserve">
+    <value>ロードされたパッケージをアンインストール</value>
+  </data>
+  <data name="PackagesGuidePackagesNodeTitle" xml:space="preserve">
+    <value>パッケージ ノードを使用</value>
+  </data>
+  <data name="PublishPackageViewFilePath" xml:space="preserve">
+    <value>ファイル パス</value>
+  </data>
+  <data name="PublishPackageViewNodeLibrary" xml:space="preserve">
+    <value>ノード ライブラリ</value>
+  </data>
+  <data name="PublishPackageRetainFolderStructureTooltip" xml:space="preserve">
+    <value>この設定を有効にすると、アップロードされたファイルのフォルダ構造が保持されます。無効にすると、ファイルは定義済みのフォルダに配置されます。
+
+注: フォルダ構造が正しくない場合、正しいファイル構成に依存するパッケージの機能に影響を与える可能性があります。疑わしい場合は、この設定をオフのままにしてください。
+    </value>
+  </data>
+  <data name="PublishPackageNodeLibraryTooltip" xml:space="preserve">
+    <value>Dynamo がノードとして読み込むタイプとメソッドを含む DLL ファイルです。ノード ライブラリとして Dynamo に読み込む ZeroTouch、NodeModel、または NodeViewCustomization の DLL とタイプをマークします。</value>
+  </data>
+  <data name="NodeTooltipRenamed" xml:space="preserve">
+    <value>{0} から名前が変更されました</value>
+  </data>
+  <data name="WorkspaceTabTooltipHeaderUnsaved" xml:space="preserve">
+    <value>未保存</value>
+  </data>
+  <data name="TourLabelProgressText" xml:space="preserve">
+    <value>/</value>
+  </data>
+  <data name="StartTourButtonText" xml:space="preserve">
+    <value>ツアーを開始</value>
+  </data>
+  <data name="ContextUnpinFromNode" xml:space="preserve">
+    <value>ノードから固定解除</value>
+  </data>
+  <data name="UnpinNodeTooltip" xml:space="preserve">
+    <value>ノードからこのノートを固定解除します</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsGroupStyleInput" xml:space="preserve">
+    <value>スタイル名</value>
+  </data>
+  <data name="PreferencesViewEmptyStyleWarning" xml:space="preserve">
+    <value>有効な名前を入力してください</value>
+  </data>
+  <data name="GroupStyleContextAnnotation" xml:space="preserve">
+    <value>グループ スタイル</value>
+  </data>
+  <data name="ContextPinToNodeTooltip" xml:space="preserve">
+    <value>ノードを選択して、このノートに固定します。</value>
+  </data>
+  <data name="GroupStylesCancelButtonText" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="GroupStylesSaveButtonText" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="OnboardingGuide" xml:space="preserve">
+    <value>スタートアップ(_G)</value>
+  </data>
+  <data name="OnboardingGuideWelcomeTitle" xml:space="preserve">
+    <value>Dynamo のスタートアップ</value>
+  </data>
+  <data name="OnboardingGuideSurveyText" xml:space="preserve">
+    <value>スタートアップ ガイドはこれで終わりです。</value>
+  </data>
+  <data name="OnboardingWorkspaceText" xml:space="preserve">
+    <value>これがワークスペースです。ここでビジュアル プログラムを開発して結果をプレビューします。\n\nビジュアル プログラムは、いずれも **グラフ** によって行われます。グラフでは、データの処理やジオメトリの作成など、さまざまな操作が可能です。このガイドでは、サンプルのグラフを使用します。</value>
+  </data>
+  <data name="OnboardingWorkspaceTitle" xml:space="preserve">
+    <value>ワークスペース</value>
+  </data>
+  <data name="GetStartedLinkText" xml:space="preserve">
+    <value>スタートアップ</value>
+  </data>
+  <data name="NextGuideText" xml:space="preserve">
+    <value>次のガイド: </value>
+  </data>
+  <data name="GroupContextMenuColor" xml:space="preserve">
+    <value>カラー</value>
+  </data>
+  <data name="RunCompletedWithErrorsMessage" xml:space="preserve">
+    <value>実行は完了しましたが、エラーが発生しました。</value>
+  </data>
+  <data name="RunCompletedWithScaleChangeAndErrorsMessage" xml:space="preserve">
+    <value>実行は完了しましたが、新しい動作範囲の設定でエラーが発生しました。</value>
+  </data>
+  <data name="RunReady" xml:space="preserve">
+    <value>実行準備ができました。</value>
+  </data>
+  <data name="PreferencesSecuritySettingsTab" xml:space="preserve">
+    <value>セキュリティ</value>
+  </data>
+  <data name="PreferencesViewTrustWarningHeader" xml:space="preserve">
+    <value>信頼性に関する警告</value>
+  </data>
+  <data name="PreferencesViewTrustWarningLabel" xml:space="preserve">
+    <value>信頼性に関する警告を無効にする</value>
+  </data>
+  <data name="PreferencesViewTrustWarningTooltipText" xml:space="preserve">
+    <value>これは Dynamo、Dynamo プレーヤ、ジェネレーティブ デザインのプレーヤに適用されます。信頼できない場所にあるファイルを誤って開かないよう、このスイッチをオフにしておくことをお勧めします。</value>
+  </data>
+  <data name="SecurityPathAddPathButtonName" xml:space="preserve">
+    <value>パスを追加</value>
+  </data>
+  <data name="SecurityWarningExpanderName" xml:space="preserve">
+    <value>警告</value>
+  </data>
+  <data name="TrustedPathsExpanderName" xml:space="preserve">
+    <value>信頼できるファイルの場所</value>
+  </data>
+  <data name="ZoomLevel" xml:space="preserve">
+    <value>0.4</value>
+  </data>
+  <data name="OnboardingNodesText" xml:space="preserve">
+    <value>ノードはグラフの構成要素です。ノードは、数値の格納やジオメトリの作成などの操作を行います。\n\nノードのパーツにカーソルを合わせると、その詳細を参照できます。このノードには入力がありません。\n\n入力ポートにカーソルを合わせて、入力可能なデータのタイプを確認してください。</value>
+  </data>
+  <data name="OnboardingNodesTitle" xml:space="preserve">
+    <value>ノード</value>
+  </data>
+  <data name="OnboardingGuideWelcomeText" xml:space="preserve">
+    <value>Dynamo の基本的な構成要素について学習します。グラフを使用して実践的な練習を行います。</value>
+  </data>
+  <data name="OnboardingPlaceNodeText" xml:space="preserve">
+    <value>ライブラリには、グラフの構築に使用されるノードが含まれています。ノードを探すには、ライブラリを検索するか、そのカテゴリを参照します。
+
+ライブラリからワークスペースにノードを配置するには、該当するノードをクリックします。
+
+ハイライト表示された **ByOrigin** ノードを配置してみてください。</value>
+  </data>
+  <data name="OnboardingPlaceNodeTitle" xml:space="preserve">
+    <value>ノードを配置する</value>
+  </data>
+  <data name="OnboardingGuideConnectNodesText" xml:space="preserve">
+    <value>この新しいノードをグラフの一部にするには、別のノードに接続する必要があります。試してみてから、[次へ]の矢印をクリックしてください。</value>
+  </data>
+  <data name="OnboardingGuideConnectNodesTitle" xml:space="preserve">
+    <value>ノードを接続する</value>
+  </data>
+  <data name="OnboardingGuideRunGraphText" xml:space="preserve">
+    <value>グラフを実行し、行った調整の結果を確認します。[実行]をクリックしてください。</value>
+  </data>
+  <data name="OnboardingGuideRunGraphTitle" xml:space="preserve">
+    <value>グラフを実行する</value>
+  </data>
+  <data name="FileTrustWarningCheckBoxText" xml:space="preserve">
+    <value>今後はこのファイルの場所を信頼します。</value>
+  </data>
+  <data name="FileTrustWarningPopupNoCloseFile" xml:space="preserve">
+    <value>いいえ、ファイルを閉じます</value>
+  </data>
+  <data name="DiscardChangesWarningPopupCaption" xml:space="preserve">
+    <value>変更を破棄しますか?</value>
+  </data>
+  <data name="DiscardChangesWarningPopupMessage" xml:space="preserve">
+    <value>パッケージのアップロード スクリーンからナビゲートすると、変更内容は失われます。</value>
+  </data>
+  <data name="FileTrustWarningPopupSettings" xml:space="preserve">
+    <value>設定</value>
+  </data>
+  <data name="FileTrustWarningPopupText" xml:space="preserve">
+    <value>このファイルは信頼できない場所に保存されています。このファイルを開きますか?</value>
+  </data>
+  <data name="FileTrustWarningPopupTitle" xml:space="preserve">
+    <value>外部ファイルを開きますか?</value>
+  </data>
+  <data name="FileTrustWarningPopupTooltip1" xml:space="preserve">
+    <value>外部コンテンツは、システムのセキュリティにリスクをもたらす場合があります。</value>
+  </data>
+  <data name="FileTrustWarningPopupTooltip2" xml:space="preserve">
+    <value>ファイルの現在の場所は、信頼できる場所に追加されます。
+これは、[基本設定] -&gt; [セキュリティ]で管理できます。</value>
+  </data>
+  <data name="FileTrustWarningPopupYes" xml:space="preserve">
+    <value>はい</value>
+  </data>
+  <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
+    <value>グラフの実行は、警告が解決されるまで中断されます</value>
+  </data>
+  <data name="DynamoShowFileTrustWarning" xml:space="preserve">
+    <value>ファイルの信頼性の警告を表示する</value>
+  </data>
+  <data name="DynamoViewRunTypesComboBoxToolTipDisabled" xml:space="preserve">
+    <value>実行モードは警告が解決されるまで変更できません</value>
+  </data>
+  <data name="BubbleDismissAllButtonTooltip" xml:space="preserve">
+    <value>このノードのすべての警告を一時的に閉じる</value>
+  </data>
+  <data name="RunCompletedWithWarningsDismissedMessage" xml:space="preserve">
+    <value>実行は完了しましたが、警告は閉じられました。</value>
+  </data>
+  <data name="PackageRepositoryLabel" xml:space="preserve">
+    <value>リポジトリ</value>
+  </data>
+  <data name="PackageWebsiteLabel" xml:space="preserve">
+    <value>Web サイト</value>
+  </data>
+  <data name="OnboardingSuccessText" xml:space="preserve">
+    <value>おつかれさまでした。Dynamo で初めてのグラフが実行できました。\n\n今後も #Dynamo Primer=https://primer2.dynamobim.org/v/ja/ で Dynamo の基本について学習を続けてください。</value>
+  </data>
+  <data name="OnboardingSuccessTitle" xml:space="preserve">
+    <value>成功</value>
+  </data>
+  <data name="MessagePackageTargetOtherHosts" xml:space="preserve">
+    <value>パッケージまたはその依存関係の 1 つが、Revit、Civil 3D、Advance Steel、Alias、FormIt などの異なる環境を対象としています。そのため、不安定となり予期しない問題が発生する可能性があります。続行しますか?</value>
+  </data>
+  <data name="RunBlockedMessage" xml:space="preserve">
+    <value>実行がブロックされました。</value>
+  </data>
+  <data name="FooterNotificationErrorImage" xml:space="preserve">
+    <value>/DynamoCoreWpf;component/UI/Images/error.png</value>
+  </data>
+  <data name="FooterNotificationErrorTooltip" xml:space="preserve">
+    <value>クリックすると、エラーのあるノードを循環します。</value>
+  </data>
+  <data name="FooterNotificationInfoImage" xml:space="preserve">
+    <value>/DynamoCoreWpf;component/UI/Images/info.png</value>
+  </data>
+  <data name="FooterNotificationInfoTooltip" xml:space="preserve">
+    <value>クリックすると、情報状態のノードを循環します。</value>
+  </data>
+  <data name="FooterNotificationWarningImage" xml:space="preserve">
+    <value>/DynamoCoreWpf;component/UI/Images/warning_16px.png</value>
+  </data>
+  <data name="FooterNotificationWarningTooltip" xml:space="preserve">
+    <value>クリックすると、警告のあるノードを循環します。</value>
+  </data>
+  <data name="TrustLocationAddedNotification" xml:space="preserve">
+    <value>信頼できるファイルの場所が追加されました:
+{0}</value>
+  </data>
+  <data name="TrustLocationSkippedNotification" xml:space="preserve">
+    <value>ファイルの場所が信頼できる場所に追加されていません。</value>
+  </data>
+  <data name="MessagePackageTargetOtherHosts2" xml:space="preserve">
+    <value>パッケージまたはその依存関係の 1 つが、Revit、Civil 3D、Advance Steel、Alias、FormIt などの異なる環境を対象としています。そのため、不安定となり予期しない問題が発生する可能性があります。</value>
+  </data>
+  <data name="MessagePackageTargetOtherHostShort" xml:space="preserve">
+    <value>パッケージは現在のホスト アプリケーションとは異なるホストを対象としています。</value>
+  </data>
+  <data name="TitlePackageTargetOtherHost" xml:space="preserve">
+    <value>パッケージ ホスト エラー</value>
+  </data>
+  <data name="TrustedLocationNotAccessible" xml:space="preserve">
+    <value>A problem occurred when trying to access the trusted location. Dynamo is unable to obtain read/write access to
+{0}</value>
+  </data>
+  <data name="UnableToAccessTrustedDirectory" xml:space="preserve">
+    <value>Unable To Access Trusted Directory</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
+    <value>ワイヤを固定</value>
+  </data>
+  <data name="ContextMenuConnectionsHideAll" xml:space="preserve">
+    <value>すべてのワイヤを非表示</value>
+  </data>
+  <data name="ContextMenuConnectionsShowAll" xml:space="preserve">
+    <value>すべてのワイヤを表示</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderStartNode" xml:space="preserve">
+    <value>上流をナビゲート</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
+    <value>Navigate Downtream</value>
+  </data>
+  <data name="ContextMenuNodeConnections" xml:space="preserve">
+    <value>ノード接続</value>
+  </data>
+  <data name="InvalidDraggingOperationMessgae" xml:space="preserve">
+    <value>何もドラッグされていません。このメッセージが表示された場合、直近の Dynamo の操作は推奨されていない可能性が高いです。</value>
+  </data>
+  <data name="UngroupParentGroupWarning" xml:space="preserve">
+    <value>親グループがない場合、Dynamo はグループ化を解除できません。</value>
+  </data>
+  <data name="PreferencesViewEnableNotificationCenter" xml:space="preserve">
+    <value>通知を受信</value>
+  </data>
+  <data name="PreferencesViewNotificationCenter" xml:space="preserve">
+    <value>通知センター</value>
+  </data>
+  <data name="NotificationCenterButtonTooltip" xml:space="preserve">
+    <value>クリックすると、Dynamo Team の最新ニュースが表示されます。</value>
+  </data>
+  <data name="InfectedPackageMessageString" xml:space="preserve">
+    <value>これは感染したパッケージです。感染していないバージョンをアップロードしてください。</value>
+  </data>
+  <data name="InfectedPackageErrorString" xml:space="preserve">
+    <value>アップロード エラー</value>
+  </data>
+  <data name="PrePackagePublishMessage" xml:space="preserve">
+    <value>パッケージはウィルスがないかスキャンされ、スキャンに成功するとダウンロードできるようになります。</value>
+  </data>
+  <data name="PrePackagePublishTitle" xml:space="preserve">
+    <value>パッケージ アップロード スキャン</value>
+  </data>
+  <data name="ImportPreferencesInfo" xml:space="preserve">
+    <value>カスタム設定をここで読み込むことができます。読み込むと、現在の設定が上書きされます。現在の設定のコピーを保存する場合は、設定を書き出してから、新しい設定を読み込んでください。[基本設定]パネルに表示されていない設定は、Dynamo およびホスト プログラムを再起動すると適用されます。</value>
+  </data>
+  <data name="PreferencesMustBeClosedMessage" xml:space="preserve">
+    <value>続行する前に基本設定を閉じる必要があります。すべての変更内容は自動的に保存されました。</value>
+  </data>
+  <data name="PreferencesViewNodeAutocomplete" xml:space="preserve">
+    <value>ノード オートコンプリート</value>
+  </data>
+  <data name="PreferredConfidenceLevel" xml:space="preserve">
+    <value>推奨の信頼度レベル</value>
+  </data>
+  <data name="PreferredConfidenceLevelInfo" xml:space="preserve">
+    <value>信頼度レベルは、各推奨ノードの横に表示され、そのノードが適切な選択である推定確率を表します。この設定をオンにすると、指定した信頼度レベルを満たさない推奨ノードは非表示になります。それらのノードを表示するには、[低信頼度]ヘッダをクリックします。</value>
+  </data>
+  <data name="MLRecommendationNumberOfResults" xml:space="preserve">
+    <value>結果数</value>
+  </data>
+  <data name="ImportPreferencesText" xml:space="preserve">
+    <value>読み込み</value>
+  </data>
+  <data name="ExportPreferencesText" xml:space="preserve">
+    <value>書き出し</value>
+  </data>
+  <data name="ExportSettingsDialogTitle" xml:space="preserve">
+    <value>書き出すフォルダを選択</value>
+  </data>
+  <data name="FileDialogImportSettingsFiles" xml:space="preserve">
+    <value>設定ファイル({0})|{0}</value>
+  </data>
+  <data name="ImportSettingsDialogTitle" xml:space="preserve">
+    <value>読み込み設定</value>
+  </data>
+  <data name="ImportSettingsSuccessMessage" xml:space="preserve">
+    <value>読み込みに成功しました</value>
+  </data>
+  <data name="ImportSettingsFailedMessage" xml:space="preserve">
+    <value>読み込みに失敗しました</value>
+  </data>
+  <data name="PreferencesSettingHardwareAcceleration" xml:space="preserve">
+    <value>ハードウェア アクセラレーションを使用</value>
+  </data>
+  <data name="PreferencesSettingCustomPythomTemplate" xml:space="preserve">
+    <value>カスタム Python テンプレート ファイル パス</value>
+  </data>
+  <data name="PreferencesSettingBackupInterval" xml:space="preserve">
+    <value>自動バックアップ間隔</value>
+  </data>
+  <data name="PreferencesSettingDefaultBackupLocation" xml:space="preserve">
+    <value>既定のバックアップの場所</value>
+  </data>
+  <data name="PreferencesSettingUpdateBackupLocationTooltip" xml:space="preserve">
+    <value>バックアップの場所を編集</value>
+  </data>
+  <data name="PreferencesSettingResetBackupLocationTooltip" xml:space="preserve">
+    <value>バックアップの場所をリセット</value>
+  </data>
+  <data name="PreferencesSettingsBackupLocationDialogTitle" xml:space="preserve">
+    <value>バックアップするフォルダを選択</value>
+  </data>
+  <data name="PreferencesSettingsBackupFailedTitle" xml:space="preserve">
+    <value>バックアップの場所の設定に失敗しました</value>
+  </data>
+  <data name="PreferencesSettingsBackupFailedMessage" xml:space="preserve">
+    <value>無効なバックアップの場所</value>
+  </data>
+  <data name="PreferencesSettingMaxRecentFiles" xml:space="preserve">
+    <value>最近使用したファイルの最大数</value>
+  </data>
+  <data name="BackupInternalUnit" xml:space="preserve">
+    <value>バックアップ間隔(分単位)</value>
+  </data>
+  <data name="PythonTemplateAddPathTooltip" xml:space="preserve">
+    <value>Python ノード テンプレートのファイル パスを追加します</value>
+  </data>
+  <data name="AddFilePathButtonName" xml:space="preserve">
+    <value>ファイル パスを追加</value>
+  </data>
+  <data name="PackageDeprecatedTooltip" xml:space="preserve">
+    <value>このパッケージは古いためインストールできません。</value>
+  </data>
+  <data name="PackageManagerMyPackagesPublishVersion" xml:space="preserve">
+    <value>パブリッシュ バージョン</value>
+  </data>
+  <data name="SplashScreenViewExtensions" xml:space="preserve">
+    <value>ビューの拡張機能をロードしています...</value>
+  </data>
+  <data name="DynamoViewSettingShowStaticSplashScreen" xml:space="preserve">
+    <value>スプラッシュ画面を一時停止</value>
+  </data>
+  <data name="PreferencesViewShowStaticSplashScreenTooltip" xml:space="preserve">
+    <value>ロードの完了時にスプラッシュ画面を一時停止します。これにより、Dynamo の手動での起動、Autodesk Account へのサイン イン、または設定の読み込みを実行できます。</value>
+  </data>
+  <data name="LogoutMenuItemText" xml:space="preserve">
+    <value>サインアウト</value>
+  </data>
+  <data name="SignInButtonText" xml:space="preserve">
+    <value>サインイン</value>
+  </data>
+  <data name="SigningInButtonText" xml:space="preserve">
+    <value>サインインしています</value>
+  </data>
+  <data name="RecentFileNumberInfo" xml:space="preserve">
+    <value>この数を減らすと、選択した数を超える最近使用したファイルがすべて破棄されます。</value>
+  </data>
+  <data name="WebView2RequiredMessage" xml:space="preserve">
+    <value>Dynamo には WebView2 Evergreen Runtime が必要ですが、お使いのコンピュータにはインストールされていません。次のリンクを使用して Evergreen Standalone インストーラをダウンロードし、プログラムをインストールした後 Dynamo を再起動してください。\n\n#WebView2 Runtime Installer=https://developer.microsoft.com/ja-jp/microsoft-edge/webview2/#download-sectionedge/webview2/#download-section</value>
+  </data>
+  <data name="WebView2RequiredTitle" xml:space="preserve">
+    <value>WebView2 が必要です</value>
+  </data>
+  <data name="DynamoViewFileMenuInsert" xml:space="preserve">
+    <value>挿入...</value>
+  </data>
+  <data name="DynamoViewRunTypesAutomaticToolTip" xml:space="preserve">
+    <value>グラフの変更はリアルタイムで実行されます。小さいグラフ、既知のグラフ、DynamoSandbox に最適です。</value>
+  </data>
+  <data name="DynamoViewRunTypesComboBoxToolTipEnabled" xml:space="preserve">
+    <value>実行モード\n\nグラフが変更されたときの動作をコントロールします。</value>
+  </data>
+  <data name="DynamoViewRunTypesManualToolTip" xml:space="preserve">
+    <value>グラフの変更は、[実行]をクリックしたときに実行されます。このモードは、大きなグラフ、不明なグラフ、またはホスト アプリケーションで作業するときに使用します。</value>
+  </data>
+  <data name="DynamoViewRunTypesPeriodicToolTip" xml:space="preserve">
+    <value>グラフの変更は指定した間隔で実行されます。グラフに DateTime.Now や WebRequest などの特定のノードが含まれている場合にのみ使用できます。</value>
+  </data>
+  <data name="PreferencesViewDefaultRunSettingsInfoTooltip" xml:space="preserve">
+    <value>グラフの既定の実行モードを設定します。手動モードでは、[実行]をクリックすると、グラフの変更が実行されます。このモードは、大きなグラフ、不明なグラフ、またはホストプログラムで作業する場合に使用します。
+
+自動モードでは、グラフの変更はリアルタイムで実行されます。 
+
+特定の複雑なグラフまたはホストプログラムの場合は、不安定や問題が発生する場合があります。そうした場合、手動モードに切り替えます。</value>
+  </data>
+  <data name="GroupStyleFontSizeToolTip" xml:space="preserve">
+    <value>フォントサイズ</value>
+  </data>
+  <data name="SplashScreenImportSettings" xml:space="preserve">
+    <value>読み込み設定</value>
+  </data>
+  <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
+    <value>カスタム設定ファイルの読み込み時に問題が発生しました。もう一度試すか、既定の設定で続行してください。</value>
+  </data>
+  <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
+    <value>Dynamo ビューを起動しています...</value>
+  </data>
+  <data name="SplashScreenLaunchTitle" xml:space="preserve">
+    <value>Dynamo を起動</value>
+  </data>
+  <data name="SplashScreenLoadingTimeLabel" xml:space="preserve">
+    <value>ロード時間</value>
+  </data>
+  <data name="SplashScreenShowScreenAgainLabel" xml:space="preserve">
+    <value>今後この画面を表示しない</value>
+  </data>
+  <data name="SplashScreenSignIn" xml:space="preserve">
+    <value>サインイン</value>
+  </data>
+  <data name="SplashScreenSignOut" xml:space="preserve">
+    <value>サインアウト</value>
+  </data>
+  <data name="SplashScreenWelcomeToDynamo" xml:space="preserve">
+    <value>Dynamo へようこそ!</value>
+  </data>
+  <data name="SplashScreenTotalLoadingTimeLabel" xml:space="preserve">
+    <value>総ロード時間:</value>
+  </data>
+  <data name="ExportSettingsFailedMessage" xml:space="preserve">
+    <value>書き出しに失敗しました</value>
+  </data>
+  <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
+    <value>オンに切り替えると、Dynamo でハードウェア アクセラレーションを利用できるようになり、中央処理装置(CPU)からグラフィックス処理装置(GPU)に作業がオフロードされるため、グラフィックスが滑らかになって、全体的なパフォーマンスが向上します。</value>
+  </data>
+  <data name="PreferencesWindowIsolateSelectedGeoTooltip" xml:space="preserve">
+    <value>オンに切り替えると、ジオメトリ ノードを選択したときに、生成されるジオメトリが背景 3D プレビューでハイライト表示されます。</value>
+  </data>
+  <data name="PreferencesWindowShowCodeBlockNodeLineNumberTooltip" xml:space="preserve">
+    <value>オンに切り替えると、Code Block ノード エディタに行番号が表示されます。</value>
+  </data>
+  <data name="PreferencesWindowShowEdgesTooltip" xml:space="preserve">
+    <value>オンに切り替えると、トポロジのサブタイプのジオメトリに対して、より詳細なエッジが表示されます。</value>
+  </data>
+  <data name="PreferencesWindowShowPreviewBubblesTooltip" xml:space="preserve">
+    <value>オンに切り替えると、ノードの下部にカーソルを合わせたときに、ノードの出力のプレビューが表示されます。</value>
+  </data>
+  <data name="PreferencesViewBetaTag" xml:space="preserve">
+    <value>Beta</value>
+  </data>
+  <data name="SplashScreenSigningIn" xml:space="preserve">
+    <value>サインインしています</value>
+  </data>
+  <data name="InCanvasGeometryScalingToolTip" xml:space="preserve">
+    <value>ワークスペースのジオメトリのスケーリング</value>
+  </data>
+  <data name="GroupContextMenuPreview" xml:space="preserve">
+    <value>ジオメトリをプレビュー</value>
+  </data>
+  <data name="LibraryZoomScaleTooltipText" xml:space="preserve">
+    <value>ドラッグして、ライブラリのズーム スケールを 25% ～ 300% の範囲で調整します。[Ctrl]を押しながらマウス ホイールをスクロールすると、ライブラリ内でも調整できます。</value>
+  </data>
+  <data name="PreferencesViewZoomScalingSettings" xml:space="preserve">
+    <value>ズーム スケールの調整</value>
+  </data>
+  <data name="DynamoViewSettingLibraryZoomScale" xml:space="preserve">
+    <value>ライブラリ</value>
+  </data>
+  <data name="PortPropertiesPromptInputWindowTitle" xml:space="preserve">
+    <value>入力ポート プロパティ</value>
+  </data>
+  <data name="PortPropertiesPromptOutputWindowTitle" xml:space="preserve">
+    <value>出力ポート プロパティ</value>
+  </data>
+  <data name="PortPropertiesPromptDescriptionTooltip" xml:space="preserve">
+    <value>ポートの説明</value>
+  </data>
+  <data name="PortPropertiesPromptWindowDescription" xml:space="preserve">
+    <value>説明</value>
+  </data>
+  <data name="PortPropertiesPromptNameTooltip" xml:space="preserve">
+    <value>ポート名</value>
+  </data>
+  <data name="PortPropertiesPromptWindowName" xml:space="preserve">
+    <value>名前</value>
+  </data>
+  <data name="RemovePythonPortWarningMessageBoxTitle" xml:space="preserve">
+    <value>ポートを削除しますか?</value>
+  </data>
+  <data name="MessageRemovePythonPort" xml:space="preserve">
+    <value>ポートを削除すると、カスタムのポート プロパティが失われます。</value>
+  </data>
+  <data name="MessagePortNameInvalid" xml:space="preserve">
+    <value>特殊文字(# % * ? \ : [ ])は使用できません</value>
+  </data>
+  <data name="PreferencesViewEnablePersistExtensions" xml:space="preserve">
+    <value>起動時に、前回のセッションで開いていた拡張機能のパネルを呼び出す</value>
+  </data>
+  <data name="PreferencesViewExtensions" xml:space="preserve">
+    <value>拡張機能</value>
+  </data>
+  <data name="PythonZoomScaleTooltipText" xml:space="preserve">
+    <value>ドラッグして、Python エディタのズーム スケールを 25% ～ 300% の範囲で調整します。[Ctrl]を押しながらマウス ホイールをスクロールすると、Python エディタ内でも調整できます。</value>
+  </data>
+  <data name="PreferencesViewLanguageSwitchHelp" xml:space="preserve">
+    <value>言語の選択を適用するには、Dynamo を再起動する必要があります。</value>
+  </data>
+  <data name="CustomColorPickerApplyBtn" xml:space="preserve">
+    <value>適用</value>
+  </data>
+  <data name="CustomColorPickerBasicColors" xml:space="preserve">
+    <value>基本色:</value>
+  </data>
+  <data name="CustomColorPickerCancelBtn" xml:space="preserve">
+    <value>キャンセル</value>
+  </data>
+  <data name="CustomColorPickerCustomColorBtn" xml:space="preserve">
+    <value>カスタム色を定義</value>
+  </data>
+  <data name="CustomColorPickerCustomColors" xml:space="preserve">
+    <value>カスタム色:</value>
+  </data>
+  <data name="CustomColorPickerTitle" xml:space="preserve">
+    <value>色</value>
+  </data>
+  <data name="PreferencesViewZoomScaling0Percent" xml:space="preserve">
+    <value>0%</value>
+  </data>
+  <data name="PreferencesViewZoomScaling100Percent" xml:space="preserve">
+    <value>100%</value>
+  </data>
+  <data name="PreferencesViewZoomScaling25Percent" xml:space="preserve">
+    <value>25%</value>
+  </data>
+  <data name="PreferencesViewZoomScaling300Percent" xml:space="preserve">
+    <value>300%</value>
+  </data>
+  <data name="PreferencesViewPythonEditorLable" xml:space="preserve">
+    <value>Python エディタ</value>
+  </data>
+  <data name="CustomColorsPopupTitle" xml:space="preserve">
+    <value>カスタム</value>
+  </data>
+  <data name="PreferencesGrahicHelpersScale" xml:space="preserve">
+    <value>グラフィックス要素のスケール</value>
+  </data>
+  <data name="PreferencesGrahicHelpersScaleTooltip" xml:space="preserve">
+    <value>バックグラウンド グラフィックス ヘルパー(通芯、軸)のスケールを選択します。</value>
+  </data>
+  <data name="LibraryLoadFailureMessageSuffix" xml:space="preserve">
+    <value>読み込みの失敗の詳細については、コンソールのログを参照してください。</value>
+  </data>
+  <data name="PreferencesHostGenericScaleImperialUnits" xml:space="preserve">
+    <value>インチ/フィート単位</value>
+  </data>
+  <data name="PreferencesHostGenericScaleMetricUnits" xml:space="preserve">
+    <value>メートル単位</value>
+  </data>
+  <data name="CantExportWorkspaceAsImageEmptyMessage" xml:space="preserve">
+    <value>ワークスペースは空のため、イメージとして書き出すことができません。</value>
+  </data>
+  <data name="CantExportWorkspaceAsImageNotValidMessage" xml:space="preserve">
+    <value>互いに離れすぎたノードが含まれているため、ワークスペースをイメージとして書き出すことができません。</value>
+  </data>
+  <data name="PreferencesViewSettingIncludeTimestampExportPath" xml:space="preserve">
+    <value>書き出しイメージ パスにタイムスタンプを含める</value>
+  </data>
+  <data name="PreferencesViewIncludeTimestampExportPathTooltip" xml:space="preserve">
+    <value>オンにすると、書き出されたイメージのファイル名に書き出しの日付と時刻が含まれます。</value>
+  </data>
+  <data name="ElementBindingWarningMessage" xml:space="preserve">
+    <value>[名前を付けて保存]コマンドを使用すると、Dynamo で完全に新しいファイルとして扱われるワークスペースが作成され、既存の要素バインド データは失われます。このファイルを実行すると、新しい要素バインド データが通常どおりに作成されます。ホスト ドキュメントとの要素バインドを保持する場合は、代わりに[保存]コマンドを使用してください。</value>
+  </data>
+  <data name="ElementBindingWarningTitle" xml:space="preserve">
+    <value>要素のバインドの警告</value>
+  </data>
+  <data name="ElementBindingDesc" xml:space="preserve">
+    <value>[要素のバインド]を使用すると、Dynamo とホスト アプリケーション(Revit や Civil3D など)との間で双方向の操作が可能になり、ユーザはホスト ドキュメント内の要素を選択して、その要素をワークスペース内のノードに「バインド」できます。</value>
+  </data>
+  <data name="PreferencesViewVisualSettingUseInstancing" xml:space="preserve">
+    <value>インスタンスを使用(ベータ版)</value>
+  </data>
+  <data name="PreferencesWindowUseInstancingTooltip" xml:space="preserve">
+    <value>オンにすると、立方体、長方形、または球などの対称ジオメトリ タイプの一部は、複数のコピーが順番ではなく一度に描画されるため、レンダリングが高速になります。</value>
+  </data>
+  <data name="NotificationToAgreeMLNodeautocompleteTOU" xml:space="preserve">
+    <value>推奨ノード機能にアクセスするには、[Dynamo] &gt; [データ収集に関する契約]をお読みのうえ同意してください。</value>
+  </data>
+  <data name="GESUnitCentimeters" xml:space="preserve">
+    <value>センチメートル</value>
+  </data>
+  <data name="GESUnitFeet" xml:space="preserve">
+    <value>フィート</value>
+  </data>
+  <data name="GESUnitInches" xml:space="preserve">
+    <value>インチ</value>
+  </data>
+  <data name="GESUnitKilometers" xml:space="preserve">
+    <value>キロメートル</value>
+  </data>
+  <data name="GESUnitMeters" xml:space="preserve">
+    <value>メートル</value>
+  </data>
+  <data name="GESUnitMiles" xml:space="preserve">
+    <value>マイル</value>
+  </data>
+  <data name="GESUnitMillimeters" xml:space="preserve">
+    <value>ミリメートル</value>
+  </data>
+  <data name="SignOutConfirmationDialogText" xml:space="preserve">
+    <value>Dynamo からサインアウトすると、すべてのオートデスク デスクトップ製品からサインアウトします。</value>
+  </data>
+  <data name="SignOutConfirmationDialogTitle" xml:space="preserve">
+    <value>Dynamo からサインアウト</value>
+  </data>
+  <data name="PackageDetailsGroup" xml:space="preserve">
+    <value>グループ</value>
+  </data>
+  <data name="PackageDetailsKeywords" xml:space="preserve">
+    <value>キーワード</value>
+  </data>
+  <data name="PackageDetailsSize" xml:space="preserve">
+    <value>サイズ</value>
+  </data>
+  <data name="PackageDetailsLinks" xml:space="preserve">
+    <value>リンク</value>
+  </data>
+  <data name="ResetChangesWarningPopupMessage" xml:space="preserve">
+    <value>続行すると、変更内容が失われます。</value>
+  </data>
+  <data name="DynamoViewFileMenuOpenFile" xml:space="preserve">
+    <value>ファイル(_F)</value>
+  </data>
+  <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
+    <value>テンプレート(_T)</value>
+  </data>
+  <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
+    <value>テンプレート フォルダにはワークスペースを直接保存できません。ファイルを保存するには、別のフォルダを選択してください。
+このファイルを新規テンプレートにするには、別のフォルダに保存し、それをテンプレート フォルダに移動してください。</value>
+  </data>
+  <data name="WorkspaceSaveTemplateDirectoryBlockTitle" xml:space="preserve">
+    <value>無効な保存パス</value>
+  </data>
+  <data name="PublishPackageRetainFolderStructureToggleButtonText" xml:space="preserve">
+    <value>フォルダ構造を保持</value>
+  </data>
+  <data name="UpdateNodeIconsDebugMenu" xml:space="preserve">
+    <value>ノード アイコンを更新</value>
+  </data>
+  <data name="PreferencesViewEnablePanelingNodes" xml:space="preserve">
+    <value>パネルノードを有効化</value>
+  </data>
+  <data name="PreferencesSettingTemplateLocationLabel" xml:space="preserve">
+    <value>テンプレート パス</value>
+  </data>
+  <data name="PreferencesSettingResetTemplateLocationTooltip" xml:space="preserve">
+    <value>テンプレートの場所をリセット</value>
+  </data>
+  <data name="PreferencesSettingsTemplateFailedMessage" xml:space="preserve">
+    <value>テンプレートの場所の更新に失敗しました</value>
+  </data>
+  <data name="PreferencesSettingsTemplateFailedTitle" xml:space="preserve">
+    <value>無効なテンプレートの場所</value>
+  </data>
+  <data name="PreferencesSettingsTemplateLocationDialogTitle" xml:space="preserve">
+    <value>テンプレートのフォルダを選択</value>
+  </data>
+  <data name="PreferencesSettingUpdateTemplateLocationTooltip" xml:space="preserve">
+    <value>テンプレートの場所を編集</value>
+  </data>
+  <data name="PreferencesViewGeneralSettingsTemplate" xml:space="preserve">
+    <value>テンプレート</value>
+  </data>
+  <data name="DynamoXmlFileFormat" xml:space="preserve">
+    <value>Dynamo 1.x ファイル形式</value>
+  </data>
+  <data name="DataInputNodeModeLockTooltip" xml:space="preserve">
+    <value>ロックされている場合、このノードは選択したデータ タイプのみを入力として受け入れます。ロック解除されている場合、入力はサポートされている任意のデータ タイプにすることができます。</value>
+  </data>
+  <data name="DataInputNodeInformationTooltip" xml:space="preserve">
+    <value>入力データにリストが含まれている場合はオンにします。</value>
+  </data>
+  <data name="DataInputAutoDetectTypeTooltip" xml:space="preserve">
+    <value>Define Data をオンに切り替えて、入力ノードのデータ タイプを自動的に検出できるようにします。オフに切り替えると、目的のデータ タイプを自分で設定できます。</value>
+  </data>
+  <data name="DataInputAutoDetectTypeLabel" xml:space="preserve">
+    <value>自動検出タイプ</value>
+  </data>
+  <data name="DataInputTypeLabel" xml:space="preserve">
+    <value>タイプ</value>
+  </data>
+  <data name="DataInputListLabel" xml:space="preserve">
+    <value>リスト</value>
+  </data>
+  <data name="MessagePackageOlderDynamo" xml:space="preserve">
+    <value>このパッケージまたはその依存関係の 1 つは旧バージョンの Dynamo 用に作成されています。このバージョンでは動作しない可能性があります。続行しますか?</value>
+  </data>
+  <data name="PackageUseOlderDynamoMessageBoxTitle" xml:space="preserve">
+    <value>{0}! のこのバージョンではパッケージが機能しない可能性があります。</value>
+  </data>
+  <data name="MessagePackOlderDynamoLink" xml:space="preserve">
+    <value>#詳しくはこちら=https://primer2.dynamobim.org/v/ja/1_developer_primer_intro/3_developing_for_dynamo/updating-your-packages-and-dynamo-libraries-for-dynamo-3x-net8</value>
+  </data>
+  <data name="DuplicateFilesInPublishWarningMessage" xml:space="preserve">
+    <value>同じ名前のファイルは最終パッケージで上書きされます。これを回避するには、重複ファイルの名前を変更するか、重複ファイルを破棄するか、[フォルダ構造を保持]オプションを有効にしてください。\n\n {0} 個の重複ファイルが見つかりました。\n{1}</value>
+  </data>
+  <data name="DuplicateFilesInPublishWarningTitle" xml:space="preserve">
+    <value>重複ファイル</value>
+  </data>
+  <data name="NodeInCanvasSearchCreationError" xml:space="preserve">
+    <value>ノードの作成に失敗しました: </value>
+  </data>
+  <data name="InstancingRenderFailureDescription" xml:space="preserve">
+    <value>[表示設定]の[表示設定]セクションで[インスタンスを使用]を無効にしてください。</value>
+  </data>
+  <data name="PartialRenderFailureTitle" xml:space="preserve">
+    <value>背景プレビューに問題がありました</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpData" xml:space="preserve">
+    <value>データをダンプ(_D)</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeHelpData" xml:space="preserve">
+    <value>ノード ヘルプ データをダンプ(_D)</value>
+  </data>
+  <data name="NodeHelpIsDumped" xml:space="preserve">
+    <value>Node Help Data is dumped to \"{0}\".</value>
+  </data>
+  <data name="UpdateAllPythonEngineWarning" xml:space="preserve">
+    <value>Update all {0} python nodes in the current workspace to use {1} engine?</value>
+  </data>
+  <data name="UpdateAllPythonEngineWarningTitle" xml:space="preserve">
+    <value>すべての Python ノードを更新</value>
+  </data>
+  <data name="UpdateAllPythonEngineMainMenuHeader" xml:space="preserve">
+    <value>Python エンジンを設定</value>
+  </data>
+  <data name="PackageDetailsReleaseNotes" xml:space="preserve">
+    <value>リリース ノート</value>
+  </data>
+  <data name="PackageDetailsDependsOn" xml:space="preserve">
+    <value>従属先</value>
+  </data>
+  <data name="PackageDetailsCompatibility" xml:space="preserve">
+    <value>互換性</value>
+  </data>
+  <data name="PackageDetailsCompatibilityWithSetup" xml:space="preserve">
+    <value>現在の設定と互換性があります</value>
+  </data>
+  <data name="PackageDetailsIncompatibilityWithSetup" xml:space="preserve">
+    <value>現在の設定と互換性がない</value>
+  </data>
+  <data name="PackageDetailsXCompatibilityWithSetup" xml:space="preserve">
+    <value>現在の設定との互換性が不明</value>
+  </data>
+  <data name="PackageDetailsCompatibleVersionTooltip" xml:space="preserve">
+    <value>このバージョンは、現在の設定との互換性が必要です</value>
+  </data>
+  <data name="PackageDetailsUnknownCompatibilityVersionTooltip" xml:space="preserve">
+    <value>このバージョンの互換性は検証されていません。現在の設定と互換性があるかどうかは不明です。</value>
+  </data>
+  <data name="PackageDetailsIncompatibileVersionTooltip" xml:space="preserve">
+    <value>このバージョンは、現在の設定と互換性がない可能性があります</value>
+  </data>
+  <data name="PackageManagerIncompatibleVersionDownloadMsg" xml:space="preserve">
+    <value>このバージョンは、現在の設定(該当する場合は Dynamo およびホストのバージョン)と互換性がありません。正常に動作しない可能性があります。インストールしますか?</value>
+  </data>
+  <data name="PackageManagerIncompatibleVersionDownloadTitle" xml:space="preserve">
+    <value>互換性のないバージョン</value>
+  </data>
+  <data name="PackageFilterByCompatibility" xml:space="preserve">
+    <value>バージョンの互換性</value>
+  </data>
+  <data name="PackageCompatible" xml:space="preserve">
+    <value>互換性</value>
+  </data>
+  <data name="PackageCompatibleFilterTooltip" xml:space="preserve">
+    <value>現在の設定と互換性のあるバージョン</value>
+  </data>
+  <data name="PackageUnknownCompatibility" xml:space="preserve">
+    <value>不明な互換性</value>
+  </data>
+  <data name="PackageUnknownCompatibilityFilterTooltip" xml:space="preserve">
+    <value>パッケージ バージョンの互換性を確認できません</value>
+  </data>
+  <data name="PackageIncompatible" xml:space="preserve">
+    <value>非互換</value>
+  </data>
+  <data name="PackageIncompatibleFilterTooltip" xml:space="preserve">
+    <value>現在の設定と互換性のない可能性があるバージョン</value>
+  </data>
+  <data name="PackageVersionTooltip" xml:space="preserve">
+    <value>.x でマークされたバージョンには、指定されたメジャー リリースまたはマイナー リリースのすべてのバージョンが含まれます</value>
+  </data>
+  <data name="CannotAddNodeToWorkspace" xml:space="preserve">
+    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
+  </data>
+  <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
+    <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
+  </data>
+  <data name="IDSDKErrorMessage" xml:space="preserve">
+    <value>Autodesk Identity Manager がシステムに設定されていないようです。すべての機能に完全にアクセスするには、Autodesk Identity Manager を使用して Autodesk Account にサインインしてください。
+#ダウンロードとインストール=https://manage.autodesk.com/products/updates をここで行うか、Autodesk Access からサインインしてください。</value>
+  </data>
+  <data name="IDSDKErrorMessageTitle" xml:space="preserve">
+    <value>Autodesk Identity Manager をダウンロードする</value>
+  </data>
+  <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
+    <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
+  </data>
+  <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
+    <value>Freeze Group</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>保存</value>
+  </data>
+  <data name="DiscardButton" xml:space="preserve">
+    <value>破棄</value>
+  </data>
+  <data name="PreferencesViewGroupStylesHeader" xml:space="preserve">
+    <value>グループ スタイル</value>
+  </data>
+  <data name="PreferencesViewShowDefaultGroupDescription" xml:space="preserve">
+    <value>Show default group description</value>
+  </data>
+  <data name="NodeAutoCompleteToolTip" xml:space="preserve">
+    <value>Click to get Node Autocomplete suggestions</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="vsDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\vsDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="vsDynamoPointLine" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\vsDynamoPointLine;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="psDynamoLine" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoLine;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="psDynamoPoint" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoPoint;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+</root>

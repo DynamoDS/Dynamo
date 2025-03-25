@@ -1,0 +1,693 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AndDescription" xml:space="preserve">
+    <value>ブール演算 AND: すべての入力が True の場合にのみ True を返します。いずれかが False の場合は、False を返します。</value>
+  </data>
+  <data name="ApplyPortDataFuncArgToolTip" xml:space="preserve">
+    <value>アプリケーションの結果。</value>
+  </data>
+  <data name="ApplyPortDataFuncToolTip" xml:space="preserve">
+    <value>適用する関数。</value>
+  </data>
+  <data name="BooleanDescription" xml:space="preserve">
+    <value>True/False の選択を有効にします</value>
+  </data>
+  <data name="BooleanSelectorSearchTags" xml:space="preserve">
+    <value>true;truth;false</value>
+  </data>
+  <data name="ColorRangeDescription" xml:space="preserve">
+    <value>特定の色域の色を返します</value>
+  </data>
+  <data name="ColorRangePortDataIndicesToolTip" xml:space="preserve">
+    <value>0.0 から 1.0 の間の値のリスト。入力色を範囲に沿って配置します</value>
+  </data>
+  <data name="ColorRangePortDataResultToolTip" xml:space="preserve">
+    <value>選択した色</value>
+  </data>
+  <data name="ColorRangePortDataColorsToolTip" xml:space="preserve">
+    <value>範囲に含める色のリスト</value>
+  </data>
+  <data name="ColorRangePortDataValueToolTip" xml:space="preserve">
+    <value>0.0 から 1.0 の間の値のリスト。これらの値で、色の範囲に沿って選択される色を定義して、色のリストを作成します。</value>
+  </data>
+  <data name="CombinatorPortDataCombToolTip" xml:space="preserve">
+    <value>コンビネータとして使用する関数</value>
+  </data>
+  <data name="CombinatorPortDataResultToolTip" xml:space="preserve">
+    <value>結合されたリスト</value>
+  </data>
+  <data name="ComposePortDataFunc0ToolTip" xml:space="preserve">
+    <value>関数 #0</value>
+  </data>
+  <data name="ComposePortDataFunc1ToolTip" xml:space="preserve">
+    <value>関数 #1</value>
+  </data>
+  <data name="ComposePortDataResultToolTip" xml:space="preserve">
+    <value>構成された関数。</value>
+  </data>
+  <data name="CreateListPortDataIndex0ToolTip" xml:space="preserve">
+    <value>項目インデックス番号 0</value>
+  </data>
+  <data name="CreateListPortDataResultToolTip" xml:space="preserve">
+    <value>リスト(タイプ: var[]..[])</value>
+  </data>
+  <data name="DirectoryFromPathDescription" xml:space="preserve">
+    <value>特定のパスからフォルダ オブジェクトを作成します</value>
+  </data>
+  <data name="DirectoryNodeDescription" xml:space="preserve">
+    <value>システム上の任意のフォルダを選択して、そのパスを返すことができます</value>
+  </data>
+  <data name="DirectoryObjectNodeDescription" xml:space="preserve">
+    <value>特定のパスからフォルダ オブジェクトを作成します</value>
+  </data>
+  <data name="DirectoryObjectPortDataPathToolTip" xml:space="preserve">
+    <value>フォルダへのパス(タイプ: 文字列)</value>
+  </data>
+  <data name="DirectoryObjectPortDataResultToolTip" xml:space="preserve">
+    <value>フォルダ オブジェクト。</value>
+  </data>
+  <data name="DirectoryPathDescription" xml:space="preserve">
+    <value>システム上の任意のフォルダを選択して、そのパスを返すことができます</value>
+  </data>
+  <data name="DoubleInputNodeDescription" xml:space="preserve">
+    <value>数値を作成します</value>
+  </data>
+  <data name="DoubleSliderDescription" xml:space="preserve">
+    <value>数値を生成します</value>
+  </data>
+  <data name="DoubleSliderNodeDescription" xml:space="preserve">
+    <value>数値を生成します</value>
+  </data>
+  <data name="DropDownPortDataResultToolTip" xml:space="preserve">
+    <value>選択した {0}</value>
+  </data>
+  <data name="FileFromPathDescription" xml:space="preserve">
+    <value>特定のパスからファイル オブジェクトを作成します</value>
+  </data>
+  <data name="FilenameNodeDescription" xml:space="preserve">
+    <value>システム上の任意のファイルを選択して、そのファイル名を取得することができます。</value>
+  </data>
+  <data name="FileObjectNodeDescription" xml:space="preserve">
+    <value>特定のパスからファイル オブジェクトを作成します</value>
+  </data>
+  <data name="FileObjectPortDataPathToolTip" xml:space="preserve">
+    <value>ファイルへのパス。</value>
+  </data>
+  <data name="FileObjectPortDataResultToolTip" xml:space="preserve">
+    <value>ファイル オブジェクト</value>
+  </data>
+  <data name="FilePathDescription" xml:space="preserve">
+    <value>システム上の任意のファイルを選択して、そのファイル パスを返すことができます</value>
+  </data>
+  <data name="FilterPortDataConditionToolTip" xml:space="preserve">
+    <value>要素をフィルタで含めるか除外するかを判断するために使用するフィルタ関数</value>
+  </data>
+  <data name="FilterPortDataListToolTip" xml:space="preserve">
+    <value>フィルタするリスト</value>
+  </data>
+  <data name="FilterPortDataResultInToolTip" xml:space="preserve">
+    <value>条件(x)が True となる、すべての要素 "x" を含むリスト</value>
+  </data>
+  <data name="FilterPortDataResultOutToolTip" xml:space="preserve">
+    <value>条件(x)が False となる、すべての要素 "x" を含むリスト</value>
+  </data>
+  <data name="FormulaDescription" xml:space="preserve">
+    <value>NCalc を使用して数学式を評価します</value>
+  </data>
+  <data name="FormulaPortDataResultToolTip" xml:space="preserve">
+    <value>計算式の結果</value>
+  </data>
+  <data name="FromArrayPortDataArrayToolTip" xml:space="preserve">
+    <value>シリアル化するオブジェクトの配列</value>
+  </data>
+  <data name="FromArrayPortDataResultToolTip" xml:space="preserve">
+    <value>配列の文字列表現</value>
+  </data>
+  <data name="FromArraySearchTags" xml:space="preserve">
+    <value>string.fromarray;tostring;2string;list2string;listtostring;array2string;arraytostring</value>
+  </data>
+  <data name="FromObjectPortDataObjToolTip" xml:space="preserve">
+    <value>シリアル化するオブジェクト</value>
+  </data>
+  <data name="FromObjectPortDataResultToolTip" xml:space="preserve">
+    <value>オブジェクトの文字列表現</value>
+  </data>
+  <data name="FromObjectSearchTags" xml:space="preserve">
+    <value>string.fromobject;tostring;2string;number2string;numbertostring</value>
+  </data>
+  <data name="FunctionApplyDescription" xml:space="preserve">
+    <value>指定した引数での関数の結果を返します</value>
+  </data>
+  <data name="FunctionComposeDescription" xml:space="preserve">
+    <value>複数の関数から単一の関数を返します</value>
+  </data>
+  <data name="IfDescription" xml:space="preserve">
+    <value>条件ステートメント</value>
+  </data>
+  <data name="IntegerSliderDescription" xml:space="preserve">
+    <value>整数値を生成します</value>
+  </data>
+  <data name="IntegerSliderNodeDescription" xml:space="preserve">
+    <value>整数値を生成します</value>
+  </data>
+  <data name="LegacyNodeDescription" xml:space="preserve">
+    <value>これは廃止されたノードです</value>
+  </data>
+  <data name="ListCartesianProductDescription" xml:space="preserve">
+    <value>2 つのシーケンスのデカルト積の各ペアにコンビネータを適用します</value>
+  </data>
+  <data name="ListCartesianProductSearchTags" xml:space="preserve">
+    <value>cross product;crossreference;cross ref;</value>
+  </data>
+  <data name="ListCombineDescription" xml:space="preserve">
+    <value>2 つのシーケンスの各要素にコンビネータを適用します</value>
+  </data>
+  <data name="ListCombineSearchTags" xml:space="preserve">
+    <value>map multiple;apply over lists;multiple inputs</value>
+  </data>
+  <data name="ListCreateDescription" xml:space="preserve">
+    <value>特定の入力から新しいリストを作成します</value>
+  </data>
+  <data name="ListFilterDescription" xml:space="preserve">
+    <value>特定の条件に基づいてリストの項目をフィルタあるいはフィルタ解除します。条件が True の場合、項目はフィルタされ、False の場合はフィルタが外されます。</value>
+  </data>
+  <data name="ListFilterSearchTags" xml:space="preserve">
+    <value>screen;dispatch;</value>
+  </data>
+  <data name="ListForEachDescription" xml:space="preserve">
+    <value>リストの各要素に対して計算を実行します。結果は累積しません。</value>
+  </data>
+  <data name="ListForEachSearchTags" xml:space="preserve">
+    <value>apply function;void;</value>
+  </data>
+  <data name="ListLaceLongestDescription" xml:space="preserve">
+    <value>入力リストの最も長いレーシングから発生する各ペアにコンビネータを適用します。最も長い入力の長さに合わせて、すべてのリストの最後の要素が繰り返されます。</value>
+  </data>
+  <data name="ListLaceLongestSearchTags" xml:space="preserve">
+    <value>repeat last;</value>
+  </data>
+  <data name="ListLaceShortestDescription" xml:space="preserve">
+    <value>入力リストの最も短いレーシングから発生する各ペアにコンビネータを適用します。最も短い入力の長さに合わせて、すべてのリストが切り詰められます。</value>
+  </data>
+  <data name="ListLaceShortestSearchTags" xml:space="preserve">
+    <value>mix;trim end</value>
+  </data>
+  <data name="ListMapDescription" xml:space="preserve">
+    <value>リストのすべての要素に関数を適用し、その結果から新しいリストを生成します。</value>
+  </data>
+  <data name="ListMapSearchTags" xml:space="preserve">
+    <value>function;applied;over list;do to each</value>
+  </data>
+  <data name="ListReduceDescription" xml:space="preserve">
+    <value>各要素を累積した結果に組み合わせることで、リストを新しい値に削減します</value>
+  </data>
+  <data name="ListReduceSearchTags" xml:space="preserve">
+    <value>accumulate;aggregate;fold</value>
+  </data>
+  <data name="ListScanDescription" xml:space="preserve">
+    <value>各要素を累積した結果に組み合わせることでリストを新しい値に削減し、削減した値が連続するリストを作成します。</value>
+  </data>
+  <data name="ListScanSearchTags" xml:space="preserve">
+    <value>intermediate;maps;folds</value>
+  </data>
+  <data name="MapPortDataFxToolTip" xml:space="preserve">
+    <value>要素のマッピングに使用するプロシージャ</value>
+  </data>
+  <data name="MapPortDataListToolTip" xml:space="preserve">
+    <value>マッピングするリスト。</value>
+  </data>
+  <data name="MapPortDataResultToolTip" xml:space="preserve">
+    <value>マッピングされたリスト(タイプ: var[]..[])</value>
+  </data>
+  <data name="RangeDescription" xml:space="preserve">
+    <value>特定の範囲内で数値または文字のシーケンスを作成します</value>
+  </data>
+  <data name="SequenceDescription" xml:space="preserve">
+    <value>数値のシーケンスを作成します</value>
+  </data>
+  <data name="OrDescription" xml:space="preserve">
+    <value>ブール演算 OR: 入力のいずれかが True の場合に True を返します。いずれも True ではない場合は、False を返します。</value>
+  </data>
+  <data name="PortDataFalseBlockToolTip" xml:space="preserve">
+    <value>テストが false の場合に返されます</value>
+  </data>
+  <data name="PortDataImageToolTip" xml:space="preserve">
+    <value>視覚化用のイメージ</value>
+  </data>
+  <data name="PortDataListToolTip" xml:space="preserve">
+    <value>リスト</value>
+  </data>
+  <data name="PortDataOperandToolTip" xml:space="preserve">
+    <value>Boolean #</value>
+  </data>
+  <data name="PortDataResultToolTip" xml:space="preserve">
+    <value>生成された結果ブロック</value>
+  </data>
+  <data name="PortDataTestBlockToolTip" xml:space="preserve">
+    <value>ブール値テスト</value>
+  </data>
+  <data name="PortDataTrueBlockToolTip" xml:space="preserve">
+    <value>テストが true の場合に返されます</value>
+  </data>
+  <data name="PortDataVariableToolTip" xml:space="preserve">
+    <value>変数</value>
+  </data>
+  <data name="ReducePortDataReductorToolTip" xml:space="preserve">
+    <value>Reductor 関数: 削減する各リストから項目を 1 つ受け取り、現在の累積値を使用して、新しい累積値を算出します。</value>
+  </data>
+  <data name="ReducePortDataResultToolTip" xml:space="preserve">
+    <value>削減されたリスト(タイプ: var[]..[])</value>
+  </data>
+  <data name="ReducePortDataSeedToolTip" xml:space="preserve">
+    <value>開始累積値。Reductor 関数の最初の呼び出しに渡されます。</value>
+  </data>
+  <data name="ReplaceByConditionDescription" xml:space="preserve">
+    <value>元の項目が特定の条件を満たす場合に、項目を特定の別項目に置き換えます。</value>
+  </data>
+  <data name="ReplaceByConditionSearchTags" xml:space="preserve">
+    <value>predicate;override;replace if,</value>
+  </data>
+  <data name="ReplacePortDataConditionToolTip" xml:space="preserve">
+    <value>オブジェクトを置換するかどうかを判断するために使用する置換関数</value>
+  </data>
+  <data name="ReplacePortDataItemToolTip" xml:space="preserve">
+    <value>置き換えられる可能性のある項目</value>
+  </data>
+  <data name="ReplacePortDataReplaceWithToolTip" xml:space="preserve">
+    <value>置き換えるオブジェクト</value>
+  </data>
+  <data name="ReplacePortDataResultToolTip" xml:space="preserve">
+    <value>条件を使用して "replaceWith" で指定された項目で置き換えた項目または項目のリスト</value>
+  </data>
+  <data name="ScanPortDataReductorToolTip" xml:space="preserve">
+    <value>Reductor 関数: 削減する各リストから項目を 1 つ受け取り、現在の累積値を使用して、新しい累積値を算出します。</value>
+  </data>
+  <data name="ScanPortDataResultToolTip" xml:space="preserve">
+    <value>スキャンされたリスト(タイプ: var[]..[])</value>
+  </data>
+  <data name="ScanPortDataSeedToolTip" xml:space="preserve">
+    <value>開始累積値。Reductor 関数の最初の呼び出しに渡されます。</value>
+  </data>
+  <data name="ScopeIfDescription" xml:space="preserve">
+    <value>テスト入力でどのブール値を切り替えるかに応じて、True または False のいずれかの入力の結果を返します。単一の分岐のみの実行を必要とする反復処理をサポートします。True の分岐と False の分岐が分離されており、相互に作用しないことが重要です。</value>
+  </data>
+  <data name="SelectionPortDataResultToolTip" xml:space="preserve">
+    <value>選択した要素。</value>
+  </data>
+  <data name="StringfromArrayDescription" xml:space="preserve">
+    <value>Converts an array to a string representation</value>
+  </data>
+  <data name="StringfromObjectDescription" xml:space="preserve">
+    <value>オブジェクトを文字列表現に変換します</value>
+  </data>
+  <data name="StringInputNodeDescription" xml:space="preserve">
+    <value>文字列を作成します</value>
+  </data>
+  <data name="WatchDescription" xml:space="preserve">
+    <value>ノードの出力を可視化します</value>
+  </data>
+  <data name="WatchImageDescription" xml:space="preserve">
+    <value>イメージをプレビューします</value>
+  </data>
+  <data name="WatchImageSearchTags" xml:space="preserve">
+    <value>image;inspect image;pixels;display;panel;watchimage;</value>
+  </data>
+  <data name="WatchNodeDescription" xml:space="preserve">
+    <value>ノードの出力を可視化します</value>
+  </data>
+  <data name="WatchPortDataInputToolTip" xml:space="preserve">
+    <value>出力を表示するノード</value>
+  </data>
+  <data name="WatchPortDataResultToolTip" xml:space="preserve">
+    <value>ノードの出力</value>
+  </data>
+  <data name="WatchSearchTags" xml:space="preserve">
+    <value>print;output;display</value>
+  </data>
+  <data name="WebRequestDescription" xml:space="preserve">
+    <value>Returns the contents of a webpage from the given URL as a string</value>
+  </data>
+  <data name="WebRequestPortDataResultToolTip" xml:space="preserve">
+    <value>Web リクエストのコンテンツ(文字列)。</value>
+  </data>
+  <data name="WebRequestPortDataUrlToolTip" xml:space="preserve">
+    <value>Web リクエストの URL (文字列)。</value>
+  </data>
+  <data name="WatchNodeSearchTags" xml:space="preserve">
+    <value>print;output;disply;panel;inspect;debug</value>
+  </data>
+  <data name="ConversionNodeDescription" xml:space="preserve">
+    <value>計測単位を変換します。</value>
+  </data>
+  <data name="SelectFromComboBoxToolTip" xml:space="preserve">
+    <value>これは Revit の表示単位の設定です</value>
+  </data>
+  <data name="ListCreateSearchTags" xml:space="preserve">
+    <value>entwine;listcreate,newlist;makelist;list;</value>
+  </data>
+  <data name="DoubleSliderSearchTags" xml:space="preserve">
+    <value>double;number;float;integer;slider;numberslider;</value>
+  </data>
+  <data name="DynamoConvertSearchTags" xml:space="preserve">
+    <value>Convert;Units;Length;Area;Volume;convertbetweenunits;</value>
+  </data>
+  <data name="ListCreateInPortToolTip" xml:space="preserve">
+    <value>項目インデックス番号 #{0}</value>
+  </data>
+  <data name="SelectionNodeNothingSelected" xml:space="preserve">
+    <value>何も選択されていません。</value>
+  </data>
+  <data name="SelectionNodeSugestion" xml:space="preserve">
+    <value>モデル内の項目を選択します。</value>
+  </data>
+  <data name="UnitNodeFromPortTooltip" xml:space="preserve">
+    <value>変換する数値。</value>
+  </data>
+  <data name="UnitNodeToPortToolTip" xml:space="preserve">
+    <value>変換した数値。</value>
+  </data>
+  <data name="DateTimeDescription" xml:space="preserve">
+    <value>書式化された日付と時刻の文字列から dateTime オブジェクトを作成します。日付と時刻は「April 12, 1977 12:00 PM」の書式で指定する必要があります</value>
+  </data>
+  <data name="ColorRangeSearchTags" xml:space="preserve">
+    <value>colorrange;</value>
+  </data>
+  <data name="DirectoryPathSearchTags" xml:space="preserve">
+    <value>directorypath;filepath;</value>
+  </data>
+  <data name="FilePathSearchTags" xml:space="preserve">
+    <value>filepath;</value>
+  </data>
+  <data name="IntegerSliderSearchTags" xml:space="preserve">
+    <value>integerslider;</value>
+  </data>
+  <data name="RangeSearchTags" xml:space="preserve">
+    <value>numberrange;numbersequence;</value>
+  </data>
+  <data name="SequenceSearchTags" xml:space="preserve">
+    <value>numbersequence;</value>
+  </data>
+  <data name="SelectionEdgeOutputPortName" xml:space="preserve">
+    <value>曲線</value>
+  </data>
+  <data name="SelectionEdgesOutputPortName" xml:space="preserve">
+    <value>曲線</value>
+  </data>
+  <data name="SelectionElementOutputPortName" xml:space="preserve">
+    <value>要素</value>
+  </data>
+  <data name="SelectionElementsOutputPortName" xml:space="preserve">
+    <value>要素</value>
+  </data>
+  <data name="SelectionFaceOutputPortName" xml:space="preserve">
+    <value>サーフェス</value>
+  </data>
+  <data name="SelectionFacesOutputPortName" xml:space="preserve">
+    <value>サーフェス</value>
+  </data>
+  <data name="SelectionPointOutputPortName" xml:space="preserve">
+    <value>点</value>
+  </data>
+  <data name="SelectionPointsOutputPortName" xml:space="preserve">
+    <value>点</value>
+  </data>
+  <data name="NumberNodeInputMustBeNumeric" xml:space="preserve">
+    <value>数値を入力する必要があります。</value>
+  </data>
+  <data name="ColorPaletteDescription" xml:space="preserve">
+    <value>パレットから色を選択します</value>
+  </data>
+  <data name="ColorPaletteSearchTags" xml:space="preserve">
+    <value>color</value>
+  </data>
+  <data name="EqualsWithToleranceDescription" xml:space="preserve">
+    <value>特定の許容範囲で x と y が等しい場合に True を返します</value>
+  </data>
+  <data name="EqualsWithToleranceLhsRhsTooltip" xml:space="preserve">
+    <value>整数値または倍精度値</value>
+  </data>
+  <data name="EqualsWithToleranceOutportTooltip" xml:space="preserve">
+    <value>等価チェックの結果</value>
+  </data>
+  <data name="EqualsWithToleranceSearchTags" xml:space="preserve">
+    <value>equals;tolerance</value>
+  </data>
+  <data name="EqualsWithToleranceTooltip" xml:space="preserve">
+    <value>等価チェックで使用可能な許容差
+既定値: {0}</value>
+  </data>
+  <data name="DirectoryPathOutputDescription" xml:space="preserve">
+    <value>フォルダ パス</value>
+  </data>
+  <data name="FilePathOutputDescription" xml:space="preserve">
+    <value>ファイル パス</value>
+  </data>
+  <data name="IFNodeWarningMessage" xml:space="preserve">
+    <value>このノードは更新され、Dynamo の今後のバージョンで削除されます。既存の動作は保持されますが、新しいバージョンでは空のリスト、NULL 値、および長さの異なる入力がサポートされるようになりました。この改善された動作を使用する場合は、このノードを置き換えてください。</value>
+  </data>
+  <data name="CustomSelectionSearchTags" xml:space="preserve">
+    <value>dropdown;custom;custom dropdown;enum;custom enum</value>
+  </data>
+  <data name="CustomSelectionNodeDescription" xml:space="preserve">
+    <value>カスタマイズ可能な値を含むドロップダウン メニュー。</value>
+  </data>
+  <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
+    <value>は使用されなくなりました。新しい Convert Units ノードを使用してください。</value>
+  </data>
+  <data name="IntegerSliderInfoMessage" xml:space="preserve">
+    <value>入力された値は int64 の範囲にありません。</value>
+  </data>
+  <data name="CustomSelectionOutputDescription" xml:space="preserve">
+    <value>選択した値</value>
+  </data>
+  <data name="TooltipTextAction" xml:space="preserve">
+    <value>アクションを実行するノード</value>
+  </data>
+  <data name="TooltipTextCreate" xml:space="preserve">
+    <value>データを作成するノード</value>
+  </data>
+  <data name="TooltipTextQuery" xml:space="preserve">
+    <value>データをクエリーするノード</value>
+  </data>
+  <data name="RememberDescription" xml:space="preserve">
+    <value>このノードを通過するデータを Dynamo ファイルに保存します。入力が null の場合は、保存されたデータを返します。</value>
+  </data>
+  <data name="RememberInputToolTip" xml:space="preserve">
+    <value>サンプリングしてファイルに保存するデータ。</value>
+  </data>
+  <data name="RememberOuputToolTip" xml:space="preserve">
+    <value>データ</value>
+  </data>
+  <data name="GateDescription" xml:space="preserve">
+    <value>このノードを通過して下流ノードにデータが渡されるのをブロックします。ノードは、ノード値が Open に設定されている場合にのみ入力データを返します。
+
+ジェネレーティブ デザイン ワークフローでは、このノードを使用して、Revit に要素を配置するノードの動作をコントロールおよびブロックする必要があります。</value>
+  </data>
+  <data name="GateInPortToolTip" xml:space="preserve">
+    <value>ゲート付きコントロールを使用して下流ノードに渡すデータです。</value>
+  </data>
+  <data name="GateOutPortToolTip" xml:space="preserve">
+    <value>データ</value>
+  </data>
+  <data name="GateSearchTags" xml:space="preserve">
+    <value>gate;stop;data</value>
+  </data>
+  <data name="DefineDataDescription" xml:space="preserve">
+    <value>入力のデータ タイプを検証し、返します</value>
+  </data>
+  <data name="DefineDataInputTooltip" xml:space="preserve">
+    <value>検証する入力データです。許可される型のリストについては、ドロップダウンを参照してください</value>
+  </data>
+  <data name="DefineDataOutputTooltip" xml:space="preserve">
+    <value>検証されたデータ</value>
+  </data>
+  <data name="DefineDataDisplayValueMessage" xml:space="preserve">
+    <value>型を選択</value>
+  </data>
+  <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
+    <value>数値の書式指定子の詳細については、拡張ノードのヘルプを参照してください。
+既定値: G</value>
+  </data>
+  <data name="CurveMapperCountInputPortName" xml:space="preserve">
+    <value>count</value>
+  </data>
+  <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
+    <value>Number of values to generate.
+
+int</value>
+  </data>
+  <data name="CurveMapperDescription" xml:space="preserve">
+    <value>Redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+  </data>
+  <data name="CurveMapperSearchTags" xml:space="preserve">
+    <value>graph;curve;mapper;math</value>
+  </data>
+  <data name="CurveMapperWarningMessage" xml:space="preserve">
+    <value>The provided original values cannot be redistributed using the curve equation.</value>
+  </data>
+  <data name="CurveMapperXMaxLimitInputPortName" xml:space="preserve">
+    <value>x-MaxLimit</value>
+  </data>
+  <data name="CurveMapperXMaxLimitInputPortToolTip" xml:space="preserve">
+    <value>Maximum value for the X-axis domain.
+
+double</value>
+  </data>
+  <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
+    <value>Minimum value for the X-axis domain.
+
+double</value>
+  </data>
+  <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
+    <value>Maximum value for the Y-axis domain.
+
+double</value>
+  </data>
+  <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
+    <value>Minimum value for the Y-axis domain.
+
+double</value>
+  </data>
+  <data name="CurveMapperXMinLimitInputPortName" xml:space="preserve">
+    <value>x-MinLimit</value>
+  </data>
+  <data name="CurveMapperYMaxLimitInputPortName" xml:space="preserve">
+    <value>y-MaxLimit</value>
+  </data>
+  <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
+    <value>y-MinLimit</value>
+  </data>
+  <data name="CurveMapperXValuesOutputPortName" xml:space="preserve">
+    <value>x-Values</value>
+  </data>
+  <data name="CurveMapperXValuesOutputPortToolTip" xml:space="preserve">
+    <value>X values derived from the curve.
+
+double[]</value>
+  </data>
+  <data name="CurveMapperYValuesOutputPortName" xml:space="preserve">
+    <value>y-Values</value>
+  </data>
+  <data name="CurveMapperYValuesOutputPortToolTip" xml:space="preserve">
+    <value>Y values derived from the curve.
+
+double[]</value>
+  </data>
+</root>

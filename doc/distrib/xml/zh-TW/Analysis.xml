@@ -1,0 +1,153 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Analysis</name>
+    </assembly>
+    <members>
+        <member name="T:Analysis.AnalysisResources">
+            <summary>一種強型別資源類別，用於查找本土化的字串等等。</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.ResourceManager">
+            <summary>傳回此類別所使用的已快取 ResourceManager 例證。</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.Culture">
+            <summary>為使用此強類型資源類別查找的所有資源，
+              取代目前執行緒的 CurrentUICulture 性質。</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyColorsMessage">
+            <summary>查找類似於「沒有指定顏色。」的本土化字串。</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyPointsMessage">
+            <summary>查找類似於「沒有指定點。」的本土化字串。</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyUVsMessage">
+            <summary>查找類似於「沒有指定 UV。」的本土化字串。</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyValuesMessage">
+            <summary>查找類似於「沒有指定值。」的本土化字串。</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.InputsNotEquivalentMessage">
+            <summary>查找類似於「您必須提供相同數目的點和值。」的本土化字串。</summary>
+        </member>
+        <member name="P:Analysis.IStructuredData`2.ValueLocations">
+            <summary>計算位置的集合。</summary>
+        </member>
+        <member name="P:Analysis.IStructuredData`2.Values">
+            <summary>對應於每個位置的值清單。</summary>
+        </member>
+        <member name="P:Analysis.ISurfaceData`2.Surface">
+            <summary>分析曲面。</summary>
+        </member>
+        <member name="P:Analysis.ICurveData`2.Curve">
+            <summary>分析曲線。</summary>
+        </member>
+        <member name="T:Analysis.IAnalysisModel`2">
+            <summary>分析模型。</summary>
+            <typeparam name="TLocation">The analysis location type. (i.e. UV, Point)</typeparam>
+            <typeparam name="TValue">The analysis return type. (i.e. double, vector, SIUnit)</typeparam>
+        </member>
+        <member name="M:Analysis.Label.ByPointAndString(Autodesk.DesignScript.Geometry.Point,System.String)">
+            <summary>為指定點物件和字串標示傳回標示物件。</summary>
+            <param name="point"/>
+            <param name="label"/>
+            <returns/>
+        </member>
+        <member name="T:Analysis.PointData">
+            <summary>用於儲存結構點分析資料的類別。</summary>
+        </member>
+        <member name="P:Analysis.PointData.ValueLocations">
+            <summary>點清單。</summary>
+        </member>
+        <member name="P:Analysis.PointData.Values">
+            <summary>倍精度值清單的字典。</summary>
+        </member>
+        <member name="M:Analysis.PointData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{System.Double})">
+            <summary>建立 PointAnalysisData 物件。</summary>
+            <param name="points">點清單。</param>
+            <param name="values">倍精度值清單。</param>
+        </member>
+        <member name="T:Analysis.Properties.Resources">
+            <summary>一種強型別資源類別，用於查找本土化的字串，等等。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ResourceManager">
+            <summary>傳回此類別所使用的已快取 ResourceManager 例證。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.Culture">
+            <summary>為使用此強類型資源類別查找的所有資源，
+              取代目前執行緒的 CurrentUICulture 性質。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ByPointsAndValueObsolete">
+            <summary>查找類似於「使用點節點和號碼節點，作為之前使用 PointData 節點之節點的直接輸入」的本土化字串。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.BySurfacePointObsolete">
+            <summary>查找類似於「使用曲面和 UV 節點，作為之前使用 PointData 節點之節點的直接輸入」的本土化字串。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.BySurfacePointsAndValues">
+            <summary>查找類似於「使用曲面、UV 和號碼節點，作為之前使用 PointData 節點之節點的直接輸入」的本土化字串。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.SurfaceObsolete">
+            <summary>查找類似於「使用可在圖表中其他位置取得的曲面」的本土化字串。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueLocationObsolete">
+            <summary>查找類似於「使用可在圖表中其他位置取得的點」的本土化字串。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueLocationsObsolete">
+            <summary>查找類似於「使用可在圖表中其他位置取得的 UV 位置。」的本土化字串。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValuesObsolete">
+            <summary>查找類似於「使用由節點提供的值進行分析。」的本土化字串。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueSurfaceObsolete">
+            <summary>查找類似於「使用由節點提供的值進行分析」的本土化字串。</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.VectorValueObsolete">
+            <summary>查找類似於「使用向量節點和號碼節點，作為之前使用 PointData 節點之節點的直接輸入」的本土化字串。</summary>
+        </member>
+        <member name="T:Analysis.SurfaceData">
+            <summary>用於儲存結構化曲面分析資料的類別。</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.Surface">
+            <summary>包含位置的曲面。</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.ValueLocations">
+            <summary>曲面上的 UV 位置清單。</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.Values">
+            <summary>倍精度實數清單的字典。</summary>
+        </member>
+        <member name="M:Analysis.SurfaceData.BySurfaceAndPoints(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
+            <summary>建立沒有值的 SurfaceData 物件。</summary>
+            <param name="surface">包含位置的曲面。</param>
+            <param name="uvs">曲面上的 UV 位置清單。</param>
+            <returns/>
+        </member>
+        <member name="M:Analysis.SurfaceData.BySurfacePointsAndValues(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},System.Collections.Generic.IList{System.Double})">
+            <summary>建立 SurfaceData 物件。</summary>
+            <param name="surface">包含位置的曲面。</param>
+            <param name="uvs">曲面上的 UV 位置清單。</param>
+            <param name="values">倍精度值清單。</param>
+        </member>
+        <member name="M:Analysis.AnalysisExtensions.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
+            <summary>參考兩個 UV 類型的平面，如其之間差異小於 1.0e-6，將傳回 True，否則傳回 False。</summary>
+            <param name="a"/>
+            <param name="b"/>
+            <returns/>
+        </member>
+        <member name="T:Analysis.Utils.ValueLocation`1">
+            <summary>用於儲存位置中值的類別。</summary>
+        </member>
+        <member name="T:Analysis.VectorData">
+            <summary>用於儲存結構化向量分析資料的類別。</summary>
+        </member>
+        <member name="P:Analysis.VectorData.ValueLocations">
+            <summary>計算位置清單。</summary>
+        </member>
+        <member name="P:Analysis.VectorData.Values">
+            <summary>結果字典。</summary>
+        </member>
+        <member name="M:Analysis.VectorData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.Vector})">
+            <summary>建立 VectorAnalysisData 物件。</summary>
+            <param name="points">點清單。</param>
+            <param name="values">向量值清單。</param>
+        </member>
+    </members>
+</doc>

@@ -1,0 +1,80 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>FFITarget</name>
+    </assembly>
+    <members>
+        <member name="T:FFITarget.ClassFunctionality">
+            <summary>Tests for basic functional testing of FFI implementations</summary>
+        </member>
+        <member name="T:FFITarget.ClassFunctionalityMirror">
+            <summary>A class that contains the same IntVal member as ClassFunctionality</summary>
+        </member>
+        <member name="T:FFITarget.CodeCompletionClass">
+            <summary>Tests for code completion in codeblock node</summary>
+        </member>
+        <member name="T:FFITarget.InstanceableClass">
+            <summary>A test class that creates a pyramid using instancing.</summary>
+        </member>
+        <member name="T:FFITarget.InstanceableLineClass">
+            <summary>A test class that creates a pyramid using instancing.</summary>
+        </member>
+        <member name="T:FFITarget.InstanceableClass_NoInstanceData">
+            <summary>This class is instanceable, but it returns false for instanceInfoAvailable so it will use regular tessellation.</summary>
+        </member>
+        <member name="T:FFITarget.ElementIDLifecycleManager`1">
+            <summary>Class to handle the lifetime of elements from their IDs</summary>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.GetInstance">
+            <summary>Returns the LifecycleManager for the specific type
+            WARNING: This is only a singleton for a given TypeArg</summary>
+            <returns/>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.RegisterAsssociation(`0,System.Object)">
+            <summary>Register a new dependency between an element ID and a wrapper</summary>
+            <param name="elementID"/>
+            <param name="wrapper"/>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.UnRegisterAssociation(`0,System.Object)">
+            <summary>Remove an association between an element ID and</summary>
+            <param name="elementID"/>
+            <param name="wrapper"/>
+            <returns>The number of remaining associations</returns>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.GetRegisteredCount(`0)">
+            <summary>Returns the number of wrappers that are registered</summary>
+            <param name="id"/>
+            <returns/>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.IsRevitDeleted(`0)">
+            <summary>Checks whether an element has been deleted in Revit</summary>
+            <param name="id"/>
+            <returns/>
+        </member>
+        <member name="M:FFITarget.ElementIDLifecycleManager`1.NotifyOfRevitDeletion(`0)">
+            <summary>Set deletion state of Revit element</summary>
+            <param name="id">The element that needs to be deleted&gt;</param>
+        </member>
+        <member name="M:FFITarget.IncrementerTracedClass.#ctor(System.Int32)">
+            <summary>Note that x is a dummy var here that is intended to force replicated dispatch
+            it's not actually used</summary>
+            <param name="x"/>
+        </member>
+        <member name="M:FFITarget.IncrementerTracedClass.#ctor(System.Int32,System.Boolean)">
+            <summary>Note that x is a dummy var here that is intended to force replicated dispatch
+            it's not actually used</summary>
+            <param name="x">Dummy var used to force replicated dispatch</param>
+            <param name="failWithException">Fail dispatch with an exception rather than</param>
+        </member>
+        <member name="T:FFITarget.OverloadTarget">
+            <summary>Test target for overloaded methods</summary>
+        </member>
+        <member name="M:FFITarget.TestData.ReturnNestedDictionary">
+            <summary>Return nested dictionary.</summary>
+            <returns name="col">柱</returns>
+            <returns name="dict">词典</returns>
+            <returns name="num">数量</returns>
+            <returns name="wt">重量</returns>
+            <returns name="ok">中等</returns>
+        </member>
+    </members>
+</doc>

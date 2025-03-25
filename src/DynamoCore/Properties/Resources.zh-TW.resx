@@ -1,0 +1,899 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BuildSublistsDescription" xml:space="preserve">
+    <value>使用 DesignScript 範圍語法，從清單建置子清單。</value>
+  </data>
+  <data name="CodeBlockNodeDescription" xml:space="preserve">
+    <value>允許直接編寫 DesignScript 程式碼</value>
+  </data>
+  <data name="NumberNodeDescription" xml:space="preserve">
+    <value>建立一個數字。</value>
+  </data>
+  <data name="StringNodeDescription" xml:space="preserve">
+    <value>建立一個字串。</value>
+  </data>
+  <data name="FunctionNodeDescription" xml:space="preserve">
+    <value>DesignScript 內建函數</value>
+  </data>
+  <data name="CustomNodeDesciption" xml:space="preserve">
+    <value>自訂節點的例證</value>
+  </data>
+  <data name="ComposeFunctionNodeDescription" xml:space="preserve">
+    <value>將兩個單一參數函數組成一個函數。</value>
+  </data>
+  <data name="OutputNodeDescription" xml:space="preserve">
+    <value>函數輸出，與自訂節點搭配使用</value>
+  </data>
+  <data name="InputNodeDescription" xml:space="preserve">
+    <value>函數參數，與自訂節點搭配使用</value>
+  </data>
+  <data name="InputNodeSearchTags" xml:space="preserve">
+    <value>variable;argument;parameter</value>
+  </data>
+  <data name="ComposeFunctionPortDataFunctionToolTip" xml:space="preserve">
+    <value>函數</value>
+  </data>
+  <data name="ComposeFunctionPortDataResultToolTip" xml:space="preserve">
+    <value>構成函數：g(f(x))</value>
+  </data>
+  <data name="RangePortDataAmountToolTip" xml:space="preserve">
+    <value>順序中的數字或字母數量
+預設值: 10</value>
+  </data>
+  <data name="RangePortDataEndToolTip" xml:space="preserve">
+    <value>數字或字母順序結束於
+預設值：9</value>
+  </data>
+  <data name="RangePortDataSeqToolTip" xml:space="preserve">
+    <value>新清單，類型: var[]..[]</value>
+  </data>
+  <data name="RangePortDataStartToolTip" xml:space="preserve">
+    <value>數字或字母順序開始於
+預設值：0</value>
+  </data>
+  <data name="RangePortDataStepToolTip" xml:space="preserve">
+    <value>數字或字母之間的空間
+預設值：1</value>
+  </data>
+  <data name="PortDataParameterToolTip" xml:space="preserve">
+    <value>參數</value>
+  </data>
+  <data name="PortDataVariableToolTip" xml:space="preserve">
+    <value>變數</value>
+  </data>
+  <data name="SublistPortDataResultToolTip" xml:space="preserve">
+    <value>子清單。</value>
+  </data>
+  <data name="SublistsPortDataListToolTip" xml:space="preserve">
+    <value>要從中建立子清單的清單。</value>
+  </data>
+  <data name="SublistsPortDataOffsetToolTip" xml:space="preserve">
+    <value>要套用至子清單的偏移。範例：偏移為 1 的範圍 "0.. 2" 將產生子清單 {0,1,2}{1,2,3}{2,3,4}...</value>
+  </data>
+  <data name="PortDataFunctionOutputToolTip" xml:space="preserve">
+    <value>函數輸出</value>
+  </data>
+  <data name="PortDataInputToolTip" xml:space="preserve">
+    <value>輸入 #{0}</value>
+  </data>
+  <data name="PortDataOutputToolTip" xml:space="preserve">
+    <value>輸出 #{0}</value>
+  </data>
+  <data name="PortDataPathToFileToolTip" xml:space="preserve">
+    <value>檔案路徑</value>
+  </data>
+  <data name="PortDataReturnValueToolTip" xml:space="preserve">
+    <value>傳回值</value>
+  </data>
+  <data name="PortDataSymbolToolTip" xml:space="preserve">
+    <value>符號</value>
+  </data>
+  <data name="ButtonDownloadLastest" xml:space="preserve">
+    <value>下載最新版本</value>
+  </data>
+  <data name="052465" xml:space="preserve">
+    <value>Arrrrg，確定</value>
+  </data>
+  <data name="ButtonProcess" xml:space="preserve">
+    <value>無論如何都要繼續嗎？</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>取消</value>
+  </data>
+  <data name="CannotOpenFile" xml:space="preserve">
+    <value>無法開啟您的檔案</value>
+  </data>
+  <data name="DisplayEngineFailureMessageDescription" xml:space="preserve">
+    <value>提供 Dynamo 電源的虛擬機器內部遇到一些非預期的錯誤，可能非常難以處理。建議您立即儲存您的工作，並重新載入檔案。提供 Dynamo VM 新的租賃壽命，可能可以讓它感覺更好而更加順暢。
+
+如果您不介意，請傳送檔案給我們，這樣有助於我們更快修正這些問題。</value>
+  </data>
+  <data name="FileNotOpenedCorrectly" xml:space="preserve">
+    <value>您的檔案可能無法正確地開啟</value>
+  </data>
+  <data name="IncompatibleOfFileAndDynamo" xml:space="preserve">
+    <value>此版本的 Dynamo ({2}) 無法開啟您的檔案 '{0}' (版本為 '{1}')</value>
+  </data>
+  <data name="IncorrectVersionToOpenFile" xml:space="preserve">
+    <value>檔案 '{0}' 已建立在未來版本 '{1}' 中，而且可能無法在安裝的 Dynamo  '{2}' 版本中正確開啟</value>
+  </data>
+  <data name="SubmitBugToGithub" xml:space="preserve">
+    <value>將錯誤提交至 Github</value>
+  </data>
+  <data name="UnhandledExceptionInDynamoEngine" xml:space="preserve">
+    <value>Dynamo 引擎中未處理的異常狀況</value>
+  </data>
+  <data name="UsageReportingErrorMessage" xml:space="preserve">
+    <value>呃...
+ 很抱歉 - 我們嘗試儲存您的決策，但發生錯誤。決策可能尚未儲存。不應該發生這個狀況。請透過 GitHub 與我們聯繫，並將這項資訊傳送給我們。
+您也可以嘗試刪除 [FILEPATH]，然後再試一次。
+視您先前的選擇而定，分析可能仍在執行，如果您擔心，請考慮先不要使用 Dynamo，直到我們為您解決問題。
+對於發生這個狀況，我們深感抱歉。</value>
+  </data>
+  <data name="CouldNotLoadTypes" xml:space="preserve">
+    <value>無法載入類型。</value>
+  </data>
+  <data name="CreatingConnectorError" xml:space="preserve">
+    <value>錯誤: 無法在 {0} 與 {1} 之間建立連接器。</value>
+  </data>
+  <data name="DllLoadException" xml:space="preserve">
+    <value>DLL 載入例外：</value>
+  </data>
+  <data name="ElapsedWhenLoadingXml" xml:space="preserve">
+    <value>載入 XML 時經歷的 {0}。</value>
+  </data>
+  <data name="EvaluationCompleted" xml:space="preserve">
+    <value>已在 {0} 完成演算</value>
+  </data>
+  <data name="FailedToLoadHeader" xml:space="preserve">
+    <value>錯誤：{0} 中自訂節點的標頭無法載入。無法進行搜尋。</value>
+  </data>
+  <data name="FileBackUpLocation" xml:space="preserve">
+    <value>原始檔案 '{0}' 已備份在 '{1}'</value>
+  </data>
+  <data name="LoadingNodeDefinition" xml:space="preserve">
+    <value>正在從下列位置載入 "{0}" 的節點定義：{1}</value>
+  </data>
+  <data name="NodeProblemEncountered" xml:space="preserve">
+    <value>在準備執行時此節點發生問題。請洽詢節點建立者，並將此訊息提供給他們：</value>
+  </data>
+  <data name="OpeningHomeWorkspace" xml:space="preserve">
+    <value>開啟首頁工作區 {0}...</value>
+  </data>
+  <data name="OpenWorkbenchError" xml:space="preserve">
+    <value>開啟 Workbench 時發生錯誤。</value>
+  </data>
+  <data name="BadIdentifierSyntax" xml:space="preserve">
+    <value>不正確的識別碼語法："{0}"</value>
+  </data>
+  <data name="BadRangeSyntax" xml:space="preserve">
+    <value>不正確的範圍語法：格式不是 \"start..end[..(increment|#count)]\"</value>
+  </data>
+  <data name="CannotHave0Step" xml:space="preserve">
+    <value>無法有 0 個步驟。</value>
+  </data>
+  <data name="ClearingWorkflow" xml:space="preserve">
+    <value>正在清除工作流程...</value>
+  </data>
+  <data name="CouldNotCompressFile" xml:space="preserve">
+    <value>無法壓縮檔案。該檔案是否使用中？</value>
+  </data>
+  <data name="CouldNotGetLatestBuild" xml:space="preserve">
+    <value>無法取得 S3 的最新建置</value>
+  </data>
+  <data name="CouldNotGetUpdateData" xml:space="preserve">
+    <value>無法取得 {0} 的更新資料</value>
+  </data>
+  <data name="DulicatedPackage" xml:space="preserve">
+    <value>在 {1} 找到重複的套件，稱為 {0}。將忽略它。</value>
+  </data>
+  <data name="DynamoUpToDate" xml:space="preserve">
+    <value>Dynamo 是最新的。</value>
+  </data>
+  <data name="ExceptionEncountered" xml:space="preserve">
+    <value>掃描 {0} 中的套件目錄時發現異常狀況</value>
+  </data>
+  <data name="FailedToLoad" xml:space="preserve">
+    <value>無法載入 {0}\n，異常狀況：{1}</value>
+  </data>
+  <data name="FailedToLoadCustomNode" xml:space="preserve">
+    <value>無法載入自訂節點：{0}。將取代為代理自訂節點。</value>
+  </data>
+  <data name="FailedToSave" xml:space="preserve">
+    <value>無法儲存 {0}\n，異常狀況：{1}</value>
+  </data>
+  <data name="IdentifiersNotFound" xml:space="preserve">
+    <value>找不到識別碼。</value>
+  </data>
+  <data name="InvalidStartOrEndOfRange" xml:space="preserve">
+    <value>範圍的開始或結束大於清單中的可用元素數目。</value>
+  </data>
+  <data name="MalformedHeaderPackage" xml:space="preserve">
+    <value>{0} 包含一個具有錯誤標頭的套件。將忽略它。</value>
+  </data>
+  <data name="NoHeaderPackage" xml:space="preserve">
+    <value>{0} 包含一個沒有標頭的套件。將忽略它。</value>
+  </data>
+  <data name="PackageEmpty" xml:space="preserve">
+    <value>發現套件是空的且未安裝。</value>
+  </data>
+  <data name="PackageTooLarge" xml:space="preserve">
+    <value>套件太大！套件必須小於 15 MB！</value>
+  </data>
+  <data name="PathNotRegconizableAsStableOrDailyBuild" xml:space="preserve">
+    <value>指定的檔案路徑無法辨識為穩定或每日建置</value>
+  </data>
+  <data name="RangeEndCouldNotBeParsed" xml:space="preserve">
+    <value>無法剖析範圍終點。</value>
+  </data>
+  <data name="RangeOrApprIdentifierAlrUsed" xml:space="preserve">
+    <value>當範圍或近似識別字已用來指定計數時，無法在增量欄位上使用該範圍或近似識別字。</value>
+  </data>
+  <data name="RangeStepCouldNotBeParsed" xml:space="preserve">
+    <value>無法剖析範圍步驟。</value>
+  </data>
+  <data name="RangeValuesGreaterThanZero" xml:space="preserve">
+    <value>範圍值必須大於零。</value>
+  </data>
+  <data name="RequestingVersionUpdate" xml:space="preserve">
+    <value>正在請求版本更新資訊...</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>可用的更新：{0}</value>
+  </data>
+  <data name="UpdateDownloadComplete" xml:space="preserve">
+    <value>更新下載完成。</value>
+  </data>
+  <data name="UpdateDownloadProgress" xml:space="preserve">
+    <value>更新下載進度：{0}%</value>
+  </data>
+  <data name="UpdateDownloadStarted" xml:space="preserve">
+    <value>已啟動更新下載...</value>
+  </data>
+  <data name="WorkbenchNotOpen" xml:space="preserve">
+    <value>Workbench 無法開啟。</value>
+  </data>
+  <data name="CouldNotRepairOneNodeHoles" xml:space="preserve">
+    <value>無法修復 1 節點孔</value>
+  </data>
+  <data name="CustomNodeCouldNotBeInitialized" xml:space="preserve">
+    <value>無法初始化自訂節點 \"{0}\"。</value>
+  </data>
+  <data name="FailedToGetMirrorVariable" xml:space="preserve">
+    <value>無法取得變數的鏡射：{0}；原因：{1}。</value>
+  </data>
+  <data name="FailedToLoadType" xml:space="preserve">
+    <value>無法 {0} 載入類型從。類型為 {1}。</value>
+  </data>
+  <data name="OpenWorkspaceError" xml:space="preserve">
+    <value>開啟工作區時發生錯誤。</value>
+  </data>
+  <data name="UnableToCreateCustomNodeID" xml:space="preserve">
+    <value>無法建立自訂節點的例證，ID 為：\"</value>
+  </data>
+  <data name="BackUpOriginalFileMessage" xml:space="preserve">
+    <value>原始檔案 '{0}' 已備份在 '{1}'</value>
+  </data>
+  <data name="ClearingWorkSpace" xml:space="preserve">
+    <value>正在清除工作區...</value>
+  </data>
+  <data name="CodeBlockDescription" xml:space="preserve">
+    <value>允許直接編寫 DesignScript 程式碼</value>
+  </data>
+  <data name="DownloadLatestButton" xml:space="preserve">
+    <value>下載最新版本</value>
+  </data>
+  <data name="DuplicateMigrationTypeRegistered" xml:space="preserve">
+    <value>已對 {0} 註冊重複移轉類型</value>
+  </data>
+  <data name="FileCannotBeOpened" xml:space="preserve">
+    <value>無法開啟您的檔案。</value>
+  </data>
+  <data name="FutureFileDescription" xml:space="preserve">
+    <value>檔案 '{0}' 已建立在未來版本 '{1}' 中，而且可能無法在安裝的 Dynamo  '{2}' 版本中正確開啟</value>
+  </data>
+  <data name="FutureFileSummary" xml:space="preserve">
+    <value>您的檔案可能無法正確地開啟</value>
+  </data>
+  <data name="FutureFileTitle" xml:space="preserve">
+    <value>未來檔案</value>
+  </data>
+  <data name="GoodByeLog" xml:space="preserve">
+    <value>再見</value>
+  </data>
+  <data name="InvalidLibraryFormat" xml:space="preserve">
+    <value>無效的資源庫格式。</value>
+  </data>
+  <data name="LibraryBuildError" xml:space="preserve">
+    <value>資源庫的建置錯誤：{0}</value>
+  </data>
+  <data name="LibraryHasBeenLoaded" xml:space="preserve">
+    <value>已載入資源庫 {0}。</value>
+  </data>
+  <data name="LibraryIsDumped" xml:space="preserve">
+    <value>資源庫已傾印到 \"{0}\"。</value>
+  </data>
+  <data name="LibraryPathCannotBeFound" xml:space="preserve">
+    <value>找不到資源庫路徑：{0}。</value>
+  </data>
+  <data name="NewNoteString" xml:space="preserve">
+    <value>新註記</value>
+  </data>
+  <data name="ObsoleteFileDescription" xml:space="preserve">
+    <value>此版本的 Dynamo ({2}) 無法開啟您的檔案 '{0}' (版本為 '{1}')</value>
+  </data>
+  <data name="ObsoleteFileTitle" xml:space="preserve">
+    <value>舊檔案</value>
+  </data>
+  <data name="OKButton" xml:space="preserve">
+    <value>確定</value>
+  </data>
+  <data name="ProceedButton" xml:space="preserve">
+    <value>無論如何都要繼續嗎？</value>
+  </data>
+  <data name="SavingInProgress" xml:space="preserve">
+    <value>正在儲存 {0}...</value>
+  </data>
+  <data name="SubmitBugButton" xml:space="preserve">
+    <value>將錯誤提交至 Github</value>
+  </data>
+  <data name="ToolTipForTempVar" xml:space="preserve">
+    <value>陳述式輸出</value>
+  </data>
+  <data name="ToolTipReturnValue" xml:space="preserve">
+    <value>傳回值</value>
+  </data>
+  <data name="UnhandledExceptionSummary" xml:space="preserve">
+    <value>Dynamo 引擎中未處理的異常狀況</value>
+  </data>
+  <data name="UnhandledExceptionTitle" xml:space="preserve">
+    <value>未處理的異常狀況</value>
+  </data>
+  <data name="UnknownVersion" xml:space="preserve">
+    <value>不明</value>
+  </data>
+  <data name="WelcomeMessage" xml:space="preserve">
+    <value>歡迎使用 Dynamo！</value>
+  </data>
+  <data name="ToolTipFunctionOutput" xml:space="preserve">
+    <value>函數輸出</value>
+  </data>
+  <data name="ToolTipInput" xml:space="preserve">
+    <value>輸入 #</value>
+  </data>
+  <data name="ToolTipOutput" xml:space="preserve">
+    <value>輸出 #</value>
+  </data>
+  <data name="ToolTipOutputData" xml:space="preserve">
+    <value>輸出資料</value>
+  </data>
+  <data name="WarningCannotFindType" xml:space="preserve">
+    <value>找不到類型 '{0}'</value>
+  </data>
+  <data name="WarningInvalidInput" xml:space="preserve">
+    <value>無效的輸入。
+
+參數名稱應以字母字元開頭。 您可以指定其類型與預設值。 例如 ，
+
+輸入：var [].. []
+值：bool = false</value>
+  </data>
+  <data name="DSFunctionNodeDescription" xml:space="preserve">
+    <value>DesignScript 內建函數</value>
+  </data>
+  <data name="DummyNodeDescription" xml:space="preserve">
+    <value>這是舊型節點</value>
+  </data>
+  <data name="FunctionDescription" xml:space="preserve">
+    <value>自訂節點的例證</value>
+  </data>
+  <data name="SymbolNodeDescription" xml:space="preserve">
+    <value>函數參數，與自訂節點共同使用。
+
+您可以指定類型和預設值參數。例如 ，
+
+input : var[]..[]
+value : bool = false</value>
+  </data>
+  <data name="CustomNodeNotLoaded" xml:space="preserve">
+    <value>未載入自訂節點定義！href=CustomNodeNotLoaded.html</value>
+  </data>
+  <data name="RunTypeToolTipAutomatically" xml:space="preserve">
+    <value>每當更新圖表的輸入時，即會執行</value>
+  </data>
+  <data name="RunTypeToolTipManually" xml:space="preserve">
+    <value>按一下「執行」按鈕時執行。</value>
+  </data>
+  <data name="RunTypeToolTipPeriodicallyDisabled" xml:space="preserve">
+    <value>只在圖表中有支援定期更新的節點時，才能使用定期執行。</value>
+  </data>
+  <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
+    <value>以指定的間隔執行。</value>
+  </data>
+  <data name="HeaderAction" xml:space="preserve">
+    <value>動作</value>
+  </data>
+  <data name="HeaderCreate" xml:space="preserve">
+    <value>建立</value>
+  </data>
+  <data name="HeaderQuery" xml:space="preserve">
+    <value>查詢</value>
+  </data>
+  <data name="InputLabel" xml:space="preserve">
+    <value>輸入</value>
+  </data>
+  <data name="MoreButtonTextFormat" xml:space="preserve">
+    <value>展示更多 ({0})</value>
+  </data>
+  <data name="NoDescriptionAvailable" xml:space="preserve">
+    <value>無可用的描述</value>
+  </data>
+  <data name="OutputLabel" xml:space="preserve">
+    <value>輸出</value>
+  </data>
+  <data name="TopResult" xml:space="preserve">
+    <value>頂部結果</value>
+  </data>
+  <data name="LocateInDisk" xml:space="preserve">
+    <value>在磁碟中尋找。</value>
+  </data>
+  <data name="MoveLabel" xml:space="preserve">
+    <value>移動</value>
+  </data>
+  <data name="NoMatchesFound" xml:space="preserve">
+    <value>找不到相符項</value>
+  </data>
+  <data name="RemoveLabel" xml:space="preserve">
+    <value>移除</value>
+  </data>
+  <data name="IncorrectlyFormattedNodeLibraryDisplay" xml:space="preserve">
+    <value>這是未正確格式化的資源庫名稱：</value>
+  </data>
+  <data name="IncorrectlyFormattedNodeLibraryWarning" xml:space="preserve">
+    <value>發現未正確格式化的套件節點資源庫，這可能會導致套件組合未被載入！</value>
+  </data>
+  <data name="NothingIsSelectedWarning" xml:space="preserve">
+    <value>未選取任何項目。href=NothingIsSelectedWarning.html</value>
+  </data>
+  <data name="SearchTextBlockText" xml:space="preserve">
+    <value>搜尋</value>
+  </data>
+  <data name="AutocompleteSearchTextBlockText" xml:space="preserve">
+    <value>搜尋自動完成結果</value>
+  </data>
+  <data name="Autocomplete" xml:space="preserve">
+    <value>自動完成</value>
+  </data>
+  <data name="WatermarkLabelText" xml:space="preserve">
+    <value>在這裡輸入程式碼</value>
+  </data>
+  <data name="DefaultValue" xml:space="preserve">
+    <value>預設值</value>
+  </data>
+  <data name="DefaultValueDisabled" xml:space="preserve">
+    <value>(已停用)</value>
+  </data>
+  <data name="SymbolSearchTags" xml:space="preserve">
+    <value>variable;argument;parameter</value>
+  </data>
+  <data name="DefaultCustomNodeCategory" xml:space="preserve">
+    <value>自訂節點</value>
+  </data>
+  <data name="InvalidCustomNodeFolderWarning" xml:space="preserve">
+    <value>'{0}' 資料夾不存在</value>
+  </data>
+  <data name="CodeBlockSearchTags" xml:space="preserve">
+    <value>codeblock;</value>
+  </data>
+  <data name="DirectoryNotFound" xml:space="preserve">
+    <value>找不到目錄：{0}</value>
+  </data>
+  <data name="CustomNodeFolderLoadFailure" xml:space="preserve">
+    <value>無法載入自訂節點目錄。您是否有權限可以存取 {0}？</value>
+  </data>
+  <data name="PortsNameDescriptionDoNotEqualWarningMessage" xml:space="preserve">
+    <value>連接埠名稱的數量不等於連接埠描述的數量。</value>
+  </data>
+  <data name="DescriptionResource1" xml:space="preserve">
+    <value>某些描述</value>
+  </data>
+  <data name="ResourcePropertyIsNotStringTypeMessage" xml:space="preserve">
+    <value>資源性質不是字串類型</value>
+  </data>
+  <data name="ResourceTypeDoesNotHavePropertyMessage" xml:space="preserve">
+    <value>資源類型沒有性質</value>
+  </data>
+  <data name="WarningInvalidOutput" xml:space="preserve">
+    <value>在輸出節點中僅允許註解和單一變數。</value>
+  </data>
+  <data name="FailedToLoadLibrary" xml:space="preserve">
+    <value>無法載入資源庫：{0}</value>
+  </data>
+  <data name="NoneString" xml:space="preserve">
+    <value>無</value>
+  </data>
+  <data name="DefaultHomeWorkspaceName" xml:space="preserve">
+    <value>主視圖</value>
+  </data>
+  <data name="UnresolvedNodesWarningShortMessage" xml:space="preserve">
+    <value>圖表有未解決的節點，無法儲存。</value>
+  </data>
+  <data name="UnresolvedNodesWarningTitle" xml:space="preserve">
+    <value>無法儲存圖表</value>
+  </data>
+  <data name="UnresolvedNodesWarningMessage" xml:space="preserve">
+    <value>這可能是因為缺少套件、不相容的套件版本或缺少主程式。如果您「另存新檔」，將會移除未解決的節點。
+
+請解決或移除未解決的節點，然後再試一次。</value>
+  </data>
+  <data name="CodeBlockTempIdentifierOutputLabel" xml:space="preserve">
+    <value>表示式在第 {0} 行的值</value>
+  </data>
+  <data name="InvalidInputSymbolCustomNodeWarning" xml:space="preserve">
+    <value>此自訂節點包含無效的輸入。請先修正輸入後再儲存自訂節點。</value>
+  </data>
+  <data name="InvalidInputSymbolErrorMessage" xml:space="preserve">
+    <value>此輸入符號目前無效，必須先修正，才能儲存。有效輸入的形式如下:
+
+名稱 : 類型 = 預設值
+
+輸入名稱必須是有效的變數名稱，不含空格。輸入類型與預設值是可選的。</value>
+  </data>
+  <data name="InvalidInputSymbolWarningMessage" xml:space="preserve">
+    <value>此自訂節點目前包含某些無效的輸入，必須先修正輸入才能儲存。如果使用「另存」儲存自訂節點，無效的輸入將會轉換為一般輸入。有效輸入的形式如下:
+
+名稱 : 類型 = 預設值
+
+輸入名稱必須是有效的變數名稱，不含空格。輸入類型與預設值是可選的。</value>
+  </data>
+  <data name="InvalidInputSymbolWarningShortMessage" xml:space="preserve">
+    <value>必須先移除或修正無效的輸入，才能儲存此自訂節點。</value>
+  </data>
+  <data name="InvalidInputSymbolWarningTitle" xml:space="preserve">
+    <value>自訂節點包含無效的輸入，因此無法儲存。</value>
+  </data>
+  <data name="PythonTemplateAppData" xml:space="preserve">
+    <value>從 AppData 載入的 Python 樣板</value>
+  </data>
+  <data name="PythonTemplateDefaultFile" xml:space="preserve">
+    <value>設定為預設的 Python 樣板。</value>
+  </data>
+  <data name="PythonTemplateDefinedByHost" xml:space="preserve">
+    <value>主體整合程式設定的 Python 樣板</value>
+  </data>
+  <data name="PythonTemplateUserFile" xml:space="preserve">
+    <value>從 DynamoSettings.xml 路徑載入的 Python 樣板</value>
+  </data>
+  <data name="MessageCustomNodePackageFailedToLoad" xml:space="preserve">
+    <value>無法載入 {1}。
+安裝它將會與已經在 {0} (目前已載入) 的一個或多個節點定義衝突。
+若要安裝 {1}，Dynamo 必須先解除安裝 {0}。
+請重新啟動 Dynamo 以完成解除安裝。</value>
+  </data>
+  <data name="FunctionDefinitionOverwrittenMessage" xml:space="preserve">
+    <value>嘗試載入套件 {1} 載入的 customNode {0}，但是名為 {2} 的舊定義卻沒有相關聯的套件。新的 customNode 定義已載入，但 Dynamo 可能處於不穩定的狀態，請避免載入有該 ID 的多個自訂節點。</value>
+  </data>
+  <data name="Preview3DOutageTitle" xml:space="preserve">
+    <value>3D 預覽已停用</value>
+  </data>
+  <data name="MissingXmlTagConsoleMessage" xml:space="preserve">
+    <value>{0} 缺少某些 XML 文件標籤。</value>
+  </data>
+  <data name="FailedToHandleReadyEvent" xml:space="preserve">
+    <value>無法呼叫延伸中的 Ready(): </value>
+  </data>
+  <data name="DuplicatedModelGuidError" xml:space="preserve">
+    <value>貼圖已包含有此 ID 的模型，目前正被重新序列化的工作區的 ID 必須是唯一的: {0}</value>
+  </data>
+  <data name="ArgumentNullException" xml:space="preserve">
+    <value>值不能為空值。
+參數名稱: {0}</value>
+  </data>
+  <data name="ModelNotFoundError" xml:space="preserve">
+    <value>UpdateModelValue: 找不到模型</value>
+  </data>
+  <data name="PackageManagerPackageAlreadyExists" xml:space="preserve">
+    <value>具有給定名稱的套件已存在。</value>
+  </data>
+  <data name="PackageManagerUserIsNotAMaintainer" xml:space="preserve">
+    <value>目前使用者「{0}」不是「{1}」套件的維護者。</value>
+  </data>
+  <data name="PackageManagerPackagePreviewCounter" xml:space="preserve">
+    <value>{0} files and {1} folders will be created.</value>
+  </data>
+  <data name="PackageManagerPackageSelectCounter" xml:space="preserve">
+    <value>{0} files and {1} folders loaded.</value>
+  </data>
+  <data name="DuplicatedOlderPackage" xml:space="preserve">
+    <value>在 {1} 找到名為 {0} (版本 {2}) 之套件的較舊版本 (版本 {3})。已忽略較舊版本。</value>
+  </data>
+  <data name="InvalidPackageVersion" xml:space="preserve">
+    <value>在 {1} 找到名為 {0} 之套件的版本無效 (版本:「{2}」)。將忽略它。</value>
+  </data>
+  <data name="DuplicatedNewerPackage" xml:space="preserve">
+    <value>在 {1} 找到名為 {0} (版本 {2}) 之套件的較新版本 (版本 {3})。已忽略較新版本。</value>
+  </data>
+  <data name="NoneLinterDescriptorName" xml:space="preserve">
+    <value>無</value>
+  </data>
+  <data name="PackageStatePendingUnload" xml:space="preserve">
+    <value>已排定要卸載</value>
+  </data>
+  <data name="PackageStateError" xml:space="preserve">
+    <value>錯誤</value>
+  </data>
+  <data name="PackageStateLoaded" xml:space="preserve">
+    <value>已載入</value>
+  </data>
+  <data name="PackageStateUnloaded" xml:space="preserve">
+    <value>已卸載</value>
+  </data>
+  <data name="PackageStatePendingUnloadTooltip" xml:space="preserve">
+    <value>已排定要卸載。
+下次重新啟動 Dynamo 後，將卸載此套件。</value>
+  </data>
+  <data name="PackageStateErrorTooltip" xml:space="preserve">
+    <value>已卸載。
+由於發生未預期的錯誤，未載入此套件。</value>
+  </data>
+  <data name="PackageStateLoadedTooltip" xml:space="preserve">
+    <value>已載入。
+此套件已載入且可供使用。</value>
+  </data>
+  <data name="PackageStateUnloadedTooltip" xml:space="preserve">
+    <value>已卸載。
+未載入此套件，因為在載入此套件之前先載入了另一個相衝突的套件。</value>
+  </data>
+  <data name="GroupDefaultText" xml:space="preserve">
+    <value>描述 &lt;按兩下這裡以編輯群組描述&gt;</value>
+  </data>
+  <data name="GroupNameDefaultText" xml:space="preserve">
+    <value>標題 &lt;按兩下這裡以編輯群組標題&gt;</value>
+  </data>
+  <data name="OutputPortAlternativeName" xml:space="preserve">
+    <value>輸出</value>
+  </data>
+  <data name="InputPortAlternativeName" xml:space="preserve">
+    <value>輸入</value>
+  </data>
+  <data name="BackupSavedMsg" xml:space="preserve">
+    <value>備份檔案已儲存</value>
+  </data>
+  <data name="NodeDeprecatedMsg" xml:space="preserve">
+    <value>節點「{0}」現在已棄用。</value>
+  </data>
+  <data name="NodeNotResolvedMsg" xml:space="preserve">
+    <value>無法解析節點「{0}」。</value>
+  </data>
+  <data name="NodeOfTypeDeprecatedMsg" xml:space="preserve">
+    <value>現在已棄用組合「{1}」中類型為「{0}」的節點。</value>
+  </data>
+  <data name="NodeOfTypeNotResolvedMsg" xml:space="preserve">
+    <value>無法解析組合「{1}」中類型為「{0}」的節點。</value>
+  </data>
+  <data name="NodeUnhandledMsg" xml:space="preserve">
+    <value>未處理的「DummyNode.NodeNature」值: {0}</value>
+  </data>
+  <data name="CoreLibraryLoadFailureForBlockedAssembly" xml:space="preserve">
+    <value>{0}
+
+此組合可能已被封鎖。請在解除封鎖此組合和可能被封鎖的所有其他核心組合後，嘗試重新啟動 Dynamo。如果您執行的是從 .zip 檔案解壓縮的已下載 DynamoSandbox 建置，請嘗試使用 7zip 解壓縮 Dynamo 二進位檔案，然後再試一次。</value>
+  </data>
+  <data name="LibraryLoadFailureForBlockedAssembly" xml:space="preserve">
+    <value>{0}
+
+此組合可能已被封鎖。請在解除封鎖組合後嘗試再匯入一次。</value>
+  </data>
+  <data name="PackageLoadFailureForBlockedAssembly" xml:space="preserve">
+    <value>{0}
+
+此套件可能包含被封鎖的組合。解除封鎖組合後，您必須再次載入套件。請重新啟動 Dynamo 以重新載入套件。</value>
+  </data>
+  <data name="CoreLibraryLoadFailureMessageBoxTitle" xml:space="preserve">
+    <value>核心資源庫載入失敗</value>
+  </data>
+  <data name="LibraryLoadFailureMessageBoxTitle" xml:space="preserve">
+    <value>資源庫載入失敗</value>
+  </data>
+  <data name="FileLoadFailureMessageBoxTitle" xml:space="preserve">
+    <value>檔案載入失敗</value>
+  </data>
+  <data name="GroupStyleDefaultActions" xml:space="preserve">
+    <value>動作</value>
+  </data>
+  <data name="GroupStyleDefaultActionsColor" xml:space="preserve">
+    <value>B9F9E1</value>
+  </data>
+  <data name="GroupStyleDefaultInputs" xml:space="preserve">
+    <value>輸入</value>
+  </data>
+  <data name="GroupStyleDefaultInputsColor" xml:space="preserve">
+    <value>FFB8D8</value>
+  </data>
+  <data name="GroupStyleDefaultOutputs" xml:space="preserve">
+    <value>輸出</value>
+  </data>
+  <data name="GroupStyleDefaultOutputsColor" xml:space="preserve">
+    <value>FFC999</value>
+  </data>
+  <data name="GroupStyleDefaultReview" xml:space="preserve">
+    <value>檢閱</value>
+  </data>
+  <data name="GroupStyleDefaultReviewColor" xml:space="preserve">
+    <value>A4E1FF</value>
+  </data>
+  <data name="ToolTipInputData" xml:space="preserve">
+    <value>輸入資料</value>
+  </data>
+  <data name="SplashScreenInitPreferencesSettings" xml:space="preserve">
+    <value>正在初始化偏好...</value>
+  </data>
+  <data name="SplashScreenLoadNodeLibrary" xml:space="preserve">
+    <value>正在載入節點資源庫...</value>
+  </data>
+  <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
+    <value>沒有建議</value>
+  </data>
+  <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
+    <value>低信賴</value>
+  </data>
+  <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
+    <value>還沒有任何建議。您可以嘗試切換到節點類型相符自動完成。</value>
+  </data>
+  <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
+    <value>所有建議都低於指定的信賴水準。您可以嘗試這些建議，或在「偏好」中調整信賴設定。</value>
+  </data>
+  <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
+    <value>展示低於信賴水準的建議。</value>
+  </data>
+  <data name="LoginNeededTitle" xml:space="preserve">
+    <value>未驗證</value>
+  </data>
+  <data name="LoginNeededMessage" xml:space="preserve">
+    <value>您必須登入帳戶才能獲得建議。請登入或切換到節點類型相符自動完成。</value>
+  </data>
+  <data name="FailedInsertFileNodeExistNotification" xml:space="preserve">
+    <value>無法插入檔案，因為某些節點已存在於目前工作區中。</value>
+  </data>
+  <data name="InsertDialogBoxText" xml:space="preserve">
+    <value>Insert Dynamo Graph...</value>
+  </data>
+  <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
+    <value>範例檔已加入工作區。執行模式已變更為「手動」。</value>
+  </data>
+  <data name="DynamoLanguages_noxlate" xml:space="preserve">
+    <value>Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
+  </data>
+  <data name="FormulaDSConversionFailure" xml:space="preserve">
+    <value>公式無法轉換為 DesignScript 程式碼。請手動編輯公式以在 CodeBlock 節點中使用。</value>
+  </data>
+  <data name="FormulaMigrated" xml:space="preserve">
+    <value>公式節點已棄用。該節點已自動移轉至 CodeBlock 節點。請注意，移轉後的結果可能會有所不同，取決於在原始公式節點上選取的交織選項。可能必須對 CodeBlock 節點指令碼套用適當的複製指南。</value>
+  </data>
+  <data name="LegacyTraceDataWarning" xml:space="preserve">
+    <value>此工作區包含的元素繫結資料是 Dynamo 3.0 和更高版本不再支援的舊式格式。下次執行並儲存此工作區時，將以新格式儲存元素繫結資料。</value>
+  </data>
+  <data name="InputNodeRenameHint" xml:space="preserve">
+    <value>預設輸入名稱，請更名！</value>
+  </data>
+  <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
+    <value>此節點目前處實驗驗階段。節點的行為、名稱和用法可能會發生變化。</value>
+  </data>
+</root>

@@ -1,0 +1,897 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BuildSublistsDescription" xml:space="preserve">
+    <value>Sestaví dílčí seznamy ze seznamu pomocí syntaxe rozsahu DesignScript.</value>
+  </data>
+  <data name="CodeBlockNodeDescription" xml:space="preserve">
+    <value>Umožňuje přímé vytváření kódu DesignScript.</value>
+  </data>
+  <data name="NumberNodeDescription" xml:space="preserve">
+    <value>Vytvoří číslo.</value>
+  </data>
+  <data name="StringNodeDescription" xml:space="preserve">
+    <value>Vytvoří řetězec.</value>
+  </data>
+  <data name="FunctionNodeDescription" xml:space="preserve">
+    <value>Integrované funkce aplikace DesignScript</value>
+  </data>
+  <data name="CustomNodeDesciption" xml:space="preserve">
+    <value>Instance uživatelského uzlu</value>
+  </data>
+  <data name="ComposeFunctionNodeDescription" xml:space="preserve">
+    <value>Sloučí dvě funkce s jedním parametrem do jedné funkce.</value>
+  </data>
+  <data name="OutputNodeDescription" xml:space="preserve">
+    <value>Výstup funkce, použijte s vlastními uzly</value>
+  </data>
+  <data name="InputNodeDescription" xml:space="preserve">
+    <value>Parametr funkce, použijte s vlastními uzly.</value>
+  </data>
+  <data name="InputNodeSearchTags" xml:space="preserve">
+    <value>variable;argument;parameter</value>
+  </data>
+  <data name="ComposeFunctionPortDataFunctionToolTip" xml:space="preserve">
+    <value>Funkce</value>
+  </data>
+  <data name="ComposeFunctionPortDataResultToolTip" xml:space="preserve">
+    <value>Vytvořená funkce: g(f(x))</value>
+  </data>
+  <data name="RangePortDataAmountToolTip" xml:space="preserve">
+    <value>Počet čísel nebo písmen v posloupnosti
+Výchozí hodnota: 10</value>
+  </data>
+  <data name="RangePortDataEndToolTip" xml:space="preserve">
+    <value>Číslo nebo písmeno, u kterých bude ukončena posloupnost
+Výchozí hodnota: 9</value>
+  </data>
+  <data name="RangePortDataSeqToolTip" xml:space="preserve">
+    <value>Nový seznam typu: var[]..[]</value>
+  </data>
+  <data name="RangePortDataStartToolTip" xml:space="preserve">
+    <value>Číslo nebo písmeno, u kterých bude zahájena posloupnost
+Výchozí hodnota: 0</value>
+  </data>
+  <data name="RangePortDataStepToolTip" xml:space="preserve">
+    <value>Prostor mezi čísly nebo písmeny
+Výchozí hodnota: 1</value>
+  </data>
+  <data name="PortDataParameterToolTip" xml:space="preserve">
+    <value>parametr</value>
+  </data>
+  <data name="PortDataVariableToolTip" xml:space="preserve">
+    <value>proměnná</value>
+  </data>
+  <data name="SublistPortDataResultToolTip" xml:space="preserve">
+    <value>Žádné dílčí seznamy.</value>
+  </data>
+  <data name="SublistsPortDataListToolTip" xml:space="preserve">
+    <value>Seznam, ze kterého chcete vytvořit dílčí seznamy.</value>
+  </data>
+  <data name="SublistsPortDataOffsetToolTip" xml:space="preserve">
+    <value>Odsazení, které chcete použít pro dílčí seznam. Př.: Rozsah „0..2“ s odsazením 1 povolí dílčí seznamy {0,1,2}{1,2,3}{2,3,4}...</value>
+  </data>
+  <data name="PortDataFunctionOutputToolTip" xml:space="preserve">
+    <value>výstup funkce</value>
+  </data>
+  <data name="PortDataInputToolTip" xml:space="preserve">
+    <value>Zadejte #{0}.</value>
+  </data>
+  <data name="PortDataOutputToolTip" xml:space="preserve">
+    <value>Výstup č. {0}</value>
+  </data>
+  <data name="PortDataPathToFileToolTip" xml:space="preserve">
+    <value>Cesta k souboru</value>
+  </data>
+  <data name="PortDataReturnValueToolTip" xml:space="preserve">
+    <value>návratová hodnota</value>
+  </data>
+  <data name="PortDataSymbolToolTip" xml:space="preserve">
+    <value>Symbol</value>
+  </data>
+  <data name="ButtonDownloadLastest" xml:space="preserve">
+    <value>Stáhněte si nejnovější verzi.</value>
+  </data>
+  <data name="052465" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="ButtonProcess" xml:space="preserve">
+    <value>Přesto pokračovat.</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Storno</value>
+  </data>
+  <data name="CannotOpenFile" xml:space="preserve">
+    <value>Soubor nelze otevřít.</value>
+  </data>
+  <data name="DisplayEngineFailureMessageDescription" xml:space="preserve">
+    <value>Ve virtuálním počítači, na kterém běží aplikace Dynamo, došlo k neočekávaným​ vnitřním chybám a pravděpodobně se potýká s velkými potížemi. Doporučujeme vám uložit si nyní svou práci a znovu načíst soubor. Dáte tak virtuálnímu počítači Dynamo novou příležitost k dalšímu bezproblémovému fungování. Pokud je to možné, pošlete nám váš soubor. Pak budeme moci tyto problémy rychleji vyřešit.</value>
+  </data>
+  <data name="FileNotOpenedCorrectly" xml:space="preserve">
+    <value>Soubor se nemusí správně otevírat.</value>
+  </data>
+  <data name="IncompatibleOfFileAndDynamo" xml:space="preserve">
+    <value>Váš soubor „{0}“ ve verzi „{1}“ nelze otevřít v této verzi aplikace Dynamo ({2}).</value>
+  </data>
+  <data name="IncorrectVersionToOpenFile" xml:space="preserve">
+    <value>Váš soubor „{0}“ byl vytvořen v budoucí verzi „{1}“ a nemusí se správně spouštět v nainstalované verzi aplikace Dynamo „{2}“.</value>
+  </data>
+  <data name="SubmitBugToGithub" xml:space="preserve">
+    <value>Odeslat chybu na Github</value>
+  </data>
+  <data name="UnhandledExceptionInDynamoEngine" xml:space="preserve">
+    <value>Neošetřená výjimka v systému aplikaci Dynamo</value>
+  </data>
+  <data name="UsageReportingErrorMessage" xml:space="preserve">
+    <value>Tady něco nehraje...
+ Je nám líto. Snažili jsme se uložit vaše rozhodnutí, ale došlo k chybě. Rozhodnutí pravděpodobně nebylo uloženo. To se nemělo stát. Kontaktujte nás přes GitHub a zašlete nám tyto informace.
+Můžete také zkusit odstranit [FILEPATH] a opakovat akci.
+Podle vašeho předchozího výběru může být nástroj analýzy stále spuštěn. Pokud z toho máte obavy, nepoužívejte aplikaci Dynamo, dokud vám nedáme vědět ohledně řešení problému.
+Omlouváme se za komplikace.</value>
+  </data>
+  <data name="CouldNotLoadTypes" xml:space="preserve">
+    <value>Nelze načíst typy.</value>
+  </data>
+  <data name="CreatingConnectorError" xml:space="preserve">
+    <value>CHYBA: Nelze vytvořit spojku mezi {0} a {1}.</value>
+  </data>
+  <data name="DllLoadException" xml:space="preserve">
+    <value>Výjimka načítání DLL:</value>
+  </data>
+  <data name="ElapsedWhenLoadingXml" xml:space="preserve">
+    <value>{0} uplynulo pro načítání XML.</value>
+  </data>
+  <data name="EvaluationCompleted" xml:space="preserve">
+    <value>Vyhodnocení bylo dokončeno v {0}.</value>
+  </data>
+  <data name="FailedToLoadHeader" xml:space="preserve">
+    <value>CHYBA: Záhlaví vlastního uzlu v {0} se nepodařilo načíst.  Z vyhledávání bude vynecháno.</value>
+  </data>
+  <data name="FileBackUpLocation" xml:space="preserve">
+    <value>Původní soubor „{0}“ se zálohuje v „{1}“.</value>
+  </data>
+  <data name="LoadingNodeDefinition" xml:space="preserve">
+    <value>Načítání definice uzlu pro „{0}“ z: {1}</value>
+  </data>
+  <data name="NodeProblemEncountered" xml:space="preserve">
+    <value>Během přípravy ke spuštění došlo v tomto uzlu k problému. Obraťte se na tvůrce uzlu a sdělte jim tuto zprávu:</value>
+  </data>
+  <data name="OpeningHomeWorkspace" xml:space="preserve">
+    <value>Spouštění domovského pracovního prostoru {0}...</value>
+  </data>
+  <data name="OpenWorkbenchError" xml:space="preserve">
+    <value>Nastala chyba při otevírání systému workbench.</value>
+  </data>
+  <data name="BadIdentifierSyntax" xml:space="preserve">
+    <value>Chybná syntaxe identifikátoru: „{0}“</value>
+  </data>
+  <data name="BadRangeSyntax" xml:space="preserve">
+    <value>Chybná syntaxe rozsahu: není ve formátu \„start..end[..(přírůstek | #počet)]\“</value>
+  </data>
+  <data name="CannotHave0Step" xml:space="preserve">
+    <value>Nelze mít 0 kroků.</value>
+  </data>
+  <data name="ClearingWorkflow" xml:space="preserve">
+    <value>Mazání pracovního postupu...</value>
+  </data>
+  <data name="CouldNotCompressFile" xml:space="preserve">
+    <value>Soubor nelze komprimovat. Používá se soubor?</value>
+  </data>
+  <data name="CouldNotGetLatestBuild" xml:space="preserve">
+    <value>Nelze získat nejnovější verzi z S3.</value>
+  </data>
+  <data name="CouldNotGetUpdateData" xml:space="preserve">
+    <value>Nelze získat data aktualizace z {0}.</value>
+  </data>
+  <data name="DulicatedPackage" xml:space="preserve">
+    <value>Duplicitní balíček s názvem {0} byl nalezen v {1}.  Je ignorován.</value>
+  </data>
+  <data name="DynamoUpToDate" xml:space="preserve">
+    <value>Aplikaci Dynamo je aktuální.</value>
+  </data>
+  <data name="ExceptionEncountered" xml:space="preserve">
+    <value>Došlo k výjimce při skenování adresáře s balíčkem na {0}.</value>
+  </data>
+  <data name="FailedToLoad" xml:space="preserve">
+    <value>Nepodařilo se načíst {0}\n, výjimka: {1}</value>
+  </data>
+  <data name="FailedToLoadCustomNode" xml:space="preserve">
+    <value>Nepodařilo se načíst vlastní uzel: {0}. Je nahrazen vlastním uzlem serveru proxy.</value>
+  </data>
+  <data name="FailedToSave" xml:space="preserve">
+    <value>Nepodařilo se uložit {0}\n, výjimka: {1}.</value>
+  </data>
+  <data name="IdentifiersNotFound" xml:space="preserve">
+    <value>Nebyly nalezeny žádné identifikátory.</value>
+  </data>
+  <data name="InvalidStartOrEndOfRange" xml:space="preserve">
+    <value>Začátek nebo konec rozsahu je větší než počet dostupných prvků v seznamu.</value>
+  </data>
+  <data name="MalformedHeaderPackage" xml:space="preserve">
+    <value>{0} obsahuje balíček se špatně vytvořeným záhlavím. Je ignorován.</value>
+  </data>
+  <data name="NoHeaderPackage" xml:space="preserve">
+    <value>{0} obsahuje balíček bez záhlaví. Je ignorován.</value>
+  </data>
+  <data name="PackageEmpty" xml:space="preserve">
+    <value>Ukázalo se, že balíček je prázdný, a nebyl nainstalován.</value>
+  </data>
+  <data name="PackageTooLarge" xml:space="preserve">
+    <value>Balíček je příliš velký!  Balíček musí být menší než 15 MB.</value>
+  </data>
+  <data name="PathNotRegconizableAsStableOrDailyBuild" xml:space="preserve">
+    <value>Určená cesta k souboru není rozpoznatelná jako stabilní nebo denní sestavení</value>
+  </data>
+  <data name="RangeEndCouldNotBeParsed" xml:space="preserve">
+    <value>Konec rozsahu nelze analyzovat.</value>
+  </data>
+  <data name="RangeOrApprIdentifierAlrUsed" xml:space="preserve">
+    <value>Nelze použít rozsah nebo přibližný identifikátor pro pole přírůstku, když již byl použit k určení počtu.</value>
+  </data>
+  <data name="RangeStepCouldNotBeParsed" xml:space="preserve">
+    <value>Krok rozsahu nelze analyzovat.</value>
+  </data>
+  <data name="RangeValuesGreaterThanZero" xml:space="preserve">
+    <value>Rozsah hodnot musí být větší než nula.</value>
+  </data>
+  <data name="RequestingVersionUpdate" xml:space="preserve">
+    <value>Požadavek na informace o aktualizaci verze...</value>
+  </data>
+  <data name="UpdateAvailable" xml:space="preserve">
+    <value>Je k dispozici aktualizace: {0}.</value>
+  </data>
+  <data name="UpdateDownloadComplete" xml:space="preserve">
+    <value>Stahování aktualizace dokončeno.</value>
+  </data>
+  <data name="UpdateDownloadProgress" xml:space="preserve">
+    <value>Aktualizovat průběh stahování: {0} %</value>
+  </data>
+  <data name="UpdateDownloadStarted" xml:space="preserve">
+    <value>Stahování aktualizace bylo zahájeno...</value>
+  </data>
+  <data name="WorkbenchNotOpen" xml:space="preserve">
+    <value>Systém workbench nelze otevřít.</value>
+  </data>
+  <data name="CouldNotRepairOneNodeHoles" xml:space="preserve">
+    <value>Nelze opravit 1uzlové díry.</value>
+  </data>
+  <data name="CustomNodeCouldNotBeInitialized" xml:space="preserve">
+    <value>Uživatelský uzel \„{0}\“ nelze inicializovat.</value>
+  </data>
+  <data name="FailedToGetMirrorVariable" xml:space="preserve">
+    <value>Nepodařilo se zrcadlit proměnou: {0}; příčina: {1}.</value>
+  </data>
+  <data name="FailedToLoadType" xml:space="preserve">
+    <value>Nepodařilo se načíst typ z {0}. Typ byl {1}.</value>
+  </data>
+  <data name="OpenWorkspaceError" xml:space="preserve">
+    <value>Nastala chyba při otevírání pracovního prostoru.</value>
+  </data>
+  <data name="UnableToCreateCustomNodeID" xml:space="preserve">
+    <value>Nelze vytvořit instanci vlastního uzlu s ID: \".</value>
+  </data>
+  <data name="BackUpOriginalFileMessage" xml:space="preserve">
+    <value>Původní soubor „{0}“ se zálohuje v „{1}“.</value>
+  </data>
+  <data name="ClearingWorkSpace" xml:space="preserve">
+    <value>Mazání pracovního prostoru...</value>
+  </data>
+  <data name="CodeBlockDescription" xml:space="preserve">
+    <value>Umožňuje přímé vytváření kódu DesignScript.</value>
+  </data>
+  <data name="DownloadLatestButton" xml:space="preserve">
+    <value>Stáhněte si nejnovější verzi.</value>
+  </data>
+  <data name="DuplicateMigrationTypeRegistered" xml:space="preserve">
+    <value>Duplicitní typ migrace zjištěn pro {0}.</value>
+  </data>
+  <data name="FileCannotBeOpened" xml:space="preserve">
+    <value>Soubor nelze otevřít.</value>
+  </data>
+  <data name="FutureFileDescription" xml:space="preserve">
+    <value>Váš soubor „{0}“ byl vytvořen v budoucí verzi „{1}“ a nemusí se správně spouštět v nainstalované verzi aplikace Dynamo „{2}“.</value>
+  </data>
+  <data name="FutureFileSummary" xml:space="preserve">
+    <value>Soubor se nemusí správně otevírat.</value>
+  </data>
+  <data name="FutureFileTitle" xml:space="preserve">
+    <value>Budoucí soubor</value>
+  </data>
+  <data name="GoodByeLog" xml:space="preserve">
+    <value>Na shledanou</value>
+  </data>
+  <data name="InvalidLibraryFormat" xml:space="preserve">
+    <value>Neplatný formát knihovny.</value>
+  </data>
+  <data name="LibraryBuildError" xml:space="preserve">
+    <value>Chyba sestavení pro knihovnu: {0}</value>
+  </data>
+  <data name="LibraryHasBeenLoaded" xml:space="preserve">
+    <value>Knihovna {0} byla načtena.</value>
+  </data>
+  <data name="LibraryIsDumped" xml:space="preserve">
+    <value>Knihovna je vypsána do \„{0}\“.</value>
+  </data>
+  <data name="LibraryPathCannotBeFound" xml:space="preserve">
+    <value>Nelze najít cestu knihovny: {0}.</value>
+  </data>
+  <data name="NewNoteString" xml:space="preserve">
+    <value>Nová poznámka</value>
+  </data>
+  <data name="ObsoleteFileDescription" xml:space="preserve">
+    <value>Váš soubor „{0}“ ve verzi „{1}“ nelze otevřít v této verzi aplikace Dynamo ({2}).</value>
+  </data>
+  <data name="ObsoleteFileTitle" xml:space="preserve">
+    <value>Zastaralý soubor</value>
+  </data>
+  <data name="OKButton" xml:space="preserve">
+    <value>OK</value>
+  </data>
+  <data name="ProceedButton" xml:space="preserve">
+    <value>Přesto pokračovat</value>
+  </data>
+  <data name="SavingInProgress" xml:space="preserve">
+    <value>Ukládání {0}...</value>
+  </data>
+  <data name="SubmitBugButton" xml:space="preserve">
+    <value>Odeslat chybu na Github</value>
+  </data>
+  <data name="ToolTipForTempVar" xml:space="preserve">
+    <value>Výstup příkazu</value>
+  </data>
+  <data name="ToolTipReturnValue" xml:space="preserve">
+    <value>návratová hodnota</value>
+  </data>
+  <data name="UnhandledExceptionSummary" xml:space="preserve">
+    <value>Neošetřená výjimka v systému aplikaci Dynamo</value>
+  </data>
+  <data name="UnhandledExceptionTitle" xml:space="preserve">
+    <value>Neošetřená výjimka</value>
+  </data>
+  <data name="UnknownVersion" xml:space="preserve">
+    <value>Neznámý</value>
+  </data>
+  <data name="WelcomeMessage" xml:space="preserve">
+    <value>Vítejte v aplikaci Dynamo!</value>
+  </data>
+  <data name="ToolTipFunctionOutput" xml:space="preserve">
+    <value>výstup funkce</value>
+  </data>
+  <data name="ToolTipInput" xml:space="preserve">
+    <value>Vstup č.</value>
+  </data>
+  <data name="ToolTipOutput" xml:space="preserve">
+    <value>Výstup č.</value>
+  </data>
+  <data name="ToolTipOutputData" xml:space="preserve">
+    <value>Výstupní data</value>
+  </data>
+  <data name="WarningCannotFindType" xml:space="preserve">
+    <value>Nelze nalézt typ „{0}“.</value>
+  </data>
+  <data name="WarningInvalidInput" xml:space="preserve">
+    <value>Neplatné zadání.
+
+Název parametru musí začínat abecedním znakem. Můžete určit jeho typ a výchozí hodnotu. Například
+
+zadejte: var []..[]
+value: bool = false</value>
+  </data>
+  <data name="DSFunctionNodeDescription" xml:space="preserve">
+    <value>Integrované funkce aplikace DesignScript</value>
+  </data>
+  <data name="DummyNodeDescription" xml:space="preserve">
+    <value>Toto je zastaralý uzel.</value>
+  </data>
+  <data name="FunctionDescription" xml:space="preserve">
+    <value>Instance uživatelského uzlu</value>
+  </data>
+  <data name="SymbolNodeDescription" xml:space="preserve">
+    <value>Parametr funkce. Použijte s vlastními uzly.
+
+Můžete zadat typ a výchozí hodnotu parametru. Například
+
+zadejte: var[]..[]
+hodnota: bool = False</value>
+  </data>
+  <data name="CustomNodeNotLoaded" xml:space="preserve">
+    <value>Definice uživatelského uzlu není načtena! href=CustomNodeNotLoaded.html</value>
+  </data>
+  <data name="RunTypeToolTipAutomatically" xml:space="preserve">
+    <value>Spustit vždy, když je aktualizován vstup do grafu.</value>
+  </data>
+  <data name="RunTypeToolTipManually" xml:space="preserve">
+    <value>Ke spuštění dojde po kliknutí na tlačítko Spustit.</value>
+  </data>
+  <data name="RunTypeToolTipPeriodicallyDisabled" xml:space="preserve">
+    <value>Možnost Spouštět pravidelně je dostupná pouze tehdy, když v grafu existují uzly, které podporují pravidelné aktualizace.</value>
+  </data>
+  <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
+    <value>Spustit v zadaném intervalu.</value>
+  </data>
+  <data name="HeaderAction" xml:space="preserve">
+    <value>AKCE</value>
+  </data>
+  <data name="HeaderCreate" xml:space="preserve">
+    <value>VYTVOŘIT</value>
+  </data>
+  <data name="HeaderQuery" xml:space="preserve">
+    <value>DOTAZ</value>
+  </data>
+  <data name="InputLabel" xml:space="preserve">
+    <value>VSTUP</value>
+  </data>
+  <data name="MoreButtonTextFormat" xml:space="preserve">
+    <value>ZOBRAZIT VÍCE ({0})</value>
+  </data>
+  <data name="NoDescriptionAvailable" xml:space="preserve">
+    <value>K dispozici není žádný popis.</value>
+  </data>
+  <data name="OutputLabel" xml:space="preserve">
+    <value>VÝSTUP</value>
+  </data>
+  <data name="TopResult" xml:space="preserve">
+    <value>Nejlepší výsledek</value>
+  </data>
+  <data name="LocateInDisk" xml:space="preserve">
+    <value>Najít disk.</value>
+  </data>
+  <data name="MoveLabel" xml:space="preserve">
+    <value>Přesunout</value>
+  </data>
+  <data name="NoMatchesFound" xml:space="preserve">
+    <value>Nebyly nalezeny žádné shody.</value>
+  </data>
+  <data name="RemoveLabel" xml:space="preserve">
+    <value>Odstranit</value>
+  </data>
+  <data name="IncorrectlyFormattedNodeLibraryDisplay" xml:space="preserve">
+    <value>Toto je nesprávně naformátovaný název knihovny:</value>
+  </data>
+  <data name="IncorrectlyFormattedNodeLibraryWarning" xml:space="preserve">
+    <value>Vyskytl se nesprávně naformátovaná knihovna uzlů balíčku, což může mít za následek nenačtení sestavení balíčku.</value>
+  </data>
+  <data name="NothingIsSelectedWarning" xml:space="preserve">
+    <value>Není nic vybráno. href=NothingIsSelectedWarning.html</value>
+  </data>
+  <data name="SearchTextBlockText" xml:space="preserve">
+    <value>Hledat</value>
+  </data>
+  <data name="AutocompleteSearchTextBlockText" xml:space="preserve">
+    <value>Hledat výsledky automatického dokončování</value>
+  </data>
+  <data name="Autocomplete" xml:space="preserve">
+    <value>Automatické dokončování</value>
+  </data>
+  <data name="WatermarkLabelText" xml:space="preserve">
+    <value>Zde zadejte kód</value>
+  </data>
+  <data name="DefaultValue" xml:space="preserve">
+    <value>Výchozí hodnota</value>
+  </data>
+  <data name="DefaultValueDisabled" xml:space="preserve">
+    <value>(vypnuto)</value>
+  </data>
+  <data name="SymbolSearchTags" xml:space="preserve">
+    <value>variable;argument;parameter</value>
+  </data>
+  <data name="DefaultCustomNodeCategory" xml:space="preserve">
+    <value>Uživatelské uzly</value>
+  </data>
+  <data name="InvalidCustomNodeFolderWarning" xml:space="preserve">
+    <value>Složka {0} neexistuje.</value>
+  </data>
+  <data name="CodeBlockSearchTags" xml:space="preserve">
+    <value>codeblock;</value>
+  </data>
+  <data name="DirectoryNotFound" xml:space="preserve">
+    <value>Nenalezený adresář: {0}</value>
+  </data>
+  <data name="CustomNodeFolderLoadFailure" xml:space="preserve">
+    <value>Nepodařilo se načíst adresář vlastních uzlů. Máte oprávnění k přístupu ke složce {0}?</value>
+  </data>
+  <data name="PortsNameDescriptionDoNotEqualWarningMessage" xml:space="preserve">
+    <value>Počet názvů portů se nerovná počtu popisů portů.</value>
+  </data>
+  <data name="DescriptionResource1" xml:space="preserve">
+    <value>určitý popis</value>
+  </data>
+  <data name="ResourcePropertyIsNotStringTypeMessage" xml:space="preserve">
+    <value>Vlastnost zdroje není typ řetězce.</value>
+  </data>
+  <data name="ResourceTypeDoesNotHavePropertyMessage" xml:space="preserve">
+    <value>Typ zdroje nemá vlastnost.</value>
+  </data>
+  <data name="WarningInvalidOutput" xml:space="preserve">
+    <value>Ve výstupním uzlu jsou povoleny pouze komentáře a jedna proměnná.</value>
+  </data>
+  <data name="FailedToLoadLibrary" xml:space="preserve">
+    <value>Nepodařilo se načíst tuto knihovnu: {0}.</value>
+  </data>
+  <data name="NoneString" xml:space="preserve">
+    <value>žádné</value>
+  </data>
+  <data name="DefaultHomeWorkspaceName" xml:space="preserve">
+    <value>Výchozí</value>
+  </data>
+  <data name="UnresolvedNodesWarningShortMessage" xml:space="preserve">
+    <value>Graf obsahuje nevyřešené uzly a nelze jej uložit.</value>
+  </data>
+  <data name="UnresolvedNodesWarningTitle" xml:space="preserve">
+    <value>Graf nelze uložit.</value>
+  </data>
+  <data name="UnresolvedNodesWarningMessage" xml:space="preserve">
+    <value>To může být způsobeno chybějícím balíčkem, nekompatibilní verzí balíčku nebo chybějícím programem hostitele. Pokud použijete funkci Uložit jako, nevyřešené uzly budou odstraněny.
+
+Vyřešte nebo odstraňte nevyřešené uzly a zkuste to znovu.</value>
+  </data>
+  <data name="CodeBlockTempIdentifierOutputLabel" xml:space="preserve">
+    <value>Hodnota výrazu na řádku {0}</value>
+  </data>
+  <data name="InvalidInputSymbolCustomNodeWarning" xml:space="preserve">
+    <value>Tento vlastní uzel obsahuje neplatný vstup. Opravte vstup před uložením vlastního uzlu.</value>
+  </data>
+  <data name="InvalidInputSymbolErrorMessage" xml:space="preserve">
+    <value>Tento vstup symbolu aktuálně není platný a nelze jej uložit, dokud nebude opraven. Platné vstupní hodnoty jsou:
+
+název : typ = výchozíHodnota
+
+Název musí být platným názvem proměnné bez mezer. Typ vstupu a výchozí hodnota jsou volitelné.</value>
+  </data>
+  <data name="InvalidInputSymbolWarningMessage" xml:space="preserve">
+    <value>Tento vlastní uzel aktuálně obsahuje neplatné vstupy a nelze jej uložit, dokud nebudou opraveny. Pokud bude vlastní uzel uložen pomocí příkazu ULOŽITJAKO, položky neplatných vstupů se navrátí na obecné vstupy. Platné vstupní hodnoty jsou:
+
+název : typ = výchozíHodnota
+
+Název musí být platným názvem proměnné bez mezer. Typ vstupu a výchozí hodnota jsou volitelné.</value>
+  </data>
+  <data name="InvalidInputSymbolWarningShortMessage" xml:space="preserve">
+    <value>Tento vlastní uzel nelze uložit, dokud nebudou neplatné vstupy odebrány nebo opraveny.</value>
+  </data>
+  <data name="InvalidInputSymbolWarningTitle" xml:space="preserve">
+    <value>Vlastní uzel obsahuje neplatné vstupy a nelze jej uložit.</value>
+  </data>
+  <data name="PythonTemplateAppData" xml:space="preserve">
+    <value>Šablona Python načtena ze složky AppData</value>
+  </data>
+  <data name="PythonTemplateDefaultFile" xml:space="preserve">
+    <value>Šablona Python nastavena na výchozí.</value>
+  </data>
+  <data name="PythonTemplateDefinedByHost" xml:space="preserve">
+    <value>Šablona Python nastavena integrátorem hostitele</value>
+  </data>
+  <data name="PythonTemplateUserFile" xml:space="preserve">
+    <value>Šablona Python načtena z cesty souboru DynamoSettings.xml</value>
+  </data>
+  <data name="MessageCustomNodePackageFailedToLoad" xml:space="preserve">
+    <value>Položku {1} není možné načíst.
+Instalace této položky je v konfliktu s jednou nebo více definicemi uzlů, které již v aktuálně načtené položce {0} existují.
+K instalaci položky {1} potřebuje aplikace Dynamo nejprve odinstalovat položku {0}. 
+Restartováním aplikace Dynamo dokončíte odinstalaci.</value>
+  </data>
+  <data name="FunctionDefinitionOverwrittenMessage" xml:space="preserve">
+    <value>Byl proveden pokus o načtení položky customNode {0} načtené balíčkem {1}, existuje však předchozí definice s názvem {2} bez asociovaného balíčku. Nová definice položky customNode byla načtena, ale aplikace Dynamo se může dostat do nestabilního stavu. Vyhněte se načítání více vlastních uzlů se stejným ID.</value>
+  </data>
+  <data name="Preview3DOutageTitle" xml:space="preserve">
+    <value>3D náhled byl deaktivován</value>
+  </data>
+  <data name="MissingXmlTagConsoleMessage" xml:space="preserve">
+    <value>V položce {0} chybí některé tagy formátu XML.</value>
+  </data>
+  <data name="FailedToHandleReadyEvent" xml:space="preserve">
+    <value>Nepodařilo se volat objekt Ready() v rozšíření: </value>
+  </data>
+  <data name="DuplicatedModelGuidError" xml:space="preserve">
+    <value>Mapa již obsahuje model s tímto ID. ID musí být jedinečný v rámci pracovního prostoru, který je aktuálně deserializován: {0}</value>
+  </data>
+  <data name="ArgumentNullException" xml:space="preserve">
+    <value>Hodnota nesmí být hodnotou null.
+Název parametru: {0}</value>
+  </data>
+  <data name="ModelNotFoundError" xml:space="preserve">
+    <value>UpdateModelValue: Model nebyl nalezen.</value>
+  </data>
+  <data name="PackageManagerPackageAlreadyExists" xml:space="preserve">
+    <value>Balíček s daným názvem již existuje.</value>
+  </data>
+  <data name="PackageManagerUserIsNotAMaintainer" xml:space="preserve">
+    <value>Aktuální uživatel '{0}' není hlavním aktuálním uživatelem balíčku '{1}'.</value>
+  </data>
+  <data name="PackageManagerPackagePreviewCounter" xml:space="preserve">
+    <value>{0} files and {1} folders will be created.</value>
+  </data>
+  <data name="PackageManagerPackageSelectCounter" xml:space="preserve">
+    <value>{0} files and {1} folders loaded.</value>
+  </data>
+  <data name="DuplicatedOlderPackage" xml:space="preserve">
+    <value>Starší verze balíčku s názvem {0} verze {2} byla nalezena v {1} s verzí {3}. Starší verze byla ignorována.</value>
+  </data>
+  <data name="InvalidPackageVersion" xml:space="preserve">
+    <value>Verze balíčku s názvem {0} nalezená v {1} není platná (verze: "{2}"). Bude ignorována.</value>
+  </data>
+  <data name="DuplicatedNewerPackage" xml:space="preserve">
+    <value>Byla nalezena novější verze balíčku s názvem {0} verze {2} v umístění {1} s verzí {3}. Novější verze byla ignorována.</value>
+  </data>
+  <data name="NoneLinterDescriptorName" xml:space="preserve">
+    <value>Žádný</value>
+  </data>
+  <data name="PackageStatePendingUnload" xml:space="preserve">
+    <value>Naplánováno k nenačtení</value>
+  </data>
+  <data name="PackageStateError" xml:space="preserve">
+    <value>Chyba</value>
+  </data>
+  <data name="PackageStateLoaded" xml:space="preserve">
+    <value>Načteno</value>
+  </data>
+  <data name="PackageStateUnloaded" xml:space="preserve">
+    <value>Nenačteno</value>
+  </data>
+  <data name="PackageStatePendingUnloadTooltip" xml:space="preserve">
+    <value>Naplánováno k nenačtení.
+Po dalším restartování aplikace Dynamo bude tento balíček ve stavu nenačteno.</value>
+  </data>
+  <data name="PackageStateErrorTooltip" xml:space="preserve">
+    <value>Nenačteno.
+Tento balíček nebyl načten z důvodu neočekávané chyby.</value>
+  </data>
+  <data name="PackageStateLoadedTooltip" xml:space="preserve">
+    <value>Načteno.
+Tento balíček je načten a připraven k použití.</value>
+  </data>
+  <data name="PackageStateUnloadedTooltip" xml:space="preserve">
+    <value>Nenačteno.
+Tento balíček nebyl načten, protože před ním byl načten jiný konfliktní balíček.</value>
+  </data>
+  <data name="GroupDefaultText" xml:space="preserve">
+    <value>Popis &lt;Dvojitým kliknutím sem upravte popis skupiny&gt;</value>
+  </data>
+  <data name="GroupNameDefaultText" xml:space="preserve">
+    <value>Název &lt;Dvojitým kliknutím sem upravte název skupiny&gt;</value>
+  </data>
+  <data name="OutputPortAlternativeName" xml:space="preserve">
+    <value>výstup</value>
+  </data>
+  <data name="InputPortAlternativeName" xml:space="preserve">
+    <value>vstup</value>
+  </data>
+  <data name="BackupSavedMsg" xml:space="preserve">
+    <value>Záložní soubor je uložen</value>
+  </data>
+  <data name="NodeDeprecatedMsg" xml:space="preserve">
+    <value>Uzel '{0}' je nyní vyřazen.</value>
+  </data>
+  <data name="NodeNotResolvedMsg" xml:space="preserve">
+    <value>Uzel '{0}' nelze vyhodnotit.</value>
+  </data>
+  <data name="NodeOfTypeDeprecatedMsg" xml:space="preserve">
+    <value>Uzel typu '{0}' ze sestavy '{1}' je nyní vyřazen.</value>
+  </data>
+  <data name="NodeOfTypeNotResolvedMsg" xml:space="preserve">
+    <value>Uzel typu '{0}' ze sestavy '{1}' nelze vyhodnotit.</value>
+  </data>
+  <data name="NodeUnhandledMsg" xml:space="preserve">
+    <value>Nezpracovaná hodnota DummyNode.NodeNature: {0}</value>
+  </data>
+  <data name="CoreLibraryLoadFailureForBlockedAssembly" xml:space="preserve">
+    <value>{0}
+
+Tato sestava je pravděpodobně blokována. Zkuste aplikaci Dynamo restartovat po odblokování této sestavy a všech dalších hlavních sestav, které mohou být blokovány. Pokud používáte stažené sestavení DynamoSandbox, které je extrahováno ze souboru ZIP, zkuste extrahovat binární soubory aplikace Dynamo pomocí aplikace 7zip a akci zopakovat.</value>
+  </data>
+  <data name="LibraryLoadFailureForBlockedAssembly" xml:space="preserve">
+    <value>{0}
+
+Tato sestava je pravděpodobně blokována. Po odblokování sestavy ji zkuste znovu importovat.</value>
+  </data>
+  <data name="PackageLoadFailureForBlockedAssembly" xml:space="preserve">
+    <value>{0}
+
+Tento balíček pravděpodobně obsahuje sestavu, která je blokována. Po odblokování sestavy bude nutné balíček znovu načíst. Chcete-li balíček znovu načíst, restartujte aplikaci Dynamo.</value>
+  </data>
+  <data name="CoreLibraryLoadFailureMessageBoxTitle" xml:space="preserve">
+    <value>Načtení hlavní knihovny se nezdařilo</value>
+  </data>
+  <data name="LibraryLoadFailureMessageBoxTitle" xml:space="preserve">
+    <value>Načtení knihovny se nezdařilo</value>
+  </data>
+  <data name="FileLoadFailureMessageBoxTitle" xml:space="preserve">
+    <value>Načtení souboru se nezdařilo.</value>
+  </data>
+  <data name="GroupStyleDefaultActions" xml:space="preserve">
+    <value>Akce</value>
+  </data>
+  <data name="GroupStyleDefaultActionsColor" xml:space="preserve">
+    <value>B9F9E1</value>
+  </data>
+  <data name="GroupStyleDefaultInputs" xml:space="preserve">
+    <value>Vstupy</value>
+  </data>
+  <data name="GroupStyleDefaultInputsColor" xml:space="preserve">
+    <value>FFB8D8</value>
+  </data>
+  <data name="GroupStyleDefaultOutputs" xml:space="preserve">
+    <value>Výstupy</value>
+  </data>
+  <data name="GroupStyleDefaultOutputsColor" xml:space="preserve">
+    <value>FFC999</value>
+  </data>
+  <data name="GroupStyleDefaultReview" xml:space="preserve">
+    <value>Kontrola</value>
+  </data>
+  <data name="GroupStyleDefaultReviewColor" xml:space="preserve">
+    <value>A4E1FF</value>
+  </data>
+  <data name="ToolTipInputData" xml:space="preserve">
+    <value>Vstupní data</value>
+  </data>
+  <data name="SplashScreenInitPreferencesSettings" xml:space="preserve">
+    <value>Inicializace předvoleb...</value>
+  </data>
+  <data name="SplashScreenLoadNodeLibrary" xml:space="preserve">
+    <value>Načítání knihovny uzlů...</value>
+  </data>
+  <data name="AutocompleteNoRecommendationsTitle" xml:space="preserve">
+    <value>Žádná doporučení</value>
+  </data>
+  <data name="AutocompleteLowConfidenceTitle" xml:space="preserve">
+    <value>Nízká spolehlivost</value>
+  </data>
+  <data name="AutocompleteNoRecommendationsMessage" xml:space="preserve">
+    <value>Zatím nejsou žádná doporučení. Můžete zkusit přepnout na automatické dokončování shody typu uzlů.</value>
+  </data>
+  <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
+    <value>Všechna doporučení mají nízkou spolehlivost. Můžete je vyzkoušet nebo upravit nastavení spolehlivosti v dialogu Předvolby.</value>
+  </data>
+  <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
+    <value>Zobrazení doporučení s nízkou spolehlivostí.</value>
+  </data>
+  <data name="LoginNeededTitle" xml:space="preserve">
+    <value>Neověřeno</value>
+  </data>
+  <data name="LoginNeededMessage" xml:space="preserve">
+    <value>Chcete-li získat doporučení, přihlaste se ke svému účtu. Přihlaste se nebo přepněte na automatické dokončování shody typu uzlů.</value>
+  </data>
+  <data name="FailedInsertFileNodeExistNotification" xml:space="preserve">
+    <value>Vložení souboru se nezdařilo, protože některé uzly již v aktuálním pracovním prostoru existují.</value>
+  </data>
+  <data name="InsertDialogBoxText" xml:space="preserve">
+    <value>Insert Dynamo Graph...</value>
+  </data>
+  <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
+    <value>Do pracovního prostoru byl přidán vzorový soubor. Režim spuštění byl změněn na Ruční.</value>
+  </data>
+  <data name="DynamoLanguages_noxlate" xml:space="preserve">
+    <value>Default,English,Čeština,Deutsch,Español,Français,Italiano,日本語,한국어,Polski,Português (Brasil),Русский,简体中文,繁體中文</value>
+  </data>
+  <data name="FormulaDSConversionFailure" xml:space="preserve">
+    <value>Převod vzorce na kód DesignScript se nezdařil. Upravte vzorec ručně, aby jej bylo možné použít v uzlu CodeBlock.</value>
+  </data>
+  <data name="FormulaMigrated" xml:space="preserve">
+    <value>Uzel vzorce byl vyřazen. Byl automaticky migrován do uzlu CodeBlock. Všimněte si, že výsledky se mohou po migraci lišit v závislosti na možnostech vázání vybraných v původním uzlu Formula. Pro uzel CodeBlock může být nutné použít příslušná vodítka replikace.</value>
+  </data>
+  <data name="LegacyTraceDataWarning" xml:space="preserve">
+    <value>Tento pracovní prostor obsahuje data vazeb prvků ve starším formátu, který již není podporován v aplikaci Dynamo 3.0 a vyšších verzích. Data vazeb prvků budou uložena v novém formátu při příštím spuštění a uložení tohoto pracovního prostoru.</value>
+  </data>
+  <data name="InputNodeRenameHint" xml:space="preserve">
+    <value>výchozí název vstupu, přejmenujte mě.</value>
+  </data>
+  <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
+    <value>Tento uzel je v současné době experimentální. Jeho chování, název a podpis se mohou změnit.</value>
+  </data>
+</root>
