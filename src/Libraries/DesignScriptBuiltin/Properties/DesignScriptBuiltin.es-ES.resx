@@ -118,12 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="IndexOutOfRangeExceptionMessage" xml:space="preserve">
-    <value>El índice se encuentra fuera del intervalo. El valor condicional no negativo debe ser inferior al tamaño de la lista. href=kIndexOutOfRange.html</value>
+    <value>Index was out of range. If non-negative must be less than the size of the list. href=kIndexOutOfRange.html</value>
   </data>
   <data name="StringOverIndexingExceptionMessage" xml:space="preserve">
-    <value>El índice se encuentra fuera del intervalo. El valor condicional no negativo debe ser inferior al tamaño de la cadena. href=kIndexOutOfRange.html</value>
+    <value>Index was out of range. If non-negative must be less than the size of the string. href=kIndexOutOfRange.html</value>
   </data>
   <data name="NullReferenceExceptionMessage" xml:space="preserve">
-    <value>No se puede indexar en una lista, una cadena o un diccionario nulos.</value>
+    <value>Cannot index into a null list, dictionary or string.</value>
   </data>
 </root>
