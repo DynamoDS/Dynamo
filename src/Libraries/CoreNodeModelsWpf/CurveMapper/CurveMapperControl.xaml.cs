@@ -3,10 +3,14 @@ using Dynamo.Wpf.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Linq;
+using System.Text;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -57,7 +61,7 @@ namespace Dynamo.Wpf.CurveMapper
         private const double offsetValue = 6;
         private const int gridSize = 10;
         private const int minCanvasSize = 240;
-        private const int controlLabelsWidth = 70;
+        private const int controlLabelsWidth = 85;
         private const int controlLabelsHeight = 100;
 
         /// <summary> 
@@ -319,7 +323,7 @@ namespace Dynamo.Wpf.CurveMapper
             }
         }
 
-        
+
         private void DrawGrid()
         {
             // Remove current grid lines

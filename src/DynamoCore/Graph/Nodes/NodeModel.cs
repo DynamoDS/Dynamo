@@ -1093,6 +1093,12 @@ namespace Dynamo.Graph.Nodes
             }
         }
 
+        /// <summary>
+        ///     Indicates whether this node supports user-resizable UI elements
+        /// </summary>
+        [JsonIgnore]
+        public virtual bool IsResizable => false;
+
         #endregion
 
         #region freeze execution

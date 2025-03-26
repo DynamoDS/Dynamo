@@ -504,6 +504,10 @@ Dynamo.Controls.NumberFormatConverter
 Dynamo.Controls.NumberFormatConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NumberFormatConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.NumberFormatConverter.NumberFormatConverter() -> void
+Dynamo.Controls.NumberFormatterConverter
+Dynamo.Controls.NumberFormatterConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.NumberFormatterConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.NumberFormatterConverter.NumberFormatterConverter() -> void
 Dynamo.Controls.ObjectTypeConverter
 Dynamo.Controls.ObjectTypeConverter.Convert(object[] values, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.ObjectTypeConverter.ConvertBack(object value, System.Type[] targetTypes, object parameter, System.Globalization.CultureInfo culture) -> object[]
