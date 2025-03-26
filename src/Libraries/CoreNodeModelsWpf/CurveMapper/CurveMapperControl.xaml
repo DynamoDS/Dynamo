@@ -5,9 +5,11 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              xmlns:resx="clr-namespace:Dynamo.Wpf.Properties"
-             Width="310"
+             xmlns:local="clr-namespace:Dynamo.Wpf.CurveMapper"
+             xmlns:contols="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
+             Width="325"
              Height="340"
-             MinWidth="310"
+             MinWidth="325"
              MinHeight="340"
              mc:Ignorable="d">
     <UserControl.Resources>
@@ -17,6 +19,7 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.LiveChartsDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
+            <contols:NumberFormatterConverter x:Key="NumberFormatterConverter"/>
             <!--  Style for X and Y Axis Labels -->
             <Style x:Key="AxisLabelStyle" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
@@ -35,7 +38,7 @@
 
     <Grid>
         <Grid x:Name="MainGrid"
-          MinWidth="310"
+          MinWidth="325"
           MinHeight="340"
           Width="{Binding MainGridWidth, Mode=TwoWay}"
           Height="{Binding MainGridHeight, Mode=TwoWay}">
@@ -45,7 +48,7 @@
                 <RowDefinition Height="55" />
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="40" />
+                <ColumnDefinition Width="55" />
                 <ColumnDefinition Width="*" />
                 <ColumnDefinition Width="20" />
             </Grid.ColumnDefinitions>
@@ -76,7 +79,7 @@
                        HorizontalAlignment="Left"
                        VerticalAlignment="Top"
                        Style="{StaticResource AxisLabelStyle}"
-                       Text="{Binding MinLimitX}" />
+                       Text="{Binding MinLimitX, Converter={StaticResource NumberFormatterConverter}}" />
 
                 <TextBlock x:Name="midXLabel"
                        Grid.Row="0" Grid.Column="1"
@@ -84,14 +87,14 @@
                        HorizontalAlignment="Center"
                        VerticalAlignment="Top"
                        Style="{StaticResource AxisLabelStyle}"
-                       Text="{Binding MidValueX}" />
+                       Text="{Binding MidValueX, Converter={StaticResource NumberFormatterConverter}}" />
 
                 <TextBlock x:Name="maxLimitXLabel"
                        Grid.Row="0" Grid.Column="2"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Top"
                        Style="{StaticResource AxisLabelStyle}"
-                       Text="{Binding MaxLimitX}" />
+                       Text="{Binding MaxLimitX, Converter={StaticResource NumberFormatterConverter}}" />
 
                 <TextBlock Grid.Row="1" Grid.Column="1"
                        Style="{StaticResource AxisTitleStyle}"
@@ -100,8 +103,8 @@
             <!--  Y labels  -->
             <Grid Grid.Row="0" Grid.Column="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="15" />
-                    <ColumnDefinition Width="25" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="*" />
@@ -114,22 +117,23 @@
                        HorizontalAlignment="Right"
                        VerticalAlignment="Bottom"
                        Style="{StaticResource AxisLabelStyle}"
-                       Text="{Binding MinLimitY}" />
+                       Text="{Binding MinLimitY, Converter={StaticResource NumberFormatterConverter}}" />
                 <TextBlock x:Name="midYLabel"
                        Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Center"
                        Style="{StaticResource AxisLabelStyle}"
-                       Text="{Binding MidValueY}" />
+                       Text="{Binding MidValueY, Converter={StaticResource NumberFormatterConverter}}" />
                 <TextBlock x:Name="maxLimitYLabel"
                        Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
                        HorizontalAlignment="Right"
                        VerticalAlignment="Top"
                        Style="{StaticResource AxisLabelStyle}"
-                       Text="{Binding MaxLimitY}" />
+                       Text="{Binding MaxLimitY, Converter={StaticResource NumberFormatterConverter}}" />
                 <TextBlock Grid.Row="1" Grid.Column="0"
                        Style="{StaticResource AxisTitleStyle}"
-                       Text="y">
+                       Text="y"
+                           HorizontalAlignment="Right">
                     <TextBlock.RenderTransform>
                         <RotateTransform Angle="-90" />
                     </TextBlock.RenderTransform>
