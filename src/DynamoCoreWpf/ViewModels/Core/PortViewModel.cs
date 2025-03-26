@@ -421,20 +421,6 @@ namespace Dynamo.ViewModels
             return new[] { placement };
         }
 
-        private CustomPopupPlacement[] PlaceDNAAutocompletePopup(Size popupSize, Size targetSize, Point offset)
-        {
-            // Highlight the port when the autocomplete popup is shown
-            Highlight = Visibility.Visible;
-            double x = 0;
-            // Scale the spaacing by the target height (passed to the callback) and the actual height of the node.
-            var scaledSpacing = autocompletePopupSpacing * targetSize.Height / node.ActualHeight;
-            var y = scaledSpacing + targetSize.Height;
-
-            var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);
-
-            return new[] { placement };
-        }
-
         private CustomPopupPlacement[] PlacePortContextMenu(Size popupSize, Size targetSize, Point offset)
         {
             // The actual zoom here is confusing

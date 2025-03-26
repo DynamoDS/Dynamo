@@ -25,6 +25,7 @@ namespace Dynamo.UI.Controls
 
         public DNAAutocompleteBar(Window window, NodeAutoCompleteSearchViewModel viewModel)
         {
+            viewModel.PortViewModel.Highlight = Visibility.Visible;
             this.Owner = window;
             DataContext = viewModel;
             InitializeComponent();
@@ -144,6 +145,7 @@ namespace Dynamo.UI.Controls
             {
                 ViewModel?.DeleteTransientNodes();
             }), DispatcherPriority.Loaded);
+            ViewModel.PortViewModel.Highlight = Visibility.Hidden;
             ViewModel.IsOpen = false;
             this.Close();
             ViewModel?.OnNodeAutoCompleteWindowClosed();
