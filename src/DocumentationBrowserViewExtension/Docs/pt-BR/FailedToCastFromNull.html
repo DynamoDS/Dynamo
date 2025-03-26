@@ -1,0 +1,36 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Não é possível converter o valor nulo em tipo</h2>
+<p>Esse aviso significa que o nó que você está tentando usar está esperando uma entrada de determinado tipo de dados e que esse tipo não pode ser nulo. Nulo significa simplesmente “Nenhum objeto”, portanto o nó produz um aviso dizendo que você está tentando inserir nenhum objeto no nó, o que não é permitido.</p>
+
+<h4>Como corrigir</h4>
+<p>O erro pode ser causado por outros nós no gráfico. Verifique os nós a montante para verificar se eles são executados corretamente; é comum que os nós a montante não sejam executados corretamente e passem valores nulos a jusante até um nó que, em seguida, exibe essa mensagem de erro. Comece no nó que está causando esse aviso e verifique a saída de cada nó na direção inversa até encontrar o nó que está causando esse problema.</p>
+
+<p>Se a mensagem de erro indicar qual parâmetro é nulo, verifique os nós no caminho a montante do parâmetro para ver se eles são executados corretamente e passam valores não nulos a jusante.</p>
+
+<h4>Mais informações</h4>
+<p>Para saber mais, consulte<a href="https://forum.dynamobim.com/search?q=null%20value%20cannot%20be%20cast%20to"><span>“<strong>não é possível converter o valor nulo em tipo</strong>”</span></a>.</p>
+
+</body>

@@ -1,0 +1,188 @@
+﻿<!--
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.
+
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="UTF-8" />
+</head>
+
+<style>
+    body {
+        color: white;
+        font-size: 14px;
+        font-family: "Artifakt Element";
+        src: url("fonts/ArtifaktElement-Regular.woff") format("woff");
+        padding: 1%;
+    }
+
+    a {
+        color: lightgray;
+        cursor: pointer;
+        background-color: transparent;
+    }
+
+    table {
+        border-collapse: collapse;
+        border: 1px solid white;
+    }
+
+    th,
+    td {
+        border: 1px solid white;
+        padding-right: 10px;
+        padding-left: 10px;
+        padding-bottom: 10px;
+        padding-top: 10px;
+    }
+
+    samp {
+        margin-top: 10px;
+        display: block;
+        color: lightgrey;
+    }
+
+    code .k {
+        color: #dcdcaa;
+        font-weight: bold;
+    }
+
+    code .s {
+        color: #ce9178;
+    }
+
+    code .v {
+        color: #b5cea8;
+    }
+
+    code .o {
+        color: #c586c0;
+        font-weight: bold;
+    }
+
+    code .i {
+        color: #569cd6;
+        font-weight: bold;
+    }
+
+    code .b {
+        color: #9cdcfe;
+        font-weight: bold;
+    }
+
+    code .e {
+        color: #43c9b0;
+    }
+
+    code > .nl .nl {
+        padding-left: 10px;
+    }
+
+    code .nl {
+        display: block;
+    }
+
+    thead {
+        text-align: center;
+    }
+
+    .hidden-lg {
+        display: none;
+    }
+
+    .button {
+        background-color: transparent;
+        border-color: #3c3c3c;
+        color: #bbbbbb;
+    }
+
+        .button:hover {
+            border-color: #656565;
+            background-color: #373737;
+            opacity: 1.0;
+        }
+
+    .questionmark:after {
+        content: '?';
+        display: inline-block;
+        font-family: sans-serif;
+        font-weight: bold;
+        text-align: center;
+        font-size: 0.8em;
+        line-height: 0.8em;
+        border-radius: 50%;
+        margin-left: 6px;
+        padding: 0.13em 0.2em 0.09em 0.2em;
+        color: inherit;
+        border: 1px solid;
+        text-decoration: none;
+    }
+
+    @media screen and (max-width: 600px) {
+        table {
+            width: 100%;
+        }
+
+        table,
+        th,
+        td {
+            border: none;
+        }
+
+        tr {
+            border: 1px solid white;
+            display: block;
+        }
+
+        td,
+        th {
+            display: block;
+        }
+
+        .hidden-lg {
+            display: block;
+            font-weight: bold;
+            text-align: center;
+            border-bottom: 1px solid white;
+        }
+
+        .hidden-sm {
+            display: none;
+        }
+
+        .spaced-sm {
+            margin-top: 20px;
+        }
+
+        tbody tr:first-of-type {
+            border-bottom: none;
+        }
+    }
+</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h3>Graph Status</h3>
+    <h4>Overview</h4>
+    <p>The Graph Status extension is where you can find information about issues that Dynamo has detected in your graph. The issues that are shown in the Graph Status panel are separate from warnings and errors that are displayed on individual Dynamo nodes in the workspace. Instead, these are derived from custom rules that can be defined by Dynamo extensions.</p>
+    <h4>Graph Type</h4>
+    <p>When a Dynamo extensions utilizes Dynamo's Linting API to register a custom set of rules, the name of that extension will appear as an option in the dropdown labeled <i>Graph Type</i>. Dynamo will check to see if those rules have been broken whenever changes are made to the graph.</p>
+    <p>For example, the Generative Design extension for Dynamo uses this feature to ensure that Dynamo graphs designed for use with Generative Design have the necessary properties required for the graph to work correctly in the Generative Design app. Generative Design requires that graphs have at least one input and one output node, and this is enforced using the rules registered by the Dynamo extension.</p>
+    <h4>Node Issues and Graph Issues</h4>
+    <p>Rules defined by an extension are registered as one of two types: Graph rules, or Node rules.  If Dynamo detects that one of those rules has been broken in the current graph, a warning with information on how to fix the issue, and a link to where the issue was detected will be shown in one of these two sections.</p>
+    <h4>Other Info</h4>
+    <p>Whenever a graph is saved, the Graph Status extension will store some metadata in the Dynamo file such as the selected Graph Type, and whether or not issues were present when the graph was last saved.</p>
+    <p>When a new Dynamo graph is created, the Graph Status extension doesn't check for any specific rules automatically. The default selection for the Graph Type will be <i>None</i>. Currently, only one Graph Type can be selected at a time in the Graph Status view.</p>
+</body>
