@@ -118,33 +118,33 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ArraySizeOverflow" xml:space="preserve">
-    <value>Array size overflow</value>
+    <value>配列サイズ オーバーフロー</value>
   </data>
   <data name="ClassNameAsVariableError" xml:space="preserve">
-    <value>{0} is a class name, can't be used as a variable.</value>
+    <value>{0} はクラス名です。変数として使用できません。</value>
   </data>
   <data name="ConstantExpectedInArrayDeclaration" xml:space="preserve">
-    <value>Array declaration expected constant expression</value>
+    <value>配列宣言には定数式が必要です</value>
   </data>
   <data name="FunctionAsVaribleError" xml:space="preserve">
-    <value>\"{0}\"is a function and not allowed as a variable name</value>
+    <value>\"{0}\" は関数であり、変数名として使用できません</value>
   </data>
   <data name="FunctionPointerNotAllowedAtBinaryExpression" xml:space="preserve">
-    <value>Function pointer is not allowed at binary expression other than assignment.</value>
+    <value>関数ポインタは割り当て以外の二項式では使用できません。</value>
   </data>
   <data name="IdentifierRedefinition" xml:space="preserve">
-    <value>redefinition of identifier '{0}'</value>
+    <value>識別子 '{0}' の再設定</value>
   </data>
   <data name="ImperativeSymbolsAreReadOnly" xml:space="preserve">
-    <value>Variables declared in an outer scope cannot be changed inside an imperative block.</value>
+    <value>外側スコープ内で宣言された変数を命令ブロック内で変更することはできません。</value>
   </data>
   <data name="InvalidArrayInitializer" xml:space="preserve">
-    <value>array initializer must be an expression list</value>
+    <value>配列イニシャライザは式のリストにする必要があります</value>
   </data>
   <data name="InvalidNestedImperativeBlock" xml:space="preserve">
-    <value>An imperative language block is declared within an imperative language block.</value>
+    <value>命令型言語ブロックが命令型言語ブロック内で宣言されています。</value>
   </data>
   <data name="OnlyIdentifierOrIdentifierListCanBeOnLeftSide" xml:space="preserve">
-    <value>Only identifier or identifier list can appear on the left hand side of assignment.</value>
+    <value>割り当ての左側には識別子または識別子のリストのみが表示されます。</value>
   </data>
 </root>

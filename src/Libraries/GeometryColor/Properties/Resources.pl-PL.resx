@@ -118,24 +118,24 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="JaggedListExceptionMessage" xml:space="preserve">
-    <value>The list of colors must not be a jagged list.</value>
+    <value>Lista kolorów nie może być nieregularna.</value>
   </data>
   <data name="NoColorsExceptionMessage" xml:space="preserve">
-    <value>You must provide some colors.</value>
+    <value>Należy podać niektóre kolory.</value>
   </data>
   <data name="NoVertexExceptionMessage" xml:space="preserve">
-    <value>You must provide some vertices.</value>
+    <value>Należy podać niektóre wierzchołki.</value>
   </data>
   <data name="TwoDimensionalListExceptionMessage" xml:space="preserve">
-    <value>You must supply a two dimensional list of Colors.</value>
+    <value>Należy podać dwuwymiarową listę kolorów.</value>
   </data>
   <data name="VertexColorCountMismatchExceptionMessage" xml:space="preserve">
-    <value>The number of colors supplied must match the number of vertices.</value>
+    <value>Liczba dostarczonych kolorów powinna odpowiadać liczbie wierzchołków.</value>
   </data>
   <data name="VerticesDivisibleByThreeExceptionMessage" xml:space="preserve">
-    <value>The number of vertices supplied must be divisible by three.</value>
+    <value>Podana liczba wierzchołków powinna być podzielna przez trzy.</value>
   </data>
   <data name="ByMeshColorsInvalidColorCountMessage" xml:space="preserve">
-      <value>The color count is invalid. It must equal 1 (single color), or equal the face count (per-face color), or equal the vertex count (per-vertex color), or equal the triangle count multiplied by three (per-triangle-vertex color). If you want to color multiple meshes, you may need to use List Levels.</value>
+    <value>Liczba kolorów jest nieprawidłowa. Musi być równa 1 (pojedynczy kolor), równa liczbie powierzchni (kolor na powierzchnię), równa liczbie wierzchołków (kolor na wierzchołek) lub równa liczbie trójkątów pomnożonej przez trzy (kolor na wierzchołek trójkąta). Aby pokolorować wiele siatek, może być konieczne użycie poziomów listy.</value>
   </data>
 </root>

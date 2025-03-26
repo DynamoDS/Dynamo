@@ -118,12 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExcelInteropObsoleteNode" xml:space="preserve">
-    <value>This node is obsolete and will be removed in a future version of Dynamo, please use the corresponding one that is OpenXML based.</value>
+    <value>Este nodo está obsoleto y se eliminará en una futura versión de Dynamo. Utilice el correspondiente basado en OpenXML.</value>
   </data>
   <data name="ReadObsolete" xml:space="preserve">
-    <value>Use File.FromPath -&gt; Excel.ReadFromFile node instead.</value>
+    <value>Utiliza los nodos File.FromPath -&gt; Excel.ReadFromFile en su lugar.</value>
   </data>
   <data name="StreamWriterNotFoundException" xml:space="preserve">
-    <value>The file or directory cannot be found</value>
+    <value>No se puede encontrar el archivo o el directorio.</value>
   </data>
 </root>

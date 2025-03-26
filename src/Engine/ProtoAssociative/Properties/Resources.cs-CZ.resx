@@ -118,21 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ClassCannotBeDefinedInsideLanguageBlock" xml:space="preserve">
-    <value>A class cannot be defined inside a language block.\n</value>
+    <value>Třídu nelze definovat uvnitř bloku jazyka.\n</value>
   </data>
   <data name="ClassNameAsVariableError" xml:space="preserve">
-    <value>{0} is a class name, can't be used as a variable.</value>
+    <value>{0} je název třídy, nelze použít jako proměnná.</value>
   </data>
   <data name="FunctionAsVariableError" xml:space="preserve">
-    <value>\"{0}\" is a function and not allowed as a variable name</value>
+    <value>\„{0}\“ je funkce a není povoleno jako název proměnné</value>
   </data>
   <data name="FunctionPointerNotAllowedAtBinaryExpression" xml:space="preserve">
-    <value>Function pointer is not allowed at binary expression other than assignment!</value>
+    <value>Ukazatel funkce není povolen v binárním výrazu jiném než přiřazení!</value>
   </data>
   <data name="InvalidNestedAssociativeBlock" xml:space="preserve">
-    <value>An associative language block is declared within an associative language block.</value>
+    <value>Asociativní blok jazyka je deklarován v rámci asociativního bloku jazyka.</value>
   </data>
   <data name="MemberVariableAlreadyDefined" xml:space="preserve">
-    <value>Member variable '{0}' is already defined in class {1}</value>
+    <value>Proměnná členu „{0}“ je již definována ve třídě {1}</value>
   </data>
 </root>

@@ -118,10 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="SandboxBuildsPageDialogMessage" xml:space="preserve">
-    <value>Go to the Dynamo builds wiki site({0}) for more information.</value>
-    <comment>message directing user to wiki page</comment>
+    <value>자세한 내용을 보려면 Dynamo 빌드 Wiki 사이트({0})로 이동하십시오.</value>
   </data>
   <data name="SandboxCrashMessage" xml:space="preserve">
-    <value>Could not start Dynamo Sandbox, unhandled exception.</value>
+    <value>Dynamo Sandbox를 시작할 수 없습니다. 처리되지 않은 예외가 발생했습니다.</value>
   </data>
 </root>

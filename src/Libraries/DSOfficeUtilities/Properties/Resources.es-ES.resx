@@ -118,22 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExcelCommunicationError" xml:space="preserve">
-    <value>Error setting up communication with Excel.  Try closing any open Excel instances.</value>
+    <value>Error al configurar la comunicación con Excel. Finalice cualquier proceso de Excel en ejecución.</value>
   </data>
   <data name="ExcelNotInstalled" xml:space="preserve">
-    <value>Excel is not installed. href=ExcelNotInstalled.html</value>
+    <value>Excel no está instalado. href=ExcelNotInstalled.html</value>
   </data>
   <data name="kMethodResolutionFailureWithTypes" xml:space="preserve">
-    <value>One or more of the input types are not matching. Couldn't find a version of {0} that takes arguments of type {1}</value>
+    <value>Uno o varios de los tipos de entrada no son coincidentes. No se ha podido encontrar una versión de {0} que requiere argumentos de tipo {1}</value>
   </data>
   <data name="ReadObsolete" xml:space="preserve">
-    <value>Use File.FromPath -&gt; Excel.ReadFromFile node instead.</value>
+    <value>Utiliza los nodos File.FromPath -&gt; Excel.ReadFromFile en su lugar.</value>
   </data>
   <data name="WorkbookNotFound" xml:space="preserve">
-    <value>A workbook was not found in the provided path.</value>
+    <value>No se ha encontrado un libro en la ruta especificada.</value>
   </data>
   <data name="WorksheetNotFound" xml:space="preserve">
-    <value>A worksheet with the provided name '{0}' was not found in the workbook.</value>
-    <comment>{0} = name of the worksheet, for example 'Sheet1'.</comment>
+    <value>No se ha encontrado una hoja de trabajo con el nombre especificado '{0}' en el libro.</value>
   </data>
 </root>

@@ -118,12 +118,12 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="IndexOutOfRangeExceptionMessage" xml:space="preserve">
-    <value>Index was out of range. If non-negative must be less than the size of the list. href=kIndexOutOfRange.html</value>
+    <value>Index byl mimo rozsah. Pokud je nezáporný, musí být menší než velikost seznamu. href=kIndexOutOfRange.html</value>
   </data>
   <data name="StringOverIndexingExceptionMessage" xml:space="preserve">
-    <value>Index was out of range. If non-negative must be less than the size of the string. href=kIndexOutOfRange.html</value>
+    <value>Index byl mimo rozsah. Pokud je nezáporný, musí být menší než velikost řetězce. href=kIndexOutOfRange.html</value>
   </data>
   <data name="NullReferenceExceptionMessage" xml:space="preserve">
-    <value>Cannot index into a null list, dictionary or string.</value>
+    <value>Nelze Indexovat do seznamu, slovníku nebo řetězce nastaveného na null.</value>
   </data>
 </root>

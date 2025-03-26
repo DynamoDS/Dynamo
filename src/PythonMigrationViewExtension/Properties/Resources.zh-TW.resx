@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,107 +118,107 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AcceptButtonTooltip" xml:space="preserve">
-    <value>Accept the current code changes.</value>
+    <value>接受目前的程式碼變更。</value>
   </data>
   <data name="CustomNodesPythonDependencyHeader" xml:space="preserve">
-    <value>Custom Nodes that have an IronPython2 dependency</value>
+    <value>有 IronPython2 相依性的自訂節點</value>
   </data>
   <data name="DiffButtonTooltip" xml:space="preserve">
-    <value>Change between Side-by-Side and Inline view.</value>
+    <value>在「並排」和「內嵌」視圖之間變更。</value>
   </data>
   <data name="IronPythonDialogDescription" xml:space="preserve">
-    <value>Dynamo has moved away from the old IronPython2 (Python 2) engine towards a new CPython3 (Python 3) engine. 
-The IronPython engine is still available as a package from the Dynamo package manager, but only the CPython3 engine will be supported.</value>
+    <value>Dynamo 已經從舊的 IronPython2 (Python 2) 引擎轉換到新的 CPython3 (Python 3) 引擎。
+從 Dynamo Package Manager 中仍然會看到 IronPython 引擎以套件形式存在，但只支援 CPython3 引擎。</value>
   </data>
   <data name="IronPythonDialogSummary" xml:space="preserve">
-    <value>This graph contains nodes that reference an outdated Python engine.</value>
+    <value>此圖表包含的節點參考過期的 Python 引擎。</value>
   </data>
   <data name="IronPythonDialogTitle" xml:space="preserve">
-    <value>Graph contains outdated Python engine</value>
+    <value>圖表包含過期的 Python 引擎</value>
   </data>
   <data name="IronPythonDisableAlertMessage" xml:space="preserve">
-    <value>Do not show again.</value>
+    <value>不要再顯示。</value>
   </data>
   <data name="IronPythonNotificationDetailedMessage" xml:space="preserve">
-    <value>This graph currently contains python nodes that are using the old IronPython Engine which has been deprecated. Consider updating these nodes to use the new CPython 3.7 Engine.</value>
+    <value>此圖表目前包含的 python 節點使用已被捨棄的舊版 IronPython 引擎。請考慮更新這些節點以使用新的 CPython 3.7 引擎。</value>
   </data>
   <data name="IronPythonNotificationShortMessage" xml:space="preserve">
-    <value>This graph currently contains nodes that are using the old IronPython2 (Python 2) engine which has been deprecated. A new CPython3 (Python 3) has been implemented and is accessible inside the Python editor.</value>
+    <value>此圖表目前包含的節點使用已被捨棄的舊版 IronPython2 (Python 2) 引擎。我們已導入新的 CPython3 (Python 3)，您可以在 Python 編輯器中存取。</value>
   </data>
   <data name="MigrationAssistantDisclaimerContinueButtonContent" xml:space="preserve">
-    <value>Continue</value>
+    <value>繼續</value>
   </data>
   <data name="MigrationAssistantDisclaimerDecline" xml:space="preserve">
-    <value>Decline</value>
+    <value>拒絕</value>
   </data>
   <data name="MigrationAssistantDisclaimerDisable" xml:space="preserve">
-    <value>Do not show again.</value>
+    <value>不要再顯示。</value>
   </data>
   <data name="MigrationAssistantDisclaimerHeader" xml:space="preserve">
-    <value>You are about to make changes to your Python code</value>
+    <value>您即將變更您的 Python 程式碼</value>
   </data>
   <data name="MigrationAssistantDisclaimerMessage" xml:space="preserve">
-    <value>The Migration Assistant helps users to update scripts from Python 2 to Python 3.
-By clicking “Continue”, you are agreeing to implement the syntax changes to your source code as suggested by the Migration Assistant. The Migration Assistant is a component of open source Dynamo, and as such it is licensed to you under the terms of the Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0 ). Under the terms of the Apache License 2.0, Dynamo and the Migration Assistant are provided to you on an “AS IS” basis.</value>
+    <value>「移轉助理」可協助使用者將指令碼從 Python 2 更新為 Python 3。
+按一下「繼續」，即表示您同意依照「移轉助理」的建議，對原始程式碼導入語法變更。「移轉助理」是開放原始碼 Dynamo 的一個元件，因此依照 Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0) 的條款授權給您。依照 Apache License 2.0 的條款，Dynamo 和「移轉助理」是以「AS IS (現況)」為基礎提供給您。</value>
   </data>
   <data name="MigrationAssistantDisclaimerWindowTitle" xml:space="preserve">
-    <value>Migration Assistant Disclaimer</value>
+    <value>「移轉助理」免責聲明</value>
   </data>
   <data name="MigrationAssistantNoChangesStateHeader" xml:space="preserve">
-    <value>Nothing to see here!</value>
+    <value>這裡沒有可查看的內容！</value>
   </data>
   <data name="MigrationAssistantNoChangesStateMessage" xml:space="preserve">
-    <value>Your code is ready to run with the Python 3 engine. Click accept and we'll switch to the Python 3 engine for you.</value>
+    <value>您的程式碼已經準備好可以使用 Python 3 引擎執行。請按一下「接受」，我們將為您切換至 Python 3 引擎。</value>
   </data>
   <data name="MigrationAssistantErrorStateHeader" xml:space="preserve">
-    <value>There is an error in your code!</value>
+    <value>您的程式碼有錯誤！</value>
   </data>
   <data name="MigrationAssistantErrorStateMessage" xml:space="preserve">
-    <value>Fix all errors before attempting code migration.</value>
+    <value>請在嘗試移轉程式碼之前，修正所有錯誤。</value>
   </data>
   <data name="PackagedCustomNodesHeader" xml:space="preserve">
-    <value>Packaged</value>
+    <value>來自套件</value>
   </data>
   <data name="PackagedCustomNodesTooltip" xml:space="preserve">
-    <value>Please notify the package author to update the package</value>
+    <value>請通知套件作者更新套件</value>
   </data>
   <data name="PythonMigrationAssistantCodeAfter" xml:space="preserve">
-    <value>After</value>
+    <value>之後</value>
   </data>
   <data name="PythonMigrationAssistantCodeBefore" xml:space="preserve">
-    <value>Before</value>
+    <value>之前</value>
   </data>
   <data name="PythonMigrationAssistantInlinePaneTitle" xml:space="preserve">
-    <value>Before -&gt; After</value>
+    <value>之前 -&gt; 之後</value>
   </data>
   <data name="PythonMigrationAssistantWindowTitle" xml:space="preserve">
-    <value>Migration Assistant</value>
+    <value>移轉助理</value>
   </data>
   <data name="PythonMigrationBackupExtension" xml:space="preserve">
     <value>Python2</value>
   </data>
   <data name="PythonMigrationBackupFileCreatedMessage" xml:space="preserve">
-    <value>Before applying the Python code migration, a backup of this graph has been saved to the configured backup location : {0}</value>
+    <value>在套用 Python 程式碼移轉之前，此圖表的備份已儲存至規劃的備份位置: {0}</value>
   </data>
   <data name="RejectButtonTooltip" xml:space="preserve">
-    <value>Reject the current code changes.</value>
+    <value>拒絕目前的程式碼變更。</value>
   </data>
   <data name="UserDefinitionCustomNodesTooltip" xml:space="preserve">
-    <value>Double-click on the custom node to open its workspace</value>
+    <value>按兩下自訂節點以開啟其工作區</value>
   </data>
   <data name="UserDefinitionsHeader" xml:space="preserve">
-    <value>Definitions</value>
+    <value>定義</value>
   </data>
   <data name="MoreInformationButton" xml:space="preserve">
-    <value>More Information</value>
+    <value>更多資訊</value>
   </data>
   <data name="AcceptButton" xml:space="preserve">
-    <value>Accept</value>
+    <value>接受</value>
   </data>
   <data name="RejectButton" xml:space="preserve">
-    <value>Cancel</value>
+    <value>取消</value>
   </data>
   <data name="SwitchViewButton" xml:space="preserve">
-    <value>Switch View</value>
+    <value>切換視圖</value>
   </data>
 </root>

@@ -1,0 +1,104 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Operators</name>
+    </assembly>
+    <members>
+        <member name="%add">
+            <summary>返回 x 加 y 的和</summary>
+            <param name="x">整数值、双精度值或字符串</param>
+            <param name="y">整数值、双精度值或字符串</param>
+            <returns name="var">两个输入数字之和，或两个字符串串联</returns>
+            <search>add, plus, addition, +</search>
+        </member>
+		<member name="%sub">
+            <summary>返回 x 减 y 的差</summary>
+            <param name="x">整数或双精度值</param>
+            <param name="y">整数或双精度值</param>
+            <returns name="number">从 x 输入中减去 y 输入的结果</returns>
+            <search>sub, subtract, difference, -</search>
+        </member>		
+		<member name="%mul">
+            <summary>返回 x 乘 y 的积</summary>
+            <param name="x">整数或双精度值</param>
+            <param name="y">整数或双精度值</param>
+            <returns name="number">两个输入数字的乘积</returns>
+            <search>mul, multiply, product, times, *, x</search>
+        </member>
+		<member name="%div">
+            <summary>返回 x 除以 y 的商</summary>
+            <param name="x">整数或双精度值</param>
+            <param name="y">整数或双精度值</param>
+            <returns name="double">相除结果</returns>
+            <search>div, divide, product</search>
+        </member>
+		<member name="%eq">
+            <summary>比较 x 和 y 是否相等</summary>
+            <param name="x">要比较的基本类型对象(例如 bool、int、double、string 等)</param>
+            <param name="y">要比较的基本类型对象(例如 bool、int、double、string 等)</param>
+            <returns name="bool">相等检查的结果</returns>
+            <search>eq, equal, =</search>
+        </member>
+		<member name="%ge">
+            <summary>比较 x 是否大于或等于 y</summary>
+            <param name="x">整数或双精度值</param>
+            <param name="y">整数或双精度值</param>
+            <returns name="bool">如果 x 等于或大于 y，为 True；如果不是，则为 false</returns>
+            <search>greater,equal</search>
+        </member>
+		<member name="%gt">
+            <summary>比较 x 是否大于 y</summary>
+            <param name="x">整数或双精度值</param>
+            <param name="y">整数或双精度值</param>
+            <returns name="bool">如果 x 大于 y，为 True；如果不是，则为 false</returns>
+            <search>greater</search>
+        </member>
+		<member name="%mod">
+            <summary>求模: 求 x/y 的余数</summary>
+            <param name="x">整数或双精度值</param>
+            <param name="y">整数或双精度值</param>
+            <returns name="number">x 输入除以 y 输入的余数</returns>
+            <search>mod, modulo, remainder</search>
+        </member>
+		<member name="%le">
+            <summary>比较 x 是否小于或等于 y</summary>
+            <param name="x">整数或双精度值</param>
+            <param name="y">整数或双精度值</param>
+            <returns name="bool">检查的结果</returns>
+            <search>less,equal</search>
+        </member>
+		<member name="%lt">
+            <summary>比较 x 是否小于 y</summary>
+            <param name="x">整数或双精度值</param>
+            <param name="y">整数或双精度值</param>
+            <returns name="bool">检查的结果</returns>
+            <search>less</search>
+        </member>
+		<member name="%and">
+            <summary>逻辑运算符 AND</summary>
+            <param name="x">一个要检查是否为 true 的布尔值</param>
+            <param name="y">另一个要检查是否为 true 的布尔值</param>
+            <returns name="bool">检查的结果</returns>
+            <search>and</search>
+        </member>
+		<member name="%or">
+            <summary>逻辑运算符 OR</summary>
+            <param name="bool">要检查是否为 true 的布尔值</param>
+            <param name="otherBool">另一个要检查是否为 true 的布尔值</param>
+            <returns name="bool">如果所有输入都是 true，则为 true</returns>
+            <search>or</search>
+        </member>
+		<member name="%nq">
+            <summary>如果两个值不同，则返回 true</summary>
+            <param name="x">整数或双精度值</param>
+            <param name="y">整数或双精度值</param>
+            <returns name="bool">检查的结果</returns>
+            <search>equal</search>
+        </member>
+		<member name="%Not">
+		            <summary>使输入为负值，例如，当输入为 true 时返回 false。</summary>
+            <param name="x">要反转的布尔值。</param>
+            <returns name="bool">类型 var[]..[] (反转的布尔值)</returns>
+            <search>not</search>
+        </member>
+    </members>
+</doc>

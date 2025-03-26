@@ -1,0 +1,112 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>GeometryColor</name>
+    </assembly>
+    <members>
+        <member name="M:Modifiers.GeometryColor.ByGeometryColor(Autodesk.DesignScript.Geometry.Geometry,DSCore.Color)">
+            <summary>色を使用してジオメトリを表示します。</summary>
+            <param name="geometry">色の適用先ジオメトリです。</param>
+            <param name="color">色。</param>
+            <returns>表示オブジェクトです。</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.BySurfaceColors(Autodesk.DesignScript.Geometry.Surface,DSCore.Color[][])">
+             <summary>サーフェス上での色の値を表示します。
+            
+            提供された色は、サーフェスにマッピングされるイメージのテクスチャに内部的に
+            変換されます。</summary>
+             <param name="surface">色の適用先サーフェスです。</param>
+             <param name="colors">色の 2 次元リストです。
+            
+           色のリストは正方形である必要があります。ジャグ配列を渡そうとすると
+           例外が発生します。</param>
+             <returns>表示オブジェクトです。</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ByPointsColors(Autodesk.DesignScript.Geometry.Point[],DSCore.Color[])">
+             <summary>点と色を使用した色付きメッシュを作成します。
+            
+            指定された点のリストは、頂点が結合されていない三角メッシュを構築するために
+            使用されます。</summary>
+             <param name="points">点のリストです。
+            
+            現在は三角メッシュのみサポートされています。リストにある各三連続の点がメッシュに
+            三角形を 1 つ形成します。点の順番は CCW (反時計回り)です。
+            3 で割り切れない数の頂点のリストを渡そうとすると、例外がスローされます。</param>
+             <param name="colors">色のリストです。
+            
+            色の数は、頂点の数と一致する必要があります。点のリストとは違う数の色のリストを渡そうとすると、
+            例外がスローされます。</param>
+             <returns>表示オブジェクトです。</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
+            <summary>単一色、面ごとの色、頂点ごとの色、または面ごとの頂点の色でメッシュを表示します。</summary>
+            <param name="mesh"/>The Mesh on which to apply the colors
+            <param name="colors">色の数は、1 (単一色)、面の数(面ごとの色)、頂点の数(頂点ごとの色)、または三角形の数に 3 を掛けた値(三角形の頂点ごとの色)に等しい必要があります</param>
+            <param name="smoothShading">True の場合、シェーディングはファセットではなくスムーズに見えるため、滑らかな連続したサーフェスを視覚化するのに役立ちます</param>
+            <returns>表示オブジェクトです。</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ComputeColorMap(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},DSCore.Color[],System.Int32,System.Int32)">
+            <summary>一連の SurfaceData オブジェクトから一連のカラー マップを計算します。</summary>
+            <returns/>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ComputeSamplesFromNormalizedValue(System.Double,System.Int32,System.Int32)">
+            <summary>このメソッドは、0.0 と 1.0 の間の数値を lowestPower と highestPower の間の整数値に再マップします。</summary>
+        </member>
+        <member name="T:Autodesk.DesignScript.Geometry.ImportHelpers">
+            <summary>Protogeometry に導入する必要のない依存関係を持つ Geometry Import ノード。
+            これらのメソッドは NodeModel ノードによってさらにラップされているため、
+            名前とライブラリの場所を正確に取得できます。</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.ImportFromSATWithUnits(System.String,DynamoUnits.Unit)">
+            <summary>SAT ファイル パスからジオメトリを読み込みます。dynamoUnit 入力を設定し、
+            Dynamo ファイルでの他の数値の解釈方法と一致させます。</summary>
+            <param name="filePath">.SAT ファイルへのファイル パスの文字列。</param>
+            <param name="dynamoUnit">Forge の単位長さ。null のままにすると、SAT ファイルは単位なしとして読み込まれます</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.ImportFromSATWithUnits(System.IO.FileInfo,DynamoUnits.Unit)">
+            <summary>SAT ファイル パスからジオメトリを読み込みます。dynamoUnit 入力を設定し、
+            Dynamo ファイルでの他の数値の解釈方法と一致させます。</summary>
+            <param name="file">.SAT ファイルを指し示すファイル オブジェクト。</param>
+            <param name="dynamoUnit">Forge の単位長さ。null のままにすると、SAT ファイルは単位なしとして読み込まれます</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.DeserializeFromSABWithUnits(System.Byte[],DynamoUnits.Unit)">
+            <summary>SAB バイト配列からジオメトリを読み込みます。dynamoUnit 入力を設定し、
+            Dynamo ファイルでの他の数値の解釈方法と一致させます。</summary>
+            <param name="buffer">SAB バイト配列</param>
+            <param name="dynamoUnit">Forge の単位長さ。null のままにすると、SAT ファイルは単位なしとして読み込まれます</param>
+            <returns/>
+        </member>
+        <member name="T:GeometryColor.Properties.Resources">
+            <summary>ローカライズされた文字列などを検索するための、厳密に型指定されたリソース クラスです。</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.ResourceManager">
+            <summary>このクラスが使用する、キャッシュされた ResourceManager インスタンスを返します。</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.Culture">
+            <summary>厳密に型指定されたリソース  クラスを使用して、すべてのリソース検索で
+              現在のスレッドの CurrentUICulture プロパティを上書きします。</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.ByMeshColorsInvalidColorCountMessage">
+            <summary>「カラー数が無効です。1 (単一色)、面の数(面ごとの色)、頂点の数(頂点ごとの色)、または三角形の数に 3 を掛けた値(三角形の頂点ごとの色)に等しい必要があります。複数のメッシュに色付けする場合は、List Levels を使用する必要があります。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.JaggedListExceptionMessage">
+            <summary>「色のリストはジャグ リストにすることはできません。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.NoColorsExceptionMessage">
+            <summary>「色を指定する必要があります」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.NoVertexExceptionMessage">
+            <summary>「頂点を指定する必要があります」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.TwoDimensionalListExceptionMessage">
+            <summary>「Color の 2 次元のリストを指定する必要があります。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.VertexColorCountMismatchExceptionMessage">
+            <summary>「指定した色の数は頂点の数と一致する必要があります」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.VerticesDivisibleByThreeExceptionMessage">
+            <summary>「指定した頂点の数は 3 で割り切れる数にする必要があります。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+    </members>
+</doc>

@@ -118,40 +118,39 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExportToSATDescripiton" xml:space="preserve">
-    <value>Exports the given geometry to the given SAT file path</value>
+    <value>Экспорт выбранной геометрии в указанный файл SAT</value>
   </data>
   <data name="ExportToSatFilePathDescription" xml:space="preserve">
-    <value>File to export the geometry to.</value>
+    <value>Файл для экспорта геометрии.</value>
   </data>
   <data name="ExportToSatFilePathOutputDescription" xml:space="preserve">
-    <value>The file path of the exported file. Note this may change from the input in it contains non-ASCII characters.</value>
+    <value>Путь к экспортированному файлу. Обратите внимание на то, что он может измениться в зависимости от наличия во входных данных символов, не относящихся к ASCII.</value>
   </data>
   <data name="ExportToSatGeometryInputDescription" xml:space="preserve">
-    <value>Geometry to export into a SAT file.</value>
+    <value>Геометрия для экспорта в файл SAT.</value>
   </data>
   <data name="ExportWithUnitsSearchTags" xml:space="preserve">
     <value>Export;SAT</value>
-    <comment>Search tags for ExportWithUnits node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
   <data name="ImportSABByteArrayDesc" xml:space="preserve">
-    <value>SAB byte array.</value>
+    <value>Массив байтов SAB.</value>
   </data>
   <data name="ImportSATDynamoUnitDesc" xml:space="preserve">
-    <value>A forge unit length, if left null, geometry will be imported as unitless.</value>
+    <value>Единица длины Forge. Если ее не указать, геометрия будет импортирована как безразмерная.</value>
   </data>
   <data name="ImportSATFilePathDesc" xml:space="preserve">
-    <value>Filepath or File object to import .SAT from.</value>
+    <value>Путь к файлу или файловый объект для импорта SAT.</value>
   </data>
   <data name="ImportToSABUnitsDesc" xml:space="preserve">
-    <value>Imports geometry from SAB byte array. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file.</value>
+    <value>Импорт геометрии из массива байтов SAB. Задайте входной параметр dynamoUnit в соответствии с тем, как интерпретируются другие числа в файле Dynamo.</value>
   </data>
   <data name="ImportToSATUnitsDesc" xml:space="preserve">
-    <value>Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file.</value>
+    <value>Импорт геометрии из файла SAT. Задайте входной параметр dynamoUnit в соответствии с тем, как интерпретируются другие числа в файле Dynamo.</value>
   </data>
   <data name="PanelSurfaceBoundaryConditionDropDownDesc" xml:space="preserve">
-    <value>A drop down node that allow easy access to PanelSurface BoundaryCondition possible values</value>
+    <value>Узел раскрывающегося списка, обеспечивающий удобный доступ к возможным значениям PanelSurface BoundaryCondition</value>
   </data>
   <data name="SABSATGeoDesc" xml:space="preserve">
-    <value>Loaded geometry</value>
+    <value>Загруженная геометрия</value>
   </data>
 </root>

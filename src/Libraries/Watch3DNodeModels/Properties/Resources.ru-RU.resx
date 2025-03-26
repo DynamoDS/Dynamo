@@ -118,17 +118,15 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="Watch3DDescription" xml:space="preserve">
-    <value>Shows a dynamic preview of geometry</value>
-    <comment>Description for Watch 3D</comment>
+    <value>Выполнение динамического просмотра геометрии</value>
   </data>
   <data name="Watch3DPortDataInputToolTip" xml:space="preserve">
-    <value>Incoming geometry objects.</value>
+    <value>Входящие объекты геометрии.</value>
   </data>
   <data name="Watch3DPortDataOutputToolTip" xml:space="preserve">
-    <value>Watch contents, passed through</value>
+    <value>Просмотр пропускаемого содержимого</value>
   </data>
   <data name="Watch3DSearchTags" xml:space="preserve">
     <value>panel;3dview;view;inspect;debug;watch geo;watch3d;</value>
-    <comment>Search Tags for Watch 3D</comment>
   </data>
 </root>

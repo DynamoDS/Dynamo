@@ -1,0 +1,65 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Tessellation</name>
+    </assembly>
+    <members>
+        <member name="T:Tessellation.Adapters.Cell2">
+            <summary>2D 다듬기를 위한 셀</summary>
+        </member>
+        <member name="T:Tessellation.Adapters.Cell3">
+            <summary>3D 다듬기를 위한 셀</summary>
+        </member>
+        <member name="T:Tessellation.Adapters.Tetrahedron">
+            <summary>정점은 점, 노드 또는 정점의 위치를 저장하는 단순 클래스입니다.</summary>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.GetPosition(System.Int32)">
+            <summary>i번째 정점의 위치를 가져오기 위한 도우미 함수.</summary>
+            <param name="i"/>
+            <returns>i번째 정점의 위치</returns>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.MakeFace(System.Int32,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>이 함수는 면을 나타내는 삼각형에 대한 색인을 추가합니다.
+            순서는 자동으로 계산된 법선이 올바른 방향을 가리키도록 CCW(시계 반대 방향) 순서입니다.</summary>
+            <param name="i"/>
+            <param name="j"/>
+            <param name="k"/>
+            <param name="center"/>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.MakeFaces">
+            <summary>4면체의 모델을 작성합니다. 투명도가 색상에 적용됩니다.</summary>
+            <returns>4면체를 나타내는 모델</returns>
+        </member>
+        <member name="T:Tessellation.Adapters.TriangleFace">
+            <summary>정점은 점, 노드 또는 정점의 위치를 저장하는 단순 클래스입니다.</summary>
+        </member>
+        <member name="T:Tessellation.ConvexHull">
+            <summary>볼록 헐 작성 함수.</summary>
+        </member>
+        <member name="M:Tessellation.ConvexHull.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>점 세트의 볼록 헐을 만듭니다.</summary>
+            <param name="points">점 세트.</param>
+        </member>
+        <member name="T:Tessellation.Delaunay">
+            <summary>Delaunay 삼각형 작성 함수.</summary>
+        </member>
+        <member name="M:Tessellation.Delaunay.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
+            <summary>지정된 UV 매개변수 세트를 사용하여 표면의 Delaunay 삼각형을 만듭니다.</summary>
+            <param name="uvs">UV 매개변수 세트.</param>
+            <param name="face">삼각형 처리할 표면.</param>
+            <search>uvs</search>
+        </member>
+        <member name="M:Tessellation.Delaunay.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>점 세트의 Delaunay 삼각형을 만듭니다.</summary>
+            <param name="points">점 세트.</param>
+        </member>
+        <member name="T:Tessellation.Voronoi">
+            <summary>Voronoi 다듬기 작성 함수.</summary>
+        </member>
+        <member name="M:Tessellation.Voronoi.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
+            <summary>지정된 UV 매개변수 세트를 사용하여 표면의 Voronoi 다듬기를 만듭니다.</summary>
+            <param name="uvs">UV 매개변수 세트.</param>
+            <param name="face">다듬을 표면.</param>
+            <search>uvs</search>
+        </member>
+    </members>
+</doc>

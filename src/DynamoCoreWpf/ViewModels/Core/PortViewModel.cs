@@ -139,7 +139,7 @@ namespace Dynamo.ViewModels
         }
         private bool CanHaveAutoCompleteMarker()
         {
-            return PortModel.Connectors.Count == 0
+            return ((this is InPortViewModel && PortModel.Connectors.Count == 0) || this is OutPortViewModel)
                    && NodeViewModel.NodeModel is not CodeBlockNodeModel
                    && NodeViewModel.NodeModel is not CoreNodeModels.Watch
                    && NodeViewModel.NodeModel is not PythonNodeModels.PythonNode
@@ -521,6 +521,7 @@ namespace Dynamo.ViewModels
                 case nameof(IsConnected):
                     RaisePropertyChanged(nameof(IsConnected));
                     RefreshPortColors();
+                    NodeAutoCompleteMarkerVisible = IsSelected;
                     break;
                 case nameof(IsEnabled):
                     RaisePropertyChanged(nameof(IsEnabled));

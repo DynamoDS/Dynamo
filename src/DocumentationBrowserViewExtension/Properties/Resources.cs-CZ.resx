@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,105 +118,90 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BrowserViewCannotBeAddedToSidebar" xml:space="preserve">
-    <value>Browser view has not been initialised and cannot be added to the sidebar.</value>
+    <value>Pohled prohlížeče nebyl inicializován a nelze jej přidat na boční panel.</value>
   </data>
   <data name="ExtensionName" xml:space="preserve">
-    <value>Documentation Browser</value>
+    <value>Prohlížeč dokumentace</value>
   </data>
   <data name="FileNotFoundFailureMessage" xml:space="preserve">
-    <value>File not found</value>
+    <value>Soubor nebyl nalezen</value>
   </data>
   <data name="ImageFitToolTip" xml:space="preserve">
-    <value>Zoom to fit</value>
-    <comment>Image Control ToolTip</comment>
+    <value>Přizpůsobit</value>
   </data>
   <data name="ImageInsertToolTip" xml:space="preserve">
-    <value>Add to workspace\n\nAdds the example file to the workspace as a group. To avoid potential issues, run mode will be changed to Manual.</value>
-    <comment>Image Control ToolTip</comment>
+    <value>Přidat do pracovního prostoru\n\nPřidá vzorový soubor do pracovního souboru jako skupinu. Aby se předešlo možným problémům, režim spuštění bude změněn na Ruční.</value>
   </data>
   <data name="ImageZoomInToolTip" xml:space="preserve">
-    <value>Zoom in</value>
-    <comment>Image Control ToolTip</comment>
+    <value>Přiblížit</value>
   </data>
   <data name="ImageZoomOutToolTip" xml:space="preserve">
-    <value>Zoom out</value>
-    <comment>Image Control ToolTip</comment>
+    <value>Oddálit</value>
   </data>
   <data name="InputDefaultValue" xml:space="preserve">
-    <value>default value</value>
+    <value>výchozí hodnota</value>
   </data>
   <data name="InsertedGroupSubTitle" xml:space="preserve">
-    <value>Inserted Dynamo graph</value>
+    <value>Vložený graf aplikace Dynamo</value>
   </data>
   <data name="InsertGraphContainsNodesAlertMessage" xml:space="preserve">
-    <value>The graph already contains the nodes to be inserted.</value>
+    <value>Graf již obsahuje uzly, které mají být vloženy.</value>
   </data>
   <data name="InternalErrorNoDetailsAvailable" xml:space="preserve">
-    <value>No further details available for this error.</value>
+    <value>Pro tuto chybu nejsou k dispozici žádné další podrobnosti.</value>
   </data>
   <data name="InvalidDocumentationLink" xml:space="preserve">
-    <value>Documentation link is not a valid URI.</value>
+    <value>Propojení dokumentace není platným indentifikátorem URI.</value>
   </data>
   <data name="MenuItemText" xml:space="preserve">
-    <value>Show _Documentation Browser</value>
+    <value>Zobrazit _prohlížeč dokumentace</value>
   </data>
   <data name="NodeDocumentationCategory" xml:space="preserve">
-    <value>Category</value>
-    <comment>Header in Node Info table</comment>
+    <value>Kategorie</value>
   </data>
   <data name="NodeDocumentationDescription" xml:space="preserve">
-    <value>Description</value>
-    <comment>Header in Node Info table</comment>
+    <value>Popis</value>
   </data>
   <data name="NodeDocumentationInputs" xml:space="preserve">
-    <value>Inputs</value>
-    <comment>Header in Node Info table</comment>
+    <value>Vstupy</value>
   </data>
   <data name="NodeDocumentationInputsAndOutputs" xml:space="preserve">
-    <value>Inputs and Outputs</value>
+    <value>Vstupy a výstupy</value>
   </data>
   <data name="NodeDocumentationIssueHelp" xml:space="preserve">
-    <value>Node Issue Help</value>
+    <value>Nápověda k problému uzlu</value>
   </data>
   <data name="NodeDocumentationNodeInfo" xml:space="preserve">
-    <value>Node Information</value>
-    <comment>Header in Node Info table</comment>
+    <value>Informace o uzlu</value>
   </data>
   <data name="NodeDocumentationOriginalNodeName" xml:space="preserve">
-    <value>Node Type</value>
-    <comment>Header in Node Info table</comment>
+    <value>Typ uzlu</value>
   </data>
   <data name="NodeDocumentationOutputs" xml:space="preserve">
-    <value>Outputs</value>
-    <comment>Header in Node Info table</comment>
+    <value>Výstupy</value>
   </data>
   <data name="NodeInputsDataType" xml:space="preserve">
-    <value>Data type</value>
-    <comment>Input Header</comment>
+    <value>Typ dat</value>
   </data>
   <data name="NodeInputsDescription" xml:space="preserve">
-    <value>Description</value>
-    <comment>Input Header</comment>
+    <value>Popis</value>
   </data>
   <data name="NodeInputsName" xml:space="preserve">
-    <value>Name</value>
-    <comment>Input Header</comment>
+    <value>Název</value>
   </data>
   <data name="NodeInputsType" xml:space="preserve">
-    <value>Type</value>
-    <comment>Input Header</comment>
+    <value>Typ</value>
   </data>
   <data name="NodeInputsValue" xml:space="preserve">
-    <value>Default value</value>
-    <comment>Input Header</comment>
+    <value>Výchozí hodnota</value>
   </data>
   <data name="ScriptTagsRemovalWarning" xml:space="preserve">
-    <value>Script tags detected in the help document have been removed.</value>
+    <value>Značky skriptů nalezené v dokumentu nápovědy byly odstraněny.</value>
   </data>
   <data name="ToastFileNotFoundLocationNotificationText" xml:space="preserve">
-    <value>Example file from {0} could not be found</value>
+    <value>Vzorový soubor z {0} nebyl nalezen.</value>
   </data>
   <data name="ToastInsertGraphNotificationText" xml:space="preserve">
-    <value>Example file added to workspace. Run mode changed to Manual.</value>
+    <value>Do pracovního prostoru byl přidán vzorový soubor. Režim spuštění byl změněn na Ruční.</value>
   </data>
 </root>

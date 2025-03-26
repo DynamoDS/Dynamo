@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,105 +118,90 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="BrowserViewCannotBeAddedToSidebar" xml:space="preserve">
-    <value>Browser view has not been initialised and cannot be added to the sidebar.</value>
+    <value>A vista do navegador não foi inicializada e não pode ser adicionada à barra lateral.</value>
   </data>
   <data name="ExtensionName" xml:space="preserve">
-    <value>Documentation Browser</value>
+    <value>Navegador da documentação</value>
   </data>
   <data name="FileNotFoundFailureMessage" xml:space="preserve">
-    <value>File not found</value>
+    <value>Arquivo não encontrado</value>
   </data>
   <data name="ImageFitToolTip" xml:space="preserve">
-    <value>Zoom to fit</value>
-    <comment>Image Control ToolTip</comment>
+    <value>Aplicar zoom para ajustar</value>
   </data>
   <data name="ImageInsertToolTip" xml:space="preserve">
-    <value>Add to workspace\n\nAdds the example file to the workspace as a group. To avoid potential issues, run mode will be changed to Manual.</value>
-    <comment>Image Control ToolTip</comment>
+    <value>Adicionar ao espaço de trabalho\n\nAdiciona o arquivo de exemplo ao espaço de trabalho como um grupo. Para evitar problemas potenciais, o modo de execução será alterado para Manual.</value>
   </data>
   <data name="ImageZoomInToolTip" xml:space="preserve">
-    <value>Zoom in</value>
-    <comment>Image Control ToolTip</comment>
+    <value>Aproximar zoom</value>
   </data>
   <data name="ImageZoomOutToolTip" xml:space="preserve">
-    <value>Zoom out</value>
-    <comment>Image Control ToolTip</comment>
+    <value>Afastar zoom</value>
   </data>
   <data name="InputDefaultValue" xml:space="preserve">
-    <value>default value</value>
+    <value>valor padrão</value>
   </data>
   <data name="InsertedGroupSubTitle" xml:space="preserve">
-    <value>Inserted Dynamo graph</value>
+    <value>Gráfico do Dynamo inserido</value>
   </data>
   <data name="InsertGraphContainsNodesAlertMessage" xml:space="preserve">
-    <value>The graph already contains the nodes to be inserted.</value>
+    <value>O gráfico já contém os nós a serem inseridos.</value>
   </data>
   <data name="InternalErrorNoDetailsAvailable" xml:space="preserve">
-    <value>No further details available for this error.</value>
+    <value>Não há mais detalhes disponíveis para esse erro.</value>
   </data>
   <data name="InvalidDocumentationLink" xml:space="preserve">
-    <value>Documentation link is not a valid URI.</value>
+    <value>O link da documentação não é um URI válido.</value>
   </data>
   <data name="MenuItemText" xml:space="preserve">
-    <value>Show _Documentation Browser</value>
+    <value>Mostrar navegador de _documentação</value>
   </data>
   <data name="NodeDocumentationCategory" xml:space="preserve">
-    <value>Category</value>
-    <comment>Header in Node Info table</comment>
+    <value>Categoria</value>
   </data>
   <data name="NodeDocumentationDescription" xml:space="preserve">
-    <value>Description</value>
-    <comment>Header in Node Info table</comment>
+    <value>Descrição</value>
   </data>
   <data name="NodeDocumentationInputs" xml:space="preserve">
-    <value>Inputs</value>
-    <comment>Header in Node Info table</comment>
+    <value>Entradas</value>
   </data>
   <data name="NodeDocumentationInputsAndOutputs" xml:space="preserve">
-    <value>Inputs and Outputs</value>
+    <value>Entradas e saídas</value>
   </data>
   <data name="NodeDocumentationIssueHelp" xml:space="preserve">
-    <value>Node Issue Help</value>
+    <value>Ajuda para problemas de nós</value>
   </data>
   <data name="NodeDocumentationNodeInfo" xml:space="preserve">
-    <value>Node Information</value>
-    <comment>Header in Node Info table</comment>
+    <value>Informações dos nós</value>
   </data>
   <data name="NodeDocumentationOriginalNodeName" xml:space="preserve">
-    <value>Node Type</value>
-    <comment>Header in Node Info table</comment>
+    <value>Tipo de nó</value>
   </data>
   <data name="NodeDocumentationOutputs" xml:space="preserve">
-    <value>Outputs</value>
-    <comment>Header in Node Info table</comment>
+    <value>Saídas</value>
   </data>
   <data name="NodeInputsDataType" xml:space="preserve">
-    <value>Data type</value>
-    <comment>Input Header</comment>
+    <value>Tipo de dados</value>
   </data>
   <data name="NodeInputsDescription" xml:space="preserve">
-    <value>Description</value>
-    <comment>Input Header</comment>
+    <value>Descrição</value>
   </data>
   <data name="NodeInputsName" xml:space="preserve">
-    <value>Name</value>
-    <comment>Input Header</comment>
+    <value>Nome</value>
   </data>
   <data name="NodeInputsType" xml:space="preserve">
-    <value>Type</value>
-    <comment>Input Header</comment>
+    <value>Tipo</value>
   </data>
   <data name="NodeInputsValue" xml:space="preserve">
-    <value>Default value</value>
-    <comment>Input Header</comment>
+    <value>Valor padrão</value>
   </data>
   <data name="ScriptTagsRemovalWarning" xml:space="preserve">
-    <value>Script tags detected in the help document have been removed.</value>
+    <value>Os identificadores de scripts detectados no documento de ajuda foram removidos.</value>
   </data>
   <data name="ToastFileNotFoundLocationNotificationText" xml:space="preserve">
-    <value>Example file from {0} could not be found</value>
+    <value>Não foi possível encontrar o arquivo de exemplo de {0}</value>
   </data>
   <data name="ToastInsertGraphNotificationText" xml:space="preserve">
-    <value>Example file added to workspace. Run mode changed to Manual.</value>
+    <value>Arquivo de exemplo adicionado ao espaço de trabalho. Modo de execução alterado para Manual.</value>
   </data>
 </root>

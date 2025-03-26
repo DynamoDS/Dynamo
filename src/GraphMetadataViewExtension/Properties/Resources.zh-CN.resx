@@ -118,49 +118,48 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CustomPropertyControl_CustomPropertyDefault" xml:space="preserve">
-    <value>Custom Property</value>
+    <value>自定义特性</value>
   </data>
   <data name="ExtensionName" xml:space="preserve">
-    <value>Properties</value>
+    <value>特性</value>
   </data>
   <data name="GraphMetaData_AuthorName" xml:space="preserve">
-    <value>Author Name</value>
+    <value>创建者姓名</value>
   </data>
   <data name="GraphMetaData_CustomProperties" xml:space="preserve">
-    <value>Custom Properties</value>
+    <value>自定义特性</value>
   </data>
   <data name="GraphMetaData_Description" xml:space="preserve">
-    <value>Description</value>
+    <value>说明</value>
   </data>
   <data name="GraphMetaData_GraphType" xml:space="preserve">
-    <value>Graph Type</value>
-    <comment>Same label as found in LintingViewExtension</comment>
+    <value>图形类型</value>
   </data>
   <data name="GraphMetaData_Image" xml:space="preserve">
-    <value>Image</value>
+    <value>图像</value>
   </data>
   <data name="GraphMetaData_LearnMoreURL" xml:space="preserve">
-    <value>Learn More URL</value>
+    <value>了解更多 URL</value>
   </data>
   <data name="ImageSelector_Message_DefaultFeedback" xml:space="preserve">
-    <value>Drag and Drop or Select image</value>
+    <value>拖放或选择图像</value>
   </data>
   <data name="ImageSelector_Message_DropImage" xml:space="preserve">
-    <value>Drop your image</value>
+    <value>放置图像</value>
   </data>
   <data name="ImageSelector_Message_InvalidExtension" xml:space="preserve">
-    <value>Only image files are allowed</value>
+    <value>仅允许图像文件</value>
   </data>
   <data name="ImageSelector_Message_NoImageSelected" xml:space="preserve">
-    <value>No image selected</value>
+    <value>未选择图像</value>
   </data>
   <data name="ImageSelector_Title_SelectImage" xml:space="preserve">
-    <value>Select Image</value>
+    <value>选择图像</value>
   </data>
   <data name="MenuItemText" xml:space="preserve">
-    <value>Show Graph _Properties</value>
+    <value>显示图形特性(_P)</value>
   </data>
   <data name="URIValidationRule_Fail_Message" xml:space="preserve">
-    <value>String is not a valid URI</value>
+    <value>字符串不是有效的 URI</value>
   </data>
 </root>

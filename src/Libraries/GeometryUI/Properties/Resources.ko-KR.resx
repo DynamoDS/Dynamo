@@ -118,40 +118,39 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="ExportToSATDescripiton" xml:space="preserve">
-    <value>Exports the given geometry to the given SAT file path</value>
+    <value>지정된 형상을 지정된 SAT 파일 경로로 내보냅니다</value>
   </data>
   <data name="ExportToSatFilePathDescription" xml:space="preserve">
-    <value>File to export the geometry to.</value>
+    <value>형상을 내보낼 파일.</value>
   </data>
   <data name="ExportToSatFilePathOutputDescription" xml:space="preserve">
-    <value>The file path of the exported file. Note this may change from the input in it contains non-ASCII characters.</value>
+    <value>내보낸 파일의 파일 경로. ASCII 문자가 아닌 문자가 포함되어 있는 경우 입력에서 변경될 수도 있습니다.</value>
   </data>
   <data name="ExportToSatGeometryInputDescription" xml:space="preserve">
-    <value>Geometry to export into a SAT file.</value>
+    <value>SAT 파일로 내보낼 형상.</value>
   </data>
   <data name="ExportWithUnitsSearchTags" xml:space="preserve">
     <value>Export;SAT</value>
-    <comment>Search tags for ExportWithUnits node. During translation, localized keywords can be appended to the end of these tags to provide localized search terms in addition to the existing ones.</comment>
   </data>
   <data name="ImportSABByteArrayDesc" xml:space="preserve">
-    <value>SAB byte array.</value>
+    <value>SAB 바이트 배열.</value>
   </data>
   <data name="ImportSATDynamoUnitDesc" xml:space="preserve">
-    <value>A forge unit length, if left null, geometry will be imported as unitless.</value>
+    <value>단조 단위 길이, null일 경우 형상을 무단위로 가져옵니다.</value>
   </data>
   <data name="ImportSATFilePathDesc" xml:space="preserve">
-    <value>Filepath or File object to import .SAT from.</value>
+    <value>.SAT를 가져올 파일 경로 또는 파일 객체.</value>
   </data>
   <data name="ImportToSABUnitsDesc" xml:space="preserve">
-    <value>Imports geometry from SAB byte array. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file.</value>
+    <value>SAB 바이트 배열에서 형상을 가져옵니다. dynamoUnit 입력을 Dynamo 파일의 다른 번호를 해석하는 방법과 일치하도록 설정하십시오.</value>
   </data>
   <data name="ImportToSATUnitsDesc" xml:space="preserve">
-    <value>Imports geometry from SAT filepath. Set the dynamoUnit input to match how you are interpreting the other numbers in your Dynamo file.</value>
+    <value>SAT 파일 경로에서 형상을 가져옵니다. dynamoUnit 입력을 Dynamo 파일의 다른 번호를 해석하는 방법과 일치하도록 설정하십시오.</value>
   </data>
   <data name="PanelSurfaceBoundaryConditionDropDownDesc" xml:space="preserve">
-    <value>A drop down node that allow easy access to PanelSurface BoundaryCondition possible values</value>
+    <value>PanelSurface BoundaryCondition 가능 값에 쉽게 액세스할 수 있는 드롭다운 노드</value>
   </data>
   <data name="SABSATGeoDesc" xml:space="preserve">
-    <value>Loaded geometry</value>
+    <value>로드된 형상</value>
   </data>
 </root>

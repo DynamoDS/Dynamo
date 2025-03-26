@@ -1,0 +1,153 @@
+﻿<!--
+    Dynamo: https://github.com/DynamoDS/Dynamo
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code > .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h1>Package Manager</h1>
+
+    <p>Dynamo Package Manager 是瀏覽、安裝和發佈套件的一站式工具。請從<b>「套件」&gt;「Package Manager」</b>下的頂端導覽存取。</p>
+
+    <h2>什麼是套件？</h2>
+
+    <p>Dynamo 提供大量現成功能，也維護一個豐富的套件資源庫，可大幅擴充 Dynamo 的功能。套件是自訂節點或其他功能的集合。Dynamo Package Manager 是一個供社群下載任何已線上發佈套件的入口網站。這些工具集由第三方和 Dynamo 團隊共同開發，可擴充 Dynamo 的核心功能，所有人都能存取，按一下按鈕即可下載。</p>
+
+    <h2>安裝 Dynamo 套件</h2>
+
+    <p>您可以在 Package Manager 的<b>「搜尋套件」</b>頁籤中瀏覽套件並進行安裝。使用搜尋欄位找出特定套件。您也可以套用篩選和排序，縮小清單範圍以符合您的準則，例如主體程式或缺少相依性。</p>
+
+    <p>整個「搜尋套件」頁面中的圖示會描述版本相容性:</p>
+
+    <ul>
+        <li>帶有綠色打勾記號的旗標表示該版本可能與您目前的 Dynamo 和主體程式 (例如使用 Revit) 版本相容。</li>
+        <li>帶有紅色菱形的旗標表示該版本可能與目前版本的 Dynamo 和主體程式 (如果使用) 不相容。</li>
+        <li>帶有藍色問號的旗標表示套件版本的相容性資訊不明。可能適用也可能不適用於您的設定。</li>
+    </ul>
+
+    <p>若要檢視套件的更多資訊，請按一下<b>「資訊」</b>或套件的名稱。這會開啟一個側邊面板，您可以在當中查看套件的描述、尋找版本和授權資訊等。</p>
+
+    <p>若要安裝套件，請在搜尋檢視中按一下<b>「安裝」</b>。如果套件作者已在套件中加入相容性資訊，則預設會安裝最新的相容版本。除非您從下拉式功能表中選擇其他版本，否則會安裝最新的版本。在「套件詳細資料」面板中，按一下「版本和套件需求」區段中特定版本頂端的<b>「安裝」</b>可安裝該版本。</p>
+
+    <p>若要指定套件安裝的資料夾，請按一下「安裝」按鈕旁邊的箭頭下拉式清單。</p>
+
+    <p>您可以在 Package Manager 的<b>「已安裝的套件」</b>頁籤中找到已安裝的套件清單。在此頁籤上，您可以檢視套件檔案、解除安裝套件等。</p>
+
+    <h2>對套件投票</h2>
+
+    <p>如果您想對某個套件作者的工作表達讚賞，可以對您已安裝的套件投票。移至<b>「搜尋套件資訊」</b>，按一下套件詳細資料頂端的<b>心形</b>圖示。這僅適用於已安裝的套件。</p>
+
+    <h2>發佈 Dynamo 套件</h2>
+
+    <p>您可以使用 Package Manager 在 Dynamo 中發佈套件。開啟<b>「發佈套件」</b>頁籤，開始執行發佈套件的逐步程序。「發佈套件」頁籤會詢問您要發佈之套件的所有必填和選填資訊。</p>
+
+    <h3>第 1 步: 套件詳細資料</h3>
+
+    <p>您可以在此頁面加入整個套件以及個別版本的相關資訊。只有套件名稱、描述和版本號碼是必填，其他所有欄位都是選填，但建議填寫以協助使用者找到您的套件，並且更清楚瞭解套件的用途。</p>
+
+    <h4>套件資訊</h4>
+
+    <p><b>名稱 (必填):</b></p>
+    <p>您要發佈的套件名稱。這會顯示在資源庫、套件搜尋和 Package Manager 網站中。套件名稱的長度必須至少 3 個字元。</p>
+
+    <p><b>描述 (必填):</b></p>
+    <p>您可以利用描述加入更多關於套件的詳細資料，包括列出任何例外狀況和必備條件。也能用來告訴使用者套件的功能，以及如何在工作區中使用。</p>
+
+    <p>如果是與特定版本有關的資訊，建議加入發行說明連結會更有效果。請注意，在下一步會加入相容性資訊，因此您不需要在套件描述中加入與特定版本相關的相容性資訊。</p>
+
+    <p><b>團體:</b></p>
+    <p>使用此欄位可指定套件所屬的團體，例如公司/組織。</p>
+
+    <p><b>關鍵字:</b></p>
+    <p>關鍵字可當作與套件相關的標籤使用，例如衍生式設計、ML 等。使用者可以透過搜尋關鍵字找到您的套件。您可以在欄位中一次輸入多個關鍵字 (以逗號分隔)，然後按 Enter。</p>
+
+    <p><b>網站連結:</b></p>
+    <p>網站的連結，提供使用者有關套件或組織/作者的更多資訊。</p>
+
+    <p><b>儲存庫連結:</b></p>
+    <p>套件儲存庫的連結，能讓使用者檢視或參與套件開發。</p>
+
+    <p><b>版權擁有者:</b></p>
+    <p>擁有套件版權的人員姓名。如果留空，則預設為您的使用者名稱。</p><b>版本資訊</b><p><b>版本 (必填):</b></p>
+    <p>版本欄位分為三個部分: 主要、次要和建置，可讓您以套件作者的身分上傳遵守<a href="https://semver.org/">版本控制語義</a>的新版套件。套件作者可以發佈更多有新功能和改進功能的套件版本、改善第一版留下的一些問題，或修正錯誤。</p>
+
+    <p><b>發行說明連結:</b></p>
+    <p>此版本發行說明的連結。您可以為發佈的每個版本加入一個單獨的連結。</p>
+
+    <p><b>版權年份:</b></p>
+    <p>套件的版權年份。如果留空，則預設為套件的發佈年份。</p>
+
+    <p><b>授權:</b></p>
+    <p>發佈套件所採用的授權。授權適用於最新的套件版本。如果留空，套件會採用 MIT 授權。</p>
+
+    <h2>第 2 步: 相容性</h2>
+    <p>加入套件版本的相容性資訊。此資訊可協助使用者只尋找與其設定相容的套件版本並安裝，減少可能發生的問題和混淆。指定版本相容性資訊後，使用者可以只依據相容版本進行篩選，並透過「搜尋套件」頁籤中的圖示得知相容性狀態。</p>
+    <p>要加入相容性資訊，請先選取您的套件版本只能在主體程式 (例如 Revit 或 Civil 3D) 中運作、可在主體程式和 Dynamo Core 中運作，還是只能在 Dynamo Core 中運作。選取後，您會看到其他使用者介面控制項，可開始指定一個或多個套件版本。</p>
+    <p>對 Dynamo Core 或主體程式，可以使用<b>「從」</b>和<b>「到」</b>下拉式清單選取範圍，或在<b>「加入個別版本」</b>下拉式清單中逐一加入版本。在<b>「到」</b>下拉式清單中，您也可以選取萬用字元，例如 2025.x (所有版本)。這表示套件版本與該主要版本中的所有版本都相容。</p>
+    <p>加入版本時，可以按一下中間的<b>「加入」</b>按鈕，將版本加到右側<b>「所有相容的版本」</b>表格中。如果操作有誤，可以按一下版本標籤上的 x 圖示，從表格中移除版本。</p>
+    <p>套件作者可以透過 Dynamo Package Manager 網站 (<a href="https://www.dynamopackages.com">www.dynamopackages.com</a>) 更新其 Dynamo 套件的相容性資訊。若要進行，請登入網站，導覽到「我的套件」頁籤，找到您的套件，然後按照上述步驟進行。</p>
+
+    <h2>第 3 步: 選取檔案</h2>
+    <h3>加入檔案/目錄:</h3>
+    <p>選取並加入與套件相關的所有檔案。通常會加入 bin 資料夾、二進位檔和相依性。您可以加入個別檔案或資料夾。</p>
+
+    <h3>選取套件檔案:</h3>
+    <p>使用此區段可讓您在發佈之前先整理套件內容。選取要加入的檔案或資料夾後，可以在<b>「選取套件檔案」</b>頁面檢視、移除或加入檔案。您可以在左側面板中檢視所選檔案的資料夾結構，在右側面板中檢視每個資料夾的內容。</p>
+    <p>若要從套件中移除檔案，請按一下該檔案，然後按一下頂端列的垃圾桶 (移除) 圖示。透過這種方式也可以選取和移除多個檔案。若要從套件中移除整個資料夾，請按一下該資料夾，然後按一下旁邊顯示的垃圾桶圖示。</p>
+
+    <h3>選取節點資源庫:</h3>
+    <p>勾選<b>「節點資源庫」</b>欄中的方塊，指定您加到套件中的哪些檔案是節點資源庫。節點資源庫包含 Dynamo 將匯入為節點的類型和方法。您通常應將任何包含您要匯入至 Dynamo 之類型的組合標記為節點資源庫。ZeroTouch、NodeModel 或 NodeViewCustomization 組合應標記為節點資源庫。</p>
+    <p>若要載入使用者介面 NodeViewCustomization，必須以包含對應 NodeModel 定義的同一組合定義，或以單獨的組合定義。無論是哪一種，組合都必須標記為節點資源庫。目前，對於標記為節點資源庫且包含 NodeModel 或 NodeCustomization 類型的組合，將忽略其他所有類型。因此，請務必將 NodeModel/NodeViewCustomization 類型與您要使用 ZeroTouch 匯入來匯入的類型分開。</p>
+
+    <h3>保留資料夾結構:</h3>
+    <p>建立套件時，Dynamo 會自動將套件檔案重新整理到 bin、doc、dyf 和 extra 資料夾中。套件資料夾結構複雜的進階套件作者，可以選取套件內容預覽面板下的<b>「保留資料夾結構」</b>勾選方塊。啟用此選項後，Dynamo 就不會變更您的套件資料夾結構，而會按原樣上傳套件檔案。</p>
+    <p>套件必須以某種方式設定，才能確保它們運作且避免發生任何問題。如果不確定，請不要勾選，讓 Dynamo 能夠設定資料夾結構。</p>
+
+    <h2>第 4 步: 預覽檔案</h2>
+    <p>當您對套件內容感到滿意時，請按「下一步」查看套件檔案發佈後將如何設定的預覽。此頁面僅供檢視，若要額外變更套件內容，請回到上一步。</p>
+
+    <h2>第 5 步: 確認</h2>
+    <p>發佈之前，您還有機會在此查看所有套件詳細資料、相容性和檔案。為了避免意外更動，在前面步驟中選取的選項在「確認」頁面是唯讀狀態。若要變更這些選項，請使用頁面頂端的「返回」按鈕或導覽控制項回到前面的步驟。</p>
+
+    <p><b>加入 markdown 檔案路徑 (選填):</b></p>
+    <p>您可以在<b>「Markdown 檔案路徑」</b>區段中，指定裝載套件 markdown (.md) 文件的檔案路徑。節點文件會出現在<b>「文件瀏覽器」</b>中，在 Dynamo 頂端導覽功能表的<b>「延伸」</b>下，或在節點上按一下右鍵並選取<b>「說明」</b>可加以存取。</p>
+
+    <p><b>外部套件相依性:</b></p>
+    <p>根據在第 3 步選取的檔案，Dynamo 偵測出此處列出的外部套件相依性。</p>
+
+    <h2>發佈套件</h2>
+    <p>填寫所有必填的詳細資料後，您可以在本端或線上發佈套件。在本端發佈時，套件將發佈在本端根目錄中。線上發佈時，套件會上傳到 Package Manager，通過防毒掃描後，即可供其他使用者搜尋。您也可以在<b>「我的套件」</b>頁籤中找到套件。</p>
+
+    <h2>防毒掃描</h2>
+    <p>為了為所有 Dynamo 套件使用者提供安全的環境，我們為新套件引入了防毒掃描功能。當使用者上傳套件時，系統會掃描套件是否有病毒，而且只有將其標示為安全後才可公開使用。套件上傳過程中將同時進行掃描，不會增加線上提供新套件 (通常是幾分鐘) 的時間。</p>
+    <p>如果您的套件被標示為受到病毒感染，Package Manager 搜尋頁面將顯示通知，說明發現上傳的套件受到病毒感染，不會線上發佈。若要讓套件公開供人使用，請檢查套件隨附的檔案，並透過 Package Manager 上傳新版本。</p>
+
+    <h2>管理您的套件</h2>
+    <p>您可以在 Package Manager 的<b>「我的套件」</b>頁籤找到已發佈的套件清單，在此頁籤當中可以棄用套件、發佈新版本等等。</p>
+
+    <h2>棄用套件</h2>
+    <p>如果您是套件擁有者，可以棄用套件。這會對套件加上一個標籤，通知其他使用者該套件已停止運作且不再進行維護。搜尋套件時，預設會篩選掉已棄用的套件，但您可以套用「已棄用」篩選條件，在搜尋結果中包含這類套件。</p>
+    <p>若要棄用套件，請在 Package Manager 的<b>「已安裝的套件」</b>或<b>「我的套件」</b>頁籤下找出套件。按一下「選項」功能表 (三個點)，然後選取「棄用」。</p>
+
+    <h2>轉移套件的擁有權</h2>
+    <p>您目前無法透過 Package Manager 轉移套件擁有權。您可以請 Dynamo 團隊加入其他擁有者。請注意，我們無法移除套件既有的擁有者，只能加入更多維護者。</p>
+    <p>如果您希望加入某個帳戶成為您既有套件的擁有者，請寄送電子郵件到 <a href="mailto:dynamoteam@dynamobim.org">dynamoteam@dynamobim.org</a>。請務必提供要加入的套件名稱和帳戶名稱。</p>
+
+    <h2>刪除套件</h2>
+    <p>如果您想要提交刪除請求，請寄送標題為「Package Deletion Request」的電子郵件到 <a href="mailto:dynamoteam@dynamobim.org">dynamoteam@dynamobim.org</a>，並且務必提供套件名稱。收到請求後，會寄送一封確認電子郵件到與套件關聯的套件作者電子郵件地址。作者核准請求後，將在 30 天內刪除。如果作者在 30 天內沒有回覆，則必須提出新的刪除請求。</p>
+    <p>請注意，刪除套件並不會釋出套件名稱供新的套件重複使用。</p>
+
+    <h2>套件設定</h2>
+    <p>您可以在 Package Manager 的<b>「套件設定」</b>頁籤中檢視與套件相關的設定，包括新套件下載路徑和套件/資源庫搜尋路徑。若要編輯設定，請按一下「套件設定」頁籤中的「偏好」連結存取「偏好」面板。</p>
+
+</body>

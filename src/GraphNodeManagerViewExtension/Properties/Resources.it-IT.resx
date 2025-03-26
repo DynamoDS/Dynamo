@@ -117,6 +117,93 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="ExtensionName" xml:space="preserve">
+    <value>Gestione nodi grafico</value>
+  </data>
+  <data name="HeaderNameIssues" xml:space="preserve">
+    <value>Problemi</value>
+  </data>
+  <data name="HeaderNameName" xml:space="preserve">
+    <value>Nome</value>
+  </data>
+  <data name="HeaderNameOutputs" xml:space="preserve">
+    <value>Output</value>
+  </data>
+  <data name="HeaderNameState" xml:space="preserve">
+    <value>Stato</value>
+  </data>
+  <data name="HeaderNameType" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="MenuItemExportAsCSV" xml:space="preserve">
+    <value>Esporta come CSV</value>
+  </data>
+  <data name="MenuItemExportAsJSON" xml:space="preserve">
+    <value>Esporta come JSON</value>
+  </data>
+  <data name="MenuItemText" xml:space="preserve">
+    <value>Mostra _Gestione nodi grafico</value>
+  </data>
+  <data name="SearchBoxWatermarkText" xml:space="preserve">
+    <value>Cerca</value>
+  </data>
+  <data name="Title_EmptyList" xml:space="preserve">
+    <value>Elenco vuoto</value>
+  </data>
+  <data name="Title_Error" xml:space="preserve">
+    <value>Errore</value>
+  </data>
+  <data name="Title_Frozen" xml:space="preserve">
+    <value>Congelato</value>
+  </data>
+  <data name="Title_Function" xml:space="preserve">
+    <value>Funzione</value>
+  </data>
+  <data name="Title_Information" xml:space="preserve">
+    <value>Informazioni</value>
+  </data>
+  <data name="Title_IsInput" xml:space="preserve">
+    <value>È input</value>
+  </data>
+  <data name="Title_IsOutput" xml:space="preserve">
+    <value>È output</value>
+  </data>
+  <data name="Title_MissingContent" xml:space="preserve">
+    <value>Contenuto mancante</value>
+  </data>
+  <data name="Title_Null" xml:space="preserve">
+    <value>Nullo</value>
+  </data>
+  <data name="Title_PreviewOff" xml:space="preserve">
+    <value>Anteprima disattivata</value>
+  </data>
+  <data name="Title_Warning" xml:space="preserve">
+    <value>Avviso</value>
+  </data>
+  <data name="ToolTip_ClearSearchBox" xml:space="preserve">
+    <value>Cancella casella di ricerca ..</value>
+  </data>
+  <data name="ToolTip_CopyToClipboard" xml:space="preserve">
+    <value>Copia negli Appunti</value>
+  </data>
+  <data name="ToolTip_DismissedWarnings" xml:space="preserve">
+    <value>Avvisi ignorati</value>
+  </data>
+  <data name="ToolTip_ExportToExcel" xml:space="preserve">
+    <value>Esporta dati nodi</value>
+  </data>
+  <data name="ToolTip_ExportToExcelFiltered" xml:space="preserve">
+    <value>Esporta dati nodi filtrati</value>
+  </data>
+  <data name="Title_IsOutputSingleItem" xml:space="preserve">
+    <value>Elemento singolo</value>
+  </data>
+  <data name="Title_Package" xml:space="preserve">
+    <value>Pacchetto</value>
+  </data>
+  <data name="Title_TopLevelItemsNumber" xml:space="preserve">
+    <value>Numero di elementi di livello superiore</value>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="Alert" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\Alert.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
@@ -136,9 +223,6 @@
   <data name="Export" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\Export.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="ExtensionName" xml:space="preserve">
-    <value>Graph Node Manager</value>
-  </data>
   <data name="Frozen" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\Frozen.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -157,30 +241,6 @@
   <data name="IsOutput" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\IsOutput.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="HeaderNameIssues" xml:space="preserve">
-    <value>Issues</value>
-  </data>
-  <data name="HeaderNameName" xml:space="preserve">
-    <value>Name</value>
-  </data>
-  <data name="HeaderNameOutputs" xml:space="preserve">
-    <value>Outputs</value>
-  </data>
-  <data name="HeaderNameState" xml:space="preserve">
-    <value>State</value>
-  </data>
-  <data name="HeaderNameType" xml:space="preserve">
-    <value>Type</value>
-  </data>
-  <data name="MenuItemExportAsCSV" xml:space="preserve">
-    <value>Export as CSV</value>
-  </data>
-  <data name="MenuItemExportAsJSON" xml:space="preserve">
-    <value>Export as JSON</value>
-  </data>
-  <data name="MenuItemText" xml:space="preserve">
-    <value>Show _Graph Node Manager</value>
-  </data>
   <data name="MissingNode" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\MissingNode.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
@@ -189,65 +249,5 @@
   </data>
   <data name="Search" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Images\Search.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="SearchBoxWatermarkText" xml:space="preserve">
-    <value>Search</value>
-  </data>
-  <data name="Title_EmptyList" xml:space="preserve">
-    <value>Empty list</value>
-  </data>
-  <data name="Title_Error" xml:space="preserve">
-    <value>Error</value>
-  </data>
-  <data name="Title_Frozen" xml:space="preserve">
-    <value>Frozen</value>
-  </data>
-  <data name="Title_Function" xml:space="preserve">
-    <value>Function</value>
-  </data>
-  <data name="Title_Information" xml:space="preserve">
-    <value>Info</value>
-  </data>
-  <data name="Title_IsInput" xml:space="preserve">
-    <value>Is input</value>
-  </data>
-  <data name="Title_IsOutput" xml:space="preserve">
-    <value>Is output</value>
-  </data>
-  <data name="Title_MissingContent" xml:space="preserve">
-    <value>Missing content</value>
-  </data>
-  <data name="Title_Null" xml:space="preserve">
-    <value>Null</value>
-  </data>
-  <data name="Title_PreviewOff" xml:space="preserve">
-    <value>Preview off</value>
-  </data>
-  <data name="Title_Warning" xml:space="preserve">
-    <value>Warning</value>
-  </data>
-  <data name="ToolTip_ClearSearchBox" xml:space="preserve">
-    <value>Clear search box ..</value>
-  </data>
-  <data name="ToolTip_CopyToClipboard" xml:space="preserve">
-    <value>Copy to clipboard</value>
-  </data>
-  <data name="ToolTip_DismissedWarnings" xml:space="preserve">
-    <value>Dismissed warnings</value>
-  </data>
-  <data name="ToolTip_ExportToExcel" xml:space="preserve">
-    <value>Export node data</value>
-  </data>
-  <data name="ToolTip_ExportToExcelFiltered" xml:space="preserve">
-    <value>Export filtered node data</value>
-  </data>
-  <data name="Title_IsOutputSingleItem" xml:space="preserve">
-    <value>Single item</value>
-  </data>
-  <data name="Title_Package" xml:space="preserve">
-    <value>Package</value>
-  </data>
-  <data name="Title_TopLevelItemsNumber" xml:space="preserve">
-    <value>Number of top level items</value>
   </data>
 </root>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -118,26 +118,21 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CannotRemovePackageAssemblyMessage" xml:space="preserve">
-    <value>Due to limitations in the .NET framework, it is not possible to update your package assembly while it is already loaded.  Please update the assembly while Dynamo is not running and try again.</value>
-    <comment>The message is shown when a user tries to remove assemblies from a loaded package.</comment>
+    <value>由於 .NET Framework 的限制，套件組合載入後就無法更新。請在 Dynamo 未執行時更新組合，然後再試一次。</value>
   </data>
   <data name="CannotRemovePackageAssemblyTitle" xml:space="preserve">
-    <value>Cannot update assembly</value>
+    <value>無法更新組合</value>
   </data>
   <data name="InvalidPackageFolderWarning" xml:space="preserve">
-    <value>The folder '{0}' does not exist</value>
-    <comment>This warning message is shown (during start up) when user specifies additional folders in DynamoSettings.xml file but the folders do not exist.</comment>
+    <value>「{0}」資料夾不存在</value>
   </data>
   <data name="InvalidPackageMalformedNodeLibraryDefinition" xml:space="preserve">
-    <value>"A package called {0} found at {1} has improperly defined its node libraries in the package manifest.  Ignoring it."</value>
-    <comment>This warning message is shown when packages do have a node librarie defined incorrectly so that it's name can not be determined</comment>
+    <value>「在 {1} 找到一個名為 {0} 的套件，在套件資訊清單中定義了錯誤的節點資源庫。將忽略它。」</value>
   </data>
   <data name="InvalidPackageNodeLibraryIsNotSigned" xml:space="preserve">
-    <value>"A package called {0} found at {1} could not be verified to have signed dll files.  {2}  Ignoring it."</value>
-    <comment>This warning message is shown when the node libraries defined for the package in the pkg.json manifest are invalid or do not have a verified certificate file</comment>
+    <value>「在 {1} 找到一個名為 {0} 的套件，無法驗證有已簽署的 dll 檔。{2} 將忽略它。」</value>
   </data>
   <data name="PackagesDirectorySkipped" xml:space="preserve">
-    <value>{0} was not scanned for packages because a preference setting disabled loading from that location."</value>
-    <comment>This warning message is shown when a package directory is skipped due to a preference setting disabling loads from that location type.</comment>
+    <value>未掃瞄 {0} 是否有套件，因為某個偏好設定已停止從該位置載入。</value>
   </data>
 </root>

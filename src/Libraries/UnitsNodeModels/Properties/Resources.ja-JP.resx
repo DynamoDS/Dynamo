@@ -118,98 +118,90 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="AreaFromStringDescription" xml:space="preserve">
-    <value>Enter an area.</value>
-    <comment>Description for Area From String</comment>
+    <value>面積を入力します。</value>
   </data>
   <data name="AreaFromStringPortDataAreaToolTip" xml:space="preserve">
-    <value>The area. Stored internally as decimal meters squared.</value>
+    <value>面積。十進表記の平方メートルとして内部的に格納されます。</value>
   </data>
   <data name="AreaFromStringSearchTags" xml:space="preserve">
     <value>Imperial;Metric;Area;Project;units</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="ConvertUnitsDescription" xml:space="preserve">
-    <value>Converts a value between selected unit systems</value>
+    <value>選択した単位系間で値を変換します</value>
   </data>
   <data name="ConvertUnitsSearchTags" xml:space="preserve">
     <value />
   </data>
   <data name="CovertUnitInputTooltip" xml:space="preserve">
-    <value>A value to convert</value>
+    <value>変換する値</value>
   </data>
   <data name="CovertUnitOutputTooltip" xml:space="preserve">
-    <value>Converted value</value>
+    <value>変換された値</value>
   </data>
   <data name="EditHeader" xml:space="preserve">
-    <value>Edit...</value>
+    <value>編集...</value>
   </data>
   <data name="LegthFromStringObsoleteMessage" xml:space="preserve">
-    <value>is obsolete, please use the Parse Unit Input node.</value>
+    <value>は使用されなくなりました。Parse Unit Input ノードを使用してください。</value>
   </data>
   <data name="LengthFromStringDescription" xml:space="preserve">
-    <value>A length defined as feet and inches is turned into a number representation in feet.</value>
-    <comment>Description for Length From String</comment>
+    <value>フィートとインチで定義された長さがフィート単位の数値表現となります。</value>
   </data>
   <data name="LengthFromStringPortDataLengthToolTip" xml:space="preserve">
-    <value>Number representation in feet</value>
+    <value>数値表現(フィート)</value>
   </data>
   <data name="LengthFromStringSearchTags" xml:space="preserve">
     <value>Imperial;Metric;Length;Project;units</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="ParseUnitInputDescription" xml:space="preserve">
-    <value>Converts an input string with unit values into the equivalent value of the expression</value>
+    <value>単位値を含む入力文字列を、式に相当する値に変換します</value>
   </data>
   <data name="ParseUnitInputSearchTags" xml:space="preserve">
     <value />
   </data>
   <data name="ParseUnitInputUnitTooltip" xml:space="preserve">
-    <value>Selected Unit</value>
+    <value>選択された単位</value>
   </data>
   <data name="ParseUnitInputValueTooltip" xml:space="preserve">
-    <value>Converted value of expresion</value>
+    <value>変換された式の値</value>
   </data>
   <data name="QuantitiesUIDescription" xml:space="preserve">
-    <value>Select a Quantity type</value>
+    <value>数量タイプを選択</value>
   </data>
   <data name="QuantitiesUISearchTags" xml:space="preserve">
     <value />
   </data>
   <data name="SchemaLoadWarning" xml:space="preserve">
-    <value>There was an issue loading Unit Schemas from the specified path:</value>
+    <value>指定されたパスから Unit Schemas をロード中に問題が発生しました:</value>
   </data>
   <data name="SymbolsUIDescription" xml:space="preserve">
-    <value>Select a Symbol type</value>
+    <value>記号タイプを選択</value>
   </data>
   <data name="SymbolsUISearchTags" xml:space="preserve">
     <value />
   </data>
   <data name="UnitsUIDescription" xml:space="preserve">
-    <value>Select a Unit type</value>
+    <value>単位タイプを選択</value>
   </data>
   <data name="UnitsUISearchTags" xml:space="preserve">
     <value />
   </data>
   <data name="UnitTypesDescription" xml:space="preserve">
-    <value>Select a unit of measurement.</value>
-    <comment>Description for Unit Types</comment>
+    <value>測定単位を選択します。</value>
   </data>
   <data name="UnitTypesObsoleteMessage" xml:space="preserve">
-    <value>is obsolete, please use the Units dropdown node.</value>
+    <value>は使用されなくなりました。Units ドロップダウン ノードを使用してください。</value>
   </data>
   <data name="UnitTypesSearchTags" xml:space="preserve">
     <value>units;unittypes;</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="VolumeFromStringDescription" xml:space="preserve">
-    <value>Enter a volume.</value>
-    <comment>Description for Volume From String</comment>
+    <value>容積を入力します。</value>
   </data>
   <data name="VolumeFromStringPortDataVolumeToolTip" xml:space="preserve">
-    <value>The volume. Stored internally as decimal meters cubed.</value>
+    <value>容積。十進表記の立方メートルとして内部的に格納されます。</value>
   </data>
   <data name="VolumeFromStringSearchTags" xml:space="preserve">
     <value>Imperial;Metric;volume;Project;units</value>
-    <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
 </root>
