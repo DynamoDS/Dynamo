@@ -208,7 +208,7 @@ Výchozí hodnota: 1</value>
   <data name="ButtonDownloadLastest" xml:space="preserve">
     <value>Stáhněte si nejnovější verzi.</value>
   </data>
-  <data name="052465" xml:space="preserve">
+  <data name="ArggOKButton" xml:space="preserve">
     <value>OK</value>
   </data>
   <data name="ButtonProcess" xml:space="preserve">
