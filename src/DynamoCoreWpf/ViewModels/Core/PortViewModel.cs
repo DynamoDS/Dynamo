@@ -6,13 +6,13 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
-using static Dynamo.ViewModels.SearchViewModel;
 
 namespace Dynamo.ViewModels
 {
@@ -606,35 +606,39 @@ namespace Dynamo.ViewModels
                             // The port index is 1- based (currently a hack and not expected from service)
                             var sourcePort = sourceNode.OutPorts.FirstOrDefault(p => p.PortModel.Index == connection.StartNode.PortIndex - 1);
                             var targetPort = targetNode.InPorts.FirstOrDefault(p => p.PortModel.Index == connection.EndNode.PortIndex - 1);
-                            var commands = new List<DynamoModel.ModelBasedRecordableCommand>
-                            {
-                            new DynamoModel.MakeConnectionCommand(sourceNode.Id.ToString(), connection.StartNode.PortIndex - 1, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
-                            new DynamoModel.MakeConnectionCommand(targetNode.Id.ToString(), connection.EndNode.PortIndex - 1, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
-                            };
-                            commands.ForEach(c =>
-                            {
-                                try
-                                {
-                                    wsViewModel.DynamoViewModel.Model.ExecuteCommand(c);
-                                }
-                                catch (Exception) { }
-                            });
+
+                            ConnectorModel.Make(sourceNode.NodeModel, targetNode.NodeModel, connection.StartNode.PortIndex - 1, connection.EndNode.PortIndex - 1);
+
+                            //var commands = new List<DynamoModel.ModelBasedRecordableCommand>
+                            //{
+                            //    new DynamoModel.MakeConnectionCommand(sourceNode.Id.ToString(), connection.StartNode.PortIndex - 1, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
+                            //    new DynamoModel.MakeConnectionCommand(targetNode.Id.ToString(), connection.EndNode.PortIndex - 1, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
+                            //};
+                            //commands.ForEach(c =>
+                            //{
+                            //    try
+                            //    {
+                            //        wsViewModel.DynamoViewModel.Model.ExecuteCommand(c);
+                            //    }
+                            //    catch (Exception) { }
+                            //});
                         });
 
                         // Connect the cluster to the original node and port
-                        var finalCommands = new List<DynamoModel.ModelBasedRecordableCommand>
-                        {
-                        new DynamoModel.MakeConnectionCommand(node.Id.ToString(), 0, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
-                        new DynamoModel.MakeConnectionCommand(targetNodeFromCluster?.Id.ToString(), ClusterResultItem.EntryNodeInPort, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
-                        };
-                        finalCommands.ForEach(c =>
-                        {
-                            try
-                            {
-                                wsViewModel.DynamoViewModel.Model.ExecuteCommand(c);
-                            }
-                            catch (Exception) { }
-                        });
+                        ConnectorModel.Make(node.NodeModel, targetNodeFromCluster.NodeModel, 0, ClusterResultItem.EntryNodeInPort);
+                        //var finalCommands = new List<DynamoModel.ModelBasedRecordableCommand>
+                        //{
+                        //    new DynamoModel.MakeConnectionCommand(node.Id.ToString(), 0, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
+                        //    new DynamoModel.MakeConnectionCommand(targetNodeFromCluster?.Id.ToString(), ClusterResultItem.EntryNodeInPort, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
+                        //};
+                        //finalCommands.ForEach(c =>
+                        //{
+                        //    try
+                        //    {
+                        //        wsViewModel.DynamoViewModel.Model.ExecuteCommand(c);
+                        //    }
+                        //    catch (Exception) { }
+                        //});
 
                         // AutoLayout should be called after all nodes are connected
                         foreach (var node in clusterMapping.Values)
@@ -648,7 +652,7 @@ namespace Dynamo.ViewModels
                     // wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
                 }
             }
-            catch (Exception)
+            catch (Exception ex)
             {
                 // Log the exception and show a notification to the user
             }
