@@ -4800,6 +4800,8 @@ static Dynamo.Wpf.Properties.Resources.ExitTourWindowContent.get -> string
 static Dynamo.Wpf.Properties.Resources.ExportPreferencesText.get -> string
 static Dynamo.Wpf.Properties.Resources.ExportSettingsDialogTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.ExportSettingsFailedMessage.get -> string
+static Dynamo.Wpf.Properties.Resources.ExportWorkspaceAsImage.get -> string
+static Dynamo.Wpf.Properties.Resources.ExportWorkspaceAs3DImage.get -> string
 static Dynamo.Wpf.Properties.Resources.ExtensionAdded.get -> string
 static Dynamo.Wpf.Properties.Resources.ExtensionAlreadyPresent.get -> string
 static Dynamo.Wpf.Properties.Resources.FileDialogAllFiles.get -> string
