@@ -1304,7 +1304,6 @@
     <Resource Include="UI\Images\dock_32px_default.png" />
     <Resource Include="UI\Images\check.png" />
     <Resource Include="UI\Images\check-disabled.png" />
-    <Resource Include="UI\Images\close.png" />
     <Resource Include="UI\Images\closetab_normal.png" />
     <Resource Include="UI\Images\dynamonotext.png" />
     <Resource Include="UI\Images\error_48px.png" />

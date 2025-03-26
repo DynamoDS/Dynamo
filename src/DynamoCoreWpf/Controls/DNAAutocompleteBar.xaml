@@ -353,7 +353,7 @@
                                                     Background="Transparent"
                                                     CornerRadius="2" />
                                             <Image x:Name="DotsImage"
-                                                   Source="/DynamoCoreWpf;component/UI/Images/close.png"
+                                                   Source="/DynamoCoreWpf;component/UI/Images/whiteclosetab.png"
                                                    Width="16px"
                                                    Height="16px"
                                                    Margin="5"
