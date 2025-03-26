@@ -222,7 +222,7 @@ Default value: 1</value>
     <value>Download latest version</value>
     <comment>Button Download Lastest</comment>
   </data>
-  <data name="052465" xml:space="preserve">
+  <data name="ArggOKButton" xml:space="preserve">
     <value>Arrrrg, ok</value>
     <comment>Button OK</comment>
   </data>
