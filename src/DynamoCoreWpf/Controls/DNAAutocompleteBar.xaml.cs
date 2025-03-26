@@ -6,7 +6,6 @@ using Dynamo.ViewModels;
 using System;
 using System.Linq;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Threading;
 
@@ -19,12 +18,6 @@ namespace Dynamo.UI.Controls
     /// </summary>
     public partial class DNAAutocompleteBar : IDisposable
     {
-        ListBoxItem HighlightedItem;
-
-        double currentX;
-
-        ListBoxItem currentListBoxItem;
-
         /// <summary>
         /// Node AutoComplete Search ViewModel DataContext
         /// </summary>
@@ -125,11 +118,8 @@ namespace Dynamo.UI.Controls
                     CloseAutoCompletion();
                     break;
                 case Key.Enter:
-                    if (HighlightedItem != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
-                    {
-                        ViewModel?.ConsolidateTransientNodes();
-                        CloseAutoCompletion();
-                    }
+                    ViewModel?.ConsolidateTransientNodes();
+                    CloseAutoCompletion();
                     break;
             }
         }
