@@ -1,0 +1,132 @@
+﻿<!--
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.
+
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code  .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } .questionmark:after { content: '?'; display: inline-block; font-family: sans-serif; font-weight: bold; text-align: center; font-size: 0.8em; line-height: 0.8em; border-radius: 50%; margin-left: 6px; padding: 0.13em 0.2em 0.09em 0.2em; color: inherit; border: 1px solid; text-decoration: none; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <form action="https://forum.dynamobim.com/t/new-feature-preview-python-3-support-issue-thread/51649"><input type="submit" class="button" value="Nahlásit problém s uzlem v jazyce Python 3" style="font-size:medium;"/></form>
+    <h2>Převod z jazyka Python 2 na jazyk Python 3</h2>
+    <p>Nadace Python Software Foundation (PSF) oficiálně ukončila podporu jazyka Python 2 1. ledna 2020. Od verze 2.7 aplikace Dynamo přešla na modul CPython3, který poskytuje přístup k jazyku Python 3 v aplikaci Dynamo.</p>
+   
+    <h3>Proč jsme změnili verzi jazyka Python?</h3>
+    <p>Aplikace Dynamo podobně jako v mnoha jiných prostředích založených na jazyku C# používá k přesunu dat mezi objekty .NET a skripty jazyka Python nástroj s názvem IronPython. Protože nástroj IronPython nebyl aktualizován na jazyk Python 3, aplikace Dynamo přešla na standardní nativní překladač jazyka Python.</p>
+    <p>Přechod aplikace Dynamo na jazyk Python 3 umožňuje uživatelům aplikace Dynamo přistupovat k oblíbeným moderním knihovnám a nadále přistupovat k novým funkcím platformy, základním opravám údržby a bezpečnostním opravám. Grafy aplikace Dynamo mohou navíc využívat knihovny jazyka Python s nativními rozšířeními, která dříve nebyla dostupná, například NumPy, SciPy a Pandas.</p>
+
+    <h3>Zpětná kompatibilita</h3>
+    <p>Není zaručeno, že každý kód vytvořený v prostředí CPython3 bude fungovat v předchozích verzích aplikace Dynamo. Autoři kódů by podle potřeby měli zajistit zpětnou kompatibilitu s verzemi IronPython2 i CPython3.</p>
+    
+    <h3>Co to znamená pro uživatele a jejich grafy s jazykem Python?</h3>
+    <p>Pokud nejste autorem grafu nebo uzlů jazyka Python, které obsahuje, obraťte se na autora a informujte je o těchto změnách, aby mohli v případě potřeby provádět změny.</p>
+    <p>Pokud jste autorem grafu, přečtěte si následující pokyny, abyste pochopili, jak tyto změny mohou ovlivnit uzly v jazyce Python a jak provádět aktualizace.</p>
+
+    <p>Jazyk Python 3 je v zásadě stejný jako Python 2, má jen změněnou syntaxi a základní knihovny, aby byl konzistentnější, lépe se dal naučit a byla zajištěna lepší podpora Unicode.</p>
+    <p>Některé programy v jazyce Python 2 budou v jazyce Python 3 fungovat normálně, ale mnoho výrazů a příkazů bude nutné upravit, například příkaz print. Spoustu těchto změn lze naštěstí automatizovat.</p>
+
+    <h3>Aktualizace uzlů jazyka Python na jazyk Python 3 </h3>
+    <p>Skripty v jazyce Python lze spouštět nástrojem IronPython2 nebo systémem CPython3. V každém případě, kdy skript obsahuje syntaxi, která se mezi verzemi změnila, jsme vám usnadnili aktualizaci skriptu pomocí automatického převodníku kódu v uzlu jazyka Python s názvem Migration Assistant.</p>
+    <p>Chcete-li aktualizovat skript pomocí nástroje Migration Assistant, otevřete editor uzlů jazyka Python, přepněte se pomocí rozevíracího seznamu na modul CPython3 a klikněte na ikonu 2-3. Aplikace Dynamo vám oznámí, které změny jsou nutné, a nabídne vám možnost převod odmítnout nebo přijmout.</p>
+    <p>Protože uzel Python Script From String jednoduše provádí vstup kódu jazyka Python a neposkytuje prostředí textového editoru, nemá přístup k nástroji Migration Assistant. Pokud chcete tuto funkci použít, bude nutné dočasně zkopírovat a vložit kód do uzlu jazyka Python před jeho zkopírováním a vložením zpět do uzlu bloku kódu.</p>
+
+    <h3>Další informace</h3>
+    <p>Pokud vás zajímají rozdíly mezi oběma verzemi jazyka Python, můžete se podívat na tyto dva odkazy:<ul>
+            <li><a href="https://docs.python.org/3/howto/pyporting.html">Oficiální příručka pro převod kódu Python 2 na Python 3</a></li>
+            <li><a href="http://python3porting.com/">Podpora jazyka Python 3: Podrobný průvodce</a></li>
+        </ul>
+    </p>
+
+    <h3>Klíčové změny syntaxe v jazyce Python 3</h3>
+    <p>Následující seznam vysvětluje některé klíčové změny syntaxe mezi verzemi Python 2 a Python 3. Jedná se o výběr nejčastěji používaných funkcí, které byly ovlivněny, nikoli o úplný seznam.</p>
+
+
+    <h4><b>Funkce Print</b></h4>
+    <p>Nejznámější změnou je úprava syntaxe příkazu print. Ačkoliv se v aplikace Dynamo nepoužívá příliš často, zde je příklad ukazující, jak se příkaz <code>print</code> změnil.</p>
+
+    <table>
+        <tr>
+            <th>Python 2</th>
+            <th class="hidden-sm">Python 3</th>
+        </tr>
+        <tr>
+            <td><code><span class="k">print</span> <span class="s">'Hello, Dynamo!'</span></code> <samp>// Hello, Dynamo!</samp></td>
+            <th class="hidden-lg" style="border-top: 1px solid white;">Python 3</th>
+            <td><code><span class="k">print</span>(<span class="s">'Hello, Dynamo!'</span>)</code> <samp>// Hello, Dynamo!</samp></td>
+        </tr>
+    </table>
+
+    <h4><b>Celočíselné dělení</b></h4>
+    <p>Tato změna nezpůsobí vyvolání výjimky ve skriptu, může však mít vliv na výstup. Pokud jsou oba operandy celá čísla, výchozí chování operátoru dělení v jazyce Python
+ 2 je klasické dělení, kdy se odřízne desetinná část a vrátí se celé číslo. Pokud jsou operandy čísla s plovoucí desetinnou tečkou, vrátí se číslo s plovoucí desetinnou tečkou (skutečné dělení).</p>
+
+    <table>
+        <tr>
+            <th>Python 2</th>
+            <th class="hidden-sm">Python 3</th>
+        </tr>
+        <tr>
+            <td><code><span class="v">1</span>/<span class="v">2</span></code> <samp>// 0</samp></td>
+            <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
+            <td><code><span class="v">1</span>/<span class="v">2</span></code> <samp>// 0.5</samp></td>
+        </tr>
+        <tr class="spaced-sm">
+            <td class="hidden-lg">Python 2</td>
+            <td><code><span class="v">1.0</span>/<span class="v">2.0</span></code> <samp>// 0.5</samp></td>
+            <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
+            <td><code><span class="v">1.0</span>/<span class="v">2.0</span></code> <samp>// 0.5</samp></td>
+        </tr>
+    </table>
+
+    <h4><b>xrange</b></h4>
+    <p>Funkce <code>xrange</code> se obvykle používá spolu se smyčkou for nebo s příkazy pracujícími se seznamy. Pokud potřebujete provést iteraci pouze jednou, je rychlejší iterovat s funkcí <code>xrange()</code> než s funkcí <code>range()</code>. V jazyce Python 3 je funkce <code>range()</code> implementována stejně jako funkce <code>xrange()</code>, takže funkce <code>xrange()</code> již neexistuje. Po použití funkce xrange() se vyvolá výjimka NameError.</p>
+
+    <table>
+        <tr>
+            <th>Python 2</th>
+            <th class="hidden-sm">Python 3</th>
+        </tr>
+        <tr>
+            <td><code> <span class="nl">n = <span class="v">1000000</span></span> <span class="nl"> <span class="o">for</span> i <span class="i">in</span> <span class="b">xrange</span>(n): <span class="nl"><span class="k">print</span> i</span> </span> </code> <samp>// 1,2,3,4,5...</samp></td>
+            <th class="hidden-lg" style="border-top: 1px solid white;">Python 3</th>
+            <td><code> <span class="nl">n = <span class="v">1000000</span></span> <span class="nl"> <span class="o">for</span> i <span class="i">in</span> <span class="k">range</span>(n): <span class="nl"><span class="k">print</span>(i)</span> </span> </code> <samp>// 1,2,3,4,5...</samp></td>
+        </tr>
+    </table>
+
+    <h4><b>Vyvolávání a zpracování výjimek</b></h4>
+    <p>Python 2 umožňuje oba způsoby zápisu – starou i novou syntaxi – zatímco Python 3 zobrazí chybu SyntaxError v případě, že není argument výjimky uzavřen v závorkách. Zpracování výjimek bylo v jazyce Python 3 mírně upraveno a nyní je nutné používat klíčové slovo &quot;as&quot;.</p>
+
+    <table>
+        <tr>
+            <th>Python 2</th>
+            <th class="hidden-sm">Python 3</th>
+        </tr>
+        <tr>
+            <td><code> <span class="o">raise</span> <span class="e">IOError</span>, <span class="s">&quot;file error&quot;</span> </code> <samp>// IOError: file error</samp></td>
+            <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
+            <td><code> <span class="o">raise</span> <span class="e">IOError</span>(<span class="s">&quot;file error&quot;</span>) </code> <samp>// OSError: file error</samp></td>
+        </tr>
+        <tr class="spaced-sm">
+            <td class="hidden-lg">Python 2</td>
+            <td><code> <span class="nl"> <span class="o">try:</span> <span class="nl">let_us_cause_a_NameError</span> </span> <span class="nl"> <span class="o">except</span> <span class="e">NameError</span>, err: <span class="nl"><span class="k">print</span> err, <span class="s">'-- our error message'</span></span> </span> </code> <samp>// IOError: file error</samp></td>
+            <td class="hidden-lg" style="border-top: 1px solid white;">Python 3</td>
+            <td><code> <span class="nl"> <span class="o">try:</span> <span class="nl">let_us_cause_a_NameError</span> </span> <span class="nl"> <span class="o">except</span> <span class="e">NameError</span> <span class="o">as</span> err: <span class="nl"><span class="k">print</span>(err, <span class="s">'-- our error message'</span>)</span> </span> </code> <samp>// OSError: file error</samp></td>
+        </tr>
+    </table>
+</body>

@@ -365,31 +365,38 @@ namespace Dynamo.Models
             bool isInPort = portType == PortType.Input;
             activeStartPorts = null;
 
-            if (!(CurrentWorkspace.GetModelInternal(nodeId) is NodeModel node))
+            if (CurrentWorkspace.GetModelInternal(nodeId) is not NodeModel node)
                 return;
-            PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
-
-            // Test if port already has a connection, if so grab it and begin connecting 
-            // to somewhere else (we don't allow the grabbing of the start connector).
-            if (portModel.Connectors.Count > 0 && portModel.Connectors[0].Start != portModel)
+            try
             {
-                activeStartPorts = new PortModel[] { portModel.Connectors[0].Start };
-                firstStartPort = portModel.Connectors[0].Start;
-                // Disconnect the connector model from its start and end ports
-                // and remove it from the connectors collection. This will also
-                // remove the view model.
-                ConnectorModel connector = portModel.Connectors[0];
-                if (CurrentWorkspace.Connectors.Contains(connector))
+                PortModel portModel = isInPort ? node.InPorts[portIndex] : node.OutPorts[portIndex];
+
+                // Test if port already has a connection, if so grab it and begin connecting 
+                // to somewhere else (we don't allow the grabbing of the start connector).
+                if (portModel.Connectors.Count > 0 && portModel.Connectors[0].Start != portModel)
                 {
-                    var models = new List<ModelBase> { connector };
-                    CurrentWorkspace.SaveAndDeleteModels(models);
-                    connector.Delete();
+                    activeStartPorts = new PortModel[] { portModel.Connectors[0].Start };
+                    firstStartPort = portModel.Connectors[0].Start;
+                    // Disconnect the connector model from its start and end ports
+                    // and remove it from the connectors collection. This will also
+                    // remove the view model.
+                    ConnectorModel connector = portModel.Connectors[0];
+                    if (CurrentWorkspace.Connectors.Contains(connector))
+                    {
+                        var models = new List<ModelBase> { connector };
+                        CurrentWorkspace.SaveAndDeleteModels(models);
+                        connector.Delete();
+                    }
+                }
+                else
+                {
+                    activeStartPorts = new PortModel[] { portModel };
+                    firstStartPort = isInPort ? null : portModel; // Only assign firstStartPort if the port selected is an output port
                 }
             }
-            else
+            catch (Exception ex)
             {
-                activeStartPorts = new PortModel[] { portModel };
-                firstStartPort = isInPort ? null : portModel; // Only assign firstStartPort if the port selected is an output port
+                Logger.LogError("Failed to begin connection." + "\n" + ex.Message);
             }
         }
 

@@ -5093,6 +5093,9 @@
         <member name="F:Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.RemoveVertices">
             <summary>입력 면에 없는 정점을 제거합니다.</summary>
         </member>
+        <member name="F:Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Trim">
+            <summary>Trim overlapping panels to surface boundary.</summary>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.ToString">
             <summary>PanelSurface의 문자열 표현을 가져옵니다</summary>
         </member>
