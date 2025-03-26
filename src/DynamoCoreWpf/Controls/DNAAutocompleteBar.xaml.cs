@@ -147,7 +147,13 @@ namespace Dynamo.UI.Controls
 
         internal void CloseAutoCompletion()
         {
-            ViewModel?.DeleteTransientNodes();
+            //if we're doing this while a node is being deleted, doing this synchronously will
+            //cause an exception because of the current undo stack being open
+            //TODO: Transient node operations shouldn't be recorded in the undo-redo stack
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                ViewModel?.DeleteTransientNodes();
+            }), DispatcherPriority.Loaded);
             ViewModel.IsOpen = false;
             this.Close();
             ViewModel?.OnNodeAutoCompleteWindowClosed();
