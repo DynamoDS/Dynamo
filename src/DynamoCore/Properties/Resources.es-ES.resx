@@ -208,7 +208,7 @@ Valor por defecto: 1</value>
   <data name="ButtonDownloadLastest" xml:space="preserve">
     <value>Descargar versión más reciente</value>
   </data>
-  <data name="052465" xml:space="preserve">
+  <data name="ArggOKButton" xml:space="preserve">
     <value>Vaya, de acuerdo</value>
   </data>
   <data name="ButtonProcess" xml:space="preserve">

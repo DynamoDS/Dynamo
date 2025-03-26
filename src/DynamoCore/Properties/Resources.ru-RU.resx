@@ -208,7 +208,7 @@
   <data name="ButtonDownloadLastest" xml:space="preserve">
     <value>Загрузить последнюю версию</value>
   </data>
-  <data name="052465" xml:space="preserve">
+  <data name="ArggOKButton" xml:space="preserve">
     <value>Ох, ну ладно</value>
   </data>
   <data name="ButtonProcess" xml:space="preserve">
