@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -139,6 +138,7 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeHelp -= ViewModel_RequestShowNodeHelp;
             ViewModel.RequestShowNodeRename -= ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection -= ViewModel_RequestsSelection;
+            ViewModel.RequestClusterAutoCompletePopupPlacementTarget -= ViewModel_RequestClusterAutoCompletePopupPlacementTarget;
             ViewModel.RequestAutoCompletePopupPlacementTarget -= ViewModel_RequestAutoCompletePopupPlacementTarget;
             ViewModel.RequestPortContextMenuPopupPlacementTarget -= ViewModel_RequestPortContextMenuPlacementTarget;
             ViewModel.NodeLogic.PropertyChanged -= NodeLogic_PropertyChanged;
@@ -216,6 +216,7 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeHelp += ViewModel_RequestShowNodeHelp;
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
+            ViewModel.RequestClusterAutoCompletePopupPlacementTarget += ViewModel_RequestClusterAutoCompletePopupPlacementTarget;
             ViewModel.RequestAutoCompletePopupPlacementTarget += ViewModel_RequestAutoCompletePopupPlacementTarget;
             ViewModel.RequestPortContextMenuPopupPlacementTarget += ViewModel_RequestPortContextMenuPlacementTarget;
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
@@ -296,6 +297,16 @@ namespace Dynamo.Controls
 
             ViewModel.ActualHeight = ActualHeight;
             ViewModel.ActualWidth = ActualWidth;
+        }
+
+        private void ViewModel_RequestClusterAutoCompletePopupPlacementTarget(Window window, double spacing)
+        {
+            Point positionFromScreen = PointToScreen(new Point(0, this.ActualHeight));
+            PresentationSource source = PresentationSource.FromVisual(this);
+            Point targetPoints = source.CompositionTarget.TransformFromDevice.Transform(positionFromScreen);
+                
+            window.Left = targetPoints.X;
+            window.Top = targetPoints.Y + spacing;
         }
 
         private void ViewModel_RequestPortContextMenuPlacementTarget(Popup popup)
@@ -500,7 +511,7 @@ namespace Dynamo.Controls
         }
 
 
-        #region Preview Control Related Event Handlers
+    #region Preview Control Related Event Handlers
 
         private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
         {
@@ -548,10 +559,11 @@ namespace Dynamo.Controls
                 ViewModel.WorkspaceViewModel.IsSelecting || !previewEnabled ||
                 !ViewModel.IsPreviewInsetVisible || ViewModel.IsFrozen || viewModel.IsTransient;
         }
+
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
             ViewModel.ZIndex = oldZIndex;
-            
+
             //Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
             if (ViewModel.NodeModel != null && ViewModel.NodeModel is CoreNodeModels.Watch) return;
 
@@ -686,7 +698,7 @@ namespace Dynamo.Controls
         /// So we can't use MouseLeave/MouseEnter events.
         /// In this case, when we want to ensure, that mouse really left node, we use HitTest.
         /// </summary>
-        /// <param name="mousePosition">Correct position of mouse</param>
+        /// <param name="mousePosition">Currect position of mouse</param>
         /// <returns>bool</returns>
         private bool IsMouseInsideNodeOrPreview(Point mousePosition)
         {
@@ -775,7 +787,7 @@ namespace Dynamo.Controls
 
                 // We don't stash the same MenuItem multiple times.
                 if (NodeViewCustomizationMenuItems.Contains(menuItem.Header.ToString())) continue;
-
+                
                 // The MenuItem gets stashed.
                 NodeViewCustomizationMenuItems.Add(menuItem.Header.ToString(), menuItem);
             }
@@ -803,7 +815,7 @@ namespace Dynamo.Controls
             // Clearing any existing items in the node's ContextMenu.
             contextMenu.Items.Clear();
             NodeContextMenuBuilder.Build(contextMenu, viewModel, NodeViewCustomizationMenuItems);
-
+            
             contextMenu.DataContext = viewModel;
             contextMenu.IsOpen = true;
 

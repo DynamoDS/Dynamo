@@ -126,6 +126,7 @@ namespace Dynamo.ViewModels
         }
 
         public bool ResultsLoaded => ClusterResults != null;
+        public bool IsOpen { get; set; }
 
         private int ClusterResultsCount => ClusterResults == null ? 0 : ClusterResults.Count();
 
@@ -844,7 +845,7 @@ namespace Dynamo.ViewModels
                 var comboboxResults = fullResults.Results.Select(x => new ClusterAutocompleteResult { Description = x.Description });
                 dynamoViewModel.UIDispatcher.BeginInvoke(() =>
                 {
-                    if (!Visible)
+                    if (!IsOpen)
                     {
                         // view dissapeared while the background thread was waiting for the server response.
                         // Ignore the results are we're no longer interested.

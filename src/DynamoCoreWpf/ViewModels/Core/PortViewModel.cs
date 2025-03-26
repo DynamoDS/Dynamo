@@ -341,10 +341,9 @@ namespace Dynamo.ViewModels
         /// Sets up the node autocomplete window to be placed relative to the node.
         /// </summary>
         /// <param name="popup">Node autocomplete popup.</param>
-        internal void SetupPlaceDNAAutocompletePlacement(Popup popup)
+        internal void SetupPlaceDNAAutocompletePlacement(Window window)
         {
-            node.OnRequestAutoCompletePopupPlacementTarget(popup);
-            popup.CustomPopupPlacementCallback = PlaceDNAAutocompletePopup;
+            node.OnClusterRequestAutoCompletePopupPlacementTarget(window, autocompletePopupSpacing);
         }
 
 
@@ -595,7 +594,7 @@ namespace Dynamo.ViewModels
                 // Display the cluster info in the right side panel
                 // wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
 
-                wsViewModel.OnRequestDNAAutocompleteBar(ShowHideFlags.Show);
+                wsViewModel.OnRequestDNAAutocompleteBar();
             }
             catch (Exception)
             {

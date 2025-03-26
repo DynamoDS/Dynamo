@@ -21,8 +21,6 @@ namespace Dynamo.UI.Controls
     {
         ListBoxItem HighlightedItem;
 
-        internal event Action<ShowHideFlags> RequestShowNodeAutoCompleteSearch;
-
         double currentX;
 
         ListBoxItem currentListBoxItem;
@@ -30,10 +28,12 @@ namespace Dynamo.UI.Controls
         /// <summary>
         /// Node AutoComplete Search ViewModel DataContext
         /// </summary>
-        public NodeAutoCompleteSearchViewModel ViewModel => DataContext as NodeAutoCompleteSearchViewModel;
+        private NodeAutoCompleteSearchViewModel ViewModel => DataContext as NodeAutoCompleteSearchViewModel;
 
-        public DNAAutocompleteBar()
+        public DNAAutocompleteBar(Window window, NodeAutoCompleteSearchViewModel viewModel)
         {
+            this.Owner = window;
+            DataContext = viewModel;
             InitializeComponent();
             if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
@@ -44,6 +44,8 @@ namespace Dynamo.UI.Controls
                 }
             }
             HomeWorkspaceModel.WorkspaceClosed += this.CloseAutoCompletion;
+            ViewModel.IsOpen = true;
+            LoadAndPopulate();
         }
 
         private void NodeAutoCompleteSearchControl_Unloaded(object sender, System.ComponentModel.CancelEventArgs e)
@@ -61,27 +63,11 @@ namespace Dynamo.UI.Controls
 
         private void CurrentApplicationDeactivated(object sender, EventArgs e)
         {
-            OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+            CloseAutoCompletion();
         }
 
-        private void OnRequestShowNodeAutoCompleteSearch(ShowHideFlags flags)
+        private void LoadAndPopulate()
         {
-            RequestShowNodeAutoCompleteSearch?.Invoke(flags);
-        }
-
-        private void OnNodeAutoCompleteSearchControlVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            // If visibility  is false, then remove all transient nodes and return.
-            if (!(bool)e.NewValue) {
-                ViewModel.Visible = false;
-                ViewModel.DeleteTransientNodes();
-                return;
-            }
-            ViewModel.Visible = true;
-
-            // When launching this control, always start with clear search term.
-            //SearchTextBox.Clear(); TODO
-
             Analytics.TrackEvent(
             Dynamo.Logging.Actions.Open,
             Dynamo.Logging.Categories.NodeAutoCompleteOperations);
@@ -96,6 +82,11 @@ namespace Dynamo.UI.Controls
             }), DispatcherPriority.Loaded);
 
             ViewModel.ParentNodeRemoved += OnParentNodeRemoved;
+        }
+
+        private void GripHandle_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            this.DragMove();
         }
 
         private void MoveIndex(int step)
@@ -119,7 +110,7 @@ namespace Dynamo.UI.Controls
             NodeModel parent_node = ViewModel.PortViewModel?.PortModel.Owner;
             if (node == parent_node)
             {
-                OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+                CloseAutoCompletion();
                 ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
             }
         }
@@ -131,13 +122,13 @@ namespace Dynamo.UI.Controls
             switch (key)
             {
                 case Key.Escape:
-                    OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+                    CloseAutoCompletion();
                     break;
                 case Key.Enter:
                     if (HighlightedItem != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
                     {
-                        //TODO: consolidate transient nodes
-                        OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+                        ViewModel?.ConsolidateTransientNodes();
+                        CloseAutoCompletion();
                     }
                     break;
             }
@@ -151,13 +142,14 @@ namespace Dynamo.UI.Controls
 
         internal void CloseAutocompletionWindow(object sender, RoutedEventArgs e)
         {
-            ViewModel?.DeleteTransientNodes();
             CloseAutoCompletion();
         }
 
         internal void CloseAutoCompletion()
         {
-            OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+            ViewModel?.DeleteTransientNodes();
+            ViewModel.IsOpen = false;
+            this.Close();
             ViewModel?.OnNodeAutoCompleteWindowClosed();
         }
 

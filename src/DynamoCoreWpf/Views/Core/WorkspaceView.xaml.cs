@@ -64,6 +64,7 @@ namespace Dynamo.Views
         private PortViewModel snappedPort;
         private double currentNodeCascadeOffset;
         private Point inCanvasSearchPosition;
+       
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
 
         public WorkspaceViewModel ViewModel
@@ -131,7 +132,7 @@ namespace Dynamo.Views
             ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
             ViewModel.RequestHideAllPopup -= HideAllPopUp;
             ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
-            ViewModel.RequestDNAAutocompleteBar -= ShowHideDNAAutocompleteBar;
+            ViewModel.RequestDNAAutocompleteBar -= ShowDNAAutocompleteBar;
             ViewModel.RequestPortContextMenu -= ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged -= ViewModel_PropertyChanged;
 
@@ -161,7 +162,7 @@ namespace Dynamo.Views
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
             ViewModel.RequestHideAllPopup += HideAllPopUp;
             ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
-            ViewModel.RequestDNAAutocompleteBar += ShowHideDNAAutocompleteBar;
+            ViewModel.RequestDNAAutocompleteBar += ShowDNAAutocompleteBar;
             ViewModel.RequestPortContextMenu += ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
@@ -187,9 +188,16 @@ namespace Dynamo.Views
             ShowHidePopup(flag, NodeAutoCompleteSearchBar);
         }
 
-        private void ShowHideDNAAutocompleteBar(ShowHideFlags flag)
+        private void ShowDNAAutocompleteBar()
         {
-            ShowHidePopup(flag, DNAAutocompleteBar);
+            if (ViewModel.NodeAutoCompleteSearchViewModel.IsOpen)
+            {
+                return;
+            }
+            var window = new DNAAutocompleteBar(Window.GetWindow(this), ViewModel.NodeAutoCompleteSearchViewModel);
+            window.Show();
+            ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupPlaceDNAAutocompletePlacement(window);
+            //ShowHidePopup(flag, DNAAutocompleteBar);
         }
 
         private void ShowHidePortContextMenu(ShowHideFlags flag, PortViewModel portViewModel)
@@ -228,7 +236,7 @@ namespace Dynamo.Views
 
                     if (displayPopup)
                     {
-                        if (popup == NodeAutoCompleteSearchBar || popup == DNAAutocompleteBar)
+                        if (popup == NodeAutoCompleteSearchBar /*|| popup == DNAAutocompleteBar*/)
                         {
                             if (ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel == null) return;
                             // if the MLRecommendation is default but user not accepting TOU, display notification
@@ -246,11 +254,6 @@ namespace Dynamo.Views
                             {
 
                                 ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
-                            }
-                            else
-                            {
-
-                                ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupPlaceDNAAutocompletePlacement(popup);
                             }
                         }
 

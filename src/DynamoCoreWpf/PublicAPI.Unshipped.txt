@@ -2466,6 +2466,8 @@ Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.DisplayLowConfidence.set -> vo
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.HideAutocompleteMethodOptions.get -> bool
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.IsDisplayingMLRecommendation.get -> bool
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.IsMLAutocompleteTOUApproved.get -> bool
+Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.IsOpen.get -> bool
+Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.IsOpen.set -> void
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.NextSource.get -> string
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.NthofTotal.get -> string
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.PreviousSource.get -> string
@@ -2967,6 +2969,8 @@ Dynamo.ViewModels.SearchViewModel.InCanvasSearchPosition -> System.Windows.Point
 Dynamo.ViewModels.SearchViewModel.IsAnySearchResult.get -> bool
 Dynamo.ViewModels.SearchViewModel.IsDetailedMode.get -> bool
 Dynamo.ViewModels.SearchViewModel.IsDetailedMode.set -> void
+Dynamo.ViewModels.SearchViewModel.IsOpen.get -> bool
+Dynamo.ViewModels.SearchViewModel.IsOpen.set -> void
 Dynamo.ViewModels.SearchViewModel.LibraryRootCategories.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.Wpf.ViewModels.NodeCategoryViewModel>
 Dynamo.ViewModels.SearchViewModel.Model.get -> Dynamo.Search.NodeSearchModel
 Dynamo.ViewModels.SearchViewModel.MoveSelection(Dynamo.ViewModels.SearchViewModel.Direction direction) -> void
