@@ -3074,6 +3074,7 @@ virtual Dynamo.Graph.Nodes.NodeModel.InputData.get -> Dynamo.Graph.Nodes.NodeInp
 virtual Dynamo.Graph.Nodes.NodeModel.IsConvertible.get -> bool
 virtual Dynamo.Graph.Nodes.NodeModel.IsInputNode.get -> bool
 virtual Dynamo.Graph.Nodes.NodeModel.IsOutputNode.get -> bool
+virtual Dynamo.Graph.Nodes.NodeModel.IsResizable.get -> bool
 virtual Dynamo.Graph.Nodes.NodeModel.NodeType.get -> string
 virtual Dynamo.Graph.Nodes.NodeModel.OnBuilt() -> void
 virtual Dynamo.Graph.Nodes.NodeModel.OnConnectorAdded(Dynamo.Graph.Connectors.ConnectorModel obj) -> void

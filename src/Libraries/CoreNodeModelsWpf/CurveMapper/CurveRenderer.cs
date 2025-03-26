@@ -79,7 +79,7 @@ namespace Dynamo.Wpf.CurveMapper
             return new Path
             {
                 Data = geometry,
-                Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#B385F2")),
+                Stroke = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#5BC9BD")),
                 StrokeThickness = isControlLine ? 1 : 3,
                 StrokeDashArray = isControlLine ? new DoubleCollection { 4, 4 } : null
             };
