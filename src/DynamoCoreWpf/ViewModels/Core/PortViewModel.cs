@@ -338,9 +338,9 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Sets up the node autocomplete window to be placed relative to the node.
+        /// Sets up the node cluster autocomplete flyout window to be placed relative to the node.
         /// </summary>
-        /// <param name="popup">Node autocomplete popup.</param>
+        /// <param name="window">Node cluster autocomplete window.</param>
         internal void SetupPlaceDNAAutocompletePlacement(Window window)
         {
             node.OnClusterRequestAutoCompletePopupPlacementTarget(window, autocompletePopupSpacing);
@@ -423,8 +423,8 @@ namespace Dynamo.ViewModels
 
         private CustomPopupPlacement[] PlaceDNAAutocompletePopup(Size popupSize, Size targetSize, Point offset)
         {
-            var zoom = node.WorkspaceViewModel.Zoom;
-
+            // Highlight the port when the autocomplete popup is shown
+            Highlight = Visibility.Visible;
             double x = 0;
             // Scale the spaacing by the target height (passed to the callback) and the actual height of the node.
             var scaledSpacing = autocompletePopupSpacing * targetSize.Height / node.ActualHeight;
