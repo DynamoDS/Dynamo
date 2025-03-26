@@ -2918,6 +2918,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Workspace has been exported as a 3D image to .
+        /// </summary>
+        public static string ExportWorkspaceAs3DImage {
+            get {
+                return ResourceManager.GetString("ExportWorkspaceAs3DImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Workspace has been exported as an image to .
+        /// </summary>
+        public static string ExportWorkspaceAsImage {
+            get {
+                return ResourceManager.GetString("ExportWorkspaceAsImage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Extension tab added to the extensions side bar..
         /// </summary>
         public static string ExtensionAdded {

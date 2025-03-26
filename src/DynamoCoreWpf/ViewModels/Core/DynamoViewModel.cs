@@ -3397,6 +3397,10 @@ namespace Dynamo.ViewModels
         {
             OnRequestSaveImage(this, new ImageSaveEventArgs(parameters.ToString()));
 
+            string message = String.Concat(WpfResources.ExportWorkspaceAsImage, parameters.ToString());
+
+            MainGuideManager?.CreateRealTimeInfoWindow(message, true);
+
             Dynamo.Logging.Analytics.TrackTaskCommandEvent("ImageCapture",
                 "NodeCount", CurrentSpace.Nodes.Count());
         }
@@ -3405,6 +3409,10 @@ namespace Dynamo.ViewModels
         {
             // Save the parameters
             OnRequestSave3DImage(this, new ImageSaveEventArgs(parameters.ToString()));
+
+            string message = String.Concat(WpfResources.ExportWorkspaceAs3DImage, parameters.ToString());
+
+            MainGuideManager?.CreateRealTimeInfoWindow(message, true);
         }
 
         internal bool CanSaveImage(object parameters)
