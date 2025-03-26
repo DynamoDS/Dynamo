@@ -6,6 +6,7 @@
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              xmlns:resx="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:local="clr-namespace:Dynamo.Wpf.CurveMapper"
+             xmlns:contols="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
              Width="325"
              Height="340"
              MinWidth="325"
@@ -18,7 +19,7 @@
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoColorsAndBrushesDictionaryUri}" />
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.LiveChartsDictionaryUri}" />
             </ResourceDictionary.MergedDictionaries>
-            <local:NumberFormatterConverter x:Key="NumberFormatterConverter"/>
+            <contols:NumberFormatterConverter x:Key="NumberFormatterConverter"/>
             <!--  Style for X and Y Axis Labels -->
             <Style x:Key="AxisLabelStyle" TargetType="TextBlock">
                 <Setter Property="FontFamily" Value="{StaticResource ArtifaktElementRegular}" />
