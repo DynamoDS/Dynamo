@@ -250,11 +250,7 @@ namespace Dynamo.Views
                             // 2. Dynamo rely on child visibility change hander to setup Node AutoComplete control
                             // 3. This should not be set to in canvas search control
                             popup.Child.Visibility = Visibility.Collapsed;
-                            if(popup == NodeAutoCompleteSearchBar)
-                            {
-
-                                ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
-                            }
+                            ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
                         }
 
                         else if (popup == PortContextMenu)
