@@ -197,7 +197,6 @@ namespace Dynamo.Views
             var window = new DNAAutocompleteBar(Window.GetWindow(this), ViewModel.NodeAutoCompleteSearchViewModel);
             window.Show();
             ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupPlaceDNAAutocompletePlacement(window);
-            //ShowHidePopup(flag, DNAAutocompleteBar);
         }
 
         private void ShowHidePortContextMenu(ShowHideFlags flag, PortViewModel portViewModel)
@@ -236,7 +235,7 @@ namespace Dynamo.Views
 
                     if (displayPopup)
                     {
-                        if (popup == NodeAutoCompleteSearchBar /*|| popup == DNAAutocompleteBar*/)
+                        if (popup == NodeAutoCompleteSearchBar)
                         {
                             if (ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel == null) return;
                             // if the MLRecommendation is default but user not accepting TOU, display notification
