@@ -741,7 +741,7 @@ namespace Dynamo.ViewModels
             // Save the filtered results for search.
             searchElementsCache = FilteredResults.ToList();
         }
-        public void DeleteTransientNodes()
+        internal void DeleteTransientNodes()
         {
             var node = PortViewModel.NodeViewModel;
             var wsViewModel = node.WorkspaceViewModel;

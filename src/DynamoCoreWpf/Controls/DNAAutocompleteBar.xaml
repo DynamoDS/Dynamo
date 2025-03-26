@@ -184,7 +184,6 @@
                                 <Style BasedOn="{StaticResource PackageManagerSmallComboBox}" TargetType="ComboBox">
                                 </Style>
                             </ComboBox.Style>
-                            <!-- SelectedItem="{Binding SelectedItem}"-->
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Margin="0" Height="30" VerticalAlignment="Center">
@@ -194,7 +193,7 @@
                                                Margin="0,0,0,0"/>
                                         <TextBlock Text="{Binding Description}" FontSize="12" Foreground="White" Height="15"/>
                                     </StackPanel>
-                                </DataTemplate> 
+                                </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
                         <Rectangle Height="5" Style="{StaticResource RectangleStyle}" />
@@ -249,7 +248,9 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                <StackPanel MinWidth="50" Grid.Column="4" VerticalAlignment="Center">
+                <StackPanel MinWidth="50"
+                            Grid.Column="4"
+                            VerticalAlignment="Center">
                     <TextBlock
                         HorizontalAlignment="Center"
                         Width="Auto"
