@@ -321,4 +321,25 @@ Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   <data name="GateOpen" xml:space="preserve">
     <value>Otwórz</value>
   </data>
+  <data name="CurveMapperControlPointCoordinatesLabel" xml:space="preserve">
+    <value>Współrzędne</value>
+  </data>
+  <data name="CurveMapperControlPointToolTip" xml:space="preserve">
+    <value>Drag to modify the curve.</value>
+  </data>
+  <data name="CurveMapperCurveTypesLabel" xml:space="preserve">
+    <value>Typ krzywej</value>
+  </data>
+  <data name="CurveMapperLockedResetToolTip" xml:space="preserve">
+    <value>The curve has been locked and cannot be reset. Please unlock the curve first.</value>
+  </data>
+  <data name="CurveMapperLockToolTip" xml:space="preserve">
+    <value>Click to lock the curve.</value>
+  </data>
+  <data name="CurveMapperResetToolTip" xml:space="preserve">
+    <value>Reset the curve.</value>
+  </data>
+  <data name="CurveMapperUnlockToolTip" xml:space="preserve">
+    <value>Curve cannot be modified. Click to unlock.</value>
+  </data>
 </root>

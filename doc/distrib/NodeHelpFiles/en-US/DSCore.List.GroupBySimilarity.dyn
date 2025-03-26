@@ -1,0 +1,731 @@
+{
+  "Uuid": "06408123-bb60-4481-8c8f-51f23f37f9cf",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "DSCore.List.GroupBySimilarity",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "7892fee1d2a54878957a892968062c82",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "45349a3ad7454b4e98b0cb70364c725c",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "2;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "9d0983b9c4aa4acf8fcde4bbfb1e56df",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "937e50503b3d4fcb87dcbe907c1c7c5f",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "[\"Room\",\"room\",\"rooms\",\"gate\",\"Gate\",\"gates\",\"Room A\",\"room A\", \"Level\",\"level\",\"Leval\"];"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 236.5,
+      "WatchHeight": 350.0,
+      "Id": "b1306fbd369c44b4a0bb1a50a713864c",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "aca0fd84c020411eae29311ea72f0968",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "aa51105930b141acb63a3e712df2c148",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 234.5,
+      "WatchHeight": 343.5,
+      "Id": "4b64a6aa3a4a4b30b97076227a5c73b1",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "e5f0c6e208074c7bbcde2f1dcb7f16fb",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "a9c6a1d4c00c482583b74c4b7fa10a53",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "90f33d0806234c51b92701babffd3a4f",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "2d53fda14783413abc92938dac651ea6",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": false
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "0e81755c156b4286a8025dd756c3aee5",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "778ca5eaff894413af02796a8bb2d12a",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "[1.10012, 1.1516, 1.13189, 2.1011, 2.1125, 4.1256, 4.2089, 4.2321, 5.30];"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "62fcb1389d5f4d4783d0d8c95653d4c4",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7e5613907ee847efb475bde6e77a3a7b",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "0.2;"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 272.5,
+      "WatchHeight": 312.0,
+      "Id": "3c9e3a0b414a466fa1eee48769eef769",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "af1e416cd7954782b34e4a6bc8cd6cc7",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "ab15636c41724c73839b00fb7953a0cc",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 200.0,
+      "WatchHeight": 200.0,
+      "Id": "145a9cea56374d76ac909dfd44d5b6a6",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "8a535fa97e7a483982e06067e6805cff",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "8201f09954e748be9fa048a959f3e979",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.BoolSelector, CoreNodeModels",
+      "Id": "62c8268ad76747bebb06eec5a3600602",
+      "NodeType": "BooleanInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "7fc17a7c16cf424eb5dd2003f5576ea6",
+          "Name": "",
+          "Description": "Boolean",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Enables selection between True and False",
+      "InputValue": true
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "0e915d22028540bda4ed2ff7a4282dd4",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "3e801ab54f614f0bb90e9b1e9b21f1ab",
+          "Name": "list",
+          "Description": "List of items to group as sublists based on adjacency and similarity\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "9e4d20ad98184b518678b24d17198e4b",
+          "Name": "tolerance",
+          "Description": "Threshold value for grouping similar items\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "a8e276ff983d4b04acd3ae7286276f1e",
+          "Name": "considerAdjacency",
+          "Description": "Boolean value to control if the node should consider adjacency or not.\n\nbool\nDefault value : true",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "db3dfeaedab7452c9bb00fa28cf355e3",
+          "Name": "groupedValues",
+          "Description": "list of sublists with items grouped by similar values",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "10352ed7d13b4d1c99f2786007ef5387",
+          "Name": "groupedIndices",
+          "Description": "list of sublists containing the original indices of grouped values",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.List.GroupBySimilarity@var[]..[],double,bool",
+      "Replication": "Auto",
+      "Description": "This node clusters elements in a list based on the adjacency of their indices and the similarity of their values. It can handle list of numbers as well as list of strings. The boolean input allows the user to specify whether adjacency should be considered when grouping the elements. The tolerance input allows the user to specify the threshold value for grouping similar elements. In case of integers, the tolerance value is the difference between the two integers. And in case of strings, the tolerance value is the number of characters that can be different between the two strings.\n\nList.GroupBySimilarity (list: var[]..[], tolerance: double = 0, considerAdjacency: bool = true): var[]..[]"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
+      "Id": "b380dbe74ab44561ae717c4dad875191",
+      "NodeType": "FunctionNode",
+      "Inputs": [
+        {
+          "Id": "eb1da7e124d34f1fb080d9451f156c9d",
+          "Name": "list",
+          "Description": "List of items to group as sublists based on adjacency and similarity\n\nvar[]..[]",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "f4d3c40ee7bd44f2a987fee33c02f77b",
+          "Name": "tolerance",
+          "Description": "Threshold value for grouping similar items\n\ndouble\nDefault value : 0",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "e5195cbbb76a4d799a4692af61487759",
+          "Name": "considerAdjacency",
+          "Description": "Boolean value to control if the node should consider adjacency or not.\n\nbool\nDefault value : true",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "0029c2bbf1f34448ae684600136c57de",
+          "Name": "groupedValues",
+          "Description": "list of sublists with items grouped by similar values",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "cf255a6270c949b8a8e9c1811f3cfb6f",
+          "Name": "groupedIndices",
+          "Description": "list of sublists containing the original indices of grouped values",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "FunctionSignature": "DSCore.List.GroupBySimilarity@var[]..[],double,bool",
+      "Replication": "Auto",
+      "Description": "This node clusters elements in a list based on the adjacency of their indices and the similarity of their values. It can handle list of numbers as well as list of strings. The boolean input allows the user to specify whether adjacency should be considered when grouping the elements. The tolerance input allows the user to specify the threshold value for grouping similar elements. In case of integers, the tolerance value is the difference between the two integers. And in case of strings, the tolerance value is the number of characters that can be different between the two strings.\n\nList.GroupBySimilarity (list: var[]..[], tolerance: double = 0, considerAdjacency: bool = true): var[]..[]"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "45349a3ad7454b4e98b0cb70364c725c",
+      "End": "9e4d20ad98184b518678b24d17198e4b",
+      "Id": "7d1bc82a83844000a7989856210ae08a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "937e50503b3d4fcb87dcbe907c1c7c5f",
+      "End": "3e801ab54f614f0bb90e9b1e9b21f1ab",
+      "Id": "d78170c4d537497787f56f54298b73e1",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "2d53fda14783413abc92938dac651ea6",
+      "End": "a8e276ff983d4b04acd3ae7286276f1e",
+      "Id": "cbc5da9bdf7b4760b13cb3da1b20089a",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "778ca5eaff894413af02796a8bb2d12a",
+      "End": "eb1da7e124d34f1fb080d9451f156c9d",
+      "Id": "56c7d43898344d67b455a369a6d0da90",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "7e5613907ee847efb475bde6e77a3a7b",
+      "End": "f4d3c40ee7bd44f2a987fee33c02f77b",
+      "Id": "6260ff8083494fb8b1125ec891844ca3",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "7fc17a7c16cf424eb5dd2003f5576ea6",
+      "End": "e5195cbbb76a4d799a4692af61487759",
+      "Id": "2e215198bab24a90a315935eb264a330",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "db3dfeaedab7452c9bb00fa28cf355e3",
+      "End": "aca0fd84c020411eae29311ea72f0968",
+      "Id": "c4fcb77937484dcebf72897660889c96",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "10352ed7d13b4d1c99f2786007ef5387",
+      "End": "e5f0c6e208074c7bbcde2f1dcb7f16fb",
+      "Id": "bde2c19a480d4b98aa5174fe87453e3c",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "0029c2bbf1f34448ae684600136c57de",
+      "End": "af1e416cd7954782b34e4a6bc8cd6cc7",
+      "Id": "0d8aeed1f7784494861e9163703caf81",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "cf255a6270c949b8a8e9c1811f3cfb6f",
+      "End": "8a535fa97e7a483982e06067e6805cff",
+      "Id": "15b595bcbd1e4b33860060852c3b72f6",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.5",
+      "Data": {}
+    },
+    {
+      "ExtensionGuid": "DFBD9CC0-DB40-457A-939E-8C8555555A9D",
+      "Name": "Generative Design",
+      "Version": "8.2",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.5.0.8100",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "7892fee1d2a54878957a892968062c82",
+        "Name": "Tolerance",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1076.975339091025,
+        "Y": 539.6228908193044
+      },
+      {
+        "Id": "9d0983b9c4aa4acf8fcde4bbfb1e56df",
+        "Name": "Strings",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 606.7452784969734,
+        "Y": 260.7186438701209
+      },
+      {
+        "Id": "b1306fbd369c44b4a0bb1a50a713864c",
+        "Name": "Clustered list",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2134.9045499528,
+        "Y": 121.40316571777919
+      },
+      {
+        "Id": "4b64a6aa3a4a4b30b97076227a5c73b1",
+        "Name": "List of Index",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2098.38415794514,
+        "Y": 605.5583665390755
+      },
+      {
+        "Id": "90f33d0806234c51b92701babffd3a4f",
+        "Name": "Consider Adjacency?",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1016.684295311834,
+        "Y": 690.2226885416325
+      },
+      {
+        "Id": "0e81755c156b4286a8025dd756c3aee5",
+        "Name": "Numbers",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 611.3182485683442,
+        "Y": 1182.8089904079816
+      },
+      {
+        "Id": "62fcb1389d5f4d4783d0d8c95653d4c4",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 916.8279236954061,
+        "Y": 1438.2631488280122
+      },
+      {
+        "Id": "3c9e3a0b414a466fa1eee48769eef769",
+        "Name": "Clustered list",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2092.4313937786233,
+        "Y": 1160.7979125978134
+      },
+      {
+        "Id": "145a9cea56374d76ac909dfd44d5b6a6",
+        "Name": "List of Index",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 2113.637088811027,
+        "Y": 1700.7125956738994
+      },
+      {
+        "Id": "62c8268ad76747bebb06eec5a3600602",
+        "Name": "Consider Adjacency?",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 927.0185179790817,
+        "Y": 1652.625127837648
+      },
+      {
+        "Id": "0e915d22028540bda4ed2ff7a4282dd4",
+        "Name": "List.GroupBySimilarity",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1506.8805006172925,
+        "Y": 299.67282566609055
+      },
+      {
+        "Id": "b380dbe74ab44561ae717c4dad875191",
+        "Name": "List.GroupBySimilarity",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1471.8625799570414,
+        "Y": 1447.3403396931205
+      }
+    ],
+    "Annotations": [
+      {
+        "Id": "568cd8c596784df98c4ee671088d6ca2",
+        "Title": "Cluster list of strings by similarity ",
+        "DescriptionText": "",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "9d0983b9c4aa4acf8fcde4bbfb1e56df",
+          "b1306fbd369c44b4a0bb1a50a713864c",
+          "4b64a6aa3a4a4b30b97076227a5c73b1",
+          "90f33d0806234c51b92701babffd3a4f",
+          "7892fee1d2a54878957a892968062c82",
+          "0e915d22028540bda4ed2ff7a4282dd4",
+          "6dbd1303f1fe4d24a1c49d8181d722e5"
+        ],
+        "HasNestedGroups": false,
+        "Left": 596.7452784969734,
+        "Top": 48.40316571777919,
+        "Width": 1861.659271455827,
+        "Height": 998.6552008212963,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 121.40316571777919,
+        "InitialHeight": 713.8195228238533,
+        "TextblockHeight": 63.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "2498a92767794f71a35933de22185b67",
+        "Title": "Cluster list of number by adjacency and similarity ",
+        "DescriptionText": "",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "0e81755c156b4286a8025dd756c3aee5",
+          "62fcb1389d5f4d4783d0d8c95653d4c4",
+          "3c9e3a0b414a466fa1eee48769eef769",
+          "145a9cea56374d76ac909dfd44d5b6a6",
+          "62c8268ad76747bebb06eec5a3600602",
+          "b380dbe74ab44561ae717c4dad875191",
+          "ccfbfef9afa74c6a8d81a56d240f2eed"
+        ],
+        "HasNestedGroups": false,
+        "Left": 601.3182485683442,
+        "Top": 1087.7979125978134,
+        "Width": 1850.613145210279,
+        "Height": 910.914683076086,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 1160.7979125978134,
+        "InitialHeight": 684.914683076086,
+        "TextblockHeight": 63.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "94f1f9ce8d314817950b8fb3e81bccb0",
+        "Title": "Group lists by similarity",
+        "DescriptionText": "",
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [
+          "568cd8c596784df98c4ee671088d6ca2",
+          "2498a92767794f71a35933de22185b67"
+        ],
+        "HasNestedGroups": true,
+        "Left": 586.7452784969734,
+        "Top": -24.59683428222081,
+        "Width": 1881.659271455827,
+        "Height": 2038.3094299561203,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 48.40316571777919,
+        "InitialHeight": 1769.3094299561203,
+        "TextblockHeight": 63.0,
+        "Background": "#FFC1D676"
+      },
+      {
+        "Id": "ccfbfef9afa74c6a8d81a56d240f2eed",
+        "Title": "The tolerance input lets users define the threshold value for grouping similar elements. For numeric lists, the tolerance value represents the allowable difference between two numbers. ",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 849.0779236954061,
+        "Top": 1344.7631488280122,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "62fcb1389d5f4d4783d0d8c95653d4c4"
+      },
+      {
+        "Id": "6dbd1303f1fe4d24a1c49d8181d722e5",
+        "Title": "The tolerance input lets users define the threshold value for grouping similar elements.  For string lists, it represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison.\nMaximum tolerance for strings is set to 5.",
+        "DescriptionText": null,
+        "IsExpanded": true,
+        "WidthAdjustment": 0.0,
+        "HeightAdjustment": 0.0,
+        "Nodes": [],
+        "HasNestedGroups": false,
+        "Left": 1000.725339091025,
+        "Top": 417.1228908193044,
+        "Width": 0.0,
+        "Height": 0.0,
+        "FontSize": 36.0,
+        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
+        "InitialTop": 0.0,
+        "InitialHeight": 0.0,
+        "TextblockHeight": 0.0,
+        "Background": "#FFC1D676",
+        "PinnedNode": "7892fee1d2a54878957a892968062c82"
+      }
+    ],
+    "X": 81.31474751559222,
+    "Y": 21.508588122677736,
+    "Zoom": 0.3305121506592241
+  }
+}

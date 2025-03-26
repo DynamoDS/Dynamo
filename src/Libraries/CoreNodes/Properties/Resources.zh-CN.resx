@@ -1,0 +1,237 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="BitmapOverflowError" xml:space="preserve">
+    <value>提供的颜色数据太大，无法适应图像边界。</value>
+  </data>
+  <data name="EnumDateOfWeekFriday" xml:space="preserve">
+    <value>星期五</value>
+  </data>
+  <data name="EnumDateOfWeekMonday" xml:space="preserve">
+    <value>星期一</value>
+  </data>
+  <data name="EnumDateOfWeekSaturday" xml:space="preserve">
+    <value>星期六</value>
+  </data>
+  <data name="EnumDateOfWeekSunday" xml:space="preserve">
+    <value>星期日</value>
+  </data>
+  <data name="EnumDateOfWeekThursday" xml:space="preserve">
+    <value>星期四</value>
+  </data>
+  <data name="EnumDateOfWeekTuesday" xml:space="preserve">
+    <value>星期二</value>
+  </data>
+  <data name="EnumDateOfWeekWednesday" xml:space="preserve">
+    <value>星期三</value>
+  </data>
+  <data name="Exception_Deserialize_Bad_Format" xml:space="preserve">
+    <value>{0} 类型的 json 格式设置不正确</value>
+  </data>
+  <data name="Exception_Deserialize_Unsupported_Cache" xml:space="preserve">
+    <value>无法加载存储的数据。</value>
+  </data>
+  <data name="Exception_Serialize_Depth_Unsupported" xml:space="preserve">
+    <value>深度 {0} 超过路径为“{2}”的最大深度 {1}</value>
+  </data>
+  <data name="Exception_Serialize_DesignScript_Unsupported" xml:space="preserve">
+    <value>此类几何图形无法序列化。</value>
+  </data>
+  <data name="Exception_Serialize_Unsupported_Type" xml:space="preserve">
+    <value>无法存储 {0} 类型的数据。</value>
+  </data>
+  <data name="ExportToCSVObsolete" xml:space="preserve">
+    <value>而是使用 Data.ExportCSV 节点</value>
+  </data>
+  <data name="FactorialNegativeInt" xml:space="preserve">
+    <value>Math.Factorial 的输入值不能为负。</value>
+  </data>
+  <data name="FactorialOverflow" xml:space="preserve">
+    <value>Math.Factorial 的返回值已超出范围。</value>
+  </data>
+  <data name="FindPointsWithinRadiusNullPointMessage" xml:space="preserve">
+    <value>必须提供一个中心点。</value>
+  </data>
+  <data name="FindPointsWithinRadiusSearchRadiusMessage" xml:space="preserve">
+    <value>搜索半径不能为零。</value>
+  </data>
+  <data name="FromObjectObsolete" xml:space="preserve">
+    <value>此节点已过时，请使用“String from Object”</value>
+  </data>
+  <data name="IntegerOverflow" xml:space="preserve">
+    <value>该操作导致整数溢出。其结果可能异常。</value>
+  </data>
+  <data name="InvalidDestinationPathErrorMessage" xml:space="preserve">
+    <value>用作复制路径的目标文件路径无效。</value>
+  </data>
+  <data name="InvalidKeysErrorMessage" xml:space="preserve">
+    <value>一个或多个输入类型不匹配。用列表作关键字不受支持。</value>
+  </data>
+  <data name="InvalidKeysLenghtErrorMessage" xml:space="preserve">
+    <value>项目数与关键字数不匹配。href=InvalidKeysLenghtErrorMessage.html</value>
+  </data>
+  <data name="LoadImageFromPathObsolete" xml:space="preserve">
+    <value>而是使用 File.FromPath -&gt; Image.ReadFromFile 节点</value>
+  </data>
+  <data name="MissingPythonEngine" xml:space="preserve">
+    <value>找不到选定的 Python 引擎</value>
+  </data>
+  <data name="ObjectArgumentExceptionMessage" xml:space="preserve">
+    <value>对象不能为空，请提供适当的值。</value>
+  </data>
+  <data name="QuadtreeConstructionEmptyUVSetMessage" xml:space="preserve">
+    <value>无法由空点集构造四叉树。</value>
+  </data>
+  <data name="QuadtreeConstructionNullUVSetMessage" xml:space="preserve">
+    <value>无法由空 UV 集构造四叉树。</value>
+  </data>
+  <data name="ReadImageObsolete" xml:space="preserve">
+    <value>而是使用 File.FromPath -&gt; Image.ReadFromFile -&gt; Image.Pixels 节点</value>
+  </data>
+  <data name="ReadTextObsolete" xml:space="preserve">
+    <value>而是使用 File.FromPath -&gt; File.ReadText 节点。</value>
+  </data>
+  <data name="StringRemoveCountOutOfRangeMessage" xml:space="preserve">
+    <value>计数超出范围！</value>
+  </data>
+  <data name="StringRemoveStartIndexOutOfRangeMessage" xml:space="preserve">
+    <value>StartIndex 超出范围！</value>
+  </data>
+  <data name="StringToNumberInvalidNumberMessage" xml:space="preserve">
+    <value>不是有效数字。</value>
+  </data>
+  <data name="WebRequestNullUrlMessage" xml:space="preserve">
+    <value>url 不能为空。</value>
+  </data>
+  <data name="WriteImageObsolete" xml:space="preserve">
+    <value>而是使用 Image.WriteToFile 节点</value>
+  </data>
+  <data name="DefineDataUnexpectedInputExceptionMessage" xml:space="preserve">
+    <value>此节点预计需要 {0} 输入，但却收到 {1} 输入。请提供预计输入，或在节点的下拉菜单中拾取新类型。</value>
+  </data>
+  <data name="DefineDataUnsupportedCombinationOfDataTypesExceptionMessage" xml:space="preserve">
+    <value>此节点不支持当前输入列表 {0} 中的数据类型组合。请确保输入列表包含相同数据类型的项，或包含具有公共父类型的混合类型的项。</value>
+  </data>
+  <data name="DefineDataUnsupportedDataTypeExceptionMessage" xml:space="preserve">
+    <value>此节点不支持当前输入数据类型({0})。请在下拉菜单中查看支持的数据类型。</value>
+  </data>
+  <data name="DefineDataSupportedInputValueExceptionMessage" xml:space="preserve">
+    <value>输入必须是单个值或非嵌套列表。</value>
+  </data>
+</root>

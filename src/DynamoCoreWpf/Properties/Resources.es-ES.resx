@@ -1,0 +1,3798 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutWindowCannotGetVersion" xml:space="preserve">
+    <value>No se ha podido obtener la versión</value>
+  </data>
+  <data name="AboutWindowDynamoWebsiteButton" xml:space="preserve">
+    <value>Sitio web de {0}</value>
+  </data>
+  <data name="AboutWindowTitle" xml:space="preserve">
+    <value>Acerca de {0}</value>
+  </data>
+  <data name="AboutWindowUpToDate" xml:space="preserve">
+    <value>(Actualizado)</value>
+  </data>
+  <data name="ActionMember" xml:space="preserve">
+    <value>Acción</value>
+  </data>
+  <data name="AddButton" xml:space="preserve">
+    <value>Añadir</value>
+  </data>
+  <data name="AddCustomFileToPackageDialogTitle" xml:space="preserve">
+    <value>Añadir nodo personalizado, biblioteca o archivo XML a paquete...</value>
+  </data>
+  <data name="AddFileToPackageDialogTitle" xml:space="preserve">
+    <value>Añadir archivo a paquete...</value>
+  </data>
+  <data name="AddToLibraryButton" xml:space="preserve">
+    <value>Añadir</value>
+  </data>
+  <data name="SignInButtonContentToolTip" xml:space="preserve">
+    <value>Inicie sesión para acceder a los servicios en línea que se integran con el software de escritorio.</value>
+  </data>
+  <data name="Autodesk360SignInButtonTitleToolTip" xml:space="preserve">
+    <value>Autodesk A360</value>
+  </data>
+  <data name="AutodeskSignIn" xml:space="preserve">
+    <value>Inicio de sesión en Autodesk</value>
+  </data>
+  <data name="Automatic" xml:space="preserve">
+    <value>Automático</value>
+  </data>
+  <data name="BackgroundPreviewCreationFailureMessage" xml:space="preserve">
+    <value>Ha habido un error al crear una vista preliminar en segundo plano en Dynamo. Podría deberse a falta de recursos en el equipo. Consulte el registro para obtener más información.</value>
+  </data>
+  <data name="BackgroundPreviewDefaultName" xml:space="preserve">
+    <value>Vista preliminar en segundo plano por defecto</value>
+  </data>
+  <data name="BackgroundPreviewName" xml:space="preserve">
+    <value>_Vista preliminar en segundo plano</value>
+  </data>
+  <data name="BrowserNodeButtonLabel" xml:space="preserve">
+    <value>Examinar...</value>
+  </data>
+  <data name="BrowserNodeNoFileSelected" xml:space="preserve">
+    <value>No hay ningún archivo seleccionado.</value>
+  </data>
+  <data name="BrowserWindowLoading" xml:space="preserve">
+    <value>Cargando...</value>
+  </data>
+  <data name="BuildVersionNonNegative" xml:space="preserve">
+    <value>Debe proporcionar una versión de compilación como entero no negativo</value>
+  </data>
+  <data name="CameraDataLoadError" xml:space="preserve">
+    <value>La información de posición de cámara no se ha podido cargar desde el archivo.</value>
+  </data>
+  <data name="CameraDataSaveError" xml:space="preserve">
+    <value>La información de posición de cámara no se ha podido guardar.</value>
+  </data>
+  <data name="CancelButton" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="CannotDownloadPackageMessageBoxTitle" xml:space="preserve">
+    <value>No se puede descargar paquete</value>
+  </data>
+  <data name="BuiltInPackageConflictMessageBoxTitle" xml:space="preserve">
+    <value>El paquete presenta conflictos con uno o más paquetes integrados.</value>
+  </data>
+  <data name="PackagesInUseConflictMessageBoxTitle" xml:space="preserve">
+    <value>El paquete presenta conflictos con uno o más paquetes en uso.</value>
+  </data>
+  <data name="LoadedPackagesConflictMessageBoxTitle" xml:space="preserve">
+    <value>El paquete presenta conflictos con uno o más paquetes cargados.</value>
+  </data>
+  <data name="CannotSubmitPackage" xml:space="preserve">
+    <value>No se puede enviar un paquete en esta versión de {0}. Necesitará una aplicación host, como Revit, para enviar un paquete.</value>
+  </data>
+  <data name="ChangeScaleFactorPromptCaptionText" xml:space="preserve">
+    <value>Para asegurar un cálculo y una renderización de geometría precisos, seleccione el rango de tamaños de geometría con los que trabajará:</value>
+  </data>
+  <data name="ChangeScaleFactorPromptDescriptionBox" xml:space="preserve">
+    <value>El rango numérico que se muestra aquí indica los números en la unidad siguiente:</value>
+  </data>
+  <data name="ChangeScaleFactorPromptDescriptionContent" xml:space="preserve">
+    <value>Utilice este rango de trabajo para modelar en valores que van de {0} a {1} unidades</value>
+  </data>
+  <data name="ChangeScaleFactorPromptDescriptionDefaultSetting" xml:space="preserve">
+    <value>Valor por defecto:</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitCm" xml:space="preserve">
+    <value>Centímetros (cm)</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitM" xml:space="preserve">
+    <value>Metros (m)</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitMm" xml:space="preserve">
+    <value>Milímetros (mm)</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitsNumberFormatCm" xml:space="preserve">
+    <value>{0} cm</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitsNumberFormatM" xml:space="preserve">
+    <value>{0} m</value>
+  </data>
+  <data name="ChangeScaleFactorPromptUnitsNumberFormatMm" xml:space="preserve">
+    <value>{0} mm</value>
+  </data>
+  <data name="ChangeScaleFactorPromptWindowTitle" xml:space="preserve">
+    <value>Rango de trabajo de geometría</value>
+  </data>
+  <data name="CompactLayoutTitle" xml:space="preserve">
+    <value>Compacto</value>
+  </data>
+  <data name="ConsentFormADPAnalyticsCheckBoxContent" xml:space="preserve">
+    <value>Acepto la recopilación de datos de los productos de escritorio para los programas de análisis de Autodesk.</value>
+  </data>
+  <data name="ContextAddGroupFromSelection" xml:space="preserve">
+    <value>Añadir nodo al grupo</value>
+  </data>
+  <data name="ContextCreateGroupFromSelection" xml:space="preserve">
+    <value>Crear grupo</value>
+  </data>
+  <data name="ContextMenuCopy" xml:space="preserve">
+    <value>Copiar contenido</value>
+  </data>
+  <data name="ContextMenuDelete" xml:space="preserve">
+    <value>Suprimir</value>
+  </data>
+  <data name="ContextMenuEditCustomNode" xml:space="preserve">
+    <value>Editar nodo personalizado...</value>
+  </data>
+  <data name="ContextMenuEditCustomNodeProperty" xml:space="preserve">
+    <value>Editar propiedades de nodo personalizado...</value>
+  </data>
+  <data name="ContextMenuFitToScreen" xml:space="preserve">
+    <value>_Ajustar a tamaño de pantalla</value>
+  </data>
+  <data name="ContextMenuGeometryView" xml:space="preserve">
+    <value>Cambiar a vista de geometría</value>
+  </data>
+  <data name="ContextMenuHideGeometry" xml:space="preserve">
+    <value>Ocultar vista preliminar de geometría</value>
+  </data>
+  <data name="ContextMenuHideAllTextBubble" xml:space="preserve">
+    <value>Ocultar toda la burbuja de texto</value>
+  </data>
+  <data name="ContextMenuInsertCodeBlock" xml:space="preserve">
+    <value>Insertar bloque de código</value>
+  </data>
+  <data name="ContextMenuLacing" xml:space="preserve">
+    <value>Encaje</value>
+  </data>
+  <data name="ContextMenuLacingAuto" xml:space="preserve">
+    <value>Auto</value>
+  </data>
+  <data name="ContextMenuLacingCrossProduct" xml:space="preserve">
+    <value>Producto cartesiano</value>
+  </data>
+  <data name="ContextMenuLacingFirst" xml:space="preserve">
+    <value>Primero</value>
+  </data>
+  <data name="ContextMenuLacingLongest" xml:space="preserve">
+    <value>Más largo</value>
+  </data>
+  <data name="ContextMenuLacingShortest" xml:space="preserve">
+    <value>Más corto</value>
+  </data>
+  <data name="ContextMenuNodesFromGeometry" xml:space="preserve">
+    <value>Nodos de _Selected Geometry</value>
+  </data>
+  <data name="ContextMenuNodesFromSelection" xml:space="preserve">
+    <value>Crear nodo personalizado</value>
+  </data>
+  <data name="ContextMenuNodeToCode" xml:space="preserve">
+    <value>Nodo para _código</value>
+  </data>
+  <data name="ContextMenuPan" xml:space="preserve">
+    <value>E_ncuadrar</value>
+  </data>
+  <data name="ContextMenuPaste" xml:space="preserve">
+    <value>Pegar</value>
+  </data>
+  <data name="ContextMenuPublishCustomNode" xml:space="preserve">
+    <value>Publicar este nodo personalizado...</value>
+  </data>
+  <data name="ContextMenuShowGeometry" xml:space="preserve">
+    <value>Mostrar vista preliminar de geometría</value>
+  </data>
+  <data name="ContextMenuShowAllTextBubble" xml:space="preserve">
+    <value>Mostrar toda la burbuja de texto</value>
+  </data>
+  <data name="ContextUnGroupFromSelection" xml:space="preserve">
+    <value>Eliminar de grupo</value>
+  </data>
+  <data name="ContinueButton" xml:space="preserve">
+    <value>Continuar</value>
+  </data>
+  <data name="ConverterMessageCurrentOffset" xml:space="preserve">
+    <value>Desfase actual X: {0}, Y: {1}</value>
+  </data>
+  <data name="ConverterMessageTransformOrigin" xml:space="preserve">
+    <value>Origen de transformación X: {0}, Y: {1}</value>
+  </data>
+  <data name="ConverterMessageZoom" xml:space="preserve">
+    <value>Zoom: {0}</value>
+  </data>
+  <data name="CrashPromptDialogCopyButton" xml:space="preserve">
+    <value>Copiar</value>
+  </data>
+  <data name="CrashPromptDialogCrashMessage" xml:space="preserve">
+    <value>Se ha producido algún problema y Dynamo se ha cerrado inesperadamente.
+
+No se preocupe; tendrá la opción de guardar su trabajo.</value>
+  </data>
+  <data name="CrashPromptDialogDetailButton" xml:space="preserve">
+    <value>Detalles</value>
+  </data>
+  <data name="CrashPromptDialogOpenFolderButton" xml:space="preserve">
+    <value>Abrir carpeta</value>
+  </data>
+  <data name="CrashPromptDialogSubmitBugButton" xml:space="preserve">
+    <value>Enviar error a GitHub</value>
+  </data>
+  <data name="CrashPromptDialogTitle" xml:space="preserve">
+    <value>{0} se ha cerrado inesperadamente</value>
+  </data>
+  <data name="CreateMember" xml:space="preserve">
+    <value>Crear</value>
+  </data>
+  <data name="CustomNodePromptDescriptionTooltip" xml:space="preserve">
+    <value>Una descripción que ayuda a los usuarios a entender para qué pueden usar el nodo.</value>
+  </data>
+  <data name="CustomNodePromptNameTooltip" xml:space="preserve">
+    <value>Un nombre exclusivo para el nodo.</value>
+  </data>
+  <data name="CustomNodePropertyErrorMessageBoxTitle" xml:space="preserve">
+    <value>Error propiedad nodo personalizado</value>
+  </data>
+  <data name="CustomNodePropertyWindowCategory" xml:space="preserve">
+    <value>Categoría de complementos</value>
+  </data>
+  <data name="CustomNodePropertyWindowDescription" xml:space="preserve">
+    <value>Descripción</value>
+  </data>
+  <data name="CustomNodePropertyWindowDescriptionHint" xml:space="preserve">
+    <value>Descripción de nodo personalizado</value>
+  </data>
+  <data name="CustomNodePropertyWindowName" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="CustomNodePropertyWindowNameHint" xml:space="preserve">
+    <value>Nombre de nodo personalizado</value>
+  </data>
+  <data name="CustomNodePropertyWindowLocationNote" xml:space="preserve">
+    <value>Los nodos personalizados se incluirán en la sección Complementos de la biblioteca.</value>
+  </data>
+  <data name="CustomNodePropertyWindowTitle" xml:space="preserve">
+    <value>Propiedades de nodo personalizado</value>
+  </data>
+  <data name="CustomNodeTypeShortString" xml:space="preserve">
+    <value>DS</value>
+  </data>
+  <data name="DeprecatingPackageMessageBoxTitle" xml:space="preserve">
+    <value>Declarando paquete obsoleto</value>
+  </data>
+  <data name="DescriptionNeedMoreCharacters" xml:space="preserve">
+    <value>La descripción debe tener más de 10 caracteres</value>
+  </data>
+  <data name="DetailedLayoutTitle" xml:space="preserve">
+    <value>Detallado</value>
+  </data>
+  <data name="DirectoryNotFound" xml:space="preserve">
+    <value>Directorio no encontrado</value>
+  </data>
+  <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
+    <value>Advertencia de descarga</value>
+  </data>
+  <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
+    <value>Hay disponible una actualización de Dynamo. Haga clic para instalar.</value>
+  </data>
+  <data name="DynamoViewCancelButtonTooltip" xml:space="preserve">
+    <value>Cancelar ejecución (Mayús+F5)</value>
+  </data>
+  <data name="DynamoViewContextMenuClearLog" xml:space="preserve">
+    <value>Borrar</value>
+  </data>
+  <data name="DynamoViewDebugMenu" xml:space="preserve">
+    <value>De_purar</value>
+  </data>
+  <data name="DynamoViewDebugMenuCheckDailyBuild" xml:space="preserve">
+    <value>_Comprobar compilaciones diarias</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpLibrary" xml:space="preserve">
+    <value>Biblioteca de volca_dos</value>
+  </data>
+  <data name="DynamoViewDebugMenuForceReExecute" xml:space="preserve">
+    <value>_Forzar volver a ejecutar</value>
+  </data>
+  <data name="DynamoViewDebugMenuForceUpdate" xml:space="preserve">
+    <value>For_zar actualización</value>
+  </data>
+  <data name="DynamoViewDebugMenuRunMutationTest" xml:space="preserve">
+    <value>_Ejecutar prueba de mutación</value>
+  </data>
+  <data name="DynamoViewDebugMenuShowDebugAST" xml:space="preserve">
+    <value>_Mostrar AST de depuración</value>
+  </data>
+  <data name="DynamoViewDebugMenuVerboseLogging" xml:space="preserve">
+    <value>_Registro detallado</value>
+  </data>
+  <data name="DynamoViewDebugMenuDebugModes" xml:space="preserve">
+    <value>_Modos de depuración</value>
+  </data>
+  <data name="DynamoViewEditMenu" xml:space="preserve">
+    <value>_Editar</value>
+  </data>
+  <data name="DynamoViewEditMenuAlighBottom" xml:space="preserve">
+    <value>_Abajo</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignLeft" xml:space="preserve">
+    <value>_Izquierda</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignRight" xml:space="preserve">
+    <value>_Derecha</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignSelection" xml:space="preserve">
+    <value>Alinear _selección</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignTop" xml:space="preserve">
+    <value>A_rriba</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignXAverage" xml:space="preserve">
+    <value>X _media</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignXDistribute" xml:space="preserve">
+    <value>X _distribuida</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignYAverage" xml:space="preserve">
+    <value>_Y media</value>
+  </data>
+  <data name="DynamoViewEditMenuAlignYDistribute" xml:space="preserve">
+    <value>Y di_stribuida</value>
+  </data>
+  <data name="DynamoViewEditMenuCleanupLayout" xml:space="preserve">
+    <value>Presentación de nodo de _limpieza</value>
+  </data>
+  <data name="DynamoViewEditMenuCopy" xml:space="preserve">
+    <value>_Copiar</value>
+  </data>
+  <data name="DynamoViewEditMenuCreateCustomNode" xml:space="preserve">
+    <value>Crear _nodo personalizado</value>
+  </data>
+  <data name="DynamoViewEditMenuCreateGroup" xml:space="preserve">
+    <value>Cre_ar grupo</value>
+  </data>
+  <data name="DynamoViewEditMenuCreateNote" xml:space="preserve">
+    <value>Cr_ear nota</value>
+  </data>
+  <data name="DynamoViewEditMenuCreatePreset" xml:space="preserve">
+    <value>Crear valor predefinido a partir de la selección</value>
+  </data>
+  <data name="DynamoViewEditMenuDeletePreset" xml:space="preserve">
+    <value>Suprimir valor predefinido</value>
+  </data>
+  <data name="DynamoViewEditMenuDeleteSelected" xml:space="preserve">
+    <value>Supri_mir seleccionados</value>
+  </data>
+  <data name="DynamoViewEditMenuPaste" xml:space="preserve">
+    <value>_Pegar</value>
+  </data>
+  <data name="DynamoViewEditMenuPresetsMenu" xml:space="preserve">
+    <value>Valores predefinidos</value>
+  </data>
+  <data name="DynamoViewEditMenuRedo" xml:space="preserve">
+    <value>_Rehacer</value>
+  </data>
+  <data name="DynamoViewEditMenuRestorePreset" xml:space="preserve">
+    <value>Restaurar valor predefinido</value>
+  </data>
+  <data name="DynamoViewEditMenuSelectAll" xml:space="preserve">
+    <value>Selecc_ionar todo</value>
+  </data>
+  <data name="DynamoViewEditMenuUnpinAllPreviewBubbles" xml:space="preserve">
+    <value>_Desbloquear todas las burbujas de vista preliminar</value>
+  </data>
+  <data name="DynamoViewEditMenuSelectNeighbours" xml:space="preserve">
+    <value>_Seleccionar adyacentes</value>
+  </data>
+  <data name="DynamoViewEditMenuUndo" xml:space="preserve">
+    <value>_Deshacer</value>
+  </data>
+  <data name="DynamoViewDynamoMenuExit" xml:space="preserve">
+    <value>_Salir de Dynamo</value>
+  </data>
+  <data name="DynamoViewFileMenu" xml:space="preserve">
+    <value>_Archivo</value>
+  </data>
+  <data name="DynamoViewFileMenuExport3DAsImage" xml:space="preserve">
+    <value>E_xportar vista preliminar 3D en segundo plano como imagen...</value>
+  </data>
+  <data name="DynamoViewFileMenuExportAsImage" xml:space="preserve">
+    <value>_Exportar espacio de trabajo como imagen...</value>
+  </data>
+  <data name="DynamoViewFileMenuExportToSTL" xml:space="preserve">
+    <value>Ex_portar modelo a STL...</value>
+  </data>
+  <data name="DynamoViewFileMenuImport" xml:space="preserve">
+    <value>_Importar biblioteca...</value>
+  </data>
+  <data name="DynamoViewFileMenuNew" xml:space="preserve">
+    <value>_Nuevo</value>
+  </data>
+  <data name="DynamoViewFileMenuNewCustomNode" xml:space="preserve">
+    <value>_Nodo personalizado...</value>
+  </data>
+  <data name="DynamoViewFileMenuNewHomeWorkSpace" xml:space="preserve">
+    <value>_Espacio de trabajo de inicio</value>
+  </data>
+  <data name="DynamoViewFileMenuOpen" xml:space="preserve">
+    <value>_Abrir...</value>
+  </data>
+  <data name="DynamoViewFileMenuRecentFiles" xml:space="preserve">
+    <value>A_brir archivos recientes</value>
+  </data>
+  <data name="DynamoViewFileMenuSave" xml:space="preserve">
+    <value>_Guardar</value>
+  </data>
+  <data name="DynamoViewFileMenuSaveAs" xml:space="preserve">
+    <value>Guardar _como...</value>
+  </data>
+  <data name="DynamoViewHelpDictionary" xml:space="preserve">
+    <value>Di_ccionario de Dynamo</value>
+  </data>
+  <data name="DynamoViewHelpMenu" xml:space="preserve">
+    <value>Ay_uda</value>
+  </data>
+  <data name="DynamoViewHelpMenuDisplayStartPage" xml:space="preserve">
+    <value>_Mostrar página de inicio</value>
+  </data>
+  <data name="DynamoViewHelpMenuGotoWebsite" xml:space="preserve">
+    <value>Sitio web de _Dynamo</value>
+  </data>
+  <data name="DynamoViewHelpMenuGotoRepo" xml:space="preserve">
+    <value>_Repositorio de Dynamo</value>
+  </data>
+  <data name="DynamoViewHelpMenuGotoWiki" xml:space="preserve">
+    <value>_Wiki del proyecto Dynamo</value>
+  </data>
+  <data name="DynamoViewHelpMenuReportBug" xml:space="preserve">
+    <value>_Informar de un error</value>
+  </data>
+  <data name="DynamoViewHelpMenuShowInFolder" xml:space="preserve">
+    <value>Mostrar en carpeta</value>
+  </data>
+  <data name="DynamoViewHepMenuSamples" xml:space="preserve">
+    <value>_Muestras</value>
+  </data>
+  <data name="DynamoViewPackageMenu" xml:space="preserve">
+    <value>_Paquetes</value>
+  </data>
+  <data name="DynamoViewPackageMenuManagePackage" xml:space="preserve">
+    <value>_Gestionar paquetes...</value>
+  </data>
+  <data name="DynamoViewPackageMenuPublishNodes" xml:space="preserve">
+    <value>P_ublicar nodos seleccionados...</value>
+  </data>
+  <data name="DynamoViewPackageMenuPublishWorkspace" xml:space="preserve">
+    <value>Pub_licar espacio de trabajo actual...</value>
+  </data>
+  <data name="DynamoViewPackageMenuSearchPackage" xml:space="preserve">
+    <value>_Buscar un paquete...</value>
+  </data>
+  <data name="DynamoViewPackageMenuPackageManager" xml:space="preserve">
+    <value>_Package Manager...</value>
+  </data>
+  <data name="DynamoViewRunAutomaticallyOption" xml:space="preserve">
+    <value>Ejecutar automáticamente</value>
+  </data>
+  <data name="DynamoViewRunButton" xml:space="preserve">
+    <value>Ejecutar</value>
+  </data>
+  <data name="DynamoViewRunButtonTooltip" xml:space="preserve">
+    <value>Ejecuta flujo de trabajo (F5)</value>
+  </data>
+  <data name="DynamoViewRunButtonToolTipDisabled" xml:space="preserve">
+    <value>No se puede ejecutar cuando se ejecuta automáticamente o periódicamente</value>
+  </data>
+  <data name="DynamoViewSamplesMenuShowInFolder" xml:space="preserve">
+    <value>Mostrar en carpeta</value>
+  </data>
+  <data name="PreferencesViewEnableTSplineNodes" xml:space="preserve">
+    <value>Activar nodos de T-Spline</value>
+  </data>
+  <data name="PreferencesViewExperimentalLabel" xml:space="preserve">
+    <value>Experimental</value>
+  </data>
+  <data name="DynamoViewSettingMenu" xml:space="preserve">
+    <value>_Configuración</value>
+  </data>
+  <data name="DynamoViewSettingMenuAreaUnits" xml:space="preserve">
+    <value>Unidades de visualización de área</value>
+  </data>
+  <data name="DynamoViewSettingMenuCentimeter" xml:space="preserve">
+    <value>Centímetro</value>
+  </data>
+  <data name="DynamoViewSettingMenuCubicCentimeter" xml:space="preserve">
+    <value>Centímetro cúbico</value>
+  </data>
+  <data name="DynamoViewSettingMenuCubicFoot" xml:space="preserve">
+    <value>Pie cúbico</value>
+  </data>
+  <data name="DynamoViewSettingMenuCubicInch" xml:space="preserve">
+    <value>Pulgada cúbica</value>
+  </data>
+  <data name="DynamoViewSettingMenuCubicMeter" xml:space="preserve">
+    <value>Metro cúbico</value>
+  </data>
+  <data name="DynamoViewSettingMenuCubicMillimeter" xml:space="preserve">
+    <value>Milímetro cúbico</value>
+  </data>
+  <data name="DynamoViewSettingMenuDecimalFoot" xml:space="preserve">
+    <value>Pie decimal</value>
+  </data>
+  <data name="DynamoViewSettingMenuDecimalInch" xml:space="preserve">
+    <value>Pulgada decimal</value>
+  </data>
+  <data name="DynamoViewSettingMenuShowDataReportingDialog" xml:space="preserve">
+    <value>Acuerdos para la recopilación _de datos</value>
+  </data>
+  <data name="DynamoViewSettingMenuFractionalFoot" xml:space="preserve">
+    <value>Fracción de pie</value>
+  </data>
+  <data name="DynamoViewSettingMenuFractionalInch" xml:space="preserve">
+    <value>Fracción de pulgada</value>
+  </data>
+  <data name="DynamoViewSettingMenuHighRenderPrecision" xml:space="preserve">
+    <value>Alta</value>
+  </data>
+  <data name="DynamoViewSettingMenuLengthUnits" xml:space="preserve">
+    <value>Unidades de visualización de longitud</value>
+  </data>
+  <data name="DynamoViewSettingMenuLowRenderPrecision" xml:space="preserve">
+    <value>Baja</value>
+  </data>
+  <data name="DynamoViewSettingMenuManagePackagePath" xml:space="preserve">
+    <value>Administra rutas de nodos y paquetes...</value>
+  </data>
+  <data name="DynamoViewSettingMenuMeter" xml:space="preserve">
+    <value>Metro</value>
+  </data>
+  <data name="DynamoViewSettingMenuMillimeter" xml:space="preserve">
+    <value>Milímetro</value>
+  </data>
+  <data name="DynamoViewSettingMenuNumber0" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="DynamoViewSettingMenuNumber00" xml:space="preserve">
+    <value>0.0</value>
+  </data>
+  <data name="DynamoViewSettingMenuNumber000" xml:space="preserve">
+    <value>0.00</value>
+  </data>
+  <data name="DynamoViewSettingMenuNumber0000" xml:space="preserve">
+    <value>0.000</value>
+  </data>
+  <data name="DynamoViewSettingMenuNumber00000" xml:space="preserve">
+    <value>0.0000</value>
+  </data>
+  <data name="DynamoViewSettingMenuNumberFormat" xml:space="preserve">
+    <value>Formato de número</value>
+  </data>
+  <data name="PreferencesViewSelectedPackagePathForDownload" xml:space="preserve">
+    <value>Ruta del paquete seleccionada para descarga</value>
+  </data>
+  <data name="PreferencesViewDisableBuiltInPackages" xml:space="preserve">
+    <value>Desactivar carga de paquetes integrados</value>
+  </data>
+  <data name="PreferencesViewDisableCustomPackages" xml:space="preserve">
+    <value>Desactivar carga de paquetes personalizados</value>
+  </data>
+  <data name="DynamoViewSettingMenuSquareCentimeter" xml:space="preserve">
+    <value>Centímetro cuadrado</value>
+  </data>
+  <data name="DynamoViewSettingMenuSquareFoot" xml:space="preserve">
+    <value>Pie cuadrado</value>
+  </data>
+  <data name="DynamoViewSettingMenuSquareInch" xml:space="preserve">
+    <value>Pulgada cuadrada</value>
+  </data>
+  <data name="DynamoViewSettingMenuSquareMeter" xml:space="preserve">
+    <value>Metro cuadrado</value>
+  </data>
+  <data name="DynamoViewSettingMenuSquareMillimeter" xml:space="preserve">
+    <value>Milímetro cuadrado</value>
+  </data>
+  <data name="DynamoViewSettingMenuVolumeUnits" xml:space="preserve">
+    <value>Unidades de visualización de volumen</value>
+  </data>
+  <data name="DynamoViewSettingShowRunPreview" xml:space="preserve">
+    <value>Mostrar vista preliminar de ejecución</value>
+  </data>
+  <data name="DynamoViewSettingsMenuChangeScaleFactor" xml:space="preserve">
+    <value>Escala de geometría...</value>
+  </data>
+  <data name="DynamoViewSettingsMenuVisualizationSettings" xml:space="preserve">
+    <value>Configuración de visualización</value>
+  </data>
+  <data name="DynamoViewToolbarExport3DButtonTooltip" xml:space="preserve">
+    <value>Exportar vista preliminar en segundo plano como imagen</value>
+  </data>
+  <data name="DynamoViewToolbarExportButtonTooltip" xml:space="preserve">
+    <value>Exporta espacio de trabajo como imagen</value>
+  </data>
+  <data name="DynamoViewToolbarNewButtonTooltip" xml:space="preserve">
+    <value>Nuevo [Ctrl + N]</value>
+  </data>
+  <data name="DynamoViewToolbarOpenButtonTooltip" xml:space="preserve">
+    <value>Abrir [Ctrl + O]</value>
+  </data>
+  <data name="DynamoViewToolbarRedoButtonTooltip" xml:space="preserve">
+    <value>Rehacer [Ctrl + Y]</value>
+  </data>
+  <data name="DynamoViewToolbarSaveButtonTooltip" xml:space="preserve">
+    <value>Guardar [Ctrl + S]</value>
+  </data>
+  <data name="DynamoViewToolbarUndoButtonTooltip" xml:space="preserve">
+    <value>Deshacer [Ctrl + Z]</value>
+  </data>
+  <data name="DynamoViewViewMenu" xml:space="preserve">
+    <value>_Ver</value>
+  </data>
+  <data name="DynamoViewViewMenu3DPreview" xml:space="preserve">
+    <value>_Vista preliminar 3D en segundo plano</value>
+  </data>
+  <data name="DynamoViewViewMenuAlternateContextGeometry" xml:space="preserve">
+    <value>Mostrar Geometry en {0}</value>
+  </data>
+  <data name="DynamoViewViewMenuAvailablePreviews" xml:space="preserve">
+    <value>_Vistas preliminares disponibles</value>
+  </data>
+  <data name="DynamoViewViewMenuConnector" xml:space="preserve">
+    <value>_Conectores</value>
+  </data>
+  <data name="DynamoViewViewMenuConnectorType" xml:space="preserve">
+    <value>Tipo de _conector</value>
+  </data>
+  <data name="DynamoViewViewMenuConnectorTypeCurve" xml:space="preserve">
+    <value>Curvas</value>
+  </data>
+  <data name="DynamoViewViewMenuConnectorTypePolylines" xml:space="preserve">
+    <value>Polilíneas</value>
+  </data>
+  <data name="DynamoViewViewMenuHideConsole" xml:space="preserve">
+    <value>Ocultar consola</value>
+  </data>
+  <data name="DynamoViewViewMenuPan" xml:space="preserve">
+    <value>_Encuadrar</value>
+  </data>
+  <data name="DynamoViewViewMenuPanDown" xml:space="preserve">
+    <value>Encuadre inferior (rueda de ratón abajo)</value>
+  </data>
+  <data name="DynamoViewViewMenuPanLeft" xml:space="preserve">
+    <value>Encuadre izquierdo (rueda de ratón izquierda)</value>
+  </data>
+  <data name="DynamoViewViewMenuPanRight" xml:space="preserve">
+    <value>Encuadre derecho (rueda de ratón derecha)</value>
+  </data>
+  <data name="DynamoViewViewMenuPanUp" xml:space="preserve">
+    <value>Encuadre superior (rueda de ratón arriba)</value>
+  </data>
+  <data name="DynamoViewViewMenuPreviewNavigate" xml:space="preserve">
+    <value>_Desplazarse por la vista preliminar 3D en segundo plano</value>
+  </data>
+  <data name="DynamoViewViewMenuShowBackground3DPreview" xml:space="preserve">
+    <value>Mostrando vista preliminar 3D en segundo plano</value>
+  </data>
+  <data name="DynamoViewViewMenuShowConnectors" xml:space="preserve">
+    <value>_Mostrar conectores</value>
+  </data>
+  <data name="DynamoViewViewMenuShowConsole" xml:space="preserve">
+    <value>Mo_strar consola</value>
+  </data>
+  <data name="DynamoViewViewMenuShowGrid" xml:space="preserve">
+    <value>_Mostrar ayudas</value>
+  </data>
+  <data name="DynamoViewViewMenuZoom" xml:space="preserve">
+    <value>_Zoom</value>
+  </data>
+  <data name="DynamoViewViewMenuZoomIn" xml:space="preserve">
+    <value>Ampliar (rueda de ratón abajo)</value>
+  </data>
+  <data name="DynamoViewViewMenuZoomOut" xml:space="preserve">
+    <value>Reducir (rueda de ratón arriba)</value>
+  </data>
+  <data name="EditAnnotationTitle" xml:space="preserve">
+    <value>Editar título de grupo</value>
+  </data>
+  <data name="EditNodeWindowTitle" xml:space="preserve">
+    <value>Editar nombre de nodo</value>
+  </data>
+  <data name="EditWindowAcceptButton" xml:space="preserve">
+    <value>Aceptar</value>
+  </data>
+  <data name="EditWindowTitle" xml:space="preserve">
+    <value>Definir valor...</value>
+  </data>
+  <data name="FileDialogAllFiles" xml:space="preserve">
+    <value>Todos los archivos ({0})|{0}</value>
+  </data>
+  <data name="FileDialogAssemblyFiles" xml:space="preserve">
+    <value>Archivos de biblioteca de conjuntos ({0})|{0}</value>
+  </data>
+  <data name="FileDialogCustomNodeDLLXML" xml:space="preserve">
+    <value>Nodo personalizado, DLL, XML ({0})|{0}</value>
+  </data>
+  <data name="FileDialogDefaultPNGName" xml:space="preserve">
+    <value>Capture.png</value>
+  </data>
+  <data name="FileDialogDefaultSTLModelName" xml:space="preserve">
+    <value>model.stl</value>
+  </data>
+  <data name="FileDialogDesignScriptFiles" xml:space="preserve">
+    <value>Archivos de DesignScript ({0})|{0}</value>
+  </data>
+  <data name="FileDialogDynamoCustomNode" xml:space="preserve">
+    <value>Nodo personalizado de {0} ({1})|{1}</value>
+  </data>
+  <data name="FileDialogDynamoDefinitions" xml:space="preserve">
+    <value>Definiciones de {0} ({1})|{1}</value>
+  </data>
+  <data name="FileDialogDynamoWorkspace" xml:space="preserve">
+    <value>Espacio de trabajo de {0} ({1})|{1}</value>
+  </data>
+  <data name="FileDialogLibraryFiles" xml:space="preserve">
+    <value>Archivos de biblioteca ({0})|{0}</value>
+  </data>
+  <data name="FileDialogManualMode" xml:space="preserve">
+    <value>Abrir en modo de ejecución manual</value>
+  </data>
+  <data name="FileDialogPNGFiles" xml:space="preserve">
+    <value>Imagen PNG|{0}</value>
+  </data>
+  <data name="FileDialogSTLModels" xml:space="preserve">
+    <value>Modelos STL|{0}</value>
+  </data>
+  <data name="FileNotPublishCaption" xml:space="preserve">
+    <value>Error de publicación.</value>
+  </data>
+  <data name="FileNotPublishMessage" xml:space="preserve">
+    <value>No se ha encontrado los archivos o bien están dentro de un paquete. Añada solo archivos que estén fuera de paquetes.
+
+Error al publicar archivos: 
+{0}</value>
+  </data>
+  <data name="FilePathConverterNoFileSelected" xml:space="preserve">
+    <value>No hay ningún archivo seleccionado</value>
+  </data>
+  <data name="FilterIconTooltip" xml:space="preserve">
+    <value>Filtrar resultados</value>
+  </data>
+  <data name="FolderNotWritableError" xml:space="preserve">
+    <value>No dispone de permiso de escritura para {0}.</value>
+  </data>
+  <data name="GenericTaskDialogSampleLeftButton" xml:space="preserve">
+    <value>Botón izquierdo de muestra</value>
+  </data>
+  <data name="GenericTaskDialogSampleRightButton" xml:space="preserve">
+    <value>Botón derecho de muestra</value>
+  </data>
+  <data name="GenericTaskDialogTitle" xml:space="preserve">
+    <value>Cuadro de diálogo genérico de tareas</value>
+  </data>
+  <data name="GroupContextMenuBackground" xml:space="preserve">
+    <value>Seleccionar fondo</value>
+  </data>
+  <data name="GroupContextMenuDeleteGroup" xml:space="preserve">
+    <value>Suprimir grupo</value>
+  </data>
+  <data name="GroupContextMenuFont" xml:space="preserve">
+    <value>Tamaño de tipo de letra</value>
+  </data>
+  <data name="GroupContextMenuGraphLayout" xml:space="preserve">
+    <value>Presentación de nodo de limpieza</value>
+  </data>
+  <data name="GroupContextMenuUngroup" xml:space="preserve">
+    <value>_Desagrupar</value>
+  </data>
+  <data name="HideClassicNodeLibrary" xml:space="preserve">
+    <value>Ocultar biblioteca de nodos clásica</value>
+  </data>
+  <data name="ImportLibraryDialogTitle" xml:space="preserve">
+    <value>Importar biblioteca</value>
+  </data>
+  <data name="InCanvasFitViewButtonToolTip" xml:space="preserve">
+    <value>Ajustar en ventana</value>
+  </data>
+  <data name="InCanvasGeomButtonToolTip" xml:space="preserve">
+    <value>Activa la navegación de vista preliminar 3D en segundo plano (Ctrl + B)</value>
+  </data>
+  <data name="InCanvasNodeButtonToolTip" xml:space="preserve">
+    <value>Activar navegación de vista de gráfico (Ctrl + B)</value>
+  </data>
+  <data name="InCanvasOrbitButtonToolTip" xml:space="preserve">
+    <value>Órbita</value>
+  </data>
+  <data name="InCanvasPanButtonToolTip" xml:space="preserve">
+    <value>Encuadrar</value>
+  </data>
+  <data name="InCanvasZoomInButtonToolTip" xml:space="preserve">
+    <value>Ampliar</value>
+  </data>
+  <data name="InCanvasZoomOutButtonToolTip" xml:space="preserve">
+    <value>Reducir</value>
+  </data>
+  <data name="InfoBubbleError" xml:space="preserve">
+    <value>Error: </value>
+  </data>
+  <data name="InfoBubbleWarning" xml:space="preserve">
+    <value>Advertencia: </value>
+  </data>
+  <data name="InstalledPackageViewAdditionalFileLabel" xml:space="preserve">
+    <value>Archivos adicionales</value>
+  </data>
+  <data name="InstalledPackageViewAdditionalLabel" xml:space="preserve">
+    <value>Bibliotecas adicionales</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuDeprecate" xml:space="preserve">
+    <value>Declarar obsoleto</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuDeprecateTooltip" xml:space="preserve">
+    <value>Define este paquete como obsoleto. Solo se permite si usted es mantenedor actual del paquete</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuGetLatest" xml:space="preserve">
+    <value>Obtener última versión</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuGetLatestTooltip" xml:space="preserve">
+    <value>Comprueba si hay una versión más reciente de este paquete y la descarga</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuPublish" xml:space="preserve">
+    <value>Publicar...</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuPublishTooltip" xml:space="preserve">
+    <value>Publica este paquete, si aún no se ha publicado</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuPublishVersion" xml:space="preserve">
+    <value>Publicar versión...</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuPublishVersionTooltip" xml:space="preserve">
+    <value>Publica una nueva versión de este paquete suponiendo que ya se haya publicado. Solo se permite si usted es mantenedor actual del paquete</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuRemoveDeprecation" xml:space="preserve">
+    <value>Eliminar obsolescencia</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuRemoveDeprecationTooltip" xml:space="preserve">
+    <value>Eliminar obsolescencia de paquete. Solo se permite si el usuario es un mantenedor actual del paquete</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuShowRootDir" xml:space="preserve">
+    <value>Mostrar directorio raíz</value>
+  </data>
+  <data name="InstalledPackageViewContextMenuShowRootDirTooltip" xml:space="preserve">
+    <value>Va a la carpeta raíz de este paquete</value>
+  </data>
+  <data name="InstalledPackageViewCustomNodesLabel" xml:space="preserve">
+    <value>Nodos personalizados</value>
+  </data>
+  <data name="InstalledPackageViewNodeLibrariesLabel" xml:space="preserve">
+    <value>Bibliotecas de nodos</value>
+  </data>
+  <data name="InstalledPackageViewPendingInstallButton" xml:space="preserve">
+    <value>Desinstalación pendiente</value>
+  </data>
+  <data name="InstalledPackageViewTitle" xml:space="preserve">
+    <value>Paquetes instalados</value>
+  </data>
+  <data name="InstalledPackagePartialTextMessage" xml:space="preserve">
+    <value>Vea los paquetes instalados en </value>
+  </data>
+  <data name="InstalledPackagePartialHyperlinkMessage" xml:space="preserve">
+    <value>Package Manager</value>
+  </data>
+  <data name="InstallMessageCaption" xml:space="preserve">
+    <value>Instalar Dynamo</value>
+  </data>
+  <data name="InvalidLoginUrl" xml:space="preserve">
+    <value>URL no válida para página de inicio de sesión</value>
+  </data>
+  <data name="InvalidTimeZoneMessage" xml:space="preserve">
+    <value>No se puede iniciar sesión en este momento. Compruebe la configuración de fecha, hora y zona horaria y vuelva a iniciar sesión.</value>
+  </data>
+  <data name="LacingAutoToolTip" xml:space="preserve">
+    <value>No se añadirá ninguna guía de replicación.</value>
+  </data>
+  <data name="LacingCrossProductToolTip" xml:space="preserve">
+    <value>Para dos listas [a,b,c][1,2,3] devuelve [a1,a2,a3][b1,b2,b3][c1,c2,c3].</value>
+  </data>
+  <data name="LacingDisabledToolTip" xml:space="preserve">
+    <value>El encaje de argumentos está desactivado en este nodo</value>
+  </data>
+  <data name="LacingFirstToolTip" xml:space="preserve">
+    <value>Para dos listas [a,b,c][1,2,3] devuelve {a1}.</value>
+  </data>
+  <data name="LacingLongestToolTip" xml:space="preserve">
+    <value>Para dos listas [a,b,c][1,2] devuelve [a1,b2,c2].</value>
+  </data>
+  <data name="LacingShortestToolTip" xml:space="preserve">
+    <value>Para dos listas [a,b,c][1,2] devuelve [a1,b2].</value>
+  </data>
+  <data name="LayoutIconTooltip" xml:space="preserve">
+    <value>Diseño de vista</value>
+  </data>
+  <data name="LearnMore" xml:space="preserve">
+    <value>Más información</value>
+  </data>
+  <data name="LibraryViewContextMenuEditNode" xml:space="preserve">
+    <value>Editar...</value>
+  </data>
+  <data name="LibraryViewNoMatchesFound" xml:space="preserve">
+    <value>No se ha encontrado ninguna coincidencia</value>
+  </data>
+  <data name="LibraryViewSearchText" xml:space="preserve">
+    <value>Buscar</value>
+  </data>
+  <data name="LibraryViewTitle" xml:space="preserve">
+    <value>Biblioteca</value>
+  </data>
+  <data name="MajorVersionNonNegative" xml:space="preserve">
+    <value>Proporcione el número de versión principal, secundaria y de compilación.</value>
+  </data>
+  <data name="Manual" xml:space="preserve">
+    <value>Manual</value>
+  </data>
+  <data name="MessageAlreadyInstallDynamo" xml:space="preserve">
+    <value>El paquete {1} ya está instalado.
+
+{0} intentará desinstalar este paquete antes de instalar {2}.</value>
+  </data>
+  <data name="MessageConfirmToInstallPackage" xml:space="preserve">
+    <value>¿Seguro que desea instalar {0} {1}?</value>
+  </data>
+  <data name="MessageConfirmToInstallPackageToFolder" xml:space="preserve">
+    <value>¿Está seguro de que desea instalar {0} {1} en {2}?</value>
+  </data>
+  <data name="MessageConfirmToSaveCustomNode" xml:space="preserve">
+    <value>En el espacio de trabajo de nodos personalizados: "{0}" hay cambios sin guardar.
+
+¿Desea guardar los cambios?</value>
+  </data>
+  <data name="MessageConfirmToSaveHomeWorkSpace" xml:space="preserve">
+    <value>En el espacio de trabajo de inicio hay cambios sin guardar.
+
+¿Desea guardar los cambios?</value>
+  </data>
+  <data name="MessageFileInUseByApplication" xml:space="preserve">
+    <value>Otra aplicación está utilizando actualmente el archivo.
+	
+Cierre el archivo antes de intentar sobrescribirlo.</value>
+  </data>
+  <data name="TitleFileInUse" xml:space="preserve">
+    <value>Archivo en uso</value>
+  </data>
+  <data name="MessageConfirmToSaveNamedHomeWorkSpace" xml:space="preserve">
+    <value>Hay cambios sin guardar en {0}.
+
+¿Desea guardar los cambios?</value>
+  </data>
+  <data name="MessageConfirmToSaveReadOnlyCustomNode" xml:space="preserve">
+    <value>No se puede guardar "{0}" porque el archivo es de solo lectura o contiene nodos no válidos o sin resolver. Para conservar los cambios, ¿desea "Guardar como..." con otro nombre o ruta?</value>
+  </data>
+  <data name="MessageConfirmToDeletePackage" xml:space="preserve">
+    <value>¿Está seguro de que desea suprimir {0}? Esto suprimirá el directorio raíz de paquetes.
+
+Siempre puede volver a descargar el paquete.</value>
+  </data>
+  <data name="MessageExcessiveLoadTime" xml:space="preserve">
+    <value>La carga de paquetes está tardando más de lo esperado. ¿Qué desea hacer?</value>
+  </data>
+  <data name="MessageExcessiveLoadTimeTitle" xml:space="preserve">
+    <value>Carga en curso</value>
+  </data>
+  <data name="MessageCustomNodeNameExist" xml:space="preserve">
+    <value>Ya existe un nodo integrado con este nombre</value>
+  </data>
+  <data name="MessageCustomNodeNeedNewCategory" xml:space="preserve">
+    <value>Debe introducir una nueva categoría o seleccionar una de las categorías existentes</value>
+  </data>
+  <data name="MessageCustomNodeNoName" xml:space="preserve">
+    <value>Debe proporcionar un nombre</value>
+  </data>
+  <data name="MessageCustomNodeNameInvalid" xml:space="preserve">
+    <value>El nombre de nodo personalizado no puede contener ninguno de los siguientes caracteres especiales
+     # % * ? \ : o ningún carácter no imprimible.</value>
+  </data>
+  <data name="MessageErrorOpeningFileGeneral" xml:space="preserve">
+    <value>Error al abrir el archivo</value>
+  </data>
+  <data name="MessageFailedToAddFile" xml:space="preserve">
+    <value>Error al añadir el archivo: {0}</value>
+  </data>
+  <data name="MessageFailedToApplyCustomization" xml:space="preserve">
+    <value>Error al aplicar NodeViewCustomization para {0}</value>
+  </data>
+  <data name="MessageFailedToAttachToRowColumn" xml:space="preserve">
+    <value>'AttachmentToRowColumnConverter' espera que un valor de 'ConverterParameter' sea 'Row' o 'Column'</value>
+  </data>
+  <data name="MessageFailedToDownloadPackage" xml:space="preserve">
+    <value>Error al descargar paquete con ID: {0}. Inténtelo de nuevo e informe sobre el paquete si sigue teniendo problemas</value>
+  </data>
+  <data name="MessageInvalidPackage" xml:space="preserve">
+    <value>No se ha podido cargar un paquete no válido.</value>
+  </data>
+  <data name="MessageFailedToFindNodeById" xml:space="preserve">
+    <value>No se ha podido encontrar ningún nodo con ese ID</value>
+  </data>
+  <data name="MessageFailedToFindGroupById" xml:space="preserve">
+    <value>No se ha podido encontrar ningún grupo con ese ID.</value>
+  </data>
+  <data name="MessageFailedToOpenCorruptedFile" xml:space="preserve">
+    <value>Error al abrir archivo dañado: {0}</value>
+  </data>
+  <data name="MessageFailedToSaveAsImage" xml:space="preserve">
+    <value>Error al guardar el espacio de trabajo como imagen</value>
+  </data>
+  <data name="MessageFailedToDelete" xml:space="preserve">
+    <value>{0} no ha podido suprimir el paquete. Es posible que deba suprimir el directorio raíz del paquete manualmente.</value>
+  </data>
+  <data name="MessageFailToUninstallPackage" xml:space="preserve">
+    <value>Error de {0} al desinstalar el paquete: {1}. Es posible que el paquete deba reinstalarse manualmente</value>
+  </data>
+  <data name="MessageGettingNodeError" xml:space="preserve">
+    <value>Se ha producido un problema al obtener el nodo del espacio de trabajo</value>
+  </data>
+  <data name="MessageLoadingTime" xml:space="preserve">
+    <value>{0} transcurridos para cargar la ventana principal de {1}.</value>
+  </data>
+  <data name="MessageNeedToRestartAfterDelete" xml:space="preserve">
+    <value>{0} y su aplicación host deben reiniciarse antes de que se aplique la supresión.</value>
+  </data>
+  <data name="MessageNodeWithNullFunction" xml:space="preserve">
+    <value>Hay una definición de función nula para este nodo</value>
+  </data>
+  <data name="MessageNoNodeDescription" xml:space="preserve">
+    <value>No se ha proporcionado ninguna descripción</value>
+  </data>
+  <data name="MessagePackageContainPythonScript" xml:space="preserve">
+    <value>El paquete o una de sus dependencias contiene binarios o secuencias de comando de Python. ¿Desea continuar?</value>
+  </data>
+  <data name="MessagePackageNewerDynamo" xml:space="preserve">
+    <value>Este paquete o una de sus dependencias se han creado para una versión más reciente de Dynamo. Es posible que no funcionen en esta versión. ¿Desea continuar?</value>
+  </data>
+  <data name="MessageSelectAtLeastOneNode" xml:space="preserve">
+    <value>Debe seleccionar al menos un nodo personalizado</value>
+  </data>
+  <data name="MessageSelectSymbolNotFound" xml:space="preserve">
+    <value>El símbolo seleccionado no se ha encontrado en el espacio de trabajo</value>
+  </data>
+  <data name="MessageSubmitSameNamePackage" xml:space="preserve">
+    <value>El nodo forma parte del paquete de {0} "{1}". ¿Desea enviar una nueva versión de este paquete?
+
+De lo contrario, este nodo se desplazará al paquete que está creando"</value>
+  </data>
+  <data name="MessageToDeprecatePackage" xml:space="preserve">
+    <value>¿Seguro que desea declarar obsoleto {0}? Esta solicitud no se aceptará si usted no es el mantenedor del paquete. Indica que ya no podrá admitir el paquete, si bien el paquete seguirá apareciendo cuando se busque explícitamente.
+
+Siempre puede anular la obsolescencia del paquete.</value>
+  </data>
+  <data name="MessageToUndeprecatePackage" xml:space="preserve">
+    <value>¿Seguro que desea anular la obsolescencia de {0}? Esta solicitud no se aceptará si usted no es el mantenedor del paquete. Indica que seguirá admitiendo el paquete y que el paquete aparecerá cuando los usuarios naveguen por los paquetes.
+
+Siempre puede volver a declarar obsoleto el paquete.</value>
+  </data>
+  <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
+    <value>El paquete {0} presenta una o más dependencias que entran en conflicto con los siguientes paquetes que están en uso en el espacio de trabajo: {1}. Los conflictos de dependencia pueden provocar un comportamiento no deseado.
+    
+¿Desea seguir instalándolo al mismo tiempo que conserva los paquetes instalados?
+
+Si no es así, {2} debe desinstalar {1} para continuar, pero no puede mientras estén en uso. Intente reiniciar {2} y descargar {0} de nuevo.</value>
+  </data>
+  <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
+    <value>El paquete {0} presenta una o más dependencias que entran en conflicto con los siguientes paquetes:
+
+{1}
+
+Si continúa con la instalación del paquete, puede producirse un comportamiento inesperado.
+
+Para evitar tal comportamiento, desinstale el paquete o los paquetes cargados que generan el conflicto, reinicie Dynamo y vuelva a descargar {0}.</value>
+  </data>
+  <data name="MessageUnkownErrorOpeningFile" xml:space="preserve">
+    <value>Error desconocido al abrir archivo: {0}</value>
+  </data>
+  <data name="MessageUnsavedChanges0" xml:space="preserve">
+    <value>Los espacios de trabajo siguientes no se han guardado:</value>
+  </data>
+  <data name="MessageUnsavedChanges1" xml:space="preserve">
+    <value>. Guárdelos y vuelva a intentarlo.</value>
+  </data>
+  <data name="MinorVersionNonNegative" xml:space="preserve">
+    <value>Debe proporcionar una versión secundaria como entero no negativo</value>
+  </data>
+  <data name="MoreButton" xml:space="preserve">
+    <value>Más</value>
+  </data>
+  <data name="NameNeedMoreCharacters" xml:space="preserve">
+    <value>Debe tener al menos 3 caracteres.</value>
+  </data>
+  <data name="PackageManagerProvidePackageName" xml:space="preserve">
+    <value>Proporcionar nombre del paquete</value>
+  </data>
+  <data name="PackageManagerProvidePackageNameAndFiles" xml:space="preserve">
+    <value>Proporcionar nombre del paquete y archivos</value>
+  </data>
+  <data name="PackageManagerProvidePackageNameAndVersion" xml:space="preserve">
+    <value>Proporcionar nombre de paquete y número de versión</value>
+  </data>
+  <data name="PackageManagerProvideVersion" xml:space="preserve">
+    <value>Proporcionar número de versión</value>
+  </data>
+  <data name="PackageManagerProvideVersionAndFiles" xml:space="preserve">
+    <value>Proporcionar número de versión y archivos</value>
+  </data>
+  <data name="PackageManagerProvideFiles" xml:space="preserve">
+    <value>Proporcionar archivos</value>
+  </data>
+  <data name="NodeContextMenuEnablePeriodicUpdate" xml:space="preserve">
+    <value>Activar actualización periódica</value>
+  </data>
+  <data name="NodeContextMenuHelp" xml:space="preserve">
+    <value>Ayuda...</value>
+  </data>
+  <data name="NodeContextMenuIsInput" xml:space="preserve">
+    <value>Es entrada</value>
+  </data>
+  <data name="NodeContextMenuIsOutput" xml:space="preserve">
+    <value>Se genera</value>
+  </data>
+  <data name="NodeContextMenuPreview" xml:space="preserve">
+    <value>Vista preliminar de geometría</value>
+  </data>
+  <data name="NodeContextMenuRenameNode" xml:space="preserve">
+    <value>Cambiar nombre</value>
+  </data>
+  <data name="NodeContextMenuShowLabels" xml:space="preserve">
+    <value>Mostrar etiquetas</value>
+  </data>
+  <data name="NodeHelpWindowNodeCategory" xml:space="preserve">
+    <value>CATEGORÍA</value>
+  </data>
+  <data name="NodeHelpWindowNodeDescription" xml:space="preserve">
+    <value>DESCRIPCIÓN</value>
+  </data>
+  <data name="NodeHelpWindowNodeInput" xml:space="preserve">
+    <value>ENTRADAS</value>
+  </data>
+  <data name="NodeHelpWindowNodeOutput" xml:space="preserve">
+    <value>SALIDAS</value>
+  </data>
+  <data name="NodeHelpWindowNodeType" xml:space="preserve">
+    <value>TIPO DE NODO</value>
+  </data>
+  <data name="NodesRunStatus" xml:space="preserve">
+    <value>Bloquear</value>
+  </data>
+  <data name="NodeViewCustomizationFindErrorMessage" xml:space="preserve">
+    <value>Se ha producido un error al buscar las personalizaciones de vista de nodo para {0}. Póngase en contacto con el autor de este ensamblaje para obtener más información.</value>
+  </data>
+  <data name="NoneString" xml:space="preserve">
+    <value>ninguno</value>
+  </data>
+  <data name="NoteViewContextMenuDelete" xml:space="preserve">
+    <value>Suprimir</value>
+  </data>
+  <data name="NoteViewContextMenuEdit" xml:space="preserve">
+    <value>Editar...</value>
+  </data>
+  <data name="NullString" xml:space="preserve">
+    <value>null</value>
+  </data>
+  <data name="OKButton" xml:space="preserve">
+    <value>Aceptar</value>
+  </data>
+  <data name="OneAssemblyWasLoadedSeveralTimesErrorMessage" xml:space="preserve">
+    <value>Por favor, cargue los montajes solo una vez.
+Los siguientes montajes se han cargado varias veces:
+</value>
+  </data>
+  <data name="PackageManagerNoValidationErrors" xml:space="preserve">
+    <value>No validation errors</value>
+  </data>
+  <data name="OnlyTitle" xml:space="preserve">
+    <value>solo</value>
+  </data>
+  <data name="OpenDynamoDefinitionDialogTitle" xml:space="preserve">
+    <value>Abrir definición de {0}...</value>
+  </data>
+  <data name="PackageDownloadConfirmMessageBoxTitle" xml:space="preserve">
+    <value>Confirmación de descarga de paquete</value>
+  </data>
+  <data name="PackageDownloadErrorMessageBoxTitle" xml:space="preserve">
+    <value>Error de descarga de paquete</value>
+  </data>
+  <data name="PackageDownloadMessageBoxTitle" xml:space="preserve">
+    <value>Descarga de paquetes</value>
+  </data>
+  <data name="PackageDownloadStateDownloaded" xml:space="preserve">
+    <value>Descargado</value>
+  </data>
+  <data name="PackageDownloadStateDownloading" xml:space="preserve">
+    <value>Descargando</value>
+  </data>
+  <data name="PackageDownloadStateError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="PackageDownloadStateInstalled" xml:space="preserve">
+    <value>Instalado</value>
+  </data>
+  <data name="PackageDownloadStateInstalling" xml:space="preserve">
+    <value>Instalando</value>
+  </data>
+  <data name="PackageDownloadStateStarting" xml:space="preserve">
+    <value>Iniciando</value>
+  </data>
+  <data name="PackageDuplicateAssemblyWarning" xml:space="preserve">
+    <value>Debido a limitaciones de .NET Framework, no es posible actualizar el conjunto de paquetes mientras está cargado. Actualice el conjunto mientras {0} no se esté ejecutando e inténtelo de nuevo.</value>
+  </data>
+  <data name="PackageDuplicateAssemblyWarningTitle" xml:space="preserve">
+    <value>No se puede actualizar conjunto</value>
+  </data>
+  <data name="PackageFolderNotAccessible" xml:space="preserve">
+    <value>Se ha producido un problema al intentar instalar el paquete. Dynamo no puede obtener acceso de lectura/escritura para
+{0}</value>
+  </data>
+  <data name="PackageNameCannotContainTheseCharacters" xml:space="preserve">
+    <value>El nombre del paquete no puede contener</value>
+  </data>
+  <data name="PackageNeedAtLeastOneFile" xml:space="preserve">
+    <value>El paquete debe contener al menos un archivo</value>
+  </data>
+  <data name="PackageCompatibilityMatrixMissing" xml:space="preserve">
+    <value>Provide compatibility information for the package..</value>
+  </data>
+  <data name="PackageNotExisted" xml:space="preserve">
+    <value>El directorio raíz del paquete no existe. Intente volver a instalar el paquete.</value>
+  </data>
+  <data name="PackagePathViewAccept" xml:space="preserve">
+    <value>Aceptar cambios</value>
+  </data>
+  <data name="PackagePathViewHeading" xml:space="preserve">
+    <value>Rutas:</value>
+  </data>
+  <data name="PackagePathViewSummary1" xml:space="preserve">
+    <value>Añade rutas para que los nodos y los paquetes aparezcan en la biblioteca.</value>
+  </data>
+  <data name="PackagePathViewTitle" xml:space="preserve">
+    <value>Administra rutas de nodos y paquetes</value>
+  </data>
+  <data name="PackagePathViewToolTipDown" xml:space="preserve">
+    <value>Desplaza la ruta seleccionada hacia abajo</value>
+  </data>
+  <data name="PackagePathViewToolTipMinus" xml:space="preserve">
+    <value>Elimina la ruta seleccionada de la lista</value>
+  </data>
+  <data name="PackagePathViewToolTipPlus" xml:space="preserve">
+    <value>Añade una nueva ruta a la lista</value>
+  </data>
+  <data name="PackagePathViewToolTipUp" xml:space="preserve">
+    <value>Desplaza la ruta seleccionada hacia arriba</value>
+  </data>
+  <data name="PackageManagerFinishedPackagePackagePath" xml:space="preserve">
+    <value>Ruta del paquete</value>
+  </data>
+  <data name="PackageManagerFinishedPackageFilesUploadedMessage" xml:space="preserve">
+    <value> archivos cargados</value>
+  </data>
+  <data name="PackageManagerFinishedPackageFilesPublishedMessage" xml:space="preserve">
+    <value> archivos publicados</value>
+  </data>
+  <data name="PackagePathAutoAddNotificationTitle" xml:space="preserve">
+    <value>Ruta de paquete añadida</value>
+  </data>
+  <data name="PackagePathAutoAddNotificationShortDescription" xml:space="preserve">
+    <value>Se ha importado recientemente una biblioteca (*.dll, *.ds) en Dynamo. Su ruta se ha añadido automáticamente a "Preferencias &gt; Rutas de nodos y paquetes...".</value>
+  </data>
+  <data name="PackagePathAutoAddNotificationDetailedDescription" xml:space="preserve">
+    <value>La ruta de importación "{0}" se ha añadido a "Rutas de nodos y paquetes". Si desea actualizar o eliminar esta ruta, abra "Dynamo &gt; Preferencias &gt; Package Manager &gt; Rutas de nodos y paquetes...".</value>
+  </data>
+  <data name="PackageSearchStateNoResult" xml:space="preserve">
+    <value>La búsqueda no ha devuelto ningún resultado</value>
+  </data>
+  <data name="PackageSearchStateSearching" xml:space="preserve">
+    <value>Buscando...</value>
+  </data>
+  <data name="PackageSearchStateSyncingWithServer" xml:space="preserve">
+    <value>Sincronizando con servidor...</value>
+  </data>
+  <data name="PackageSearchViewClearButton" xml:space="preserve">
+    <value>Borrar</value>
+  </data>
+  <data name="PackageSearchViewClearButtonTooltip" xml:space="preserve">
+    <value>Anula la selección de las descargas</value>
+  </data>
+  <data name="PackageSearchViewContextMenuOrderAscending" xml:space="preserve">
+    <value>Ascendente</value>
+  </data>
+  <data name="PackageSearchViewContextMenuOrderDescending" xml:space="preserve">
+    <value>Descendente</value>
+  </data>
+  <data name="PackageSearchViewContextMenuSortByAuthor" xml:space="preserve">
+    <value>Autor</value>
+  </data>
+  <data name="PackageSearchViewContextMenuSortByDownloads" xml:space="preserve">
+    <value>Descargas</value>
+  </data>
+  <data name="PackageSearchViewContextMenuSortByName" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="PackageSearchViewContextMenuSortByVotes" xml:space="preserve">
+    <value>Votos</value>
+  </data>
+  <data name="PackageSearchViewContextMenuSortyByUpdate" xml:space="preserve">
+    <value>Actualización más reciente</value>
+  </data>
+  <data name="PackageManagerPackageDeprecated" xml:space="preserve">
+    <value>Obsoleto</value>
+  </data>
+  <data name="PackageSearchViewDeprecatedTooltip" xml:space="preserve">
+    <value>Los mantenedores de este paquete han indicado que ya no lo actualizarán. Si lo utiliza, lo hará por su cuenta y riesgo</value>
+  </data>
+  <data name="PackageSearchViewDescription" xml:space="preserve">
+    <value>Descripción</value>
+  </data>
+  <data name="PackageSearchViewInstallButton" xml:space="preserve">
+    <value>⇓ Instalar</value>
+  </data>
+  <data name="PackageSearchViewInstallLatestVersion" xml:space="preserve">
+    <value>Instalar la versión más reciente</value>
+  </data>
+  <data name="PackageSearchViewInstallLatestVersionTo" xml:space="preserve">
+    <value>Instalar en la carpeta...</value>
+  </data>
+  <data name="PackageSearchViewInstallThisVersion" xml:space="preserve">
+    <value>Instalar esta versión</value>
+  </data>
+  <data name="PackageSearchViewInstallThisVersionTo" xml:space="preserve">
+    <value>Instalar esta versión en la carpeta...</value>
+  </data>
+  <data name="PackageSearchViewKeywords" xml:space="preserve">
+    <value>Palabras clave</value>
+  </data>
+  <data name="PackageSearchViewSearchTextBox" xml:space="preserve">
+    <value>Buscar...</value>
+  </data>
+  <data name="PackageSearchViewSortByButton" xml:space="preserve">
+    <value>Ordenar por</value>
+  </data>
+  <data name="PackageSearchViewTitle" xml:space="preserve">
+    <value>Búsqueda en línea de paquete</value>
+  </data>
+  <data name="PackageSearchViewUpvoteButtonTooltip" xml:space="preserve">
+    <value>Votar en soporte de este paquete</value>
+  </data>
+  <data name="PackageSearchViewVersions" xml:space="preserve">
+    <value>Versiones</value>
+  </data>
+  <data name="PackageSearchViewVisitRepositoryBuutton" xml:space="preserve">
+    <value>Visitar depósito de paquetes</value>
+  </data>
+  <data name="PackageSearchViewVisitWebSiteButton" xml:space="preserve">
+    <value>Visitar sitio web de paquetes</value>
+  </data>
+  <data name="PackageStateUnknown" xml:space="preserve">
+    <value>Desconocido</value>
+  </data>
+  <data name="PackageTypeShortString" xml:space="preserve">
+    <value>Pqt</value>
+  </data>
+  <data name="PackageUploadNoDependency" xml:space="preserve">
+    <value>Ninguno</value>
+  </data>
+  <data name="PackageUploadStateCompressing" xml:space="preserve">
+    <value>Comprimiendo...</value>
+  </data>
+  <data name="PackageUploadStateCopying" xml:space="preserve">
+    <value>Copiando...</value>
+  </data>
+  <data name="PackageUploadStateError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="PackageUploadStateReady" xml:space="preserve">
+    <value>Listo</value>
+  </data>
+  <data name="PackageUploadStateUploaded" xml:space="preserve">
+    <value>Cargado</value>
+  </data>
+  <data name="PackageUploadStateUploading" xml:space="preserve">
+    <value>Cargando...</value>
+  </data>
+  <data name="PackageFilterByHost" xml:space="preserve">
+    <value>ANFITRIÓN</value>
+  </data>
+  <data name="PackageFilterByStatus" xml:space="preserve">
+    <value>ESTADO</value>
+  </data>
+  <data name="PackageFilterNewTooltip" xml:space="preserve">
+    <value>Publicado en los últimos 30 días</value>
+  </data>
+  <data name="PackageFilterUpdatedTooltip" xml:space="preserve">
+    <value>Actualizado en los últimos 30 días</value>
+  </data>
+  <data name="PackageFilterDeprecatedTooltip" xml:space="preserve">
+    <value>Paquetes obsoletos</value>
+  </data>
+  <data name="PackageFilterByDependency" xml:space="preserve">
+    <value>DEPENDENCIA</value>
+  </data>
+  <data name="PackageFilterHasDependenciesTooltip" xml:space="preserve">
+    <value>Paquetes que requieren la instalación de otros paquetes</value>
+  </data>
+  <data name="PackageFilterHasNoDependenciesTooltip" xml:space="preserve">
+    <value>Paquetes independientes</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterActive" xml:space="preserve">
+    <value>Activo</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterDeprecated" xml:space="preserve">
+    <value>Obsoleto</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterDependencies" xml:space="preserve">
+    <value>Tiene dependencias</value>
+  </data>
+  <data name="PackageSearchViewContextMenuFilterNoDependencies" xml:space="preserve">
+    <value>No tiene dependencias</value>
+  </data>
+  <data name="PackageUseNewerDynamoMessageBoxTitle" xml:space="preserve">
+    <value>Es posible que el paquete no funcione en esta versión de {0}.</value>
+  </data>
+  <data name="PackageWarningMessageBoxTitle" xml:space="preserve">
+    <value>Advertencia de paquete</value>
+  </data>
+  <data name="PackageManagerClearAllButtonText" xml:space="preserve">
+    <value>Desactivar todo</value>
+  </data>
+  <data name="Periodic" xml:space="preserve">
+    <value>Periódica</value>
+  </data>
+  <data name="PortViewContextMenuUserDefaultValue" xml:space="preserve">
+    <value>Utilizar valor por defecto</value>
+  </data>
+  <data name="PresetOverwrite" xml:space="preserve">
+    <value>Ya existe un valor predefinido con este nombre, ¿desea sobrescribirlo?</value>
+  </data>
+  <data name="PresetPromptDescriptionTooltip" xml:space="preserve">
+    <value>Una descripción del valor predefinido.</value>
+  </data>
+  <data name="PresetPromptNameTooltip" xml:space="preserve">
+    <value>Un nombre exclusivo para el valor predefinido.</value>
+  </data>
+  <data name="PresetsWindowDescription" xml:space="preserve">
+    <value>Descripción</value>
+  </data>
+  <data name="PresetsWindowDescriptionHint" xml:space="preserve">
+    <value>Escriba una descripción para este valor predefinido.</value>
+  </data>
+  <data name="PresetsWindowName" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="PresetsWindowTitle" xml:space="preserve">
+    <value>Propiedades de estado predefinido</value>
+  </data>
+  <data name="PresetTextRemaining" xml:space="preserve">
+    <value>Caracteres restantes</value>
+  </data>
+  <data name="PresetWarningMessage" xml:space="preserve">
+    <value>No se han seleccionado nodos de entrada. Seleccione al menos un nodo de entrada para crear un valor predefinido.</value>
+  </data>
+  <data name="PreviewListLabel" xml:space="preserve">
+    <value>Lista</value>
+  </data>
+  <data name="PublishPackage" xml:space="preserve">
+    <value>Publicar en línea</value>
+  </data>
+  <data name="PublishPackageDialogCaption" xml:space="preserve">
+    <value>Se ha publicado correctamente</value>
+  </data>
+  <data name="PublishPackageSelectPackageContentsMessage" xml:space="preserve">
+    <value>Seleccionar contenido del paquete</value>
+  </data>
+  <data name="PublishPackagePreviewPackageContentsMessage" xml:space="preserve">
+    <value>Previsualizar el contenido del paquete (solo lectura)</value>
+  </data>
+  <data name="PublishPackageLocally" xml:space="preserve">
+    <value>Publicar localmente</value>
+  </data>
+  <data name="PublishPackageResetButton" xml:space="preserve">
+    <value>Restablecer</value>
+  </data>
+  <data name="PublishPackageMessage" xml:space="preserve">
+    <value>El paquete se ha publicado correctamente. 
+¿Desea publicar otro paquete?</value>
+  </data>
+  <data name="PublishPackagePackageContent" xml:space="preserve">
+    <value>Contenido de paquete</value>
+  </data>
+  <data name="PublishPackageViewAddFileButton" xml:space="preserve">
+    <value>Añadir archivos</value>
+  </data>
+  <data name="PublishPackageViewAddFileButtonTooltip" xml:space="preserve">
+    <value>Añadir archivo</value>
+  </data>
+  <data name="PublishPackageRemoveFromPacakgeTooltip" xml:space="preserve">
+    <value>Eliminar del paquete</value>
+  </data>
+  <data name="PublishPackageViewContextMenuIsNodeLibrary" xml:space="preserve">
+    <value>Es biblioteca de nodos</value>
+  </data>
+  <data name="PublishPackageViewLicense" xml:space="preserve">
+    <value>Licencia (opcional)</value>
+  </data>
+  <data name="PublishPackageViewPackageDependencies" xml:space="preserve">
+    <value>Dependencias</value>
+  </data>
+  <data name="PublishPackageViewPackageDescriptionTooltip" xml:space="preserve">
+    <value>Una descripción que ayuda a los usuarios a entender para qué pueden usar el paquete.</value>
+  </data>
+  <data name="PublishPackageViewPackageGroup" xml:space="preserve">
+    <value>Grupo (opcional)</value>
+  </data>
+  <data name="PublishPackageViewPackageGroupTooltip" xml:space="preserve">
+    <value>Grupo para ayudar a categorizar este paquete. Puede ser útil para una colección de paquetes relativos a una empresa, una escuela, etc.</value>
+  </data>
+  <data name="PublishPackageViewPackageKeywords" xml:space="preserve">
+    <value>Palabras clave (opcional)</value>
+  </data>
+  <data name="PublishPackageViewPackageKeywordsTooltip" xml:space="preserve">
+    <value>Las palabras ayudan a buscar el paquete en la base de datos. Sepárelas con espacios</value>
+  </data>
+  <data name="PublishPackageViewPackageName" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="PublishPackageViewPackageNameTooltip" xml:space="preserve">
+    <value>Un nombre exclusivo para el paquete.</value>
+  </data>
+  <data name="PublishPackageViewPackageVersion" xml:space="preserve">
+    <value>Versión</value>
+  </data>
+  <data name="PublishPackageViewMajorPackageVersionLabel" xml:space="preserve">
+    <value>Principal</value>
+  </data>
+  <data name="PublishPackageViewMinorPackageVersionLabel" xml:space="preserve">
+    <value>Secundaria</value>
+  </data>
+  <data name="PublishPackageViewBuildPackageVersionLabel" xml:space="preserve">
+    <value>Compilación</value>
+  </data>
+  <data name="PublishPackageViewPackageVersionTooltip" xml:space="preserve">
+    <value>Un nombre de versión ayuda al remitente a realizar el seguimiento de las actualizaciones del paquete. Cuando se añade una nueva versión de un paquete, el número de versión debe incrementarse.</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebsiteTooltip" xml:space="preserve">
+    <value>Vínculo al sitio web del paquete.</value>
+  </data>
+  <data name="PublishPackageViewGithubLinkTooltip" xml:space="preserve">
+    <value>Vínculo del repositorio de GitHub para el paquete.</value>
+  </data>
+  <data name="PublishPackageViewLicenceTooltip" xml:space="preserve">
+    <value>La licencia del paquete.</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderTooltip" xml:space="preserve">
+    <value>El titular de copyright del paquete.</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearTooltip" xml:space="preserve">
+    <value>Año de copyright del paquete.</value>
+  </data>
+  <data name="PublishPackageViewPublish" xml:space="preserve">
+    <value>Publicar un paquete</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebiSite" xml:space="preserve">
+    <value>URL de sitio web (opcional)</value>
+  </data>
+  <data name="PublishPackageViewRepositoryUrl" xml:space="preserve">
+    <value>URL de depósito (opcional)</value>
+  </data>
+  <data name="PublishPackageViewTitle" xml:space="preserve">
+    <value>Publicar un paquete de {0}</value>
+  </data>
+  <data name="QueryMember" xml:space="preserve">
+    <value>Consultar</value>
+  </data>
+  <data name="RerunButton" xml:space="preserve">
+    <value>Aplicar cambios</value>
+  </data>
+  <data name="RunCompletedMessage" xml:space="preserve">
+    <value>Ejecución completada</value>
+  </data>
+  <data name="RunCompletedWithScaleChangeAndWarningsMessage" xml:space="preserve">
+    <value>Ejecución finalizada con advertencias al establecer el nuevo rango de trabajo.</value>
+  </data>
+  <data name="RunCompletedWithScaleChangeMessage" xml:space="preserve">
+    <value>Ejecución finalizada con nuevo rango de trabajo.</value>
+  </data>
+  <data name="RunCompletedWithWarningsMessage" xml:space="preserve">
+    <value>Ejecución finalizada con advertencias</value>
+  </data>
+  <data name="RunStartedMessage" xml:space="preserve">
+    <value>Se ha iniciado la ejecución...</value>
+  </data>
+  <data name="RunStartedWithScaleChangeMessage" xml:space="preserve">
+    <value>Ejecución iniciada con nuevo rango de trabajo...</value>
+  </data>
+  <data name="RunTypeToolTipAutomatically" xml:space="preserve">
+    <value>Los cambios realizados en el gráfico se ejecutan en tiempo real. Es más adecuado para gráficos conocidos y de menor tamaño, además de para Dynamo Sandbox.</value>
+  </data>
+  <data name="RunTypeToolTipManually" xml:space="preserve">
+    <value>Los cambios realizados en el gráfico se ejecutan al hacer clic en Ejecutar. Utilice este modo cuando trabaje con gráficos grandes o desconocidos, o aplicaciones anfitrionas.</value>
+  </data>
+  <data name="RunTypeToolTipPeriodicallyDisabled" xml:space="preserve">
+    <value>La ejecución periódica se desactiva si su gráfico no tiene nodos que la admitan.</value>
+  </data>
+  <data name="RunTypeToolTipPeriodicallyEnabled" xml:space="preserve">
+    <value>Los cambios realizados en el gráfico se ejecutan en un intervalo especificado. Solo está disponible cuando el gráfico contiene nodos específicos, como DateTime.Now o WebRequest.</value>
+  </data>
+  <data name="UnsavedChangesMessageBoxTitle" xml:space="preserve">
+    <value>Cambios sin guardar</value>
+  </data>
+  <data name="SaveModelToSTLDialogTitle" xml:space="preserve">
+    <value>Guardar el modelo en STL</value>
+  </data>
+  <data name="SaveWorkbenToImageDialogTitle" xml:space="preserve">
+    <value>Guardar Workbench en una imagen</value>
+  </data>
+  <data name="ScalingExtraLargeButton" xml:space="preserve">
+    <value>Muy grande</value>
+  </data>
+  <data name="ScalingLargeButton" xml:space="preserve">
+    <value>Grande</value>
+  </data>
+  <data name="ScalingMediumButton" xml:space="preserve">
+    <value>Medio</value>
+  </data>
+  <data name="ScalingSmallButton" xml:space="preserve">
+    <value>Pequeño</value>
+  </data>
+  <data name="ScreenShotFrom3DParameter" xml:space="preserve">
+    <value>screenshot_3D</value>
+  </data>
+  <data name="ScreenShotFrom3DShortcutParameter" xml:space="preserve">
+    <value>screenshot_3D_shortcut</value>
+  </data>
+  <data name="SearchViewTopResult" xml:space="preserve">
+    <value>Resultado destacado</value>
+  </data>
+  <data name="SelectAllTitle" xml:space="preserve">
+    <value>Seleccionar todo</value>
+  </data>
+  <data name="SelectionErrorMessageBoxTitle" xml:space="preserve">
+    <value>Error de selección</value>
+  </data>
+  <data name="SelectNodeButtonChange" xml:space="preserve">
+    <value>Cambiar</value>
+  </data>
+  <data name="SelectNodeButtonSelect" xml:space="preserve">
+    <value>Seleccionar</value>
+  </data>
+  <data name="ShowClassicNodeLibrary" xml:space="preserve">
+    <value>Mostrar biblioteca de nodos clásica</value>
+  </data>
+  <data name="ShowHideLibraryIconTooltip" xml:space="preserve">
+    <value>Mostrar/Ocultar</value>
+  </data>
+  <data name="ShowRunPreviewDisableToolTip" xml:space="preserve">
+    <value>Obtiene una vista preliminar del estado de ejecución de su gráfico. Los nodos previstos para ejecutarse se resaltarán en el gráfico</value>
+  </data>
+  <data name="ShowRunPreviewEnableToolTip" xml:space="preserve">
+    <value>La vista preliminar de ejecución no está disponible con la ejecución automática</value>
+  </data>
+  <data name="SolutionToFolderNotWritatbleError" xml:space="preserve">
+    <value>Actualice los permisos o vaya a "Preferencias &gt; Rutas de nodos y paquetes..." para cambiar el directorio por defecto.</value>
+  </data>
+  <data name="StartPageAdvancedTutorials" xml:space="preserve">
+    <value>Aprendizajes avanzados</value>
+  </data>
+  <data name="StartPageAsk" xml:space="preserve">
+    <value>PREGUNTAR</value>
+  </data>
+  <data name="StartPageBackupLocation" xml:space="preserve">
+    <value>Ubic. copia seguridad</value>
+  </data>
+  <data name="StartPageBackupNoCrash" xml:space="preserve">
+    <value>COPIA DE SEGURIDAD</value>
+  </data>
+  <data name="StartPageBackupOnCrash" xml:space="preserve">
+    <value>RECUP. DESDE COPIA SEG.</value>
+  </data>
+  <data name="StartPageCode" xml:space="preserve">
+    <value>CÓDIGO</value>
+  </data>
+  <data name="StartPageDiscussionForum" xml:space="preserve">
+    <value>Foro de discusión</value>
+  </data>
+  <data name="StartPageDynamoDictionary" xml:space="preserve">
+    <value>Diccionario de Dynamo</value>
+  </data>
+  <data name="StartPageDynamoPrimer" xml:space="preserve">
+    <value>Dynamo Primer</value>
+  </data>
+  <data name="StartPageFiles" xml:space="preserve">
+    <value>ARCHIVOS</value>
+  </data>
+  <data name="StartPageGithubRepository" xml:space="preserve">
+    <value>Depósito de Github</value>
+  </data>
+  <data name="StartPageMoreSamples" xml:space="preserve">
+    <value>Más muestras</value>
+  </data>
+  <data name="StartPageNewCustomNode" xml:space="preserve">
+    <value>Nodo personalizado</value>
+  </data>
+  <data name="StartPageNewFile" xml:space="preserve">
+    <value>Nuevo</value>
+  </data>
+  <data name="StartPageOpenFile" xml:space="preserve">
+    <value>Abrir</value>
+  </data>
+  <data name="StartPageRecent" xml:space="preserve">
+    <value>RECIENTE</value>
+  </data>
+  <data name="StartPageReference" xml:space="preserve">
+    <value>REFERENCIA</value>
+  </data>
+  <data name="StartPageSamples" xml:space="preserve">
+    <value>MUESTRAS</value>
+  </data>
+  <data name="StartPageSendIssues" xml:space="preserve">
+    <value>Enviar problemas</value>
+  </data>
+  <data name="StartPageShowSamples" xml:space="preserve">
+    <value>Mostrar muestras en carpeta</value>
+  </data>
+  <data name="StartPageVideoTutorials" xml:space="preserve">
+    <value>Vídeos de aprendizajes</value>
+  </data>
+  <data name="StartPageVisitWebsite" xml:space="preserve">
+    <value>Sitio web de {0}</value>
+  </data>
+  <data name="StartPageWhatsNew" xml:space="preserve">
+    <value>Para empezar</value>
+  </data>
+  <data name="StringInputNodeEditMenu" xml:space="preserve">
+    <value>Editar...</value>
+  </data>
+  <data name="TabFileNameReadOnlyPrefix" xml:space="preserve">
+    <value>[Solo lectura] </value>
+  </data>
+  <data name="TermsOfUseAcceptButton" xml:space="preserve">
+    <value>Acepto</value>
+  </data>
+  <data name="TermsOfUseDeclineButton" xml:space="preserve">
+    <value>No acepto</value>
+  </data>
+  <data name="TermsOfUseViewTitle" xml:space="preserve">
+    <value>Términos de uso de Package Manager</value>
+  </data>
+  <data name="TooltipCurrentIndex" xml:space="preserve">
+    <value>{0} de {1}</value>
+  </data>
+  <data name="UnableToAccessPackageDirectory" xml:space="preserve">
+    <value>No se puede acceder al directorio de paquetes</value>
+  </data>
+  <data name="UndeprecatingPackageMessageBoxTitle" xml:space="preserve">
+    <value>Eliminando obsolescencia de paquete</value>
+  </data>
+  <data name="DeleteFailureMessageBoxTitle" xml:space="preserve">
+    <value>Error al suprimir</value>
+  </data>
+  <data name="MessageNeedToRestartAfterDeleteTitle" xml:space="preserve">
+    <value>Supresión del paquete</value>
+  </data>
+  <data name="UnitAcres" xml:space="preserve">
+    <value>Acres</value>
+  </data>
+  <data name="UnitArea" xml:space="preserve">
+    <value>Área</value>
+  </data>
+  <data name="UnitCentimeters" xml:space="preserve">
+    <value>Centímetros</value>
+  </data>
+  <data name="UnitCubicCentimeter" xml:space="preserve">
+    <value>Centímetro cúbico</value>
+  </data>
+  <data name="UnitCubicFoot" xml:space="preserve">
+    <value>Pie cúbico</value>
+  </data>
+  <data name="UnitCubicInches" xml:space="preserve">
+    <value>Pulgadas cúbicas</value>
+  </data>
+  <data name="UnitCubicMeters" xml:space="preserve">
+    <value>Metros cúbicos</value>
+  </data>
+  <data name="UnitCubicMillimeter" xml:space="preserve">
+    <value>Milímetro cúbico</value>
+  </data>
+  <data name="UnitCubicYards" xml:space="preserve">
+    <value>Yardas cúbicas</value>
+  </data>
+  <data name="UnitDecimeters" xml:space="preserve">
+    <value>Decímetros</value>
+  </data>
+  <data name="UnitFeet" xml:space="preserve">
+    <value>Pies</value>
+  </data>
+  <data name="UnitHectares" xml:space="preserve">
+    <value>Hectáreas</value>
+  </data>
+  <data name="UnitInches" xml:space="preserve">
+    <value>Pulgadas</value>
+  </data>
+  <data name="UnitLength" xml:space="preserve">
+    <value>Longitud</value>
+  </data>
+  <data name="UnitLitres" xml:space="preserve">
+    <value>Litros</value>
+  </data>
+  <data name="UnitMeters" xml:space="preserve">
+    <value>Metros</value>
+  </data>
+  <data name="UnitMillimeters" xml:space="preserve">
+    <value>Milímetros</value>
+  </data>
+  <data name="Units" xml:space="preserve">
+    <value>Unidades:</value>
+  </data>
+  <data name="UnitSquareCentimeter" xml:space="preserve">
+    <value>Centímetro cuadrado</value>
+  </data>
+  <data name="UnitSquareFoot" xml:space="preserve">
+    <value>Pie cuadrado</value>
+  </data>
+  <data name="UnitSquareInch" xml:space="preserve">
+    <value>Pulgada cuadrada</value>
+  </data>
+  <data name="UnitSquareMeter" xml:space="preserve">
+    <value>Metro cuadrado</value>
+  </data>
+  <data name="UnitSquareMillimeter" xml:space="preserve">
+    <value>Milímetro cúbico</value>
+  </data>
+  <data name="UnitUSGallons" xml:space="preserve">
+    <value>Galones EE. UU.</value>
+  </data>
+  <data name="UnitVolume" xml:space="preserve">
+    <value>Volumen</value>
+  </data>
+  <data name="UnknowDateFormat" xml:space="preserve">
+    <value>Formato de fecha desconocido</value>
+  </data>
+  <data name="UpdateMessage" xml:space="preserve">
+    <value>Hay una actualización disponible para Dynamo.
+Para instalar la actualización más reciente, hay que cerrar Dynamo y todas las aplicaciones host.
+¿Desea instalar la actualización más reciente de Dynamo?</value>
+  </data>
+  <data name="UsageReportPromptDialogTitle" xml:space="preserve">
+    <value>Acuerdos para la recopilación de datos</value>
+  </data>
+  <data name="AgreeToMLAutocompleteTOUText" xml:space="preserve">
+    <value>Deseo participar en la recopilación de datos de programas de aprendizaje automático.</value>
+  </data>
+  <data name="UseLevelKeepListStructureHint" xml:space="preserve">
+    <value>Mantener 1 anidación de la lista de entradas</value>
+  </data>
+  <data name="UseLevelKeepListStructurePopupMenuItem" xml:space="preserve">
+    <value>Mantener la estructura de listas</value>
+  </data>
+  <data name="UseLevelPopupMenuItem" xml:space="preserve">
+    <value>Utilizar niveles</value>
+  </data>
+  <data name="VersionValueGreaterThan0" xml:space="preserve">
+    <value>Al menos uno de los valores de su versión debe ser mayor que 0</value>
+  </data>
+  <data name="Watch3DViewContextMenuPan" xml:space="preserve">
+    <value>_Encuadrar</value>
+  </data>
+  <data name="Watch3DViewContextMenuRotate" xml:space="preserve">
+    <value>_Rotar</value>
+  </data>
+  <data name="Watch3DViewContextMenuSwitchView" xml:space="preserve">
+    <value>Cambiar a nodo _Ver</value>
+  </data>
+  <data name="Watch3DViewContextMenuZoomToFit" xml:space="preserve">
+    <value>_Ajustar en ventana</value>
+  </data>
+  <data name="WatchNodeRawDataMenu" xml:space="preserve">
+    <value>Mostrar datos sin procesar</value>
+  </data>
+  <data name="ZeroTouchTypeShortString" xml:space="preserve">
+    <value>DLL</value>
+  </data>
+  <data name="RerunButtonToolTip" xml:space="preserve">
+    <value>Vuelva a ejecutar el gráfico.</value>
+  </data>
+  <data name="PackageSearchViewSearchTextBoxSyncing" xml:space="preserve">
+    <value>Espere...</value>
+  </data>
+  <data name="EditNoteWindowTitle" xml:space="preserve">
+    <value>Escribir nota aquí</value>
+  </data>
+  <data name="SideBarPanelViewTitle" xml:space="preserve">
+    <value>Barra lateral</value>
+  </data>
+  <data name="ExtensionAdded" xml:space="preserve">
+    <value>Se ha añadido una ficha de extensión a la barra lateral de extensiones.</value>
+  </data>
+  <data name="ExtensionAlreadyPresent" xml:space="preserve">
+    <value>No se ha añadido ninguna ficha nueva, ya que la extensión ya está presente en la barra lateral de extensiones.</value>
+  </data>
+  <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
+    <value>{1} no se puede cargar.
+Su instalación entrará en conflicto con una o más definiciones de nodo que existen en {0}, que ya se ha cargado.
+Para instalar {1}, Dynamo debe desinstalar primero {0}.
+Reinicie Dynamo para completar la desinstalación.
+
+¿Desinstalar los siguientes paquetes: {0}?</value>
+  </data>
+  <data name="PreviewText" xml:space="preserve">
+    <value> Esta función se encuentra en modo de vista preliminar. </value>
+  </data>
+  <data name="PackageHostDependencyTooltip" xml:space="preserve">
+    <value>Este paquete contiene nodos que dependen de aplicaciones externas a Dynamo. Para utilizar por completo los nodos de este paquete, debe tener instaladas estas aplicaciones externas.</value>
+  </data>
+  <data name="PackageHostDependencyFilter" xml:space="preserve">
+    <value>Filtre los paquetes que dependen de las aplicaciones externas a Dynamo. Actualmente, esta función solo puede filtrar paquetes que hayan marcado manualmente los autores de paquetes durante la publicación.</value>
+  </data>
+  <data name="PackageHostDependencyFilterContextItem" xml:space="preserve">
+    <value>Paquetes que dependen de la aplicación externa seleccionada</value>
+  </data>
+  <data name="MessageUninstallSamePackage" xml:space="preserve">
+    <value>"El paquete {0} ya está instalado. Para volver a instalarlo, primero debe desinstalarlo y reiniciarlo para completar la desinstalación. ¿Desea marcar {0} para desinstalarlo?"</value>
+  </data>
+  <data name="MessagePackageNotFound" xml:space="preserve">
+    <value>{0} no se ha encontrado y no se ha podido descargar.</value>
+  </data>
+  <data name="MessagePackageVersionNotFound" xml:space="preserve">
+    <value>No se ha podido encontrar la versión {0} de {1}.</value>
+  </data>
+  <data name="PublishPackageViewPackageHostDependency" xml:space="preserve">
+    <value>Anfitrión (opcional)</value>
+  </data>
+  <data name="PublishPackageViewPackageHostDependencyTooltip" xml:space="preserve">
+    <value>Una indicación de las aplicaciones externas a Dynamo de las que depende el paquete, como Revit, Civil 3D o Photoshop. Los usuarios del paquete deberán instalar estas aplicaciones para utilizarlo por completo.</value>
+  </data>
+  <data name="InfoBubbleDocumentationLinkText" xml:space="preserve">
+    <value>Más información...</value>
+  </data>
+  <data name="PackageSearchViewFilterByButton" xml:space="preserve">
+    <value>Filtrar por</value>
+  </data>
+  <data name="PreferencesViewShowCodeBlockNodeLineNumber" xml:space="preserve">
+    <value>Mostrar números de línea de CodeBlockNode</value>
+  </data>
+  <data name="MessageFailedToDownloadPackageVersion" xml:space="preserve">
+    <value>No se ha podido descargar la versión {0} del paquete con el ID: {1}. Inténtelo de nuevo e informe del paquete si continúa teniendo problemas.</value>
+  </data>
+  <data name="NodeTooltipDescription" xml:space="preserve">
+    <value>Descripción: </value>
+  </data>
+  <data name="NodeTooltipOriginalName" xml:space="preserve">
+    <value>Nombre original del nodo: </value>
+  </data>
+  <data name="NodeTooltipPackage" xml:space="preserve">
+    <value>Paquete: </value>
+  </data>
+  <data name="RenderingMemoryOutageDescription" xml:space="preserve">
+    <value>Compruebe si tenía intención de renderizar esta cantidad de geometría y considere la posibilidad de desactivar la vista preliminar de otros nodos del gráfico, reducir la cantidad de geometría que desea renderizar o rebajar la precisión de renderización.</value>
+  </data>
+  <data name="RenderingMemoryOutageSummary" xml:space="preserve">
+    <value>Dynamo se ha quedado sin memoria al intentar renderizar la geometría. Se ha desactivado la vista preliminar de la geometría.</value>
+  </data>
+  <data name="PreferencesViewShowWhitespaceInPythonEditor" xml:space="preserve">
+    <value>Mostrar espacios en blanco en el editor de Python</value>
+  </data>
+  <data name="PreferencesViewDefaultPythonEngine" xml:space="preserve">
+    <value>Motor de Python por defecto</value>
+  </data>
+  <data name="PreferencesViewPackageDownloadDirectory" xml:space="preserve">
+    <value>Nueva ruta de descarga de paquetes</value>
+  </data>
+  <data name="PreferencesPackageDownloadDirectoryTooltip" xml:space="preserve">
+    <value>Elija una ruta de paquete en esta lista en la que descargar los nuevos paquetes.</value>
+  </data>
+  <data name="DefaultPythonEngineNone" xml:space="preserve">
+    <value>Usar valores por defecto del sistema</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoComplete" xml:space="preserve">
+    <value>Activar Autocompletar nodo</value>
+  </data>
+  <data name="ErrorLoadingIcon" xml:space="preserve">
+    <value>Se ha producido un error al cargar el icono de la aplicación: {0}</value>
+  </data>
+  <data name="PublishPackageSelectNodeLibraries" xml:space="preserve">
+    <value>Seleccionar bibliotecas de nodos</value>
+  </data>
+  <data name="PublishPackageMoreInfoFile" xml:space="preserve">
+    <value>DynamoCoreWpf;PublishPackageDocumentation.html</value>
+  </data>
+  <data name="DynamoViewDynamoMenu" xml:space="preserve">
+    <value>_Dynamo</value>
+  </data>
+  <data name="DynamoViewDynamoMenuAbout" xml:space="preserve">
+    <value>_Acerca de</value>
+  </data>
+  <data name="DynamoViewDynamoMenuPreferences" xml:space="preserve">
+    <value>_Preferencias...</value>
+  </data>
+  <data name="DynamoViewFileMenuExport" xml:space="preserve">
+    <value>_Exportar</value>
+  </data>
+  <data name="PublishPackageDocTooltipText" xml:space="preserve">
+    <value>Más información sobre los paquetes</value>
+  </data>
+  <data name="PreferencesViewFeaturesTab" xml:space="preserve">
+    <value>Funciones</value>
+  </data>
+  <data name="PreferencesViewGeneralTab" xml:space="preserve">
+    <value>General</value>
+  </data>
+  <data name="PreferencesViewTitle" xml:space="preserve">
+    <value>Preferencias</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsTab" xml:space="preserve">
+    <value>Configuración visual</value>
+  </data>
+  <data name="PreferencesViewFontSizeLabel" xml:space="preserve">
+    <value>Tamaño del tipo de letra del nodo</value>
+  </data>
+  <data name="PreferencesViewLanguageLabel" xml:space="preserve">
+    <value>Idioma</value>
+  </data>
+  <data name="PreferencesViewRunSettingsLabel" xml:space="preserve">
+    <value>Configuración de ejecución por defecto</value>
+  </data>
+  <data name="PreferencesNodeAutocompleteMethod" xml:space="preserve">
+    <value>Método de clasificación por defecto</value>
+  </data>
+  <data name="ConfidenceToolTipTitle" xml:space="preserve">
+    <value>Valoración de confianza</value>
+  </data>
+  <data name="ConfidenceToolTipDescription" xml:space="preserve">
+    <value>Representa la probabilidad estimada de que el nodo especificado sea la opción correcta. Los nodos recomendados aparecen ordenados de mayor a menor nivel de confianza. Los porcentajes de nivel de confianza de todos los nodos recomendados suman aproximadamente un 100 %.</value>
+  </data>
+  <data name="ConfidenceToolTipoLearnMore" xml:space="preserve">
+    <value>Más información</value>
+  </data>
+  <data name="ObjectType" xml:space="preserve">
+    <value>Coincidencia de tipo de nodo</value>
+  </data>
+  <data name="RecommendedNodes" xml:space="preserve">
+    <value>Nodos recomendados</value>
+  </data>
+  <data name="DynamoViewExtensionsMenu" xml:space="preserve">
+    <value>E_xtensiones</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderBreakConnection" xml:space="preserve">
+    <value>Interrumpir conexión</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderShowConnector" xml:space="preserve">
+    <value>Mostrar cable</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderSelectConnected" xml:space="preserve">
+    <value>Seleccionar conectados</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderUnpinConnector" xml:space="preserve">
+    <value>Desbloquear cable</value>
+  </data>
+  <data name="PreferencesViewPython" xml:space="preserve">
+    <value>Python</value>
+  </data>
+  <data name="PreferencesViewRequiresRelaunchOfDynamo" xml:space="preserve">
+    <value>Requiere que se reinicie Dynamo.</value>
+  </data>
+  <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
+    <value>{0} presenta dependencias que entran en conflicto con los siguientes paquetes integrados: {1}. Los conflictos de dependencia podrían provocar un comportamiento no deseado.
+    
+¿Desea seguir intentando instalar {0}?</value>
+  </data>
+  <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
+    <value>{0} no puede instalarse porque entra en conflicto con una versión diferente del paquete integrado, {1}, que ya está instalado.
+    
+Puede intentar desactivar la carga de paquetes desde las rutas de paquetes integrados o descargar el paquete en conflicto y, a continuación, reiniciar {2} y descargar {0} de nuevo.</value>
+  </data>
+  <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
+    <value>The same version of package {0} is already installed as a built-in package and does not need to be installed again.</value>
+  </data>
+  <data name="MessageSamePackageSameVersInLocalPackages" xml:space="preserve">
+    <value>La misma versión de {0} ya está instalada y no es necesario instalarla de nuevo.</value>
+  </data>
+  <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
+    <value>El paquete {0} no se puede instalar porque entra en conflicto con una versión diferente, {1}, que ya está instalada. 
+
+¿Desea desinstalar {1}? Reinicie {2} para completar la desinstalación e intente descargar {0} de nuevo.</value>
+  </data>
+  <data name="PreferencesViewGeneralSettingsRun" xml:space="preserve">
+    <value>Parámetros de ejecución</value>
+  </data>
+  <data name="PreferencesViewGeneralSettingsGeoScaling" xml:space="preserve">
+    <value>Escala de geometría por defecto</value>
+  </data>
+  <data name="PreferencesViewGeneralSettingsBackup" xml:space="preserve">
+    <value>Parámetros de copia de seguridad</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsGroupStyles" xml:space="preserve">
+    <value>Grupos</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsRenderPrecision" xml:space="preserve">
+    <value>Precisión de renderización</value>
+  </data>
+  <data name="PreferencesViewAlreadyExistingStyleWarning" xml:space="preserve">
+    <value>Ya se está utilizando el nombre de estilo.</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsDisplaySettings" xml:space="preserve">
+    <value>Configuración de visualización</value>
+  </data>
+  <data name="PreferencesViewVisualSettingShowEdges" xml:space="preserve">
+    <value>Mostrar aristas</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsIsolateSelectedGeo" xml:space="preserve">
+    <value>Aislar geometría seleccionada</value>
+  </data>
+  <data name="PackagePathViewModel_BuiltInPackages" xml:space="preserve">
+    <value>Paquetes integrados de Dynamo</value>
+  </data>
+  <data name="PreferencesViewSavedChangesLabel" xml:space="preserve">
+    <value>Todos los cambios se han guardado automáticamente.</value>
+  </data>
+  <data name="PreferencesViewSavedChangesTooltip" xml:space="preserve">
+    <value>Guardado por última vez:</value>
+  </data>
+  <data name="NodeAutocompleteDocumentationUriString" xml:space="preserve">
+    <value>DynamoCoreWpf;NodeAutocompleteDocumentation.html</value>
+  </data>
+  <data name="FileTrustWarningDocumentationUriString" xml:space="preserve">
+    <value>DynamoCoreWpf;FileTrustWarningDocumentation.html</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteTooltipText" xml:space="preserve">
+    <value>Obtenga más información sobre la función Autocompletar nodo.</value>
+  </data>
+  <data name="AddStyleButton" xml:space="preserve">
+    <value>Añadir estilo</value>
+  </data>
+  <data name="ResetCPythonButtonText" xml:space="preserve">
+    <value>Restablecer CPython</value>
+  </data>
+  <data name="ResetCPythonButtonToolTip" xml:space="preserve">
+    <value>Restablece el entorno de CPython mediante la recarga de los módulos.</value>
+  </data>
+  <data name="GraphIssuesOnSave_CancelBtn" xml:space="preserve">
+    <value>Cancelar y mostrar incidencias</value>
+  </data>
+  <data name="GraphIssuesOnSave_Description" xml:space="preserve">
+    <value>Hay incidencias sin resolver en relación con el tipo de gráfico. Si este gráfico se ha diseñado para utilizarse fuera de Dynamo, resuelva todas las incidencias y guarde de nuevo el gráfico.</value>
+  </data>
+  <data name="GraphIssuesOnSave_ProceedBtn" xml:space="preserve">
+    <value>Guardar con incidencias</value>
+  </data>
+  <data name="GraphIssuesOnSave_Summary" xml:space="preserve">
+    <value>Está intentando guardar un gráfico con incidencias no resueltas.</value>
+  </data>
+  <data name="GraphIssuesOnSave_Title" xml:space="preserve">
+    <value>Incidencias de tipo de gráfico encontradas</value>
+  </data>
+  <data name="PackagePathsExpanderName" xml:space="preserve">
+    <value>Ubicaciones de archivo de nodos y paquetes</value>
+  </data>
+  <data name="PreferencesPackageManagerSettingsTab" xml:space="preserve">
+    <value>Configuración de paquetes</value>
+  </data>
+  <data name="PackagePathAddPathButtonName" xml:space="preserve">
+    <value>Añadir ruta</value>
+  </data>
+  <data name="PackagePathPreferencesTitle" xml:space="preserve">
+    <value>Rutas de búsqueda de paquete/biblioteca</value>
+  </data>
+  <data name="PreferencesViewShowRunPreviewTooltip" xml:space="preserve">
+    <value>Para previsualizar el estado de ejecución del gráfico, los cables conectados a los puertos que se verán afectados por una ejecución del gráfico se resaltarán en naranja. Solo está disponible cuando el espacio de trabajo actual se encuentra en el modo de ejecución Manual.</value>
+  </data>
+  <data name="PersistentVisualStatusOfLinterIssues" xml:space="preserve">
+    <value>Se han encontrado incidencias.</value>
+  </data>
+  <data name="ContextSelectConnectedDownstream" xml:space="preserve">
+    <value>Descendente</value>
+  </data>
+  <data name="ContextSelectConnectedHeader" xml:space="preserve">
+    <value>Seleccionar conectados</value>
+  </data>
+  <data name="ContextSelectConnectedUpstream" xml:space="preserve">
+    <value>Ascendente</value>
+  </data>
+  <data name="ContextSelectConnectedUpstreamDownstream" xml:space="preserve">
+    <value>Ambos</value>
+  </data>
+  <data name="NodeRenamedLabel" xml:space="preserve">
+    <value>Renombrado</value>
+  </data>
+  <data name="PackagePathProtected" xml:space="preserve">
+    <value>Esta ruta está integrada y no se puede modificar.</value>
+  </data>
+  <data name="PackagePathUpdatePathTooltip" xml:space="preserve">
+    <value>Editar ruta</value>
+  </data>
+  <data name="GetStartedGuide" xml:space="preserve">
+    <value>_Recorrido por la interfaz de usuario</value>
+  </data>
+  <data name="GetStartedGuideDescription" xml:space="preserve">
+    <value>Inicie el proceso de programación visual con esta breve guía. En ella, aprenderá algunos conceptos básicos sobre la interfaz y las funciones de Dynamo.</value>
+  </data>
+  <data name="OnboardingGuideDescription" xml:space="preserve">
+    <value>Obtenga más información sobre los componentes básicos de Dynamo. Practique con un gráfico.</value>
+  </data>
+  <data name="PackagesGuideDescription" xml:space="preserve">
+    <value>Un paquete es un conjunto de herramientas de utilidades que le permiten ir más allá de las función principal de Dynamo y hacer más con esta solución. En esta guía, se muestra cómo buscar, instalar y usar paquetes. Instala un paquete de ejemplo de Autodesk para que lo explore.</value>
+  </data>
+  <data name="InteractiveGuides" xml:space="preserve">
+    <value>_Guías interactivas</value>
+  </data>
+  <data name="GetStartedGuideLibraryText" xml:space="preserve">
+    <value>La biblioteca contiene todas las funciones por defecto #(nodos)=https://primer2.dynamobim.org/v/es/4_nodes_and_wires of Dynamo , así como los nodos personalizados que pueda haber cargado. \n\nPara localizar un nodo, busque en la biblioteca o examine sus categorías.</value>
+  </data>
+  <data name="GetStartedGuideLibraryTitle" xml:space="preserve">
+    <value>Biblioteca</value>
+  </data>
+  <data name="GetStartedGuidePreferencesText" xml:space="preserve">
+    <value>Utilice las Preferencias para personalizar su experiencia en Dynamo. \n\nPuede cambiar la configuración de idioma y de zona horaria, ajustar el estilo visual del espacio de trabajo, etc.</value>
+  </data>
+  <data name="GetStartedGuidePreferencesTitle" xml:space="preserve">
+    <value>Preferencias</value>
+  </data>
+  <data name="GetStartedGuideResourcesText" xml:space="preserve">
+    <value>Utilice el menú Ayuda para acceder a herramientas y recursos que le ayudarán a empezar. \n\nPuede elegir secuencias de comandos de ejemplo, examinar el diccionario de Dynamo, buscar otras guías, etc.</value>
+  </data>
+  <data name="GetStartedGuideResourcesTitle" xml:space="preserve">
+    <value>Recursos</value>
+  </data>
+  <data name="GetStartedGuideRunStatusBarText" xml:space="preserve">
+    <value>Utilice la barra de estado de ejecución para ejecutar un gráfico de Dynamo (una secuencia de comandos que contiene la lógica o el algoritmo). \n\nPuede seleccionar el tipo de ejecución que prefiera: -Automático: el gráfico se ejecuta cada vez que realiza un cambio.- -Manual: el gráfico se ejecuta solo cuando hace clic en Ejecutar.-</value>
+  </data>
+  <data name="GetStartedGuideRunStatusBarTitle" xml:space="preserve">
+    <value>Barra de estado de ejecución</value>
+  </data>
+  <data name="GetStartedGuideToolbarText" xml:space="preserve">
+    <value>En la barra de herramientas, puede realizar lo siguiente: -Abrir un nuevo espacio de trabajo.- -Abrir un archivo de Dynamo guardado.- -Guardar el archivo de Dynamo actual.- -Deshacer o rehacer cambios.-</value>
+  </data>
+  <data name="GetStartedGuideToolbarTitle" xml:space="preserve">
+    <value>Barra de herramientas</value>
+  </data>
+  <data name="GetStartedGuideWelcomeText" xml:space="preserve">
+    <value>Comience su recorrido por la programación visual con esta breve guía. \n\nAquí aprenderá algunos conceptos básicos sobre la interfaz y las funciones de Dynamo.</value>
+  </data>
+  <data name="GetStartedGuideWelcomeTitle" xml:space="preserve">
+    <value>Bienvenido a Dynamo</value>
+  </data>
+  <data name="ContextMenuGroups" xml:space="preserve">
+    <value>Grupos</value>
+  </data>
+  <data name="ContextPinToNode" xml:space="preserve">
+    <value>Bloquear en nodo</value>
+  </data>
+  <data name="GetStartedGuideRatingTextTitle" xml:space="preserve">
+    <value>Valorar esta guía</value>
+  </data>
+  <data name="GetStartedGuideSurveyText" xml:space="preserve">
+    <value>Obtenga más información sobre Dynamo en #ayuda en línea=https://primer2.dynamobim.org/v/es/</value>
+  </data>
+  <data name="GetStartedGuideSurveyTitle" xml:space="preserve">
+    <value>Finalizado</value>
+  </data>
+  <data name="GroupDefaultText" xml:space="preserve">
+    <value>Descripción &lt;Haga doble clic aquí para editar la descripción del grupo&gt;</value>
+  </data>
+  <data name="GroupNameDefaultText" xml:space="preserve">
+    <value>Title &lt;Click here to edit the group title&gt;</value>
+  </data>
+  <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
+    <value>Añadir grupo a este grupo</value>
+  </data>
+  <data name="NodeInformationalStateDismiss" xml:space="preserve">
+    <value>Descartar</value>
+  </data>
+  <data name="NodeInformationalStateShowAllInfo" xml:space="preserve">
+    <value>Mostrar toda la información</value>
+  </data>
+  <data name="NodeInformationalStateShowAllWarnings" xml:space="preserve">
+    <value>Mostrar todas las advertencias</value>
+  </data>
+  <data name="NodeInformationalStateShowAllErrors" xml:space="preserve">
+    <value>Mostrar todos los errores</value>
+  </data>
+  <data name="NodeInformationalStateShowLess" xml:space="preserve">
+    <value>Mostrar menos</value>
+  </data>
+  <data name="NodeInformationalStateDismissAll" xml:space="preserve">
+    <value>Descartar todo</value>
+  </data>
+  <data name="NodeInfoDismissButtonToolTip" xml:space="preserve">
+    <value>Descarta los mensajes de información de este nodo. Utilice esta opción cuando desee diseñar sin tener en cuenta los errores del gráfico o el mensaje de información no sea pertinente durante la ejecución del gráfico.</value>
+  </data>
+  <data name="NodeWarningDismissButtonToolTip" xml:space="preserve">
+    <value>Descarta los mensajes de advertencia en este nodo. Utilice esta opción cuando desee diseñar sin tener en cuenta los errores del gráfico o cuando el mensaje de advertencia no sea pertinente durante la ejecución del gráfico.</value>
+  </data>
+  <data name="BreakConnectionsPopupMenuItem" xml:space="preserve">
+    <value>Interrumpir conexiones</value>
+  </data>
+  <data name="RenamePortPopupMenuItem" xml:space="preserve">
+    <value>Editar propiedades del puerto</value>
+  </data>
+  <data name="HideWiresPopupMenuItem" xml:space="preserve">
+    <value>Ocultar cables</value>
+  </data>
+  <data name="ShowWiresPopupMenuItem" xml:space="preserve">
+    <value>Mostrar cables</value>
+  </data>
+  <data name="ExitTourWindowContent" xml:space="preserve">
+    <value>Puede volver a esta guía más adelante desde el menú Ayuda.</value>
+  </data>
+  <data name="PackageStatePendingUnload" xml:space="preserve">
+    <value>Anulación de carga programada</value>
+  </data>
+  <data name="PackageStateError" xml:space="preserve">
+    <value>Error</value>
+  </data>
+  <data name="PackageStateLoaded" xml:space="preserve">
+    <value>Cargado</value>
+  </data>
+  <data name="PackageStateUnloaded" xml:space="preserve">
+    <value>No cargado</value>
+  </data>
+  <data name="PackageStateScheduledForDeletion" xml:space="preserve">
+    <value>Programado para supresión</value>
+  </data>
+  <data name="PackageStateScheduledForUnload" xml:space="preserve">
+    <value>Programado para descarga</value>
+  </data>
+  <data name="PackageStateErrorTooltip" xml:space="preserve">
+    <value>Error.
+Este paquete no se ha cargado debido al siguiente error:
+{0}.</value>
+  </data>
+  <data name="PackageStateLoadedTooltip" xml:space="preserve">
+    <value>Cargado.
+Este paquete se ha cargado y está listo para su uso.</value>
+  </data>
+  <data name="PackageStateUnloadedTooltip" xml:space="preserve">
+    <value>Descargado.
+Este paquete se ha marcado como descargado.</value>
+  </data>
+  <data name="PackageStateScheduledForDeletionTooltip" xml:space="preserve">
+    <value>Programado para supresión.
+Este paquete se suprimirá después del siguiente reinicio de Dynamo.</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageText" xml:space="preserve">
+    <value>Suprimir</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageTooltip" xml:space="preserve">
+    <value>Suprima este paquete de las ubicaciones de paquetes de Dynamo. Una vez suprimido, ya no se cargará en Dynamo hasta que se vuelva a instalar.</value>
+  </data>
+  <data name="PackageContextMenuUnloadPackageText" xml:space="preserve">
+    <value>Descargar</value>
+  </data>
+  <data name="PackageContextMenuUnloadPackageTooltip" xml:space="preserve">
+    <value>Descargue este paquete para que no se cargue en Dynamo. El paquete no se eliminará de las ubicaciones de paquetes de Dynamo.</value>
+  </data>
+  <data name="PackageContextMenuUnmarkDeletePackageText" xml:space="preserve">
+    <value>Cancelar supresión</value>
+  </data>
+  <data name="PackageContextMenuUnmarkDeletePackageTooltip" xml:space="preserve">
+    <value>Eliminar el estado de supresión programada</value>
+  </data>
+  <data name="PackageContextMenuUnmarkUnloadPackageText" xml:space="preserve">
+    <value>Cancelar descarga</value>
+  </data>
+  <data name="PackageContextMenuUnmarkUnloadPackageTooltip" xml:space="preserve">
+    <value>Eliminar el estado de descarga programada</value>
+  </data>
+  <data name="PackageViewContextMenuLoadText" xml:space="preserve">
+    <value>Cargar</value>
+  </data>
+  <data name="PackageViewContextMenuLoadTooltip" xml:space="preserve">
+    <value>Cargue este paquete en Dynamo. Se suprimirán automáticamente otros paquetes con el mismo nombre.</value>
+  </data>
+  <data name="CannotLoadPackageMessageBoxTitle" xml:space="preserve">
+    <value>No se puede cargar el paquete</value>
+  </data>
+  <data name="MessageLoadBuiltInPackage" xml:space="preserve">
+    <value>Para cargar el paquete integrado {1}, {0} debe suprimir primero los paquetes en conflicto.
+
+¿Desea suprimir los siguientes paquetes {2}?</value>
+  </data>
+  <data name="MessageLoadBuiltInWithRestartPackage" xml:space="preserve">
+    <value>Para cargar el paquete integrado {1}, {0} debe suprimir primero los paquetes en conflicto.
+Reinicie {0} para completar la supresión y, a continuación, intente cargar de nuevo el paquete integrado.
+
+¿Desea suprimir los siguientes paquetes {2}?
+    </value>
+  </data>
+  <data name="GraphIssuesOnSavePath_Description" xml:space="preserve">
+    <value>La ruta de ubicación de almacenamiento seleccionada es demasiado larga. Cambie la ubicación de almacenamiento e inténtelo de nuevo.</value>
+  </data>
+  <data name="GraphIssuesOnSavePath_Summary" xml:space="preserve">
+    <value>Está intentando guardar un gráfico con una ruta demasiado larga.</value>
+  </data>
+  <data name="GraphIssuesOnSavePath_Title" xml:space="preserve">
+    <value>Se han encontrado problemas de ruta de almacenamiento</value>
+  </data>
+  <data name="MessageNeedToRestartAfterUnload" xml:space="preserve">
+    <value>{0} y su aplicación host deben reiniciarse antes de que se aplique la descarga.</value>
+  </data>
+  <data name="MessageNeedToRestartAfterUnloadTitle" xml:space="preserve">
+    <value>Descarga del paquete</value>
+  </data>
+  <data name="MessageFailedToUnload" xml:space="preserve">
+    <value>{0} no ha podido descargar el paquete.</value>
+  </data>
+  <data name="UnloadFailureMessageBoxTitle" xml:space="preserve">
+    <value>Error al descargar</value>
+  </data>
+  <data name="DynamoViewViewMenuConnectorShowTooltip" xml:space="preserve">
+    <value>Mostrar _información de herramientas</value>
+  </data>
+  <data name="NodeInformationalStateDismissedAlerts" xml:space="preserve">
+    <value>Alertas descartadas</value>
+  </data>
+  <data name="ContextMenu" xml:space="preserve">
+    <value>Opciones de nodo</value>
+  </data>
+  <data name="NodeAutocomplete" xml:space="preserve">
+    <value>Ordenar resultados por</value>
+  </data>
+  <data name="PackageFilter_Name_All" xml:space="preserve">
+    <value>Todo</value>
+  </data>
+  <data name="PackageSearchHeader" xml:space="preserve">
+    <value>Buscar paquetes</value>
+  </data>
+  <data name="DisablePackageInstallIconTooltip" xml:space="preserve">
+    <value>Todas las rutas de paquetes personalizadas se han desactivado en Preferencias. Los paquetes no se podrán instalar a menos que se vuelvan a activar.</value>
+  </data>
+  <data name="DisableBuiltInPackageToggleInfo" xml:space="preserve">
+    <value>Si el conmutador está activado, los paquetes integrados no se cargarán al reiniciar. Los paquetes integrados que estén cargados actualmente se descargarán al reiniciar. 
+Si el conmutador está desactivado, los paquetes integrados que aún no estén cargados se cargarán una vez cerrado el cuadro de diálogo de preferencias.</value>
+  </data>
+  <data name="DisableCustomPackageToggleInfo" xml:space="preserve">
+    <value>Si el conmutador está activado, los paquetes personalizados no se cargarán al reiniciar. Los paquetes personalizados que estén cargados actualmente se descargarán al reiniciar. 
+Si el conmutador está desactivado, los paquetes personalizados que aún no estén cargados se cargarán una vez cerrado el cuadro de diálogo de preferencias.</value>
+  </data>
+  <data name="PackageSearchSortBy" xml:space="preserve">
+    <value>ORDENAR POR</value>
+  </data>
+  <data name="PackageSearchResultViewDetails" xml:space="preserve">
+    <value>Información</value>
+  </data>
+  <data name="PackageSearchResultRequirements" xml:space="preserve">
+    <value>Requisitos</value>
+  </data>
+  <data name="PackageSearchOrder" xml:space="preserve">
+    <value>ORDEN</value>
+  </data>
+  <data name="PreferencesViewShowPreviewBubbles" xml:space="preserve">
+    <value>Mostrar burbujas de vista previa</value>
+  </data>
+  <data name="PreferencesUseHostScaleUnits" xml:space="preserve">
+    <value>Utilice Revit para ajustar la escala de las ayudas gráficas de fondo.</value>
+  </data>
+  <data name="PreferencesUseHostScaleUnitsToolTip" xml:space="preserve">
+    <value>When toggled on, the current Host document units will be used to scale the background graphic helpers (grids, axes). Otherwise, the Graphic Elements Scale drop-down will determine scale.</value>
+  </data>
+  <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="PublishPackageVersionMinorWatermark" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="PublishPackageVersionBuildWatermark" xml:space="preserve">
+    <value>0</value>
+  </data>
+  <data name="PublishPackageViewPackageDescription" xml:space="preserve">
+    <value>Descripción</value>
+  </data>
+  <data name="PublishPackageViewPackageNameWatermark" xml:space="preserve">
+    <value>Nombre del paquete</value>
+  </data>
+  <data name="PackageStateScheduledForUnloadTooltip" xml:space="preserve">
+    <value>Programado para descarga.
+Este paquete se descargará después del siguiente reinicio de Dynamo.</value>
+  </data>
+  <data name="PublishPackageGroupWatermark" xml:space="preserve">
+    <value>Grupo</value>
+  </data>
+  <data name="PublishPackageKeywordsWatermark" xml:space="preserve">
+    <value>Palabras clave</value>
+  </data>
+  <data name="PublishPackageViewLicenseSubLabel" xml:space="preserve">
+    <value>Applies to the latest package version. If blank, the package will be licensed under </value>
+  </data>
+  <data name="PublishPackageViewLicenseWatermark" xml:space="preserve">
+    <value>Licencia</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolder" xml:space="preserve">
+    <value>Titular del copyright (opcional)</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderWatermark" xml:space="preserve">
+    <value>Nombre del autor</value>
+  </data>
+  <data name="PublishPackageViewCopyrightHolderSubLabel" xml:space="preserve">
+    <value>Si se deja en blanco, el valor por defecto es el nombre de usuario.</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYear" xml:space="preserve">
+    <value>Año de copyright (opcional)</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearWatermark" xml:space="preserve">
+    <value>Año de publicación</value>
+  </data>
+  <data name="PublishPackageViewCopyrightYearSubLabel" xml:space="preserve">
+    <value>Si se deja en blanco, el valor por defecto es el año de publicación.</value>
+  </data>
+  <data name="PublishPackageViewRepositoryUrlWatermark" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebSite" xml:space="preserve">
+    <value>URL de sitio web (opcional)</value>
+  </data>
+  <data name="PublishPackageViewPublisherWebSiteWatermark" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="PublishPackageViewAddDirectoryButton" xml:space="preserve">
+    <value>Añadir directorio</value>
+  </data>
+  <data name="PublishPackageViewAddDirectoryButtonTooltip" xml:space="preserve">
+    <value>Añadir carpeta</value>
+  </data>
+  <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
+    <value>Ruta de archivos de anotaciones (opcional)</value>
+  </data>
+  <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
+    <value>Una ubicación opcional para documentar el paquete en formato de anotación.</value>
+  </data>
+  <data name="PublishPackageViewResetMarkdownDirectoryButton" xml:space="preserve">
+    <value>Restablecer</value>
+  </data>
+  <data name="PublishPackageViewResetMarkdownDirectoryButtonToolTip" xml:space="preserve">
+    <value>Borra el directorio de anotaciones de este paquete.</value>
+  </data>
+  <data name="PublishPackageViewRemoveItemToolTip" xml:space="preserve">
+    <value>Elimina este elemento de la lista de contenido del paquete.</value>
+  </data>
+  <data name="PublishPackageExternalPackageDependencies" xml:space="preserve">
+    <value>Dependencias de paquetes externos</value>
+  </data>
+  <data name="PreferencesViewMarkdownDirectoryTooltip" xml:space="preserve">
+    <value>La documentación de anotaciones se puede añadir al paquete para que el Navegador de documentación muestre la información generada por el autor en cada nodo.</value>
+  </data>
+  <data name="PublishPackageViewPublisherURLWatermark" xml:space="preserve">
+    <value>URL</value>
+  </data>
+  <data name="PackagesGuide" xml:space="preserve">
+    <value>_Paquetes</value>
+  </data>
+  <data name="PackagesGuideLearnAbout" xml:space="preserve">
+    <value>Más información sobre los paquetes</value>
+  </data>
+  <data name="NodeAutoCompleteNotAvailableForCollapsedGroups" xml:space="preserve">
+    <value>La función Autocompletar nodo no está disponible en los puertos que pertenecen a grupos contraídos.</value>
+  </data>
+  <data name="PackageManagerInstall" xml:space="preserve">
+    <value>Instalar</value>
+  </data>
+  <data name="PackageManagerPackageUpdated" xml:space="preserve">
+    <value>Actualizado</value>
+  </data>
+  <data name="PackageManagerPackageNew" xml:space="preserve">
+    <value>Nuevo</value>
+  </data>
+  <data name="PackageManagerMyPackagesControlName" xml:space="preserve">
+    <value>packageManagerMyPackages</value>
+  </data>
+  <data name="PackageManagerSearchTab" xml:space="preserve">
+    <value>Buscar paquetes</value>
+  </data>
+  <data name="PackageManagerPublishTab" xml:space="preserve">
+    <value>Publicar un paquete</value>
+  </data>
+  <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
+    <value>Virus scan in progress. Your package will be searchable in a few minutes.</value>
+  </data>
+  <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
+    <value>Paquetes instalados</value>
+  </data>
+  <data name="PackageManagerMyPackagesTab" xml:space="preserve">
+    <value>Mis paquetes</value>
+  </data>
+  <data name="PackageManagerPackageSettingsTab" xml:space="preserve">
+    <value>Configuración de paquetes</value>
+  </data>
+  <data name="PackageManagerTitle" xml:space="preserve">
+    <value>Package Manager</value>
+  </data>
+  <data name="PackageManagerLoadingTimedOutWarningMessage" xml:space="preserve">
+    <value>La carga de paquetes está tardando más de lo esperado. Espere o reinicie Package Manager.</value>
+  </data>
+  <data name="PackagerManageNoInstalledPackagesMessage" xml:space="preserve">
+    <value>Aún no tiene ningún paquete instalado.</value>
+  </data>
+  <data name="PackageManagerNoInstalledPackagesSubMessage" xml:space="preserve">
+    <value>Una vez que instale un paquete, podrá encontrarlo aquí.</value>
+  </data>
+  <data name="PackagerManageUserNotSignedPackagesMessage" xml:space="preserve">
+    <value>Inicie sesión en su cuenta de Dynamo para ver los paquetes publicados.</value>
+  </data>
+  <data name="PackageManagerUserNotSignedPackagesSubMessage" xml:space="preserve">
+    <value>Una vez que haya iniciado sesión, encontrará aquí los paquetes publicados.</value>
+  </data>
+  <data name="PackageManagerSearchPackagesButton" xml:space="preserve">
+    <value>Buscar paquetes</value>
+  </data>
+  <data name="PackagerManageNoPublishedPackagesMessage" xml:space="preserve">
+    <value>Aún no ha publicado ningún paquete.</value>
+  </data>
+  <data name="PackagerManageNoPublishedPackagesSubMessage" xml:space="preserve">
+    <value>Una vez que publique un paquete, podrá encontrarlo aquí.</value>
+  </data>
+  <data name="PackageManagerPublishPackageButton" xml:space="preserve">
+    <value>Publicar un paquete</value>
+  </data>
+  <data name="PackageManagerSettingsRunPrefix" xml:space="preserve">
+    <value>Edite la configuración de paquetes en </value>
+  </data>
+  <data name="PackageManagerSettingsHyperlink" xml:space="preserve">
+    <value>Preferencias</value>
+  </data>
+  <data name="PackageDetailsDescription" xml:space="preserve">
+    <value>DESCRIPCIÓN</value>
+  </data>
+  <data name="PackageDetailsLicense" xml:space="preserve">
+    <value>LICENCIA DEL PAQUETE MÁS RECIENTE</value>
+  </data>
+  <data name="PackageDetailsVersionsAndPackageRequirements" xml:space="preserve">
+    <value>VERSIONES Y REQUISITOS DE PAQUETES</value>
+  </data>
+  <data name="PackageDetailsVersions" xml:space="preserve">
+    <value>Versiones</value>
+  </data>
+  <data name="PackageDetailsHost" xml:space="preserve">
+    <value>Anfitrión</value>
+  </data>
+  <data name="PackageDetailsPython" xml:space="preserve">
+    <value>Python</value>
+  </data>
+  <data name="PackageDetailsCopyRightHolder" xml:space="preserve">
+    <value>Titular del copyright</value>
+  </data>
+  <data name="PackageDetailsCopyRightYear" xml:space="preserve">
+    <value>Año de copyright</value>
+  </data>
+  <data name="PackageDetailsPackage" xml:space="preserve">
+    <value>Paquete</value>
+  </data>
+  <data name="PackageSortToolTip" xml:space="preserve">
+    <value>Ordene los paquetes.</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderHideConnector" xml:space="preserve">
+    <value>Ocultar cable</value>
+  </data>
+  <data name="PackagesGuideFindPackageText" xml:space="preserve">
+    <value>Los paquetes proporcionan funciones adicionales que se pueden utilizar en Dynamo. \n\nPara buscar un paquete o ver lo que está disponible, \n**Haga clic en Paquetes &gt; Package Manager...**.</value>
+  </data>
+  <data name="PackagesGuideFindPackageTitle" xml:space="preserve">
+    <value>Buscar un paquete</value>
+  </data>
+  <data name="PackagesGuideSearchFilterText" xml:space="preserve">
+    <value>\nPuede buscar paquetes cuyo título, autor o palabras clave contengan la frase de búsqueda. Para filtrar y ordenar los resultados, utilice los iconos situados junto a la barra de búsqueda.</value>
+  </data>
+  <data name="PackagesGuideSearchFilterTitle" xml:space="preserve">
+    <value>Buscar, filtrar y ordenar</value>
+  </data>
+  <data name="PackagesGuideTermsOfServiceText" xml:space="preserve">
+    <value>Los paquetes pueden provenir de terceros. Tenga en cuenta que los paquetes pueden suponer riesgos de seguridad. #Más información=https://dynamobim.org/issues/extend-dynamo-with-packages \n\n**Haga clic en Acepto** en los Términos del servicio para aceptarlo y continuar con esta guía.</value>
+  </data>
+  <data name="PackagesGuideTermsOfServiceTitle" xml:space="preserve">
+    <value>Aceptar los Términos del servicio</value>
+  </data>
+  <data name="PackagesGuideThirdPartyText" xml:space="preserve">
+    <value>Los paquetes pueden provenir de terceros. Tenga en cuenta que los paquetes pueden suponer riesgos de seguridad. #Más información=https://dynamobim.org/issues/extend-dynamo-with-packages/</value>
+  </data>
+  <data name="PackagesGuideThirdPartyTitle" xml:space="preserve">
+    <value>Paquetes de terceros</value>
+  </data>
+  <data name="GenericTaskDialogOptionYes" xml:space="preserve">
+    <value>Sí</value>
+  </data>
+  <data name="GenericTaskDialogOptionNo" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="GenericTaskDialogOptionOK" xml:space="preserve">
+    <value>Aceptar</value>
+  </data>
+  <data name="GenericTaskDialogOptionCancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="WorkspaceTabSavingUnnecessary" xml:space="preserve">
+    <value>No es necesario guardar.</value>
+  </data>
+  <data name="WorkspaceTabSavingNecessary" xml:space="preserve">
+    <value>Debe guardar las actualizaciones de este archivo.</value>
+  </data>
+  <data name="WorkspaceTabSavingBrandNewFile" xml:space="preserve">
+    <value>Este es un archivo totalmente nuevo.</value>
+  </data>
+  <data name="WorkspaceTabNotSavedYet" xml:space="preserve">
+    <value>Aún no ha guardado este archivo.</value>
+  </data>
+  <data name="ScriptTagsRemovalWarning" xml:space="preserve">
+    <value>Se han eliminado las etiquetas de secuencias de comandos detectadas en el documento de ayuda.</value>
+  </data>
+  <data name="PackagesGuideContinueButton" xml:space="preserve">
+    <value>Continuar</value>
+  </data>
+  <data name="PackagesGuideExitButton" xml:space="preserve">
+    <value>Salir</value>
+  </data>
+  <data name="ShortcutExportAsImageMainMenu" xml:space="preserve">
+    <value>Exportar como imagen</value>
+  </data>
+  <data name="ShortcutExportBackground3DPreview" xml:space="preserve">
+    <value>Vista preliminar 3D en segundo plano</value>
+  </data>
+  <data name="ShortcutExportWorkspace" xml:space="preserve">
+    <value>Espacio de trabajo</value>
+  </data>
+  <data name="PackagesGuideExitAcceptTerms" xml:space="preserve">
+    <value>Para continuar con la guía e instalar el paquete de ejemplo, debe aceptar los Términos del servicio. \n\n **Haga clic en Continuar.** A continuación, en los términos, **haga clic en Acepto.** \n\n\n\n</value>
+  </data>
+  <data name="PackagesGuideExitTitle" xml:space="preserve">
+    <value>¿Desea salir de la guía?</value>
+  </data>
+  <data name="InfoBubbleInfo" xml:space="preserve">
+    <value>Información</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="PackagesGuideInstallAPackageText" xml:space="preserve">
+    <value>Las instalaciones de paquetes suelen ser rápidas en función de su tamaño y otros factores. \n\n**Haga clic en Instalar** para instalar la versión más reciente del paquete de Autodesk de muestra y continuar con esta guía.</value>
+  </data>
+  <data name="PackagesGuideInstallAPackageTitle" xml:space="preserve">
+    <value>Instalar un paquete</value>
+  </data>
+  <data name="PackagesGuideInstalledPackageText" xml:space="preserve">
+    <value>Las instalaciones de paquetes suelen ser rápidas en función de su tamaño y otros factores. \n
+Para instalar la versión más reciente de un paquete, haga clic en Instalar. \n
+%./UI/Images/alert.png% El paquete de muestra de Autodesk ya se ha instalado en el equipo.</value>
+  </data>
+  <data name="PackagesGuideDependenciesText" xml:space="preserve">
+    <value>\nSi necesita otro software o herramientas para utilizar este paquete, estos se muestran en Versiones y requisitos de paquetes.</value>
+  </data>
+  <data name="PackagesGuideDependenciesTitle" xml:space="preserve">
+    <value>Dependencias de paquetes</value>
+  </data>
+  <data name="PackagesGuideSearchResultsText" xml:space="preserve">
+    <value>\nLos resultados de la búsqueda presentan información de resumen de cada paquete: -Autor- -Me gusta y descargas- -Fecha de la versión más reciente- \n**Haga clic en Ver detalles** para ver más información sobre un paquete.</value>
+  </data>
+  <data name="PackagesGuideSearchResultsTitle" xml:space="preserve">
+    <value>Resultados de búsqueda</value>
+  </data>
+  <data name="PackageContextMenuDeletePackageCustomNodesInUseTooltip" xml:space="preserve">
+    <value>Este paquete contiene nodos personalizados en uso. Estos deben eliminarse o el gráfico debe cerrarse antes de poder suprimir el paquete.</value>
+  </data>
+  <data name="PackagesGuideNavigatePackagesText" xml:space="preserve">
+    <value>\nWhen you install a package, it appears in the library under Add-ons.  \n\n**Click to expand the package** so you can see its nodes (functions).</value>
+  </data>
+  <data name="PackagesGuideNavigatePackagesTitle" xml:space="preserve">
+    <value>Desplazarse a los paquetes</value>
+  </data>
+  <data name="PackagesGuideSurveyText" xml:space="preserve">
+    <value>Obtenga más información sobre los paquetes en la #ayuda en línea=https://dynamobim.org/issues/extend-dynamo-with-packages</value>
+  </data>
+  <data name="PackagesGuideSurveyTitle" xml:space="preserve">
+    <value>Finalizado</value>
+  </data>
+  <data name="PackagesGuideUsePackageText" xml:space="preserve">
+    <value>Para obtener información sobre cómo utilizar nodos en un paquete, coloque el cursor sobre un nodo para ver la descripción. Para agregar un nodo al área de trabajo, haga clic en su nombre en la lista.</value>
+  </data>
+  <data name="PackagesGuideUsePackageTitle" xml:space="preserve">
+    <value>Utilizar nodos de paquete</value>
+  </data>
+  <data name="ConfigureADPButtonText" xml:space="preserve">
+    <value>Configurar el programa de análisis de Autodesk</value>
+  </data>
+  <data name="ContinueInstall" xml:space="preserve">
+    <value>Continuar con la instalación</value>
+  </data>
+  <data name="UninstallLoadedPackages" xml:space="preserve">
+    <value>Desinstalar paquetes cargados</value>
+  </data>
+  <data name="UninstallLoadedPackage" xml:space="preserve">
+    <value>Desinstalar paquete cargado</value>
+  </data>
+  <data name="PackagesGuidePackagesNodeTitle" xml:space="preserve">
+    <value>Utilizar nodos de paquete</value>
+  </data>
+  <data name="PublishPackageViewFilePath" xml:space="preserve">
+    <value>Ruta de archivo</value>
+  </data>
+  <data name="PublishPackageViewNodeLibrary" xml:space="preserve">
+    <value>Biblioteca de nodos</value>
+  </data>
+  <data name="PublishPackageRetainFolderStructureTooltip" xml:space="preserve">
+    <value>Si esta opción está habilitada, se conservará la estructura de carpetas de los archivos cargados. De lo contrario, los archivos se incluirán en carpetas predefinidas.
+
+Nota: Una estructura de carpetas incorrecta puede afectar a la funcionalidad de los paquetes que dependen de la organización de archivos correcta. En caso de duda, desactive esta opción.
+    </value>
+  </data>
+  <data name="PublishPackageNodeLibraryTooltip" xml:space="preserve">
+    <value>Archivo DLL que contiene los tipos y métodos que Dynamo importa como nodos. Marque los archivos DLL de ZeroTouch, NodeModel o NodeViewCustomization y los tipos que desea importar en Dynamo como bibliotecas de nodos.</value>
+  </data>
+  <data name="NodeTooltipRenamed" xml:space="preserve">
+    <value>Renombrado desde {0}</value>
+  </data>
+  <data name="WorkspaceTabTooltipHeaderUnsaved" xml:space="preserve">
+    <value>Sin guardar</value>
+  </data>
+  <data name="TourLabelProgressText" xml:space="preserve">
+    <value>de</value>
+  </data>
+  <data name="StartTourButtonText" xml:space="preserve">
+    <value>Iniciar visita</value>
+  </data>
+  <data name="ContextUnpinFromNode" xml:space="preserve">
+    <value>Desbloquear del nodo</value>
+  </data>
+  <data name="UnpinNodeTooltip" xml:space="preserve">
+    <value>Desbloquear esta nota del nodo</value>
+  </data>
+  <data name="PreferencesViewVisualSettingsGroupStyleInput" xml:space="preserve">
+    <value>Nombre de estilo</value>
+  </data>
+  <data name="PreferencesViewEmptyStyleWarning" xml:space="preserve">
+    <value>Introduzca un nombre válido.</value>
+  </data>
+  <data name="GroupStyleContextAnnotation" xml:space="preserve">
+    <value>Estilo de grupo</value>
+  </data>
+  <data name="ContextPinToNodeTooltip" xml:space="preserve">
+    <value>Seleccione un nodo que anclar a esta nota.</value>
+  </data>
+  <data name="GroupStylesCancelButtonText" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="GroupStylesSaveButtonText" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="OnboardingGuide" xml:space="preserve">
+    <value>_Para empezar</value>
+  </data>
+  <data name="OnboardingGuideWelcomeTitle" xml:space="preserve">
+    <value>Empezar a trabajar con Dynamo</value>
+  </data>
+  <data name="OnboardingGuideSurveyText" xml:space="preserve">
+    <value>Ha finalizado la guía de introducción.</value>
+  </data>
+  <data name="OnboardingWorkspaceText" xml:space="preserve">
+    <value>Este es el espacio de trabajo, donde se desarrollan programas visuales y se obtiene una vista preliminar de los resultados. \n\nCada programa visual es impulsado por un **gráfico** . Los gráficos pueden procesar datos, crear geometría y mucho más. En esta guía, trabajaremos con un gráfico de ejemplo.</value>
+  </data>
+  <data name="OnboardingWorkspaceTitle" xml:space="preserve">
+    <value>Espacio de trabajo</value>
+  </data>
+  <data name="GetStartedLinkText" xml:space="preserve">
+    <value>Primeros pasos</value>
+  </data>
+  <data name="NextGuideText" xml:space="preserve">
+    <value>Siguiente guía: </value>
+  </data>
+  <data name="GroupContextMenuColor" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="RunCompletedWithErrorsMessage" xml:space="preserve">
+    <value>Ejecución completada con errores.</value>
+  </data>
+  <data name="RunCompletedWithScaleChangeAndErrorsMessage" xml:space="preserve">
+    <value>Ejecución finalizada con errores al establecer el nuevo rango de trabajo.</value>
+  </data>
+  <data name="RunReady" xml:space="preserve">
+    <value>Listo para ejecutarse.</value>
+  </data>
+  <data name="PreferencesSecuritySettingsTab" xml:space="preserve">
+    <value>Seguridad</value>
+  </data>
+  <data name="PreferencesViewTrustWarningHeader" xml:space="preserve">
+    <value>Advertencia de confianza</value>
+  </data>
+  <data name="PreferencesViewTrustWarningLabel" xml:space="preserve">
+    <value>Desactivar advertencia de confianza</value>
+  </data>
+  <data name="PreferencesViewTrustWarningTooltipText" xml:space="preserve">
+    <value>Esto se aplica a Dynamo, el Reproductor de Dynamo y el Reproductor de Diseño generativo. Recomendamos mantener esta opción desactivada para evitar abrir accidentalmente un archivo desde una ubicación que no es de confianza.</value>
+  </data>
+  <data name="SecurityPathAddPathButtonName" xml:space="preserve">
+    <value>Añadir ruta</value>
+  </data>
+  <data name="SecurityWarningExpanderName" xml:space="preserve">
+    <value>Advertencia</value>
+  </data>
+  <data name="TrustedPathsExpanderName" xml:space="preserve">
+    <value>Ubicaciones de archivo de confianza</value>
+  </data>
+  <data name="ZoomLevel" xml:space="preserve">
+    <value>0.4</value>
+  </data>
+  <data name="OnboardingNodesText" xml:space="preserve">
+    <value>Los nodos son los bloques de creación de los gráficos y realizan operaciones como, por ejemplo, almacenar un número o crear geometría.\n\nPara obtener más información sobre un nodo, coloque el cursor sobre una de sus piezas. A este nodo le falta una entrada.\n\nColoque el cursor sobre el puerto de entrada para ver los tipos de datos que acepta.</value>
+  </data>
+  <data name="OnboardingNodesTitle" xml:space="preserve">
+    <value>Nodos</value>
+  </data>
+  <data name="OnboardingGuideWelcomeText" xml:space="preserve">
+    <value>Obtenga más información sobre los componentes básicos de Dynamo. Practique con un gráfico.</value>
+  </data>
+  <data name="OnboardingPlaceNodeText" xml:space="preserve">
+    <value>La biblioteca contiene los nodos utilizados para generar gráficos. Para localizar un nodo, puede buscar en la biblioteca o examinar sus categorías.
+
+Para colocar un nodo de la biblioteca en el espacio de trabajo, haga clic en el nodo.
+
+Pruebe a colocar el nodo resaltado **ByOrigin** .</value>
+  </data>
+  <data name="OnboardingPlaceNodeTitle" xml:space="preserve">
+    <value>Colocación de nodos</value>
+  </data>
+  <data name="OnboardingGuideConnectNodesText" xml:space="preserve">
+    <value>Este nuevo nodo debe estar conectado a otro para que forme parte del gráfico. Inténtelo y, a continuación, haga clic en la flecha Siguiente.</value>
+  </data>
+  <data name="OnboardingGuideConnectNodesTitle" xml:space="preserve">
+    <value>Conectar los nodos</value>
+  </data>
+  <data name="OnboardingGuideRunGraphText" xml:space="preserve">
+    <value>Vamos a ejecutar el gráfico y ver los resultados de los ajustes realizados. Haga clic en Ejecutar.</value>
+  </data>
+  <data name="OnboardingGuideRunGraphTitle" xml:space="preserve">
+    <value>Ejecutar el gráfico</value>
+  </data>
+  <data name="FileTrustWarningCheckBoxText" xml:space="preserve">
+    <value>Confiar en la ubicación de este archivo en el futuro.</value>
+  </data>
+  <data name="FileTrustWarningPopupNoCloseFile" xml:space="preserve">
+    <value>No, cerrar archivo.</value>
+  </data>
+  <data name="DiscardChangesWarningPopupCaption" xml:space="preserve">
+    <value>¿Descartar cambios?</value>
+  </data>
+  <data name="DiscardChangesWarningPopupMessage" xml:space="preserve">
+    <value>Si sale de la pantalla de carga de paquetes, se perderán los cambios.</value>
+  </data>
+  <data name="FileTrustWarningPopupSettings" xml:space="preserve">
+    <value>Configuración</value>
+  </data>
+  <data name="FileTrustWarningPopupText" xml:space="preserve">
+    <value>Este archivo se ha almacenado en una ubicación que no es de confianza. ¿Desea abrirlo?</value>
+  </data>
+  <data name="FileTrustWarningPopupTitle" xml:space="preserve">
+    <value>¿Abrir archivo externo?</value>
+  </data>
+  <data name="FileTrustWarningPopupTooltip1" xml:space="preserve">
+    <value>El contenido externo puede poner en riesgo la seguridad del sistema.</value>
+  </data>
+  <data name="FileTrustWarningPopupTooltip2" xml:space="preserve">
+    <value>La ubicación actual del archivo se añadirá a las ubicaciones de confianza.
+Puede administrar esto en Preferencias - &gt; Seguridad.</value>
+  </data>
+  <data name="FileTrustWarningPopupYes" xml:space="preserve">
+    <value>Sí</value>
+  </data>
+  <data name="DynamoViewRunButtonToolTipDisabledFileTrust" xml:space="preserve">
+    <value>La ejecución del gráfico se suspenderá hasta que se resuelva la advertencia.</value>
+  </data>
+  <data name="DynamoShowFileTrustWarning" xml:space="preserve">
+    <value>Mostrar advertencia de confianza de archivo</value>
+  </data>
+  <data name="DynamoViewRunTypesComboBoxToolTipDisabled" xml:space="preserve">
+    <value>El modo de ejecución no se puede cambiar hasta que se resuelva la advertencia.</value>
+  </data>
+  <data name="BubbleDismissAllButtonTooltip" xml:space="preserve">
+    <value>Descartar temporalmente todas las advertencias de este nodo</value>
+  </data>
+  <data name="RunCompletedWithWarningsDismissedMessage" xml:space="preserve">
+    <value>Ejecución finalizada con advertencias descartadas.</value>
+  </data>
+  <data name="PackageRepositoryLabel" xml:space="preserve">
+    <value>Repositorio</value>
+  </data>
+  <data name="PackageWebsiteLabel" xml:space="preserve">
+    <value>Sitio web</value>
+  </data>
+  <data name="OnboardingSuccessText" xml:space="preserve">
+    <value>¡Bien hecho! Acaba de ejecutar su primer gráfico en Dynamo. \n\nEsté atento a más guías sobre los conceptos básicos de Dynamo. Mientras tanto, continúe su aprendizaje en #Dynamo Primer=https://primer2.dynamobim.org/v/es/ .</value>
+  </data>
+  <data name="OnboardingSuccessTitle" xml:space="preserve">
+    <value>Correcto</value>
+  </data>
+  <data name="MessagePackageTargetOtherHosts" xml:space="preserve">
+    <value>El paquete o una de sus dependencias tienen como destino un entorno diferente, como Revit, Civil 3D, Advance Steel, Alias o FormIt. Esto puede provocar inestabilidad y problemas inesperados. ¿Desea continuar?</value>
+  </data>
+  <data name="RunBlockedMessage" xml:space="preserve">
+    <value>Ejecución bloqueada.</value>
+  </data>
+  <data name="FooterNotificationErrorImage" xml:space="preserve">
+    <value>/DynamoCoreWpf;component/UI/Images/error.png</value>
+  </data>
+  <data name="FooterNotificationErrorTooltip" xml:space="preserve">
+    <value>Haga clic para recorrer los nodos con errores.</value>
+  </data>
+  <data name="FooterNotificationInfoImage" xml:space="preserve">
+    <value>/DynamoCoreWpf;component/UI/Images/info.png</value>
+  </data>
+  <data name="FooterNotificationInfoTooltip" xml:space="preserve">
+    <value>Haga clic para recorrer los nodos con estados de información.</value>
+  </data>
+  <data name="FooterNotificationWarningImage" xml:space="preserve">
+    <value>/DynamoCoreWpf;component/UI/Images/warning_16px.png</value>
+  </data>
+  <data name="FooterNotificationWarningTooltip" xml:space="preserve">
+    <value>Haga clic para recorrer los nodos con advertencias.</value>
+  </data>
+  <data name="TrustLocationAddedNotification" xml:space="preserve">
+    <value>Tiene una ubicación de archivo de confianza:
+{0}</value>
+  </data>
+  <data name="TrustLocationSkippedNotification" xml:space="preserve">
+    <value>La ubicación del archivo no se ha añadido a las ubicaciones de confianza.</value>
+  </data>
+  <data name="MessagePackageTargetOtherHosts2" xml:space="preserve">
+    <value>El paquete o una de sus dependencias tienen como destino un entorno diferente, como Revit, Civil 3D, Advance Steel, Alias o FormIt. Esto puede provocar inestabilidad y problemas inesperados.</value>
+  </data>
+  <data name="MessagePackageTargetOtherHostShort" xml:space="preserve">
+    <value>El paquete tiene como destino un anfitrión diferente al de la aplicación de anfitrión actual.</value>
+  </data>
+  <data name="TitlePackageTargetOtherHost" xml:space="preserve">
+    <value>Error de anfitrión de paquete</value>
+  </data>
+  <data name="TrustedLocationNotAccessible" xml:space="preserve">
+    <value>A problem occurred when trying to access the trusted location. Dynamo is unable to obtain read/write access to
+{0}</value>
+  </data>
+  <data name="UnableToAccessTrustedDirectory" xml:space="preserve">
+    <value>Unable To Access Trusted Directory</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
+    <value>Bloquear cable</value>
+  </data>
+  <data name="ContextMenuConnectionsHideAll" xml:space="preserve">
+    <value>Ocultar todos los cables</value>
+  </data>
+  <data name="ContextMenuConnectionsShowAll" xml:space="preserve">
+    <value>Mostrar todos los cables</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderStartNode" xml:space="preserve">
+    <value>Desplazarse hacia arriba</value>
+  </data>
+  <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
+    <value>Navigate Downtream</value>
+  </data>
+  <data name="ContextMenuNodeConnections" xml:space="preserve">
+    <value>Conexiones de nodos</value>
+  </data>
+  <data name="InvalidDraggingOperationMessgae" xml:space="preserve">
+    <value>No se está arrastrando nada. Si ve este mensaje, es probable que no se recomiende su interacción reciente con Dynamo.</value>
+  </data>
+  <data name="UngroupParentGroupWarning" xml:space="preserve">
+    <value>Dynamo no puede desagrupar grupos si no hay ningún grupo principal.</value>
+  </data>
+  <data name="PreferencesViewEnableNotificationCenter" xml:space="preserve">
+    <value>Recibir notificación</value>
+  </data>
+  <data name="PreferencesViewNotificationCenter" xml:space="preserve">
+    <value>Centro de notificaciones</value>
+  </data>
+  <data name="NotificationCenterButtonTooltip" xml:space="preserve">
+    <value>Haga clic para ver las últimas noticias de Dynamo Team.</value>
+  </data>
+  <data name="InfectedPackageMessageString" xml:space="preserve">
+    <value>Este paquete está infectado. Cargue una versión limpia.</value>
+  </data>
+  <data name="InfectedPackageErrorString" xml:space="preserve">
+    <value>Error de carga</value>
+  </data>
+  <data name="PrePackagePublishMessage" xml:space="preserve">
+    <value>El paquete se analizará en busca de virus y se podrá descargar una vez que se haya superado correctamente la exploración.</value>
+  </data>
+  <data name="PrePackagePublishTitle" xml:space="preserve">
+    <value>Exploración de carga de paquetes</value>
+  </data>
+  <data name="ImportPreferencesInfo" xml:space="preserve">
+    <value>Aquí puede importar parámetros personalizados, que sobrescribirán a los actuales. Si desea conservar una copia de la configuración actual, expórtela antes de importar la nueva. Los parámetros no mostrados en el panel de Preferencias se aplicarán una vez que Dynamo y cualquier programa anfitrión se reinicien.</value>
+  </data>
+  <data name="PreferencesMustBeClosedMessage" xml:space="preserve">
+    <value>Las preferencias deben cerrarse antes de continuar. Todos los cambios se guardan automáticamente.</value>
+  </data>
+  <data name="PreferencesViewNodeAutocomplete" xml:space="preserve">
+    <value>Autocompletar nodo</value>
+  </data>
+  <data name="PreferredConfidenceLevel" xml:space="preserve">
+    <value>Nivel de confianza preferido</value>
+  </data>
+  <data name="PreferredConfidenceLevelInfo" xml:space="preserve">
+    <value>El nivel de confianza aparece junto a cada nodo recomendado y representa la probabilidad estimada de que el nodo sea una buena opción. Si se activa este parámetro, oculta los nodos recomendados que no cumplen el nivel de confianza especificado. Puede hacer clic en el encabezado Confianza baja para visualizar los nodos.</value>
+  </data>
+  <data name="MLRecommendationNumberOfResults" xml:space="preserve">
+    <value>Número de resultados</value>
+  </data>
+  <data name="ImportPreferencesText" xml:space="preserve">
+    <value>Importar</value>
+  </data>
+  <data name="ExportPreferencesText" xml:space="preserve">
+    <value>Exportar</value>
+  </data>
+  <data name="ExportSettingsDialogTitle" xml:space="preserve">
+    <value>Seleccionar carpeta para exportar</value>
+  </data>
+  <data name="FileDialogImportSettingsFiles" xml:space="preserve">
+    <value>Archivos de configuración ({0})|{0}</value>
+  </data>
+  <data name="ImportSettingsDialogTitle" xml:space="preserve">
+    <value>Importar configuración</value>
+  </data>
+  <data name="ImportSettingsSuccessMessage" xml:space="preserve">
+    <value>Importación correcta</value>
+  </data>
+  <data name="ImportSettingsFailedMessage" xml:space="preserve">
+    <value>Error de importación</value>
+  </data>
+  <data name="PreferencesSettingHardwareAcceleration" xml:space="preserve">
+    <value>Usar aceleración de hardware</value>
+  </data>
+  <data name="PreferencesSettingCustomPythomTemplate" xml:space="preserve">
+    <value>Ruta de archivo de plantilla de Python personalizada</value>
+  </data>
+  <data name="PreferencesSettingBackupInterval" xml:space="preserve">
+    <value>Intervalo copia seg. automática</value>
+  </data>
+  <data name="PreferencesSettingDefaultBackupLocation" xml:space="preserve">
+    <value>Ubicación de copia de seguridad por defecto</value>
+  </data>
+  <data name="PreferencesSettingUpdateBackupLocationTooltip" xml:space="preserve">
+    <value>Editar ubicación de copia de seguridad</value>
+  </data>
+  <data name="PreferencesSettingResetBackupLocationTooltip" xml:space="preserve">
+    <value>Restablecer ubicación de copia de seguridad</value>
+  </data>
+  <data name="PreferencesSettingsBackupLocationDialogTitle" xml:space="preserve">
+    <value>Seleccionar carpeta para copia de seguridad</value>
+  </data>
+  <data name="PreferencesSettingsBackupFailedTitle" xml:space="preserve">
+    <value>Error en la ubicación de copia de seguridad</value>
+  </data>
+  <data name="PreferencesSettingsBackupFailedMessage" xml:space="preserve">
+    <value>Ubicación de copia de seguridad no válida</value>
+  </data>
+  <data name="PreferencesSettingMaxRecentFiles" xml:space="preserve">
+    <value>Número máximo de archivos recientes</value>
+  </data>
+  <data name="BackupInternalUnit" xml:space="preserve">
+    <value>Minuto(s) entre copias de seguridad</value>
+  </data>
+  <data name="PythonTemplateAddPathTooltip" xml:space="preserve">
+    <value>Añadir una ruta de archivo para la plantilla de nodo de Python</value>
+  </data>
+  <data name="AddFilePathButtonName" xml:space="preserve">
+    <value>Añadir ruta de archivo</value>
+  </data>
+  <data name="PackageDeprecatedTooltip" xml:space="preserve">
+    <value>Este paquete está obsoleto y no se puede instalar.</value>
+  </data>
+  <data name="PackageManagerMyPackagesPublishVersion" xml:space="preserve">
+    <value>Publicar versión</value>
+  </data>
+  <data name="SplashScreenViewExtensions" xml:space="preserve">
+    <value>Cargando extensiones de vista...</value>
+  </data>
+  <data name="DynamoViewSettingShowStaticSplashScreen" xml:space="preserve">
+    <value>Pausar pantalla de bienvenida</value>
+  </data>
+  <data name="PreferencesViewShowStaticSplashScreenTooltip" xml:space="preserve">
+    <value>Pausa la pantalla de bienvenida cuando se completa la carga, lo que le permite iniciar Dynamo manualmente, iniciar sesión en su cuenta de Autodesk Account o importar la configuración.</value>
+  </data>
+  <data name="LogoutMenuItemText" xml:space="preserve">
+    <value>Cerrar sesión</value>
+  </data>
+  <data name="SignInButtonText" xml:space="preserve">
+    <value>Iniciar sesión</value>
+  </data>
+  <data name="SigningInButtonText" xml:space="preserve">
+    <value>Iniciando sesión</value>
+  </data>
+  <data name="RecentFileNumberInfo" xml:space="preserve">
+    <value>Si se reduce este número, se descartarán todos los archivos recientes que superen el número seleccionado.</value>
+  </data>
+  <data name="WebView2RequiredMessage" xml:space="preserve">
+    <value>Dynamo requiere WebView2 Evergreen Runtime, que no está instalado en el equipo. Utilice el vínculo siguiente para descargar el instalador independiente de Evergreen e instalar el programa. A continuación, vuelva a iniciar Dynamo. \n\n#WebView2 Runtime Installer=https://developer.microsoft.com/es-es/microsoft-edge/webview2/#download-sectionedge/webview2/#download-section</value>
+  </data>
+  <data name="WebView2RequiredTitle" xml:space="preserve">
+    <value>WebView2 necesario</value>
+  </data>
+  <data name="DynamoViewFileMenuInsert" xml:space="preserve">
+    <value>Insertar...</value>
+  </data>
+  <data name="DynamoViewRunTypesAutomaticToolTip" xml:space="preserve">
+    <value>Los cambios realizados en el gráfico se ejecutan en tiempo real. Es más adecuado para gráficos conocidos y de menor tamaño, además de para Dynamo Sandbox.</value>
+  </data>
+  <data name="DynamoViewRunTypesComboBoxToolTipEnabled" xml:space="preserve">
+    <value>Modo de ejecución\n\nControla cuándo se ejecutan los cambios realizados en el gráfico.</value>
+  </data>
+  <data name="DynamoViewRunTypesManualToolTip" xml:space="preserve">
+    <value>Los cambios realizados en el gráfico se ejecutan al hacer clic en Ejecutar. Utilice este modo cuando trabaje con gráficos grandes o desconocidos, o aplicaciones anfitrionas.</value>
+  </data>
+  <data name="DynamoViewRunTypesPeriodicToolTip" xml:space="preserve">
+    <value>Los cambios realizados en el gráfico se ejecutan en un intervalo especificado. Solo está disponible cuando el gráfico contiene nodos específicos, como DateTime.Now o WebRequest.</value>
+  </data>
+  <data name="PreferencesViewDefaultRunSettingsInfoTooltip" xml:space="preserve">
+    <value>Establezca el modo de ejecución por defecto para los gráficos. En el modo Manual, los cambios realizados en el gráfico se ejecutan al hacer clic en Ejecutar. Utilice este modo cuando trabaje con gráficos grandes o desconocidos, o programas anfitriones.
+
+En el modo Automático, los cambios realizados en el gráfico se ejecutan en tiempo real. Este modo proporciona información inmediata. 
+
+En determinados gráficos complejos o al usar programas anfitriones, el modo Automático puede provocar inestabilidad u otros problemas. En ese caso, pruebe a cambiar al modo Manual.</value>
+  </data>
+  <data name="GroupStyleFontSizeToolTip" xml:space="preserve">
+    <value>Tamaño de tipo de letra</value>
+  </data>
+  <data name="SplashScreenImportSettings" xml:space="preserve">
+    <value>Importar configuración</value>
+  </data>
+  <data name="SplashScreenImportSettingsFailDescription" xml:space="preserve">
+    <value>Se ha producido un error al importar el archivo de configuración personalizada. Inténtelo de nuevo o continúe con la configuración por defecto.</value>
+  </data>
+  <data name="SplashScreenLaunchingDynamo" xml:space="preserve">
+    <value>Iniciando vista de Dynamo...</value>
+  </data>
+  <data name="SplashScreenLaunchTitle" xml:space="preserve">
+    <value>Iniciar Dynamo</value>
+  </data>
+  <data name="SplashScreenLoadingTimeLabel" xml:space="preserve">
+    <value>Tiempo de carga</value>
+  </data>
+  <data name="SplashScreenShowScreenAgainLabel" xml:space="preserve">
+    <value>No volver a mostrar</value>
+  </data>
+  <data name="SplashScreenSignIn" xml:space="preserve">
+    <value>Iniciar sesión</value>
+  </data>
+  <data name="SplashScreenSignOut" xml:space="preserve">
+    <value>Cerrar sesión</value>
+  </data>
+  <data name="SplashScreenWelcomeToDynamo" xml:space="preserve">
+    <value>Le damos la bienvenida a Dynamo.</value>
+  </data>
+  <data name="SplashScreenTotalLoadingTimeLabel" xml:space="preserve">
+    <value>Tiempo total de carga:</value>
+  </data>
+  <data name="ExportSettingsFailedMessage" xml:space="preserve">
+    <value>Error de exportación</value>
+  </data>
+  <data name="PreferencesWindowHardwareAccelerationTooltip" xml:space="preserve">
+    <value>Si se ha activado, Dynamo se beneficia de la aceleración de hardware para mejorar la uniformidad de los gráficos y el rendimiento general, ya que el trabajo se descarga de las unidades de procesamiento central (CPU) a las unidades de procesamiento de gráficos (GPU).</value>
+  </data>
+  <data name="PreferencesWindowIsolateSelectedGeoTooltip" xml:space="preserve">
+    <value>Si se ha activado, al seleccionar un nodo de geometría, se resalta la geometría que se genera en la vista preliminar 3D en segundo plano.</value>
+  </data>
+  <data name="PreferencesWindowShowCodeBlockNodeLineNumberTooltip" xml:space="preserve">
+    <value>Si se ha activado, los números de línea se mostrarán en el editor de nodos de bloque de código.</value>
+  </data>
+  <data name="PreferencesWindowShowEdgesTooltip" xml:space="preserve">
+    <value>Si se ha activado, se mostrarán aristas más detalladas para la geometría de los subtipos de topología.</value>
+  </data>
+  <data name="PreferencesWindowShowPreviewBubblesTooltip" xml:space="preserve">
+    <value>Si se ha activado, se mostrará una vista preliminar de la salida del nodo al colocar el cursor sobre la parte inferior de un nodo.</value>
+  </data>
+  <data name="PreferencesViewBetaTag" xml:space="preserve">
+    <value>Beta</value>
+  </data>
+  <data name="SplashScreenSigningIn" xml:space="preserve">
+    <value>Iniciando sesión</value>
+  </data>
+  <data name="InCanvasGeometryScalingToolTip" xml:space="preserve">
+    <value>Escala de geometría de espacio de trabajo</value>
+  </data>
+  <data name="GroupContextMenuPreview" xml:space="preserve">
+    <value>Vista preliminar de geometría</value>
+  </data>
+  <data name="LibraryZoomScaleTooltipText" xml:space="preserve">
+    <value>Arrastre para ajustar la escala de zoom de la biblioteca entre el 25 % y el 300 %. También puede ajustarla en la biblioteca si pulsa Ctrl y desplaza la rueda del ratón.</value>
+  </data>
+  <data name="PreferencesViewZoomScalingSettings" xml:space="preserve">
+    <value>Escala de zoom</value>
+  </data>
+  <data name="DynamoViewSettingLibraryZoomScale" xml:space="preserve">
+    <value>Biblioteca</value>
+  </data>
+  <data name="PortPropertiesPromptInputWindowTitle" xml:space="preserve">
+    <value>Propiedades del puerto de entrada</value>
+  </data>
+  <data name="PortPropertiesPromptOutputWindowTitle" xml:space="preserve">
+    <value>Propiedades del puerto de salida</value>
+  </data>
+  <data name="PortPropertiesPromptDescriptionTooltip" xml:space="preserve">
+    <value>Descripción del puerto</value>
+  </data>
+  <data name="PortPropertiesPromptWindowDescription" xml:space="preserve">
+    <value>Descripción</value>
+  </data>
+  <data name="PortPropertiesPromptNameTooltip" xml:space="preserve">
+    <value>Nombre de puerto</value>
+  </data>
+  <data name="PortPropertiesPromptWindowName" xml:space="preserve">
+    <value>Nombre</value>
+  </data>
+  <data name="RemovePythonPortWarningMessageBoxTitle" xml:space="preserve">
+    <value>¿Eliminar puerto?</value>
+  </data>
+  <data name="MessageRemovePythonPort" xml:space="preserve">
+    <value>Las propiedades de puerto personalizadas se perderán una vez que se elimine el puerto.</value>
+  </data>
+  <data name="MessagePortNameInvalid" xml:space="preserve">
+    <value>No puede contener caracteres especiales (# % * ? \ : [ ]).</value>
+  </data>
+  <data name="PreferencesViewEnablePersistExtensions" xml:space="preserve">
+    <value>Al iniciar, recuerde abrir los paneles de extensiones de la última sesión.</value>
+  </data>
+  <data name="PreferencesViewExtensions" xml:space="preserve">
+    <value>Extensiones</value>
+  </data>
+  <data name="PythonZoomScaleTooltipText" xml:space="preserve">
+    <value>Arrastre para ajustar la escala de zoom del editor de Python entre un 25 % y un 300 %. También puede ajustarla en el editor de Python si pulsa Ctrl y desplaza la rueda del ratón.</value>
+  </data>
+  <data name="PreferencesViewLanguageSwitchHelp" xml:space="preserve">
+    <value>Es necesario reiniciar Dynamo para aplicar la selección de idioma.</value>
+  </data>
+  <data name="CustomColorPickerApplyBtn" xml:space="preserve">
+    <value>Aplicar</value>
+  </data>
+  <data name="CustomColorPickerBasicColors" xml:space="preserve">
+    <value>Colores básicos:</value>
+  </data>
+  <data name="CustomColorPickerCancelBtn" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="CustomColorPickerCustomColorBtn" xml:space="preserve">
+    <value>Definir colores personalizados</value>
+  </data>
+  <data name="CustomColorPickerCustomColors" xml:space="preserve">
+    <value>Colores personalizados:</value>
+  </data>
+  <data name="CustomColorPickerTitle" xml:space="preserve">
+    <value>Color</value>
+  </data>
+  <data name="PreferencesViewZoomScaling0Percent" xml:space="preserve">
+    <value>0 %</value>
+  </data>
+  <data name="PreferencesViewZoomScaling100Percent" xml:space="preserve">
+    <value>100 %</value>
+  </data>
+  <data name="PreferencesViewZoomScaling25Percent" xml:space="preserve">
+    <value>25 %</value>
+  </data>
+  <data name="PreferencesViewZoomScaling300Percent" xml:space="preserve">
+    <value>300 %</value>
+  </data>
+  <data name="PreferencesViewPythonEditorLable" xml:space="preserve">
+    <value>Editor de Python</value>
+  </data>
+  <data name="CustomColorsPopupTitle" xml:space="preserve">
+    <value>Personalizados</value>
+  </data>
+  <data name="PreferencesGrahicHelpersScale" xml:space="preserve">
+    <value>Escala de elementos gráficos</value>
+  </data>
+  <data name="PreferencesGrahicHelpersScaleTooltip" xml:space="preserve">
+    <value>Seleccione una escala para las ayudas gráficas de fondo (rejillas y ejes).</value>
+  </data>
+  <data name="LibraryLoadFailureMessageSuffix" xml:space="preserve">
+    <value>Consulte el registro de la consola para obtener información detallada sobre el error de importación.</value>
+  </data>
+  <data name="PreferencesHostGenericScaleImperialUnits" xml:space="preserve">
+    <value>Unidades imperiales</value>
+  </data>
+  <data name="PreferencesHostGenericScaleMetricUnits" xml:space="preserve">
+    <value>Unidades métricas</value>
+  </data>
+  <data name="CantExportWorkspaceAsImageEmptyMessage" xml:space="preserve">
+    <value>El espacio de trabajo no se puede exportar como una imagen porque está vacío.</value>
+  </data>
+  <data name="CantExportWorkspaceAsImageNotValidMessage" xml:space="preserve">
+    <value>El espacio de trabajo no se puede exportar como una imagen porque contiene nodos que están demasiado alejados entre sí.</value>
+  </data>
+  <data name="PreferencesViewSettingIncludeTimestampExportPath" xml:space="preserve">
+    <value>Incluir marca de tiempo en la ruta de exportación de imagen</value>
+  </data>
+  <data name="PreferencesViewIncludeTimestampExportPathTooltip" xml:space="preserve">
+    <value>Si esta opción está activada, los nombres de archivo de las imágenes exportadas incluyen la fecha y la hora de exportación.</value>
+  </data>
+  <data name="ElementBindingWarningMessage" xml:space="preserve">
+    <value>Un comando Guardar como creará un espacio de trabajo que Dynamo considerará como un archivo completamente nuevo y se perderán los datos de enlace de elementos existentes. Los nuevos datos de enlace de elementos se crearán de la forma habitual al ejecutar este archivo. Utilice el comando Guardar si desea conservar el enlace de elementos con el documento anfitrión.</value>
+  </data>
+  <data name="ElementBindingWarningTitle" xml:space="preserve">
+    <value>Advertencia de enlace de elementos</value>
+  </data>
+  <data name="ElementBindingDesc" xml:space="preserve">
+    <value>El enlace de elementos permite una interacción bidireccional entre Dynamo y la aplicación anfitriona, como Revit o Civil3D, en la que un usuario puede seleccionar un elemento en el documento anfitrión y conseguir que Dynamo "enlace" ese elemento a un nodo del espacio de trabajo.</value>
+  </data>
+  <data name="PreferencesViewVisualSettingUseInstancing" xml:space="preserve">
+    <value>Utilizar la creación de ejemplares (beta)</value>
+  </data>
+  <data name="PreferencesWindowUseInstancingTooltip" xml:space="preserve">
+    <value>Si se ha activado esta opción, algunos tipos de geometría simétrica, como cubos, rectángulos o esferas, se renderizarán con más rapidez debido a que se dibujan varias copias a la vez en lugar de secuencialmente.</value>
+  </data>
+  <data name="NotificationToAgreeMLNodeautocompleteTOU" xml:space="preserve">
+    <value>Para acceder a la función Nodos recomendados, lea y acepte Dynamo &gt; Acuerdos para la recopilación de datos.</value>
+  </data>
+  <data name="GESUnitCentimeters" xml:space="preserve">
+    <value>Centímetros</value>
+  </data>
+  <data name="GESUnitFeet" xml:space="preserve">
+    <value>Pies</value>
+  </data>
+  <data name="GESUnitInches" xml:space="preserve">
+    <value>Pulgadas</value>
+  </data>
+  <data name="GESUnitKilometers" xml:space="preserve">
+    <value>Kilómetros</value>
+  </data>
+  <data name="GESUnitMeters" xml:space="preserve">
+    <value>Metros</value>
+  </data>
+  <data name="GESUnitMiles" xml:space="preserve">
+    <value>Millas</value>
+  </data>
+  <data name="GESUnitMillimeters" xml:space="preserve">
+    <value>Milímetros</value>
+  </data>
+  <data name="SignOutConfirmationDialogText" xml:space="preserve">
+    <value>Si cierra la sesión de Dynamo, saldrá de todos los productos de escritorio de Autodesk.</value>
+  </data>
+  <data name="SignOutConfirmationDialogTitle" xml:space="preserve">
+    <value>Cerrar sesión de Dynamo</value>
+  </data>
+  <data name="PackageDetailsGroup" xml:space="preserve">
+    <value>GRUPO</value>
+  </data>
+  <data name="PackageDetailsKeywords" xml:space="preserve">
+    <value>PALABRAS CLAVE</value>
+  </data>
+  <data name="PackageDetailsSize" xml:space="preserve">
+    <value>Tamaño</value>
+  </data>
+  <data name="PackageDetailsLinks" xml:space="preserve">
+    <value>VÍNCULOS</value>
+  </data>
+  <data name="ResetChangesWarningPopupMessage" xml:space="preserve">
+    <value>Si continúa, se perderán los cambios.</value>
+  </data>
+  <data name="DynamoViewFileMenuOpenFile" xml:space="preserve">
+    <value>_Archivo</value>
+  </data>
+  <data name="DynamoViewFileMenuOpenTemplate" xml:space="preserve">
+    <value>_Plantilla</value>
+  </data>
+  <data name="WorkspaceSaveTemplateDirectoryBlockMsg" xml:space="preserve">
+    <value>Los espacios de trabajo no se pueden guardar en la carpeta de plantillas. Elija otra carpeta para guardar el archivo.
+Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta diferente y, a continuación, desplácelo a la carpeta de plantillas.</value>
+  </data>
+  <data name="WorkspaceSaveTemplateDirectoryBlockTitle" xml:space="preserve">
+    <value>Ruta de almacenamiento no válida</value>
+  </data>
+  <data name="PublishPackageRetainFolderStructureToggleButtonText" xml:space="preserve">
+    <value>Conservar estructura de carpetas</value>
+  </data>
+  <data name="UpdateNodeIconsDebugMenu" xml:space="preserve">
+    <value>Actualizar iconos de nodos</value>
+  </data>
+  <data name="PreferencesViewEnablePanelingNodes" xml:space="preserve">
+    <value>Activar nodos de paneles</value>
+  </data>
+  <data name="PreferencesSettingTemplateLocationLabel" xml:space="preserve">
+    <value>Ruta de plantillas</value>
+  </data>
+  <data name="PreferencesSettingResetTemplateLocationTooltip" xml:space="preserve">
+    <value>Restablecer ubicación de plantilla</value>
+  </data>
+  <data name="PreferencesSettingsTemplateFailedMessage" xml:space="preserve">
+    <value>No se ha podido actualizar la ubicación de plantilla.</value>
+  </data>
+  <data name="PreferencesSettingsTemplateFailedTitle" xml:space="preserve">
+    <value>Ubicación de plantilla no válida</value>
+  </data>
+  <data name="PreferencesSettingsTemplateLocationDialogTitle" xml:space="preserve">
+    <value>Seleccionar carpeta para plantillas</value>
+  </data>
+  <data name="PreferencesSettingUpdateTemplateLocationTooltip" xml:space="preserve">
+    <value>Editar ubicación de plantilla</value>
+  </data>
+  <data name="PreferencesViewGeneralSettingsTemplate" xml:space="preserve">
+    <value>Plantillas</value>
+  </data>
+  <data name="DynamoXmlFileFormat" xml:space="preserve">
+    <value>Formato de archivo de Dynamo 1.x</value>
+  </data>
+  <data name="DataInputNodeModeLockTooltip" xml:space="preserve">
+    <value>Si está bloqueado, este nodo solo acepta el tipo de datos seleccionado como entrada. Si está desbloqueado, la entrada puede ser cualquier tipo de datos admitido.</value>
+  </data>
+  <data name="DataInputNodeInformationTooltip" xml:space="preserve">
+    <value>Active esta opción si los datos de entrada contienen una lista.</value>
+  </data>
+  <data name="DataInputAutoDetectTypeTooltip" xml:space="preserve">
+    <value>Active esta opción para permitir que "Define Data" detecte automáticamente el tipo de datos del nodo de entrada. Desactívela para que pueda establecer personalmente el tipo de datos que desee.</value>
+  </data>
+  <data name="DataInputAutoDetectTypeLabel" xml:space="preserve">
+    <value>Detección automática de tipo</value>
+  </data>
+  <data name="DataInputTypeLabel" xml:space="preserve">
+    <value>Tipo</value>
+  </data>
+  <data name="DataInputListLabel" xml:space="preserve">
+    <value>Lista</value>
+  </data>
+  <data name="MessagePackageOlderDynamo" xml:space="preserve">
+    <value>Este paquete o una de sus dependencias se han creado para una versión anterior de Dynamo. Es posible que no funcionen en esta versión. ¿Desea continuar?</value>
+  </data>
+  <data name="PackageUseOlderDynamoMessageBoxTitle" xml:space="preserve">
+    <value>Es posible que el paquete no funcione en esta versión de {0}.</value>
+  </data>
+  <data name="MessagePackOlderDynamoLink" xml:space="preserve">
+    <value>#Más información=https://primer2.dynamobim.org/v/es/1_developer_primer_intro/3_developing_for_dynamo/updating-your-packages-and-dynamo-libraries-for-dynamo-3x-net8</value>
+  </data>
+  <data name="DuplicateFilesInPublishWarningMessage" xml:space="preserve">
+    <value>Los archivos con el mismo nombre se sobrescribirán en el paquete final. Para evitar esto, cambie el nombre de los archivos duplicados o descártelos, o active la opción Conservar estructura de carpetas.\n\n{0} archivo(s) duplicado(s) encontrado(s):\n{1}</value>
+  </data>
+  <data name="DuplicateFilesInPublishWarningTitle" xml:space="preserve">
+    <value>Archivos duplicados</value>
+  </data>
+  <data name="NodeInCanvasSearchCreationError" xml:space="preserve">
+    <value>No se ha podido crear el nodo: </value>
+  </data>
+  <data name="InstancingRenderFailureDescription" xml:space="preserve">
+    <value>Desactive Utilizar la creación de ejemplares en la sección Configuración de visualización de Configuración visual.</value>
+  </data>
+  <data name="PartialRenderFailureTitle" xml:space="preserve">
+    <value>Se ha producido un problema con la vista preliminar en segundo plano</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpData" xml:space="preserve">
+    <value>_Volcar datos</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeHelpData" xml:space="preserve">
+    <value>_Volcar datos de ayuda del nodo</value>
+  </data>
+  <data name="NodeHelpIsDumped" xml:space="preserve">
+    <value>Node Help Data is dumped to \"{0}\".</value>
+  </data>
+  <data name="UpdateAllPythonEngineWarning" xml:space="preserve">
+    <value>Update all {0} python nodes in the current workspace to use {1} engine?</value>
+  </data>
+  <data name="UpdateAllPythonEngineWarningTitle" xml:space="preserve">
+    <value>Actualizar todos los nodos de Python</value>
+  </data>
+  <data name="UpdateAllPythonEngineMainMenuHeader" xml:space="preserve">
+    <value>Establecer motor de Python</value>
+  </data>
+  <data name="PackageDetailsReleaseNotes" xml:space="preserve">
+    <value>Notas de la versión</value>
+  </data>
+  <data name="PackageDetailsDependsOn" xml:space="preserve">
+    <value>Depende de</value>
+  </data>
+  <data name="PackageDetailsCompatibility" xml:space="preserve">
+    <value>COMPATIBILIDAD</value>
+  </data>
+  <data name="PackageDetailsCompatibilityWithSetup" xml:space="preserve">
+    <value>Compatible con la configuración actual</value>
+  </data>
+  <data name="PackageDetailsIncompatibilityWithSetup" xml:space="preserve">
+    <value>Incompatible con la configuración actual</value>
+  </data>
+  <data name="PackageDetailsXCompatibilityWithSetup" xml:space="preserve">
+    <value>Compatibilidad desconocida con la configuración actual</value>
+  </data>
+  <data name="PackageDetailsCompatibleVersionTooltip" xml:space="preserve">
+    <value>Esta versión debe ser compatible con la configuración actual.</value>
+  </data>
+  <data name="PackageDetailsUnknownCompatibilityVersionTooltip" xml:space="preserve">
+    <value>No se ha verificado la compatibilidad de esta versión. Es posible que sea o no compatible con la configuración actual.</value>
+  </data>
+  <data name="PackageDetailsIncompatibileVersionTooltip" xml:space="preserve">
+    <value>Esta versión puede ser incompatible con la configuración actual.</value>
+  </data>
+  <data name="PackageManagerIncompatibleVersionDownloadMsg" xml:space="preserve">
+    <value>Esta versión es incompatible con la configuración actual (Dynamo y versión de host, si procede). Es posible que no funcione correctamente. ¿Desea instalarla de todos modos?</value>
+  </data>
+  <data name="PackageManagerIncompatibleVersionDownloadTitle" xml:space="preserve">
+    <value>Versión incompatible</value>
+  </data>
+  <data name="PackageFilterByCompatibility" xml:space="preserve">
+    <value>COMPATIBILIDAD DE VERSIONES</value>
+  </data>
+  <data name="PackageCompatible" xml:space="preserve">
+    <value>Compatible</value>
+  </data>
+  <data name="PackageCompatibleFilterTooltip" xml:space="preserve">
+    <value>Versiones compatibles con la configuración actual</value>
+  </data>
+  <data name="PackageUnknownCompatibility" xml:space="preserve">
+    <value>Compatibilidad desconocida</value>
+  </data>
+  <data name="PackageUnknownCompatibilityFilterTooltip" xml:space="preserve">
+    <value>No se puede verificar la compatibilidad de la versión del paquete.</value>
+  </data>
+  <data name="PackageIncompatible" xml:space="preserve">
+    <value>Incompatible</value>
+  </data>
+  <data name="PackageIncompatibleFilterTooltip" xml:space="preserve">
+    <value>Las versiones pueden ser incompatibles con la configuración actual.</value>
+  </data>
+  <data name="PackageVersionTooltip" xml:space="preserve">
+    <value>Las versiones marcadas con .x incluyen todas las versiones de la compilación principal o secundaria especificada.</value>
+  </data>
+  <data name="CannotAddNodeToWorkspace" xml:space="preserve">
+    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
+  </data>
+  <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
+    <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
+  </data>
+  <data name="IDSDKErrorMessage" xml:space="preserve">
+    <value>Parece que Autodesk Identity Manager no está configurado en el sistema. Para garantizar el acceso completo a todas las funciones, inicie sesión en su cuenta de Autodesk Account mediante Autodesk Identity Manager.
+#Descargue e instale este componente=https://manage.autodesk.com/products/updates desde aquí o mediante Autodesk Access y, a continuación, inicie sesión.</value>
+  </data>
+  <data name="IDSDKErrorMessageTitle" xml:space="preserve">
+    <value>Descargar Autodesk Identity Manager</value>
+  </data>
+  <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
+    <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
+  </data>
+  <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
+    <value>Freeze Group</value>
+  </data>
+  <data name="SaveButton" xml:space="preserve">
+    <value>Guardar</value>
+  </data>
+  <data name="DiscardButton" xml:space="preserve">
+    <value>Descartar</value>
+  </data>
+  <data name="PreferencesViewGroupStylesHeader" xml:space="preserve">
+    <value>Estilos de grupo</value>
+  </data>
+  <data name="PreferencesViewShowDefaultGroupDescription" xml:space="preserve">
+    <value>Show default group description</value>
+  </data>
+  <data name="NodeAutoCompleteToolTip" xml:space="preserve">
+    <value>Click to get Node Autocomplete suggestions</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="vsDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\vsDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="vsDynamoPointLine" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\vsDynamoPointLine;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="psDynamoLine" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoLine;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="psDynamoPoint" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\ViewModels\Watch3D\compiledShaders\psDynamoPoint;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+</root>

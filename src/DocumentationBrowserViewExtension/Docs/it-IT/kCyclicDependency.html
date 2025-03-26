@@ -1,0 +1,34 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>È presente una dipendenza ciclica tra due variabili</h2>
+<p>Questo messaggio di avviso indica che si sta tentando di trasferire l'output di un nodo all'input dello stesso nodo. Ciò creerà una dipendenza ciclica che non è consentita in Dynamo.</p>
+
+<h4>Come risolvere questo problema</h4>
+<p>Assicurarsi di non trasferire l'output di un nodo nell'input dello stesso nodo. Se è necessario creare un loop, è possibile utilizzare il <a href="https://dictionary.dynamobim.com/2/#/Script/Control%20Flow/Action/LoopWhile">nodo LoopWhile</a>, <a href="https://forum.dynamobim.com/search?q=Loop%20using%20designscript">creare un loop utilizzando DesignScript</a> o creare un loop utilizzando Python, come mostrato in <a href="https://github.com/Amoursol/dynamoPython/tree/master/concepts">questi esempi</a>.</p>
+
+<h4>Ulteriori informazioni</h4>
+<p>Per ulteriori informazioni, consultare i <a href="https://forum.dynamobim.com/search?q=cyclic%20dependency%20exists%20between%20two%20variables"><span>post nel forum di discussione di Dynamobim &quot;<strong>cyclic dependency exists between two variables</strong>&quot;</span></a>.</p>
+
+</body>

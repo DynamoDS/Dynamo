@@ -4,6 +4,7 @@
                     xmlns:dynui="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
                     xmlns:interactivity="clr-namespace:Dynamo.Microsoft.Xaml.Behaviors;assembly=Dynamo.Microsoft.Xaml.Behaviors"
                     xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+                    xmlns:p="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
                     xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
                     xmlns:views="clr-namespace:Dynamo.UI.Views;assembly=DynamoCoreWpf">
     <ResourceDictionary.MergedDictionaries>
@@ -217,10 +218,13 @@
                 >✨</Label>
 
                 <interactivity:Interaction.Triggers>
-                    <interactivity:EventTrigger EventName="PreviewMouseDown">
+                    <interactivity:EventTrigger EventName="PreviewMouseLeftButtonDown">
                         <interactivity:InvokeCommandAction Command="{Binding NodeAutoCompleteCommand}" PassEventArgsToCommand="True"/>
                     </interactivity:EventTrigger>
                 </interactivity:Interaction.Triggers>
+                <Border.ToolTip>
+                    <dynui:DynamoToolTip AttachmentSide="Right" Style="{DynamicResource ResourceKey=SLightToolTip}" Content="{x:Static p:Resources.NodeAutoCompleteToolTip}"/>
+                </Border.ToolTip>
             </Border>
 
             <Border x:Name="PortBorderHighlight"
@@ -232,7 +236,6 @@
                     CornerRadius="11,0,0,11"
                     Visibility="{Binding Highlight, UpdateSourceTrigger=PropertyChanged}"
                     SnapsToDevicePixels="True">
-
             </Border>
         </Grid>
     </DataTemplate>

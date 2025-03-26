@@ -12,6 +12,7 @@ using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
+using static Dynamo.ViewModels.SearchViewModel;
 
 namespace Dynamo.ViewModels
 {
@@ -29,7 +30,6 @@ namespace Dynamo.ViewModels
         private bool showUseLevelMenu;
         private const double autocompletePopupSpacing = 2.5;
         private const double proxyPortContextMenuOffset = 20;
-        internal bool inputPortDisconnectedByConnectCommand = false;
         private bool nodeAutoCompleteMarkerVisible;
         protected static readonly SolidColorBrush PortBackgroundColorPreviewOff = new SolidColorBrush(Color.FromRgb(102, 102, 102));
         protected static readonly SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
@@ -115,11 +115,36 @@ namespace Dynamo.ViewModels
             get => nodeAutoCompleteMarkerVisible;
             set
             {
-                nodeAutoCompleteMarkerVisible = value;
+                if (!IsAutoCompleteMarkerDisabled() && CanHaveAutoCompleteMarker())
+                {
+                    nodeAutoCompleteMarkerVisible = value;
+                }
+                else
+                {
+                    nodeAutoCompleteMarkerVisible = false;
+                }
                 RaisePropertyChanged(nameof(NodeAutoCompleteMarkerVisible));
             }
         }
-
+        private bool IsAutoCompleteMarkerDisabled()
+        {
+            // True if autocomplete is turned off globally
+            // Or a connector is being created now
+            // Or node is frozen.
+            // Or node is transient state.
+            return !NodeViewModel.DynamoViewModel.EnableNodeAutoComplete ||
+                   NodeViewModel.WorkspaceViewModel.IsConnecting ||
+                   NodeViewModel.IsFrozen ||
+                   NodeViewModel.IsTransient;
+        }
+        private bool CanHaveAutoCompleteMarker()
+        {
+            return ((this is InPortViewModel && PortModel.Connectors.Count == 0) || this is OutPortViewModel)
+                   && NodeViewModel.NodeModel is not CodeBlockNodeModel
+                   && NodeViewModel.NodeModel is not CoreNodeModels.Watch
+                   && NodeViewModel.NodeModel is not PythonNodeModels.PythonNode
+                   && NodeViewModel.NodeModel is not PythonNodeModels.PythonStringNode;
+        }
         /// <summary>
         /// The height of port.
         /// </summary>
@@ -438,6 +463,7 @@ namespace Dynamo.ViewModels
             {
                 case nameof(IsSelected):
                     RaisePropertyChanged(nameof(IsSelected));
+                    NodeAutoCompleteMarkerVisible = IsSelected;
                     break;
                 case nameof(State):
                     RaisePropertyChanged(nameof(State));
@@ -471,6 +497,7 @@ namespace Dynamo.ViewModels
                 case nameof(IsConnected):
                     RaisePropertyChanged(nameof(IsConnected));
                     RefreshPortColors();
+                    NodeAutoCompleteMarkerVisible = IsSelected;
                     break;
                 case nameof(IsEnabled):
                     RaisePropertyChanged(nameof(IsEnabled));
@@ -505,24 +532,13 @@ namespace Dynamo.ViewModels
         {
             //handle the mouse event to prevent connection from starting
             MouseButtonEventArgs evArgs = parameter as MouseButtonEventArgs;
-            evArgs.Handled = true;
+            if (evArgs != null)
+            {
+                evArgs.Handled = true;
+            }            
 
             var wsViewModel = node?.WorkspaceViewModel;
             if (wsViewModel is null || wsViewModel.NodeAutoCompleteSearchViewModel is null)
-            {
-                return;
-            }
-
-            // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
-            if (inputPortDisconnectedByConnectCommand)
-            {
-                wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
-            }
-
-            // Bail out from connect state
-            wsViewModel.CancelActiveState();
-
-            if (PortModel != null && !PortModel.CanAutoCompleteInput())
             {
                 return;
             }
@@ -547,20 +563,6 @@ namespace Dynamo.ViewModels
             
             var wsViewModel = node.WorkspaceViewModel;
             wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
-
-            // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
-            if (this.inputPortDisconnectedByConnectCommand)
-            {
-                wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
-            }
-
-            // Bail out from connect state
-            wsViewModel.CancelActiveState();
-
-            if (PortModel != null && !PortModel.CanAutoCompleteInput())
-            {
-                return;
-            }
 
             // CreateMockCluster();
 
@@ -702,8 +704,11 @@ namespace Dynamo.ViewModels
             {
                 dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.NodeAutoCompleteNotAvailableForCollapsedGroups);
             }
-            // If the feature is enabled from Dynamo experiment setting and if user interaction is not on proxy ports.
-            return dynamoViewModel.EnableNodeAutoComplete && !port.IsProxyPort;
+
+            // We can AutoComplete if the feature is enabled from Dynamo experiment setting,
+            // if user interaction is not on proxy ports and if the port is not an input already connected.
+            return dynamoViewModel.EnableNodeAutoComplete && !port.IsProxyPort &&
+                !(PortType == PortType.Input && PortModel?.Connectors?.FirstOrDefault()?.Start?.Owner != null);
         }
 
         /// <summary>

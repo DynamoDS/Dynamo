@@ -1,0 +1,112 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>GeometryColor</name>
+    </assembly>
+    <members>
+        <member name="M:Modifiers.GeometryColor.ByGeometryColor(Autodesk.DesignScript.Geometry.Geometry,DSCore.Color)">
+            <summary>Wyświetl geometrię za pomocą koloru.</summary>
+            <param name="geometry">Geometria, do której chcesz zastosować kolor.</param>
+            <param name="color">Kolor.</param>
+            <returns>Obiekt wyświetlany.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.BySurfaceColors(Autodesk.DesignScript.Geometry.Surface,DSCore.Color[][])">
+             <summary>Wyświetl wartości kolorów na powierzchni.
+            
+             Podane kolory są wewnętrznie przekształcane w teksturę obrazu, która
+             jest mapowana na powierzchnię.</summary>
+             <param name="surface">Powierzchnia, na której mają zostać umieszczone kolory.</param>
+             <param name="colors">Dwuwymiarowa lista kolorów.
+            
+             Lista kolorów musi być kwadratowa. Próba przekazania nierównego
+             szyku spowoduje zwrócenie wyjątku.</param>
+             <returns>Obiekt wyświetlany.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ByPointsColors(Autodesk.DesignScript.Geometry.Point[],DSCore.Color[])">
+             <summary>Utwórz kolorową siatkę przy użyciu punktów i kolorów.
+           
+            Przekazana lista punktów jest używana do utworzenia siatki
+            z triangulacją z niepołączonymi wierzchołkami.</summary>
+             <param name="points">Lista punktów. 
+            
+             Obecnie obsługiwane są tylko siatki z triangulacją. Każda trójka punktów na liście formuje jeden
+             trójkąt w siatce. Kolejność punktów powinna być zgodna z kierunkiem przeciwnym do ruchu wskazówek zegara. 
+             Próba przekazania listy wierzchołków o liczbie niepodzielnej przez 3 spowoduje zwrócenie wyjątku.</param>
+             <param name="colors">Lista kolorów. 
+            
+             Liczba kolorów musi odpowiadać liczbie wierzchołków. Próba przekazania listy kolorów o liczbie kolorów
+             różnej od liczby punktów spowoduje zwrócenie wyjątku.</param>
+             <returns>Obiekt wyświetlany.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
+            <summary>Wyświetl siatkę według pojedynczego koloru, według kolorów powierzchni, według kolorów wierzchołków lub według kolorów wierzchołków powierzchni.</summary>
+            <param name="mesh"/>The Mesh on which to apply the colors
+            <param name="colors">Liczba kolorów musi być równa 1 (pojedynczy kolor), równa liczbie powierzchni (kolor na powierzchnię), równa liczbie wierzchołków (kolor na wierzchołek) lub równa liczbie trójkątów pomnożonej przez trzy (kolor na wierzchołek trójkąta)</param>
+            <param name="smoothShading">W przypadku wartości „prawda” (true) cieniowanie będzie gładkie, a nie płaszczyznowe, przydatne do wizualizacji gładkich powierzchni ciągłych</param>
+            <returns>Wyświetlany obiekt.</returns>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ComputeColorMap(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},DSCore.Color[],System.Int32,System.Int32)">
+            <summary>Oblicz zestaw map kolorów na podstawie zestawu obiektów SurfaceData.</summary>
+            <returns/>
+        </member>
+        <member name="M:Modifiers.GeometryColor.ComputeSamplesFromNormalizedValue(System.Double,System.Int32,System.Int32)">
+            <summary>Ta metoda ponownie mapuje liczbę z przedziału od 0,0 do 1,0 na wartość całkowitą z przedziału lowestPower i highestPower</summary>
+        </member>
+        <member name="T:Autodesk.DesignScript.Geometry.ImportHelpers">
+            <summary>Węzły importowania geometrii mające zależności, które nie powinny być wprowadzane do protogeometrii.
+            Te metody są dalej otaczane przez węzły NodeModel, aby umożliwić dokładne określenie
+            nazwy i lokalizacji biblioteki.</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.ImportFromSATWithUnits(System.String,DynamoUnits.Unit)">
+            <summary>Importuje geometrię ze ścieżki pliku SAT. Ustaw wartość wejściową dynamoUnit, 
+            aby dopasować sposób interpretowania innych liczb w pliku dodatku Dynamo.</summary>
+            <param name="filePath">ciąg ścieżki pliku .SAT.</param>
+            <param name="dynamoUnit">długość jednostki forge, w razie pozostawienia wartości null plik sat zostanie zaimportowany jako niemianowany</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.ImportFromSATWithUnits(System.IO.FileInfo,DynamoUnits.Unit)">
+            <summary>Importuje geometrię ze ścieżki pliku SAT. Ustaw wartość wejściową dynamoUnit, 
+            aby dopasować sposób interpretowania innych liczb w pliku dodatku Dynamo.</summary>
+            <param name="file">obiekt pliku wskazujący plik .SAT.</param>
+            <param name="dynamoUnit">długość jednostki forge, w razie pozostawienia wartości null plik sat zostanie zaimportowany jako niemianowany</param>
+            <returns/>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.ImportHelpers.DeserializeFromSABWithUnits(System.Byte[],DynamoUnits.Unit)">
+            <summary>Importuje geometrię z tablicy bajtów SAB. Ustaw wartość wejściową dynamoUnit, aby dopasować 
+            sposób interpretacji innych liczb w pliku Dynamo.</summary>
+            <param name="buffer">Tablica bajtów SAB</param>
+            <param name="dynamoUnit">długość jednostki forge, w razie pozostawienia wartości null plik sat zostanie zaimportowany jako niemianowany</param>
+            <returns/>
+        </member>
+        <member name="T:GeometryColor.Properties.Resources">
+            <summary>Silnie typizowana klasa zasobów do wyszukiwania zlokalizowanych ciągów itp.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.ResourceManager">
+            <summary>Zwraca buforowane wystąpienie obiektu ResourceManager używane przez tą klasę.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.Culture">
+            <summary>Nadpisuje właściwość CurrentUICulture bieżącego wątku dla wszystkich
+              wyszukań zasobów przy użyciu tej silnie typizowanej klasy zasobów.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.ByMeshColorsInvalidColorCountMessage">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do: Liczba kolorów jest nieprawidłowa. Musi być równa 1 (pojedynczy kolor), równa liczbie powierzchni (kolor na powierzchnię), równa liczbie wierzchołków (kolor na wierzchołek) lub równa liczbie trójkątów pomnożonej przez trzy (kolor na wierzchołek trójkąta). Aby pokolorować wiele siatek, może być konieczne użycie poziomów listy.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.JaggedListExceptionMessage">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do: Lista kolorów nie może być nieregularna.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.NoColorsExceptionMessage">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do: Należy podać kilka kolorów.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.NoVertexExceptionMessage">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do: Należy podać kilka wierzchołków.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.TwoDimensionalListExceptionMessage">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do: Należy podać dwuwymiarową listę kolorów.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.VertexColorCountMismatchExceptionMessage">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do: Liczba dostarczonych kolorów powinna odpowiadać liczbie wierzchołków.</summary>
+        </member>
+        <member name="P:GeometryColor.Properties.Resources.VerticesDivisibleByThreeExceptionMessage">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do: Podana liczba wierzchołków powinna być podzielna przez trzy.</summary>
+        </member>
+    </members>
+</doc>
