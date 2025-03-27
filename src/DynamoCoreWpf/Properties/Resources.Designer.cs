@@ -8733,6 +8733,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Back to File Selection.
+        /// </summary>
+        public static string PublishPackageBackToFileButton {
+            get {
+                return ResourceManager.GetString("PublishPackageBackToFileButton", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Published Successfully.
         /// </summary>
         public static string PublishPackageDialogCaption {
