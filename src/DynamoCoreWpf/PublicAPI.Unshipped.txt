@@ -2975,8 +2975,6 @@ Dynamo.ViewModels.SearchViewModel.InCanvasSearchPosition -> System.Windows.Point
 Dynamo.ViewModels.SearchViewModel.IsAnySearchResult.get -> bool
 Dynamo.ViewModels.SearchViewModel.IsDetailedMode.get -> bool
 Dynamo.ViewModels.SearchViewModel.IsDetailedMode.set -> void
-Dynamo.ViewModels.SearchViewModel.IsOpen.get -> bool
-Dynamo.ViewModels.SearchViewModel.IsOpen.set -> void
 Dynamo.ViewModels.SearchViewModel.LibraryRootCategories.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.Wpf.ViewModels.NodeCategoryViewModel>
 Dynamo.ViewModels.SearchViewModel.Model.get -> Dynamo.Search.NodeSearchModel
 Dynamo.ViewModels.SearchViewModel.MoveSelection(Dynamo.ViewModels.SearchViewModel.Direction direction) -> void
