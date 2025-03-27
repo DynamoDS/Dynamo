@@ -496,6 +496,7 @@ namespace Dynamo.ViewModels
                     break;
                 case nameof(IsConnected):
                     RaisePropertyChanged(nameof(IsConnected));
+                    RaisePropertyChanged(nameof(NodeAutoCompleteMarkerVisible));
                     RefreshPortColors();
                     break;
                 case nameof(IsEnabled):
