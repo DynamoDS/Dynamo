@@ -132,7 +132,7 @@ namespace Dynamo.ViewModels
 
         private int selectedIndex = 0;
         /// <summary>
-        /// Cluster autocomplete search results.
+        /// Selected index of the current cluster autocomplete option
         /// </summary>
         public int SelectedIndex
         {
@@ -167,7 +167,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public void ConsolidateTransientNodes()
+        internal void ConsolidateTransientNodes()
         {
             var node = PortViewModel.NodeViewModel;
             var transientNodes = node.WorkspaceViewModel.Nodes.Where(x => x.IsTransient).ToList();
@@ -860,11 +860,6 @@ namespace Dynamo.ViewModels
                     }
                 });
             });
-            /*
-            foreach (var result in GetMLNodeClusterAutocompleteResults().Results)
-            {
-                ClusterResults.Add(result);
-            }*/
             //Tracking Analytics when raising Node Autocomplete with the Recommended Nodes option selected (Machine Learning)
             Analytics.TrackEvent(
                 Actions.Show,

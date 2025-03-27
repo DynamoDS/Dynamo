@@ -633,7 +633,7 @@ namespace Dynamo.ViewModels
             set
             {
                 NodeModel.IsTransient = value;
-                RaisePropertyChanged("IsTransient");
+                RaisePropertyChanged(nameof(IsTransient));
             }
             get { return NodeModel.IsTransient; }
         }

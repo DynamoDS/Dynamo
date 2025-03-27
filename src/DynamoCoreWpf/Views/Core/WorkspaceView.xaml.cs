@@ -64,7 +64,6 @@ namespace Dynamo.Views
         private PortViewModel snappedPort;
         private double currentNodeCascadeOffset;
         private Point inCanvasSearchPosition;
-       
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
 
         public WorkspaceViewModel ViewModel

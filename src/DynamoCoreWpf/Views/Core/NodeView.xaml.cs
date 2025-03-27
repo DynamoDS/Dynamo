@@ -511,7 +511,7 @@ namespace Dynamo.Controls
         }
 
 
-    #region Preview Control Related Event Handlers
+        #region Preview Control Related Event Handlers
 
         private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
         {
@@ -698,7 +698,7 @@ namespace Dynamo.Controls
         /// So we can't use MouseLeave/MouseEnter events.
         /// In this case, when we want to ensure, that mouse really left node, we use HitTest.
         /// </summary>
-        /// <param name="mousePosition">Currect position of mouse</param>
+        /// <param name="mousePosition">Correct position of mouse</param>
         /// <returns>bool</returns>
         private bool IsMouseInsideNodeOrPreview(Point mousePosition)
         {
@@ -787,7 +787,7 @@ namespace Dynamo.Controls
 
                 // We don't stash the same MenuItem multiple times.
                 if (NodeViewCustomizationMenuItems.Contains(menuItem.Header.ToString())) continue;
-                
+
                 // The MenuItem gets stashed.
                 NodeViewCustomizationMenuItems.Add(menuItem.Header.ToString(), menuItem);
             }
@@ -815,7 +815,7 @@ namespace Dynamo.Controls
             // Clearing any existing items in the node's ContextMenu.
             contextMenu.Items.Clear();
             NodeContextMenuBuilder.Build(contextMenu, viewModel, NodeViewCustomizationMenuItems);
-            
+
             contextMenu.DataContext = viewModel;
             contextMenu.IsOpen = true;
 
