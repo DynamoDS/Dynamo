@@ -250,7 +250,7 @@
                         <!--  When clicked, the filter button displays a ContextMenu of options to the user  -->
                         <Button.ContextMenu>
                             <ContextMenu Name="HostFilter"
-                                         Width="180"
+                                         Width="205"
                                          Background="{StaticResource GenericBorderBackgroundColorBrush}"
                                          DataContext="{Binding PlacementTarget.DataContext, RelativeSource={RelativeSource Mode=Self}}"
                                          DisplayMemberPath="FilterName"
@@ -393,7 +393,6 @@
 
                 <!--  Clear Filter Button  -->
                 <Button x:Name="ClearFiltersButton"
-                        Width="60"
                         Margin="0,3,5,15"
                         HorizontalAlignment="Right"
                         Command="{Binding ClearFiltersCommand}"
