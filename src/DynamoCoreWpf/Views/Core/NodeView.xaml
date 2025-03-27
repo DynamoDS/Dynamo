@@ -542,6 +542,14 @@
                     </Style>
                 </Grid.Style>
             </Grid>
+            <!-- Spacer for embedded resize thumb (visible only on resizable nodes) -->
+            <Border Width="16"
+                    Height="16"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    IsHitTestVisible="False"
+                    Visibility="{Binding Path=NodeModel.IsResizable, Converter={StaticResource BooleanToVisibilityCollapsedConverter}, Mode=OneWay}">
+            </Border>
             
             <!-- Button to open node context menu from lower right corner -->
             <Button x:Name="OptionsButton"
