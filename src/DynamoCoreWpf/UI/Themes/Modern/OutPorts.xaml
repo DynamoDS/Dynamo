@@ -184,7 +184,7 @@
                     </Style>
                 </Border.Style>
                 <Border.ToolTip>
-                    <dynui:DynamoToolTip AttachmentSide="Right" Style="{DynamicResource ResourceKey=SLightToolTip}">
+                    <dynui:DynamoToolTip AttachmentSide="Left" Style="{DynamicResource ResourceKey=SLightToolTip}">
                         <Grid>
                             <TextBlock MaxWidth="320"
                                        Text="{Binding Path=ToolTipContent}"
@@ -223,18 +223,17 @@
                 >✨</Label>
                 <Border.Style>
                     <Style TargetType="Border">
+                        <Setter Property="Opacity" Value="0"/>
+                        <!-- Default value -->
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Opacity" Value="1"/>
                             </Trigger>
-                            <Trigger Property="IsMouseOver" Value="False">
-                                <Setter Property="Opacity" Value="0"/>
-                            </Trigger>
                             <DataTrigger Binding="{Binding ElementName=NodeAutoCompleteHover, Path=IsMouseOver}" Value="True">
-                                <Setter Property="Opacity" Value="1" />
+                                <Setter Property="Opacity" Value="1"/>
                             </DataTrigger>
                             <DataTrigger Binding="{Binding ElementName=BorderHighlightOverlay, Path=IsMouseOver}" Value="True">
-                                <Setter Property="Opacity" Value="1" />
+                                <Setter Property="Opacity" Value="1"/>
                             </DataTrigger>
                         </Style.Triggers>
                     </Style>
