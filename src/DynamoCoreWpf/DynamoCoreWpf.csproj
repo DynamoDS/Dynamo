@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <UILib>true</UILib>
   </PropertyGroup>
@@ -604,6 +604,7 @@
     <Compile Include="Utilities\GroupStyleItemSelector.cs" />
     <Compile Include="Utilities\LibraryDragAndDrop.cs" />
     <Compile Include="Utilities\MessageBoxUtilities.cs" />
+    <Compile Include="Utilities\NodeAutoCompleteUtilities.cs" />
     <Compile Include="Utilities\NodeContextMenuBuilder.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
     <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
