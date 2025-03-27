@@ -5134,6 +5134,7 @@ static Dynamo.Wpf.Properties.Resources.PackageDetailsSize.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsUnknownCompatibilityVersionTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsVersions.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsVersionsAndPackageRequirements.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsViewExtensionName.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsXCompatibilityWithSetup.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDownloadConfirmMessageBoxTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDownloadErrorMessageBoxTitle.get -> string
