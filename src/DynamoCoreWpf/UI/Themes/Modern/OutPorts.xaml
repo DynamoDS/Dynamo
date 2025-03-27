@@ -157,7 +157,7 @@
             <!--  A semi-transparent border, which displays when the user's mouse moves over the port  -->
             <Border x:Name="BorderHighlightOverlay"
                     Grid.Column="0"
-                    Grid.ColumnSpan="3"
+                    Grid.ColumnSpan="2"
                     BorderBrush="Transparent"
                     Opacity="0.2"
                     SnapsToDevicePixels="True">
@@ -196,6 +196,11 @@
             </Border>
 
             <!--  A border, to initiate the node autocomplete command -->
+            <Rectangle x:Name="NodeAutoCompleteHover"
+                       Grid.Column="2"
+                       Margin="0,0,-18,0"
+                       Fill="Transparent">
+            </Rectangle>
             <Border x:Name="NodeAutoCompleteMarker"
                     Grid.Column="2"
                     Margin="0,0,-18,0"
@@ -225,6 +230,9 @@
                             <Trigger Property="IsMouseOver" Value="False">
                                 <Setter Property="Opacity" Value="0"/>
                             </Trigger>
+                            <DataTrigger Binding="{Binding ElementName=NodeAutoCompleteHover, Path=IsMouseOver}" Value="True">
+                                <Setter Property="Opacity" Value="1" />
+                            </DataTrigger>
                             <DataTrigger Binding="{Binding ElementName=BorderHighlightOverlay, Path=IsMouseOver}" Value="True">
                                 <Setter Property="Opacity" Value="1" />
                             </DataTrigger>
@@ -237,8 +245,15 @@
                     </interactivity:EventTrigger>
                 </interactivity:Interaction.Triggers>
                 <Border.ToolTip>
-                    <dynui:DynamoToolTip AttachmentSide="Right" Style="{DynamicResource ResourceKey=SLightToolTip}" Content="{x:Static p:Resources.NodeAutoCompleteToolTip}"/>
+                    <dynui:DynamoToolTip AttachmentSide="Right" Style="{DynamicResource ResourceKey=SLightToolTip}">
+                        <Grid>
+                            <TextBlock MaxWidth="320"
+                                       Text="{x:Static p:Resources.NodeAutoCompleteToolTip}"
+                                       TextWrapping="Wrap" />
+                        </Grid>
+                    </dynui:DynamoToolTip>
                 </Border.ToolTip>
+
             </Border>
 
             <Border x:Name="PortBorderHighlight"
