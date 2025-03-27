@@ -340,7 +340,7 @@ namespace Dynamo.Wpf.ViewModels
             
             // Avoid triggering auto complete for an already connected input.
             PortModel portModel = parameter as PortModel;
-            return portModel?.PortType != PortType.Input || portModel?.Connectors?.FirstOrDefault()?.Start?.Owner is null;
+            return parameter as PortModel != null ? portModel.CanAutoCompleteInput() : true;
         }
 
         private Rect2D GetNodesBoundingBox(IEnumerable<NodeModel> nodes)
