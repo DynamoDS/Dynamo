@@ -92,6 +92,15 @@ namespace Dynamo.Wpf.Utilities
             return realIntersection;
         }
 
+        /// <summary>
+        /// Automatically arranges misplaced nodes based on the specified parameters.
+        /// </summary>
+        /// <param name="wsModel">The workspace model containing the nodes to be arranged.</param>
+        /// <param name="queryNode">The node used as a starting point for the layout operation.</param>
+        /// <param name="misplacedNodes">A collection of nodes that are not properly positioned and need to be arranged.</param>
+        /// <param name="clusterLayout">Ensures misplaced nodes are positioned downstream. Nodes will be moved if necessary.</param>
+        /// <param name="checkWorkspaceNodes">Specifies whether to consider existing nodes in the workspace during the layout operation.</param>
+        /// <param name="finalizer">An action to be executed after the layout operation is complete, typically for cleanup or further adjustments.</param>
         internal static void AutoLayoutNodes(WorkspaceModel wsModel,
             NodeModel queryNode,
             IEnumerable<NodeModel> misplacedNodes,
