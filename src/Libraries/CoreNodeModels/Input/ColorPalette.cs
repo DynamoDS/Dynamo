@@ -22,7 +22,7 @@ namespace CoreNodeModels.Input
     [OutPortNames("Color")]
     [OutPortTypes("DSCore.Color")]
     [OutPortDescriptions(typeof(Resources),
-        "ColorRangePortDataResultToolTip")]
+        "ColorPalettePortDataResultToolTip")]
     public class ColorPalette : NodeModel
     {
         private DSColor dscolor = DSColor.ByARGB(255, 0, 0, 0);
