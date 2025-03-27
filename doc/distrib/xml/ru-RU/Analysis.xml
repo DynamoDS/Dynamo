@@ -1,0 +1,153 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Analysis</name>
+    </assembly>
+    <members>
+        <member name="T:Analysis.AnalysisResources">
+            <summary>Класс ресурса со строгим контролем типа, используемый для поиска локализованных строк и т. п.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.ResourceManager">
+            <summary>Возврат кэшированного экземпляра ResourceManager, используемого в данном классе.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.Culture">
+            <summary>Переопределение свойства CurrentUICulture текущего потока для всех
+               случаев поиска ресурсов при использовании данного класса ресурса со строгим контролем типа.</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyColorsMessage">
+            <summary>Поиск локализованной строки, подобной строке «Не задано ни одного цвета».</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyPointsMessage">
+            <summary>Поиск локализованной строки, подобной строке «Не задано ни одной точки».</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyUVsMessage">
+            <summary>Поиск локализованной строки, подобной строке «Не указано UV».</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.EmptyValuesMessage">
+            <summary>Поиск локализованной строки, подобной строке «Не задано ни одного значения».</summary>
+        </member>
+        <member name="P:Analysis.AnalysisResources.InputsNotEquivalentMessage">
+            <summary>Поиск локализованной строки, подобной строке «Необходимо указать эквивалентное количество точек и значений».</summary>
+        </member>
+        <member name="P:Analysis.IStructuredData`2.ValueLocations">
+            <summary>Коллекция местоположений расчета.</summary>
+        </member>
+        <member name="P:Analysis.IStructuredData`2.Values">
+            <summary>Список значений, соответствующих каждому местоположению.</summary>
+        </member>
+        <member name="P:Analysis.ISurfaceData`2.Surface">
+            <summary>Поверхность для анализа.</summary>
+        </member>
+        <member name="P:Analysis.ICurveData`2.Curve">
+            <summary>Кривая для анализа.</summary>
+        </member>
+        <member name="T:Analysis.IAnalysisModel`2">
+            <summary>Модель для анализа.</summary>
+            <typeparam name="TLocation">The analysis location type. (i.e. UV, Point)</typeparam>
+            <typeparam name="TValue">The analysis return type. (i.e. double, vector, SIUnit)</typeparam>
+        </member>
+        <member name="M:Analysis.Label.ByPointAndString(Autodesk.DesignScript.Geometry.Point,System.String)">
+            <summary>Возвращает объект метки для указанного объекта точки и метки строки.</summary>
+            <param name="point"/>
+            <param name="label"/>
+            <returns/>
+        </member>
+        <member name="T:Analysis.PointData">
+            <summary>Класс для хранения структурированных данных анализа точек.</summary>
+        </member>
+        <member name="P:Analysis.PointData.ValueLocations">
+            <summary>Список точек.</summary>
+        </member>
+        <member name="P:Analysis.PointData.Values">
+            <summary>Словарь списков двойных значений.</summary>
+        </member>
+        <member name="M:Analysis.PointData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{System.Double})">
+            <summary>Создание объекта PointAnalysisData.</summary>
+            <param name="points">Список точек.</param>
+            <param name="values">Список двойных значений.</param>
+        </member>
+        <member name="T:Analysis.Properties.Resources">
+            <summary>Класс ресурса со строгим контролем типа, используемый для поиска локализованных строк и т. п.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ResourceManager">
+            <summary>Возврат кэшированного экземпляра ResourceManager, используемого в данном классе.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.Culture">
+            <summary>Переопределение свойства CurrentUICulture текущего потока для всех
+               случаев поиска ресурсов при использовании данного класса ресурса со строгим контролем типа.</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ByPointsAndValueObsolete">
+            <summary>Поиск локализованной строки, подобной строке «Используйте узлы "Точка" и "Число" как прямые входные данные для узлов, для которых ранее использовались узлы PointData».</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.BySurfacePointObsolete">
+            <summary>Поиск локализованной строки, подобной строке «Используйте узлы "Поверхность" и "UV" как прямые входные данные для узлов, для которых ранее использовались узлы SurfaceData».</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.BySurfacePointsAndValues">
+            <summary>Поиск локализованной строки, подобной строке «Используйте узлы "Поверхность", "UV" и "Число" как прямые входные данные для узлов, для которых ранее использовались узлы SurfaceData».</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.SurfaceObsolete">
+            <summary>Поиск локализованной строки, подобной строке «Используйте поверхность, доступную в любом другом месте графика».</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueLocationObsolete">
+            <summary>Поиск локализованной строки, подобной строке «Используйте точки, доступные в любом другом месте графика».</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueLocationsObsolete">
+            <summary>Поиск локализованной строки, подобной строке «Используйте местоположения UV, доступные в любом другом месте графика».</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValuesObsolete">
+            <summary>Поиск локализованной строки, подобной строке «Используйте значения, полученные от узла, который проводит анализ».</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.ValueSurfaceObsolete">
+            <summary>Поиск локализованной строки, подобной строке «Используйте значения, полученные от узла, который проводит анализ».</summary>
+        </member>
+        <member name="P:Analysis.Properties.Resources.VectorValueObsolete">
+            <summary>Поиск локализованной строки, подобной строке «Используйте узлы "Вектор" и узлы "Число" как прямые входные данные для узлов, для которых ранее использовались узлы VectorData».</summary>
+        </member>
+        <member name="T:Analysis.SurfaceData">
+            <summary>Класс для хранения структурированных данных анализа поверхности.</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.Surface">
+            <summary>Поверхность, содержащая местоположения.</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.ValueLocations">
+            <summary>Список местоположений UV на поверхности.</summary>
+        </member>
+        <member name="P:Analysis.SurfaceData.Values">
+            <summary>Словарь списков повторов.</summary>
+        </member>
+        <member name="M:Analysis.SurfaceData.BySurfaceAndPoints(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
+            <summary>Создание объекта SurfaceData без значений.</summary>
+            <param name="surface">Поверхность, содержащая местоположения.</param>
+            <param name="uvs">Список местоположений UV на поверхности.</param>
+            <returns/>
+        </member>
+        <member name="M:Analysis.SurfaceData.BySurfacePointsAndValues(Autodesk.DesignScript.Geometry.Surface,System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},System.Collections.Generic.IList{System.Double})">
+            <summary>Создание объекта SurfaceData.</summary>
+            <param name="surface">Поверхность, содержащая местоположения.</param>
+            <param name="uvs">Список местоположений UV на поверхности.</param>
+            <param name="values">Список двойных значений.</param>
+        </member>
+        <member name="M:Analysis.AnalysisExtensions.IsAlmostEqualTo(Autodesk.DesignScript.Geometry.UV,Autodesk.DesignScript.Geometry.UV)">
+            <summary>Сравнивает две плоскости (тип UV) и возвращает значение True, если разница между этими плоскостями меньше 1,0e-6. В противном случае возвращает значение False.</summary>
+            <param name="a"/>
+            <param name="b"/>
+            <returns/>
+        </member>
+        <member name="T:Analysis.Utils.ValueLocation`1">
+            <summary>Класс для хранения значения в местоположении.</summary>
+        </member>
+        <member name="T:Analysis.VectorData">
+            <summary>Класс для хранения структурированных данных векторного анализа.</summary>
+        </member>
+        <member name="P:Analysis.VectorData.ValueLocations">
+            <summary>Список местоположений для расчета.</summary>
+        </member>
+        <member name="P:Analysis.VectorData.Values">
+            <summary>Словарь результатов.</summary>
+        </member>
+        <member name="M:Analysis.VectorData.ByPointsAndValues(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IList{Autodesk.DesignScript.Geometry.Vector})">
+            <summary>Создание объекта VectorAnalysisData.</summary>
+            <param name="points">Список точек.</param>
+            <param name="values">Список значений вектора.</param>
+        </member>
+    </members>
+</doc>

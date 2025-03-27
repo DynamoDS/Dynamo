@@ -1,0 +1,153 @@
+﻿<!--
+    Dynamo: https://github.com/DynamoDS/Dynamo
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code > .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h1>Package Manager</h1>
+
+    <p>O Package Manager do Dynamo é um local único para navegar, instalar e publicar pacotes. Acesse-o na parte superior da navegação em <b>Pacotes &gt; Package Manager</b>.</p>
+
+    <h2>O que é um pacote?</h2>
+
+    <p>O Dynamo oferece um grande número de recursos prontos para uso e também mantém uma ampla biblioteca de pacotes que pode estender significativamente a capacidade do Dynamo. Um pacote é uma coleção de nós personalizados ou funcionalidades adicionais. O Package Manager do Dynamo é um portal para a comunidade fazer o download de qualquer pacote que tenha sido publicado on-line. Esses conjuntos de ferramentas foram desenvolvidos por terceiros e pela equipe do Dynamo para estender a funcionalidade central do Dynamo, acessível a todos, e pronta para download com o clique do botão.</p>
+
+    <h2>Instalar pacotes do Dynamo</h2>
+
+    <p>É possível procurar e instalar pacotes na guia <b>Procurar pacotes</b> do Package Manager. Use o campo de pesquisa para localizar pacotes específicos. Também é possível aplicar filtros e classificar para restringir a lista para atender aos critérios, como um programa hospedeiro ou falta de dependências.</p>
+
+    <p>A compatibilidade de versões é mostrada por meio de ícones em toda a página Pesquisar pacotes:</p>
+
+    <ul>
+        <li>Um sinalizador com marca de seleção verde significa que a versão provavelmente será compatível com sua versão atual do Dynamo e do programa hospedeiro, como o Revit (se estiver usando um).</li>
+        <li>Um sinalizador com um losango vermelho significa que a versão provavelmente será incompatível com sua versão atual do Dynamo e hospedeiro (se estiver usando um).</li>
+        <li>Um sinalizador com um ponto de interrogação azul significa que as informações de compatibilidade não são conhecidas para a versão do pacote. Isso pode ou não funcionar com sua configuração.</li>
+    </ul>
+
+    <p>Para visualizar mais informações sobre um pacote, clique em <b>Informações</b> ou no nome do pacote. Isso abre um painel lateral no qual é possível ler uma descrição do pacote, encontrar informações da versão e da licença etc.</p>
+
+    <p>Para instalar um pacote, clique em <b>Instalar</b> na vista de pesquisa. Se o autor do pacote tiver adicionado informações de compatibilidade ao pacote, a versão compatível mais recente será instalada por padrão. Caso contrário, a versão mais recente será instalada, a menos que você escolha outra versão no menu suspenso. No painel de detalhes do pacote, é possível clicar em <b>Instalar</b> na parte superior de uma versão específica na seção Versões e requisitos do pacote para instalar essa versão.</p>
+
+    <p>Para especificar a pasta em que o pacote será instalado, clique na seta do menu suspenso ao lado do botão Instalar.</p>
+
+    <p>É possível encontrar uma lista dos pacotes instalados na guia <b>Pacotes instalados</b> do Package Manager. Nessa guia, é possível visualizar os arquivos dos pacotes, desinstalar pacotes e muito mais.</p>
+
+    <h2>Votar em pacotes</h2>
+
+    <p>Se desejar expressar seu reconhecimento pelo trabalho de um autor de pacote, será possível votar em um pacote instalado. Vá para <b>Pesquisar informações de pacotes </b>, clique no ícone de <b>coração</b> na parte superior dos detalhes do pacote. Isso só está disponível para pacotes instalados.</p>
+
+    <h2>Publicação de pacotes do Dynamo</h2>
+
+    <p>O Package Manager permite publicar pacotes no Dynamo. Abra a guia <b>Publicar um pacote</b> para começar o processo passo a passo de publicação de um pacote. A guia Publicar um pacote solicita todas as informações necessárias e opcionais relacionadas ao pacote que você deseja publicar.</p>
+
+    <h3>Etapa 1: Detalhes do pacote</h3>
+
+    <p>Nessa página, é possível adicionar informações sobre o pacote como um todo, bem como a versão individual. Somente o nome, a descrição e o número da versão do pacote são necessários; todos os outros campos são opcionais, mas recomendados para ajudar os usuários a localizar e entender melhor a finalidade do pacote.</p>
+
+    <h4>Informações do pacote</h4>
+
+    <p><b>Nome (obrigatório):</b></p>
+    <p>Nome do pacote que você deseja publicar. Esse nome será exibido na biblioteca, na pesquisa de pacotes e no site do Package Manager. Os nomes de pacote devem ter pelo menos 3 caracteres.</p>
+
+    <p><b>Descrição (obrigatório):</b></p>
+    <p>A descrição é uma oportunidade para adicionar mais detalhes sobre o pacote, incluindo a listagem de exceções e pré-requisitos. Ela também pode ser usada para instruir os usuários sobre o que o pacote faz e como ele pode ser usado em seus espaços de trabalho.</p>
+
+    <p>Para obter informações específicas da versão, é mais eficiente adicionar um link de notas de versão. Observe que as informações de compatibilidade são adicionadas na próxima etapa; portanto, você não precisa adicionar informações de compatibilidade específicas da versão à descrição do pacote.</p>
+
+    <p><b>Grupo:</b></p>
+    <p>É possível usar esse campo para especificar um grupo ao qual um pacote pertence, como a empresa/organização.</p>
+
+    <p><b>Palavras-chave:</b></p>
+    <p>Palavras-chave que podem ser usadas como identificadores relacionados ao pacote, por exemplo, Projeto generativo, ML etc. As palavras-chave podem ajudar os usuários a encontrar os pacotes por meio da pesquisa. Você pode digitar várias palavras-chave no campo de uma só vez separando-as com uma vírgula e pressionando Enter.</p>
+
+    <p><b>Link do site:</b></p>
+    <p>Um link para um site que fornece ao usuário mais informações sobre o pacote ou a organização/autor.</p>
+
+    <p><b>Link do repositório:</b></p>
+    <p>Um link para o repositório do pacote que permite que os usuários visualizem ou contribuam para o desenvolvimento do pacote.</p>
+
+    <p><b>Titular dos direitos autorais:</b></p>
+    <p>Nome da pessoa que detém os direitos autorais do pacote. Se deixado em branco, o padrão será seu nome de usuário.</p><b>Informações da versão</b><p><b>Versão (obrigatório):</b></p>
+    <p>O campo de versão está dividido em três seções, principal, secundária e de compilação, o que permite que você, como autor do pacote, carregue novas versões do pacote que seguem a <a href="https://semver.org/">semântica de controle de versão</a>. Os autores de pacotes podem querer publicar mais versões de seus pacotes com recursos novos e aprimorados, aperfeiçoar alguns detalhes que não foram considerados na primeira versão ou corrigir uma falha.</p>
+
+    <p><b>Link das notas de versão:</b></p>
+    <p>Um link para as notas de versão desta versão. É possível adicionar um link separado para cada versão publicada.</p>
+
+    <p><b>Ano dos direitos autorais:</b></p>
+    <p>O ano dos direitos autorais do pacote. Se deixado em branco, o padrão será o ano em que o pacote foi publicado.</p>
+
+    <p><b>Licença:</b></p>
+    <p>Uma licença com base na qual o pacote é liberado. A licença se aplica à última versão do pacote. Se deixado em branco, o pacote utilizará a licença MIT.</p>
+
+    <h2>Etapa 2: Compatibilidade</h2>
+    <p>Adicione informações de compatibilidade à versão do pacote. Essas informações ajudarão os usuários a localizar e instalar apenas as versões do pacote que serão compatíveis com sua configuração, reduzindo possíveis problemas e evitando confusão. Quando as informações de compatibilidade de versão são atribuídas, os usuários podem filtrar somente por versões compatíveis e são notificados sobre o status de compatibilidade por meio dos ícones na guia Procurar pacotes.</p>
+    <p>Para começar a adicionar informações de compatibilidade, selecione se a versão do pacote funciona somente em um programa hospedeiro, como o Revit ou o Civil 3D; em um programa hospedeiro e no Dynamo Core; ou somente no Dynamo Core. Após selecionar, você verá controles de interface do usuário adicionais para começar a atribuir uma ou mais versões ao pacote.</p>
+    <p>Para o Dynamo Core ou um programa hospedeiro, é possível usar os menus suspensos <b>De</b> e <b>Até</b> para selecionar um intervalo ou adicionar versões uma a uma no menu suspenso <b>Adicionar versões individuais</b>. No menu suspenso <b>Para</b>, também há a opção de selecionar um caractere curinga, por exemplo, 2025.x (todas as versões). Isso significa que a versão do pacote é compatível com todas as versões dessa versão principal.</p>
+    <p>À medida que adiciona versões, é possível adicioná-las à tabela <b>Todas as versões compatíveis</b>, à direita, clicando no botão <b>Adicionar</b> no meio. Se você cometer um erro, será possível remover versões dessa tabela clicando no ícone x no identificador de versão.</p>
+    <p>Os autores de pacotes podem atualizar as informações de compatibilidade de seus pacotes do Dynamo no site do Dynamo Package Manager (<a href="https://www.dynamopackages.com">www.dynamopackages.com</a>). Para fazer isso, faça login no site, navegue até a guia Meus pacotes, localize seu pacote e siga as etapas descritas acima.</p>
+
+    <h2>Passo 3: Selecionar arquivos</h2>
+    <h3>Adicionar arquivos/diretório:</h3>
+    <p>Selecione e adicione todos os arquivos relacionados ao pacote. Geralmente, a pasta bin, os binários e as dependências são adicionados. É possível adicionar arquivos ou pastas individuais.</p>
+
+    <h3>Selecionar arquivos do pacote:</h3>
+    <p>Essa seção permite organizar o conteúdo do pacote antes da publicação. Após selecionar os arquivos ou as pastas a serem adicionados, será possível visualizar, remover ou adicionar arquivos na página <b>Selecionar arquivos do pacote</b>. É possível visualizar a estrutura de pastas dos arquivos selecionados no painel esquerdo e o conteúdo de cada pasta no painel direito.</p>
+    <p>Para remover um arquivo do pacote, clique nele e, em seguida, clique no ícone da lixeira (remover) na linha superior. Também é possível selecionar e remover vários arquivos dessa maneira. Para remover pastas inteiras do pacote, clique na pasta e, em seguida, clique no ícone da lixeira que é exibido ao lado dela.</p>
+
+    <h3>Selecionar bibliotecas de nós:</h3>
+    <p>Especifique quais dos arquivos adicionados ao pacote são as bibliotecas de nós marcando a caixa na coluna <b>Biblioteca de nós</b>. As bibliotecas de nós contêm os tipos e os métodos que o Dynamo importará como nós. Em geral, você deve marcar qualquer montagem como uma biblioteca de nós que contenha tipos que deseja importar para o Dynamo. As montagens ZeroTouch, NodeModel ou NodeViewCustomization devem ser marcadas como uma biblioteca de nós.</p>
+    <p>Para carregar as montagens NodeViewCustomizations da interface do usuário, elas devem ser definidas na mesma montagem que contém as definições correspondentes do NodeModel OU definidas em uma montagem separada. Em ambos os casos, a montagem deve ser identificada como uma biblioteca de nós. No momento, no caso das montagens marcadas como biblioteca de nós que contêm os tipos NodeModel ou NodeCustomization, todos os outros tipos serão ignorados. Por esse motivo, é importante separar os tipos NodeModel/NodeViewCustomization dos tipos que você deseja importar usando a importação ZeroTouch.</p>
+
+    <h3>Manter estrutura de pastas:</h3>
+    <p>Ao criar um pacote, o Dynamo reorganiza automaticamente os arquivos do pacote em pastas bin, doc, dyf e extras. Os autores de pacotes avançados com estruturas de pastas de pacotes complexas podem optar por marcar a caixa de seleção <b>Manter estrutura de pastas</b> abaixo do painel de visualização do conteúdo do pacote. Quando essa opção estiver ativada, o Dynamo não fará alterações na estrutura de pastas do pacote; em vez disso, os arquivos do pacote serão carregados como estão.</p>
+    <p>Os pacotes precisam ser configurados de uma determinada maneira para garantir que funcionem e para evitar problemas. Quando estiver em dúvida, verifique se a caixa de seleção está desmarcada para permitir que o Dynamo configure a estrutura de pastas.</p>
+
+    <h2>Passo 4: Visualizar arquivos</h2>
+    <p>Quando estiver satisfeito com o conteúdo do pacote, clique em Avançar para ter uma visualização de como os arquivos do pacote serão configurados depois que forem publicados. Essa página é somente visualização; para fazer alterações adicionais no conteúdo do pacote, volte para a etapa anterior.</p>
+
+    <h2>Etapa 5: Confirmar</h2>
+    <p>Essa etapa dá a você a chance de ver todos os detalhes do pacote, compatibilidade e arquivos antes da publicação. Para evitar alterações acidentais, as opções selecionadas nas etapas anteriores são somente leitura na página Confirmar. Para alterá-las, volte para as etapas anteriores usando o botão Voltar ou os controles de navegação na parte superior da página.</p>
+
+    <p><b>Adicionar caminho do arquivo markdown (opcional):</b></p>
+    <p>Você tem a opção de especificar um caminho de arquivo que hospeda o documentação do markdown (.md) para o pacote na seção <b>Caminho do arquivo markdown</b>. A documentação do nó será exibida no <b>Navegador de documentação</b>, disponível em <b>Extensões</b>, no menu de navegação superior do Dynamo, ou clicando com o botão direito do mouse em um nó e selecionando <b>Ajuda</b>.</p>
+
+    <p><b>Dependências do pacote externo:</b></p>
+    <p>Com base nos arquivos selecionados na Etapa 3, o Dynamo detecta as dependências do pacote externo, que estão listadas aqui.</p>
+
+    <h2>Publicar o pacote</h2>
+    <p>Após preencher todos os detalhes necessários, será possível publicar o pacote localmente ou on-line. Ao publicar localmente, o pacote será publicado no diretório raiz local. Ao publicar on-line, o pacote será carregado no Package Manager para que seja pesquisável por outros usuários depois de passar na verificação antivírus. Ele também está localizado na guia <b>Meus pacotes</b>.</p>
+
+    <h2>Verificações antivírus</h2>
+    <p>Para fornecer um ambiente seguro a todos os usuários de pacotes do Dynamo, introduzimos verificações antivírus para novos pacotes. Quando um usuário carregar um pacote, ele será verificado para detectar se existem vírus e somente ficará disponível publicamente depois que for marcado como seguro. A verificação ocorrerá durante o processo de carregamento do pacote e não levará mais tempo do que a duração usual de alguns minutos para que o novo pacote esteja disponível on-line.</p>
+    <p>Se o pacote estiver marcado como infectado, a página de pesquisa do Package Manager exibirá uma notificação informando que o pacote carregado foi considerado infectado e não será publicado on-line. Para tornar o pacote disponível publicamente, verifique os arquivos incluídos no pacote e carregue uma nova versão através do Package Manager.</p>
+
+    <h2>Gerenciamento dos pacotes</h2>
+    <p>É possível encontrar uma lista dos pacotes publicados na guia <b>Meus pacotes</b> do Package Manager, na qual é possível tornar pacotes obsoletos, publicar uma nova versão etc.</p>
+
+    <h2>Tornar um pacote obsoleto</h2>
+    <p>Como proprietário de um pacote, você pode tornar um pacote obsoleto. Isso coloca uma etiqueta no pacote para notificar outros usuários de que o pacote foi descontinuado e não é mais mantido. A pesquisa de pacotes por padrão filtra pacotes obsoletos, embora você possa aplicar o filtro Obsoleto para incluí-los nos resultados da pesquisa.</p>
+    <p>Para cancelar a obsolescência de um pacote, localize o pacote no Package Manager na guia <b>Pacotes instalados</b> ou <b>Meus pacotes</b>. Clique no menu Opções (três pontos) e selecione Obsoleto.</p>
+
+    <h2>Transferir a propriedade de um pacote</h2>
+    <p>No momento, não é possível transferir a propriedade do pacote por meio do Package Manager. Você pode solicitar que a equipe do Dynamo adicione mais um proprietário. Observe que não podemos remover proprietários existentes, apenas adicionar mais responsáveis pela manutenção do pacote.</p>
+    <p>Se você desejar adicionar uma conta como proprietária ao pacote existente, envie um e-mail para <a href="mailto:dynamoteam@dynamobim.org">dynamoteam@dynamobim.org</a>. Certifique-se de fornecer o nome do pacote e o nome da conta que deseja adicionar.</p>
+
+    <h2>Excluir um pacote</h2>
+    <p>Se você desejar enviar uma solicitação de exclusão, envie um e-mail para <a href="mailto:dynamoteam@dynamobim.org">dynamoteam@dynamobim.org</a> com a linha de assunto “Solicitação de exclusão de pacotes” e certifique-se de fornecer o nome do pacote. Assim que a solicitação for recebida, um e-mail de confirmação será enviado para o e-mail do autor associado ao pacote. Depois de aprovada a solicitação, a exclusão ocorrerá no prazo de 30 dias. Se o autor não responder no prazo de 30 dias, será necessário enviar uma nova solicitação de exclusão.</p>
+    <p>Observe que a exclusão de um pacote não libera o nome do pacote para reutilização por novos pacotes.</p>
+
+    <h2>Configurações do pacote</h2>
+    <p>É possível visualizar as configurações relacionadas ao pacote na guia <b>Configurações do pacote</b> do Package Manager, incluindo novos caminhos de download de pacotes e caminhos de pesquisa de pacote/biblioteca. Para editar as configurações, clique no link Preferências na guia Configurações do pacote para acessar o painel Preferências.</p>
+
+</body>
