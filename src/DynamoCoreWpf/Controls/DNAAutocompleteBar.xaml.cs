@@ -16,7 +16,7 @@ namespace Dynamo.UI.Controls
     /// Notice this control shares a lot of logic with InCanvasSearchControl for now
     /// But they will diverge eventually because of UI improvements to auto complete.
     /// </summary>
-    public partial class DNAAutocompleteBar : IDisposable
+    public partial class DNAAutocompleteBar
     {
         /// <summary>
         /// Node AutoComplete Search ViewModel DataContext
@@ -31,10 +31,9 @@ namespace Dynamo.UI.Controls
             InitializeComponent();
             if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
-                Application.Current.Deactivated += CurrentApplicationDeactivated;
                 if (Application.Current?.MainWindow != null)
                 {
-                    Application.Current.MainWindow.Closing += NodeAutoCompleteSearchControl_Unloaded;
+                    Application.Current.MainWindow.Closing += UnsubscribeEvents;
                 }
             }
             HomeWorkspaceModel.WorkspaceClosed += this.CloseAutoCompletion;
@@ -42,22 +41,16 @@ namespace Dynamo.UI.Controls
             LoadAndPopulate();
         }
 
-        private void NodeAutoCompleteSearchControl_Unloaded(object sender, System.ComponentModel.CancelEventArgs e)
+        private void UnsubscribeEvents(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
-                Application.Current.Deactivated -= CurrentApplicationDeactivated;
                 if (Application.Current?.MainWindow != null)
                 {
-                    Application.Current.MainWindow.Closing -= NodeAutoCompleteSearchControl_Unloaded;
+                    Application.Current.MainWindow.Closing -= UnsubscribeEvents;
                 }
             }
             HomeWorkspaceModel.WorkspaceClosed -= this.CloseAutoCompletion;
-        }
-
-        private void CurrentApplicationDeactivated(object sender, EventArgs e)
-        {
-            CloseAutoCompletion();
         }
 
         private void LoadAndPopulate()
@@ -148,15 +141,8 @@ namespace Dynamo.UI.Controls
             ViewModel.PortViewModel.Highlight = Visibility.Hidden;
             ViewModel.IsOpen = false;
             this.Close();
+            UnsubscribeEvents(this, null);
             ViewModel?.OnNodeAutoCompleteWindowClosed();
-        }
-
-        /// <summary>
-        /// Dispose the control
-        /// </summary>
-        public void Dispose()
-        {
-            NodeAutoCompleteSearchControl_Unloaded(this, null);
         }
     }
 }
