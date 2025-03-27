@@ -30,14 +30,14 @@ namespace Dynamo.ViewModels
         private bool showUseLevelMenu;
         private const double autocompletePopupSpacing = 2.5;
         private const double proxyPortContextMenuOffset = 20;
-        private bool nodeAutoCompleteMarkerVisible;
         protected static readonly SolidColorBrush PortBackgroundColorPreviewOff = new SolidColorBrush(Color.FromRgb(102, 102, 102));
         protected static readonly SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
         protected static readonly SolidColorBrush PortBorderBrushColorDefault = new SolidColorBrush(Color.FromRgb(161, 161, 161));
         private SolidColorBrush portBorderBrushColor = PortBorderBrushColorDefault;
         private SolidColorBrush portBackgroundColor = PortBackgroundColorDefault;
         private Visibility highlight = Visibility.Collapsed;
-        
+        private bool nodeAutoCompleteMarkerVisible = false;
+
         /// <summary>
         /// Port model.
         /// </summary>
@@ -107,44 +107,6 @@ namespace Dynamo.ViewModels
             get { return port.IsEnabled; }
         }
 
-        /// <summary>
-        /// Controls whether the node autocomplete marker is visible
-        /// </summary>
-        public bool NodeAutoCompleteMarkerVisible
-        {
-            get => nodeAutoCompleteMarkerVisible;
-            set
-            {
-                if (!IsAutoCompleteMarkerDisabled() && CanHaveAutoCompleteMarker())
-                {
-                    nodeAutoCompleteMarkerVisible = value;
-                }
-                else
-                {
-                    nodeAutoCompleteMarkerVisible = false;
-                }
-                RaisePropertyChanged(nameof(NodeAutoCompleteMarkerVisible));
-            }
-        }
-        private bool IsAutoCompleteMarkerDisabled()
-        {
-            // True if autocomplete is turned off globally
-            // Or a connector is being created now
-            // Or node is frozen.
-            // Or node is transient state.
-            return !NodeViewModel.DynamoViewModel.EnableNodeAutoComplete ||
-                   NodeViewModel.WorkspaceViewModel.IsConnecting ||
-                   NodeViewModel.IsFrozen ||
-                   NodeViewModel.IsTransient;
-        }
-        private bool CanHaveAutoCompleteMarker()
-        {
-            return ((this is InPortViewModel && PortModel.Connectors.Count == 0) || this is OutPortViewModel)
-                   && NodeViewModel.NodeModel is not CodeBlockNodeModel
-                   && NodeViewModel.NodeModel is not CoreNodeModels.Watch
-                   && NodeViewModel.NodeModel is not PythonNodeModels.PythonNode
-                   && NodeViewModel.NodeModel is not PythonNodeModels.PythonStringNode;
-        }
         /// <summary>
         /// The height of port.
         /// </summary>
@@ -250,6 +212,35 @@ namespace Dynamo.ViewModels
                 highlight = value;
                 RaisePropertyChanged(nameof(Highlight));
             }
+        }
+
+        /// <summary>
+        /// Controls whether the node autocomplete marker is visible
+        /// </summary>
+        public bool NodeAutoCompleteMarkerVisible
+        {
+            get => CanHaveAutoCompleteMarker();
+           
+        }
+        private bool IsAutoCompleteMarkerDisabled()
+        {
+            // True if autocomplete is turned off globally
+            // Or a connector is being created now
+            // Or node is frozen.
+            // Or node is transient state.
+            return !NodeViewModel.DynamoViewModel.EnableNodeAutoComplete ||
+                   NodeViewModel.WorkspaceViewModel.IsConnecting ||
+                   NodeViewModel.IsFrozen ||
+                   NodeViewModel.IsTransient;
+        }
+        private bool CanHaveAutoCompleteMarker()
+        {
+            return ((this is InPortViewModel && PortModel.Connectors.Count == 0) || this is OutPortViewModel)
+                   && NodeViewModel.NodeModel is not CodeBlockNodeModel
+                   && NodeViewModel.NodeModel is not CoreNodeModels.Watch
+                   && NodeViewModel.NodeModel is not PythonNodeModels.PythonNode
+                   && NodeViewModel.NodeModel is not PythonNodeModels.PythonStringNode
+                   && !IsAutoCompleteMarkerDisabled();
         }
 
         /// <summary>
@@ -473,7 +464,6 @@ namespace Dynamo.ViewModels
             {
                 case nameof(IsSelected):
                     RaisePropertyChanged(nameof(IsSelected));
-                    NodeAutoCompleteMarkerVisible = IsSelected;
                     break;
                 case nameof(State):
                     RaisePropertyChanged(nameof(State));
@@ -507,7 +497,6 @@ namespace Dynamo.ViewModels
                 case nameof(IsConnected):
                     RaisePropertyChanged(nameof(IsConnected));
                     RefreshPortColors();
-                    NodeAutoCompleteMarkerVisible = IsSelected;
                     break;
                 case nameof(IsEnabled):
                     RaisePropertyChanged(nameof(IsEnabled));

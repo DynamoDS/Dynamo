@@ -114,7 +114,7 @@
                     </Style>
                 </Rectangle.Style>
             </Rectangle>
-    
+
             <!--  Grid containing the Port Name TextBox  -->
             <Grid Name="PortNameGrid"
                   Grid.Column="0"
@@ -157,7 +157,7 @@
             <!--  A semi-transparent border, which displays when the user's mouse moves over the port  -->
             <Border x:Name="BorderHighlightOverlay"
                     Grid.Column="0"
-                    Grid.ColumnSpan="2"
+                    Grid.ColumnSpan="3"
                     BorderBrush="Transparent"
                     Opacity="0.2"
                     SnapsToDevicePixels="True">
@@ -216,7 +216,21 @@
                     Height="25"
                     Margin="-3,-3,0,0"
                 >✨</Label>
-
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Opacity" Value="1"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="False">
+                                <Setter Property="Opacity" Value="0"/>
+                            </Trigger>
+                            <DataTrigger Binding="{Binding ElementName=BorderHighlightOverlay, Path=IsMouseOver}" Value="True">
+                                <Setter Property="Opacity" Value="1" />
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
                 <interactivity:Interaction.Triggers>
                     <interactivity:EventTrigger EventName="PreviewMouseLeftButtonDown">
                         <interactivity:InvokeCommandAction Command="{Binding NodeAutoCompleteCommand}" PassEventArgsToCommand="True"/>
