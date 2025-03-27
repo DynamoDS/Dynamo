@@ -1407,6 +1407,7 @@ Dynamo.UI.Controls.CodeCompletionEditor.ReturnFocus() -> void
 Dynamo.UI.Controls.CodeCompletionEditor.SetFocus() -> void
 Dynamo.UI.Controls.CodeCompletionEditor.UpdateNodeValue(string property) -> void
 Dynamo.UI.Controls.DNAAutocompleteBar
+Dynamo.UI.Controls.DNAAutocompleteBar.Dispose() -> void
 Dynamo.UI.Controls.DNAAutocompleteBar.DNAAutocompleteBar(System.Windows.Window window, Dynamo.ViewModels.NodeAutoCompleteSearchViewModel viewModel) -> void
 Dynamo.UI.Controls.DynamoToolTip
 Dynamo.UI.Controls.DynamoToolTip.AttachmentSide.get -> Dynamo.UI.Controls.DynamoToolTip.Side
