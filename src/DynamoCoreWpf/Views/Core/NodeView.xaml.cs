@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -500,7 +499,7 @@ namespace Dynamo.Controls
         }
 
 
-        #region Preview Control Related Event Handlers
+    #region Preview Control Related Event Handlers
 
         private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
         {
@@ -508,9 +507,6 @@ namespace Dynamo.Controls
             // ViewModel.DynamoViewModel.ShowPreviewBubbles will be updated AFTER node mouse enter event occurs
             // so, wait while ShowPreviewBubbles binding updates value
             Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
-
-
-            Dispatcher.BeginInvoke(new Action(TryShowAutoCompleteMarker), DispatcherPriority.Loaded);
         }
 
         private void TryShowPreviewBubbles()
@@ -537,40 +533,6 @@ namespace Dynamo.Controls
             Dispatcher.DelayInvoke(previewDelay, BringToFront);
         }
 
-        private void TryShowAutoCompleteMarker()
-        {
-            //show the node autocomplete marker if available, skip codeblocks and watch nodes
-            if (IsAutoCompleteMarkerDisabled())
-            {
-                return;
-            }
-
-            if (ViewModel.NodeModel is not CodeBlockNodeModel && ViewModel.NodeModel is not CoreNodeModels.Watch && ViewModel.NodeModel is not PythonNodeModels.PythonNode && ViewModel.NodeModel is not PythonNodeModels.PythonStringNode)
-            {
-                var ports = new List<PortViewModel>(ViewModel.InPorts);
-                ports.AddRange(ViewModel.OutPorts);
-
-                foreach (PortViewModel port in ports)
-                {
-                    //if there are connectors present, do not show marker.
-                    //We check for connector count because 'IsConnected' returns true for use of default value
-                    port.NodeAutoCompleteMarkerVisible = port.PortModel.Connectors.Count < 1;
-                }
-            }
-        }
-
-        private void TryHideAutoCompleteMaker()
-        {
-            //hide the node autocomplete marker if mouse leaves the node
-            var ports = new List<PortViewModel>(ViewModel.InPorts);
-            ports.AddRange(ViewModel.OutPorts);
-
-            foreach (PortViewModel port in ports)
-            {
-                port.NodeAutoCompleteMarkerVisible = false;
-            }
-        }
-
         private bool IsPreviewDisabled()
         {
             // True if preview bubbles are turned off globally 
@@ -585,24 +547,11 @@ namespace Dynamo.Controls
                 ViewModel.WorkspaceViewModel.IsSelecting || !previewEnabled ||
                 !ViewModel.IsPreviewInsetVisible || ViewModel.IsFrozen || viewModel.IsTransient;
         }
-        private bool IsAutoCompleteMarkerDisabled()
-        {
-            // True if autocomplete is turned off globally
-            // Or a connector is being created now
-            // Or node is frozen.
-            // Or node is transient state.
-            return !ViewModel.DynamoViewModel.EnableNodeAutoComplete ||
-                   ViewModel.WorkspaceViewModel.IsConnecting ||
-                   ViewModel.IsFrozen ||
-                   viewModel.IsTransient;
-        }
+
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
             ViewModel.ZIndex = oldZIndex;
 
-            //hide the node autocomplete marker if mouse leaves the node
-           TryHideAutoCompleteMaker();
-            
             //Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
             if (ViewModel.NodeModel != null && ViewModel.NodeModel is CoreNodeModels.Watch) return;
 
@@ -730,8 +679,6 @@ namespace Dynamo.Controls
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Hidden);
             }
-
-            TryHideAutoCompleteMaker();
         }
 
         /// <summary>
@@ -828,7 +775,7 @@ namespace Dynamo.Controls
 
                 // We don't stash the same MenuItem multiple times.
                 if (NodeViewCustomizationMenuItems.Contains(menuItem.Header.ToString())) continue;
-
+                
                 // The MenuItem gets stashed.
                 NodeViewCustomizationMenuItems.Add(menuItem.Header.ToString(), menuItem);
             }
@@ -856,7 +803,7 @@ namespace Dynamo.Controls
             // Clearing any existing items in the node's ContextMenu.
             contextMenu.Items.Clear();
             NodeContextMenuBuilder.Build(contextMenu, viewModel, NodeViewCustomizationMenuItems);
-
+            
             contextMenu.DataContext = viewModel;
             contextMenu.IsOpen = true;
 

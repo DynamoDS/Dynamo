@@ -93,7 +93,7 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (!(sender is ListBoxItem listBoxItem) || e.OriginalSource is Thumb) return;
 

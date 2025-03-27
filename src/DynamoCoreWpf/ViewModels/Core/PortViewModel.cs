@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
-using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
@@ -30,7 +29,6 @@ namespace Dynamo.ViewModels
         private const double autocompletePopupSpacing = 2.5;
         private const double proxyPortContextMenuOffset = 20;
         internal bool inputPortDisconnectedByConnectCommand = false;
-        private bool nodeAutoCompleteMarkerVisible;
         protected static readonly SolidColorBrush PortBackgroundColorPreviewOff = new SolidColorBrush(Color.FromRgb(102, 102, 102));
         protected static readonly SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
         protected static readonly SolidColorBrush PortBorderBrushColorDefault = new SolidColorBrush(Color.FromRgb(161, 161, 161));
@@ -108,19 +106,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Controls whether the node autocomplete marker is visible
-        /// </summary>
-        public bool NodeAutoCompleteMarkerVisible
-        {
-            get => nodeAutoCompleteMarkerVisible;
-            set
-            {
-                nodeAutoCompleteMarkerVisible = value;
-                RaisePropertyChanged(nameof(NodeAutoCompleteMarkerVisible));
-            }
-        }
-
-        /// <summary>
         /// The height of port.
         /// </summary>
         public double Height
@@ -157,7 +142,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-        /// <summary>
         /// IsHitTestVisible property gets a value that declares whether 
         /// a Snapping rectangle can possibly be returned as a hit test result.
         /// When FirstActiveConnector is not null, Snapping rectangle handles click events.
@@ -503,10 +487,6 @@ namespace Dynamo.ViewModels
         // Handler to invoke node Auto Complete
         private void AutoComplete(object parameter)
         {
-            //handle the mouse event to prevent connection from starting
-            MouseButtonEventArgs evArgs = parameter as MouseButtonEventArgs;
-            evArgs.Handled = true;
-
             var wsViewModel = node?.WorkspaceViewModel;
             if (wsViewModel is null || wsViewModel.NodeAutoCompleteSearchViewModel is null)
             {
@@ -541,10 +521,6 @@ namespace Dynamo.ViewModels
         // Handler to invoke Node autocomplete cluster
         private void AutoCompleteCluster(object parameter)
         {
-            //handle the mouse event to prevent connection from starting
-            MouseButtonEventArgs evArgs = parameter as MouseButtonEventArgs;
-            evArgs.Handled = true;
-            
             var wsViewModel = node.WorkspaceViewModel;
             wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
 
