@@ -1,11 +1,11 @@
-﻿using System;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using Autodesk.DesignScript.Geometry;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
-using Point = Autodesk.DesignScript.Geometry.Point;
+using Autodesk.GeometryPrimitives.Dynamo.Geometry;
+using Vector = Autodesk.GeometryPrimitives.Dynamo.Math.Vector3d;
 
 namespace Dynamo.Manipulation
 {
@@ -20,13 +20,14 @@ namespace Dynamo.Manipulation
     public class MousePointManipulator : NodeManipulator
     {
         private Point origin;
-        internal override Point Origin { get { return origin; } }
+        internal override Point Origin => origin;
 
         private TranslationGizmo gizmo;
 
         // Holds manipulator axis and input node pair for each input port.
         // This collection is accessed from multiple threads
-        private ConcurrentDictionary<int, Tuple<Vector, NodeModel>> indexedAxisNodePairs = new ConcurrentDictionary<int, Tuple<Vector, NodeModel>>();
+        private readonly ConcurrentDictionary<int, Tuple<Vector, NodeModel>> indexedAxisNodePairs
+            = new ConcurrentDictionary<int, Tuple<Vector, NodeModel>>();
 
         internal MousePointManipulator(DSFunction node, DynamoManipulationExtension manipulatorContext)
             : base(node, manipulatorContext)
@@ -38,15 +39,14 @@ namespace Dynamo.Manipulation
         protected override void AssignInputNodes()
         {
             //Default axes
-            var axes = new Vector[] { Vector.XAxis(), Vector.YAxis(), Vector.ZAxis() };
+            var axes = new Vector[] { Vector.XAxis, Vector.YAxis, Vector.ZAxis };
 
             indexedAxisNodePairs.Clear();
 
             for (int i = 0; i < 3; i++)
             {
                 //First find out if the input can be manipulated.
-                NodeModel node = null;
-                if (!CanManipulateInputNode(i, out node))
+                if (!CanManipulateInputNode(i, out var node))
                 {
                     continue;
                 }
@@ -69,7 +69,7 @@ namespace Dynamo.Manipulation
                     {
                         //Combine old axis with this axis
                         axis = item.Value.Item1;
-                        axis = axis.Add(axes[i]);
+                        axis = axis + axes[i];
                         idx = item.Key;
                         break;
                     }
@@ -87,10 +87,9 @@ namespace Dynamo.Manipulation
             // Normalize all axes in indexedAxisNodePairs
             for (int i = 0; i < 3; i++)
             {
-                Tuple<Vector, NodeModel> pair;
-                if (indexedAxisNodePairs.TryGetValue(i, out pair))
+                if (indexedAxisNodePairs.TryGetValue(i, out var pair))
                 {
-                    indexedAxisNodePairs[i] = Tuple.Create(pair.Item1.Normalized(), pair.Item2);
+                    indexedAxisNodePairs[i] = Tuple.Create(pair.Item1.Unit, pair.Item2);
                 }
             }
         }
@@ -109,7 +108,7 @@ namespace Dynamo.Manipulation
                 yield break;
 
             //No axis data, so no gizmo.
-            if (!indexedAxisNodePairs.Any())
+            if (indexedAxisNodePairs.IsEmpty)
                 yield break;
 
             if (createOrUpdate)
@@ -134,11 +133,10 @@ namespace Dynamo.Manipulation
             if(axis1 == null)
             {
                 //Hit object is a plane, two axes will be updated simultaneously.
-                var plane = hitObject as Plane;
-                if(plane != null)
+                if(hitObject is Plane plane)
                 {
-                    axis1 = plane.XAxis;
-                    axis2 = plane.YAxis;
+                    axis1 = plane.UAxis;
+                    axis2 = plane.Normal * plane.UAxis;
                 }
             }
 
@@ -149,11 +147,8 @@ namespace Dynamo.Manipulation
                 var node = item.Value.Item2;
                 if (v.Equals(axis1) || v.Equals(axis2))
                 {
-                    if (node == null)
-                    {
-                        node = CreateAndConnectInputNode(0, item.Key);
-                    }
-                    
+                    node ??= CreateAndConnectInputNode(0, item.Key);
+
                     nodes.Add(item.Key, node);
                 }
             }
@@ -178,9 +173,8 @@ namespace Dynamo.Manipulation
         /// <param name="offset">Offset by which the gizmo has moved.</param>
         protected override void OnGizmoMoved(IGizmo gizmoInAction, Vector offset)
         {
-            var offsetPos = origin.Add(offset);
-            origin.Dispose();
-            origin = offsetPos;
+            var offsetPos = origin.Position + offset;
+            origin = new Point(offsetPos);
         }
 
         protected override List<(NodeModel inputNode, double amount)> InputNodesToUpdateAfterMove(Vector offset)
@@ -192,15 +186,13 @@ namespace Dynamo.Manipulation
 
                 // When more than one input is connected to the same slider, this
                 // method will decompose the axis corresponding to each input.
-                using (var v = GetFirstAxisComponent(item.Value.Item1))
-                {
-                    var amount = offset.Dot(v);
+                var v = GetFirstAxisComponent(item.Value.Item1);
+                var amount = offset % v;
 
-                    if (Math.Abs(amount) > MIN_OFFSET_VAL)
-                    {
-                        dynamic uiNode = item.Value.Item2;
-                        inputNodes.Add((uiNode, uiNode.Value + amount));
-                    }
+                if (Math.Abs(amount) > MIN_OFFSET_VAL)
+                {
+                    dynamic uiNode = item.Value.Item2;
+                    inputNodes.Add((uiNode, uiNode.Value + amount));
                 }
             }
             return inputNodes;
@@ -213,18 +205,15 @@ namespace Dynamo.Manipulation
         {
             if (Node == null || !indexedAxisNodePairs.Any()) return false;
 
-            if (origin == null)
-            {
-                origin = Point.Origin(); //First time initialization
-            }
+            origin ??= new Point(0, 0, 0);
 
             //Node output could be a collection, consider the first item as origin.
-            Point pt = GetFirstValueFromNode(Node) as Point;
+            var pt = GetFirstValueFromNode(Node) as Autodesk.DesignScript.Geometry.Point;
             if (null == pt) return false; //The node output is not Point, could be a function object.
 
             //Don't cache pt directly here, we need to create a copy, because 
             //pt may be GC'ed by VM.
-            origin = Point.ByCoordinates(pt.X, pt.Y, pt.Z);
+            origin = new Point(pt.X, pt.Y, pt.Z);
             
             return true;
         }
@@ -266,15 +255,15 @@ namespace Dynamo.Manipulation
         private Vector GetFirstAxisComponent(Vector vector)
         {
             var tol = 0.0001;
-            var v1 = Vector.ByCoordinates(vector.X, 0, 0);
-            if (v1.Length > tol)
-                return v1.Normalized();
+            var v1 = new Vector(vector.X, 0, 0);
+            if (v1.Magnitude > tol)
+                return v1.Unit;
 
-            var v2 = Vector.ByCoordinates(0, vector.Y, 0);
-            if (v2.Length > tol)
-                return v2.Normalized();
+            var v2 = new Vector(0, vector.Y, 0);
+            if (v2.Magnitude > tol)
+                return v2.Unit;
 
-            return vector.Normalized();
+            return vector.Unit;
         }
 
         #endregion
