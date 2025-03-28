@@ -131,6 +131,7 @@ namespace Dynamo.Views
             ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
             ViewModel.RequestHideAllPopup -= HideAllPopUp;
             ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
+            ViewModel.RequestDNAAutocompleteBar -= ShowDNAAutocompleteBar;
             ViewModel.RequestPortContextMenu -= ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged -= ViewModel_PropertyChanged;
 
@@ -160,6 +161,7 @@ namespace Dynamo.Views
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
             ViewModel.RequestHideAllPopup += HideAllPopUp;
             ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
+            ViewModel.RequestDNAAutocompleteBar += ShowDNAAutocompleteBar;
             ViewModel.RequestPortContextMenu += ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
@@ -183,6 +185,17 @@ namespace Dynamo.Views
         private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
         {
             ShowHidePopup(flag, NodeAutoCompleteSearchBar);
+        }
+
+        private void ShowDNAAutocompleteBar()
+        {
+            if (ViewModel.NodeAutoCompleteSearchViewModel.IsOpen)
+            {
+                return;
+            }
+            var window = new DNAAutocompleteBar(Window.GetWindow(this), ViewModel.NodeAutoCompleteSearchViewModel);
+            window.Show();
+            ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupPlaceDNAAutocompletePlacement(window);
         }
 
         private void ShowHidePortContextMenu(ShowHideFlags flag, PortViewModel portViewModel)
