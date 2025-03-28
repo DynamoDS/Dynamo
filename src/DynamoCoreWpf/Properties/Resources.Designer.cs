@@ -8035,6 +8035,15 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("PreferencesViewEnableNodeAutoCompleteTooltipText", resourceCulture);
             }
         }
+		
+		/// <summary>
+        ///   Looks up a localized string similar to Enable Node AutoComplete Marker..
+        /// </summary>
+        public static string PreferencesViewEnableNodeAutoCompleteMarker {
+            get {
+                return ResourceManager.GetString("PreferencesViewEnableNodeAutoCompleteMarker", resourceCulture);
+            }
+        }
         
         /// <summary>
         ///   Looks up a localized string similar to Receive notification.

@@ -184,7 +184,7 @@
                     </Style>
                 </Border.Style>
                 <Border.ToolTip>
-                    <dynui:DynamoToolTip AttachmentSide="Left" Style="{DynamicResource ResourceKey=SLightToolTip}">
+                    <dynui:DynamoToolTip AttachmentSide="Top" Style="{DynamicResource ResourceKey=SLightToolTip}">
                         <Grid>
                             <TextBlock MaxWidth="320"
                                        Text="{Binding Path=ToolTipContent}"
@@ -213,7 +213,7 @@
                     Background="{StaticResource NodeTransientOverlayColor}"
                     IsHitTestVisible="True"
                     SnapsToDevicePixels="True"
-                    Visibility="{Binding NodeAutoCompleteMarkerVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                    Visibility="{Binding NodeAutoCompleteMarkerEnabled, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
                 <Label
                     Name="NodeAutoCompleteMarkerLabel"
                     FontSize="12"
@@ -224,7 +224,6 @@
                 <Border.Style>
                     <Style TargetType="Border">
                         <Setter Property="Opacity" Value="0"/>
-                        <!-- Default value -->
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Opacity" Value="1"/>
