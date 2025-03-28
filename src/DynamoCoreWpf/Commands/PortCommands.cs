@@ -39,7 +39,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-
         /// <summary>
         /// Command to open an Port's Context Menu popup
         /// </summary>
