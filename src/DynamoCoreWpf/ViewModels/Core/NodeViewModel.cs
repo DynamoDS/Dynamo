@@ -2011,7 +2011,7 @@ namespace Dynamo.ViewModels
 
             foreach (var inode in nodes)
             {
-                var current = this.WorkspaceViewModel.Nodes.FirstOrDefault(x => x.NodeLogic == inode);
+                var current = WorkspaceViewModel.FindNode(inode.GUID);
                 if (current != null)
                 {
                     current.RaisePropertyChanged("IsFrozen");
