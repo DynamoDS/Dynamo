@@ -2016,6 +2016,8 @@ Dynamo.ViewModels.DynamoViewModel.EditName.get -> string
 Dynamo.ViewModels.DynamoViewModel.EditName.set -> void
 Dynamo.ViewModels.DynamoViewModel.EnableNodeAutoComplete.get -> bool
 Dynamo.ViewModels.DynamoViewModel.EnableNodeAutoComplete.set -> void
+Dynamo.ViewModels.DynamoViewModel.EnableNodeAutoCompleteMarker.get -> bool
+Dynamo.ViewModels.DynamoViewModel.EnableNodeAutoCompleteMarker.set -> void
 Dynamo.ViewModels.DynamoViewModel.EnablePresetOptions.get -> bool
 Dynamo.ViewModels.DynamoViewModel.EnableTSpline.get -> bool
 Dynamo.ViewModels.DynamoViewModel.EnableTSpline.set -> void
@@ -2872,6 +2874,7 @@ Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMachineLearningIsChecked.
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMachineLearningIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMarkerIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMarkerIsChecked.set -> void
+Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMarkerIsEnabled.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.NotificationCenterIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.NotificationCenterIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.NumberFormatList.get -> System.Collections.ObjectModel.ObservableCollection<string>
@@ -5387,6 +5390,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewDisableBuiltInPackages.get
 static Dynamo.Wpf.Properties.Resources.PreferencesViewDisableCustomPackages.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEmptyStyleWarning.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoComplete.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteMarker.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteTooltipText.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNotificationCenter.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnablePanelingNodes.get -> string
