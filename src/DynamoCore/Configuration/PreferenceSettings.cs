@@ -984,6 +984,7 @@ namespace Dynamo.Configuration
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
             EnableNodeAutoComplete = true;
+            EnableNodeAutoCompleteMarker = true;
             DefaultEnableLegacyPolyCurveBehavior = true;
             HideNodesBelowSpecificConfidenceLevel = false;
             MLRecommendationConfidenceLevel = 10;

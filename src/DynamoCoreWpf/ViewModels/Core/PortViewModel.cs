@@ -220,15 +220,15 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool NodeAutoCompleteMarkerEnabled
         {
-            get => nodeAutoCompleteMarkerEnabled && CanHaveAutoCompleteMarker() && !CannotDisplayAutoCompleteMarker();
+            get => nodeAutoCompleteMarkerEnabled;
             set
             {
-                nodeAutoCompleteMarkerEnabled = value && CanHaveAutoCompleteMarker() && !CannotDisplayAutoCompleteMarker();
+                nodeAutoCompleteMarkerEnabled = value;
                 RaisePropertyChanged(nameof(NodeAutoCompleteMarkerEnabled));
             }
         }
 
-        private bool CanHaveAutoCompleteMarker()
+        internal bool CanHaveAutoCompleteMarker()
         {
             return ((this is InPortViewModel && PortModel.Connectors.Count == 0) || this is OutPortViewModel)
                    && NodeViewModel.NodeModel is not CodeBlockNodeModel
@@ -236,7 +236,7 @@ namespace Dynamo.ViewModels
                    && NodeViewModel.NodeModel is not PythonNodeModels.PythonNode
                    && NodeViewModel.NodeModel is not PythonNodeModels.PythonStringNode;
         }
-        private bool CannotDisplayAutoCompleteMarker()
+        internal bool CannotDisplayAutoCompleteMarker()
         {
             // True if autocomplete is turned off globally
             // Or a connector is being created now
@@ -249,7 +249,7 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Sets the color of the port's background - affected by multiple factors such as
-        /// MouseOver, IsConnected, Node States (active, inactie, frozen 
+        /// MouseOver, IsConnected, Node States (active, inactive, frozen 
         /// </summary>
         public SolidColorBrush PortBackgroundColor
         {

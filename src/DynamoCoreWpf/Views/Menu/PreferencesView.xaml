@@ -948,8 +948,9 @@
                                                       Height="{StaticResource ToggleButtonHeight}"
                                                       VerticalAlignment="Center"
                                                       IsChecked="{Binding Path=NodeAutocompleteMarkerIsChecked}"
-                                                      Style="{StaticResource EllipseToggleButton1}"/>
-                                        <Label Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoComplete}"
+                                                      Style="{StaticResource EllipseToggleButton1}"
+                                                      IsEnabled="{Binding Path=EnableHideNodesToggle}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoCompleteMarker}"
                                                FontWeight="Normal"
                                                Margin="10,0,0,0"
                                                VerticalAlignment="Center"
