@@ -240,17 +240,10 @@ namespace Dynamo.ViewModels
                    && NodeViewModel.NodeModel is not CoreNodeModels.Watch
                    && NodeViewModel.NodeModel is not Watch3DNodeModels.Watch3D
                    && NodeViewModel.NodeModel is not PythonNodeModels.PythonNode
-                   && NodeViewModel.NodeModel is not PythonNodeModels.PythonStringNode;
-        }
-        internal bool CannotDisplayAutoCompleteMarker()
-        {
-            // True if autocomplete is turned off globally
-            // Or a connector is being created now
-            // Or node is frozen.
-            // Or node is transient state.
-            return NodeViewModel.WorkspaceViewModel.IsConnecting ||
-                   NodeViewModel.IsFrozen ||
-                   NodeViewModel.IsTransient;
+                   && NodeViewModel.NodeModel is not PythonNodeModels.PythonStringNode
+                   && !NodeViewModel.IsTransient
+                   && !NodeViewModel.IsFrozen
+                   && !NodeViewModel.WorkspaceViewModel.IsConnecting;
         }
 
         /// <summary>
