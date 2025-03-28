@@ -1125,6 +1125,8 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(NodeAutocompleteIsChecked));
                 RaisePropertyChanged(nameof(EnableHideNodesToggle));
                 RaisePropertyChanged(nameof(EnableConfidenceLevelSlider));
+                RaisePropertyChanged(nameof(NodeAutocompleteMarkerIsChecked));
+                dynamoViewModel.RefreshNodeAutoCompleteMarker();
             }
         }
 

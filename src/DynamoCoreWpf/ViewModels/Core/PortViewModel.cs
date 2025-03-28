@@ -221,7 +221,10 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool NodeAutoCompleteMarkerEnabled
         {
-            get => nodeAutoCompleteMarkerEnabled;
+            get
+            {
+                return CanHaveAutoCompleteMarker() && nodeAutoCompleteMarkerEnabled;
+            }
             set
             {
                 nodeAutoCompleteMarkerEnabled = value;
@@ -232,6 +235,7 @@ namespace Dynamo.ViewModels
         internal bool CanHaveAutoCompleteMarker()
         {
             return ((this is InPortViewModel && PortModel.Connectors.Count == 0) || this is OutPortViewModel)
+                   && !this.PortModel.IsProxyPort
                    && NodeViewModel.NodeModel is not CodeBlockNodeModel
                    && NodeViewModel.NodeModel is not CoreNodeModels.Watch
                    && NodeViewModel.NodeModel is not Watch3DNodeModels.Watch3D
