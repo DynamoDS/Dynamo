@@ -198,7 +198,7 @@ namespace Dynamo.ViewModels
             }
         }
         /// <summary>
-        /// Bitmap Source for right caret
+        /// Bitmap Source for confirmation checkmark
         /// </summary>
         public string ConfirmSource
         {
@@ -741,6 +741,8 @@ namespace Dynamo.ViewModels
             // Save the filtered results for search.
             searchElementsCache = FilteredResults.ToList();
         }
+
+        // Delete all transient nodes in the workspace
         internal void DeleteTransientNodes()
         {
             var node = PortViewModel.NodeViewModel;
@@ -752,6 +754,8 @@ namespace Dynamo.ViewModels
                 dynamoViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(transientNodes.Select(x => x.Id)));
             }
         }
+
+        // Add Cluster from server result into the workspace
         internal void AddCluster(ClusterResultItem ClusterResultItem)
         {
             NodeViewModel targetNodeFromCluster = null;

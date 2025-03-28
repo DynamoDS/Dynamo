@@ -12,15 +12,10 @@ using System.Windows.Threading;
 namespace Dynamo.UI.Controls
 {
     /// <summary>
-    /// Interaction logic for AutoCompleteSearchControl.xaml
-    /// Notice this control shares a lot of logic with InCanvasSearchControl for now
-    /// But they will diverge eventually because of UI improvements to auto complete.
+    /// Interaction logic for DNAAutocompleteBar.xaml
     /// </summary>
     public partial class DNAAutocompleteBar
     {
-        /// <summary>
-        /// Node AutoComplete Search ViewModel DataContext
-        /// </summary>
         private NodeAutoCompleteSearchViewModel ViewModel => DataContext as NodeAutoCompleteSearchViewModel;
 
         public DNAAutocompleteBar(Window window, NodeAutoCompleteSearchViewModel viewModel)

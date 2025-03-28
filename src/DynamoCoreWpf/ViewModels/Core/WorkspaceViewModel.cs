@@ -179,6 +179,7 @@ namespace Dynamo.ViewModels
         {
             RequestNodeAutoCompleteSearch?.Invoke(flag);
         }
+
         internal void OnRequestDNAAutocompleteBar()
         {
             RequestDNAAutocompleteBar?.Invoke();
