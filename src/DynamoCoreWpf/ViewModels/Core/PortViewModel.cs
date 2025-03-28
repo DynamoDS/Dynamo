@@ -234,6 +234,7 @@ namespace Dynamo.ViewModels
             return ((this is InPortViewModel && PortModel.Connectors.Count == 0) || this is OutPortViewModel)
                    && NodeViewModel.NodeModel is not CodeBlockNodeModel
                    && NodeViewModel.NodeModel is not CoreNodeModels.Watch
+                   && NodeViewModel.NodeModel is not Watch3DNodeModels.Watch3D
                    && NodeViewModel.NodeModel is not PythonNodeModels.PythonNode
                    && NodeViewModel.NodeModel is not PythonNodeModels.PythonStringNode;
         }

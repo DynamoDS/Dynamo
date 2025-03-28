@@ -1135,6 +1135,13 @@ namespace Dynamo.ViewModels
         {
             get
             {
+                if (NodeAutocompleteMarkerIsEnabled)
+                {
+                    preferenceSettings.EnableNodeAutoCompleteMarker = true;
+
+                    return true;
+                }
+
                 return preferenceSettings.EnableNodeAutoCompleteMarker;
             }
             set
@@ -1194,6 +1201,17 @@ namespace Dynamo.ViewModels
             get
             {
                 return DynamoModel.FeatureFlags?.CheckFeatureFlag("NodeAutocompleteMachineLearningIsBeta", false) ?? false;
+            }
+        }
+
+        /// <summary>
+        /// Controls if the node autocomplete marker is visible for node autocomplete service
+        /// </summary>
+        public bool NodeAutocompleteMarkerIsEnabled
+        {
+            get
+            {
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("NodeAutocompleteMarkerIsEnabled", false) ?? false;
             }
         }
 
