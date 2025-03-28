@@ -1129,6 +1129,23 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls the IsChecked property in the "Node autocomplete" toggle button
+        /// </summary>
+        public bool NodeAutocompleteMarkerIsChecked
+        {
+            get
+            {
+                return preferenceSettings.EnableNodeAutoCompleteMarker;
+            }
+            set
+            {
+                preferenceSettings.EnableNodeAutoCompleteMarker = value;
+                RaisePropertyChanged(nameof(NodeAutocompleteMarkerIsChecked));
+                dynamoViewModel.RefreshNodeAutoCompleteMarker();
+            }
+        }
+
+        /// <summary>
         /// If MLAutocompleteTOU is approved
         /// </summary>
         internal bool IsMLAutocompleteTOUApproved

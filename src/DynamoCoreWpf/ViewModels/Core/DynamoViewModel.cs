@@ -460,7 +460,21 @@ namespace Dynamo.ViewModels
                 PreferenceSettings.EnableNodeAutoComplete = value;
             }
         }
-
+        /// <summary>
+        /// Indicates whether the node autocomplete marker is enabled.
+        /// </summary>
+        public bool EnableNodeAutoCompleteMarker
+        {
+            get
+            {
+                return PreferenceSettings.EnableNodeAutoCompleteMarker;
+            }
+            set
+            {
+                PreferenceSettings.EnableNodeAutoCompleteMarker = value;
+                RaisePropertyChanged(nameof(EnableNodeAutoCompleteMarker));
+            }
+        }
         public int LibraryWidth
         {
             get
@@ -2294,6 +2308,24 @@ namespace Dynamo.ViewModels
                         var temp = group.AnnotationDescriptionText;
                         group.AnnotationDescriptionText = temp;
                     }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Forces all nodes in the workspace to refresh their ports for node autocomplete marker display
+        /// </summary>
+        public void RefreshNodeAutoCompleteMarker()
+        {
+            foreach (var nodeViewModel in currentWorkspaceViewModel.Nodes)
+            {
+                List<PortViewModel> ports = new List<PortViewModel>();
+                ports.AddRange(nodeViewModel.InPorts);
+                ports.AddRange(nodeViewModel.OutPorts);
+
+                foreach (var port in ports)
+                {
+                    port.NodeAutoCompleteMarkerEnabled = (EnableNodeAutoComplete && EnableNodeAutoCompleteMarker);
                 }
             }
         }
