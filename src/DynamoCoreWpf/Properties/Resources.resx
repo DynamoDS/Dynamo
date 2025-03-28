@@ -4127,6 +4127,9 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="NodeAutoCompleteToolTip" xml:space="preserve">
     <value>Click to get Node Autocomplete suggestions</value>
   </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteMarker" xml:space="preserve">
+    <value>Enable Node Autocomplete Marker</value>
+  </data>
   <data name="ExportWorkspaceAsImage" xml:space="preserve">
     <value>Workspace has been exported as an image to </value>
   </data>

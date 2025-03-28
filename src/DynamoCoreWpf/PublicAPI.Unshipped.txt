@@ -2015,6 +2015,8 @@ Dynamo.ViewModels.DynamoViewModel.EditName.get -> string
 Dynamo.ViewModels.DynamoViewModel.EditName.set -> void
 Dynamo.ViewModels.DynamoViewModel.EnableNodeAutoComplete.get -> bool
 Dynamo.ViewModels.DynamoViewModel.EnableNodeAutoComplete.set -> void
+Dynamo.ViewModels.DynamoViewModel.EnableNodeAutoCompleteMarker.get -> bool
+Dynamo.ViewModels.DynamoViewModel.EnableNodeAutoCompleteMarker.set -> void
 Dynamo.ViewModels.DynamoViewModel.EnablePresetOptions.get -> bool
 Dynamo.ViewModels.DynamoViewModel.EnableTSpline.get -> bool
 Dynamo.ViewModels.DynamoViewModel.EnableTSpline.set -> void
@@ -2261,6 +2263,7 @@ Dynamo.ViewModels.DynamoViewModel.UngroupAnnotationCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.UngroupModelCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UngroupModelCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.RefreshAnnotationDescriptions() -> void
+Dynamo.ViewModels.DynamoViewModel.RefreshNodeAutoCompleteMarker() -> void
 Dynamo.ViewModels.DynamoViewModel.UpdateAllPythonEngineCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.UpdateAllPythonEngineCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.UpdateGraphicHelpersScale(object parameter) -> void
@@ -2788,8 +2791,8 @@ Dynamo.ViewModels.PortViewModel.MouseLeftButtonDownOnLevel -> System.EventHandle
 Dynamo.ViewModels.PortViewModel.MouseLeftButtonDownOnLevelCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.PortViewModel.MouseLeftUseLevelCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.PortViewModel.NodeAutoCompleteCommand.get -> Dynamo.UI.Commands.DelegateCommand
-Dynamo.ViewModels.PortViewModel.NodeAutoCompleteMarkerVisible.get -> bool
-Dynamo.ViewModels.PortViewModel.NodeAutoCompleteMarkerVisible.set -> void
+Dynamo.ViewModels.PortViewModel.NodeAutoCompleteMarkerEnabled.get -> bool
+Dynamo.ViewModels.PortViewModel.NodeAutoCompleteMarkerEnabled.set -> void
 Dynamo.ViewModels.PortViewModel.NodePortContextMenuCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.PortViewModel.PortBackgroundColor.get -> System.Windows.Media.SolidColorBrush
 Dynamo.ViewModels.PortViewModel.PortBackgroundColor.set -> void
@@ -2868,6 +2871,9 @@ Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMachineLearningIsBeta.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMachineLearningIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMachineLearningIsChecked.set -> void
+Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMarkerIsChecked.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMarkerIsChecked.set -> void
+Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMarkerIsEnabled.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.NotificationCenterIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.NotificationCenterIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.NumberFormatList.get -> System.Collections.ObjectModel.ObservableCollection<string>
@@ -5383,6 +5389,7 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewDisableBuiltInPackages.get
 static Dynamo.Wpf.Properties.Resources.PreferencesViewDisableCustomPackages.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEmptyStyleWarning.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoComplete.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteMarker.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteTooltipText.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNotificationCenter.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewEnablePanelingNodes.get -> string

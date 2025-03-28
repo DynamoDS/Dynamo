@@ -1125,6 +1125,32 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(NodeAutocompleteIsChecked));
                 RaisePropertyChanged(nameof(EnableHideNodesToggle));
                 RaisePropertyChanged(nameof(EnableConfidenceLevelSlider));
+                RaisePropertyChanged(nameof(NodeAutocompleteMarkerIsChecked));
+                dynamoViewModel.RefreshNodeAutoCompleteMarker();
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Node autocomplete" toggle button
+        /// </summary>
+        public bool NodeAutocompleteMarkerIsChecked
+        {
+            get
+            {
+                if (NodeAutocompleteMarkerIsEnabled)
+                {
+                    preferenceSettings.EnableNodeAutoCompleteMarker = true;
+
+                    return true;
+                }
+
+                return preferenceSettings.EnableNodeAutoCompleteMarker;
+            }
+            set
+            {
+                preferenceSettings.EnableNodeAutoCompleteMarker = value;
+                RaisePropertyChanged(nameof(NodeAutocompleteMarkerIsChecked));
+                dynamoViewModel.RefreshNodeAutoCompleteMarker();
             }
         }
 
@@ -1177,6 +1203,17 @@ namespace Dynamo.ViewModels
             get
             {
                 return DynamoModel.FeatureFlags?.CheckFeatureFlag("NodeAutocompleteMachineLearningIsBeta", false) ?? false;
+            }
+        }
+
+        /// <summary>
+        /// Controls if the node autocomplete marker is visible for node autocomplete service
+        /// </summary>
+        public bool NodeAutocompleteMarkerIsEnabled
+        {
+            get
+            {
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("NodeAutocompleteMarkerIsEnabled", false) ?? false;
             }
         }
 

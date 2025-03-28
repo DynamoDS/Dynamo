@@ -535,6 +535,11 @@ namespace Dynamo.Graph.Nodes
 
             return null;
         }
+        //remove when autocomplete marker is accepted
+        internal bool CanAutoCompleteInput()
+        {
+            return !(PortType == PortType.Input && Connectors?.FirstOrDefault()?.Start?.Owner != null);
+        }
     }
 
     /// <summary>
