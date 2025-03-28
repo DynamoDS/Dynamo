@@ -664,6 +664,11 @@ namespace Dynamo.Configuration
         public bool EnableNodeAutoComplete { get; set; }
 
         /// <summary>
+        /// This defines if user wants to see the enabled node Auto Complete marker enabled.
+        /// </summary>
+        public bool EnableNodeAutoCompleteMarker { get; set; }
+
+        /// <summary>
         /// PolyCurve normal and direction behavior has been made predictable in Dynamo 3.0 and has therefore changed. 
         /// This defines whether legacy (pre-3.0) PolyCurve behavior is selected by default.
         /// This flag can be overridden by individual workspaces that have the EnableLegacyPolyCurveBehavior flag defined.

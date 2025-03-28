@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
@@ -36,7 +37,7 @@ namespace Dynamo.ViewModels
         private SolidColorBrush portBorderBrushColor = PortBorderBrushColorDefault;
         private SolidColorBrush portBackgroundColor = PortBackgroundColorDefault;
         private Visibility highlight = Visibility.Collapsed;
-        private bool nodeAutoCompleteMarkerVisible = false;
+        private bool nodeAutoCompleteMarkerEnabled = true;
 
         /// <summary>
         /// Port model.
@@ -217,30 +218,33 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Controls whether the node autocomplete marker is visible
         /// </summary>
-        public bool NodeAutoCompleteMarkerVisible
+        public bool NodeAutoCompleteMarkerEnabled
         {
-            get => CanHaveAutoCompleteMarker();
-           
+            get => nodeAutoCompleteMarkerEnabled && CanHaveAutoCompleteMarker() && !CannotDisplayAutoCompleteMarker();
+            set
+            {
+                nodeAutoCompleteMarkerEnabled = value && CanHaveAutoCompleteMarker() && !CannotDisplayAutoCompleteMarker();
+                RaisePropertyChanged(nameof(NodeAutoCompleteMarkerEnabled));
+            }
         }
-        private bool IsAutoCompleteMarkerDisabled()
-        {
-            // True if autocomplete is turned off globally
-            // Or a connector is being created now
-            // Or node is frozen.
-            // Or node is transient state.
-            return !NodeViewModel.DynamoViewModel.EnableNodeAutoComplete ||
-                   NodeViewModel.WorkspaceViewModel.IsConnecting ||
-                   NodeViewModel.IsFrozen ||
-                   NodeViewModel.IsTransient;
-        }
+
         private bool CanHaveAutoCompleteMarker()
         {
             return ((this is InPortViewModel && PortModel.Connectors.Count == 0) || this is OutPortViewModel)
                    && NodeViewModel.NodeModel is not CodeBlockNodeModel
                    && NodeViewModel.NodeModel is not CoreNodeModels.Watch
                    && NodeViewModel.NodeModel is not PythonNodeModels.PythonNode
-                   && NodeViewModel.NodeModel is not PythonNodeModels.PythonStringNode
-                   && !IsAutoCompleteMarkerDisabled();
+                   && NodeViewModel.NodeModel is not PythonNodeModels.PythonStringNode;
+        }
+        private bool CannotDisplayAutoCompleteMarker()
+        {
+            // True if autocomplete is turned off globally
+            // Or a connector is being created now
+            // Or node is frozen.
+            // Or node is transient state.
+            return NodeViewModel.WorkspaceViewModel.IsConnecting ||
+                   NodeViewModel.IsFrozen ||
+                   NodeViewModel.IsTransient;
         }
 
         /// <summary>
@@ -274,6 +278,10 @@ namespace Dynamo.ViewModels
             this.port.PropertyChanged += PortPropertyChanged;
             this.node.PropertyChanged += NodePropertyChanged;
             this.node.WorkspaceViewModel.PropertyChanged += WorkspacePropertyChanged;
+
+            //turn on the autocomplete marker if enabled
+            nodeAutoCompleteMarkerEnabled = NodeViewModel.DynamoViewModel.EnableNodeAutoComplete &&
+                                            NodeViewModel.DynamoViewModel.EnableNodeAutoCompleteMarker;
 
             RefreshPortColors();
         }
@@ -464,6 +472,7 @@ namespace Dynamo.ViewModels
             {
                 case nameof(IsSelected):
                     RaisePropertyChanged(nameof(IsSelected));
+                    RaisePropertyChanged(nameof(NodeAutoCompleteMarkerEnabled));
                     break;
                 case nameof(State):
                     RaisePropertyChanged(nameof(State));
@@ -496,7 +505,7 @@ namespace Dynamo.ViewModels
                     break;
                 case nameof(IsConnected):
                     RaisePropertyChanged(nameof(IsConnected));
-                    RaisePropertyChanged(nameof(NodeAutoCompleteMarkerVisible));
+                    RaisePropertyChanged(nameof(NodeAutoCompleteMarkerEnabled));
                     RefreshPortColors();
                     break;
                 case nameof(IsEnabled):
