@@ -1,0 +1,83 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>DesignScriptBuiltin</name>
+    </assembly>
+    <members>
+        <member name="M:DesignScript.Builtin.Dictionary.CustomKeyComparer.GetHashCode(System.String)">
+            <summary>Ce code a été copié à partir de String.GetHashCode() pour .NET Framework 4.8, qui utilise un algorithme de hachage déterministe. Plus précisément, il s'agit de la fonction String.GetLegacyNonRandomizedHashCode() disponible ici : https://referencesource.microsoft.com/mscorlib/R/42c2b7ffc7c3111f.html</summary>
+            <param name="obj"/>
+            <returns/>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ByKeysValues(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>Crée un dictionnaire avec les valeurs et les clés fournies. Le nombre d'entrées est 
+                égal à la valeur la plus faible entre le nombre de valeurs et de clés.</summary>
+            <param name="keys">Clés du dictionnaire</param>
+            <param name="values">Valeurs du dictionnaire</param>
+            <returns name="dictionary">Dictionnaire obtenu à partir des clés et des valeurs</returns>
+            <search>map,{},table</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.Components">
+            <summary>Crée les composants d'un dictionnaire. L'inverse de Dictionary.ByKeysValues.</summary>
+            <returns name="keys">Clés du dictionnaire</returns>
+            <returns name="values">Valeurs du dictionnaire</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Keys">
+            <summary>Crée les clés d'un dictionnaire.</summary>
+            <returns name="keys">Clés du dictionnaire</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Values">
+            <summary>Crée les valeurs d'un dictionnaire.</summary>
+            <returns name="values">Valeurs du dictionnaire</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Count">
+            <summary>Nombre de paires clé-valeur d'un dictionnaire.</summary> 
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.SetValueAtKeys(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>Crée un nouveau dictionnaire avec une liste de clés définies sur les nouvelles valeurs, en remplaçant potentiellement les paires clé-valeur existantes. 
+                Ces deux listes doivent être de la même longueur. Si ce n'est pas le cas, la plus petite des deux limite le nombre d'insertions.</summary>
+            <param name="keys">Clés du dictionnaire à définir. Si la même clé existe déjà, la valeur qui y est associée sera modifiée.</param>
+            <param name="values">Valeurs correspondantes à insérer.</param>
+            <returns name="dictionary">Nouveau dictionnaire contenant les entrées à insérer</returns>
+            <search>insert,add</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.RemoveKeys(System.Collections.Generic.IList{System.String})">
+            <summary>Crée un nouveau dictionnaire où les clés indiquées ont été supprimées.</summary>
+            <param name="keys">Clé du dictionnaire à supprimer.</param>
+            <returns name="dictionary">Nouveau dictionnaire où les clés ont été supprimées</returns>
+            <search>drop,delete</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ValueAtKey(System.String)">
+            <summary>Obtenir la valeur associée à la clé spécifiée</summary>
+            <param name="key">Obtenir la valeur associée à cette clé du dictionnaire</param>
+            <returns name="value">Valeur associée à la clé spécifiée, ou NULL si aucune valeur n'est définie</returns>
+            <search>lookup,valueatkey,find</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ToString">
+            <summary>Renvoie une représentation de chaîne conviviale du dictionnaire.</summary>
+            <returns>Représentation sous forme de chaîne du dictionnaire.</returns>
+        </member>
+        <member name="T:DesignScript.Builtin.BuiltinNullReferenceException">
+            <summary>Exception de référence NULL renvoyée avec des types intégrés DS NULL:
+            listes, dictionnaires et chaînes.</summary>
+        </member>
+        <member name="T:Builtin.Properties.DesignScriptBuiltin">
+            <summary>Une classe de ressource fortement typée, pour la recherche de chaînes localisées, etc.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.ResourceManager">
+            <summary>Renvoie l'instance ResourceManager mise en cache utilisée par cette classe.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.Culture">
+            <summary>Remplace la propriété CurrentUICulture du thread actuel pour toutes
+              les recherches de ressources qui utilisent cette classe de ressource fortement typée.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.IndexOutOfRangeExceptionMessage">
+            <summary>Recherche une chaîne localisée semblable à la suivante: L'index était hors limites. Si la valeur n'est pas négative, elle doit être inférieure à la taille de la liste. href=kIndexOutOfRange.html.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.NullReferenceExceptionMessage">
+            <summary>Permet de rechercher une chaîne localisée semblable à Impossible de réaliser l'indexation dans une liste, un dictionnaire ou une chaîne NULL.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.StringOverIndexingExceptionMessage">
+            <summary>Recherche une chaîne localisée semblable à la suivante: L'index était hors limites. Si la valeur n'est pas négative, elle doit être inférieure à la taille de la chaîne. href=kIndexOutOfRange.html.</summary>
+        </member>
+    </members>
+</doc>

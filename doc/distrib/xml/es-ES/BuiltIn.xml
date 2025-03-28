@@ -1,0 +1,173 @@
+<?xml version="1.0"?><doc>
+  <assembly>
+    <name>BuiltIn</name>
+  </assembly>
+  <members>
+    <member name="List.Rank">
+      <summary>Devuelve la profundidad máxima de la lista.</summary>
+      <param name="list">Lista desde la que consultar la clasificación.</param>
+      <returns name="int">Profundidad máxima de la lista.</returns>
+      <search>rank,depth,nesting,ranks</search>
+    </member>
+    <member name="List.RemoveIfNot">
+      <summary>Elimina los elementos de la lista que no son elementos del tipo especificado</summary>
+      <param name="list">Lista de la que se eliminarán elementos.</param>
+      <param name="type">Tipo de elemento.</param>
+      <returns name="list">Lista con todos los elementos eliminados, excepto un tipo especificado.</returns>
+      <search>remove,not,ofType,filtertype</search>
+    </member>
+    <member name="List.Equals">
+      <summary>Determina si dos ejemplares de objeto son iguales.</summary>
+      <param name="object">Primer objeto.</param>
+      <param name="otherObject">Otro objeto.</param>
+      <returns name="bool">Devuelve True si los ejemplares de objeto son iguales; False si son diferentes.</returns>
+      <search>equals</search>
+    </member>
+    <member name="List.SortByFunction">
+      <summary>Utilice una función para determinar cómo se deben ordenar los elementos de la lista.</summary>
+      <param name="list">lista de valores</param>
+      <param name="sortFunction">Función utilizada para ordenar la lista</param>
+      <returns name="sortedList">tipo: var[]..[]</returns>
+      <search>sort,order</search>
+    </member>
+    <member name="ToString">
+      <param name="object">algún objeto</param>
+      <search>string</search>
+    </member>
+    <member name="__ToStringFromObject">
+      <param name="object">algún objeto</param>
+      <search>string,from,object</search>
+    </member>
+    <member name="__ToStringFromArray">
+      <param name="list">alguna lista</param>
+      <search>string,from,array</search>
+    </member>
+    <member name="__Apply">
+      <param name="functionObject"/>
+      <param name="param"/>
+      <search>apply</search>
+    </member>
+    <member name="__ApplyList">
+      <param name="functionObject"/>
+      <param name="param"/>
+      <search>apply,list</search>
+    </member>
+    <member name="__GetOutput">
+      <param name="outputs"/>
+      <param name="key"/>
+      <search>output</search>
+    </member>
+    <member name="__Compose">
+      <param name="funcs"/>
+      <search>compose,functionchain</search>
+    </member>
+    <member name="__ComposeBuffered">
+      <param name="funcs"/>
+      <param name="amt"/>
+      <param name="arg"/>
+      <search>compose,buffered</search>
+    </member>
+    <member name="List.MinimumItemByKey">
+      <summary>Devuelve los elementos de la lista que generan los valores mínimos para la función proporcionada como el proyector clave.</summary>
+      <param name="list">lista de valores</param>
+      <param name="keyFunction">Función aplicada a los elementos de la lista</param>
+      <returns name="minimumItem">N.º mínimo de elementos de la lista que utilizan keyFunction (tipo: var[]..[])</returns>
+      <search>min,item,key</search>
+    </member>
+    <member name="List.MaximumItemByKey">
+      <summary>Devuelve los elementos de la lista que generan los valores máximos para la función proporcionada como el proyector clave.</summary>
+      <param name="list">lista de valores</param>
+      <param name="keyFunction">Función aplicada a los elementos de la lista</param>
+      <returns name="maximumItem">N.º máximo de elementos de la lista que utilizan keyFunction (tipo: var[]..[])</returns>
+      <search>max,item,key</search>
+    </member>
+    <member name="__Replace">
+      <param name="list">lista de valores</param>
+      <param name="with"/>
+      <param name="predicate"/>
+      <search>replace</search>
+    </member>
+    <member name="__Filter">
+      <param name="list">lista de valores</param>
+      <param name="predicate"/>
+      <search>filter</search>
+    </member>
+    <member name="__Combine">
+      <param name="func">función</param>
+      <param name="lists"/>
+      <search>combine</search>
+    </member>
+    <member name="__Map">
+      <param name="func">función</param>
+      <param name="arg"/>
+      <search>map</search>
+    </member>
+    <member name="__LaceShortest">
+      <param name="func">función</param>
+      <param name="lists"/>
+      <search>lace,shortest</search>
+    </member>
+    <member name="__LaceLongest">
+      <param name="func">función</param>
+      <param name="lists"/>
+      <search>lace,longest</search>
+    </member>
+    <member name="__ApplyNested">
+      <param name="fs">función</param>
+      <param name="xs"/>
+      <param name="amt"/>
+      <search>apply,nested</search>
+    </member>
+    <member name="__CartesianProduct">
+      <param name="func">función</param>
+      <param name="lists"/>
+      <search>cartesian,product</search>
+    </member>
+    <member name="__Scan">
+      <param name="accumulator"/>
+      <param name="seed"/>
+      <param name="lists"/>
+      <search>scan</search>
+    </member>
+    <member name="__Reduce">
+      <param name="accumulator"/>
+      <param name="seed"/>
+      <param name="lists"/>
+      <search>reduce</search>
+    </member>
+    <member name="List.GroupByFunction">
+      <summary>Utilice una función para determinar cómo se deben agrupar los elementos de la lista.</summary>
+      <param name="list">lista de valores</param>
+      <param name="groupFunction">Función para agrupar la lista</param>
+      <returns name="groupedList">Lista de rangos/niveles arbitrarios (tipo: var[]..[])</returns>
+      <search>group,function</search>
+    </member>
+    <member name="List.TrueForAll">
+      <summary>Devuelve True si todos los elementos de la lista se evalúan como verdaderos con la función de consulta especificada.</summary>
+      <param name="list">Lista desde la que evaluar los elementos mediante la función de consulta.</param>
+      <param name="queryFunction">Función que evaluará la lista.</param>
+      <returns name="bool">Devuelve True si todos los elementos de la lista se evalúan como verdaderos con la función de consulta especificada.</returns>
+      <search>true,all</search>
+    </member>
+    <member name="List.TrueForAny">
+      <summary>Devuelve True si uno o varios elementos de la lista se evalúan como verdaderos con la función de consulta especificada.</summary>
+      <param name="list">Lista desde la que evaluar los elementos mediante la función de consulta.</param>
+      <param name="queryFunction">Función que evaluará la lista.</param>
+      <returns name="bool">Devuelve True si cualquiera de los elementos de la lista se evalúa como verdadero con la función de consulta.</returns>
+      <search>true,any</search>
+    </member>
+    <member name="__ForEach">
+      <param name="functionObject"/>
+      <param name="lists"/>
+      <search>foreach</search>
+    </member>
+    <member name="LoopWhile">
+      <summary>Construye un nodo de bucle temporal con el valor inicial, la condición y el cuerpo de bucle especificados.</summary>
+      <param name="initialValue">Valor inicial del bucle</param>
+      <param name="continueWhile">while loop condition</param>
+      <param name="loopBody">while loop body</param>
+      <returns name="result">Resultado del bucle (tipo: var[]..[])</returns>
+      <search>loop,while,repeat</search>
+    </member>
+  </members>
+</doc>

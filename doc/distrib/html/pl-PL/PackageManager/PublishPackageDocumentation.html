@@ -1,0 +1,153 @@
+﻿<!--
+    Dynamo: https://github.com/DynamoDS/Dynamo
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code > .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h1>Package Manager</h1>
+
+    <p>Dynamo Package Manager to kompleksowe narzędzie do przeglądania, instalowania i publikowania pakietów. Dostęp do tego narzędzia można uzyskać w górnym obszarze nawigacji: <b>Pakiety, Package Manager</b>.</p>
+
+    <h2>Co to jest pakiet?</h2>
+
+    <p>Dodatek Dynamo udostępnia bardzo wiele gotowych funkcji oraz obszerną bibliotekę pakietów znacznie zwiększającą możliwości dodatku Dynamo. Pakiet jest zbiorem węzłów niestandardowych lub dodatkowych funkcji. Dynamo Package Manager to portal dla społeczności umożliwiający pobranie dowolnego pakietu opublikowanego w trybie online. Te zestawy narzędzi zostały opracowane przez firmy trzecie i zespół dodatku Dynamo w celu rozszerzenia podstawowych funkcji dodatku Dynamo. Są one dostępne dla wszystkich i gotowe do pobrania przez kliknięcie przycisku.</p>
+
+    <h2>Instalowanie pakietów Dynamo</h2>
+
+    <p>Pakiety można przeglądać i instalować na karcie <b>Wyszukiwanie pakietów</b> w narzędziu Package Manager. Użyj pola wyszukiwania, aby zlokalizować określone pakiety. Można również zastosować filtry i sortowanie, aby zawęzić listę i spełnić kryteria, takie jak program nadrzędny lub brak zależności.</p>
+
+    <p>Zgodność wersji jest przedstawiana za pomocą ikon na całej stronie Wyszukiwanie pakietów:</p>
+
+    <ul>
+        <li>Flaga z zielonym znacznikiem wyboru oznacza, że wersja jest prawdopodobnie zgodna z bieżącą wersją dodatku Dynamo i programem nadrzędnym, takim jak Revit (jeśli jest używany).</li>
+        <li>Flaga z czerwonym rombem oznacza, że wersja jest prawdopodobnie niezgodna z bieżącą wersją dodatku Dynamo i programem nadrzędnym (jeśli jest używany).</li>
+        <li>Flaga z niebieskim znakiem zapytania oznacza, że informacje o zgodności wersji pakietu nie są znane. Może on, ale nie musi, współdziałać z używaną konfiguracją.</li>
+    </ul>
+
+    <p>Aby wyświetlić więcej informacji na temat pakietu, kliknij opcję <b>Informacje</b> lub nazwę pakietu. Spowoduje to otwarcie panelu bocznego, w którym można przeczytać opis pakietu, a także informacje o wersji i licencji oraz inne.</p>
+
+    <p>Aby zainstalować pakiet, kliknij przycisk <b>Zainstaluj</b> w widoku wyszukiwania. Jeśli autor pakietu dodał do pakietu informacje o zgodności, domyślnie zostanie zainstalowana najnowsza zgodna wersja. W przeciwnym razie zostanie zainstalowana najnowsza wersja, chyba że zostanie wybrana inna wersja z menu rozwijanego. W panelu szczegółów pakietu można kliknąć przycisk <b>Zainstaluj</b> u góry określonej wersji w sekcji Wersje i wymagania dotyczące pakietów, aby zainstalować tę wersję.</p>
+
+    <p>Aby określić folder, w którym zostanie zainstalowany pakiet, kliknij strzałkę rozwijaną obok przycisku Zainstaluj.</p>
+
+    <p>Listę zainstalowanych pakietów można znaleźć na karcie <b>Zainstalowane pakiety</b> w narzędziu Package Manager. Na tej karcie można między innymi przeglądać pliki pakietów i odinstalowywać pakiety.</p>
+
+    <h2>Głosowanie na pakiety</h2>
+
+    <p>Jeśli chcesz wyrazić uznanie dla pracy autora pakietu, możesz zagłosować na zainstalowany pakiet. Przejdź do sekcji <b>Wyszukiwanie pakietów, Informacje</b> i kliknij ikonę <b>serca</b> u góry szczegółów pakietu. Ta opcja jest dostępna tylko dla zainstalowanych pakietów.</p>
+
+    <h2>Publikowanie pakietów Dynamo</h2>
+
+    <p>Narzędzie Package Manager umożliwia publikowanie pakietów w dodatku Dynamo. Otwórz kartę <b>Opublikuj pakiet,</b> aby rozpocząć krok po kroku proces publikowania pakietu. Na karcie Opublikuj pakiet jest wyświetlane zapytanie o wszystkie wymagane i opcjonalne informacje dotyczące pakietu, który chcesz opublikować.</p>
+
+    <h3>Krok 1. Szczegóły pakietu</h3>
+
+    <p>Na tej stronie można dodać informacje o pakiecie jako całości, a także o jego pojedynczej wersji. Wymagana jest tylko nazwa pakietu, opis i numer wersji. Wszystkie pozostałe pola są opcjonalne, ale zalecane, aby ułatwić użytkownikom zlokalizowanie i lepsze zrozumienie przeznaczenia pakietu.</p>
+
+    <h4>Informacje o pakiecie</h4>
+
+    <p><b>Nazwa (wymagana):</b></p>
+    <p>Nazwa pakietu, który chcesz opublikować. Ta informacja będzie widoczna w bibliotece, w wyszukiwarce pakietów i w witrynie internetowej narzędzia Package Manager. Nazwy pakietów muszą zawierać co najmniej 3 znaki.</p>
+
+    <p><b>Opis (wymagany):</b></p>
+    <p>Opis jest okazją do dodania większej ilości informacji o pakiecie, w tym do podania wszelkich wyjątków i wymagań wstępnych. Za pomocą tej pozycji można również poinformować użytkowników, do czego służy pakiet i jak można go używać we własnych obszarach roboczych.</p>
+
+    <p>W przypadku informacji charakterystycznych dla wersji wydajniejsze jest dodanie łącza uwag do wydania. Należy pamiętać, że informacje o zgodności są dodawane w następnym kroku, więc nie trzeba dodawać informacji o zgodności charakterystycznych dla wersji do opisu pakietu.</p>
+
+    <p><b>Grupa:</b></p>
+    <p>Za pomocą tego pola można określić grupę, do której należy pakiet, np. firmę/organizację.</p>
+
+    <p><b>Słowa kluczowe:</b></p>
+    <p>Słowa kluczowe, które mogą być używane jako oznaczenia powiązane z pakietem, na przykład: projektowanie generatywne, uczenie maszynowe itp. Słowa kluczowe mogą ułatwić użytkownikom znalezienie pakietu za pomocą wyszukiwania. W polu można wpisać wiele słów kluczowych jednocześnie, oddzielając je przecinkami i naciskając klawisz Enter.</p>
+
+    <p><b>Łącze do witryny internetowej:</b></p>
+    <p>Łącze do witryny internetowej, które zapewnia użytkownikowi więcej informacji na temat pakietu lub organizacji/autora.</p>
+
+    <p><b>Łącze do repozytorium:</b></p>
+    <p>Łącze do repozytorium pakietu, które umożliwia użytkownikom przeglądanie prac nad pakietem lub udział w tym projekcie.</p>
+
+    <p><b>Prawa autorskie:</b></p>
+    <p>Nazwisko osoby posiadającej prawa autorskie do pakietu. Jeśli to pole pozostanie puste, będzie to domyślnie Twoja nazwa użytkownika.</p><b>Informacje o wersji</b><p><b>Wersja (wymagana):</b></p>
+    <p>Pole wersji jest podzielone na trzy sekcje: wersji głównej, wersji pośredniej i kompilacji, co umożliwia autorowi pakietu przekazywanie nowych wersji pakietu zgodnie z <a href="https://semver.org/">semantyką oznaczania kolejnych wersji</a>. Autorzy pakietów mogą chcieć opublikować więcej wersji pakietów z nowymi i ulepszonymi funkcjami, dopracować niektóre elementy pierwszej wersji lub naprawić błąd.</p>
+
+    <p><b>Łącze do uwag do wydania:</b></p>
+    <p>Łącze do uwag do wydania dla tej wersji. Do każdej publikowanej wersji można dodać osobne łącze.</p>
+
+    <p><b>Rok praw autorskich:</b></p>
+    <p>Rok praw autorskich dla pakietu. Jeśli to pole pozostanie puste, będzie to domyślnie rok publikacji pakietu.</p>
+
+    <p><b>Licencja:</b></p>
+    <p>Licencja, na podstawie której pakiet jest wydawany. Licencja dotyczy najnowszej wersji pakietu. Jeśli to pole pozostanie puste, pakiet będzie objęty licencją MIT.</p>
+
+    <h2>Krok 2. Zgodność</h2>
+    <p>Dodaj informacje o zgodności dla wersji pakietu. Dzięki tym informacjom użytkownicy mogą znaleźć i zainstalować tylko wersje pakietu zgodne z używaną konfiguracją, co ograniczy potencjalne problemy i niejasności. Po przypisaniu informacji o zgodności wersji użytkownicy mogą filtrować tylko według zgodnych wersji i są powiadamiani o stanie zgodności za pomocą ikon na karcie Wyszukiwanie pakietów.</p>
+    <p>Aby rozpocząć dodawanie informacji o zgodności, wybierz, czy wersja pakietu działa tylko w programie nadrzędnym, takim jak Revit lub Civil 3D, w programie nadrzędnym i w dodatku Dynamo Core, czy tylko w dodatku Dynamo Core. Po wybraniu zostaną wyświetlone dodatkowe elementy sterujące interfejsu użytkownika, aby rozpocząć przypisywanie do pakietu co najmniej jednej wersji.</p>
+    <p>W przypadku dodatku Dynamo Core lub programu nadrzędnego można wybrać zakres za pomocą list rozwijanych <b>Od</b> i <b>Do</b> albo dodać wersje pojedynczo z listy rozwijanej <b>Dodaj poszczególne wersje</b>. Na liście rozwijanej <b>Do</b> można również wybrać symbol wieloznaczny, na przykład 2025.x (wszystkie wersje). Oznacza to, że wersja pakietu jest zgodna ze wszystkimi wersjami w tym wydaniu głównym.</p>
+    <p>Podczas dodawania wersji można je dodać do tabeli <b>Wszystkie zgodne wersje</b> po prawej stronie, klikając przycisk <b>Dodaj</b> w środku. Jeśli popełniono błąd, można usunąć wersje z tej tabeli, klikając ikonę x na znaczniku wersji.</p>
+    <p>Autorzy pakietów mogą aktualizować informacje o zgodności pakietów Dynamo w witrynie narzędzia Dynamo Package Manager (<a href="https://www.dynamopackages.com">www.dynamopackages.com</a>). Aby to zrobić, zaloguj się w tej witrynie, przejdź do karty Moje pakiety, znajdź pakiet i wykonaj czynności opisane powyżej.</p>
+
+    <h2>Krok 3. Wybierz pliki</h2>
+    <h3>Dodaj pliki/katalog:</h3>
+    <p>Wybierz i dodaj wszystkie pliki powiązane z pakietem. Zazwyczaj dodawane są folder bin, pliki binarne i zależności. Można dodać pojedyncze pliki lub foldery.</p>
+
+    <h3>Wybierz pliki pakietu:</h3>
+    <p>Ta sekcja umożliwia zorganizowanie zawartości pakietu przed jego opublikowaniem. Po wybraniu plików lub folderów do dodania można wyświetlać, usuwać lub dodawać pliki na stronie <b>Wybierz pliki pakietu</b>. Strukturę folderów wybranych plików można przeglądać w lewym panelu, a zawartość każdego folderu w prawym panelu.</p>
+    <p>Aby usunąć plik z pakietu, kliknij go, a następnie kliknij ikonę kosza na śmieci (usuń) w górnym wierszu. W ten sposób można również zaznaczyć i usunąć wiele plików. Aby usunąć z pakietu całe foldery, kliknij folder, a następnie kliknij wyświetloną obok niego ikonę kosza na śmieci.</p>
+
+    <h3>Wybierz biblioteki węzłów:</h3>
+    <p>Określ, które pliki dodane do pakietu są bibliotekami węzłów, przez zaznaczenie pola w kolumnie <b>Biblioteka węzłów</b>. Biblioteki węzłów zawierają typy i metody, które dodatek Dynamo zaimportuje jako węzły. Ogólnie jako bibliotekę węzłów należy oznaczyć każdy zespół zawierający typy, które mają zostać zaimportowane do dodatku Dynamo. Zespoły ZeroTouch, NodeModel lub NodeViewCustomization powinny zostać oznaczone jako biblioteki węzłów.</p>
+    <p>Aby można było wczytać dostosowania NodeViewCustomization interfejsu użytkownika, należy zdefiniować te dostosowania w tym samym zespole, który zawiera odpowiednie definicje NodeModel, LUB zdefiniować je w oddzielnym zespole. W obu przypadkach zespół musi być oznaczony jako biblioteka węzłów. Obecnie w przypadku zespołów oznaczonych jako biblioteka węzłów zawierających typy NodeModel lub NodeCustomization wszystkie pozostałe typy zostaną zignorowane. Z tego powodu ważne jest oddzielenie typów NodeModel/NodeViewCustomization od typów, które mają zostać zaimportowane przy użyciu importu ZeroTouch.</p>
+
+    <h3>Zachowaj strukturę folderów:</h3>
+    <p>Podczas tworzenia pakietu dodatek Dynamo automatycznie reorganizuje pliki pakietu w folderach bin, doc, dyf i extra (dodatkowe). Zaawansowani autorzy pakietów używający złożonych struktur folderów pakietów powinni zaznaczyć pole wyboru <b>Zachowaj strukturę folderów</b> poniżej panelu podglądu zawartości pakietu. Gdy ta opcja jest włączona, dodatek Dynamo nie wprowadza zmian w strukturze folderów pakietu i pliki pakietu zostają przekazane w bieżącej postaci.</p>
+    <p>Pakiety muszą być skonfigurowane w określony sposób, aby można było zapewnić ich działanie i uniknąć problemów. W razie wątpliwości upewnij się, że to pole wyboru nie jest zaznaczone, aby umożliwić dodatkowi Dynamo skonfigurowanie struktury folderów.</p>
+
+    <h2>Krok 4. Podgląd plików</h2>
+    <p>Gdy zawartość pakietu będzie już zadowalająca, kliknij przycisk Dalej, aby zobaczyć podgląd konfiguracji plików pakietu po ich opublikowaniu. Ta strona jest tylko do przeglądu. Aby wprowadzić dodatkowe zmiany w zawartości pakietu, wróć do poprzedniego kroku.</p>
+
+    <h2>Krok 5. Potwierdź</h2>
+    <p>Ten krok umożliwia wyświetlenie wszystkich szczegółów pakietu, informacji o zgodności i plików przed opublikowaniem. Aby uniknąć wprowadzenia przypadkowych zmian, na stronie Potwierdź opcje wybrane w poprzednich krokach są tylko do odczytu. Aby wprowadzić zmiany w tych opcjach, wróć do poprzednich kroków za pomocą przycisku Wstecz lub elementów sterujących nawigacji u góry strony.</p>
+
+    <p><b>Dodaj ścieżkę plików znaczników (opcjonalnie):</b></p>
+    <p>Możesz określić ścieżkę pliku zawierającego dokumentację znaczników (.md) dla pakietu w sekcji <b>Ścieżka plików znaczników</b>. Dokumentacja węzłów będzie wyświetlana w <b>Przeglądarce dokumentacji</b> dostępnej w obszarze <b>Rozszerzenia</b> w górnym menu nawigacji dodatku Dynamo lub po kliknięciu węzła prawym przyciskiem myszy i wybraniu opcji <b>Pomoc</b>.</p>
+
+    <p><b>Zależności zewnętrzne pakietu:</b></p>
+    <p>Na podstawie plików wybranych w kroku 3 dodatek Dynamo wykrywa zależności zewnętrzne pakietów, które są wymienione tutaj.</p>
+
+    <h2>Publikowanie pakietu</h2>
+    <p>Po podaniu wszystkich wymaganych informacji można opublikować pakiet lokalnie lub online. W przypadku publikowania lokalnego pakiet zostanie opublikowany w lokalnym katalogu głównym. Po opublikowaniu online pakiet zostanie przekazany do narzędzia Package Manager, aby po przejściu skanowania antywirusowego był dostępny do wyszukania przez innych użytkowników. Znajdziesz go również na karcie <b>Moje pakiety</b>.</p>
+
+    <h2>Skanowania antywirusowe</h2>
+    <p>Aby zapewnić wszystkim użytkownikom pakietów Dynamo bezpieczne środowisko, wprowadziliśmy skanowania antywirusowe nowych pakietów. Gdy użytkownik przekaże pakiet, zostanie on przeskanowany pod kątem obecności wirusów i zostanie on udostępniony publicznie tylko wtedy, gdy zostanie oznaczony jako bezpieczny. Skanowanie zostanie przeprowadzone podczas procesu przekazywania pakietu i nie wydłuży normalnego oczekiwania na udostępnienie pakietu online, które trwa kilka minut.</p>
+    <p>W razie oznaczenia pakietu jako zainfekowanego na stronie wyszukiwania narzędzia Package Manager zostanie wyświetlone powiadomienie z informacją, że przekazany pakiet został zainfekowany i nie zostanie opublikowany online. Aby udostępnić pakiet publicznie, sprawdź pliki zawarte w pakiecie i przekaż nową wersję za pomocą narzędzia Package Manager.</p>
+
+    <h2>Zarządzanie własnymi pakietami</h2>
+    <p>Listę opublikowanych przez siebie pakietów znajdziesz na karcie <b>Moje pakiety</b> w narzędziu Package Manager. W tym miejscu możesz wycofać pakiety, opublikować nową wersję itp.</p>
+
+    <h2>Wycofywanie pakietu</h2>
+    <p>Jako właściciel pakietu możesz wycofać pakiet. Spowoduje to umieszczenie na pakiecie znacznika powiadamiającego innych użytkowników, że pakiet został wycofany i nie jest już obsługiwany. Wyszukiwanie pakietów domyślnie odfiltrowuje wycofane pakiety, ale można zastosować filtr Nieaktualne, aby uwzględnić je w wynikach wyszukiwania.</p>
+    <p>Aby wycofać pakiet, znajdź go w narzędziu Package Manager na karcie <b>Zainstalowane pakiety</b> lub <b>Moje pakiety</b>. Kliknij menu Opcje (trzy kropki) i wybierz polecenie Wycofaj.</p>
+
+    <h2>Przenoszenie prawa własności do pakietu</h2>
+    <p>Obecnie nie można przenieść prawa własności do pakietu za pomocą Package Manager. Możesz poprosić zespół dodatku Dynamo o dodanie dodatkowego właściciela. Uwaga: nie możemy usunąć istniejących właścicieli — możemy jedynie dodać więcej osób obsługujących pakiet.</p>
+    <p>Jeśli chcesz dodać do istniejącego pakietu konto w roli właściciela, wyślij wiadomość e-mail na adres <a href="mailto:dynamoteam@dynamobim.org">dynamoteam@dynamobim.org</a>. Pamiętaj, aby podać nazwę pakietu i nazwę konta, które chcesz dodać.</p>
+
+    <h2>Usuwanie pakietu</h2>
+    <p>Aby przesłać prośbę o usunięcie, wyślij wiadomość e-mail na adres <a href="mailto:dynamoteam@dynamobim.org">dynamoteam@dynamobim.org</a> z tematem ’Package Deletion Request’ (Żądanie usunięcia pakietu) i koniecznie podaj nazwę pakietu. Po otrzymaniu tej prośby na adres e-mail autora pakietu skojarzony z pakietem zostanie wysłana wiadomość e-mail dotycząca potwierdzenia. Po zatwierdzeniu tej prośby przez autora usunięcie nastąpi w ciągu 30 dni. Jeśli autor nie odpowie w ciągu 30 dni, wymagana jest ponowna prośba o usunięcie.</p>
+    <p>Pamiętaj, że usunięcie pakietu nie powoduje uwolnienia jego nazwy do ponownego używania w innych pakietach.</p>
+
+    <h2>Ustawienia pakietów</h2>
+    <p>Ustawienia związane z pakietami można przejrzeć na karcie <b>Ustawienia pakietów</b> w narzędziu Package Manager. Obejmuje to ścieżki pobierania nowych pakietów i ścieżki wyszukiwania pakietów/bibliotek. Aby edytować ustawienia, kliknij łącze Preferencje na karcie Ustawienia pakietów w celu uzyskania dostępu do panelu Preferencje.</p>
+
+</body>

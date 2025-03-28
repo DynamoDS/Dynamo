@@ -1,0 +1,693 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AndDescription" xml:space="preserve">
+    <value>布尔 AND: 仅当所有输入内容都为 True 时才返回 True。如果其中任一为 False，则返回 False。</value>
+  </data>
+  <data name="ApplyPortDataFuncArgToolTip" xml:space="preserve">
+    <value>应用程序的结果。</value>
+  </data>
+  <data name="ApplyPortDataFuncToolTip" xml:space="preserve">
+    <value>要应用的函数。</value>
+  </data>
+  <data name="BooleanDescription" xml:space="preserve">
+    <value>启用在“True”和“False”之间选择</value>
+  </data>
+  <data name="BooleanSelectorSearchTags" xml:space="preserve">
+    <value>true;truth;false</value>
+  </data>
+  <data name="ColorRangeDescription" xml:space="preserve">
+    <value>返回给定颜色范围中的颜色</value>
+  </data>
+  <data name="ColorRangePortDataIndicesToolTip" xml:space="preserve">
+    <value>介于 0.0 和 1.0 之间的值列表，这些值沿范围定位输入颜色</value>
+  </data>
+  <data name="ColorRangePortDataResultToolTip" xml:space="preserve">
+    <value>选定的颜色</value>
+  </data>
+  <data name="ColorRangePortDataColorsToolTip" xml:space="preserve">
+    <value>要包含在范围内的颜色列表</value>
+  </data>
+  <data name="ColorRangePortDataValueToolTip" xml:space="preserve">
+    <value>介于 0.0 和 1.0 之间的值列表。这些值定义沿颜色范围选择的颜色以创建颜色列表。</value>
+  </data>
+  <data name="CombinatorPortDataCombToolTip" xml:space="preserve">
+    <value>要用作连结符的函数</value>
+  </data>
+  <data name="CombinatorPortDataResultToolTip" xml:space="preserve">
+    <value>组合列表</value>
+  </data>
+  <data name="ComposePortDataFunc0ToolTip" xml:space="preserve">
+    <value>函数 #0</value>
+  </data>
+  <data name="ComposePortDataFunc1ToolTip" xml:space="preserve">
+    <value>函数 #1</value>
+  </data>
+  <data name="ComposePortDataResultToolTip" xml:space="preserve">
+    <value>复合函数。</value>
+  </data>
+  <data name="CreateListPortDataIndex0ToolTip" xml:space="preserve">
+    <value>项索引 #0</value>
+  </data>
+  <data name="CreateListPortDataResultToolTip" xml:space="preserve">
+    <value>列表(类型: var[]..[])</value>
+  </data>
+  <data name="DirectoryFromPathDescription" xml:space="preserve">
+    <value>从给定路径创建目录对象</value>
+  </data>
+  <data name="DirectoryNodeDescription" xml:space="preserve">
+    <value>允许您选择系统上的目录并返回其路径</value>
+  </data>
+  <data name="DirectoryObjectNodeDescription" xml:space="preserve">
+    <value>从给定路径创建目录对象</value>
+  </data>
+  <data name="DirectoryObjectPortDataPathToolTip" xml:space="preserve">
+    <value>目录路径(类型: 字符串)</value>
+  </data>
+  <data name="DirectoryObjectPortDataResultToolTip" xml:space="preserve">
+    <value>目录对象。</value>
+  </data>
+  <data name="DirectoryPathDescription" xml:space="preserve">
+    <value>允许您选择系统上的目录并返回其路径</value>
+  </data>
+  <data name="DoubleInputNodeDescription" xml:space="preserve">
+    <value>创建一个数字</value>
+  </data>
+  <data name="DoubleSliderDescription" xml:space="preserve">
+    <value>生成数值</value>
+  </data>
+  <data name="DoubleSliderNodeDescription" xml:space="preserve">
+    <value>生成数值</value>
+  </data>
+  <data name="DropDownPortDataResultToolTip" xml:space="preserve">
+    <value>选定的 {0}</value>
+  </data>
+  <data name="FileFromPathDescription" xml:space="preserve">
+    <value>从给定路径创建文件对象</value>
+  </data>
+  <data name="FilenameNodeDescription" xml:space="preserve">
+    <value>允许您选择系统上的文件以获得其文件名</value>
+  </data>
+  <data name="FileObjectNodeDescription" xml:space="preserve">
+    <value>从给定路径创建文件对象</value>
+  </data>
+  <data name="FileObjectPortDataPathToolTip" xml:space="preserve">
+    <value>文件路径。</value>
+  </data>
+  <data name="FileObjectPortDataResultToolTip" xml:space="preserve">
+    <value>文件对象</value>
+  </data>
+  <data name="FilePathDescription" xml:space="preserve">
+    <value>允许选择系统上某个文件以返回其文件路径</value>
+  </data>
+  <data name="FilterPortDataConditionToolTip" xml:space="preserve">
+    <value>用于确定是否要滤除某个图元的过滤函数</value>
+  </data>
+  <data name="FilterPortDataListToolTip" xml:space="preserve">
+    <value>要过滤的列表</value>
+  </data>
+  <data name="FilterPortDataResultInToolTip" xml:space="preserve">
+    <value>列表包含所有元素 "X"，条件 (X)= True</value>
+  </data>
+  <data name="FilterPortDataResultOutToolTip" xml:space="preserve">
+    <value>列表包含所有元素 "X"，条件 (X)= False</value>
+  </data>
+  <data name="FormulaDescription" xml:space="preserve">
+    <value>使用 NCalc 计算数学公式</value>
+  </data>
+  <data name="FormulaPortDataResultToolTip" xml:space="preserve">
+    <value>公式的结果</value>
+  </data>
+  <data name="FromArrayPortDataArrayToolTip" xml:space="preserve">
+    <value>要系列化的对象数组</value>
+  </data>
+  <data name="FromArrayPortDataResultToolTip" xml:space="preserve">
+    <value>数组的字符串表示</value>
+  </data>
+  <data name="FromArraySearchTags" xml:space="preserve">
+    <value>string.fromarray;tostring;2string;list2string;listtostring;array2string;arraytostring</value>
+  </data>
+  <data name="FromObjectPortDataObjToolTip" xml:space="preserve">
+    <value>要系列化的对象</value>
+  </data>
+  <data name="FromObjectPortDataResultToolTip" xml:space="preserve">
+    <value>对象的字符串表示</value>
+  </data>
+  <data name="FromObjectSearchTags" xml:space="preserve">
+    <value>string.fromobject;tostring;2string;number2string;numbertostring</value>
+  </data>
+  <data name="FunctionApplyDescription" xml:space="preserve">
+    <value>使用给定的参数返回函数的结果</value>
+  </data>
+  <data name="FunctionComposeDescription" xml:space="preserve">
+    <value>从多个函数返回单个函数</value>
+  </data>
+  <data name="IfDescription" xml:space="preserve">
+    <value>条件语句</value>
+  </data>
+  <data name="IntegerSliderDescription" xml:space="preserve">
+    <value>生成整数值</value>
+  </data>
+  <data name="IntegerSliderNodeDescription" xml:space="preserve">
+    <value>生成整数值</value>
+  </data>
+  <data name="LegacyNodeDescription" xml:space="preserve">
+    <value>这是过时的节点</value>
+  </data>
+  <data name="ListCartesianProductDescription" xml:space="preserve">
+    <value>将连结符应用到两个序列内笛卡尔积中的每个对</value>
+  </data>
+  <data name="ListCartesianProductSearchTags" xml:space="preserve">
+    <value>cross product;crossreference;cross ref;</value>
+  </data>
+  <data name="ListCombineDescription" xml:space="preserve">
+    <value>将连结符应用到两个序列中的每个元素</value>
+  </data>
+  <data name="ListCombineSearchTags" xml:space="preserve">
+    <value>map multiple;apply over lists;multiple inputs</value>
+  </data>
+  <data name="ListCreateDescription" xml:space="preserve">
+    <value>从给定输入内容生成新列表</value>
+  </data>
+  <data name="ListFilterDescription" xml:space="preserve">
+    <value>根据给定条件滤入或滤出列表中的项目。如果条件为 True，则滤入项目，如果条件为 False，则滤出项目。</value>
+  </data>
+  <data name="ListFilterSearchTags" xml:space="preserve">
+    <value>screen;dispatch;</value>
+  </data>
+  <data name="ListForEachDescription" xml:space="preserve">
+    <value>对列表的每个元素执行计算。不累加结果。</value>
+  </data>
+  <data name="ListForEachSearchTags" xml:space="preserve">
+    <value>apply function;void;</value>
+  </data>
+  <data name="ListLaceLongestDescription" xml:space="preserve">
+    <value>将连结符应用到由输入列表最长连缀产生的每一对元素中。所有列表重复最后一个元素以匹配最长输入内容的长度。</value>
+  </data>
+  <data name="ListLaceLongestSearchTags" xml:space="preserve">
+    <value>repeat last;</value>
+  </data>
+  <data name="ListLaceShortestDescription" xml:space="preserve">
+    <value>将连结符应用到由输入列表最短连缀产生的每一对元素中。所有列表都被截断至最短输入的长度。</value>
+  </data>
+  <data name="ListLaceShortestSearchTags" xml:space="preserve">
+    <value>mix;trim end</value>
+  </data>
+  <data name="ListMapDescription" xml:space="preserve">
+    <value>将函数应用于列表的所有元素，根据结果生成一个新列表</value>
+  </data>
+  <data name="ListMapSearchTags" xml:space="preserve">
+    <value>function;applied;over list;do to each</value>
+  </data>
+  <data name="ListReduceDescription" xml:space="preserve">
+    <value>通过将每个元素与累积结果结合，将列表缩减到新值</value>
+  </data>
+  <data name="ListReduceSearchTags" xml:space="preserve">
+    <value>accumulate;aggregate;fold</value>
+  </data>
+  <data name="ListScanDescription" xml:space="preserve">
+    <value>通过将每个元素与累积结果结合，将列表缩减到新值，生成连续缩减值列表。</value>
+  </data>
+  <data name="ListScanSearchTags" xml:space="preserve">
+    <value>intermediate;maps;folds</value>
+  </data>
+  <data name="MapPortDataFxToolTip" xml:space="preserve">
+    <value>用于映射元素的步骤</value>
+  </data>
+  <data name="MapPortDataListToolTip" xml:space="preserve">
+    <value>要映射到的列表。</value>
+  </data>
+  <data name="MapPortDataResultToolTip" xml:space="preserve">
+    <value>映射的列表(类型: var[]..[])</value>
+  </data>
+  <data name="RangeDescription" xml:space="preserve">
+    <value>按给定范围创建一系列数字或字母</value>
+  </data>
+  <data name="SequenceDescription" xml:space="preserve">
+    <value>创建数字序列</value>
+  </data>
+  <data name="OrDescription" xml:space="preserve">
+    <value>布尔 OR: 如果任一输入内容为 True，则返回 True。如果都不为 True，则返回 False。</value>
+  </data>
+  <data name="PortDataFalseBlockToolTip" xml:space="preserve">
+    <value>如果测试为 false，则返回</value>
+  </data>
+  <data name="PortDataImageToolTip" xml:space="preserve">
+    <value>可视化图像</value>
+  </data>
+  <data name="PortDataListToolTip" xml:space="preserve">
+    <value>列表</value>
+  </data>
+  <data name="PortDataOperandToolTip" xml:space="preserve">
+    <value>Boolean #</value>
+  </data>
+  <data name="PortDataResultToolTip" xml:space="preserve">
+    <value>产生的结果块</value>
+  </data>
+  <data name="PortDataTestBlockToolTip" xml:space="preserve">
+    <value>布尔值测试</value>
+  </data>
+  <data name="PortDataTrueBlockToolTip" xml:space="preserve">
+    <value>如果测试为 true，则返回</value>
+  </data>
+  <data name="PortDataVariableToolTip" xml:space="preserve">
+    <value>变量</value>
+  </data>
+  <data name="ReducePortDataReductorToolTip" xml:space="preserve">
+    <value>Reductor 函数: 从缩减的每个列表接受一项，加上当前累积值，结果是新的累积值。</value>
+  </data>
+  <data name="ReducePortDataResultToolTip" xml:space="preserve">
+    <value>减少的列表(类型: var[]..[])</value>
+  </data>
+  <data name="ReducePortDataSeedToolTip" xml:space="preserve">
+    <value>起始累积值，将传递到 Reductor 函数的首次调用。</value>
+  </data>
+  <data name="ReplaceByConditionDescription" xml:space="preserve">
+    <value>如果原始项目满足给定条件，则将项目替换为给定替换内容</value>
+  </data>
+  <data name="ReplaceByConditionSearchTags" xml:space="preserve">
+    <value>predicate;override;replace if,</value>
+  </data>
+  <data name="ReplacePortDataConditionToolTip" xml:space="preserve">
+    <value>用于确定是否应替换某个对象的替换函数</value>
+  </data>
+  <data name="ReplacePortDataItemToolTip" xml:space="preserve">
+    <value>可能要替换的项</value>
+  </data>
+  <data name="ReplacePortDataReplaceWithToolTip" xml:space="preserve">
+    <value>用以替换的对象</value>
+  </data>
+  <data name="ReplacePortDataResultToolTip" xml:space="preserve">
+    <value>满足条件，可用于将其替换为“replaceWith”中给定项的项目或项目列表</value>
+  </data>
+  <data name="ScanPortDataReductorToolTip" xml:space="preserve">
+    <value>Reductor 函数: 从缩减的每个列表接受一项，加上当前累积值，结果是新的累积值。</value>
+  </data>
+  <data name="ScanPortDataResultToolTip" xml:space="preserve">
+    <value>扫描的列表(类型: var[]..[])</value>
+  </data>
+  <data name="ScanPortDataSeedToolTip" xml:space="preserve">
+    <value>起始累积值，将传递到 Reductor 函数的首次调用。</value>
+  </data>
+  <data name="ScopeIfDescription" xml:space="preserve">
+    <value>返回 True 或 False 输入的结果，具体取决于在测试输入中切换的布尔值。支持只需要执行一个分支的递归。至关重要的是，True 和 False 分支保持隔离，并且不会相互交互！</value>
+  </data>
+  <data name="SelectionPortDataResultToolTip" xml:space="preserve">
+    <value>选定的元素。</value>
+  </data>
+  <data name="StringfromArrayDescription" xml:space="preserve">
+    <value>Converts an array to a string representation</value>
+  </data>
+  <data name="StringfromObjectDescription" xml:space="preserve">
+    <value>将对象转换为字符串表示</value>
+  </data>
+  <data name="StringInputNodeDescription" xml:space="preserve">
+    <value>创建字符串</value>
+  </data>
+  <data name="WatchDescription" xml:space="preserve">
+    <value>显示节点的输出内容</value>
+  </data>
+  <data name="WatchImageDescription" xml:space="preserve">
+    <value>预览图像</value>
+  </data>
+  <data name="WatchImageSearchTags" xml:space="preserve">
+    <value>image;inspect image;pixels;display;panel;watchimage;</value>
+  </data>
+  <data name="WatchNodeDescription" xml:space="preserve">
+    <value>显示节点的输出内容</value>
+  </data>
+  <data name="WatchPortDataInputToolTip" xml:space="preserve">
+    <value>要显示其输出的节点</value>
+  </data>
+  <data name="WatchPortDataResultToolTip" xml:space="preserve">
+    <value>节点输出</value>
+  </data>
+  <data name="WatchSearchTags" xml:space="preserve">
+    <value>print;output;display</value>
+  </data>
+  <data name="WebRequestDescription" xml:space="preserve">
+    <value>Returns the contents of a webpage from the given URL as a string</value>
+  </data>
+  <data name="WebRequestPortDataResultToolTip" xml:space="preserve">
+    <value>Web 请求的内容(字符串)。</value>
+  </data>
+  <data name="WebRequestPortDataUrlToolTip" xml:space="preserve">
+    <value>Web 请求的 URL (字符串)。</value>
+  </data>
+  <data name="WatchNodeSearchTags" xml:space="preserve">
+    <value>print;output;disply;panel;inspect;debug</value>
+  </data>
+  <data name="ConversionNodeDescription" xml:space="preserve">
+    <value>测量单位之间的转换。</value>
+  </data>
+  <data name="SelectFromComboBoxToolTip" xml:space="preserve">
+    <value>这是 Revit 显示单位设置</value>
+  </data>
+  <data name="ListCreateSearchTags" xml:space="preserve">
+    <value>entwine;listcreate,newlist;makelist;list;</value>
+  </data>
+  <data name="DoubleSliderSearchTags" xml:space="preserve">
+    <value>double;number;float;integer;slider;numberslider;</value>
+  </data>
+  <data name="DynamoConvertSearchTags" xml:space="preserve">
+    <value>Convert;Units;Length;Area;Volume;convertbetweenunits;</value>
+  </data>
+  <data name="ListCreateInPortToolTip" xml:space="preserve">
+    <value>项索引 #{0}</value>
+  </data>
+  <data name="SelectionNodeNothingSelected" xml:space="preserve">
+    <value>未选择任何对象。</value>
+  </data>
+  <data name="SelectionNodeSugestion" xml:space="preserve">
+    <value>在模型中选择对象。</value>
+  </data>
+  <data name="UnitNodeFromPortTooltip" xml:space="preserve">
+    <value>用于转换的数字值。</value>
+  </data>
+  <data name="UnitNodeToPortToolTip" xml:space="preserve">
+    <value>转换后的数字值。</value>
+  </data>
+  <data name="DateTimeDescription" xml:space="preserve">
+    <value>从格式化的日期和时间字符串创建 dateTime 对象。日期和时间必须使用默认的 DateTime 格式“MMMM dd, yyyy h:mm tt”(例如，“April 02, 1977 12:00 PM”)</value>
+  </data>
+  <data name="ColorRangeSearchTags" xml:space="preserve">
+    <value>colorrange;</value>
+  </data>
+  <data name="DirectoryPathSearchTags" xml:space="preserve">
+    <value>directorypath;filepath;</value>
+  </data>
+  <data name="FilePathSearchTags" xml:space="preserve">
+    <value>filepath;</value>
+  </data>
+  <data name="IntegerSliderSearchTags" xml:space="preserve">
+    <value>integerslider;</value>
+  </data>
+  <data name="RangeSearchTags" xml:space="preserve">
+    <value>numberrange;numbersequence;</value>
+  </data>
+  <data name="SequenceSearchTags" xml:space="preserve">
+    <value>numbersequence;</value>
+  </data>
+  <data name="SelectionEdgeOutputPortName" xml:space="preserve">
+    <value>曲线</value>
+  </data>
+  <data name="SelectionEdgesOutputPortName" xml:space="preserve">
+    <value>曲线</value>
+  </data>
+  <data name="SelectionElementOutputPortName" xml:space="preserve">
+    <value>图元</value>
+  </data>
+  <data name="SelectionElementsOutputPortName" xml:space="preserve">
+    <value>图元</value>
+  </data>
+  <data name="SelectionFaceOutputPortName" xml:space="preserve">
+    <value>曲面</value>
+  </data>
+  <data name="SelectionFacesOutputPortName" xml:space="preserve">
+    <value>曲面</value>
+  </data>
+  <data name="SelectionPointOutputPortName" xml:space="preserve">
+    <value>点</value>
+  </data>
+  <data name="SelectionPointsOutputPortName" xml:space="preserve">
+    <value>点</value>
+  </data>
+  <data name="NumberNodeInputMustBeNumeric" xml:space="preserve">
+    <value>输入值必须为数值。</value>
+  </data>
+  <data name="ColorPaletteDescription" xml:space="preserve">
+    <value>从选项板中选择颜色</value>
+  </data>
+  <data name="ColorPaletteSearchTags" xml:space="preserve">
+    <value>color</value>
+  </data>
+  <data name="EqualsWithToleranceDescription" xml:space="preserve">
+    <value>根据给定的特定公差，如果 x 和 y 相等，则返回 True</value>
+  </data>
+  <data name="EqualsWithToleranceLhsRhsTooltip" xml:space="preserve">
+    <value>整数或双精度值</value>
+  </data>
+  <data name="EqualsWithToleranceOutportTooltip" xml:space="preserve">
+    <value>相等检查的结果</value>
+  </data>
+  <data name="EqualsWithToleranceSearchTags" xml:space="preserve">
+    <value>equals;tolerance</value>
+  </data>
+  <data name="EqualsWithToleranceTooltip" xml:space="preserve">
+    <value>相等检查所允许的公差
+默认值: {0}</value>
+  </data>
+  <data name="DirectoryPathOutputDescription" xml:space="preserve">
+    <value>目录路径</value>
+  </data>
+  <data name="FilePathOutputDescription" xml:space="preserve">
+    <value>文件路径</value>
+  </data>
+  <data name="IFNodeWarningMessage" xml:space="preserve">
+    <value>此节点已更新，将在 Dynamo 的未来版本中删除。现有行为将保留，但新版本现在支持空列表、空值和不同长度的输入。如果要使用此改进的行为，请替换此节点。</value>
+  </data>
+  <data name="CustomSelectionSearchTags" xml:space="preserve">
+    <value>dropdown;custom;custom dropdown;enum;custom enum</value>
+  </data>
+  <data name="CustomSelectionNodeDescription" xml:space="preserve">
+    <value>带有可自定义值的下拉菜单。</value>
+  </data>
+  <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
+    <value>已过时，请使用新的“转换单位”节点。</value>
+  </data>
+  <data name="IntegerSliderInfoMessage" xml:space="preserve">
+    <value>输入的值不在 int64 范围内。</value>
+  </data>
+  <data name="CustomSelectionOutputDescription" xml:space="preserve">
+    <value>选定值</value>
+  </data>
+  <data name="TooltipTextAction" xml:space="preserve">
+    <value>执行操作的节点</value>
+  </data>
+  <data name="TooltipTextCreate" xml:space="preserve">
+    <value>创建数据的节点</value>
+  </data>
+  <data name="TooltipTextQuery" xml:space="preserve">
+    <value>查询数据的节点</value>
+  </data>
+  <data name="RememberDescription" xml:space="preserve">
+    <value>存储通过此节点传递到 Dynamo 文件的数据。如果输入为空，则返回存储的数据。</value>
+  </data>
+  <data name="RememberInputToolTip" xml:space="preserve">
+    <value>要采样并存储在文件中的数据。</value>
+  </data>
+  <data name="RememberOuputToolTip" xml:space="preserve">
+    <value>数据</value>
+  </data>
+  <data name="GateDescription" xml:space="preserve">
+    <value>阻止通过此节点传递到下游节点的数据。仅当节点值设置为“Open”时，该节点才会返回输入数据。
+
+在衍生式设计工作流中，此节点应该用于控制和阻止会将图元放置在 Revit 中的节点的行为。</value>
+  </data>
+  <data name="GateInPortToolTip" xml:space="preserve">
+    <value>要传递到具有浇口控制的下游节点的数据。</value>
+  </data>
+  <data name="GateOutPortToolTip" xml:space="preserve">
+    <value>数据</value>
+  </data>
+  <data name="GateSearchTags" xml:space="preserve">
+    <value>gate;stop;data</value>
+  </data>
+  <data name="DefineDataDescription" xml:space="preserve">
+    <value>验证输入内容的数据类型并返回该数据类型</value>
+  </data>
+  <data name="DefineDataInputTooltip" xml:space="preserve">
+    <value>要验证的输入数据。有关允许的类型列表，请参见下拉列表。</value>
+  </data>
+  <data name="DefineDataOutputTooltip" xml:space="preserve">
+    <value>验证的数据</value>
+  </data>
+  <data name="DefineDataDisplayValueMessage" xml:space="preserve">
+    <value>选择类型</value>
+  </data>
+  <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
+    <value>数字值的格式说明符，请参见扩展节点帮助以获取详细信息。
+默认值: G</value>
+  </data>
+  <data name="CurveMapperCountInputPortName" xml:space="preserve">
+    <value>count</value>
+  </data>
+  <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
+    <value>Number of values to generate.
+
+int</value>
+  </data>
+  <data name="CurveMapperDescription" xml:space="preserve">
+    <value>Redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+  </data>
+  <data name="CurveMapperSearchTags" xml:space="preserve">
+    <value>graph;curve;mapper;math</value>
+  </data>
+  <data name="CurveMapperWarningMessage" xml:space="preserve">
+    <value>The provided original values cannot be redistributed using the curve equation.</value>
+  </data>
+  <data name="CurveMapperXMaxLimitInputPortName" xml:space="preserve">
+    <value>x-MaxLimit</value>
+  </data>
+  <data name="CurveMapperXMaxLimitInputPortToolTip" xml:space="preserve">
+    <value>Maximum value for the X-axis domain.
+
+double</value>
+  </data>
+  <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
+    <value>Minimum value for the X-axis domain.
+
+double</value>
+  </data>
+  <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
+    <value>Maximum value for the Y-axis domain.
+
+double</value>
+  </data>
+  <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
+    <value>Minimum value for the Y-axis domain.
+
+double</value>
+  </data>
+  <data name="CurveMapperXMinLimitInputPortName" xml:space="preserve">
+    <value>x-MinLimit</value>
+  </data>
+  <data name="CurveMapperYMaxLimitInputPortName" xml:space="preserve">
+    <value>y-MaxLimit</value>
+  </data>
+  <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
+    <value>y-MinLimit</value>
+  </data>
+  <data name="CurveMapperXValuesOutputPortName" xml:space="preserve">
+    <value>x-Values</value>
+  </data>
+  <data name="CurveMapperXValuesOutputPortToolTip" xml:space="preserve">
+    <value>X values derived from the curve.
+
+double[]</value>
+  </data>
+  <data name="CurveMapperYValuesOutputPortName" xml:space="preserve">
+    <value>y-Values</value>
+  </data>
+  <data name="CurveMapperYValuesOutputPortToolTip" xml:space="preserve">
+    <value>Y values derived from the curve.
+
+double[]</value>
+  </data>
+</root>

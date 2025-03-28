@@ -1,0 +1,65 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Tessellation</name>
+    </assembly>
+    <members>
+        <member name="T:Tessellation.Adapters.Cell2">
+            <summary>Komórka do krzyżowania 2D</summary>
+        </member>
+        <member name="T:Tessellation.Adapters.Cell3">
+            <summary>Komórka do krzyżowania 3D</summary>
+        </member>
+        <member name="T:Tessellation.Adapters.Tetrahedron">
+            <summary>Wierzchołek jest prostą klasą, która przechowuje położenie punktu, węzła lub wierzchołka.</summary>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.GetPosition(System.Int32)">
+            <summary>Funkcja pomocnicza do uzyskania położenia i-tego wierzchołka.</summary>
+            <param name="i"/>
+            <returns>Położenie wierzchołka i-th</returns>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.MakeFace(System.Int32,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>Funkcja ta umożliwia dodanie indeksów dla trójkąta reprezentującego powierzchnię.
+            Kolejność jest przeciwna do ruchu wskazówek zegara, tak aby automatycznie obliczone normalne wskazywały we właściwym kierunku.</summary>
+            <param name="i"/>
+            <param name="j"/>
+            <param name="k"/>
+            <param name="center"/>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.MakeFaces">
+            <summary>Tworzy model czworościanu. Przezroczystość jest stosowana do koloru.</summary>
+            <returns>Model przedstawiający czworościan</returns>
+        </member>
+        <member name="T:Tessellation.Adapters.TriangleFace">
+            <summary>Wierzchołek to prosta klasa, która przechowuje położenie punktu, węzła lub wierzchołka.</summary>
+        </member>
+        <member name="T:Tessellation.ConvexHull">
+            <summary>Funkcje do tworzenia powłok wypukłych.</summary>
+        </member>
+        <member name="M:Tessellation.ConvexHull.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>Tworzy powłokę wypukłą z zestawu punktów.</summary>
+            <param name="points">Zestaw punktów.</param>
+        </member>
+        <member name="T:Tessellation.Delaunay">
+            <summary>Funkcje do tworzenia triangulacji Delaunaya.</summary>
+        </member>
+        <member name="M:Tessellation.Delaunay.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
+            <summary>Tworzy triangulację Delaunaya powierzchni na podstawie zestawu parametrów UV.</summary>
+            <param name="uvs">Zestaw parametrów UV.</param>
+            <param name="face">Powierzchnia do triangulacji.</param>
+            <search>uvs</search>
+        </member>
+        <member name="M:Tessellation.Delaunay.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>Tworzy triangulację Delaunaya z zestawu punktów.</summary>
+            <param name="points">Zestaw punktów.</param>
+        </member>
+        <member name="T:Tessellation.Voronoi">
+            <summary>Funkcje do tworzenia diagramów Woronoja.</summary>
+        </member>
+        <member name="M:Tessellation.Voronoi.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
+            <summary>Tworzy diagram Woronoja z powierzchni na podstawie zestawu parametrów UV.</summary>
+            <param name="uvs">Zestaw parametrów UV.</param>
+            <param name="face">Powierzchnia, z której zostaną utworzone diagramy.</param>
+            <search>uvs</search>
+        </member>
+    </members>
+</doc>

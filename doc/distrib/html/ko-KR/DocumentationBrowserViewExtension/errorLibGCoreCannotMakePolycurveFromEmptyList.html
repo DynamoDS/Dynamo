@@ -1,0 +1,34 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>빈 리스트에서 PolyCurve를 만들 수 없음.</h2>
+<p>이 경고는 PolyCurve를 만들려고 할 때 빈 리스트를 입력하면 발생합니다.</p>
+
+<h4>수정 방법</h4>
+<p>이 오류는 그래프의 다른 노드로 인해 발생할 수 있습니다. 업스트림 노드가 제대로 실행되는지 확인하십시오. 업스트림 노드가 빈 리스트를 노드에 다운스트림으로 전달하여 이 오류 메시지가 표시되는 경우가 자주 있습니다. 이 경고를 유발하는 노드부터 시작하여 거슬러 올라가며 이 문제를 일으키는 노드를 찾을 때까지 각 노드의 출력을 확인하십시오.</p>
+
+<h4>추가 정보</h4>
+<p>자세한 내용을 보려면 <a href="https://forum.dynamobim.com/search?q=cannot%20make%20a%20polycurve%20from%20an%20empty%20list"><span>&quot;<strong>빈 리스트에서 PolyCurve를 만들 수 없음.</strong>&quot;에 대해 논의하는 Dynamobim 포럼의 게시물</span></a>을 확인하십시오.</p>
+
+</body>

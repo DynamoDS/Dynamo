@@ -1,0 +1,65 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Tessellation</name>
+    </assembly>
+    <members>
+        <member name="T:Tessellation.Adapters.Cell2">
+            <summary>2D テッセレーションのセル</summary>
+        </member>
+        <member name="T:Tessellation.Adapters.Cell3">
+            <summary>3D テッセレーションのセル</summary>
+        </member>
+        <member name="T:Tessellation.Adapters.Tetrahedron">
+            <summary>vertex は、点、ノード、頂点の位置を格納する単純なクラスです。</summary>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.GetPosition(System.Int32)">
+            <summary>i 番目の頂点の位置を取得するためのヘルパー関数です。</summary>
+            <param name="i"/>
+            <returns>i 番目の頂点の位置</returns>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.MakeFace(System.Int32,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>この関数は、面を表す三角形のインデックスを追加します。
+            順番は、自動計算された法線が正しい方向に向くように、CCW (反時計回り)となります。</summary>
+            <param name="i"/>
+            <param name="j"/>
+            <param name="k"/>
+            <param name="center"/>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.MakeFaces">
+            <summary>四面体のモデルを作成します。透明度が色に適用されます。</summary>
+            <returns>四面体を表すモデル</returns>
+        </member>
+        <member name="T:Tessellation.Adapters.TriangleFace">
+            <summary>vertex は、点、ノード、頂点の位置を格納する単純なクラスです。</summary>
+        </member>
+        <member name="T:Tessellation.ConvexHull">
+            <summary>凸型ハルを作成するための関数。</summary>
+        </member>
+        <member name="M:Tessellation.ConvexHull.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>一連の点の凸型ハルを作成します。</summary>
+            <param name="points">点のセット。</param>
+        </member>
+        <member name="T:Tessellation.Delaunay">
+            <summary>ドローネー三角形分割を作成するための関数。</summary>
+        </member>
+        <member name="M:Tessellation.Delaunay.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
+            <summary>UV パラメータを指定したサーフェスのドローネー三角形分割を作成します。</summary>
+            <param name="uvs">UV パラメータのセット。</param>
+            <param name="face">三角形分割するサーフェス。</param>
+            <search>uvs</search>
+        </member>
+        <member name="M:Tessellation.Delaunay.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>一連の点からなるドローネー三角形分割を作成します。</summary>
+            <param name="points">点のセット。</param>
+        </member>
+        <member name="T:Tessellation.Voronoi">
+            <summary>Voronoi テッセレーションを作成するための関数。</summary>
+        </member>
+        <member name="M:Tessellation.Voronoi.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
+            <summary>一連の UV パラメータを指定してサーフェスの Voronoi テッセレーションを作成します。</summary>
+            <param name="uvs">UV パラメータのセット。</param>
+            <param name="face">テッセレーションするサーフェス。</param>
+            <search>uvs</search>
+        </member>
+    </members>
+</doc>

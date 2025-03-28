@@ -1,0 +1,693 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AndDescription" xml:space="preserve">
+    <value>Логическое И: возвращается значение True, только если оба ввода истинны. Если один из вводов является ложным, возвращается значение False.</value>
+  </data>
+  <data name="ApplyPortDataFuncArgToolTip" xml:space="preserve">
+    <value>Результат применения.</value>
+  </data>
+  <data name="ApplyPortDataFuncToolTip" xml:space="preserve">
+    <value>Функция для применения.</value>
+  </data>
+  <data name="BooleanDescription" xml:space="preserve">
+    <value>Возможность выбора между значениями True и False</value>
+  </data>
+  <data name="BooleanSelectorSearchTags" xml:space="preserve">
+    <value>true;truth;false</value>
+  </data>
+  <data name="ColorRangeDescription" xml:space="preserve">
+    <value>Возврат цвета на основе заданного диапазона цветов</value>
+  </data>
+  <data name="ColorRangePortDataIndicesToolTip" xml:space="preserve">
+    <value>Список значений в диапазоне от 0,0 до 1,0, обозначающих входные цвета по диапазону</value>
+  </data>
+  <data name="ColorRangePortDataResultToolTip" xml:space="preserve">
+    <value>Выбранные цвета</value>
+  </data>
+  <data name="ColorRangePortDataColorsToolTip" xml:space="preserve">
+    <value>Список цветов для включения в диапазон</value>
+  </data>
+  <data name="ColorRangePortDataValueToolTip" xml:space="preserve">
+    <value>Список значений в диапазоне от 0,0 до 1,0. Эти значения определяют цвета, которые выбираются в диапазоне цветов для создания списка цветов.</value>
+  </data>
+  <data name="CombinatorPortDataCombToolTip" xml:space="preserve">
+    <value>Функция для использования в качестве комбинатора</value>
+  </data>
+  <data name="CombinatorPortDataResultToolTip" xml:space="preserve">
+    <value>Объединенные списки</value>
+  </data>
+  <data name="ComposePortDataFunc0ToolTip" xml:space="preserve">
+    <value>Функция #0</value>
+  </data>
+  <data name="ComposePortDataFunc1ToolTip" xml:space="preserve">
+    <value>Функция #1</value>
+  </data>
+  <data name="ComposePortDataResultToolTip" xml:space="preserve">
+    <value>Создана функция.</value>
+  </data>
+  <data name="CreateListPortDataIndex0ToolTip" xml:space="preserve">
+    <value>Индекс элемента #0</value>
+  </data>
+  <data name="CreateListPortDataResultToolTip" xml:space="preserve">
+    <value>Список (тип: var[]..[])</value>
+  </data>
+  <data name="DirectoryFromPathDescription" xml:space="preserve">
+    <value>Создание объекта каталога на основе указанного пути</value>
+  </data>
+  <data name="DirectoryNodeDescription" xml:space="preserve">
+    <value>Возможность выбрать каталог в системе и возврат пути к нему</value>
+  </data>
+  <data name="DirectoryObjectNodeDescription" xml:space="preserve">
+    <value>Создание объекта каталога на основе указанного пути</value>
+  </data>
+  <data name="DirectoryObjectPortDataPathToolTip" xml:space="preserve">
+    <value>Путь к папке (тип: строка)</value>
+  </data>
+  <data name="DirectoryObjectPortDataResultToolTip" xml:space="preserve">
+    <value>Папка объекта.</value>
+  </data>
+  <data name="DirectoryPathDescription" xml:space="preserve">
+    <value>Возможность выбрать каталог в системе и возврат пути к нему</value>
+  </data>
+  <data name="DoubleInputNodeDescription" xml:space="preserve">
+    <value>Создание числа</value>
+  </data>
+  <data name="DoubleSliderDescription" xml:space="preserve">
+    <value>Создание числовых значений</value>
+  </data>
+  <data name="DoubleSliderNodeDescription" xml:space="preserve">
+    <value>Создание числовых значений</value>
+  </data>
+  <data name="DropDownPortDataResultToolTip" xml:space="preserve">
+    <value>Выбрано {0}</value>
+  </data>
+  <data name="FileFromPathDescription" xml:space="preserve">
+    <value>Создание объекта файла на основе указанного пути</value>
+  </data>
+  <data name="FilenameNodeDescription" xml:space="preserve">
+    <value>Позволяет выбрать файл в системе и получить его имя</value>
+  </data>
+  <data name="FileObjectNodeDescription" xml:space="preserve">
+    <value>Создание объекта файла на основе указанного пути</value>
+  </data>
+  <data name="FileObjectPortDataPathToolTip" xml:space="preserve">
+    <value>Путь к файлу.</value>
+  </data>
+  <data name="FileObjectPortDataResultToolTip" xml:space="preserve">
+    <value>Файловый объект</value>
+  </data>
+  <data name="FilePathDescription" xml:space="preserve">
+    <value>Возможность выбрать файл в системе и возврат пути к нему</value>
+  </data>
+  <data name="FilterPortDataConditionToolTip" xml:space="preserve">
+    <value>Функция фильтрации, используемая для определения того, включается или исключается элемент путем фильтрации</value>
+  </data>
+  <data name="FilterPortDataListToolTip" xml:space="preserve">
+    <value>Список, который требуется отфильтровать</value>
+  </data>
+  <data name="FilterPortDataResultInToolTip" xml:space="preserve">
+    <value>Список, содержащий все элементы «x», где условие(x) = True</value>
+  </data>
+  <data name="FilterPortDataResultOutToolTip" xml:space="preserve">
+    <value>Список, содержащий все элементы «x», где условие(x) = False</value>
+  </data>
+  <data name="FormulaDescription" xml:space="preserve">
+    <value>Оценка математических формул с использованием NCalc</value>
+  </data>
+  <data name="FormulaPortDataResultToolTip" xml:space="preserve">
+    <value>Результат расчета по формуле</value>
+  </data>
+  <data name="FromArrayPortDataArrayToolTip" xml:space="preserve">
+    <value>Массив объекта для индексации</value>
+  </data>
+  <data name="FromArrayPortDataResultToolTip" xml:space="preserve">
+    <value>Строчное представление массива</value>
+  </data>
+  <data name="FromArraySearchTags" xml:space="preserve">
+    <value>string.fromarray;tostring;2string;list2string;listtostring;array2string;arraytostring</value>
+  </data>
+  <data name="FromObjectPortDataObjToolTip" xml:space="preserve">
+    <value>Объект индексации</value>
+  </data>
+  <data name="FromObjectPortDataResultToolTip" xml:space="preserve">
+    <value>Строчное представление объекта</value>
+  </data>
+  <data name="FromObjectSearchTags" xml:space="preserve">
+    <value>string.fromobject;tostring;2string;number2string;numbertostring</value>
+  </data>
+  <data name="FunctionApplyDescription" xml:space="preserve">
+    <value>Возврат результата функции с заданными аргументами</value>
+  </data>
+  <data name="FunctionComposeDescription" xml:space="preserve">
+    <value>Возврат одной функции из нескольких</value>
+  </data>
+  <data name="IfDescription" xml:space="preserve">
+    <value>Условное выражение</value>
+  </data>
+  <data name="IntegerSliderDescription" xml:space="preserve">
+    <value>Создание целых значений</value>
+  </data>
+  <data name="IntegerSliderNodeDescription" xml:space="preserve">
+    <value>Создание целых значений</value>
+  </data>
+  <data name="LegacyNodeDescription" xml:space="preserve">
+    <value>Это устаревший узел</value>
+  </data>
+  <data name="ListCartesianProductDescription" xml:space="preserve">
+    <value>Применение комбинатора к каждой паре в декартовом произведении в двух последовательностях</value>
+  </data>
+  <data name="ListCartesianProductSearchTags" xml:space="preserve">
+    <value>cross product;crossreference;cross ref;</value>
+  </data>
+  <data name="ListCombineDescription" xml:space="preserve">
+    <value>Применение комбинатора к каждому элементу в двух последовательностях</value>
+  </data>
+  <data name="ListCombineSearchTags" xml:space="preserve">
+    <value>map multiple;apply over lists;multiple inputs</value>
+  </data>
+  <data name="ListCreateDescription" xml:space="preserve">
+    <value>Создание списка из заданных входных значений</value>
+  </data>
+  <data name="ListFilterDescription" xml:space="preserve">
+    <value>Фильтрация элементов списка на основе заданного условия. Если условие соблюдается, элементы включаются в результаты фильтрации. Если условие не соблюдается, элементы исключаются.</value>
+  </data>
+  <data name="ListFilterSearchTags" xml:space="preserve">
+    <value>screen;dispatch;</value>
+  </data>
+  <data name="ListForEachDescription" xml:space="preserve">
+    <value>Выполняется расчет для каждого элемента в списке. Результаты не суммируются.</value>
+  </data>
+  <data name="ListForEachSearchTags" xml:space="preserve">
+    <value>apply function;void;</value>
+  </data>
+  <data name="ListLaceLongestDescription" xml:space="preserve">
+    <value>Применение комбинатора к каждой паре, полученной в результате длинного переплетения входных списков. Во всех списках повторяется последний элемент для обеспечения соответствия длине самой длинной строки входных данных.</value>
+  </data>
+  <data name="ListLaceLongestSearchTags" xml:space="preserve">
+    <value>repeat last;</value>
+  </data>
+  <data name="ListLaceShortestDescription" xml:space="preserve">
+    <value>Применение комбинатора к каждой паре, полученной в результате самого короткого переплетения входных списков. Все списки усекаются для обеспечения соответствия длине самой короткой строки входных данных.</value>
+  </data>
+  <data name="ListLaceShortestSearchTags" xml:space="preserve">
+    <value>mix;trim end</value>
+  </data>
+  <data name="ListMapDescription" xml:space="preserve">
+    <value>Применение функции ко всем элементам списка с созданием нового списка на основе результатов</value>
+  </data>
+  <data name="ListMapSearchTags" xml:space="preserve">
+    <value>function;applied;over list;do to each</value>
+  </data>
+  <data name="ListReduceDescription" xml:space="preserve">
+    <value>Приведение списка к новому значению путем объединения каждого элемента с накопленным результатом</value>
+  </data>
+  <data name="ListReduceSearchTags" xml:space="preserve">
+    <value>accumulate;aggregate;fold</value>
+  </data>
+  <data name="ListScanDescription" xml:space="preserve">
+    <value>Приведение списка к новому значению путем объединения каждого элемента с накопленным результатом и получение списка последовательных приведенных значений.</value>
+  </data>
+  <data name="ListScanSearchTags" xml:space="preserve">
+    <value>intermediate;maps;folds</value>
+  </data>
+  <data name="MapPortDataFxToolTip" xml:space="preserve">
+    <value>Процедура, используемая для сопоставления элементов</value>
+  </data>
+  <data name="MapPortDataListToolTip" xml:space="preserve">
+    <value>Список для сопоставления.</value>
+  </data>
+  <data name="MapPortDataResultToolTip" xml:space="preserve">
+    <value>Список после сопоставления с типом var[]..[]</value>
+  </data>
+  <data name="RangeDescription" xml:space="preserve">
+    <value>Создание последовательности чисел или букв в заданном диапазоне</value>
+  </data>
+  <data name="SequenceDescription" xml:space="preserve">
+    <value>Создание последовательности чисел</value>
+  </data>
+  <data name="OrDescription" xml:space="preserve">
+    <value>Логическое ИЛИ: возвращает значение True, если любой из вводов является истинным. Если ни один из них не является таковым, возвращается значение False.</value>
+  </data>
+  <data name="PortDataFalseBlockToolTip" xml:space="preserve">
+    <value>Возвращается, если проверка дает значение False</value>
+  </data>
+  <data name="PortDataImageToolTip" xml:space="preserve">
+    <value>Изображение для визуализации</value>
+  </data>
+  <data name="PortDataListToolTip" xml:space="preserve">
+    <value>Список</value>
+  </data>
+  <data name="PortDataOperandToolTip" xml:space="preserve">
+    <value>Boolean #</value>
+  </data>
+  <data name="PortDataResultToolTip" xml:space="preserve">
+    <value>Сформированный блок результата</value>
+  </data>
+  <data name="PortDataTestBlockToolTip" xml:space="preserve">
+    <value>Логическая проверка</value>
+  </data>
+  <data name="PortDataTrueBlockToolTip" xml:space="preserve">
+    <value>Возвращается, если проверка дает значение True</value>
+  </data>
+  <data name="PortDataVariableToolTip" xml:space="preserve">
+    <value>переменная</value>
+  </data>
+  <data name="ReducePortDataReductorToolTip" xml:space="preserve">
+    <value>Функция «Уменьшитель»: берется один элемент из каждого списка, который требуется уменьшить, и текущее суммарное значение. В результате получается новое суммарное значение.</value>
+  </data>
+  <data name="ReducePortDataResultToolTip" xml:space="preserve">
+    <value>Приведенные списки (тип: var[]..[])</value>
+  </data>
+  <data name="ReducePortDataSeedToolTip" xml:space="preserve">
+    <value>Начальное суммарное значение, которое будет передано при первом вызове функции «Уменьшитель».</value>
+  </data>
+  <data name="ReplaceByConditionDescription" xml:space="preserve">
+    <value>Замена элемента указанным объектом для подстановки, если исходный элемент удовлетворяет заданному условию</value>
+  </data>
+  <data name="ReplaceByConditionSearchTags" xml:space="preserve">
+    <value>predicate;override;replace if,</value>
+  </data>
+  <data name="ReplacePortDataConditionToolTip" xml:space="preserve">
+    <value>Функция замены, используемая для определения того, следует ли заменить объект</value>
+  </data>
+  <data name="ReplacePortDataItemToolTip" xml:space="preserve">
+    <value>Элемент, который, возможно, потребуется заменить</value>
+  </data>
+  <data name="ReplacePortDataReplaceWithToolTip" xml:space="preserve">
+    <value>Объект на замену</value>
+  </data>
+  <data name="ReplacePortDataResultToolTip" xml:space="preserve">
+    <value>Элемент или список элементов, в котором использовалось условие для замены на элемент, указанный в свойстве replaceWith</value>
+  </data>
+  <data name="ScanPortDataReductorToolTip" xml:space="preserve">
+    <value>Функция «Уменьшитель»: берется один элемент из каждого списка, который требуется уменьшить, и текущее суммарное значение. В результате получается новое суммарное значение.</value>
+  </data>
+  <data name="ScanPortDataResultToolTip" xml:space="preserve">
+    <value>Отсканированные списки (тип: var[]..[])</value>
+  </data>
+  <data name="ScanPortDataSeedToolTip" xml:space="preserve">
+    <value>Начальное суммарное значение, которое будет передано при первом вызове функции «Уменьшитель».</value>
+  </data>
+  <data name="ScopeIfDescription" xml:space="preserve">
+    <value>Возврат результата для входных данных со значением True или False в зависимости от того, какое логическое значение использовалось в тестовых входных данных. Поддержка рекурсии, которая предусматривает выполнение только одного ответвления. Крайне важно, чтобы ответвления True и False были изолированы и не взаимодействовали друг с другом.</value>
+  </data>
+  <data name="SelectionPortDataResultToolTip" xml:space="preserve">
+    <value>Выбранные элементы.</value>
+  </data>
+  <data name="StringfromArrayDescription" xml:space="preserve">
+    <value>Converts an array to a string representation</value>
+  </data>
+  <data name="StringfromObjectDescription" xml:space="preserve">
+    <value>Преобразование объекта в строчное представление</value>
+  </data>
+  <data name="StringInputNodeDescription" xml:space="preserve">
+    <value>Создание строки</value>
+  </data>
+  <data name="WatchDescription" xml:space="preserve">
+    <value>Визуализация выходных данных узла</value>
+  </data>
+  <data name="WatchImageDescription" xml:space="preserve">
+    <value>Предварительный просмотр изображения</value>
+  </data>
+  <data name="WatchImageSearchTags" xml:space="preserve">
+    <value>image;inspect image;pixels;display;panel;watchimage;</value>
+  </data>
+  <data name="WatchNodeDescription" xml:space="preserve">
+    <value>Визуализация выходных данных узла</value>
+  </data>
+  <data name="WatchPortDataInputToolTip" xml:space="preserve">
+    <value>Узел для отображения выходных данных</value>
+  </data>
+  <data name="WatchPortDataResultToolTip" xml:space="preserve">
+    <value>Выходные данные узла</value>
+  </data>
+  <data name="WatchSearchTags" xml:space="preserve">
+    <value>print;output;display</value>
+  </data>
+  <data name="WebRequestDescription" xml:space="preserve">
+    <value>Returns the contents of a webpage from the given URL as a string</value>
+  </data>
+  <data name="WebRequestPortDataResultToolTip" xml:space="preserve">
+    <value>Содержимое веб-запроса в виде строки.</value>
+  </data>
+  <data name="WebRequestPortDataUrlToolTip" xml:space="preserve">
+    <value>URL-адрес для веб-запроса в виде строки.</value>
+  </data>
+  <data name="WatchNodeSearchTags" xml:space="preserve">
+    <value>print;output;disply;panel;inspect;debug</value>
+  </data>
+  <data name="ConversionNodeDescription" xml:space="preserve">
+    <value>Преобразование единиц измерения.</value>
+  </data>
+  <data name="SelectFromComboBoxToolTip" xml:space="preserve">
+    <value>Здесь находятся персональные настройки отображаемых единиц Revit</value>
+  </data>
+  <data name="ListCreateSearchTags" xml:space="preserve">
+    <value>entwine;listcreate,newlist;makelist;list;</value>
+  </data>
+  <data name="DoubleSliderSearchTags" xml:space="preserve">
+    <value>double;number;float;integer;slider;numberslider;</value>
+  </data>
+  <data name="DynamoConvertSearchTags" xml:space="preserve">
+    <value>Convert;Units;Length;Area;Volume;convertbetweenunits;</value>
+  </data>
+  <data name="ListCreateInPortToolTip" xml:space="preserve">
+    <value>Индекс элемента #{0}</value>
+  </data>
+  <data name="SelectionNodeNothingSelected" xml:space="preserve">
+    <value>Нет выбранных объектов.</value>
+  </data>
+  <data name="SelectionNodeSugestion" xml:space="preserve">
+    <value>Выберите элемент модели.</value>
+  </data>
+  <data name="UnitNodeFromPortTooltip" xml:space="preserve">
+    <value>Числовое значение для преобразования.</value>
+  </data>
+  <data name="UnitNodeToPortToolTip" xml:space="preserve">
+    <value>Преобразованное числовое значение.</value>
+  </data>
+  <data name="DateTimeDescription" xml:space="preserve">
+    <value>Создание объекта dateTime на основе строки, содержащей дату и время в определенном формате. Формат даты и времени должен быть следующим: «MMMM dd, yyyy h:mm tt» (по умолчанию), например «April 02, 1977 12:00 PM»</value>
+  </data>
+  <data name="ColorRangeSearchTags" xml:space="preserve">
+    <value>colorrange;</value>
+  </data>
+  <data name="DirectoryPathSearchTags" xml:space="preserve">
+    <value>directorypath;filepath;</value>
+  </data>
+  <data name="FilePathSearchTags" xml:space="preserve">
+    <value>filepath;</value>
+  </data>
+  <data name="IntegerSliderSearchTags" xml:space="preserve">
+    <value>integerslider;</value>
+  </data>
+  <data name="RangeSearchTags" xml:space="preserve">
+    <value>numberrange;numbersequence;</value>
+  </data>
+  <data name="SequenceSearchTags" xml:space="preserve">
+    <value>numbersequence;</value>
+  </data>
+  <data name="SelectionEdgeOutputPortName" xml:space="preserve">
+    <value>Кривая</value>
+  </data>
+  <data name="SelectionEdgesOutputPortName" xml:space="preserve">
+    <value>Кривые</value>
+  </data>
+  <data name="SelectionElementOutputPortName" xml:space="preserve">
+    <value>Элемент</value>
+  </data>
+  <data name="SelectionElementsOutputPortName" xml:space="preserve">
+    <value>Элементы</value>
+  </data>
+  <data name="SelectionFaceOutputPortName" xml:space="preserve">
+    <value>Поверхность</value>
+  </data>
+  <data name="SelectionFacesOutputPortName" xml:space="preserve">
+    <value>Поверхности</value>
+  </data>
+  <data name="SelectionPointOutputPortName" xml:space="preserve">
+    <value>Точка</value>
+  </data>
+  <data name="SelectionPointsOutputPortName" xml:space="preserve">
+    <value>Точки</value>
+  </data>
+  <data name="NumberNodeInputMustBeNumeric" xml:space="preserve">
+    <value>Ввод должен быть числовым.</value>
+  </data>
+  <data name="ColorPaletteDescription" xml:space="preserve">
+    <value>Выберите цвет на палитре</value>
+  </data>
+  <data name="ColorPaletteSearchTags" xml:space="preserve">
+    <value>color</value>
+  </data>
+  <data name="EqualsWithToleranceDescription" xml:space="preserve">
+    <value>Возврат значения True, если значения x и y равны с учетом заданного допуска</value>
+  </data>
+  <data name="EqualsWithToleranceLhsRhsTooltip" xml:space="preserve">
+    <value>Целое число или двойное значение</value>
+  </data>
+  <data name="EqualsWithToleranceOutportTooltip" xml:space="preserve">
+    <value>Результат проверки равенства</value>
+  </data>
+  <data name="EqualsWithToleranceSearchTags" xml:space="preserve">
+    <value>equals;tolerance</value>
+  </data>
+  <data name="EqualsWithToleranceTooltip" xml:space="preserve">
+    <value>Допуск для проверки равенства
+Значение по умолчанию: {0}</value>
+  </data>
+  <data name="DirectoryPathOutputDescription" xml:space="preserve">
+    <value>Путь к каталогу</value>
+  </data>
+  <data name="FilePathOutputDescription" xml:space="preserve">
+    <value>Путь к файлу</value>
+  </data>
+  <data name="IFNodeWarningMessage" xml:space="preserve">
+    <value>Этот узел обновлен и будет удален в следующей версии Dynamo. Существующий режим сохраняется, но новая версия теперь поддерживает пустые списки, нулевые значения и входные данные переменной длины. Чтобы использовать улучшенный режим, замените этот узел.</value>
+  </data>
+  <data name="CustomSelectionSearchTags" xml:space="preserve">
+    <value>dropdown;custom;custom dropdown;enum;custom enum</value>
+  </data>
+  <data name="CustomSelectionNodeDescription" xml:space="preserve">
+    <value>Раскрывающееся меню с настраиваемыми значениями.</value>
+  </data>
+  <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
+    <value>устарел, используйте новый узел «Преобразовать единицы».</value>
+  </data>
+  <data name="IntegerSliderInfoMessage" xml:space="preserve">
+    <value>Введенное значение выходит за пределы диапазона int64.</value>
+  </data>
+  <data name="CustomSelectionOutputDescription" xml:space="preserve">
+    <value>Выбранное значение</value>
+  </data>
+  <data name="TooltipTextAction" xml:space="preserve">
+    <value>Узлы, выполняющие операцию</value>
+  </data>
+  <data name="TooltipTextCreate" xml:space="preserve">
+    <value>Узлы, создающие данные</value>
+  </data>
+  <data name="TooltipTextQuery" xml:space="preserve">
+    <value>Узлы, запрашивающие данные</value>
+  </data>
+  <data name="RememberDescription" xml:space="preserve">
+    <value>Сохранение данных, проходящих через этот узел, в файл Dynamo. Если входные данные пусты, выполняется возврат сохраненных данных.</value>
+  </data>
+  <data name="RememberInputToolTip" xml:space="preserve">
+    <value>Данные для выборки и сохранения в файл.</value>
+  </data>
+  <data name="RememberOuputToolTip" xml:space="preserve">
+    <value>Данные</value>
+  </data>
+  <data name="GateDescription" xml:space="preserve">
+    <value>Блокирование данных, передаваемых через этот узел на последующие узлы. Узел возвращает входные данные, только если для узла задано значение «Открыть».
+
+В рабочих процессах генеративного проектирования этот узел следует использовать для управления поведением узлов, которые размещают элементы в Revit, и их блокирования.</value>
+  </data>
+  <data name="GateInPortToolTip" xml:space="preserve">
+    <value>Данные для передачи в последующий узел с помощью регулируемых элементов управления.</value>
+  </data>
+  <data name="GateOutPortToolTip" xml:space="preserve">
+    <value>Данные</value>
+  </data>
+  <data name="GateSearchTags" xml:space="preserve">
+    <value>gate;stop;data</value>
+  </data>
+  <data name="DefineDataDescription" xml:space="preserve">
+    <value>Проверка типа входных данных и его возврат</value>
+  </data>
+  <data name="DefineDataInputTooltip" xml:space="preserve">
+    <value>Входные данные для проверки. Список допустимых типов см. в раскрывающемся списке</value>
+  </data>
+  <data name="DefineDataOutputTooltip" xml:space="preserve">
+    <value>Проверенные данные</value>
+  </data>
+  <data name="DefineDataDisplayValueMessage" xml:space="preserve">
+    <value>Выберите типы</value>
+  </data>
+  <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
+    <value>Спецификатор формата для числовых значений, дополнительные сведения см. в расширенной справке по узлу.
+Значение по умолчанию: G</value>
+  </data>
+  <data name="CurveMapperCountInputPortName" xml:space="preserve">
+    <value>count</value>
+  </data>
+  <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
+    <value>Number of values to generate.
+
+int</value>
+  </data>
+  <data name="CurveMapperDescription" xml:space="preserve">
+    <value>Redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+  </data>
+  <data name="CurveMapperSearchTags" xml:space="preserve">
+    <value>graph;curve;mapper;math</value>
+  </data>
+  <data name="CurveMapperWarningMessage" xml:space="preserve">
+    <value>The provided original values cannot be redistributed using the curve equation.</value>
+  </data>
+  <data name="CurveMapperXMaxLimitInputPortName" xml:space="preserve">
+    <value>x-MaxLimit</value>
+  </data>
+  <data name="CurveMapperXMaxLimitInputPortToolTip" xml:space="preserve">
+    <value>Maximum value for the X-axis domain.
+
+double</value>
+  </data>
+  <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
+    <value>Minimum value for the X-axis domain.
+
+double</value>
+  </data>
+  <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
+    <value>Maximum value for the Y-axis domain.
+
+double</value>
+  </data>
+  <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
+    <value>Minimum value for the Y-axis domain.
+
+double</value>
+  </data>
+  <data name="CurveMapperXMinLimitInputPortName" xml:space="preserve">
+    <value>x-MinLimit</value>
+  </data>
+  <data name="CurveMapperYMaxLimitInputPortName" xml:space="preserve">
+    <value>y-MaxLimit</value>
+  </data>
+  <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
+    <value>y-MinLimit</value>
+  </data>
+  <data name="CurveMapperXValuesOutputPortName" xml:space="preserve">
+    <value>x-Values</value>
+  </data>
+  <data name="CurveMapperXValuesOutputPortToolTip" xml:space="preserve">
+    <value>X values derived from the curve.
+
+double[]</value>
+  </data>
+  <data name="CurveMapperYValuesOutputPortName" xml:space="preserve">
+    <value>y-Values</value>
+  </data>
+  <data name="CurveMapperYValuesOutputPortToolTip" xml:space="preserve">
+    <value>Y values derived from the curve.
+
+double[]</value>
+  </data>
+</root>

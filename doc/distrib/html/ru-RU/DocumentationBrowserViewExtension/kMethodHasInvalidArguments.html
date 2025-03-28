@@ -1,0 +1,36 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Содержит недопустимые аргументы</h2>
+<p>Это сообщение об ошибке указывает, что узел предусматривает входные данные определенного типа, но полученный им тип данных невозможно использовать. Эта ошибка аналогична другой ошибке — «ожидает аргументы типа, а вызов выполнен с использованием» — и обычно сопровождается дополнительной информацией, которая поможет определить, какие типы аргументов необходимо передать в используемый узел. </p>
+
+<h4>Устранение проблемы</h4>
+<p>Как правило, необходимо проверить, какие типы входных данных используются узлом, и попытаться определить, (а) передается ли в узел допустимый тип входных данных и (б) можно ли заменить тип входных данных, чтобы он поддерживался данным узлом (как показано в <a href="https://forum.dynamobim.com/t/springs-number-tostring/35562/2">этом примере</a>).</p>
+
+<p>Например, может появиться примерно следующее сообщение <code>Предупреждение. Не удалось выполнить операцию Element.SetParameterByName. Наилучшее соответствие перегруженного метода Revit.Elements.InternalUtilities.ElementUtils.SetParameterValue(Autodesk.Revit.DB.Parameter, double) содержит недопустимые аргументы</code> — дополнительная информация в скобках поможет понять, в чем проблема. В этом случае <code>SetParameterValue(Autodesk.Revit.DB.Parameter, double)</code> означает, что используемый узел предусматривает входные данные типа <code>double</code> и другие входные данные не поддерживаются.</p>
+
+<h4>Дополнительные сведения</h4>
+<p>Дополнительные сведения можно найти в <a href="https://forum.dynamobim.com/search?q=has%20some%20invalid%20arguments"><span>публикациях на форуме Dynamobim с обсуждением ошибки <strong>has some invalid arguments</strong></span></a>.</p>
+
+</body>
