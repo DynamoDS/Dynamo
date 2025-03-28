@@ -2778,11 +2778,14 @@ namespace Dynamo.PackageManager
                 return false;
             }
 
+            /* Enable to make compatilibity matrix obligatory */
+            /*
             if (CompatibilityMatrix == null || !CompatibilityMatrix.Any())
             {
                 ErrorString = Resources.PackageCompatibilityMatrixMissing;
                 return false;
             }
+            */
 
             if (UploadState != PackageUploadHandle.State.Error) ErrorString = "";
 
