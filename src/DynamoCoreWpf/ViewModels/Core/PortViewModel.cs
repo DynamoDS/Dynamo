@@ -28,6 +28,7 @@ namespace Dynamo.ViewModels
         protected readonly NodeViewModel node;
         private DelegateCommand useLevelsCommand;
         private DelegateCommand keepListStructureCommand;
+        internal bool inputPortDisconnectedByConnectCommand = false;
         private bool showUseLevelMenu;
         private const double autocompletePopupSpacing = 2.5;
         private const double proxyPortContextMenuOffset = 20;
@@ -544,13 +545,37 @@ namespace Dynamo.ViewModels
             if (evArgs != null)
             {
                 evArgs.Handled = true;
-            }            
+            }
 
             var wsViewModel = node?.WorkspaceViewModel;
             if (wsViewModel is null || wsViewModel.NodeAutoCompleteSearchViewModel is null)
             {
                 return;
             }
+
+            //remove when autocomplete marker is accepted
+            #region RemoveWhenMarkerAccepted
+            //get here for double click initiated, but it shouldn't be because the Node Autocomplete Marker is enabled
+            if (evArgs == null && wsViewModel.DynamoViewModel.EnableNodeAutoCompleteMarker)
+            {
+                return;
+            }
+
+            // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
+            if (this.inputPortDisconnectedByConnectCommand)
+            {
+                wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
+            }
+
+            // Bail out from connect state
+            wsViewModel.CancelActiveState();
+
+            if (PortModel != null && !PortModel.CanAutoCompleteInput())
+            {
+                return;
+            }
+            #endregion
+
 
             var existingPort = wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel;
             if (existingPort != null)
@@ -568,10 +593,37 @@ namespace Dynamo.ViewModels
         {
             //handle the mouse event to prevent connection from starting
             MouseButtonEventArgs evArgs = parameter as MouseButtonEventArgs;
-            evArgs.Handled = true;
-            
+            if (evArgs != null)
+            {
+                evArgs.Handled = true;
+            }
+
             var wsViewModel = node.WorkspaceViewModel;
             wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
+
+            //remove when autocomplete marker is accepted
+            #region RemoveWhenMarkerAccepted
+            //get here for double click initiated, but it shouldn't be because the Node Autocomplete Marker is enabled
+            if (evArgs == null && wsViewModel.DynamoViewModel.EnableNodeAutoCompleteMarker)
+            {
+                return;
+            }
+
+            // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
+            if (this.inputPortDisconnectedByConnectCommand)
+            {
+                wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
+            }
+
+            // Bail out from connect state
+            wsViewModel.CancelActiveState();
+
+            if (PortModel != null && !PortModel.CanAutoCompleteInput())
+            {
+                return;
+            }
+            #endregion
+
 
             // CreateMockCluster();
 

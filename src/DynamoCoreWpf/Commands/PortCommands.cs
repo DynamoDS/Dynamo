@@ -33,11 +33,12 @@ namespace Dynamo.ViewModels
             get
             {
                 if (autoCompleteCommand == null)
-                    autoCompleteCommand ??= new DelegateCommand(NodeViewModel.WorkspaceViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled ? AutoCompleteCluster : AutoComplete, CanAutoComplete);
+                    autoCompleteCommand ??= new DelegateCommand(NodeViewModel.WorkspaceViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled ? AutoCompleteCluster : AutoComplete, CanAutoComplete );
 
                 return autoCompleteCommand;
             }
         }
+
 
         /// <summary>
         /// Command to open an Port's Context Menu popup
