@@ -169,7 +169,7 @@
         </Grid.RowDefinitions>
         <DockPanel Margin="0,8,0,0">
             <Label Margin="10,0,0,0"
-                   Content="Package Details"
+                   Content="{x:Static p:Resources.PackageDetailsViewExtensionName}"
                    FontSize="14"
                    FontWeight="Regular"
                    Foreground="#f5f5f5" />

@@ -1076,7 +1076,7 @@
                                                 CornerRadius="0,0,0,0">
                                             <Border.ToolTip>
                                                 <uictrls:DynamoToolTip AttachmentSide="Bottom" Style="{DynamicResource ResourceKey=SLightToolTip}">
-                                                    <StackPanel MaxWidth="250" Margin="5">
+                                                    <StackPanel MaxWidth="300" Margin="5">
                                                         <TextBlock x:Name="FileName"
                                                                    Margin="0,0,0,5"
                                                                    Text="{Binding Path=FileName, Converter={StaticResource PathToFileNameConverter}}"

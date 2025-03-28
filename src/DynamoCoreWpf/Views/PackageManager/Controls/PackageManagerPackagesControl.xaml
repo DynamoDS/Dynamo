@@ -587,7 +587,7 @@
                                     <ColumnDefinition Width="68" />
                                     <ColumnDefinition Width="85" />
                                     <ColumnDefinition Width="94" />
-                                    <ColumnDefinition Width="60" />
+                                    <ColumnDefinition Width="*" />
                                 </Grid.ColumnDefinitions>
 
                                 <!--  Number of Favorites Label  -->
@@ -643,7 +643,6 @@
                                 <!--  View Details Button  -->
                                 <Button Name="viewDetailsButton"
                                         Grid.Column="3"
-                                        Width="60"
                                         HorizontalAlignment="Right"
                                         Click="ViewDetailsButton_OnClick"
                                         Content="{x:Static p:Resources.PackageSearchResultViewDetails}">

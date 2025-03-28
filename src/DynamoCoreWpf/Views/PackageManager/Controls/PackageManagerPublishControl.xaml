@@ -235,7 +235,7 @@
                                     <Setter Property="Grid.Row" TargetName="contentPanel" Value="0"/>
                                     <Setter Property="Grid.Column" TargetName="headerPanel" Value="0"/>
                                     <Setter Property="Grid.Column" TargetName="contentPanel" Value="1"/>
-                                    <Setter Property="Width" TargetName="ColumnDefinition0" Value="Auto"/>
+                                    <Setter Property="Width" TargetName="ColumnDefinition0" Value="185"/>
                                     <Setter Property="Width" TargetName="ColumnDefinition1" Value="*"/>
                                     <Setter Property="Height" TargetName="RowDefinition0" Value="*"/>
                                     <Setter Property="Height" TargetName="RowDefinition1" Value="0"/>
@@ -478,7 +478,7 @@
                             Orientation="Horizontal">
 
                     <!--  Back to Selection -->
-                    <Button Content="Back to File Selection"
+                    <Button Content="{x:Static p:Resources.PublishPackageBackToFileButton}"
                             Tag="Back"
                             Click="BreadcrumbButton_Click"
                             DockPanel.Dock="Right"

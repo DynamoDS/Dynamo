@@ -4546,7 +4546,7 @@
                                     VerticalAlignment="Stretch"
                                     Orientation="Horizontal">
                             <Grid Name="TabPanel"
-                                  Width="165"
+                                  Width="180"
                                   Height="30"
                                   Margin="5">
                                 <Grid.ColumnDefinitions>

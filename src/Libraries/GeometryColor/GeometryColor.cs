@@ -196,7 +196,7 @@ namespace Modifiers
         /// <summary>
         /// Display mesh by single color, per-face colors, per-vertex colors, or per-face-vertex colors.
         /// </summary>
-        /// <param name="mesh"></param>The Mesh on which to apply the colors
+        /// <param name="mesh">The Mesh on which to apply the colors</param>
         /// <param name="colors">The color count must equal 1 (single color), or equal the face count (per-face color), or equal the vertex count (per-vertex color), or equal the triangle count multiplied by three (per-triangle-vertex color)</param>
         /// <param name="smoothShading">If true, shading will look smooth instead of faceted, useful for visualizing smooth continuous surfaces</param>
         /// <returns>A Display object.</returns>
