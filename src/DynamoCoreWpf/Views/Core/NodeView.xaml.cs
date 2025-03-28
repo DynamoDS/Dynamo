@@ -519,8 +519,6 @@ namespace Dynamo.Controls
             // ViewModel.DynamoViewModel.ShowPreviewBubbles will be updated AFTER node mouse enter event occurs
             // so, wait while ShowPreviewBubbles binding updates value
             Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
-
-            SetAutoCompleteMarkerAvailability();
         }
 
         private void TryShowPreviewBubbles()
@@ -562,24 +560,6 @@ namespace Dynamo.Controls
                 !ViewModel.IsPreviewInsetVisible || ViewModel.IsFrozen || viewModel.IsTransient;
         }
 
-
-
-        private void SetAutoCompleteMarkerAvailability()
-        {
-            if (!ViewModel.DynamoViewModel.EnableNodeAutoComplete ||
-                !ViewModel.DynamoViewModel.EnableNodeAutoCompleteMarker) return;
-
-
-            //node autocomplete marker is enabled globally, go ahead and work with it
-            var ports = new List<PortViewModel>(ViewModel.InPorts);
-            ports.AddRange(ViewModel.OutPorts);
-
-            foreach (PortViewModel port in ports)
-            {
-                port.NodeAutoCompleteMarkerEnabled = port.CanHaveAutoCompleteMarker() && !port.CannotDisplayAutoCompleteMarker();
-            }
-        }
-
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
             ViewModel.ZIndex = oldZIndex;
@@ -601,8 +581,6 @@ namespace Dynamo.Controls
             {
                 PreviewControl.TransitionToState(PreviewControl.State.Hidden);
             }
-
-            SetAutoCompleteMarkerAvailability();
         }
 
         /// <summary>
