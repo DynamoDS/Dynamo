@@ -5441,6 +5441,7 @@ static Dynamo.Wpf.Properties.Resources.psDynamoLine.get -> byte[]
 static Dynamo.Wpf.Properties.Resources.psDynamoMesh.get -> byte[]
 static Dynamo.Wpf.Properties.Resources.psDynamoPoint.get -> byte[]
 static Dynamo.Wpf.Properties.Resources.PublishPackage.get -> string
+static Dynamo.Wpf.Properties.Resources.PublishPackageBackToFileButton.get -> string
 static Dynamo.Wpf.Properties.Resources.PublishPackageDialogCaption.get -> string
 static Dynamo.Wpf.Properties.Resources.PublishPackageDocTooltipText.get -> string
 static Dynamo.Wpf.Properties.Resources.PublishPackageExternalPackageDependencies.get -> string
