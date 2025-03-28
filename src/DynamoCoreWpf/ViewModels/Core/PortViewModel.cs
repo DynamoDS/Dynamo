@@ -561,24 +561,24 @@ namespace Dynamo.ViewModels
             //remove when autocomplete marker is accepted
             #region RemoveWhenMarkerAccepted
             //get here for double click initiated, but it shouldn't be because the Node Autocomplete Marker is enabled
-            if (evArgs == null && wsViewModel.DynamoViewModel.EnableNodeAutoCompleteMarker)
+            if (evArgs == null && !wsViewModel.DynamoViewModel.EnableNodeAutoCompleteMarker)
             {
-                return;
+
+                // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
+                if (this.inputPortDisconnectedByConnectCommand)
+                {
+                    wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
+                }
+
+                // Bail out from connect state
+                wsViewModel.CancelActiveState();
+
+                if (PortModel != null && !PortModel.CanAutoCompleteInput())
+                {
+                    return;
+                }
             }
 
-            // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
-            if (this.inputPortDisconnectedByConnectCommand)
-            {
-                wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
-            }
-
-            // Bail out from connect state
-            wsViewModel.CancelActiveState();
-
-            if (PortModel != null && !PortModel.CanAutoCompleteInput())
-            {
-                return;
-            }
             #endregion
 
 
@@ -609,23 +609,21 @@ namespace Dynamo.ViewModels
             //remove when autocomplete marker is accepted
             #region RemoveWhenMarkerAccepted
             //get here for double click initiated, but it shouldn't be because the Node Autocomplete Marker is enabled
-            if (evArgs == null && wsViewModel.DynamoViewModel.EnableNodeAutoCompleteMarker)
+            if (evArgs == null && !wsViewModel.DynamoViewModel.EnableNodeAutoCompleteMarker)
             {
-                return;
-            }
+                // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
+                if (this.inputPortDisconnectedByConnectCommand)
+                {
+                    wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
+                }
 
-            // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
-            if (this.inputPortDisconnectedByConnectCommand)
-            {
-                wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
-            }
+                // Bail out from connect state
+                wsViewModel.CancelActiveState();
 
-            // Bail out from connect state
-            wsViewModel.CancelActiveState();
-
-            if (PortModel != null && !PortModel.CanAutoCompleteInput())
-            {
-                return;
+                if (PortModel != null && !PortModel.CanAutoCompleteInput())
+                {
+                    return;
+                }
             }
             #endregion
 
