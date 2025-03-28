@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Diagnostics;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -139,6 +138,7 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeHelp -= ViewModel_RequestShowNodeHelp;
             ViewModel.RequestShowNodeRename -= ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection -= ViewModel_RequestsSelection;
+            ViewModel.RequestClusterAutoCompletePopupPlacementTarget -= ViewModel_RequestClusterAutoCompletePopupPlacementTarget;
             ViewModel.RequestAutoCompletePopupPlacementTarget -= ViewModel_RequestAutoCompletePopupPlacementTarget;
             ViewModel.RequestPortContextMenuPopupPlacementTarget -= ViewModel_RequestPortContextMenuPlacementTarget;
             ViewModel.NodeLogic.PropertyChanged -= NodeLogic_PropertyChanged;
@@ -216,6 +216,7 @@ namespace Dynamo.Controls
             ViewModel.RequestShowNodeHelp += ViewModel_RequestShowNodeHelp;
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
             ViewModel.RequestsSelection += ViewModel_RequestsSelection;
+            ViewModel.RequestClusterAutoCompletePopupPlacementTarget += ViewModel_RequestClusterAutoCompletePopupPlacementTarget;
             ViewModel.RequestAutoCompletePopupPlacementTarget += ViewModel_RequestAutoCompletePopupPlacementTarget;
             ViewModel.RequestPortContextMenuPopupPlacementTarget += ViewModel_RequestPortContextMenuPlacementTarget;
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
@@ -296,6 +297,16 @@ namespace Dynamo.Controls
 
             ViewModel.ActualHeight = ActualHeight;
             ViewModel.ActualWidth = ActualWidth;
+        }
+
+        private void ViewModel_RequestClusterAutoCompletePopupPlacementTarget(Window window, double spacing)
+        {
+            Point positionFromScreen = PointToScreen(new Point(0, this.ActualHeight));
+            PresentationSource source = PresentationSource.FromVisual(this);
+            Point targetPoints = source.CompositionTarget.TransformFromDevice.Transform(positionFromScreen);
+                
+            window.Left = targetPoints.X;
+            window.Top = targetPoints.Y + spacing;
         }
 
         private void ViewModel_RequestPortContextMenuPlacementTarget(Popup popup)
@@ -548,10 +559,11 @@ namespace Dynamo.Controls
                 ViewModel.WorkspaceViewModel.IsSelecting || !previewEnabled ||
                 !ViewModel.IsPreviewInsetVisible || ViewModel.IsFrozen || viewModel.IsTransient;
         }
+
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
             ViewModel.ZIndex = oldZIndex;
-            
+
             //Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
             if (ViewModel.NodeModel != null && ViewModel.NodeModel is CoreNodeModels.Watch) return;
 

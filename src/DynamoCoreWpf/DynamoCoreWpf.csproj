@@ -129,6 +129,7 @@
 
     <ItemGroup>
     <None Remove="Packages\PackageManagerWizard\dist\index.html" />
+    <None Remove="Controls\DNAAutocompleteBar.xaml" />
     <None Remove="Controls\Docs\cs-CZ\FileTrustWarningDocumentation.html" />
     <None Remove="Controls\Docs\cs-CZ\NodeAutocompleteDocumentation.html" />
     <None Remove="Controls\Docs\de-DE\FileTrustWarningDocumentation.html" />
@@ -489,6 +490,7 @@
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\DNAAutocompleteBar.xaml.cs" />
     <Compile Include="Controls\InstalledPackagesControl.xaml.cs">
       <DependentUpon>InstalledPackagesControl.xaml</DependentUpon>
     </Compile>
@@ -704,6 +706,7 @@
     <Compile Include="Utilities\ActionDebouncer.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
+    <Compile Include="ViewModels\Search\ClusterAutocompleteResult.cs" />
     <Compile Include="ViewModels\Search\NodeAutoCompleteSearchViewModel.cs" />
     <Compile Include="ViewModels\Search\NodeSearchElementViewModel.cs" />
     <Compile Include="ViewModels\Core\StateMachine.cs" />
@@ -894,6 +897,9 @@
     <Compile Include="Windows\ModelessChildWindow.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\DNAAutocompleteBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\InstalledPackagesControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1301,6 +1307,15 @@
     <Resource Include="UI\Images\closetab_hover.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\gripper-default.png" />
+    <Resource Include="UI\Images\gripper-hover.png" />
+    <Resource Include="UI\Images\caret-left-disabled.png" />
+    <Resource Include="UI\Images\caret-right-disabled.png" />
+    <Resource Include="UI\Images\caret-left-default.png" />
+    <Resource Include="UI\Images\caret-right-default.png" />
+    <Resource Include="UI\Images\dock_32px_default.png" />
+    <Resource Include="UI\Images\check.png" />
+    <Resource Include="UI\Images\check-disabled.png" />
     <Resource Include="UI\Images\closetab_normal.png" />
     <Resource Include="UI\Images\dynamonotext.png" />
     <Resource Include="UI\Images\error_48px.png" />
