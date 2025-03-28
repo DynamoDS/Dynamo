@@ -14,6 +14,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 using FontAwesome5;
 using Prism.Commands;
 
@@ -25,7 +26,6 @@ namespace Dynamo.Wpf.ViewModels
 
         private bool isSelected;
         private SearchViewModel searchViewModel;
-        private IDisposable undoRecorderGroup;
         private int spacingBetweenNodes = 50;
         private int spacingforHigherWidthNodes = 450;
 
@@ -265,16 +265,8 @@ namespace Dynamo.Wpf.ViewModels
 
             // Initialize a new undo action group before calling 
             // node CreateAndConnect and AutoLayout commands.
-            if (undoRecorderGroup == null)
-            {
-                undoRecorderGroup = dynamoViewModel.CurrentSpace.UndoRecorder.BeginActionGroup();
+            IDisposable undoRecorderGroup = dynamoViewModel.CurrentSpace.UndoRecorder.BeginActionGroup();
 
-                // Node AutoLayout can be performed correctly only when the positions and sizes of the nodes are known, 
-                // which is possible only after the node views have been updated. Note that the NodeView ready event is 
-                // not sufficient for AutoLayout, as node customization has not yet been applied. 
-                // Therefore, we postpone the AutoLayout execution to the next Idling event.
-                dynamoViewModel.NodeViewReady += PostAutoLayoutNodes;
-            }
 
             var initialNode = portModel.Owner;
             var initialNodeVm = dynamoViewModel.CurrentSpaceViewModel.Nodes.FirstOrDefault(x => x.Id == initialNode.GUID);
@@ -285,11 +277,7 @@ namespace Dynamo.Wpf.ViewModels
 
             var createAsDownStreamNode = portModel.PortType == PortType.Output;
 
-            // Clear current selections.
-            DynamoSelection.Instance.ClearSelection();
-
-            //Add initial node in the selection in order to be considered while auto layout
-            DynamoSelection.Instance.Selection.Add(initialNode);
+            IEnumerable<NodeModel> misplacedNodes;
 
             // Placing the new node based on which port it is connecting to.
             if (createAsDownStreamNode)
@@ -301,19 +289,11 @@ namespace Dynamo.Wpf.ViewModels
                 dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, initialNode.GUID,
                     Model.CreationName, portModel.Index, Model.AutoCompletionNodeElementInfo.PortToConnect, adjustedX, adjustedY, createAsDownStreamNode, false, true));
 
-                //Select all output nodes as we need to perform Auto layout on only the output nodes
-                var outputNodes = initialNode.OutputNodes.Values.Where(x => x != null).SelectMany(y => y.Select(z => z.Item2));
-                DynamoSelection.Instance.Selection.AddRange(outputNodes);
+                //Collect all output nodes as we need to perform Auto layout on only the output nodes
+                misplacedNodes = initialNode.OutputNodes.Values.Where(x => x != null).SelectMany(y => y.Select(z => z.Item2));                
             }
             else
             {
-                //Add the node that is about to be replaced in the selection in order to be considered while AutoLayout
-                NodeModel prevNode = portModel?.Connectors?.FirstOrDefault()?.Start?.Owner; //upstream we only have one node to check
-                if (prevNode != null)
-                {
-                    DynamoSelection.Instance.Selection.Add(prevNode);
-                }
-
                 // Placing the new node to the left of initial node
                 adjustedX -= initialNode.Width + spacingBetweenNodes;
 
@@ -327,10 +307,20 @@ namespace Dynamo.Wpf.ViewModels
                 dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, initialNode.GUID,
                       Model.CreationName, 0, portModel.Index, adjustedX, adjustedY, createAsDownStreamNode, false, true));
 
-                //Select all input nodes as we need to perform Auto layout on only the input nodes
-                var inputNodes = initialNode.InputNodes.Values.Where(x => x != null).Select(y => y.Item2);
-                DynamoSelection.Instance.Selection.AddRange(inputNodes);
-            }            
+                //Collect all input nodes as we need to perform Auto layout on only the input nodes
+                misplacedNodes = initialNode.InputNodes.Values.Where(x => x != null).Select(y => y.Item2);
+
+                //Add the node that is about to be replaced in the selection in order to be considered while AutoLayout
+                NodeModel prevNode = portModel?.Connectors?.FirstOrDefault()?.Start?.Owner; //upstream we only have one node to check
+                if (prevNode != null)
+                {
+                    misplacedNodes.Append(prevNode);
+                }
+            }
+
+            Action ensureUndoGroup = () => undoRecorderGroup?.Dispose();
+
+            NodeAutoCompleteUtilities.PostAutoLayoutNodes(dynamoViewModel.CurrentSpace, initialNode, misplacedNodes, false, true, ensureUndoGroup);
         }
 
         protected virtual bool CanCreateAndConnectToPort(object parameter)
@@ -341,146 +331,6 @@ namespace Dynamo.Wpf.ViewModels
             // Avoid triggering auto complete for an already connected input.
             PortModel portModel = parameter as PortModel;
             return portModel?.PortType != PortType.Input || portModel?.Connectors?.FirstOrDefault()?.Start?.Owner is null;
-        }
-
-        private Rect2D GetNodesBoundingBox(IEnumerable<NodeModel> nodes)
-        {
-            if (nodes is null || nodes.Count() == 0)
-                return Rect2D.Empty;
-
-            double minX = nodes.Min(node => node.Rect.TopLeft.X);
-            double maxX = nodes.Max(node => node.Rect.BottomRight.X);
-            double minY = nodes.Min(node => node.Rect.TopLeft.Y);
-            double maxY = nodes.Max(node => node.Rect.BottomRight.Y);
-
-            return new Rect2D(minX, minY, maxX - minX, maxY - minY);
-        }
-
-        // Determines whether an AutoLayout operation is needed for originalNode and its connected inputs or outputs.
-        // This is based on whether the input or output nodes connected to the originalNode intersect with other nodes in the model.
-        // If intersections occur, the function identifies the newly intersected nodes and returns true considering
-        // an additional AutoLayout operation is needed.
-        private bool AutoLayoutNeeded(NodeModel originalNode, IEnumerable<NodeModel> allNodes, bool newInput, out List<NodeModel> intersectedNodes)
-        {
-            //Collect all connected input or output nodes from the original node.
-            List<NodeModel> connectedNodesToConsider = new List<NodeModel>();
-            HashSet<Guid> connectedNodesGuids = new HashSet<Guid>();
-            connectedNodesGuids.Append(originalNode.GUID);
-            var originalPorts = newInput ? originalNode.InPorts : originalNode.OutPorts;
-
-            foreach (var port in originalPorts)
-            {
-                foreach (var connector in port.Connectors)
-                {
-                    var otherNode = newInput ? connector?.Start?.Owner : connector?.End?.Owner;
-                    if (otherNode != null)
-                    {
-                        connectedNodesToConsider.Add(otherNode);
-                        connectedNodesGuids.Add(otherNode.GUID);
-                    }
-                }
-            }
-
-            Rect2D connectedNodesBBox = GetNodesBoundingBox(connectedNodesToConsider);
-
-            //See if there are other nodes that intersect with our bbbox.
-            //If there are, check to see if they actually intersect with one of the
-            //connected nodes and select them for auto layout.
-            intersectedNodes = new List<NodeModel>();
-            bool realIntersection = false;
-            foreach (var node in allNodes)
-            {
-                if (connectedNodesGuids.Contains(node.GUID))
-                    continue;
-
-                if (connectedNodesBBox.IntersectsWith(node.Rect) ||
-                    connectedNodesBBox.Contains(node.Rect))
-                {
-                    intersectedNodes.Add(node);
-                    if (!realIntersection)
-                    {
-                        foreach (var connectedNode in connectedNodesToConsider)
-                        {
-                            if (node.Rect.IntersectsWith(connectedNode.Rect) ||
-                                node.Rect.Contains(connectedNode.Rect) ||
-                                connectedNode.Rect.Contains(node.Rect))
-                            {
-                                realIntersection = true;
-                                break;
-                            }
-                        }
-                    }
-                }
-            }
-
-            return realIntersection;
-        }
-
-        // We want to perform an AutoLayout operation only after all nodes have updated their UI.
-        // Therefore, we will queue the AutoLayout operation to execute during the next idle event.
-        private void PostAutoLayoutNodes(object sender, EventArgs e)
-        {
-            var nodeView = sender as NodeView;
-            if (nodeView is null)
-                return;
-
-            if (Application.Current?.Dispatcher != null)
-            {
-                Application.Current.Dispatcher.BeginInvoke(() => AutoLayoutNodes(sender, e), DispatcherPriority.ApplicationIdle);
-            }
-
-            var dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
-
-            dynamoViewModel.NodeViewReady -= PostAutoLayoutNodes;
-        }
-
-        private void AutoLayoutNodes(object sender, EventArgs e)
-        {
-            var nodeView = sender as NodeView;
-            if (nodeView is null)
-                return;
-
-            var dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
-
-            Guid originalNodeId = Guid.Empty;
-            bool newInput = false;
-            //The new node was just placed and can only have one input or output node.
-            if (nodeView.ViewModel.NodeModel.OutputNodes.Count() > 0)
-            {
-                originalNodeId = nodeView.ViewModel.NodeModel.OutputNodes.Values.SelectMany(s => s.Select(t => t.Item2)).Distinct().FirstOrDefault().GUID;
-                newInput = true;
-            }
-            else if (nodeView.ViewModel.NodeModel.InputNodes.Count > 0)
-            {
-                originalNodeId = nodeView.ViewModel.NodeModel.InputNodes.Values.Select(s => s.Item2).Distinct().FirstOrDefault().GUID;                
-            }
-
-            if (originalNodeId != Guid.Empty)
-            {
-                dynamoViewModel.CurrentSpace.DoGraphAutoLayout(true, true, originalNodeId);
-
-                NodeModel originalNode = dynamoViewModel.Model.CurrentWorkspace.Nodes.FirstOrDefault(x => x.GUID == originalNodeId);
-
-                bool redoAutoLayout = AutoLayoutNeeded(originalNode,
-                    dynamoViewModel.Model.CurrentWorkspace.Nodes,
-                    newInput,
-                    out List<NodeModel> intersectedNodes);
-
-                if (redoAutoLayout)
-                {
-                    DynamoSelection.Instance.Selection.AddRange(intersectedNodes);
-                    dynamoViewModel.CurrentSpace.DoGraphAutoLayout(true, true, originalNodeId);
-                }
-            }
-
-            DynamoSelection.Instance.ClearSelection();
-
-            // Close the undo action group once the node is created, connected and placed.
-            if (undoRecorderGroup != null)
-            {
-                undoRecorderGroup.Dispose();
-                undoRecorderGroup = null;
-            }
         }
 
         public ICommand ClickedCommand { get; private set; }
