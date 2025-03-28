@@ -2870,6 +2870,8 @@ Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMachineLearningIsBeta.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMachineLearningIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMachineLearningIsChecked.set -> void
+Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMarkerIsChecked.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMarkerIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.NotificationCenterIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.NotificationCenterIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.NumberFormatList.get -> System.Collections.ObjectModel.ObservableCollection<string>
