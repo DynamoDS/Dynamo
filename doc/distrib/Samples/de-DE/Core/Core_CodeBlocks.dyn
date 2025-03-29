@@ -5489,7 +5489,7 @@
       },
       {
         "Id": "68e41793387f43a4b617b1f9da07e298",
-        "Title": "Codeblöcke können verwendet werden, um einen beliebigen anderen Block in der Bibliothek aufzurufen. Blöcke in der Bibliothek weisen im Allgemeinen drei Typen auf:\r\n\r\n    Erstellen:\tObjekt erstellen\r\n    Aktion:\tAktion für ein Objekt ausführen\r\n    Abfrage:\t\tEigenschaft von einem Objekt abrufen,\r\n\t\tdas bereits existiert\r\n\r\nMethoden oder Blöcke dieser drei Typen werden unterschiedlich behandelt, wenn sie in einem Codeblock aufgerufen werden.",
+        "Title": "Codeblöcke können verwendet werden, um einen beliebigen anderen Block in der Bibliothek aufzurufen. Blöcke in der Bibliothek weisen im Allgemeinen drei Typen auf:\r\n\r\n    Erstellen:\tObjekt erstellen\r\n    Aktion:\tAktion für ein Objekt ausführen\r\n    Abfrage:\tEigenschaft von einem Objekt\t\tabrufen, das bereits existiert\r\n\r\nMethoden oder Blöcke dieser drei Typen werden unterschiedlich behandelt, wenn sie in einem Codeblock aufgerufen werden.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6053,7 +6053,7 @@
       },
       {
         "Id": "48b10f5b91ed46d0b5dda59e32d479ea",
-        "Title": "Multiple variables are defined in this code block, and at the end, a list is created containing all of them.",
+        "Title": "In diesem Codeblock werden mehrere Variablen definiert, und am Ende wird eine Liste mit allen Variablen erstellt.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

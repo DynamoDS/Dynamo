@@ -1,5 +1,5 @@
 ## Подробности
-This node will convert an array to a string. The second input `format specifier` controls how numeric inputs are converted to their string representations.
+Этот узел преобразует массив в строку. Второй входной параметр, `format specifier`, управляет преобразованием числовых входных данных в их строковые представления.
 Параметр ввода `format specifier` должен быть одним из спецификаторов стандартных числовых форматов C#.
 
 Спецификаторы формата должны иметь следующий формат:

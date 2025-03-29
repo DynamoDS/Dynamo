@@ -1,7 +1,7 @@
 ## En detalle:
-`PolySurface.SurfaceCount` returns the number of surface within the given PolySurface object.
+`PolySurface.SurfaceCount` devuelve el número de superficie dentro del objeto PolySurface especificado.
 
-In the example below, a PolySurface is created from a cuboid and the surface count is provided with `PolySurface.SurfaceCount`.
+En el siguiente ejemplo, se crea una PolySurface a partir de un ortoedro y se proporciona el recuento de superficies con `PolySurface.SurfaceCount`.
 ___
 ## Archivo de ejemplo
 

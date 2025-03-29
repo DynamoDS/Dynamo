@@ -5,4 +5,4 @@ W poniższym przykładzie zostaje utworzona powierzchnia prymitywu sferowego T-s
 
 ## Plik przykładowy
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySphereBestFit_img.jpg)
+![Example](./RUAGD4YGKJ6XHPIKDL7GZX63CDAFMI6KUSR6XMXEBGJJOATEI5IA_img.jpg)

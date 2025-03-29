@@ -1,15 +1,15 @@
 ## Подробности
-`List.GroupBySimilarity` clusters list elements based on the adjacency of their indices and the similarity of their values. The list of elements to be clustered can contain either numbers (integers and floating-point numbers) or strings, but not a mix of both.
+Узел `List.GroupBySimilarity` группирует элементы списка на основе смежности их индексов и сходства их значений. Список объединяемых в кластер элементов может содержать либо числа (целые и с плавающей точкой), либо строки, но не значения обоих типов.
 
-Use the `tolerance` input to determine the similarity of elements. For lists of numbers, the 'tolerance' value represents the maximum allowable difference between two numbers for them to be considered similar.
+Используйте входное значение допуска `tolerance` для определения сходства элементов. Для списков чисел значение 'tolerance' представляет собой максимально допустимую разницу между двумя числами, чтобы они считались сходными.
 
-For lists of strings, this is a decimal value (between 0 and 1) specifying the minimum similarity ratio (computed using fuzzy logic) for adjacent elements to be considered similar. For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is set to 5.
+Для списков строк это десятичное значение (от 0 до 1), указывающее минимальный коэффициент сходства (вычисленный с использованием нечеткой логики), при котором смежные элементы считаются сходными. Для списков строк значение 'tolerance' указывает максимальное количество символов, которое может отличаться в двух строках (для сравнения используется расстояние Левенштейна). Максимальный допуск для строк — 5.
 
-The `considerAdjacency` Boolean input indicates whether adjacency should be considered when clustering the elements. If True, only adjacent elements that are similar will be clustered together. If False, similarity alone will be used to form clusters, regardless of adjacency.
+Логический входной параметр `considerAdjacency` указывает, следует ли учитывать смежность при группировании элементов. Если задано значение True, в кластер будут включены только схожие смежные элементы. Если задано значение False, для формирования кластеров будет использоваться только сходство, независимо от смежности.
 
-The node outputs a list of lists of clustered values based on adjacency and similarly, as well as a list of lists of the indices of the clustered elements in the original list.
+Этот узел выводит список списков группированных значений на основе смежности и сходства, а также список списков индексов группированных элементов в исходном списке.
 
-In the sample below, `List.GroupBySimilarity` is used in two ways: to cluster a list of strings by similarity only, and to cluster a list of numbers by adjacency and similarity.
+В приведенном ниже примере узел `List.GroupBySimilarity` используется двумя способами: для кластеризации списка строк только по сходству и для кластеризации списка чисел по смежности и схожести.
 ___
 ## Файл примера
 

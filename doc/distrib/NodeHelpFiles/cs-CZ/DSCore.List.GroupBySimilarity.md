@@ -1,15 +1,15 @@
 ## Podrobnosti
-`List.GroupBySimilarity` clusters list elements based on the adjacency of their indices and the similarity of their values. The list of elements to be clustered can contain either numbers (integers and floating-point numbers) or strings, but not a mix of both.
+Uzel `List.GroupBySimilarity` seskupuje prvky seznamu podle přilehlosti jejich indexů a podobnosti jejich hodnot. Seznam prvků, které mají být seskupeny, může obsahovat buď čísla (celá čísla a čísla s plovoucí desetinnou čárkou), nebo řetězce, ale ne kombinaci obou.
 
-Use the `tolerance` input to determine the similarity of elements. For lists of numbers, the 'tolerance' value represents the maximum allowable difference between two numbers for them to be considered similar.
+Pomocí vstupu `tolerance` určete podobnost prvků. U seznamů čísel představuje hodnota `tolerance` maximální přípustný rozdíl mezi dvěma čísly, aby byla považována za podobná.
 
-For lists of strings, this is a decimal value (between 0 and 1) specifying the minimum similarity ratio (computed using fuzzy logic) for adjacent elements to be considered similar. For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is set to 5.
+U seznamů řetězců se jedná o desetinnou hodnotu (mezi 0 a 1) určující minimální poměr podobnosti (vypočítaný pomocí fuzzy logiky) sousedních prvků, které mají být považovány za podobné. U seznamů řetězců představuje vstup 'tolerance' maximální počet znaků, které se mohou mezi dvěma řetězci lišit, přičemž ke srovnání se použije Levenštejnova vzdálenost. Maximální tolerance řetězců je nastavena na hodnotu 5.
 
-The `considerAdjacency` Boolean input indicates whether adjacency should be considered when clustering the elements. If True, only adjacent elements that are similar will be clustered together. If False, similarity alone will be used to form clusters, regardless of adjacency.
+Booleovský vstup `considerAdjacency` označuje, zda má být při seskupování prvků zohledněna přilehlost. Pokud má hodnotu True, budou seskupeny dohromady pouze sousední prvky, které jsou podobné. Pokud má hodnotu False, k vytvoření shluků se použije samotná podobnost bez ohledu na přilehlost.
 
-The node outputs a list of lists of clustered values based on adjacency and similarly, as well as a list of lists of the indices of the clustered elements in the original list.
+Uzel vytvoří na výstupu seznam seznamů seskupovaných hodnot podle přilehlosti a podobnosti a také seznam seznamů indexů seskupovaných prvků v původním seznamu.
 
-In the sample below, `List.GroupBySimilarity` is used in two ways: to cluster a list of strings by similarity only, and to cluster a list of numbers by adjacency and similarity.
+V následující ukázce se uzel`List.GroupBySimilarity` používá dvěma způsoby: k seskupení seznamu řetězců pouze podle podobnosti a ke shlukování seznamu čísel podle přilehlosti a podobnosti.
 ___
 ## Vzorový soubor
 

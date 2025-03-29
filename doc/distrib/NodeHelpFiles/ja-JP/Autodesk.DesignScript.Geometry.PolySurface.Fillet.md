@@ -1,9 +1,9 @@
 ## 詳細
-`PolySurface.Fillet` creates a fillet (rounded edge) between the edges of the given PolySurface.
+`PolySurface.Fillet` は指定された PolySurface のエッジ間にフィレット(丸めたエッジ)を作成します。
 
-This node is particularly useful for smoothing out sharp edges in a polysurface model, enhancing the visual and physical properties of the geometry.
+このノードは PolySurface モデルの鋭角エッジを滑らかにするのに特に役に立ち、ジオメトリの表示プロパティと物理的プロパティを強化します。
 
-In the example below, a cuboid is created, converted to a PolySurface and finally rounded off with `PolySurface.Fillet`.
+次の例では、立方体を作成して PolySurface に変換し、最後に `PolySurface.Fillet` で丸めます。
 ___
 ## サンプル ファイル
 

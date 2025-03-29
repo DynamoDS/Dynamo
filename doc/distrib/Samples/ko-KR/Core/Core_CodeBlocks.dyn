@@ -5489,7 +5489,7 @@
       },
       {
         "Id": "68e41793387f43a4b617b1f9da07e298",
-        "Title": "Code Block은 라이브러리의 다른 노드를 호출하는 데 사용할 수 있습니다. 라이브러리의 노드는 일반적으로 세 가지 유형으로 제공됩니다.\r\n\r\n    만들기:\t무언가를 만듭니다.\r\n    작업:\t무언가에 대한 작업을 수행합니다.\r\n    조회:\t\t이미 존재하는 것의\r\n\t\t특성을 가져옵니다.\r\n\r\n이 세 가지 유형의 메서드 또는 노드는 Code Block 내에서 호출될 때 다르게 취급됩니다.",
+        "Title": "Code Block은 라이브러리의 다른 노드를 호출하는 데 사용할 수 있습니다. 라이브러리의 노드는 일반적으로 세 가지 유형으로 제공됩니다.\r\n\r\n    만들기:\t무언가를 만듭니다.\r\n    작업:\t\t무언가에 대한 작업을 수행합니다.\r\n    조회:\t\t이미 존재하는 것의\r\n\t\t특성을 가져옵니다.\r\n\r\n이 세 가지 유형의 메서드 또는 노드는 Code Block 내에서 호출될 때 다르게 취급됩니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6053,7 +6053,7 @@
       },
       {
         "Id": "48b10f5b91ed46d0b5dda59e32d479ea",
-        "Title": "Multiple variables are defined in this code block, and at the end, a list is created containing all of them.",
+        "Title": "여러 변수가 이 코드 블록 내에 정의되고 결과적으로 모든 변수를 포함하는 리스트가 작성됩니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

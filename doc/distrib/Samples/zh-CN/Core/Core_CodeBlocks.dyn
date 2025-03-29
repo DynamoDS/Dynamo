@@ -5489,7 +5489,7 @@
       },
       {
         "Id": "68e41793387f43a4b617b1f9da07e298",
-        "Title": "代码块可用于调用库中的任何其他节点。库中的节点通常有三种类型:\r\n\r\n    创建:\t创建内容\r\n    操作:\t对内容执行操作\r\n    查询:\t\t获取已存在内容的特性\r\n\t\t\r\n\r\n在代码块中调用这三种类型的方法或节点时，它们的处理方式有所不同。",
+        "Title": "代码块可用于调用库中的任何其他节点。库中的节点通常有三种类型:\r\n\r\n    创建:\t\t创建内容\r\n    操作:\t\t对内容执行操作\r\n    查询:\t\t获取已存在内容的特性\r\n\t\t\r\n\r\n在代码块中调用这三种类型的方法或节点时，它们的处理方式有所不同。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6053,7 +6053,7 @@
       },
       {
         "Id": "48b10f5b91ed46d0b5dda59e32d479ea",
-        "Title": "Multiple variables are defined in this code block, and at the end, a list is created containing all of them.",
+        "Title": "多个变量在此代码块中定义，最后，将创建一个包含所有变量的列表。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

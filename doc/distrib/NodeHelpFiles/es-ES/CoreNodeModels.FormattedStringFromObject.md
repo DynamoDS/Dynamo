@@ -1,5 +1,5 @@
 ## En detalle:
-This node will convert an object to a string. The second input `format specifier` controls how numeric inputs are converted to their string representations.
+Este nodo convertirá un objeto en una cadena. La segunda entrada `format specifier` controla cómo se convierten las entradas numéricas en sus representaciones de cadena.
 Esta entrada `format specifier` debe ser uno de los especificadores numéricos de formato estándar de c#.
 
 Los especificadores de formato deben presentar el formato:

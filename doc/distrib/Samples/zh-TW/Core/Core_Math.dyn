@@ -10186,7 +10186,7 @@
       },
       {
         "Id": "355c40ca31c5437db2855da2afac623d",
-        "Title": "This example shows four different ways to approach dealing with Math functions.  Each of these examples starts with a grid of points, calculates z-coordinates for the points and then makes a surface.  Only the calculation method differs; these methods all solve the same.\n\n1. Nodes. Math nodes are in the Math section of the Library which is further split into Functions, Logic and Operators.\n\n2. Python.\n\n3. Code Block Node.  Double-click anywhere in the canvas to create a code block node.  Syntax for each function matches the name of the node in Dynamo.\n\n** Note: You can adjust the resolution of the geometry preview by navigating to the Render Precision settings: Dynamo -> Preferences -> Visual Settings -> Render Precision",
+        "Title": "此範例示範四種不同處理數學函數的方法。每個範例都以點格線開始，計算點的 Z 座標，然後產生曲面。只有計算方法不同，但這些方法都得到相同答案。\n\n1. 節點。數學節點位於 Library 的 Math 區段，然後又進一步分成 Functions、Logic 和 Operators。\n\n2. Python。\n\n3. Code Block 節點。按兩下圖元區中的任意位置可建立 Code Block 節點。每個函數的語法都符合 Dynamo 中節點的名稱。\n\n** 注意事項: 您可以導覽到「彩現精確度」設定: Dynamo ->「偏好」->「視覺設定」->「彩現精確度」來調整幾何圖形預覽的解析度。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10454,7 +10454,7 @@
       },
       {
         "Id": "488aa4f143a34f18bc197a2677f80fb6",
-        "Title": "Tip: Adjust how precisely the geometry in the background preview is rendered by navigating to Dynamo -> Preferences -> Visual Settings -> Render Precision.  A higher value will make curved surfaces look smoother, but it will take more processing power to draw.",
+        "Title": "秘訣: 導覽到 Dynamo ->「偏好」->「視覺設定」->「彩現精確度」，來調整要多精確彩現背景預覽中的幾何圖形。值越高會讓曲面看起來越平滑，但也需要越高的處理能力才能繪製。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

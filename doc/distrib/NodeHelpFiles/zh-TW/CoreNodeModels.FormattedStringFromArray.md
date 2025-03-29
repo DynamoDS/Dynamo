@@ -1,5 +1,5 @@
 ## 深入資訊
-This node will convert an array to a string. The second input `format specifier` controls how numeric inputs are converted to their string representations.
+此節點會將陣列轉換為字串。第二個輸入 `format specifier` 控制數值輸入如何轉換為其字串表現法。
 此 `format specifier` 輸入必須是其中一個 C# 標準格式數值指定字。
 
 格式指定字應採用以下形式:

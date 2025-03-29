@@ -1,5 +1,5 @@
 ## Em profundidade
-This node will convert an object to a string. The second input `format specifier` controls how numeric inputs are converted to their string representations.
+Esse nó converterá um objeto em uma sequência de caracteres. A segunda entrada de `format specifier` controla como entradas numéricas são convertidas em suas representações de sequência de caracteres.
 Essas entradas do `format specifier` devem ser um dos especificadores numéricos de formato padrão c#.
 
 Os especificadores de formato devem estar no formato:

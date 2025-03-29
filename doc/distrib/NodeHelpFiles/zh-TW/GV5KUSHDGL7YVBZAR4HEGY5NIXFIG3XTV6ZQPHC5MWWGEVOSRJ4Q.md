@@ -1,13 +1,13 @@
 ## 深入資訊
-The `Curve Mapper` node leverages mathematical curves to redistribute points within a defined range. Redistribution in this context means reassigning x-coordinates to new positions along a specified curve based on their y-coordinates. This technique is particularly valuable for applications such as façade design, parametric roof structures, and other design calculations where specific patterns or distributions are required.
+`Curve Mapper` 節點利用數學曲線在定義的範圍內讓點重新分佈。在此脈絡下的重新分佈，表示會沿著指定曲線，根據新位置的 y 座標重新指定 x 座標。這種技術對於立面設計、參數式屋頂結構和其他需要特定模式或分佈的設計計算等應用特別有價值。
 
-Define the limits for both x and y coordinates by setting the minimum and maximum values. These limits set the boundaries within which the points will be redistributed. Next, select a mathematical curve from the provided options, which includes Linear, Sine, Cosine, Perlin Noise, Bezier, Gaussian, Parabolic, Square Root, and Power curves. Use the interactive control points to adjust the shape of the selected curve, tailoring it to your specific needs.
+透過設定最小值和最大值，定義 X 與 Y 座標的限制。這些限制設定這些點將在當中重新分佈的邊界。接下來，從提供的選項中選取一條數學曲線，其中包括線性曲線、正弦曲線、餘弦曲線、柏林噪波曲線、Bezier 曲線、高斯曲線、拋物線曲線、平方根曲線和冪曲線。使用互動式控制點，根據您的特定需求調整所選曲線的形狀。
 
-You can lock the curve shape using the lock button, which prevents further modifications to the curve. Additionally, you can reset the shape to its default state by using the reset button inside the node.
+您可以使用鎖頭按鈕鎖住曲線形狀，這樣可避免進一步修改曲線。此外，您還可以使用節點內的重設按鈕，將形狀重設為預設狀態。
 
-Specify the number of points to be redistributed by setting the Count input. The node calculates new x-coordinates for the specified number of points based on the selected curve and defined limits. The points are redistributed in a way that their x-coordinates follow the shape of the curve along the y-axis.
+透過設定 Count 輸入指定要重新分佈的點數。節點會根據選取的曲線和定義的限制，針對指定的點數計算新的 x 座標。點重新分佈的方式為，沿著 y 軸跟著曲線形狀移動而得到 x 座標。
 
-For example, to redistribute 80 points along a sine curve, set Min X to 0, Max X to 20, Min Y to 0, and Max Y to 10. After selecting the sine curve and adjusting its shape as needed, the `Curve Mapper` node outputs 80 points with x-coordinates that follow the sine curve pattern along the y-axis from 0 to 10.
+例如，若要沿正弦曲線重新分佈 80 個點，將 X 最小值設為 0、X 最大值設為 20、Y 最小值設為 0、Y 最大值設為 10。選取正弦曲線並視需要調整形狀後，`Curve Mapper` 節點輸出的 80 個點，其 x 座標是沿著 y 軸 0 到 10 的範圍跟著正弦曲線移動計算而得。
 
 
 

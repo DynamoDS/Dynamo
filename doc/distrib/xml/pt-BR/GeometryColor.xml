@@ -39,7 +39,7 @@
         </member>
         <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
             <summary>Exiba a malha por cor única, cores por face, cores por vértice ou cores por vértice por face.</summary>
-            <param name="mesh"/>The Mesh on which to apply the colors
+            <param name="mesh">The Mesh on which to apply the colors</param>
             <param name="colors">A contagem de cores deve ser igual a 1 (cor única), igual à contagem de faces (cor por face), igual à contagem de vértices (cor por vértice) ou igual à contagem de triângulos multiplicada por três (cor por vértice de triângulo)</param>
             <param name="smoothShading">Se true, o sombreamento parecerá liso em vez de facetado, o que é útil para visualizar superfícies contínuas suaves</param>
             <returns>Um objeto de exibição.</returns>

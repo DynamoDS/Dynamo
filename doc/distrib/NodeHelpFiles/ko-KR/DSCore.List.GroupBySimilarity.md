@@ -1,15 +1,15 @@
 ## 상세
-`List.GroupBySimilarity` clusters list elements based on the adjacency of their indices and the similarity of their values. The list of elements to be clustered can contain either numbers (integers and floating-point numbers) or strings, but not a mix of both.
+`List.GroupBySimilarity` 클러스터는 색인의 인접성 및 값의 유사성을 기준으로 요소를 나열합니다. 클러스터화할 요소 리스트에는 숫자(정수 및 부동 소수점 숫자) 또는 문자열 중 하나만 포함될 수 있으며, 두 가지가 혼합된 형태는 안 됩니다.
 
-Use the `tolerance` input to determine the similarity of elements. For lists of numbers, the 'tolerance' value represents the maximum allowable difference between two numbers for them to be considered similar.
+`tolerance` 입력을 사용하여 요소의 유사성을 결정합니다. 숫자 리스트의 경우 'tolerance' 값은 두 숫자가 유사하다고 간주될 수 있는 최대 허용 차이를 나타냅니다.
 
-For lists of strings, this is a decimal value (between 0 and 1) specifying the minimum similarity ratio (computed using fuzzy logic) for adjacent elements to be considered similar. For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is set to 5.
+문자열 리스트의 경우, 이것은 0과 1 사이의 소수 값으로, 인접한 요소들이 유사하다고 간주되기 위한 최소 유사성 비율을 지정합니다(이 비율은 퍼지 논리를 사용하여 계산됨). 문자열 리스트의 경우, 'tolerance'는 두 문자열 간의 차이가 허용될 수 있는 최대 문자 수를 나타내며, 비교에는 레벤슈타인 거리가 사용됩니다. 문자열에 대한 최대 공차는 5로 설정됩니다.
 
-The `considerAdjacency` Boolean input indicates whether adjacency should be considered when clustering the elements. If True, only adjacent elements that are similar will be clustered together. If False, similarity alone will be used to form clusters, regardless of adjacency.
+`considerAdjacency` 부울 입력은 요소를 클러스터링할 때 인접성을 고려해야 하는지 여부를 나타냅니다. True인 경우 유사한 인접 요소만 함께 클러스터링됩니다. False이면 인접성에 관계없이 유사성만을 사용하여 클러스터를 형성합니다.
 
-The node outputs a list of lists of clustered values based on adjacency and similarly, as well as a list of lists of the indices of the clustered elements in the original list.
+이 노드는 인접성 및 유사성에 따라 클러스터링된 값 리스트의 리스트와 원래 리스트에서 클러스터링된 요소의 색인 리스트의 리스트를 출력합니다.
 
-In the sample below, `List.GroupBySimilarity` is used in two ways: to cluster a list of strings by similarity only, and to cluster a list of numbers by adjacency and similarity.
+아래 샘플에서`List.GroupBySimilarity`는 두 가지 방식, 즉 유사성을 기준으로만 문자열 리스트를 클러스터링하는 방식과 인접성 및 유사성을 기준으로 숫자 리스트를 클러스터링하는 방식으로 사용됩니다.
 ___
 ## 예제 파일
 

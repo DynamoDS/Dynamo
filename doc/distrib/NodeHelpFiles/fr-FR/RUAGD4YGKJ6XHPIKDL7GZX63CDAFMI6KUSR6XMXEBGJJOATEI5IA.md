@@ -5,4 +5,4 @@ Dans l'exemple ci-dessous, une surface primitive de sphère T-Spline est créée
 
 ## Exemple de fichier
 
-![Example](./Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySphereBestFit_img.jpg)
+![Example](./RUAGD4YGKJ6XHPIKDL7GZX63CDAFMI6KUSR6XMXEBGJJOATEI5IA_img.jpg)

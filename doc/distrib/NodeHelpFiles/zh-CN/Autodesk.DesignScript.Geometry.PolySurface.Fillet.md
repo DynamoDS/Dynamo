@@ -1,9 +1,9 @@
 ## 详细
-`PolySurface.Fillet` creates a fillet (rounded edge) between the edges of the given PolySurface.
+“PolySurface.Fillet”将在给定 PolySurface 的边之间创建一个圆角(圆边)。
 
-This node is particularly useful for smoothing out sharp edges in a polysurface model, enhancing the visual and physical properties of the geometry.
+在 Polysurface 模型中，此节点尤其可用于平滑锐利的边，从而提高几何图形的视觉和物理特性。
 
-In the example below, a cuboid is created, converted to a PolySurface and finally rounded off with `PolySurface.Fillet`.
+在下面的示例中，创建了一个立方体，并将其转换为 PolySurface，最后使用“PolySurface.Fillet”进行圆化。
 ___
 ## 示例文件
 

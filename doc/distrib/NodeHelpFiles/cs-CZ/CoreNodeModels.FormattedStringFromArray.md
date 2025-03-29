@@ -1,5 +1,5 @@
 ## Podrobnosti
-This node will convert an array to a string. The second input `format specifier` controls how numeric inputs are converted to their string representations.
+Tento uzel převede pole na řetězec. Druhý vstup `format specifier` řídí, jak jsou číselné vstupy převedeny na jejich řetězcové reprezentace.
 Tento vstup `format specifier`by měl být jedním z číselných specifikátorů standardního formátu jazyka C#.
 
 specifikátory formátu by měly mít následující formu:

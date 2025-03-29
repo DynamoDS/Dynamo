@@ -1,13 +1,13 @@
-## En detalle:
-The `Curve Mapper` node leverages mathematical curves to redistribute points within a defined range. Redistribution in this context means reassigning x-coordinates to new positions along a specified curve based on their y-coordinates. This technique is particularly valuable for applications such as façade design, parametric roof structures, and other design calculations where specific patterns or distributions are required.
+## En detalle
+El nodo `Curve Mapper` aprovecha las curvas matemáticas para redistribuir puntos dentro de un rango definido. En este contexto, la redistribución consiste en reasignar las coordenadas X a nuevas posiciones a lo largo de una curva especificada en función de las coordenadas Y. Esta técnica es especialmente valiosa para aplicaciones como el diseño de fachadas, estructuras paramétricas de cubiertas y otros cálculos de diseño en los que se requieren patrones o distribuciones específicos.
 
-Define the limits for both x and y coordinates by setting the minimum and maximum values. These limits set the boundaries within which the points will be redistributed. Next, select a mathematical curve from the provided options, which includes Linear, Sine, Cosine, Perlin Noise, Bezier, Gaussian, Parabolic, Square Root, and Power curves. Use the interactive control points to adjust the shape of the selected curve, tailoring it to your specific needs.
+Defina los límites de las coordenadas X e Y mediante la configuración de los valores mínimo y máximo. Estos límites establecen los contornos dentro de los cuales se redistribuirán los puntos. A continuación, seleccione una curva matemática de entre las opciones proporcionadas, que incluyen las curvas lineal, sinusoidal, de coseno, de ruido de Perlin, de Bezier, gaussiana, parabólica, de raíz cuadrada y de potencia. Utilice los puntos de control interactivos para ajustar la forma de la curva seleccionada, adaptándola a sus necesidades específicas.
 
-You can lock the curve shape using the lock button, which prevents further modifications to the curve. Additionally, you can reset the shape to its default state by using the reset button inside the node.
+Puede bloquear la forma de la curva mediante el botón de bloqueo, que impide realizar más modificaciones en la curva. Además, puede restablecer la forma a su estado por defecto mediante el botón de restablecimiento dentro del nodo.
 
-Specify the number of points to be redistributed by setting the Count input. The node calculates new x-coordinates for the specified number of points based on the selected curve and defined limits. The points are redistributed in a way that their x-coordinates follow the shape of the curve along the y-axis.
+Especifique el número de puntos que se van a redistribuir mediante la entrada `Count`. El nodo calcula nuevas coordenadas X para el número especificado de puntos en función de la curva seleccionada y los límites definidos. Los puntos se redistribuyen de forma que sus coordenadas X sigan la forma de la curva a lo largo del eje Y.
 
-For example, to redistribute 80 points along a sine curve, set Min X to 0, Max X to 20, Min Y to 0, and Max Y to 10. After selecting the sine curve and adjusting its shape as needed, the `Curve Mapper` node outputs 80 points with x-coordinates that follow the sine curve pattern along the y-axis from 0 to 10.
+Por ejemplo, para redistribuir 80 puntos a lo largo de una curva sinusoidal, establezca el valor mínimo de X en 0, el valor máximo de X en 20, el valor mínimo de Y en 0 y el valor máximo de Y en 10. Tras seleccionar la curva sinusoidal y ajustar su forma según sea necesario, el nodo `Curve Mapper` emite 80 puntos con coordenadas X que siguen el patrón de la curva sinusoidal a lo largo del eje Y de 0 a 10.
 
 
 

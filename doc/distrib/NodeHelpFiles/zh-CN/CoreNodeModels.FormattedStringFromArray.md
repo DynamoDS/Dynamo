@@ -1,5 +1,5 @@
 ## 详细
-This node will convert an array to a string. The second input `format specifier` controls how numeric inputs are converted to their string representations.
+此节点会将阵列转化为字符串。第二个输入“格式说明符”控制如何将数值输入转换为其字符串表示形式。
 此“格式说明符”输入应该是 C# 标准格式数值说明符之一。
 
 格式说明符应采用以下形式:

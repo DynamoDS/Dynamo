@@ -1,9 +1,9 @@
 ## Description approfondie
-`PolySurface.Fillet` creates a fillet (rounded edge) between the edges of the given PolySurface.
+'PolySurface.Fillet' crée un raccord (arête arrondie) entre les arêtes de la PolySurface donnée.
 
-This node is particularly useful for smoothing out sharp edges in a polysurface model, enhancing the visual and physical properties of the geometry.
+Ce noeud est particulièrement utile pour atténuer les arêtes prononcées d'un modèle de polysurface, ce qui permet d'améliorer les propriétés visuelles et physiques de la géométrie.
 
-In the example below, a cuboid is created, converted to a PolySurface and finally rounded off with `PolySurface.Fillet`.
+Dans l'exemple ci-dessous, un parallélépipède est créé, converti en PolySurface, puis arrondi avec 'PolySurface.Fillet'.
 ___
 ## Exemple de fichier
 
