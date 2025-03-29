@@ -1,11 +1,11 @@
 ## Description approfondie
-`Solid.Repair` attempts to repair solids which have invalid geometry, as well as potentially performing optimizations. `Solid.Repair` will return a new solid object.
+'Solid.Repair' tente de réparer les solides dont la géométrie est incorrecte, ainsi que d'effectuer des optimisations potentielles. 'Solid.Repair' renvoie un nouvel objet solide.
 
-Ce nœud est utile lorsque vous rencontrez des erreurs lors de l'exécution d'opérations sur une géométrie importée ou convertie.
+Ce noeud est utile lorsque vous rencontrez des erreurs lors de l'exécution d'opérations sur une géométrie importée ou convertie.
 
-In the example below, `Solid.Repair` is used to repair geometry from an **.SAT** file. The geometry in the file fails to boolean or trim, and `Solid.Repair` cleans up any *invalid geometry* that is causing the failure.
+Dans l'exemple ci-dessous, 'Solid.Repair' est utilisé pour réparer la géométrie provenant d'un fichier **. SAT**. La géométrie du fichier échoue lors d'une opération booléenne ou d'ajustement, et 'Solid.Repair' nettoie toute *géométrie incorrecte* à l'origine de l'échec.
 
-In general, you should not need to use this functionality on geometry you create in Dynamo, only on geometry from external sources. If you find that is not the case, please report a bug to the Dynamo team Github
+En règle générale, vous ne devriez pas avoir besoin d'utiliser cette fonctionnalité sur les géométries que vous créez dans Dynamo, mais uniquement sur celles provenant de sources externes. Si vous constatez que ce n'est pas le cas, veuillez signaler un bogue à l'équipe Dynamo Github
 ___
 ## Exemple de fichier
 
