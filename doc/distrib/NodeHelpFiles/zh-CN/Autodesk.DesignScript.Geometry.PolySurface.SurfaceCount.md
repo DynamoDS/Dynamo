@@ -1,7 +1,7 @@
 ## 详细
-`PolySurface.SurfaceCount` returns the number of surface within the given PolySurface object.
+“PolySurface.SurfaceCount”会返回给定 PolySurface 对象中的曲面数。
 
-In the example below, a PolySurface is created from a cuboid and the surface count is provided with `PolySurface.SurfaceCount`.
+在下面的示例中，从立方体创建一个 PolySurface，并且通过“PolySurface.SurfaceCount”提供曲面计数。
 ___
 ## 示例文件
 

@@ -1,5 +1,5 @@
 ## Im Detail
-This node will convert an object to a string. The second input `format specifier` controls how numeric inputs are converted to their string representations.
+Dieser Block konvertiert ein Objekt in eine Zeichenfolge. Die zweite Eingabe `format specifier` steuert, wie numerische Eingaben in die entsprechenden Zeichenfolgendarstellungen konvertiert werden.
 Diese Eingaben für `format specifier` sollten numerische C#-Standardformatspezifizierer sein.
 
 Formatspezifizierer sollten die folgende Form haben:

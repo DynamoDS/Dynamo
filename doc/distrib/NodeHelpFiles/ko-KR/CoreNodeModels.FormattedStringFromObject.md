@@ -1,5 +1,5 @@
 ## 상세
-This node will convert an object to a string. The second input `format specifier` controls how numeric inputs are converted to their string representations.
+이 노드는 객체를 문자열로 변환합니다. 두 번째 입력 `format specifier`는 숫자 입력이 문자열 표현으로 변환되는 방법을 제어합니다.
 이 `format specifier` 입력은 c# 표준 형식 숫자 지정자 중 하나여야 합니다.
 
 형식 지정자의 형식은 다음과 같아야 합니다.

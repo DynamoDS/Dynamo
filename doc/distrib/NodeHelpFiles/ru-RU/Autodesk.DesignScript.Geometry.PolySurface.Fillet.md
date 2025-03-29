@@ -1,9 +1,9 @@
 ## Подробности
-`PolySurface.Fillet` creates a fillet (rounded edge) between the edges of the given PolySurface.
+`PolySurface.Fillet` создает скругление (скругленное ребро) между ребрами заданного объекта PolySurface.
 
-This node is particularly useful for smoothing out sharp edges in a polysurface model, enhancing the visual and physical properties of the geometry.
+Этот узел хорошо подходит для сглаживания острых ребер в модели сложных поверхностей, поскольку улучшает визуальные и физические свойства геометрии.
 
-In the example below, a cuboid is created, converted to a PolySurface and finally rounded off with `PolySurface.Fillet`.
+В приведенном ниже примере выполняется создание кубоида, который преобразуется в объект PolySurface, а затем скругляется с помощью узла `PolySurface.Fillet`.
 ___
 ## Файл примера
 
