@@ -101,18 +101,7 @@ namespace DSCore.CurveMapper
             }
             else
             {
-                double minInput = pointsDomain.Min();
-                double maxInput = pointsDomain.Max();
-
-                foreach (var t in pointsDomain)
-                {
-                    // Normalize domain value & map to X range on canvas
-                    double normalizedT = (t - minInput) / (maxInput - minInput);
-                    double x = normalizedT * CanvasSize;
-
-                    valuesX.Add(x);
-                    valuesY.Add(SolveParabolaForY(x));
-                }
+                return GenerateFromDomain(pointsDomain, x => SolveParabolaForY(x));
             }
 
             return (valuesX, valuesY);

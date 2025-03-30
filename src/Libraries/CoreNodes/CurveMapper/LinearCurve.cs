@@ -93,22 +93,7 @@ namespace DSCore.CurveMapper
             }
             else
             {
-                // Make sure X values range from 0 to CanvasSize
-                double minInput = pointsDomain.Min();
-                double maxInput = pointsDomain.Max();
-
-                foreach (var t in pointsDomain)
-                {
-                    // Normalize each value to 0-1 range
-                    double normalizedT = (t - minInput) / (maxInput - minInput);
-
-                    // Map it to the canvas X range
-                    double mappedX = normalizedT * CanvasSize;
-                    double y = LineEquation(mappedX);
-
-                    valuesX.Add(mappedX);
-                    valuesY.Add(System.Math.Clamp(y, 0, CanvasSize));
-                }
+                return GenerateFromDomain(pointsDomain, x => LineEquation(x));
             }
 
             return (valuesX, valuesY);

@@ -78,18 +78,7 @@ namespace DSCore.CurveMapper
             }
             else
             {
-                double minInput = pointsDomain.Min();
-                double maxInput = pointsDomain.Max();
-
-                foreach (var t in pointsDomain)
-                {
-                    // Normalize domain value & map to canvas X coordinate
-                    double normalizedT = (t - minInput) / (maxInput - minInput);
-                    double x = normalizedT * CanvasSize;
-
-                    valuesX.Add(x);
-                    valuesY.Add(ComputePowerY(x, powerFactor));
-                }
+                return GenerateFromDomain(pointsDomain, x => ComputePowerY(x, powerFactor));
             }
 
             return (valuesX, valuesY);

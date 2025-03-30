@@ -209,18 +209,7 @@ namespace DSCore.CurveMapper
             }
             else
             {
-                double minInput = pointsDomain.Min();
-                double maxInput = pointsDomain.Max();
-
-                foreach (var t in pointsDomain)
-                {
-                    // Normalize domain value & map to X range on canvas
-                    double normalizedT = (t - minInput) / (maxInput - minInput);
-                    double x = normalizedT * CanvasSize;
-
-                    valuesX.Add(x);
-                    valuesY.Add(ComputePerlinCurveY(x));
-                }
+                return GenerateFromDomain(pointsDomain, x => ComputePerlinCurveY(x));
             }
 
             return (valuesX, valuesY);

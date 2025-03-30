@@ -70,8 +70,7 @@ namespace DSCore.CurveMapper
                 {
                     double x = i * step;
                     valuesX.Add(x);
-                    double y = CosineEquation(ConvertXToTrigo(x));
-                    valuesY.Add(ConvertTrigoToY(y));
+                    valuesY.Add(ConvertTrigoToY(CosineEquation(ConvertXToTrigo(x))));
                 }
             }
             else
@@ -81,13 +80,7 @@ namespace DSCore.CurveMapper
 
                 foreach (var t in pointsDomain)
                 {
-                    // Normalize domain value & map to canvas X coordinate
-                    double normalizedT = (t - minInput) / (maxInput - minInput);
-                    double x = normalizedT * CanvasSize;
-
-                    valuesX.Add(x);
-                    double y = CosineEquation(ConvertXToTrigo(x));
-                    valuesY.Add(ConvertTrigoToY(y));
+                    return GenerateFromDomain(pointsDomain, x => ConvertTrigoToY(CosineEquation(ConvertXToTrigo(x))));
                 }
             }
 

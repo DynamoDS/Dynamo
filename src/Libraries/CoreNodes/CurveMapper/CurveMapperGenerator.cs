@@ -6,6 +6,7 @@ namespace DSCore.CurveMapper
     public class CurveMapperGenerator
     {
         private static int rounding = 10;
+        private static List<List<double>> cachedValues = null;
 
         public static List<List<double>> CalculateValues(
             List<double> controlPoints, double canvasSize,
@@ -80,8 +81,10 @@ namespace DSCore.CurveMapper
             List<double> pointsCount, string graphType
             )
         {
-            var result = CalculateValues(controlPoints, canvasSize, minX, maxX, minY, maxY, pointsCount, graphType)[0];
-            return result ;
+            // X values must always be calculated first to initialize the cache.
+            // CalculateValuesY() depends on this to avoid redundant calculation.
+            cachedValues = CalculateValues(controlPoints, canvasSize, minX, maxX, minY, maxY, pointsCount, graphType);
+            return cachedValues[0];
         }
 
         public static List<double> CalculateValuesY(
@@ -90,8 +93,11 @@ namespace DSCore.CurveMapper
             List<double> pointsCount, string graphType
             )
         {
-            var result = CalculateValues(controlPoints, canvasSize, minX, maxX, minY, maxY, pointsCount, graphType)[1];
-            return result;
+            if ( cachedValues == null )
+            {
+                cachedValues = CalculateValues(controlPoints, canvasSize, minX, maxX, minY, maxY, pointsCount, graphType);
+            }            
+            return cachedValues[1];
         }
 
         private static double GetCP(List<double> controlPoints, int index)

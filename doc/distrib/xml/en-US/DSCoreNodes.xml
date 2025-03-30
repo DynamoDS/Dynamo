@@ -240,6 +240,11 @@
             Common method for retrieving Y values.
             </summary>
         </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateFromDomain(System.Collections.Generic.List{System.Double},System.Func{System.Double,System.Double})">
+            <summary>
+            Generates X and Y values by mapping domain inputs to canvas space and evaluating a curve function.
+            </summary>
+        </member>
         <member name="T:DSCore.CurveMapper.GaussianCurve">
             <summary>
             Represents a Gaussian curve in the CurveMapper.

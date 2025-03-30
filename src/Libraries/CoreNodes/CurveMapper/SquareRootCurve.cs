@@ -106,18 +106,7 @@ namespace DSCore.CurveMapper
             }
             else
             {
-                double minInput = pointsDomain.Min();
-                double maxInput = pointsDomain.Max();
-
-                foreach (var t in pointsDomain)
-                {
-                    // Normalize domain value & map to canvas X coordinate
-                    double normalizedT = (t - minInput) / (maxInput - minInput);
-                    double x = normalizedT * CanvasSize;
-
-                    valuesX.Add(x);
-                    valuesY.Add(ComputeSquareRootY(x, sqrtFactor));
-                }
+                return GenerateFromDomain(pointsDomain, x => ComputeSquareRootY(x, sqrtFactor));
             }
 
             return (valuesX, valuesY);

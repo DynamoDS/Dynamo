@@ -122,18 +122,7 @@ namespace DSCore.CurveMapper
             }
             else
             {
-                double minInput = pointsDomain.Min();
-                double maxInput = pointsDomain.Max();
-
-                foreach (var t in pointsDomain)
-                {
-                    // Normalize domain value & map to canvas X coordinate
-                    double normalizedT = (t - minInput) / (maxInput - minInput);
-                    double x = normalizedT * CanvasSize;
-
-                    valuesX.Add(x);
-                    valuesY.Add(CanvasSize - ComputeGaussianY(x, A, mu, sigma));
-                }
+                return GenerateFromDomain(pointsDomain, x => CanvasSize - ComputeGaussianY(x, A, mu, sigma));
             }
 
             return (valuesX, valuesY);
