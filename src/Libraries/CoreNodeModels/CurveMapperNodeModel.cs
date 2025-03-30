@@ -22,7 +22,7 @@ namespace CoreNodeModels
         private double maxLimitX = 1;
         private double minLimitY = 0;
         private double maxLimitY = 1;
-        private int pointsCount = 10;
+        private List<Double> pointsCount = new List<double>() { 10.0 };
 
         private List<double> outputValuesY;
         private List<double> outputValuesX;
@@ -33,7 +33,11 @@ namespace CoreNodeModels
         private readonly IntNode maxLimitXDefaultValue = new IntNode(1);
         private readonly IntNode minLimitYDefaultValue = new IntNode(0);
         private readonly IntNode maxLimitYDefaultValue = new IntNode(1);
-        private readonly IntNode pointsCountDefaultValue = new IntNode(10);
+        private readonly AssociativeNode pointsCountDefaultValue =
+            AstFactory.BuildExprList(new List<AssociativeNode>
+            {
+                AstFactory.BuildDoubleNode(10.0)
+            });
 
         private const string gaussianCurveControlPointData2Tag = "GaussianCurveControlPointData2";
         private const string gaussianCurveControlPointData3Tag = "GaussianCurveControlPointData3";
@@ -228,7 +232,7 @@ namespace CoreNodeModels
 
         /// <summary> Gets or sets the number of points used to compute the curve. </summary>
         [JsonProperty]
-        public int PointsCount
+        public List<double> PointsCount
         {
             get => pointsCount;
             set
@@ -678,9 +682,16 @@ namespace CoreNodeModels
 
         private bool IsValidInput()
         {
-            return PointsCount >= 2
-                && MinLimitX != MaxLimitX
-                && MinLimitY != MaxLimitY;
+            if (pointsCount == null || pointsCount.Count == 0)
+                return false;
+
+            if (pointsCount.Count == 1 && pointsCount[0] < 2)
+                return false;
+
+            if (MinLimitX == MaxLimitX || MinLimitY == MaxLimitY)
+                return false;
+
+            return true;
         }
 
         private bool IsValidCurve()
@@ -787,14 +798,44 @@ namespace CoreNodeModels
             var maxValueX = double.TryParse(inputs[1]?.ToString(), out var maxX) ? maxX : MaxLimitX;
             var minValueY = double.TryParse(inputs[2]?.ToString(), out var minY) ? minY : MinLimitY;
             var maxValueY = double.TryParse(inputs[3]?.ToString(), out var maxY) ? maxY : MaxLimitY;
-            var listValue = int.TryParse(inputs[4]?.ToString(), out var parsedCount) ? parsedCount : PointsCount;
+            List<double> parsedPointsCount;
+
+            if (inputs[4] is IList countList)
+            {
+                parsedPointsCount = new List<double>();
+
+                foreach (var item in countList)
+                {
+                    if (item is IList nestedList)
+                    {
+                        foreach (var nested in nestedList)
+                        {
+                            if (double.TryParse(nested?.ToString(), out var val))
+                                parsedPointsCount.Add(val);
+                        }
+                    }
+                    else if (double.TryParse(item?.ToString(), out var val))
+                    {
+                        parsedPointsCount.Add(val);
+                    }
+                }
+            }
+            else if (double.TryParse(inputs[4]?.ToString(), out var singleVal))
+            {
+                parsedPointsCount = new List<double> { singleVal };
+            }
+            else
+            {
+                parsedPointsCount = PointsCount;
+            }
+
 
             // Check port connectivity
             if (InPorts[0].IsConnected) MinLimitX = minValueX;
             if (InPorts[1].IsConnected) MaxLimitX = maxValueX;
             if (InPorts[2].IsConnected) MinLimitY = minValueY;
             if (InPorts[3].IsConnected) MaxLimitY = maxValueY;
-            if (InPorts[4].IsConnected) PointsCount = listValue;
+            if (InPorts[4].IsConnected) PointsCount = parsedPointsCount;
 
             // Notify property changes to update UI
             foreach (var propertyName in new[] { nameof(MinLimitX), nameof(MaxLimitX), nameof(MinLimitY), nameof(MaxLimitY), nameof(PointsCount) })
@@ -810,8 +851,8 @@ namespace CoreNodeModels
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            // Return null outputs if GraphType is Empty
-            if (SelectedGraphType == GraphTypes.Empty || !IsValidCurve())
+            // If input is missing or invalid, return nulls
+            if (inputAstNodes == null || inputAstNodes.Count < 5 || SelectedGraphType == GraphTypes.Empty || !IsValidCurve())
             {
                 return new[]
                 {
@@ -866,16 +907,13 @@ namespace CoreNodeModels
                 }
             };
 
-            // Build controlPointsList dynamically
             var controlPointsList = AstFactory.BuildExprList(
                 controlPointMap[SelectedGraphType]
                 .SelectMany(cp => new AssociativeNode[]
                 {
                     AstFactory.BuildDoubleNode(cp.X),
                     AstFactory.BuildDoubleNode(DynamicCanvasSize - cp.Y)
-                })
-                .Cast<AssociativeNode>()
-                .ToList()
+                }).ToList()
                 );
 
             // Handle input values with fall-back defaults
@@ -892,28 +930,32 @@ namespace CoreNodeModels
             curveInputs.AddRange(inputValues);
             curveInputs.Add(AstFactory.BuildStringNode(SelectedGraphType.ToString()));
 
-            AssociativeNode buildResultNode =
+            AssociativeNode buildResultNodeX =
                 AstFactory.BuildFunctionCall(
-                    new Func<List<double>, double, double, double, double, double, int, string, List<List<double>>>(
-                        CurveMapperGenerator.CalculateValues),
+                    new Func<List<double>, double, double, double, double, double, List<double>, string, List<double>>(
+                        CurveMapperGenerator.CalculateValuesX),
                     curveInputs
                 );
+
+            AssociativeNode buildResultNodeY =
+                AstFactory.BuildFunctionCall(
+                    new Func<List<double>, double, double, double, double, double, List<double>, string, List<double>>(
+                        CurveMapperGenerator.CalculateValuesY),
+                    curveInputs
+                );
+
+            var xValuesAssignment = AstFactory.BuildAssignment(
+                GetAstIdentifierForOutputIndex(0),
+                buildResultNodeX);
+
+            var yValuesAssignment = AstFactory.BuildAssignment(
+                GetAstIdentifierForOutputIndex(1),
+                buildResultNodeY);
 
             // DataBridge call
             var dataBridgeCall = AstFactory.BuildAssignment(
                 AstFactory.BuildIdentifier(AstIdentifierBase + "_dataBridge"),
                 VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputValues))
-            );
-
-            // Assign outputs
-            var xValuesAssignment = AstFactory.BuildAssignment(
-                GetAstIdentifierForOutputIndex(0),
-                AstFactory.BuildIndexExpression(buildResultNode, AstFactory.BuildIntNode(0))
-            );
-
-            var yValuesAssignment = AstFactory.BuildAssignment(
-                GetAstIdentifierForOutputIndex(1),
-                AstFactory.BuildIndexExpression(buildResultNode, AstFactory.BuildIntNode(1))
             );
 
             return new[] { xValuesAssignment, yValuesAssignment, dataBridgeCall };

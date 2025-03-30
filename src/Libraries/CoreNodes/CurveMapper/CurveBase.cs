@@ -19,12 +19,12 @@ namespace DSCore.CurveMapper
         /// <summary>
         /// Abstract method to be implemented by derived classes for generating curve values.
         /// </summary>
-        protected abstract (List<double> XValues, List<double> YValues) GenerateCurve(int pointsCount, bool isRender);
+        protected abstract (List<double> XValues, List<double> YValues) GenerateCurve(List<double> pointsCount, bool isRender);
 
         /// <summary>
         /// Common method for retrieving X values.
         /// </summary>
-        public virtual List<double> GetCurveXValues(int pointsCount, bool isRender = false)
+        public virtual List<double> GetCurveXValues(List<double> pointsCount, bool isRender = false)
         {
             return GenerateCurve(pointsCount, isRender).XValues;
         }
@@ -32,7 +32,7 @@ namespace DSCore.CurveMapper
         /// <summary>
         /// Common method for retrieving Y values.
         /// </summary>
-        public virtual List<double> GetCurveYValues(int pointsCount, bool isRender = false)
+        public virtual List<double> GetCurveYValues(List<double> pointsCount, bool isRender = false)
         {
             return GenerateCurve(pointsCount, isRender).YValues;
         }

@@ -160,7 +160,7 @@ namespace DSCore.CurveMapper
         /// <summary>
         /// Returns X and Y values distributed across the curve.
         /// </summary>
-        protected override (List<double> XValues, List<double> YValues) GenerateCurve(int pointsCount, bool isRender = false)
+        protected override (List<double> XValues, List<double> YValues) GenerateCurve(List<double> pointsDomain, bool isRender = false)
         {
             var valuesX = new List<double>();
             var valuesY = new List<double>();
@@ -194,17 +194,32 @@ namespace DSCore.CurveMapper
                 valuesX = sortedPairs.Select(p => p.X).ToList();
                 valuesY = sortedPairs.Select(p => p.Y).ToList();
             }
-            else
+            else if (pointsDomain.Count == 1)
             {
+                var pointsCount = pointsDomain[0];
                 var step = CanvasSize / (pointsCount - 1);
 
                 for (int i = 0; i < pointsCount; i++)
                 {
                     double x = 0 + step * i;
-                    double y = ComputePerlinCurveY(x);
 
                     valuesX.Add(x);
-                    valuesY.Add(y);
+                    valuesY.Add(ComputePerlinCurveY(x));
+                }
+            }
+            else
+            {
+                double minInput = pointsDomain.Min();
+                double maxInput = pointsDomain.Max();
+
+                foreach (var t in pointsDomain)
+                {
+                    // Normalize domain value & map to X range on canvas
+                    double normalizedT = (t - minInput) / (maxInput - minInput);
+                    double x = normalizedT * CanvasSize;
+
+                    valuesX.Add(x);
+                    valuesY.Add(ComputePerlinCurveY(x));
                 }
             }
 

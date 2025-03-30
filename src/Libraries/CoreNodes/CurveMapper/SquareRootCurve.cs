@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DSCore.CurveMapper
 {
@@ -56,7 +57,7 @@ namespace DSCore.CurveMapper
         /// <summary>
         /// Returns X and Y values distributed across the curve.
         /// </summary>
-        protected override (List<double> XValues, List<double> YValues) GenerateCurve(int pointsCount, bool isRender)
+        protected override (List<double> XValues, List<double> YValues) GenerateCurve(List<double> pointsDomain, bool isRender)
         {
             var valuesX = new List<double>();
             var valuesY = new List<double>();
@@ -90,13 +91,29 @@ namespace DSCore.CurveMapper
                     }
                 }
             }
-            else
+            else if (pointsDomain.Count == 1)
             {
+                var pointsCount = (int)pointsDomain[0];
                 var step = CanvasSize / (pointsCount - 1);
 
                 for (int i = 0; i < pointsCount; i++)
                 {
                     double x = 0 + i * step;
+
+                    valuesX.Add(x);
+                    valuesY.Add(ComputeSquareRootY(x, sqrtFactor));
+                }
+            }
+            else
+            {
+                double minInput = pointsDomain.Min();
+                double maxInput = pointsDomain.Max();
+
+                foreach (var t in pointsDomain)
+                {
+                    // Normalize domain value & map to canvas X coordinate
+                    double normalizedT = (t - minInput) / (maxInput - minInput);
+                    double x = normalizedT * CanvasSize;
 
                     valuesX.Add(x);
                     valuesY.Add(ComputeSquareRootY(x, sqrtFactor));

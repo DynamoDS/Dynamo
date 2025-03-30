@@ -10,13 +10,18 @@ namespace DSCore.CurveMapper
         public static List<List<double>> CalculateValues(
             List<double> controlPoints, double canvasSize,
             double minX, double maxX, double minY, double maxY,
-            int pointsCount, string graphType
+            List<double> pointsCount, string graphType
             )
         {
             var xValues = new List<double>() { double.NaN };
             var yValues = new List<double>() { double.NaN };
 
-            if (minX != maxX && minY != maxY && pointsCount >= 2)
+            if (pointsCount.Count == 1 && pointsCount[0] < 2)
+            {
+                return new List<List<double>> { yValues, xValues };
+            }
+
+            if (minX != maxX && minY != maxY)
             {
                 // Unpack the control points
                 double cp1x = GetCP(controlPoints, 0), cp1y = GetCP(controlPoints, 1);
@@ -67,6 +72,26 @@ namespace DSCore.CurveMapper
             }
 
             return new List<List<double>> { yValues, xValues };
+        }
+
+        public static List<double> CalculateValuesX(
+            List<double> controlPoints, double canvasSize,
+            double minX, double maxX, double minY, double maxY,
+            List<double> pointsCount, string graphType
+            )
+        {
+            var result = CalculateValues(controlPoints, canvasSize, minX, maxX, minY, maxY, pointsCount, graphType)[0];
+            return result ;
+        }
+
+        public static List<double> CalculateValuesY(
+            List<double> controlPoints, double canvasSize,
+            double minX, double maxX, double minY, double maxY,
+            List<double> pointsCount, string graphType
+            )
+        {
+            var result = CalculateValues(controlPoints, canvasSize, minX, maxX, minY, maxY, pointsCount, graphType)[1];
+            return result;
         }
 
         private static double GetCP(List<double> controlPoints, int index)
