@@ -214,13 +214,13 @@
                     IsHitTestVisible="True"
                     SnapsToDevicePixels="True"
                     Visibility="{Binding NodeAutoCompleteMarkerEnabled, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                <Image
-                    x:Name="MarkerImage"
-                    Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/ai-feature-dark-64px.png"
-                    Margin="2"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Stretch="UniformToFill" />
+                <Label
+                    Name="NodeAutoCompleteMarkerLabel"
+                    FontSize="12"
+                    Width="25"
+                    Height="25"
+                    Margin="-3,-3,0,0"
+                >✨</Label>
                 <Border.Style>
                     <Style TargetType="Border">
                         <Setter Property="Opacity" Value="0"/>
