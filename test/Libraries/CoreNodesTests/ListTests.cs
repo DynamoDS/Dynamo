@@ -1528,17 +1528,17 @@ namespace DSCoreNodesTests
         }
 
         [Test]
-        public static void GroupBySimilarity_WithStrings_Tolerance2()
+        public static void GroupBySimilarity_WithStrings_Tolerance11()
         {
             var list = new List<object> { "apple", "appl", "aple", "banana", "banan", "cherry", "cherr" };
             Assert.Throws<ArgumentException>(() =>
             {
-                List.GroupBySimilarity(list);
+                List.GroupBySimilarity(list, 11);
             });
         }
 
         [Test]
-        public static void GroupBySimilarity_WithStrings_Tolerance11()
+        public static void GroupBySimilarity_WithStrings_Tolerance2()
         {
             var list = new List<object> { "apple", "appl", "aple", "banana", "banan", "cherry", "cherr" };
             var result = List.GroupBySimilarity(list, 2);
