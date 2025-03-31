@@ -745,4 +745,7 @@ double</value>
 
 double[]</value>
   </data>
+  <data name="ColorPalettePortDataResultToolTip" xml:space="preserve">
+    <value>Selected color</value>
+  </data>
 </root>
