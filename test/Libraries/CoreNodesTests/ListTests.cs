@@ -1495,59 +1495,19 @@ namespace DSCoreNodesTests
         }
 
         [Test]
-        public static void GroupBySimilarity_WithMixedList()
+        public static void GroupBySimilarity_WithMixedList_ThrowsException()
         {
             var list = new List<object> { 1, "1", 2, "2", 3, "3" };
-            var result = List.GroupBySimilarity(list);
-            var expected = new Dictionary<string, object>
+            Assert.Throws<ArgumentException>(() =>
             {
-                { "groupedValues",
-                    new object[]
-                    {
-                        new object[] { 1, "1" },
-                        new object[] { 2, "2" },
-                        new object[] { 3, "3" },
-                    } },
-                { "groupedIndices",
-                    new object[]
-                    {
-                        new object[] { 0, 1 },
-                        new object[] { 2, 3 },
-                        new object[] { 4, 5 },
-                    } }
-            };
-            Assert.AreEqual(expected, result);
-        }
-
-        [Test]
-        public static void GroupBySimilarity_WithNulls()
-        {
-            var list = new List<object> { null, null, 1, 1, "a", "a" };
-            var result = List.GroupBySimilarity(list);
-            var expected = new Dictionary<string, object>
-            {
-                { "groupedValues",
-                    new object[]
-                    {
-                        new object[] { null, null },
-                        new object[] { 1, 1 },
-                        new object[] { "a", "a" }
-                    } },
-                { "groupedIndices",
-                    new object[]
-                    {
-                        new object[] { 0, 1 },
-                        new object[] { 2, 3 },
-                        new object[] { 4, 5 }
-                    } }
-            };
-            Assert.AreEqual(expected, result);
+                List.GroupBySimilarity(list);
+            });
         }
 
         [Test]
         public static void GroupBySimilarity_WithEmptyItems()
         {
-            var list = new List<object> { "", "", "a", "a", 1, 1 };
+            var list = new List<object> { "", "", "a", "a" };
             var result = List.GroupBySimilarity(list);
             var expected = new Dictionary<string, object>
             {
@@ -1556,18 +1516,27 @@ namespace DSCoreNodesTests
                     {
                         new object[] { "", "" },
                         new object[] { "a", "a" },
-                        new object[] { 1, 1 }
                     } },
                 { "groupedIndices",
                     new object[]
                     {
                         new object[] { 0, 1 },
                         new object[] { 2, 3 },
-                        new object[] { 4, 5 }
                     } }
             };
             Assert.AreEqual(expected, result);
         }
+
+        [Test]
+        public static void GroupBySimilarity_WithStrings_Tolerance11()
+        {
+            var list = new List<object> { "apple", "appl", "aple", "banana", "banan", "cherry", "cherr" };
+            Assert.Throws<ArgumentException>(() =>
+            {
+                List.GroupBySimilarity(list, 11);
+            });
+        }
+
         [Test]
         public static void GroupBySimilarity_WithStrings_Tolerance2()
         {
@@ -1742,33 +1711,6 @@ namespace DSCoreNodesTests
                         new object[] { 0, 1, 2 },
                         new object[] { 3, 4 },
                         new object[] { 5, 6 }
-                    } }
-            };
-            Assert.AreEqual(expected, result);
-        }
-
-        [Test]
-        public static void GroupBySimilarity_WithMixedList_Tolerance0_5()
-        {
-            var list = new List<object> { 1, 1.4, "1", "1.4", 2, 2.5, "2", "2.5" };
-            var result = List.GroupBySimilarity(list, 0.5);
-            var expected = new Dictionary<string, object>
-            {
-                { "groupedValues",
-                    new object[]
-                    {
-                        new object[] { 1, 1.4, "1" },
-                        new object[] { "1.4" },
-                        new object[] { 2, 2.5, "2" },
-                        new object[] { "2.5" }
-                    } },
-                { "groupedIndices",
-                    new object[]
-                    {
-                        new object[] { 0, 1, 2 },
-                        new object[] { 3 },
-                        new object[] { 4, 5, 6 },
-                        new object[] { 7 }
                     } }
             };
             Assert.AreEqual(expected, result);
