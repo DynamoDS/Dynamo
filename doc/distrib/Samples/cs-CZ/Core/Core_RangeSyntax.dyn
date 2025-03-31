@@ -1610,7 +1610,7 @@
       },
       {
         "Id": "4987688db50c44a78c1d9bf3cbfc3572",
-        "Title": "start..end..krok\nOd 0 do 10 s krokem 2\n\nTato metoda je ekvivalentní k použití uzlu Range",
+        "Title": "start..end..step\nOd 0 do 10 s krokem 2\n\nTato metoda je ekvivalentní k použití uzlu Range",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

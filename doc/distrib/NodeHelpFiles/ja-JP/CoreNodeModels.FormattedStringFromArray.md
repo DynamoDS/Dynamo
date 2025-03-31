@@ -1,5 +1,5 @@
 ## 詳細
-This node will convert an array to a string. The second input `format specifier` controls how numeric inputs are converted to their string representations.
+このノードは配列を文字列に変換します。2 番目の入力 `format specifier` は、数値入力を文字列表現に変換する方法をコントロールします。
 この `format specifier` 入力は、C# 標準書式の数値指定子の 1 つである必要があります。
 
 書式指定子は次の形式にする必要があります。

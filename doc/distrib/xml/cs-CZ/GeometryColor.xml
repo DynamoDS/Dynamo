@@ -39,7 +39,7 @@
         </member>
         <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
             <summary>Zobrazí síť podle jedné barvy, barev na plochu, barev na vrchol nebo barev na vrchol plochy.</summary>
-            <param name="mesh"/>The Mesh on which to apply the colors
+            <param name="mesh">The Mesh on which to apply the colors</param>
             <param name="colors">Počet barev se musí rovnat 1 (jedna barva), počtu ploch (barva na plochu), počtu vrcholů (barva na vrchol) nebo počtu trojúhelníků vynásobenému třemi (barva na vrchol trojúhelníku)</param>
             <param name="smoothShading">Pokud je tato hodnota true, stínování bude vypadat vyhlazeně místo složeně, což je užitečné k vizualizaci vyhlazených souvislých povrchů</param>
             <returns>Objekt zobrazení.</returns>
