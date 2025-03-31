@@ -568,35 +568,35 @@ namespace Dynamo.ViewModels
 
             try
             {
-                //start an undoBeginGroup
-                using (var undoGroup = wsViewModel.Model.UndoRecorder.BeginActionGroup())
-                {
-                    MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
-                    NodeViewModel targetNodeFromCluster = null;
+                MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
+                NodeViewModel targetNodeFromCluster = null;
 
-                    // Process the results and display the preview of the cluster with the highest confidence level
-                    var ClusterResultItem = results.Results.FirstOrDefault();
+                // Process the results and display the preview of the cluster with the highest confidence level
+                var ClusterResultItem = results.Results.FirstOrDefault();
+                {
+                    var index = 0;
+                    // A map of the cluster result v.s. actual nodes created for node connection look up
+                    var clusterMapping = new Dictionary<string, NodeViewModel>();
+                    // Convert topology to actual cluster
+                    ClusterResultItem.Topology.Nodes.ToList().ForEach(node =>
                     {
-                        var index = 0;
-                        // A map of the cluster result v.s. actual nodes created for node connection look up
-                        var clusterMapping = new Dictionary<string, NodeViewModel>();
-                        // Convert topology to actual cluster
-                        ClusterResultItem.Topology.Nodes.ToList().ForEach(node =>
+                        // Retreive assembly name and node full name from type.id.
+                        var typeInfo = wsViewModel.NodeAutoCompleteSearchViewModel.GetInfoFromTypeId(node.Type.Id);
+                        wsViewModel.DynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, 0, 0, false, false));
+                        var nodeFromCluster = wsViewModel.Nodes.LastOrDefault();
+                        nodeFromCluster.IsTransient = true;
+                        clusterMapping.Add(node.Id, nodeFromCluster);
+                        // Add the node to the selection to prepare for autolayout later
+                        if (index == ClusterResultItem.EntryNodeIndex)
                         {
-                            // Retreive assembly name and node full name from type.id.
-                            var typeInfo = wsViewModel.NodeAutoCompleteSearchViewModel.GetInfoFromTypeId(node.Type.Id);
-                            wsViewModel.DynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, 0, 0, false, false));
-                            var nodeFromCluster = wsViewModel.Nodes.LastOrDefault();
-                            nodeFromCluster.IsTransient = true;
-                            clusterMapping.Add(node.Id, nodeFromCluster);
-                            // Add the node to the selection to prepare for autolayout later
-                            if (index == ClusterResultItem.EntryNodeIndex)
-                            {
-                                // This is the target node from cluster that should connect to the query node
-                                targetNodeFromCluster = nodeFromCluster;
-                            }
-                            index++;
-                        });
+                            // This is the target node from cluster that should connect to the query node
+                            targetNodeFromCluster = nodeFromCluster;
+                        }
+                        index++;
+                    });
+
+                    using (var undoGroup = wsViewModel.Model.UndoRecorder.BeginActionGroup())
+                    {
 
                         ClusterResultItem.Topology.Connections.ToList().ForEach(connection =>
                         {
@@ -607,38 +607,14 @@ namespace Dynamo.ViewModels
                             var sourcePort = sourceNode.OutPorts.FirstOrDefault(p => p.PortModel.Index == connection.StartNode.PortIndex - 1);
                             var targetPort = targetNode.InPorts.FirstOrDefault(p => p.PortModel.Index == connection.EndNode.PortIndex - 1);
 
-                            ConnectorModel.Make(sourceNode.NodeModel, targetNode.NodeModel, connection.StartNode.PortIndex - 1, connection.EndNode.PortIndex - 1);
-
-                            //var commands = new List<DynamoModel.ModelBasedRecordableCommand>
-                            //{
-                            //    new DynamoModel.MakeConnectionCommand(sourceNode.Id.ToString(), connection.StartNode.PortIndex - 1, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
-                            //    new DynamoModel.MakeConnectionCommand(targetNode.Id.ToString(), connection.EndNode.PortIndex - 1, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
-                            //};
-                            //commands.ForEach(c =>
-                            //{
-                            //    try
-                            //    {
-                            //        wsViewModel.DynamoViewModel.Model.ExecuteCommand(c);
-                            //    }
-                            //    catch (Exception) { }
-                            //});
+                            var connector = ConnectorModel.Make(sourceNode.NodeModel, targetNode.NodeModel, connection.StartNode.PortIndex - 1, connection.EndNode.PortIndex - 1);
+                            wsViewModel.Model.UndoRecorder.RecordCreationForUndo(connector);
                         });
 
+
                         // Connect the cluster to the original node and port
-                        ConnectorModel.Make(node.NodeModel, targetNodeFromCluster.NodeModel, 0, ClusterResultItem.EntryNodeInPort);
-                        //var finalCommands = new List<DynamoModel.ModelBasedRecordableCommand>
-                        //{
-                        //    new DynamoModel.MakeConnectionCommand(node.Id.ToString(), 0, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
-                        //    new DynamoModel.MakeConnectionCommand(targetNodeFromCluster?.Id.ToString(), ClusterResultItem.EntryNodeInPort, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
-                        //};
-                        //finalCommands.ForEach(c =>
-                        //{
-                        //    try
-                        //    {
-                        //        wsViewModel.DynamoViewModel.Model.ExecuteCommand(c);
-                        //    }
-                        //    catch (Exception) { }
-                        //});
+                        var connector = ConnectorModel.Make(node.NodeModel, targetNodeFromCluster.NodeModel, 0, ClusterResultItem.EntryNodeInPort);
+                        wsViewModel.Model.UndoRecorder.RecordCreationForUndo(connector);
 
                         // AutoLayout should be called after all nodes are connected
                         foreach (var node in clusterMapping.Values)
@@ -647,10 +623,10 @@ namespace Dynamo.ViewModels
                         }
                         wsViewModel.Model.DoGraphAutoLayout(true, true, node.Id);
                     }
+                }   
 
-                    // Display the cluster info in the right side panel
-                    // wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
-                }
+                // Display the cluster info in the right side panel
+                // wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
             }
             catch (Exception ex)
             {
