@@ -67,6 +67,7 @@ namespace CoreNodeModels
         private const double defaultCanvasSize = 240;
         private double dynamicCanvasSize = defaultCanvasSize;
         private bool isLocked;
+        private bool isResizing;
 
         #region Curves & Point Data
         
@@ -293,7 +294,6 @@ namespace CoreNodeModels
 
                     ScaleAllControlPoints(oldSize, dynamicCanvasSize);
                     RaisePropertyChanged(nameof(DynamicCanvasSize));
-                    OnNodeModified();
                     GenerateRenderValues();
                 }
             }
@@ -347,6 +347,21 @@ namespace CoreNodeModels
                 {
                     isLocked = value;
                     RaisePropertyChanged(nameof(IsLocked));
+                }
+            }
+        }
+
+        /// <summary>Indicates whether the node is currently being resized in the UI.</summary>
+        [JsonIgnore]
+        public bool IsResizing
+        {
+            get => isResizing;
+            set
+            {
+                if (isResizing != value)
+                {
+                    isResizing = value;
+                    RaisePropertyChanged(nameof(IsResizing));
                 }
             }
         }
@@ -444,8 +459,6 @@ namespace CoreNodeModels
         /// </summary>
         public void GenerateRenderValues()
         {
-            ClearErrorsAndWarnings();
-
             if (SelectedGraphType == GraphTypes.Empty)
             {
                 RenderValuesX = RenderValuesY = null;
@@ -453,12 +466,16 @@ namespace CoreNodeModels
             }
             if (!IsValidCurve())
             {
-                ClearErrorsAndWarnings();
                 Warning(Properties.Resources.CurveMapperWarningMessage, isPersistent: true);
 
                 RenderValuesX = RenderValuesY = null;
                 return;
             }
+            else if(!IsResizing)
+            {
+                ClearErrorsAndWarnings();
+            }
+
             object curve = null;
 
             switch (SelectedGraphType)
