@@ -160,7 +160,7 @@ namespace Dynamo.UI.Views
             previousViewModel = publishPackageViewModel;
 
             // If the application hasn't been loaded, and the flag hasn't been flipped, flip it here
-            if(!_applicationLoaded && !_hasPendingUpdates)
+            if(!_applicationLoaded && !_hasPendingUpdates && (bool)publishPackageViewModel?.HasChanges)
                 _hasPendingUpdates = true;
 
             // Subscribe to the new ViewModel
