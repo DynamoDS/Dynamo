@@ -1,15 +1,15 @@
 ## 詳細
-`List.GroupBySimilarity` clusters list elements based on the adjacency of their indices and the similarity of their values. The list of elements to be clustered can contain either numbers (integers and floating-point numbers) or strings, but not a mix of both.
+`List.GroupBySimilarity` は、インデックスの隣接関係と値の類似性に基づいてリストの要素をクラスタ化します。クラスタ化する要素のリストには数値(整数と浮動小数点数)または文字列を含めることができますが、両方を組み合わせることはできません。
 
-Use the `tolerance` input to determine the similarity of elements. For lists of numbers, the 'tolerance' value represents the maximum allowable difference between two numbers for them to be considered similar.
+要素の類似性を判定するには、`tolerance` 入力を使用します。数値のリストの場合、`tolerance` の値は、2 つの数値が類似していると見なされる最大許容差です。
 
-For lists of strings, this is a decimal value (between 0 and 1) specifying the minimum similarity ratio (computed using fuzzy logic) for adjacent elements to be considered similar. For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is set to 5.
+文字列のリストの場合、これは 0 から 1 までの間の小数値であり、類似していると見なされる隣接する要素の最小類似度比(ファジー論理を使用して計算)を指定します。文字列リストの場合、'tolerance' は 2 つの文字列間で異なる文字数の許容される最大数であり、レーベンシュタイン距離を比較に使用します。文字列の最大許容差は 5 に設定されます。
 
-The `considerAdjacency` Boolean input indicates whether adjacency should be considered when clustering the elements. If True, only adjacent elements that are similar will be clustered together. If False, similarity alone will be used to form clusters, regardless of adjacency.
+`considerAdjacency` ブール値入力は、要素をクラスタ化するときに隣接関係を考慮するかどうかを示します。True の場合は、類似した隣接する要素のみがクラスタ化されます。False の場合は、隣接関係に関係なく、類似性のみを使用してクラスタが形成されます。
 
-The node outputs a list of lists of clustered values based on adjacency and similarly, as well as a list of lists of the indices of the clustered elements in the original list.
+このノードは、隣接関係と類似性に基づいてクラスタ化された値のリストのリストと、元のリスト内のクラスタ化された要素のインデックスのリストのリストを出力します。
 
-In the sample below, `List.GroupBySimilarity` is used in two ways: to cluster a list of strings by similarity only, and to cluster a list of numbers by adjacency and similarity.
+次の例では、`List.GroupBySimilarity` は、類似性のみによって文字列のリストをクラスタ化する方法と、隣接関係と類似性によって数値のリストをクラスタ化する方法の、2 つの方法で使用されています。
 ___
 ## サンプル ファイル
 

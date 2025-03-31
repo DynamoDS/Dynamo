@@ -3335,7 +3335,7 @@
       },
       {
         "Id": "8ca82044b6ac4821a29686f5f764c8d7",
-        "Title": "If the string includes a \" character, use an escape character \\ before \" to treat it as a part of the string and not the end of the string.",
+        "Title": "如果字符串包含 \" 字符，请在 \" 前使用转义字符 \\，以将其视为字符串的一部分，而不是字符串的结束。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

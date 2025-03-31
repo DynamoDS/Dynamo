@@ -1,15 +1,15 @@
 ## In profondità
-`List.GroupBySimilarity` clusters list elements based on the adjacency of their indices and the similarity of their values. The list of elements to be clustered can contain either numbers (integers and floating-point numbers) or strings, but not a mix of both.
+I cluster `List.GroupBySimilarity` elencano gli elementi in base all'adiacenza dei relativi indici e alla similitudine dei relativi valori. L'elenco degli elementi da raggruppare può contenere numeri (numeri interi e a virgola mobile) o stringhe, ma non una combinazione di entrambi.
 
-Use the `tolerance` input to determine the similarity of elements. For lists of numbers, the 'tolerance' value represents the maximum allowable difference between two numbers for them to be considered similar.
+Utilizzare l'input `tolerance` per determinare la similitudine degli elementi. Per gli elenchi di numeri, il valore `tolerance` rappresenta la differenza massima consentita tra due numeri affinché siano considerati simili.
 
-For lists of strings, this is a decimal value (between 0 and 1) specifying the minimum similarity ratio (computed using fuzzy logic) for adjacent elements to be considered similar. For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is set to 5.
+Per gli elenchi di stringhe, si tratta di un valore decimale (compreso tra 0 e 1) che specifica il rapporto di similitudine minimo (calcolato utilizzando la logica fuzzy) affinché gli elementi adiacenti siano considerati simili. Per gli elenchi di stringhe, `tolerance` rappresenta il numero massimo di caratteri che possono differire tra due stringhe, utilizzando la distanza di Levenshtein per il confronto. La tolleranza massima per le stringhe è impostata su 5.
 
-The `considerAdjacency` Boolean input indicates whether adjacency should be considered when clustering the elements. If True, only adjacent elements that are similar will be clustered together. If False, similarity alone will be used to form clusters, regardless of adjacency.
+L'input booleano `considerAdjacency` indica se l'adiacenza deve essere presa in considerazione quando si raggruppano gli elementi. Se è True, solo gli elementi adiacenti simili verranno raggruppati insieme. Se è False, verrà utilizzata solo la similitudine per formare cluster, indipendentemente dall'adiacenza.
 
-The node outputs a list of lists of clustered values based on adjacency and similarly, as well as a list of lists of the indices of the clustered elements in the original list.
+Il nodo genera un elenco di elenchi di valori raggruppati in base all'adiacenza e alla similitudine, nonché un elenco di elenchi degli indici degli elementi raggruppati nell'elenco originale.
 
-In the sample below, `List.GroupBySimilarity` is used in two ways: to cluster a list of strings by similarity only, and to cluster a list of numbers by adjacency and similarity.
+Nell'esempio seguente, `List.GroupBySimilarity` viene utilizzato in due modi: per raggruppare un elenco di stringhe solo in base alla similitudine e per raggruppare un elenco di numeri in base all'adiacenza e alla similitudine.
 ___
 ## File di esempio
 

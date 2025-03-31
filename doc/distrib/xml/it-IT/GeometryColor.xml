@@ -39,7 +39,7 @@
         </member>
         <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
             <summary>Visualizza la maglia in base ad un singolo colore, ai colori per faccia, ai colori per vertice o ai colori per faccia e vertice.</summary>
-            <param name="mesh"/>The Mesh on which to apply the colors
+            <param name="mesh">The Mesh on which to apply the colors</param>
             <param name="colors">Il numero di colori deve essere uguale a 1 (colore singolo), uguale al numero di facce (colore per faccia), uguale al numero di vertici (colore per vertice) o uguale al numero di triangoli moltiplicato per tre (colore per vertice del triangolo).</param>
             <param name="smoothShading">Se è true, l'ombreggiatura apparirà levigata invece che sfaccettata, utile per visualizzare superfici continue lisce.</param>
             <returns>Oggetto di visualizzazione.</returns>

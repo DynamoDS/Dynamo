@@ -1,5 +1,5 @@
 ## Description approfondie
-This node will convert an array to a string. The second input `format specifier` controls how numeric inputs are converted to their string representations.
+Ce noeud convertit un réseau en chaîne. Le deuxième spécificateur de format d'entrée contrôle la façon dont les entrées numériques sont converties en leurs représentations sous forme de chaîne.
 Ce 'spécificateur de format' doit être l'un des spécificateurs numériques du format standard C#.
 
 Les spécificateurs de format doivent se présenter sous la forme:

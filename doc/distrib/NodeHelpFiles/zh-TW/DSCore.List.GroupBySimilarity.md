@@ -1,15 +1,15 @@
 ## 深入資訊
-`List.GroupBySimilarity` clusters list elements based on the adjacency of their indices and the similarity of their values. The list of elements to be clustered can contain either numbers (integers and floating-point numbers) or strings, but not a mix of both.
+`List.GroupBySimilarity` 會根據清單索引的相鄰性和其值的相似性群集清單元素。要群集的元素清單可以包含數字 (整數和浮點數) 或字串，但不能同時包含兩者。
 
-Use the `tolerance` input to determine the similarity of elements. For lists of numbers, the 'tolerance' value represents the maximum allowable difference between two numbers for them to be considered similar.
+使用 `tolerance` 輸入判斷元素的相似性。如果是數字清單，`tolerance` 值表示兩個數字之間被視為相似的最大允許差異。
 
-For lists of strings, this is a decimal value (between 0 and 1) specifying the minimum similarity ratio (computed using fuzzy logic) for adjacent elements to be considered similar. For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is set to 5.
+如果是字串清單，這是一個十進位值 (介於 0 和 1 之間)，指定被視為相似的相鄰元素的最小相似性比率 (使用模糊邏輯計算)。如果是字串清單，`tolerance` 表示兩個字串之間可以不同的最大字元數 (使用 Levenshtein 距離進行比較)。字串的最大公差設定為 5。
 
-The `considerAdjacency` Boolean input indicates whether adjacency should be considered when clustering the elements. If True, only adjacent elements that are similar will be clustered together. If False, similarity alone will be used to form clusters, regardless of adjacency.
+`considerAdjacency` 布林輸入表示在群集元素時是否應考慮相鄰性。如果為 True，則只有相似的相鄰元素才會群集在一起。如果為 False，則無論相鄰性如何，都會單獨使用相似性來形成群集。
 
-The node outputs a list of lists of clustered values based on adjacency and similarly, as well as a list of lists of the indices of the clustered elements in the original list.
+節點會根據相鄰性和相似性輸出群集值清單的清單，以及原始清單中群集元素索引清單的清單。
 
-In the sample below, `List.GroupBySimilarity` is used in two ways: to cluster a list of strings by similarity only, and to cluster a list of numbers by adjacency and similarity.
+以下範例以兩種方式使用 `List.GroupBySimilarity`: 僅依相似性群集字串清單，以及依相鄰性和相似性群集數字清單。
 ___
 ## 範例檔案
 
