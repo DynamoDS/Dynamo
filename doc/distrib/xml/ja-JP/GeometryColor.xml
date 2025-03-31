@@ -39,7 +39,7 @@
         </member>
         <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
             <summary>単一色、面ごとの色、頂点ごとの色、または面ごとの頂点の色でメッシュを表示します。</summary>
-            <param name="mesh"/>The Mesh on which to apply the colors
+            <param name="mesh">The Mesh on which to apply the colors</param>
             <param name="colors">色の数は、1 (単一色)、面の数(面ごとの色)、頂点の数(頂点ごとの色)、または三角形の数に 3 を掛けた値(三角形の頂点ごとの色)に等しい必要があります</param>
             <param name="smoothShading">True の場合、シェーディングはファセットではなくスムーズに見えるため、滑らかな連続したサーフェスを視覚化するのに役立ちます</param>
             <returns>表示オブジェクトです。</returns>

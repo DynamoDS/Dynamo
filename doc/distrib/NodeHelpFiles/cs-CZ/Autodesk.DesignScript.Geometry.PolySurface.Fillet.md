@@ -1,9 +1,9 @@
 ## Podrobnosti
-`PolySurface.Fillet` creates a fillet (rounded edge) between the edges of the given PolySurface.
+Uzel `PolySurface.Fillet` vytvoří zaoblení (zaoblenou hranu) mezi hranami dané křivky PolySurface.
 
-This node is particularly useful for smoothing out sharp edges in a polysurface model, enhancing the visual and physical properties of the geometry.
+Tento uzel je zvlášť užitečný při vyhlazování ostrých hran v modelu PolySurface, což vylepší vizuální a fyzikální vlastnosti geometrie.
 
-In the example below, a cuboid is created, converted to a PolySurface and finally rounded off with `PolySurface.Fillet`.
+V následujícím příkladu se vytvoří kvádr, který je převeden na objekt PolySurface a nakonec zaoblen uzlem `PolySurface.Fillet`.
 ___
 ## Vzorový soubor
 

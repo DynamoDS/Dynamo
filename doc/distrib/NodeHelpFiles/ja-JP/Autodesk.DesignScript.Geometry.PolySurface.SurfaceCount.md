@@ -1,7 +1,7 @@
 ## 詳細
-`PolySurface.SurfaceCount` returns the number of surface within the given PolySurface object.
+`PolySurface.SurfaceCount` は、指定された PolySurface オブジェクト内のサーフェスの数を返します。
 
-In the example below, a PolySurface is created from a cuboid and the surface count is provided with `PolySurface.SurfaceCount`.
+次の例では、PolySurface が立方体から作成され、サーフェスの数が `PolySurface.SurfaceCount` で指定されます。
 ___
 ## サンプル ファイル
 
