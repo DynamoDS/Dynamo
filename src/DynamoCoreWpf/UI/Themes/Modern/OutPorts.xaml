@@ -199,7 +199,8 @@
             <Rectangle x:Name="NodeAutoCompleteHover"
                        Grid.Column="2"
                        Margin="0,0,-18,0"
-                       Fill="Transparent">
+                       Fill="Transparent"
+                       IsHitTestVisible="{Binding NodeAutoCompleteMarkerEnabled}">
             </Rectangle>
             <Border x:Name="NodeAutoCompleteMarker"
                     Grid.Column="2"
@@ -211,8 +212,8 @@
                     VerticalAlignment="Center"
                     HorizontalAlignment="Right"
                     Background="{StaticResource NodeTransientOverlayColor}"
-                    IsHitTestVisible="True"
-                    SnapsToDevicePixels="True">
+                    SnapsToDevicePixels="True"
+                    IsHitTestVisible="{Binding NodeAutoCompleteMarkerEnabled}">
                 <Label
                     Name="NodeAutoCompleteMarkerLabel"
                     FontSize="12"
@@ -230,9 +231,13 @@
                             <DataTrigger Binding="{Binding ElementName=NodeAutoCompleteHover, Path=IsMouseOver}" Value="True">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </DataTrigger>
-                            <DataTrigger Binding="{Binding ElementName=BorderHighlightOverlay, Path=IsMouseOver}" Value="True">
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding ElementName=BorderHighlightOverlay, Path=IsMouseOver}" Value="True" />
+                                    <Condition Binding="{Binding Path=NodeAutoCompleteMarkerEnabled}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
+                            </MultiDataTrigger>
                         </Style.Triggers>
                     </Style>
                 </Border.Style>

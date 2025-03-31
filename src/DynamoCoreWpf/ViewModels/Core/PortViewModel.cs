@@ -221,7 +221,12 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return CanHaveAutoCompleteMarker() && nodeAutoCompleteMarkerEnabled && node.WorkspaceViewModel.FirstActiveConnector == null;
+                if (node.WorkspaceViewModel.FirstActiveConnector != null)
+                {
+                    return false;
+                }
+
+                return CanHaveAutoCompleteMarker() && nodeAutoCompleteMarkerEnabled;
             }
             set
             {
@@ -232,7 +237,7 @@ namespace Dynamo.ViewModels
 
         internal bool CanHaveAutoCompleteMarker()
         {
-            return ((this is InPortViewModel && PortModel.Connectors.Count == 0) || this is OutPortViewModel)
+            return (this is InPortViewModel && PortModel.Connectors.Count == 0 || this is OutPortViewModel)
                    && !this.PortModel.IsProxyPort
                    && NodeViewModel.NodeModel is not CodeBlockNodeModel
                    && NodeViewModel.NodeModel is not CoreNodeModels.Watch
@@ -240,8 +245,7 @@ namespace Dynamo.ViewModels
                    && NodeViewModel.NodeModel is not PythonNodeModels.PythonNode
                    && NodeViewModel.NodeModel is not PythonNodeModels.PythonStringNode
                    && !NodeViewModel.IsTransient
-                   && !NodeViewModel.IsFrozen
-                   && !NodeViewModel.WorkspaceViewModel.IsConnecting;
+                   && !NodeViewModel.IsFrozen;
         }
 
         /// <summary>
@@ -456,6 +460,7 @@ namespace Dynamo.ViewModels
             {
                 case "ActiveConnector":
                     RaisePropertyChanged(nameof(IsHitTestVisible));
+                    RaisePropertyChanged(nameof(NodeAutoCompleteMarkerEnabled));
                     break;
                 default:
                     break;
@@ -468,7 +473,6 @@ namespace Dynamo.ViewModels
             {
                 case nameof(IsSelected):
                     RaisePropertyChanged(nameof(IsSelected));
-                    RaisePropertyChanged(nameof(NodeAutoCompleteMarkerEnabled));
                     break;
                 case nameof(State):
                     RaisePropertyChanged(nameof(State));
