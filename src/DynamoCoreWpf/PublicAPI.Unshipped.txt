@@ -1189,6 +1189,8 @@ Dynamo.PackageManager.UI.IndentConverter.Convert(object value, System.Type targe
 Dynamo.PackageManager.UI.IndentConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.PackageManager.UI.IndentConverter.IndentConverter() -> void
 Dynamo.PackageManager.UI.LoadingAnimationStripeControl
+Dynamo.PackageManager.UI.LoadingAnimationStripeControl.AnimationSpeed.get -> double
+Dynamo.PackageManager.UI.LoadingAnimationStripeControl.AnimationSpeed.set -> void
 Dynamo.PackageManager.UI.LoadingAnimationStripeControl.InitializeComponent() -> void
 Dynamo.PackageManager.UI.LoadingAnimationStripeControl.LoadingAnimationStripeControl() -> void
 Dynamo.PackageManager.UI.MyTreeViewHelper
@@ -1404,6 +1406,9 @@ Dynamo.UI.Controls.CodeCompletionEditor.nodeViewModel -> Dynamo.ViewModels.NodeV
 Dynamo.UI.Controls.CodeCompletionEditor.ReturnFocus() -> void
 Dynamo.UI.Controls.CodeCompletionEditor.SetFocus() -> void
 Dynamo.UI.Controls.CodeCompletionEditor.UpdateNodeValue(string property) -> void
+Dynamo.UI.Controls.DNAAutocompleteBar
+Dynamo.UI.Controls.DNAAutocompleteBar.DNAAutocompleteBar(System.Windows.Window window, Dynamo.ViewModels.NodeAutoCompleteSearchViewModel viewModel) -> void
+Dynamo.UI.Controls.DNAAutocompleteBar.InitializeComponent() -> void
 Dynamo.UI.Controls.DynamoToolTip
 Dynamo.UI.Controls.DynamoToolTip.AttachmentSide.get -> Dynamo.UI.Controls.DynamoToolTip.Side
 Dynamo.UI.Controls.DynamoToolTip.AttachmentSide.set -> void
@@ -1698,7 +1703,8 @@ Dynamo.UI.Views.ScriptWizardObject.OpenFolder(string path) -> void
 Dynamo.UI.Views.ScriptWizardObject.Publish() -> void
 Dynamo.UI.Views.ScriptWizardObject.RemoveFileOrFolder(string name) -> void
 Dynamo.UI.Views.ScriptWizardObject.Reset() -> void
-Dynamo.UI.Views.ScriptWizardObject.ScriptWizardObject(System.Action<string> requestAddFileOrFolder, System.Action<string> requestRemoveFileOrFolder, System.Action<bool> requestRetainFolderStructure, System.Action<string> requestUpdatePackageDetails, System.Action requestSubmit, System.Action requestPublish, System.Action requestReset, System.Action<string> requestToggleNodeLibraryOnItem, System.Action<string> requestOpenFolder, System.Action<string> requestUpdateCompatibilityMatrix, System.Action requestLoadMarkdownContent, System.Action requestClearMarkdownContent, System.Action<string> requestLogMessage, System.Action requestApplicationLoaded) -> void
+Dynamo.UI.Views.ScriptWizardObject.ScriptWizardObject(System.Action<string> requestAddFileOrFolder, System.Action<string> requestRemoveFileOrFolder, System.Action<bool> requestRetainFolderStructure, System.Action<string> requestUpdatePackageDetails, System.Action requestSubmit, System.Action requestPublish, System.Action requestReset, System.Action<string> requestToggleNodeLibraryOnItem, System.Action<string> requestOpenFolder, System.Action<string> requestUpdateCompatibilityMatrix, System.Action requestLoadMarkdownContent, System.Action requestClearMarkdownContent, System.Action<string> requestLogMessage, System.Action requestApplicationLoaded, System.Action<string, string> requestShowDialog) -> void
+Dynamo.UI.Views.ScriptWizardObject.ShowDialog(string title, string message) -> void
 Dynamo.UI.Views.ScriptWizardObject.Submit() -> void
 Dynamo.UI.Views.ScriptWizardObject.ToggleNodeLibraryOnItem(string name) -> void
 Dynamo.UI.Views.ScriptWizardObject.ToggleRetainFolderStructure(bool flag) -> void
@@ -2457,6 +2463,9 @@ Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.AutocompleteMLMessage.get -> s
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.AutocompleteMLMessage.set -> void
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.AutocompleteMLTitle.get -> string
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.AutocompleteMLTitle.set -> void
+Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.ClusterResults.get -> System.Collections.Generic.IEnumerable<Dynamo.Wpf.ViewModels.ClusterAutocompleteResult>
+Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.ClusterResults.set -> void
+Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.ConfirmSource.get -> string
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.DisplayAutocompleteMLStaticPage.get -> bool
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.DisplayAutocompleteMLStaticPage.set -> void
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.DisplayLowConfidence.get -> bool
@@ -2464,6 +2473,14 @@ Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.DisplayLowConfidence.set -> vo
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.HideAutocompleteMethodOptions.get -> bool
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.IsDisplayingMLRecommendation.get -> bool
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.IsMLAutocompleteTOUApproved.get -> bool
+Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.IsOpen.get -> bool
+Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.IsOpen.set -> void
+Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.NextSource.get -> string
+Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.NthofTotal.get -> string
+Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.PreviousSource.get -> string
+Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.ResultsLoaded.get -> bool
+Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.SelectedIndex.get -> int
+Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.SelectedIndex.set -> void
 Dynamo.ViewModels.NodeDialogEventArgs
 Dynamo.ViewModels.NodeDialogEventArgs.Handled.get -> bool
 Dynamo.ViewModels.NodeDialogEventArgs.Handled.set -> void
@@ -3791,6 +3808,10 @@ Dynamo.Wpf.ViewModels.ClassInformationViewModel.PopulateMemberCollections(Dynamo
 Dynamo.Wpf.ViewModels.ClassInformationViewModel.PrimaryHeaderItems.get -> System.Collections.Generic.List<Dynamo.UI.Controls.HeaderStripItem>
 Dynamo.Wpf.ViewModels.ClassInformationViewModel.QueryHeaderItems.get -> System.Collections.Generic.List<Dynamo.UI.Controls.HeaderStripItem>
 Dynamo.Wpf.ViewModels.ClassInformationViewModel.QueryMembers.get -> System.Collections.Generic.IEnumerable<Dynamo.Wpf.ViewModels.NodeSearchElementViewModel>
+Dynamo.Wpf.ViewModels.ClusterAutocompleteResult
+Dynamo.Wpf.ViewModels.ClusterAutocompleteResult.ClusterAutocompleteResult() -> void
+Dynamo.Wpf.ViewModels.ClusterAutocompleteResult.Description.get -> string
+Dynamo.Wpf.ViewModels.ClusterAutocompleteResult.Description.set -> void
 Dynamo.Wpf.ViewModels.Core.Converters.AnnotationViewModelConverter
 Dynamo.Wpf.ViewModels.Core.Converters.AnnotationViewModelConverter.AnnotationViewModelConverter() -> void
 Dynamo.Wpf.ViewModels.Core.Converters.DynamoPythonScriptEditorTextOptions
@@ -5134,6 +5155,7 @@ static Dynamo.Wpf.Properties.Resources.PackageDetailsSize.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsUnknownCompatibilityVersionTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsVersions.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsVersionsAndPackageRequirements.get -> string
+static Dynamo.Wpf.Properties.Resources.PackageDetailsViewExtensionName.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDetailsXCompatibilityWithSetup.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDownloadConfirmMessageBoxTitle.get -> string
 static Dynamo.Wpf.Properties.Resources.PackageDownloadErrorMessageBoxTitle.get -> string
@@ -5440,6 +5462,7 @@ static Dynamo.Wpf.Properties.Resources.psDynamoLine.get -> byte[]
 static Dynamo.Wpf.Properties.Resources.psDynamoMesh.get -> byte[]
 static Dynamo.Wpf.Properties.Resources.psDynamoPoint.get -> byte[]
 static Dynamo.Wpf.Properties.Resources.PublishPackage.get -> string
+static Dynamo.Wpf.Properties.Resources.PublishPackageBackToFileButton.get -> string
 static Dynamo.Wpf.Properties.Resources.PublishPackageDialogCaption.get -> string
 static Dynamo.Wpf.Properties.Resources.PublishPackageDocTooltipText.get -> string
 static Dynamo.Wpf.Properties.Resources.PublishPackageExternalPackageDependencies.get -> string
@@ -5741,6 +5764,7 @@ static readonly Dynamo.PackageManager.UI.CustomBrowserControl.RootProperty -> Sy
 static readonly Dynamo.PackageManager.UI.FilterTagControl.FilterCommandProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.PackageManager.UI.FilterTagControl.IsFilterOnProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.PackageManager.UI.FilterTagControl.TagNameProperty -> System.Windows.DependencyProperty
+static readonly Dynamo.PackageManager.UI.LoadingAnimationStripeControl.AnimationSpeedProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.PackageManager.UI.MyTreeViewHelper.IsMouseDirectlyOverItemProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.PackageManager.UI.NumericUpDownControl.LabelProperty -> System.Windows.DependencyProperty
 static readonly Dynamo.PackageManager.UI.NumericUpDownControl.ValueProperty -> System.Windows.DependencyProperty

@@ -5945,6 +5945,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package Details.
+        /// </summary>
+        public static string PackageDetailsViewExtensionName {
+            get {
+                return ResourceManager.GetString("PackageDetailsViewExtensionName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Unknown compatibility with your current setup.
         /// </summary>
         public static string PackageDetailsXCompatibilityWithSetup {
@@ -8720,6 +8729,15 @@ namespace Dynamo.Wpf.Properties {
         public static string PublishPackage {
             get {
                 return ResourceManager.GetString("PublishPackage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Back to File Selection.
+        /// </summary>
+        public static string PublishPackageBackToFileButton {
+            get {
+                return ResourceManager.GetString("PublishPackageBackToFileButton", resourceCulture);
             }
         }
         

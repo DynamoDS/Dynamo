@@ -1,7 +1,7 @@
 ## Informacje szczegółowe
-`Data.ParseJSON` converts values from JSON format. JSON file format is a convention for structuring data you want to store. In fact, Dynamo's own file format is structured as JSON.
+Węzeł `Data.ParseJSON` konwertuje wartości z formatu JSON. Format pliku JSON to konwencja strukturyzowania danych do przechowywania. W rzeczywistości własny format pliku dodatku Dynamo ma strukturę JSON.
 
-In the example below, a dictionary (in JSON formatting) is deserialized into a Dynamo dictionary.
+W poniższym przykładzie słownik (w formacie JSON) zostaje zdeserializowany do postaci słownika dodatku Dynamo.
 ___
 ## Plik przykładowy
 

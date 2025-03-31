@@ -1,11 +1,11 @@
 ## Podrobnosti
-`Solid.Repair` attempts to repair solids which have invalid geometry, as well as potentially performing optimizations. `Solid.Repair` will return a new solid object.
+Uzel `Solid.Repair` se pokusí opravit tělesa, která mají nesprávnou geometrii a také se pokusí provést potenciální optimalizace. Uzel `Solid.Repair` vrací nový objekt tělesa.
 
 Tento uzel je užitečný, pokud se setkáte s chybami při provádění operací na importované nebo převedené geometrii.
 
-In the example below, `Solid.Repair` is used to repair geometry from an **.SAT** file. The geometry in the file fails to boolean or trim, and `Solid.Repair` cleans up any *invalid geometry* that is causing the failure.
+V následujícím příkladu je pomocí uzlu `Solid.Repair` opravena geometrie ze souboru **. SAT** soubor. Geometrii v souboru nelze oříznout, ani u ní provést booleovskou operaci a uzel `Solid.Repair` odstraní *neplatnou geometrii*, která způsobuje chybu.
 
-In general, you should not need to use this functionality on geometry you create in Dynamo, only on geometry from external sources. If you find that is not the case, please report a bug to the Dynamo team Github
+Obecně platí, že tuto funkci není nutné používat u geometrie, kterou vytvoříte v aplikaci Dynamo, pouze u geometrie z externích zdrojů. Pokud zjistíte, že tomu tak není, nahlaste chybu týmu Dynamo na síti Githubu
 ___
 ## Vzorový soubor
 

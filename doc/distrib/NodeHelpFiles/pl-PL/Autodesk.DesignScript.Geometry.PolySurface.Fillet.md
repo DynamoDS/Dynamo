@@ -1,9 +1,9 @@
 ## Informacje szczegółowe
-`PolySurface.Fillet` creates a fillet (rounded edge) between the edges of the given PolySurface.
+Węzeł `PolySurface.Fillet` tworzy zaokrąglenie (zaokrągloną krawędź) między krawędziami danej powierzchni PolySurface.
 
-This node is particularly useful for smoothing out sharp edges in a polysurface model, enhancing the visual and physical properties of the geometry.
+Ten węzeł jest szczególnie przydatny do wygładzania ostrych krawędzi w modelu PolySurface w celu poprawienia wizualnych i fizycznych właściwości geometrii.
 
-In the example below, a cuboid is created, converted to a PolySurface and finally rounded off with `PolySurface.Fillet`.
+W poniższym przykładzie zostaje utworzony prostopadłościan, który zostaje następnie przekonwertowany na powierzchnię PolySurface i ostatecznie zaokrąglony za pomocą węzła `PolySurface.Fillet`.
 ___
 ## Plik przykładowy
 

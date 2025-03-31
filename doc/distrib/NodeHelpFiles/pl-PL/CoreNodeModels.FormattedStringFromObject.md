@@ -1,5 +1,5 @@
 ## Informacje szczegółowe
-This node will convert an object to a string. The second input `format specifier` controls how numeric inputs are converted to their string representations.
+Ten węzeł konwertuje obiekt na ciąg. Druga pozycja danych wejściowych `format specifier` steruje sposobem konwertowania liczbowych danych wejściowych na ich reprezentacje w postaci ciągów.
 Ta pozycja danych wejściowych `format specifier` powinna być jednym ze standardowych specyfikatorów liczbowych formatu języka C#.
 
 Specyfikatory formatu powinny mieć postać:

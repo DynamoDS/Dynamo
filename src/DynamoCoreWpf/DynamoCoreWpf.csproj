@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <UILib>true</UILib>
   </PropertyGroup>
@@ -94,7 +94,7 @@
 
     <Target Name="NpmRunBuildPMWizard" BeforeTargets="BeforeBuild">
         <PropertyGroup>
-            <PackageVersion>0.0.12</PackageVersion>
+            <PackageVersion>0.0.15</PackageVersion>
             <PackageName>PackageManagerWizard</PackageName>
         </PropertyGroup>
         <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)pkgexist.ps1&quot; &quot;$(PackageName)&quot; &quot;$(PackageVersion)&quot;" ConsoleToMSBuild="true">
@@ -129,6 +129,7 @@
 
     <ItemGroup>
     <None Remove="Packages\PackageManagerWizard\dist\index.html" />
+    <None Remove="Controls\DNAAutocompleteBar.xaml" />
     <None Remove="Controls\Docs\cs-CZ\FileTrustWarningDocumentation.html" />
     <None Remove="Controls\Docs\cs-CZ\NodeAutocompleteDocumentation.html" />
     <None Remove="Controls\Docs\de-DE\FileTrustWarningDocumentation.html" />
@@ -395,6 +396,18 @@
     <EmbeddedResource Include="Views\SplashScreen\WebApp\splashScreenBackground.png" />
     <EmbeddedResource Include="Packages\DynamoHome\build\index.bundle.js" />
     <EmbeddedResource Include="Packages\DynamoHome\build\index.html" />
+	<EmbeddedResource Include="Properties\Resources.cs-CZ.resx" />
+    <EmbeddedResource Include="Properties\Resources.de-DE.resx" />
+    <EmbeddedResource Include="Properties\Resources.es-ES.resx" />
+    <EmbeddedResource Include="Properties\Resources.fr-FR.resx" />
+    <EmbeddedResource Include="Properties\Resources.it-IT.resx" />
+    <EmbeddedResource Include="Properties\Resources.ja-JP.resx" />
+    <EmbeddedResource Include="Properties\Resources.ko-KR.resx" />
+    <EmbeddedResource Include="Properties\Resources.pl-PL.resx" />
+    <EmbeddedResource Include="Properties\Resources.pt-BR.resx" />
+    <EmbeddedResource Include="Properties\Resources.ru-RU.resx" />
+    <EmbeddedResource Include="Properties\Resources.zh-CN.resx" />
+    <EmbeddedResource Include="Properties\Resources.zh-TW.resx" />
   </ItemGroup>
 
   <ItemGroup>
@@ -446,7 +459,7 @@
       <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
       <PackageReference Include="System.Configuration.ConfigurationManager" Version="5.0.0" />
-      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.4435" />
+      <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.4510" />
     <PackageReference Include="FontAwesome5" Version="2.1.11" />
     <PackageReference Include="AvalonEdit" Version="6.3.0.90" CopyXML="true" />
     <PackageReference Include="Greg" Version="3.0.2.6533" />
@@ -477,6 +490,7 @@
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\DNAAutocompleteBar.xaml.cs" />
     <Compile Include="Controls\InstalledPackagesControl.xaml.cs">
       <DependentUpon>InstalledPackagesControl.xaml</DependentUpon>
     </Compile>
@@ -590,6 +604,7 @@
     <Compile Include="Utilities\GroupStyleItemSelector.cs" />
     <Compile Include="Utilities\LibraryDragAndDrop.cs" />
     <Compile Include="Utilities\MessageBoxUtilities.cs" />
+    <Compile Include="Utilities\NodeAutoCompleteUtilities.cs" />
     <Compile Include="Utilities\NodeContextMenuBuilder.cs" />
     <Compile Include="Utilities\OnceDisposable.cs" />
     <Compile Include="TestInfrastructure\ConnectorMutator.cs" />
@@ -692,6 +707,7 @@
     <Compile Include="Utilities\ActionDebouncer.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
+    <Compile Include="ViewModels\Search\ClusterAutocompleteResult.cs" />
     <Compile Include="ViewModels\Search\NodeAutoCompleteSearchViewModel.cs" />
     <Compile Include="ViewModels\Search\NodeSearchElementViewModel.cs" />
     <Compile Include="ViewModels\Core\StateMachine.cs" />
@@ -882,6 +898,9 @@
     <Compile Include="Windows\ModelessChildWindow.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\DNAAutocompleteBar.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\InstalledPackagesControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -1289,6 +1308,15 @@
     <Resource Include="UI\Images\closetab_hover.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\gripper-default.png" />
+    <Resource Include="UI\Images\gripper-hover.png" />
+    <Resource Include="UI\Images\caret-left-disabled.png" />
+    <Resource Include="UI\Images\caret-right-disabled.png" />
+    <Resource Include="UI\Images\caret-left-default.png" />
+    <Resource Include="UI\Images\caret-right-default.png" />
+    <Resource Include="UI\Images\dock_32px_default.png" />
+    <Resource Include="UI\Images\check.png" />
+    <Resource Include="UI\Images\check-disabled.png" />
     <Resource Include="UI\Images\closetab_normal.png" />
     <Resource Include="UI\Images\dynamonotext.png" />
     <Resource Include="UI\Images\error_48px.png" />
