@@ -157,8 +157,8 @@ namespace Dynamo.Tests.Configuration
             Assert.AreEqual(settings.MaxNumRecentFiles, 24);
             Assert.AreEqual(settings.BackupInterval, 120000);
             Assert.AreEqual(settings.UseHardwareAcceleration, false);
-            Assert.AreEqual(settings.EnableNodeAutoComplete, false);
             Assert.AreEqual(settings.EnableNodeAutoComplete, true);
+            Assert.AreEqual(settings.EnableNodeAutoCompleteMarker, false);
             Assert.AreEqual(settings.EnableNotificationCenter, false);
             Assert.AreEqual(settings.ViewExtensionSettings.Count, 1);
             var extensionSettings = settings.ViewExtensionSettings[0];
