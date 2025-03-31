@@ -305,7 +305,17 @@ namespace Dynamo.UI.Views
             /* ErrorString*/
             else if (e.PropertyName.Equals(nameof(publishPackageViewModel.ErrorString)))
             {
-                SendErrorString(publishPackageViewModel.ErrorString);
+                // Calling the SendErrorString when the publish routine is running on the background thread is causign a crash 
+                if (!Dispatcher.CheckAccess())
+                {
+                    Dispatcher.InvokeAsync(() =>
+                        SendErrorString(publishPackageViewModel.ErrorString)
+                    );
+                }
+                else
+                {
+                    SendErrorString(publishPackageViewModel.ErrorString);
+                }
             }
         }
 
