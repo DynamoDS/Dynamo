@@ -182,6 +182,8 @@ namespace Dynamo.UI.Views
                 if (publishPackageViewModel.HasChanges) SendPackageUpdates(publishPackageViewModel);
                 if (publishPackageViewModel.PackageContents?.Count > 0) UpdatePackageContents();
                 if (publishPackageViewModel.PreviewPackageContents?.Count > 0) UpdatePreviewPackageContents();
+                if (publishPackageViewModel.CompatibilityMatrix?.Count > 0) SendCompatibilityMatrix(publishPackageViewModel.CompatibilityMatrix);
+                if (publishPackageViewModel.RetainFolderStructureOverride) UpdateRetainFolderStructureFlag(publishPackageViewModel.RetainFolderStructureOverride);
             }
         }
 
@@ -361,17 +363,32 @@ namespace Dynamo.UI.Views
 
         #region Upstream API calls
 
-        private async void SendCompatibilityMap(List<JObject> compatibilityMapList, string dynamoVersion, object host)
+        private async void SendCompatibilityMap(List<JObject> compatibilityMapList)
         {
             if (compatibilityMapList != null)
             {
-                var payload = new { jsonData = compatibilityMapList, dynamo = dynamoVersion, host };
+                var payload = new { jsonData = compatibilityMapList };
 
                 string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(payload, Formatting.None);
 
                 if (dynWebView?.CoreWebView2 != null)
                 {
                     await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveCompatibilityMap({jsonPayload})");
+                }
+            }
+        }
+
+        private async void SendCompatibilityMatrix(ICollection<Greg.Requests.PackageCompatibility> compatibilityMatrix)
+        {
+            if (compatibilityMatrix != null)
+            {
+                var payload = new { jsonData = compatibilityMatrix };
+
+                string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(payload, Formatting.None);
+
+                if (dynWebView?.CoreWebView2 != null)
+                {
+                    await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveCompatibilityMatrix({jsonPayload})");
                 }
             }
         }
@@ -503,9 +520,20 @@ namespace Dynamo.UI.Views
 
             string jsonPayload = JsonSerializer.Serialize(payload, options);
 
-            if (dynWebView?.CoreWebView2 != null)
+            if (dynWebView?.CoreWebView2 != null)   
             {
                 await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveUpdatedPackageDetails({jsonPayload});");
+            }
+        }
+
+        private async void UpdateRetainFolderStructureFlag(bool flag)
+        {
+            var payload = new { flag = flag };
+            string jsonPayload = JsonSerializer.Serialize(payload);
+
+            if (dynWebView?.CoreWebView2 != null)
+            {
+                await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveRetainFolderStructure({jsonPayload});");
             }
         }
 
@@ -720,14 +748,8 @@ namespace Dynamo.UI.Views
         internal void CompatibilityMap()
         {
             var compatibilityMapList = PackageManagerClient.CompatibilityMapList(); // Fetch full compatibility map
-            var dynamoVersion = VersionUtilities.Parse(DynamoModel.Version).ToString();
-            var host = new
-            {
-                name = DynamoModel.HostAnalyticsInfo.HostProductName,
-                version = DynamoModel.HostAnalyticsInfo.HostProductVersion
-            };
 
-            SendCompatibilityMap(compatibilityMapList, dynamoVersion, host);
+            SendCompatibilityMap(compatibilityMapList);
         }
 
         internal void Submit()
