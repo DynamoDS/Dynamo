@@ -4133,4 +4133,10 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="ExportWorkspaceAs3DImage" xml:space="preserve">
     <value>Workspace has been exported as a 3D image to </value>
   </data>
+  <data name="PackageDetailsViewExtensionName" xml:space="preserve">
+    <value>Package Details</value>
+  </data>
+  <data name="PublishPackageBackToFileButton" xml:space="preserve">
+    <value>Back to File Selection</value>
+  </data>
 </root>
