@@ -462,8 +462,8 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "3.6.0.6885",
-      "RunType": "Automatic",
+      "Version": "3.5.0.8100",
+      "RunType": "Manual",
       "RunPeriod": "1000"
     },
     "Camera": {
