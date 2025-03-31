@@ -160,7 +160,6 @@
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="Packages\DynamoHome\build\index.bundle.js" />
     <None Remove="Packages\DynamoHome\build\index.html" />
-    <None Remove="UI\Images\ai-feature-dark-64px.png" />
     <None Remove="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
     <None Remove="UI\Images\caret_down_white_48px.png" />
     <None Remove="UI\Images\caret_up_white_48px.png" />
@@ -1163,7 +1162,6 @@
     <Resource Include="UI\Images\AboutWindow\logo_about_dark.png">
       <CopyToOutputDirectory></CopyToOutputDirectory>
     </Resource>
-    <Resource Include="UI\Images\ai-feature-dark-64px.png" />
     <Resource Include="UI\Images\Alignment\align_bottom.png" />
     <Resource Include="UI\Images\Alignment\align_left.png" />
     <Resource Include="UI\Images\Alignment\align_right.png" />
