@@ -312,6 +312,11 @@ namespace DynamoCoreWpfTests
             // Images are named for ease of use
             // As of Dynamo 3.5, the number of images in a node view is 9 after the addition of the TransientImage
             Assert.AreEqual(9, imgs.Count());
+
+            var img = imgs.First(x => x.Name == "DotsImage");
+
+            Assert.Greater(img.ActualWidth, 10);
+            Assert.Greater(img.ActualHeight, 10);
         }
 
         [Test]
