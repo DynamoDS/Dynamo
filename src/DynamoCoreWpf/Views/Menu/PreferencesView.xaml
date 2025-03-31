@@ -911,7 +911,7 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
+                                    </Grid.RowDefinitions>
 
                                     <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
                                         <ToggleButton Name="NodeAutocompleteToggle"
