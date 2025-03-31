@@ -2016,8 +2016,6 @@ Dynamo.ViewModels.DynamoViewModel.EditName.get -> string
 Dynamo.ViewModels.DynamoViewModel.EditName.set -> void
 Dynamo.ViewModels.DynamoViewModel.EnableNodeAutoComplete.get -> bool
 Dynamo.ViewModels.DynamoViewModel.EnableNodeAutoComplete.set -> void
-Dynamo.ViewModels.DynamoViewModel.EnableNodeAutoCompleteMarker.get -> bool
-Dynamo.ViewModels.DynamoViewModel.EnableNodeAutoCompleteMarker.set -> void
 Dynamo.ViewModels.DynamoViewModel.EnablePresetOptions.get -> bool
 Dynamo.ViewModels.DynamoViewModel.EnableTSpline.get -> bool
 Dynamo.ViewModels.DynamoViewModel.EnableTSpline.set -> void
