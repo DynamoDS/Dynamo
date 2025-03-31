@@ -564,7 +564,7 @@ namespace DSCore
             bool isNumeric = firstElementType == typeof(int) || firstElementType == typeof(float) || firstElementType == typeof(double) || firstElementType == typeof(long);
             bool isString = firstElementType == typeof(string);
 
-            if (isNumeric && list.Cast<object>().Any(item => !(item is int || item is float || item is double)))
+            if (isNumeric && list.Cast<object>().Any(item => !(item is int || item is float || item is double || item is long)))
             {
                 throw new ArgumentException("The list must contain only numbers or only strings.", nameof(list));
             }
