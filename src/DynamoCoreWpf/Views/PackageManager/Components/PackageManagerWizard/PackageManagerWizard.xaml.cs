@@ -64,6 +64,7 @@ namespace Dynamo.UI.Views
         internal Action RequestClearMarkdownContent;
         internal Action<string> RequestLogMessage;
         internal Action RequestApplicationLoaded;
+        internal Action<string, string> RequestShowDialog;
 
         private PackageUpdateRequest previousPackageDetails;
         #endregion
@@ -100,13 +101,14 @@ namespace Dynamo.UI.Views
             RequestClearMarkdownContent = ClearMarkdownContent;
             RequestLogMessage = LogMessage;
             RequestApplicationLoaded = ApplicationLoaded;
+            RequestShowDialog = ShowDialog;
 
             DataContextChanged += OnDataContextChanged;
 
         }
 
         internal void ApplicationLoaded()
-        { 
+        {
             LoadingDone();
             Logging.Analytics.TrackEvent(Logging.Actions.Load, Logging.Categories.PackageManagerOperations);
         }
@@ -206,7 +208,8 @@ namespace Dynamo.UI.Views
                             RequestLoadMarkdownContent,
                             RequestClearMarkdownContent,
                             RequestLogMessage,
-                            RequestApplicationLoaded));
+                            RequestApplicationLoaded,
+                            RequestShowDialog));
 
                 }
                 catch (Exception ex)
@@ -431,6 +434,18 @@ namespace Dynamo.UI.Views
                 await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveResetProgress();");
             }
         }
+
+        private async void SendDialogResult(string msg)
+        {
+            var payload = new { result = msg };
+            string jsonPayload = JsonSerializer.Serialize(payload);
+
+            if (dynWebView?.CoreWebView2 != null)
+            {
+                await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveDialogResult({jsonPayload});");
+            }
+        }
+
 
         #endregion
 
@@ -657,6 +672,35 @@ namespace Dynamo.UI.Views
             }
         }
 
+
+        /// <summary>
+        /// A request from the front-end to use a modal dialog
+        /// </summary>
+        /// <param name="title">The title of the dialog</param>
+        /// <param name="message">The message to be displayed</param>
+        /// <exception cref="NotImplementedException"></exception>
+        internal void ShowDialog(string title, string message)
+        {
+            var ownerWindow = Window.GetWindow(this);
+
+            MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK :
+                    MessageBoxService.Show(
+                    ownerWindow,
+                    message,
+                    title,
+                    MessageBoxButton.OKCancel,
+                    MessageBoxImage.Warning);
+
+            if (response == MessageBoxResult.OK)
+            {
+                SendDialogResult("Yes");
+            }
+            else
+            {
+                SendDialogResult("Cancel");
+            }
+        }
+
         #endregion
 
         #region Utility
@@ -813,6 +857,7 @@ namespace Dynamo.UI.Views
             string logMessage = $"Package Manager Wizard ERROR: {ex.GetType()}: {ex.Message}\nStack Trace:\n{ex.StackTrace}";
             this.publishPackageViewModel?.DynamoViewModel?.Model.Logger.Log(logMessage);
         }
+
         #endregion
 
         #region Dispose
@@ -874,6 +919,7 @@ namespace Dynamo.UI.Views
         readonly Action RequestClearMarkdownContent;
         readonly Action<string> RequestLogMessage;
         readonly Action RequestApplicationLoaded;
+        readonly Action<string, string> RequestShowDialog;
 
         public ScriptWizardObject(
             Action<string> requestAddFileOrFolder,
@@ -889,7 +935,8 @@ namespace Dynamo.UI.Views
             Action requestLoadMarkdownContent,
             Action requestClearMarkdownContent,
             Action<string> requestLogMessage,
-            Action requestApplicationLoaded)
+            Action requestApplicationLoaded,
+            Action<string, string> requestShowDialog)
         {
             RequestAddFileOrFolder = requestAddFileOrFolder;
             RequestRemoveFileOrFolder = requestRemoveFileOrFolder;
@@ -905,6 +952,7 @@ namespace Dynamo.UI.Views
             RequestClearMarkdownContent = requestClearMarkdownContent;
             RequestLogMessage = requestLogMessage;
             RequestApplicationLoaded = requestApplicationLoaded;
+            RequestShowDialog = requestShowDialog;
         }
 
         [DynamoJSInvokable]
@@ -991,6 +1039,12 @@ namespace Dynamo.UI.Views
         public void LogMessage(string message)
         {
             RequestLogMessage(message);
+        }
+
+        [DynamoJSInvokable]
+        public void ShowDialog(string title, string message)
+        {
+            RequestShowDialog(title, message);
         }
     }
 
