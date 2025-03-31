@@ -460,21 +460,7 @@ namespace Dynamo.ViewModels
                 PreferenceSettings.EnableNodeAutoComplete = value;
             }
         }
-        /// <summary>
-        /// Indicates whether the node autocomplete marker is enabled.
-        /// </summary>
-        public bool EnableNodeAutoCompleteMarker
-        {
-            get
-            {
-                return PreferenceSettings.EnableNodeAutoCompleteMarker;
-            }
-            set
-            {
-                PreferenceSettings.EnableNodeAutoCompleteMarker = value;
-                RaisePropertyChanged(nameof(EnableNodeAutoCompleteMarker));
-            }
-        }
+      
         public int LibraryWidth
         {
             get
@@ -2325,7 +2311,7 @@ namespace Dynamo.ViewModels
 
                 foreach (var port in ports)
                 {
-                    port.NodeAutoCompleteMarkerEnabled = (EnableNodeAutoComplete && EnableNodeAutoCompleteMarker);
+                    port.NodeAutoCompleteMarkerEnabled = EnableNodeAutoComplete;
                 }
             }
         }

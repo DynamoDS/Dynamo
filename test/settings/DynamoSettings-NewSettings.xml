@@ -74,7 +74,6 @@
   <IsIronPythonDialogDisabled>true</IsIronPythonDialogDisabled>
   <ShowTabsAndSpacesInScriptEditor>true</ShowTabsAndSpacesInScriptEditor>
   <EnableNodeAutoComplete>false</EnableNodeAutoComplete>
-  <EnableNodeAutoCompleteMarker>true</EnableNodeAutoCompleteMarker>
   <DefaultEnableLegacyPolyCurveBehavior>false</DefaultEnableLegacyPolyCurveBehavior>
   <HideNodesBelowSpecificConfidenceLevel>true</HideNodesBelowSpecificConfidenceLevel>
   <MLRecommendationConfidenceLevel>99</MLRecommendationConfidenceLevel>

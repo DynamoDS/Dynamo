@@ -47,11 +47,6 @@
                 </Style>
             </Grid.Style>
 
-            <!--  Bind NodeAutoComplete to double left click  -->
-            <Grid.InputBindings>
-                <MouseBinding Command="{Binding Path=NodeAutoCompleteCommand}" MouseAction="LeftDoubleClick"/>
-            </Grid.InputBindings>
-
             <!--  Transparent rectangle used for port snapping, overhangs the edge of the port  -->
             <Rectangle Grid.Column="0"
                        x:Name="PortSnapping"
