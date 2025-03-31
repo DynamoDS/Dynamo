@@ -8035,7 +8035,7 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("PreferencesViewEnableNodeAutoCompleteTooltipText", resourceCulture);
             }
         }
-		
+    
         /// <summary>
         ///   Looks up a localized string similar to Receive notification.
         /// </summary>
