@@ -36,7 +36,7 @@ namespace Dynamo.ViewModels
         private SolidColorBrush portBorderBrushColor = PortBorderBrushColorDefault;
         private SolidColorBrush portBackgroundColor = PortBackgroundColorDefault;
         private Visibility highlight = Visibility.Collapsed;
-        private bool nodeAutoCompleteMarkerEnabled = true;
+        private bool nodeAutoCompleteMarkerEnabled = false;
 
         /// <summary>
         /// Port model.
@@ -221,7 +221,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                return CanHaveAutoCompleteMarker() && nodeAutoCompleteMarkerEnabled;
+                return CanHaveAutoCompleteMarker() && nodeAutoCompleteMarkerEnabled && node.WorkspaceViewModel.FirstActiveConnector == null;
             }
             set
             {
@@ -277,7 +277,7 @@ namespace Dynamo.ViewModels
             this.node.WorkspaceViewModel.PropertyChanged += WorkspacePropertyChanged;
 
             //turn on the autocomplete marker if enabled
-            nodeAutoCompleteMarkerEnabled = NodeViewModel.DynamoViewModel.EnableNodeAutoComplete;
+            NodeAutoCompleteMarkerEnabled = NodeViewModel.DynamoViewModel.EnableNodeAutoComplete;
 
             RefreshPortColors();
         }
