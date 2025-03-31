@@ -39,7 +39,7 @@
         </member>
         <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
             <summary>按单一颜色、逐面颜色、逐顶点颜色或逐面顶点颜色显示网格。</summary>
-            <param name="mesh"/>The Mesh on which to apply the colors
+            <param name="mesh">The Mesh on which to apply the colors</param>
             <param name="colors">颜色计数必须等于 1 (单色)，或等于面数(逐面颜色)，或等于顶点计数(逐顶点颜色)，或等于三角形计数乘以 3 (逐三角形顶点颜色)</param>
             <param name="smoothShading">如果为 true，着色将看起来平滑而不是有面，这对于可视化平滑的连续曲面很有用</param>
             <returns>显示对象。</returns>

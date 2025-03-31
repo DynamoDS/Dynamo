@@ -5489,7 +5489,7 @@
       },
       {
         "Id": "68e41793387f43a4b617b1f9da07e298",
-        "Title": "Za pomocą węzłów Code Block można wywoływać dowolne inne węzły w bibliotece. Węzły w bibliotece są zazwyczaj jednego z trzech typów:\n\n    Tworzenie:\tutwórz element\n    Operacja:\twykonaj operację na elemencie\n    Zapytanie:\t\tpobierz właściwość elementu,\n\t\tktóry już istnieje.\n\nMetody lub węzły tych trzech typów są traktowane w różny sposób w przypadku wywołania ich z poziomu węzła Code Block.",
+        "Title": "Za pomocą węzłów Code Block można wywoływać dowolne inne węzły w bibliotece. Węzły w bibliotece są zazwyczaj jednego z trzech typów:\n\n    Tworzenie:\tutwórz element\n    Operacja:\twykonaj operację na elemencie\n    Zapytanie:\tpobierz właściwość elementu,\n\t\tktóry już istnieje.\n\nMetody lub węzły tych trzech typów są traktowane w różny sposób w przypadku wywołania ich z poziomu węzła Code Block.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6053,7 +6053,7 @@
       },
       {
         "Id": "48b10f5b91ed46d0b5dda59e32d479ea",
-        "Title": "Multiple variables are defined in this code block, and at the end, a list is created containing all of them.",
+        "Title": "W tym samym węźle Code Block zdefiniowano wiele zmiennych, a na końcu tworzona jest lista zawierająca je wszystkie.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

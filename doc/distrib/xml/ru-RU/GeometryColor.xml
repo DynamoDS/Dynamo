@@ -39,7 +39,7 @@
         </member>
         <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
             <summary>Отображение сети по одному цвету, по цветам граней, по цветам вершин или по цветам вершин и граней.</summary>
-            <param name="mesh"/>The Mesh on which to apply the colors
+            <param name="mesh">The Mesh on which to apply the colors</param>
             <param name="colors">Количество цветов должно быть равно 1 (один цвет), количеству граней (цвет каждой грани), количеству вершин (цвет каждой вершины) или количеству треугольников, умноженному на три (цвет каждого треугольника и каждой вершины)</param>
             <param name="smoothShading">Если задано значение true, тонирование будет выглядеть гладким, а не фасеточным, что полезно для визуализации гладких непрерывных поверхностей</param>
             <returns>Объект отображения.</returns>

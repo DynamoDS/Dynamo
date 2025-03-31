@@ -3335,7 +3335,7 @@
       },
       {
         "Id": "8ca82044b6ac4821a29686f5f764c8d7",
-        "Title": "If the string includes a \" character, use an escape character \\ before \" to treat it as a part of the string and not the end of the string.",
+        "Title": "Si la chaîne contient un caractère \", utilisez un caractère d'échappement \\ avant le caractère \" pour le traiter comme faisant partie de la chaîne et non comme la fin de la chaîne.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
