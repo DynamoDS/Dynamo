@@ -570,6 +570,13 @@ namespace Dynamo.ViewModels
             }
 
             var wsViewModel = node.WorkspaceViewModel;
+
+            var existingPort = wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel;
+            if (existingPort != null)
+            {
+                existingPort.Highlight = Visibility.Collapsed;
+            }
+
             wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
 
             // CreateMockCluster();
