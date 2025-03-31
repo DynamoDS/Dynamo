@@ -10186,7 +10186,7 @@
       },
       {
         "Id": "355c40ca31c5437db2855da2afac623d",
-        "Title": "This example shows four different ways to approach dealing with Math functions.  Each of these examples starts with a grid of points, calculates z-coordinates for the points and then makes a surface.  Only the calculation method differs; these methods all solve the same.\n\n1. Nodes. Math nodes are in the Math section of the Library which is further split into Functions, Logic and Operators.\n\n2. Python.\n\n3. Code Block Node.  Double-click anywhere in the canvas to create a code block node.  Syntax for each function matches the name of the node in Dynamo.\n\n** Note: You can adjust the resolution of the geometry preview by navigating to the Render Precision settings: Dynamo -> Preferences -> Visual Settings -> Render Precision",
+        "Title": "이 예제에서는 수학 함수를 다루는 네 가지 접근 방식을 보여줍니다. 이러한 각 예제는 점 그리드에서 시작하여 점의 z 좌표를 계산한 다음, 표면을 만듭니다. 계산 방법만 다를 뿐 각 방법의 결과값은 모두 동일합니다.\n\n1. 노드. 수학 노드는 라이브러리의 수학 섹션에 있으며 추가로 함수, 로직 및 연산자로 분할됩니다.\n\n2. Python.\n\n3. Code Block 노드. 캔버스에서 아무 곳이나 두 번 클릭하면 코드 블록 노드를 만들 수 있습니다. 각 함수의 구문은 Dynamo의 노드 이름과 일치합니다.\n\n** 주: Dynamo -> 기본 설정 -> 시각적 설정 -> 렌더링 정밀도 설정으로 이동하여 형상 미리보기의 해상도를 조정할 수 있습니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -10454,7 +10454,7 @@
       },
       {
         "Id": "488aa4f143a34f18bc197a2677f80fb6",
-        "Title": "Tip: Adjust how precisely the geometry in the background preview is rendered by navigating to Dynamo -> Preferences -> Visual Settings -> Render Precision.  A higher value will make curved surfaces look smoother, but it will take more processing power to draw.",
+        "Title": "팁: Dynamo -> 기본 설정 -> 시각적 설정 -> 렌더링 정밀도로 이동하여 배경 미리보기에서 형상의 렌더링 정밀도 정도를 조정하십시오. 값이 클수록 곡선형 표면이 더 부드럽게 보이지만 그리는 데 더 많은 처리 용량이 필요합니다.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

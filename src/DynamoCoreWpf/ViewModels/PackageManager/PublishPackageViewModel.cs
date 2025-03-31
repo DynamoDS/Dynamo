@@ -1591,7 +1591,14 @@ namespace Dynamo.PackageManager
                 IsPublishFromLocalPackage = true,
                 CurrentPackageRootDirectories = new List<string> { pkg.RootDirectory },
                 //default retain folder structure to true when publishing a new version from local.
-                RetainFolderStructureOverride = retainFolderStructure
+                RetainFolderStructureOverride = retainFolderStructure,
+                CompatibilityMatrix = pkg.Header.compatibility_matrix?
+                .Select(entry => new PackageCompatibility(
+                    entry.name,
+                    entry.versions != null ? new List<string>(entry.versions) : null,
+                    entry.min,
+                    entry.max))
+                .ToList()
             };
 
             // add additional files
@@ -2778,11 +2785,14 @@ namespace Dynamo.PackageManager
                 return false;
             }
 
+            /* Enable to make compatilibity matrix obligatory */
+            /*
             if (CompatibilityMatrix == null || !CompatibilityMatrix.Any())
             {
                 ErrorString = Resources.PackageCompatibilityMatrixMissing;
                 return false;
             }
+            */
 
             if (UploadState != PackageUploadHandle.State.Error) ErrorString = "";
 

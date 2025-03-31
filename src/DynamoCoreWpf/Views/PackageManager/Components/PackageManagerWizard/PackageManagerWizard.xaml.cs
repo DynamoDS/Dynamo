@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System;
-using System.Diagnostics;
-using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
@@ -23,7 +20,6 @@ using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Newtonsoft.Json;
 using JsonSerializer = System.Text.Json.JsonSerializer;
-using System.Runtime.InteropServices.JavaScript;
 using Greg.Requests;
 using Newtonsoft.Json.Linq;
 using Dynamo.Models;
@@ -44,9 +40,11 @@ namespace Dynamo.UI.Views
         private static readonly string htmlRelativeFilePath = $"PackageManager\\index.html";
 
         private bool _onlyLoadOnce = false;
+        private bool _applicationLoaded = false;
         private bool _disposed = false;
 
         private PublishPackageViewModel publishPackageViewModel;
+        private PublishPackageViewModel previousViewModel = null;
         private List<PackageItemRootViewModel> _previousPackageContents = new List<PackageItemRootViewModel>();
         private List<PackageItemRootViewModel> _previousPreviewPackageContents = new List<PackageItemRootViewModel>();
 
@@ -64,8 +62,11 @@ namespace Dynamo.UI.Views
         internal Action RequestClearMarkdownContent;
         internal Action<string> RequestLogMessage;
         internal Action RequestApplicationLoaded;
+        internal Action<string, string> RequestShowDialog;
 
         private PackageUpdateRequest previousPackageDetails;
+
+        private bool _hasPendingUpdates = false;
         #endregion
 
         /// <summary>
@@ -100,13 +101,15 @@ namespace Dynamo.UI.Views
             RequestClearMarkdownContent = ClearMarkdownContent;
             RequestLogMessage = LogMessage;
             RequestApplicationLoaded = ApplicationLoaded;
+            RequestShowDialog = ShowDialog;
 
             DataContextChanged += OnDataContextChanged;
-
         }
 
         internal void ApplicationLoaded()
-        { 
+        {
+            _applicationLoaded = true;
+
             LoadingDone();
             Logging.Analytics.TrackEvent(Logging.Actions.Load, Logging.Categories.PackageManagerOperations);
         }
@@ -115,6 +118,12 @@ namespace Dynamo.UI.Views
         {
             CompatibilityMap();
             SetLocale();
+
+            if (_hasPendingUpdates)
+            {
+                _hasPendingUpdates = false;
+                UpdateFromBackEnd();
+            }
         }
 
         private async void SetLocale()
@@ -138,14 +147,44 @@ namespace Dynamo.UI.Views
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            // If we have triggered on data context chagnes with the same context, return
+            if (this.DataContext as PublishPackageViewModel == previousViewModel) return;
+            if (previousViewModel != null)
+            {
+                previousViewModel.PropertyChanged -= PublishPackageViewModel_PropertyChanged;
+                previousViewModel.PublishSuccess -= PublishPackageViewModel_PublishSuccess;
+            }
+
+            // Cast and assign the new DataContext
             publishPackageViewModel = this.DataContext as PublishPackageViewModel;
+            previousViewModel = publishPackageViewModel;
+
+            // If the application hasn't been loaded, and the flag hasn't been flipped, flip it here
+            if(!_applicationLoaded && !_hasPendingUpdates && (bool)publishPackageViewModel?.HasChanges)
+                _hasPendingUpdates = true;
+
+            // Subscribe to the new ViewModel
             if (publishPackageViewModel != null)
             {
                 publishPackageViewModel.PropertyChanged += PublishPackageViewModel_PropertyChanged;
                 publishPackageViewModel.PublishSuccess += PublishPackageViewModel_PublishSuccess;
-            }
 
-            SendPackageDependencies(publishPackageViewModel.DependencyNames);
+                // Only send updates if the application has been loaded
+                if(_applicationLoaded) UpdateFromBackEnd();
+            }
+        }
+
+        private void UpdateFromBackEnd()
+        {
+            if (publishPackageViewModel != null)
+            {
+                if (publishPackageViewModel.HasDependencies) SendPackageDependencies(publishPackageViewModel.DependencyNames);
+                if (publishPackageViewModel.HasChanges) SendPackageUpdates(publishPackageViewModel);
+                if (publishPackageViewModel.PackageContents?.Count > 0) UpdatePackageContents();
+                if (publishPackageViewModel.PreviewPackageContents?.Count > 0) UpdatePreviewPackageContents();
+                if (publishPackageViewModel.CompatibilityMatrix?.Count > 0) SendCompatibilityMatrix(publishPackageViewModel.CompatibilityMatrix);
+                if (publishPackageViewModel.RetainFolderStructureOverride) UpdateRetainFolderStructureFlag(publishPackageViewModel.RetainFolderStructureOverride);
+            }
         }
 
         internal async Task PreloadWebView2Async()
@@ -206,7 +245,8 @@ namespace Dynamo.UI.Views
                             RequestLoadMarkdownContent,
                             RequestClearMarkdownContent,
                             RequestLogMessage,
-                            RequestApplicationLoaded));
+                            RequestApplicationLoaded,
+                            RequestShowDialog));
 
                 }
                 catch (Exception ex)
@@ -242,32 +282,12 @@ namespace Dynamo.UI.Views
             /* PackageContents */
             if (e.PropertyName.Equals(nameof(publishPackageViewModel.PackageContents)))
             {
-                var updatedContents = publishPackageViewModel.PackageContents
-                    .Where(item => item.DependencyType != DependencyType.CustomNode) // Filter out CustomNode
-                    .ToList();
-
-                var changesDetected = !ArePackageContentsEqual(_previousPackageContents, updatedContents);
-                if (changesDetected)
-                {
-                    _previousPackageContents = updatedContents; // Update the snapshot
-                    var frontendData = ConvertToJsonFormat(updatedContents);
-                    SendUpdatedPackageContents(frontendData, "package"); // Specify "package"
-                }
+                UpdatePackageContents();
             }
             /* PreviewPackageContents */
             else if (e.PropertyName.Equals(nameof(publishPackageViewModel.PreviewPackageContents)))
             {
-                var updatedPreviewContents = publishPackageViewModel.PreviewPackageContents
-                    .Where(item => item.DependencyType != DependencyType.CustomNode) // Filter out CustomNode
-                    .ToList();
-
-                var previewChangesDetected = !ArePackageContentsEqual(_previousPreviewPackageContents, updatedPreviewContents);
-                if (previewChangesDetected)
-                {
-                    _previousPreviewPackageContents = updatedPreviewContents;
-                    var frontendPreviewData = ConvertToJsonFormat(updatedPreviewContents);
-                    SendUpdatedPackageContents(frontendPreviewData, "preview"); // Specify "preview"
-                }
+                UpdatePreviewPackageContents();
             }
             /* PublishDirectory*/
             else if (e.PropertyName.Equals(nameof(publishPackageViewModel.PublishDirectory)))
@@ -287,7 +307,47 @@ namespace Dynamo.UI.Views
             /* ErrorString*/
             else if (e.PropertyName.Equals(nameof(publishPackageViewModel.ErrorString)))
             {
-                SendErrorString(publishPackageViewModel.ErrorString);
+                // Calling the SendErrorString when the publish routine is running on the background thread is causign a crash 
+                if (!Dispatcher.CheckAccess())
+                {
+                    Dispatcher.InvokeAsync(() =>
+                        SendErrorString(publishPackageViewModel.ErrorString)
+                    );
+                }
+                else
+                {
+                    SendErrorString(publishPackageViewModel.ErrorString);
+                }
+            }
+        }
+
+        private void UpdatePackageContents()
+        {
+            var updatedContents = publishPackageViewModel.PackageContents
+                  .Where(item => item.DependencyType != DependencyType.CustomNode) // Filter out CustomNode
+                  .ToList();
+
+            var changesDetected = !ArePackageContentsEqual(_previousPackageContents, updatedContents);
+            if (changesDetected)
+            {
+                _previousPackageContents = updatedContents; // Update the snapshot
+                var frontendData = ConvertToJsonFormat(updatedContents);
+                SendUpdatedPackageContents(frontendData, "package"); // Specify "package"
+            }
+        }
+
+        private void UpdatePreviewPackageContents()
+        {
+            var updatedPreviewContents = publishPackageViewModel.PreviewPackageContents
+                   .Where(item => item.DependencyType != DependencyType.CustomNode) // Filter out CustomNode
+                   .ToList();
+
+            var previewChangesDetected = !ArePackageContentsEqual(_previousPreviewPackageContents, updatedPreviewContents);
+            if (previewChangesDetected)
+            {
+                _previousPreviewPackageContents = updatedPreviewContents;
+                var frontendPreviewData = ConvertToJsonFormat(updatedPreviewContents);
+                SendUpdatedPackageContents(frontendPreviewData, "preview"); // Specify "preview"
             }
         }
 
@@ -303,17 +363,32 @@ namespace Dynamo.UI.Views
 
         #region Upstream API calls
 
-        private async void SendCompatibilityMap(List<JObject> compatibilityMapList, string dynamoVersion, object host)
+        private async void SendCompatibilityMap(List<JObject> compatibilityMapList)
         {
             if (compatibilityMapList != null)
             {
-                var payload = new { jsonData = compatibilityMapList, dynamo = dynamoVersion, host };
+                var payload = new { jsonData = compatibilityMapList };
 
                 string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(payload, Formatting.None);
 
                 if (dynWebView?.CoreWebView2 != null)
                 {
                     await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveCompatibilityMap({jsonPayload})");
+                }
+            }
+        }
+
+        private async void SendCompatibilityMatrix(ICollection<Greg.Requests.PackageCompatibility> compatibilityMatrix)
+        {
+            if (compatibilityMatrix != null)
+            {
+                var payload = new { jsonData = compatibilityMatrix };
+
+                string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(payload, Formatting.None);
+
+                if (dynWebView?.CoreWebView2 != null)
+                {
+                    await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveCompatibilityMatrix({jsonPayload})");
                 }
             }
         }
@@ -413,6 +488,55 @@ namespace Dynamo.UI.Views
             }
         }
 
+        private async void SendPackageUpdates(PublishPackageViewModel vm)
+        {
+            if (vm == null) return;
+
+            var packageDetails = new PackageUpdateRequest
+            {
+                Name = vm.Name ?? string.Empty,
+                Description = vm.Description ?? string.Empty,
+                Major = vm.MajorVersion,
+                Minor = vm.MinorVersion,
+                Patch = vm.BuildVersion,
+                Keywords = vm.Keywords?.Split(',')
+                    .Select(k => k.Trim())
+                    .Where(k => !string.IsNullOrWhiteSpace(k))
+                    .ToList() ?? new List<string>(),
+                CopyrightHolder = vm.CopyrightHolder ?? string.Empty,
+                CopyrightYear = vm.CopyrightYear ?? string.Empty,
+                License = vm.License ?? string.Empty,
+                RepositoryUrl = vm.RepositoryUrl ?? string.Empty,
+                SiteUrl = vm.SiteUrl ?? string.Empty,
+                Group = vm.Group ?? string.Empty,
+                ReleaseNotesUrl = vm.ReleaseNotesUrl ?? string.Empty
+            };
+
+            var payload = new { payload = packageDetails };
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+
+            string jsonPayload = JsonSerializer.Serialize(payload, options);
+
+            if (dynWebView?.CoreWebView2 != null)   
+            {
+                await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveUpdatedPackageDetails({jsonPayload});");
+            }
+        }
+
+        private async void UpdateRetainFolderStructureFlag(bool flag)
+        {
+            var payload = new { flag = flag };
+            string jsonPayload = JsonSerializer.Serialize(payload);
+
+            if (dynWebView?.CoreWebView2 != null)
+            {
+                await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveRetainFolderStructure({jsonPayload});");
+            }
+        }
+
         private async void SendNavigateToPage(int number)
         {
             var payload = new { pageNumber = number };
@@ -431,6 +555,18 @@ namespace Dynamo.UI.Views
                 await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveResetProgress();");
             }
         }
+
+        private async void SendDialogResult(string msg)
+        {
+            var payload = new { result = msg };
+            string jsonPayload = JsonSerializer.Serialize(payload);
+
+            if (dynWebView?.CoreWebView2 != null)
+            {
+                await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveDialogResult({jsonPayload});");
+            }
+        }
+
 
         #endregion
 
@@ -612,14 +748,8 @@ namespace Dynamo.UI.Views
         internal void CompatibilityMap()
         {
             var compatibilityMapList = PackageManagerClient.CompatibilityMapList(); // Fetch full compatibility map
-            var dynamoVersion = VersionUtilities.Parse(DynamoModel.Version).ToString();
-            var host = new
-            {
-                name = DynamoModel.HostAnalyticsInfo.HostProductName,
-                version = DynamoModel.HostAnalyticsInfo.HostProductVersion
-            };
 
-            SendCompatibilityMap(compatibilityMapList, dynamoVersion, host);
+            SendCompatibilityMap(compatibilityMapList);
         }
 
         internal void Submit()
@@ -654,6 +784,35 @@ namespace Dynamo.UI.Views
             if (Directory.Exists(folderPath))
             {
                 System.Diagnostics.Process.Start("explorer.exe", folderPath);
+            }
+        }
+
+
+        /// <summary>
+        /// A request from the front-end to use a modal dialog
+        /// </summary>
+        /// <param name="title">The title of the dialog</param>
+        /// <param name="message">The message to be displayed</param>
+        /// <exception cref="NotImplementedException"></exception>
+        internal void ShowDialog(string title, string message)
+        {
+            var ownerWindow = Window.GetWindow(this);
+
+            MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK :
+                    MessageBoxService.Show(
+                    ownerWindow,
+                    message,
+                    title,
+                    MessageBoxButton.OKCancel,
+                    MessageBoxImage.Warning);
+
+            if (response == MessageBoxResult.OK)
+            {
+                SendDialogResult("Yes");
+            }
+            else
+            {
+                SendDialogResult("Cancel");
             }
         }
 
@@ -813,6 +972,7 @@ namespace Dynamo.UI.Views
             string logMessage = $"Package Manager Wizard ERROR: {ex.GetType()}: {ex.Message}\nStack Trace:\n{ex.StackTrace}";
             this.publishPackageViewModel?.DynamoViewModel?.Model.Logger.Log(logMessage);
         }
+
         #endregion
 
         #region Dispose
@@ -874,6 +1034,7 @@ namespace Dynamo.UI.Views
         readonly Action RequestClearMarkdownContent;
         readonly Action<string> RequestLogMessage;
         readonly Action RequestApplicationLoaded;
+        readonly Action<string, string> RequestShowDialog;
 
         public ScriptWizardObject(
             Action<string> requestAddFileOrFolder,
@@ -889,7 +1050,8 @@ namespace Dynamo.UI.Views
             Action requestLoadMarkdownContent,
             Action requestClearMarkdownContent,
             Action<string> requestLogMessage,
-            Action requestApplicationLoaded)
+            Action requestApplicationLoaded,
+            Action<string, string> requestShowDialog)
         {
             RequestAddFileOrFolder = requestAddFileOrFolder;
             RequestRemoveFileOrFolder = requestRemoveFileOrFolder;
@@ -905,6 +1067,7 @@ namespace Dynamo.UI.Views
             RequestClearMarkdownContent = requestClearMarkdownContent;
             RequestLogMessage = requestLogMessage;
             RequestApplicationLoaded = requestApplicationLoaded;
+            RequestShowDialog = requestShowDialog;
         }
 
         [DynamoJSInvokable]
@@ -991,6 +1154,12 @@ namespace Dynamo.UI.Views
         public void LogMessage(string message)
         {
             RequestLogMessage(message);
+        }
+
+        [DynamoJSInvokable]
+        public void ShowDialog(string title, string message)
+        {
+            RequestShowDialog(title, message);
         }
     }
 

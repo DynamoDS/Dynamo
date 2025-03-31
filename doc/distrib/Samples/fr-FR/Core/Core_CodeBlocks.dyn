@@ -5489,7 +5489,7 @@
       },
       {
         "Id": "68e41793387f43a4b617b1f9da07e298",
-        "Title": "Les Code Blocks peuvent être utilisés pour appeler n'importe quel autre noeud de la bibliothèque. Les noeuds de la bibliothèque relèvent généralement de trois types \r\n\r\n    Création :\tcréer quelque chose\r\n    Action :\teffectuer une action sur quelque chose\r\n    Requête :\tobtenir une propriété\r\n\t\td'un élément existant\r\n\r\nLes méthodes ou noeuds de ces trois types sont traités différemment lorsqu'ils sont appelés dans un Code Block.",
+        "Title": "Les Code Blocks peuvent être utilisés pour appeler n'importe quel autre noeud de la bibliothèque. Les noeuds de la bibliothèque relèvent généralement de trois types \r\n\r\n    Création :\tcréer quelque chose\r\n    Action :\teffectuer une action sur quelque\t\tchose\r\n    Requête :\tobtenir une propriété\r\n\t\td'un élément existant\r\n\r\nLes méthodes ou noeuds de ces trois types sont traités différemment lorsqu'ils sont appelés dans un Code Block.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6053,7 +6053,7 @@
       },
       {
         "Id": "48b10f5b91ed46d0b5dda59e32d479ea",
-        "Title": "Multiple variables are defined in this code block, and at the end, a list is created containing all of them.",
+        "Title": "Plusieurs variables sont définies dans ce bloc de code et. à la fin, une liste les contenant tous est créée.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

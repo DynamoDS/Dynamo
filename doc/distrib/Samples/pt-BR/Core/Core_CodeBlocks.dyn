@@ -6053,7 +6053,7 @@
       },
       {
         "Id": "48b10f5b91ed46d0b5dda59e32d479ea",
-        "Title": "Multiple variables are defined in this code block, and at the end, a list is created containing all of them.",
+        "Title": "Várias variáveis são definidas no mesmo bloco de código e, no final, uma lista é criada contendo todas elas.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

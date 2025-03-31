@@ -39,7 +39,7 @@
         </member>
         <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
             <summary>Wyświetl siatkę według pojedynczego koloru, według kolorów powierzchni, według kolorów wierzchołków lub według kolorów wierzchołków powierzchni.</summary>
-            <param name="mesh"/>The Mesh on which to apply the colors
+            <param name="mesh">The Mesh on which to apply the colors</param>
             <param name="colors">Liczba kolorów musi być równa 1 (pojedynczy kolor), równa liczbie powierzchni (kolor na powierzchnię), równa liczbie wierzchołków (kolor na wierzchołek) lub równa liczbie trójkątów pomnożonej przez trzy (kolor na wierzchołek trójkąta)</param>
             <param name="smoothShading">W przypadku wartości „prawda” (true) cieniowanie będzie gładkie, a nie płaszczyznowe, przydatne do wizualizacji gładkich powierzchni ciągłych</param>
             <returns>Wyświetlany obiekt.</returns>

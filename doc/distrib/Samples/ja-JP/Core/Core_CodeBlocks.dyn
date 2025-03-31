@@ -5489,7 +5489,7 @@
       },
       {
         "Id": "68e41793387f43a4b617b1f9da07e298",
-        "Title": "Code Block を使用して、ライブラリ内の他のノードを呼び出すことができます。ライブラリ内のノードは、通常、次の 3 つのタイプで構成されます。\r\n\r\n    Create:\t何かを作成します\r\n    Action:\t何かに対してアクションを実行します\r\n    Query:\t\t既に存在する何かのプロパティを取得します\r\n\r\nこれらの 3 つのタイプのメソッド(ノード)では、Code Block で呼び出されるときの処理がそれぞれ異なります。",
+        "Title": "Code Block を使用して、ライブラリ内の他のノードを呼び出すことができます。ライブラリ内のノードは、通常、次の 3 つのタイプで構成されます。\r\n\r\n    Create:\t何かを作成します\r\n    Action:\t何かに対してアクションを実行します\r\n    Query:\t\t既に存在する何かのプロパティを取得し\t\tます\r\n\r\nこれらの 3 つのタイプのメソッド(ノード)では、Code Block で呼び出されるときの処理がそれぞれ異なります。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6053,7 +6053,7 @@
       },
       {
         "Id": "48b10f5b91ed46d0b5dda59e32d479ea",
-        "Title": "Multiple variables are defined in this code block, and at the end, a list is created containing all of them.",
+        "Title": "複数の変数がこの Code Block 内で定義され、最後に、それらすべてを含むリストが作成されます。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
