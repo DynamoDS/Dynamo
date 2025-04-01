@@ -22,7 +22,6 @@ namespace Dynamo.ViewModels
     public partial class PortViewModel : ViewModelBase
     {
         #region Properties/Fields
-
         protected readonly PortModel port;
         protected readonly NodeViewModel node;
         private DelegateCommand useLevelsCommand;
