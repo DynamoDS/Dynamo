@@ -686,7 +686,7 @@ default value: G</value>
   <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
     <value>Number of values to generate.
 
-int</value>
+Default value (int): {0}</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
     <value>Redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
@@ -703,7 +703,7 @@ int</value>
   <data name="CurveMapperXMaxLimitInputPortToolTip" xml:space="preserve">
     <value>Maximum value for the X-axis domain.
 
-double</value>
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperXMinLimitInputPortName" xml:space="preserve">
     <value>x-MinLimit</value>
@@ -711,7 +711,7 @@ double</value>
   <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
     <value>Minimum value for the X-axis domain.
 
-double</value>
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperXValuesOutputPortName" xml:space="preserve">
     <value>x-Values</value>
@@ -727,7 +727,7 @@ double[]</value>
   <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
     <value>Maximum value for the Y-axis domain.
 
-double</value>
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
     <value>y-MinLimit</value>
@@ -735,7 +735,7 @@ double</value>
   <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
     <value>Minimum value for the Y-axis domain.
 
-double</value>
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperYValuesOutputPortName" xml:space="preserve">
     <value>y-Values</value>
