@@ -213,15 +213,14 @@
                     VerticalAlignment="Center"
                     HorizontalAlignment="Left"
                     Background="{StaticResource NodeTransientOverlayColor}"
-                    SnapsToDevicePixels="True"
-                    IsHitTestVisible="{Binding NodeAutoCompleteMarkerEnabled}">
+                    SnapsToDevicePixels="True">
                 <Label
                     Name="NodeAutoCompleteMarkerLabel"
                     FontSize="12"
                     Width="25"
                     Height="25"
                     Margin="-3,-3,0,0"
-                >✨</Label>
+                    Content="✨"/>
 
                 <Border.Style>
                     <Style TargetType="Border">
