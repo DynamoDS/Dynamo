@@ -714,10 +714,10 @@ Název parametru: {0}</value>
     <value>Aktuální uživatel '{0}' není hlavním aktuálním uživatelem balíčku '{1}'.</value>
   </data>
   <data name="PackageManagerPackagePreviewCounter" xml:space="preserve">
-    <value>{0} files and {1} folders will be created.</value>
+    <value>Bude vytvořeno {0} souborů a {1} složek.</value>
   </data>
   <data name="PackageManagerPackageSelectCounter" xml:space="preserve">
-    <value>{0} files and {1} folders loaded.</value>
+    <value>Načteno {0} souborů a {1} složek.</value>
   </data>
   <data name="DuplicatedOlderPackage" xml:space="preserve">
     <value>Starší verze balíčku s názvem {0} verze {2} byla nalezena v {1} s verzí {3}. Starší verze byla ignorována.</value>
@@ -871,7 +871,7 @@ Tento balíček pravděpodobně obsahuje sestavu, která je blokována. Po odblo
     <value>Vložení souboru se nezdařilo, protože některé uzly již v aktuálním pracovním prostoru existují.</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Insert Dynamo Graph...</value>
+    <value>Vložit graf aplikace Dynamo…</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>Do pracovního prostoru byl přidán vzorový soubor. Režim spuštění byl změněn na Ruční.</value>

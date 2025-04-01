@@ -921,7 +921,7 @@ Parameter name: {0}. href=ArgumentNullException.html</value>
     <value>Syntaxe list@level incorrecte, utilisez @L1 pour le niveau 1.</value>
   </data>
   <data name="VariableRedifinitionError" xml:space="preserve">
-    <value>La variable {0} a été définie dans ce noeud de bloc de code. Vous ne pouvez pas définir une variable plusieurs fois.</value>
+    <value>La variable {0} a été définie dans ce noeud Code Block. Vous ne pouvez pas définir une variable plusieurs fois.</value>
   </data>
   <data name="VariableRecursiveReference" xml:space="preserve">
     <value>La variable {0} est utilisée dans l'instruction où vous l'avez définie. La dépendance récurrente n'est pas autorisée.</value>

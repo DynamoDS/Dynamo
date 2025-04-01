@@ -921,7 +921,7 @@ Parameter name: {0}. href=ArgumentNullException.html</value>
     <value>無效的 list@level 語法，請考慮使用 @L1 為第 1 層。</value>
   </data>
   <data name="VariableRedifinitionError" xml:space="preserve">
-    <value>變數 {0} 已在此程式碼區塊節點中定義。您不能定義變數超過一次。</value>
+    <value>變數 {0} 已在此 Code Block 節點中定義。您不能定義變數超過一次。</value>
   </data>
   <data name="VariableRecursiveReference" xml:space="preserve">
     <value>變數 {0} 已在定義它的同一個陳述式中使用。不允許遞迴的相依性。</value>

@@ -1,5 +1,5 @@
 ## 詳細
-Trim overlapping panels to surface boundary.
+重複しているパネルをサーフェス境界に合わせてトリムします。
 ___
 ## サンプル ファイル
 

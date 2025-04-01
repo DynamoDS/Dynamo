@@ -1,5 +1,5 @@
 ## Em profundidade
-Trim overlapping panels to surface boundary.
+Recorte painéis sobrepostos para o limite da superfície.
 ___
 ## Arquivo de exemplo
 
