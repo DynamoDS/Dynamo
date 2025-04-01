@@ -29,11 +29,18 @@ namespace CoreNodeModels
         private List<double> renderValuesY;
         private List<double> renderValuesX;
 
-        private readonly IntNode minLimitXDefaultValue = new IntNode(0);
-        private readonly IntNode maxLimitXDefaultValue = new IntNode(1);
-        private readonly IntNode minLimitYDefaultValue = new IntNode(0);
-        private readonly IntNode maxLimitYDefaultValue = new IntNode(1);
-        private readonly IntNode pointsCountDefaultValue = new IntNode(10);
+        private const int minXDefaultValue = 0;
+        private const int maxXDefaultValue = 1;
+        private const int minYDefaultValue = 0;
+        private const int maxYDefaultValue = 1;
+
+        private const int pointCountDefaultValue = 10;
+
+        private readonly IntNode minLimitXDefaultValue = new IntNode(minXDefaultValue);
+        private readonly IntNode maxLimitXDefaultValue = new IntNode(maxXDefaultValue);
+        private readonly IntNode minLimitYDefaultValue = new IntNode(minYDefaultValue);
+        private readonly IntNode maxLimitYDefaultValue = new IntNode(maxYDefaultValue);
+        private readonly IntNode pointsCountDefaultValue = new IntNode(pointCountDefaultValue);
 
         private const string gaussianCurveControlPointData2Tag = "GaussianCurveControlPointData2";
         private const string gaussianCurveControlPointData3Tag = "GaussianCurveControlPointData3";
@@ -378,27 +385,27 @@ namespace CoreNodeModels
             {
                 InPorts.Add(new PortModel(PortType.Input, this, new PortData(
                     Properties.Resources.CurveMapperXMinLimitInputPortName,
-                    Properties.Resources.CurveMapperXMinLimitInputPortToolTip,
+                    string.Format(Properties.Resources.CurveMapperXMinLimitInputPortToolTip, minXDefaultValue),
                     minLimitXDefaultValue
                     )));
                 InPorts.Add(new PortModel(PortType.Input, this, new PortData(
                     Properties.Resources.CurveMapperXMaxLimitInputPortName,
-                    Properties.Resources.CurveMapperXMaxLimitInputPortToolTip,
+                    string.Format(Properties.Resources.CurveMapperXMaxLimitInputPortToolTip, maxXDefaultValue),
                     maxLimitXDefaultValue
                     )));
                 InPorts.Add(new PortModel(PortType.Input, this, new PortData(
                     Properties.Resources.CurveMapperYMinLimitInputPortName,
-                    Properties.Resources.CurveMapperYMinLimitInputPortToolTip,
+                    string.Format(Properties.Resources.CurveMapperYMinLimitInputPortToolTip, minYDefaultValue),
                     minLimitYDefaultValue
                     )));
                 InPorts.Add(new PortModel(PortType.Input, this, new PortData(
                     Properties.Resources.CurveMapperYMaxLimitInputPortName,
-                    Properties.Resources.CurveMapperYMaxLimitInputPortToolTip,
+                    string.Format(Properties.Resources.CurveMapperYMaxLimitInputPortToolTip, maxYDefaultValue),
                     maxLimitYDefaultValue
                     )));
                 InPorts.Add(new PortModel(PortType.Input, this, new PortData(
                     Properties.Resources.CurveMapperCountInputPortName,
-                    Properties.Resources.CurveMapperCountInputPortToolTip,
+                    string.Format(Properties.Resources.CurveMapperCountInputPortToolTip, pointCountDefaultValue),
                     pointsCountDefaultValue
                     )));
             }

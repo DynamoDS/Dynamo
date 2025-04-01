@@ -454,18 +454,18 @@
     <value>The selected elements.</value>
   </data>
   <data name="StringfromArrayDescription" xml:space="preserve">
-    <value>Convert an array to a string representation.</value>
+    <value>Converts an array to a string representation</value>
     <comment>Description for String from Array</comment>
   </data>
   <data name="StringfromObjectDescription" xml:space="preserve">
-    <value>Convert an object to a string representation.</value>
+    <value>Converts an object to a string representation</value>
     <comment>Description for String from Object</comment>
   </data>
   <data name="StringInputNodeDescription" xml:space="preserve">
     <value>Creates a string.</value>
   </data>
   <data name="WatchDescription" xml:space="preserve">
-    <value>Visualize the output of node.</value>
+    <value>Visualizes a node's output</value>
     <comment>Description for Watch</comment>
   </data>
   <data name="WatchImageDescription" xml:space="preserve">
@@ -477,7 +477,7 @@
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="WatchNodeDescription" xml:space="preserve">
-    <value>Visualize the node's output</value>
+    <value>Visualizes a node's output</value>
   </data>
   <data name="WatchPortDataInputToolTip" xml:space="preserve">
     <value>Node to show output from</value>
@@ -490,7 +490,7 @@
     <comment>Search tags. When do translation, appending localized tags to the existing tags and use ';' to seperate them</comment>
   </data>
   <data name="WebRequestDescription" xml:space="preserve">
-    <value>Make a web request given a url.</value>
+    <value>Returns the contents of a webpage from the given URL as a string</value>
     <comment>Description for Web Request</comment>
   </data>
   <data name="WebRequestPortDataResultToolTip" xml:space="preserve">
@@ -686,7 +686,7 @@ default value: G</value>
   <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
     <value>Number of values to generate.
 
-int</value>
+Default value (int): {0}</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
     <value>Redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
@@ -703,7 +703,7 @@ int</value>
   <data name="CurveMapperXMaxLimitInputPortToolTip" xml:space="preserve">
     <value>Maximum value for the X-axis domain.
 
-double</value>
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperXMinLimitInputPortName" xml:space="preserve">
     <value>x-MinLimit</value>
@@ -711,7 +711,7 @@ double</value>
   <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
     <value>Minimum value for the X-axis domain.
 
-double</value>
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperXValuesOutputPortName" xml:space="preserve">
     <value>x-Values</value>
@@ -727,7 +727,7 @@ double[]</value>
   <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
     <value>Maximum value for the Y-axis domain.
 
-double</value>
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
     <value>y-MinLimit</value>
@@ -735,7 +735,7 @@ double</value>
   <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
     <value>Minimum value for the Y-axis domain.
 
-double</value>
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperYValuesOutputPortName" xml:space="preserve">
     <value>y-Values</value>
