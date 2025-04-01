@@ -96,6 +96,19 @@ namespace Dynamo.PythonMigration
             return new[] { packageDependencyInfo };
         }
 
+        // Returns a dictionary of node and python engine mapping for the workspace python nodes.
+        internal Dictionary<Guid, String> GetPythonEngineMapping()
+        {
+            var pythonNodeMapping = new Dictionary<Guid, String>();
+
+            foreach (var node in workspace.Nodes.OfType<PythonNode>())
+            {
+                pythonNodeMapping.Add(node.GUID, node.EngineName);
+            }
+
+            return pythonNodeMapping;
+        }
+
         /// <summary>
         /// This recursive function returns true if any of the custom nodes in the input list has an IronPython dependency.
         /// Any custom nodes in the input list traversed during evaluation have their dependencies cached in <see cref="CustomNodePythonDependencyMap"/>.
