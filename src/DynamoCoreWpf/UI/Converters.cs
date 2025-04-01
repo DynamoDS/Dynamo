@@ -4215,6 +4215,9 @@ namespace Dynamo.Controls
             string superExp = ToSuperscript(exponent);
             string formatted = $"{basePart}×10{superExp}";
 
+            if (d < 0)
+                formatted = string.Concat("-", formatted);
+
             if (formatted.Length <= MaxLength)
                 return formatted;
 
