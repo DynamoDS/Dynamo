@@ -16,6 +16,8 @@ namespace Dynamo.PythonMigration
     public class GraphPythonDependencies
     {
         internal static readonly string PythonPackage = "DynamoIronPython2.7";
+        // Current Dynamo inbuilt python package is CPython3. Change this when it is updated.
+        internal static readonly string InBuiltPythonPackage = PythonEngineManager.CPython3EngineName;
         internal readonly Version PythonPackageVersion;
         private IWorkspaceModel workspace;
         private readonly ICustomNodeManager customNodeManager;
@@ -103,7 +105,8 @@ namespace Dynamo.PythonMigration
 
             foreach (var node in workspace.Nodes.OfType<PythonNode>())
             {
-                pythonNodeMapping.Add(node.GUID, node.EngineName);
+                var enginePackage = node.EngineName.Equals(InBuiltPythonPackage) ? "InBuilt" : "FromPackage";
+                pythonNodeMapping.Add(node.GUID, enginePackage);
             }
 
             return pythonNodeMapping;
