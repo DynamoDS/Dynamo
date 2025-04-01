@@ -278,6 +278,7 @@ namespace Dynamo.ViewModels
             this.port.PropertyChanged += PortPropertyChanged;
             this.node.PropertyChanged += NodePropertyChanged;
             this.node.WorkspaceViewModel.PropertyChanged += WorkspacePropertyChanged;
+            this.node.WorkspaceViewModel.DynamoViewModel.PreferencesViewModel.PropertyChanged += PreferencesViewModelPropertyChanged;
 
             //turn on the autocomplete marker if enabled
             NodeAutoCompleteMarkerEnabled = NodeViewModel.DynamoViewModel.EnableNodeAutoComplete;
@@ -290,6 +291,7 @@ namespace Dynamo.ViewModels
             port.PropertyChanged -= PortPropertyChanged;
             node.PropertyChanged -= NodePropertyChanged;
             node.WorkspaceViewModel.PropertyChanged -= WorkspacePropertyChanged;
+            node.WorkspaceViewModel.DynamoViewModel.PreferencesViewModel.PropertyChanged -= PreferencesViewModelPropertyChanged;
         }
 
         internal virtual PortViewModel CreateProxyPortViewModel(PortModel portModel)
@@ -461,10 +463,14 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged(nameof(IsHitTestVisible));
                     RaisePropertyChanged(nameof(NodeAutoCompleteMarkerEnabled));
                     break;
-                case "RunSettingsViewModel":
+            }
+        }
+        private void PreferencesViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "NodeAutocompleteIsChecked":
                     RaisePropertyChanged(nameof(NodeAutoCompleteMarkerEnabled));
-                    break;
-                default:
                     break;
             }
         }
