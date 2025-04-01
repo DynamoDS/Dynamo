@@ -685,7 +685,7 @@ namespace CoreNodeModels
             if (pointsCount == null || pointsCount.Count == 0)
                 return false;
 
-            if (pointsCount.Count == 1 && pointsCount[0] < 2)
+            if (pointsCount.Count == 1 && pointsCount.FirstOrDefault() < 2)
                 return false;
 
             if (MinLimitX == MaxLimitX || MinLimitY == MaxLimitY)
