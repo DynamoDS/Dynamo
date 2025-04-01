@@ -40,7 +40,7 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Command to open an Port's Context Menu popup
+        /// Command to open a Port's Context Menu popup
         /// </summary>
         public DelegateCommand NodePortContextMenuCommand
         {

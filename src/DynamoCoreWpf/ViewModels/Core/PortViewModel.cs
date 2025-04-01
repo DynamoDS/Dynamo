@@ -220,7 +220,7 @@ namespace Dynamo.ViewModels
         {
             get
             {
-                if (node.WorkspaceViewModel.FirstActiveConnector != null)
+                if (node.WorkspaceViewModel.FirstActiveConnector != null || !NodeViewModel.DynamoViewModel.EnableNodeAutoComplete)
                 {
                     return false;
                 }
@@ -459,6 +459,9 @@ namespace Dynamo.ViewModels
             {
                 case "ActiveConnector":
                     RaisePropertyChanged(nameof(IsHitTestVisible));
+                    RaisePropertyChanged(nameof(NodeAutoCompleteMarkerEnabled));
+                    break;
+                case "RunSettingsViewModel":
                     RaisePropertyChanged(nameof(NodeAutoCompleteMarkerEnabled));
                     break;
                 default:

@@ -192,7 +192,6 @@
                         </Grid>
                     </dynui:DynamoToolTip>
                 </Border.ToolTip>
-
             </Border>
 
             <!--  A border, to initiate the node autocomplete command -->
@@ -228,9 +227,13 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </Trigger>
-                            <DataTrigger Binding="{Binding ElementName=NodeAutoCompleteHover, Path=IsMouseOver}" Value="True">
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding ElementName=NodeAutoCompleteHover, Path=IsMouseOver}" Value="True" />
+                                    <Condition Binding="{Binding Path=NodeAutoCompleteMarkerEnabled}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
+                            </MultiDataTrigger>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding ElementName=BorderHighlightOverlay, Path=IsMouseOver}" Value="True" />

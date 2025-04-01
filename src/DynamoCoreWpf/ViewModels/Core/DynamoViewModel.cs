@@ -2299,24 +2299,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Forces all nodes in the workspace to refresh their ports for node autocomplete marker display
-        /// </summary>
-        public void RefreshNodeAutoCompleteMarker()
-        {
-            foreach (var nodeViewModel in currentWorkspaceViewModel.Nodes)
-            {
-                List<PortViewModel> ports = new List<PortViewModel>();
-                ports.AddRange(nodeViewModel.InPorts);
-                ports.AddRange(nodeViewModel.OutPorts);
-
-                foreach (var port in ports)
-                {
-                    port.NodeAutoCompleteMarkerEnabled = EnableNodeAutoComplete;
-                }
-            }
-        }
-
-        /// <summary>
         /// Read the contents of the file and set the view parameters for that current workspace
         /// </summary>
         private void model_ComputeModelDeserialized()

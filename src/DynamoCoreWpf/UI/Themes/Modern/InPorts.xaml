@@ -231,9 +231,13 @@
                             <Trigger Property="IsMouseOver" Value="True">
                                 <Setter Property="Visibility" Value="Visible"/>
                             </Trigger>
-                            <DataTrigger Binding="{Binding ElementName=NodeAutoCompleteHover, Path=IsMouseOver}" Value="True">
+                            <MultiDataTrigger>
+                                <MultiDataTrigger.Conditions>
+                                    <Condition Binding="{Binding ElementName=NodeAutoCompleteHover, Path=IsMouseOver}" Value="True" />
+                                    <Condition Binding="{Binding Path=NodeAutoCompleteMarkerEnabled}" Value="True" />
+                                </MultiDataTrigger.Conditions>
                                 <Setter Property="Visibility" Value="Visible"/>
-                            </DataTrigger>
+                            </MultiDataTrigger>
                             <MultiDataTrigger>
                                 <MultiDataTrigger.Conditions>
                                     <Condition Binding="{Binding ElementName=MainBorderHighlightOverlay, Path=IsMouseOver}" Value="True" />
