@@ -221,7 +221,6 @@
                     Height="25"
                     Margin="-3,-3,0,0"
                     Content="✨"/>
-
                 <Border.Style>
                     <Style TargetType="Border">
                         <Setter Property="Visibility" Value="Collapsed"/>
