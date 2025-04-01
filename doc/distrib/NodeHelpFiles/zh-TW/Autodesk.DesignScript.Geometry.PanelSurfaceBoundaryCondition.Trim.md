@@ -1,5 +1,5 @@
 ## 深入資訊
-Trim overlapping panels to surface boundary.
+將重疊的嵌板修剪到曲面邊界。
 ___
 ## 範例檔案
 

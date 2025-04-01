@@ -1,5 +1,5 @@
 ## Description approfondie
-Trim overlapping panels to surface boundary.
+Ajustez les panneaux qui se chevauchent jusqu&apos;à la délimitation de la surface.
 ___
 ## Exemple de fichier
 

@@ -760,8 +760,8 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Curve.LengthBetweenParameters(System.Double,System.Double)">
             <summary>取得曲線上兩個參數點之間的弧長度</summary>
-            <param name="startParam">網域起點</param>
-            <param name="endParam">網域終點</param>
+            <param name="startParam">定義域的起點</param>
+            <param name="endParam">定義域的終點</param>
             <returns>兩個參數之間的弧長</returns>
             <search>
             measure,distance,arclength
@@ -4972,7 +4972,7 @@
             小區塊: 如果網格包含相對於整體網格大小
                 非常小而不連接的區段，將會捨棄這些
                 區段。
-            孔: 網格中的孔會填入
+            孔: 網格中的孔會填滿
             非流形區域: 如果一個頂點連接至兩條以上
                 的 *邊界* 邊，或一條邊連接至兩個以上
                 的三角形，則頂點/邊是非流形的。網格
@@ -4998,8 +4998,8 @@
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.MakeHollow(System.Int32,System.Double,System.Double,System.Double,System.Double)">
             <summary>傳回已挖空要進行 3D 列印的新網格。</summary>
-            <param name="holeCount">漏洞的數量</param>
-            <param name="holeRadius">漏洞的半徑</param>
+            <param name="holeCount">材料清除孔數</param>
+            <param name="holeRadius">材料清除孔的半徑</param>
             <param name="wallThickness">內部偏移距離</param>
             <param name="solidResolution">製作代表中空網格內部曲面的實體解析度 (8 - 4096)</param>
             <param name="meshResolution">在挖空網格內部曲面上產生網格的解析度 (8 - 4096)</param>
@@ -5049,7 +5049,7 @@
             <summary>網格上距離指定點最近的點</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Mirror(Autodesk.DesignScript.Geometry.Plane)">
-            <summary>將網格反射到整個輸入平面上</summary>
+            <summary>跨輸入平面反射網格</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Rotate(Autodesk.DesignScript.Geometry.Vector,System.Double)">
             <summary>將網格繞著輸入軸旋轉輸入度數。旋轉
@@ -5092,7 +5092,7 @@
             <summary>移除不在輸入面上的頂點。</summary>
         </member>
         <member name="F:Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Trim">
-            <summary>Trim overlapping panels to surface boundary.</summary>
+            <summary>將重疊的嵌板修剪到曲面邊界。</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.ToString">
             <summary>取得 PanelSurface 的字串表現法</summary>
@@ -5531,13 +5531,13 @@
             <summary>查找類似於「找不到檔案: {0}」的本土化字串。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.geometry_deserializefromsab_deprecated">
-            <summary>查找類似於「此方法已棄用，未來版本的 Dynamo 將移除。請使用允許傳遞 mmPerUnit 的過載」的本土化字串。</summary>
+            <summary>查找類似於「此方法已棄用，未來版本的 Dynamo 將移除。請使用允許傳遞 mmPerUnit 的多載」的本土化字串。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.geometry_exporttosat_deprecated">
             <summary>查找類似於「此方法已棄用，未來版本的 Dynamo 將移除。請改用 ExportToSAT 使用者介面節點」的本土化字串。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.geometry_importfromsat_deprecated">
-            <summary>查找類似於「此方法已棄用，未來版本的 Dynamo 將移除。請使用指定每單位公釐的過載」的本土化字串。</summary>
+            <summary>查找類似於「此方法已棄用，未來版本的 Dynamo 將移除。請使用指定每單位公釐的多載」的本土化字串。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.GreaterThan">
             <summary>查找類似於「{0} 大於 {1}」的本土化字串。</summary>

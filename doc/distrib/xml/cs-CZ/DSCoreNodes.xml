@@ -152,86 +152,86 @@
             <search>smaller,equal</search>
         </member>
         <member name="T:DSCore.CurveMapper.BezierCurve">
-            <summary>Represents a Bezier curve in the CurveMapper.
-            A Bezier curve is defined by four control points and provides smooth interpolation.</summary>
+            <summary>Představuje Bezierovu křivku v uzlu CurveMapper.
+            Bezierova křivka je definována čtyřmi řídicími body a nabízí hladkou interpolaci.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.BezierCurve.GenerateCurve(System.Int32,System.Boolean)">
-            <summary>Gets interpolated Y values based on the assigned parameters and limits.</summary>
+            <summary>Zobrazí interpolované hodnoty Y podle přiřazených parametrů a mezí.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.ControlLine">
-            <summary>Represents a control line in the CurveMapper.
-            This is used for auxiliary control of other curves, particularly Bezier curves.</summary>
+            <summary>Představuje řídicí úsečku v uzlu CurveMapper.
+            Používá se k pomocnému ovládání jiných křivek, zejména Bezierových křivek.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.CurveBase">
-            <summary>Represents a base class for all curve types in the CurveMapper.
-            Provides common functionality for generating and retrieving curve values.</summary>
+            <summary>Představuje základní třídu pro všechny typy křivek v uzlu CurveMapper.
+            Nabízí běžnou funkcionalitu ke generování a načítání hodnot křivky.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.CurveBase.GenerateCurve(System.Int32,System.Boolean)">
-            <summary>Abstract method to be implemented by derived classes for generating curve values.</summary>
+            <summary>Abstraktní metoda implementovaná odvozenými třídami ke generování hodnot křivek.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Int32,System.Boolean)">
-            <summary>Common method for retrieving X values.</summary>
+            <summary>Běžná metoda získávání hodnot X.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Int32,System.Boolean)">
-            <summary>Common method for retrieving Y values.</summary>
+            <summary>Běžná metoda získávání hodnot Y.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.GaussianCurve">
-            <summary>Represents a Gaussian curve in the CurveMapper.
-            The Gaussian curve follows a bell-shaped distribution defined by four control points.</summary>
+            <summary>Představuje Gaussovu křivku v uzlu CurveMapper.
+            Gaussova křivka sleduje zvonovité rozložení, které je definováno čtyřmi řídicími body.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.GaussianCurve.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
-            <summary>Indicates whether the node is currently being resized, preventing unintended control point updates.</summary>
+            <summary>Označuje, zda je aktuálně měněna velikost uzlu, aby se zabránilo nezamýšleným aktualizacím řídicích bodů.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.GaussianCurve.GenerateCurve(System.Int32,System.Boolean)">
-            <summary>Returns X and Y values distributed across the curve.</summary>
+            <summary>Vrací hodnoty X a Y rozložené po křivce.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.LinearCurve">
-            <summary>Represents a linear curve in the CurveMapper.
-            A linear curve is a straight line between two control points.</summary>
+            <summary>Představuje lineární křivku v uzlu CurveMapper.
+            Lineární křivka je rovná čára mezi dvěma řídicími body.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.LinearCurve.LineEquation(System.Double)">
-            <summary>Calculates the Y values (canvas coordinates) for min and max X values</summary>
+            <summary>Vypočítá hodnoty Y (souřadnice kreslicí plochy) pro minimální a maximální hodnoty X</summary>
         </member>
         <member name="M:DSCore.CurveMapper.LinearCurve.SolveForXGivenY(System.Double)">
-            <summary>Calculates the X values (canvas coordinates) for min and max Y values</summary>
+            <summary>Vypočítá hodnoty X (souřadnice kreslicí plochy) pro minimální a maximální hodnoty Y</summary>
         </member>
         <member name="M:DSCore.CurveMapper.LinearCurve.GenerateCurve(System.Int32,System.Boolean)">
-            <summary>Returns X and Y values distributed across the curve.</summary>
+            <summary>Vrací hodnoty X a Y rozložené po křivce.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.ParabolicCurve">
-            <summary>Represents a parabolic curve in the CurveMapper.
-            The curve follows a quadratic equation based on two control points.</summary>
+            <summary>Představuje parabolickou křivku v uzlu CurveMapper.
+            Křivka se řídí kvadratickou rovnicí založenou na dvou řídicích bodech.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.ParabolicCurve.GenerateCurve(System.Int32,System.Boolean)">
-            <summary>Returns X and Y values distributed across the curve.</summary>
+            <summary>Vrací hodnoty X a Y rozložené po křivce.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.PerlinNoiseCurve">
-            <summary>Represents a Perlin noise curve in the CurveMapper.
-            The curve generates procedural noise based on control points and Perlin noise functions.</summary>
+            <summary>Představuje křivku Perlinova šumu v uzlu CurveMapper.
+            Křivka generuje procedurální šum podle řídicích bodů a funkcí Perlinova šumu.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.PerlinNoiseCurve.GenerateCurve(System.Int32,System.Boolean)">
-            <summary>Returns X and Y values distributed across the curve.</summary>
+            <summary>Vrací hodnoty X a Y rozložené po křivce.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.PowerCurve">
-            <summary>Represents a power function curve in the CurveMapper.
-            The curve is defined by a power equation derived from a control point.</summary>
+            <summary>Představuje křivku mocninné funkce v uzlu CurveMapper.
+            Křivka je definována mocninnou rovnicí odvozenou z řídicího bodu.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.PowerCurve.GenerateCurve(System.Int32,System.Boolean)">
-            <summary>Returns X and Y values distributed across the curve.</summary>
+            <summary>Vrací hodnoty X a Y rozložené po křivce.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.SineWave">
-            <summary>Represents a sine wave curve in the CurveMapper.
-            The sine wave is defined by two control points and follows a trigonometric function.</summary>
+            <summary>Představuje sinusoidu v uzlu CurveMapper.
+            Sinusová vlna je definována dvěma řídicími body a řídí se trigonometrickou funkcí.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.SineWave.GenerateCurve(System.Int32,System.Boolean)">
-            <summary>Returns X and Y values distributed across the curve.</summary>
+            <summary>Vrací hodnoty X a Y rozložené po křivce.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.SquareRootCurve">
-            <summary>Represents a square root curve in the CurveMapper.
-            The curve follows a square root function and is influenced by two control points.</summary>
+            <summary>Představuje křivku druhé odmocniny v uzlu CurveMapper.
+            Křivka sleduje funkci druhé odmocniny a je ovlivněna dvěma řídicími body.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.SquareRootCurve.GenerateCurve(System.Int32,System.Boolean)">
-            <summary>Returns X and Y values distributed across the curve.</summary>
+            <summary>Vrací hodnoty X a Y rozložené po křivce.</summary>
         </member>
         <member name="M:DSCore.Data.ParseJSON(System.String)">
             <summary>Analýza převede libovolný řetězec JSON na hodnotu. Jedná se o opak funkce JSON.Stringify.</summary>
@@ -927,17 +927,17 @@ Jako výchozí je nastaven standardní formát „F“: „Úterý, 21. února 2
             <search>list;group;groupbykey;</search>
         </member>
         <member name="M:DSCore.List.GroupBySimilarity(System.Collections.IList,System.Double,System.Boolean)">
-            <summary>Clusters list elements based on the adjacency of their indices and the similarity of their values</summary>
-            <param name="list">List of items to group as sublists based on adjacency and similarity</param>
-            <param name="tolerance">Threshold value for grouping similar items</param>
-            <param name="considerAdjacency">Boolean value to control if the node should consider adjacency or not.</param>
-            <returns name="groupedValues">list of sublists with items grouped by similar values</returns>
-            <returns name="groupedIndices">list of sublists containing the original indices of grouped values</returns>
+            <summary>Shluky uvádějí seznam prvků podle přilehlosti jejich indexů a podobnosti jejich hodnot</summary>
+            <param name="list">Seznam položek, které mají být seskupeny do dílčích seznamů podle přilehlosti a podobnosti</param>
+            <param name="tolerance">Prahová hodnota pro seskupení podobných položek</param>
+            <param name="considerAdjacency">Booleovská hodnota, která určuje, zda má uzel brát v úvahu přilehlost či nikoliv.</param>
+            <returns name="groupedValues">seznam dílčích seznamů s položkami seskupenými podle podobných hodnot</returns>
+            <returns name="groupedIndices">seznam dílčích seznamů obsahující původní indexy seskupených hodnot</returns>
             <search>list;group;similar;adjacent;adjacency;groupbyadjacency;groupadjacentitems;groupsimilaritems;cluster;tolerance</search>
         </member>
         <member name="M:DSCore.List.LevenshteinDistance(System.String,System.String)">
-            <summary>Levenshtein Distance is the algorithm used to get the distance between 2 strings
-            | <see href="https://gist.github.com/Davidblkx/e12ab0bb2aff7fd8072632b396538560">Source</see></summary>
+            <summary>Levenštejnova vzdálenost je algoritmus používaný k získání vzdálenosti mezi 2 řetězci
+            | <see href="https://gist.github.com/Davidblkx/e12ab0bb2aff7fd8072632b396538560">Zdroj</see></summary>
         </member>
         <member name="M:DSCore.List.AddItemToFront(System.Object,System.Collections.IList)">
             <summary>Přidá položku na začátek seznamu.</summary>
@@ -991,11 +991,11 @@ Jako výchozí je nastaven standardní formát „F“: „Úterý, 21. února 2
             <search>replace,switch</search>
         </member>
         <member name="M:DSCore.List.ReplaceItemAtIndices(System.Collections.IList,System.Collections.Generic.IList{System.Int32},System.Object)">
-            <summary>Replaces items from the given list that are located at the specified indices.</summary>
-            <param name="list">Seznam, v němž se má položka nahradit</param>
-            <param name="indices">Indices of the item(s) to be replaced.</param>
-            <param name="item">Položka ke vložení</param>
-            <returns name="list">A new list with the item(s) replaced.</returns>
+            <summary>Nahradí položky daného seznamu, které se nacházejí na určených indexech.</summary>
+            <param name="list">Seznam, v němž se má položka nahradit.</param>
+            <param name="indices">Indexy položek, které mají být nahrazeny.</param>
+            <param name="item">Položka ke vložení.</param>
+            <returns name="list">Nový seznam s nahrazenými položkami.</returns>
             <search>replace,switch</search>
         </member>
         <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">

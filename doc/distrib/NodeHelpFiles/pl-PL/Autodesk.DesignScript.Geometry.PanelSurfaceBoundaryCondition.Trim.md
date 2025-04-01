@@ -1,5 +1,5 @@
 ## Informacje szczegółowe
-Trim overlapping panels to surface boundary.
+Przytnij nakładające się panele do obwiedni powierzchni.
 ___
 ## Plik przykładowy
 
