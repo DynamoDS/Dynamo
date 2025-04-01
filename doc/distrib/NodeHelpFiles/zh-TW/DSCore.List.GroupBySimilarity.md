@@ -3,7 +3,7 @@
 
 使用 `tolerance` 輸入判斷元素的相似性。如果是數字清單，`tolerance` 值表示兩個數字之間被視為相似的最大允許差異。
 
-如果是字串清單，這是一個十進位值 (介於 0 和 1 之間)，指定被視為相似的相鄰元素的最小相似性比率 (使用模糊邏輯計算)。如果是字串清單，`tolerance` 表示兩個字串之間可以不同的最大字元數 (使用 Levenshtein 距離進行比較)。字串的最大公差設定為 5。
+For lists of strings, this value (between 0 and 10) represents the minimum similarity ratio (computed using fuzzy logic) for adjacent elements to be considered similar. For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is set to 10.
 
 `considerAdjacency` 布林輸入表示在群集元素時是否應考慮相鄰性。如果為 True，則只有相似的相鄰元素才會群集在一起。如果為 False，則無論相鄰性如何，都會單獨使用相似性來形成群集。
 

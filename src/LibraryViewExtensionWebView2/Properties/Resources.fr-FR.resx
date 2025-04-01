@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CannotAddNodeToWorkspace" xml:space="preserve">
-    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
+    <value>Vous ne pouvez pas placer un nœud personnalisé dans son propre espace de travail sans implémenter correctement le cas de base récursif à l'aide du nœud scopeif.</value>
   </data>
 </root>

@@ -325,21 +325,21 @@ Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
     <value>Koordinaten</value>
   </data>
   <data name="CurveMapperControlPointToolTip" xml:space="preserve">
-    <value>Drag to modify the curve.</value>
+    <value>Ziehen Sie den Mauszeiger, um die Kurve zu ändern.</value>
   </data>
   <data name="CurveMapperCurveTypesLabel" xml:space="preserve">
-    <value>Teilungstyp</value>
+    <value>Kurventyp</value>
   </data>
   <data name="CurveMapperLockedResetToolTip" xml:space="preserve">
-    <value>The curve has been locked and cannot be reset. Please unlock the curve first.</value>
+    <value>Die Kurve wurde gesperrt und kann nicht zurückgesetzt werden. Entsperren Sie zuerst die Kurve.</value>
   </data>
   <data name="CurveMapperLockToolTip" xml:space="preserve">
-    <value>Click to lock the curve.</value>
+    <value>Klicken Sie, um die Kurve zu sperren.</value>
   </data>
   <data name="CurveMapperResetToolTip" xml:space="preserve">
-    <value>Reset the curve.</value>
+    <value>Setzen Sie die Kurve zurück.</value>
   </data>
   <data name="CurveMapperUnlockToolTip" xml:space="preserve">
-    <value>Curve cannot be modified. Click to unlock.</value>
+    <value>Kurve kann nicht geändert werden. Klicken Sie zum Entsperren mit der Maus.</value>
   </data>
 </root>

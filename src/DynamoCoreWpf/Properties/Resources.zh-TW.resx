@@ -1159,7 +1159,7 @@
     <value>{0} 耗用於載入 {1} 主視窗中。</value>
   </data>
   <data name="MessageNeedToRestartAfterDelete" xml:space="preserve">
-    <value>{0} 及其主應用程式必須重新啟動，刪除才會生效。</value>
+    <value>{0} 及其主體應用程式必須重新啟動，刪除才會生效。</value>
   </data>
   <data name="MessageNodeWithNullFunction" xml:space="preserve">
     <value>此節點有一個空函數定義。</value>
@@ -1195,11 +1195,11 @@
 您可以永遠重新棄用套件。</value>
   </data>
   <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
-    <value>套件 {0} 有一個或多個相依性與工作區中使用的下列套件發生衝突: {1}。相依性衝突可能會導致發生非預期的行為。
+    <value>Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
     
-您是否要繼續安裝它，同時保留已安裝的套件？
+Do you wish to continue installing it while keeping the packages that are already installed?
 
-如果不，{2} 必須先解除安裝 {1} 才能繼續，但無法如使用中一樣。請嘗試重新啟動 {2} 並再次下載 {0}。</value>
+If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Try restarting {2} and download {0} again.</value>
   </data>
   <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
     <value>套件 {0} 有一個或多個相依性與下列套件發生衝突:
@@ -1309,7 +1309,7 @@
 </value>
   </data>
   <data name="PackageManagerNoValidationErrors" xml:space="preserve">
-    <value>No validation errors</value>
+    <value>沒有驗證錯誤</value>
   </data>
   <data name="OnlyTitle" xml:space="preserve">
     <value>僅</value>
@@ -1360,7 +1360,7 @@
     <value>您的套件必須包含至少一個檔案。</value>
   </data>
   <data name="PackageCompatibilityMatrixMissing" xml:space="preserve">
-    <value>Provide compatibility information for the package..</value>
+    <value>提供套件的相容性資訊。</value>
   </data>
   <data name="PackageNotExisted" xml:space="preserve">
     <value>根目錄的套件不存在。 請嘗試重新安裝套件。</value>
@@ -1519,7 +1519,7 @@
     <value>正在上載...</value>
   </data>
   <data name="PackageFilterByHost" xml:space="preserve">
-    <value>主體</value>
+    <value>主體程式</value>
   </data>
   <data name="PackageFilterByStatus" xml:space="preserve">
     <value>狀態</value>
@@ -1637,7 +1637,7 @@
     <value>是否為節點資源庫</value>
   </data>
   <data name="PublishPackageViewLicense" xml:space="preserve">
-    <value>授權 (可選)</value>
+    <value>授權 (選填)</value>
   </data>
   <data name="PublishPackageViewPackageDependencies" xml:space="preserve">
     <value>相依性</value>
@@ -1697,7 +1697,7 @@
     <value>發佈套件</value>
   </data>
   <data name="PublishPackageViewPublisherWebiSite" xml:space="preserve">
-    <value>網站 URL (可選)</value>
+    <value>網站 URL (選填)</value>
   </data>
   <data name="PublishPackageViewRepositoryUrl" xml:space="preserve">
     <value>儲存庫 URL (可選)</value>
@@ -1733,7 +1733,7 @@
     <value>圖表變更會即時執行。最適合較小的圖表、熟知的圖表和 Dynamo Sandbox。</value>
   </data>
   <data name="RunTypeToolTipManually" xml:space="preserve">
-    <value>圖表變更會在您按一下「執行」時執行。在大型圖表、不熟悉的圖表或主應用程式中工作時，請使用此模式。</value>
+    <value>當您按一下「執行」時會執行圖表變更。在大型圖表、不熟悉的圖表或主體應用程式中工作時，請使用此模式。</value>
   </data>
   <data name="RunTypeToolTipPeriodicallyDisabled" xml:space="preserve">
     <value>當圖表中沒有支援定期執行的節點時，定期執行即會停用，。</value>
@@ -2035,12 +2035,12 @@
     <value>未加入新頁籤，因為該延伸已經位於延伸側邊列中。</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
-    <value>無法載入 {1}。
-安裝它將會與已經在 {0} (目前已載入) 的一個或多個節點定義衝突。
-若要安裝 {1}，Dynamo 必須先解除安裝 {0}。
-請重新啟動 Dynamo 以完成解除安裝。
+    <value>{1} cannot be loaded.
+Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
+To install {1}, Dynamo needs to first uninstall {0}. 
+Restart Dynamo to complete the uninstall.
 
-是否要解除安裝下列套件: {0}？</value>
+Uninstall the following packages: {0}?</value>
   </data>
   <data name="PreviewText" xml:space="preserve">
     <value> 此功能為預覽版功能！</value>
@@ -2064,7 +2064,7 @@
     <value>找不到 {1} {0} 版。</value>
   </data>
   <data name="PublishPackageViewPackageHostDependency" xml:space="preserve">
-    <value>主體 (可選)</value>
+    <value>主體程式 (選填)</value>
   </data>
   <data name="PublishPackageViewPackageHostDependencyTooltip" xml:space="preserve">
     <value>有跡象顯示，您的套件依賴 Dynamo 外部的應用程式，例如 Revit、Civil 3D 或 Photoshop。套件的使用者必須安裝這些應用程式，才能完整使用套件。</value>
@@ -2199,14 +2199,14 @@
     <value>需要重新啟動 Dynamo</value>
   </data>
   <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
-    <value>{0} 有相依性與下列內建套件衝突: {1}。相依性衝突可能會導致發生非預期的行為。
+    <value>{0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
     
-您是否要繼續安裝 {0}？</value>
+Do you wish to continue trying to install {0}?</value>
   </data>
   <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
-    <value>{0} 無法安裝，因為與已安裝的不同版內建套件 {1} 發生衝突。
+    <value>{0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
     
-您可以嘗試停止從內建套件路徑載入套件，或卸載衝突的套件，然後重新啟動 {2} 並再次下載 {0}。</value>
+You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again.</value>
   </data>
   <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
     <value>The same version of package {0} is already installed as a built-in package and does not need to be installed again.</value>
@@ -2215,9 +2215,9 @@
     <value>已安裝同版本的 {0}，不需要再次安裝。</value>
   </data>
   <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
-    <value>套件 {0} 無法安裝，因為與已安裝的其他版本 {1} 發生衝突。
+    <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
 
-您是否要解除安裝 {1}？請重新啟動 {2} 完成解除安裝，然後嘗試再次下載 {0}。</value>
+Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again.</value>
   </data>
   <data name="PreferencesViewGeneralSettingsRun" xml:space="preserve">
     <value>執行設定</value>
@@ -2624,7 +2624,7 @@
     <value>授權</value>
   </data>
   <data name="PublishPackageViewCopyrightHolder" xml:space="preserve">
-    <value>版權擁有者 (可選)</value>
+    <value>版權擁有者 (選填)</value>
   </data>
   <data name="PublishPackageViewCopyrightHolderWatermark" xml:space="preserve">
     <value>作者名稱</value>
@@ -2633,7 +2633,7 @@
     <value>如果空白，預設為您的使用者名稱</value>
   </data>
   <data name="PublishPackageViewCopyrightYear" xml:space="preserve">
-    <value>版權年份 (可選)</value>
+    <value>版權年份 (選填)</value>
   </data>
   <data name="PublishPackageViewCopyrightYearWatermark" xml:space="preserve">
     <value>發佈年份</value>
@@ -2645,7 +2645,7 @@
     <value>URL</value>
   </data>
   <data name="PublishPackageViewPublisherWebSite" xml:space="preserve">
-    <value>網站 URL (可選)</value>
+    <value>網站 URL (選填)</value>
   </data>
   <data name="PublishPackageViewPublisherWebSiteWatermark" xml:space="preserve">
     <value>URL</value>
@@ -2657,7 +2657,7 @@
     <value>加入資料夾</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectory" xml:space="preserve">
-    <value>Markdown 檔案路徑 (可選)</value>
+    <value>Markdown 檔案路徑 (選填)</value>
   </data>
   <data name="PublishPackageViewMarkdownFilesDirectoryToolTip" xml:space="preserve">
     <value>用於以 markdown 格式記錄套件內容的可選位置。</value>
@@ -2708,7 +2708,7 @@
     <value>發佈套件</value>
   </data>
   <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
-    <value>Virus scan in progress. Your package will be searchable in a few minutes.</value>
+    <value>病毒掃描進行中。幾分鐘後即可搜尋到您的套件。</value>
   </data>
   <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
     <value>已安裝的套件</value>
@@ -2768,7 +2768,7 @@
     <value>版本</value>
   </data>
   <data name="PackageDetailsHost" xml:space="preserve">
-    <value>主體</value>
+    <value>主體程式</value>
   </data>
   <data name="PackageDetailsPython" xml:space="preserve">
     <value>Python</value>
@@ -3157,7 +3157,7 @@
     <value>套件或其中一個相依性是針對不同環境，例如 Revit、Civil 3D、Advance Steel、Alias 或 FormIt。這可能會導致不穩定和非預期的問題。</value>
   </data>
   <data name="MessagePackageTargetOtherHostShort" xml:space="preserve">
-    <value>套件的目標主體與目前的主體應用程式不同。</value>
+    <value>套件的目標主體程式與目前的主體應用程式不同。</value>
   </data>
   <data name="TitlePackageTargetOtherHost" xml:space="preserve">
     <value>套件主體錯誤</value>
@@ -3209,13 +3209,13 @@
     <value>上傳錯誤</value>
   </data>
   <data name="PrePackagePublishMessage" xml:space="preserve">
-    <value>將掃瞄您的套件是否有病毒，成功通過掃瞄後即可供下載。</value>
+    <value>將掃描您的套件是否有病毒，成功通過掃描後即可供人下載。</value>
   </data>
   <data name="PrePackagePublishTitle" xml:space="preserve">
-    <value>套件上傳掃瞄</value>
+    <value>套件上傳掃描</value>
   </data>
   <data name="ImportPreferencesInfo" xml:space="preserve">
-    <value>您可以在此處匯入自訂設定，自訂設定會覆寫您目前的設定。如果您想要保留一份目前的設定，請在匯入新設定之前先將其匯出。Dynamo 和任何主程式重新啟動後，將套用「偏好」面板中未顯示的設定。</value>
+    <value>您可以在此處匯入自訂設定，自訂設定會覆寫您目前的設定。如果您想要保留一份目前的設定，請在匯入新設定之前先將其匯出。Dynamo 和任何主體程式重新啟動後，將套用「偏好」面板中未顯示的設定。</value>
   </data>
   <data name="PreferencesMustBeClosedMessage" xml:space="preserve">
     <value>必須先關閉「偏好」才能繼續。所有變更都會自動儲存。</value>
@@ -3335,7 +3335,7 @@
     <value>執行模式\n\n控制何時執行圖表變更。</value>
   </data>
   <data name="DynamoViewRunTypesManualToolTip" xml:space="preserve">
-    <value>圖表變更會在您按一下「執行」時執行。在大型圖表、不熟悉的圖表或主應用程式中工作時，請使用此模式。</value>
+    <value>當您按一下「執行」時會執行圖表變更。在大型圖表、不熟悉的圖表或主體應用程式中工作時，請使用此模式。</value>
   </data>
   <data name="DynamoViewRunTypesPeriodicToolTip" xml:space="preserve">
     <value>圖表變更會以指定的間隔執行。只有當圖表包含特定節點 (例如 DateTime.Now 或 WebRequest) 時才能使用。</value>
@@ -3676,10 +3676,10 @@
     <value>傾印節點說明資料(_D)</value>
   </data>
   <data name="NodeHelpIsDumped" xml:space="preserve">
-    <value>Node Help Data is dumped to \"{0}\".</value>
+    <value>節點說明資料已傾印至「{0}」。</value>
   </data>
   <data name="UpdateAllPythonEngineWarning" xml:space="preserve">
-    <value>Update all {0} python nodes in the current workspace to use {1} engine?</value>
+    <value>是否要將目前工作區中全部 {0} 個 Python 節點更新為使用 {1} 引擎？</value>
   </data>
   <data name="UpdateAllPythonEngineWarningTitle" xml:space="preserve">
     <value>更新所有 Python 節點</value>
@@ -3691,7 +3691,7 @@
     <value>發行說明</value>
   </data>
   <data name="PackageDetailsDependsOn" xml:space="preserve">
-    <value>取決於</value>
+    <value>相依於</value>
   </data>
   <data name="PackageDetailsCompatibility" xml:space="preserve">
     <value>相容性</value>
@@ -3715,7 +3715,7 @@
     <value>此版本可能與您目前的設定不相容</value>
   </data>
   <data name="PackageManagerIncompatibleVersionDownloadMsg" xml:space="preserve">
-    <value>此版本與您目前的設定 (Dynamo 和主程式版本，如果適用) 不相容。它可能無法正常運作。您仍然要安裝嗎？</value>
+    <value>此版本與您目前的設定 (Dynamo 和主體程式版本，如果適用) 不相容。它可能無法正常運作。您仍然要安裝嗎？</value>
   </data>
   <data name="PackageManagerIncompatibleVersionDownloadTitle" xml:space="preserve">
     <value>版本不相容</value>
@@ -3745,7 +3745,7 @@
     <value>標示 .x 的版本包括指定主要版本和次要版本中的所有版本</value>
   </data>
   <data name="CannotAddNodeToWorkspace" xml:space="preserve">
-    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
+    <value>如果未使用 scopeif 節點正確實作遞迴基準情況，則無法將自訂節點放在自己的工作區中。</value>
   </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
     <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
@@ -3758,10 +3758,10 @@
     <value>下載 Autodesk Identity Manager</value>
   </data>
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
-    <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
+    <value>提供的檔案路徑無效。如果檔案已歸檔，開啟之前請務必先解壓縮。\n{0}</value>
   </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
-    <value>Freeze Group</value>
+    <value>凍結群組</value>
   </data>
   <data name="SaveButton" xml:space="preserve">
     <value>儲存</value>
@@ -3773,7 +3773,7 @@
     <value>群組型式</value>
   </data>
   <data name="PreferencesViewShowDefaultGroupDescription" xml:space="preserve">
-    <value>Show default group description</value>
+    <value>顯示預設群組描述</value>
   </data>
   <data name="NodeAutoCompleteToolTip" xml:space="preserve">
     <value>Click to get Node Autocomplete suggestions</value>

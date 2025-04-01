@@ -1195,11 +1195,11 @@ Odmítnutí balíčku můžete vždy zrušit.</value>
 Odmítnutí balíčku můžete vždy zrušit.</value>
   </data>
   <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
-    <value>Balíček {0} má jednu nebo více závislostí, které jsou v konfliktu s následujícími balíčky, které se používají v pracovním prostoru: {1}. Konflikty závislostí by mohly způsobit nežádoucí chování.
+    <value>Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
     
-Chcete pokračovat v instalaci a zachovat již nainstalované balíčky?
+Do you wish to continue installing it while keeping the packages that are already installed?
 
-Pokud ne, aplikace {2} musí před pokračováním odinstalovat balíček {1}, což však nemůže provést, pokud se balíčky používají. Restartujte aplikaci {2} a poté stáhněte balíček {0} znovu.</value>
+If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Try restarting {2} and download {0} again.</value>
   </data>
   <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
     <value>Balíček {0} má jednu nebo více závislostí, které jsou v konfliktu s následujícími balíčky:
@@ -1309,7 +1309,7 @@ Několikrát byly načteny i další sestavy:
 </value>
   </data>
   <data name="PackageManagerNoValidationErrors" xml:space="preserve">
-    <value>No validation errors</value>
+    <value>Žádné chyby ověření</value>
   </data>
   <data name="OnlyTitle" xml:space="preserve">
     <value>pouze</value>
@@ -1360,7 +1360,7 @@ Několikrát byly načteny i další sestavy:
     <value>Váš balíček musí obsahovat nejméně jeden soubor.</value>
   </data>
   <data name="PackageCompatibilityMatrixMissing" xml:space="preserve">
-    <value>Provide compatibility information for the package..</value>
+    <value>Uveďte informace o kompatibilitě balíčku..</value>
   </data>
   <data name="PackageNotExisted" xml:space="preserve">
     <value>Kořenový adresář balíčku neexistuje. Opakujte akci a balíček znovu nainstalujte.</value>
@@ -1859,7 +1859,7 @@ Chcete publikovat jiný balíček?</value>
     <value>Zobrazit ukázky ve složce</value>
   </data>
   <data name="StartPageVideoTutorials" xml:space="preserve">
-    <value>Výukové videofilmy</value>
+    <value>Výuková videa</value>
   </data>
   <data name="StartPageVisitWebsite" xml:space="preserve">
     <value>Web aplikace {0}</value>
@@ -2035,12 +2035,12 @@ Chcete nainstalovat nejnovější aktualizaci aplikace Dynamo?</value>
     <value>Nebyla přidána žádná nová karta, protože rozšíření se již nachází na bočním panelu rozšíření.</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
-    <value>Položku {1} není možné načíst.
-Instalace této položky je v konfliktu s jednou nebo více definicemi uzlů, které již v aktuálně načtené položce {0} existují.
-K instalaci položky {1} potřebuje aplikace Dynamo nejprve odinstalovat položku {0}. 
-Restartováním aplikace Dynamo dokončíte odinstalaci.
+    <value>{1} cannot be loaded.
+Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
+To install {1}, Dynamo needs to first uninstall {0}. 
+Restart Dynamo to complete the uninstall.
 
-Chcete odinstalovat následující balíčky: {0}?</value>
+Uninstall the following packages: {0}?</value>
   </data>
   <data name="PreviewText" xml:space="preserve">
     <value> Tato funkce je v režimu Náhled. </value>
@@ -2199,14 +2199,14 @@ Chcete odinstalovat následující balíčky: {0}?</value>
     <value>Vyžaduje nové spuštění aplikace Dynamo</value>
   </data>
   <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
-    <value>Balíček {0} má závislosti, které jsou v konfliktu s následujícími vestavěnými balíčky: {1}. Konflikty závislostí by mohly způsobit nežádoucí chování.
+    <value>{0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
     
-Chcete pokračovat v pokusu o instalaci balíčku {0}?</value>
+Do you wish to continue trying to install {0}?</value>
   </data>
   <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
-    <value>Balíček {0} není možné nainstalovat, protože je v konfliktu s jinou verzí vestavěného balíčku, {1}, který je již nainstalován.
+    <value>{0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
     
-Můžete zkusit zakázat načítání balíčků pomocí cest vestavěných balíčků, případně uvolnit balíček, který konflikt způsobuje, poté provést restart balíčku {2} a znovu stáhnout balíček {0}.</value>
+You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again.</value>
   </data>
   <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
     <value>The same version of package {0} is already installed as a built-in package and does not need to be installed again.</value>
@@ -2215,9 +2215,9 @@ Můžete zkusit zakázat načítání balíčků pomocí cest vestavěných bal�
     <value>Již je nainstalována stejná verze balíčku {0} a není třeba ji instalovat znovu.</value>
   </data>
   <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
-    <value>Balíček {0} není možné nainstalovat, protože je v konfliktu s jinou verzí, {1}, která je již nainstalována. 
+    <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
 
-Chcete odinstalovat verzi {1}? Restartujte {2}, aby se dokončila odinstalace, a zkuste stáhnout balíček {0} znovu.</value>
+Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again.</value>
   </data>
   <data name="PreferencesViewGeneralSettingsRun" xml:space="preserve">
     <value>Nastavení spuštění</value>
@@ -2331,10 +2331,10 @@ Chcete odinstalovat verzi {1}? Restartujte {2}, aby se dokončila odinstalace, a
     <value>_Prohlídka uživatelského rozhraní</value>
   </data>
   <data name="GetStartedGuideDescription" xml:space="preserve">
-    <value>Začněte svou cestu vizuálního programování pomocí této krátké příručky. Zde se dozvíte některé základy rozhraní a funkcí aplikace Dynamo.</value>
+    <value>Začněte svou cestu vizuálního programování pomocí této krátké příručky. Zde se dozvíte některé základy uživatelského rozhraní a funkcí aplikace Dynamo.</value>
   </data>
   <data name="OnboardingGuideDescription" xml:space="preserve">
-    <value>Seznamte se se základními stavebními bloky aplikace Dynamo. Získejte praktickou zkušenost práce s grafem.</value>
+    <value>Seznamte se se základními stavebními bloky aplikace Dynamo. Získejte praktickou zkušenost, jak pracovat s grafem.</value>
   </data>
   <data name="PackagesGuideDescription" xml:space="preserve">
     <value>Balíček je sada nástrojů, která vám umožní pracovat s aplikací Dynamo a využívat přitom nejen její základní funkce. Tato příručka ukazuje, jak najít, nainstalovat a použít balíčky. Nainstaluje vám vzorový balíček Autodesk, který si můžete vyzkoušet.</value>
@@ -2373,7 +2373,7 @@ Chcete odinstalovat verzi {1}? Restartujte {2}, aby se dokončila odinstalace, a
     <value>Panel nástrojů</value>
   </data>
   <data name="GetStartedGuideWelcomeText" xml:space="preserve">
-    <value>V tomto výukovém programu se podívejte na základy vizuálního programování. \n\nSeznámíte se zde s rozhraním a funkcemi aplikace Dynamo.</value>
+    <value>V tomto výukovém programu se podívejte na základy vizuálního programování. \n\nSeznámíte se zde s uživatelským rozhraním a funkcemi aplikace Dynamo.</value>
   </data>
   <data name="GetStartedGuideWelcomeTitle" xml:space="preserve">
     <value>Vítejte v aplikaci Dynamo</value>
@@ -2575,7 +2575,7 @@ Pokud je přepínač vypnutý, vlastní balíčky, které ještě nejsou načten
     <value>SEŘADIT PODLE</value>
   </data>
   <data name="PackageSearchResultViewDetails" xml:space="preserve">
-    <value>Info</value>
+    <value>Informace</value>
   </data>
   <data name="PackageSearchResultRequirements" xml:space="preserve">
     <value>Požadavky</value>
@@ -2708,7 +2708,7 @@ Tento balíček bude uvolněn po dalším restartování aplikace Dynamo.</value
     <value>Publikovat balíček</value>
   </data>
   <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
-    <value>Virus scan in progress. Your package will be searchable in a few minutes.</value>
+    <value>Probíhá skenování virů. Balíček bude možné prohledat za pár minut.</value>
   </data>
   <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
     <value>Nainstalované balíčky</value>
@@ -3040,7 +3040,7 @@ Poznámka: Nesprávná struktura složek může ovlivnit funkce balíčků, kter
     <value>Uzly</value>
   </data>
   <data name="OnboardingGuideWelcomeText" xml:space="preserve">
-    <value>Seznamte se se základními stavebními bloky aplikace Dynamo. Získejte praktickou zkušenost práce s grafem.</value>
+    <value>Seznamte se se základními stavebními bloky aplikace Dynamo. Získejte praktickou zkušenost, jak pracovat s grafem.</value>
   </data>
   <data name="OnboardingPlaceNodeText" xml:space="preserve">
     <value>Knihovna obsahuje uzly používané k tvorbě grafů. Chcete-li najít uzel, můžete v knihovně hledat nebo procházet její kategorie.
@@ -3676,10 +3676,10 @@ Chcete-li vytvořit z tohoto souboru novou šablonu, uložte ho do jiné složky
     <value>_Vypsat data nápovědy uzlu</value>
   </data>
   <data name="NodeHelpIsDumped" xml:space="preserve">
-    <value>Node Help Data is dumped to \"{0}\".</value>
+    <value>Data nápovědy uzlu jsou vypsána do umístění \"{0}\".</value>
   </data>
   <data name="UpdateAllPythonEngineWarning" xml:space="preserve">
-    <value>Update all {0} python nodes in the current workspace to use {1} engine?</value>
+    <value>Aktualizovat všechny uzly jazyka Python ({0}) v aktuálním pracovním prostoru tak, aby se použil modul {1}?</value>
   </data>
   <data name="UpdateAllPythonEngineWarningTitle" xml:space="preserve">
     <value>Aktualizovat všechny uzly jazyka Python</value>
@@ -3745,7 +3745,7 @@ Chcete-li vytvořit z tohoto souboru novou šablonu, uložte ho do jiné složky
     <value>Verze označené .x zahrnují všechny verze v uvedené hlavní nebo vedlejší verzi</value>
   </data>
   <data name="CannotAddNodeToWorkspace" xml:space="preserve">
-    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
+    <value>Vlastní uzel nelze umístit do jeho vlastního pracovní prostor bez správné implementace rekurzivního základního případu pomocí uzlu scopeif.</value>
   </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
     <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
@@ -3758,22 +3758,22 @@ Chcete-li vytvořit z tohoto souboru novou šablonu, uložte ho do jiné složky
     <value>Stáhnout aplikaci Autodesk Identity Manager</value>
   </data>
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
-    <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
+    <value>Byla poskytnuta neplatná cesta souboru. Pokud je soubor archivován, před otevřením jej rozbalte.\n{0}</value>
   </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
-    <value>Freeze Group</value>
+    <value>Zmrazit skupinu</value>
   </data>
   <data name="SaveButton" xml:space="preserve">
     <value>Uložit</value>
   </data>
   <data name="DiscardButton" xml:space="preserve">
-    <value>Zrušit</value>
+    <value>Vyřadit</value>
   </data>
   <data name="PreferencesViewGroupStylesHeader" xml:space="preserve">
-    <value>Styly skupiny</value>
+    <value>Styly skupin</value>
   </data>
   <data name="PreferencesViewShowDefaultGroupDescription" xml:space="preserve">
-    <value>Show default group description</value>
+    <value>Zobrazit výchozí popis skupiny</value>
   </data>
   <data name="NodeAutoCompleteToolTip" xml:space="preserve">
     <value>Click to get Node Autocomplete suggestions</value>

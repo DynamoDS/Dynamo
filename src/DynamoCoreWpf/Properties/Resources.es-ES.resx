@@ -1195,11 +1195,11 @@ Siempre puede anular la obsolescencia del paquete.</value>
 Siempre puede volver a declarar obsoleto el paquete.</value>
   </data>
   <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
-    <value>El paquete {0} presenta una o más dependencias que entran en conflicto con los siguientes paquetes que están en uso en el espacio de trabajo: {1}. Los conflictos de dependencia pueden provocar un comportamiento no deseado.
+    <value>Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
     
-¿Desea seguir instalándolo al mismo tiempo que conserva los paquetes instalados?
+Do you wish to continue installing it while keeping the packages that are already installed?
 
-Si no es así, {2} debe desinstalar {1} para continuar, pero no puede mientras estén en uso. Intente reiniciar {2} y descargar {0} de nuevo.</value>
+If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Try restarting {2} and download {0} again.</value>
   </data>
   <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
     <value>El paquete {0} presenta una o más dependencias que entran en conflicto con los siguientes paquetes:
@@ -1309,7 +1309,7 @@ Los siguientes montajes se han cargado varias veces:
 </value>
   </data>
   <data name="PackageManagerNoValidationErrors" xml:space="preserve">
-    <value>No validation errors</value>
+    <value>No hay errores de validación</value>
   </data>
   <data name="OnlyTitle" xml:space="preserve">
     <value>solo</value>
@@ -1361,7 +1361,7 @@ Los siguientes montajes se han cargado varias veces:
     <value>El paquete debe contener al menos un archivo</value>
   </data>
   <data name="PackageCompatibilityMatrixMissing" xml:space="preserve">
-    <value>Provide compatibility information for the package..</value>
+    <value>Proporcione información de compatibilidad para el paquete.</value>
   </data>
   <data name="PackageNotExisted" xml:space="preserve">
     <value>El directorio raíz del paquete no existe. Intente volver a instalar el paquete.</value>
@@ -2036,12 +2036,12 @@ Para instalar la actualización más reciente, hay que cerrar Dynamo y todas las
     <value>No se ha añadido ninguna ficha nueva, ya que la extensión ya está presente en la barra lateral de extensiones.</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
-    <value>{1} no se puede cargar.
-Su instalación entrará en conflicto con una o más definiciones de nodo que existen en {0}, que ya se ha cargado.
-Para instalar {1}, Dynamo debe desinstalar primero {0}.
-Reinicie Dynamo para completar la desinstalación.
+    <value>{1} cannot be loaded.
+Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
+To install {1}, Dynamo needs to first uninstall {0}. 
+Restart Dynamo to complete the uninstall.
 
-¿Desinstalar los siguientes paquetes: {0}?</value>
+Uninstall the following packages: {0}?</value>
   </data>
   <data name="PreviewText" xml:space="preserve">
     <value> Esta función se encuentra en modo de vista preliminar. </value>
@@ -2200,14 +2200,14 @@ Reinicie Dynamo para completar la desinstalación.
     <value>Requiere que se reinicie Dynamo.</value>
   </data>
   <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
-    <value>{0} presenta dependencias que entran en conflicto con los siguientes paquetes integrados: {1}. Los conflictos de dependencia podrían provocar un comportamiento no deseado.
+    <value>{0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
     
-¿Desea seguir intentando instalar {0}?</value>
+Do you wish to continue trying to install {0}?</value>
   </data>
   <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
-    <value>{0} no puede instalarse porque entra en conflicto con una versión diferente del paquete integrado, {1}, que ya está instalado.
+    <value>{0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
     
-Puede intentar desactivar la carga de paquetes desde las rutas de paquetes integrados o descargar el paquete en conflicto y, a continuación, reiniciar {2} y descargar {0} de nuevo.</value>
+You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again.</value>
   </data>
   <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
     <value>The same version of package {0} is already installed as a built-in package and does not need to be installed again.</value>
@@ -2216,9 +2216,9 @@ Puede intentar desactivar la carga de paquetes desde las rutas de paquetes integ
     <value>La misma versión de {0} ya está instalada y no es necesario instalarla de nuevo.</value>
   </data>
   <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
-    <value>El paquete {0} no se puede instalar porque entra en conflicto con una versión diferente, {1}, que ya está instalada. 
+    <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
 
-¿Desea desinstalar {1}? Reinicie {2} para completar la desinstalación e intente descargar {0} de nuevo.</value>
+Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again.</value>
   </data>
   <data name="PreferencesViewGeneralSettingsRun" xml:space="preserve">
     <value>Parámetros de ejecución</value>
@@ -2338,7 +2338,7 @@ Puede intentar desactivar la carga de paquetes desde las rutas de paquetes integ
     <value>Obtenga más información sobre los componentes básicos de Dynamo. Practique con un gráfico.</value>
   </data>
   <data name="PackagesGuideDescription" xml:space="preserve">
-    <value>Un paquete es un conjunto de herramientas de utilidades que le permiten ir más allá de las función principal de Dynamo y hacer más con esta solución. En esta guía, se muestra cómo buscar, instalar y usar paquetes. Instala un paquete de ejemplo de Autodesk para que lo explore.</value>
+    <value>Un paquete es un conjunto de herramientas de utilidades que le permiten ir más allá de la funcionalidad principal de Dynamo y hacer más con esta solución. En esta guía, se muestra cómo buscar, instalar y usar paquetes. Instala un paquete de ejemplo de Autodesk para que lo explore.</value>
   </data>
   <data name="InteractiveGuides" xml:space="preserve">
     <value>_Guías interactivas</value>
@@ -2709,7 +2709,7 @@ Este paquete se descargará después del siguiente reinicio de Dynamo.</value>
     <value>Publicar un paquete</value>
   </data>
   <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
-    <value>Virus scan in progress. Your package will be searchable in a few minutes.</value>
+    <value>Análisis de virus en curso. Podrá realizar búsquedas en el paquete en unos pocos minutos.</value>
   </data>
   <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
     <value>Paquetes instalados</value>
@@ -3677,10 +3677,10 @@ Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta dif
     <value>_Volcar datos de ayuda del nodo</value>
   </data>
   <data name="NodeHelpIsDumped" xml:space="preserve">
-    <value>Node Help Data is dumped to \"{0}\".</value>
+    <value>Los datos de ayuda del nodo se han volcado en \"{0}\".</value>
   </data>
   <data name="UpdateAllPythonEngineWarning" xml:space="preserve">
-    <value>Update all {0} python nodes in the current workspace to use {1} engine?</value>
+    <value>¿Desea actualizar los {0} nodos de Python del espacio de trabajo actual para utilizar el motor de {1}?</value>
   </data>
   <data name="UpdateAllPythonEngineWarningTitle" xml:space="preserve">
     <value>Actualizar todos los nodos de Python</value>
@@ -3746,7 +3746,7 @@ Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta dif
     <value>Las versiones marcadas con .x incluyen todas las versiones de la compilación principal o secundaria especificada.</value>
   </data>
   <data name="CannotAddNodeToWorkspace" xml:space="preserve">
-    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
+    <value>No se puede colocar un nodo personalizado en su propia área de trabajo sin implementar correctamente el caso base recursivo mediante el nodo scopeif.</value>
   </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
     <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
@@ -3759,10 +3759,10 @@ Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta dif
     <value>Descargar Autodesk Identity Manager</value>
   </data>
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
-    <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
+    <value>Se ha especificado una ruta de archivo no válida. En caso de que se haya guardado el archivo, asegúrese de extraerlo antes de abrirlo.\n{0}</value>
   </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
-    <value>Freeze Group</value>
+    <value>Inmovilizar grupo</value>
   </data>
   <data name="SaveButton" xml:space="preserve">
     <value>Guardar</value>
@@ -3774,7 +3774,7 @@ Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta dif
     <value>Estilos de grupo</value>
   </data>
   <data name="PreferencesViewShowDefaultGroupDescription" xml:space="preserve">
-    <value>Show default group description</value>
+    <value>Mostrar descripción de grupo por defecto</value>
   </data>
   <data name="NodeAutoCompleteToolTip" xml:space="preserve">
     <value>Click to get Node Autocomplete suggestions</value>

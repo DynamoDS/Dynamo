@@ -716,10 +716,10 @@
     <value>Текущий пользователь «{0}» не является сопроводителем пакета «{1}».</value>
   </data>
   <data name="PackageManagerPackagePreviewCounter" xml:space="preserve">
-    <value>{0} files and {1} folders will be created.</value>
+    <value>Будут созданы файлы ({0}) и папки ({1}).</value>
   </data>
   <data name="PackageManagerPackageSelectCounter" xml:space="preserve">
-    <value>{0} files and {1} folders loaded.</value>
+    <value>Файлы ({0}) и папки ({1}) загружены.</value>
   </data>
   <data name="DuplicatedOlderPackage" xml:space="preserve">
     <value>Более ранняя версия пакета с именем {0} ({2}) обнаружена в {1} с версией {3}. Более ранняя версия проигнорирована.</value>
@@ -873,7 +873,7 @@
     <value>Не удалось вставить файл, так как некоторые узлы уже существуют в текущем рабочем пространстве.</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Insert Dynamo Graph...</value>
+    <value>Вставить граф Dynamo...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>Файл примера добавлен в рабочее пространство. Режим выполнения изменен на «Вручную».</value>

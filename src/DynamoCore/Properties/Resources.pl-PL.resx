@@ -716,10 +716,10 @@ Nazwa parametru: {0}</value>
     <value>Bieżący użytkownik, „{0}”, nie jest administratorem pakietu „{1}”.</value>
   </data>
   <data name="PackageManagerPackagePreviewCounter" xml:space="preserve">
-    <value>{0} files and {1} folders will be created.</value>
+    <value>Zostaną utworzone pliki ({0}) i foldery ({1}).</value>
   </data>
   <data name="PackageManagerPackageSelectCounter" xml:space="preserve">
-    <value>{0} files and {1} folders loaded.</value>
+    <value>Wczytano pliki ({0}) i foldery ({1}).</value>
   </data>
   <data name="DuplicatedOlderPackage" xml:space="preserve">
     <value>Starsza wersja pakietu o nazwie {0} wersja {2} została znaleziona w {1} w wersji {3}. Starsza wersja została zignorowana.</value>
@@ -873,7 +873,7 @@ Ten pakiet prawdopodobnie zawiera zablokowany zespół. Po odblokowaniu zespołu
     <value>Nie można wstawić pliku, ponieważ niektóre węzły już istnieją w bieżącym obszarze roboczym.</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Insert Dynamo Graph...</value>
+    <value>Wstaw wykres Dynamo...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>Dodano przykładowy plik do obszaru roboczego. Tryb uruchamiania zmieniono na ręczny.</value>
