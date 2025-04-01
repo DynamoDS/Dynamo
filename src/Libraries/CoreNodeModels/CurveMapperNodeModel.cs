@@ -795,8 +795,6 @@ namespace CoreNodeModels
 
         private void DataBridgeCallback(object data)
         {
-            ClearErrorsAndWarnings();
-
             // Ignore invalid inputs & grab input data
             if (!(data is ArrayList inputs) || inputs.Count < 5) return;
 
