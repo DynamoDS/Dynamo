@@ -447,6 +447,8 @@ namespace Dynamo.Wpf.CurveMapper
 
         private void ThumbResizeThumbOnDragDeltaHandler(object sender, DragDeltaEventArgs e)
         {
+            curveMapperNodeModel.IsResizing = true;
+
             var sizeChange = Math.Min(e.VerticalChange, e.HorizontalChange);
             var yAdjust = ActualHeight + sizeChange;
             var xAdjust = ActualWidth + sizeChange;
@@ -465,6 +467,8 @@ namespace Dynamo.Wpf.CurveMapper
             // Reposition control points based on the new size
             NodeModel_PropertyChanged(this, new PropertyChangedEventArgs(nameof(curveMapperNodeModel.DynamicCanvasSize)));
             curveMapperNodeModel.GenerateRenderValues();
+
+            curveMapperNodeModel.IsResizing = false;
         }
     }
 }
