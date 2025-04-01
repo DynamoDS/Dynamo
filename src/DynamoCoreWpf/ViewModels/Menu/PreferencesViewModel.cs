@@ -1129,8 +1129,6 @@ namespace Dynamo.ViewModels
             }
         }
 
-       
-
         /// <summary>
         /// If MLAutocompleteTOU is approved
         /// </summary>
