@@ -817,10 +817,10 @@ namespace Dynamo.Graph.Workspaces
                         computePythonNodeMapping = false;
                     }
 
-                    var pythonEngine = pythonNodeMapping[node.GUID];
+                    var pythonEnginePackage = (pythonNodeMapping != null && pythonNodeMapping.ContainsKey(node.GUID)) ? pythonNodeMapping[node.GUID] : string.Empty;
 
-                    // Since CPython3 is a default inbuilt python engine,no package dependency is set for that node.
-                    if (pythonEngine.Equals(PythonEngineManager.CPython3EngineName))
+                    // For inbuilt python engine,package dependency is not set.
+                    if (pythonEnginePackage.Equals("InBuilt"))
                     {
                         continue;
                     }

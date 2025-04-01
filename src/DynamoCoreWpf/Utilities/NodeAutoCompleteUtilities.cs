@@ -1,6 +1,6 @@
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
-
+using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using System;
@@ -18,8 +18,9 @@ namespace Dynamo.Wpf.Utilities
         internal static void PostAutoLayoutNodes(WorkspaceModel wsModel,
             NodeModel queryNode,
             IEnumerable<NodeModel> misplacedNodes,
-            bool clusterLayout,
+            bool skipInitialAutoLayout,
             bool checkWorkspaceNodes,
+            bool reuseUndoGroup,
             Action finalizer)
         {
             if (Application.Current?.Dispatcher != null)
@@ -27,8 +28,9 @@ namespace Dynamo.Wpf.Utilities
                 Application.Current.Dispatcher.BeginInvoke(() => AutoLayoutNodes(wsModel,
                     queryNode,
                     misplacedNodes,
-                    clusterLayout,
+                    skipInitialAutoLayout,
                     checkWorkspaceNodes,
+                    reuseUndoGroup,
                     finalizer), DispatcherPriority.ApplicationIdle);
             }
         }
@@ -98,42 +100,23 @@ namespace Dynamo.Wpf.Utilities
         /// <param name="wsModel">The workspace model containing the nodes to be arranged.</param>
         /// <param name="queryNode">The node used as a starting point for the layout operation.</param>
         /// <param name="misplacedNodes">A collection of nodes that are not properly positioned and need to be arranged.</param>
-        /// <param name="clusterLayout">Ensures misplaced nodes are positioned downstream. Nodes will be moved if necessary.</param>
+        /// <param name="skipInitialAutoLayout">Skip initial AutoLayout when we know that nodes are already in a good position.</param>
         /// <param name="checkWorkspaceNodes">Specifies whether to consider existing nodes in the workspace during the layout operation.</param>
+        /// <param name="reuseUndoGroup">Specify if the AutoLayout should use the existing undo group</param>
         /// <param name="finalizer">An action to be executed after the layout operation is complete, typically for cleanup or further adjustments.</param>
         internal static void AutoLayoutNodes(WorkspaceModel wsModel,
             NodeModel queryNode,
             IEnumerable<NodeModel> misplacedNodes,
-            bool clusterLayout,
+            bool skipInitialAutoLayout,
             bool checkWorkspaceNodes,
+            bool reuseUndoGroup,
             Action finalizer)
         {
             DynamoSelection.Instance.Selection.AddRange(misplacedNodes);
-            wsModel.DoGraphAutoLayout(true, true, queryNode.GUID);
 
-            // For large clusters of nodes, auto-layout may place nodes on both sides of the query node.
-            // While the arrangement is technically fine, we move the entire group downstream for better consistency.
-            if (clusterLayout)
+            if (!skipInitialAutoLayout)
             {
-                double offset = -1;
-                foreach (var node in misplacedNodes)
-                {
-                    if (node.X < queryNode.X)
-                    {
-                        offset = Math.Max(offset, queryNode.X - node.X);
-                    }
-                }
-
-                double balast = 50;
-                if (offset > 0)
-                {
-                    foreach (var node in misplacedNodes)
-                    {
-                        node.X = node.X + offset + queryNode.Width + balast;
-                    }
-
-                    wsModel.DoGraphAutoLayout(true, true, queryNode.GUID);
-                }
+                wsModel.DoGraphAutoLayout(reuseUndoGroup, true, queryNode.GUID);
             }
 
             // Check if the newly added nodes are still intersecting with other nodes in the workspace.
@@ -145,7 +128,7 @@ namespace Dynamo.Wpf.Utilities
                 if (redoAutoLayout)
                 {
                     DynamoSelection.Instance.Selection.AddRange(intersectedNodes);
-                    wsModel.DoGraphAutoLayout(true, true, queryNode.GUID);
+                    wsModel.DoGraphAutoLayout(reuseUndoGroup, true, queryNode.GUID);
                 }
             }
 
@@ -155,6 +138,36 @@ namespace Dynamo.Wpf.Utilities
             {
                 finalizer();
             }
+        }
+
+        //Order cluster nodes from left to right based on their connections.
+        internal static List<List<NodeItem>> ComputeNodePlacementHeuristics(List<ConnectionItem> connections, List<NodeItem> clusterNodes)
+        {
+            List<List<NodeItem>> resultNodesColumns = new List<List<NodeItem>>();
+            List<NodeItem> remainingNodes = [.. clusterNodes];
+            List<ConnectionItem> remainingConnections = [.. connections];
+
+            while (remainingNodes.Count > 0)
+            {
+                //mark nodes with input connections
+                Dictionary<string, bool> nodesWithInputs = new Dictionary<string, bool>();
+                remainingConnections.ForEach(connection => nodesWithInputs[connection.EndNode.NodeId] = true);
+
+                //extract nodes without input connections
+                var currentNodesColumn = remainingNodes.Where(node => !nodesWithInputs.ContainsKey(node.Id)).ToList();
+
+                //store the current set of inputs
+                resultNodesColumns.Add(currentNodesColumn);
+
+                //remove connections that start with current set of inputs
+                var currentNodesColumnIds = currentNodesColumn.Select(node => node.Id).ToList();
+                remainingConnections = remainingConnections.Where(connection => !currentNodesColumnIds.Contains(connection.StartNode.NodeId)).ToList();
+
+                //remove current inputs from the remaining nodes
+                remainingNodes = remainingNodes.Except(currentNodesColumn).ToList();
+            }
+
+            return resultNodesColumns;
         }
     }
 }

@@ -32,6 +32,7 @@ using ProtoCore.Mirror;
 using ProtoCore.Utils;
 using RestSharp;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Wpf.Utilities;
 
 namespace Dynamo.ViewModels
 {
@@ -171,10 +172,12 @@ namespace Dynamo.ViewModels
         {
             var node = PortViewModel.NodeViewModel;
             var transientNodes = node.WorkspaceViewModel.Nodes.Where(x => x.IsTransient).ToList();
-            foreach(var transientNode in transientNodes)
+            foreach (var transientNode in transientNodes)
             {
                 transientNode.IsTransient = false;
             }
+
+            NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, false, null);
         }
 
         /// <summary>
@@ -767,49 +770,75 @@ namespace Dynamo.ViewModels
 
             var index = 0;
             // A map of the cluster result v.s. actual nodes created for node connection look up
-            var clusterMapping = new Dictionary<string, NodeViewModel>();
+            var clusterMapping = new Dictionary<string, NodeModel>();
             // Convert topology to actual cluster
-            ClusterResultItem.Topology.Nodes.ToList().ForEach(node =>
-            {
-                // Retreive assembly name and node full name from type.id.
-                var typeInfo = wsViewModel.NodeAutoCompleteSearchViewModel.GetInfoFromTypeId(node.Type.Id);
-                dynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, 0, 0, false, false));
-                var nodeFromCluster = wsViewModel.Nodes.LastOrDefault();
-                nodeFromCluster.IsTransient = true;
-                clusterMapping.Add(node.Id, nodeFromCluster);
-                // Add the node to the selection to prepare for autolayout later
-                if (index == ClusterResultItem.EntryNodeIndex)
-                {
-                    // This is the target node from cluster that should connect to the query node
-                    targetNodeFromCluster = nodeFromCluster;
-                }
-                index++;
-            });
-            using (var undoGroup = wsViewModel.Model.UndoRecorder.BeginActionGroup())
-            {
-                ClusterResultItem.Topology.Connections.ToList().ForEach(connection =>
-                {
-                    // Connect the nodes
-                    var sourceNode = clusterMapping[connection.StartNode.NodeId];
-                    var targetNode = clusterMapping[connection.EndNode.NodeId];
-                    // The port index is 1- based (currently a hack and not expected from service)
-                    var sourcePort = sourceNode.OutPorts.FirstOrDefault(p => p.PortModel.Index == connection.StartNode.PortIndex - 1);
-                    var targetPort = targetNode.InPorts.FirstOrDefault(p => p.PortModel.Index == connection.EndNode.PortIndex - 1);
-                    var connector = ConnectorModel.Make(sourceNode.NodeModel, targetNode.NodeModel, connection.StartNode.PortIndex - 1, connection.EndNode.PortIndex - 1);
-                    wsViewModel.Model.UndoRecorder.RecordCreationForUndo(connector);
-                });
+            var clusterNodes = ClusterResultItem.Topology.Nodes.ToList();
+            var clusterConnections = ClusterResultItem.Topology.Connections.ToList();
 
-                // Connect the cluster to the original node and port
-                var connector = ConnectorModel.Make(node.NodeModel, targetNodeFromCluster.NodeModel, 0, ClusterResultItem.EntryNodeInPort);
-                wsViewModel.Model.UndoRecorder.RecordCreationForUndo(connector);
+            List<List<NodeItem>> nodeStacks = NodeAutoCompleteUtilities.ComputeNodePlacementHeuristics(clusterConnections, clusterNodes);
 
-                // AutoLayout should be called after all nodes are connected
-                foreach (var clusterNode in clusterMapping.Values)
+            double xoffset = node.X + node.NodeModel.Width;
+            foreach (var nodeStack in nodeStacks)
+            {
+                xoffset += node.NodeModel.Width;
+                foreach(var newNode in nodeStack)
                 {
-                    wsViewModel.DynamoViewModel.Model.AddToSelection(clusterNode.NodeModel);
+                    // Retreive assembly name and node full name from type.id.
+                    var typeInfo = wsViewModel.NodeAutoCompleteSearchViewModel.GetInfoFromTypeId(newNode.Type.Id);
+                    dynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, xoffset, node.NodeModel.Y, false, false));
+                    var nodeFromCluster = wsViewModel.Nodes.LastOrDefault();
+                    nodeFromCluster.IsTransient = true;
+                    clusterMapping.Add(newNode.Id, nodeFromCluster.NodeModel);
+                    // Add the node to the selection to prepare for autolayout later
+                    if (index == ClusterResultItem.EntryNodeIndex)
+                    {
+                        // This is the target node from cluster that should connect to the query node
+                        targetNodeFromCluster = nodeFromCluster;
+                    }
+                    index++;
                 }
-                wsViewModel.Model.DoGraphAutoLayout(true, true, node.Id);
             }
+
+            clusterConnections.ForEach(connection =>
+            {
+                // Connect the nodes
+                var sourceNode = clusterMapping[connection.StartNode.NodeId];
+                var targetNode = clusterMapping[connection.EndNode.NodeId];
+                // The port index is 1- based (currently a hack and not expected from service)
+                var sourcePort = sourceNode.OutPorts.FirstOrDefault(p => p.Index == connection.StartNode.PortIndex - 1);
+                var targetPort = targetNode.InPorts.FirstOrDefault(p => p.Index == connection.EndNode.PortIndex - 1);
+                var commands = new List<DynamoModel.ModelBasedRecordableCommand>
+                    {
+                        new DynamoModel.MakeConnectionCommand(sourceNode.GUID.ToString(), connection.StartNode.PortIndex - 1, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
+                        new DynamoModel.MakeConnectionCommand(targetNode.GUID.ToString(), connection.EndNode.PortIndex - 1, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
+                    };
+                commands.ForEach(c =>
+                {
+                    try
+                    {
+                        wsViewModel.DynamoViewModel.Model.ExecuteCommand(c);
+                    }
+                    catch (Exception) { }
+                });
+            });
+
+            // Connect the cluster to the original node and port
+            var finalCommands = new List<DynamoModel.ModelBasedRecordableCommand>
+                {
+                    new DynamoModel.MakeConnectionCommand(node.Id.ToString(), 0, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
+                    new DynamoModel.MakeConnectionCommand(targetNodeFromCluster?.Id.ToString(), ClusterResultItem.EntryNodeInPort, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
+                };
+            finalCommands.ForEach(c =>
+            {
+                try
+                {
+                    wsViewModel.DynamoViewModel.Model.ExecuteCommand(c);
+                }
+                catch (Exception) { }
+            });
+
+            // AutoLayout should be called after all nodes are connected
+            NodeAutoCompleteUtilities.PostAutoLayoutNodes(wsViewModel.DynamoViewModel.CurrentSpace, node.NodeModel, clusterMapping.Values.ToList(), false, false, false, null);
         }
         /// <summary>
         /// Key function to populate node autocomplete results to display
