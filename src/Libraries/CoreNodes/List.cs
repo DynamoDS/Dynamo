@@ -547,11 +547,6 @@ namespace DSCore
                     { "groupedValues", new List<object>() },
                     { "groupedIndices", new List<object>() }
                 };
-
-            //reset tolerance to 0 if it is negative
-            tolerance = tolerance < 0 ? 0 : tolerance;
-
-
             if (list.Count == 1)
             {
                 var singleItemResult = new List<object>(new List<object> { list[0] });
@@ -561,6 +556,25 @@ namespace DSCore
                     { "groupedIndices",  new List<object>(new List<object> { 0 })}
                 };
             }
+
+            // Check if the list contains only numbers or only strings
+            Type firstElementType = list[0].GetType();
+
+            // Check if the list contains only numbers or only strings
+            bool isNumeric = firstElementType == typeof(int) || firstElementType == typeof(float) || firstElementType == typeof(double) || firstElementType == typeof(long);
+            bool isString = firstElementType == typeof(string);
+
+            if (isNumeric && list.Cast<object>().Any(item => !(item is int || item is float || item is double || item is long)))
+            {
+                throw new ArgumentException("The list must contain only numbers or only strings.", nameof(list));
+            }
+            else if (isString && list.Cast<object>().Any(item => !(item is string)))
+            {
+                throw new ArgumentException("The list must contain only numbers or only strings.", nameof(list));
+            }
+
+            //reset tolerance to 0 if it is negative
+            tolerance = tolerance < 0 ? 0 : tolerance;
 
             var result = new List<object>();
             var idxResult = new List<object>();
@@ -635,11 +649,12 @@ namespace DSCore
 
         private static bool AreItemsSimilar(object item1, object item2, double tolerance)
         {
+            var MAX_TOLERANCE_FOR_STRINGS = 10;
             if (item1 is string str1 && item2 is string str2)
             {
                 tolerance = Math.Round(tolerance);
-                if (tolerance > 5)
-                    throw new ArgumentException("Tolerance value for string comparison cannot be greater than 5.", nameof(tolerance));
+                if (tolerance > MAX_TOLERANCE_FOR_STRINGS)
+                    throw new ArgumentException("Tolerance value for string comparison cannot be greater than " + MAX_TOLERANCE_FOR_STRINGS + ".", nameof(tolerance));
                 return LevenshteinDistance(str1, str2) <= tolerance;
             }
             else if (item1 is IComparable comp1 && item2 is IComparable comp2)
