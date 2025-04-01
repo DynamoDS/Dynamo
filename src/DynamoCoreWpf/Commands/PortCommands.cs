@@ -6,7 +6,6 @@ namespace Dynamo.ViewModels
     {
         private DelegateCommand connectCommand;
         private DelegateCommand autoCompleteCommand;
-        private DelegateCommand nodeClusterAutoCompleteCommand;
         private DelegateCommand portMouseEnterCommand;
         private DelegateCommand portMouseLeaveCommand;
         private DelegateCommand portMouseLeftButtonCommand;
