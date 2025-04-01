@@ -1194,11 +1194,11 @@
 언제든지 패키지를 다시 사용 중단할 수 있습니다.</value>
   </data>
   <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
-    <value>{0} 패키지에는 작업공간에서 사용 중인 패키지 {1}과(와) 충돌하는 종속성이 하나 이상 있습니다. 종속성 충돌로 인해 의도하지 않은 동작이 발생할 수 있습니다.
+    <value>Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
     
-이미 설치된 패키지를 유지하면서 설치를 계속하시겠습니까?
+Do you wish to continue installing it while keeping the packages that are already installed?
 
-그렇지 않은 경우 계속하려면 {2}이(가) {1}을(를) 설치제거해야 하지만 사용 중이므로 설치제거할 수 없습니다. {2}을(를) 다시 시작해 보고 {0}을(를) 다시 다운로드하십시오.</value>
+If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Try restarting {2} and download {0} again.</value>
   </data>
   <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
     <value>{0} 패키지에 다음 패키지와 충돌하는 종속성이 하나 이상 있습니다.
@@ -1308,7 +1308,7 @@
 </value>
   </data>
   <data name="PackageManagerNoValidationErrors" xml:space="preserve">
-    <value>No validation errors</value>
+    <value>유효성 검사 오류 없음</value>
   </data>
   <data name="OnlyTitle" xml:space="preserve">
     <value>전용</value>
@@ -1359,7 +1359,7 @@
     <value>패키지에 파일이 하나 이상 포함되어 있어야 합니다.</value>
   </data>
   <data name="PackageCompatibilityMatrixMissing" xml:space="preserve">
-    <value>Provide compatibility information for the package..</value>
+    <value>패키지에 대한 호환성 정보를 제공합니다.</value>
   </data>
   <data name="PackageNotExisted" xml:space="preserve">
     <value>패키지의 루트 디렉토리가 존재하지 않습니다. 패키지를 다시 설치하고 시도하십시오.</value>
@@ -2034,12 +2034,12 @@
     <value>확장이 이미 확장 사이트바에 있어 새 탭이 추가되지 않습니다.</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
-    <value>{1}을(를) 로드할 수 없습니다. 
-이를 설치하면 현재 로드되어 있는 {0}에 이미 존재하는 1개 이상의 노드 정의와 충돌하게 됩니다. 
-{1}을(를) 설치하려면 Dynamo에서 먼저 {0}을(를) 설치제거해야 합니다. 
-설치제거를 완료하려면 Dynamo를 재시작하십시오.
+    <value>{1} cannot be loaded.
+Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
+To install {1}, Dynamo needs to first uninstall {0}. 
+Restart Dynamo to complete the uninstall.
 
-{0} 패키지를 설치제거하시겠습니까?</value>
+Uninstall the following packages: {0}?</value>
   </data>
   <data name="PreviewText" xml:space="preserve">
     <value> 이 기능은 미리보기 상태입니다! </value>
@@ -2084,7 +2084,7 @@
     <value>설명: </value>
   </data>
   <data name="NodeTooltipOriginalName" xml:space="preserve">
-    <value>원래 노드 이름: </value>
+    <value>오리지널 노드 이름: </value>
   </data>
   <data name="NodeTooltipPackage" xml:space="preserve">
     <value>패키지: </value>
@@ -2198,14 +2198,14 @@
     <value>Dynamo 재시작 필요</value>
   </data>
   <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
-    <value>{0}에 내장 패키지 {1}과(와) 충돌하는 종속성이 있습니다. 종속성 충돌로 인해 의도하지 않은 동작이 발생할 수 있습니다.
+    <value>{0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
     
-{0} 설치 시도를 계속하시겠습니까?</value>
+Do you wish to continue trying to install {0}?</value>
   </data>
   <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
-    <value>{0}은(는) 이미 설치된 내장 패키지 {1}의 다른 버전과 충돌하므로 설치할 수 없습니다.
+    <value>{0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
     
-내장 패키지 경로에서 패키지 로드를 비활성화해 보거나 충돌하는 패키지를 언로드한 다음 {2}을(를) 다시 시작하고 {0}을(를) 다시 다운로드하십시오.</value>
+You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again.</value>
   </data>
   <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
     <value>The same version of package {0} is already installed as a built-in package and does not need to be installed again.</value>
@@ -2214,9 +2214,9 @@
     <value>동일한 버전의 {0}이(가) 이미 설치되어 있으므로 다시 설치할 필요가 없습니다.</value>
   </data>
   <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
-    <value>이미 설치된 다른 버전인 {1}과(와) 충돌하기 때문에 패키지 {0}을(를) 설치할 수 없습니다. 
+    <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
 
-{1}을(를) 설치제거하시겠습니까? {2}을(를) 다시 시작하여 설치제거를 완료한 다음 {0}을(를) 다시 다운로드해 보십시오.</value>
+Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again.</value>
   </data>
   <data name="PreferencesViewGeneralSettingsRun" xml:space="preserve">
     <value>실행 설정</value>
@@ -2339,7 +2339,7 @@
     <value>패키지는 핵심 기능의 사용 외에도 Dynamo로 더 많은 작업을 수행할 수 있도록 도와주는 유틸리티 툴킷입니다. 이 안내서는 패키지를 찾고, 설치하고, 사용하는 방법을 보여줍니다. 이 안내서에는 탐색할 수 있도록 샘플 Autodesk 패키지가 설치되어 있습니다.</value>
   </data>
   <data name="InteractiveGuides" xml:space="preserve">
-    <value>대화식 안내서(_I)</value>
+    <value>대화형 가이드(_I)</value>
   </data>
   <data name="GetStartedGuideLibraryText" xml:space="preserve">
     <value>라이브러리에는 Dynamo의 모든 기본 함수 #(노드)=https://primer2.dynamobim.org/v/ko/4_nodes_and_wires 와 사용자가 로드했을 수도 있는 사용자 노드가 포함되어 있습니다. \n\n노드를 찾으려면 라이브러리를 검색하거나 해당 카테고리를 찾아보십시오.</value>
@@ -2707,7 +2707,7 @@
     <value>패키지 게시</value>
   </data>
   <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
-    <value>Virus scan in progress. Your package will be searchable in a few minutes.</value>
+    <value>바이러스 검사가 진행 중입니다. 몇 분 후에 패키지를 검색할 수 있습니다.</value>
   </data>
   <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
     <value>설치된 패키지</value>
@@ -3675,10 +3675,10 @@
     <value>_노드 도움말 데이터 덤프(_D)</value>
   </data>
   <data name="NodeHelpIsDumped" xml:space="preserve">
-    <value>Node Help Data is dumped to \"{0}\".</value>
+    <value>노드 도움말 데이터가 \"{0}\"(으)로 덤프되었습니다.</value>
   </data>
   <data name="UpdateAllPythonEngineWarning" xml:space="preserve">
-    <value>Update all {0} python nodes in the current workspace to use {1} engine?</value>
+    <value>{1} 엔진을 사용하도록 현재 작업공간에 있는 {0}개의 모든 Python 노드를 업데이트하시겠습니까?</value>
   </data>
   <data name="UpdateAllPythonEngineWarningTitle" xml:space="preserve">
     <value>모든 Python 노드 업데이트</value>
@@ -3744,7 +3744,7 @@
     <value>.x로 표시된 버전에는 지정된 주 또는 부 릴리즈의 모든 버전이 포함됩니다.</value>
   </data>
   <data name="CannotAddNodeToWorkspace" xml:space="preserve">
-    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
+    <value>scopeif 노드를 사용하여 재귀 기본 사례를 올바르게 구현하지 않으면 사용자 노드를 자체 작업공간에 배치할 수 없습니다.</value>
   </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
     <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
@@ -3757,10 +3757,10 @@
     <value>Autodesk Identity Manager 다운로드</value>
   </data>
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
-    <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
+    <value>잘못된 파일 경로가 제공되었습니다. 파일이 보관된 경우 열기 전에 압축을 해제하십시오.\n{0}</value>
   </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
-    <value>Freeze Group</value>
+    <value>그룹 고정</value>
   </data>
   <data name="SaveButton" xml:space="preserve">
     <value>저장</value>
@@ -3772,7 +3772,7 @@
     <value>그룹 스타일</value>
   </data>
   <data name="PreferencesViewShowDefaultGroupDescription" xml:space="preserve">
-    <value>Show default group description</value>
+    <value>기본 그룹 설명 표시</value>
   </data>
   <data name="NodeAutoCompleteToolTip" xml:space="preserve">
     <value>Click to get Node Autocomplete suggestions</value>

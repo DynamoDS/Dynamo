@@ -121,7 +121,7 @@
     <value>Ten węzeł jest przestarzały i zostanie usunięty w przyszłej wersji dodatku Dynamo. Użyj odpowiedniego węzła opartego na języku OpenXML.</value>
   </data>
   <data name="ReadObsolete" xml:space="preserve">
-    <value>Zamiast tego należy użyć węzła File.FromPath -&gt; Excel.ReadFromFile.</value>
+    <value>Zamiast tego użyj węzła File.FromPath -&gt; Excel.ReadFromFile.</value>
   </data>
   <data name="StreamWriterNotFoundException" xml:space="preserve">
     <value>Nie można znaleźć pliku lub katalogu</value>

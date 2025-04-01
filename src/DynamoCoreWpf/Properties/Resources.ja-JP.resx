@@ -1195,11 +1195,11 @@
 パッケージはいつでも再廃止できます。</value>
   </data>
   <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
-    <value>パッケージ {0} には、ワークスペースで使用中のパッケージ {1} と競合する依存関係が 1 つ以上あります。依存関係の競合により、予期しない動作が発生する可能性があります。
+    <value>Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
     
-既にインストールされているパッケージを保持したままインストールを続行しますか?
+Do you wish to continue installing it while keeping the packages that are already installed?
 
-続行しない場合は {1} をアンインストールする必要がありますが、使用中のためできません。{2} を再起動して、{0} を再度ダウンロードしてください。</value>
+If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Try restarting {2} and download {0} again.</value>
   </data>
   <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
     <value>パッケージ {0} には、以下のパッケージと競合する 1 つ以上の依存関係があります: 
@@ -1309,7 +1309,7 @@
 </value>
   </data>
   <data name="PackageManagerNoValidationErrors" xml:space="preserve">
-    <value>No validation errors</value>
+    <value>検証エラーなし</value>
   </data>
   <data name="OnlyTitle" xml:space="preserve">
     <value>のみ</value>
@@ -1361,7 +1361,7 @@
     <value>パッケージには少なくとも 1 つのファイルが必要です。</value>
   </data>
   <data name="PackageCompatibilityMatrixMissing" xml:space="preserve">
-    <value>Provide compatibility information for the package..</value>
+    <value>パッケージの互換性情報を指定します。</value>
   </data>
   <data name="PackageNotExisted" xml:space="preserve">
     <value>パッケージのルート フォルダが存在しません。パッケージを再インストールした後でもう一度試してください。</value>
@@ -2036,12 +2036,12 @@
     <value>[拡張]サイド バーに既に拡張が存在するため、新しいタブは追加されません。</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
-    <value>{1} をロードできません。
-これをインストールすると、現在ロードされている {0} に既に存在する 1 つまたは複数のノードの定義と競合します。 
-{1} をインストールするには、事前に Dynamo で {0} をアンインストールする必要があります。 
-Dynamo を再起動してアンインストールを完了します。
+    <value>{1} cannot be loaded.
+Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
+To install {1}, Dynamo needs to first uninstall {0}. 
+Restart Dynamo to complete the uninstall.
 
-次のパッケージをアンインストールしますか?: {0}</value>
+Uninstall the following packages: {0}?</value>
   </data>
   <data name="PreviewText" xml:space="preserve">
     <value> このフィーチャはプレビューです。 </value>
@@ -2200,14 +2200,14 @@ Dynamo を再起動してアンインストールを完了します。
     <value>Dynamo の再起動が必要です</value>
   </data>
   <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
-    <value>{0} には組み込みパッケージ {1} と競合する依存関係があります。依存関係の競合により、予期しない動作が発生する可能性があります。
+    <value>{0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
     
-{0} のインストールを続行しますか?</value>
+Do you wish to continue trying to install {0}?</value>
   </data>
   <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
-    <value>既にインストールされている別のバージョンの組み込みパッケージ {1} と競合するため、{0} はインストールできません。
+    <value>{0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
     
-組み込みパッケージのパスからのパッケージのロードを無効にするか、競合しているパッケージのロード解除を行ってから {2} を再起動し、{0} を再度ダウンロードしてみてください。</value>
+You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again.</value>
   </data>
   <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
     <value>The same version of package {0} is already installed as a built-in package and does not need to be installed again.</value>
@@ -2216,9 +2216,9 @@ Dynamo を再起動してアンインストールを完了します。
     <value>同じバージョンの {0} が既にインストールされているため、再インストールする必要はありません。</value>
   </data>
   <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
-    <value>パッケージ {0} は、既にインストールされている別のバージョン {1} と競合するためインストールできません。
+    <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
 
-{1} をアンインストールしますか? その場合は {2} を再起動してアンインストールを完了してから {0} を再度ダウンロードしてみてください。</value>
+Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again.</value>
   </data>
   <data name="PreferencesViewGeneralSettingsRun" xml:space="preserve">
     <value>実行設定</value>
@@ -2709,7 +2709,7 @@ Dynamo を再起動してアンインストールを完了します。
     <value>パッケージをパブリッシュ</value>
   </data>
   <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
-    <value>Virus scan in progress. Your package will be searchable in a few minutes.</value>
+    <value>ウイルス スキャンが進行中です。パッケージは数分で検索できるようになります。</value>
   </data>
   <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
     <value>インストール済みパッケージ</value>
@@ -3677,10 +3677,10 @@ Dynamo を再起動してアンインストールを完了します。
     <value>ノード ヘルプ データをダンプ(_D)</value>
   </data>
   <data name="NodeHelpIsDumped" xml:space="preserve">
-    <value>Node Help Data is dumped to \"{0}\".</value>
+    <value>ノード ヘルプ データは \"{0}\" にダンプされます。</value>
   </data>
   <data name="UpdateAllPythonEngineWarning" xml:space="preserve">
-    <value>Update all {0} python nodes in the current workspace to use {1} engine?</value>
+    <value>現在のワークスペース内のすべての {0} Python ノードを更新して、{1} エンジンを使用しますか?</value>
   </data>
   <data name="UpdateAllPythonEngineWarningTitle" xml:space="preserve">
     <value>すべての Python ノードを更新</value>
@@ -3746,7 +3746,7 @@ Dynamo を再起動してアンインストールを完了します。
     <value>.x でマークされたバージョンには、指定されたメジャー リリースまたはマイナー リリースのすべてのバージョンが含まれます</value>
   </data>
   <data name="CannotAddNodeToWorkspace" xml:space="preserve">
-    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
+    <value>scopeif ノードを使用して再帰的な基本ケースを正しく実装しないと、独自のワークスペースにカスタム ノードを配置できません。</value>
   </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
     <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
@@ -3759,10 +3759,10 @@ Dynamo を再起動してアンインストールを完了します。
     <value>Autodesk Identity Manager をダウンロードする</value>
   </data>
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
-    <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
+    <value>指定されたファイル パスが無効です。ファイルがアーカイブされている場合は、開く前に必ず解凍してください。\n{0}</value>
   </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
-    <value>Freeze Group</value>
+    <value>グループをフリーズ</value>
   </data>
   <data name="SaveButton" xml:space="preserve">
     <value>保存</value>
@@ -3774,7 +3774,7 @@ Dynamo を再起動してアンインストールを完了します。
     <value>グループ スタイル</value>
   </data>
   <data name="PreferencesViewShowDefaultGroupDescription" xml:space="preserve">
-    <value>Show default group description</value>
+    <value>既定のグループ説明を表示</value>
   </data>
   <data name="NodeAutoCompleteToolTip" xml:space="preserve">
     <value>Click to get Node Autocomplete suggestions</value>

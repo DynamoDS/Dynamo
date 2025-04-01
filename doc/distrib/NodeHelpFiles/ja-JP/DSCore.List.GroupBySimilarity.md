@@ -3,7 +3,7 @@
 
 要素の類似性を判定するには、`tolerance` 入力を使用します。数値のリストの場合、`tolerance` の値は、2 つの数値が類似していると見なされる最大許容差です。
 
-文字列のリストの場合、これは 0 から 1 までの間の小数値であり、類似していると見なされる隣接する要素の最小類似度比(ファジー論理を使用して計算)を指定します。文字列リストの場合、'tolerance' は 2 つの文字列間で異なる文字数の許容される最大数であり、レーベンシュタイン距離を比較に使用します。文字列の最大許容差は 5 に設定されます。
+For lists of strings, this value (between 0 and 10) represents the minimum similarity ratio (computed using fuzzy logic) for adjacent elements to be considered similar. For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is set to 10.
 
 `considerAdjacency` ブール値入力は、要素をクラスタ化するときに隣接関係を考慮するかどうかを示します。True の場合は、類似した隣接する要素のみがクラスタ化されます。False の場合は、隣接関係に関係なく、類似性のみを使用してクラスタが形成されます。
 

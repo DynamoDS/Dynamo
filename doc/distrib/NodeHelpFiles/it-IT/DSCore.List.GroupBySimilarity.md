@@ -3,7 +3,7 @@ I cluster `List.GroupBySimilarity` elencano gli elementi in base all'adiacenza d
 
 Utilizzare l'input `tolerance` per determinare la similitudine degli elementi. Per gli elenchi di numeri, il valore `tolerance` rappresenta la differenza massima consentita tra due numeri affinché siano considerati simili.
 
-Per gli elenchi di stringhe, si tratta di un valore decimale (compreso tra 0 e 1) che specifica il rapporto di similitudine minimo (calcolato utilizzando la logica fuzzy) affinché gli elementi adiacenti siano considerati simili. Per gli elenchi di stringhe, `tolerance` rappresenta il numero massimo di caratteri che possono differire tra due stringhe, utilizzando la distanza di Levenshtein per il confronto. La tolleranza massima per le stringhe è impostata su 5.
+For lists of strings, this value (between 0 and 10) represents the minimum similarity ratio (computed using fuzzy logic) for adjacent elements to be considered similar. For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is set to 10.
 
 L'input booleano `considerAdjacency` indica se l'adiacenza deve essere presa in considerazione quando si raggruppano gli elementi. Se è True, solo gli elementi adiacenti simili verranno raggruppati insieme. Se è False, verrà utilizzata solo la similitudine per formare cluster, indipendentemente dall'adiacenza.
 

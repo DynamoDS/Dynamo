@@ -681,7 +681,7 @@
     <value>0</value>
   </data>
   <data name="DynamoViewSettingMenuNumber00" xml:space="preserve">
-    <value>0,0</value>
+    <value>0.0</value>
   </data>
   <data name="DynamoViewSettingMenuNumber000" xml:space="preserve">
     <value>0.00</value>
@@ -1195,11 +1195,11 @@
 Всегда можно исключить пакет повторно.</value>
   </data>
   <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
-    <value>Пакет {0} имеет одну или несколько зависимостей, которые конфликтуют со следующими пакетами, используемыми в рабочем пространстве: {1}. Конфликты зависимостей могут привести к непредвиденному поведению.
+    <value>Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
     
-Продолжить установку, не удаляя уже установленные пакеты?
+Do you wish to continue installing it while keeping the packages that are already installed?
 
-В противном случае {2} необходимо удалить {1} для продолжения работы, однако это невозможно, так как они используются. Попробуйте перезапустить {2}, а затем повторно скачайте {0}.</value>
+If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Try restarting {2} and download {0} again.</value>
   </data>
   <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
     <value>Пакет {0} имеет одну или несколько зависимостей, конфликтующих со следующими пакетами:
@@ -1309,7 +1309,7 @@
 </value>
   </data>
   <data name="PackageManagerNoValidationErrors" xml:space="preserve">
-    <value>No validation errors</value>
+    <value>Нет ошибок проверки</value>
   </data>
   <data name="OnlyTitle" xml:space="preserve">
     <value>только</value>
@@ -1361,7 +1361,7 @@
     <value>Пакет должен содержать хотя бы один файл.</value>
   </data>
   <data name="PackageCompatibilityMatrixMissing" xml:space="preserve">
-    <value>Provide compatibility information for the package..</value>
+    <value>Сведения о совместимости пакета.</value>
   </data>
   <data name="PackageNotExisted" xml:space="preserve">
     <value>Корневая папка пакета не существует. Выполните переустановку пакета.</value>
@@ -2036,12 +2036,12 @@
     <value>Новая вкладка не добавляется, т. к. расширение уже присутствует на боковой панели расширений.</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
-    <value>Невозможно загрузить {1}. 
-Установка приведет к конфликту с одним или несколькими определениями узлов, которые уже существуют в загруженном данный момент пакете {0}.
-Для установки {1} Dynamo требуется сначала удалить {0}.
-Для завершения удаления перезапустите Dynamo.
+    <value>{1} cannot be loaded.
+Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
+To install {1}, Dynamo needs to first uninstall {0}. 
+Restart Dynamo to complete the uninstall.
 
-Удалить следующие пакеты: {0}?</value>
+Uninstall the following packages: {0}?</value>
   </data>
   <data name="PreviewText" xml:space="preserve">
     <value> Данная функция доступна в предварительной версии. </value>
@@ -2200,14 +2200,14 @@
     <value>Требуется перезапуск Dynamo</value>
   </data>
   <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
-    <value>{0} имеет зависимости, которые конфликтуют со следующими встроенными пакетами: {1}. Конфликты зависимостей могут привести к непредвиденному поведению.
+    <value>{0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
     
-Продолжить установку {0}?</value>
+Do you wish to continue trying to install {0}?</value>
   </data>
   <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
-    <value>Невозможно установить {0}, так как эта версия конфликтует с другой уже установленной версией встроенного пакета {1}.
+    <value>{0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
     
-Можно попробовать отключить загрузку пакетов из путей встроенных пакетов или выгрузить конфликтующий пакет, а затем перезапустить {2} и скачать {0} еще раз.</value>
+You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again.</value>
   </data>
   <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
     <value>The same version of package {0} is already installed as a built-in package and does not need to be installed again.</value>
@@ -2216,9 +2216,9 @@
     <value>Эта же версия {0} уже установлена и не требует повторной установки.</value>
   </data>
   <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
-    <value>Невозможно установить пакет {0}, так как он конфликтует с другой уже установленной версией {1}. 
+    <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
 
-Удалить {1}? Перезапустите {2}, чтобы завершить удаление, и попробуйте повторно скачать {0}.</value>
+Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again.</value>
   </data>
   <data name="PreferencesViewGeneralSettingsRun" xml:space="preserve">
     <value>Параметры запуска</value>
@@ -2709,7 +2709,7 @@
     <value>Публикация пакета</value>
   </data>
   <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
-    <value>Virus scan in progress. Your package will be searchable in a few minutes.</value>
+    <value>Выполняется сканирование на наличие вирусов. Пакет станет доступен для поиска через несколько минут.</value>
   </data>
   <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
     <value>Установленные пакеты</value>
@@ -3060,10 +3060,10 @@
     <value>Соединение узлов</value>
   </data>
   <data name="OnboardingGuideRunGraphText" xml:space="preserve">
-    <value>Запустите график и посмотрите результаты внесенных изменений. Нажмите «Запуск».</value>
+    <value>Запустите граф и посмотрите результаты внесенных изменений. Нажмите «Запуск».</value>
   </data>
   <data name="OnboardingGuideRunGraphTitle" xml:space="preserve">
-    <value>Выполнение графика</value>
+    <value>Выполнение графа</value>
   </data>
   <data name="FileTrustWarningCheckBoxText" xml:space="preserve">
     <value>Доверять этому расположению файла в будущем.</value>
@@ -3677,10 +3677,10 @@
     <value>_Дамп данных справки по узлу</value>
   </data>
   <data name="NodeHelpIsDumped" xml:space="preserve">
-    <value>Node Help Data is dumped to \"{0}\".</value>
+    <value>Данные справки по узлу выданы в папку «{0}».</value>
   </data>
   <data name="UpdateAllPythonEngineWarning" xml:space="preserve">
-    <value>Update all {0} python nodes in the current workspace to use {1} engine?</value>
+    <value>Обновить все узлы Python ({0}) в текущем рабочем пространстве для использования механизма {1}?</value>
   </data>
   <data name="UpdateAllPythonEngineWarningTitle" xml:space="preserve">
     <value>Обновить все узлы Python</value>
@@ -3746,7 +3746,7 @@
     <value>Версии с пометкой «.x» включают все версии из указанного основного или вспомогательного выпуска</value>
   </data>
   <data name="CannotAddNodeToWorkspace" xml:space="preserve">
-    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
+    <value>Невозможно разместить пользовательский узел в его же рабочем пространстве без правильной реализации рекурсивного основного варианта с помощью узла scopeif.</value>
   </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
     <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
@@ -3759,10 +3759,10 @@
     <value>Скачивание Autodesk Identity Manager</value>
   </data>
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
-    <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
+    <value>Указан неверный путь к файлу. Если файл находится в архиве, перед открытием его следует извлечь.\n{0}</value>
   </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
-    <value>Freeze Group</value>
+    <value>Заморозить группу</value>
   </data>
   <data name="SaveButton" xml:space="preserve">
     <value>Сохранить</value>
@@ -3774,7 +3774,7 @@
     <value>Стили групп</value>
   </data>
   <data name="PreferencesViewShowDefaultGroupDescription" xml:space="preserve">
-    <value>Show default group description</value>
+    <value>Показать описание группы по умолчанию</value>
   </data>
   <data name="NodeAutoCompleteToolTip" xml:space="preserve">
     <value>Click to get Node Autocomplete suggestions</value>
