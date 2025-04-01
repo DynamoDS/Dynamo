@@ -1,5 +1,5 @@
 ## En detalle:
-Trim overlapping panels to surface boundary.
+Recorte paneles solapados según el contorno de superficie.
 ___
 ## Archivo de ejemplo
 

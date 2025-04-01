@@ -152,86 +152,86 @@
             <search>smaller,equal</search>
         </member>
         <member name="T:DSCore.CurveMapper.BezierCurve">
-            <summary>Represents a Bezier curve in the CurveMapper.
-            A Bezier curve is defined by four control points and provides smooth interpolation.</summary>
+            <summary>Representa una curva de Bezier en CurveMapper.
+            Una curva de Bezier se define mediante cuatro puntos de control y proporciona una interpolación suave.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.BezierCurve.GenerateCurve(System.Int32,System.Boolean)">
-            <summary>Gets interpolated Y values based on the assigned parameters and limits.</summary>
+            <summary>Obtiene los valores de Y interpolados en función de los parámetros y los límites asignados.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.ControlLine">
-            <summary>Represents a control line in the CurveMapper.
-            This is used for auxiliary control of other curves, particularly Bezier curves.</summary>
+            <summary>Representa una línea de control en CurveMapper.
+            Se utiliza para el control auxiliar de otras curvas, sobre todo, de las curvas de Bezier.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.CurveBase">
-            <summary>Represents a base class for all curve types in the CurveMapper.
-            Provides common functionality for generating and retrieving curve values.</summary>
+            <summary>Representa una clase base para todos los tipos de curvas de CurveMapper.
+            Proporciona una función habitual para generar y recuperar valores de curva.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.CurveBase.GenerateCurve(System.Int32,System.Boolean)">
-            <summary>Abstract method to be implemented by derived classes for generating curve values.</summary>
+            <summary>Método abstracto que implementarán las clases derivadas para generar valores de curva.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Int32,System.Boolean)">
-            <summary>Common method for retrieving X values.</summary>
+            <summary>Método habitual para recuperar los valores de X.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Int32,System.Boolean)">
-            <summary>Common method for retrieving Y values.</summary>
+            <summary>Método habitual para recuperar los valores de Y.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.GaussianCurve">
-            <summary>Represents a Gaussian curve in the CurveMapper.
-            The Gaussian curve follows a bell-shaped distribution defined by four control points.</summary>
+            <summary>Representa una curva gaussiana en CurveMapper.
+            La curva gaussiana sigue una distribución en forma de campana definida por cuatro puntos de control.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.GaussianCurve.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
-            <summary>Indicates whether the node is currently being resized, preventing unintended control point updates.</summary>
+            <summary>Indica si se cambia de tamaño el nodo, lo que impide actualizaciones no intencionadas de puntos de control.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.GaussianCurve.GenerateCurve(System.Int32,System.Boolean)">
-            <summary>Returns X and Y values distributed across the curve.</summary>
+            <summary>Devuelve los valores de X e Y distribuidos a lo largo de la curva.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.LinearCurve">
-            <summary>Represents a linear curve in the CurveMapper.
-            A linear curve is a straight line between two control points.</summary>
+            <summary>Representa una curva lineal en CurveMapper.
+            Una curva lineal es una línea recta entre dos puntos de control.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.LinearCurve.LineEquation(System.Double)">
-            <summary>Calculates the Y values (canvas coordinates) for min and max X values</summary>
+            <summary>Calcula los valores de Y (coordenadas del lienzo) para los valores de X mínimo y máximo.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.LinearCurve.SolveForXGivenY(System.Double)">
-            <summary>Calculates the X values (canvas coordinates) for min and max Y values</summary>
+            <summary>Calcula los valores de X (coordenadas del lienzo) para los valores de Y mínimo y máximo.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.LinearCurve.GenerateCurve(System.Int32,System.Boolean)">
-            <summary>Returns X and Y values distributed across the curve.</summary>
+            <summary>Devuelve los valores de X e Y distribuidos a lo largo de la curva.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.ParabolicCurve">
-            <summary>Represents a parabolic curve in the CurveMapper.
-            The curve follows a quadratic equation based on two control points.</summary>
+            <summary>Representa una curva parabólica en CurveMapper.
+            La curva sigue una ecuación cuadrática basada en dos puntos de control.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.ParabolicCurve.GenerateCurve(System.Int32,System.Boolean)">
-            <summary>Returns X and Y values distributed across the curve.</summary>
+            <summary>Devuelve los valores de X e Y distribuidos a lo largo de la curva.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.PerlinNoiseCurve">
-            <summary>Represents a Perlin noise curve in the CurveMapper.
-            The curve generates procedural noise based on control points and Perlin noise functions.</summary>
+            <summary>Representa una curva de ruido de Perlin en CurveMapper.
+            La curva genera ruido procedimental basado en puntos de control y funciones de ruido de Perlin.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.PerlinNoiseCurve.GenerateCurve(System.Int32,System.Boolean)">
-            <summary>Returns X and Y values distributed across the curve.</summary>
+            <summary>Devuelve los valores de X e Y distribuidos a lo largo de la curva.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.PowerCurve">
-            <summary>Represents a power function curve in the CurveMapper.
-            The curve is defined by a power equation derived from a control point.</summary>
+            <summary>Representa una curva de función de potencia en CurveMapper.
+            La curva se define mediante una ecuación de potencia derivada de un punto de control.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.PowerCurve.GenerateCurve(System.Int32,System.Boolean)">
-            <summary>Returns X and Y values distributed across the curve.</summary>
+            <summary>Devuelve los valores de X e Y distribuidos a lo largo de la curva.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.SineWave">
-            <summary>Represents a sine wave curve in the CurveMapper.
-            The sine wave is defined by two control points and follows a trigonometric function.</summary>
+            <summary>Representa una curva de onda sinusoidal en CurveMapper.
+            La onda sinusoidal se define mediante dos puntos de control y sigue una función trigonométrica.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.SineWave.GenerateCurve(System.Int32,System.Boolean)">
-            <summary>Returns X and Y values distributed across the curve.</summary>
+            <summary>Devuelve los valores de X e Y distribuidos a lo largo de la curva.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.SquareRootCurve">
-            <summary>Represents a square root curve in the CurveMapper.
-            The curve follows a square root function and is influenced by two control points.</summary>
+            <summary>Representa una curva de raíz cuadrada en CurveMapper.
+            La curva sigue una función de raíz cuadrada y se ve influida por dos puntos de control.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.SquareRootCurve.GenerateCurve(System.Int32,System.Boolean)">
-            <summary>Returns X and Y values distributed across the curve.</summary>
+            <summary>Devuelve los valores de X e Y distribuidos a lo largo de la curva.</summary>
         </member>
         <member name="M:DSCore.Data.ParseJSON(System.String)">
             <summary>Parse convierte una cadena JSON arbitraria en un valor. Es lo contrario de JSON.Stringify.</summary>
@@ -927,17 +927,17 @@ Busque "Cadenas de formato de fecha y hora personalizadas de MSDN" para obtener 
             <search>list;group;groupbykey;</search>
         </member>
         <member name="M:DSCore.List.GroupBySimilarity(System.Collections.IList,System.Double,System.Boolean)">
-            <summary>Clusters list elements based on the adjacency of their indices and the similarity of their values</summary>
-            <param name="list">List of items to group as sublists based on adjacency and similarity</param>
-            <param name="tolerance">Threshold value for grouping similar items</param>
-            <param name="considerAdjacency">Boolean value to control if the node should consider adjacency or not.</param>
-            <returns name="groupedValues">list of sublists with items grouped by similar values</returns>
-            <returns name="groupedIndices">list of sublists containing the original indices of grouped values</returns>
+            <summary>Los clústeres enumeran elementos en función de la adyacencia de sus índices y la similitud de sus valores.</summary>
+            <param name="list">Lista de elementos que se agruparán como sublistas en función de la adyacencia y la similitud</param>
+            <param name="tolerance">Valor de umbral para agrupar elementos similares</param>
+            <param name="considerAdjacency">Valor booleano para controlar si el nodo debe tener en cuenta la adyacencia o no</param>
+            <returns name="groupedValues">Lista de sublistas con elementos agrupados por valores similares</returns>
+            <returns name="groupedIndices">Lista de sublistas que contienen los índices originales de los valores agrupados</returns>
             <search>list;group;similar;adjacent;adjacency;groupbyadjacency;groupadjacentitems;groupsimilaritems;cluster;tolerance</search>
         </member>
         <member name="M:DSCore.List.LevenshteinDistance(System.String,System.String)">
-            <summary>Levenshtein Distance is the algorithm used to get the distance between 2 strings
-            | <see href="https://gist.github.com/Davidblkx/e12ab0bb2aff7fd8072632b396538560">Source</see></summary>
+            <summary>La distancia de Levenshtein es el algoritmo utilizado para obtener la distancia entre dos cadenas.
+            | <see href="https://gist.github.com/Davidblkx/e12ab0bb2aff7fd8072632b396538560">Fuente</see></summary>
         </member>
         <member name="M:DSCore.List.AddItemToFront(System.Object,System.Collections.IList)">
             <summary>Añade un elemento al principio de una lista.</summary>
@@ -991,11 +991,11 @@ Busque "Cadenas de formato de fecha y hora personalizadas de MSDN" para obtener 
             <search>replace,switch</search>
         </member>
         <member name="M:DSCore.List.ReplaceItemAtIndices(System.Collections.IList,System.Collections.Generic.IList{System.Int32},System.Object)">
-            <summary>Replaces items from the given list that are located at the specified indices.</summary>
+            <summary>Sustituye los elementos de la lista especificada que se encuentran en los índices indicados.</summary>
             <param name="list">Lista en la que se debe sustituir un elemento.</param>
-            <param name="indices">Indices of the item(s) to be replaced.</param>
+            <param name="indices">Índices de los elementos que se van a sustituir.</param>
             <param name="item">El elemento que se debe insertar.</param>
-            <returns name="list">A new list with the item(s) replaced.</returns>
+            <returns name="list">Una nueva lista con los elementos sustituidos.</returns>
             <search>replace,switch</search>
         </member>
         <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">

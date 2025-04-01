@@ -5092,7 +5092,7 @@
             <summary>Entfernen Sie Scheitelpunkte, die nicht auf der Eingabe-FLÄCHE liegen.</summary>
         </member>
         <member name="F:Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Trim">
-            <summary>Trim overlapping panels to surface boundary.</summary>
+            <summary>Stutzen Sie überlappende Elemente bis zur Oberflächenbegrenzung.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.ToString">
             <summary>Zeichenfolgendarstellung des PanelSurface-Objekts abrufen</summary>

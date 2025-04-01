@@ -5099,7 +5099,7 @@ Básicamente, la malla está llena de innumerables cuadros diminutos y se crea u
             <summary>Elimine los vértices que no se encuentren en la CARA de entrada.</summary>
         </member>
         <member name="F:Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Trim">
-            <summary>Trim overlapping panels to surface boundary.</summary>
+            <summary>Recorte paneles solapados según el contorno de superficie.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.ToString">
             <summary>Obtenga una representación de cadena de la PanelSurface.</summary>
