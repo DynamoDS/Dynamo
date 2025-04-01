@@ -130,7 +130,7 @@ namespace CoreNodeModels
     [NodeSearchTags("FromArraySearchTags", typeof(Resources))]
     [IsDesignScriptCompatible]
     [System.Diagnostics.CodeAnalysis.Experimental("NEWNODE_FormattedStringFromArray")]
-    [InPortNames("object", "formatSpecifier")]
+    [InPortNames("array", "formatSpecifier")]
     [InPortTypes("var", "string")]
     [InPortDescriptions(typeof(Resources), "FromArrayPortDataArrayToolTip", "FromObjectPortDataFormatToolTip")]
     [OutPortNames("string")]
