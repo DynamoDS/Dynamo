@@ -140,13 +140,14 @@ namespace Dynamo.Wpf.Utilities
             }
         }
 
+        //Order cluster nodes from left to right based on their connections.
         internal static List<List<NodeItem>> ComputeNodePlacementHeuristics(List<ConnectionItem> connections, List<NodeItem> clusterNodes)
         {
             List<List<NodeItem>> resultNodesColumns = new List<List<NodeItem>>();
             List<NodeItem> remainingNodes = [.. clusterNodes];
             List<ConnectionItem> remainingConnections = [.. connections];
 
-            while (true)
+            while (remainingNodes.Count > 0)
             {
                 //mark nodes with input connections
                 Dictionary<string, bool> nodesWithInputs = new Dictionary<string, bool>();
@@ -164,11 +165,6 @@ namespace Dynamo.Wpf.Utilities
 
                 //remove current inputs from the remaining nodes
                 remainingNodes = remainingNodes.Except(currentNodesColumn).ToList();
-
-                if (remainingNodes.Count == 0)
-                {
-                    break;
-                }
             }
 
             return resultNodesColumns;
