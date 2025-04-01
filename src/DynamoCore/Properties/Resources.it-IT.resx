@@ -716,10 +716,10 @@ Nome parametro: {0}</value>
     <value>L'utente corrente '{0}' non è un gestore del pacchetto '{1}'.</value>
   </data>
   <data name="PackageManagerPackagePreviewCounter" xml:space="preserve">
-    <value>{0} files and {1} folders will be created.</value>
+    <value>Verranno creati {0} file e {1} cartelle.</value>
   </data>
   <data name="PackageManagerPackageSelectCounter" xml:space="preserve">
-    <value>{0} files and {1} folders loaded.</value>
+    <value>{0} file e {1} cartelle caricati.</value>
   </data>
   <data name="DuplicatedOlderPackage" xml:space="preserve">
     <value>È stata trovata una versione precedente del pacchetto denominata {0} versione {2} in {1} con versione {3}. La versione precedente è stata ignorata.</value>
@@ -867,7 +867,7 @@ Il pacchetto non è stato caricato perché prima era stato caricato un altro pac
     <value>Impossibile inserire il file perché alcuni nodi esistono già nell'area di lavoro corrente.</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Insert Dynamo Graph...</value>
+    <value>Inserisci grafico di Dynamo...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>File di esempio aggiunto all'area di lavoro. Modalità di esecuzione modificata in Manuale.</value>

@@ -3,7 +3,7 @@ Les clusters 'List.GroupBySimilarity' établissent la liste des éléments en fo
 
 Utilisez l'entrée 'tolerance' pour déterminer la similitude des éléments. Pour les listes de nombres, la valeur de 'tolerance' représente la différence maximale admissible entre deux nombres pour qu'ils soient considérés comme similaires.
 
-Pour les listes de chaînes, il s'agit d'une valeur décimale (entre 0 et 1) spécifiant le rapport de similarité minimum (calculé à l'aide de la logique floue) pour que les éléments adjacents soient considérés comme similaires. Pour les listes de chaînes, la 'tolerance' représente le nombre maximal de caractères pouvant différer entre deux chaînes, en utilisant la distance de Levenshtein pour la comparaison. La tolérance maximale pour les chaînes est définie sur 5.
+For lists of strings, this value (between 0 and 10) represents the minimum similarity ratio (computed using fuzzy logic) for adjacent elements to be considered similar. For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is set to 10.
 
 L'entrée booléenne 'considerAdjacency' indique si la contiguïté doit être prise en compte lors du regroupement des éléments. Si la valeur est True, seuls les éléments contigus qui sont similaires seront regroupés. Si la valeur est False, seule la similarité sera utilisée pour former des clusters, indépendamment de la contiguïté.
 

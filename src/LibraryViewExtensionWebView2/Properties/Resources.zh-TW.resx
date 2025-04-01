@@ -118,6 +118,6 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="CannotAddNodeToWorkspace" xml:space="preserve">
-    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
+    <value>如果未使用 scopeif 節點正確實作遞迴基準情況，則無法將自訂節點放在自己的工作區中。</value>
   </data>
 </root>

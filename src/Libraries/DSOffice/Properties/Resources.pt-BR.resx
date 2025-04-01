@@ -121,7 +121,7 @@
     <value>Esse nó está obsoleto e será removido em uma versão futura do Dynamo. Use o nó correspondente baseado em OpenXML.</value>
   </data>
   <data name="ReadObsolete" xml:space="preserve">
-    <value>Utilize o nó File.FromPath -&gt; Excel.ReadFromFile</value>
+    <value>Use o nó File.FromPath -&gt; Excel.ReadFromFile.</value>
   </data>
   <data name="StreamWriterNotFoundException" xml:space="preserve">
     <value>Não é possível localizar o arquivo ou o diretório</value>

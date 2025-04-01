@@ -716,10 +716,10 @@ value: bool = false</value>
     <value>현재 사용자인 '{0}'은(는) 패키지 '{1}'의 유지 담당자가 아닙니다.</value>
   </data>
   <data name="PackageManagerPackagePreviewCounter" xml:space="preserve">
-    <value>{0} files and {1} folders will be created.</value>
+    <value>{0}개의 파일과 {1}개의 폴더가 작성됩니다.</value>
   </data>
   <data name="PackageManagerPackageSelectCounter" xml:space="preserve">
-    <value>{0} files and {1} folders loaded.</value>
+    <value>{0}개의 파일과 {1}개의 폴더가 로드되었습니다.</value>
   </data>
   <data name="DuplicatedOlderPackage" xml:space="preserve">
     <value>{3} 버전의 {1}에서 {0} 버전 {2}(이)라는 이전 버전의 패키지를 찾았습니다. 이전 버전은 무시되었습니다.</value>
@@ -873,7 +873,7 @@ value: bool = false</value>
     <value>일부 노드가 현재 작업공간에 이미 있으므로 파일을 삽입하지 못했습니다.</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Insert Dynamo Graph...</value>
+    <value>Dynamo 그래프 삽입...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>예시 파일이 작업공간에 추가되었습니다. 실행 모드가 수동으로 변경되었습니다.</value>

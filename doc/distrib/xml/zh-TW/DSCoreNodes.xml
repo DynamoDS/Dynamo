@@ -1604,7 +1604,7 @@
         </member>
         <member name="M:DSCore.Quadtree.ByUVs(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
             <summary>建構一個包含 (0,0) -&gt; (1,1) 網域的四元樹狀目錄。</summary>
-            <param name="uvs">(0,0) - &gt; (1,1)  網域中的一組 UV。</param>
+            <param name="uvs">(0,0)-&gt;(1,1) 定義域中的一組 UV。</param>
             <returns>一個四元樹狀目錄物件。</returns>
         </member>
         <member name="M:DSCore.Quadtree.FindPointsWithinRadius(Autodesk.DesignScript.Geometry.UV,System.Double)">

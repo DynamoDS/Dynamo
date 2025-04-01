@@ -1,5 +1,5 @@
 ## Im Detail
-Trim overlapping panels to surface boundary.
+Stutzen Sie überlappende Elemente bis zur Oberflächenbegrenzung.
 ___
 ## Beispieldatei
 

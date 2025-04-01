@@ -511,10 +511,10 @@
     <value>曲线</value>
   </data>
   <data name="SelectionElementOutputPortName" xml:space="preserve">
-    <value>图元</value>
+    <value>Element</value>
   </data>
   <data name="SelectionElementsOutputPortName" xml:space="preserve">
-    <value>图元</value>
+    <value>Elements</value>
   </data>
   <data name="SelectionFaceOutputPortName" xml:space="preserve">
     <value>曲面</value>
@@ -626,67 +626,67 @@
 默认值: G</value>
   </data>
   <data name="CurveMapperCountInputPortName" xml:space="preserve">
-    <value>count</value>
+    <value>计数</value>
   </data>
   <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
-    <value>Number of values to generate.
+    <value>要生成的值数。
 
 int</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
-    <value>Redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+    <value>基于选定的数学曲线沿 y 坐标重新分配 x 坐标，从而精确控制点分布。</value>
   </data>
   <data name="CurveMapperSearchTags" xml:space="preserve">
     <value>graph;curve;mapper;math</value>
   </data>
   <data name="CurveMapperWarningMessage" xml:space="preserve">
-    <value>The provided original values cannot be redistributed using the curve equation.</value>
+    <value>提供的原始值无法使用曲线方程式重新分配。</value>
   </data>
   <data name="CurveMapperXMaxLimitInputPortName" xml:space="preserve">
-    <value>x-MaxLimit</value>
+    <value>x-最大限制</value>
   </data>
   <data name="CurveMapperXMaxLimitInputPortToolTip" xml:space="preserve">
-    <value>Maximum value for the X-axis domain.
+    <value>X 轴域的最大值。
 
 double</value>
   </data>
   <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
-    <value>Minimum value for the X-axis domain.
+    <value>X 轴域的最小值。
 
 double</value>
   </data>
   <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
-    <value>Maximum value for the Y-axis domain.
+    <value>Y 轴域的最大值。
 
 double</value>
   </data>
   <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
-    <value>Minimum value for the Y-axis domain.
+    <value>Y 轴域的最小值。
 
 double</value>
   </data>
   <data name="CurveMapperXMinLimitInputPortName" xml:space="preserve">
-    <value>x-MinLimit</value>
+    <value>x-最小限制</value>
   </data>
   <data name="CurveMapperYMaxLimitInputPortName" xml:space="preserve">
-    <value>y-MaxLimit</value>
+    <value>y-最大限制</value>
   </data>
   <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
-    <value>y-MinLimit</value>
+    <value>y-最小限制</value>
   </data>
   <data name="CurveMapperXValuesOutputPortName" xml:space="preserve">
-    <value>x-Values</value>
+    <value>x-值</value>
   </data>
   <data name="CurveMapperXValuesOutputPortToolTip" xml:space="preserve">
-    <value>X values derived from the curve.
+    <value>从曲线派生的 X 值。
 
 double[]</value>
   </data>
   <data name="CurveMapperYValuesOutputPortName" xml:space="preserve">
-    <value>y-Values</value>
+    <value>y-值</value>
   </data>
   <data name="CurveMapperYValuesOutputPortToolTip" xml:space="preserve">
-    <value>Y values derived from the curve.
+    <value>从曲线派生的 Y 值。
 
 double[]</value>
   </data>

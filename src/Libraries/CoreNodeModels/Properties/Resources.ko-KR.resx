@@ -511,10 +511,10 @@
     <value>곡선</value>
   </data>
   <data name="SelectionElementOutputPortName" xml:space="preserve">
-    <value>요소</value>
+    <value>Element</value>
   </data>
   <data name="SelectionElementsOutputPortName" xml:space="preserve">
-    <value>요소</value>
+    <value>Elements</value>
   </data>
   <data name="SelectionFaceOutputPortName" xml:space="preserve">
     <value>표면</value>
@@ -629,39 +629,39 @@
     <value>count</value>
   </data>
   <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
-    <value>Number of values to generate.
+    <value>생성할 값의 수입니다.
 
 int</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
-    <value>Redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+    <value>선택한 수학 곡선을 기준으로 y 좌표에 따라 x 좌표를 재분배하여 점 분배를 정밀하게 제어합니다.</value>
   </data>
   <data name="CurveMapperSearchTags" xml:space="preserve">
     <value>graph;curve;mapper;math</value>
   </data>
   <data name="CurveMapperWarningMessage" xml:space="preserve">
-    <value>The provided original values cannot be redistributed using the curve equation.</value>
+    <value>제공된 원래 값은 곡선 방정식을 사용하여 재분배할 수 없습니다.</value>
   </data>
   <data name="CurveMapperXMaxLimitInputPortName" xml:space="preserve">
     <value>x-MaxLimit</value>
   </data>
   <data name="CurveMapperXMaxLimitInputPortToolTip" xml:space="preserve">
-    <value>Maximum value for the X-axis domain.
+    <value>X축 도메인의 최대값입니다.
 
 double</value>
   </data>
   <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
-    <value>Minimum value for the X-axis domain.
+    <value>X축 도메인의 최소값입니다.
 
 double</value>
   </data>
   <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
-    <value>Maximum value for the Y-axis domain.
+    <value>Y축 도메인의 최대값입니다.
 
 double</value>
   </data>
   <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
-    <value>Minimum value for the Y-axis domain.
+    <value>Y축 도메인의 최소값입니다.
 
 double</value>
   </data>
@@ -678,7 +678,7 @@ double</value>
     <value>x-Values</value>
   </data>
   <data name="CurveMapperXValuesOutputPortToolTip" xml:space="preserve">
-    <value>X values derived from the curve.
+    <value>곡선에서 파생된 X 값입니다.
 
 double[]</value>
   </data>
@@ -686,7 +686,7 @@ double[]</value>
     <value>y-Values</value>
   </data>
   <data name="CurveMapperYValuesOutputPortToolTip" xml:space="preserve">
-    <value>Y values derived from the curve.
+    <value>곡선에서 파생된 Y 값입니다.
 
 double[]</value>
   </data>

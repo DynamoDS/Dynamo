@@ -511,10 +511,10 @@
     <value>Curvas</value>
   </data>
   <data name="SelectionElementOutputPortName" xml:space="preserve">
-    <value>Elemento</value>
+    <value>Element</value>
   </data>
   <data name="SelectionElementsOutputPortName" xml:space="preserve">
-    <value>Elementos</value>
+    <value>Elements</value>
   </data>
   <data name="SelectionFaceOutputPortName" xml:space="preserve">
     <value>Superfície</value>
@@ -626,42 +626,42 @@ Nos fluxos de trabalho do Projeto generativo, esse nó deve ser usado para contr
 valor padrão: G</value>
   </data>
   <data name="CurveMapperCountInputPortName" xml:space="preserve">
-    <value>count</value>
+    <value>contagem</value>
   </data>
   <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
-    <value>Number of values to generate.
+    <value>Número de valores a serem gerados.
 
 int</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
-    <value>Redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+    <value>Redistribui as coordenadas x ao longo das coordenadas y com base em uma curva matemática selecionada, fornecendo um controle preciso sobre a distribuição de pontos.</value>
   </data>
   <data name="CurveMapperSearchTags" xml:space="preserve">
     <value>graph;curve;mapper;math</value>
   </data>
   <data name="CurveMapperWarningMessage" xml:space="preserve">
-    <value>The provided original values cannot be redistributed using the curve equation.</value>
+    <value>Não é possível redistribuir os valores originais fornecidos usando a equação de curva.</value>
   </data>
   <data name="CurveMapperXMaxLimitInputPortName" xml:space="preserve">
     <value>x-MaxLimit</value>
   </data>
   <data name="CurveMapperXMaxLimitInputPortToolTip" xml:space="preserve">
-    <value>Maximum value for the X-axis domain.
+    <value>Valor máximo do domínio do eixo X.
 
 double</value>
   </data>
   <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
-    <value>Minimum value for the X-axis domain.
+    <value>Valor mínimo do domínio do eixo X.
 
 double</value>
   </data>
   <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
-    <value>Maximum value for the Y-axis domain.
+    <value>Valor máximo do domínio do eixo Y.
 
 double</value>
   </data>
   <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
-    <value>Minimum value for the Y-axis domain.
+    <value>Valor mínimo para o domínio do eixo Y.
 
 double</value>
   </data>
@@ -675,18 +675,18 @@ double</value>
     <value>y-MinLimit</value>
   </data>
   <data name="CurveMapperXValuesOutputPortName" xml:space="preserve">
-    <value>x-Values</value>
+    <value>Valores de x</value>
   </data>
   <data name="CurveMapperXValuesOutputPortToolTip" xml:space="preserve">
-    <value>X values derived from the curve.
+    <value>Valores de X derivados da curva.
 
 double[]</value>
   </data>
   <data name="CurveMapperYValuesOutputPortName" xml:space="preserve">
-    <value>y-Values</value>
+    <value>Valores de y</value>
   </data>
   <data name="CurveMapperYValuesOutputPortToolTip" xml:space="preserve">
-    <value>Y values derived from the curve.
+    <value>Valores de Y derivados da curva.
 
 double[]</value>
   </data>

@@ -324,21 +324,21 @@ Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
     <value>좌표</value>
   </data>
   <data name="CurveMapperControlPointToolTip" xml:space="preserve">
-    <value>Drag to modify the curve.</value>
+    <value>곡선을 수정하려면 끄십시오.</value>
   </data>
   <data name="CurveMapperCurveTypesLabel" xml:space="preserve">
     <value>곡선 유형</value>
   </data>
   <data name="CurveMapperLockedResetToolTip" xml:space="preserve">
-    <value>The curve has been locked and cannot be reset. Please unlock the curve first.</value>
+    <value>곡선이 잠겨 있어 재설정할 수 없습니다. 먼저 곡선의 잠금을 해제하십시오.</value>
   </data>
   <data name="CurveMapperLockToolTip" xml:space="preserve">
-    <value>Click to lock the curve.</value>
+    <value>곡선을 잠그려면 클릭합니다.</value>
   </data>
   <data name="CurveMapperResetToolTip" xml:space="preserve">
-    <value>Reset the curve.</value>
+    <value>곡선을 재설정합니다.</value>
   </data>
   <data name="CurveMapperUnlockToolTip" xml:space="preserve">
-    <value>Curve cannot be modified. Click to unlock.</value>
+    <value>곡선은 수정할 수 없습니다. 잠금을 해제하려면 클릭하십시오.</value>
   </data>
 </root>

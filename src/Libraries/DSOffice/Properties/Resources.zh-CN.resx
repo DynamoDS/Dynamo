@@ -121,7 +121,7 @@
     <value>此节点已过时，将在未来版本的 Dynamo 中删除，请使用基于 OpenXML 的相应节点。</value>
   </data>
   <data name="ReadObsolete" xml:space="preserve">
-    <value>使用 File.FromPath -&gt; Excel.ReadFromFile 节点。</value>
+    <value>改为使用 File.FromPath -&gt; Excel.ReadFromFile 节点。</value>
   </data>
   <data name="StreamWriterNotFoundException" xml:space="preserve">
     <value>找不到文件或目录</value>
