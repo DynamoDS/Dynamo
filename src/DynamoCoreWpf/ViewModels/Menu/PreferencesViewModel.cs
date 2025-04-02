@@ -1486,7 +1486,7 @@ namespace Dynamo.ViewModels
 
             // Fill language list using supported locale dictionary keys in current thread locale
             LanguagesList = Configurations.SupportedLocaleDic.Keys.ToObservableCollection();
-            SelectedLanguage = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == preferenceSettings.Locale).Key;
+            SelectedLanguage = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == preferenceSettings.Locale).Key ?? Configurations.SupportedLocaleDic.FirstOrDefault().Key;
 
             LocalizedUnitsMap = new Dictionary<string, string>();
             foreach (var unit in Configurations.SupportedUnits)
