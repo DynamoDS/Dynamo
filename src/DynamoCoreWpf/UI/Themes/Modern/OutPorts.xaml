@@ -114,7 +114,7 @@
                     </Style>
                 </Rectangle.Style>
             </Rectangle>
-    
+
             <!--  Grid containing the Port Name TextBox  -->
             <Grid Name="PortNameGrid"
                   Grid.Column="0"
@@ -184,7 +184,7 @@
                     </Style>
                 </Border.Style>
                 <Border.ToolTip>
-                    <dynui:DynamoToolTip AttachmentSide="Right" Style="{DynamicResource ResourceKey=SLightToolTip}">
+                    <dynui:DynamoToolTip AttachmentSide="Top" Style="{DynamicResource ResourceKey=SLightToolTip}">
                         <Grid>
                             <TextBlock MaxWidth="320"
                                        Text="{Binding Path=ToolTipContent}"
@@ -192,13 +192,14 @@
                         </Grid>
                     </dynui:DynamoToolTip>
                 </Border.ToolTip>
-
             </Border>
 
             <!--  A border, to initiate the node autocomplete command -->
-            <Border x:Name="NodeAutoCompleteMarker"
+            <Border x:Name="NodeAutoCompleteHover"
                     Grid.Column="2"
                     Margin="0,0,-18,0"
+                    Background="Transparent">
+                <Border x:Name="NodeAutoCompleteMarker"
                     Cursor="Hand"
                     CornerRadius="10"
                     Height="20px"
@@ -206,27 +207,51 @@
                     VerticalAlignment="Center"
                     HorizontalAlignment="Right"
                     Background="{StaticResource NodeTransientOverlayColor}"
-                    IsHitTestVisible="True"
-                    SnapsToDevicePixels="True"
-                    Visibility="{Binding NodeAutoCompleteMarkerVisible, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                <Label
-                    Name="NodeAutoCompleteMarkerLabel"
-                    FontSize="12"
-                    Width="25"
-                    Height="25"
-                    Margin="-3,-3,0,0"
-                >✨</Label>
-
-                <interactivity:Interaction.Triggers>
-                    <interactivity:EventTrigger EventName="PreviewMouseLeftButtonDown">
-                        <interactivity:InvokeCommandAction Command="{Binding NodeAutoCompleteCommand}" PassEventArgsToCommand="True"/>
-                    </interactivity:EventTrigger>
-                </interactivity:Interaction.Triggers>
-                <Border.ToolTip>
-                    <dynui:DynamoToolTip AttachmentSide="Right" Style="{DynamicResource ResourceKey=SLightToolTip}" Content="{x:Static p:Resources.NodeAutoCompleteToolTip}"/>
-                </Border.ToolTip>
+                    SnapsToDevicePixels="True">
+                    <Label
+                        Name="NodeAutoCompleteMarkerLabel"
+                        FontSize="12"
+                        Width="25"
+                        Height="25"
+                        Margin="-3,-3,0,0"
+                    >✨</Label>
+                    <Border.Style>
+                        <Style TargetType="Border">
+                            <Setter Property="Visibility" Value="Collapsed"/>
+                            <Style.Triggers>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=NodeAutoCompleteHover, Path=IsMouseOver}" Value="True" />
+                                        <Condition Binding="{Binding Path=NodeAutoCompleteMarkerEnabled}" Value="True" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding ElementName=BorderHighlightOverlay, Path=IsMouseOver}" Value="True" />
+                                        <Condition Binding="{Binding Path=NodeAutoCompleteMarkerEnabled}" Value="True" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Visibility" Value="Visible"/>
+                                </MultiDataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <interactivity:Interaction.Triggers>
+                        <interactivity:EventTrigger EventName="PreviewMouseLeftButtonDown">
+                            <interactivity:InvokeCommandAction Command="{Binding NodeAutoCompleteCommand}" PassEventArgsToCommand="True"/>
+                        </interactivity:EventTrigger>
+                    </interactivity:Interaction.Triggers>
+                    <Border.ToolTip>
+                        <dynui:DynamoToolTip AttachmentSide="Right" Style="{DynamicResource ResourceKey=SLightToolTip}">
+                            <Grid>
+                                <TextBlock MaxWidth="320"
+                                       Text="{x:Static p:Resources.NodeAutoCompleteToolTip}"
+                                       TextWrapping="Wrap" />
+                            </Grid>
+                        </dynui:DynamoToolTip>
+                    </Border.ToolTip>
+                </Border>
             </Border>
-
             <Border x:Name="PortBorderHighlight"
                     Grid.Column="0"
                     Grid.ColumnSpan="2"

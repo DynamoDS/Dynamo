@@ -2789,8 +2789,8 @@ Dynamo.ViewModels.PortViewModel.MouseLeftButtonDownOnLevel -> System.EventHandle
 Dynamo.ViewModels.PortViewModel.MouseLeftButtonDownOnLevelCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.PortViewModel.MouseLeftUseLevelCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.PortViewModel.NodeAutoCompleteCommand.get -> Dynamo.UI.Commands.DelegateCommand
-Dynamo.ViewModels.PortViewModel.NodeAutoCompleteMarkerVisible.get -> bool
-Dynamo.ViewModels.PortViewModel.NodeAutoCompleteMarkerVisible.set -> void
+Dynamo.ViewModels.PortViewModel.NodeAutoCompleteMarkerEnabled.get -> bool
+Dynamo.ViewModels.PortViewModel.NodeAutoCompleteMarkerEnabled.set -> void
 Dynamo.ViewModels.PortViewModel.NodePortContextMenuCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.PortViewModel.PortBackgroundColor.get -> System.Windows.Media.SolidColorBrush
 Dynamo.ViewModels.PortViewModel.PortBackgroundColor.set -> void
