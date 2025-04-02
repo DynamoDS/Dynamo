@@ -3,7 +3,7 @@ Uzel `List.GroupBySimilarity` seskupuje prvky seznamu podle přilehlosti jejich 
 
 Pomocí vstupu `tolerance` určete podobnost prvků. U seznamů čísel představuje hodnota `tolerance` maximální přípustný rozdíl mezi dvěma čísly, aby byla považována za podobná.
 
-For lists of strings, this value (between 0 and 10) represents the minimum similarity ratio (computed using fuzzy logic) for adjacent elements to be considered similar. For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is set to 10.
+For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is limited to 10.
 
 Booleovský vstup `considerAdjacency` označuje, zda má být při seskupování prvků zohledněna přilehlost. Pokud má hodnotu True, budou seskupeny dohromady pouze sousední prvky, které jsou podobné. Pokud má hodnotu False, k vytvoření shluků se použije samotná podobnost bez ohledu na přilehlost.
 
