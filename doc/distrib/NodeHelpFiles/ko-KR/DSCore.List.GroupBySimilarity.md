@@ -3,7 +3,7 @@
 
 `tolerance` 입력을 사용하여 요소의 유사성을 결정합니다. 숫자 리스트의 경우 'tolerance' 값은 두 숫자가 유사하다고 간주될 수 있는 최대 허용 차이를 나타냅니다.
 
-For lists of strings, this value (between 0 and 10) represents the minimum similarity ratio (computed using fuzzy logic) for adjacent elements to be considered similar. For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is set to 10.
+For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is limited to 10.
 
 `considerAdjacency` 부울 입력은 요소를 클러스터링할 때 인접성을 고려해야 하는지 여부를 나타냅니다. True인 경우 유사한 인접 요소만 함께 클러스터링됩니다. False이면 인접성에 관계없이 유사성만을 사용하여 클러스터를 형성합니다.
 
