@@ -172,7 +172,7 @@ namespace Dynamo.DocumentationBrowser
                 try
                 {
                     sb.AppendLine("<br>");
-                    sb.AppendLine($"<strong>{"Message"}</strong>");
+                    sb.AppendLine($"<strong>{Resources.MessageHeading}</strong>");
 
                     var message = e.NodeInfos.ElementAt(i).Message;
 
