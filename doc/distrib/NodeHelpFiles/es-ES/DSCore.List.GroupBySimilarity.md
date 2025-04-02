@@ -3,7 +3,7 @@
 
 Utilice la entrada `tolerance` para determinar la similitud de los elementos. Para las listas de números, el valor de `tolerance` representa la diferencia máxima admisible entre dos números para que se consideren similares.
 
-For lists of strings, this value (between 0 and 10) represents the minimum similarity ratio (computed using fuzzy logic) for adjacent elements to be considered similar. For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is set to 10.
+For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is limited to 10.
 
 La entrada booleana `considerAdjacency` indica si se debe tener en cuenta la adyacencia al agrupar los elementos. Si se establece en "True" (verdadero), solo se agruparán los elementos adyacentes que sean similares. Si se establece en "False" (falso), solo se utilizará la similitud para formar clústeres, independientemente de la adyacencia.
 
