@@ -369,6 +369,15 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Determines if node view is visible in canvas or not.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsNodeViewHidden
+        {
+            get => NodeModel.IsNodeViewHidden;
+        }
+
+        /// <summary>
         /// Determines whether or not the semi-transparent overlay is displaying on the node.
         /// This reflects whether the node is in a info/warning/error/frozen state
         /// </summary>
@@ -1212,6 +1221,9 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("IsVisible");
                     HandleColorOverlayChange();
                     RaisePropertyChanged(nameof(NodeWarningBarVisible));
+                    break;
+                case "IsNodeViewHidden":
+                    RaisePropertyChanged("IsNodeViewHidden");
                     break;
                 case "Width":
                     RaisePropertyChanged("Width");

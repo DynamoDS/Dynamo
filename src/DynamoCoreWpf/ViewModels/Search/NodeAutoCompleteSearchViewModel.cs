@@ -788,6 +788,7 @@ namespace Dynamo.ViewModels
                     dynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, xoffset, node.NodeModel.Y, false, false));
                     var nodeFromCluster = wsViewModel.Nodes.LastOrDefault();
                     nodeFromCluster.IsTransient = true;
+                    nodeFromCluster.NodeModel.IsNodeViewHidden = true;
                     clusterMapping.Add(newNode.Id, nodeFromCluster.NodeModel);
                     // Add the node to the selection to prepare for autolayout later
                     if (index == ClusterResultItem.EntryNodeIndex)
@@ -799,6 +800,7 @@ namespace Dynamo.ViewModels
                 }
             }
 
+            
             clusterConnections.ForEach(connection =>
             {
                 // Connect the nodes
@@ -837,8 +839,23 @@ namespace Dynamo.ViewModels
                 catch (Exception) { }
             });
 
+            var clusterNodesModel = clusterMapping.Values.ToList();
+            clusterNodesModel.ForEach(nodeInCluster => nodeInCluster?.AllConnectors?.ToList().ForEach(connector =>
+            {
+                if (connector != null) connector.IsHidden = true;
+            }));
+
+            Action finalizer = () =>
+            {
+                clusterNodesModel.ForEach(nodeInCluster =>
+                {
+                    nodeInCluster.IsNodeViewHidden = false;
+                    nodeInCluster.AllConnectors.ToList().ForEach(connector => connector.IsHidden = !PreferenceSettings.Instance.ShowConnector);
+                });
+            };
+
             // AutoLayout should be called after all nodes are connected
-            NodeAutoCompleteUtilities.PostAutoLayoutNodes(wsViewModel.DynamoViewModel.CurrentSpace, node.NodeModel, clusterMapping.Values.ToList(), false, false, false, null);
+            NodeAutoCompleteUtilities.PostAutoLayoutNodes(wsViewModel.DynamoViewModel.CurrentSpace, node.NodeModel, clusterMapping.Values.ToList(), false, false, false, finalizer);
         }
         /// <summary>
         /// Key function to populate node autocomplete results to display
