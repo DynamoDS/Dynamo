@@ -29,14 +29,20 @@ namespace CoreNodeModels
         private List<double> renderValuesY;
         private List<double> renderValuesX;
 
-        private readonly IntNode minLimitXDefaultValue = new IntNode(0);
-        private readonly IntNode maxLimitXDefaultValue = new IntNode(1);
-        private readonly IntNode minLimitYDefaultValue = new IntNode(0);
-        private readonly IntNode maxLimitYDefaultValue = new IntNode(1);
+        private static readonly int minXDefaultValue = 0;
+        private static readonly int maxXDefaultValue = 1;
+        private static readonly int minYDefaultValue = 0;
+        private static readonly int maxYDefaultValue = 1;
+        private static readonly double pointCountDefaultValue = 10.0;
+
+        private readonly IntNode minLimitXDefaultValue = new IntNode(minXDefaultValue);
+        private readonly IntNode maxLimitXDefaultValue = new IntNode(maxXDefaultValue);
+        private readonly IntNode minLimitYDefaultValue = new IntNode(minYDefaultValue);
+        private readonly IntNode maxLimitYDefaultValue = new IntNode(maxYDefaultValue);
         private readonly AssociativeNode pointsCountDefaultValue =
             AstFactory.BuildExprList(new List<AssociativeNode>
             {
-                AstFactory.BuildDoubleNode(10.0)
+                AstFactory.BuildDoubleNode(pointCountDefaultValue)
             });
 
         private const string gaussianCurveControlPointData2Tag = "GaussianCurveControlPointData2";
