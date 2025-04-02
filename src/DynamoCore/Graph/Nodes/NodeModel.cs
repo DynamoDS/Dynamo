@@ -75,7 +75,6 @@ namespace Dynamo.Graph.Nodes
         private LacingStrategy argumentLacing = LacingStrategy.Auto;
         private bool displayLabels;
         private bool isVisible;
-        private bool isNodeViewHidden;
         private bool isSetAsInput = false;
         private bool isSetAsOutput = false;
         private bool canUpdatePeriodically;
@@ -283,26 +282,6 @@ namespace Dynamo.Graph.Nodes
                 {
                     isVisible = value;
                     RaisePropertyChanged("IsVisible");
-                }
-            }
-        }
-
-        /// <summary>
-        ///     This property controls node view visibility in canvas.
-        /// </summary>
-        [JsonIgnore]
-        public bool IsNodeViewHidden
-        {
-            get
-            {
-                return isNodeViewHidden;
-            }
-            set
-            {
-                if (isNodeViewHidden != value)
-                {
-                    isNodeViewHidden = value;
-                    RaisePropertyChanged("IsNodeViewHidden");
                 }
             }
         }

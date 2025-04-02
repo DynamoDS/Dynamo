@@ -18,7 +18,7 @@
              MouseRightButtonDown="DisplayNodeContextMenu"
              PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
              PreviewMouseMove="OnNodeViewMouseMove"
-             Visibility="{Binding IsNodeViewHidden, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+             Visibility="{Binding IsHidden, Converter={StaticResource InverseBoolToVisibilityConverter}}">
 
 
     <Grid Name="grid"

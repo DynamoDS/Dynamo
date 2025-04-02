@@ -770,7 +770,7 @@ namespace Dynamo.ViewModels
 
             var index = 0;
             // A map of the cluster result v.s. actual nodes created for node connection look up
-            var clusterMapping = new Dictionary<string, NodeModel>();
+            var clusterMapping = new Dictionary<string, NodeViewModel>();
             // Convert topology to actual cluster
             var clusterNodes = ClusterResultItem.Topology.Nodes.ToList();
             var clusterConnections = ClusterResultItem.Topology.Connections.ToList();
@@ -788,8 +788,8 @@ namespace Dynamo.ViewModels
                     dynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, xoffset, node.NodeModel.Y, false, false));
                     var nodeFromCluster = wsViewModel.Nodes.LastOrDefault();
                     nodeFromCluster.IsTransient = true;
-                    nodeFromCluster.NodeModel.IsNodeViewHidden = true;
-                    clusterMapping.Add(newNode.Id, nodeFromCluster.NodeModel);
+                    nodeFromCluster.IsHidden = true;
+                    clusterMapping.Add(newNode.Id, nodeFromCluster);
                     // Add the node to the selection to prepare for autolayout later
                     if (index == ClusterResultItem.EntryNodeIndex)
                     {
@@ -807,12 +807,12 @@ namespace Dynamo.ViewModels
                 var sourceNode = clusterMapping[connection.StartNode.NodeId];
                 var targetNode = clusterMapping[connection.EndNode.NodeId];
                 // The port index is 1- based (currently a hack and not expected from service)
-                var sourcePort = sourceNode.OutPorts.FirstOrDefault(p => p.Index == connection.StartNode.PortIndex - 1);
-                var targetPort = targetNode.InPorts.FirstOrDefault(p => p.Index == connection.EndNode.PortIndex - 1);
+                var sourcePort = sourceNode.OutPorts.FirstOrDefault(p => p.PortModel.Index == connection.StartNode.PortIndex - 1);
+                var targetPort = targetNode.InPorts.FirstOrDefault(p => p.PortModel.Index == connection.EndNode.PortIndex - 1);
                 var commands = new List<DynamoModel.ModelBasedRecordableCommand>
                     {
-                        new DynamoModel.MakeConnectionCommand(sourceNode.GUID.ToString(), connection.StartNode.PortIndex - 1, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
-                        new DynamoModel.MakeConnectionCommand(targetNode.GUID.ToString(), connection.EndNode.PortIndex - 1, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
+                        new DynamoModel.MakeConnectionCommand(sourceNode.Id.ToString(), connection.StartNode.PortIndex - 1, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
+                        new DynamoModel.MakeConnectionCommand(targetNode.Id.ToString(), connection.EndNode.PortIndex - 1, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
                     };
                 commands.ForEach(c =>
                 {
@@ -840,7 +840,7 @@ namespace Dynamo.ViewModels
             });
 
             var clusterNodesModel = clusterMapping.Values.ToList();
-            clusterNodesModel.ForEach(nodeInCluster => nodeInCluster?.AllConnectors?.ToList().ForEach(connector =>
+            clusterNodesModel.ForEach(nodeInCluster => nodeInCluster?.NodeModel?.AllConnectors?.ToList().ForEach(connector =>
             {
                 if (connector != null) connector.IsHidden = true;
             }));
@@ -849,13 +849,16 @@ namespace Dynamo.ViewModels
             {
                 clusterNodesModel.ForEach(nodeInCluster =>
                 {
-                    nodeInCluster.IsNodeViewHidden = false;
-                    nodeInCluster.AllConnectors.ToList().ForEach(connector => connector.IsHidden = !PreferenceSettings.Instance.ShowConnector);
+                    nodeInCluster.IsHidden = false;
+                    nodeInCluster.NodeModel?.AllConnectors?.ToList().ForEach(connector =>
+                    {
+                        if (connector != null) connector.IsHidden = !PreferenceSettings.Instance.ShowConnector;
+                    });
                 });
             };
 
             // AutoLayout should be called after all nodes are connected
-            NodeAutoCompleteUtilities.PostAutoLayoutNodes(wsViewModel.DynamoViewModel.CurrentSpace, node.NodeModel, clusterMapping.Values.ToList(), false, false, false, finalizer);
+            NodeAutoCompleteUtilities.PostAutoLayoutNodes(wsViewModel.DynamoViewModel.CurrentSpace, node.NodeModel, clusterNodesModel.Select(x => x.NodeModel), false, false, false, finalizer);
         }
         /// <summary>
         /// Key function to populate node autocomplete results to display

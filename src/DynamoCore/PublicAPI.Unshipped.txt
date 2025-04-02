@@ -996,8 +996,6 @@ Dynamo.Graph.Nodes.NodeModel.IsFrozen.get -> bool
 Dynamo.Graph.Nodes.NodeModel.IsFrozen.set -> void
 Dynamo.Graph.Nodes.NodeModel.IsInErrorState.get -> bool
 Dynamo.Graph.Nodes.NodeModel.IsModified.get -> bool
-Dynamo.Graph.Nodes.NodeModel.IsNodeViewHidden.get -> bool
-Dynamo.Graph.Nodes.NodeModel.IsNodeViewHidden.set -> void
 Dynamo.Graph.Nodes.NodeModel.IsPartiallyApplied.get -> bool
 Dynamo.Graph.Nodes.NodeModel.IsSetAsInput.get -> bool
 Dynamo.Graph.Nodes.NodeModel.IsSetAsInput.set -> void
