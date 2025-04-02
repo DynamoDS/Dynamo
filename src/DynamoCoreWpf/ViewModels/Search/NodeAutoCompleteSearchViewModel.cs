@@ -770,7 +770,7 @@ namespace Dynamo.ViewModels
 
             var index = 0;
             // A map of the cluster result v.s. actual nodes created for node connection look up
-            var clusterMapping = new Dictionary<string, NodeModel>();
+            var clusterMapping = new Dictionary<string, NodeViewModel>();
             // Convert topology to actual cluster
             var clusterNodes = ClusterResultItem.Topology.Nodes.ToList();
             var clusterConnections = ClusterResultItem.Topology.Connections.ToList();
@@ -788,7 +788,8 @@ namespace Dynamo.ViewModels
                     dynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, xoffset, node.NodeModel.Y, false, false));
                     var nodeFromCluster = wsViewModel.Nodes.LastOrDefault();
                     nodeFromCluster.IsTransient = true;
-                    clusterMapping.Add(newNode.Id, nodeFromCluster.NodeModel);
+                    nodeFromCluster.IsHidden = true;
+                    clusterMapping.Add(newNode.Id, nodeFromCluster);
                     // Add the node to the selection to prepare for autolayout later
                     if (index == ClusterResultItem.EntryNodeIndex)
                     {
@@ -824,8 +825,28 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            // AutoLayout should be called after all nodes are connected
-            NodeAutoCompleteUtilities.PostAutoLayoutNodes(wsViewModel.DynamoViewModel.CurrentSpace, node.NodeModel, clusterMapping.Values.ToList(), false, false, false, null);
+            //Make connectors invisible ( just like the cluster nodes ) before they get a chance to be drawn.
+            var clusterNodesModel = clusterMapping.Values.ToList();
+            clusterNodesModel.ForEach(nodeInCluster => nodeInCluster?.NodeModel?.AllConnectors?.ToList().ForEach(connector =>
+            {
+                if (connector != null) connector.IsHidden = true;
+            }));
+
+            //Finalizer will make cluster nodes and their connections visible after autolayout has determined their final positions.
+            Action finalizer = () =>
+            {
+                clusterNodesModel.ForEach(nodeInCluster =>
+                {
+                    nodeInCluster.IsHidden = false;
+                    nodeInCluster.NodeModel?.AllConnectors?.ToList().ForEach(connector =>
+                    {
+                        if (connector != null) connector.IsHidden = !PreferenceSettings.Instance.ShowConnector;
+                    });
+                });
+            };
+
+            // AutoLayout should be called after all nodes are connected.
+            NodeAutoCompleteUtilities.PostAutoLayoutNodes(wsViewModel.DynamoViewModel.CurrentSpace, node.NodeModel, clusterNodesModel.Select(x => x.NodeModel), false, false, false, finalizer);
         }
         /// <summary>
         /// Key function to populate node autocomplete results to display
