@@ -187,7 +187,7 @@
     <value>可讓您選取系統上的目錄，並傳回其路徑</value>
   </data>
   <data name="DoubleInputNodeDescription" xml:space="preserve">
-    <value>建立數字</value>
+    <value>建立一個數字。</value>
   </data>
   <data name="DoubleSliderDescription" xml:space="preserve">
     <value>產生數值</value>
@@ -208,7 +208,7 @@
     <value>從給定路徑建立檔案物件</value>
   </data>
   <data name="FileObjectPortDataPathToolTip" xml:space="preserve">
-    <value>檔案路徑。</value>
+    <value>檔案路徑，以字串表示。</value>
   </data>
   <data name="FileObjectPortDataResultToolTip" xml:space="preserve">
     <value>檔案物件</value>
@@ -310,7 +310,7 @@
     <value>mix;trim end</value>
   </data>
   <data name="ListMapDescription" xml:space="preserve">
-    <value>將函數套用至清單的所有元素，從結果產生新清單</value>
+    <value>將函數套用至清單的所有元素，從結果產生新清單。</value>
   </data>
   <data name="ListMapSearchTags" xml:space="preserve">
     <value>function;applied;over list;do to each</value>
@@ -340,7 +340,7 @@
     <value>建立給定範圍內的一系列數字或字母</value>
   </data>
   <data name="SequenceDescription" xml:space="preserve">
-    <value>建立一系列數字</value>
+    <value>建立一系列號碼。</value>
   </data>
   <data name="OrDescription" xml:space="preserve">
     <value>布林 OR: 如果任一輸入為 true，則傳回 True。如果都不是 true，則傳回 False。</value>
@@ -418,7 +418,7 @@
     <value>將物件轉換為字串表現法</value>
   </data>
   <data name="StringInputNodeDescription" xml:space="preserve">
-    <value>建立字串</value>
+    <value>建立一個字串。</value>
   </data>
   <data name="WatchDescription" xml:space="preserve">
     <value>視覺化節點的輸出</value>
@@ -562,14 +562,14 @@
   <data name="IFNodeWarningMessage" xml:space="preserve">
     <value>此節點已更新，將從未來版本的 Dynamo 中移除。會保留既有行為，但新版本現在支援空清單、空值和長度不同的輸入。如果您想要使用此改進的行為，請取代此節點。</value>
   </data>
-  <data name="CustomSelectionSearchTags" xml:space="preserve">
-    <value>dropdown;custom;custom dropdown;enum;custom enum</value>
+  <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
+    <value>為舊型節點，請使用新的 Convert Units 節點。</value>
   </data>
   <data name="CustomSelectionNodeDescription" xml:space="preserve">
     <value>具有可自訂值的下拉式功能表。</value>
   </data>
-  <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
-    <value>為舊型節點，請使用新的 Convert Units 節點。</value>
+  <data name="CustomSelectionSearchTags" xml:space="preserve">
+    <value>dropdown;custom;custom dropdown;enum;custom enum</value>
   </data>
   <data name="IntegerSliderInfoMessage" xml:space="preserve">
     <value>輸入的值不在 int64 範圍內。</value>
@@ -629,9 +629,9 @@
     <value>count</value>
   </data>
   <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
-    <value>要產生的值數。
+    <value>Number of values to generate.
 
-int</value>
+Default value (int): {0}</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
     <value>根據選取的數學曲線沿著 y 座標重新分佈 x 座標，精確控制點的分佈。</value>
@@ -646,33 +646,17 @@ int</value>
     <value>x-MaxLimit</value>
   </data>
   <data name="CurveMapperXMaxLimitInputPortToolTip" xml:space="preserve">
-    <value>X 軸定義域的最大值。
+    <value>Maximum value for the X-axis domain.
 
-double</value>
-  </data>
-  <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
-    <value>X 軸定義域的最小值。
-
-double</value>
-  </data>
-  <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
-    <value>Y 軸定義域的最大值。
-
-double</value>
-  </data>
-  <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
-    <value>Y 軸定義域的最小值。
-
-double</value>
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperXMinLimitInputPortName" xml:space="preserve">
     <value>x-MinLimit</value>
   </data>
-  <data name="CurveMapperYMaxLimitInputPortName" xml:space="preserve">
-    <value>y-MaxLimit</value>
-  </data>
-  <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
-    <value>y-MinLimit</value>
+  <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
+    <value>Minimum value for the X-axis domain.
+
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperXValuesOutputPortName" xml:space="preserve">
     <value>x-Values</value>
@@ -681,6 +665,22 @@ double</value>
     <value>從曲線導出的 X 值。
 
 double[]</value>
+  </data>
+  <data name="CurveMapperYMaxLimitInputPortName" xml:space="preserve">
+    <value>y-MaxLimit</value>
+  </data>
+  <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
+    <value>Maximum value for the Y-axis domain.
+
+Default value (double): {0}</value>
+  </data>
+  <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
+    <value>y-MinLimit</value>
+  </data>
+  <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
+    <value>Minimum value for the Y-axis domain.
+
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperYValuesOutputPortName" xml:space="preserve">
     <value>y-Values</value>
