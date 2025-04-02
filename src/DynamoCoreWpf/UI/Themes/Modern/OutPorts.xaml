@@ -208,13 +208,13 @@
                     HorizontalAlignment="Right"
                     Background="{StaticResource NodeTransientOverlayColor}"
                     SnapsToDevicePixels="True">
-                    <TextBlock
+                    <Label
                         Name="NodeAutoCompleteMarkerLabel"
                         FontSize="12"
-                        Text="✨"
-                        IsHitTestVisible="False"
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"/>
+                        Width="25"
+                        Height="25"
+                        Margin="-3,-3,0,0"
+                    >✨</Label>
                     <Border.Style>
                         <Style TargetType="Border">
                             <Setter Property="Visibility" Value="Collapsed"/>
