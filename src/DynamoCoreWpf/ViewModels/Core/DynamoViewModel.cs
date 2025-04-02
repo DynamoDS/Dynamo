@@ -460,7 +460,7 @@ namespace Dynamo.ViewModels
                 PreferenceSettings.EnableNodeAutoComplete = value;
             }
         }
-      
+
         public int LibraryWidth
         {
             get
