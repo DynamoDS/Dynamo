@@ -219,4 +219,7 @@
   <data name="InputDefaultValue" xml:space="preserve">
     <value>default value</value>
   </data>
+  <data name="MessageHeading" xml:space="preserve">
+    <value>Message</value>
+  </data>
 </root>
