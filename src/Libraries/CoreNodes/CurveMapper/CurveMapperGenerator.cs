@@ -1,22 +1,29 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Autodesk.DesignScript.Runtime;
 
 namespace DSCore.CurveMapper
 {
+    [IsVisibleInDynamoLibrary(false)]
     public class CurveMapperGenerator
     {
         private static int rounding = 10;
 
         public static List<List<double>> CalculateValues(
             List<double> controlPoints, double canvasSize,
-            double minX, double maxX, double minY, double maxY,
-            int pointsCount, string graphType
-            )
+            [ArbitraryDimensionArrayImport] object minX, [ArbitraryDimensionArrayImport] object maxX, [ArbitraryDimensionArrayImport] object minY, [ArbitraryDimensionArrayImport] object maxY, [ArbitraryDimensionArrayImport] object pointsCount, string graphType)
         {
+            if (minX is IEnumerable || maxX is IEnumerable || minY is IEnumerable || maxY is IEnumerable || pointsCount is IEnumerable)
+            {
+                throw new ArgumentException("list input is unsupported");
+            }
+
             var xValues = new List<double>() { double.NaN };
             var yValues = new List<double>() { double.NaN };
 
-            if (minX != maxX && minY != maxY && pointsCount >= 2)
+            if (minX != maxX && minY != maxY && (long)pointsCount >= 2)
             {
                 // Unpack the control points
                 double cp1x = GetCP(controlPoints, 0), cp1y = GetCP(controlPoints, 1);
@@ -61,8 +68,18 @@ namespace DSCore.CurveMapper
                 {
                     dynamic dynamicCurve = curve;
 
-                    xValues = MapValues(dynamicCurve.GetCurveXValues(pointsCount), minX, maxX, canvasSize);
-                    yValues = MapValues(dynamicCurve.GetCurveYValues(pointsCount), minY, maxY, canvasSize);
+                    int pointsCountInt;
+                    try
+                    {
+                        pointsCountInt = checked((int)(long)pointsCount);
+                    }
+                    catch (OverflowException)
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(pointsCount), "pointsCount is out of range for an int.");
+                    }
+
+                    xValues = MapValues(dynamicCurve.GetCurveXValues(pointsCountInt), (long)minX, (long)maxX, canvasSize);
+                    yValues = MapValues(dynamicCurve.GetCurveYValues(pointsCountInt), (long)minY, (long)maxY, canvasSize);
                 }
             }
 
