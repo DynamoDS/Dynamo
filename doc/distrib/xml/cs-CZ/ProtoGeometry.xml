@@ -5095,7 +5095,7 @@
             <summary>Odstraňte vrcholy, které neleží na vstupní PLOŠE.</summary>
         </member>
         <member name="F:Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Trim">
-            <summary>Trim overlapping panels to surface boundary.</summary>
+            <summary>Oříznout překrývající se panely podle hranice povrchu.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.ToString">
             <summary>Získat řetězcovou reprezentaci prvku PanelSurface</summary>

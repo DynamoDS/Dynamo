@@ -5101,7 +5101,7 @@
             <summary>Удаление вершин, которые не лежат на входном элементе FACE.</summary>
         </member>
         <member name="F:Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Trim">
-            <summary>Trim overlapping panels to surface boundary.</summary>
+            <summary>Обрезка перекрывающихся панелей по границе поверхности.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.ToString">
             <summary>Получение строчного представления объекта PanelSurface</summary>

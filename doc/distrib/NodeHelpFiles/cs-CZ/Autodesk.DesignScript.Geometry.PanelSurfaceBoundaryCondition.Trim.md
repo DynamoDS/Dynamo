@@ -1,5 +1,5 @@
 ## Podrobnosti
-Trim overlapping panels to surface boundary.
+Oříznout překrývající se panely podle hranice povrchu.
 ___
 ## Vzorový soubor
 

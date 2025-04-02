@@ -187,7 +187,7 @@
     <value>システム上の任意のフォルダを選択して、そのパスを返すことができます</value>
   </data>
   <data name="DoubleInputNodeDescription" xml:space="preserve">
-    <value>数値を作成します</value>
+    <value>数値を作成します。</value>
   </data>
   <data name="DoubleSliderDescription" xml:space="preserve">
     <value>数値を生成します</value>
@@ -208,7 +208,7 @@
     <value>特定のパスからファイル オブジェクトを作成します</value>
   </data>
   <data name="FileObjectPortDataPathToolTip" xml:space="preserve">
-    <value>ファイルへのパス。</value>
+    <value>ファイルへのパス(文字列)。</value>
   </data>
   <data name="FileObjectPortDataResultToolTip" xml:space="preserve">
     <value>ファイル オブジェクト</value>
@@ -340,7 +340,7 @@
     <value>特定の範囲内で数値または文字のシーケンスを作成します</value>
   </data>
   <data name="SequenceDescription" xml:space="preserve">
-    <value>数値のシーケンスを作成します</value>
+    <value>数値のシーケンスを作成します。</value>
   </data>
   <data name="OrDescription" xml:space="preserve">
     <value>ブール演算 OR: 入力のいずれかが True の場合に True を返します。いずれも True ではない場合は、False を返します。</value>
@@ -418,7 +418,7 @@
     <value>オブジェクトを文字列表現に変換します</value>
   </data>
   <data name="StringInputNodeDescription" xml:space="preserve">
-    <value>文字列を作成します</value>
+    <value>文字列を作成します。</value>
   </data>
   <data name="WatchDescription" xml:space="preserve">
     <value>ノードの出力を可視化します</value>
@@ -511,10 +511,10 @@
     <value>曲線</value>
   </data>
   <data name="SelectionElementOutputPortName" xml:space="preserve">
-    <value>要素</value>
+    <value>Element</value>
   </data>
   <data name="SelectionElementsOutputPortName" xml:space="preserve">
-    <value>要素</value>
+    <value>Elements</value>
   </data>
   <data name="SelectionFaceOutputPortName" xml:space="preserve">
     <value>サーフェス</value>
@@ -562,14 +562,14 @@
   <data name="IFNodeWarningMessage" xml:space="preserve">
     <value>このノードは更新され、Dynamo の今後のバージョンで削除されます。既存の動作は保持されますが、新しいバージョンでは空のリスト、NULL 値、および長さの異なる入力がサポートされるようになりました。この改善された動作を使用する場合は、このノードを置き換えてください。</value>
   </data>
-  <data name="CustomSelectionSearchTags" xml:space="preserve">
-    <value>dropdown;custom;custom dropdown;enum;custom enum</value>
+  <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
+    <value>は使用されなくなりました。新しい Convert Units ノードを使用してください。</value>
   </data>
   <data name="CustomSelectionNodeDescription" xml:space="preserve">
     <value>カスタマイズ可能な値を含むドロップダウン メニュー。</value>
   </data>
-  <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
-    <value>は使用されなくなりました。新しい Convert Units ノードを使用してください。</value>
+  <data name="CustomSelectionSearchTags" xml:space="preserve">
+    <value>dropdown;custom;custom dropdown;enum;custom enum</value>
   </data>
   <data name="IntegerSliderInfoMessage" xml:space="preserve">
     <value>入力された値は int64 の範囲にありません。</value>
@@ -631,16 +631,16 @@
   <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
     <value>Number of values to generate.
 
-int</value>
+Default value (int): {0}</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
-    <value>Redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+    <value>選択した数学的曲線に基づいて Y 座標に沿って X 座標を再配置し、点の分布を正確にコントロールします。</value>
   </data>
   <data name="CurveMapperSearchTags" xml:space="preserve">
     <value>graph;curve;mapper;math</value>
   </data>
   <data name="CurveMapperWarningMessage" xml:space="preserve">
-    <value>The provided original values cannot be redistributed using the curve equation.</value>
+    <value>指定された元の値は、曲線計算式を使用して再分布することはできません。</value>
   </data>
   <data name="CurveMapperXMaxLimitInputPortName" xml:space="preserve">
     <value>x-MaxLimit</value>
@@ -648,45 +648,45 @@ int</value>
   <data name="CurveMapperXMaxLimitInputPortToolTip" xml:space="preserve">
     <value>Maximum value for the X-axis domain.
 
-double</value>
-  </data>
-  <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
-    <value>Minimum value for the X-axis domain.
-
-double</value>
-  </data>
-  <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
-    <value>Maximum value for the Y-axis domain.
-
-double</value>
-  </data>
-  <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
-    <value>Minimum value for the Y-axis domain.
-
-double</value>
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperXMinLimitInputPortName" xml:space="preserve">
     <value>x-MinLimit</value>
   </data>
-  <data name="CurveMapperYMaxLimitInputPortName" xml:space="preserve">
-    <value>y-MaxLimit</value>
-  </data>
-  <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
-    <value>y-MinLimit</value>
+  <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
+    <value>Minimum value for the X-axis domain.
+
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperXValuesOutputPortName" xml:space="preserve">
     <value>x-Values</value>
   </data>
   <data name="CurveMapperXValuesOutputPortToolTip" xml:space="preserve">
-    <value>X values derived from the curve.
+    <value>曲線から派生した X 値
 
 double[]</value>
+  </data>
+  <data name="CurveMapperYMaxLimitInputPortName" xml:space="preserve">
+    <value>y-MaxLimit</value>
+  </data>
+  <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
+    <value>Maximum value for the Y-axis domain.
+
+Default value (double): {0}</value>
+  </data>
+  <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
+    <value>y-MinLimit</value>
+  </data>
+  <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
+    <value>Minimum value for the Y-axis domain.
+
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperYValuesOutputPortName" xml:space="preserve">
     <value>y-Values</value>
   </data>
   <data name="CurveMapperYValuesOutputPortToolTip" xml:space="preserve">
-    <value>Y values derived from the curve.
+    <value>曲線から派生した Y 値。
 
 double[]</value>
   </data>

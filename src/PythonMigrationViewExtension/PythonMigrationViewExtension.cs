@@ -72,7 +72,7 @@ namespace Dynamo.PythonMigration
             DynamoViewModel = LoadedParams.DynamoWindow.DataContext as DynamoViewModel;
             CurrentWorkspace = LoadedParams.CurrentWorkspaceModel as WorkspaceModel;
             CustomNodeManager = (CustomNodeManager)LoadedParams.StartupParams.CustomNodeManager;
-            CurrentWorkspace.RequestPackageDependencies += PythonDependencies.AddPythonPackageDependency;
+            CurrentWorkspace.RequestPythonEngineMapping += PythonDependencies.GetPythonEngineMapping;
             Dispatcher = Dispatcher.CurrentDispatcher;
 
             SubscribeToDynamoEvents();
@@ -181,7 +181,7 @@ namespace Dynamo.PythonMigration
         {
             CurrentWorkspace.NodeAdded += OnNodeAdded;
             CurrentWorkspace.NodeRemoved += OnNodeRemoved;
-            CurrentWorkspace.RequestPackageDependencies += PythonDependencies.AddPythonPackageDependency;
+            CurrentWorkspace.RequestPythonEngineMapping += PythonDependencies.GetPythonEngineMapping;
         }
 
         private void SubscribeToPythonNodeEvents(PythonNodeBase node)
@@ -198,7 +198,7 @@ namespace Dynamo.PythonMigration
         {
             if (CurrentWorkspace != null)
             {
-                CurrentWorkspace.RequestPackageDependencies -= PythonDependencies.AddPythonPackageDependency;
+                CurrentWorkspace.RequestPythonEngineMapping -= PythonDependencies.GetPythonEngineMapping;
                 CurrentWorkspace.NodeAdded -= OnNodeAdded;
                 CurrentWorkspace.NodeRemoved -= OnNodeRemoved;
                 CurrentWorkspace.Nodes
@@ -220,7 +220,7 @@ namespace Dynamo.PythonMigration
             
             if (CurrentWorkspace  != null)
             {
-                CurrentWorkspace.RequestPackageDependencies -= PythonDependencies.AddPythonPackageDependency;
+                CurrentWorkspace.RequestPythonEngineMapping -= PythonDependencies.GetPythonEngineMapping;
             }
             UnSubscribeWorkspaceEvents();
         }

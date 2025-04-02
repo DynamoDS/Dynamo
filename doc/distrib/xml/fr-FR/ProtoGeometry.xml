@@ -5100,7 +5100,7 @@ Fondamentalement, le maillage est rempli d’un tas de petites boîtes, et un no
             <summary>Supprimer les sommets qui ne se trouvent pas sur la FACE d'entrée.</summary>
         </member>
         <member name="F:Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Trim">
-            <summary>Trim overlapping panels to surface boundary.</summary>
+            <summary>Ajustez les panneaux qui se chevauchent jusqu'à la délimitation de la surface.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.ToString">
             <summary>Obtenir une représentation de la PanelSurface sous forme de chaîne</summary>

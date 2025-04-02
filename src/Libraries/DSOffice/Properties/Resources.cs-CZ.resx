@@ -121,7 +121,7 @@
     <value>Tento uzel je zastaralý a bude odebrán v budoucí verzi aplikace Dynamo, použijte odpovídající uzel založený na OpenXML.</value>
   </data>
   <data name="ReadObsolete" xml:space="preserve">
-    <value>Použijte místo toho uzel File.FromPath - &gt; Excel.ReadFromFile.</value>
+    <value>Použijte místo toho uzel File.FromPath -&gt; Excel.ReadFromFile.</value>
   </data>
   <data name="StreamWriterNotFoundException" xml:space="preserve">
     <value>Soubor nebo adresář nelze nalézt.</value>

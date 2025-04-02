@@ -71,6 +71,7 @@ namespace CoreNodeModels
         private const double defaultCanvasSize = 240;
         private double dynamicCanvasSize = defaultCanvasSize;
         private bool isLocked;
+        private bool isResizing;
 
         #region Curves & Point Data
         
@@ -297,7 +298,6 @@ namespace CoreNodeModels
 
                     ScaleAllControlPoints(oldSize, dynamicCanvasSize);
                     RaisePropertyChanged(nameof(DynamicCanvasSize));
-                    OnNodeModified();
                     GenerateRenderValues();
                 }
             }
@@ -355,6 +355,21 @@ namespace CoreNodeModels
             }
         }
 
+        /// <summary>Indicates whether the node is currently being resized in the UI.</summary>
+        [JsonIgnore]
+        public bool IsResizing
+        {
+            get => isResizing;
+            set
+            {
+                if (isResizing != value)
+                {
+                    isResizing = value;
+                    RaisePropertyChanged(nameof(IsResizing));
+                }
+            }
+        }
+
         /// <summary> Indicates that this node supports resizing via UI. </summary>
         [JsonIgnore]
         public override bool IsResizable => true;
@@ -367,27 +382,27 @@ namespace CoreNodeModels
             {
                 InPorts.Add(new PortModel(PortType.Input, this, new PortData(
                     Properties.Resources.CurveMapperXMinLimitInputPortName,
-                    Properties.Resources.CurveMapperXMinLimitInputPortToolTip,
+                    string.Format(Properties.Resources.CurveMapperXMinLimitInputPortToolTip, minXDefaultValue),
                     minLimitXDefaultValue
                     )));
                 InPorts.Add(new PortModel(PortType.Input, this, new PortData(
                     Properties.Resources.CurveMapperXMaxLimitInputPortName,
-                    Properties.Resources.CurveMapperXMaxLimitInputPortToolTip,
+                    string.Format(Properties.Resources.CurveMapperXMaxLimitInputPortToolTip, maxXDefaultValue),
                     maxLimitXDefaultValue
                     )));
                 InPorts.Add(new PortModel(PortType.Input, this, new PortData(
                     Properties.Resources.CurveMapperYMinLimitInputPortName,
-                    Properties.Resources.CurveMapperYMinLimitInputPortToolTip,
+                    string.Format(Properties.Resources.CurveMapperYMinLimitInputPortToolTip, minYDefaultValue),
                     minLimitYDefaultValue
                     )));
                 InPorts.Add(new PortModel(PortType.Input, this, new PortData(
                     Properties.Resources.CurveMapperYMaxLimitInputPortName,
-                    Properties.Resources.CurveMapperYMaxLimitInputPortToolTip,
+                    string.Format(Properties.Resources.CurveMapperYMaxLimitInputPortToolTip, maxYDefaultValue),
                     maxLimitYDefaultValue
                     )));
                 InPorts.Add(new PortModel(PortType.Input, this, new PortData(
                     Properties.Resources.CurveMapperCountInputPortName,
-                    Properties.Resources.CurveMapperCountInputPortToolTip,
+                    string.Format(Properties.Resources.CurveMapperCountInputPortToolTip, pointCountDefaultValue),
                     pointsCountDefaultValue
                     )));
             }
@@ -448,8 +463,6 @@ namespace CoreNodeModels
         /// </summary>
         public void GenerateRenderValues()
         {
-            ClearErrorsAndWarnings();
-
             if (SelectedGraphType == GraphTypes.Empty)
             {
                 RenderValuesX = RenderValuesY = null;
@@ -457,12 +470,16 @@ namespace CoreNodeModels
             }
             if (!IsValidCurve())
             {
-                ClearErrorsAndWarnings();
                 Warning(Properties.Resources.CurveMapperWarningMessage, isPersistent: true);
 
                 RenderValuesX = RenderValuesY = null;
                 return;
             }
+            else if(!IsResizing)
+            {
+                ClearErrorsAndWarnings();
+            }
+
             object curve = null;
 
             switch (SelectedGraphType)
@@ -789,8 +806,6 @@ namespace CoreNodeModels
 
         private void DataBridgeCallback(object data)
         {
-            ClearErrorsAndWarnings();
-
             // Ignore invalid inputs & grab input data
             if (!(data is ArrayList inputs) || inputs.Count < 5) return;
 

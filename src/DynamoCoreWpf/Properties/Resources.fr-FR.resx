@@ -1185,7 +1185,7 @@ Vous pouvez toujours télécharger une nouvelle fois le package.</value>
 Dans la négative, ce noeud sera déplacé vers le nouveau package que vous créez.</value>
   </data>
   <data name="MessageToDeprecatePackage" xml:space="preserve">
-    <value>Etes-vous sûr de vouloir révoquer {0}? Cette demande sera rejetée si vous n'êtes pas un gestionnaire du package. Il indique que vous n'êtes plus en charge du package, bien que le package apparaisse toujours lorsqu'il fait l'objet d'une recherche explicite. 
+    <value>Etes-vous sûr de vouloir révoquer {0}? Cette demande sera rejetée si vous n'êtes pas un gestionnaire du package. Il indique que vous n'êtes plus en charge du module, bien que le module apparaisse toujours lorsqu'il fait l'objet d'une recherche explicite. 
 
 Vous pouvez toujours annuler la révocation du package.</value>
   </data>
@@ -1195,11 +1195,11 @@ Vous pouvez toujours annuler la révocation du package.</value>
 Vous pouvez toujours révoquer de nouveau le package.</value>
   </data>
   <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
-    <value>Le package {0} possède une ou plusieurs dépendances qui sont en conflit avec les packages suivants utilisés dans l'espace de travail: {1}. Les conflits de dépendance peuvent entraîner un comportement inattendu.
+    <value>Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
     
-Voulez-vous continuer l'installation tout en conservant les packages déjà installés?
+Do you wish to continue installing it while keeping the packages that are already installed?
 
- Si ce n'est pas le cas, {2} doit désinstaller {1} pour continuer, mais ne peut pas le faire, car ils sont en cours d'utilisation. Essayez de redémarrer {2} et de télécharger {0} à nouveau.</value>
+If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Try restarting {2} and download {0} again.</value>
   </data>
   <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
     <value>Le package {0} a une ou plusieurs dépendances qui sont en conflit avec les packages suivants:
@@ -1309,7 +1309,7 @@ Les ensembles suivants ont été chargés plusieurs fois:
 </value>
   </data>
   <data name="PackageManagerNoValidationErrors" xml:space="preserve">
-    <value>No validation errors</value>
+    <value>Aucune erreur de validation</value>
   </data>
   <data name="OnlyTitle" xml:space="preserve">
     <value>uniquement</value>
@@ -1360,7 +1360,7 @@ Les ensembles suivants ont été chargés plusieurs fois:
     <value>Votre package doit contenir au minimum un fichier.</value>
   </data>
   <data name="PackageCompatibilityMatrixMissing" xml:space="preserve">
-    <value>Provide compatibility information for the package..</value>
+    <value>Fournissez des informations de compatibilité pour le paquet.</value>
   </data>
   <data name="PackageNotExisted" xml:space="preserve">
     <value>Le répertoire racine du package n'existe pas. Essayez de réinstaller le package.</value>
@@ -2035,12 +2035,12 @@ Voulez-vous installer la dernière mise à jour de Dynamo?</value>
     <value>Aucun nouvel onglet n'a été ajouté, car l'extension figure déjà dans la barre latérale des extensions.</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
-    <value>Impossible de charger {1}. 
-L'installation va entrer en conflit avec une ou plusieurs définitions de noeud qui existent déjà dans {0}, qui est en cours de chargement. 
-Pour installer {1}, Dynamo doit d'abord désinstaller {0}. 
-Redémarrez Dynamo pour terminer la désinstallation.
+    <value>{1} cannot be loaded.
+Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
+To install {1}, Dynamo needs to first uninstall {0}. 
+Restart Dynamo to complete the uninstall.
 
-Désinstaller les packages suivants: {0}?</value>
+Uninstall the following packages: {0}?</value>
   </data>
   <data name="PreviewText" xml:space="preserve">
     <value> Cette fonctionnalité est disponible en aperçu. </value>
@@ -2199,14 +2199,14 @@ Désinstaller les packages suivants: {0}?</value>
     <value>Nécessite le redémarrage de Dynamo</value>
   </data>
   <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
-    <value>{0} a des dépendances qui sont en conflit avec le(s) package(s) intégré(s) suivant(s): {1}. Les conflits de dépendances peuvent entraîner un comportement inattendu.
+    <value>{0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
     
-Voulez-vous poursuivre l'installation de {0}?</value>
+Do you wish to continue trying to install {0}?</value>
   </data>
   <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
-    <value>{0} ne peut pas être installé en raison d'un conflit avec une autre version du package intégré {1}, déjà installée.
+    <value>{0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
     
-Vous pouvez essayer de désactiver le chargement de packages à partir des chemins de packages intégrés, ou annuler le chargement du package en conflit, puis redémarrer {2} et télécharger à nouveau {0}.</value>
+You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again.</value>
   </data>
   <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
     <value>The same version of package {0} is already installed as a built-in package and does not need to be installed again.</value>
@@ -2215,9 +2215,9 @@ Vous pouvez essayer de désactiver le chargement de packages à partir des chemi
     <value>La même version de {0} est déjà installée, il n'est pas nécessaire de la réinstaller.</value>
   </data>
   <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
-    <value>Impossible d'installer le package {0}, car il est en conflit avec une autre version, {1}, qui est déjà installée. 
+    <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
 
-Voulez-vous désinstaller {1}? Redémarrez {2} pour finaliser la désinstallation, puis téléchargez {0}.</value>
+Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again.</value>
   </data>
   <data name="PreferencesViewGeneralSettingsRun" xml:space="preserve">
     <value>Paramètres de simulation</value>
@@ -2707,7 +2707,7 @@ Ce package sera déchargé après le prochain redémarrage de Dynamo.</value>
     <value>Publier un package</value>
   </data>
   <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
-    <value>Virus scan in progress. Your package will be searchable in a few minutes.</value>
+    <value>Analyse antivirus en cours. Votre package pourra apparaître dans les recherches d'ici quelques minutes.</value>
   </data>
   <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
     <value>Packages installés</value>
@@ -3671,10 +3671,10 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
     <value>_Vider les données d'aide du noeud</value>
   </data>
   <data name="NodeHelpIsDumped" xml:space="preserve">
-    <value>Node Help Data is dumped to \"{0}\".</value>
+    <value>Les données d'aide du noeud sont vidées vers \"{0}\".</value>
   </data>
   <data name="UpdateAllPythonEngineWarning" xml:space="preserve">
-    <value>Update all {0} python nodes in the current workspace to use {1} engine?</value>
+    <value>Mettre à jour les {0} noeuds python dans l'espace de travail actuel pour utiliser {1} moteur de recherche?</value>
   </data>
   <data name="UpdateAllPythonEngineWarningTitle" xml:space="preserve">
     <value>Mettre à jour tous les noeuds Python</value>
@@ -3740,7 +3740,7 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
     <value>Les versions portant l'indication .x comprennent toutes les versions de l'édition majeure ou mineure indiquée</value>
   </data>
   <data name="CannotAddNodeToWorkspace" xml:space="preserve">
-    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
+    <value>Vous ne pouvez pas placer un nœud personnalisé dans son propre espace de travail sans implémenter correctement le cas de base récursif à l'aide du nœud scopeif.</value>
   </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
     <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
@@ -3753,10 +3753,10 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
     <value>Télécharger Autodesk Identity Manager</value>
   </data>
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
-    <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
+    <value>Le chemin d'accès fourni est incorrect. Si le fichier est archivé, assurez-vous de l'extraire avant de l'ouvrir.\n{0}</value>
   </data>
   <data name="GroupContextMenuFreezeGroup" xml:space="preserve">
-    <value>Freeze Group</value>
+    <value>Geler le groupe</value>
   </data>
   <data name="SaveButton" xml:space="preserve">
     <value>Enregistrer</value>
@@ -3765,10 +3765,10 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
     <value>Ignorer</value>
   </data>
   <data name="PreferencesViewGroupStylesHeader" xml:space="preserve">
-    <value>Styles de groupes</value>
+    <value>Styles de groupe</value>
   </data>
   <data name="PreferencesViewShowDefaultGroupDescription" xml:space="preserve">
-    <value>Show default group description</value>
+    <value>Afficher la description du groupe par défaut</value>
   </data>
   <data name="NodeAutoCompleteToolTip" xml:space="preserve">
     <value>Click to get Node Autocomplete suggestions</value>

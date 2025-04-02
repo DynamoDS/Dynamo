@@ -5075,7 +5075,7 @@ Basicamente, a malha é preenchida com várias pequenas caixas, e uma nova
             <summary>Remover os vértices que não estão na entrada FACE.</summary>
         </member>
         <member name="F:Autodesk.DesignScript.Geometry.PanelSurfaceBoundaryCondition.Trim">
-            <summary>Trim overlapping panels to surface boundary.</summary>
+            <summary>Recorte painéis sobrepostos para o limite da superfície.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.PanelSurface.ToString">
             <summary>Obteruma representação da sequência de caracteres de PanelSurface</summary>

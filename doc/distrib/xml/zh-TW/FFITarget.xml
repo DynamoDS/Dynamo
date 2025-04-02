@@ -70,11 +70,11 @@
         </member>
         <member name="M:FFITarget.TestData.ReturnNestedDictionary">
             <summary>Return nested dictionary.</summary>
-            <returns name="col">柱</returns>
-            <returns name="dict">字典</returns>
-            <returns name="num">數值</returns>
-            <returns name="wt">重量</returns>
-            <returns name="ok">一般</returns>
+            <returns name="col">column</returns>
+            <returns name="dict">dictionary</returns>
+            <returns name="num">number</returns>
+            <returns name="wt">weight</returns>
+            <returns name="ok">okay</returns>
         </member>
     </members>
 </doc>

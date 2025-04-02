@@ -133,6 +133,6 @@
     <value>「在 {1} 找到一個名為 {0} 的套件，無法驗證有已簽署的 dll 檔。{2} 將忽略它。」</value>
   </data>
   <data name="PackagesDirectorySkipped" xml:space="preserve">
-    <value>未掃瞄 {0} 是否有套件，因為某個偏好設定已停止從該位置載入。</value>
+    <value>未掃描 {0} 是否有套件，因為某個偏好設定已停止從該位置載入。</value>
   </data>
 </root>

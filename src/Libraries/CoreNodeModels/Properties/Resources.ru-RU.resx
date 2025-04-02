@@ -187,7 +187,7 @@
     <value>Возможность выбрать каталог в системе и возврат пути к нему</value>
   </data>
   <data name="DoubleInputNodeDescription" xml:space="preserve">
-    <value>Создание числа</value>
+    <value>Создание числа.</value>
   </data>
   <data name="DoubleSliderDescription" xml:space="preserve">
     <value>Создание числовых значений</value>
@@ -208,7 +208,7 @@
     <value>Создание объекта файла на основе указанного пути</value>
   </data>
   <data name="FileObjectPortDataPathToolTip" xml:space="preserve">
-    <value>Путь к файлу.</value>
+    <value>Путь к файлу в виде строки.</value>
   </data>
   <data name="FileObjectPortDataResultToolTip" xml:space="preserve">
     <value>Файловый объект</value>
@@ -310,7 +310,7 @@
     <value>mix;trim end</value>
   </data>
   <data name="ListMapDescription" xml:space="preserve">
-    <value>Применение функции ко всем элементам списка с созданием нового списка на основе результатов</value>
+    <value>Применение функции ко всем элементам списка с созданием нового списка на основе результатов.</value>
   </data>
   <data name="ListMapSearchTags" xml:space="preserve">
     <value>function;applied;over list;do to each</value>
@@ -340,7 +340,7 @@
     <value>Создание последовательности чисел или букв в заданном диапазоне</value>
   </data>
   <data name="SequenceDescription" xml:space="preserve">
-    <value>Создание последовательности чисел</value>
+    <value>Создание последовательности чисел.</value>
   </data>
   <data name="OrDescription" xml:space="preserve">
     <value>Логическое ИЛИ: возвращает значение True, если любой из вводов является истинным. Если ни один из них не является таковым, возвращается значение False.</value>
@@ -418,7 +418,7 @@
     <value>Преобразование объекта в строчное представление</value>
   </data>
   <data name="StringInputNodeDescription" xml:space="preserve">
-    <value>Создание строки</value>
+    <value>Создание строки.</value>
   </data>
   <data name="WatchDescription" xml:space="preserve">
     <value>Визуализация выходных данных узла</value>
@@ -511,10 +511,10 @@
     <value>Кривые</value>
   </data>
   <data name="SelectionElementOutputPortName" xml:space="preserve">
-    <value>Элемент</value>
+    <value>Element</value>
   </data>
   <data name="SelectionElementsOutputPortName" xml:space="preserve">
-    <value>Элементы</value>
+    <value>Elements</value>
   </data>
   <data name="SelectionFaceOutputPortName" xml:space="preserve">
     <value>Поверхность</value>
@@ -562,14 +562,14 @@
   <data name="IFNodeWarningMessage" xml:space="preserve">
     <value>Этот узел обновлен и будет удален в следующей версии Dynamo. Существующий режим сохраняется, но новая версия теперь поддерживает пустые списки, нулевые значения и входные данные переменной длины. Чтобы использовать улучшенный режим, замените этот узел.</value>
   </data>
-  <data name="CustomSelectionSearchTags" xml:space="preserve">
-    <value>dropdown;custom;custom dropdown;enum;custom enum</value>
+  <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
+    <value>устарел, используйте новый узел «Преобразовать единицы».</value>
   </data>
   <data name="CustomSelectionNodeDescription" xml:space="preserve">
     <value>Раскрывающееся меню с настраиваемыми значениями.</value>
   </data>
-  <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
-    <value>устарел, используйте новый узел «Преобразовать единицы».</value>
+  <data name="CustomSelectionSearchTags" xml:space="preserve">
+    <value>dropdown;custom;custom dropdown;enum;custom enum</value>
   </data>
   <data name="IntegerSliderInfoMessage" xml:space="preserve">
     <value>Введенное значение выходит за пределы диапазона int64.</value>
@@ -631,16 +631,16 @@
   <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
     <value>Number of values to generate.
 
-int</value>
+Default value (int): {0}</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
-    <value>Redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+    <value>Перераспределение координат X по координатам Y на основе выбранной математической кривой для точного управления распределением точек.</value>
   </data>
   <data name="CurveMapperSearchTags" xml:space="preserve">
     <value>graph;curve;mapper;math</value>
   </data>
   <data name="CurveMapperWarningMessage" xml:space="preserve">
-    <value>The provided original values cannot be redistributed using the curve equation.</value>
+    <value>Предоставленные исходные значения невозможно перераспределить с помощью уравнения для кривой.</value>
   </data>
   <data name="CurveMapperXMaxLimitInputPortName" xml:space="preserve">
     <value>x-MaxLimit</value>
@@ -648,45 +648,45 @@ int</value>
   <data name="CurveMapperXMaxLimitInputPortToolTip" xml:space="preserve">
     <value>Maximum value for the X-axis domain.
 
-double</value>
-  </data>
-  <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
-    <value>Minimum value for the X-axis domain.
-
-double</value>
-  </data>
-  <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
-    <value>Maximum value for the Y-axis domain.
-
-double</value>
-  </data>
-  <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
-    <value>Minimum value for the Y-axis domain.
-
-double</value>
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperXMinLimitInputPortName" xml:space="preserve">
     <value>x-MinLimit</value>
   </data>
-  <data name="CurveMapperYMaxLimitInputPortName" xml:space="preserve">
-    <value>y-MaxLimit</value>
-  </data>
-  <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
-    <value>y-MinLimit</value>
+  <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
+    <value>Minimum value for the X-axis domain.
+
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperXValuesOutputPortName" xml:space="preserve">
     <value>x-Values</value>
   </data>
   <data name="CurveMapperXValuesOutputPortToolTip" xml:space="preserve">
-    <value>X values derived from the curve.
+    <value>Значения X, полученные из кривой.
 
 double[]</value>
+  </data>
+  <data name="CurveMapperYMaxLimitInputPortName" xml:space="preserve">
+    <value>y-MaxLimit</value>
+  </data>
+  <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
+    <value>Maximum value for the Y-axis domain.
+
+Default value (double): {0}</value>
+  </data>
+  <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
+    <value>y-MinLimit</value>
+  </data>
+  <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
+    <value>Minimum value for the Y-axis domain.
+
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperYValuesOutputPortName" xml:space="preserve">
     <value>y-Values</value>
   </data>
   <data name="CurveMapperYValuesOutputPortToolTip" xml:space="preserve">
-    <value>Y values derived from the curve.
+    <value>Значения Y, полученные из кривой.
 
 double[]</value>
   </data>

@@ -308,7 +308,7 @@
       ],
       "FunctionSignature": "DSCore.List.GroupBySimilarity@var[]..[],double,bool",
       "Replication": "Auto",
-      "Description": "This node clusters elements in a list based on the adjacency of their indices and the similarity of their values. It can handle list of numbers as well as list of strings. The boolean input allows the user to specify whether adjacency should be considered when grouping the elements. The tolerance input allows the user to specify the threshold value for grouping similar elements. In case of integers, the tolerance value is the difference between the two integers. And in case of strings, the tolerance value is the number of characters that can be different between the two strings.\n\nList.GroupBySimilarity (list: var[]..[], tolerance: double = 0, considerAdjacency: bool = true): var[]..[]"
+      "Description": "Clusters list elements based on the adjacency of their indices and the similarity of their values\n\nList.GroupBySimilarity (list: var[]..[], tolerance: double = 0, considerAdjacency: bool = true): var[]..[]"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.ZeroTouch.DSFunction, DynamoCore",
@@ -365,7 +365,7 @@
       ],
       "FunctionSignature": "DSCore.List.GroupBySimilarity@var[]..[],double,bool",
       "Replication": "Auto",
-      "Description": "This node clusters elements in a list based on the adjacency of their indices and the similarity of their values. It can handle list of numbers as well as list of strings. The boolean input allows the user to specify whether adjacency should be considered when grouping the elements. The tolerance input allows the user to specify the threshold value for grouping similar elements. In case of integers, the tolerance value is the difference between the two integers. And in case of strings, the tolerance value is the number of characters that can be different between the two strings.\n\nList.GroupBySimilarity (list: var[]..[], tolerance: double = 0, considerAdjacency: bool = true): var[]..[]"
+      "Description": "Clusters list elements based on the adjacency of their indices and the similarity of their values\n\nList.GroupBySimilarity (list: var[]..[], tolerance: double = 0, considerAdjacency: bool = true): var[]..[]"
     }
   ],
   "Connectors": [
@@ -487,8 +487,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 1076.975339091025,
-        "Y": 539.6228908193044
+        "X": 1073.3673201144798,
+        "Y": 514.9148750690757
       },
       {
         "Id": "9d0983b9c4aa4acf8fcde4bbfb1e56df",
@@ -497,8 +497,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 606.7452784969734,
-        "Y": 260.7186438701209
+        "X": 603.137259520428,
+        "Y": 236.81344137200676
       },
       {
         "Id": "b1306fbd369c44b4a0bb1a50a713864c",
@@ -507,8 +507,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 2134.9045499528,
-        "Y": 121.40316571777919
+        "X": 2131.296530976255,
+        "Y": 97.49796321966505
       },
       {
         "Id": "4b64a6aa3a4a4b30b97076227a5c73b1",
@@ -517,8 +517,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 2098.38415794514,
-        "Y": 605.5583665390755
+        "X": 2094.7761389685948,
+        "Y": 581.6531640409613
       },
       {
         "Id": "90f33d0806234c51b92701babffd3a4f",
@@ -527,8 +527,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 1016.684295311834,
-        "Y": 690.2226885416325
+        "X": 1013.0762763352886,
+        "Y": 666.3174860435183
       },
       {
         "Id": "0e81755c156b4286a8025dd756c3aee5",
@@ -568,7 +568,7 @@
         "Excluded": false,
         "ShowGeometry": true,
         "X": 2113.637088811027,
-        "Y": 1700.7125956738994
+        "Y": 1700.7125956738996
       },
       {
         "Id": "62c8268ad76747bebb06eec5a3600602",
@@ -587,8 +587,8 @@
         "IsSetAsOutput": false,
         "Excluded": false,
         "ShowGeometry": true,
-        "X": 1506.8805006172925,
-        "Y": 299.67282566609055
+        "X": 1503.2724816407472,
+        "Y": 275.7676231679764
       },
       {
         "Id": "b380dbe74ab44561ae717c4dad875191",
@@ -602,34 +602,6 @@
       }
     ],
     "Annotations": [
-      {
-        "Id": "568cd8c596784df98c4ee671088d6ca2",
-        "Title": "Cluster list of strings by similarity ",
-        "DescriptionText": "",
-        "IsExpanded": true,
-        "WidthAdjustment": 0.0,
-        "HeightAdjustment": 0.0,
-        "Nodes": [
-          "9d0983b9c4aa4acf8fcde4bbfb1e56df",
-          "b1306fbd369c44b4a0bb1a50a713864c",
-          "4b64a6aa3a4a4b30b97076227a5c73b1",
-          "90f33d0806234c51b92701babffd3a4f",
-          "7892fee1d2a54878957a892968062c82",
-          "0e915d22028540bda4ed2ff7a4282dd4",
-          "6dbd1303f1fe4d24a1c49d8181d722e5"
-        ],
-        "HasNestedGroups": false,
-        "Left": 596.7452784969734,
-        "Top": 48.40316571777919,
-        "Width": 1861.659271455827,
-        "Height": 998.6552008212963,
-        "FontSize": 36.0,
-        "GroupStyleId": "00000000-0000-0000-0000-000000000000",
-        "InitialTop": 121.40316571777919,
-        "InitialHeight": 713.8195228238533,
-        "TextblockHeight": 63.0,
-        "Background": "#FFC1D676"
-      },
       {
         "Id": "2498a92767794f71a35933de22185b67",
         "Title": "Cluster list of number by adjacency and similarity ",
@@ -650,7 +622,7 @@
         "Left": 601.3182485683442,
         "Top": 1087.7979125978134,
         "Width": 1850.613145210279,
-        "Height": 910.914683076086,
+        "Height": 910.9146830760862,
         "FontSize": 36.0,
         "GroupStyleId": "00000000-0000-0000-0000-000000000000",
         "InitialTop": 1160.7979125978134,
@@ -659,25 +631,30 @@
         "Background": "#FFC1D676"
       },
       {
-        "Id": "94f1f9ce8d314817950b8fb3e81bccb0",
-        "Title": "Group lists by similarity",
+        "Id": "568cd8c596784df98c4ee671088d6ca2",
+        "Title": "Cluster list of strings by similarity ",
         "DescriptionText": "",
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
         "Nodes": [
-          "568cd8c596784df98c4ee671088d6ca2",
-          "2498a92767794f71a35933de22185b67"
+          "9d0983b9c4aa4acf8fcde4bbfb1e56df",
+          "b1306fbd369c44b4a0bb1a50a713864c",
+          "4b64a6aa3a4a4b30b97076227a5c73b1",
+          "90f33d0806234c51b92701babffd3a4f",
+          "7892fee1d2a54878957a892968062c82",
+          "0e915d22028540bda4ed2ff7a4282dd4",
+          "6dbd1303f1fe4d24a1c49d8181d722e5"
         ],
-        "HasNestedGroups": true,
-        "Left": 586.7452784969734,
-        "Top": -24.59683428222081,
-        "Width": 1881.659271455827,
-        "Height": 2038.3094299561203,
+        "HasNestedGroups": false,
+        "Left": 593.137259520428,
+        "Top": 24.497963219665053,
+        "Width": 1861.659271455827,
+        "Height": 998.6552008212963,
         "FontSize": 36.0,
         "GroupStyleId": "00000000-0000-0000-0000-000000000000",
-        "InitialTop": 48.40316571777919,
-        "InitialHeight": 1769.3094299561203,
+        "InitialTop": 97.49796321966505,
+        "InitialHeight": 713.8195228238533,
         "TextblockHeight": 63.0,
         "Background": "#FFC1D676"
       },
@@ -704,15 +681,15 @@
       },
       {
         "Id": "6dbd1303f1fe4d24a1c49d8181d722e5",
-        "Title": "The tolerance input lets users define the threshold value for grouping similar elements.  For string lists, it represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison.\nMaximum tolerance for strings is set to 5.",
+        "Title": "The tolerance input lets users define the threshold value for grouping similar elements.  For string lists, it represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison.\nMaximum tolerance for strings is set to 10.",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
         "HeightAdjustment": 0.0,
         "Nodes": [],
         "HasNestedGroups": false,
-        "Left": 1000.725339091025,
-        "Top": 417.1228908193044,
+        "Left": 997.1173201144798,
+        "Top": 392.4148750690757,
         "Width": 0.0,
         "Height": 0.0,
         "FontSize": 36.0,
@@ -724,8 +701,8 @@
         "PinnedNode": "7892fee1d2a54878957a892968062c82"
       }
     ],
-    "X": 81.31474751559222,
-    "Y": 21.508588122677736,
-    "Zoom": 0.3305121506592241
+    "X": 106.51350716824152,
+    "Y": 128.6238085378581,
+    "Zoom": 0.3077696697475148
   }
 }

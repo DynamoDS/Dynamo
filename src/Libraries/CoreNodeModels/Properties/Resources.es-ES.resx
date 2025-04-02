@@ -187,7 +187,7 @@
     <value>Permite seleccionar un directorio del sistema y devuelve su ruta.</value>
   </data>
   <data name="DoubleInputNodeDescription" xml:space="preserve">
-    <value>Crea un número.</value>
+    <value>Crea un número</value>
   </data>
   <data name="DoubleSliderDescription" xml:space="preserve">
     <value>Genera valores numéricos.</value>
@@ -208,7 +208,7 @@
     <value>Crea un objeto de archivo a partir de la ruta especificada.</value>
   </data>
   <data name="FileObjectPortDataPathToolTip" xml:space="preserve">
-    <value>Ruta al archivo.</value>
+    <value>Ruta al archivo como cadena.</value>
   </data>
   <data name="FileObjectPortDataResultToolTip" xml:space="preserve">
     <value>Objeto de archivo</value>
@@ -310,7 +310,7 @@
     <value>mix;trim end</value>
   </data>
   <data name="ListMapDescription" xml:space="preserve">
-    <value>Aplica una función a todos los elementos de una lista, lo que genera una nueva lista a partir de los resultados.</value>
+    <value>Aplica una función a todos los elementos de una lista y genera una lista nueva a partir de los resultados</value>
   </data>
   <data name="ListMapSearchTags" xml:space="preserve">
     <value>function;applied;over list;do to each</value>
@@ -340,7 +340,7 @@
     <value>Crea una secuencia de números o letras en el rango especificado.</value>
   </data>
   <data name="SequenceDescription" xml:space="preserve">
-    <value>Crea una secuencia de números.</value>
+    <value>Crea una secuencia de números</value>
   </data>
   <data name="OrDescription" xml:space="preserve">
     <value>Valor booleano OR: devuelve ·"True" (verdadera) si cualquiera de las entradas es verdadera. Si ninguna de ellas es verdadera, devuelve "False" (falsa).</value>
@@ -418,7 +418,7 @@
     <value>Convierte un objeto en una representación de cadena.</value>
   </data>
   <data name="StringInputNodeDescription" xml:space="preserve">
-    <value>Crea una cadena.</value>
+    <value>Crea una cadena</value>
   </data>
   <data name="WatchDescription" xml:space="preserve">
     <value>Muestra la salida de un nodo.</value>
@@ -511,10 +511,10 @@
     <value>Curves</value>
   </data>
   <data name="SelectionElementOutputPortName" xml:space="preserve">
-    <value>Elemento</value>
+    <value>Element</value>
   </data>
   <data name="SelectionElementsOutputPortName" xml:space="preserve">
-    <value>Elementos</value>
+    <value>Elements</value>
   </data>
   <data name="SelectionFaceOutputPortName" xml:space="preserve">
     <value>Superficie</value>
@@ -562,14 +562,14 @@ Valor por defecto: {0}</value>
   <data name="IFNodeWarningMessage" xml:space="preserve">
     <value>Este nodo se ha actualizado y se eliminará en una versión futura de Dynamo. Se conservará el comportamiento existente, pero una nueva versión ahora admite listas vacías, valores nulos y entradas de longitud variable. Sustituya este nodo si desea utilizar este comportamiento mejorado.</value>
   </data>
-  <data name="CustomSelectionSearchTags" xml:space="preserve">
-    <value>dropdown;custom;custom dropdown;enum;custom enum</value>
+  <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
+    <value>está obsoleto; utilice el nuevo nodo para convertir unidades.</value>
   </data>
   <data name="CustomSelectionNodeDescription" xml:space="preserve">
     <value>Un menú desplegable con valores personalizables.</value>
   </data>
-  <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
-    <value>está obsoleto; utilice el nuevo nodo para convertir unidades.</value>
+  <data name="CustomSelectionSearchTags" xml:space="preserve">
+    <value>dropdown;custom;custom dropdown;enum;custom enum</value>
   </data>
   <data name="IntegerSliderInfoMessage" xml:space="preserve">
     <value>El valor introducido no está en el rango int64.</value>
@@ -631,16 +631,16 @@ Valor por defecto: G</value>
   <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
     <value>Number of values to generate.
 
-int</value>
+Default value (int): {0}</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
-    <value>Redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+    <value>Redistribuye las coordenadas X a lo largo de las coordenadas Y en función de una curva matemática seleccionada, lo que proporciona un control preciso de la distribución de puntos.</value>
   </data>
   <data name="CurveMapperSearchTags" xml:space="preserve">
     <value>graph;curve;mapper;math</value>
   </data>
   <data name="CurveMapperWarningMessage" xml:space="preserve">
-    <value>The provided original values cannot be redistributed using the curve equation.</value>
+    <value>Los valores originales especificados no se pueden redistribuir mediante la ecuación de curva.</value>
   </data>
   <data name="CurveMapperXMaxLimitInputPortName" xml:space="preserve">
     <value>x-MaxLimit</value>
@@ -648,45 +648,45 @@ int</value>
   <data name="CurveMapperXMaxLimitInputPortToolTip" xml:space="preserve">
     <value>Maximum value for the X-axis domain.
 
-double</value>
-  </data>
-  <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
-    <value>Minimum value for the X-axis domain.
-
-double</value>
-  </data>
-  <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
-    <value>Maximum value for the Y-axis domain.
-
-double</value>
-  </data>
-  <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
-    <value>Minimum value for the Y-axis domain.
-
-double</value>
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperXMinLimitInputPortName" xml:space="preserve">
     <value>x-MinLimit</value>
   </data>
-  <data name="CurveMapperYMaxLimitInputPortName" xml:space="preserve">
-    <value>y-MaxLimit</value>
-  </data>
-  <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
-    <value>y-MinLimit</value>
+  <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
+    <value>Minimum value for the X-axis domain.
+
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperXValuesOutputPortName" xml:space="preserve">
     <value>x-Values</value>
   </data>
   <data name="CurveMapperXValuesOutputPortToolTip" xml:space="preserve">
-    <value>X values derived from the curve.
+    <value>Valores de X derivados de la curva.
 
 double[]</value>
+  </data>
+  <data name="CurveMapperYMaxLimitInputPortName" xml:space="preserve">
+    <value>y-MaxLimit</value>
+  </data>
+  <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
+    <value>Maximum value for the Y-axis domain.
+
+Default value (double): {0}</value>
+  </data>
+  <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
+    <value>y-MinLimit</value>
+  </data>
+  <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
+    <value>Minimum value for the Y-axis domain.
+
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperYValuesOutputPortName" xml:space="preserve">
     <value>y-Values</value>
   </data>
   <data name="CurveMapperYValuesOutputPortToolTip" xml:space="preserve">
-    <value>Y values derived from the curve.
+    <value>Valores de Y derivados de la curva.
 
 double[]</value>
   </data>

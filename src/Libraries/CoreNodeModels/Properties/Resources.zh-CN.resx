@@ -187,7 +187,7 @@
     <value>允许您选择系统上的目录并返回其路径</value>
   </data>
   <data name="DoubleInputNodeDescription" xml:space="preserve">
-    <value>创建一个数字</value>
+    <value>创建数字。</value>
   </data>
   <data name="DoubleSliderDescription" xml:space="preserve">
     <value>生成数值</value>
@@ -208,7 +208,7 @@
     <value>从给定路径创建文件对象</value>
   </data>
   <data name="FileObjectPortDataPathToolTip" xml:space="preserve">
-    <value>文件路径。</value>
+    <value>文件路径(字符串)。</value>
   </data>
   <data name="FileObjectPortDataResultToolTip" xml:space="preserve">
     <value>文件对象</value>
@@ -310,7 +310,7 @@
     <value>mix;trim end</value>
   </data>
   <data name="ListMapDescription" xml:space="preserve">
-    <value>将函数应用于列表的所有元素，根据结果生成一个新列表</value>
+    <value>将函数应用到列表的所有元素，由结果生成一个新列表。</value>
   </data>
   <data name="ListMapSearchTags" xml:space="preserve">
     <value>function;applied;over list;do to each</value>
@@ -340,7 +340,7 @@
     <value>按给定范围创建一系列数字或字母</value>
   </data>
   <data name="SequenceDescription" xml:space="preserve">
-    <value>创建数字序列</value>
+    <value>创建数字序列。</value>
   </data>
   <data name="OrDescription" xml:space="preserve">
     <value>布尔 OR: 如果任一输入内容为 True，则返回 True。如果都不为 True，则返回 False。</value>
@@ -418,7 +418,7 @@
     <value>将对象转换为字符串表示</value>
   </data>
   <data name="StringInputNodeDescription" xml:space="preserve">
-    <value>创建字符串</value>
+    <value>创建字符串。</value>
   </data>
   <data name="WatchDescription" xml:space="preserve">
     <value>显示节点的输出内容</value>
@@ -511,10 +511,10 @@
     <value>曲线</value>
   </data>
   <data name="SelectionElementOutputPortName" xml:space="preserve">
-    <value>图元</value>
+    <value>Element</value>
   </data>
   <data name="SelectionElementsOutputPortName" xml:space="preserve">
-    <value>图元</value>
+    <value>Elements</value>
   </data>
   <data name="SelectionFaceOutputPortName" xml:space="preserve">
     <value>曲面</value>
@@ -562,14 +562,14 @@
   <data name="IFNodeWarningMessage" xml:space="preserve">
     <value>此节点已更新，将在 Dynamo 的未来版本中删除。现有行为将保留，但新版本现在支持空列表、空值和不同长度的输入。如果要使用此改进的行为，请替换此节点。</value>
   </data>
-  <data name="CustomSelectionSearchTags" xml:space="preserve">
-    <value>dropdown;custom;custom dropdown;enum;custom enum</value>
+  <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
+    <value>已过时，请使用新的“转换单位”节点。</value>
   </data>
   <data name="CustomSelectionNodeDescription" xml:space="preserve">
     <value>带有可自定义值的下拉菜单。</value>
   </data>
-  <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
-    <value>已过时，请使用新的“转换单位”节点。</value>
+  <data name="CustomSelectionSearchTags" xml:space="preserve">
+    <value>dropdown;custom;custom dropdown;enum;custom enum</value>
   </data>
   <data name="IntegerSliderInfoMessage" xml:space="preserve">
     <value>输入的值不在 int64 范围内。</value>
@@ -626,67 +626,67 @@
 默认值: G</value>
   </data>
   <data name="CurveMapperCountInputPortName" xml:space="preserve">
-    <value>count</value>
+    <value>计数</value>
   </data>
   <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
     <value>Number of values to generate.
 
-int</value>
+Default value (int): {0}</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
-    <value>Redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+    <value>基于选定的数学曲线沿 y 坐标重新分配 x 坐标，从而精确控制点分布。</value>
   </data>
   <data name="CurveMapperSearchTags" xml:space="preserve">
     <value>graph;curve;mapper;math</value>
   </data>
   <data name="CurveMapperWarningMessage" xml:space="preserve">
-    <value>The provided original values cannot be redistributed using the curve equation.</value>
+    <value>提供的原始值无法使用曲线方程式重新分配。</value>
   </data>
   <data name="CurveMapperXMaxLimitInputPortName" xml:space="preserve">
-    <value>x-MaxLimit</value>
+    <value>x-最大限制</value>
   </data>
   <data name="CurveMapperXMaxLimitInputPortToolTip" xml:space="preserve">
     <value>Maximum value for the X-axis domain.
 
-double</value>
+Default value (double): {0}</value>
+  </data>
+  <data name="CurveMapperXMinLimitInputPortName" xml:space="preserve">
+    <value>x-最小限制</value>
   </data>
   <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
     <value>Minimum value for the X-axis domain.
 
-double</value>
+Default value (double): {0}</value>
+  </data>
+  <data name="CurveMapperXValuesOutputPortName" xml:space="preserve">
+    <value>x-值</value>
+  </data>
+  <data name="CurveMapperXValuesOutputPortToolTip" xml:space="preserve">
+    <value>从曲线派生的 X 值。
+
+double[]</value>
+  </data>
+  <data name="CurveMapperYMaxLimitInputPortName" xml:space="preserve">
+    <value>y-最大限制</value>
   </data>
   <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
     <value>Maximum value for the Y-axis domain.
 
-double</value>
+Default value (double): {0}</value>
+  </data>
+  <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
+    <value>y-最小限制</value>
   </data>
   <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
     <value>Minimum value for the Y-axis domain.
 
-double</value>
-  </data>
-  <data name="CurveMapperXMinLimitInputPortName" xml:space="preserve">
-    <value>x-MinLimit</value>
-  </data>
-  <data name="CurveMapperYMaxLimitInputPortName" xml:space="preserve">
-    <value>y-MaxLimit</value>
-  </data>
-  <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
-    <value>y-MinLimit</value>
-  </data>
-  <data name="CurveMapperXValuesOutputPortName" xml:space="preserve">
-    <value>x-Values</value>
-  </data>
-  <data name="CurveMapperXValuesOutputPortToolTip" xml:space="preserve">
-    <value>X values derived from the curve.
-
-double[]</value>
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperYValuesOutputPortName" xml:space="preserve">
-    <value>y-Values</value>
+    <value>y-值</value>
   </data>
   <data name="CurveMapperYValuesOutputPortToolTip" xml:space="preserve">
-    <value>Y values derived from the curve.
+    <value>从曲线派生的 Y 值。
 
 double[]</value>
   </data>

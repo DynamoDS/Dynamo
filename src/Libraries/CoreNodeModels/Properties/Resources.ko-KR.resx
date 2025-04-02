@@ -187,7 +187,7 @@
     <value>시스템에서 디렉토리를 선택하여 해당 경로를 반환할 수 있습니다</value>
   </data>
   <data name="DoubleInputNodeDescription" xml:space="preserve">
-    <value>숫자를 만듭니다</value>
+    <value>숫자를 만듭니다.</value>
   </data>
   <data name="DoubleSliderDescription" xml:space="preserve">
     <value>숫자 값을 생성합니다</value>
@@ -208,7 +208,7 @@
     <value>지정된 경로에서 파일 객체를 작성합니다</value>
   </data>
   <data name="FileObjectPortDataPathToolTip" xml:space="preserve">
-    <value>파일 경로입니다.</value>
+    <value>파일 경로를 문자열로.</value>
   </data>
   <data name="FileObjectPortDataResultToolTip" xml:space="preserve">
     <value>파일 객체</value>
@@ -310,7 +310,7 @@
     <value>mix;trim end</value>
   </data>
   <data name="ListMapDescription" xml:space="preserve">
-    <value>리스트의 모든 요소에 함수를 적용하여 결과에서 새 리스트를 생성합니다.</value>
+    <value>리스트의 모든 요소에 함수를 적용하고 결과에서 새 리스트를 생성합니다.</value>
   </data>
   <data name="ListMapSearchTags" xml:space="preserve">
     <value>function;applied;over list;do to each</value>
@@ -340,7 +340,7 @@
     <value>지정된 범위에서 숫자 또는 문자의 시퀀스를 작성합니다</value>
   </data>
   <data name="SequenceDescription" xml:space="preserve">
-    <value>숫자 시퀀스를 작성합니다.</value>
+    <value>숫자의 시퀀스를 만듭니다.</value>
   </data>
   <data name="OrDescription" xml:space="preserve">
     <value>부울 OR: 입력 중 하나가 true인 경우 True를 반환합니다. 모두가 true가 아니면 False를 반환합니다.</value>
@@ -418,7 +418,7 @@
     <value>객체를 문자열 표현으로 변환합니다.</value>
   </data>
   <data name="StringInputNodeDescription" xml:space="preserve">
-    <value>문자열 작성</value>
+    <value>문자열을 작성합니다.</value>
   </data>
   <data name="WatchDescription" xml:space="preserve">
     <value>노드의 출력을 시각화합니다.</value>
@@ -511,10 +511,10 @@
     <value>곡선</value>
   </data>
   <data name="SelectionElementOutputPortName" xml:space="preserve">
-    <value>요소</value>
+    <value>Element</value>
   </data>
   <data name="SelectionElementsOutputPortName" xml:space="preserve">
-    <value>요소</value>
+    <value>Elements</value>
   </data>
   <data name="SelectionFaceOutputPortName" xml:space="preserve">
     <value>표면</value>
@@ -562,14 +562,14 @@
   <data name="IFNodeWarningMessage" xml:space="preserve">
     <value>이 노드는 업데이트되었으며 이후 버전의 Dynamo에서 제거됩니다. 기존 동작은 유지되지만 새 버전은 이제 비어 있는 리스트, Null 값 및 다양한 길이의 입력을 지원합니다. 이 개선된 동작을 사용하려면 이 노드를 바꾸십시오.</value>
   </data>
-  <data name="CustomSelectionSearchTags" xml:space="preserve">
-    <value>dropdown;custom;custom dropdown;enum;custom enum</value>
+  <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
+    <value>은(는) 사용되지 않습니다. 새 단위 변환 노드를 사용하십시오.</value>
   </data>
   <data name="CustomSelectionNodeDescription" xml:space="preserve">
     <value>값을 사용자화할 수 있는 드롭다운 메뉴.</value>
   </data>
-  <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
-    <value>은(는) 사용되지 않습니다. 새 단위 변환 노드를 사용하십시오.</value>
+  <data name="CustomSelectionSearchTags" xml:space="preserve">
+    <value>dropdown;custom;custom dropdown;enum;custom enum</value>
   </data>
   <data name="IntegerSliderInfoMessage" xml:space="preserve">
     <value>입력한 값이 int64 범위에 없습니다.</value>
@@ -631,16 +631,16 @@
   <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
     <value>Number of values to generate.
 
-int</value>
+Default value (int): {0}</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
-    <value>Redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution.</value>
+    <value>선택한 수학 곡선을 기준으로 y 좌표에 따라 x 좌표를 재분배하여 점 분배를 정밀하게 제어합니다.</value>
   </data>
   <data name="CurveMapperSearchTags" xml:space="preserve">
     <value>graph;curve;mapper;math</value>
   </data>
   <data name="CurveMapperWarningMessage" xml:space="preserve">
-    <value>The provided original values cannot be redistributed using the curve equation.</value>
+    <value>제공된 원래 값은 곡선 방정식을 사용하여 재분배할 수 없습니다.</value>
   </data>
   <data name="CurveMapperXMaxLimitInputPortName" xml:space="preserve">
     <value>x-MaxLimit</value>
@@ -648,45 +648,45 @@ int</value>
   <data name="CurveMapperXMaxLimitInputPortToolTip" xml:space="preserve">
     <value>Maximum value for the X-axis domain.
 
-double</value>
-  </data>
-  <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
-    <value>Minimum value for the X-axis domain.
-
-double</value>
-  </data>
-  <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
-    <value>Maximum value for the Y-axis domain.
-
-double</value>
-  </data>
-  <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
-    <value>Minimum value for the Y-axis domain.
-
-double</value>
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperXMinLimitInputPortName" xml:space="preserve">
     <value>x-MinLimit</value>
   </data>
-  <data name="CurveMapperYMaxLimitInputPortName" xml:space="preserve">
-    <value>y-MaxLimit</value>
-  </data>
-  <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
-    <value>y-MinLimit</value>
+  <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
+    <value>Minimum value for the X-axis domain.
+
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperXValuesOutputPortName" xml:space="preserve">
     <value>x-Values</value>
   </data>
   <data name="CurveMapperXValuesOutputPortToolTip" xml:space="preserve">
-    <value>X values derived from the curve.
+    <value>곡선에서 파생된 X 값입니다.
 
 double[]</value>
+  </data>
+  <data name="CurveMapperYMaxLimitInputPortName" xml:space="preserve">
+    <value>y-MaxLimit</value>
+  </data>
+  <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
+    <value>Maximum value for the Y-axis domain.
+
+Default value (double): {0}</value>
+  </data>
+  <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
+    <value>y-MinLimit</value>
+  </data>
+  <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
+    <value>Minimum value for the Y-axis domain.
+
+Default value (double): {0}</value>
   </data>
   <data name="CurveMapperYValuesOutputPortName" xml:space="preserve">
     <value>y-Values</value>
   </data>
   <data name="CurveMapperYValuesOutputPortToolTip" xml:space="preserve">
-    <value>Y values derived from the curve.
+    <value>곡선에서 파생된 Y 값입니다.
 
 double[]</value>
   </data>

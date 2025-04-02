@@ -3,7 +3,7 @@
 
 Verwenden Sie die Eingabe `tolerance`, um die Ähnlichkeit von Elementen zu bestimmen. Bei Nummernlisten stellt der Wert 'tolerance' die maximal zulässige Differenz zwischen zwei Nummern dar, damit sie als ähnlich angesehen werden.
 
-Für Listen mit Zeichenfolgen ist dies ein Dezimalwert (zwischen 0 und 1), der das (mit Fuzzy-Logik berechnete) minimale Ähnlichkeitsverhältnis für benachbarte Elemente angibt, damit sie als ähnlich betrachtet werden. Bei Zeichenfolgenlisten stellt 'tolerance' die maximale Anzahl an Zeichen dar, die zwischen zwei Zeichenfolgen unterschiedlich sein können, wobei die Levenshtein-Distanz zum Vergleich verwendet wird. Die maximale Toleranz für Zeichenfolgen ist auf 5 festgelegt.
+For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is limited to 10.
 
 Die boolesche Eingabe `considerAdjacency` gibt an, ob die Nachbarschaft beim Gruppieren der Elemente berücksichtigt werden soll. Wenn True angegeben ist, werden nur benachbarte Elemente, die sich ähneln, gruppiert. Wenn False angegeben ist, wird nur die Ähnlichkeit zur Bildung von Gruppen verwendet, unabhängig von der Nachbarschaft.
 
