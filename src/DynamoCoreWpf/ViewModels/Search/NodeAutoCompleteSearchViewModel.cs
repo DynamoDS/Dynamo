@@ -839,12 +839,14 @@ namespace Dynamo.ViewModels
                 catch (Exception) { }
             });
 
+            //Make connectors invisible ( just like the cluster nodes ) before they get a chance to be drawn.
             var clusterNodesModel = clusterMapping.Values.ToList();
             clusterNodesModel.ForEach(nodeInCluster => nodeInCluster?.NodeModel?.AllConnectors?.ToList().ForEach(connector =>
             {
                 if (connector != null) connector.IsHidden = true;
             }));
 
+            //Finalizer will make cluster nodes and their connections visible after autolayout has determined their final positions.
             Action finalizer = () =>
             {
                 clusterNodesModel.ForEach(nodeInCluster =>
@@ -857,7 +859,7 @@ namespace Dynamo.ViewModels
                 });
             };
 
-            // AutoLayout should be called after all nodes are connected
+            // AutoLayout should be called after all nodes are connected.
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(wsViewModel.DynamoViewModel.CurrentSpace, node.NodeModel, clusterNodesModel.Select(x => x.NodeModel), false, false, false, finalizer);
         }
         /// <summary>
