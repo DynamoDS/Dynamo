@@ -2520,6 +2520,8 @@ Dynamo.ViewModels.NodeViewModel.IsDisplayingLabels.set -> void
 Dynamo.ViewModels.NodeViewModel.IsExperimental.get -> bool
 Dynamo.ViewModels.NodeViewModel.IsFrozen.get -> bool
 Dynamo.ViewModels.NodeViewModel.IsFrozen.set -> void
+Dynamo.ViewModels.NodeViewModel.IsHidden.get -> bool
+Dynamo.ViewModels.NodeViewModel.IsHidden.set -> void
 Dynamo.ViewModels.NodeViewModel.IsTransient.get -> bool
 Dynamo.ViewModels.NodeViewModel.IsTransient.set -> void
 Dynamo.ViewModels.NodeViewModel.IsFrozenExplicitly.get -> bool
