@@ -914,10 +914,17 @@ namespace CoreNodeModels
             curveInputs.AddRange(inputValues);
             curveInputs.Add(AstFactory.BuildStringNode(SelectedGraphType.ToString()));
 
-            AssociativeNode buildResultNode =
+            AssociativeNode buildResultNodeX =
                 AstFactory.BuildFunctionCall(
-                    new Func<List<double>, double, double, double, double, double, int, string, List<List<double>>>(
-                        CurveMapperGenerator.CalculateValues),
+                    new Func<List<double>, double, object, object, object, object, object, string, List<double>>(
+                        CurveMapperGenerator.CalculateValuesX),
+                    curveInputs
+                );
+
+            AssociativeNode buildResultNodeY =
+                AstFactory.BuildFunctionCall(
+                    new Func<List<double>, double, object, object, object, object, object, string, List<double>>(
+                        CurveMapperGenerator.CalculateValuesY),
                     curveInputs
                 );
 
@@ -930,12 +937,12 @@ namespace CoreNodeModels
             // Assign outputs
             var xValuesAssignment = AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
-                AstFactory.BuildIndexExpression(buildResultNode, AstFactory.BuildIntNode(0))
+                AstFactory.BuildIndexExpression(buildResultNodeX, AstFactory.BuildIntNode(0))
             );
 
             var yValuesAssignment = AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(1),
-                AstFactory.BuildIndexExpression(buildResultNode, AstFactory.BuildIntNode(1))
+                AstFactory.BuildIndexExpression(buildResultNodeY, AstFactory.BuildIntNode(1))
             );
 
             return new[] { xValuesAssignment, yValuesAssignment, dataBridgeCall };

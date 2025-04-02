@@ -1,22 +1,44 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Autodesk.DesignScript.Runtime;
 
 namespace DSCore.CurveMapper
 {
     public class CurveMapperGenerator
     {
         private static int rounding = 10;
+        private static List<List<double>> cachedValues = null;
 
+        [IsVisibleInDynamoLibrary(false)]
         public static List<List<double>> CalculateValues(
-            List<double> controlPoints, double canvasSize,
-            double minX, double maxX, double minY, double maxY,
-            int pointsCount, string graphType
+            List<double>
+            controlPoints,
+            double canvasSize,
+            [ArbitraryDimensionArrayImport] object minX,
+            [ArbitraryDimensionArrayImport] object maxX,
+            [ArbitraryDimensionArrayImport] object minY,
+            [ArbitraryDimensionArrayImport] object maxY,
+            object pointsCount,
+            string graphType
             )
         {
+            if (
+                minX is IEnumerable ||
+                maxX is IEnumerable ||
+                minY is IEnumerable ||
+                maxY is IEnumerable)
+            {
+                throw new ArgumentException("LIST INPUT IS UNSUPPORTED");
+            }
+
             var xValues = new List<double>() { double.NaN };
             var yValues = new List<double>() { double.NaN };
 
-            if (minX != maxX && minY != maxY && pointsCount >= 2)
+            
+
+            if (minX != maxX && minY != maxY) // pointsCount >= 2
             {
                 // Unpack the control points
                 double cp1x = GetCP(controlPoints, 0), cp1y = GetCP(controlPoints, 1);
@@ -31,30 +53,30 @@ namespace DSCore.CurveMapper
                     case "LinearCurve":
                         curve = new LinearCurve(cp1x, cp1y, cp2x, cp2y, canvasSize);
                         break;
-                    case "BezierCurve":
-                        curve = new BezierCurve(cp1x, cp1y, cp2x, cp2y, cp3x, cp3y, cp4x, cp4y, canvasSize);
-                        break;
-                    case "SineWave":
-                        curve = new SineWave(cp1x, cp1y, cp2x, cp2y, canvasSize);
-                        break;
-                    case "CosineWave":
-                        curve = new SineWave(cp1x, cp1y, cp2x, cp2y, canvasSize);
-                        break;
-                    case "ParabolicCurve":
-                        curve = new ParabolicCurve(cp1x, cp1y, cp2x, cp2y, canvasSize);
-                        break;
-                    case "PerlinNoiseCurve":
-                        curve = new PerlinNoiseCurve(cp1x, cp1y, cp2x, cp2y, cp3x, cp3y, canvasSize);
-                        break;
-                    case "PowerCurve":
-                        curve = new PowerCurve(cp1x, cp1y, canvasSize);
-                        break;
-                    case "SquareRootCurve":
-                        curve = new SquareRootCurve(cp1x, cp1y, cp2x, cp2y, canvasSize);
-                        break;
-                    case "GaussianCurve":
-                        curve = new GaussianCurve(cp1x, cp1y, cp2x, cp2y, cp3x, cp3y, cp4x, cp4y, canvasSize);
-                        break;
+                    //case "BezierCurve":
+                    //    curve = new BezierCurve(cp1x, cp1y, cp2x, cp2y, cp3x, cp3y, cp4x, cp4y, canvasSize);
+                    //    break;
+                    //case "SineWave":
+                    //    curve = new SineWave(cp1x, cp1y, cp2x, cp2y, canvasSize);
+                    //    break;
+                    //case "CosineWave":
+                    //    curve = new SineWave(cp1x, cp1y, cp2x, cp2y, canvasSize);
+                    //    break;
+                    //case "ParabolicCurve":
+                    //    curve = new ParabolicCurve(cp1x, cp1y, cp2x, cp2y, canvasSize);
+                    //    break;
+                    //case "PerlinNoiseCurve":
+                    //    curve = new PerlinNoiseCurve(cp1x, cp1y, cp2x, cp2y, cp3x, cp3y, canvasSize);
+                    //    break;
+                    //case "PowerCurve":
+                    //    curve = new PowerCurve(cp1x, cp1y, canvasSize);
+                    //    break;
+                    //case "SquareRootCurve":
+                    //    curve = new SquareRootCurve(cp1x, cp1y, cp2x, cp2y, canvasSize);
+                    //    break;
+                    //case "GaussianCurve":
+                    //    curve = new GaussianCurve(cp1x, cp1y, cp2x, cp2y, cp3x, cp3y, cp4x, cp4y, canvasSize);
+                    //    break;
                 }
 
                 if (curve != null)
@@ -83,6 +105,42 @@ namespace DSCore.CurveMapper
                 mappedValues.Add(Math.Round(minLimit + value / canvasSize * (maxLimit - minLimit), rounding));
             }
             return mappedValues;
+        }
+
+        //SafeCalculateValues
+        public static List<double> CalculateValuesX(
+            List<double>
+            controlPoints,
+            double canvasSize,
+            [ArbitraryDimensionArrayImport] object minX,
+            [ArbitraryDimensionArrayImport] object maxX,
+            [ArbitraryDimensionArrayImport] object minY,
+            [ArbitraryDimensionArrayImport] object maxY,
+            object pointsCount,
+            string graphType
+            )
+        {
+            // Run safe version to prevent list replication
+            cachedValues = CalculateValues(controlPoints, canvasSize, minX, maxX, minY, maxY, pointsCount, graphType);
+            return cachedValues?[0];
+        }
+        public static List<double> CalculateValuesY(
+            List<double>
+            controlPoints,
+            double canvasSize,
+            [ArbitraryDimensionArrayImport] object minX,
+            [ArbitraryDimensionArrayImport] object maxX,
+            [ArbitraryDimensionArrayImport] object minY,
+            [ArbitraryDimensionArrayImport] object maxY,
+            object pointsCount,
+            string graphType
+            )
+        {
+            if (cachedValues == null)
+            {
+                cachedValues = CalculateValues(controlPoints, canvasSize, minX, maxX, minY, maxY, pointsCount, graphType);
+            }
+            return cachedValues?[1];
         }
     }
 }
