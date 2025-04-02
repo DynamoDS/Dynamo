@@ -118,6 +118,7 @@ namespace Dynamo.UI.Views
         {
             CompatibilityMap();
             SetLocale();
+            SetDefaultUserNamePreviewValue();
 
             if (_hasPendingUpdates)
             {
@@ -125,6 +126,7 @@ namespace Dynamo.UI.Views
                 UpdateFromBackEnd();
             }
         }
+
 
         private async void SetLocale()
         {
@@ -567,6 +569,20 @@ namespace Dynamo.UI.Views
             }
         }
 
+        private async void SetDefaultUserNamePreviewValue()
+        {
+            if (!string.IsNullOrEmpty(publishPackageViewModel?.DynamoViewModel?.Model?.AuthenticationManager?.Username))
+            {
+                var payload = new { userName = publishPackageViewModel.DynamoViewModel.Model.AuthenticationManager.Username };
+
+                string jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(payload, Formatting.None);
+
+                if (dynWebView?.CoreWebView2 != null)
+                {
+                    await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveDefaultUserName({jsonPayload})");
+                }
+            }
+        }
 
         #endregion
 
@@ -754,6 +770,8 @@ namespace Dynamo.UI.Views
 
         internal void Submit()
         {
+            PrePopulateDefaultValues();
+
             if (publishPackageViewModel == null) return;
             if (publishPackageViewModel.SubmitCommand?.CanExecute() == true)
             {
@@ -763,6 +781,8 @@ namespace Dynamo.UI.Views
 
         internal void Publish()
         {
+            PrePopulateDefaultValues();
+
             if (publishPackageViewModel == null) return;
             if (publishPackageViewModel.PublishLocallyCommand?.CanExecute() == true)
             {
@@ -973,6 +993,25 @@ namespace Dynamo.UI.Views
             this.publishPackageViewModel?.DynamoViewModel?.Model.Logger.Log(logMessage);
         }
 
+        /// <summary>
+        /// Pre-populate default values for the package details
+        /// </summary>
+        private void PrePopulateDefaultValues()
+        {
+            if (publishPackageViewModel == null) return;
+            if (string.IsNullOrEmpty(publishPackageViewModel.CopyrightYear))
+            {
+                publishPackageViewModel.CopyrightYear = DateTime.Now.Year.ToString();
+            }
+            if (string.IsNullOrEmpty(publishPackageViewModel.License))
+            {
+                publishPackageViewModel.License = "MIT";
+            }
+            if (string.IsNullOrEmpty(publishPackageViewModel.CopyrightHolder))
+            {
+                publishPackageViewModel.CopyrightHolder = publishPackageViewModel.DynamoViewModel.Model.AuthenticationManager.Username;
+            }
+        }
         #endregion
 
         #region Dispose
