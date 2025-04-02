@@ -3,7 +3,7 @@
 
 使用“tolerance”输入来确定元素的相似性。对于数字列表，“tolerance”值表示两个数字之间允许的最大差异，以便将它们视为相似。
 
-For lists of strings, this value (between 0 and 10) represents the minimum similarity ratio (computed using fuzzy logic) for adjacent elements to be considered similar. For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is set to 10.
+For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is limited to 10.
 
 “considerAdjacency”布尔输入指示在对图元进行聚类时是否应考虑邻接性。如果为 True，则仅将相似的相邻元素聚集在一起。如果为 False，则无论邻接性如何，都将单独使用相似性来形成聚类。
 
