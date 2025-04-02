@@ -20,7 +20,7 @@ namespace DSCore.CurveMapper
             [ArbitraryDimensionArrayImport] object maxX,
             [ArbitraryDimensionArrayImport] object minY,
             [ArbitraryDimensionArrayImport] object maxY,
-            object pointsCount,
+            [ArbitraryDimensionArrayImport] object pointsCount, // REVERT
             string graphType
             )
         {
@@ -53,38 +53,54 @@ namespace DSCore.CurveMapper
                     case "LinearCurve":
                         curve = new LinearCurve(cp1x, cp1y, cp2x, cp2y, canvasSize);
                         break;
-                    //case "BezierCurve":
-                    //    curve = new BezierCurve(cp1x, cp1y, cp2x, cp2y, cp3x, cp3y, cp4x, cp4y, canvasSize);
-                    //    break;
-                    //case "SineWave":
-                    //    curve = new SineWave(cp1x, cp1y, cp2x, cp2y, canvasSize);
-                    //    break;
-                    //case "CosineWave":
-                    //    curve = new SineWave(cp1x, cp1y, cp2x, cp2y, canvasSize);
-                    //    break;
-                    //case "ParabolicCurve":
-                    //    curve = new ParabolicCurve(cp1x, cp1y, cp2x, cp2y, canvasSize);
-                    //    break;
-                    //case "PerlinNoiseCurve":
-                    //    curve = new PerlinNoiseCurve(cp1x, cp1y, cp2x, cp2y, cp3x, cp3y, canvasSize);
-                    //    break;
-                    //case "PowerCurve":
-                    //    curve = new PowerCurve(cp1x, cp1y, canvasSize);
-                    //    break;
-                    //case "SquareRootCurve":
-                    //    curve = new SquareRootCurve(cp1x, cp1y, cp2x, cp2y, canvasSize);
-                    //    break;
-                    //case "GaussianCurve":
-                    //    curve = new GaussianCurve(cp1x, cp1y, cp2x, cp2y, cp3x, cp3y, cp4x, cp4y, canvasSize);
-                    //    break;
+                    case "BezierCurve":
+                        curve = new BezierCurve(cp1x, cp1y, cp2x, cp2y, cp3x, cp3y, cp4x, cp4y, canvasSize);
+                        break;
+                    case "SineWave":
+                        curve = new SineWave(cp1x, cp1y, cp2x, cp2y, canvasSize);
+                        break;
+                    case "CosineWave":
+                        curve = new SineWave(cp1x, cp1y, cp2x, cp2y, canvasSize);
+                        break;
+                    case "ParabolicCurve":
+                        curve = new ParabolicCurve(cp1x, cp1y, cp2x, cp2y, canvasSize);
+                        break;
+                    case "PerlinNoiseCurve":
+                        curve = new PerlinNoiseCurve(cp1x, cp1y, cp2x, cp2y, cp3x, cp3y, canvasSize);
+                        break;
+                    case "PowerCurve":
+                        curve = new PowerCurve(cp1x, cp1y, canvasSize);
+                        break;
+                    case "SquareRootCurve":
+                        curve = new SquareRootCurve(cp1x, cp1y, cp2x, cp2y, canvasSize);
+                        break;
+                    case "GaussianCurve":
+                        curve = new GaussianCurve(cp1x, cp1y, cp2x, cp2y, cp3x, cp3y, cp4x, cp4y, canvasSize);
+                        break;
                 }
 
                 if (curve != null)
                 {
                     dynamic dynamicCurve = curve;
 
-                    xValues = MapValues(dynamicCurve.GetCurveXValues(pointsCount), minX, maxX, canvasSize);
-                    yValues = MapValues(dynamicCurve.GetCurveYValues(pointsCount), minY, maxY, canvasSize);
+                    int pointsCountInt;
+                    try
+                    {
+                        pointsCountInt = checked((int)(long)pointsCount);
+                    }
+                    catch (OverflowException)
+                    {
+                        throw new ArgumentOutOfRangeException(nameof(pointsCount), "pointsCount is out of range for an int.");
+                    }
+
+                    var c1 = (long)minX;
+                    var c2 = (long)maxX;
+                    var c4 = (long)pointsCount;
+                    var d1 = dynamicCurve.GetCurveXValues(pointsCountInt);
+                    var d2 = dynamicCurve.GetCurveYValues(pointsCountInt);
+
+                    xValues = MapValues(dynamicCurve.GetCurveXValues(pointsCountInt), (long)minX, (long)maxX, canvasSize);
+                    yValues = MapValues(dynamicCurve.GetCurveYValues(pointsCountInt), (long)minY, (long)maxY, canvasSize);
                 }
             }
 

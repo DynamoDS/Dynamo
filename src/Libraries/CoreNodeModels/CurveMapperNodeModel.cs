@@ -895,9 +895,7 @@ namespace CoreNodeModels
                 {
                     AstFactory.BuildDoubleNode(cp.X),
                     AstFactory.BuildDoubleNode(DynamicCanvasSize - cp.Y)
-                })
-                .Cast<AssociativeNode>()
-                .ToList()
+                }).ToList()
                 );
 
             // Handle input values with fall-back defaults
@@ -928,21 +926,21 @@ namespace CoreNodeModels
                     curveInputs
                 );
 
-            // DataBridge call
-            var dataBridgeCall = AstFactory.BuildAssignment(
-                AstFactory.BuildIdentifier(AstIdentifierBase + "_dataBridge"),
-                VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputValues))
-            );
-
             // Assign outputs
             var xValuesAssignment = AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(0),
-                AstFactory.BuildIndexExpression(buildResultNodeX, AstFactory.BuildIntNode(0))
+                buildResultNodeX
             );
 
             var yValuesAssignment = AstFactory.BuildAssignment(
                 GetAstIdentifierForOutputIndex(1),
-                AstFactory.BuildIndexExpression(buildResultNodeY, AstFactory.BuildIntNode(1))
+                buildResultNodeY
+            );
+
+            // DataBridge call
+            var dataBridgeCall = AstFactory.BuildAssignment(
+                AstFactory.BuildIdentifier(AstIdentifierBase + "_dataBridge"),
+                VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputValues))
             );
 
             return new[] { xValuesAssignment, yValuesAssignment, dataBridgeCall };
