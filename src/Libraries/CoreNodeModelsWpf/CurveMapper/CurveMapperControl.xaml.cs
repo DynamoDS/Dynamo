@@ -170,8 +170,6 @@ namespace Dynamo.Wpf.CurveMapper
             // Dictionary to map UI control points to their corresponding data
             var controlPointsResetMap = BuildControlPointsDictionary();
             RecreateControlPoints(controlPointsResetMap);
-
-            curveMapperNodeModel.GenerateRenderValues();
             RenderCurve();
         }
 

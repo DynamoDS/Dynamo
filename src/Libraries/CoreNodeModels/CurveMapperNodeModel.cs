@@ -268,7 +268,6 @@ namespace CoreNodeModels
             set
             {
                 renderValuesY = value;
-                OnNodeModified();
             }
         }
         /// <summary> Gets or sets the X values used for rendering the curve. </summary>
@@ -279,7 +278,6 @@ namespace CoreNodeModels
             set
             {
                 renderValuesX = value;
-                OnNodeModified();
             }
         }
 
@@ -334,7 +332,6 @@ namespace CoreNodeModels
             set
             {
                 selectedGraphType = value;
-                GenerateRenderValues();
                 RaisePropertyChanged(nameof(SelectedGraphType));
                 OnNodeModified();
             }
@@ -447,6 +444,7 @@ namespace CoreNodeModels
             if (SelectedGraphType == GraphTypes.Empty)
             {
                 RenderValuesX = RenderValuesY = null;
+                OnNodeModified();
                 return;
             }
             if (!IsValidCurve())
@@ -454,9 +452,10 @@ namespace CoreNodeModels
                 Warning(Properties.Resources.CurveMapperWarningMessage, isPersistent: true);
 
                 RenderValuesX = RenderValuesY = null;
+                OnNodeModified();
                 return;
             }
-            else if(!IsResizing)
+            if(!IsResizing)
             {
                 ClearErrorsAndWarnings();
             }
@@ -539,6 +538,11 @@ namespace CoreNodeModels
                 dynamic dynamicCurve = curve;
                 RenderValuesX = dynamicCurve.GetCurveXValues(PointsCount, true);
                 RenderValuesY = dynamicCurve.GetCurveYValues(PointsCount, true);
+
+                if (!IsResizing)
+                {
+                    OnNodeModified();
+                }
             }
         }
 
