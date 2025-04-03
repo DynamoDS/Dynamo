@@ -307,7 +307,7 @@
     <value>'{0}()' 방법이 이미 정의되어 있습니다</value>
   </data>
   <data name="kMethodHasInvalidArguments" xml:space="preserve">
-    <value>'{0}()' has some invalid arguments href=kMethodHasInvalidArguments</value>
+    <value>'{0}()'에는 잘못된 인수가 있습니다. href=kMethodHasInvalidArguments</value>
   </data>
   <data name="kMethodIsInaccessible" xml:space="preserve">
     <value>여기서는 '{0}()' 방법으로 도달할 수 없습니다</value>
@@ -316,7 +316,7 @@
     <value>'{0}()' 방법을 찾을 수 없습니다. href=kMethodNotFound.html</value>
   </data>
   <data name="kMethodResolutionFailure" xml:space="preserve">
-    <value>Internal error, please report: Method resolution failure on: {0}().</value>
+    <value>내부 오류가 발생했습니다. 보고해 주십시오. 메서드 해석 실패: {0}().</value>
   </data>
   <data name="kMethodResolutionFailureForOperator" xml:space="preserve">
     <value>'{0}' 연산자는 '{1}' 및 '{2}' 유형의 피연산자에 적용할 수 없습니다</value>
@@ -334,7 +334,7 @@
     <value>'{0}'에 대한 여러 정의가 {1}(으)로 확인되었습니다</value>
   </data>
   <data name="kMethodDeprecated" xml:space="preserve">
-    <value>Method '{0}' has been deprecated, please use method '{1}' instead. href=Deprecated.html</value>
+    <value>메서도 '{0}'은(는) 더 이상 사용되지 않습니다. 대신 메서드 '{1}'을(를) 사용하십시오. href=Deprecated.html</value>
   </data>
   <data name="kNoStepSizeInAmountRangeExpression" xml:space="preserve">
     <value>양 범위 표현식에 단계 크기가 지정되지 않았습니다</value>
@@ -349,7 +349,7 @@
     <value>'{0}' 특성을 찾을 수 없습니다</value>
   </data>
   <data name="kPropertyOfClassNotFound" xml:space="preserve">
-    <value>No property called {0} on {1} could be found href=kPropertyOfClassNotFound</value>
+    <value>{1}에서 {0}(이)라는 특성을 찾을 수 없습니다. href=kPropertyOfClassNotFound</value>
   </data>
   <data name="kRangeExpressionConflictOperator" xml:space="preserve">
     <value>양 연산자는 단계 연산자와 함께 사용할 수 없습니다</value>
@@ -884,8 +884,8 @@
     <value>Null 값은 {0}(으)로 투영할 수 없습니다. href=FailedToCastFromNull.html</value>
   </data>
   <data name="ArgumentNullException" xml:space="preserve">
-    <value>Value cannot be null.
-Parameter name: {0}. href=ArgumentNullException.html</value>
+    <value>값은 null일 수 없습니다.
+매개변수 이름: {0}. href=ArgumentNullException.html</value>
   </data>
   <data name="FunctionGroupNotFound" xml:space="preserve">
     <value>{1}에서 {0} 함수를 찾을 수 없습니다.</value>

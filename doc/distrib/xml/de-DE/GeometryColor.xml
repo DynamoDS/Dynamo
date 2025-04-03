@@ -39,7 +39,7 @@
         </member>
         <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
             <summary>Zeigt das Netz nach Einzelfarbe, Farben pro Fläche, Farben pro Scheitelpunkt oder Farben pro Flächenscheitelpunkt an.</summary>
-            <param name="mesh">The Mesh on which to apply the colors</param>
+            <param name="mesh">Netz, auf das die Farben angewendet werden sollen</param>
             <param name="colors">Die Farbanzahl muss gleich 1 (Einzelfarbe) oder gleich der Flächenanzahl (Farbe pro Fläche) oder gleich der Scheitelpunktanzahl (Farbe pro Scheitelpunkt) oder gleich der Dreiecksanzahl multipliziert mit drei (Farbe pro Flächenscheitelpunkt) sein</param>
             <param name="smoothShading">Wenn True, wird die Schattierung glatt statt facettiert aussehen, was für die Visualisierung glatter, kontinuierlicher Oberflächen nützlich ist</param>
             <returns>Ein Anzeigeobjekt.</returns>

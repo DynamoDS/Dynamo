@@ -31,15 +31,15 @@
             <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DebugTools.EnableAsmJournaling(System.Collections.IList,System.String)">
-            <summary>Enables ASM journaling</summary>
-            <param name="input">Any input value</param>
-            <param name="journalPath">optional path to specify location of ASM journals.</param>
-            <returns name="output">Returns the input value</returns>
+            <summary>Povolí ASM žurnálování</summary>
+            <param name="input">Libovolná vstupní hodnota</param>
+            <param name="journalPath">Volitelná cesta k určení umístění ASM žurnálů.</param>
+            <returns name="output">Vrací vstupní hodnotu</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DebugTools.DisableAsmJournaling(System.Collections.IList)">
-            <summary>Disables ASM journaling</summary>
-            <param name="input">Any input value</param>
-            <returns name="output">Returns the input value</returns>
+            <summary>Zakáže ASM žurnálování</summary>
+            <param name="input">Libovolná vstupní hodnota</param>
+            <returns name="output">Vrací vstupní hodnotu</returns>
         </member>
         <member name="T:Autodesk.DesignScript.Geometry.Core.EntityTags">
             <summary>Štítky umožňují přidat k entitě DesignScriptEntity libovolná metadata. Jde o funkci, která je zásadní

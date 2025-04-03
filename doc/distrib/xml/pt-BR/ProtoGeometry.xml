@@ -31,15 +31,15 @@
             <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DebugTools.EnableAsmJournaling(System.Collections.IList,System.String)">
-            <summary>Enables ASM journaling</summary>
-            <param name="input">Any input value</param>
-            <param name="journalPath">optional path to specify location of ASM journals.</param>
-            <returns name="output">Returns the input value</returns>
+            <summary>Ativa o registro no diário do ASM</summary>
+            <param name="input">Qualquer valor de entrada</param>
+            <param name="journalPath">caminho opcional para especificar a localização dos diários do ASM.</param>
+            <returns name="output">Retorna o valor de entrada</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DebugTools.DisableAsmJournaling(System.Collections.IList)">
-            <summary>Disables ASM journaling</summary>
-            <param name="input">Any input value</param>
-            <returns name="output">Returns the input value</returns>
+            <summary>Desativa o registro no diário do ASM</summary>
+            <param name="input">Qualquer valor de entrada</param>
+            <returns name="output">Retorna o valor de entrada</returns>
         </member>
         <member name="T:Autodesk.DesignScript.Geometry.Core.EntityTags">
             <summary>Os identificadores permitem adicionar metadados arbitrários para um DesignScriptEntity.  Isto é crítico para a integração da geometria do Revit.</summary>

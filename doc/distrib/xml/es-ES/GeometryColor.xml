@@ -39,7 +39,7 @@
         </member>
         <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
             <summary>Muestra la malla por un solo color, colores por cara, colores por vértice o colores por vértice de cara.</summary>
-            <param name="mesh">The Mesh on which to apply the colors</param>
+            <param name="mesh">La malla en la que se aplicarán los colores</param>
             <param name="colors">El número de colores debe ser igual a 1 (un solo color), al número de caras (color por cara), al número de vértices (por vértice) o al número de triángulos multiplicado por tres (color por vértice de triángulo).</param>
             <param name="smoothShading">Si se establece en "True" (verdadero), el sombreado se mostrará suave en lugar de facetado; esto es útil para visualizar superficies continuas suaves.</param>
             <returns>Un objeto de visualización.</returns>

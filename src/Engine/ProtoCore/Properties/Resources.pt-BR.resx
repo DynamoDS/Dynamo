@@ -307,7 +307,7 @@
     <value>Método '{0}() ' já definido</value>
   </data>
   <data name="kMethodHasInvalidArguments" xml:space="preserve">
-    <value>'{0}()' has some invalid arguments href=kMethodHasInvalidArguments</value>
+    <value>'{0}()' tem alguns argumentos inválidos href=kMethodHasInvalidArguments</value>
   </data>
   <data name="kMethodIsInaccessible" xml:space="preserve">
     <value>O método '{0}()' não pode ser alcançado daqui</value>
@@ -316,7 +316,7 @@
     <value>Método '{0}()' não encontrado href=kMethodNotFound.html</value>
   </data>
   <data name="kMethodResolutionFailure" xml:space="preserve">
-    <value>Internal error, please report: Method resolution failure on: {0}().</value>
+    <value>Erro interno. Informe: Falha na resolução do método em: {0}().</value>
   </data>
   <data name="kMethodResolutionFailureForOperator" xml:space="preserve">
     <value>O operador '{0}' não pode ser aplicado para operandos do tipo '{1}' e '{2}'</value>
@@ -334,7 +334,7 @@
     <value>Múltiplas definições para '{0}' são encontrados como {1}</value>
   </data>
   <data name="kMethodDeprecated" xml:space="preserve">
-    <value>Method '{0}' has been deprecated, please use method '{1}' instead. href=Deprecated.html</value>
+    <value>O método '{0}' está obsoleto. Use antes o método '{1}'. href=Deprecated.html</value>
   </data>
   <data name="kNoStepSizeInAmountRangeExpression" xml:space="preserve">
     <value>Nenhum tamanho de etapa está especificado na expressão de faixa de valor</value>
@@ -349,7 +349,7 @@
     <value>A propriedade '{0}' não foi encontrada</value>
   </data>
   <data name="kPropertyOfClassNotFound" xml:space="preserve">
-    <value>No property called {0} on {1} could be found href=kPropertyOfClassNotFound</value>
+    <value>Não foi possível localizar nenhuma propriedade chamada {0} em {1} href=kPropertyOfClassNotFound</value>
   </data>
   <data name="kRangeExpressionConflictOperator" xml:space="preserve">
     <value>Um operador de quantidade não pode ser usado junto com um operador de etapa</value>
@@ -884,8 +884,8 @@
     <value>Não é possível projetar um valor nulo para {0} href=FailedToCastFromNull.html</value>
   </data>
   <data name="ArgumentNullException" xml:space="preserve">
-    <value>Value cannot be null.
-Parameter name: {0}. href=ArgumentNullException.html</value>
+    <value>O valor não pode ser nulo.
+Nome do parâmetro: {0}. href=ArgumentNullException.html</value>
   </data>
   <data name="FunctionGroupNotFound" xml:space="preserve">
     <value>Nenhuma função chamada {0} no {1} pôde ser encontrada</value>

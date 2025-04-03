@@ -39,7 +39,7 @@
         </member>
         <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
             <summary>依單一顏色、每個面一色、每個頂點一色或每個面和頂點都一色顯示網格。</summary>
-            <param name="mesh">The Mesh on which to apply the colors</param>
+            <param name="mesh">要套用顏色的網格</param>
             <param name="colors">顏色數必須等於 1 (單一顏色)，或等於面數 (每個面一色)，或等於頂點數 (每個頂點一色)，或等於三角形數乘以 3 (每個三角形和頂點都一色)</param>
             <param name="smoothShading">如果為 True，描影會看起來平滑而不是呈現刻面，這對於視覺化平滑連續的曲面非常有用</param>
             <returns>顯示物件。</returns>

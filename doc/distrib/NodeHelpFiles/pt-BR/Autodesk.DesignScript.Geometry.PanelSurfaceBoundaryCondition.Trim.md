@@ -1,5 +1,5 @@
 ## Em profundidade
-Recorte painéis sobrepostos para o limite da superfície.
+Corte os painéis sobrepostos até o limite da superfície.
 ___
 ## Arquivo de exemplo
 

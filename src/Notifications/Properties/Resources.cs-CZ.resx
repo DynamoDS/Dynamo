@@ -136,7 +136,7 @@
     <value>Oznámení</value>
   </data>
   <data name="NoNotificationsMsg" xml:space="preserve">
-    <value>You currently have no notifications. New notifications will appear above</value>
+    <value>Aktuálně nemáte žádná oznámení. Nová oznámení se zobrazí výše</value>
   </data>
   <data name="NoNotificationsTitle" xml:space="preserve">
     <value>Žádná oznámení</value>

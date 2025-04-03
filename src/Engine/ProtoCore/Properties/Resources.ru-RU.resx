@@ -307,7 +307,7 @@
     <value>Метод '{0}()' уже определен</value>
   </data>
   <data name="kMethodHasInvalidArguments" xml:space="preserve">
-    <value>'{0}()' has some invalid arguments href=kMethodHasInvalidArguments</value>
+    <value>В «{0}()» имеются недопустимые аргументы href=kMethodHasInvalidArguments</value>
   </data>
   <data name="kMethodIsInaccessible" xml:space="preserve">
     <value>Невозможно достичь выполнения метода '{0}()' здесь</value>
@@ -316,7 +316,7 @@
     <value>Метод «{0}()» не найден href=kMethodNotFound.html</value>
   </data>
   <data name="kMethodResolutionFailure" xml:space="preserve">
-    <value>Internal error, please report: Method resolution failure on: {0}().</value>
+    <value>Внутренняя ошибка. Отправьте отчет: сбой разрешения метода при: {0}().</value>
   </data>
   <data name="kMethodResolutionFailureForOperator" xml:space="preserve">
     <value>Оператор '{0}' невозможно применить к операнду типов '{1}' и '{2}'</value>
@@ -334,7 +334,7 @@
     <value>Несколько определений для '{0}' найдены в виде {1}</value>
   </data>
   <data name="kMethodDeprecated" xml:space="preserve">
-    <value>Method '{0}' has been deprecated, please use method '{1}' instead. href=Deprecated.html</value>
+    <value>Метод «{0}» был исключен, используйте вместо этого метод «{1}». href=Deprecated.html</value>
   </data>
   <data name="kNoStepSizeInAmountRangeExpression" xml:space="preserve">
     <value>Размер шага не задан в выражении диапазона объема.</value>
@@ -349,7 +349,7 @@
     <value>Свойство '{0}' не найдено</value>
   </data>
   <data name="kPropertyOfClassNotFound" xml:space="preserve">
-    <value>No property called {0} on {1} could be found href=kPropertyOfClassNotFound</value>
+    <value>Невозможно найти свойство {0} в {1} href=kPropertyOfClassNotFound</value>
   </data>
   <data name="kRangeExpressionConflictOperator" xml:space="preserve">
     <value>Оператор количества не может использоваться вместе с оператором шага</value>
@@ -884,8 +884,8 @@
     <value>Нулевое значение не может быть приведено к {0} href=FailedToCastFromNull.html</value>
   </data>
   <data name="ArgumentNullException" xml:space="preserve">
-    <value>Value cannot be null.
-Parameter name: {0}. href=ArgumentNullException.html</value>
+    <value>Значение не может быть пустым.
+Имя параметра: {0}. href=ArgumentNullException.html</value>
   </data>
   <data name="FunctionGroupNotFound" xml:space="preserve">
     <value>Невозможно найти функцию {0} в {1}</value>
