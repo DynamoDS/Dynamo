@@ -873,9 +873,9 @@
     <value>Сбой при публикации!</value>
   </data>
   <data name="FileNotPublishMessage" xml:space="preserve">
-    <value>Файл не найдены или содержатся в пакете. Следует добавлять только те файлы, которые находятся вне пакетов.
+    <value>Файлы не найдены или содержатся в пакете. Следует добавлять только те файлы, которые находятся вне пакетов.
 
-Не удалось опубликовать файлы:
+Не удалось опубликовать файлы: 
 {0}</value>
   </data>
   <data name="FilePathConverterNoFileSelected" xml:space="preserve">
@@ -939,10 +939,10 @@
     <value>Уменьшить</value>
   </data>
   <data name="InfoBubbleError" xml:space="preserve">
-    <value>Ошибка:</value>
+    <value>Ошибка. </value>
   </data>
   <data name="InfoBubbleWarning" xml:space="preserve">
-    <value>Предупреждение:</value>
+    <value>Предупреждение. </value>
   </data>
   <data name="InstalledPackageViewAdditionalFileLabel" xml:space="preserve">
     <value>Дополнительные файлы</value>
@@ -1079,7 +1079,7 @@
   <data name="MessageFileInUseByApplication" xml:space="preserve">
     <value>В настоящий момент файл используется другим приложением.
 	
-Закройте файл, прежде чем пытаться перезаписать его.</value>
+Прежде чем пытаться перезаписать файл, закройте его.</value>
   </data>
   <data name="TitleFileInUse" xml:space="preserve">
     <value>Файл используется</value>
@@ -1185,9 +1185,9 @@
 При отказе данный узел будет перемещен в новый пакет, создаваемый в данный момент.</value>
   </data>
   <data name="MessageToDeprecatePackage" xml:space="preserve">
-    <value>Вы действительно хотите исключить {0}? Этот запрос будет отклонен, если вы не являетесь разработчиком пакета. Это означает, что вы больше не будете обслуживать данный пакет, несмотря на то что он все равно будет отображаться в результатах поиска. 
+    <value>Исключить пакет {0}? Этот запрос будет отклонен, если вы не являетесь сопроводителем пакета. Это означает, что вы больше не будете обслуживать данный пакет, несмотря на то что он все равно будет отображаться в результатах поиска. 
 
-Всегда можно отменить исключение пакета.</value>
+Исключение пакета всегда можно отменить.</value>
   </data>
   <data name="MessageToUndeprecatePackage" xml:space="preserve">
     <value>Вы действительно хотите отменить исключение {0}? Этот запрос будет отклонен, если вы не являетесь разработчиком этого пакета. Это означает, что вы продолжите обслуживать данный пакет, и он будет отображаться при просмотре пользователями пакетов. 
@@ -1195,11 +1195,11 @@
 Всегда можно исключить пакет повторно.</value>
   </data>
   <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
-    <value>Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
+    <value>Пакет {0} имеет одну или несколько зависимостей, которые конфликтуют со следующими пакетами, используемыми в рабочем пространстве: {1}. Конфликты зависимостей могут привести к непредвиденному поведению.
     
-Do you wish to continue installing it while keeping the packages that are already installed?
+Продолжить установку, не удаляя уже установленные пакеты?
 
-If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Try restarting {2} and download {0} again.</value>
+В противном случае {2} необходимо удалить {1} для продолжения работы, однако это невозможно, так как они используются. Попробуйте перезапустить {2}, а затем повторно скачайте {0}.</value>
   </data>
   <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
     <value>Пакет {0} имеет одну или несколько зависимостей, конфликтующих со следующими пакетами:
@@ -2036,12 +2036,12 @@ If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Tr
     <value>Новая вкладка не добавляется, т. к. расширение уже присутствует на боковой панели расширений.</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
-    <value>{1} cannot be loaded.
-Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
-To install {1}, Dynamo needs to first uninstall {0}. 
-Restart Dynamo to complete the uninstall.
+    <value>Невозможно загрузить {1}.
+Установка приведет к конфликту с одним или несколькими определениями узлов, которые уже существуют в загруженном в данный момент пакете {0}. 
+Для установки {1} программе Dynamo требуется сначала удалить {0}. 
+Для завершения удаления перезапустите Dynamo.
 
-Uninstall the following packages: {0}?</value>
+Удалить следующие пакеты: {0}?</value>
   </data>
   <data name="PreviewText" xml:space="preserve">
     <value> Данная функция доступна в предварительной версии. </value>
@@ -2200,25 +2200,25 @@ Uninstall the following packages: {0}?</value>
     <value>Требуется перезапуск Dynamo</value>
   </data>
   <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
-    <value>{0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
+    <value>{0} имеет зависимости, которые конфликтуют со следующими встроенными пакетами: {1}. Конфликты зависимостей могут привести к непредвиденному поведению.
     
-Do you wish to continue trying to install {0}?</value>
+Продолжить установку {0}?</value>
   </data>
   <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
-    <value>{0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
+    <value>Невозможно установить {0}, так как эта версия конфликтует с другой, уже установленной версией встроенного пакета: {1}.
     
-You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again.</value>
+Попробуйте отключить загрузку пакетов из путей встроенных пакетов или выгрузить конфликтующий пакет, а затем перезапустить {2} и скачать {0} еще раз.</value>
   </data>
   <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
-    <value>The same version of package {0} is already installed as a built-in package and does not need to be installed again.</value>
+    <value>Эта же версия пакета {0} уже установлена в качестве встроенного пакета и не требует повторной установки.</value>
   </data>
   <data name="MessageSamePackageSameVersInLocalPackages" xml:space="preserve">
     <value>Эта же версия {0} уже установлена и не требует повторной установки.</value>
   </data>
   <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
-    <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
+    <value>Невозможно установить пакет {0}, так как он конфликтует с другой, уже установленной версией: {1}. 
 
-Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again.</value>
+Удалить {1}? Перезапустите {2}, чтобы завершить удаление, и попробуйте повторно скачать {0}.</value>
   </data>
   <data name="PreferencesViewGeneralSettingsRun" xml:space="preserve">
     <value>Параметры запуска</value>
@@ -2398,7 +2398,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Описание &lt;Дважды нажмите здесь, чтобы изменить описание группы&gt;</value>
   </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>Title &lt;Click here to edit the group title&gt;</value>
+    <value>Заголовок &lt;щелкните для редактирования заголовка группы&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
     <value>Добавить группу в эту группу</value>
@@ -2591,7 +2591,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Использование Revit для масштабирования вспомогательных элементов фоновой графики</value>
   </data>
   <data name="PreferencesUseHostScaleUnitsToolTip" xml:space="preserve">
-    <value>When toggled on, the current Host document units will be used to scale the background graphic helpers (grids, axes). Otherwise, the Graphic Elements Scale drop-down will determine scale.</value>
+    <value>Если этот параметр включен, для масштабирования вспомогательных элементов фоновой графики (сеток, осей) будут использоваться текущие единицы измерения документа основного приложения. В противном случае масштаб будет определяться значением в раскрывающемся списке «Масштаб графических элементов».</value>
   </data>
   <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
     <value>0</value>
@@ -2619,7 +2619,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Ключевые слова</value>
   </data>
   <data name="PublishPackageViewLicenseSubLabel" xml:space="preserve">
-    <value>Applies to the latest package version. If blank, the package will be licensed under </value>
+    <value>Применимо к последней версии пакета. Если поле не заполнено, лицензия на пакет будет предоставляться по </value>
   </data>
   <data name="PublishPackageViewLicenseWatermark" xml:space="preserve">
     <value>Лицензия</value>
@@ -2894,7 +2894,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Этот пакет содержит пользовательские узлы, которые используются. Их необходимо удалить или закрыть график перед удалением пакета.</value>
   </data>
   <data name="PackagesGuideNavigatePackagesText" xml:space="preserve">
-    <value>\nWhen you install a package, it appears in the library under Add-ons.  \n\n**Click to expand the package** so you can see its nodes (functions).</value>
+    <value>\nПри установке пакет отображается в библиотеке в разделе «Надстройки». \n\n**Щелкните, чтобы развернуть пакет** и отобразить его узлы (функции).</value>
   </data>
   <data name="PackagesGuideNavigatePackagesTitle" xml:space="preserve">
     <value>Перейти к пакетам</value>
@@ -3164,11 +3164,11 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Ошибка основы пакета</value>
   </data>
   <data name="TrustedLocationNotAccessible" xml:space="preserve">
-    <value>A problem occurred when trying to access the trusted location. Dynamo is unable to obtain read/write access to
+    <value>При попытке получить доступ к доверенному расположению возникла проблема. Программе Dynamo не удалось получить доступ на чтение и запись в
 {0}</value>
   </data>
   <data name="UnableToAccessTrustedDirectory" xml:space="preserve">
-    <value>Unable To Access Trusted Directory</value>
+    <value>Не удалось получить доступ к доверенной папке</value>
   </data>
   <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
     <value>Закрепить провод</value>
@@ -3183,7 +3183,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Перейти к предшествующему</value>
   </data>
   <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
-    <value>Navigate Downtream</value>
+    <value>Перейти к следующему</value>
   </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>Соединения узлов</value>
@@ -3749,7 +3749,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Невозможно разместить пользовательский узел в его же рабочем пространстве без правильной реализации рекурсивного основного варианта с помощью узла scopeif.</value>
   </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
-    <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
+    <value>Совместимость этой версии с вашими настройками не проверялась. Они могут как работать надлежащим образом, так и нет.</value>
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Возможно, в системе не настроен компонент Autodesk Identity Manager. Чтобы обеспечить полный доступ ко всем функциям, войдите в учетную запись на портале Autodesk Account с помощью Autodesk Identity Manager.
@@ -3777,19 +3777,19 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Показать описание группы по умолчанию</value>
   </data>
   <data name="NodeAutoCompleteToolTip" xml:space="preserve">
-    <value>Click to get Node Autocomplete suggestions</value>
+    <value>Щелкните, чтобы получить варианты автозаполнения узла</value>
   </data>
   <data name="ExportWorkspaceAsImage" xml:space="preserve">
-    <value>Workspace has been exported as an image to </value>
+    <value>Рабочее пространство экспортировано в качестве изображения в </value>
   </data>
   <data name="ExportWorkspaceAs3DImage" xml:space="preserve">
-    <value>Workspace has been exported as a 3D image to </value>
+    <value>Рабочее пространство экспортировано в качестве 3D-изображения в </value>
   </data>
   <data name="PackageDetailsViewExtensionName" xml:space="preserve">
     <value>Сведения о пакете</value>
   </data>
   <data name="PublishPackageBackToFileButton" xml:space="preserve">
-    <value>Back to File Selection</value>
+    <value>Назад к выбору файлов</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

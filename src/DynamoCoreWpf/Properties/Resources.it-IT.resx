@@ -1193,11 +1193,11 @@ Se non si invia una nuova versione, il nodo verrà spostato nel nuovo pacchetto 
 È possibile impostare il pacchetto come obsoleto in un secondo momento.</value>
   </data>
   <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
-    <value>Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
+    <value>Il pacchetto {0} presenta una o più dipendenze in conflitto con i seguenti pacchetti in uso nel area di lavoro: {1}. I conflitti delle dipendenze potrebbero causare un comportamento imprevisto.
     
-Do you wish to continue installing it while keeping the packages that are already installed?
+Continuare l'installazione mantenendo i pacchetti già installati?
 
-If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Try restarting {2} and download {0} again.</value>
+In caso contrario, in {2} è necessario disinstallare {1} per continuare, ma non è possibile poiché sono in uso. Provare a riavviare {2} e scaricare nuovamente {0}.</value>
   </data>
   <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
     <value>Il pacchetto {0} presenta una o più dipendenze in conflitto con i seguenti pacchetti: {1} Se si continua ad installare il pacchetto, potrebbe verificarsi un funzionamento imprevisto. Per evitare ciò, disinstallare i pacchetti caricati in conflitto, riavviare Dynamo e scaricare nuovamente {0}.</value>
@@ -1621,10 +1621,10 @@ Pubblicare un altro pacchetto?</value>
     <value>Aggiungi file</value>
   </data>
   <data name="PublishPackageViewAddFileButtonTooltip" xml:space="preserve">
-    <value>Aggiungi file</value>
+    <value>Aggiunge il file.</value>
   </data>
   <data name="PublishPackageRemoveFromPacakgeTooltip" xml:space="preserve">
-    <value>Rimuovi dal pacchetto</value>
+    <value>Rimuove dal pacchetto.</value>
   </data>
   <data name="PublishPackageViewContextMenuIsNodeLibrary" xml:space="preserve">
     <value>È libreria nodo</value>
@@ -2028,12 +2028,12 @@ Installare l'aggiornamento più recente di Dynamo?</value>
     <value>Non è stata una nuova scheda perché l'estensione è già presente sulla barra laterale delle estensioni.</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
-    <value>{1} cannot be loaded.
-Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
-To install {1}, Dynamo needs to first uninstall {0}. 
-Restart Dynamo to complete the uninstall.
+    <value>Impossibile caricare {1}.
+L'installazione sarà in conflitto con una o più definizioni di nodi già esistenti in {0}, attualmente caricato. 
+Per installare {1}, in Dynamo è necessario prima disinstallare{0}. 
+Riavviare Dynamo per completare la disinstallazione.
 
-Uninstall the following packages: {0}?</value>
+Disinstallare i seguenti pacchetti: {0}?</value>
   </data>
   <data name="PreviewText" xml:space="preserve">
     <value> Questa funzionalità è in anteprima. </value>
@@ -2192,25 +2192,25 @@ Uninstall the following packages: {0}?</value>
     <value>Richiede il riavvio di Dynamo</value>
   </data>
   <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
-    <value>{0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
+    <value>{0} presenta dipendenze in conflitto con i seguenti pacchetti incorporati: {1}. I conflitti delle dipendenze potrebbero causare un comportamento imprevisto.
     
-Do you wish to continue trying to install {0}?</value>
+Continuare a provare a installare {0}?</value>
   </data>
   <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
-    <value>{0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
+    <value>Impossibile installare {0} perché è in conflitto con una versione differente del pacchetto incorporato, {1}, che è già installata.
     
-You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again.</value>
+È possibile provare a disattivare il caricamento di pacchetti dai percorsi di pacchetti incorporati o scaricare il pacchetto in conflitto, quindi riavviare {2} e scaricare nuovamente {0}.</value>
   </data>
   <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
-    <value>The same version of package {0} is already installed as a built-in package and does not need to be installed again.</value>
+    <value>La stessa versione del pacchetto {0} è già stata installata come pacchetto incorporato e non deve essere installata di nuovo.</value>
   </data>
   <data name="MessageSamePackageSameVersInLocalPackages" xml:space="preserve">
     <value>La stessa versione di {0} è già stata installata e non è necessario installarla nuovamente.</value>
   </data>
   <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
-    <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
+    <value>Impossibile installare il pacchetto {0} perché è in conflitto con una versione differente, {1}, che è già stata installata. 
 
-Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again.</value>
+Disinstallare {1}? Riavviare {2} per completare la disinstallazione e provare a scaricare nuovamente {0}.</value>
   </data>
   <data name="PreferencesViewGeneralSettingsRun" xml:space="preserve">
     <value>Impostazioni di esecuzione</value>
@@ -2390,7 +2390,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Descrizione &lt;Fare doppio clic qui per modificare la descrizione del gruppo&gt;</value>
   </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>Title &lt;Click here to edit the group title&gt;</value>
+    <value>Titolo &lt;Fare clic qui per modificare il titolo del gruppo&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
     <value>Aggiungi gruppo a questo gruppo</value>
@@ -2574,7 +2574,7 @@ Questo pacchetto viene caricato ed è pronto per essere utilizzato.</value>
     <value>Utilizzare Revit per mettere in scala gli helper grafici di sfondo.</value>
   </data>
   <data name="PreferencesUseHostScaleUnitsToolTip" xml:space="preserve">
-    <value>When toggled on, the current Host document units will be used to scale the background graphic helpers (grids, axes). Otherwise, the Graphic Elements Scale drop-down will determine scale.</value>
+    <value>Quando l'opzione è attivata, le unità del documento host corrente verranno utilizzate per mettere in scala gli helper grafici di sfondo (griglie, assi). In caso contrario, il menu a discesa Scala elementi grafici determinerà la scala.</value>
   </data>
   <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
     <value>0</value>
@@ -2601,7 +2601,7 @@ Questo pacchetto viene caricato ed è pronto per essere utilizzato.</value>
     <value>Parole chiave</value>
   </data>
   <data name="PublishPackageViewLicenseSubLabel" xml:space="preserve">
-    <value>Applies to the latest package version. If blank, the package will be licensed under </value>
+    <value>Si applica alla versione del pacchetto più recente. Se vuoto, il pacchetto verrà concesso in licenza </value>
   </data>
   <data name="PublishPackageViewLicenseWatermark" xml:space="preserve">
     <value>Licenza</value>
@@ -2876,7 +2876,7 @@ Per installare la versione più recente di un pacchetto, fare clic su Installa. 
     <value>Questo pacchetto contiene nodi personalizzati in uso. È necessario eliminare questi nodi personalizzati oppure chiudere il grafico prima di poter eliminare il pacchetto.</value>
   </data>
   <data name="PackagesGuideNavigatePackagesText" xml:space="preserve">
-    <value>\nWhen you install a package, it appears in the library under Add-ons.  \n\n**Click to expand the package** so you can see its nodes (functions).</value>
+    <value>\nQuando si installa un pacchetto, questo compare nella libreria sotto Moduli aggiuntivi.  \n\n**Fare clic per espandere il pacchetto** in modo da visualizzarne i nodi (funzioni).</value>
   </data>
   <data name="PackagesGuideNavigatePackagesTitle" xml:space="preserve">
     <value>Accedi ai pacchetti</value>
@@ -3146,11 +3146,11 @@ Provare a posizionare il nodo **ByOrigin** evidenziato.</value>
     <value>Errore host pacchetto</value>
   </data>
   <data name="TrustedLocationNotAccessible" xml:space="preserve">
-    <value>A problem occurred when trying to access the trusted location. Dynamo is unable to obtain read/write access to
+    <value>Si è verificato un problema durante il tentativo di accedere al percorso attendibile. Dynamo non è in grado di ottenere l'accesso in lettura/scrittura a
 {0}</value>
   </data>
   <data name="UnableToAccessTrustedDirectory" xml:space="preserve">
-    <value>Unable To Access Trusted Directory</value>
+    <value>Impossibile accedere alla directory attendibile</value>
   </data>
   <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
     <value>Blocca filo</value>
@@ -3165,7 +3165,7 @@ Provare a posizionare il nodo **ByOrigin** evidenziato.</value>
     <value>Navigazione a monte</value>
   </data>
   <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
-    <value>Navigate Downtream</value>
+    <value>Navigazione a valle</value>
   </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>Connessioni nodi</value>
@@ -3731,7 +3731,7 @@ Per trasformare questo file in un nuovo modello, salvarlo in un'altra cartella e
     <value>Impossibile posizionare un nodo personalizzato nell'area di lavoro senza implementare correttamente il caso di base ricorsivo utilizzando il nodo scopeif.</value>
   </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
-    <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
+    <value>La compatibilità di questa versione con l'impostazione in uso non è stata verificata. Potrebbe funzionare o meno come previsto.</value>
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Autodesk Identity Manager non è impostato nel sistema in uso. Per garantire l'accesso completo a tutte le funzionalità, accedere ad Autodesk Account utilizzando Autodesk Identity Manager.
@@ -3759,19 +3759,19 @@ Per trasformare questo file in un nuovo modello, salvarlo in un'altra cartella e
     <value>Mostra descrizione gruppo di default</value>
   </data>
   <data name="NodeAutoCompleteToolTip" xml:space="preserve">
-    <value>Click to get Node Autocomplete suggestions</value>
+    <value>Fare clic per ottenere suggerimenti per Completamento automatico nodi.</value>
   </data>
   <data name="ExportWorkspaceAsImage" xml:space="preserve">
-    <value>Workspace has been exported as an image to </value>
+    <value>L'area di lavoro è stata esportata come immagine in </value>
   </data>
   <data name="ExportWorkspaceAs3DImage" xml:space="preserve">
-    <value>Workspace has been exported as a 3D image to </value>
+    <value>L'area di lavoro è stata esportata come immagine 3D in </value>
   </data>
   <data name="PackageDetailsViewExtensionName" xml:space="preserve">
     <value>Dettagli pacchetto</value>
   </data>
   <data name="PublishPackageBackToFileButton" xml:space="preserve">
-    <value>Back to File Selection</value>
+    <value>Torna alla selezione di file</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

@@ -307,7 +307,7 @@
     <value>Methode '{0}()' ist bereits definiert.</value>
   </data>
   <data name="kMethodHasInvalidArguments" xml:space="preserve">
-    <value>'{0}()' has some invalid arguments href=kMethodHasInvalidArguments</value>
+    <value>'{0}()' enthält einige ungültige Argumente href=kMethodHasInvalidArguments</value>
   </data>
   <data name="kMethodIsInaccessible" xml:space="preserve">
     <value>Methode '{0}()' ist von hier nicht erreichbar.</value>
@@ -316,7 +316,7 @@
     <value>Methode '{0}()' nicht gefunden href=kMethodNotFound.html</value>
   </data>
   <data name="kMethodResolutionFailure" xml:space="preserve">
-    <value>Internal error, please report: Method resolution failure on: {0}().</value>
+    <value>Interner Fehler, bitte melden: Methodenauflösungsfehler für: {0}().</value>
   </data>
   <data name="kMethodResolutionFailureForOperator" xml:space="preserve">
     <value>Operator '{0}' kann nicht auf Operanden von Typ '{1}' und '{2}' angewendet werden.</value>
@@ -334,7 +334,7 @@
     <value>Mehrere Definitionen für '{0}' gefunden als {1}</value>
   </data>
   <data name="kMethodDeprecated" xml:space="preserve">
-    <value>Method '{0}' has been deprecated, please use method '{1}' instead. href=Deprecated.html</value>
+    <value>Methode '{0}' ist veraltet. Verwenden Sie stattdessen die Methode '{1}'. href=Deprecated.html</value>
   </data>
   <data name="kNoStepSizeInAmountRangeExpression" xml:space="preserve">
     <value>Keine Schrittgröße im Ausdruck für Betragsbereich angegeben</value>
@@ -349,7 +349,7 @@
     <value>Eigenschaft '{0}' nicht gefunden</value>
   </data>
   <data name="kPropertyOfClassNotFound" xml:space="preserve">
-    <value>No property called {0} on {1} could be found href=kPropertyOfClassNotFound</value>
+    <value>Keine Eigenschaft mit dem Namen {0} auf {1} gefunden href=kPropertyOfClassNotFound</value>
   </data>
   <data name="kRangeExpressionConflictOperator" xml:space="preserve">
     <value>Ein Betragsoperator kann nicht zusammen mit einem Schrittoperator verwendet werden.</value>
@@ -884,8 +884,8 @@
     <value>Null-Wert kann nicht in {0} umgewandelt werden href=FailedToCastFromNull.html</value>
   </data>
   <data name="ArgumentNullException" xml:space="preserve">
-    <value>Value cannot be null.
-Parameter name: {0}. href=ArgumentNullException.html</value>
+    <value>Wert darf nicht null sein.
+Parametername: {0}. href=ArgumentNullException.html</value>
   </data>
   <data name="FunctionGroupNotFound" xml:space="preserve">
     <value>Keine Funktion mit dem Namen {0} in {1} gefunden</value>

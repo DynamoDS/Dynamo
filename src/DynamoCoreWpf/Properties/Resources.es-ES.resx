@@ -873,9 +873,9 @@ No se preocupe; tendrá la opción de guardar su trabajo.</value>
     <value>Error de publicación.</value>
   </data>
   <data name="FileNotPublishMessage" xml:space="preserve">
-    <value>No se ha encontrado los archivos o bien están dentro de un paquete. Añada solo archivos que estén fuera de paquetes.
+    <value>No se han encontrado los archivos o se encuentran dentro de un paquete. Añada solo archivos que estén fuera de los paquetes.
 
-Error al publicar archivos: 
+No se han podido publicar los siguientes archivos: 
 {0}</value>
   </data>
   <data name="FilePathConverterNoFileSelected" xml:space="preserve">
@@ -1079,7 +1079,7 @@ Error al publicar archivos:
   <data name="MessageFileInUseByApplication" xml:space="preserve">
     <value>Otra aplicación está utilizando actualmente el archivo.
 	
-Cierre el archivo antes de intentar sobrescribirlo.</value>
+Ciérrelo el archivo antes de intentar sobrescribirlo.</value>
   </data>
   <data name="TitleFileInUse" xml:space="preserve">
     <value>Archivo en uso</value>
@@ -1185,9 +1185,9 @@ Siempre puede volver a descargar el paquete.</value>
 De lo contrario, este nodo se desplazará al paquete que está creando"</value>
   </data>
   <data name="MessageToDeprecatePackage" xml:space="preserve">
-    <value>¿Seguro que desea declarar obsoleto {0}? Esta solicitud no se aceptará si usted no es el mantenedor del paquete. Indica que ya no podrá admitir el paquete, si bien el paquete seguirá apareciendo cuando se busque explícitamente.
+    <value>¿Confirma desea establecer como obsoleto {0}? Esta solicitud no se aceptará si no es el encargado del mantenimiento del paquete. Esto indica que ya no se proporcionará soporte al paquete, aunque este seguirá apareciendo cuando se busque explícitamente.
 
-Siempre puede anular la obsolescencia del paquete.</value>
+Siempre puede anular la caducidad del paquete.</value>
   </data>
   <data name="MessageToUndeprecatePackage" xml:space="preserve">
     <value>¿Seguro que desea anular la obsolescencia de {0}? Esta solicitud no se aceptará si usted no es el mantenedor del paquete. Indica que seguirá admitiendo el paquete y que el paquete aparecerá cuando los usuarios naveguen por los paquetes.
@@ -1195,11 +1195,11 @@ Siempre puede anular la obsolescencia del paquete.</value>
 Siempre puede volver a declarar obsoleto el paquete.</value>
   </data>
   <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
-    <value>Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
+    <value>El paquete {0} presenta una o más dependencias que entran en conflicto con los siguientes paquetes que están en uso en el área de trabajo: {1}. Los conflictos de dependencia pueden provocar un comportamiento no deseado.
     
-Do you wish to continue installing it while keeping the packages that are already installed?
+¿Desea seguir instalándolo al mismo tiempo que conserva los paquetes instalados?
 
-If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Try restarting {2} and download {0} again.</value>
+Si no es así, {2} debe desinstalar {1} para continuar, pero no puede porque se están utilizando. Pruebe a reiniciar {2} y descargue {0} de nuevo.</value>
   </data>
   <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
     <value>El paquete {0} presenta una o más dependencias que entran en conflicto con los siguientes paquetes:
@@ -2036,12 +2036,12 @@ Para instalar la actualización más reciente, hay que cerrar Dynamo y todas las
     <value>No se ha añadido ninguna ficha nueva, ya que la extensión ya está presente en la barra lateral de extensiones.</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
-    <value>{1} cannot be loaded.
-Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
-To install {1}, Dynamo needs to first uninstall {0}. 
-Restart Dynamo to complete the uninstall.
+    <value>{1} no se puede cargar.
+Su instalación entrará en conflicto con una o varias definiciones de nodo que ya existen en {0}, que ya se ha cargado. 
+Para instalar {1}, Dynamo debe desinstalar primero {0}. 
+Reinicie Dynamo para completar la desinstalación.
 
-Uninstall the following packages: {0}?</value>
+¿Desea desinstalar los siguientes paquetes: {0}?</value>
   </data>
   <data name="PreviewText" xml:space="preserve">
     <value> Esta función se encuentra en modo de vista preliminar. </value>
@@ -2200,25 +2200,25 @@ Uninstall the following packages: {0}?</value>
     <value>Requiere que se reinicie Dynamo.</value>
   </data>
   <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
-    <value>{0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
+    <value>{0} presenta dependencias que entran en conflicto con los siguientes paquetes integrados: {1}. Los conflictos de dependencia pueden provocar un comportamiento no deseado.
     
-Do you wish to continue trying to install {0}?</value>
+¿Desea continuar intentando instalar {0}?</value>
   </data>
   <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
-    <value>{0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
+    <value>{0} no se puede instalar porque entra en conflicto con una versión diferente del paquete integrado, {1}, que ya está instalado.
     
-You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again.</value>
+Puede intentar desactivar la carga de paquetes desde las rutas de paquetes integrados o descargar el paquete en conflicto y, a continuación, reiniciar {2} y descargar {0} de nuevo.</value>
   </data>
   <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
-    <value>The same version of package {0} is already installed as a built-in package and does not need to be installed again.</value>
+    <value>La misma versión del paquete {0} ya está instalada como un paquete integrado, por lo que no es necesario instalarla de nuevo.</value>
   </data>
   <data name="MessageSamePackageSameVersInLocalPackages" xml:space="preserve">
     <value>La misma versión de {0} ya está instalada y no es necesario instalarla de nuevo.</value>
   </data>
   <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
-    <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
+    <value>El paquete {0} no se puede instalar porque entra en conflicto con una versión diferente, {1}, que ya se ha instalado. 
 
-Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again.</value>
+¿Desea desinstalar {1}? Reinicie {2} para completar la desinstalación e intente descargar {0} de nuevo.</value>
   </data>
   <data name="PreferencesViewGeneralSettingsRun" xml:space="preserve">
     <value>Parámetros de ejecución</value>
@@ -2398,7 +2398,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Descripción &lt;Haga doble clic aquí para editar la descripción del grupo&gt;</value>
   </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>Title &lt;Click here to edit the group title&gt;</value>
+    <value>Título &lt;Haga clic aquí para editar el título del grupo&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
     <value>Añadir grupo a este grupo</value>
@@ -2591,7 +2591,7 @@ Si el conmutador está desactivado, los paquetes personalizados que aún no est�
     <value>Utilice Revit para ajustar la escala de las ayudas gráficas de fondo.</value>
   </data>
   <data name="PreferencesUseHostScaleUnitsToolTip" xml:space="preserve">
-    <value>When toggled on, the current Host document units will be used to scale the background graphic helpers (grids, axes). Otherwise, the Graphic Elements Scale drop-down will determine scale.</value>
+    <value>Si esta opción está activada, las unidades actuales del documento anfitrión se utilizarán para ajustar la escala de las ayudas gráficas de fondo (rejillas y ejes). De lo contrario, el menú desplegable Escala de elementos gráficos determinará la escala.</value>
   </data>
   <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
     <value>0</value>
@@ -2619,7 +2619,7 @@ Este paquete se descargará después del siguiente reinicio de Dynamo.</value>
     <value>Palabras clave</value>
   </data>
   <data name="PublishPackageViewLicenseSubLabel" xml:space="preserve">
-    <value>Applies to the latest package version. If blank, the package will be licensed under </value>
+    <value>Se aplica a la versión del paquete más reciente. Si se deja en blanco, se le otorgará una licencia al paquete en virtud de </value>
   </data>
   <data name="PublishPackageViewLicenseWatermark" xml:space="preserve">
     <value>Licencia</value>
@@ -2894,7 +2894,7 @@ Para instalar la versión más reciente de un paquete, haga clic en Instalar. \n
     <value>Este paquete contiene nodos personalizados en uso. Estos deben eliminarse o el gráfico debe cerrarse antes de poder suprimir el paquete.</value>
   </data>
   <data name="PackagesGuideNavigatePackagesText" xml:space="preserve">
-    <value>\nWhen you install a package, it appears in the library under Add-ons.  \n\n**Click to expand the package** so you can see its nodes (functions).</value>
+    <value>\nAl instalar un paquete, aparece en la biblioteca, debajo de Complementos.  \n\n**Haga clic para expandir el paquete** a fin de que pueda ver sus nodos (funciones).</value>
   </data>
   <data name="PackagesGuideNavigatePackagesTitle" xml:space="preserve">
     <value>Desplazarse a los paquetes</value>
@@ -3164,11 +3164,11 @@ Puede administrar esto en Preferencias - &gt; Seguridad.</value>
     <value>Error de anfitrión de paquete</value>
   </data>
   <data name="TrustedLocationNotAccessible" xml:space="preserve">
-    <value>A problem occurred when trying to access the trusted location. Dynamo is unable to obtain read/write access to
-{0}</value>
+    <value>Se ha producido un problema al intentar acceder a la ubicación de confianza. Dynamo no puede obtener acceso de lectura y escritura a
+{0}.</value>
   </data>
   <data name="UnableToAccessTrustedDirectory" xml:space="preserve">
-    <value>Unable To Access Trusted Directory</value>
+    <value>No se puede acceder al directorio de confianza.</value>
   </data>
   <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
     <value>Bloquear cable</value>
@@ -3183,7 +3183,7 @@ Puede administrar esto en Preferencias - &gt; Seguridad.</value>
     <value>Desplazarse hacia arriba</value>
   </data>
   <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
-    <value>Navigate Downtream</value>
+    <value>Navegar hacia abajo</value>
   </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>Conexiones de nodos</value>
@@ -3749,7 +3749,7 @@ Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta dif
     <value>No se puede colocar un nodo personalizado en su propia área de trabajo sin implementar correctamente el caso base recursivo mediante el nodo scopeif.</value>
   </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
-    <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
+    <value>No se ha verificado la compatibilidad de esta versión con su configuración. Es posible que no funcione según lo previsto.</value>
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Parece que Autodesk Identity Manager no está configurado en el sistema. Para garantizar el acceso completo a todas las funciones, inicie sesión en su cuenta de Autodesk Account mediante Autodesk Identity Manager.
@@ -3777,19 +3777,19 @@ Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta dif
     <value>Mostrar descripción de grupo por defecto</value>
   </data>
   <data name="NodeAutoCompleteToolTip" xml:space="preserve">
-    <value>Click to get Node Autocomplete suggestions</value>
+    <value>Haga clic para obtener sugerencias de Autocompletar nodo.</value>
   </data>
   <data name="ExportWorkspaceAsImage" xml:space="preserve">
-    <value>Workspace has been exported as an image to </value>
+    <value>El área de trabajo se ha exportado como una imagen a </value>
   </data>
   <data name="ExportWorkspaceAs3DImage" xml:space="preserve">
-    <value>Workspace has been exported as a 3D image to </value>
+    <value>El área de trabajo se ha exportado como una imagen 3D a </value>
   </data>
   <data name="PackageDetailsViewExtensionName" xml:space="preserve">
     <value>Detalles del paquete</value>
   </data>
   <data name="PublishPackageBackToFileButton" xml:space="preserve">
-    <value>Back to File Selection</value>
+    <value>Volver a la selección de archivos</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

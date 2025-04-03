@@ -1,5 +1,5 @@
 ## Im Detail
-Stutzen Sie überlappende Elemente bis zur Oberflächenbegrenzung.
+Stutzen Sie überlappende Panels bis zur Oberflächenbegrenzung.
 ___
 ## Beispieldatei
 

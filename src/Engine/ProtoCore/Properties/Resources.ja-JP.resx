@@ -307,7 +307,7 @@
     <value>メソッド '{0}()' は既に設定されています</value>
   </data>
   <data name="kMethodHasInvalidArguments" xml:space="preserve">
-    <value>'{0}()' has some invalid arguments href=kMethodHasInvalidArguments</value>
+    <value>'{0}()' に無効な引数があります。href=kMethodHasInvalidArguments</value>
   </data>
   <data name="kMethodIsInaccessible" xml:space="preserve">
     <value>メソッド '{0}()' はここから利用できません</value>
@@ -316,7 +316,7 @@
     <value>メソッド '{0}()' が見つかりません href=kMethodNotFound.html</value>
   </data>
   <data name="kMethodResolutionFailure" xml:space="preserve">
-    <value>Internal error, please report: Method resolution failure on: {0}().</value>
+    <value>内部エラーです。次の内容を報告してください: {0}() でメソッドが解決できませんでした。</value>
   </data>
   <data name="kMethodResolutionFailureForOperator" xml:space="preserve">
     <value>演算子 '{0}' はタイプ '{1}' および '{2}' のオペランドには適用できません</value>
@@ -334,7 +334,7 @@
     <value>'{0}' の複数の設定が {1} として見つかりました</value>
   </data>
   <data name="kMethodDeprecated" xml:space="preserve">
-    <value>Method '{0}' has been deprecated, please use method '{1}' instead. href=Deprecated.html</value>
+    <value>メソッド '{0}' は廃止されました。代わりにメソッド '{1}' を使用してください。href=Deprecated.html</value>
   </data>
   <data name="kNoStepSizeInAmountRangeExpression" xml:space="preserve">
     <value>量の範囲の式にステップ サイズが指定されていません</value>
@@ -349,7 +349,7 @@
     <value>プロパティ '{0}' が見つかりません</value>
   </data>
   <data name="kPropertyOfClassNotFound" xml:space="preserve">
-    <value>No property called {0} on {1} could be found href=kPropertyOfClassNotFound</value>
+    <value>{0} というプロパティが {1} で見つかりませんでした。href=kPropertyOfClassNotFound</value>
   </data>
   <data name="kRangeExpressionConflictOperator" xml:space="preserve">
     <value>数量の演算子を昇降演算子とともに使用することはできません</value>
@@ -884,8 +884,8 @@
     <value>NULL 値を {0} にキャストできません href=FailedToCastFromNull.html</value>
   </data>
   <data name="ArgumentNullException" xml:space="preserve">
-    <value>Value cannot be null.
-Parameter name: {0}. href=ArgumentNullException.html</value>
+    <value>値を NULL にすることはできません。
+パラメータ名: {0}。href=ArgumentNullException.html</value>
   </data>
   <data name="FunctionGroupNotFound" xml:space="preserve">
     <value>{0} という関数が {1} に見つかりません</value>
