@@ -811,7 +811,7 @@ namespace Dynamo.ViewModels
                     var targetPort = targetNode.InPorts.FirstOrDefault(p => p.Index == connection.EndNode.PortIndex - 1);
 
                     var connector = ConnectorModel.Make(sourceNode, targetNode, connection.StartNode.PortIndex - 1, connection.EndNode.PortIndex - 1);
-                    if (connector != null)
+                    if (connector != null && !targetPort.IsConnected)
                     {
                         wsViewModel.Model.UndoRecorder.RecordCreationForUndo(connector);
                     }
@@ -819,7 +819,7 @@ namespace Dynamo.ViewModels
 
                 // Connect the cluster to the original node and port
                 var connector = ConnectorModel.Make(node.NodeModel, targetNodeFromCluster.NodeModel, 0, ClusterResultItem.EntryNodeInPort);
-                if (connector != null)
+                if (connector != null && !targetNodeFromCluster.OutPorts.FirstOrDefault().IsConnected)
                 {
                     wsViewModel.Model.UndoRecorder.RecordCreationForUndo(connector);
                 }
