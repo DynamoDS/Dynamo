@@ -332,7 +332,6 @@ namespace CoreNodeModels
             set
             {
                 selectedGraphType = value;
-                GenerateRenderValues();
                 RaisePropertyChanged(nameof(SelectedGraphType));
             }
         }

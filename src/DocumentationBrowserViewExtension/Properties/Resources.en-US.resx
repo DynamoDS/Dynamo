@@ -160,6 +160,9 @@
   <data name="MenuItemText" xml:space="preserve">
     <value>Show _Documentation Browser</value>
   </data>
+  <data name="MessageHeading" xml:space="preserve">
+    <value>Message</value>
+  </data>
   <data name="NodeDocumentationCategory" xml:space="preserve">
     <value>Category</value>
     <comment>Header in Node Info table</comment>

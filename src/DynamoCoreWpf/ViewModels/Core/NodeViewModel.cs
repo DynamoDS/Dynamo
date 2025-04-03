@@ -64,6 +64,7 @@ namespace Dynamo.ViewModels
         private bool isNodeInCollapsedGroup = false;
         private const string WatchNodeName = "Watch";
         private bool nodeHoveringState;
+        private bool isHidden;
         #endregion
 
         #region public members
@@ -365,6 +366,23 @@ namespace Dynamo.ViewModels
             get
             {
                 return nodeLogic.IsVisible;
+            }
+        }
+
+        /// <summary>
+        ///     This property controls node view visibility in canvas.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsHidden
+        {
+            get => isHidden;
+            set
+            {
+                if (isHidden != value)
+                {
+                    isHidden = value;
+                    RaisePropertyChanged(nameof(IsHidden));
+                }
             }
         }
 
