@@ -31,15 +31,15 @@
             <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DebugTools.EnableAsmJournaling(System.Collections.IList,System.String)">
-            <summary>Enables ASM journaling</summary>
-            <param name="input">Any input value</param>
-            <param name="journalPath">optional path to specify location of ASM journals.</param>
-            <returns name="output">Returns the input value</returns>
+            <summary>ASM ジャーナリングを有効にします</summary>
+            <param name="input">任意の入力値</param>
+            <param name="journalPath">ASM ジャーナルの場所を指定する任意のパス。</param>
+            <returns name="output">入力値を返します</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DebugTools.DisableAsmJournaling(System.Collections.IList)">
-            <summary>Disables ASM journaling</summary>
-            <param name="input">Any input value</param>
-            <returns name="output">Returns the input value</returns>
+            <summary>ASM ジャーナリングを無効にします</summary>
+            <param name="input">任意の入力値</param>
+            <returns name="output">入力値を返します</returns>
         </member>
         <member name="T:Autodesk.DesignScript.Geometry.Core.EntityTags">
             <summary>タグにより、DesignScriptEntity に任意のメタデータを追加できます。これは、Revit ジオメトリの

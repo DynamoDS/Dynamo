@@ -355,7 +355,7 @@
     <value>Список</value>
   </data>
   <data name="PortDataOperandToolTip" xml:space="preserve">
-    <value>Boolean #</value>
+    <value>Логическое число</value>
   </data>
   <data name="PortDataResultToolTip" xml:space="preserve">
     <value>Сформированный блок результата</value>
@@ -412,7 +412,7 @@
     <value>Выбранные элементы.</value>
   </data>
   <data name="StringfromArrayDescription" xml:space="preserve">
-    <value>Converts an array to a string representation</value>
+    <value>Преобразование массива в строчное представление</value>
   </data>
   <data name="StringfromObjectDescription" xml:space="preserve">
     <value>Преобразование объекта в строчное представление</value>
@@ -442,7 +442,7 @@
     <value>print;output;display</value>
   </data>
   <data name="WebRequestDescription" xml:space="preserve">
-    <value>Returns the contents of a webpage from the given URL as a string</value>
+    <value>Возврат содержимого веб-страницы заданного URL-адреса в виде строки</value>
   </data>
   <data name="WebRequestPortDataResultToolTip" xml:space="preserve">
     <value>Содержимое веб-запроса в виде строки.</value>
@@ -691,6 +691,6 @@ Default value (double): {0}</value>
 double[]</value>
   </data>
   <data name="ColorPalettePortDataResultToolTip" xml:space="preserve">
-    <value>Selected color</value>
+    <value>Выбранный цвет</value>
   </data>
 </root>

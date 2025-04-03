@@ -136,7 +136,7 @@
     <value>Notificaciones</value>
   </data>
   <data name="NoNotificationsMsg" xml:space="preserve">
-    <value>You currently have no notifications. New notifications will appear above</value>
+    <value>Actualmente no tiene notificaciones. Las nuevas notificaciones aparecerán arriba.</value>
   </data>
   <data name="NoNotificationsTitle" xml:space="preserve">
     <value>No hay notificaciones</value>

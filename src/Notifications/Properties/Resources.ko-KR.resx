@@ -136,7 +136,7 @@
     <value>알림</value>
   </data>
   <data name="NoNotificationsMsg" xml:space="preserve">
-    <value>You currently have no notifications. New notifications will appear above</value>
+    <value>현재 알림이 없습니다. 새 알람이 있으면 위에 나타납니다.</value>
   </data>
   <data name="NoNotificationsTitle" xml:space="preserve">
     <value>알림 없음</value>

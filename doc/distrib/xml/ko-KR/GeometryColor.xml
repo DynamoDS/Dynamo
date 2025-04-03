@@ -39,7 +39,7 @@
         </member>
         <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
             <summary>단일 색상, 면 기반 색상, 정점 기반 색상 또는 면 기반 정점 색상으로 메쉬를 표시합니다.</summary>
-            <param name="mesh">The Mesh on which to apply the colors</param>
+            <param name="mesh">색상을 적용할 메시</param>
             <param name="colors">색상 개수는 1(단색)이거나, 면 수(면별 색)와 같거나, 정점 수(정점별 색)와 같거나, 삼각형 수에 3을 곱한 값(삼각형-정점별 색)과 같아야 합니다.</param>
             <param name="smoothShading">True인 경우 음영이 각진 형태 대신 부드럽게 표시되며, 이는 부드러운 연속 표면을 시각화하는 데 유용합니다.</param>
             <returns>표시 객체입니다.</returns>

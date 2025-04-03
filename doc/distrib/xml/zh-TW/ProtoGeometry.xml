@@ -31,15 +31,15 @@
             <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DebugTools.EnableAsmJournaling(System.Collections.IList,System.String)">
-            <summary>Enables ASM journaling</summary>
-            <param name="input">Any input value</param>
-            <param name="journalPath">optional path to specify location of ASM journals.</param>
-            <returns name="output">Returns the input value</returns>
+            <summary>啟用 ASM 日誌功能</summary>
+            <param name="input">任何輸入值</param>
+            <param name="journalPath">指定 ASM 日誌位置的選填路徑。</param>
+            <returns name="output">傳回輸入值</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DebugTools.DisableAsmJournaling(System.Collections.IList)">
-            <summary>Disables ASM journaling</summary>
-            <param name="input">Any input value</param>
-            <returns name="output">Returns the input value</returns>
+            <summary>停用 ASM 日誌功能</summary>
+            <param name="input">任何輸入值</param>
+            <returns name="output">傳回輸入值</returns>
         </member>
         <member name="T:Autodesk.DesignScript.Geometry.Core.EntityTags">
             <summary>標籤可讓您將任意詮釋資料加入至 DesignScriptEntity。這對 Revit

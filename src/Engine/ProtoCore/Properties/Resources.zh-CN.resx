@@ -307,7 +307,7 @@
     <value>方法函数 '{0}()' 已定义</value>
   </data>
   <data name="kMethodHasInvalidArguments" xml:space="preserve">
-    <value>'{0}()' has some invalid arguments href=kMethodHasInvalidArguments</value>
+    <value>“{0}()”中的某些参数无效 href=kMethodHasInvalidArguments</value>
   </data>
   <data name="kMethodIsInaccessible" xml:space="preserve">
     <value>无法从此处达到方法函数 '{0}()'</value>
@@ -316,7 +316,7 @@
     <value>未找到方法“{0}()”href=kMethodNotFound.html</value>
   </data>
   <data name="kMethodResolutionFailure" xml:space="preserve">
-    <value>Internal error, please report: Method resolution failure on: {0}().</value>
+    <value>内部错误，请报告: 方法解决失败: {0}()。</value>
   </data>
   <data name="kMethodResolutionFailureForOperator" xml:space="preserve">
     <value>运算符 '{0}' 无法应用于类型为 '{1}' 和 '{2}' 的运算对象</value>
@@ -334,7 +334,7 @@
     <value>发现 '{0}' 的多个定义为 {1}</value>
   </data>
   <data name="kMethodDeprecated" xml:space="preserve">
-    <value>Method '{0}' has been deprecated, please use method '{1}' instead. href=Deprecated.html</value>
+    <value>方法“{0}”已弃用，请改用方法“{1}”。href=Deprecated.html</value>
   </data>
   <data name="kNoStepSizeInAmountRangeExpression" xml:space="preserve">
     <value>数量范围表达式中没有指定步长大小</value>
@@ -349,7 +349,7 @@
     <value>未找到特性 '{0}'</value>
   </data>
   <data name="kPropertyOfClassNotFound" xml:space="preserve">
-    <value>No property called {0} on {1} could be found href=kPropertyOfClassNotFound</value>
+    <value>找不到 {1} 上名为 {0} 的属性 href=kPropertyOfClassNotFound</value>
   </data>
   <data name="kRangeExpressionConflictOperator" xml:space="preserve">
     <value>数量运算符不能与步长运算符一起使用</value>
@@ -884,8 +884,8 @@
     <value>空值不能投射到 {0} href=FailedToCastFromNull.html</value>
   </data>
   <data name="ArgumentNullException" xml:space="preserve">
-    <value>Value cannot be null.
-Parameter name: {0}. href=ArgumentNullException.html</value>
+    <value>值不能为空。
+参数名称: {0}。href=ArgumentNullException.html</value>
   </data>
   <data name="FunctionGroupNotFound" xml:space="preserve">
     <value>无法找到名称为 {0} ({1} 上)的函数</value>

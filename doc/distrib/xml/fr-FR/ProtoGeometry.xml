@@ -31,15 +31,15 @@
             <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DebugTools.EnableAsmJournaling(System.Collections.IList,System.String)">
-            <summary>Enables ASM journaling</summary>
-            <param name="input">Any input value</param>
-            <param name="journalPath">optional path to specify location of ASM journals.</param>
-            <returns name="output">Returns the input value</returns>
+            <summary>Active la journalisation ASM</summary>
+            <param name="input">Toute valeur d'entrée</param>
+            <param name="journalPath">chemin facultatif pour spécifier l'emplacement des journaux ASM.</param>
+            <returns name="output">Renvoie la valeur d'entrée</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DebugTools.DisableAsmJournaling(System.Collections.IList)">
-            <summary>Disables ASM journaling</summary>
-            <param name="input">Any input value</param>
-            <returns name="output">Returns the input value</returns>
+            <summary>Désactive la journalisation ASM</summary>
+            <param name="input">Toute valeur d'entrée</param>
+            <returns name="output">Renvoie la valeur d'entrée</returns>
         </member>
         <member name="T:Autodesk.DesignScript.Geometry.Core.EntityTags">
             <summary>Les étiquettes vous permettent d'ajouter des métadonnées arbitraires à une DesignScriptEntity. Cela est essentiel pour

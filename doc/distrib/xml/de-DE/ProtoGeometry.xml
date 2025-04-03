@@ -31,15 +31,15 @@
             <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DebugTools.EnableAsmJournaling(System.Collections.IList,System.String)">
-            <summary>Enables ASM journaling</summary>
-            <param name="input">Any input value</param>
-            <param name="journalPath">optional path to specify location of ASM journals.</param>
-            <returns name="output">Returns the input value</returns>
+            <summary>Aktiviert die ASM-Protokollerstellung</summary>
+            <param name="input">Beliebiger Eingabewert</param>
+            <param name="journalPath">optionaler Pfad zum Angeben des Speicherorts von ASM-Protokollen.</param>
+            <returns name="output">Gibt den Eingabewert zurück</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DebugTools.DisableAsmJournaling(System.Collections.IList)">
-            <summary>Disables ASM journaling</summary>
-            <param name="input">Any input value</param>
-            <returns name="output">Returns the input value</returns>
+            <summary>Deaktiviert die ASM-Protokollerstellung</summary>
+            <param name="input">Beliebiger Eingabewert</param>
+            <returns name="output">Gibt den Eingabewert zurück</returns>
         </member>
         <member name="T:Autodesk.DesignScript.Geometry.Core.EntityTags">
             <summary>Durch Beschriftungen können beliebige Metadaten einem DesignScriptEntity hinzugefügt werden.

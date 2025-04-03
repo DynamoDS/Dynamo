@@ -1,7 +1,7 @@
 <!--- Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.InnerVertices --->
 <!--- UZ7LZDBGWQPVR7727ZYQZDLUW55DWAGDHV5P5O7EVZL4HMD3B7TQ --->
-## Profondeur
-`TSplineTopology.InnerVertices` returns the vertices within the given topology. In the example below, a TSpline surface is created and then the inner vertices are returned with `TSplineTopology.InnerVertices`.
+## Description approfondie
+'TSplineTopology.InnerVertices' renvoie les sommets dans la topologie donnée. Dans l'exemple ci-dessous, une surface T-Spline est créée, puis les sommets internes sont renvoyés avec 'TSplineTopology.InnerVertices'.
 
 ## Exemple de fichier
 

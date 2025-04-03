@@ -1,7 +1,7 @@
 <!--- Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.InnerVertices --->
 <!--- UZ7LZDBGWQPVR7727ZYQZDLUW55DWAGDHV5P5O7EVZL4HMD3B7TQ --->
 ## En detalle
-`TSplineTopology.InnerVertices` returns the vertices within the given topology. In the example below, a TSpline surface is created and then the inner vertices are returned with `TSplineTopology.InnerVertices`.
+`TSplineTopology.InnerVertices` devuelve los vértices dentro de la topología especificada. En el ejemplo siguiente, se crea una superficie TSpline y, a continuación, se devuelven los vértices interiores con `TSplineTopology.InnerVertices`.
 
 ## Archivo de ejemplo
 

@@ -31,15 +31,15 @@
             <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DebugTools.EnableAsmJournaling(System.Collections.IList,System.String)">
-            <summary>Enables ASM journaling</summary>
-            <param name="input">Any input value</param>
-            <param name="journalPath">optional path to specify location of ASM journals.</param>
-            <returns name="output">Returns the input value</returns>
+            <summary>Włącza zapisywanie w dzienniku ASM</summary>
+            <param name="input">Dowolna wartość wejściowa</param>
+            <param name="journalPath">opcjonalna ścieżka do określania położenia dzienników ASM.</param>
+            <returns name="output">Zwraca wartość wejściową</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DebugTools.DisableAsmJournaling(System.Collections.IList)">
-            <summary>Disables ASM journaling</summary>
-            <param name="input">Any input value</param>
-            <returns name="output">Returns the input value</returns>
+            <summary>Wyłącza zapisywanie w dzienniku ASM</summary>
+            <param name="input">Dowolna wartość wejściowa</param>
+            <returns name="output">Zwraca wartość wejściową</returns>
         </member>
         <member name="T:Autodesk.DesignScript.Geometry.Core.EntityTags">
             <summary>Etykiety umożliwiają dodawanie dowolnych metadanych do DesignScriptEntity.  Jest to istotne w przypadku integragracji geometrii programu Revit.</summary>
