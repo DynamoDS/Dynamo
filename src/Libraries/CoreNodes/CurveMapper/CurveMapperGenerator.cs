@@ -42,7 +42,8 @@ namespace DSCore.CurveMapper
             }
 
             // Safety checks
-            // TODO: Similar check in CurveMapperNodeModel. @Ivo to rationalize.
+            // TODO: There are similar checks in CurveMapperNodeModel.
+            // Review and see if they can be removed.
             if (pointsCount == null || pointsCount.Count == 0 || (pointsCount.Count == 1 && pointsCount[0] < 2))
                 return new List<List<double>> { yValues, xValues };
 
