@@ -156,6 +156,9 @@
   <data name="MenuItemText" xml:space="preserve">
     <value>Mostra browser _documentazione</value>
   </data>
+  <data name="MessageHeading" xml:space="preserve">
+    <value>Messaggio</value>
+  </data>
   <data name="NodeDocumentationCategory" xml:space="preserve">
     <value>Categoria</value>
   </data>

@@ -156,6 +156,9 @@
   <data name="MenuItemText" xml:space="preserve">
     <value>Zobrazit _prohlížeč dokumentace</value>
   </data>
+  <data name="MessageHeading" xml:space="preserve">
+    <value>Zpráva</value>
+  </data>
   <data name="NodeDocumentationCategory" xml:space="preserve">
     <value>Kategorie</value>
   </data>
