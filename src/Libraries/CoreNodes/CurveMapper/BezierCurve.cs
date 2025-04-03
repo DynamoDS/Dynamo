@@ -53,12 +53,14 @@ namespace DSCore.CurveMapper
         /// <summary>
         /// Gets interpolated Y values based on the assigned parameters and limits.
         /// </summary>
-        protected override (List<double> XValues, List<double> YValues) GenerateCurve(int pointsCount, bool isRender)
+        protected override (List<double> XValues, List<double> YValues) GenerateCurve(List<double> pointsDomain, bool isRender)
         {
             var renderValuesX = new List<double>();
             var renderValuesY = new List<double>();
             var valuesX = new List<double>();
             var valuesY = new List<double>();
+
+            var pointsCount = pointsDomain.Count == 1 ? pointsDomain[0] : pointsDomain.Count;
 
             // Generate fine-grained samples to ensure better interpolation
             int fineSteps = (int)(pointsCount * CanvasSize);
@@ -78,15 +80,35 @@ namespace DSCore.CurveMapper
                 return (renderValuesX, renderValuesY);
             }
 
-            // Collect output values
-            for (int i = 0; i < pointsCount; i++)
+            if (pointsDomain.Count == 1)
             {
-                double targetX = (i / (double)(pointsCount - 1) * CanvasSize);
-                int closestIndex = renderValuesX.IndexOf(renderValuesX.OrderBy(x => Math.Abs(x - targetX)).First());
-                double y = renderValuesY[closestIndex];
+                for (int i = 0; i < pointsCount; i++)
+                {
+                    double targetX = (i / (double)(pointsCount - 1) * CanvasSize);
+                    int closestIndex = renderValuesX.IndexOf(renderValuesX.OrderBy(x => Math.Abs(x - targetX)).First());
+                    double y = renderValuesY[closestIndex];
 
-                valuesX.Add(targetX);
-                valuesY.Add(y);
+                    valuesX.Add(targetX);
+                    valuesY.Add(y);
+                }
+            }
+            else
+            {
+                double minInput = pointsDomain.Min();
+                double maxInput = pointsDomain.Max();
+
+                // Normalize domain value & map to canvas X coordinate
+                foreach (double t in pointsDomain)
+                {
+                    double normalizedT = (t - minInput) / (maxInput - minInput);
+                    double targetX = normalizedT * CanvasSize;
+
+                    int closestIndex = renderValuesX.IndexOf(renderValuesX.OrderBy(x => Math.Abs(x - targetX)).First());
+                    double y = renderValuesY[closestIndex];
+
+                    valuesX.Add(targetX);
+                    valuesY.Add(y);
+                }
             }
 
             return (valuesX, valuesY);
