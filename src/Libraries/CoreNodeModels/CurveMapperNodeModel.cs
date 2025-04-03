@@ -904,13 +904,13 @@ namespace CoreNodeModels
 
             // Build controlPointsList dynamically
             var controlPointsList = AstFactory.BuildExprList(
-                controlPointMap[SelectedGraphType]
-                .SelectMany(cp => new AssociativeNode[]
-                {
+                 controlPointMap[SelectedGraphType]
+                 .SelectMany(cp => new AssociativeNode[]
+                 {
                     AstFactory.BuildDoubleNode(cp.X),
                     AstFactory.BuildDoubleNode(DynamicCanvasSize - cp.Y)
-                }).ToList()
-                );
+                 }).ToList()
+                 );
 
             // Handle input values with fall-back defaults
             var inputValues = new List<AssociativeNode>
@@ -922,20 +922,20 @@ namespace CoreNodeModels
                 InPorts[4].IsConnected ? inputAstNodes[4] : pointsCountDefaultValue
             };
 
-            var curveInputs = new List<AssociativeNode> {controlPointsList, AstFactory.BuildDoubleNode(DynamicCanvasSize)};
+            var curveInputs = new List<AssociativeNode> { controlPointsList, AstFactory.BuildDoubleNode(DynamicCanvasSize) };
             curveInputs.AddRange(inputValues);
             curveInputs.Add(AstFactory.BuildStringNode(SelectedGraphType.ToString()));
 
             AssociativeNode buildResultNodeX =
                 AstFactory.BuildFunctionCall(
-                    new Func<List<double>, double, object, object, object, object, object, string, List<double>>(
+                    new Func<List<double>, double, object, object, object, object, List<double>, string, List<double>>(
                         CurveMapperGenerator.CalculateValuesX),
                     curveInputs
                 );
 
             AssociativeNode buildResultNodeY =
                 AstFactory.BuildFunctionCall(
-                    new Func<List<double>, double, object, object, object, object, object, string, List<double>>(
+                    new Func<List<double>, double, object, object, object, object, List<double>, string, List<double>>(
                         CurveMapperGenerator.CalculateValuesY),
                     curveInputs
                 );
