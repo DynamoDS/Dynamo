@@ -156,6 +156,9 @@
   <data name="MenuItemText" xml:space="preserve">
     <value>显示文档浏览器(_D)</value>
   </data>
+  <data name="MessageHeading" xml:space="preserve">
+    <value>消息</value>
+  </data>
   <data name="NodeDocumentationCategory" xml:space="preserve">
     <value>类别</value>
   </data>

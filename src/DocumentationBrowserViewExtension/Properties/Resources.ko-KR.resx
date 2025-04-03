@@ -156,6 +156,9 @@
   <data name="MenuItemText" xml:space="preserve">
     <value>문서 탐색기 표시(_D)</value>
   </data>
+  <data name="MessageHeading" xml:space="preserve">
+    <value>메시지</value>
+  </data>
   <data name="NodeDocumentationCategory" xml:space="preserve">
     <value>카테고리</value>
   </data>

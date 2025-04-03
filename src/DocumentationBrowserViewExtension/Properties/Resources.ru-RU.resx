@@ -156,6 +156,9 @@
   <data name="MenuItemText" xml:space="preserve">
     <value>Показать обозре_ватель документации</value>
   </data>
+  <data name="MessageHeading" xml:space="preserve">
+    <value>Сообщение</value>
+  </data>
   <data name="NodeDocumentationCategory" xml:space="preserve">
     <value>Категория</value>
   </data>
