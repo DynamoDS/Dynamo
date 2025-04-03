@@ -1,5 +1,5 @@
 ## Description approfondie
-Ajustez les panneaux qui se chevauchent jusqu&apos;à la délimitation de la surface.
+Ajustez les panneaux qui se chevauchent jusqu'à la limite de la surface.
 ___
 ## Exemple de fichier
 

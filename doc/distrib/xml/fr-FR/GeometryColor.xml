@@ -39,7 +39,7 @@
         </member>
         <member name="M:Modifiers.GeometryColor.ByMeshColors(Autodesk.DesignScript.Geometry.Mesh,DSCore.Color[],System.Boolean)">
             <summary>Affichez le maillage par couleur unique, par couleur de face, par couleur de sommet ou par couleur de sommet de face.</summary>
-            <param name="mesh">The Mesh on which to apply the colors</param>
+            <param name="mesh">Le maillage sur lequel appliquer les couleurs</param>
             <param name="colors">Le nombre de couleurs doit être égal à 1 (couleur unique), ou égal au nombre de faces (couleur par face), ou égal au nombre de sommets (couleur par sommet), ou égal au nombre de triangles multiplié par trois (couleur par sommet de triangle)</param>
             <param name="smoothShading">Si la valeur est True, l’ombrage aura un aspect lisse au lieu d’être à facettes, ce qui est utile pour visualiser des surfaces continues lisses</param>
             <returns>Un objet d'affichage.</returns>

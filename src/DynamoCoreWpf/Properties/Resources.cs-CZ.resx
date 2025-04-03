@@ -1080,7 +1080,7 @@ Chcete změny uložit?</value>
   <data name="MessageFileInUseByApplication" xml:space="preserve">
     <value>Soubor je aktuálně používán jinou aplikací.
 	
-Než se jej pokusíte přepsat, zavřete soubor.</value>
+Než se jej pokusíte přepsat, zavřete jej.</value>
   </data>
   <data name="TitleFileInUse" xml:space="preserve">
     <value>Soubor je používán</value>
@@ -1187,7 +1187,7 @@ Pokud nebude verze odeslána, uzel bude přesunut do nového balíčku, který v
   <data name="MessageToDeprecatePackage" xml:space="preserve">
     <value>Opravdu chcete odmítnout {0}? Tento požadavek bude zamítnut, pokud aktuálně nemáte na starosti údržbu balíčku. To znamená, že již nebudete nepodporovat balíček, i když balíček bude stále zobrazen, když jej explicitně vyhledáte. 
 
-Odmítnutí balíčku můžete vždy zrušit.</value>
+Odmítnutí balíčku můžete kdykoliv zrušit.</value>
   </data>
   <data name="MessageToUndeprecatePackage" xml:space="preserve">
     <value>Opravdu chcete odmítnout {0}? Tento požadavek bude zamítnut, pokud aktuálně nemáte na starosti údržbu balíčku. To znamená, že budete nadále podporovat balíček a balíček se zobrazí, když uživatelé procházejí balíčky. 
@@ -1195,11 +1195,11 @@ Odmítnutí balíčku můžete vždy zrušit.</value>
 Odmítnutí balíčku můžete vždy zrušit.</value>
   </data>
   <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
-    <value>Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
+    <value>Balíček {0} má jednu nebo více závislostí, které jsou v konfliktu s následujícími balíčky, které jsou používány v pracovním prostoru: {1}. Konflikty závislostí by mohly způsobit nežádoucí chování.
     
-Do you wish to continue installing it while keeping the packages that are already installed?
+Chcete pokračovat v instalaci a zachovat již nainstalované balíčky?
 
-If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Try restarting {2} and download {0} again.</value>
+Pokud ne, {2} potřebuje odinstalovat {1}, abyste mohli pokračovat, ale zatím to není možné, protože se právě používají. Zkuste restartovat {2} a stáhnout {0} znovu.</value>
   </data>
   <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
     <value>Balíček {0} má jednu nebo více závislostí, které jsou v konfliktu s následujícími balíčky:
@@ -1250,7 +1250,7 @@ Chcete-li se tomuto vyhnout, odinstalujte načtené balíčky způsobující kon
     <value>Povolit pravidelné aktualizace</value>
   </data>
   <data name="NodeContextMenuHelp" xml:space="preserve">
-    <value>Nápověda...</value>
+    <value>Nápověda…</value>
   </data>
   <data name="NodeContextMenuIsInput" xml:space="preserve">
     <value>Je vstup</value>
@@ -2035,12 +2035,12 @@ Chcete nainstalovat nejnovější aktualizaci aplikace Dynamo?</value>
     <value>Nebyla přidána žádná nová karta, protože rozšíření se již nachází na bočním panelu rozšíření.</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
-    <value>{1} cannot be loaded.
-Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
-To install {1}, Dynamo needs to first uninstall {0}. 
-Restart Dynamo to complete the uninstall.
+    <value>{1} nelze načíst.
+Instalace tohoto uzlu je v konfliktu s jednou nebo více definicemi uzlů, které již v aktuálně načteném {0} existují. 
+Chcete-li {1} nainstalovat, aplikace Dynamo potřebuje nejprve odinstalovat {0}. 
+Restartováním Dynamo dokončete odinstalaci.
 
-Uninstall the following packages: {0}?</value>
+Odinstalovat následující balíčky: {0}?</value>
   </data>
   <data name="PreviewText" xml:space="preserve">
     <value> Tato funkce je v režimu Náhled. </value>
@@ -2199,25 +2199,25 @@ Uninstall the following packages: {0}?</value>
     <value>Vyžaduje nové spuštění aplikace Dynamo</value>
   </data>
   <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
-    <value>{0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
+    <value>{0} má závislosti, které jsou v konfliktu s následujícími vestavěnými balíčky: {1}. Konflikty závislostí by mohly způsobit nežádoucí chování.
     
-Do you wish to continue trying to install {0}?</value>
+Chcete pokračovat v pokusu o instalaci {0}?</value>
   </data>
   <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
-    <value>{0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
+    <value>{0} nelze nainstalovat, protože je v konfliktu s jinou verzí vestavěného balíčku {1}, který je již nainstalován.
     
-You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again.</value>
+Můžete zkusit zakázat načítání balíčků pomocí cest vestavěných balíčků, případně uvolnit konfliktní balíček, poté restartovat {2} a stáhnout {0} znovu.</value>
   </data>
   <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
-    <value>The same version of package {0} is already installed as a built-in package and does not need to be installed again.</value>
+    <value>Stejná verze balíčku {0} je již nainstalována jako vestavěný balíček a není nutné ji znovu instalovat.</value>
   </data>
   <data name="MessageSamePackageSameVersInLocalPackages" xml:space="preserve">
     <value>Již je nainstalována stejná verze balíčku {0} a není třeba ji instalovat znovu.</value>
   </data>
   <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
-    <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
+    <value>Balíček {0} není možné nainstalovat, protože je v konfliktu s jinou verzí, {1}, která je již nainstalována. 
 
-Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again.</value>
+Chcete {1} odinstalovat? Restartujte {2}, aby se dokončila odinstalace, a zkuste {0} stáhnout znovu.</value>
   </data>
   <data name="PreferencesViewGeneralSettingsRun" xml:space="preserve">
     <value>Nastavení spuštění</value>
@@ -2397,7 +2397,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Popis &lt;Dvojitým kliknutím sem upravte popis skupiny&gt;</value>
   </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>Title &lt;Click here to edit the group title&gt;</value>
+    <value>Nadpis &lt;Kliknutím sem upravte název skupiny&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
     <value>Přidat skupinu do této skupiny</value>
@@ -2590,7 +2590,7 @@ Pokud je přepínač vypnutý, vlastní balíčky, které ještě nejsou načten
     <value>Změna měřítka pomocných grafických prvků na pozadí pomocí aplikace Revit</value>
   </data>
   <data name="PreferencesUseHostScaleUnitsToolTip" xml:space="preserve">
-    <value>When toggled on, the current Host document units will be used to scale the background graphic helpers (grids, axes). Otherwise, the Graphic Elements Scale drop-down will determine scale.</value>
+    <value>Pokud je tato možnost zapnuta, budou k nastavení měřítka pomocných grafických prvků pozadí (osnovy, osy) použity aktuální jednotky hostitelského dokumentu. V opačném případě bude měřítko určeno pomocí rozevíracího seznamu Měřítko grafických prvků.</value>
   </data>
   <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
     <value>0</value>
@@ -2618,7 +2618,7 @@ Tento balíček bude uvolněn po dalším restartování aplikace Dynamo.</value
     <value>Klíčová slova</value>
   </data>
   <data name="PublishPackageViewLicenseSubLabel" xml:space="preserve">
-    <value>Applies to the latest package version. If blank, the package will be licensed under </value>
+    <value>Platí pro nejnovější verzi balíčku. Pokud je toto pole prázdné, balíček bude licencován pod </value>
   </data>
   <data name="PublishPackageViewLicenseWatermark" xml:space="preserve">
     <value>Licence</value>
@@ -2893,7 +2893,7 @@ Chcete-li nainstalovat nejnovější verzi balíčku, klikněte na možnost Inst
     <value>Tento balíček obsahuje uživatelské uzly, které se používají. Tyto uživatelské uzly je třeba odstranit, případně je nutné před odstraněním balíčku zavřít graf.</value>
   </data>
   <data name="PackagesGuideNavigatePackagesText" xml:space="preserve">
-    <value>\nWhen you install a package, it appears in the library under Add-ons.  \n\n**Click to expand the package** so you can see its nodes (functions).</value>
+    <value>\nPři instalaci balíčku se balíček zobrazí v knihovně pod položkou Doplňky.  \n\n**Kliknutím rozbalíte balíček** a zobrazíte jeho uzly (funkce).</value>
   </data>
   <data name="PackagesGuideNavigatePackagesTitle" xml:space="preserve">
     <value>Přejít na balíčky</value>
@@ -3163,11 +3163,11 @@ Tato umístění můžete spravovat v části Předvolby -&gt; Zabezpečení.</v
     <value>Chyba hostitele balíčku</value>
   </data>
   <data name="TrustedLocationNotAccessible" xml:space="preserve">
-    <value>A problem occurred when trying to access the trusted location. Dynamo is unable to obtain read/write access to
+    <value>Při pokusu o přístup k důvěryhodnému umístění došlo k problému. Aplikace Dynamo nemůže získat přístup pro čtení a zápis do
 {0}</value>
   </data>
   <data name="UnableToAccessTrustedDirectory" xml:space="preserve">
-    <value>Unable To Access Trusted Directory</value>
+    <value>Nelze získat přístup k důvěryhodnému adresáři</value>
   </data>
   <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
     <value>Připnout drát</value>
@@ -3182,7 +3182,7 @@ Tato umístění můžete spravovat v části Předvolby -&gt; Zabezpečení.</v
     <value>Přejít proti proudu</value>
   </data>
   <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
-    <value>Navigate Downtream</value>
+    <value>Navigovat dolů</value>
   </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>Uzlová připojení</value>
@@ -3748,7 +3748,7 @@ Chcete-li vytvořit z tohoto souboru novou šablonu, uložte ho do jiné složky
     <value>Vlastní uzel nelze umístit do jeho vlastního pracovní prostor bez správné implementace rekurzivního základního případu pomocí uzlu scopeif.</value>
   </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
-    <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
+    <value>Kompatibilita této verze s vaším nastavením nebyla ověřena. Může, ale nemusí fungovat podle očekávání.</value>
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Zdá se, že v systému není nastaven nástroj Autodesk Identity Manager. Chcete-li zajistit plný přístup ke všem funkcím, přihlaste se ke svému účtu Autodesk pomocí nástroje Autodesk Identity Manager.
@@ -3776,19 +3776,19 @@ Chcete-li vytvořit z tohoto souboru novou šablonu, uložte ho do jiné složky
     <value>Zobrazit výchozí popis skupiny</value>
   </data>
   <data name="NodeAutoCompleteToolTip" xml:space="preserve">
-    <value>Click to get Node Autocomplete suggestions</value>
+    <value>Kliknutím získáte návrhy automatického dokončování uzlů</value>
   </data>
   <data name="ExportWorkspaceAsImage" xml:space="preserve">
-    <value>Workspace has been exported as an image to </value>
+    <value>Pracovní prostor byl exportován jako obrázek do </value>
   </data>
   <data name="ExportWorkspaceAs3DImage" xml:space="preserve">
-    <value>Workspace has been exported as a 3D image to </value>
+    <value>Pracovní prostor byl exportován jako 3D obrázek do </value>
   </data>
   <data name="PackageDetailsViewExtensionName" xml:space="preserve">
     <value>Podrobnosti o balíčku</value>
   </data>
   <data name="PublishPackageBackToFileButton" xml:space="preserve">
-    <value>Back to File Selection</value>
+    <value>Zpět na výběr souboru</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

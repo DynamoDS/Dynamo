@@ -355,7 +355,7 @@
     <value>Elenca</value>
   </data>
   <data name="PortDataOperandToolTip" xml:space="preserve">
-    <value>Boolean #</value>
+    <value>Numero booleano</value>
   </data>
   <data name="PortDataResultToolTip" xml:space="preserve">
     <value>Blocco dei risultati prodotto</value>
@@ -412,7 +412,7 @@
     <value>Elementi selezionati.</value>
   </data>
   <data name="StringfromArrayDescription" xml:space="preserve">
-    <value>Converts an array to a string representation</value>
+    <value>Converte una matrice in una rappresentazione stringa.</value>
   </data>
   <data name="StringfromObjectDescription" xml:space="preserve">
     <value>Converte un oggetto in una rappresentazione stringa.</value>
@@ -442,7 +442,7 @@
     <value>print;output;display</value>
   </data>
   <data name="WebRequestDescription" xml:space="preserve">
-    <value>Returns the contents of a webpage from the given URL as a string</value>
+    <value>Restituisce il contenuto di una pagina Web dall'URL specificato come stringa.</value>
   </data>
   <data name="WebRequestPortDataResultToolTip" xml:space="preserve">
     <value>Contenuto di una richiesta Web come stringa.</value>
@@ -691,6 +691,6 @@ Default value (double): {0}</value>
 double[]</value>
   </data>
   <data name="ColorPalettePortDataResultToolTip" xml:space="preserve">
-    <value>Selected color</value>
+    <value>Colore selezionato</value>
   </data>
 </root>

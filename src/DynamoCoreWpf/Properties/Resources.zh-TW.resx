@@ -873,9 +873,9 @@
     <value>發佈失敗!</value>
   </data>
   <data name="FileNotPublishMessage" xml:space="preserve">
-    <value>未找到檔案或包含在套件內。 請僅加入位於套件外的檔案。
+    <value>找不到檔案，或檔案已在套件內。請只加入套件以外的檔案。
 
-無法發佈檔案:
+無法發佈檔案: 
 {0}</value>
   </data>
   <data name="FilePathConverterNoFileSelected" xml:space="preserve">
@@ -939,10 +939,10 @@
     <value>縮小</value>
   </data>
   <data name="InfoBubbleError" xml:space="preserve">
-    <value>錯誤： </value>
+    <value>錯誤: </value>
   </data>
   <data name="InfoBubbleWarning" xml:space="preserve">
-    <value>警告： </value>
+    <value>警告: </value>
   </data>
   <data name="InstalledPackageViewAdditionalFileLabel" xml:space="preserve">
     <value>其他檔案</value>
@@ -1077,9 +1077,9 @@
 您要儲存您的變更嗎？</value>
   </data>
   <data name="MessageFileInUseByApplication" xml:space="preserve">
-    <value>此檔案目前正由另一個應用程式使用中。
+    <value>檔案目前正由另一個應用程式使用中。
 	
-請在嘗試覆蓋之前先關閉檔案。</value>
+請在嘗試覆寫之前先關閉檔案。</value>
   </data>
   <data name="TitleFileInUse" xml:space="preserve">
     <value>檔案使用中</value>
@@ -1185,9 +1185,9 @@
 如果不要，此節點將移動至您要建立的新套件。</value>
   </data>
   <data name="MessageToDeprecatePackage" xml:space="preserve">
-    <value>您確定要棄用 {0} 嗎？如果您不是套件的維護者，此請求將被拒絕。 這表示您將不再支援套件，雖然明確搜尋時，套件仍會出垷。 
+    <value>您確定要棄用 {0} 嗎？如果您不是套件的維護者，將拒絕此請求。這表示您將不再支援該套件，但如果明確搜尋，套件仍會出現。
 
-您可以永遠取消棄用套件。</value>
+您永遠都可以取消棄用套件。</value>
   </data>
   <data name="MessageToUndeprecatePackage" xml:space="preserve">
     <value>您確定要取消棄用{0}嗎？如果您不是套件的維護者，此請求將被拒絕。 這表示您將繼續支援套件，而且在使用者瀏覽套件時，套件將會出現。 
@@ -1195,11 +1195,11 @@
 您可以永遠重新棄用套件。</value>
   </data>
   <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
-    <value>Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
+    <value>套件 {0} 有一個或多個相依性與工作區中正在使用的下列套件發生衝突: {1}。相依性衝突可能會導致發生非預期的行為。
     
-Do you wish to continue installing it while keeping the packages that are already installed?
+您是否要繼續安裝，同時保留已安裝的套件？
 
-If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Try restarting {2} and download {0} again.</value>
+若否，{2} 必須先解除安裝 {1} 才能繼續，但無法如使用中狀態一樣。請嘗試重新啟動 {2}，然後再次下載 {0}。</value>
   </data>
   <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
     <value>套件 {0} 有一個或多個相依性與下列套件發生衝突:
@@ -2035,12 +2035,12 @@ If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Tr
     <value>未加入新頁籤，因為該延伸已經位於延伸側邊列中。</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
-    <value>{1} cannot be loaded.
-Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
-To install {1}, Dynamo needs to first uninstall {0}. 
-Restart Dynamo to complete the uninstall.
+    <value>無法載入 {1}。
+安裝它將會與 {0} (目前已載入) 已存在的一個或多個節點定義發生衝突。
+若要安裝 {1}，Dynamo 必須先解除安裝 {0}。
+請重新啟動 Dynamo 以完成解除安裝。
 
-Uninstall the following packages: {0}?</value>
+要解除安裝下列套件: {0}？</value>
   </data>
   <data name="PreviewText" xml:space="preserve">
     <value> 此功能為預覽版功能！</value>
@@ -2199,25 +2199,25 @@ Uninstall the following packages: {0}?</value>
     <value>需要重新啟動 Dynamo</value>
   </data>
   <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
-    <value>{0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
+    <value>{0} 有相依性與下列內建套件發生衝突: {1}。相依性衝突可能會導致發生意外行為。
     
-Do you wish to continue trying to install {0}?</value>
+您是否要繼續嘗試安裝 {0}？</value>
   </data>
   <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
-    <value>{0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
+    <value>{0} 無法安裝，因為與已安裝的不同版內建套件 {1} 發生衝突。
     
-You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again.</value>
+您可以嘗試停止從內建套件路徑載入套件，或卸載衝突的套件，然後重新啟動 {2} 並再次下載 {0}。</value>
   </data>
   <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
-    <value>The same version of package {0} is already installed as a built-in package and does not need to be installed again.</value>
+    <value>相同版本的套件 {0} 已安裝為內建套件，不需要再次安裝。</value>
   </data>
   <data name="MessageSamePackageSameVersInLocalPackages" xml:space="preserve">
     <value>已安裝同版本的 {0}，不需要再次安裝。</value>
   </data>
   <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
-    <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
+    <value>套件 {0} 無法安裝，因為與已安裝的其他版本 {1} 發生衝突。
 
-Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again.</value>
+您是否要解除安裝 {1}？請重新啟動 {2} 以完成解除安裝，然後再次嘗試下載 {0}。</value>
   </data>
   <data name="PreferencesViewGeneralSettingsRun" xml:space="preserve">
     <value>執行設定</value>
@@ -2397,7 +2397,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>描述 &lt;按兩下這裡以編輯群組描述&gt;</value>
   </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>Title &lt;Click here to edit the group title&gt;</value>
+    <value>標題 &lt;按一下這裡編輯群組標題&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
     <value>將群組加入此群組</value>
@@ -2590,7 +2590,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>使用 Revit 調整背景圖形輔助工具的比例</value>
   </data>
   <data name="PreferencesUseHostScaleUnitsToolTip" xml:space="preserve">
-    <value>When toggled on, the current Host document units will be used to scale the background graphic helpers (grids, axes). Otherwise, the Graphic Elements Scale drop-down will determine scale.</value>
+    <value>如果開啟，將使用目前的主體文件單位調整背景圖形輔助工具 (網格、軸) 的比例。否則，「圖形元素比例」下拉式清單將決定比例。</value>
   </data>
   <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
     <value>0</value>
@@ -2618,7 +2618,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>關鍵字</value>
   </data>
   <data name="PublishPackageViewLicenseSubLabel" xml:space="preserve">
-    <value>Applies to the latest package version. If blank, the package will be licensed under </value>
+    <value>適用於最新的套件版本。如果留空，則套件會採用的授權為 </value>
   </data>
   <data name="PublishPackageViewLicenseWatermark" xml:space="preserve">
     <value>授權</value>
@@ -2893,7 +2893,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>此套件包含使用中的自訂節點。必須先刪除這些自訂節點或關閉圖表，才能刪除套件。</value>
   </data>
   <data name="PackagesGuideNavigatePackagesText" xml:space="preserve">
-    <value>\nWhen you install a package, it appears in the library under Add-ons.  \n\n**Click to expand the package** so you can see its nodes (functions).</value>
+    <value>\n安裝套件時，該套件會出現在資源庫的「附加元件」下。\n\n**按一下可展開套件**，您就可以看到其節點 (功能)。</value>
   </data>
   <data name="PackagesGuideNavigatePackagesTitle" xml:space="preserve">
     <value>導覽至套件</value>
@@ -3163,11 +3163,11 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>套件主體錯誤</value>
   </data>
   <data name="TrustedLocationNotAccessible" xml:space="preserve">
-    <value>A problem occurred when trying to access the trusted location. Dynamo is unable to obtain read/write access to
+    <value>嘗試存取受信任位置時發生問題。Dynamo 無法取得下列項目的讀取/寫入權限
 {0}</value>
   </data>
   <data name="UnableToAccessTrustedDirectory" xml:space="preserve">
-    <value>Unable To Access Trusted Directory</value>
+    <value>無法存取受信任的目錄</value>
   </data>
   <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
     <value>固定線路</value>
@@ -3182,7 +3182,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>導覽上游</value>
   </data>
   <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
-    <value>Navigate Downtream</value>
+    <value>導覽下游</value>
   </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>節點連接</value>
@@ -3748,7 +3748,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>如果未使用 scopeif 節點正確實作遞迴基準情況，則無法將自訂節點放在自己的工作區中。</value>
   </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
-    <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
+    <value>尚未驗證此版本與您設定的相容性。它不一定會如預期般運作。</value>
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>您的系統似乎未設定 Autodesk Identity Manager。若要確保完整存取所有功能，請使用 Autodesk Identity Manager 登入您的 Autodesk 帳戶。
@@ -3776,19 +3776,19 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>顯示預設群組描述</value>
   </data>
   <data name="NodeAutoCompleteToolTip" xml:space="preserve">
-    <value>Click to get Node Autocomplete suggestions</value>
+    <value>按一下以取得「節點自動完成」的建議</value>
   </data>
   <data name="ExportWorkspaceAsImage" xml:space="preserve">
-    <value>Workspace has been exported as an image to </value>
+    <value>工作區已成為影像匯出到 </value>
   </data>
   <data name="ExportWorkspaceAs3DImage" xml:space="preserve">
-    <value>Workspace has been exported as a 3D image to </value>
+    <value>工作區已成為 3D 影像匯出到 </value>
   </data>
   <data name="PackageDetailsViewExtensionName" xml:space="preserve">
     <value>套件詳細資料</value>
   </data>
   <data name="PublishPackageBackToFileButton" xml:space="preserve">
-    <value>Back to File Selection</value>
+    <value>回到檔案選取</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

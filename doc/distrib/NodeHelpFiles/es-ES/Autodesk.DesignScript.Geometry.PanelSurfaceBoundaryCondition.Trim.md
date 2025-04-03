@@ -1,4 +1,4 @@
-## En detalle:
+## En detalle
 Recorte paneles solapados según el contorno de superficie.
 ___
 ## Archivo de ejemplo

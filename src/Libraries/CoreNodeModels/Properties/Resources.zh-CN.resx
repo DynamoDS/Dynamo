@@ -355,7 +355,7 @@
     <value>列表</value>
   </data>
   <data name="PortDataOperandToolTip" xml:space="preserve">
-    <value>Boolean #</value>
+    <value>布尔 #</value>
   </data>
   <data name="PortDataResultToolTip" xml:space="preserve">
     <value>产生的结果块</value>
@@ -412,7 +412,7 @@
     <value>选定的元素。</value>
   </data>
   <data name="StringfromArrayDescription" xml:space="preserve">
-    <value>Converts an array to a string representation</value>
+    <value>将阵列转换为字符串表示</value>
   </data>
   <data name="StringfromObjectDescription" xml:space="preserve">
     <value>将对象转换为字符串表示</value>
@@ -442,7 +442,7 @@
     <value>print;output;display</value>
   </data>
   <data name="WebRequestDescription" xml:space="preserve">
-    <value>Returns the contents of a webpage from the given URL as a string</value>
+    <value>以字符串形式从给定 URL 返回网页内容</value>
   </data>
   <data name="WebRequestPortDataResultToolTip" xml:space="preserve">
     <value>Web 请求的内容(字符串)。</value>
@@ -691,6 +691,6 @@ Default value (double): {0}</value>
 double[]</value>
   </data>
   <data name="ColorPalettePortDataResultToolTip" xml:space="preserve">
-    <value>Selected color</value>
+    <value>选定的颜色</value>
   </data>
 </root>

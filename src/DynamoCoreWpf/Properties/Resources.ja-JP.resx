@@ -875,7 +875,7 @@
   <data name="FileNotPublishMessage" xml:space="preserve">
     <value>ファイルが見つからないか、パッケージ内部に含まれています。パッケージの外部に置かれているファイルのみを追加してください。
 
-ファイルのパブリッシュに失敗しました:
+ファイルのパブリッシュに失敗しました: 
 {0}</value>
   </data>
   <data name="FilePathConverterNoFileSelected" xml:space="preserve">
@@ -939,10 +939,10 @@
     <value>縮小</value>
   </data>
   <data name="InfoBubbleError" xml:space="preserve">
-    <value>エラー:</value>
+    <value>エラー: </value>
   </data>
   <data name="InfoBubbleWarning" xml:space="preserve">
-    <value>警告:</value>
+    <value>警告: </value>
   </data>
   <data name="InstalledPackageViewAdditionalFileLabel" xml:space="preserve">
     <value>追加ファイル</value>
@@ -1185,7 +1185,7 @@
 送信しない場合、このノードは作成中の新しいパッケージに移動します。」</value>
   </data>
   <data name="MessageToDeprecatePackage" xml:space="preserve">
-    <value>{0} を廃止してもよろしいですか?  あなたがパッケージを保持していない場合は、この要求は拒否されます。廃止すると、明示的に検索すればパッケージは表示されますが、パッケージはサポートされなくなります。 
+    <value>{0} を廃止してもよろしいですか?  あなたがパッケージを保持していない場合は、この要求は拒否されます。廃止すると、パッケージはサポートされなくなりますが、明示的に検索すればパッケージは表示されます。
 
 パッケージの廃止はいつでも解除できます。</value>
   </data>
@@ -1195,11 +1195,11 @@
 パッケージはいつでも再廃止できます。</value>
   </data>
   <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
-    <value>Package {0} has one or more dependencies that conflict with the following packages that are in use in the workspace: {1}. Dependency conflicts could cause unintended behavior to occur.
+    <value>パッケージ {0} には、ワークスペースで使用中のパッケージ {1} と競合する依存関係が 1 つ以上あります。依存関係の競合により、予期しない動作が発生する可能性があります。
     
-Do you wish to continue installing it while keeping the packages that are already installed?
+既にインストールされているパッケージを保持したままインストールを続行しますか?
 
-If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Try restarting {2} and download {0} again.</value>
+続行しない場合は {2} で {1} をアンインストールする必要がありますが、使用中のためできません。{2} を再起動して、{0} を再度ダウンロードしてください。</value>
   </data>
   <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
     <value>パッケージ {0} には、以下のパッケージと競合する 1 つ以上の依存関係があります: 
@@ -2036,12 +2036,12 @@ If not, {2} needs to uninstall {1} to continue but cannot as they are in use. Tr
     <value>[拡張]サイド バーに既に拡張が存在するため、新しいタブは追加されません。</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
-    <value>{1} cannot be loaded.
-Installing it will conflict with one or more node definitions that already exist in {0}, which is currently loaded. 
-To install {1}, Dynamo needs to first uninstall {0}. 
-Restart Dynamo to complete the uninstall.
+    <value>{1} をロードできません。
+これをインストールすると、現在ロードされている {0} に既に存在する 1 つまたは複数のノードの定義と競合します。 
+{1} をインストールするには、事前に Dynamo で {0} をアンインストールする必要があります。 
+Dynamo を再起動してアンインストールを完了します。
 
-Uninstall the following packages: {0}?</value>
+次のパッケージをアンインストールしますか?: {0}</value>
   </data>
   <data name="PreviewText" xml:space="preserve">
     <value> このフィーチャはプレビューです。 </value>
@@ -2200,25 +2200,25 @@ Uninstall the following packages: {0}?</value>
     <value>Dynamo の再起動が必要です</value>
   </data>
   <data name="MessagePackageDepsInBuiltinPackages" xml:space="preserve">
-    <value>{0} has dependencies that conflict with the following built-in package(s): {1}. Dependency conflicts could cause unintended behavior to occur.
+    <value>{0} には組み込みパッケージ {1} と競合する依存関係があります。依存関係の競合により、予期しない動作が発生する可能性があります。
     
-Do you wish to continue trying to install {0}?</value>
+{0} のインストールを続行しますか?</value>
   </data>
   <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
-    <value>{0} cannot be installed as it conflicts with a different version of the built-in package, {1}, which is already installed.
+    <value>既にインストールされている別のバージョンの組み込みパッケージ {1} と競合するため、{0} はインストールできません。
     
-You can try disabling loading packages from built-in package paths, or unload the conflicting package, then restart {2} and download {0} again.</value>
+組み込みパッケージのパスからのパッケージのロードを無効にするか、競合しているパッケージのロード解除を行ってから {2} を再起動し、{0} を再度ダウンロードしてみてください。</value>
   </data>
   <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
-    <value>The same version of package {0} is already installed as a built-in package and does not need to be installed again.</value>
+    <value>パッケージ {0} の同じバージョンは既に組み込みパッケージとしてインストールされているため、再インストールする必要はありません。</value>
   </data>
   <data name="MessageSamePackageSameVersInLocalPackages" xml:space="preserve">
     <value>同じバージョンの {0} が既にインストールされているため、再インストールする必要はありません。</value>
   </data>
   <data name="MessageSamePackageDiffVersInLocalPackages" xml:space="preserve">
-    <value>Package {0} cannot be installed as it conflicts with a different version, {1}, which is already installed. 
+    <value>パッケージ {0} は、既にインストールされている別のバージョン {1} と競合するためインストールできません。
 
-Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try downloading {0} again.</value>
+{1} をアンインストールしますか? その場合は {2} を再起動してアンインストールを完了してから {0} を再度ダウンロードしてみてください。</value>
   </data>
   <data name="PreferencesViewGeneralSettingsRun" xml:space="preserve">
     <value>実行設定</value>
@@ -2398,7 +2398,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>説明&lt;グループの説明を編集するにはここをダブル クリック&gt;</value>
   </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>Title &lt;Click here to edit the group title&gt;</value>
+    <value>タイトル &lt;グループ タイトルを編集するにはここをクリック&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
     <value>このグループにグループを追加</value>
@@ -2591,7 +2591,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>Revit を使用してバックグラウンド グラフィックス ヘルパーのスケールを変更</value>
   </data>
   <data name="PreferencesUseHostScaleUnitsToolTip" xml:space="preserve">
-    <value>When toggled on, the current Host document units will be used to scale the background graphic helpers (grids, axes). Otherwise, the Graphic Elements Scale drop-down will determine scale.</value>
+    <value>オンに切り替えると、現在のホスト ドキュメント単位が、バックグラウンド グラフィックス ヘルパー(通芯、軸)のスケールの変更に使用されます。オフに切り替えると、[グラフィックス要素のスケール]ドロップダウンでスケールが決まります。</value>
   </data>
   <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
     <value>0</value>
@@ -2619,7 +2619,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>キーワード</value>
   </data>
   <data name="PublishPackageViewLicenseSubLabel" xml:space="preserve">
-    <value>Applies to the latest package version. If blank, the package will be licensed under </value>
+    <value>パッケージの最新のバージョンに該当します。空白の場合、パッケージは次のライセンスが適用されます </value>
   </data>
   <data name="PublishPackageViewLicenseWatermark" xml:space="preserve">
     <value>ライセンス</value>
@@ -2894,7 +2894,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>このパッケージには使用中のカスタム ノードが含まれています。パッケージを削除する前に、使用中のカスタム ノードを削除するか、グラフを閉じる必要があります。</value>
   </data>
   <data name="PackagesGuideNavigatePackagesText" xml:space="preserve">
-    <value>\nWhen you install a package, it appears in the library under Add-ons.  \n\n**Click to expand the package** so you can see its nodes (functions).</value>
+    <value>\nパッケージをインストールすると、そのパッケージが Add-ons 以下のライブラリに表示されます。  \n\n**クリックしてパッケージを展開** すると、パッケージのノード(機能)を確認できます。</value>
   </data>
   <data name="PackagesGuideNavigatePackagesTitle" xml:space="preserve">
     <value>パッケージに移動</value>
@@ -3164,11 +3164,11 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>パッケージ ホスト エラー</value>
   </data>
   <data name="TrustedLocationNotAccessible" xml:space="preserve">
-    <value>A problem occurred when trying to access the trusted location. Dynamo is unable to obtain read/write access to
+    <value>信頼できる場所へのアクセスを試行中に問題が発生しました。Dynamo は次への読み取り/書き込みアクセス権を取得できません:
 {0}</value>
   </data>
   <data name="UnableToAccessTrustedDirectory" xml:space="preserve">
-    <value>Unable To Access Trusted Directory</value>
+    <value>信頼できるフォルダにアクセスできません</value>
   </data>
   <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
     <value>ワイヤを固定</value>
@@ -3183,7 +3183,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>上流をナビゲート</value>
   </data>
   <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
-    <value>Navigate Downtream</value>
+    <value>下流をナビゲート</value>
   </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>ノード接続</value>
@@ -3749,7 +3749,7 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>scopeif ノードを使用して再帰的な基本ケースを正しく実装しないと、独自のワークスペースにカスタム ノードを配置できません。</value>
   </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
-    <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
+    <value>このバージョンとお使いの設定の互換性は検証されていません。想定どおりに機能しない可能性があります。</value>
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>Autodesk Identity Manager がシステムに設定されていないようです。すべての機能に完全にアクセスするには、Autodesk Identity Manager を使用して Autodesk Account にサインインしてください。
@@ -3777,19 +3777,19 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
     <value>既定のグループ説明を表示</value>
   </data>
   <data name="NodeAutoCompleteToolTip" xml:space="preserve">
-    <value>Click to get Node Autocomplete suggestions</value>
+    <value>クリックすると、ノード オートコンプリートの提案が表示されます</value>
   </data>
   <data name="ExportWorkspaceAsImage" xml:space="preserve">
-    <value>Workspace has been exported as an image to </value>
+    <value>ワークスペースは、イメージとして次の場所に書き出されました </value>
   </data>
   <data name="ExportWorkspaceAs3DImage" xml:space="preserve">
-    <value>Workspace has been exported as a 3D image to </value>
+    <value>ワークスペースは 3D イメージとして次の場所に書き出されました </value>
   </data>
   <data name="PackageDetailsViewExtensionName" xml:space="preserve">
     <value>パッケージ詳細</value>
   </data>
   <data name="PublishPackageBackToFileButton" xml:space="preserve">
-    <value>Back to File Selection</value>
+    <value>ファイル選択に戻る</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
