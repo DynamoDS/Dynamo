@@ -804,8 +804,8 @@ namespace Dynamo.ViewModels
                 clusterConnections.ForEach(connection =>
                 {
                     // Connect the nodes    
-                    var sourceNode = clusterMapping[connection.StartNode.NodeId];
-                    var targetNode = clusterMapping[connection.EndNode.NodeId];
+                    var sourceNode = clusterMapping[connection.StartNode.NodeId].NodeModel;
+                    var targetNode = clusterMapping[connection.EndNode.NodeId].NodeModel;
                     // The port index is 1- based (currently a hack and not expected from service)
                     var sourcePort = sourceNode.OutPorts.FirstOrDefault(p => p.Index == connection.StartNode.PortIndex - 1);
                     var targetPort = targetNode.InPorts.FirstOrDefault(p => p.Index == connection.EndNode.PortIndex - 1);
