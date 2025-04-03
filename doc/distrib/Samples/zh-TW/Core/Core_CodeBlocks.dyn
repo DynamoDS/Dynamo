@@ -5489,7 +5489,7 @@
       },
       {
         "Id": "68e41793387f43a4b617b1f9da07e298",
-        "Title": "Code Block 可以用來呼叫資源庫中的其他任何節點。資源庫中的節點通常有三種類型:\r\n\r\n    建立:\t建立物件\r\n    動作:\t對物件執行動作\r\n    查詢:\t\t取得已存在物件\r\n\t\t的性質\r\n\r\n在 Code Block 內呼叫時，這三種類型的方法 (或稱為節點) 有不同的處理方式。",
+        "Title": "Code Block 可以用來呼叫資源庫中的其他任何節點。資源庫中的節點通常有三種類型:\r\n\r\n    建立:\t\t建立物件\r\n    動作:\t\t對物件執行動作\r\n    查詢:\t\t取得已存在物件\r\n\t\t的性質\r\n\r\n在 Code Block 內呼叫時，這三種類型的方法 (或稱為節點) 有不同的處理方式。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,
@@ -6053,7 +6053,7 @@
       },
       {
         "Id": "48b10f5b91ed46d0b5dda59e32d479ea",
-        "Title": "Multiple variables are defined in this code block, and at the end, a list is created containing all of them.",
+        "Title": "在此 Code Block 中定義多個變數，最後建立包含所有變數的清單。",
         "DescriptionText": null,
         "IsExpanded": true,
         "WidthAdjustment": 0.0,

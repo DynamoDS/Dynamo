@@ -886,11 +886,11 @@
             <search>replace,switch</search>
         </member>
         <member name="M:DSCore.List.ReplaceItemAtIndices(System.Collections.IList,System.Collections.Generic.IList{System.Int32},System.Object)">
-            <summary>Replaces items from the given list that are located at the specified indices.</summary>
-            <param name="list">要取代其中項目的清單。</param>
-            <param name="indices">Indices of the item(s) to be replaced.</param>
+            <summary>取代給定清單中位於指定索引的項目。</summary>
+            <param name="list">要取代項目的清單。</param>
+            <param name="indices">要被取代項目的索引。</param>
             <param name="item">要插入的項目。</param>
-            <returns name="list">A new list with the item(s) replaced.</returns>
+            <returns name="list">取代項目後的新清單。</returns>
             <search>replace,switch</search>
         </member>
         <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">
@@ -1612,7 +1612,7 @@
         </member>
         <member name="M:DSCore.Quadtree.ByUVs(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV})">
             <summary>建構一個包含 (0,0) -&gt; (1,1) 網域的四元樹狀目錄。</summary>
-            <param name="uvs">(0,0) - &gt; (1,1)  網域中的一組 UV。</param>
+            <param name="uvs">(0,0)-&gt;(1,1) 定義域中的一組 UV。</param>
             <returns>一個四元樹狀目錄物件。</returns>
         </member>
         <member name="M:DSCore.Quadtree.FindPointsWithinRadius(Autodesk.DesignScript.Geometry.UV,System.Double)">

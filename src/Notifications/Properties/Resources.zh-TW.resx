@@ -136,10 +136,10 @@
     <value>通知</value>
   </data>
   <data name="NoNotificationsMsg" xml:space="preserve">
-    <value>You currently have no notifications. New notifications will appear above</value>
+    <value>您目前沒有通知。新通知將出現在上方</value>
   </data>
   <data name="NoNotificationsTitle" xml:space="preserve">
-    <value>無通知</value>
+    <value>沒有通知</value>
   </data>
   <data name="NotificationCenterDisabledMsg" xml:space="preserve">
     <value>通知中心功能已停用。請在「偏好」面板中啟用以查看最新新聞。</value>

@@ -31,15 +31,15 @@
             <notranslation>true</notranslation>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DebugTools.EnableAsmJournaling(System.Collections.IList,System.String)">
-            <summary>Enables ASM journaling</summary>
-            <param name="input">Any input value</param>
-            <param name="journalPath">optional path to specify location of ASM journals.</param>
-            <returns name="output">Returns the input value</returns>
+            <summary>ASM 저널링을 활성화합니다.</summary>
+            <param name="input">모든 입력 값</param>
+            <param name="journalPath">ASM 저널의 위치를 지정하기 위한 선택적 경로입니다.</param>
+            <returns name="output">입력 값을 반환합니다.</returns>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.DebugTools.DisableAsmJournaling(System.Collections.IList)">
-            <summary>Disables ASM journaling</summary>
-            <param name="input">Any input value</param>
-            <returns name="output">Returns the input value</returns>
+            <summary>ASM 저널링을 비활성화합니다.</summary>
+            <param name="input">모든 입력 값</param>
+            <returns name="output">입력 값을 반환합니다.</returns>
         </member>
         <member name="T:Autodesk.DesignScript.Geometry.Core.EntityTags">
             <summary>태그를 사용하면 임의의 메타데이터를 DesignScriptEntity에 추가할 수 있습니다. 이 기능은 

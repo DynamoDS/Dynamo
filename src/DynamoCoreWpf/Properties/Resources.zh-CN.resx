@@ -875,7 +875,7 @@
   <data name="FileNotPublishMessage" xml:space="preserve">
     <value>未找到文件或文件包含在某个软件包中。请仅添加软件包外的文件。
 
-无法发布文件:
+无法发布文件: 
 {0}</value>
   </data>
   <data name="FilePathConverterNoFileSelected" xml:space="preserve">
@@ -939,10 +939,10 @@
     <value>缩小</value>
   </data>
   <data name="InfoBubbleError" xml:space="preserve">
-    <value>错误:</value>
+    <value>错误: </value>
   </data>
   <data name="InfoBubbleWarning" xml:space="preserve">
-    <value>警告:</value>
+    <value>警告: </value>
   </data>
   <data name="InstalledPackageViewAdditionalFileLabel" xml:space="preserve">
     <value>其他文件</value>
@@ -1195,10 +1195,11 @@
 您始终可以再次弃用该软件包。</value>
   </data>
   <data name="MessageForceInstallOrUninstallToContinue" xml:space="preserve">
-    <value>软件包 {0} 的一个或多个依存关系与工作空间中已在使用的以下软件包冲突: {1}. 依存关系冲突可能会导致发生意外行为。
+    <value>软件包 {0} 的一个或多个依存关系与工作空间中使用的以下软件包冲突: {1}. 依存关系冲突可能会导致发生意外行为。
     
 是否要在保留已安装的软件包的情况下继续安装它？
-如果不是，{2} 需要卸载 {1} 才能继续，但在它们已在使用的情况下无法卸载。尝试重新启动 {2}，然后再次下载 {0}。</value>
+
+如果不是，{2}需要卸载 {1} 才能继续，但在它们正在使用的情况下无法卸载。请尝试重新启动 {2}，然后再次下载 {0}。</value>
   </data>
   <data name="MessageForceInstallOrUninstallUponRestart" xml:space="preserve">
     <value>软件包 {0} 的一个或多个依存关系与以下软件包冲突:
@@ -2031,8 +2032,8 @@
     <value>添加了新选项卡，因为该扩展已经显示在扩展侧栏上。</value>
   </data>
   <data name="MessageUninstallCustomNodeToContinue" xml:space="preserve">
-    <value>{1} 无法加载。
-安装它会与当前加载的 {0} 中已存在的一个或多个节点定义产生冲突。 
+    <value>无法加载 {1}。
+安装它会与当前加载的 {0} 中已存在的一个或多个节点定义产生冲突。
 要安装 {1}，Dynamo 需要先卸载 {0}。
 重新启动 Dynamo 以完成卸载。
 
@@ -2200,12 +2201,12 @@
 是否要继续尝试安装 {0}？</value>
   </data>
   <data name="MessageSamePackageDiffVersInBuiltinPackages" xml:space="preserve">
-    <value>{0} 无法安装，因为它与已安装的其他版本的内置软件包 {1} 冲突。
+    <value>无法安装 {0}，因为它与已安装的其他版本的内置软件包 {1} 冲突。
     
-可以尝试禁止从内置软件包路径加载软件包，也可以卸载冲突的软件包，然后重新启动 {2} 并再次下载 {0}。</value>
+可以尝试禁用从内置软件包路径加载软件包，或卸载冲突的软件包，然后重新启动 {2} 并再次下载{0}。</value>
   </data>
   <data name="MessageSamePackageSameVersInBuiltinPackages" xml:space="preserve">
-    <value>The same version of package {0} is already installed as a built-in package and does not need to be installed again.</value>
+    <value>相同版本的软件包 {0} 已作为内置软件包安装，无需再次安装。</value>
   </data>
   <data name="MessageSamePackageSameVersInLocalPackages" xml:space="preserve">
     <value>同一版本的 {0} 已安装，无需再次安装。</value>
@@ -2393,7 +2394,7 @@
     <value>说明 &lt;双击此处编辑组说明&gt;</value>
   </data>
   <data name="GroupNameDefaultText" xml:space="preserve">
-    <value>Title &lt;Click here to edit the group title&gt;</value>
+    <value>标题 &lt;单击此处编辑组标题&gt;</value>
   </data>
   <data name="GroupContextMenuAddGroupToGroup" xml:space="preserve">
     <value>将组添加到此组</value>
@@ -2586,7 +2587,7 @@
     <value>使用 Revit 缩放背景图形辅助对象</value>
   </data>
   <data name="PreferencesUseHostScaleUnitsToolTip" xml:space="preserve">
-    <value>When toggled on, the current Host document units will be used to scale the background graphic helpers (grids, axes). Otherwise, the Graphic Elements Scale drop-down will determine scale.</value>
+    <value>启用后，当前主体文档单位将用于缩放背景图形辅助对象(网格、轴)。否则，“图形图元比例”下拉列表将确定比例。</value>
   </data>
   <data name="PublishPackageVersionMajorWatermark" xml:space="preserve">
     <value>0</value>
@@ -2614,7 +2615,7 @@
     <value>关键字</value>
   </data>
   <data name="PublishPackageViewLicenseSubLabel" xml:space="preserve">
-    <value>Applies to the latest package version. If blank, the package will be licensed under </value>
+    <value>适用于最新的软件包版本。如果为空，则该软件包将获得许可，基于 </value>
   </data>
   <data name="PublishPackageViewLicenseWatermark" xml:space="preserve">
     <value>许可证</value>
@@ -2704,7 +2705,7 @@
     <value>发布软件包</value>
   </data>
   <data name="PackageManagerPublishOnlineFinishedMessage" xml:space="preserve">
-    <value>Virus scan in progress. Your package will be searchable in a few minutes.</value>
+    <value>正在进行病毒扫描。您的软件包将在几分钟内可搜索。</value>
   </data>
   <data name="PackageManagerInstalledPackagesTab" xml:space="preserve">
     <value>已安装的软件包</value>
@@ -2889,7 +2890,7 @@
     <value>该软件包包含已在使用的自定义节点。在可以删除软件包之前，需要先删除这些自定义节点或关闭图形。</value>
   </data>
   <data name="PackagesGuideNavigatePackagesText" xml:space="preserve">
-    <value>\nWhen you install a package, it appears in the library under Add-ons.  \n\n**Click to expand the package** so you can see its nodes (functions).</value>
+    <value>\n安装软件包时，它将显示在库中的“附加模块”下。  \n\n**单击以展开软件包**，以便可以查看其节点(功能)。</value>
   </data>
   <data name="PackagesGuideNavigatePackagesTitle" xml:space="preserve">
     <value>导航到软件包</value>
@@ -3159,11 +3160,10 @@
     <value>软件包主机错误</value>
   </data>
   <data name="TrustedLocationNotAccessible" xml:space="preserve">
-    <value>A problem occurred when trying to access the trusted location. Dynamo is unable to obtain read/write access to
-{0}</value>
+    <value>尝试访问受信任的位置时出现问题。Dynamo 无法获取对 {0} 的读/写访问权限</value>
   </data>
   <data name="UnableToAccessTrustedDirectory" xml:space="preserve">
-    <value>Unable To Access Trusted Directory</value>
+    <value>无法访问受信任的目录</value>
   </data>
   <data name="ConnectorContextMenuHeaderPinConnector" xml:space="preserve">
     <value>固定导线</value>
@@ -3178,7 +3178,7 @@
     <value>向上浏览</value>
   </data>
   <data name="ConnectorContextMenuHeaderEndNode" xml:space="preserve">
-    <value>Navigate Downtream</value>
+    <value>导航 Downtream</value>
   </data>
   <data name="ContextMenuNodeConnections" xml:space="preserve">
     <value>节点连接</value>
@@ -3672,10 +3672,10 @@
     <value>转储节点帮助数据(_D)</value>
   </data>
   <data name="NodeHelpIsDumped" xml:space="preserve">
-    <value>Node Help Data is dumped to \"{0}\".</value>
+    <value>节点帮助数据将转储到“{0}”。</value>
   </data>
   <data name="UpdateAllPythonEngineWarning" xml:space="preserve">
-    <value>Update all {0} python nodes in the current workspace to use {1} engine?</value>
+    <value>是否更新当前工作空间中的所有 {0} Python 节点以使用 {1} 引擎？</value>
   </data>
   <data name="UpdateAllPythonEngineWarningTitle" xml:space="preserve">
     <value>更新所有 Python 节点</value>
@@ -3741,10 +3741,10 @@
     <value>带有 .x 标记的版本包括指定的主要和次要版本中的所有版本</value>
   </data>
   <data name="CannotAddNodeToWorkspace" xml:space="preserve">
-    <value>You cannot place a custom node in its own workspace without correctly implementing the recursive base case using scopeif node.</value>
+    <value>如果不使用 scopeif 节点正确实现递归基本情况，则无法将自定义节点放置在其自己的工作空间中。</value>
   </data>
   <data name="PackageUnknownCompatibilityVersionDownloadMsg" xml:space="preserve">
-    <value>The compatibility of this version with your setup has not been verified. It may or may not work as expected.</value>
+    <value>此版本与您的设置的兼容性尚未得到验证。它可能会也可能不会按预期工作。</value>
   </data>
   <data name="IDSDKErrorMessage" xml:space="preserve">
     <value>您的系统上似乎未设置 Autodesk Identity Manager。要确保完全访问所有功能，请使用 Autodesk Identity Manager 登录您的 Autodesk 帐户。
@@ -3754,13 +3754,13 @@
     <value>下载 Autodesk Identity Manager</value>
   </data>
   <data name="MessageErrorOpeningInvalidPath" xml:space="preserve">
-    <value>Invalid file path provided. In case the file is archived, please make sure to extract it before opening.\n{0}</value>
+    <value>提供的文件路径无效。如果文件已存档，请确保在打开之前将其解压缩。\n{0}</value>
   </data>
   <data name="PreferencesViewGroupStylesHeader" xml:space="preserve">
     <value>组样式</value>
   </data>
   <data name="PreferencesViewShowDefaultGroupDescription" xml:space="preserve">
-    <value>Show default group description</value>
+    <value>显示默认组描述</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

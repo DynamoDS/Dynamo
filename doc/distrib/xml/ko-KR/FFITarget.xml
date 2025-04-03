@@ -4,77 +4,77 @@
     </assembly>
     <members>
         <member name="T:FFITarget.ClassFunctionality">
-            <summary>Tests for basic functional testing of FFI implementations</summary>
+            <summary>FFI 구현의 기본 기능을 테스트하기 위한 테스트입니다.</summary>
         </member>
         <member name="T:FFITarget.ClassFunctionalityMirror">
-            <summary>A class that contains the same IntVal member as ClassFunctionality</summary>
+            <summary>ClassFunctionality와 동일한 IntVal 멤버를 포함하는 클래스입니다.</summary>
         </member>
         <member name="T:FFITarget.CodeCompletionClass">
-            <summary>Tests for code completion in codeblock node</summary>
+            <summary>코드 블록 노드에서 코드 완성이 작동하는지를 테스트하기 위한 테스트입니다.</summary>
         </member>
         <member name="T:FFITarget.InstanceableClass">
-            <summary>A test class that creates a pyramid using instancing.</summary>
+            <summary>인스턴스를 사용하여 피라미드를 만드는 테스트 클래스입니다.</summary>
         </member>
         <member name="T:FFITarget.InstanceableLineClass">
-            <summary>A test class that creates a pyramid using instancing.</summary>
+            <summary>인스턴스를 사용하여 피라미드를 만드는 테스트 클래스입니다.</summary>
         </member>
         <member name="T:FFITarget.InstanceableClass_NoInstanceData">
-            <summary>This class is instanceable, but it returns false for instanceInfoAvailable so it will use regular tessellation.</summary>
+            <summary>이 클래스는 인스턴스화할 수 있지만, instanceInfoAvailable 에 대해 false를 반환하므로 일반 테셀레이션을 사용합니다.</summary>
         </member>
         <member name="T:FFITarget.ElementIDLifecycleManager`1">
-            <summary>Class to handle the lifetime of elements from their IDs</summary>
+            <summary>ID에서 요소의 수명을 처리하는 클래스입니다.</summary>
         </member>
         <member name="M:FFITarget.ElementIDLifecycleManager`1.GetInstance">
-            <summary>Returns the LifecycleManager for the specific type
-            WARNING: This is only a singleton for a given TypeArg</summary>
+            <summary>특정 유형에 대한 LifecycleManager를 반환합니다.
+            경고: 이것은 특정 TypeArg에 대해서만 싱글톤입니다.</summary>
             <returns/>
         </member>
         <member name="M:FFITarget.ElementIDLifecycleManager`1.RegisterAsssociation(`0,System.Object)">
-            <summary>Register a new dependency between an element ID and a wrapper</summary>
+            <summary>요소 ID와 래퍼 간의 새 종속성을 등록합니다.</summary>
             <param name="elementID"/>
             <param name="wrapper"/>
         </member>
         <member name="M:FFITarget.ElementIDLifecycleManager`1.UnRegisterAssociation(`0,System.Object)">
-            <summary>Remove an association between an element ID and</summary>
+            <summary>요소 ID와 다음 간의 연관을 제거합니다.</summary>
             <param name="elementID"/>
             <param name="wrapper"/>
-            <returns>The number of remaining associations</returns>
+            <returns>남은 연관 수</returns>
         </member>
         <member name="M:FFITarget.ElementIDLifecycleManager`1.GetRegisteredCount(`0)">
-            <summary>Returns the number of wrappers that are registered</summary>
+            <summary>등록된 래퍼 수를 반환합니다.</summary>
             <param name="id"/>
             <returns/>
         </member>
         <member name="M:FFITarget.ElementIDLifecycleManager`1.IsRevitDeleted(`0)">
-            <summary>Checks whether an element has been deleted in Revit</summary>
+            <summary>Revit에서 요소가 삭제되었는지 여부를 확인합니다.</summary>
             <param name="id"/>
             <returns/>
         </member>
         <member name="M:FFITarget.ElementIDLifecycleManager`1.NotifyOfRevitDeletion(`0)">
-            <summary>Set deletion state of Revit element</summary>
-            <param name="id">The element that needs to be deleted&gt;</param>
+            <summary>Revit 요소의 삭제 상태를 설정합니다.</summary>
+            <param name="id">삭제해야 하는 요소입니다.</param>
         </member>
         <member name="M:FFITarget.IncrementerTracedClass.#ctor(System.Int32)">
-            <summary>Note that x is a dummy var here that is intended to force replicated dispatch
-            it's not actually used</summary>
+            <summary>여기서 x는 복제된 디스패치를 강제하기 위한 더미 변수입니다.
+            실제로 사용되지는 않습니다.</summary>
             <param name="x"/>
         </member>
         <member name="M:FFITarget.IncrementerTracedClass.#ctor(System.Int32,System.Boolean)">
-            <summary>Note that x is a dummy var here that is intended to force replicated dispatch
-            it's not actually used</summary>
-            <param name="x">Dummy var used to force replicated dispatch</param>
-            <param name="failWithException">Fail dispatch with an exception rather than</param>
+            <summary>여기서 x는 복제된 디스패치를 강제하기 위한 더미 변수입니다.
+            실제로 사용되지는 않습니다.</summary>
+            <param name="x">복제된 디스패치를 강제하는 데 사용되는 더미 변수</param>
+            <param name="failWithException">다음이 아닌 예외로 인한 디스패치 실패</param>
         </member>
         <member name="T:FFITarget.OverloadTarget">
-            <summary>Test target for overloaded methods</summary>
+            <summary>오버로드된 메서드에 대한 대상을 테스트합니다.</summary>
         </member>
         <member name="M:FFITarget.TestData.ReturnNestedDictionary">
-            <summary>Return nested dictionary.</summary>
-            <returns name="col">기둥</returns>
-            <returns name="dict">사전</returns>
-            <returns name="num">수</returns>
-            <returns name="wt">중량</returns>
-            <returns name="ok">적정</returns>
+            <summary>중첩된 사전을 반환합니다.</summary>
+            <returns name="col">column</returns>
+            <returns name="dict">dictionary</returns>
+            <returns name="num">number</returns>
+            <returns name="wt">weight</returns>
+            <returns name="ok">okay</returns>
         </member>
     </members>
 </doc>

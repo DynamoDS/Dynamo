@@ -4,77 +4,77 @@
     </assembly>
     <members>
         <member name="T:FFITarget.ClassFunctionality">
-            <summary>Tests for basic functional testing of FFI implementations</summary>
+            <summary>Testy do podstawowego testowania funkcjonalnego wdrożeń FFI</summary>
         </member>
         <member name="T:FFITarget.ClassFunctionalityMirror">
-            <summary>A class that contains the same IntVal member as ClassFunctionality</summary>
+            <summary>Klasa zawierająca ten sam element IntVal co element ClassFunctionality</summary>
         </member>
         <member name="T:FFITarget.CodeCompletionClass">
-            <summary>Tests for code completion in codeblock node</summary>
+            <summary>Testy uzupełniania kodu w węźle Code Block</summary>
         </member>
         <member name="T:FFITarget.InstanceableClass">
-            <summary>A test class that creates a pyramid using instancing.</summary>
+            <summary>Klasa testowa, która tworzy stożek przy użyciu tworzenia wystąpienia.</summary>
         </member>
         <member name="T:FFITarget.InstanceableLineClass">
-            <summary>A test class that creates a pyramid using instancing.</summary>
+            <summary>Klasa testowa, która tworzy stożek przy użyciu tworzenia wystąpienia.</summary>
         </member>
         <member name="T:FFITarget.InstanceableClass_NoInstanceData">
-            <summary>This class is instanceable, but it returns false for instanceInfoAvailable so it will use regular tessellation.</summary>
+            <summary>Ta klasa umożliwia tworzenie wystąpień, ale zwraca wartość false dla elementu instanceInfoAvailable, więc użyje zwykłego mozaikowania.</summary>
         </member>
         <member name="T:FFITarget.ElementIDLifecycleManager`1">
-            <summary>Class to handle the lifetime of elements from their IDs</summary>
+            <summary>Klasa do obsługi okresu istnienia elementów na podstawie ich identyfikatorów</summary>
         </member>
         <member name="M:FFITarget.ElementIDLifecycleManager`1.GetInstance">
-            <summary>Returns the LifecycleManager for the specific type
-            WARNING: This is only a singleton for a given TypeArg</summary>
+            <summary>Zwraca obiekt LifecycleManager dla określonego typu
+            OSTRZEŻENIE: to jest tylko singleton dla danego TypeArg</summary>
             <returns/>
         </member>
         <member name="M:FFITarget.ElementIDLifecycleManager`1.RegisterAsssociation(`0,System.Object)">
-            <summary>Register a new dependency between an element ID and a wrapper</summary>
+            <summary>Zarejestruj nową zależność między identyfikatorem elementu a opakowaniem</summary>
             <param name="elementID"/>
             <param name="wrapper"/>
         </member>
         <member name="M:FFITarget.ElementIDLifecycleManager`1.UnRegisterAssociation(`0,System.Object)">
-            <summary>Remove an association between an element ID and</summary>
+            <summary>Usuń skojarzenie między identyfikatorem elementu a</summary>
             <param name="elementID"/>
             <param name="wrapper"/>
-            <returns>The number of remaining associations</returns>
+            <returns>Liczba pozostałych skojarzeń</returns>
         </member>
         <member name="M:FFITarget.ElementIDLifecycleManager`1.GetRegisteredCount(`0)">
-            <summary>Returns the number of wrappers that are registered</summary>
+            <summary>Zwraca liczbę zarejestrowanych opakowań</summary>
             <param name="id"/>
             <returns/>
         </member>
         <member name="M:FFITarget.ElementIDLifecycleManager`1.IsRevitDeleted(`0)">
-            <summary>Checks whether an element has been deleted in Revit</summary>
+            <summary>Sprawdza, czy element został usunięty w programie Revit</summary>
             <param name="id"/>
             <returns/>
         </member>
         <member name="M:FFITarget.ElementIDLifecycleManager`1.NotifyOfRevitDeletion(`0)">
-            <summary>Set deletion state of Revit element</summary>
-            <param name="id">The element that needs to be deleted&gt;</param>
+            <summary>Ustaw stan usunięcia elementu programu Revit</summary>
+            <param name="id">Element, który ma zostać usunięty&gt;</param>
         </member>
         <member name="M:FFITarget.IncrementerTracedClass.#ctor(System.Int32)">
-            <summary>Note that x is a dummy var here that is intended to force replicated dispatch
-            it's not actually used</summary>
+            <summary>Uwaga: x jest tutaj fikcyjną zmienną, która ma na celu wymuszenie replikowanego wysłania
+            w rzeczywistości nie jest używana</summary>
             <param name="x"/>
         </member>
         <member name="M:FFITarget.IncrementerTracedClass.#ctor(System.Int32,System.Boolean)">
-            <summary>Note that x is a dummy var here that is intended to force replicated dispatch
-            it's not actually used</summary>
-            <param name="x">Dummy var used to force replicated dispatch</param>
-            <param name="failWithException">Fail dispatch with an exception rather than</param>
+            <summary>Uwaga: x jest tutaj fikcyjną zmienną, która ma na celu wymuszenie replikowanego wysłania
+            w rzeczywistości nie jest używana</summary>
+            <param name="x">Fikcyjna zmienna używana do wymuszenia replikowanego wysyłania</param>
+            <param name="failWithException">Niepowodzenie wysyłania ze zwróceniem wyjątku zamiast</param>
         </member>
         <member name="T:FFITarget.OverloadTarget">
-            <summary>Test target for overloaded methods</summary>
+            <summary>Testowy obiekt docelowy dla metod przeciążonych</summary>
         </member>
         <member name="M:FFITarget.TestData.ReturnNestedDictionary">
-            <summary>Return nested dictionary.</summary>
-            <returns name="col">słup</returns>
-            <returns name="dict">słownik</returns>
-            <returns name="num">liczba</returns>
-            <returns name="wt">ciężar</returns>
-            <returns name="ok">prawidłowa</returns>
+            <summary>Zwróć słownik zagnieżdżony.</summary>
+            <returns name="col">column</returns>
+            <returns name="dict">dictionary</returns>
+            <returns name="num">number</returns>
+            <returns name="wt">weight</returns>
+            <returns name="ok">okay</returns>
         </member>
     </members>
 </doc>

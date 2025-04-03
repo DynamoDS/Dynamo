@@ -11,9 +11,9 @@
         </member>
         <member name="M:Modifiers.GeometryColor.BySurfaceColors(Autodesk.DesignScript.Geometry.Surface,DSCore.Color[][])">
              <summary>Muestra valores de color en una superficie.
-            
-             Los colores proporcionados se convierten de forma interna en una textura de imagen que
-             se asigna a la superficie.</summary>
+            
+             Los colores proporcionados se convierten de forma interna en una textura de imagen que
+             se asigna a la superficie.</summary>
              <param name="surface">La superficie en la que se aplicarán los colores.</param>
              <param name="colors">Una lista bidimensional de colores.
             

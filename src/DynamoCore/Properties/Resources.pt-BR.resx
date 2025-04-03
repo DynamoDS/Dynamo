@@ -716,10 +716,10 @@ Nome do parâmetro: {0}</value>
     <value>O usuário atual, '{0}', não é um mantenedor do pacote '{1}'.</value>
   </data>
   <data name="PackageManagerPackagePreviewCounter" xml:space="preserve">
-    <value>{0} files and {1} folders will be created.</value>
+    <value>{0} arquivos e {1} pastas serão criados.</value>
   </data>
   <data name="PackageManagerPackageSelectCounter" xml:space="preserve">
-    <value>{0} files and {1} folders loaded.</value>
+    <value>{0} arquivos e {1} pastas carregados.</value>
   </data>
   <data name="DuplicatedOlderPackage" xml:space="preserve">
     <value>Uma versão mais antiga do pacote chamado {0} versão {2} foi encontrada em {1} com a versão {3}. A versão mais antiga foi ignorada.</value>
@@ -873,7 +873,7 @@ Este pacote provavelmente contém uma montagem bloqueada. Será necessário carr
     <value>Falha durante a inserção do arquivo, pois alguns dos nós já existem no espaço de trabalho atual.</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Insert Dynamo Graph...</value>
+    <value>Inserir gráfico do Dynamo...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>Arquivo de exemplo adicionado ao espaço de trabalho. Modo de execução alterado para Manual.</value>

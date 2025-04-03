@@ -310,7 +310,7 @@
     <value>mix;trim end</value>
   </data>
   <data name="ListMapDescription" xml:space="preserve">
-    <value>リストのすべての要素に関数を適用し、その結果から新しいリストを生成します。</value>
+    <value>リストのすべての要素に関数を適用し、その結果から新しいリストを生成します</value>
   </data>
   <data name="ListMapSearchTags" xml:space="preserve">
     <value>function;applied;over list;do to each</value>
@@ -355,7 +355,7 @@
     <value>リスト</value>
   </data>
   <data name="PortDataOperandToolTip" xml:space="preserve">
-    <value>Boolean #</value>
+    <value>ブール値 #</value>
   </data>
   <data name="PortDataResultToolTip" xml:space="preserve">
     <value>生成された結果ブロック</value>
@@ -412,7 +412,7 @@
     <value>選択した要素。</value>
   </data>
   <data name="StringfromArrayDescription" xml:space="preserve">
-    <value>Converts an array to a string representation</value>
+    <value>配列を文字列表現に変換します</value>
   </data>
   <data name="StringfromObjectDescription" xml:space="preserve">
     <value>オブジェクトを文字列表現に変換します</value>
@@ -442,7 +442,7 @@
     <value>print;output;display</value>
   </data>
   <data name="WebRequestDescription" xml:space="preserve">
-    <value>Returns the contents of a webpage from the given URL as a string</value>
+    <value>指定した URL の Web ページのコンテンツを文字列として返します</value>
   </data>
   <data name="WebRequestPortDataResultToolTip" xml:space="preserve">
     <value>Web リクエストのコンテンツ(文字列)。</value>
@@ -511,10 +511,10 @@
     <value>曲線</value>
   </data>
   <data name="SelectionElementOutputPortName" xml:space="preserve">
-    <value>要素</value>
+    <value>Element</value>
   </data>
   <data name="SelectionElementsOutputPortName" xml:space="preserve">
-    <value>要素</value>
+    <value>Elements</value>
   </data>
   <data name="SelectionFaceOutputPortName" xml:space="preserve">
     <value>サーフェス</value>

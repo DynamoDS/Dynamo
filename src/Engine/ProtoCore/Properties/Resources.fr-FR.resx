@@ -307,7 +307,7 @@
     <value>Méthode '{0}()' déjà définie</value>
   </data>
   <data name="kMethodHasInvalidArguments" xml:space="preserve">
-    <value>'{0}()' has some invalid arguments href=kMethodHasInvalidArguments</value>
+    <value>'{0}()' a des arguments non valides href=kMethodHasInvalidArguments</value>
   </data>
   <data name="kMethodIsInaccessible" xml:space="preserve">
     <value>La méthode '{0}()' n'est pas accessible depuis cet emplacement</value>
@@ -316,7 +316,7 @@
     <value>Méthode '{0}()' introuvable href=kMethodNotFound.html</value>
   </data>
   <data name="kMethodResolutionFailure" xml:space="preserve">
-    <value>Internal error, please report: Method resolution failure on: {0}().</value>
+    <value>Erreur interne, veuillez signaler: échec de la résolution de la méthode sur: {0}().</value>
   </data>
   <data name="kMethodResolutionFailureForOperator" xml:space="preserve">
     <value>L'opérateur '{0}' ne peut pas être appliqué aux opérandes de type '{1}' et '{2}'</value>
@@ -334,7 +334,7 @@
     <value>Plusieurs définitions pour '{0}' ont été trouvées comme {1}</value>
   </data>
   <data name="kMethodDeprecated" xml:space="preserve">
-    <value>Method '{0}' has been deprecated, please use method '{1}' instead. href=Deprecated.html</value>
+    <value>La méthode '{0}' a été révoquée. Utilisez la méthode '{1}' à la place. href=Deprecated.html</value>
   </data>
   <data name="kNoStepSizeInAmountRangeExpression" xml:space="preserve">
     <value>Aucune taille de pas n'est spécifiée dans l'expression d'intervalle de quantité</value>
@@ -349,7 +349,7 @@
     <value>Propriété '{0}' introuvable</value>
   </data>
   <data name="kPropertyOfClassNotFound" xml:space="preserve">
-    <value>No property called {0} on {1} could be found href=kPropertyOfClassNotFound</value>
+    <value>Aucune propriété appelée {0} sur {1} n'a pu être trouvée href=kPropertyOfClassNotFound</value>
   </data>
   <data name="kRangeExpressionConflictOperator" xml:space="preserve">
     <value>Un opérateur de quantité ne peut pas être utilisé avec un opérateur de pas</value>
@@ -884,8 +884,8 @@
     <value>Une valeur nulle ne peut pas être projetée vers {0} href=FailedToCastFromNull.html</value>
   </data>
   <data name="ArgumentNullException" xml:space="preserve">
-    <value>Value cannot be null.
-Parameter name: {0}. href=ArgumentNullException.html</value>
+    <value>La valeur ne peut pas être nulle.
+Nom du paramètre: {0}. href=ArgumentNullException.html</value>
   </data>
   <data name="FunctionGroupNotFound" xml:space="preserve">
     <value>Aucune fonction appelée {0} dans un(e) {1} n'a été trouvée</value>
@@ -921,7 +921,7 @@ Parameter name: {0}. href=ArgumentNullException.html</value>
     <value>Syntaxe list@level incorrecte, utilisez @L1 pour le niveau 1.</value>
   </data>
   <data name="VariableRedifinitionError" xml:space="preserve">
-    <value>La variable {0} a été définie dans ce noeud de bloc de code. Vous ne pouvez pas définir une variable plusieurs fois.</value>
+    <value>La variable {0} a été définie dans ce noeud Code Block. Vous ne pouvez pas définir une variable plusieurs fois.</value>
   </data>
   <data name="VariableRecursiveReference" xml:space="preserve">
     <value>La variable {0} est utilisée dans l'instruction où vous l'avez définie. La dépendance récurrente n'est pas autorisée.</value>

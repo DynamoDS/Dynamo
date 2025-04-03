@@ -307,7 +307,7 @@
     <value>已定義方法 '{0}()'</value>
   </data>
   <data name="kMethodHasInvalidArguments" xml:space="preserve">
-    <value>'{0}()' has some invalid arguments href=kMethodHasInvalidArguments</value>
+    <value>「{0}()」有一些無效的引數 href=kMethodHasInvalidArguments</value>
   </data>
   <data name="kMethodIsInaccessible" xml:space="preserve">
     <value>無法從此處到達方法 '{0}()'</value>
@@ -316,7 +316,7 @@
     <value>找不到方法 '{0}()' href=kMethodNotFound.html</value>
   </data>
   <data name="kMethodResolutionFailure" xml:space="preserve">
-    <value>Internal error, please report: Method resolution failure on: {0}().</value>
+    <value>發生內部錯誤，請回報: 在 {0}() 的方法解決辦法失敗。</value>
   </data>
   <data name="kMethodResolutionFailureForOperator" xml:space="preserve">
     <value>運算子 '{0}' 無法套用至類型 '{1}' 和 '{2}' 的運算元</value>
@@ -334,7 +334,7 @@
     <value>找到 '{0}' 的多個定義，做為 {1}</value>
   </data>
   <data name="kMethodDeprecated" xml:space="preserve">
-    <value>Method '{0}' has been deprecated, please use method '{1}' instead. href=Deprecated.html</value>
+    <value>方法「{0}」已棄用，請改用方法「{1}」。href=Deprecated.html</value>
   </data>
   <data name="kNoStepSizeInAmountRangeExpression" xml:space="preserve">
     <value>沒有步長大小指定在數量範圍表示式中</value>
@@ -349,7 +349,7 @@
     <value>找不到性質 '{0}'</value>
   </data>
   <data name="kPropertyOfClassNotFound" xml:space="preserve">
-    <value>No property called {0} on {1} could be found href=kPropertyOfClassNotFound</value>
+    <value>在 {1} 找不到稱為 {0} 的性質 href=kPropertyOfClassNotFound</value>
   </data>
   <data name="kRangeExpressionConflictOperator" xml:space="preserve">
     <value>數量運算子無法與步長運算子搭配使用</value>
@@ -884,8 +884,8 @@
     <value>空值不能轉換為 {0} href=FailedToCastFromNull.html</value>
   </data>
   <data name="ArgumentNullException" xml:space="preserve">
-    <value>Value cannot be null.
-Parameter name: {0}. href=ArgumentNullException.html</value>
+    <value>值不能為空值。
+參數名稱: {0}。href=ArgumentNullException.html</value>
   </data>
   <data name="FunctionGroupNotFound" xml:space="preserve">
     <value>找不到在 {1} 上稱為 {0} 的函數</value>
@@ -921,7 +921,7 @@ Parameter name: {0}. href=ArgumentNullException.html</value>
     <value>無效的 list@level 語法，請考慮使用 @L1 為第 1 層。</value>
   </data>
   <data name="VariableRedifinitionError" xml:space="preserve">
-    <value>變數 {0} 已在此程式碼區塊節點中定義。您不能定義變數超過一次。</value>
+    <value>變數 {0} 已在此 Code Block 節點中定義。您不能定義變數超過一次。</value>
   </data>
   <data name="VariableRecursiveReference" xml:space="preserve">
     <value>變數 {0} 已在定義它的同一個陳述式中使用。不允許遞迴的相依性。</value>

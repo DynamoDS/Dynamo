@@ -716,10 +716,10 @@ Parametername: {0}</value>
     <value>Der aktuelle Benutzer '{0}' ist kein Maintainer von Paket '{1}'.</value>
   </data>
   <data name="PackageManagerPackagePreviewCounter" xml:space="preserve">
-    <value>{0} files and {1} folders will be created.</value>
+    <value>{0} Dateien und {1} Ordner werden erstellt.</value>
   </data>
   <data name="PackageManagerPackageSelectCounter" xml:space="preserve">
-    <value>{0} files and {1} folders loaded.</value>
+    <value>{0} Dateien und {1} Ordner geladen.</value>
   </data>
   <data name="DuplicatedOlderPackage" xml:space="preserve">
     <value>Eine ältere Version des Pakets mit dem Namen {0} Version {2} wurde unter {1} mit Version {3} gefunden. Die ältere Version wurde ignoriert.</value>
@@ -873,7 +873,7 @@ Dieses Paket enthält wahrscheinlich eine blockierte Assembly. Sie müssen das P
     <value>Einfügen der Datei fehlgeschlagen, da einige Blöcke bereits im aktuellen Arbeitsbereich vorhanden sind.</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Insert Dynamo Graph...</value>
+    <value>Dynamo-Diagramm einfügen...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>Beispieldatei wurde zum Arbeitsbereich hinzugefügt. Ausführungsmodus in Manuell geändert.</value>

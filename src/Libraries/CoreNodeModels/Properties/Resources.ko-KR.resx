@@ -187,7 +187,7 @@
     <value>시스템에서 디렉토리를 선택하여 해당 경로를 반환할 수 있습니다</value>
   </data>
   <data name="DoubleInputNodeDescription" xml:space="preserve">
-    <value>숫자를 만듭니다</value>
+    <value>숫자를 만듭니다.</value>
   </data>
   <data name="DoubleSliderDescription" xml:space="preserve">
     <value>숫자 값을 생성합니다</value>
@@ -340,7 +340,7 @@
     <value>지정된 범위에서 숫자 또는 문자의 시퀀스를 작성합니다</value>
   </data>
   <data name="SequenceDescription" xml:space="preserve">
-    <value>숫자 시퀀스를 작성합니다.</value>
+    <value>숫자 시퀀스를 만듭니다.</value>
   </data>
   <data name="OrDescription" xml:space="preserve">
     <value>부울 OR: 입력 중 하나가 true인 경우 True를 반환합니다. 모두가 true가 아니면 False를 반환합니다.</value>
@@ -355,7 +355,7 @@
     <value>리스트</value>
   </data>
   <data name="PortDataOperandToolTip" xml:space="preserve">
-    <value>Boolean #</value>
+    <value>부울 #</value>
   </data>
   <data name="PortDataResultToolTip" xml:space="preserve">
     <value>결과 블록이 생성됨</value>
@@ -412,7 +412,7 @@
     <value>선택한 요소.</value>
   </data>
   <data name="StringfromArrayDescription" xml:space="preserve">
-    <value>Converts an array to a string representation</value>
+    <value>배열을 문자열 표현으로 변환합니다.</value>
   </data>
   <data name="StringfromObjectDescription" xml:space="preserve">
     <value>객체를 문자열 표현으로 변환합니다.</value>
@@ -442,7 +442,7 @@
     <value>print;output;display</value>
   </data>
   <data name="WebRequestDescription" xml:space="preserve">
-    <value>Returns the contents of a webpage from the given URL as a string</value>
+    <value>지정된 URL에서 웹 페이지의 컨텐츠를 문자열로 반환합니다.</value>
   </data>
   <data name="WebRequestPortDataResultToolTip" xml:space="preserve">
     <value>웹 요청의 내용을 문자열로.</value>
@@ -511,10 +511,10 @@
     <value>곡선</value>
   </data>
   <data name="SelectionElementOutputPortName" xml:space="preserve">
-    <value>요소</value>
+    <value>Element</value>
   </data>
   <data name="SelectionElementsOutputPortName" xml:space="preserve">
-    <value>요소</value>
+    <value>Elements</value>
   </data>
   <data name="SelectionFaceOutputPortName" xml:space="preserve">
     <value>표면</value>

@@ -639,7 +639,7 @@ value : bool = false</value>
     <value>無法儲存圖表</value>
   </data>
   <data name="UnresolvedNodesWarningMessage" xml:space="preserve">
-    <value>這可能是因為缺少套件、不相容的套件版本或缺少主程式。如果您「另存新檔」，將會移除未解決的節點。
+    <value>這可能是因為缺少套件、不相容的套件版本或缺少主體程式。如果您「另存新檔」，將會移除未解決的節點。
 
 請解決或移除未解決的節點，然後再試一次。</value>
   </data>
@@ -716,10 +716,10 @@ value : bool = false</value>
     <value>目前使用者「{0}」不是「{1}」套件的維護者。</value>
   </data>
   <data name="PackageManagerPackagePreviewCounter" xml:space="preserve">
-    <value>{0} files and {1} folders will be created.</value>
+    <value>將建立 {0} 個檔案和 {1} 個資料夾。</value>
   </data>
   <data name="PackageManagerPackageSelectCounter" xml:space="preserve">
-    <value>{0} files and {1} folders loaded.</value>
+    <value>已載入 {0} 個檔案和 {1} 個資料夾。</value>
   </data>
   <data name="DuplicatedOlderPackage" xml:space="preserve">
     <value>在 {1} 找到名為 {0} (版本 {2}) 之套件的較舊版本 (版本 {3})。已忽略較舊版本。</value>
@@ -873,7 +873,7 @@ value : bool = false</value>
     <value>無法插入檔案，因為某些節點已存在於目前工作區中。</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Insert Dynamo Graph...</value>
+    <value>插入 Dynamo 圖表...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>範例檔已加入工作區。執行模式已變更為「手動」。</value>

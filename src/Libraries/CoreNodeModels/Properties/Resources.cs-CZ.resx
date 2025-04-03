@@ -187,7 +187,7 @@
     <value>Umožňuje vybrat adresář v systému a vrací jeho cestu.</value>
   </data>
   <data name="DoubleInputNodeDescription" xml:space="preserve">
-    <value>Vytvoří číslo.</value>
+    <value>Vytvoří číslo</value>
   </data>
   <data name="DoubleSliderDescription" xml:space="preserve">
     <value>Vytváří číselné hodnoty.</value>
@@ -310,7 +310,7 @@
     <value>mix;trim end</value>
   </data>
   <data name="ListMapDescription" xml:space="preserve">
-    <value>Používá funkci na všechny prvky v seznamu, čím z výsledků vytvoří nový seznam.</value>
+    <value>Používá funkci na všechny prvky v seznamu, čím z výsledků vytvoří nový seznam</value>
   </data>
   <data name="ListMapSearchTags" xml:space="preserve">
     <value>function;applied;over list;do to each</value>
@@ -340,7 +340,7 @@
     <value>Vytvoří posloupnost čísel nebo písmen v zadaném rozsahu.</value>
   </data>
   <data name="SequenceDescription" xml:space="preserve">
-    <value>Vytvoří posloupnost čísel.</value>
+    <value>Vytvoří posloupnost čísel</value>
   </data>
   <data name="OrDescription" xml:space="preserve">
     <value>Booleovské OR: vrací hodnotu true, pokud má hodnotu true kterýkoli ze vstupů. Pokud nemá ani jeden vstup hodnotu true, vrací hodnotu false.</value>
@@ -355,7 +355,7 @@
     <value>Seznam</value>
   </data>
   <data name="PortDataOperandToolTip" xml:space="preserve">
-    <value>Boolean #</value>
+    <value>Booleovský #</value>
   </data>
   <data name="PortDataResultToolTip" xml:space="preserve">
     <value>Vytvořený blok výsledku</value>
@@ -412,13 +412,13 @@
     <value>Vybrané prvky.</value>
   </data>
   <data name="StringfromArrayDescription" xml:space="preserve">
-    <value>Converts an array to a string representation</value>
+    <value>Převede pole na řetězcovou reprezentaci</value>
   </data>
   <data name="StringfromObjectDescription" xml:space="preserve">
-    <value>Převede objekt na řetězcovou reprezentaci.</value>
+    <value>Převede objekt na řetězcovou reprezentaci</value>
   </data>
   <data name="StringInputNodeDescription" xml:space="preserve">
-    <value>Vytvoří řetězec.</value>
+    <value>Vytvoří řetězec</value>
   </data>
   <data name="WatchDescription" xml:space="preserve">
     <value>Vizualizuje výstup uzlu</value>
@@ -442,7 +442,7 @@
     <value>print;output;display</value>
   </data>
   <data name="WebRequestDescription" xml:space="preserve">
-    <value>Returns the contents of a webpage from the given URL as a string</value>
+    <value>Vrátí obsah webové stránky z dané adresy URL jako řetězec</value>
   </data>
   <data name="WebRequestPortDataResultToolTip" xml:space="preserve">
     <value>Obsah webového požadavku jako řetězec.</value>
@@ -511,10 +511,10 @@
     <value>Křivky</value>
   </data>
   <data name="SelectionElementOutputPortName" xml:space="preserve">
-    <value>Prvek</value>
+    <value>Element</value>
   </data>
   <data name="SelectionElementsOutputPortName" xml:space="preserve">
-    <value>Prvky</value>
+    <value>Elements</value>
   </data>
   <data name="SelectionFaceOutputPortName" xml:space="preserve">
     <value>Povrch</value>

@@ -716,10 +716,10 @@ Nom du paramètre: {0}</value>
     <value>L'utilisateur actuel, '{0}', n'est pas un gestionnaire du package '{1}'.</value>
   </data>
   <data name="PackageManagerPackagePreviewCounter" xml:space="preserve">
-    <value>{0} files and {1} folders will be created.</value>
+    <value>{0} fichiers et {1} dossiers seront créés.</value>
   </data>
   <data name="PackageManagerPackageSelectCounter" xml:space="preserve">
-    <value>{0} files and {1} folders loaded.</value>
+    <value>{0} fichiers et {1} dossiers chargés.</value>
   </data>
   <data name="DuplicatedOlderPackage" xml:space="preserve">
     <value>Une autre version antérieure du package intitulée {0} version {2} a été trouvée dans {1} avec la version {3}. Cette version antérieure a donc été ignorée.</value>
@@ -873,7 +873,7 @@ Ce package contient probablement un ensemble qui est bloqué. Vous devrez charge
     <value>Echec de l'insertion du fichier, car certains noeuds existent déjà dans l'espace de travail courant.</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Insert Dynamo Graph...</value>
+    <value>Insérer un graphique Dynamo...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>Fichier d'exemple ajouté à l'espace de travail. Le mode d'exécution est passé à Manuel.</value>

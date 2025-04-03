@@ -896,11 +896,11 @@ Suchen Sie nach "Benutzerdefinierte Zeichenfolgen für Datum und Uhrzeit bei MSD
             <search>replace,switch</search>
         </member>
         <member name="M:DSCore.List.ReplaceItemAtIndices(System.Collections.IList,System.Collections.Generic.IList{System.Int32},System.Object)">
-            <summary>Replaces items from the given list that are located at the specified indices.</summary>
-            <param name="list">Liste, in der ein Element ersetzt werden soll</param>
-            <param name="indices">Indices of the item(s) to be replaced.</param>
-            <param name="item">Einzufügendes Element</param>
-            <returns name="list">A new list with the item(s) replaced.</returns>
+            <summary>Ersetzt Elemente aus der angegebenen Liste, die sich an den angegebenen Indizes befinden.</summary>
+            <param name="list">Liste, in der ein Element ersetzt werden soll.</param>
+            <param name="indices">Indizes der zu ersetzenden Elemente.</param>
+            <param name="item">Einzufügendes Element.</param>
+            <returns name="list">Neue Liste mit den ersetzten Elementen.</returns>
             <search>replace,switch</search>
         </member>
         <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">

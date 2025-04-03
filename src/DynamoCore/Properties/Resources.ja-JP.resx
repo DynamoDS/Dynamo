@@ -713,10 +713,10 @@ value : bool = false</value>
     <value>現在のユーザ '{0}' は、パッケージ '{1}' を保持しているユーザではありません。</value>
   </data>
   <data name="PackageManagerPackagePreviewCounter" xml:space="preserve">
-    <value>{0} files and {1} folders will be created.</value>
+    <value>{0} 個のファイルと {1} 個のフォルダが作成されます。</value>
   </data>
   <data name="PackageManagerPackageSelectCounter" xml:space="preserve">
-    <value>{0} files and {1} folders loaded.</value>
+    <value>{0} 個のファイルと {1} 個のフォルダがロードされました。</value>
   </data>
   <data name="DuplicatedOlderPackage" xml:space="preserve">
     <value>{0} バージョン {2} というパッケージの古いバージョンが {1} のバージョン {3} で見つかりました。古いバージョンは無視されました。</value>
@@ -870,7 +870,7 @@ value : bool = false</value>
     <value>現在のワークスペースに既にノードが存在するため、ファイルの挿入に失敗しました。</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Insert Dynamo Graph...</value>
+    <value>Dynamo グラフを挿入...</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>サンプル ファイルがワークスペースに追加されました。実行モードが手動に変更されました。</value>

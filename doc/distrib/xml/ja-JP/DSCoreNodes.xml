@@ -895,11 +895,11 @@
             <search>replace,switch</search>
         </member>
         <member name="M:DSCore.List.ReplaceItemAtIndices(System.Collections.IList,System.Collections.Generic.IList{System.Int32},System.Object)">
-            <summary>Replaces items from the given list that are located at the specified indices.</summary>
+            <summary>リストの、指定されたインデックスにある項目を置き換えます。</summary>
             <param name="list">項目を置換するリスト。</param>
-            <param name="indices">Indices of the item(s) to be replaced.</param>
+            <param name="indices">置換する項目のインデックス。</param>
             <param name="item">挿入する項目。</param>
-            <returns name="list">A new list with the item(s) replaced.</returns>
+            <returns name="list">項目を置き換えた新しいリスト。</returns>
             <search>replace,switch</search>
         </member>
         <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">

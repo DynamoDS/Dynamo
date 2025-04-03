@@ -716,10 +716,10 @@
     <value>当前用户“{0}”不是该软件包“{1}”的维护人员。</value>
   </data>
   <data name="PackageManagerPackagePreviewCounter" xml:space="preserve">
-    <value>{0} files and {1} folders will be created.</value>
+    <value>将创建 {0} 个文件和 {1} 个文件夹。</value>
   </data>
   <data name="PackageManagerPackageSelectCounter" xml:space="preserve">
-    <value>{0} files and {1} folders loaded.</value>
+    <value>已加载 {0} 个文件和 {1} 个文件夹。</value>
   </data>
   <data name="DuplicatedOlderPackage" xml:space="preserve">
     <value>名为 {0} (版本为 {2})的软件包的旧版本已在 {1} 处找到(版本为 {3})。已忽略该旧版本。</value>
@@ -873,7 +873,7 @@
     <value>由于某些节点已存在于当前工作空间中，因此无法插入文件。</value>
   </data>
   <data name="InsertDialogBoxText" xml:space="preserve">
-    <value>Insert Dynamo Graph...</value>
+    <value>插入 Dynamo 图形…</value>
   </data>
   <data name="InsertGraphRunModeNotificationText" xml:space="preserve">
     <value>示例文件已添加到工作空间。运行模式已更改为“手动”。</value>

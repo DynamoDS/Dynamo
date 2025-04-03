@@ -4,77 +4,77 @@
     </assembly>
     <members>
         <member name="T:FFITarget.ClassFunctionality">
-            <summary>Tests for basic functional testing of FFI implementations</summary>
+            <summary>Tests für grundlegende Funktionsprüfungen von FFI-Implementierungen</summary>
         </member>
         <member name="T:FFITarget.ClassFunctionalityMirror">
-            <summary>A class that contains the same IntVal member as ClassFunctionality</summary>
+            <summary>Klasse, die das gleiche IntVal-Element wie ClassFunctionality enthält</summary>
         </member>
         <member name="T:FFITarget.CodeCompletionClass">
-            <summary>Tests for code completion in codeblock node</summary>
+            <summary>Tests für die Code-Vervollständigung im Codeblock-Block</summary>
         </member>
         <member name="T:FFITarget.InstanceableClass">
-            <summary>A test class that creates a pyramid using instancing.</summary>
+            <summary>Testklasse, die mithilfe von Instanzen eine Pyramide erstellt.</summary>
         </member>
         <member name="T:FFITarget.InstanceableLineClass">
-            <summary>A test class that creates a pyramid using instancing.</summary>
+            <summary>Testklasse, die mithilfe von Instanzen eine Pyramide erstellt.</summary>
         </member>
         <member name="T:FFITarget.InstanceableClass_NoInstanceData">
-            <summary>This class is instanceable, but it returns false for instanceInfoAvailable so it will use regular tessellation.</summary>
+            <summary>Diese Klasse ist instanziierbar, gibt jedoch für instanceInfoAvailable False zurück, sodass eine normale Tessellation verwendet wird.</summary>
         </member>
         <member name="T:FFITarget.ElementIDLifecycleManager`1">
-            <summary>Class to handle the lifetime of elements from their IDs</summary>
+            <summary>Klasse für die Verarbeitung der Lebensdauer von Elementen anhand ihrer IDs</summary>
         </member>
         <member name="M:FFITarget.ElementIDLifecycleManager`1.GetInstance">
-            <summary>Returns the LifecycleManager for the specific type
-            WARNING: This is only a singleton for a given TypeArg</summary>
+            <summary>Gibt den LifecycleManager für den spezifischen Typ zurück
+            WARNUNG: Dies ist nur ein Singleton für ein angegebenes TypeArg-Objekt</summary>
             <returns/>
         </member>
         <member name="M:FFITarget.ElementIDLifecycleManager`1.RegisterAsssociation(`0,System.Object)">
-            <summary>Register a new dependency between an element ID and a wrapper</summary>
+            <summary>Neue Abhängigkeit zwischen einer Element-ID und einem Wrapper registrieren</summary>
             <param name="elementID"/>
             <param name="wrapper"/>
         </member>
         <member name="M:FFITarget.ElementIDLifecycleManager`1.UnRegisterAssociation(`0,System.Object)">
-            <summary>Remove an association between an element ID and</summary>
+            <summary>Verknüpfung entfernen zwischen einer Element-ID und</summary>
             <param name="elementID"/>
             <param name="wrapper"/>
-            <returns>The number of remaining associations</returns>
+            <returns>Anzahl der verbleibenden Verknüpfungen</returns>
         </member>
         <member name="M:FFITarget.ElementIDLifecycleManager`1.GetRegisteredCount(`0)">
-            <summary>Returns the number of wrappers that are registered</summary>
+            <summary>Gibt die Anzahl der Wrapper zurück, die registriert sind</summary>
             <param name="id"/>
             <returns/>
         </member>
         <member name="M:FFITarget.ElementIDLifecycleManager`1.IsRevitDeleted(`0)">
-            <summary>Checks whether an element has been deleted in Revit</summary>
+            <summary>Überprüft, ob ein Element in Revit gelöscht wurde</summary>
             <param name="id"/>
             <returns/>
         </member>
         <member name="M:FFITarget.ElementIDLifecycleManager`1.NotifyOfRevitDeletion(`0)">
-            <summary>Set deletion state of Revit element</summary>
-            <param name="id">The element that needs to be deleted&gt;</param>
+            <summary>Löschstatus für Revit-Element festlegen</summary>
+            <param name="id">Element, das gelöscht werden muss &gt;</param>
         </member>
         <member name="M:FFITarget.IncrementerTracedClass.#ctor(System.Int32)">
-            <summary>Note that x is a dummy var here that is intended to force replicated dispatch
-            it's not actually used</summary>
+            <summary>Beachten Sie, dass x hier eine Dummy-Variable ist, die zum Erzwingen einer replizierten Ausgabe gedacht ist
+            sie wird nicht wirklich verwendet</summary>
             <param name="x"/>
         </member>
         <member name="M:FFITarget.IncrementerTracedClass.#ctor(System.Int32,System.Boolean)">
-            <summary>Note that x is a dummy var here that is intended to force replicated dispatch
-            it's not actually used</summary>
-            <param name="x">Dummy var used to force replicated dispatch</param>
-            <param name="failWithException">Fail dispatch with an exception rather than</param>
+            <summary>Beachten Sie, dass x hier eine Dummy-Variable ist, die zum Erzwingen einer replizierten Ausgabe gedacht ist
+            sie wird nicht wirklich verwendet</summary>
+            <param name="x">Dummy-Variable zum Erzwingen einer replizierten Ausgabe</param>
+            <param name="failWithException">Ausgabe-Fehler mit Ausnahme anstatt</param>
         </member>
         <member name="T:FFITarget.OverloadTarget">
-            <summary>Test target for overloaded methods</summary>
+            <summary>Testziel für überlastete Methoden</summary>
         </member>
         <member name="M:FFITarget.TestData.ReturnNestedDictionary">
-            <summary>Return nested dictionary.</summary>
-            <returns name="col">e Stütze</returns>
+            <summary>Gibt ein verschachteltes Wörterbuch zurück.</summary>
+            <returns name="col">column</returns>
             <returns name="dict">dictionary</returns>
-            <returns name="num">Zahl</returns>
-            <returns name="wt">gewicht</returns>
-            <returns name="ok">Mittelmäßig</returns>
+            <returns name="num">number</returns>
+            <returns name="wt">weight</returns>
+            <returns name="ok">okay</returns>
         </member>
     </members>
 </doc>

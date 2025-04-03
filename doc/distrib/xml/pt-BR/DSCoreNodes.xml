@@ -890,11 +890,11 @@ Pesquise "Cadeias de caracteres de formato de data e hora personalizado" no MSDN
             <search>replace,switch</search>
         </member>
         <member name="M:DSCore.List.ReplaceItemAtIndices(System.Collections.IList,System.Collections.Generic.IList{System.Int32},System.Object)">
-            <summary>Replaces items from the given list that are located at the specified indices.</summary>
+            <summary>Substitui itens de uma lista determinada que estão localizados nos índices especificados.</summary>
             <param name="list">Lista na qual substituir um item.</param>
-            <param name="indices">Indices of the item(s) to be replaced.</param>
-            <param name="item">O item a inserir.</param>
-            <returns name="list">A new list with the item(s) replaced.</returns>
+            <param name="indices">Índices dos itens a serem substituídos.</param>
+            <param name="item">O item a ser inserido.</param>
+            <returns name="list">Uma nova lista com os itens substituídos.</returns>
             <search>replace,switch</search>
         </member>
         <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">

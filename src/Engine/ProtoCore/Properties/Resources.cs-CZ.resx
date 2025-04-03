@@ -307,7 +307,7 @@
     <value>Metoda „{0}()“ je již definována.</value>
   </data>
   <data name="kMethodHasInvalidArguments" xml:space="preserve">
-    <value>'{0}()' has some invalid arguments href=kMethodHasInvalidArguments</value>
+    <value>'{0}()' má některé neplatné argumenty. href=kMethodHasInvalidArguments</value>
   </data>
   <data name="kMethodIsInaccessible" xml:space="preserve">
     <value>Metody „{0}()“ zde nemůže být dosaženo.</value>
@@ -316,7 +316,7 @@
     <value>Metoda „{0}()“ nebyla nalezena href=kMethodNotFound.html</value>
   </data>
   <data name="kMethodResolutionFailure" xml:space="preserve">
-    <value>Internal error, please report: Method resolution failure on: {0}().</value>
+    <value>Nahlaste vnitřní chybu: Chyba metody řešení na: {0}().</value>
   </data>
   <data name="kMethodResolutionFailureForOperator" xml:space="preserve">
     <value>Operátor „{0}“ nelze použít pro operandy typu „{1}“ a  „{2}“.</value>
@@ -334,7 +334,7 @@
     <value>Více definic pro „{0}“ bylo nalezeno jako {1}</value>
   </data>
   <data name="kMethodDeprecated" xml:space="preserve">
-    <value>Method '{0}' has been deprecated, please use method '{1}' instead. href=Deprecated.html</value>
+    <value>Metoda '{0}' byla vyřazena, použijte místo ní metodu '{1}'. href=Deprecated.html</value>
   </data>
   <data name="kNoStepSizeInAmountRangeExpression" xml:space="preserve">
     <value>Není určena žádná velikost kroku ve výrazu rozsahu množství.</value>
@@ -349,7 +349,7 @@
     <value>Vlastnost „{0}“ nebyla nalezena</value>
   </data>
   <data name="kPropertyOfClassNotFound" xml:space="preserve">
-    <value>No property called {0} on {1} could be found href=kPropertyOfClassNotFound</value>
+    <value>Žádná vlastnost s názvem {0} na {1} nebyla nalezena href=kPropertyOfClassNotFound</value>
   </data>
   <data name="kRangeExpressionConflictOperator" xml:space="preserve">
     <value>Operátor množství nelze použít společně s operátorem kroku.</value>
@@ -884,8 +884,8 @@
     <value>Hodnota NULL nemůže být přičtena k hodnotě {0}. href=FailedToCastFromNull.html</value>
   </data>
   <data name="ArgumentNullException" xml:space="preserve">
-    <value>Value cannot be null.
-Parameter name: {0}. href=ArgumentNullException.html</value>
+    <value>Hodnota nemůže být null.
+Název parametru: {0}. href=ArgumentNullException.html</value>
   </data>
   <data name="FunctionGroupNotFound" xml:space="preserve">
     <value>Žádná funkce s názvem {0} ve skupině {1} nebyla nalezena.</value>

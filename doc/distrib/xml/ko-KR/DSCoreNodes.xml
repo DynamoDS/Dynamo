@@ -889,11 +889,11 @@
             <search>replace,switch</search>
         </member>
         <member name="M:DSCore.List.ReplaceItemAtIndices(System.Collections.IList,System.Collections.Generic.IList{System.Int32},System.Object)">
-            <summary>Replaces items from the given list that are located at the specified indices.</summary>
+            <summary>지정된 리스트에서 지정된 색인에 있는 항목을 대치합니다.</summary>
             <param name="list">항목을 대체할 리스트.</param>
-            <param name="indices">Indices of the item(s) to be replaced.</param>
+            <param name="indices">대치할 항목의 색인.</param>
             <param name="item">삽입할 항목.</param>
-            <returns name="list">A new list with the item(s) replaced.</returns>
+            <returns name="list">항목이 대치된 새 리스트.</returns>
             <search>replace,switch</search>
         </member>
         <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">

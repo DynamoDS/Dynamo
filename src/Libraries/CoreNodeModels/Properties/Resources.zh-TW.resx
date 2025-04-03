@@ -355,7 +355,7 @@
     <value>清單</value>
   </data>
   <data name="PortDataOperandToolTip" xml:space="preserve">
-    <value>Boolean #</value>
+    <value>布林 #</value>
   </data>
   <data name="PortDataResultToolTip" xml:space="preserve">
     <value>產生的結果區塊</value>
@@ -400,7 +400,7 @@
     <value>Reductor 函數：從每一個清單中接受一個正在減少的項目，以及目前的累積值，結果是新的累積值。</value>
   </data>
   <data name="ScanPortDataResultToolTip" xml:space="preserve">
-    <value>掃瞄的清單 (類型: var[]..[])</value>
+    <value>掃描的清單 (類型: var[]..[])</value>
   </data>
   <data name="ScanPortDataSeedToolTip" xml:space="preserve">
     <value>起始累積值，要傳遞到 Reductor 函數的第一個呼叫。</value>
@@ -412,7 +412,7 @@
     <value>選取的元素。</value>
   </data>
   <data name="StringfromArrayDescription" xml:space="preserve">
-    <value>Converts an array to a string representation</value>
+    <value>將陣列轉換為字串表現法</value>
   </data>
   <data name="StringfromObjectDescription" xml:space="preserve">
     <value>將物件轉換為字串表現法</value>
@@ -442,7 +442,7 @@
     <value>print;output;display</value>
   </data>
   <data name="WebRequestDescription" xml:space="preserve">
-    <value>Returns the contents of a webpage from the given URL as a string</value>
+    <value>以字串傳回給定 URL 中的網頁內容</value>
   </data>
   <data name="WebRequestPortDataResultToolTip" xml:space="preserve">
     <value>網路請求的內容，以字串表示。</value>
@@ -511,10 +511,10 @@
     <value>曲線</value>
   </data>
   <data name="SelectionElementOutputPortName" xml:space="preserve">
-    <value>元素</value>
+    <value>Element</value>
   </data>
   <data name="SelectionElementsOutputPortName" xml:space="preserve">
-    <value>元素</value>
+    <value>Elements</value>
   </data>
   <data name="SelectionFaceOutputPortName" xml:space="preserve">
     <value>曲面</value>
