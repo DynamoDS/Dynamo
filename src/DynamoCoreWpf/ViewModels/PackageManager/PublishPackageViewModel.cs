@@ -1541,6 +1541,8 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// The method is used to create a PublishPackageViewModel from a Package object.
         /// If retainFolderStructure is set to true, the folder structure of the package will be retained. Else, the default folder structure will be imposed.
+        /// TODO: This process heavily relies on the pkg.json of the locally installed package providing all of the header-related inforamtion
+        /// This leads to potential mismatch from the local package and the current package on the server
         /// </summary>
         /// <param name="dynamoViewModel"></param>
         /// <param name="pkg">The package to be loaded</param>
@@ -1573,6 +1575,16 @@ namespace Dynamo.PackageManager
                 }
             }
 
+            // We need to get the compatibility matrix from the cached package list
+            // in order to show the correct compatibility matrix in the UI.
+            // We are still running the risk of having a higher version of the local package 
+            // leading to a null result for the compatibility matrix.
+            var cachedPackage = dynamoViewModel.PackageManagerClientViewModel.CachedPackageList
+                .FirstOrDefault(x => x.Name == pkg.Name);
+            var version = cachedPackage?.Header.versions
+                .FirstOrDefault(v => v.version.Equals(pkg.VersionName));
+            var compatibility_matrix = version?.compatibility_matrix;
+
             var pkgViewModel = new PublishPackageViewModel(dynamoViewModel)
             {
                 Group = pkg.Group,
@@ -1592,7 +1604,7 @@ namespace Dynamo.PackageManager
                 CurrentPackageRootDirectories = new List<string> { pkg.RootDirectory },
                 //default retain folder structure to true when publishing a new version from local.
                 RetainFolderStructureOverride = retainFolderStructure,
-                CompatibilityMatrix = pkg.Header.compatibility_matrix?
+                CompatibilityMatrix = compatibility_matrix?
                 .Select(entry => new PackageCompatibility(
                     entry.name,
                     entry.versions != null ? new List<string>(entry.versions) : null,
