@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Autodesk.DesignScript.Runtime;
 
 namespace DSCore.CurveMapper
 {
+    [IsVisibleInDynamoLibrary(false)]
     public class CurveMapperGenerator
     {
         private static int rounding = 10;
