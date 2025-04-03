@@ -178,7 +178,6 @@ namespace CoreNodeModels
                     minLimitX = value;
                     this.RaisePropertyChanged(nameof(MinLimitX));
                     this.RaisePropertyChanged(nameof(MidValueX));
-                    OnNodeModified();
                 }
             }
         }
@@ -195,7 +194,6 @@ namespace CoreNodeModels
                     maxLimitX = value;
                     this.RaisePropertyChanged(nameof(MaxLimitX));
                     this.RaisePropertyChanged(nameof(MidValueX));
-                    OnNodeModified();
                 }
             }
         }
@@ -212,7 +210,6 @@ namespace CoreNodeModels
                     minLimitY = value;
                     this.RaisePropertyChanged(nameof(MinLimitY));
                     this.RaisePropertyChanged(nameof(MidValueY));
-                    OnNodeModified();
                 }
             }
         }
@@ -229,7 +226,6 @@ namespace CoreNodeModels
                     maxLimitY = value;
                     this.RaisePropertyChanged(nameof(MaxLimitY));
                     this.RaisePropertyChanged(nameof(MidValueY));
-                    OnNodeModified();
                 }
             }
         }
@@ -245,7 +241,6 @@ namespace CoreNodeModels
                 {
                     pointsCount = value;
                     this.RaisePropertyChanged(nameof(PointsCount));
-                    OnNodeModified();
                 }
             }
         }
@@ -270,7 +265,6 @@ namespace CoreNodeModels
             set
             {
                 renderValuesY = value;
-                OnNodeModified();
             }
         }
         /// <summary> Gets or sets the X values used for rendering the curve. </summary>
@@ -281,7 +275,6 @@ namespace CoreNodeModels
             set
             {
                 renderValuesX = value;
-                OnNodeModified();
             }
         }
 
@@ -324,7 +317,6 @@ namespace CoreNodeModels
                     .Cast<GraphTypes>()
                     .FirstOrDefault(e => GetEnumDescription(e) == value);
 
-                RaisePropertyChanged(nameof(SelectedGraphType));
                 RaisePropertyChanged(nameof(SelectedGraphTypeDescription));
             }
         }
@@ -337,9 +329,7 @@ namespace CoreNodeModels
             set
             {
                 selectedGraphType = value;
-                GenerateRenderValues();
                 RaisePropertyChanged(nameof(SelectedGraphType));
-                OnNodeModified();
             }
         }
 
@@ -423,11 +413,6 @@ namespace CoreNodeModels
 
             RegisterAllPorts();
 
-            foreach (var port in InPorts)
-            {
-                port.Connectors.CollectionChanged += Connectors_CollectionChanged;
-            }
-
             SelectedGraphType = GraphTypes.Empty;
             ArgumentLacing = LacingStrategy.Disabled;
 
@@ -439,22 +424,8 @@ namespace CoreNodeModels
         public CurveMapperNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts,
             double dynamicCanvasSize = defaultCanvasSize) : base(inPorts, outPorts)
         {
-            foreach (var port in InPorts)
-            {
-                port.Connectors.CollectionChanged += Connectors_CollectionChanged;
-            }
-
             DynamicCanvasSize = dynamicCanvasSize;
             ArgumentLacing = LacingStrategy.Disabled;
-        }
-
-        #endregion
-
-        #region Event Handers
-
-        private void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            OnNodeModified();
         }
 
         #endregion
@@ -469,6 +440,7 @@ namespace CoreNodeModels
             if (SelectedGraphType == GraphTypes.Empty)
             {
                 RenderValuesX = RenderValuesY = null;
+                OnNodeModified();
                 return;
             }
             if (!IsValidCurve())
@@ -476,9 +448,10 @@ namespace CoreNodeModels
                 Warning(Properties.Resources.CurveMapperWarningMessage, isPersistent: true);
 
                 RenderValuesX = RenderValuesY = null;
+                OnNodeModified();
                 return;
             }
-            else if(!IsResizing)
+            if(!IsResizing)
             {
                 ClearErrorsAndWarnings();
             }
@@ -561,6 +534,11 @@ namespace CoreNodeModels
                 dynamic dynamicCurve = curve;
                 RenderValuesX = dynamicCurve.GetCurveXValues(PointsCount, true);
                 RenderValuesY = dynamicCurve.GetCurveYValues(PointsCount, true);
+
+                if (!IsResizing)
+                {
+                    OnNodeModified();
+                }
             }
         }
 
