@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using Autodesk.DesignScript.Runtime;
 
 namespace DSCore.CurveMapper
 {
+    [IsVisibleInDynamoLibrary(false)]
     public class CurveMapperGenerator
     {
         private static int rounding = 10;
@@ -11,7 +13,7 @@ namespace DSCore.CurveMapper
             List<double> controlPoints, double canvasSize,
             double minX, double maxX, double minY, double maxY,
             int pointsCount, string graphType
-            )
+            )   
         {
             var xValues = new List<double>() { double.NaN };
             var yValues = new List<double>() { double.NaN };
