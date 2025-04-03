@@ -589,10 +589,11 @@ namespace Dynamo.ViewModels
         {
             bool isCollectionofFiveorMore = false;
 
-            //if model is null or enginecontroller is disposed, return
+            // if model is null or node in Transient state or enginecontroller is disposed, return
             if (model is null ||
                 model.Start is null ||
                 model.Start.Owner is null||
+                model.Start.Owner.IsTransient ||
                 workspaceViewModel.DynamoViewModel.EngineController.IsDisposed == true)
             { return; }
 

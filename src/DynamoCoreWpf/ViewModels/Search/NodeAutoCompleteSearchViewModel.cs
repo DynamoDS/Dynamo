@@ -799,45 +799,31 @@ namespace Dynamo.ViewModels
                     index++;
                 }
             }
-
-            
-            clusterConnections.ForEach(connection =>
+            using (var undoGroup = wsViewModel.Model.UndoRecorder.BeginActionGroup())
             {
-                // Connect the nodes
-                var sourceNode = clusterMapping[connection.StartNode.NodeId];
-                var targetNode = clusterMapping[connection.EndNode.NodeId];
-                // The port index is 1- based (currently a hack and not expected from service)
-                var sourcePort = sourceNode.OutPorts.FirstOrDefault(p => p.PortModel.Index == connection.StartNode.PortIndex - 1);
-                var targetPort = targetNode.InPorts.FirstOrDefault(p => p.PortModel.Index == connection.EndNode.PortIndex - 1);
-                var commands = new List<DynamoModel.ModelBasedRecordableCommand>
-                    {
-                        new DynamoModel.MakeConnectionCommand(sourceNode.Id.ToString(), connection.StartNode.PortIndex - 1, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
-                        new DynamoModel.MakeConnectionCommand(targetNode.Id.ToString(), connection.EndNode.PortIndex - 1, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
-                    };
-                commands.ForEach(c =>
+                clusterConnections.ForEach(connection =>
                 {
-                    try
+                    // Connect the nodes    
+                    var sourceNode = clusterMapping[connection.StartNode.NodeId].NodeModel;
+                    var targetNode = clusterMapping[connection.EndNode.NodeId].NodeModel;
+                    // The port index is 1- based (currently a hack and not expected from service)
+                    var sourcePort = sourceNode.OutPorts.FirstOrDefault(p => p.Index == connection.StartNode.PortIndex - 1);
+                    var targetPort = targetNode.InPorts.FirstOrDefault(p => p.Index == connection.EndNode.PortIndex - 1);
+
+                    var connector = ConnectorModel.Make(sourceNode, targetNode, connection.StartNode.PortIndex - 1, connection.EndNode.PortIndex - 1);
+                    if (connector != null && !targetPort.IsConnected)
                     {
-                        wsViewModel.DynamoViewModel.Model.ExecuteCommand(c);
+                        wsViewModel.Model.UndoRecorder.RecordCreationForUndo(connector);
                     }
-                    catch (Exception) { }
                 });
-            });
 
-            // Connect the cluster to the original node and port
-            var finalCommands = new List<DynamoModel.ModelBasedRecordableCommand>
+                // Connect the cluster to the original node and port
+                var connector = ConnectorModel.Make(node.NodeModel, targetNodeFromCluster.NodeModel, 0, ClusterResultItem.EntryNodeInPort);
+                if (connector != null && !targetNodeFromCluster.OutPorts.FirstOrDefault().IsConnected)
                 {
-                    new DynamoModel.MakeConnectionCommand(node.Id.ToString(), 0, PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin),
-                    new DynamoModel.MakeConnectionCommand(targetNodeFromCluster?.Id.ToString(), ClusterResultItem.EntryNodeInPort, PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End),
-                };
-            finalCommands.ForEach(c =>
-            {
-                try
-                {
-                    wsViewModel.DynamoViewModel.Model.ExecuteCommand(c);
+                    wsViewModel.Model.UndoRecorder.RecordCreationForUndo(connector);
                 }
-                catch (Exception) { }
-            });
+            }
 
             //Make connectors invisible ( just like the cluster nodes ) before they get a chance to be drawn.
             var clusterNodesModel = clusterMapping.Values.ToList();
