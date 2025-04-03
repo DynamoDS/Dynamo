@@ -208,7 +208,7 @@
             A Bezier curve is defined by four control points and provides smooth interpolation.
             </summary>
         </member>
-        <member name="M:DSCore.CurveMapper.BezierCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.BezierCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>
             Gets interpolated Y values based on the assigned parameters and limits.
             </summary>
@@ -225,19 +225,24 @@
             Provides common functionality for generating and retrieving curve values.
             </summary>
         </member>
-        <member name="M:DSCore.CurveMapper.CurveBase.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>
             Abstract method to be implemented by derived classes for generating curve values.
             </summary>
         </member>
-        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>
             Common method for retrieving X values.
             </summary>
         </member>
-        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>
             Common method for retrieving Y values.
+            </summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateFromDomain(System.Collections.Generic.List{System.Double},System.Func{System.Double,System.Double})">
+            <summary>
+            Generates X and Y values by mapping domain inputs to canvas space and evaluating a curve function.
             </summary>
         </member>
         <member name="T:DSCore.CurveMapper.GaussianCurve">
@@ -251,7 +256,7 @@
             Indicates whether the node is currently being resized, preventing unintended control point updates.
             </summary>
         </member>
-        <member name="M:DSCore.CurveMapper.GaussianCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.GaussianCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>
             Returns X and Y values distributed across the curve.
             </summary>
@@ -272,7 +277,7 @@
             Calculates the X values (canvas coordinates) for min and max Y values
             </summary>
         </member>
-        <member name="M:DSCore.CurveMapper.LinearCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.LinearCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>
             Returns X and Y values distributed across the curve.
             </summary>
@@ -283,7 +288,7 @@
             The curve follows a quadratic equation based on two control points.
             </summary>
         </member>
-        <member name="M:DSCore.CurveMapper.ParabolicCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.ParabolicCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>
             Returns X and Y values distributed across the curve.
             </summary>
@@ -294,7 +299,7 @@
             The curve generates procedural noise based on control points and Perlin noise functions.
             </summary>
         </member>
-        <member name="M:DSCore.CurveMapper.PerlinNoiseCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.PerlinNoiseCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>
             Returns X and Y values distributed across the curve.
             </summary>
@@ -305,7 +310,7 @@
             The curve is defined by a power equation derived from a control point.
             </summary>
         </member>
-        <member name="M:DSCore.CurveMapper.PowerCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.PowerCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>
             Returns X and Y values distributed across the curve.
             </summary>
@@ -316,7 +321,7 @@
             The sine wave is defined by two control points and follows a trigonometric function.
             </summary>
         </member>
-        <member name="M:DSCore.CurveMapper.SineWave.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.SineWave.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>
             Returns X and Y values distributed across the curve.
             </summary>
@@ -327,7 +332,7 @@
             The curve follows a square root function and is influenced by two control points.
             </summary>
         </member>
-        <member name="M:DSCore.CurveMapper.SquareRootCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.SquareRootCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>
             Returns X and Y values distributed across the curve.
             </summary>

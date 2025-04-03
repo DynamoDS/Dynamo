@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DSCore.CurveMapper
 {
@@ -46,7 +47,7 @@ namespace DSCore.CurveMapper
         /// <summary>
         /// Returns X and Y values distributed across the curve.
         /// </summary>
-        protected override (List<double> XValues, List<double> YValues) GenerateCurve(int pointsCount, bool isRender = false)
+        protected override (List<double> XValues, List<double> YValues) GenerateCurve(List<double> pointsDomain, bool isRender = false)
         {
             var valuesX = new List<double>();
             var valuesY = new List<double>();
@@ -60,15 +61,26 @@ namespace DSCore.CurveMapper
                     valuesY.Add(ConvertTrigoToY(y));
                 }
             }
-            else
+            else if (pointsDomain.Count == 1)
             {
+                var pointsCount = (int)pointsDomain[0];
+
                 double step = CanvasSize / (pointsCount - 1);
                 for (int i = 0; i < pointsCount; i++)
                 {
                     double x = i * step;
                     valuesX.Add(x);
-                    double y = CosineEquation(ConvertXToTrigo(x));
-                    valuesY.Add(ConvertTrigoToY(y));
+                    valuesY.Add(ConvertTrigoToY(CosineEquation(ConvertXToTrigo(x))));
+                }
+            }
+            else
+            {
+                double minInput = pointsDomain.Min();
+                double maxInput = pointsDomain.Max();
+
+                foreach (var t in pointsDomain)
+                {
+                    return GenerateFromDomain(pointsDomain, x => ConvertTrigoToY(CosineEquation(ConvertXToTrigo(x))));
                 }
             }
 

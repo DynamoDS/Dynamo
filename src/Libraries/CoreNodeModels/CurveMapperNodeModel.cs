@@ -22,25 +22,28 @@ namespace CoreNodeModels
         private double maxLimitX = 1;
         private double minLimitY = 0;
         private double maxLimitY = 1;
-        private int pointsCount = 10;
+        private List<Double> pointsCount = new List<double>() { 10.0 };
 
         private List<double> outputValuesY;
         private List<double> outputValuesX;
         private List<double> renderValuesY;
         private List<double> renderValuesX;
 
-        private const int minXDefaultValue = 0;
-        private const int maxXDefaultValue = 1;
-        private const int minYDefaultValue = 0;
-        private const int maxYDefaultValue = 1;
-
-        private const int pointCountDefaultValue = 10;
+        private static readonly int minXDefaultValue = 0;
+        private static readonly int maxXDefaultValue = 1;
+        private static readonly int minYDefaultValue = 0;
+        private static readonly int maxYDefaultValue = 1;
+        private static readonly double pointCountDefaultValue = 10.0;
 
         private readonly IntNode minLimitXDefaultValue = new IntNode(minXDefaultValue);
         private readonly IntNode maxLimitXDefaultValue = new IntNode(maxXDefaultValue);
         private readonly IntNode minLimitYDefaultValue = new IntNode(minYDefaultValue);
         private readonly IntNode maxLimitYDefaultValue = new IntNode(maxYDefaultValue);
-        private readonly IntNode pointsCountDefaultValue = new IntNode(pointCountDefaultValue);
+        private readonly AssociativeNode pointsCountDefaultValue =
+            AstFactory.BuildExprList(new List<AssociativeNode>
+            {
+                AstFactory.BuildDoubleNode(pointCountDefaultValue)
+            });
 
         private const string gaussianCurveControlPointData2Tag = "GaussianCurveControlPointData2";
         private const string gaussianCurveControlPointData3Tag = "GaussianCurveControlPointData3";
@@ -178,7 +181,6 @@ namespace CoreNodeModels
                     minLimitX = value;
                     this.RaisePropertyChanged(nameof(MinLimitX));
                     this.RaisePropertyChanged(nameof(MidValueX));
-                    OnNodeModified();
                 }
             }
         }
@@ -195,7 +197,6 @@ namespace CoreNodeModels
                     maxLimitX = value;
                     this.RaisePropertyChanged(nameof(MaxLimitX));
                     this.RaisePropertyChanged(nameof(MidValueX));
-                    OnNodeModified();
                 }
             }
         }
@@ -212,7 +213,6 @@ namespace CoreNodeModels
                     minLimitY = value;
                     this.RaisePropertyChanged(nameof(MinLimitY));
                     this.RaisePropertyChanged(nameof(MidValueY));
-                    OnNodeModified();
                 }
             }
         }
@@ -229,14 +229,13 @@ namespace CoreNodeModels
                     maxLimitY = value;
                     this.RaisePropertyChanged(nameof(MaxLimitY));
                     this.RaisePropertyChanged(nameof(MidValueY));
-                    OnNodeModified();
                 }
             }
         }
 
         /// <summary> Gets or sets the number of points used to compute the curve. </summary>
         [JsonProperty]
-        public int PointsCount
+        public List<double> PointsCount
         {
             get => pointsCount;
             set
@@ -245,7 +244,6 @@ namespace CoreNodeModels
                 {
                     pointsCount = value;
                     this.RaisePropertyChanged(nameof(PointsCount));
-                    OnNodeModified();
                 }
             }
         }
@@ -324,7 +322,6 @@ namespace CoreNodeModels
                     .Cast<GraphTypes>()
                     .FirstOrDefault(e => GetEnumDescription(e) == value);
 
-                RaisePropertyChanged(nameof(SelectedGraphType));
                 RaisePropertyChanged(nameof(SelectedGraphTypeDescription));
             }
         }
@@ -423,11 +420,6 @@ namespace CoreNodeModels
 
             RegisterAllPorts();
 
-            foreach (var port in InPorts)
-            {
-                port.Connectors.CollectionChanged += Connectors_CollectionChanged;
-            }
-
             SelectedGraphType = GraphTypes.Empty;
             ArgumentLacing = LacingStrategy.Disabled;
 
@@ -439,22 +431,8 @@ namespace CoreNodeModels
         public CurveMapperNodeModel(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts,
             double dynamicCanvasSize = defaultCanvasSize) : base(inPorts, outPorts)
         {
-            foreach (var port in InPorts)
-            {
-                port.Connectors.CollectionChanged += Connectors_CollectionChanged;
-            }
-
             DynamicCanvasSize = dynamicCanvasSize;
             ArgumentLacing = LacingStrategy.Disabled;
-        }
-
-        #endregion
-
-        #region Event Handers
-
-        private void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
-        {
-            OnNodeModified();
         }
 
         #endregion
@@ -702,9 +680,16 @@ namespace CoreNodeModels
 
         private bool IsValidInput()
         {
-            return PointsCount >= 2
-                && MinLimitX != MaxLimitX
-                && MinLimitY != MaxLimitY;
+            if (pointsCount == null || pointsCount.Count == 0)
+                return false;
+
+            if (pointsCount.Count == 1 && pointsCount.FirstOrDefault() < 2)
+                return false;
+
+            if (MinLimitX == MaxLimitX || MinLimitY == MaxLimitY)
+                return false;
+
+            return true;
         }
 
         private bool IsValidCurve()
@@ -809,14 +794,43 @@ namespace CoreNodeModels
             var maxValueX = double.TryParse(inputs[1]?.ToString(), out var maxX) ? maxX : MaxLimitX;
             var minValueY = double.TryParse(inputs[2]?.ToString(), out var minY) ? minY : MinLimitY;
             var maxValueY = double.TryParse(inputs[3]?.ToString(), out var maxY) ? maxY : MaxLimitY;
-            var listValue = int.TryParse(inputs[4]?.ToString(), out var parsedCount) ? parsedCount : PointsCount;
+            List<double> parsedPointsCount;
+
+            if (inputs[4] is IList countList) // IS ALL THSI NEEDED?
+            {
+                parsedPointsCount = new List<double>();
+
+                foreach (var item in countList)
+                {
+                    if (item is IList nestedList)
+                    {
+                        foreach (var nested in nestedList)
+                        {
+                            if (double.TryParse(nested?.ToString(), out var val))
+                                parsedPointsCount.Add(val);
+                        }
+                    }
+                    else if (double.TryParse(item?.ToString(), out var val))
+                    {
+                        parsedPointsCount.Add(val);
+                    }
+                }
+            }
+            else if (double.TryParse(inputs[4]?.ToString(), out var singleVal))
+            {
+                parsedPointsCount = new List<double> { singleVal };
+            }
+            else
+            {
+                parsedPointsCount = PointsCount;
+            }
 
             // Check port connectivity
             if (InPorts[0].IsConnected) MinLimitX = minValueX;
             if (InPorts[1].IsConnected) MaxLimitX = maxValueX;
             if (InPorts[2].IsConnected) MinLimitY = minValueY;
             if (InPorts[3].IsConnected) MaxLimitY = maxValueY;
-            if (InPorts[4].IsConnected) PointsCount = listValue;
+            if (InPorts[4].IsConnected) PointsCount = parsedPointsCount;
 
             // Notify property changes to update UI
             foreach (var propertyName in new[] { nameof(MinLimitX), nameof(MaxLimitX), nameof(MinLimitY), nameof(MaxLimitY), nameof(PointsCount) })
@@ -832,8 +846,8 @@ namespace CoreNodeModels
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
-            // Return null outputs if GraphType is Empty
-            if (SelectedGraphType == GraphTypes.Empty || !IsValidCurve())
+            // If input is missing or invalid, return nulls
+            if (inputAstNodes == null || inputAstNodes.Count < 5 || SelectedGraphType == GraphTypes.Empty || !IsValidCurve())
             {
                 return new[]
                 {

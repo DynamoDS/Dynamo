@@ -20,7 +20,7 @@ namespace DSCore.CurveMapper
             [ArbitraryDimensionArrayImport] object maxX,
             [ArbitraryDimensionArrayImport] object minY,
             [ArbitraryDimensionArrayImport] object maxY,
-            [ArbitraryDimensionArrayImport] object pointsCount, // REVERT
+            object pointsCount,
             string graphType
             )
         {
@@ -36,7 +36,36 @@ namespace DSCore.CurveMapper
             var xValues = new List<double>() { double.NaN };
             var yValues = new List<double>() { double.NaN };
 
-            
+            var pointsCountAsList = new List<double>();
+
+            if (pointsCount is IEnumerable enumerable)
+            {
+                foreach (var item in enumerable)
+                {
+                    if (item is double d)
+                        pointsCountAsList.Add(d);
+                    else if (item is int i)
+                        pointsCountAsList.Add(Convert.ToDouble(i));
+                    else if (item is long l)
+                        pointsCountAsList.Add(Convert.ToDouble(l));
+                }
+            }
+            else if (pointsCount is double d)
+            {
+                pointsCountAsList.Add(d);
+            }
+            else if (pointsCount is int i)
+            {
+                pointsCountAsList.Add(Convert.ToDouble(i));
+            }
+            else if (pointsCount is long l)
+            {
+                pointsCountAsList.Add(Convert.ToDouble(l));
+            }
+
+
+            var e1 = pointsCountAsList; // RAISE WARNING IF IT'S A SINGLE DOUBLE VALUE
+
 
             if (minX != maxX && minY != maxY) // pointsCount >= 2
             {
@@ -83,24 +112,32 @@ namespace DSCore.CurveMapper
                 {
                     dynamic dynamicCurve = curve;
 
-                    int pointsCountInt;
-                    try
-                    {
-                        pointsCountInt = checked((int)(long)pointsCount);
-                    }
-                    catch (OverflowException)
-                    {
-                        throw new ArgumentOutOfRangeException(nameof(pointsCount), "pointsCount is out of range for an int.");
-                    }
+                    //int pointsCountInt;
+                    //try
+                    //{
+                    //    pointsCountInt = checked((int)(long)pointsCount);
+                    //}
+                    //catch (OverflowException)
+                    //{
+                    //    throw new ArgumentOutOfRangeException(nameof(pointsCount), "pointsCount is out of range for an int.");
+                    //}
 
-                    var c1 = (long)minX;
-                    var c2 = (long)maxX;
-                    var c4 = (long)pointsCount;
-                    var d1 = dynamicCurve.GetCurveXValues(pointsCountInt);
-                    var d2 = dynamicCurve.GetCurveYValues(pointsCountInt);
+                    // THROW THE WARNING IF COUNT IS SINGLE DOUBLE VALUE ?
+                    // CLEAR THE WARNING WHEN THE VALUE IN THE CODE BLOCK HAS CHANGED (ON NODE COLLECTION CHANGED?)
+                    // CHECK WHY THE OTHER WARNING ALSO APPEARS
 
-                    xValues = MapValues(dynamicCurve.GetCurveXValues(pointsCountInt), (long)minX, (long)maxX, canvasSize);
-                    yValues = MapValues(dynamicCurve.GetCurveYValues(pointsCountInt), (long)minY, (long)maxY, canvasSize);
+                    var minXConverted = Convert.ToDouble(minX);
+                    var maxXConverted = Convert.ToDouble(maxX);
+                    var minYConverted = Convert.ToDouble(minY);
+                    var maxYConverted = Convert.ToDouble(maxY);
+
+                    var pointsCountConverted = Convert.ToDouble(pointsCount);
+
+                    var d1 = dynamicCurve.GetCurveXValues(pointsCountAsList);
+                    var d2 = dynamicCurve.GetCurveYValues(pointsCountAsList);
+
+                    xValues = MapValues(dynamicCurve.GetCurveXValues(pointsCountAsList), minXConverted, maxXConverted, canvasSize);
+                    yValues = MapValues(dynamicCurve.GetCurveYValues(pointsCountAsList), minYConverted, maxYConverted, canvasSize);
                 }
             }
 

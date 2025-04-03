@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DSCore.CurveMapper
 {
@@ -41,13 +42,15 @@ namespace DSCore.CurveMapper
         /// <summary>
         /// Returns X and Y values distributed across the curve.
         /// </summary>
-        protected override (List<double> XValues, List<double> YValues) GenerateCurve(int pointsCount, bool isRender)
+        protected override (List<double> XValues, List<double> YValues) GenerateCurve(List<double> pointsDomain, bool isRender)
         {
             double leftBoundaryY = (ControlPoint2Y > ControlPoint1Y) ? CanvasSize : 0.0;
             double rightBoundaryY = (ControlPoint2Y < ControlPoint1Y) ? CanvasSize : 0.0;
-
             double startX = SolveParabolaForX(leftBoundaryY, true);
             double endX = SolveParabolaForX(leftBoundaryY);
+
+            var valuesX = new List<double>();
+            var valuesY = new List<double>();
 
             if (isRender)
             {
@@ -57,8 +60,8 @@ namespace DSCore.CurveMapper
                 // First point
                 double firstY = SolveParabolaForY(minX);
 
-                var valuesX = new List<double> { minX };
-                var valuesY = new List<double> { firstY };
+                valuesX.Add(minX);
+                valuesY.Add(firstY);
 
                 for (double d = minX; d < maxX; d += renderIncrementX)
                 {
@@ -76,16 +79,9 @@ namespace DSCore.CurveMapper
 
                 return (valuesX, valuesY);
             }
-            else
+            else if (pointsDomain.Count == 1)
             {
-                bool flip = ControlPoint2Y > ControlPoint1Y;
-
-                // First point
-                double firstY = SolveParabolaForY(leftBoundaryY);
-                double firstX = leftBoundaryY;
-
-                var valuesX = new List<double>();
-                var valuesY = new List<double>();
+                var pointsCount = pointsDomain[0];
 
                 var step = (rightBoundaryY - leftBoundaryY) / (pointsCount - 1);
 
@@ -99,14 +95,18 @@ namespace DSCore.CurveMapper
                 }
 
                 // Reverse lists if needed to ensure X values increase from left to right
-                if (flip)
+                if (ControlPoint2Y > ControlPoint1Y)
                 {
                     valuesX.Reverse();
                     valuesY.Reverse();
                 }
-
-                return (valuesX, valuesY);
             }
+            else
+            {
+                return GenerateFromDomain(pointsDomain, x => SolveParabolaForY(x));
+            }
+
+            return (valuesX, valuesY);
         }
     }
 }
