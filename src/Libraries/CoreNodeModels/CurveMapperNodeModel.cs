@@ -332,8 +332,8 @@ namespace CoreNodeModels
             set
             {
                 selectedGraphType = value;
+                GenerateRenderValues();
                 RaisePropertyChanged(nameof(SelectedGraphType));
-                OnNodeModified();
             }
         }
 
@@ -798,31 +798,19 @@ namespace CoreNodeModels
             var maxValueX = double.TryParse(inputs[1]?.ToString(), out var maxX) ? maxX : MaxLimitX;
             var minValueY = double.TryParse(inputs[2]?.ToString(), out var minY) ? minY : MinLimitY;
             var maxValueY = double.TryParse(inputs[3]?.ToString(), out var maxY) ? maxY : MaxLimitY;
-            List<double> parsedPointsCount;
+            var parsedPointsCount = new List<double>();
 
-            if (inputs[4] is IList countList) // IS ALL THSI NEEDED?
+            if (inputs[4] is IList list)
             {
-                parsedPointsCount = new List<double>();
-
-                foreach (var item in countList)
+                foreach (var item in list)
                 {
-                    if (item is IList nestedList)
-                    {
-                        foreach (var nested in nestedList)
-                        {
-                            if (double.TryParse(nested?.ToString(), out var val))
-                                parsedPointsCount.Add(val);
-                        }
-                    }
-                    else if (double.TryParse(item?.ToString(), out var val))
-                    {
+                    if (double.TryParse(item?.ToString(), out var val))
                         parsedPointsCount.Add(val);
-                    }
                 }
             }
             else if (double.TryParse(inputs[4]?.ToString(), out var singleVal))
             {
-                parsedPointsCount = new List<double> { singleVal };
+                parsedPointsCount.Add(singleVal);
             }
             else
             {
