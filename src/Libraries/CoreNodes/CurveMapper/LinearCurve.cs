@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 
 namespace DSCore.CurveMapper
 {
@@ -54,7 +55,7 @@ namespace DSCore.CurveMapper
         /// <summary>
         /// Returns X and Y values distributed across the curve.
         /// </summary>
-        protected override (List<double> XValues, List<double> YValues) GenerateCurve(int pointsCount, bool isRender = false)
+        protected override (List<double> XValues, List<double> YValues) GenerateCurve(List<double> pointsDomain, bool isRender = false)
         {
             double leftX = SolveForXGivenY(0);
             double rightX = SolveForXGivenY(CanvasSize);
@@ -76,8 +77,10 @@ namespace DSCore.CurveMapper
                     ? new List<double> { System.Math.Clamp(highY, 0, CanvasSize), System.Math.Clamp(lowY, 0, CanvasSize) }
                     : new List<double> { System.Math.Clamp(lowY, 0, CanvasSize), System.Math.Clamp(highY, 0, CanvasSize) };
             }
-            else
+            else if (pointsDomain.Count == 1)
             {
+                var pointsCount = (int)pointsDomain[0];
+
                 // For full point distribution
                 double stepX = CanvasSize / (pointsCount - 1);
                 double stepY = (highY - lowY) / (pointsCount - 1);
@@ -87,6 +90,10 @@ namespace DSCore.CurveMapper
                     valuesX.Add(i * stepX);
                     valuesY.Add((lowY + i * stepY));
                 }
+            }
+            else
+            {
+                return GenerateFromDomain(pointsDomain, x => LineEquation(x));
             }
 
             return (valuesX, valuesY);
