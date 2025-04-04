@@ -1515,12 +1515,12 @@ namespace DynamoCoreWpfTests
             Assert.IsTrue(parentGroupVM.AnnotationModel.IsFrozen);
             Assert.IsTrue(nestedGroupVM.AnnotationModel.IsFrozen);
 
-            // Unfreeze only nested group - parent should remain frozen
+            // Unfreeze only nested group - parent should also become unfrozen
             nestedGroupVM.ToggleIsFrozenGroupCommand.Execute(null);
 
             Assert.AreEqual(2, parentGroupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
             Assert.AreEqual(0, nestedGroupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
-            Assert.IsTrue(parentGroupVM.AnnotationModel.IsFrozen);
+            Assert.IsTrue(!parentGroupVM.AnnotationModel.IsFrozen);
             Assert.IsTrue(!nestedGroupVM.AnnotationModel.IsFrozen);
 
             // Freeze nested group again
@@ -1608,7 +1608,7 @@ namespace DynamoCoreWpfTests
             nodeVM.IsFrozen = false;
 
             Assert.AreEqual(4, groupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
-            Assert.IsTrue(groupVM.AnnotationModel.IsFrozen);
+            Assert.IsTrue(!groupVM.AnnotationModel.IsFrozen);
         }
 
         [Test]
