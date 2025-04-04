@@ -155,7 +155,7 @@
             <summary>表示 CurveMapper 中的 Bezier 曲線。
             Bezier 曲線由四個控制點定義，可提供平滑內插。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.BezierCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.BezierCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>根據指定的參數和限制取得內插的 Y 值。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.ControlLine">
@@ -166,14 +166,17 @@
             <summary>表示 CurveMapper 中所有曲線類型的基準類別。
             提供產生和擷取曲線值的常用功能。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.CurveBase.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>由衍生類別實作以產生曲線值的抽象方法。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>擷取 X 值的常用方法。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>擷取 Y 值的常用方法。</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateFromDomain(System.Collections.Generic.List{System.Double},System.Func{System.Double,System.Double})">
+            <summary>Generates X and Y values by mapping domain inputs to canvas space and evaluating a curve function.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.GaussianCurve">
             <summary>表示 CurveMapper 中的高斯曲線。
@@ -182,7 +185,7 @@
         <member name="M:DSCore.CurveMapper.GaussianCurve.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
             <summary>指出節點目前是否正調整大小，以防止意外的控制點更新。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.GaussianCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.GaussianCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>傳回分佈在曲線上的 X 和 Y 值。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.LinearCurve">
@@ -195,42 +198,42 @@
         <member name="M:DSCore.CurveMapper.LinearCurve.SolveForXGivenY(System.Double)">
             <summary>計算最小和最大 Y 值的 X 值 (圖元區座標)</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.LinearCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.LinearCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>傳回分佈在曲線上的 X 和 Y 值。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.ParabolicCurve">
             <summary>表示 CurveMapper 中的拋物曲線。
             曲線會沿著根據兩個控制點的二次方程式。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.ParabolicCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.ParabolicCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>傳回分佈在曲線上的 X 和 Y 值。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.PerlinNoiseCurve">
             <summary>表示 CurveMapper 中的柏林噪波曲線。
             曲線會根據控制點和柏林噪波函數產生程序性的噪波。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.PerlinNoiseCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.PerlinNoiseCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>傳回分佈在曲線上的 X 和 Y 值。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.PowerCurve">
             <summary>表示 CurveMapper 中的冪函數曲線。
             曲線是由從一個控制點導出的一個冪方程式所定義。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.PowerCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.PowerCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>傳回分佈在曲線上的 X 和 Y 值。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.SineWave">
             <summary>表示 CurveMapper 中的正弦波曲線。
             正弦波由兩個控制點定義，並沿著一個三角函數。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.SineWave.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.SineWave.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>傳回分佈在曲線上的 X 和 Y 值。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.SquareRootCurve">
             <summary>表示 CurveMapper 中的平方根曲線。
             曲線會沿著一個平方根函數，並受兩個控制點的影響。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.SquareRootCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.SquareRootCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>傳回分佈在曲線上的 X 和 Y 值。</summary>
         </member>
         <member name="M:DSCore.Data.ParseJSON(System.String)">

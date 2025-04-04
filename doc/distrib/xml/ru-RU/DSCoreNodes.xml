@@ -155,7 +155,7 @@
             <summary>Кривая Безье в CurveMapper.
             Кривая Безье определяется четырьмя управляющими точками и обеспечивает плавную интерполяцию.</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.BezierCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.BezierCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Получение интерполированных значений Y на основе назначенных параметров и ограничений.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.ControlLine">
@@ -166,14 +166,17 @@
             <summary>Базовый класс для всех типов кривых в CurveMapper.
             Предоставляет общие функции создания и извлечения значений кривых.</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.CurveBase.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Абстрактный метод, который реализуется производными классами для генерации значений кривой.</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Стандартный метод получения значений X.</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Стандартный метод получения значений Y.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateFromDomain(System.Collections.Generic.List{System.Double},System.Func{System.Double,System.Double})">
+            <summary>Generates X and Y values by mapping domain inputs to canvas space and evaluating a curve function.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.GaussianCurve">
             <summary>Кривая Гаусса в CurveMapper.
@@ -182,7 +185,7 @@
         <member name="M:DSCore.CurveMapper.GaussianCurve.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
             <summary>Указание того, изменяется ли размер узла в данный момент, что позволяет избежать непреднамеренного обновления управляющих точек.</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.GaussianCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.GaussianCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Возврат значений X и Y, распределенных по кривой.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.LinearCurve">
@@ -195,42 +198,42 @@
         <member name="M:DSCore.CurveMapper.LinearCurve.SolveForXGivenY(System.Double)">
             <summary>Вычисление значений X (координат активного окна) для минимального и максимального значений Y</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.LinearCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.LinearCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Возврат значений X и Y, распределенных по кривой.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.ParabolicCurve">
             <summary>Параболическая кривая в CurveMapper.
             Кривая определяется квадратным уравнением на основе двух управляющих точек.</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.ParabolicCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.ParabolicCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Возврат значений X и Y, распределенных по кривой.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.PerlinNoiseCurve">
             <summary>Кривая шума Перлина в CurveMapper.
             Кривая создает процедурный шум на основе управляющих точек и функций шума Перлина.</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.PerlinNoiseCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.PerlinNoiseCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Возврат значений X и Y, распределенных по кривой.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.PowerCurve">
             <summary>Кривая степенной функции в CurveMapper.
             Кривая определяется степенным уравнением, полученным на основе управляющей точки.</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.PowerCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.PowerCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Возврат значений X и Y, распределенных по кривой.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.SineWave">
             <summary>Синусоидальная кривая в CurveMapper.
             Синусоида определяется двумя управляющими точками и управляется тригонометрической функцией.</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.SineWave.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.SineWave.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Возврат значений X и Y, распределенных по кривой.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.SquareRootCurve">
             <summary>Кривая квадратного корня в CurveMapper.
             Кривая управляется функцией квадратного корня и зависит от двух управляющих точек.</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.SquareRootCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.SquareRootCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Возврат значений X и Y, распределенных по кривой.</summary>
         </member>
         <member name="M:DSCore.Data.ParseJSON(System.String)">

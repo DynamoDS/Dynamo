@@ -155,7 +155,7 @@
             <summary>表示“曲线映射器”中的贝塞尔曲线。
             贝塞尔曲线由四个控制点定义，并提供平滑插值。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.BezierCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.BezierCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>获取基于指定参数和限制的插值 Y 值。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.ControlLine">
@@ -166,14 +166,17 @@
             <summary>表示“曲线映射器”中所有曲线类型的基类。
             提供用于生成和检索曲线值的常用功能。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.CurveBase.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>要由派生类实现的用于生成曲线值的抽象方法。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>检索 X 值的常用方法。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>检索 Y 值的常用方法。</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateFromDomain(System.Collections.Generic.List{System.Double},System.Func{System.Double,System.Double})">
+            <summary>Generates X and Y values by mapping domain inputs to canvas space and evaluating a curve function.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.GaussianCurve">
             <summary>表示“曲线映射器”中的高斯曲线。
@@ -182,7 +185,7 @@
         <member name="M:DSCore.CurveMapper.GaussianCurve.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
             <summary>指示当前是否正在调整节点大小，以防止意外的控制点更新。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.GaussianCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.GaussianCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>返回分布在曲线中的 X 和 Y 值。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.LinearCurve">
@@ -195,42 +198,42 @@
         <member name="M:DSCore.CurveMapper.LinearCurve.SolveForXGivenY(System.Double)">
             <summary>计算最小和最大 Y 值的 X 值(画布坐标)</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.LinearCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.LinearCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>返回分布在曲线中的 X 和 Y 值。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.ParabolicCurve">
             <summary>表示“曲线映射器”中的抛物线。
             曲线遵循基于两个控制点的二次方程。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.ParabolicCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.ParabolicCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>返回分布在曲线中的 X 和 Y 值。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.PerlinNoiseCurve">
             <summary>表示“曲线映射器”中的 Perlin 噪波曲线。
             曲线基于控制点和 Perlin 噪波函数生成程序噪波。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.PerlinNoiseCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.PerlinNoiseCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>返回分布在曲线中的 X 和 Y 值。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.PowerCurve">
             <summary>表示“曲线映射器”中的幂函数曲线。
             曲线由从控制点得出的幂方程定义。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.PowerCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.PowerCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>返回分布在曲线中的 X 和 Y 值。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.SineWave">
             <summary>表示“曲线映射器”中的正弦波曲线。
             正弦波由两个控制点定义，并遵循三角函数。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.SineWave.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.SineWave.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>返回分布在曲线中的 X 和 Y 值。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.SquareRootCurve">
             <summary>在“曲线映射器”中表示平方根曲线。
             曲线遵循平方根函数，并受两个控制点的影响。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.SquareRootCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.SquareRootCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>返回分布在曲线中的 X 和 Y 值。</summary>
         </member>
         <member name="M:DSCore.Data.ParseJSON(System.String)">

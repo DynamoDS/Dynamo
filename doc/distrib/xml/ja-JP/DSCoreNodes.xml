@@ -155,7 +155,7 @@
             <summary>CurveMapper のベジェ曲線を表します。
             ベジェ曲線は 4 つの制御点で定義され、スムーズな補間を実現します。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.BezierCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.BezierCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>割り当てられたパラメータと範囲に基づいて、補間された Y 値を取得します。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.ControlLine">
@@ -166,14 +166,17 @@
             <summary>CurveMapper のすべての曲線タイプのベース クラスを表します。
             曲線の値の生成と取得に関する一般的な機能を提供します。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.CurveBase.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>曲線の値を生成するための派生クラスによって実装される抽象メソッドです。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>X 値を取得するための一般的な方法です。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Y 値を取得するための一般的な方法です。</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateFromDomain(System.Collections.Generic.List{System.Double},System.Func{System.Double,System.Double})">
+            <summary>Generates X and Y values by mapping domain inputs to canvas space and evaluating a curve function.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.GaussianCurve">
             <summary>CurveMapper のガウス曲線を表します。
@@ -182,7 +185,7 @@
         <member name="M:DSCore.CurveMapper.GaussianCurve.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
             <summary>ノードが現在サイズ変更中であり、意図しない制御点の更新を防止しているかどうかを示します。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.GaussianCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.GaussianCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>曲線に分布する X 値と Y 値を返します。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.LinearCurve">
@@ -195,42 +198,42 @@
         <member name="M:DSCore.CurveMapper.LinearCurve.SolveForXGivenY(System.Double)">
             <summary>Y の最小値および最大値の X 値(キャンバス座標)を計算します</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.LinearCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.LinearCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>曲線に分布する X 値と Y 値を返します。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.ParabolicCurve">
             <summary>CurveMapper の放物曲線を表します。
             この曲線は、2 つの制御点に基づく二次方程式に従います。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.ParabolicCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.ParabolicCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>曲線に分布する X 値と Y 値を返します。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.PerlinNoiseCurve">
             <summary>CurveMapper のパーリン ノイズ曲線を表します。
             この曲線は、制御点とパーリン ノイズ関数に基づいてプロシージャ ノイズを生成します。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.PerlinNoiseCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.PerlinNoiseCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>曲線に分布する X 値と Y 値を返します。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.PowerCurve">
             <summary>CurveMapper の指数関数曲線を表します。
             この曲線は、制御点から導出された指数方程式によって定義されます。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.PowerCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.PowerCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>曲線に分布する X 値と Y 値を返します。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.SineWave">
             <summary>CurveMapper の正弦波曲線を表します。
             正弦波は 2 つの制御点によって定義され、三角関数に従います。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.SineWave.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.SineWave.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>曲線に分布する X 値と Y 値を返します。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.SquareRootCurve">
             <summary>CurveMapper の平方根曲線を表します。
             この曲線は平方根関数に従い、2 つの制御点の影響を受けます。</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.SquareRootCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.SquareRootCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>曲線に分布する X 値と Y 値を返します。</summary>
         </member>
         <member name="M:DSCore.Data.ParseJSON(System.String)">

@@ -155,7 +155,7 @@
             <summary>Représente une courbe de Bézier dans le CurveMapper.
             Une courbe de Bézier est définie par quatre points de contrôle et permet une interpolation fluide.</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.BezierCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.BezierCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Obtient des valeurs Y interpolées en fonction des paramètres et des limites attribués.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.ControlLine">
@@ -166,14 +166,17 @@
             <summary>Représente une classe de base pour tous les types de courbes dans le CurveMapper.
             Fournit des fonctionnalités communes pour la génération et la récupération des valeurs de courbe.</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.CurveBase.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Méthode abstraite à implémenter par les classes dérivées pour la génération des valeurs de courbe.</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Méthode courante pour la récupération des valeurs X.</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Méthode courante pour la récupération des valeurs Y.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateFromDomain(System.Collections.Generic.List{System.Double},System.Func{System.Double,System.Double})">
+            <summary>Generates X and Y values by mapping domain inputs to canvas space and evaluating a curve function.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.GaussianCurve">
             <summary>Représente une courbe gaussienne dans le CurveMapper.
@@ -182,7 +185,7 @@
         <member name="M:DSCore.CurveMapper.GaussianCurve.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
             <summary>Indique si le noeud est en cours de redimensionnement, empêchant ainsi les mises à jour involontaires des points de contrôle.</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.GaussianCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.GaussianCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Renvoie les valeurs X et Y réparties sur toute la courbe.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.LinearCurve">
@@ -195,42 +198,42 @@
         <member name="M:DSCore.CurveMapper.LinearCurve.SolveForXGivenY(System.Double)">
             <summary>Calcule les valeurs X (coordonnées de la zone de dessin) pour les valeurs Y minimales et maximales</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.LinearCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.LinearCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Renvoie les valeurs X et Y réparties sur toute la courbe.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.ParabolicCurve">
             <summary>Représente une courbe parabolique dans le CurveMapper.
             La courbe suit une équation quadratique basée sur deux points de contrôle.</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.ParabolicCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.ParabolicCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Renvoie les valeurs X et Y réparties sur toute la courbe.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.PerlinNoiseCurve">
             <summary>Représente une courbe de bruit Perlin dans le CurveMapper.
             La courbe génère un bruit procédural basé sur des points de contrôle et des fonctions de bruit de Perlin.</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.PerlinNoiseCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.PerlinNoiseCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Renvoie les valeurs X et Y réparties sur toute la courbe.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.PowerCurve">
             <summary>Représente une courbe de fonction de puissance dans le CurveMapper.
             La courbe est définie par une équation de puissance dérivée d'un point de contrôle.</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.PowerCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.PowerCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Renvoie les valeurs X et Y réparties sur toute la courbe.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.SineWave">
             <summary>Représente une courbe d'onde sinusoïdale dans le CurveMapper.
             L'onde sinusoïdale est définie par deux points de contrôle et suit une fonction trigonométrique.</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.SineWave.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.SineWave.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Renvoie les valeurs X et Y réparties sur toute la courbe.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.SquareRootCurve">
             <summary>Représente une courbe de racine carrée dans le CurveMapper.
             La courbe suit une fonction de racine carrée et est influencée par deux points de contrôle.</summary>
         </member>
-        <member name="M:DSCore.CurveMapper.SquareRootCurve.GenerateCurve(System.Int32,System.Boolean)">
+        <member name="M:DSCore.CurveMapper.SquareRootCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Renvoie les valeurs X et Y réparties sur toute la courbe.</summary>
         </member>
         <member name="M:DSCore.Data.ParseJSON(System.String)">
