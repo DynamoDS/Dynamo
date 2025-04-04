@@ -1102,6 +1102,7 @@ Dynamo.PackageManager.PublishPackageViewModel.SiteUrl.get -> string
 Dynamo.PackageManager.PublishPackageViewModel.SiteUrl.set -> void
 Dynamo.PackageManager.PublishPackageViewModel.SubmitCommand.get -> Prism.Commands.DelegateCommand
 Dynamo.PackageManager.PublishPackageViewModel.ToggleMoreCommand.get -> Prism.Commands.DelegateCommand
+Dynamo.PackageManager.PublishPackageViewModel.UploadCancelled -> System.Action
 Dynamo.PackageManager.PublishPackageViewModel.UploadHandle.get -> Dynamo.PackageManager.PackageUploadHandle
 Dynamo.PackageManager.PublishPackageViewModel.UploadHandle.set -> void
 Dynamo.PackageManager.PublishPackageViewModel.Uploading.get -> bool

@@ -986,6 +986,11 @@ namespace Dynamo.PackageManager
         /// </summary>
         private bool IsPublishFromLocalPackage = false;
 
+        /// <summary>
+        /// Notifies the view model that the user has cancelled the upload
+        /// </summary>
+        public event Action UploadCancelled;
+
         #endregion
 
         internal PublishPackageViewModel()
@@ -2348,6 +2353,8 @@ namespace Dynamo.PackageManager
             MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK : MessageBoxService.Show(Owner, Resources.PrePackagePublishMessage, Resources.PrePackagePublishTitle, MessageBoxButton.OKCancel, MessageBoxImage.Information);
             if (response == MessageBoxResult.Cancel)
             {
+                // Notify the front-end that the user has cancelled the upload
+                UploadCancelled?.Invoke();
                 return;
             }
 
