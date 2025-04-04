@@ -288,7 +288,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Redistributes x-coordinates along y-coordinates based on a selected mathematical curve, providing precise control over point distribution..
+        ///   Looks up a localized string similar to Redistributes a series of input values within the given range and maps them along a specified curve. If a single count is provided, it generates a series of values distributed along the x direction within the given range and then maps these values to the curve..
         /// </summary>
         public static string CurveMapperDescription {
             get {
@@ -1582,7 +1582,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Convert an array to a string representation..
+        ///   Looks up a localized string similar to Converts an array to a string representation.
         /// </summary>
         public static string StringfromArrayDescription {
             get {
@@ -1591,7 +1591,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Convert an object to a string representation..
+        ///   Looks up a localized string similar to Converts an object to a string representation.
         /// </summary>
         public static string StringfromObjectDescription {
             get {
@@ -1654,7 +1654,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Visualize the output of node..
+        ///   Looks up a localized string similar to Visualizes a node&apos;s output.
         /// </summary>
         public static string WatchDescription {
             get {
@@ -1681,7 +1681,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Visualize the node&apos;s output.
+        ///   Looks up a localized string similar to Visualizes a node&apos;s output.
         /// </summary>
         public static string WatchNodeDescription {
             get {
@@ -1726,7 +1726,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Make a web request given a url..
+        ///   Looks up a localized string similar to Returns the contents of a webpage from the given URL as a string.
         /// </summary>
         public static string WebRequestDescription {
             get {
