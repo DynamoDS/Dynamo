@@ -155,6 +155,7 @@ namespace Dynamo.UI.Views
             {
                 previousViewModel.PropertyChanged -= PublishPackageViewModel_PropertyChanged;
                 previousViewModel.PublishSuccess -= PublishPackageViewModel_PublishSuccess;
+                previousViewModel.UploadCancelled -= OnUploadCancelled;
             }
 
             // Cast and assign the new DataContext
@@ -170,9 +171,10 @@ namespace Dynamo.UI.Views
             {
                 publishPackageViewModel.PropertyChanged += PublishPackageViewModel_PropertyChanged;
                 publishPackageViewModel.PublishSuccess += PublishPackageViewModel_PublishSuccess;
+                previousViewModel.UploadCancelled += OnUploadCancelled;
 
                 // Only send updates if the application has been loaded
-                if(_applicationLoaded) UpdateFromBackEnd();
+                if (_applicationLoaded) UpdateFromBackEnd();
             }
         }
 
@@ -558,6 +560,14 @@ namespace Dynamo.UI.Views
             }
         }
 
+        private async void SendUploadCancel()
+        {
+            if (dynWebView?.CoreWebView2 != null)
+            {
+                await dynWebView.CoreWebView2.ExecuteScriptAsync($"window.receiveUploadCancel();");
+            }
+        }
+
         private async void SendDialogResult(string msg)
         {
             var payload = new { result = msg };
@@ -729,6 +739,15 @@ namespace Dynamo.UI.Views
                 );
                 if (compatibilityMatrix == null) return;
 
+                // Replace any 'x' in the max field with '*'
+                foreach (var item in compatibilityMatrix)
+                {
+                    if (!string.IsNullOrWhiteSpace(item.max))
+                    {
+                        item.max = item.max.Replace("x", "*");
+                    }
+                }
+
                 publishPackageViewModel.CompatibilityMatrix = compatibilityMatrix;
 
                 LogMessage("Compatibility matrix updated successfully.");
@@ -834,6 +853,15 @@ namespace Dynamo.UI.Views
             {
                 SendDialogResult("Cancel");
             }
+        }
+
+        /// <summary>
+        ///  Notify the front-end that the upload was cancelled
+        /// </summary>
+        /// <exception cref="NotImplementedException"></exception>
+        private void OnUploadCancelled()
+        {
+           SendUploadCancel();
         }
 
         #endregion
@@ -1041,6 +1069,7 @@ namespace Dynamo.UI.Views
                     {
                         this.publishPackageViewModel.PropertyChanged -= PublishPackageViewModel_PropertyChanged;
                         this.publishPackageViewModel.PublishSuccess -= PublishPackageViewModel_PublishSuccess;
+                        this.previousViewModel.UploadCancelled -= OnUploadCancelled;
                     }
 
                     if (this.dynWebView != null && this.dynWebView.CoreWebView2 != null)
@@ -1052,6 +1081,7 @@ namespace Dynamo.UI.Views
                 _disposed = true;
             }
         }
+
         #endregion
     }
 
