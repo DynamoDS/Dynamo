@@ -1,13 +1,15 @@
 ## 詳細
-`Curve Mapper` ノードは、数学的曲線を活用して、定義された範囲内で点を再分布します。ここでの再分布とは、X 座標を、その Y 座標に基づいて、指定した曲線に沿った新しい位置に再割り当てすることを意味します。この手法は、ファサード設計、パラメトリック屋根構造、および特定のパターンや分布が必要となるその他の設計計算などのアプリケーションで特に役立ちます。
+`Curve Mapper` node redistributes a series of input values within a defined range and leverages mathematical curves to map them along a specified curve. Mapping, in this context, means the values are redistributed in a way that their x-coordinates follow the shape of the curve along the y-axis.  This technique is particularly valuable for applications such as façade design, parametric roof structures, and other design calculations where specific patterns or distributions are required.
 
-最小値と最大値を設定して、X 座標と Y 座標の両方の範囲を定義します。これらの制限は、点が再分布される境界を設定します。次に、表示されたオプションから、線形曲線、正弦曲線、余弦曲線、パーリン ノイズ曲線、ベジェ曲線、ガウス曲線、放物曲線、平方根曲線、指数曲線などの数学的曲線を選択します。インタラクティブな制御点を使用して、選択した曲線の形状を特定のニーズに合わせて調整します。
+Define the limits for the x-coordinates by setting the minimum and maximum values. These limits set the boundaries within which the points will be redistributed. You can provide either a single count to generate a series of evenly distributed values or an existing series of values, which will be distributed along the x direction within the specified range and then mapped to the curve.
 
-ロック ボタンを使用して曲線の形状をロックし、曲線をこれ以上変更しないようにすることができます。また、ノード内のリセット ボタンを使用して形状を既定の状態にリセットすることもできます。
+Select a mathematical curve from the provided options, which includes Linear, Sine, Cosine, Perlin Noise, Bezier, Gaussian, Parabolic, Square Root, and Power curves. Use interactive control points to adjust the shape of the selected curve, tailoring it to your specific needs.
 
-Count 入力を設定して、再分布する点の数を指定します。このノードは、選択した曲線と定義した範囲に基づいて、指定した数の点に対して新しい X 座標を計算します。点は、その x 座標が y 軸に沿った曲線の形状に従うように再分布されます。
+You can lock the curve shape using the lock button, preventing further modifications to the curve. Additionally, you can reset the shape to its default state by using the reset button inside the node.
 
-たとえば、正弦曲線に沿って 80 個の点を再分布するには、最小 X を 0、最大 X を 20、最小 Y を 0、最大 Y を 10 に設定します。正弦曲線を選択し、必要に応じてその形状を調整すると、`Curve Mapper` ノードは、0 から 10 の Y 軸に沿った正弦曲線パターンに従う X 座標を持つ 80 個の点を出力します。
+For example, to redistribute 80 points along a sine curve within the range of 0 to 20, set Min to 0, Max to 20, and Values to 80. After selecting the sine curve and adjusting its shape as needed, the `Curve Mapper` node outputs 80 points with x-coordinates that follow the sine curve pattern along the y-axis.
+
+To map unevenly distributed values along a Gaussian curve, set the minimum and maximum range and provide the series of values. After selecting the Gaussian curve and adjusting its shape as needed, the `Curve Mapper` node redistributes the series of values along x-coordinates using the specified range and maps the values along the curve pattern.
 
 
 
@@ -15,4 +17,4 @@ Count 入力を設定して、再分布する点の数を指定します。こ�
 ___
 ## サンプル ファイル
 
-![Example](./GV5KUSHDGL7YVBZAR4HEGY5NIXFIG3XTV6ZQPHC5MWWGEVOSRJ4Q_img.jpg)
+![Example](./GV5KUSHDGL7YVBZAR4HEGY5NIXFIG3XTV6ZQPHC5MWWGEVOSRJ4Q_img.png)

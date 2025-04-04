@@ -1,13 +1,15 @@
 ## Em profundidade
-O nó `Curve Mapper` aproveita as curvas matemáticas para redistribuir os pontos dentro de um intervalo definido. A redistribuição neste contexto significa reatribuir as coordenadas x para novas posições ao longo de uma curva especificada com base em suas coordenadas y. Essa técnica é particularmente valiosa para aplicações como projeto de fachada, estruturas de telhado paramétricas e outros cálculos de projeto em que padrões ou distribuições específicos são necessários.
+`Curve Mapper` node redistributes a series of input values within a defined range and leverages mathematical curves to map them along a specified curve. Mapping, in this context, means the values are redistributed in a way that their x-coordinates follow the shape of the curve along the y-axis.  This technique is particularly valuable for applications such as façade design, parametric roof structures, and other design calculations where specific patterns or distributions are required.
 
-Defina os limites para as coordenadas x e y especificando os valores mínimo e máximo. Esses limites definem os limites dentro dos quais os pontos serão redistribuídos. Em seguida, selecione uma curva matemática entre as opções fornecidas, que inclui as curvas linear, senoidal, de cosseno, de ruído de Perlin, de Bézier, gaussiana, parabólica, de raiz quadrada e de potência. Use os pontos de controle interativos para ajustar a forma da curva selecionada, adaptando-a às suas necessidades específicas.
+Define the limits for the x-coordinates by setting the minimum and maximum values. These limits set the boundaries within which the points will be redistributed. You can provide either a single count to generate a series of evenly distributed values or an existing series of values, which will be distributed along the x direction within the specified range and then mapped to the curve.
 
-É possível bloquear a forma da curva usando o botão de bloqueio, o que impede modificações adicionais na curva. Além disso, é possível redefinir a forma para seu estado padrão usando o botão Redefinir dentro do nó.
+Select a mathematical curve from the provided options, which includes Linear, Sine, Cosine, Perlin Noise, Bezier, Gaussian, Parabolic, Square Root, and Power curves. Use interactive control points to adjust the shape of the selected curve, tailoring it to your specific needs.
 
-Especifique o número de pontos a serem redistribuídos definindo a entrada Count. O nó calcula novas coordenadas x para o número especificado de pontos com base na curva selecionada e nos limites definidos. Os pontos são redistribuídos de forma que suas coordenadas x sigam a forma da curva ao longo do eixo y.
+You can lock the curve shape using the lock button, preventing further modifications to the curve. Additionally, you can reset the shape to its default state by using the reset button inside the node.
 
-Por exemplo, para redistribuir 80 pontos ao longo de uma curva senoidal, defina X mín. como 0, X máx. como 20, Y mín. como 0 e Y máx. como 10. Após selecionar a curva senoidal e ajustar sua forma conforme necessário, o nó `Curve Mapper` gera 80 pontos com coordenadas x que seguem o padrão da curva senoidal ao longo do eixo y de 0 a 10.
+For example, to redistribute 80 points along a sine curve within the range of 0 to 20, set Min to 0, Max to 20, and Values to 80. After selecting the sine curve and adjusting its shape as needed, the `Curve Mapper` node outputs 80 points with x-coordinates that follow the sine curve pattern along the y-axis.
+
+To map unevenly distributed values along a Gaussian curve, set the minimum and maximum range and provide the series of values. After selecting the Gaussian curve and adjusting its shape as needed, the `Curve Mapper` node redistributes the series of values along x-coordinates using the specified range and maps the values along the curve pattern.
 
 
 
@@ -15,4 +17,4 @@ Por exemplo, para redistribuir 80 pontos ao longo de uma curva senoidal, defina 
 ___
 ## Arquivo de exemplo
 
-![Example](./GV5KUSHDGL7YVBZAR4HEGY5NIXFIG3XTV6ZQPHC5MWWGEVOSRJ4Q_img.jpg)
+![Example](./GV5KUSHDGL7YVBZAR4HEGY5NIXFIG3XTV6ZQPHC5MWWGEVOSRJ4Q_img.png)
