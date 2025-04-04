@@ -268,7 +268,7 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to values.
+        ///   Looks up a localized string similar to count.
         /// </summary>
         public static string CurveMapperCountInputPortName {
             get {
@@ -277,9 +277,9 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number of values to map or List of values to map.
+        ///   Looks up a localized string similar to Number of values to generate.
         ///
-        ///Default value (int): {10}.
+        ///Default value (int): {0}.
         /// </summary>
         public static string CurveMapperCountInputPortToolTip {
             get {
