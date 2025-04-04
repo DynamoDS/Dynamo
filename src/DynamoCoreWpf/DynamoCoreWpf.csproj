@@ -129,7 +129,6 @@
 
     <ItemGroup>
     <None Remove="Packages\PackageManagerWizard\dist\index.html" />
-    <None Remove="Controls\DNAAutocompleteBar.xaml" />
     <None Remove="Controls\Docs\cs-CZ\FileTrustWarningDocumentation.html" />
     <None Remove="Controls\Docs\cs-CZ\NodeAutocompleteDocumentation.html" />
     <None Remove="Controls\Docs\de-DE\FileTrustWarningDocumentation.html" />
@@ -490,7 +489,6 @@
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Controls\DNAAutocompleteBar.xaml.cs" />
     <Compile Include="Controls\InstalledPackagesControl.xaml.cs">
       <DependentUpon>InstalledPackagesControl.xaml</DependentUpon>
     </Compile>
@@ -898,9 +896,6 @@
     <Compile Include="Windows\ModelessChildWindow.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="Controls\DNAAutocompleteBar.xaml">
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="Controls\InstalledPackagesControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

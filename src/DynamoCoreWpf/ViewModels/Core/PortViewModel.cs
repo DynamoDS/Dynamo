@@ -331,7 +331,7 @@ namespace Dynamo.ViewModels
         /// Sets up the node autocomplete window to be placed relative to the node.
         /// </summary>
         /// <param name="popup">Node autocomplete popup.</param>
-        internal void SetupNodeAutocompleteWindowPlacement(Popup popup)
+        internal void SetupNodeAutoCompleteWindowPlacement(Popup popup)
         {
             node.OnRequestAutoCompletePopupPlacementTarget(popup);
             popup.CustomPopupPlacementCallback = PlaceAutocompletePopup;
@@ -341,7 +341,7 @@ namespace Dynamo.ViewModels
         /// Sets up the node cluster autocomplete flyout window to be placed relative to the node.
         /// </summary>
         /// <param name="window">Node cluster autocomplete window.</param>
-        internal void SetupPlaceDNAAutocompletePlacement(Window window)
+        internal void SetupNodeAutoCompleteClusterWindowPlacement(Window window)
         {
             node.OnClusterRequestAutoCompletePopupPlacementTarget(window, autocompletePopupSpacing);
         }
@@ -582,28 +582,7 @@ namespace Dynamo.ViewModels
             }
 
             var wsViewModel = node.WorkspaceViewModel;
-
-            var existingPort = wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel;
-            if (existingPort != null)
-            {
-                existingPort.Highlight = Visibility.Collapsed;
-            }
-
-            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
-
-            // CreateMockCluster();
-
-            try
-            {
-                // Display the cluster info in the right side panel
-                // wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
-
-                wsViewModel.OnRequestDNAAutocompleteBar();
-            }
-            catch (Exception)
-            {
-                // Log the exception and show a notification to the user
-            }
+            wsViewModel?.OnRequestNodeAutocompleteBar(this);
         }
 
         private void NodePortContextMenu(object obj)
