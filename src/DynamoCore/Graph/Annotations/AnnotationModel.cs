@@ -526,6 +526,9 @@ namespace Dynamo.Graph.Annotations
                 case nameof(NodeModel.State):
                     UpdateErrorAndWarningIconVisibility();
                     break;
+                case nameof(NodeModel.IsFrozen):
+                    UpdateGroupFrozenStatus();
+                    break;
             }
         }
 
@@ -544,7 +547,32 @@ namespace Dynamo.Graph.Annotations
                 UpdateBoundaryFromSelection();
             }
         }
-      
+
+        /// <summary>
+        /// The method updates the group frozen status. If all nodes and nested groups are frozen, it sets to true, else false.
+        /// </summary>
+        /// <returns>Frozen state of a group</returns>
+        internal void UpdateGroupFrozenStatus()
+        {
+            // Check for any non-frozen node in the group
+            var nonFrozenNodeInGroup = this.Nodes.OfType<NodeModel>().Any(x => !x.IsFrozen);
+            if (nonFrozenNodeInGroup)
+            {
+                this.IsFrozen = false;
+                return;
+            }
+
+            // Check for any non-frozen nested group in the group
+            var nonFrozenGroupInGroup = this.Nodes.OfType<AnnotationModel>().Any(x => !x.IsFrozen);
+            if (nonFrozenGroupInGroup)
+            {
+                this.IsFrozen = false;
+                return;
+            }
+
+            this.IsFrozen = true;
+        }
+
         /// <summary>
         /// Updates the group boundary based on the nodes / notes selection.
         /// </summary>      

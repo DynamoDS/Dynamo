@@ -1307,6 +1307,7 @@ namespace Dynamo.ViewModels
             }
 
             WorkspaceViewModel.HasUnsavedChanges = true;
+            this.AnnotationModel.UpdateGroupFrozenStatus();
         }
 
         private void RemoveKeyFromCutGeometryDictionary(Guid groupGuid)
