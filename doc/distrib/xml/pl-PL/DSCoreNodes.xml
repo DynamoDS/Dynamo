@@ -151,6 +151,91 @@
             <returns name="bool">Wynik operacji logicznych.</returns>
             <search>smaller,equal</search>
         </member>
+        <member name="T:DSCore.CurveMapper.BezierCurve">
+            <summary>Reprezentuje krzywą Beziera w węźle CurveMapper.
+            Krzywa Beziera jest definiowana przez cztery punkty sterujące i zapewnia gładką interpolację.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.BezierCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Pobiera interpolowane wartości Y na podstawie przypisanych parametrów i ograniczeń.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.ControlLine">
+            <summary>Reprezentuje linię sterującą w węźle CurveMapper.
+            Służy to do pomocniczego sterowania innymi krzywymi, w szczególności krzywymi Beziera.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.CurveBase">
+            <summary>Reprezentuje klasę bazową dla wszystkich typów krzywych w węźle CurveMapper.
+            Zapewnia wspólną funkcjonalność generowania i pobierania wartości krzywych.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Abstrakcyjna metoda do zaimplementowania w klasach pochodnych na potrzeby generowania wartości krzywych.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Typowa metoda pobierania wartości X.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Typowa metoda pobierania wartości Y.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateFromDomain(System.Collections.Generic.List{System.Double},System.Func{System.Double,System.Double})">
+            <summary>Generates X and Y values by mapping domain inputs to canvas space and evaluating a curve function.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.GaussianCurve">
+            <summary>Reprezentuje krzywą Gaussa w węźle CurveMapper.
+            Krzywa Gaussa ma rozkład w kształcie dzwonu zdefiniowany przez cztery punkty sterujące.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.GaussianCurve.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>Wskazuje, czy rozmiar węzła jest obecnie zmieniany, zapobiegając niezamierzonym aktualizacjom punktów sterujących.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.GaussianCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Zwraca wartości X i Y rozłożone na krzywej.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.LinearCurve">
+            <summary>Reprezentuje krzywą liniową w węźle CurveMapper.
+            Krzywa liniowa jest linią prostą między dwoma punktami sterującymi.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.LinearCurve.LineEquation(System.Double)">
+            <summary>Oblicza wartości Y (współrzędne obszaru rysunku) dla minimalnej i maksymalnej wartości X</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.LinearCurve.SolveForXGivenY(System.Double)">
+            <summary>Oblicza wartości X (współrzędne obszaru rysunku) dla minimalnej i maksymalnej wartości Y</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.LinearCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Zwraca wartości X i Y rozłożone na krzywej.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.ParabolicCurve">
+            <summary>Reprezentuje krzywą paraboliczną w węźle CurveMapper.
+            Krzywa podąża za równaniem kwadratowym opartym na dwóch punktach sterujących.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.ParabolicCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Zwraca wartości X i Y rozłożone na krzywej.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.PerlinNoiseCurve">
+            <summary>Reprezentuje krzywą szumu Perlina w węźle CurveMapper.
+            Krzywa generuje szum proceduralny na podstawie punktów sterujących i funkcji szumu Perlina.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.PerlinNoiseCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Zwraca wartości X i Y rozłożone na krzywej.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.PowerCurve">
+            <summary>Reprezentuje krzywą funkcji potęgowej w węźle CurveMapper.
+            Krzywa jest definiowana przez równanie potęgi wyprowadzone z punktu sterującego.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.PowerCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Zwraca wartości X i Y rozłożone na krzywej.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.SineWave">
+            <summary>Reprezentuje krzywą fali sinusoidalnej w węźle CurveMapper.
+            Fala sinusoidalna jest definiowana przez dwa punkty sterujące i zgodna z funkcją trygonometryczną.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.SineWave.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Zwraca wartości X i Y rozłożone na krzywej.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.SquareRootCurve">
+            <summary>Reprezentuje krzywą pierwiastka kwadratowego w węźle CurveMapper.
+            Krzywa podąża za funkcją pierwiastka kwadratowego i zależy od dwóch punktów sterujących.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.SquareRootCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Zwraca wartości X i Y rozłożone na krzywej.</summary>
+        </member>
         <member name="M:DSCore.Data.ParseJSON(System.String)">
             <summary>Parse przekształca dowolny ciąg JSON w wartość. Odwrotność JSON.Stringify.</summary>
             <param name="json">Ciąg JSON</param>
@@ -844,6 +929,19 @@ Obszerna lista opcji dostosowania formatu jest dostępna po wyszukaniu ciągu "N
             <returns name="uniqueKeys">wartość kluczowa odpowiadająca każdej grupie</returns>
             <search>list;group;groupbykey;</search>
         </member>
+        <member name="M:DSCore.List.GroupBySimilarity(System.Collections.IList,System.Double,System.Boolean)">
+            <summary>Grupy reprezentują listy elementów zestawione na podstawie sąsiadowania ich indeksów i podobieństwa ich wartości</summary>
+            <param name="list">Lista elementów do zgrupowania w postaci list podrzędnych na podstawie sąsiadowania i podobieństwa</param>
+            <param name="tolerance">Wartość progowa do grupowania podobnych elementów</param>
+            <param name="considerAdjacency">Wartość logiczna sterująca tym, czy węzeł powinien uwzględniać sąsiadowanie, czy nie.</param>
+            <returns name="groupedValues">Lista list podrzędnych z elementami zgrupowanymi według podobnych wartości</returns>
+            <returns name="groupedIndices">lista list podrzędnych z oryginalnymi indeksami zgrupowanych wartości</returns>
+            <search>list;group;similar;adjacent;adjacency;groupbyadjacency;groupadjacentitems;groupsimilaritems;cluster;tolerance</search>
+        </member>
+        <member name="M:DSCore.List.LevenshteinDistance(System.String,System.String)">
+            <summary>Odległość Levenshteina jest algorytmem używanym do określania odległości między 2 ciągami
+            | <see href="https://gist.github.com/Davidblkx/e12ab0bb2aff7fd8072632b396538560">Źródło</see></summary>
+        </member>
         <member name="M:DSCore.List.AddItemToFront(System.Object,System.Collections.IList)">
             <summary>Dodaje element do początku listy.</summary>
             <param name="item">Element do dodania. Element może być obiektem lub listą.</param>
@@ -892,6 +990,14 @@ Obszerna lista opcji dostosowania formatu jest dostępna po wyszukaniu ciągu "N
             <param name="index">Indeks elementu, który ma zostać zastąpiony.</param>
             <param name="item">Element do wstawienia.</param>
             <returns name="list">Nowa lista z zastąpionym elementem.</returns>
+            <search>replace,switch</search>
+        </member>
+        <member name="M:DSCore.List.ReplaceItemAtIndices(System.Collections.IList,System.Collections.Generic.IList{System.Int32},System.Object)">
+            <summary>Zastępuje elementy z danej listy, które znajdują się w określonych indeksach.</summary>
+            <param name="list">Lista, na której zostanie zastąpiony element.</param>
+            <param name="indices">Indeksy elementów do zastąpienia.</param>
+            <param name="item">Element do wstawienia.</param>
+            <returns name="list">Nowa lista z zastąpionymi elementami.</returns>
             <search>replace,switch</search>
         </member>
         <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">

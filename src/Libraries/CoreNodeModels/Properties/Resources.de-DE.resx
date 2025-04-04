@@ -626,10 +626,10 @@ In Arbeitsabläufen mit generativem Design sollte dieser Block verwendet werden,
 Vorgabewert: G</value>
   </data>
   <data name="CurveMapperCountInputPortName" xml:space="preserve">
-    <value>Anzahl</value>
+    <value>Werte</value>
   </data>
   <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
-    <value>Number of values to generate.
+    <value>Number of values to map or List of values to map.
 
 Default value (int): {0}</value>
   </data>
