@@ -151,6 +151,91 @@
             <returns name="bool">Логический результат.</returns>
             <search>smaller,equal</search>
         </member>
+        <member name="T:DSCore.CurveMapper.BezierCurve">
+            <summary>Кривая Безье в CurveMapper.
+            Кривая Безье определяется четырьмя управляющими точками и обеспечивает плавную интерполяцию.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.BezierCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Получение интерполированных значений Y на основе назначенных параметров и ограничений.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.ControlLine">
+            <summary>Управляющая линия в CurveMapper.
+            Используется для дополнительного контроля над другими кривыми, в частности кривыми Безье.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.CurveBase">
+            <summary>Базовый класс для всех типов кривых в CurveMapper.
+            Предоставляет общие функции создания и извлечения значений кривых.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Абстрактный метод, который реализуется производными классами для генерации значений кривой.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Стандартный метод получения значений X.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Стандартный метод получения значений Y.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateFromDomain(System.Collections.Generic.List{System.Double},System.Func{System.Double,System.Double})">
+            <summary>Generates X and Y values by mapping domain inputs to canvas space and evaluating a curve function.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.GaussianCurve">
+            <summary>Кривая Гаусса в CurveMapper.
+            Кривая Гаусса следует воронкообразному распределению, определяемому четырьмя управляющими точками.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.GaussianCurve.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>Указание того, изменяется ли размер узла в данный момент, что позволяет избежать непреднамеренного обновления управляющих точек.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.GaussianCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Возврат значений X и Y, распределенных по кривой.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.LinearCurve">
+            <summary>Линейная кривая в CurveMapper.
+            Линейная кривая — это прямая линия между двумя управляющими точками.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.LinearCurve.LineEquation(System.Double)">
+            <summary>Вычисление значений Y (координат активного окна) для минимального и максимального значений X</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.LinearCurve.SolveForXGivenY(System.Double)">
+            <summary>Вычисление значений X (координат активного окна) для минимального и максимального значений Y</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.LinearCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Возврат значений X и Y, распределенных по кривой.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.ParabolicCurve">
+            <summary>Параболическая кривая в CurveMapper.
+            Кривая определяется квадратным уравнением на основе двух управляющих точек.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.ParabolicCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Возврат значений X и Y, распределенных по кривой.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.PerlinNoiseCurve">
+            <summary>Кривая шума Перлина в CurveMapper.
+            Кривая создает процедурный шум на основе управляющих точек и функций шума Перлина.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.PerlinNoiseCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Возврат значений X и Y, распределенных по кривой.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.PowerCurve">
+            <summary>Кривая степенной функции в CurveMapper.
+            Кривая определяется степенным уравнением, полученным на основе управляющей точки.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.PowerCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Возврат значений X и Y, распределенных по кривой.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.SineWave">
+            <summary>Синусоидальная кривая в CurveMapper.
+            Синусоида определяется двумя управляющими точками и управляется тригонометрической функцией.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.SineWave.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Возврат значений X и Y, распределенных по кривой.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.SquareRootCurve">
+            <summary>Кривая квадратного корня в CurveMapper.
+            Кривая управляется функцией квадратного корня и зависит от двух управляющих точек.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.SquareRootCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Возврат значений X и Y, распределенных по кривой.</summary>
+        </member>
         <member name="M:DSCore.Data.ParseJSON(System.String)">
             <summary>Анализ преобразует произвольную строку формата JSON в значение. Противоположно методу JSON.Stringify.</summary>
             <param name="json">Строка формата JSON</param>
@@ -843,6 +928,19 @@
             <returns name="uniqueKeys">ключевое значение для каждой группы</returns>
             <search>list;group;groupbykey;</search>
         </member>
+        <member name="M:DSCore.List.GroupBySimilarity(System.Collections.IList,System.Double,System.Boolean)">
+            <summary>Группирование элементов списка на основе смежности их индексов и сходства их значений</summary>
+            <param name="list">Список элементов, которые требуется сгруппировать во вложенные списки по смежности и сходству</param>
+            <param name="tolerance">Пороговое значение для группировки схожих элементов</param>
+            <param name="considerAdjacency">Логическое значение, определяющее, должен ли узел учитывать смежность.</param>
+            <returns name="groupedValues">Список вложенных списков с элементами, сгруппированными по сходным значениям</returns>
+            <returns name="groupedIndices">Список вложенных списков, содержащих исходные индексы сгруппированных значений</returns>
+            <search>list;group;similar;adjacent;adjacency;groupbyadjacency;groupadjacentitems;groupsimilaritems;cluster;tolerance</search>
+        </member>
+        <member name="M:DSCore.List.LevenshteinDistance(System.String,System.String)">
+            <summary>Расстояние Левенштейна — это алгоритм, используемый для получения расстояния между двумя строками
+            | <see href="https://gist.github.com/Davidblkx/e12ab0bb2aff7fd8072632b396538560">Источник</see></summary>
+        </member>
         <member name="M:DSCore.List.AddItemToFront(System.Object,System.Collections.IList)">
             <summary>Добавление элемента в начало списка.</summary>
             <param name="item">Элемент, который требуется добавить. Элемент может быть объектом или списком.</param>
@@ -892,6 +990,14 @@
             <param name="index">Индекс элемента для замены.</param>
             <param name="item">Элемент для вставки.</param>
             <returns name="list">Новый список с замененным элементом.</returns>
+            <search>replace,switch</search>
+        </member>
+        <member name="M:DSCore.List.ReplaceItemAtIndices(System.Collections.IList,System.Collections.Generic.IList{System.Int32},System.Object)">
+            <summary>Замена элементов из заданного списка, которые расположены по указанным индексам.</summary>
+            <param name="list">Список, в котором требуется заменить элемент.</param>
+            <param name="indices">Индексы элементов, которые требуется заменить.</param>
+            <param name="item">Элемент для вставки.</param>
+            <returns name="list">Новый список с замененными элементами.</returns>
             <search>replace,switch</search>
         </member>
         <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">

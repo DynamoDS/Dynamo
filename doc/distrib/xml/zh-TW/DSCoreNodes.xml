@@ -151,6 +151,91 @@
             <returns name="bool">布林運算結果。</returns>
             <search>smaller,equal</search>
         </member>
+        <member name="T:DSCore.CurveMapper.BezierCurve">
+            <summary>表示 CurveMapper 中的 Bezier 曲線。
+            Bezier 曲線由四個控制點定義，可提供平滑內插。</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.BezierCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>根據指定的參數和限制取得內插的 Y 值。</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.ControlLine">
+            <summary>表示 CurveMapper 中的控制線。
+            用於輔助控制其他曲線，特別是 Bezier 曲線。</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.CurveBase">
+            <summary>表示 CurveMapper 中所有曲線類型的基準類別。
+            提供產生和擷取曲線值的常用功能。</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>由衍生類別實作以產生曲線值的抽象方法。</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>擷取 X 值的常用方法。</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>擷取 Y 值的常用方法。</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateFromDomain(System.Collections.Generic.List{System.Double},System.Func{System.Double,System.Double})">
+            <summary>Generates X and Y values by mapping domain inputs to canvas space and evaluating a curve function.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.GaussianCurve">
+            <summary>表示 CurveMapper 中的高斯曲線。
+            高斯曲線會沿著四個控制點定義的一個鐘形分佈。</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.GaussianCurve.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>指出節點目前是否正調整大小，以防止意外的控制點更新。</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.GaussianCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>傳回分佈在曲線上的 X 和 Y 值。</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.LinearCurve">
+            <summary>表示 CurveMapper 中的線性曲線。
+            線性曲線是兩個控制點之間的一條直線。</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.LinearCurve.LineEquation(System.Double)">
+            <summary>計算最小和最大 X 值的 Y 值 (圖元區座標)</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.LinearCurve.SolveForXGivenY(System.Double)">
+            <summary>計算最小和最大 Y 值的 X 值 (圖元區座標)</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.LinearCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>傳回分佈在曲線上的 X 和 Y 值。</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.ParabolicCurve">
+            <summary>表示 CurveMapper 中的拋物曲線。
+            曲線會沿著根據兩個控制點的二次方程式。</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.ParabolicCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>傳回分佈在曲線上的 X 和 Y 值。</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.PerlinNoiseCurve">
+            <summary>表示 CurveMapper 中的柏林噪波曲線。
+            曲線會根據控制點和柏林噪波函數產生程序性的噪波。</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.PerlinNoiseCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>傳回分佈在曲線上的 X 和 Y 值。</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.PowerCurve">
+            <summary>表示 CurveMapper 中的冪函數曲線。
+            曲線是由從一個控制點導出的一個冪方程式所定義。</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.PowerCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>傳回分佈在曲線上的 X 和 Y 值。</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.SineWave">
+            <summary>表示 CurveMapper 中的正弦波曲線。
+            正弦波由兩個控制點定義，並沿著一個三角函數。</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.SineWave.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>傳回分佈在曲線上的 X 和 Y 值。</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.SquareRootCurve">
+            <summary>表示 CurveMapper 中的平方根曲線。
+            曲線會沿著一個平方根函數，並受兩個控制點的影響。</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.SquareRootCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>傳回分佈在曲線上的 X 和 Y 值。</summary>
+        </member>
         <member name="M:DSCore.Data.ParseJSON(System.String)">
             <summary>Parse 會將任意的 JSON 字串轉換成值。與 JSON.Stringify 相反。</summary>
             <param name="json">JSON 字串</param>
@@ -834,6 +919,19 @@
             <returns name="uniqueKeys">對應每個群組的關鍵值</returns>
             <search>list;group;groupbykey;</search>
         </member>
+        <member name="M:DSCore.List.GroupBySimilarity(System.Collections.IList,System.Double,System.Boolean)">
+            <summary>根據清單索引的相鄰性和其值的相似性群集清單元素</summary>
+            <param name="list">要根據相鄰性和相似性分組為子清單的項目清單</param>
+            <param name="tolerance">將類似項目分組的閾值</param>
+            <param name="considerAdjacency">控制節點是否應考慮相鄰性的布林值。</param>
+            <returns name="groupedValues">其項目依相似值分組的子清單的清單</returns>
+            <returns name="groupedIndices">包含分組值原始索引的子清單的清單</returns>
+            <search>list;group;similar;adjacent;adjacency;groupbyadjacency;groupadjacentitems;groupsimilaritems;cluster;tolerance</search>
+        </member>
+        <member name="M:DSCore.List.LevenshteinDistance(System.String,System.String)">
+            <summary>「Levenshtein 距離」是用來取得 2 個字串之間距離的演算法
+            | <see href="https://gist.github.com/Davidblkx/e12ab0bb2aff7fd8072632b396538560">來源</see></summary>
+        </member>
         <member name="M:DSCore.List.AddItemToFront(System.Object,System.Collections.IList)">
             <summary>將項目加入至清單開頭。</summary>
             <param name="item">要加入的項目。項目可以是物件或清單。</param>
@@ -883,6 +981,14 @@
             <param name="index">要取代的項目索引。</param>
             <param name="item">要插入的項目。</param>
             <returns name="list">項目已被取代的新清單。</returns>
+            <search>replace,switch</search>
+        </member>
+        <member name="M:DSCore.List.ReplaceItemAtIndices(System.Collections.IList,System.Collections.Generic.IList{System.Int32},System.Object)">
+            <summary>取代給定清單中位於指定索引的項目。</summary>
+            <param name="list">要取代項目的清單。</param>
+            <param name="indices">要被取代項目的索引。</param>
+            <param name="item">要插入的項目。</param>
+            <returns name="list">取代項目後的新清單。</returns>
             <search>replace,switch</search>
         </member>
         <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">

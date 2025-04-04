@@ -151,6 +151,91 @@
             <returns name="bool">부울 결과.</returns>
             <search>smaller,equal</search>
         </member>
+        <member name="T:DSCore.CurveMapper.BezierCurve">
+            <summary>CurveMapper의 베지어 곡선을 나타냅니다.
+            베지어 곡선은 4개의 제어점으로 정의되며 부드러운 보간을 제공합니다.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.BezierCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>할당된 매개변수 및 제한을 기준으로 보간된 Y 값을 구합니다.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.ControlLine">
+            <summary>CurveMapper의 제어 선을 나타냅니다.
+            이 옵션은 다른 곡선, 특히 베지어 곡선을 보조적으로 제어하는 데 사용됩니다.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.CurveBase">
+            <summary>CurveMapper의 모든 곡선 유형에 대한 기본 클래스를 나타냅니다.
+            곡선 값을 생성하고 검색하는 데 사용할 수 있는 일반적인 기능을 제공합니다.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>파생 클래스에서 곡선 값을 생성하기 위해 구현해야 하는 추상 메서드입니다.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>X 값을 검색하는 일반적인 방법입니다.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>Y 값을 검색하는 일반적인 방법입니다.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.CurveBase.GenerateFromDomain(System.Collections.Generic.List{System.Double},System.Func{System.Double,System.Double})">
+            <summary>Generates X and Y values by mapping domain inputs to canvas space and evaluating a curve function.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.GaussianCurve">
+            <summary>CurveMapper의 가우스 곡선을 나타냅니다.
+            가우스 곡선은 4개의 제어점으로 정의된 종 모양의 분배를 따릅니다.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.GaussianCurve.#ctor(System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double,System.Double)">
+            <summary>노드의 크기가 현재 조정되고 있는지 여부를 나타내며, 의도하지 않은 제어점 업데이트를 방지합니다.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.GaussianCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>곡선을 따라 분배된 X 및 Y 값을 반환합니다.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.LinearCurve">
+            <summary>CurveMapper의 선형 곡선을 나타냅니다.
+            선형 곡선은 두 제어점 사이의 직선입니다.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.LinearCurve.LineEquation(System.Double)">
+            <summary>최소 및 최대 X 값에 대한 Y 값(캔버스 좌표)을 계산합니다.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.LinearCurve.SolveForXGivenY(System.Double)">
+            <summary>최소 및 최대 Y 값에 대한 X 값(캔버스 좌표)을 계산합니다.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.LinearCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>곡선을 따라 분배된 X 및 Y 값을 반환합니다.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.ParabolicCurve">
+            <summary>CurveMapper의 포물선 곡선을 나타냅니다.
+            이 곡선은 두 제어점을 기준으로 하는 2차 방정식을 따릅니다.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.ParabolicCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>곡선을 따라 분배된 X 및 Y 값을 반환합니다.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.PerlinNoiseCurve">
+            <summary>CurveMapper의 펄린 노이즈 곡선을 나타냅니다.
+            이 곡선은 제어점 및 펄린 노이즈 함수를 기준으로 절차적 노이즈를 생성합니다.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.PerlinNoiseCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>곡선을 따라 분배된 X 및 Y 값을 반환합니다.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.PowerCurve">
+            <summary>CurveMapper의 거듭제곱 함수 곡선을 나타냅니다.
+            이 곡선은 제어점에서 파생된 거듭제곱 방정식으로 정의됩니다.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.PowerCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>곡선을 따라 분배된 X 및 Y 값을 반환합니다.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.SineWave">
+            <summary>CurveMapper의 사인파 곡선을 나타냅니다.
+            사인파는 두 제어점으로 정의되며 삼각 함수를 따릅니다.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.SineWave.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>곡선을 따라 분배된 X 및 Y 값을 반환합니다.</summary>
+        </member>
+        <member name="T:DSCore.CurveMapper.SquareRootCurve">
+            <summary>CurveMapper의 제곱근 곡선을 나타냅니다.
+            이 곡선은 제곱근 함수를 따르며 두 제어점의 영향을 받습니다.</summary>
+        </member>
+        <member name="M:DSCore.CurveMapper.SquareRootCurve.GenerateCurve(System.Collections.Generic.List{System.Double},System.Boolean)">
+            <summary>곡선을 따라 분배된 X 및 Y 값을 반환합니다.</summary>
+        </member>
         <member name="M:DSCore.Data.ParseJSON(System.String)">
             <summary>Parse는 임의의 JSON 문자열을 값으로 변환합니다. 이는 JSON.Stringify의 반대 작업입니다.</summary>
             <param name="json">JSON 문자열</param>
@@ -837,6 +922,19 @@
             <returns name="uniqueKeys">각 그룹에 해당하는 키 값</returns>
             <search>list;group;groupbykey;</search>
         </member>
+        <member name="M:DSCore.List.GroupBySimilarity(System.Collections.IList,System.Double,System.Boolean)">
+            <summary>클러스터는 색인의 인접성 및 값의 유사성을 기준으로 요소를 나열합니다.</summary>
+            <param name="list">인접성 및 유사성을 기준으로 하위 리스트로 그룹화할 항목의 리스트</param>
+            <param name="tolerance">유사 항목을 그룹화하기 위한 임계값</param>
+            <param name="considerAdjacency">노드가 인접성을 고려해야 하는지 여부를 제어하는 부울 값입니다.</param>
+            <returns name="groupedValues">유사한 값으로 그룹화된 항목이 있는 하위 리스트의 리스트</returns>
+            <returns name="groupedIndices">그룹화된 값의 원래 색인을 포함하는 하위 리스트의 리스트</returns>
+            <search>list;group;similar;adjacent;adjacency;groupbyadjacency;groupadjacentitems;groupsimilaritems;cluster;tolerance</search>
+        </member>
+        <member name="M:DSCore.List.LevenshteinDistance(System.String,System.String)">
+            <summary>레벤슈타인 거리는 두 문자열 사이의 거리를 구하는 데 사용되는 알고리즘입니다.
+            | <see href="https://gist.github.com/Davidblkx/e12ab0bb2aff7fd8072632b396538560">소스</see></summary>
+        </member>
         <member name="M:DSCore.List.AddItemToFront(System.Object,System.Collections.IList)">
             <summary>리스트의 처음에 항목을 추가합니다.</summary>
             <param name="item">추가할 항목. 항목은 객체 또는 리스트일 수 있습니다.</param>
@@ -886,6 +984,14 @@
             <param name="index">대체할 항목의 인덱스.</param>
             <param name="item">삽입할 항목.</param>
             <returns name="list">항목이 대체된 새 리스트.</returns>
+            <search>replace,switch</search>
+        </member>
+        <member name="M:DSCore.List.ReplaceItemAtIndices(System.Collections.IList,System.Collections.Generic.IList{System.Int32},System.Object)">
+            <summary>지정된 리스트에서 지정된 색인에 있는 항목을 대치합니다.</summary>
+            <param name="list">항목을 대체할 리스트.</param>
+            <param name="indices">대치할 항목의 색인.</param>
+            <param name="item">삽입할 항목.</param>
+            <returns name="list">항목이 대치된 새 리스트.</returns>
             <search>replace,switch</search>
         </member>
         <member name="M:DSCore.List.Slice(System.Collections.IList,System.Nullable{System.Int32},System.Nullable{System.Int32},System.Int32)">
