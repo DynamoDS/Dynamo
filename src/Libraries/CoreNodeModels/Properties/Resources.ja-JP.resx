@@ -634,7 +634,7 @@
 Default value (int): {0}</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
-    <value>選択した数学的曲線に基づいて Y 座標に沿って X 座標を再配置し、点の分布を正確にコントロールします。</value>
+    <value>Redistributes a series of input values within the given range and maps them along a specified curve. If a single count is provided, it generates a series of values distributed along the x direction within the given range and then maps these values to the curve.</value>
   </data>
   <data name="CurveMapperSearchTags" xml:space="preserve">
     <value>graph;curve;mapper;math</value>
