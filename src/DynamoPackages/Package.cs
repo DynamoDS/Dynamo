@@ -280,6 +280,8 @@ namespace Dynamo.PackageManager
                     CopyrightYear = body.copyright_year,
                     Header = body
                 };
+
+                pkg.SetCompatibility(body.compatibility_matrix);
                 
                 foreach (var dep in body.dependencies)
                     pkg.Dependencies.Add(dep);
