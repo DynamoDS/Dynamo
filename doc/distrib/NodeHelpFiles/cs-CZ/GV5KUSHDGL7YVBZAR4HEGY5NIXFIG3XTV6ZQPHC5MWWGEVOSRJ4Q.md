@@ -1,13 +1,15 @@
 ## Podrobnosti
-Uzel `Curve Mapper` využívá matematické křivky k přerozdělení bodů v definovaném rozsahu. Přerozdělení v tomto kontextu znamená znovupřiřazení souřadnic x k novým pozicím podél zadané křivky podle jejich souřadnic y. Tato technika je zvlášť užitečná v různých případech například návrh fasád, parametrické střešní konstrukce a další výpočty návrhu, kde jsou vyžadovány specifické vzory nebo rozložení.
+`Curve Mapper` node redistributes a series of input values within a defined range and leverages mathematical curves to map them along a specified curve. Mapping, in this context, means the values are redistributed in a way that their x-coordinates follow the shape of the curve along the y-axis.  This technique is particularly valuable for applications such as façade design, parametric roof structures, and other design calculations where specific patterns or distributions are required.
 
-Definujte meze pro souřadnice x a y nastavením minimálních a maximálních hodnot. Tyto meze určují hranice, v rámci kterých budou body přerozděleny. Dále vyberte matematickou křivku z nabízených možností, mezi které patří lineární křivka, sinusoida, kosinusoida, Perlinův šum, Bezierova křivka, Gaussova křivka, parabola, odmocninová křivka a mocninová křivka. Pomocí interaktivních řídicích bodů můžete upravit tvar vybrané křivky a přizpůsobit ji vašim konkrétním potřebám.
+Define the limits for the x-coordinates by setting the minimum and maximum values. These limits set the boundaries within which the points will be redistributed. You can provide either a single count to generate a series of evenly distributed values or an existing series of values, which will be distributed along the x direction within the specified range and then mapped to the curve.
 
-Tvar křivky můžete uzamknout pomocí tlačítka zámku, čímž zabráníte dalším úpravám křivky. Kromě toho můžete obnovit výchozí stav tvaru pomocí tlačítka obnovení uvnitř uzlu.
+Select a mathematical curve from the provided options, which includes Linear, Sine, Cosine, Perlin Noise, Bezier, Gaussian, Parabolic, Square Root, and Power curves. Use interactive control points to adjust the shape of the selected curve, tailoring it to your specific needs.
 
-Určete počet bodů, které mají být přerozděleny, nastavením vstupu Count. Uzel vypočítá nové souřadnice x pro zadaný počet bodů podle vybrané křivky a definovaných mezí. Body se přerozdělí tak, že jejich souřadnice x sledují tvar křivky podél osy y.
+You can lock the curve shape using the lock button, preventing further modifications to the curve. Additionally, you can reset the shape to its default state by using the reset button inside the node.
 
-Chcete-li například přerozdělit 80 bodů podél sinusoidy, nastavte možnost Min X na hodnotu 0, Max X na hodnotu 20, Min Y na hodnotu 0 a Max Y na hodnotu 10. Po výběru sinusoidy a úpravě jejího tvaru podle potřeby uzel `Curve Mapper` vypíše 80 bodů se souřadnicemi x, které sledují vzor sinusoidy podél osy y od 0 do 10.
+For example, to redistribute 80 points along a sine curve within the range of 0 to 20, set Min to 0, Max to 20, and Values to 80. After selecting the sine curve and adjusting its shape as needed, the `Curve Mapper` node outputs 80 points with x-coordinates that follow the sine curve pattern along the y-axis.
+
+To map unevenly distributed values along a Gaussian curve, set the minimum and maximum range and provide the series of values. After selecting the Gaussian curve and adjusting its shape as needed, the `Curve Mapper` node redistributes the series of values along x-coordinates using the specified range and maps the values along the curve pattern.
 
 
 
@@ -15,4 +17,4 @@ Chcete-li například přerozdělit 80 bodů podél sinusoidy, nastavte možnost
 ___
 ## Vzorový soubor
 
-![Example](./GV5KUSHDGL7YVBZAR4HEGY5NIXFIG3XTV6ZQPHC5MWWGEVOSRJ4Q_img.jpg)
+![Example](./GV5KUSHDGL7YVBZAR4HEGY5NIXFIG3XTV6ZQPHC5MWWGEVOSRJ4Q_img.png)

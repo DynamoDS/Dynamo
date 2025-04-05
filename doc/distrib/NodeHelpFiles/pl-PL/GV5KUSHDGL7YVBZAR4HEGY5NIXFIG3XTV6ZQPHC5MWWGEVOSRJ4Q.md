@@ -1,13 +1,15 @@
 ## Informacje szczegółowe
-Węzeł `Curve Mapper` wykorzystuje krzywe matematyczne do ponownego rozmieszczania punktów w zdefiniowanym zakresie. Ponowne rozmieszczanie w tym kontekście oznacza ponowne przypisanie współrzędnych x do nowych pozycji wzdłuż określonej krzywej na podstawie ich współrzędnych y. Technika ta jest szczególnie przydatna w takich zastosowaniach, jak projektowanie elewacji i parametrycznych konstrukcji dachu oraz inne obliczenia projektowe, w których wymagane są określone wzorce lub rozkłady.
+`Curve Mapper` node redistributes a series of input values within a defined range and leverages mathematical curves to map them along a specified curve. Mapping, in this context, means the values are redistributed in a way that their x-coordinates follow the shape of the curve along the y-axis.  This technique is particularly valuable for applications such as façade design, parametric roof structures, and other design calculations where specific patterns or distributions are required.
 
-Zdefiniuj granice dla współrzędnych x i y, ustawiając wartości minimalne i maksymalne. Granice te wyznaczają obwiednie, w obrębie których nastąpi ponowne rozmieszczenie punktów. Następnie wybierz krzywą matematyczną z dostępnych opcji, takich jak krzywa liniowa, sinusoidalna, kosinusoidalna, szumu Perlina, Beziera, Gaussa, paraboliczna, pierwiastka kwadratowego i potęgowa. Użyj interaktywnych punktów sterujących, aby dopasować kształt wybranej krzywej, dostosowując ją do konkretnych potrzeb.
+Define the limits for the x-coordinates by setting the minimum and maximum values. These limits set the boundaries within which the points will be redistributed. You can provide either a single count to generate a series of evenly distributed values or an existing series of values, which will be distributed along the x direction within the specified range and then mapped to the curve.
 
-Kształt krzywej można zablokować za pomocą przycisku blokady, co zapobiega dalszym modyfikacjom krzywej. Ponadto można przywrócić stan domyślny kształtu za pomocą przycisku resetowania wewnątrz węzła.
+Select a mathematical curve from the provided options, which includes Linear, Sine, Cosine, Perlin Noise, Bezier, Gaussian, Parabolic, Square Root, and Power curves. Use interactive control points to adjust the shape of the selected curve, tailoring it to your specific needs.
 
-Określ liczbę punktów do ponownego rozmieszczenia, ustawiając wartość wejściową Count. Węzeł oblicza nowe współrzędne x dla określonej liczby punktów w oparciu o wybraną krzywą i zdefiniowane granice. Punkty są rozmieszczane w taki sposób, aby ich współrzędne x podążały za kształtem krzywej wzdłuż osi y.
+You can lock the curve shape using the lock button, preventing further modifications to the curve. Additionally, you can reset the shape to its default state by using the reset button inside the node.
 
-Aby na przykład rozmieścić 80 punktów wzdłuż krzywej sinusoidalnej, ustaw wartość Min X równą 0, Max X równą 20, Min Y równą 0 oraz Max Y równą 10. Po wybraniu krzywej sinusoidalnej i dopasowaniu jej kształtu węzeł `Curve Mapper` zwraca 80 punktów ze współrzędnymi x, które podążają za wzorcem krzywej sinusoidalnej wzdłuż osi Y w zakresie od 0 do 10.
+For example, to redistribute 80 points along a sine curve within the range of 0 to 20, set Min to 0, Max to 20, and Values to 80. After selecting the sine curve and adjusting its shape as needed, the `Curve Mapper` node outputs 80 points with x-coordinates that follow the sine curve pattern along the y-axis.
+
+To map unevenly distributed values along a Gaussian curve, set the minimum and maximum range and provide the series of values. After selecting the Gaussian curve and adjusting its shape as needed, the `Curve Mapper` node redistributes the series of values along x-coordinates using the specified range and maps the values along the curve pattern.
 
 
 
@@ -15,4 +17,4 @@ Aby na przykład rozmieścić 80 punktów wzdłuż krzywej sinusoidalnej, ustaw 
 ___
 ## Plik przykładowy
 
-![Example](./GV5KUSHDGL7YVBZAR4HEGY5NIXFIG3XTV6ZQPHC5MWWGEVOSRJ4Q_img.jpg)
+![Example](./GV5KUSHDGL7YVBZAR4HEGY5NIXFIG3XTV6ZQPHC5MWWGEVOSRJ4Q_img.png)

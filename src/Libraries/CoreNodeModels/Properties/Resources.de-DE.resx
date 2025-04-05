@@ -634,7 +634,7 @@ Vorgabewert: G</value>
 Default value (int): {0}</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
-    <value>Verteilt X-Koordinaten basierend auf einer ausgewählten mathematischen Kurve entlang Y-Koordinaten neu und bietet so eine präzise Steuerung der Punktverteilung.</value>
+    <value>Redistributes a series of input values within the given range and maps them along a specified curve. If a single count is provided, it generates a series of values distributed along the x direction within the given range and then maps these values to the curve.</value>
   </data>
   <data name="CurveMapperSearchTags" xml:space="preserve">
     <value>graph;curve;mapper;math</value>

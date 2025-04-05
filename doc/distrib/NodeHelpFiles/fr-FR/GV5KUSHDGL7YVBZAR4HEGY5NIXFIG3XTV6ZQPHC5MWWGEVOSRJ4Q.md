@@ -1,13 +1,15 @@
 ## Description approfondie
-Le noeud 'Curve Mapper' utilise les courbes mathématiques pour redistribuer les points dans une plage définie. Dans ce contexte, la redistribution consiste à réattribuer les coordonnées x à de nouvelles positions le long d'une courbe spécifiée en fonction de leurs coordonnées y. Cette technique est particulièrement utile pour des applications telles que la conception de façades, de structures de toit paramétriques et d'autres calculs de conception où des motifs ou des distributions spécifiques sont nécessaires.
+`Curve Mapper` node redistributes a series of input values within a defined range and leverages mathematical curves to map them along a specified curve. Mapping, in this context, means the values are redistributed in a way that their x-coordinates follow the shape of the curve along the y-axis.  This technique is particularly valuable for applications such as façade design, parametric roof structures, and other design calculations where specific patterns or distributions are required.
 
-Établissez les limites des coordonnées x et y en définissant les valeurs minimale et maximale. Ces limites définissent les délimitations à l'intérieur desquelles les points seront redistribués. Ensuite, sélectionnez une courbe mathématique parmi les options proposées, notamment les courbes Linéaire, Sinus, Cosinus, Bruit de Perlin, Bézier, Gaussienne, Parabolique, Racine carrée et Puissance. Utilisez les points de contrôle interactifs pour ajuster la forme de la courbe sélectionnée, en l'adaptant à vos besoins précis.
+Define the limits for the x-coordinates by setting the minimum and maximum values. These limits set the boundaries within which the points will be redistributed. You can provide either a single count to generate a series of evenly distributed values or an existing series of values, which will be distributed along the x direction within the specified range and then mapped to the curve.
 
-Vous pouvez verrouiller la forme de la courbe à l'aide du bouton de verrouillage, ce qui empêche toute modification ultérieure de la courbe. En outre, vous pouvez rétablir l'état par défaut de la forme à l'aide du bouton de réinitialisation à l'intérieur du noeud.
+Select a mathematical curve from the provided options, which includes Linear, Sine, Cosine, Perlin Noise, Bezier, Gaussian, Parabolic, Square Root, and Power curves. Use interactive control points to adjust the shape of the selected curve, tailoring it to your specific needs.
 
-Spécifiez le nombre de points à redistribuer en définissant l'entrée Nombre. Le noeud calcule de nouvelles coordonnées x pour le nombre spécifié de points en fonction de la courbe sélectionnée et des limites définies. Les points sont redistribués de sorte que leurs coordonnées x suivent la forme de la courbe le long de l'axe y.
+You can lock the curve shape using the lock button, preventing further modifications to the curve. Additionally, you can reset the shape to its default state by using the reset button inside the node.
 
-Par exemple, pour redistribuer 80 points le long d'une courbe sinusoïdale, définissez Min X sur 0, Max X sur 20, Min Y sur 0 et Max Y sur 10. Après avoir sélectionné la courbe sinusoïdale et ajusté sa forme selon vos besoins, le noeud 'Curve Mapper' génère 80 points avec des coordonnées x qui suivent le motif de la courbe sinusoïdale le long de l'axe des y de 0 à 10.
+For example, to redistribute 80 points along a sine curve within the range of 0 to 20, set Min to 0, Max to 20, and Values to 80. After selecting the sine curve and adjusting its shape as needed, the `Curve Mapper` node outputs 80 points with x-coordinates that follow the sine curve pattern along the y-axis.
+
+To map unevenly distributed values along a Gaussian curve, set the minimum and maximum range and provide the series of values. After selecting the Gaussian curve and adjusting its shape as needed, the `Curve Mapper` node redistributes the series of values along x-coordinates using the specified range and maps the values along the curve pattern.
 
 
 
@@ -15,4 +17,4 @@ Par exemple, pour redistribuer 80 points le long d'une courbe sinusoïdale, déf
 ___
 ## Exemple de fichier
 
-![Example](./GV5KUSHDGL7YVBZAR4HEGY5NIXFIG3XTV6ZQPHC5MWWGEVOSRJ4Q_img.jpg)
+![Example](./GV5KUSHDGL7YVBZAR4HEGY5NIXFIG3XTV6ZQPHC5MWWGEVOSRJ4Q_img.png)
