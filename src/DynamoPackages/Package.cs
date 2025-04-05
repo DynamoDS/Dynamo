@@ -355,7 +355,8 @@ namespace Dynamo.PackageManager
         /// <param name="cmpList">Package compatibility info</param>
         internal void SetCompatibility(IEnumerable<PackageCompatibility> cmpList)
         {
-            // Clear the old compatibility matrix
+            // Clear the old compatibility matrix, not checking for an empty list here
+            // as user should be able to remove compatibility as well
             if (cmpList != null)
             {
                 CompatibilityMatrix.Clear();
