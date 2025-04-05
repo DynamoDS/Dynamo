@@ -2703,6 +2703,7 @@ namespace Dynamo.Graph.Workspaces
             annotationModel.GUID = annotationGuidValue;
             annotationModel.HeightAdjustment = annotationViewInfo.HeightAdjustment;
             annotationModel.WidthAdjustment = annotationViewInfo.WidthAdjustment;
+            annotationModel.UpdateGroupFrozenStatus();
 
             annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
             annotationModel.Disposed += (_) => annotationModel.ModelBaseRequested -= annotationModel_GetModelBase;

@@ -1580,15 +1580,26 @@ namespace Dynamo.PackageManager
                 }
             }
 
-            // We need to get the compatibility matrix from the cached package list
-            // in order to show the correct compatibility matrix in the UI.
-            // We are still running the risk of having a higher version of the local package 
-            // leading to a null result for the compatibility matrix.
-            var cachedPackage = dynamoViewModel.PackageManagerClientViewModel.CachedPackageList
-                .FirstOrDefault(x => x.Name == pkg.Name);
-            var version = cachedPackage?.Header.versions
-                .FirstOrDefault(v => v.version.Equals(pkg.VersionName));
-            var compatibility_matrix = version?.compatibility_matrix;
+            // First check if the local package has the compatibility info
+            var compatibility_matrix = pkg.CompatibilityMatrix  ?? pkg.Header?.compatibility_matrix;
+            //If we do not find compatibility info in the local package, we will check the cached packages
+            if (compatibility_matrix == null)
+            {
+                // We need to get the compatibility matrix from the cached package list
+                // in order to show the correct compatibility matrix in the UI.
+                // We are still running the risk of having a higher version of the local package 
+                // leading to a null result for the compatibility matrix, in which case we will not pre-fill the compatibility info..
+                var cachedPackage = dynamoViewModel.PackageManagerClientViewModel.CachedPackageList
+                    .FirstOrDefault(x => x.Name == pkg.Name);
+                var version = cachedPackage?.Header.versions
+                    .FirstOrDefault(v => v.version.Equals(pkg.VersionName));
+                compatibility_matrix = version?.compatibility_matrix?
+                    .Select(entry => new PackageCompatibility(
+                    entry.name,
+                    entry.versions != null ? new List<string>(entry.versions) : null,
+                    entry.min,
+                    entry.max));
+            }
 
             var pkgViewModel = new PublishPackageViewModel(dynamoViewModel)
             {
@@ -1609,13 +1620,7 @@ namespace Dynamo.PackageManager
                 CurrentPackageRootDirectories = new List<string> { pkg.RootDirectory },
                 //default retain folder structure to true when publishing a new version from local.
                 RetainFolderStructureOverride = retainFolderStructure,
-                CompatibilityMatrix = compatibility_matrix?
-                .Select(entry => new PackageCompatibility(
-                    entry.name,
-                    entry.versions != null ? new List<string>(entry.versions) : null,
-                    entry.min,
-                    entry.max))
-                .ToList()
+                CompatibilityMatrix = compatibility_matrix?.ToList(),
             };
 
             // add additional files
@@ -2570,7 +2575,7 @@ namespace Dynamo.PackageManager
                 Package.RepositoryUrl = RepositoryUrl;
                 Package.CopyrightHolder = string.IsNullOrEmpty(CopyrightHolder) ? dynamoViewModel.Model.AuthenticationManager?.Username : CopyrightHolder;
                 Package.CopyrightYear = string.IsNullOrEmpty(CopyrightYear) ? DateTime.Now.Year.ToString() : copyrightYear;
-                Package.Header.compatibility_matrix = CompatibilityMatrix;  // New - CompatibilityMatrix, Dynamo 3.5
+                Package.SetCompatibility(CompatibilityMatrix); // New - CompatibilityMatrix, Dynamo 3.5
                 Package.Header.release_notes_url = ReleaseNotesUrl; // New - ReleaseNotesUrl, Dynamo 3.5
 
                 AppendPackageContents();
