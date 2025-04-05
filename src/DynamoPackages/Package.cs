@@ -242,6 +242,7 @@ namespace Dynamo.PackageManager
             Dependencies = new ObservableCollection<PackageDependency>();
             LoadedCustomNodes = new ObservableCollection<CustomNodeInfo>();
             AdditionalFiles = new ObservableCollection<PackageFileInfo>();
+            CompatibilityMatrix = new ObservableCollection<PackageCompatibility>();
             Header = PackageUploadBuilder.NewRequestBody(this);
         }
 
@@ -352,17 +353,13 @@ namespace Dynamo.PackageManager
         /// <param name="cmpList">Package compatibility info</param>
         internal void SetCompatibility(IEnumerable<PackageCompatibility> cmpList)
         {
-            if (CompatibilityMatrix == null)
+            // Clear the old compatibility matrix
+            if (cmpList != null)
             {
-                CompatibilityMatrix = new ObservableCollection<PackageCompatibility>(); ;
-            }
-            else
-            {
-                // Clear the old compatibility matrix
                 CompatibilityMatrix.Clear();
+                CompatibilityMatrix.AddRange(cmpList);
+                Header.compatibility_matrix = cmpList;
             }
-            CompatibilityMatrix.AddRange(cmpList);
-            Header.compatibility_matrix = cmpList;
         }
 
         /// <summary>
