@@ -2,6 +2,7 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.NodeAutoComplete.ViewModels;
 using Dynamo.ViewModels;
 using System;
 using System.Linq;
@@ -9,21 +10,23 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
 
-namespace Dynamo.UI.Controls
+namespace Dynamo.NodeAutoComplete.Views
 {
     /// <summary>
-    /// Interaction logic for DNAAutocompleteBar.xaml
+    /// Interaction logic for NodeAutoCompleteBarView.xaml
     /// </summary>
-    public partial class DNAAutocompleteBar
+    public partial class NodeAutoCompleteBarView
     {
-        private NodeAutoCompleteSearchViewModel ViewModel => DataContext as NodeAutoCompleteSearchViewModel;
+        private NodeAutoCompleteBarViewModel ViewModel => DataContext as NodeAutoCompleteBarViewModel;
 
-        public DNAAutocompleteBar(Window window, NodeAutoCompleteSearchViewModel viewModel)
-        {
-            viewModel.PortViewModel.Highlight = Visibility.Visible;
-            this.Owner = window;
+        public NodeAutoCompleteBarView(Window window, NodeAutoCompleteBarViewModel viewModel)
+        {            
+            Owner = window;
             DataContext = viewModel;
             InitializeComponent();
+
+            viewModel.PortViewModel.Highlight = Visibility.Visible;
+
             if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
                 if (Application.Current?.MainWindow != null)
@@ -31,8 +34,8 @@ namespace Dynamo.UI.Controls
                     Application.Current.MainWindow.Closing += UnsubscribeEvents;
                 }
             }
-            HomeWorkspaceModel.WorkspaceClosed += this.CloseAutoCompletion;
-            ViewModel.IsOpen = true;
+            HomeWorkspaceModel.WorkspaceClosed += CloseAutoComplete;
+            viewModel.IsOpen = true;
             LoadAndPopulate();
         }
 
@@ -45,7 +48,7 @@ namespace Dynamo.UI.Controls
                     Application.Current.MainWindow.Closing -= UnsubscribeEvents;
                 }
             }
-            HomeWorkspaceModel.WorkspaceClosed -= this.CloseAutoCompletion;
+            HomeWorkspaceModel.WorkspaceClosed -= CloseAutoComplete;
         }
 
         private void LoadAndPopulate()
@@ -92,40 +95,43 @@ namespace Dynamo.UI.Controls
             NodeModel parent_node = ViewModel.PortViewModel?.PortModel.Owner;
             if (node == parent_node)
             {
-                CloseAutoCompletion();
+                CloseAutoComplete();
                 ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
             }
         }
 
-        private void OnDNAAutocompleteKeyDown(object sender, KeyEventArgs e)
+        private void OnAutoCompleteKeyDown(object sender, KeyEventArgs e)
         {
             var key = e.Key;
 
             switch (key)
             {
                 case Key.Escape:
-                    CloseAutoCompletion();
+                    CloseAutoComplete();
                     break;
                 case Key.Enter:
                     ViewModel?.ConsolidateTransientNodes();
-                    CloseAutoCompletion();
+                    CloseAutoComplete();
                     break;
             }
         }
 
-        internal void ConfirmAutocompletionWindow(object sender, RoutedEventArgs e)
+        internal void ConfirmAutoCompleteWindow(object sender, RoutedEventArgs e)
         {
             ViewModel?.ConsolidateTransientNodes();
-            CloseAutoCompletion();
+            CloseAutoComplete();
         }
 
-        internal void CloseAutocompletionWindow(object sender, RoutedEventArgs e)
+        internal void CloseAutoCompleteWindow(object sender, RoutedEventArgs e)
         {
-            CloseAutoCompletion();
+            CloseAutoComplete();
         }
 
-        internal void CloseAutoCompletion()
+        internal void CloseAutoComplete()
         {
+            ViewModel.IsOpen = false;
+            ViewModel.PortViewModel.Highlight = Visibility.Hidden;
+
             //if we're doing this while a node is being deleted, doing this synchronously will
             //cause an exception because of the current undo stack being open
             //TODO: Transient node operations shouldn't be recorded in the undo-redo stack
@@ -133,11 +139,11 @@ namespace Dynamo.UI.Controls
             {
                 ViewModel?.DeleteTransientNodes();
             }), DispatcherPriority.Loaded);
-            ViewModel.PortViewModel.Highlight = Visibility.Hidden;
-            ViewModel.IsOpen = false;
-            this.Close();
+            
+            Close();
             UnsubscribeEvents(this, null);
             ViewModel?.OnNodeAutoCompleteWindowClosed();
         }
+
     }
 }

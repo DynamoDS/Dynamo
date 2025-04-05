@@ -1,11 +1,11 @@
-<Window x:Class="Dynamo.UI.Controls.DNAAutocompleteBar"
+<Window x:Class="Dynamo.NodeAutoComplete.Views.NodeAutoCompleteBarView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:ui="clr-namespace:Dynamo.UI"
-             xmlns:local="clr-namespace:Dynamo.PackageManager.UI"
-             xmlns:dynconverters="clr-namespace:Dynamo.Controls"
+             xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             xmlns:local="clr-namespace:Dynamo.PackageManager.UI;assembly=DynamoCoreWpf"
+             xmlns:dynconverters="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
              mc:Ignorable="d"
              WindowStyle="None"
              AllowsTransparency="True"
@@ -50,7 +50,7 @@
                 Panel.ZIndex="1"
                 IsHitTestVisible="False" />
 
-        <Grid PreviewKeyDown="OnDNAAutocompleteKeyDown">
+        <Grid PreviewKeyDown="OnAutoCompleteKeyDown">
             <Grid.RowDefinitions>
                 <RowDefinition Height="45" />
             </Grid.RowDefinitions>
@@ -270,7 +270,7 @@
                     </Button.Style>
                 </Button>
                 <Button x:Name="btnCheck"
-                        Click="ConfirmAutocompletionWindow"
+                        Click="ConfirmAutoCompleteWindow"
                         Grid.Column="6">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
@@ -311,7 +311,7 @@
                     </Button.Style>
                 </Button>
                 <Button x:Name="btnClose"
-                        Click="CloseAutocompletionWindow"
+                        Click="CloseAutoCompleteWindow"
                         Grid.Column="7">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
