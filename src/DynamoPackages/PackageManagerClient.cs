@@ -150,7 +150,7 @@ namespace Dynamo.PackageManager
             {
                 var nv = new GetMaintainers("dynamo", packageInfo.Name);
                 var pkgResponse = this.client.ExecuteAndDeserializeWithContent<PackageHeader>(nv);
-                return pkgResponse.content;
+                return pkgResponse?.content;
             }, null);
 
             return header;
