@@ -1,13 +1,15 @@
 ## Im Detail
-Der Block `Curve Mapper` nutzt mathematische Kurven, um Punkte innerhalb eines definierten Bereichs neu zu verteilen. Neuverteilung bedeutet in diesem Zusammenhang, dass X-Koordinaten auf Grundlage ihrer Y-Koordinaten neuen Positionen entlang einer bestimmten Kurve zugewiesen werden. Diese Technik ist besonders nützlich für Anwendungen wie Fassadengestaltung, parametrische Dachkonstruktionen und andere Entwurfsberechnungen, bei denen bestimmte Muster oder Verteilungen erforderlich sind.
+`Curve Mapper` node redistributes a series of input values within a defined range and leverages mathematical curves to map them along a specified curve. Mapping, in this context, means the values are redistributed in a way that their x-coordinates follow the shape of the curve along the y-axis.  This technique is particularly valuable for applications such as façade design, parametric roof structures, and other design calculations where specific patterns or distributions are required.
 
-Definieren Sie die Grenzwerte für die X- und Y-Koordinaten, indem Sie die minimalen und maximalen Werte festlegen. Diese Grenzwerte definieren die Grenzen, innerhalb derer die Punkte neu verteilt werden. Wählen Sie als Nächstes eine mathematische Kurve aus den bereitgestellten Optionen aus. Dazu zählen lineare, Sinus-, Kosinus-, Perlin-Noise-, Bezier-, Gaußsche, parabolische, Quadratwurzel- und Potenzkurven. Verwenden Sie die interaktiven Steuerpunkte, um die Form der ausgewählten Kurve entsprechend Ihren spezifischen Anforderungen anzupassen.
+Define the limits for the x-coordinates by setting the minimum and maximum values. These limits set the boundaries within which the points will be redistributed. You can provide either a single count to generate a series of evenly distributed values or an existing series of values, which will be distributed along the x direction within the specified range and then mapped to the curve.
 
-Sie können die Kurvenform mit der Schaltfläche Sperren sperren, wodurch weitere Änderungen der Kurve verhindert werden. Darüber hinaus können Sie die Form auf den Vorgabezustand zurücksetzen, indem Sie die Schaltfläche Zurücksetzen innerhalb des Blocks verwenden.
+Select a mathematical curve from the provided options, which includes Linear, Sine, Cosine, Perlin Noise, Bezier, Gaussian, Parabolic, Square Root, and Power curves. Use interactive control points to adjust the shape of the selected curve, tailoring it to your specific needs.
 
-Geben Sie die Anzahl der neu zu verteilenden Punkte an, indem Sie die Eingabe Count festlegen. Der Block berechnet neue X-Koordinaten für die angegebene Anzahl an Punkten, basierend auf der ausgewählten Kurve und den definierten Grenzwerten. Die Punkte werden so neu verteilt, dass ihre X-Koordinaten der Form der Kurve entlang der Y-Achse folgen.
+You can lock the curve shape using the lock button, preventing further modifications to the curve. Additionally, you can reset the shape to its default state by using the reset button inside the node.
 
-Um beispielsweise 80 Punkte entlang einer Sinuskurve neu zu verteilen, legen Sie Min. X. auf 0, Max. X auf 20, Min. Y auf 0 und Max. Y auf 10 fest. Nachdem Sie die Sinuskurve ausgewählt und ihre Form nach Bedarf angepasst haben, gibt der Block `Curve Mapper` 80 Punkte mit X-Koordinaten aus, die dem Sinuskurvenmuster entlang der Y-Achse von 0 bis 10 folgen.
+For example, to redistribute 80 points along a sine curve within the range of 0 to 20, set Min to 0, Max to 20, and Values to 80. After selecting the sine curve and adjusting its shape as needed, the `Curve Mapper` node outputs 80 points with x-coordinates that follow the sine curve pattern along the y-axis.
+
+To map unevenly distributed values along a Gaussian curve, set the minimum and maximum range and provide the series of values. After selecting the Gaussian curve and adjusting its shape as needed, the `Curve Mapper` node redistributes the series of values along x-coordinates using the specified range and maps the values along the curve pattern.
 
 
 
@@ -15,4 +17,4 @@ Um beispielsweise 80 Punkte entlang einer Sinuskurve neu zu verteilen, legen Sie
 ___
 ## Beispieldatei
 
-![Example](./GV5KUSHDGL7YVBZAR4HEGY5NIXFIG3XTV6ZQPHC5MWWGEVOSRJ4Q_img.jpg)
+![Example](./GV5KUSHDGL7YVBZAR4HEGY5NIXFIG3XTV6ZQPHC5MWWGEVOSRJ4Q_img.png)

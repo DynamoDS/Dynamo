@@ -1,13 +1,15 @@
 ## Подробности
-Узел `Curve Mapper` использует математические кривые для перераспределения точек в пределах заданного диапазона. Перераспределение в этом контексте означает переназначение координат X новым позициям вдоль заданной кривой на основе их координат Y. Этот метод особенно ценен для проектирования фасадов, параметрических конструкций крыш и других проектных расчетов, где требуются определенные шаблоны или распределения.
+`Curve Mapper` node redistributes a series of input values within a defined range and leverages mathematical curves to map them along a specified curve. Mapping, in this context, means the values are redistributed in a way that their x-coordinates follow the shape of the curve along the y-axis.  This technique is particularly valuable for applications such as façade design, parametric roof structures, and other design calculations where specific patterns or distributions are required.
 
-Определите лимиты для координат X и Y, установив минимальное и максимальное значения. Эти лимиты задают границы, в пределах которых будет происходить перераспределение точек. Затем выберите из предложенных вариантов математическую кривую: линейную кривую, синусоиду, косинусоиду, кривую шума Перлина, кривую Безье, кривую Гаусса, параболу, кривую квадратного корня или кривую степени. Используйте интерактивные управляющие точки, чтобы настроить форму выбранной кривой в соответствии с вашими потребностями.
+Define the limits for the x-coordinates by setting the minimum and maximum values. These limits set the boundaries within which the points will be redistributed. You can provide either a single count to generate a series of evenly distributed values or an existing series of values, which will be distributed along the x direction within the specified range and then mapped to the curve.
 
-С помощью кнопки блокировки можно зафиксировать форму кривой, чтобы предотвратить ее дальнейшее изменение. Кроме того, можно восстановить состояние формы по умолчанию с помощью кнопки сброса внутри узла.
+Select a mathematical curve from the provided options, which includes Linear, Sine, Cosine, Perlin Noise, Bezier, Gaussian, Parabolic, Square Root, and Power curves. Use interactive control points to adjust the shape of the selected curve, tailoring it to your specific needs.
 
-Укажите количество точек для перераспределения, задав входной параметр Count. Узел вычисляет новые координаты X для заданного количества точек на основе выбранной кривой и заданных лимитов. Точки перераспределяются таким образом, чтобы их координаты X повторяли форму кривой по оси Y.
+You can lock the curve shape using the lock button, preventing further modifications to the curve. Additionally, you can reset the shape to its default state by using the reset button inside the node.
 
-Например, чтобы перераспределить 80 точек вдоль синусоиды, задайте для параметра «Мин. X» значение 0, для «Макс. X» — 20, для «Мин. Y» — 0, для «Макс. Y» — 10. После выбора синусоиды и требуемой корректировки ее формы узел `Curve Mapper` выводит 80 точек с координатами X, которые соответствуют шаблону синусоиды вдоль оси Y от 0 до 10.
+For example, to redistribute 80 points along a sine curve within the range of 0 to 20, set Min to 0, Max to 20, and Values to 80. After selecting the sine curve and adjusting its shape as needed, the `Curve Mapper` node outputs 80 points with x-coordinates that follow the sine curve pattern along the y-axis.
+
+To map unevenly distributed values along a Gaussian curve, set the minimum and maximum range and provide the series of values. After selecting the Gaussian curve and adjusting its shape as needed, the `Curve Mapper` node redistributes the series of values along x-coordinates using the specified range and maps the values along the curve pattern.
 
 
 
@@ -15,4 +17,4 @@
 ___
 ## Файл примера
 
-![Example](./GV5KUSHDGL7YVBZAR4HEGY5NIXFIG3XTV6ZQPHC5MWWGEVOSRJ4Q_img.jpg)
+![Example](./GV5KUSHDGL7YVBZAR4HEGY5NIXFIG3XTV6ZQPHC5MWWGEVOSRJ4Q_img.png)
