@@ -449,8 +449,6 @@ namespace CoreNodeModels
             }
             if (!IsValidCurve())
             {
-                Warning(Properties.Resources.CurveMapperWarningMessage, isPersistent: true);
-
                 RenderValuesX = RenderValuesY = null;
                 OnNodeModified();
                 return;
@@ -828,11 +826,6 @@ namespace CoreNodeModels
             foreach (var propertyName in new[] { nameof(MinLimitX), nameof(MaxLimitX), nameof(MinLimitY), nameof(MaxLimitY), nameof(PointsCount) })
             {
                 RaisePropertyChanged(propertyName);
-            }
-
-            if (!IsValidInput())
-            {
-                Warning(Properties.Resources.CurveMapperWarningMessage, isPersistent: true);
             }
         }
 
