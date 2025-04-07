@@ -170,13 +170,13 @@
             <summary>Abstraktní metoda implementovaná odvozenými třídami ke generování hodnot křivek.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Collections.Generic.List{System.Double},System.Boolean)">
-            <summary>Běžná metoda získávání hodnot X.</summary>
+            <summary>Obvyklá metoda získávání hodnot X.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Collections.Generic.List{System.Double},System.Boolean)">
-            <summary>Běžná metoda získávání hodnot Y.</summary>
+            <summary>Obvyklá metoda získávání hodnot Y.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.CurveBase.GenerateFromDomain(System.Collections.Generic.List{System.Double},System.Func{System.Double,System.Double})">
-            <summary>Generates X and Y values by mapping domain inputs to canvas space and evaluating a curve function.</summary>
+            <summary>Vygeneruje hodnoty X a Y mapováním vstupů domény do prostoru kreslicí plochy a vyhodnocením funkce křivky.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.GaussianCurve">
             <summary>Představuje Gaussovu křivku v uzlu CurveMapper.

@@ -176,7 +176,7 @@
             <summary>擷取 Y 值的常用方法。</summary>
         </member>
         <member name="M:DSCore.CurveMapper.CurveBase.GenerateFromDomain(System.Collections.Generic.List{System.Double},System.Func{System.Double,System.Double})">
-            <summary>Generates X and Y values by mapping domain inputs to canvas space and evaluating a curve function.</summary>
+            <summary>透過將定義域輸入對映至圖元區空間並演算曲線函數，產生 X 和 Y 值。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.GaussianCurve">
             <summary>表示 CurveMapper 中的高斯曲線。

@@ -170,13 +170,13 @@
             <summary>파생 클래스에서 곡선 값을 생성하기 위해 구현해야 하는 추상 메서드입니다.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Collections.Generic.List{System.Double},System.Boolean)">
-            <summary>X 값을 검색하는 일반적인 방법입니다.</summary>
+            <summary>X 값을 검색하는 일반적인 메서드입니다.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Collections.Generic.List{System.Double},System.Boolean)">
-            <summary>Y 값을 검색하는 일반적인 방법입니다.</summary>
+            <summary>Y 값을 검색하는 일반적인 메서드입니다.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.CurveBase.GenerateFromDomain(System.Collections.Generic.List{System.Double},System.Func{System.Double,System.Double})">
-            <summary>Generates X and Y values by mapping domain inputs to canvas space and evaluating a curve function.</summary>
+            <summary>도메인 입력을 캔버스 공간에 매핑하고 곡선 함수를 계산하여 X 및 Y 값을 생성합니다.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.GaussianCurve">
             <summary>CurveMapper의 가우스 곡선을 나타냅니다.
