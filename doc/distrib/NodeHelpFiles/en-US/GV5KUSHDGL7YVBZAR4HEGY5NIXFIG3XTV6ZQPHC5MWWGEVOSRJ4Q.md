@@ -5,11 +5,11 @@ Define the limits for the x-coordinates by setting the minimum and maximum value
 
 Select a mathematical curve from the provided options, which includes Linear, Sine, Cosine, Perlin Noise, Bezier, Gaussian, Parabolic, Square Root, and Power curves. Use interactive control points to adjust the shape of the selected curve, tailoring it to your specific needs.
 
-You can lock the curve shape using the lock button, preventing further modifications to the curve. Additionally, you can reset the shape to its default state by using the reset button inside the node.
+You can lock the curve shape using the lock button, preventing further modifications to the curve. Additionally, you can reset the shape to its default state by using the reset button inside the node. If you get NaN or Null as outputs, you can find more details [here](https://dynamobim.org/introducing-the-curve-mapper-node-in-dynamo/#CurveMapper_Known_Issues) on why you might be seeing this.
 
 For example, to redistribute 80 points along a sine curve within the range of 0 to 20, set Min to 0, Max to 20, and Values to 80. After selecting the sine curve and adjusting its shape as needed, the `Curve Mapper` node outputs 80 points with x-coordinates that follow the sine curve pattern along the y-axis.
 
-To map unevenly distributed values along a Gaussian curve, set the minimum and maximum range and provide the series of values. After selecting the Gaussian curve and adjusting its shape as needed, the `Curve Mapper` node redistributes the series of values along x-coordinates using the specified range and maps the values along the curve pattern.
+To map unevenly distributed values along a Gaussian curve, set the minimum and maximum range and provide the series of values. After selecting the Gaussian curve and adjusting its shape as needed, the `Curve Mapper` node redistributes the series of values along x-coordinates using the specified range and maps the values along the curve pattern. For in-depth documentation on how the node works and how to set inputs, check out [this blog post](https://dynamobim.org/introducing-the-curve-mapper-node-in-dynamo) focusing on the Curve Mapper.
 
 
 
