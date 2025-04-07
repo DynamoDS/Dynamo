@@ -794,6 +794,13 @@ namespace CoreNodeModels
             // Ignore invalid inputs & grab input data
             if (!(data is ArrayList inputs) || inputs.Count < 5) return;
 
+            // Try parsing all 4 double values
+            bool anyInvalid =
+                !double.TryParse(inputs[0]?.ToString(), out var p0) ||
+                !double.TryParse(inputs[1]?.ToString(), out var p1) ||
+                !double.TryParse(inputs[2]?.ToString(), out var p2) ||
+                !double.TryParse(inputs[3]?.ToString(), out var p3);
+
             var minValueX = double.TryParse(inputs[0]?.ToString(), out var minX) ? minX : MinLimitX;
             var maxValueX = double.TryParse(inputs[1]?.ToString(), out var maxX) ? maxX : MaxLimitX;
             var minValueY = double.TryParse(inputs[2]?.ToString(), out var minY) ? minY : MinLimitY;
@@ -833,6 +840,10 @@ namespace CoreNodeModels
             if (!IsValidInput())
             {
                 Warning(Properties.Resources.CurveMapperWarningMessage, isPersistent: true);
+            }
+            else if (!anyInvalid)
+            {
+                ClearErrorsAndWarnings();
             }
         }
 
@@ -948,6 +959,11 @@ namespace CoreNodeModels
                 AstFactory.BuildIdentifier(AstIdentifierBase + "_dataBridge"),
                 VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputValues))
             );
+
+            if (!InPorts[0].IsConnected || !InPorts[1].IsConnected || !InPorts[2].IsConnected || !InPorts[3].IsConnected || !InPorts[4].IsConnected)
+            {
+                return new[] { xValuesAssignment, yValuesAssignment };
+            }
 
             return new[] { xValuesAssignment, yValuesAssignment, dataBridgeCall };
         }
