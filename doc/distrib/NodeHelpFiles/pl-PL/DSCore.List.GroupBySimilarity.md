@@ -3,7 +3,7 @@ Węzeł `List.GroupBySimilarity` grupuje elementy listy na podstawie sąsiadowan
 
 Użyj wartości wejściowej `tolerance`, aby określić podobieństwo elementów. W przypadku list liczb wartość 'tolerance' reprezentuje maksymalną dopuszczalną różnicę między dwiema liczbami, które można uznać za podobne.
 
-For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is limited to 10.
+W przypadku list ciągów 'tolerance' oznacza maksymalną liczbę znaków, które mogą być różne między dwoma ciągami — na potrzeby porównania używana jest odległość Levenshteina. Maksymalna tolerancja dla ciągów jest ustawiona na wartość 10.
 
 Wejściowa wartość logiczna (Boolean) `considerAdjacency` wskazuje, czy sąsiadowanie powinno być uwzględniane podczas tworzenia grup elementów. Jeśli wartością jest True (Prawda), zgrupowane zostaną tylko sąsiadujące elementy, które są podobne. Jeśli wartością jest False (Fałsz), do tworzenia klastrów zostanie użyte samo podobieństwo, niezależnie od sąsiadowania.
 

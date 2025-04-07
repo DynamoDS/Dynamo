@@ -187,7 +187,7 @@
     <value>시스템에서 디렉토리를 선택하여 해당 경로를 반환할 수 있습니다</value>
   </data>
   <data name="DoubleInputNodeDescription" xml:space="preserve">
-    <value>숫자를 만듭니다.</value>
+    <value>숫자를 작성합니다.</value>
   </data>
   <data name="DoubleSliderDescription" xml:space="preserve">
     <value>숫자 값을 생성합니다</value>
@@ -208,7 +208,7 @@
     <value>지정된 경로에서 파일 객체를 작성합니다</value>
   </data>
   <data name="FileObjectPortDataPathToolTip" xml:space="preserve">
-    <value>파일 경로를 문자열로.</value>
+    <value>파일 경로를 문자열로 전환합니다.</value>
   </data>
   <data name="FileObjectPortDataResultToolTip" xml:space="preserve">
     <value>파일 객체</value>
@@ -340,7 +340,7 @@
     <value>지정된 범위에서 숫자 또는 문자의 시퀀스를 작성합니다</value>
   </data>
   <data name="SequenceDescription" xml:space="preserve">
-    <value>숫자의 시퀀스를 만듭니다.</value>
+    <value>숫자 시퀀스를 작성합니다.</value>
   </data>
   <data name="OrDescription" xml:space="preserve">
     <value>부울 OR: 입력 중 하나가 true인 경우 True를 반환합니다. 모두가 true가 아니면 False를 반환합니다.</value>
@@ -646,17 +646,17 @@ Default value (int): {0}</value>
     <value>x-MaxLimit</value>
   </data>
   <data name="CurveMapperXMaxLimitInputPortToolTip" xml:space="preserve">
-    <value>Maximum value for the X-axis domain.
+    <value>X축 도메인의 최대값입니다.
 
-Default value (double): {0}</value>
+기본값(double): {0}</value>
   </data>
   <data name="CurveMapperXMinLimitInputPortName" xml:space="preserve">
     <value>x-MinLimit</value>
   </data>
   <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
-    <value>Minimum value for the X-axis domain.
+    <value>X축 도메인의 최소값입니다.
 
-Default value (double): {0}</value>
+기본값(double): {0}</value>
   </data>
   <data name="CurveMapperXValuesOutputPortName" xml:space="preserve">
     <value>x-Values</value>
@@ -670,17 +670,17 @@ double[]</value>
     <value>y-MaxLimit</value>
   </data>
   <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
-    <value>Maximum value for the Y-axis domain.
+    <value>Y축 도메인의 최대값입니다.
 
-Default value (double): {0}</value>
+기본값(double): {0}</value>
   </data>
   <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
     <value>y-MinLimit</value>
   </data>
   <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
-    <value>Minimum value for the Y-axis domain.
+    <value>Y축 도메인의 최소값입니다.
 
-Default value (double): {0}</value>
+기본값(double): {0}</value>
   </data>
   <data name="CurveMapperYValuesOutputPortName" xml:space="preserve">
     <value>y-Values</value>

@@ -3,7 +3,7 @@ Os clusters `List.GroupBySimilarity` listam elementos com base na adjacência de
 
 Use a entrada `tolerance` para determinar a similaridade dos elementos. Para listas de números, o valor de 'tolerance' representa a diferença máxima permitida entre dois números para que sejam considerados semelhantes.
 
-For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is limited to 10.
+Para listas de sequências de caracteres, 'tolerance' representa o número máximo de caracteres que podem diferir entre duas sequências de caracteres, usando a distância de Levenshtein para comparação. A tolerância máxima para as sequências de caracteres é definida como 10.
 
 A entrada booleana `considerAdjacency` indica se a adjacência deve ser considerada ao agrupar os elementos. Se True, somente os elementos adjacentes que são similares serão agrupados. Se False, somente a similaridade será usada para formar clusters, independentemente da adjacência.
 
