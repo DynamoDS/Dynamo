@@ -705,7 +705,6 @@
     <Compile Include="Utilities\ActionDebouncer.cs" />
     <Compile Include="ViewModels\Search\BrowserInternalElementViewModel.cs" />
     <Compile Include="ViewModels\Search\BrowserItemViewModel.cs" />
-    <Compile Include="ViewModels\Search\ClusterAutocompleteResult.cs" />
     <Compile Include="ViewModels\Search\NodeAutoCompleteSearchViewModel.cs" />
     <Compile Include="ViewModels\Search\NodeSearchElementViewModel.cs" />
     <Compile Include="ViewModels\Core\StateMachine.cs" />

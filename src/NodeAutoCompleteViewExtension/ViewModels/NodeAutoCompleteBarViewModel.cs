@@ -102,11 +102,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
-        private IEnumerable<ClusterAutocompleteResult> clusterResults;
+        private IEnumerable<NodeAutoCompleteClusterResult> clusterResults;
         /// <summary>
         /// Cluster autocomplete search results.
         /// </summary>
-        public IEnumerable<ClusterAutocompleteResult> ClusterResults
+        public IEnumerable<NodeAutoCompleteClusterResult> ClusterResults
         {
             get
             {
@@ -862,7 +862,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             Task.Run(() =>
             {
                 fullResults = GetMLNodeClusterAutocompleteResults();
-                var comboboxResults = fullResults.Results.Select(x => new ClusterAutocompleteResult { Description = x.Description });
+                var comboboxResults = fullResults.Results.Select(x => new NodeAutoCompleteClusterResult { Description = x.Description });
                 dynamoViewModel.UIDispatcher.BeginInvoke(() =>
                 {                    
                     if (!IsOpen)
