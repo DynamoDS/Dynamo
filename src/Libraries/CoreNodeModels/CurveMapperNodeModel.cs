@@ -834,6 +834,10 @@ namespace CoreNodeModels
             {
                 Warning(Properties.Resources.CurveMapperWarningMessage, isPersistent: true);
             }
+            else
+            {
+                this.ClearErrorsAndWarnings();
+            }
         }
 
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
