@@ -208,7 +208,7 @@
     <value>特定のパスからファイル オブジェクトを作成します</value>
   </data>
   <data name="FileObjectPortDataPathToolTip" xml:space="preserve">
-    <value>ファイルへのパス(文字列)。</value>
+    <value>文字列としてのファイルへのパス。</value>
   </data>
   <data name="FileObjectPortDataResultToolTip" xml:space="preserve">
     <value>ファイル オブジェクト</value>
@@ -646,17 +646,17 @@ Default value (int): {0}</value>
     <value>x-MaxLimit</value>
   </data>
   <data name="CurveMapperXMaxLimitInputPortToolTip" xml:space="preserve">
-    <value>Maximum value for the X-axis domain.
+    <value>X 軸ドメインの最大値。
 
-Default value (double): {0}</value>
+既定値(double): {0}</value>
   </data>
   <data name="CurveMapperXMinLimitInputPortName" xml:space="preserve">
     <value>x-MinLimit</value>
   </data>
   <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
-    <value>Minimum value for the X-axis domain.
+    <value>X 軸ドメインの最小値。
 
-Default value (double): {0}</value>
+既定値(double): {0}</value>
   </data>
   <data name="CurveMapperXValuesOutputPortName" xml:space="preserve">
     <value>x-Values</value>
@@ -670,17 +670,17 @@ double[]</value>
     <value>y-MaxLimit</value>
   </data>
   <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
-    <value>Maximum value for the Y-axis domain.
+    <value>Y 軸ドメインの最大値。
 
-Default value (double): {0}</value>
+既定値(double): {0}</value>
   </data>
   <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
     <value>y-MinLimit</value>
   </data>
   <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
-    <value>Minimum value for the Y-axis domain.
+    <value>Y 軸ドメインの最小値。
 
-Default value (double): {0}</value>
+既定値(double): {0}</value>
   </data>
   <data name="CurveMapperYValuesOutputPortName" xml:space="preserve">
     <value>y-Values</value>

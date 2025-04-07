@@ -176,7 +176,7 @@
             <summary>Y 値を取得するための一般的な方法です。</summary>
         </member>
         <member name="M:DSCore.CurveMapper.CurveBase.GenerateFromDomain(System.Collections.Generic.List{System.Double},System.Func{System.Double,System.Double})">
-            <summary>Generates X and Y values by mapping domain inputs to canvas space and evaluating a curve function.</summary>
+            <summary>ドメイン入力をキャンバス空間にマッピングし、曲線関数を評価することで X 値と Y 値を生成します。</summary>
         </member>
         <member name="T:DSCore.CurveMapper.GaussianCurve">
             <summary>CurveMapper のガウス曲線を表します。

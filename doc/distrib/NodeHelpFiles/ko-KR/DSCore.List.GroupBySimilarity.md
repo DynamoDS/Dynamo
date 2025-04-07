@@ -3,7 +3,7 @@
 
 `tolerance` 입력을 사용하여 요소의 유사성을 결정합니다. 숫자 리스트의 경우 'tolerance' 값은 두 숫자가 유사하다고 간주될 수 있는 최대 허용 차이를 나타냅니다.
 
-For string lists, 'tolerance' represents the maximum number of characters that can differ between two strings, using Levenshtein distance for comparison. Maximum tolerance for strings is limited to 10.
+문자열 리스트에서 '공차'는 비교를 위해 Levenshtein 거리를 사용하여 두 문자열 간에 다를 수 있는 최대 문자 수를 나타냅니다. 문자열의 최대 공차는 10으로 제한됩니다.
 
 `considerAdjacency` 부울 입력은 요소를 클러스터링할 때 인접성을 고려해야 하는지 여부를 나타냅니다. True인 경우 유사한 인접 요소만 함께 클러스터링됩니다. False이면 인접성에 관계없이 유사성만을 사용하여 클러스터를 형성합니다.
 
