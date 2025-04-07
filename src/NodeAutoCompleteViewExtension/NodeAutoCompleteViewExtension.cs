@@ -186,9 +186,9 @@ namespace Dynamo.NodeAutoComplete
             nodeAutoCompleteBarViewModel.PortViewModel = portViewModel;
 
             //TODO : I think we can reuse the window too.
-            var nnodeAutoCompleteBarWindow = new NodeAutoCompleteBarView(parentWindow, nodeAutoCompleteBarViewModel);
-            nnodeAutoCompleteBarWindow.Show();
-            portViewModel.SetupNodeAutoCompleteClusterWindowPlacement(nnodeAutoCompleteBarWindow);
+            var nodeAutoCompleteBarWindow = new NodeAutoCompleteBarView(parentWindow, nodeAutoCompleteBarViewModel);
+            nodeAutoCompleteBarWindow.Show();
+            portViewModel.SetupNodeAutoCompleteClusterWindowPlacement(nodeAutoCompleteBarWindow);
         }
     }
 }
