@@ -682,7 +682,7 @@ namespace CoreNodeModels
 
         #region Private Methods
 
-        private bool IsValidInput()
+        private bool HasValidRangesAndCount()
         {
             if (pointsCount == null || pointsCount.Count == 0)
                 return false;
@@ -795,7 +795,7 @@ namespace CoreNodeModels
             if (!(data is ArrayList inputs) || inputs.Count < 5) return;
 
             // Try parsing all 4 double values
-            bool anyInvalid =
+            bool hasInvalidFormat =
                 !double.TryParse(inputs[0]?.ToString(), out var p0) ||
                 !double.TryParse(inputs[1]?.ToString(), out var p1) ||
                 !double.TryParse(inputs[2]?.ToString(), out var p2) ||
@@ -837,11 +837,15 @@ namespace CoreNodeModels
                 RaisePropertyChanged(propertyName);
             }
 
-            if (!IsValidInput())
+            // Check both logic and format:
+            // - HasValidRangesAndCount() ensures values make sense (e.g. min ≠ max, count ≥ 2)
+            // - hasInvalidFormat ensures inputs can be parsed (are single scalar values and not lists)
+            // Only clear warnings if both checks pass.
+            if (!HasValidRangesAndCount())
             {
                 Warning(Properties.Resources.CurveMapperWarningMessage, isPersistent: true);
             }
-            else if (!anyInvalid)
+            else if (!hasInvalidFormat)
             {
                 ClearErrorsAndWarnings();
             }
@@ -960,7 +964,7 @@ namespace CoreNodeModels
                 VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputValues))
             );
 
-            if (!InPorts[0].IsConnected || !InPorts[1].IsConnected || !InPorts[2].IsConnected || !InPorts[3].IsConnected || !InPorts[4].IsConnected)
+            if (InPorts.Any(x => !x.IsConnected))
             {
                 return new[] { xValuesAssignment, yValuesAssignment };
             }
