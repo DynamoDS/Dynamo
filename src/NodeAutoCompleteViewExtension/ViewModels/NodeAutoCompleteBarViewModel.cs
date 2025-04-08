@@ -47,6 +47,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         private bool displayLowConfidence;
         private const string nodeAutocompleteMLEndpoint = "MLNodeAutocomplete";
         private const string nodeClusterAutocompleteMLEndpoint = "MLNodeClusterAutocomplete";
+        private const double minClusterConfidenceScore = 0.1;
 
         // Lucene search utility to perform indexing operations just for NodeAutocomplete.
         internal LuceneSearchUtility LuceneUtility
@@ -124,6 +125,21 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
+        /// <summary>
+        /// Return the qualified results from the ML service above preferred confidence threshold
+        /// </summary>
+        internal IEnumerable<ClusterResultItem> QualifiedResults
+        {
+            get
+            {
+                if (fullResults == null)
+                {
+                    return null;
+                }
+                return fullResults.Results.Where(x => double.Parse(x.Probability) * 100 > minClusterConfidenceScore);
+            }
+        }
+
         public bool ResultsLoaded => ClusterResults != null;
 
         public bool IsOpen { get; set; }
@@ -160,7 +176,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             {
                 return;
             }
-            var results = fullResults.Results.ToList();
+            var results = QualifiedResults.ToList();
             if(index >=  0 && index  < results.Count)
             {
                 AddCluster(results[index]);
@@ -862,7 +878,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             Task.Run(() =>
             {
                 fullResults = GetMLNodeClusterAutocompleteResults();
-                var comboboxResults = fullResults.Results.Select(x => new NodeAutoCompleteClusterResult { Description = x.Description });
+                var comboboxResults = QualifiedResults.Select(x => new NodeAutoCompleteClusterResult { Description = x.Description });
                 dynamoViewModel.UIDispatcher.BeginInvoke(() =>
                 {                    
                     if (!IsOpen)
@@ -874,9 +890,9 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     
                     // this runs synchronously on the UI thread, so the UI can't dissapear during execution
                     ClusterResults = comboboxResults;
-                    if(fullResults.Results.Any())
+                    if(QualifiedResults.Any())
                     {
-                        var ClusterResultItem = fullResults.Results.First();
+                        var ClusterResultItem = QualifiedResults.First();
                         AddCluster(ClusterResultItem);
                     }
                 });
