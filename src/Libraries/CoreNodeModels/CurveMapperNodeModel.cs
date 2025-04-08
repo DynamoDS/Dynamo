@@ -449,8 +449,6 @@ namespace CoreNodeModels
             }
             if (!IsValidCurve())
             {
-                Warning(Properties.Resources.CurveMapperWarningMessage, isPersistent: true);
-
                 RenderValuesX = RenderValuesY = null;
                 OnNodeModified();
                 return;

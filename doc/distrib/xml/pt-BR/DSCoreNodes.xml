@@ -170,13 +170,13 @@
             <summary>Método abstrato a ser implementado por classes derivadas para gerar valores de curva.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.CurveBase.GetCurveXValues(System.Collections.Generic.List{System.Double},System.Boolean)">
-            <summary>Método comum para recuperar valores de X.</summary>
+            <summary>Método comum para recuperar os valores de X.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.CurveBase.GetCurveYValues(System.Collections.Generic.List{System.Double},System.Boolean)">
             <summary>Método comum para recuperar os valores de Y.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.CurveBase.GenerateFromDomain(System.Collections.Generic.List{System.Double},System.Func{System.Double,System.Double})">
-            <summary>Generates X and Y values by mapping domain inputs to canvas space and evaluating a curve function.</summary>
+            <summary>Gera os valores de X e Y mapeando as entradas de domínio para o espaço de tela e avaliando uma função de curva.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.GaussianCurve">
             <summary>Representa uma curva gaussiana no CurveMapper.

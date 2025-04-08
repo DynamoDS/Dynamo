@@ -176,7 +176,7 @@
             <summary>Allgemeine Methode zum Abrufen von Y-Werten.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.CurveBase.GenerateFromDomain(System.Collections.Generic.List{System.Double},System.Func{System.Double,System.Double})">
-            <summary>Generates X and Y values by mapping domain inputs to canvas space and evaluating a curve function.</summary>
+            <summary>Generiert X- und Y-Werte durch Zuordnen von Domäneneingaben zum Ansichtsbereich und Auswerten einer Kurvenfunktion.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.GaussianCurve">
             <summary>Stellt eine Gaußsche Kurve im CurveMapper dar.

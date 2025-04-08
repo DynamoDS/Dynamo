@@ -176,7 +176,7 @@
             <summary>Typowa metoda pobierania wartości Y.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.CurveBase.GenerateFromDomain(System.Collections.Generic.List{System.Double},System.Func{System.Double,System.Double})">
-            <summary>Generates X and Y values by mapping domain inputs to canvas space and evaluating a curve function.</summary>
+            <summary>Generuje wartości X i Y przez odwzorowanie danych wejściowych dziedziny na obszar rysunku i obliczenie funkcji krzywej.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.GaussianCurve">
             <summary>Reprezentuje krzywą Gaussa w węźle CurveMapper.

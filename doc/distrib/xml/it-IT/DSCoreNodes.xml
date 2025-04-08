@@ -176,7 +176,7 @@
             <summary>Metodo comune per il recupero di valori Y.</summary>
         </member>
         <member name="M:DSCore.CurveMapper.CurveBase.GenerateFromDomain(System.Collections.Generic.List{System.Double},System.Func{System.Double,System.Double})">
-            <summary>Generates X and Y values by mapping domain inputs to canvas space and evaluating a curve function.</summary>
+            <summary>Genera valori X e Y associando gli input del dominio allo spazio dell'area di disegno e valutando una funzione curva.</summary>
         </member>
         <member name="T:DSCore.CurveMapper.GaussianCurve">
             <summary>Rappresenta una curva gaussiana in CurveMapper.
