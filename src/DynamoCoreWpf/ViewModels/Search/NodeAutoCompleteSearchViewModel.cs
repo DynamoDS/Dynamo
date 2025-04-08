@@ -34,6 +34,7 @@ namespace Dynamo.ViewModels
     /// <summary>
     /// Search View Model for Node AutoComplete Search Bar
     /// </summary>
+    [Obsolete("This class will be removed in a future version of Dynamo")]
     public class NodeAutoCompleteSearchViewModel : SearchViewModel
     {
         internal PortViewModel PortViewModel { get; set; }
@@ -69,6 +70,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// For checking if the ML method is selected
         /// </summary>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public bool IsDisplayingMLRecommendation
         {
             get
@@ -80,6 +82,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// If MLAutocompleteTOU is approved
         /// </summary>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public bool IsMLAutocompleteTOUApproved
         {
             get
@@ -91,6 +94,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// If true, autocomplete method options are hidden from UI 
         /// </summary>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public bool HideAutocompleteMethodOptions
         {
             get
@@ -102,6 +106,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// The No Recommendations or Low Confidence Title
         /// </summary>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public string AutocompleteMLTitle
         {
             get { return autocompleteMLTitle; }
@@ -115,6 +120,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// The No Recommendations or Low Confidence message
         /// </summary>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public string AutocompleteMLMessage
         {
             get { return autocompleteMLMessage; }
@@ -128,6 +134,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Indicates the No recommendations / Low confidence message should be displayed (image and texts)
         /// </summary>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public bool DisplayAutocompleteMLStaticPage
         {
             get { return displayAutocompleteMLStaticPage; }
@@ -141,6 +148,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Indicates if display the Low confidence option and Tooltip
         /// </summary>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public bool DisplayLowConfidence
         {
             get { return displayLowConfidence; }
@@ -906,6 +914,7 @@ namespace Dynamo.ViewModels
                 this.core = core;
             }
 
+            [Obsolete("This method will be removed in a future version of Dynamo")]
             public int Compare(NodeSearchElement x, NodeSearchElement y)
             {
                 return CompareNodeSearchElementByTypeDistance(x, y, typeNameToCompareTo, core);
