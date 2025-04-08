@@ -171,7 +171,7 @@ namespace Dynamo.ViewModels
         }
 
         internal event Action<ShowHideFlags> RequestNodeAutoCompleteSearch;
-        internal event Action RequestDNAAutocompleteBar;
+        internal event Action<PortViewModel> RequestNodeAutoCompleteBar;
         internal event Action<ShowHideFlags, PortViewModel> RequestPortContextMenu;
         internal static event Action<MLNodeClusterAutoCompletionResponse> RequestNodeAutoCompleteViewExtension;
 
@@ -180,9 +180,9 @@ namespace Dynamo.ViewModels
             RequestNodeAutoCompleteSearch?.Invoke(flag);
         }
 
-        internal void OnRequestDNAAutocompleteBar()
+        internal void OnRequestNodeAutocompleteBar(PortViewModel viewModel)
         {
-            RequestDNAAutocompleteBar?.Invoke();
+            RequestNodeAutoCompleteBar?.Invoke(viewModel);
         }
 
         internal void OnRequestPortContextMenu(ShowHideFlags flag, PortViewModel viewModel)

@@ -22,15 +22,15 @@ using Newtonsoft.Json;
 using RestSharp;
 using System.Windows;
 
-namespace Dynamo.NodeAutoComplete
+namespace Dynamo.NodeAutoComplete.ViewModels
 {
-    public class NodeAutoCompleteViewModel : NotificationObject
+    public class NodeAutoCompletePanelViewModel : NotificationObject
     {
         internal UIElement DynamoView { get; set; }
         internal DynamoViewModel dynamoViewModel { get; set; }
 
         //constructor
-        internal NodeAutoCompleteViewModel(UIElement dynamoView, DynamoViewModel dvm)
+        internal NodeAutoCompletePanelViewModel(UIElement dynamoView, DynamoViewModel dvm)
         {
             DynamoView = dynamoView;
             dynamoViewModel = dvm;

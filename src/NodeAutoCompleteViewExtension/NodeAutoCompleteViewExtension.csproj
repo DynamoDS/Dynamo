@@ -14,6 +14,9 @@
     <EnableDefaultPageItems>false</EnableDefaultPageItems>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="Views\NodeAutoCompleteBarView.xaml" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\DynamoCoreWpf\DynamoCoreWpf.csproj">
       <Project>{51BB6014-43F7-4F31-B8D3-E3C37EBEDAF4}</Project>
       <Name>DynamoCoreWpf</Name>
@@ -36,7 +39,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Page Include="NodeAutoCompleteView.xaml">
+    <Page Include="Views\NodeAutoCompleteBarView.xaml" />
+    <Page Include="Views\NodeAutoCompletePanelView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
