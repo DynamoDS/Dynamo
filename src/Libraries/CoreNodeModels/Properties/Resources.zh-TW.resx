@@ -629,12 +629,12 @@
     <value>values</value>
   </data>
   <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
-    <value>Number of values to map or List of values to map.
+    <value>要對應的值數目或要對應的值清單。
 
-Default value (int): {0}</value>
+預設值 (int): {0}</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
-    <value>Redistributes a series of input values within the given range and maps them along a specified curve. If a single count is provided, it generates a series of values distributed along the x direction within the given range and then maps these values to the curve.</value>
+    <value>將一系列的輸入值在給定範圍內重新分佈，然後沿著指定的曲線對應這些值。如果提供單一計數，則會產生一系列在給定範圍內沿著 x 方向分佈的值，然後將這些值對應到曲線。</value>
   </data>
   <data name="CurveMapperSearchTags" xml:space="preserve">
     <value>graph;curve;mapper;math</value>
