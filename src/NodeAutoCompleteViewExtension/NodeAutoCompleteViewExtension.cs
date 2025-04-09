@@ -80,7 +80,7 @@ namespace Dynamo.NodeAutoComplete
 
         public override void Shutdown()
         {
-            // Do nothing for now
+            WorkspaceView.RequesNodeAutoCompleteBar -= OnNodeAutoCompleteBarRequested;
         }
 
         public override void Startup(ViewStartupParams viewStartupParams)
@@ -145,14 +145,13 @@ namespace Dynamo.NodeAutoComplete
             WorkspaceView.RequesNodeAutoCompleteBar += OnNodeAutoCompleteBarRequested;
 
         }
+
         public override void Closed()
         {
             if (this.nodeAutocompleteMenuItem != null)
             {
                 this.nodeAutocompleteMenuItem.IsChecked = false;
             }
-
-            WorkspaceView.RequesNodeAutoCompleteBar -= OnNodeAutoCompleteBarRequested;
         }
 
         internal void ShowClusterNodeAutocompleteResults(MLNodeClusterAutoCompletionResponse results)
