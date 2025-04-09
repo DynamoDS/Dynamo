@@ -1,15 +1,15 @@
 ## 深入資訊
-`Curve Mapper` node redistributes a series of input values within a defined range and leverages mathematical curves to map them along a specified curve. Mapping, in this context, means the values are redistributed in a way that their x-coordinates follow the shape of the curve along the y-axis.  This technique is particularly valuable for applications such as façade design, parametric roof structures, and other design calculations where specific patterns or distributions are required.
+`Curve Mapper` 節點將一系列的輸入值在定義的範圍內重新分佈，並利用數學曲線沿著指定的曲線對應這些值。在此脈絡下的對應，表示值的 x 座標會跟著沿 y 座標的曲線形狀來重新分佈值。這種技術對於立面設計、參數式屋頂結構和其他需要特定模式或分佈的設計計算等應用特別有價值。
 
-Define the limits for the x-coordinates by setting the minimum and maximum values. These limits set the boundaries within which the points will be redistributed. You can provide either a single count to generate a series of evenly distributed values or an existing series of values, which will be distributed along the x direction within the specified range and then mapped to the curve.
+透過設定最小值和最大值，定義 x 座標的限制。這些限制設定這些點將在當中重新分佈的邊界。您可以提供單一計數來產生一系列均勻分佈的值，或提供一系列既有的值，這些值將在指定的範圍內沿著 x 方向分佈，然後對應到曲線。
 
-Select a mathematical curve from the provided options, which includes Linear, Sine, Cosine, Perlin Noise, Bezier, Gaussian, Parabolic, Square Root, and Power curves. Use interactive control points to adjust the shape of the selected curve, tailoring it to your specific needs.
+從提供的選項中選取一條數學曲線，包括線性曲線、正弦曲線、餘弦曲線、柏林噪波曲線、Bezier 曲線、高斯曲線、拋物曲線、平方根曲線和冪曲線。使用互動式控制點可調整所選曲線的形狀，根據您的特定需求量身打造。
 
-You can lock the curve shape using the lock button, preventing further modifications to the curve. Additionally, you can reset the shape to its default state by using the reset button inside the node. If you get NaN or Null as outputs, you can find more details [here](https://dynamobim.org/introducing-the-curve-mapper-node-in-dynamo/#CurveMapper_Known_Issues) on why you might be seeing this.
+您可以使用鎖頭按鈕鎖住曲線形狀，避免曲線遭到修改。另外，也可以使用節點內的重設按鈕，將形狀重設為預設狀態。如果您在輸出結果得到 NaN 或空值，可以瀏覽 [這裡](https://dynamobim.org/introducing-the-curve-mapper-node-in-dynamo/#CurveMapper_Known_Issues) 查看更多詳細資料，瞭解您看到這些輸出的原因。
 
-For example, to redistribute 80 points along a sine curve within the range of 0 to 20, set Min to 0, Max to 20, and Values to 80. After selecting the sine curve and adjusting its shape as needed, the `Curve Mapper` node outputs 80 points with x-coordinates that follow the sine curve pattern along the y-axis.
+例如，若要在 0 到 20 的範圍內沿正弦曲線重新分佈 80 個點，請將 Min 設為 0、將 Max 設為 20、將 Values 設為 80。選取正弦曲線並視需要調整形狀後，`Curve Mapper` 節點輸出的 80 個點，其 x 座標是沿著 y 軸跟著正弦曲線型態計算而得。
 
-To map unevenly distributed values along a Gaussian curve, set the minimum and maximum range and provide the series of values. After selecting the Gaussian curve and adjusting its shape as needed, the `Curve Mapper` node redistributes the series of values along x-coordinates using the specified range and maps the values along the curve pattern. For in-depth documentation on how the node works and how to set inputs, check out [this blog post](https://dynamobim.org/introducing-the-curve-mapper-node-in-dynamo) focusing on the Curve Mapper.
+若要沿高斯曲線對應不均勻分佈的值，請設定最小和最大範圍並提供一系列值。選取高斯曲線並視需要調整形狀後，`Curve Mapper` 節點會使用指定的範圍沿著 x 座標重新分佈一系列值，並沿著曲線型態對應值。如需節點如何運作以及如何設定輸入的深入資訊文件，請查看 [這篇部落格文章](https://dynamobim.org/introducing-the-curve-mapper-node-in-dynamo) 瞭解 Curve Mapper。
 
 
 

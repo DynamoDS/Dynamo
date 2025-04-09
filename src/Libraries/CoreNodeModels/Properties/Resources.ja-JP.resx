@@ -626,15 +626,15 @@
 既定値: G</value>
   </data>
   <data name="CurveMapperCountInputPortName" xml:space="preserve">
-    <value>values</value>
+    <value>値</value>
   </data>
   <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
-    <value>Number of values to map or List of values to map.
+    <value>マッピングする値の数またはマッピングする値のリスト。
 
-Default value (int): {0}</value>
+既定値(int): {0}</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
-    <value>Redistributes a series of input values within the given range and maps them along a specified curve. If a single count is provided, it generates a series of values distributed along the x direction within the given range and then maps these values to the curve.</value>
+    <value>特定の範囲内で入力値を再分布し、指定した曲線に沿ってマッピングします。単一の数値が指定された場合は、特定の範囲内でX 方向に沿って分布される一連の値を生成し、それらを曲線にマッピングします。</value>
   </data>
   <data name="CurveMapperSearchTags" xml:space="preserve">
     <value>graph;curve;mapper;math</value>

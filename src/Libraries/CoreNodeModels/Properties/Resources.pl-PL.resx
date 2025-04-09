@@ -629,12 +629,12 @@ Wartość domyślna: G</value>
     <value>values</value>
   </data>
   <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
-    <value>Number of values to map or List of values to map.
+    <value>Liczba wartości do zamapowania lub lista wartości do zamapowania.
 
-Default value (int): {0}</value>
+Wartość domyślna (int): {0}</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
-    <value>Redistributes a series of input values within the given range and maps them along a specified curve. If a single count is provided, it generates a series of values distributed along the x direction within the given range and then maps these values to the curve.</value>
+    <value>Ponownie rozmieszcza szereg wartości wejściowych z podanego zakresu i mapuje je wzdłuż określonej krzywej. Jeśli podano pojedynczą liczbę, generuje szereg wartości rozłożonych wzdłuż kierunku X w podanym zakresie, a następnie mapuje te wartości na krzywą.</value>
   </data>
   <data name="CurveMapperSearchTags" xml:space="preserve">
     <value>graph;curve;mapper;math</value>
