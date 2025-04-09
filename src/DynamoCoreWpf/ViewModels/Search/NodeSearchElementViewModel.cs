@@ -4,14 +4,11 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Threading;
 using Dynamo.Configuration;
-using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
-using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Wpf.Utilities;
@@ -249,6 +246,7 @@ namespace Dynamo.Wpf.ViewModels
         /// <summary>
         /// Create the search element as node and connect to target port
         /// </summary>
+        [Obsolete("This command will be removed in a future version of Dynamo")]
         public ICommand CreateAndConnectCommand { get; }
 
         /// <summary>
