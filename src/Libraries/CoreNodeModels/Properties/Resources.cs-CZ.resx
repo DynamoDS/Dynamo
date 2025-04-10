@@ -626,15 +626,15 @@ V pracovních postupech generativního návrhu by tento uzel měl být použit k
 výchozí hodnota: G</value>
   </data>
   <data name="CurveMapperCountInputPortName" xml:space="preserve">
-    <value>values</value>
+    <value>hodnoty</value>
   </data>
   <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
-    <value>Number of values to map or List of values to map.
+    <value>Počet hodnot k mapování nebo seznam hodnot k mapování.
 
-Default value (int): {0}</value>
+Výchozí hodnota (int): {0}</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
-    <value>Redistributes a series of input values within the given range and maps them along a specified curve. If a single count is provided, it generates a series of values distributed along the x direction within the given range and then maps these values to the curve.</value>
+    <value>Přerozdělí řadu vstupních hodnot v daném rozsahu a mapuje je podél zadané křivky. Pokud je zadán jeden počet, vygeneruje řadu hodnot rozložených ve směru x v daném rozsahu a poté tyto hodnoty namapuje na křivku.</value>
   </data>
   <data name="CurveMapperSearchTags" xml:space="preserve">
     <value>graph;curve;mapper;math</value>

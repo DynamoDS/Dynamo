@@ -626,15 +626,15 @@ Nos fluxos de trabalho do Projeto generativo, esse nó deve ser usado para contr
 valor padrão: G</value>
   </data>
   <data name="CurveMapperCountInputPortName" xml:space="preserve">
-    <value>values</value>
+    <value>valores</value>
   </data>
   <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
-    <value>Number of values to map or List of values to map.
+    <value>Número de valores ou lista de valores para mapear.
 
-Default value (int): {0}</value>
+Valor padrão (int): {0}</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
-    <value>Redistributes a series of input values within the given range and maps them along a specified curve. If a single count is provided, it generates a series of values distributed along the x direction within the given range and then maps these values to the curve.</value>
+    <value>Redistribui uma série de valores de entrada dentro do intervalo fornecido e os mapeia ao longo de uma curva especificada. Se uma única contagem for fornecida, será gerada uma série de valores distribuídos ao longo da direção X dentro do intervalo fornecido e, em seguida, esses valores serão mapeados para a curva.</value>
   </data>
   <data name="CurveMapperSearchTags" xml:space="preserve">
     <value>graph;curve;mapper;math</value>
