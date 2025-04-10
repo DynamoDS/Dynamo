@@ -629,12 +629,12 @@
     <value>값</value>
   </data>
   <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
-    <value>Number of values to map or List of values to map.
+    <value>매핑할 값의 수 또는 매핑할 값의 목록입니다.
 
-Default value (int): {0}</value>
+기본값(int): {0}</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
-    <value>Redistributes a series of input values within the given range and maps them along a specified curve. If a single count is provided, it generates a series of values distributed along the x direction within the given range and then maps these values to the curve.</value>
+    <value>주어진 범위 내에서 일련의 입력 값을 재분포하여 지정된 곡선을 따라 해당 값을 매핑합니다. 단일 카운트가 제공되면 주어진 범위 내에서 x 방향을 따라 분포된 일련의 값을 생성한 다음 이 값을 곡선에 매핑합니다.</value>
   </data>
   <data name="CurveMapperSearchTags" xml:space="preserve">
     <value>graph;curve;mapper;math</value>

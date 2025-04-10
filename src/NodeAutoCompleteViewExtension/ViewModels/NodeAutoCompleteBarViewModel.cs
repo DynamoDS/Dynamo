@@ -31,6 +31,7 @@ using ProtoCore.Utils;
 using RestSharp;
 using Dynamo.Wpf.Utilities;
 using Dynamo.ViewModels;
+using System.Reflection;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
@@ -48,6 +49,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         private const string nodeAutocompleteMLEndpoint = "MLNodeAutocomplete";
         private const string nodeClusterAutocompleteMLEndpoint = "MLNodeClusterAutocomplete";
         private const double minClusterConfidenceScore = 0.1;
+        private static Assembly dynamoCoreWpfAssembly;
 
         // Lucene search utility to perform indexing operations just for NodeAutocomplete.
         internal LuceneSearchUtility LuceneUtility
@@ -630,7 +632,15 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 {
                     try
                     {
-                        var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(dynamoViewModel, nodeClusterAutocompleteMLEndpoint);
+                        if (dynamoCoreWpfAssembly is null)
+                        {
+                            dynamoCoreWpfAssembly = AppDomain.CurrentDomain
+                                .GetAssemblies()
+                                .FirstOrDefault(a => a.GetName().Name.Equals("DynamoCoreWPF", StringComparison.OrdinalIgnoreCase));
+                        }
+
+
+                        var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(dynamoCoreWpfAssembly, nodeClusterAutocompleteMLEndpoint);
                         var client = new RestClient(uri);
                         var request = new RestRequest(string.Empty, Method.Post);
                         var tkn = tokenprovider?.GetAccessToken();
