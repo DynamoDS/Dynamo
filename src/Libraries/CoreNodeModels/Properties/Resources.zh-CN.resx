@@ -626,15 +626,15 @@
 默认值: G</value>
   </data>
   <data name="CurveMapperCountInputPortName" xml:space="preserve">
-    <value>values</value>
+    <value>值数</value>
   </data>
   <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
-    <value>Number of values to map or List of values to map.
+    <value>要映射的值数或要映射的值列表。
 
-Default value (int): {0}</value>
+默认值(int): {0}</value>
   </data>
   <data name="CurveMapperDescription" xml:space="preserve">
-    <value>Redistributes a series of input values within the given range and maps them along a specified curve. If a single count is provided, it generates a series of values distributed along the x direction within the given range and then maps these values to the curve.</value>
+    <value>重新分布给定范围内的一系列输入值并沿指定的曲线映射它们。如果提供了单个计数，则它将生成在给定范围内沿 X 方向分布的一系列值，然后将这些值映射到曲线。</value>
   </data>
   <data name="CurveMapperSearchTags" xml:space="preserve">
     <value>graph;curve;mapper;math</value>

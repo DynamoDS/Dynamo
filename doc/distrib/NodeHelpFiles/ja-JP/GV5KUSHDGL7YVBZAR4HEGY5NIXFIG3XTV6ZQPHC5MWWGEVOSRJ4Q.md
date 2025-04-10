@@ -1,15 +1,15 @@
 ## 詳細
-`Curve Mapper` node redistributes a series of input values within a defined range and leverages mathematical curves to map them along a specified curve. Mapping, in this context, means the values are redistributed in a way that their x-coordinates follow the shape of the curve along the y-axis.  This technique is particularly valuable for applications such as façade design, parametric roof structures, and other design calculations where specific patterns or distributions are required.
+`Curve Mapper` ノードは、定義された範囲内で一連の入力値を再分布し、数学的曲線を活用して、指定した曲線に沿って値をマッピングします。ここでのマッピングとは、X 座標が曲線の Y 軸方向の形状に従うように再分布することを意味します。この手法は、ファサード設計、パラメトリック屋根構造、および特定のパターンや分布が必要となるその他の設計計算などの用途で特に役立ちます。
 
-Define the limits for the x-coordinates by setting the minimum and maximum values. These limits set the boundaries within which the points will be redistributed. You can provide either a single count to generate a series of evenly distributed values or an existing series of values, which will be distributed along the x direction within the specified range and then mapped to the curve.
+X 座標の最小値と最大値を設定して、その範囲を定義します。この範囲は、点が再分布される境界となります。均一に分布する値を生成するための単一の数値、または既存の一連の値を指定できます。いずれの場合も、特定の範囲内で X 軸方向に沿って再分布され、曲線にマッピングされます。
 
-Select a mathematical curve from the provided options, which includes Linear, Sine, Cosine, Perlin Noise, Bezier, Gaussian, Parabolic, Square Root, and Power curves. Use interactive control points to adjust the shape of the selected curve, tailoring it to your specific needs.
+表示されたオプションから、線形曲線、正弦曲線、余弦曲線、パーリン ノイズ曲線、ベジェ曲線、ガウス曲線、放物曲線、平方根曲線、指数曲線などの数学的曲線を選択します。インタラクティブな制御点を使用して、選択した曲線の形状を特定のニーズに合わせて調整します。
 
-You can lock the curve shape using the lock button, preventing further modifications to the curve. Additionally, you can reset the shape to its default state by using the reset button inside the node. If you get NaN or Null as outputs, you can find more details [here](https://dynamobim.org/introducing-the-curve-mapper-node-in-dynamo/#CurveMapper_Known_Issues) on why you might be seeing this.
+ロック ボタンを使用して曲線の形状をロックし、それ以降の曲線の変更を防ぐことができます。また、ノード内のリセット ボタンを使用して、形状を既定の状態にリセットすることもできます。NaN または Null が出力された場合は、表示された理由の詳細を[こちら](https://dynamobim.org/introducing-the-curve-mapper-node-in-dynamo/#CurveMapper_Known_Issues)で確認できます。
 
-For example, to redistribute 80 points along a sine curve within the range of 0 to 20, set Min to 0, Max to 20, and Values to 80. After selecting the sine curve and adjusting its shape as needed, the `Curve Mapper` node outputs 80 points with x-coordinates that follow the sine curve pattern along the y-axis.
+たとえば、0 ～ 20 の範囲で正弦曲線に沿って 80 個の点を再分布するには、最小を 0、最大を 20、値を 80 に設定します。正弦曲線を選択し、必要に応じて形状を調整すると、`Curve Mapper` ノードは、Y 軸に沿った正弦曲線パターンに従って配置された X 座標を持つ、80 個の点を出力します。
 
-To map unevenly distributed values along a Gaussian curve, set the minimum and maximum range and provide the series of values. After selecting the Gaussian curve and adjusting its shape as needed, the `Curve Mapper` node redistributes the series of values along x-coordinates using the specified range and maps the values along the curve pattern. For in-depth documentation on how the node works and how to set inputs, check out [this blog post](https://dynamobim.org/introducing-the-curve-mapper-node-in-dynamo) focusing on the Curve Mapper.
+不均一に分布した値をガウス曲線に沿ってマッピングするには、最小範囲と最大範囲を設定し、一連の値を指定します。ガウス曲線を選択し、必要に応じて形状を調整すると、`Curve Mapper` ノードは、指定された範囲内で X 座標に沿って一連の値を再分布し、曲線パターンに沿って値をマッピングします。ノードの仕組みと入力設定の詳細なドキュメントについては、Curve Mapper に焦点を当てた[こちらのブログの投稿](https://dynamobim.org/introducing-the-curve-mapper-node-in-dynamo)で確認してください。
 
 
 
