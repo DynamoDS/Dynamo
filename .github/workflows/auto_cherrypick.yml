@@ -63,6 +63,7 @@ jobs:
             echo "Branch exists"
           else
             echo "Branch does not exist"
+            exit 1
           fi
         shell: bash
       - uses: actions/checkout@v4
