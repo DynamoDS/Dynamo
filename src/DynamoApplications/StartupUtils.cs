@@ -186,6 +186,40 @@ namespace Dynamo.Applications
             return model;
         }
 
+        /// <summary>
+        /// Attempts to import node libraries from assemblies located at the given list of importedPaths.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="importedPaths"></param>
+        internal static void ImportAssemblies(DynamoModel model, IEnumerable<string> importedPaths)
+        {
+            if (importedPaths != null)
+            {
+                importedPaths.ToList().ForEach(path =>
+                {
+                    try
+                    {
+
+                        var filePath = new System.IO.FileInfo(path);
+                        if (!filePath.Exists)
+                        {
+                            Console.WriteLine($"could not find requested import library at path{path}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"attempting to import assembly {path}");
+                            var assembly = Assembly.LoadFile(path);
+                            model.LoadNodeLibrary(assembly, true);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"exception while trying to load assembly {path}: {e}");
+                    }
+                });
+            }
+        }
+
         private static DynamoModel PrepareModel(
             string cliLocale,
             string asmPath,
@@ -217,6 +251,7 @@ namespace Dynamo.Applications
                 cliLocale: normalizedCLILocale
             );
             model.IsASMLoaded = isASMloaded;
+
             return model;
         }
 
@@ -236,6 +271,8 @@ namespace Dynamo.Applications
                 userDataFolder: cmdLineArgs.UserDataFolder,
                 commonDataFolder: cmdLineArgs.CommonDataFolder,
                 serviceMode: cmdLineArgs.ServiceMode);
+
+            ImportAssemblies(model, cmdLineArgs.ImportedPaths);
             return model;
         }
 
