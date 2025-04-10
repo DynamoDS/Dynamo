@@ -186,6 +186,33 @@ namespace Dynamo.Applications
             return model;
         }
 
+        /// <summary>
+        /// Attempts to import an assembly as a node library from a given file path.
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="path"></param>
+        internal static void ImportAssembly(DynamoModel model, string path)
+        {
+            try
+            {
+                var filePath = new System.IO.FileInfo(path);
+                if (!filePath.Exists)
+                {
+                    Console.WriteLine($"could not find requested import library at path{path}");
+                }
+                else
+                {
+                    Console.WriteLine($"attempting to import assembly {path}");
+                    var assembly = System.Reflection.Assembly.LoadFile(path);
+                    model.LoadNodeLibrary(assembly, true);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"exception while trying to load assembly {path}: {e}");
+            }
+        }
+
         private static DynamoModel PrepareModel(
             string cliLocale,
             string asmPath,
@@ -194,7 +221,8 @@ namespace Dynamo.Applications
             bool cliMode = true,
             string userDataFolder = "",
             string commonDataFolder = "",
-            bool serviceMode = false)
+            bool serviceMode = false,
+            IEnumerable<string> importedPaths = null)
         {
             var normalizedCLILocale = string.IsNullOrEmpty(cliLocale) ? null : cliLocale;
             IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
@@ -217,6 +245,15 @@ namespace Dynamo.Applications
                 cliLocale: normalizedCLILocale
             );
             model.IsASMLoaded = isASMloaded;
+
+            if (importedPaths != null)
+            {
+                importedPaths.ToList().ForEach(path =>
+                {
+                    ImportAssembly(model, path);
+                });
+            }
+
             return model;
         }
 
@@ -235,7 +272,8 @@ namespace Dynamo.Applications
                 analyticsInfo: cmdLineArgs.AnalyticsInfo,
                 userDataFolder: cmdLineArgs.UserDataFolder,
                 commonDataFolder: cmdLineArgs.CommonDataFolder,
-                serviceMode: cmdLineArgs.ServiceMode);
+                serviceMode: cmdLineArgs.ServiceMode,
+                importedPaths: cmdLineArgs.ImportedPaths);
             return model;
         }
 
