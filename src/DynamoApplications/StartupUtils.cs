@@ -187,29 +187,36 @@ namespace Dynamo.Applications
         }
 
         /// <summary>
-        /// Attempts to import an assembly as a node library from a given file path.
+        /// Attempts to import node libraries from assemblies located at the given list of importedPaths.
         /// </summary>
         /// <param name="model"></param>
-        /// <param name="path"></param>
-        internal static void ImportAssembly(DynamoModel model, string path)
+        /// <param name="importedPaths"></param>
+        internal static void ImportAssemblies(DynamoModel model, IEnumerable<string> importedPaths)
         {
-            try
+            if (importedPaths != null)
             {
-                var filePath = new System.IO.FileInfo(path);
-                if (!filePath.Exists)
+                importedPaths.ToList().ForEach(path =>
                 {
-                    Console.WriteLine($"could not find requested import library at path{path}");
-                }
-                else
-                {
-                    Console.WriteLine($"attempting to import assembly {path}");
-                    var assembly = System.Reflection.Assembly.LoadFile(path);
-                    model.LoadNodeLibrary(assembly, true);
-                }
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine($"exception while trying to load assembly {path}: {e}");
+                    try
+                    {
+
+                        var filePath = new System.IO.FileInfo(path);
+                        if (!filePath.Exists)
+                        {
+                            Console.WriteLine($"could not find requested import library at path{path}");
+                        }
+                        else
+                        {
+                            Console.WriteLine($"attempting to import assembly {path}");
+                            var assembly = Assembly.LoadFile(path);
+                            model.LoadNodeLibrary(assembly, true);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"exception while trying to load assembly {path}: {e}");
+                    }
+                });
             }
         }
 
@@ -221,8 +228,7 @@ namespace Dynamo.Applications
             bool cliMode = true,
             string userDataFolder = "",
             string commonDataFolder = "",
-            bool serviceMode = false,
-            IEnumerable<string> importedPaths = null)
+            bool serviceMode = false)
         {
             var normalizedCLILocale = string.IsNullOrEmpty(cliLocale) ? null : cliLocale;
             IPathResolver pathResolver = CreatePathResolver(false, string.Empty, string.Empty, string.Empty);
@@ -246,14 +252,6 @@ namespace Dynamo.Applications
             );
             model.IsASMLoaded = isASMloaded;
 
-            if (importedPaths != null)
-            {
-                importedPaths.ToList().ForEach(path =>
-                {
-                    ImportAssembly(model, path);
-                });
-            }
-
             return model;
         }
 
@@ -272,8 +270,9 @@ namespace Dynamo.Applications
                 analyticsInfo: cmdLineArgs.AnalyticsInfo,
                 userDataFolder: cmdLineArgs.UserDataFolder,
                 commonDataFolder: cmdLineArgs.CommonDataFolder,
-                serviceMode: cmdLineArgs.ServiceMode,
-                importedPaths: cmdLineArgs.ImportedPaths);
+                serviceMode: cmdLineArgs.ServiceMode);
+
+            ImportAssemblies(model, cmdLineArgs.ImportedPaths);
             return model;
         }
 

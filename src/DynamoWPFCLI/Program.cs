@@ -110,10 +110,7 @@ namespace DynamoWPFCLI
                     }
                 });
 
-            cmdLineArgs.ImportedPaths.ToList().ForEach(path =>
-            {
-                StartupUtils.ImportAssembly(model, path);
-            });
+            StartupUtils.ImportAssemblies(model, cmdLineArgs.ImportedPaths);
 
             return viewModel;
         }
