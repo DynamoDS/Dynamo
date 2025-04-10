@@ -3609,6 +3609,22 @@
             "keywords": "mesh, meshes"
         },
         {
+            "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Mesh.ByPointsIndexGroups",
+            "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Mesh.ByPointsIndexGroups.Small?path=ProtoGeometry.dll",
+            "contextData": "Autodesk.DesignScript.Geometry.Mesh.ByPointsIndexGroups@Autodesk.DesignScript.Geometry.Point[],Autodesk.DesignScript.Geometry.IndexGroup[]",
+            "parameters": null,
+            "itemType": "create",
+            "keywords": "mesh, meshes"
+        },
+        {
+            "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices",
+            "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices.Small?path=ProtoGeometry.dll",
+            "contextData": "Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices@Autodesk.DesignScript.Geometry.Point[],int[]",
+            "parameters": null,
+            "itemType": "create",
+            "keywords": "mesh, meshes"
+        },
+        {
             "fullyQualifiedName": "Autodesk.DesignScript.Geometry.Mesh.FaceIndices",
             "iconUrl": "http://localhost/icons/Autodesk.DesignScript.Geometry.Mesh.FaceIndices.Small?path=ProtoGeometry.dll",
             "contextData": "Autodesk.DesignScript.Geometry.Mesh.FaceIndices",
