@@ -680,7 +680,7 @@ namespace CoreNodeModels
 
         #region Private Methods
 
-        private bool IsValidInput()
+        private bool HasValidRangesAndCount()
         {
             if (pointsCount == null || pointsCount.Count == 0)
                 return false;
@@ -792,6 +792,13 @@ namespace CoreNodeModels
             // Ignore invalid inputs & grab input data
             if (!(data is ArrayList inputs) || inputs.Count < 5) return;
 
+            // Try parsing all 4 double values
+            bool hasInvalidFormat =
+                !double.TryParse(inputs[0]?.ToString(), out var p0) ||
+                !double.TryParse(inputs[1]?.ToString(), out var p1) ||
+                !double.TryParse(inputs[2]?.ToString(), out var p2) ||
+                !double.TryParse(inputs[3]?.ToString(), out var p3);
+
             var minValueX = double.TryParse(inputs[0]?.ToString(), out var minX) ? minX : MinLimitX;
             var maxValueX = double.TryParse(inputs[1]?.ToString(), out var maxX) ? maxX : MaxLimitX;
             var minValueY = double.TryParse(inputs[2]?.ToString(), out var minY) ? minY : MinLimitY;
@@ -826,6 +833,19 @@ namespace CoreNodeModels
             foreach (var propertyName in new[] { nameof(MinLimitX), nameof(MaxLimitX), nameof(MinLimitY), nameof(MaxLimitY), nameof(PointsCount) })
             {
                 RaisePropertyChanged(propertyName);
+            }
+
+            // Check both logic and format:
+            // - HasValidRangesAndCount() ensures values make sense (e.g. min ≠ max, count ≥ 2)
+            // - hasInvalidFormat ensures inputs can be parsed (are single scalar values and not lists)
+            // Only clear warnings if both checks pass.
+            if (!HasValidRangesAndCount())
+            {
+                Warning(Properties.Resources.CurveMapperWarningMessage, isPersistent: true);
+            }
+            else if (!hasInvalidFormat)
+            {
+                ClearErrorsAndWarnings();
             }
         }
 
@@ -941,6 +961,11 @@ namespace CoreNodeModels
                 AstFactory.BuildIdentifier(AstIdentifierBase + "_dataBridge"),
                 VMDataBridge.DataBridge.GenerateBridgeDataAst(GUID.ToString(), AstFactory.BuildExprList(inputValues))
             );
+
+            if (InPorts.Any(x => !x.IsConnected))
+            {
+                return new[] { xValuesAssignment, yValuesAssignment };
+            }
 
             return new[] { xValuesAssignment, yValuesAssignment, dataBridgeCall };
         }
