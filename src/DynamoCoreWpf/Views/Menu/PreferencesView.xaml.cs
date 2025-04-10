@@ -570,11 +570,12 @@ namespace Dynamo.Wpf.Views
             }
         }
 
+        private static readonly Regex numberRegex = new Regex("[^0-9]+", RegexOptions.Compiled);
+
         // Number input textbox validation
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
         {
-            Regex regex = new Regex("[^0-9]+");
-            e.Handled = regex.IsMatch(e.Text);
+            e.Handled = numberRegex.IsMatch(e.Text);
         }
 
         internal void Dispose()
