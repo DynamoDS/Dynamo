@@ -491,5 +491,37 @@ namespace Dynamo.Applications
             }
             return output;
         }
+
+        /// <summary>
+        /// Attempts to import assemblies as node libraries from a given set of file paths.
+        /// </summary>
+        /// <param name="model">The Dynamo model</param>
+        /// <param name="paths">The list of paths from which to attempt importing </param>
+        public static void ImportAssemblies(DynamoModel model, IEnumerable<string> paths)
+        {
+            ArgumentNullException.ThrowIfNull(model, nameof(model));
+            ArgumentNullException.ThrowIfNull(paths, nameof(paths));
+
+            foreach(var path in paths)
+            {
+                try
+                {
+                    var filePath = new System.IO.FileInfo(path);
+                    if (!filePath.Exists)
+                    {
+                        model.Logger?.Log($"Could not find requested import library at path{path}");
+                    }
+                    else
+                    {
+                        var assembly = Assembly.LoadFile(path);
+                        model.LoadNodeLibrary(assembly, true);
+                    }
+                }
+                catch (Exception e)
+                {
+                    model.Logger?.Log($"Exception while trying to load assembly {path}: {e}");
+                }
+            }
+        }
     }
 }
