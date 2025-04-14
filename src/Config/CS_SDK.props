@@ -59,10 +59,6 @@
     <RuntimeIdentifier>win-x64</RuntimeIdentifier>
     <DefineConstants>$(DefineConstants);_WINDOWS</DefineConstants>
   </PropertyGroup>
-  <PropertyGroup Condition="$(Platform.Contains('Linux'))" >
-    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
-    <DefineConstants>$(DefineConstants);_LINUX</DefineConstants>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(UILib)' == 'true' AND $(RuntimeIdentifier.Contains('win'))">
     <TargetFramework>$(TargetFramework)-windows</TargetFramework>
     <UseWPF>true</UseWPF>

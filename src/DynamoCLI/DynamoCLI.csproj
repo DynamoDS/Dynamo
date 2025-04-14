@@ -2,6 +2,9 @@
   <ImportGroup Label="PropertySheets">
     <Import Project="$(SolutionDir)Config\CS_SDK.props" />
   </ImportGroup>
+    <PropertyGroup Condition="$(Platform.Contains('Linux'))" >
+    <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+  </PropertyGroup>
   <PropertyGroup>
     <ProjectGuid>{5F9AE581-6781-4A4C-A262-1B06CD27208B}</ProjectGuid>
     <OutputType>Exe</OutputType>
