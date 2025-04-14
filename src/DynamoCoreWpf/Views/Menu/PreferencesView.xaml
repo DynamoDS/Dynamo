@@ -1352,6 +1352,7 @@
                                         <Slider Width="100"
                                             Minimum="8"
                                             Maximum="512"
+                                            Style="{StaticResource SliderStyle}"
                                             Value="{Binding Path=TessellationDivisions, Mode=TwoWay}">
                                         </Slider>
                                         <TextBlock Text="{x:Static p:Resources.DynamoViewSettingMenuHighRenderPrecision}"
