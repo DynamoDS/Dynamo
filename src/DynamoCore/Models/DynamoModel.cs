@@ -928,11 +928,8 @@ namespace Dynamo.Models
 
             AddHomeWorkspace();
 
-            if (!IsServiceMode)
-            {
-                AuthenticationManager = new AuthenticationManager(config.AuthProvider);
-            }
-
+            AuthenticationManager = new AuthenticationManager(config.AuthProvider);
+  
             Logger.Log(string.Format("Dynamo -- Build {0}",
                                         Assembly.GetExecutingAssembly().GetName().Version));
 
