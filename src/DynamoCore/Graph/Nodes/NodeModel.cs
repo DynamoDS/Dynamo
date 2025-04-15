@@ -106,6 +106,7 @@ namespace Dynamo.Graph.Nodes
         #endregion
 
         internal const double HeaderHeight = 46;
+        internal const double CustomNodeTopBorderHeight = 8;
         internal static string ExtensionNode = "ExtensionNode";
 
         #region public members
