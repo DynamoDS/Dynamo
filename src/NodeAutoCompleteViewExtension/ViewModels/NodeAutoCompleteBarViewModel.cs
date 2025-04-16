@@ -823,7 +823,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     var typeInfo = wsViewModel.NodeAutoCompleteSearchViewModel.GetInfoFromTypeId(newNode.Type.Id);
                     dynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, xoffset, node.NodeModel.Y, false, false));
 
-                    //disallow the node creation command from the undo group, we are adding those later
+                    //disallow the node creation command from the undo group, we group node creation and wires below
                     wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
 
                     var nodeFromCluster = wsViewModel.Nodes.LastOrDefault();
