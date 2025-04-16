@@ -783,6 +783,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             if (transientNodes.Any())
             {
                 dynamoViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(transientNodes.Select(x => x.Id)));
+
+                //remove the initial layout of the transient nodes from the undo stack
+                wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
+                //remove the deletion of the transient nodes from the undo stack
+                wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
             }
         }
 
@@ -847,19 +852,20 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 var sourcePort = sourceNode.OutPorts.FirstOrDefault(p => p.Index == connection.StartNode.PortIndex - 1);
                 var targetPort = targetNode.InPorts.FirstOrDefault(p => p.Index == connection.EndNode.PortIndex - 1);
 
-                var connector = ConnectorModel.Make(sourceNode, targetNode, connection.StartNode.PortIndex - 1, connection.EndNode.PortIndex - 1);
+                if (targetPort != null && targetPort.Connectors.Count == 0)
+                {
+                    var connector = ConnectorModel.Make(sourceNode, targetNode, connection.StartNode.PortIndex - 1, connection.EndNode.PortIndex - 1);
 
-                newNodesAndWires.Add(connector);
+                    newNodesAndWires.Add(connector);
+                }
+
             });
 
             // Connect the cluster to the original node and port
             var connector = ConnectorModel.Make(node.NodeModel, targetNodeFromCluster.NodeModel, 0, ClusterResultItem.EntryNodeInPort);
             newNodesAndWires.Add(connector);
 
-            //record all node and wire creation as one undo
-            RecordUndoModels(wsViewModel.Model, newNodesAndWires);
-
-            //Make connectors invisible ( just like the cluster nodes ) before they get a chance to be drawn.
+            // Make connectors invisible ( just like the cluster nodes ) before they get a chance to be drawn.
             var clusterNodesModel = clusterMapping.Values.ToList();
             clusterNodesModel.ForEach(nodeInCluster => nodeInCluster?.NodeModel?.AllConnectors?.ToList().ForEach(connector =>
             {
@@ -881,6 +887,9 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             // AutoLayout should be called after all nodes are connected.
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(wsViewModel.DynamoViewModel.CurrentSpace, node.NodeModel, clusterNodesModel.Select(x => x.NodeModel), false, false, false, finalizer);
+
+            //record all node and wire creation as one undo
+            RecordUndoModels(wsViewModel.Model, newNodesAndWires);
         }
 
         private void RecordUndoModels(WorkspaceModel workspace, List<ModelBase> undoItems)
