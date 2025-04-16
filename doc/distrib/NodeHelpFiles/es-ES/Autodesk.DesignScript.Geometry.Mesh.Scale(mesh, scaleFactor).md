@@ -3,4 +3,4 @@ El nodo `Mesh.Scale` (scaleFactor) ajusta la escala de la malla en la cantidad i
 
 ## Archivo de ejemplo
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.Scale(mesh.scaleFactor)_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.Scale(mesh,%20scaleFactor)_img.jpg)

@@ -15,3 +15,7 @@ N : 数値 N2 1000 -> "1,000.00"
 このノードの既定は `G` で、コンパクトな可変表現を出力します。
 
 [詳細については、Microsoft のドキュメントを参照してください。] (https://learn.microsoft.com/ja-jp/dotnet/standard/base-types/standard-numeric-format-strings#standard-format-specifiers)
+___
+## サンプル ファイル
+
+![Formatted String from Object](./CoreNodeModels.FormattedStringFromObject_img.jpg)

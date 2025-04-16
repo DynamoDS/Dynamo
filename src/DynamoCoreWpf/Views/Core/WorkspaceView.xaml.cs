@@ -66,6 +66,8 @@ namespace Dynamo.Views
         private Point inCanvasSearchPosition;
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
 
+        static internal event Action<Window, ViewModelBase> RequesNodeAutoCompleteBar;
+
         public WorkspaceViewModel ViewModel
         {
             get
@@ -131,6 +133,7 @@ namespace Dynamo.Views
             ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
             ViewModel.RequestHideAllPopup -= HideAllPopUp;
             ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
+            ViewModel.RequestNodeAutoCompleteBar -= ShowNodeAutoCompleteBar;
             ViewModel.RequestPortContextMenu -= ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged -= ViewModel_PropertyChanged;
 
@@ -160,6 +163,7 @@ namespace Dynamo.Views
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
             ViewModel.RequestHideAllPopup += HideAllPopUp;
             ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
+            ViewModel.RequestNodeAutoCompleteBar += ShowNodeAutoCompleteBar;
             ViewModel.RequestPortContextMenu += ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
@@ -183,6 +187,11 @@ namespace Dynamo.Views
         private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
         {
             ShowHidePopup(flag, NodeAutoCompleteSearchBar);
+        }
+
+        private void ShowNodeAutoCompleteBar(PortViewModel viewModel)
+        {
+            RequesNodeAutoCompleteBar?.Invoke(Window.GetWindow(this), viewModel);
         }
 
         private void ShowHidePortContextMenu(ShowHideFlags flag, PortViewModel portViewModel)
@@ -235,7 +244,7 @@ namespace Dynamo.Views
                             // 2. Dynamo rely on child visibility change hander to setup Node AutoComplete control
                             // 3. This should not be set to in canvas search control
                             popup.Child.Visibility = Visibility.Collapsed;
-                            ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
+                            ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutoCompleteWindowPlacement(popup);
                         }
 
                         else if (popup == PortContextMenu)

@@ -147,6 +147,8 @@ namespace Dynamo.PythonServices
         /// </summary>
         internal static readonly string CPython3EngineName = "CPython3";
 
+        internal static readonly string PythonNodeNamespace = "PythonNodeModels.PythonNode";
+
         /// <summary>
         /// IronPython2 Engine name
         /// </summary>

@@ -1,16 +1,18 @@
 using System;
-using Dynamo.Core;
+using System.Collections.Generic;
+using System.Data;
+using System.Linq;
+using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Extensions;
 using Dynamo.Logging;
-using Dynamo.Wpf.Extensions;
-using System.Collections.Generic;
-using Dynamo.ViewModels;
-using Dynamo.Search.SearchElements;
-using System.Data;
-using System.Linq;
-using Dynamo.NodeAutoComplete.Properties;
 using Dynamo.Graph.Workspaces;
+using Dynamo.NodeAutoComplete.ViewModels;
+using Dynamo.NodeAutoComplete.Views;
+using Dynamo.Search.SearchElements;
+using Dynamo.ViewModels;
+using Dynamo.Views;
+using Dynamo.Wpf.Extensions;
 
 namespace Dynamo.NodeAutoComplete
 {
@@ -22,6 +24,7 @@ namespace Dynamo.NodeAutoComplete
     {
         private const String extensionName = "Node Auto Complete";
         private ViewLoadedParams viewLoadedParamsReference;
+        private NodeAutoCompletePanelViewModel nodeAutoCompleteViewModel;
 
         internal MenuItem nodeAutocompleteMenuItem;
 
@@ -31,7 +34,7 @@ namespace Dynamo.NodeAutoComplete
         /// </summary>
         internal IEnumerable<NodeAutocompleteCluster> nodeAutocompleteClusters;
 
-        internal NodeAutoCompleteViewModel nodeAutoCompleteViewModel { get; set; }
+        
 
         internal NodeAutoCompleteView DependencyView
         {
@@ -75,12 +78,12 @@ namespace Dynamo.NodeAutoComplete
             // Do nothing for now
         }
 
-        public void Shutdown()
+        public override void Shutdown()
         {
-            // Do nothing for now
+            WorkspaceView.RequesNodeAutoCompleteBar -= OnNodeAutoCompleteBarRequested;
         }
 
-        public void Startup(ViewStartupParams viewStartupParams)
+        public override void Startup(ViewStartupParams viewStartupParams)
         {
             // Do nothing for now
 
@@ -111,7 +114,7 @@ namespace Dynamo.NodeAutoComplete
             this.nodeAutocompleteMenuItem.IsChecked = true;
         }
 
-        public void Loaded(ViewLoadedParams viewLoadedParams)
+        public override void Loaded(ViewLoadedParams viewLoadedParams)
         {
             this.viewLoadedParamsReference = viewLoadedParams ?? throw new ArgumentNullException(nameof(viewLoadedParams));
             var dynamoViewModel = viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel;
@@ -119,7 +122,7 @@ namespace Dynamo.NodeAutoComplete
             if (dynamoViewModel.IsDNAClusterPlacementEnabled)
             {
                 DependencyView = new NodeAutoCompleteView(this, viewLoadedParams);
-                nodeAutoCompleteViewModel = new NodeAutoCompleteViewModel(viewLoadedParams.DynamoWindow, dynamoViewModel);
+                nodeAutoCompleteViewModel = new NodeAutoCompletePanelViewModel(viewLoadedParams.DynamoWindow, dynamoViewModel);
 
                 // Adding a button in view menu to refresh and show manually
                 nodeAutocompleteMenuItem = new MenuItem { Header = "Show NodeAutocomplete view extension", IsCheckable = true, IsChecked = false };
@@ -138,7 +141,11 @@ namespace Dynamo.NodeAutoComplete
                 };
                 viewLoadedParams.AddExtensionMenuItem(nodeAutocompleteMenuItem);
             }
+
+            WorkspaceView.RequesNodeAutoCompleteBar += OnNodeAutoCompleteBarRequested;
+
         }
+
         public override void Closed()
         {
             if (this.nodeAutocompleteMenuItem != null)
@@ -152,6 +159,35 @@ namespace Dynamo.NodeAutoComplete
             nodeAutocompleteClusters = results.Results.ToList().Select(r => new NodeAutocompleteCluster(r));
 
             DependencyView.MainItems.ItemsSource = nodeAutocompleteClusters;
+        }
+
+        private static NodeAutoCompleteBarViewModel nodeAutoCompleteBarViewModel;
+
+        private void OnNodeAutoCompleteBarRequested(Window parentWindow, ViewModelBase viewModelBase)
+        {
+            PortViewModel portViewModel = viewModelBase as PortViewModel;
+            if (parentWindow is null || portViewModel is null)
+            {
+                return;
+            }
+            
+            if (nodeAutoCompleteBarViewModel is null)
+            {
+                DynamoViewModel dynamoViewModel = portViewModel?.NodeViewModel?.WorkspaceViewModel?.DynamoViewModel;
+                nodeAutoCompleteBarViewModel = new NodeAutoCompleteBarViewModel(dynamoViewModel);
+            }
+
+            if (nodeAutoCompleteBarViewModel.PortViewModel != null)
+            {
+                nodeAutoCompleteBarViewModel.PortViewModel.Highlight = Visibility.Collapsed;
+            }
+
+            nodeAutoCompleteBarViewModel.PortViewModel = portViewModel;
+
+            //TODO : I think we can reuse the window too.
+            var nodeAutoCompleteBarWindow = new NodeAutoCompleteBarView(parentWindow, nodeAutoCompleteBarViewModel);
+            nodeAutoCompleteBarWindow.Show();
+            portViewModel.SetupNodeAutoCompleteClusterWindowPlacement(nodeAutoCompleteBarWindow);
         }
     }
 }

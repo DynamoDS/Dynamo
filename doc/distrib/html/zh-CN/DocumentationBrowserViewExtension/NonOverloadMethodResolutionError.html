@@ -1,0 +1,39 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>期望参数类型，但调用其他参数类型</h2>
+<p>此错误消息指示您使用的节点需要特定类型的输入，但收到的某类输入不能使用。 它通常后跟附加信息，该信息涉及哪些类型已传递到使用的节点以及节点需要接收的类型。 触发此错误的一些最常见操作包括:</p>
+
+<ul>
+    <li><code>Element.SetParameterByName</code> - 尝试使用 Element.Parameters 节点来检查图元中的参数。 阅读更多 <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20setparameter">Dynamobim 论坛上讨论“expects argument type setparameter”的帖子</a>。</li>
+    <li><code>Geometry.BoundingBox</code> - 尝试改用 Element.BoundingBox，如<a href="https://forum.dynamobim.com/t/geometry-boundingbox-1-3-vs-2-0/21995/3">此处</a>所述。 阅读更多 <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type%20geometry">Dynamobim 论坛上讨论“expects argument type geometry”的帖子</a>。</li>
+</ul>
+
+<h4>如何修复</h4>
+<p>上述部分提到了一些可以用于从此错误中恢复的方法。 通常，检查使用的节点期望的输入类型。 如果可能，将传递到节点的输入更改为其期望类型，或检查以查看其他节点是否可用于获取所需的功能。 请注意，可以使用 <a href="https://dictionary.dynamobim.com/2/#/Input/Object/Action/Type">Object.Type</a> 节点检查输入类型。</p>
+
+<h4>更多信息</h4>
+<p>要了解更多信息，请查看 <a href="https://forum.dynamobim.com/search?q=expects%20argument%20type"><span>Dynamobim 论坛上讨论“<strong>expects argument type</strong>”的帖子</span></a>。</p>
+
+</body>

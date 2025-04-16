@@ -1,0 +1,65 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>Tessellation</name>
+    </assembly>
+    <members>
+        <member name="T:Tessellation.Adapters.Cell2">
+            <summary>用于二维细分的单元</summary>
+        </member>
+        <member name="T:Tessellation.Adapters.Cell3">
+            <summary>用于三维细分的单元</summary>
+        </member>
+        <member name="T:Tessellation.Adapters.Tetrahedron">
+            <summary>顶点是一种简单类别，用于存储点、节点或顶点的位置。</summary>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.GetPosition(System.Int32)">
+            <summary>用来获取第 i 个顶点的位置的辅助函数。</summary>
+            <param name="i"/>
+            <returns>第 i 个顶点的位置</returns>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.MakeFace(System.Int32,System.Int32,System.Int32,Autodesk.DesignScript.Geometry.Vector)">
+            <summary>此函数为表示面的三角形添加索引。
+            顺序为 CCW（逆时针方向），以便以正确方向自动计算法线点。</summary>
+            <param name="i"/>
+            <param name="j"/>
+            <param name="k"/>
+            <param name="center"/>
+        </member>
+        <member name="M:Tessellation.Adapters.Tetrahedron.MakeFaces">
+            <summary>创建四面体的模型。透明度应用于颜色。</summary>
+            <returns>用于表示四面体的模型</returns>
+        </member>
+        <member name="T:Tessellation.Adapters.TriangleFace">
+            <summary>顶点是一种简单类别，用于存储点、节点或顶点的位置。</summary>
+        </member>
+        <member name="T:Tessellation.ConvexHull">
+            <summary>用于创建凸面外壳的函数。</summary>
+        </member>
+        <member name="M:Tessellation.ConvexHull.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>创建点集的凸面外壳。</summary>
+            <param name="points">点集。</param>
+        </member>
+        <member name="T:Tessellation.Delaunay">
+            <summary>用于创建 Delaunay 三角剖分的函数。</summary>
+        </member>
+        <member name="M:Tessellation.Delaunay.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
+            <summary>通过给定 UV 参数集创建曲面的 Delaunay 三角剖分。</summary>
+            <param name="uvs">UV 参数集。</param>
+            <param name="face">要进行三角剖分的曲面。</param>
+            <search>uvs</search>
+        </member>
+        <member name="M:Tessellation.Delaunay.ByPoints(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point})">
+            <summary>创建点集的 Delaunay 三角剖分。</summary>
+            <param name="points">点集。</param>
+        </member>
+        <member name="T:Tessellation.Voronoi">
+            <summary>用于创建 Voronoi 细分函数。</summary>
+        </member>
+        <member name="M:Tessellation.Voronoi.ByParametersOnSurface(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.UV},Autodesk.DesignScript.Geometry.Surface)">
+            <summary>通过给定 UV 参数集创建曲面的 Voronoi 细分。</summary>
+            <param name="uvs">UV 参数集。</param>
+            <param name="face">要细分的曲面。</param>
+            <search>uvs</search>
+        </member>
+    </members>
+</doc>

@@ -250,6 +250,7 @@ namespace Dynamo.UI.Views
         /// </summary>
         private bool SignIn()
         {
+            if (!viewModel.IsIDSDKInitialized(true, this)) return false;
             authManager.Login();
             bool ret = authManager.IsLoggedIn();
             Analytics.TrackEvent(Actions.SignIn, Categories.SplashScreenOperations, ret.ToString());

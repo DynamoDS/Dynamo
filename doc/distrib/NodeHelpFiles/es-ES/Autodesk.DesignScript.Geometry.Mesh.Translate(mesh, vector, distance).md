@@ -5,4 +5,4 @@ En el ejemplo siguiente, una malla simple se traslada en una dirección definida
 
 ## Archivo de ejemplo
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh.vector.distance)_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh,%20vector,%20distance)_img.jpg)

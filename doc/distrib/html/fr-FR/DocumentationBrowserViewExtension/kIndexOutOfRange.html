@@ -1,0 +1,35 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>L'index est hors intervalle</h2>
+<p>Ce message d'erreur signifie que la liste ne contient pas d'élément à l'emplacement d'index que vous avez indiqué. Par exemple, si votre liste est <code>[a, b, c, d]</code>, qu'elle contient des éléments aux index <code>0</code>, <code>1</code>, <code>2</code> et <code>3</code>, et que vous essayez d'accéder à un élément situé à l'index <code>5</code>, vous recevrez un message d'erreur car seuls les éléments entre les index <code><code>0</code> et <code>3</code> existent dans la liste. </p>
+
+<h4>Comment corriger cette erreur?</h4>
+<p>Assurez-vous que la variable d'index que vous utilisez pour accéder aux éléments de la liste est supérieure ou égale à <code>0</code> et strictement inférieure à la taille de la liste. Les index de liste vont de <code>0</code> à la taille de liste moins <code>1</code>. Cela signifie que si vous avez <code>10</code> éléments dans votre liste et que vous souhaitez accéder au 10e élément, cet élément se trouve à l'index <code>9</code>.</p>
+
+<h4>Plus d'informations</h4>
+<p>Pour en savoir plus, consultez les <a href="https://forum.dynamobim.com/search?q=index%20out%20of%20range"><span>billets publiés sur le forum Dynamobim sur le sujet <strong>&quot;index is out of range&quot; (l'index est hors intervalle)</strong></span></a>.</p>
+
+
+</body>

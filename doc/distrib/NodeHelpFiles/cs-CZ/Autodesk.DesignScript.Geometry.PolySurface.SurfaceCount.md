@@ -1,7 +1,8 @@
 ## Podrobnosti
-Uzel SurfaceCount vrátí počet povrchů v objektu PolySurface jako celé číslo. V níže uvedeném příkladu vrátí vysunutý šestiúhelník počet 8. Uzel přijímá jeden objekt PolySurface jako vstup, takže před počítáním bude nutné spojit kolekci povrchů.
+Uzel `PolySurface.SurfaceCount` vrací počet povrchů uvnitř daného objektu PolySurface.
+
+V následujícím příkladu se vytvoří objekt PolySurface z kvádru a poté je předán počet povrchů pomocí uzlu `PolySurface.SurfaceCount`.
 ___
 ## Vzorový soubor
 
-
-
+![PolySurface.SurfaceCount](./Autodesk.DesignScript.Geometry.PolySurface.SurfaceCount_img.jpg)

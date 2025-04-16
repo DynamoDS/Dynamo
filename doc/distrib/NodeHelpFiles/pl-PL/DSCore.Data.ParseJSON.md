@@ -1,5 +1,8 @@
-## ParseJSON — dokumentacja
-Ten plik dokumentacji jest generowany automatycznie przez program NodeDocumentationMarkdownGenerator z parametrami Version=2.14.0.3986, Culture=neutral, PublicKeyToken=null.
+## Informacje szczegółowe
+Węzeł `Data.ParseJSON` konwertuje wartości z formatu JSON. Format pliku JSON to konwencja strukturyzowania danych do przechowywania. W rzeczywistości własny format pliku dodatku Dynamo ma strukturę JSON.
 
-Aby uzyskać więcej informacji na temat dodawania dokumentacji do węzłów, zobacz https://github.com/DynamoDS/Dynamo/wiki/Create-and-Add-Custom-Documentation-to-Nodes
+W poniższym przykładzie słownik (w formacie JSON) zostaje zdeserializowany do postaci słownika dodatku Dynamo.
+___
+## Plik przykładowy
 
+![Data.ParseJSON](./DSCore.Data.ParseJSON_img.jpg)

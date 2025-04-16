@@ -25,6 +25,7 @@ namespace Dynamo.UI.Controls
     /// Notice this control shares a lot of logic with InCanvasSearchControl for now
     /// But they will diverge eventually because of UI improvements to auto complete.
     /// </summary>
+    [Obsolete("This class will be removed in a future version of Dynamo")]
     public partial class NodeAutoCompleteSearchControl : IDisposable
     {
         ListBoxItem HighlightedItem;
@@ -38,8 +39,10 @@ namespace Dynamo.UI.Controls
         /// <summary>
         /// Node AutoComplete Search ViewModel DataContext
         /// </summary>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public NodeAutoCompleteSearchViewModel ViewModel => DataContext as NodeAutoCompleteSearchViewModel;
 
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public NodeAutoCompleteSearchControl()
         {
             InitializeComponent();
@@ -93,7 +96,7 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (!(sender is ListBoxItem listBoxItem) || e.OriginalSource is Thumb) return;
 
@@ -196,9 +199,18 @@ namespace Dynamo.UI.Controls
 
         private void OnNodeAutoCompleteSearchControlVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            bool visible = (bool)e.NewValue;
+
+            if (ViewModel?.PortViewModel != null)
+            {
+                ViewModel.PortViewModel.Highlight = visible ? Visibility.Visible : Visibility.Collapsed;
+            }
+                
             // If visibility  is false, then stop processing it.
-            if (!(bool)e.NewValue)
+            if (!visible)
+            {
                 return;
+            }
 
             // When launching this control, always start with clear search term.
             SearchTextBox.Clear();
@@ -422,6 +434,7 @@ namespace Dynamo.UI.Controls
         /// <summary>
         /// Dispose the control
         /// </summary>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public void Dispose()
         {
             NodeAutoCompleteSearchControl_Unloaded(this,null);

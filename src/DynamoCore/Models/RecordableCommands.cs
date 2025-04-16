@@ -499,7 +499,7 @@ namespace Dynamo.Models
             {
                 // Log file open action and the number of nodes in the opened workspace
                 Dynamo.Logging.Analytics.TrackTaskFileOperationEvent(
-                    FilePath,
+                    Path.GetFileName(FilePath),
                     Logging.Actions.Open,
                     dynamoModel.CurrentWorkspace.Nodes.Count());
 
@@ -599,7 +599,7 @@ namespace Dynamo.Models
             {
                 // Log file open action and the number of nodes in the opened workspace
                 Dynamo.Logging.Analytics.TrackTaskFileOperationEvent(
-                    FilePath,
+                    Path.GetFileName(FilePath),
                     Logging.Actions.Open,
                     dynamoModel.CurrentWorkspace.Nodes.Count());
 
@@ -2251,7 +2251,12 @@ namespace Dynamo.Models
                 {
                     annotationText = Resources.GroupNameDefaultText;
                 }
-                if (string.IsNullOrEmpty(annotationDescriptionText))
+
+                if (!PreferenceSettings.Instance.ShowDefaultGroupDescription)
+                {
+                    annotationDescriptionText = string.Empty;
+                }
+                else if (string.IsNullOrEmpty(annotationDescriptionText))
                 {
                     annotationDescriptionText = Resources.GroupDefaultText;
                 }

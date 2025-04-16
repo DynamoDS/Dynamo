@@ -1,5 +1,8 @@
-## ParseJSON: ドキュメント
-このドキュメント ファイルは、NodeDocumentationMarkdownGenerator (Version=2.14.0.3986、Culture=neutral、PublicKeyToken=null)によって自動的に生成されています。
+## 詳細
+`Data.ParseJSON` は、値を JSON 形式から変換します。JSON ファイル形式は、保存するデータを構造化するための規則です。実際、Dynamo 独自のファイル形式は JSON として構造化されています。
 
-ノードにドキュメントを追加する詳細情報については、https://github.com/DynamoDS/Dynamo/wiki/Create-and-Add-Custom-Documentation-to-Nodes を参照してください
+次の例では、(JSON 形式の)ディクショナリがシリアライズ解除されて Dynamo のディクショナリになっています。
+___
+## サンプル ファイル
 
+![Data.ParseJSON](./DSCore.Data.ParseJSON_img.jpg)

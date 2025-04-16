@@ -1,7 +1,8 @@
 <!--- Autodesk.DesignScript.Geometry.TSpline.TSplineSurface.BySphereBestFit --->
 <!--- RUAGD4YGKJ6XHPIKDL7GZX63CDAFMI6KUSR6XMXEBGJJOATEI5IA --->
-## BySphereBestFit — документация
-Этот файл документации создан автоматически с помощью NodeDocumentationMarkdownGenerator, Version=2.14.0.3986, Culture=neutral, PublicKeyToken=null.
+## Подробности
+В приведенном ниже примере Т-сплайновая поверхность-примитив сферы создается с помощью узла `TSplineSurface.BySphereBestFit` из предоставленного списка случайных точек. Входные параметры `radiusSpans` и `heightSpans` определяют количество граней вдоль вертикальных и радиальных пролетов (меридианов). Входной параметр `symmetry` определяет, имеет ли форма исходную симметрию. Наконец, входной параметр `inSmoothMode` определяет, как выполняется предварительный просмотр — в режиме сглаживания или рамки.
 
-Дополнительные сведения о том, как добавлять документацию к узлам, см. на странице https://github.com/DynamoDS/Dynamo/wiki/Create-and-Add-Custom-Documentation-to-Nodes.
+## Файл примера
 
+![Example](./RUAGD4YGKJ6XHPIKDL7GZX63CDAFMI6KUSR6XMXEBGJJOATEI5IA_img.jpg)

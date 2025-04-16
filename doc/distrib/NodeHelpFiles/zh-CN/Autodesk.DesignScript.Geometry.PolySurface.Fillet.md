@@ -1,7 +1,10 @@
 ## 详细
-“Fillet”将返回一个带有圆角边的新实体。边输入指定要圆角的边，而偏移输入确定圆角的半径。在下例中，我们从使用默认输入的立方体开始。为了获得立方体的相应边，我们先分解立方体以获得作为曲面列表的面。然后，我们使用“Face.Edges”节点提取立方体的边。我们使用“GetItemAtIndex”提取每个面的第一条边。一个“数字”滑块控制每个圆角的半径。
+“PolySurface.Fillet”将在给定 PolySurface 的边之间创建一个圆角(圆边)。
+
+在 Polysurface 模型中，此节点尤其可用于平滑锐利的边，从而提高几何图形的视觉和物理特性。
+
+在下面的示例中，创建了一个立方体，并将其转换为 PolySurface，最后使用“PolySurface.Fillet”进行圆化。
 ___
 ## 示例文件
 
-
-
+![PolySurface.Fillet](./Autodesk.DesignScript.Geometry.PolySurface.Fillet_img.jpg)

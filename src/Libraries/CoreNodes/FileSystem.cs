@@ -73,6 +73,11 @@ namespace DSCore.IO
         /// <search>read file,text,file</search>
         public static string ReadText(FileInfo file)
         {
+            Analytics.TrackTaskFileOperationEvent(
+                                  file.Name,
+                                  Actions.Read,
+                                  Convert.ToInt32(file.Length));
+
             return System.IO.File.ReadAllText(file.FullName);
         }
 
@@ -97,6 +102,11 @@ namespace DSCore.IO
         /// <returns name="void">Node performs a task, doesn’t produce an output </returns>
         public static void DeleteFile(string path)
         {
+            Analytics.TrackTaskFileOperationEvent(
+                      Path.GetFileName(path),
+                      Actions.Delete,
+                      Convert.ToInt32(path.Length));
+
             System.IO.File.Delete(path);
         }
 
@@ -150,6 +160,11 @@ namespace DSCore.IO
         /// <search>write file,text,file,filepath</search>
         public static void WriteText(string filePath, string text)
         {
+            Analytics.TrackTaskFileOperationEvent(
+                                  Path.GetFileName(filePath),
+                                  Actions.Write,
+                                  Convert.ToInt32(filePath.Length));
+
             var fullpath = AbsolutePath(filePath);
             System.IO.File.WriteAllText(fullpath, text);
         }
@@ -399,6 +414,11 @@ namespace DSCore.IO
         /// <returns name="image">Image object from file</returns>
         public static Bitmap ReadFromFile(FileInfo file)
         {
+            Analytics.TrackTaskFileOperationEvent(
+                                  file.Name,
+                                  Actions.Read,
+                                  Convert.ToInt32(file.Length));
+
             using (var fs = new FileStream(file.FullName, FileMode.Open))
                 return new Bitmap(System.Drawing.Image.FromStream(fs));
         }
@@ -516,6 +536,11 @@ namespace DSCore.IO
         /// <search>write image,image,file,filepath</search>
         public static Bitmap WriteToFile(string path, Bitmap image)
         {
+            Analytics.TrackTaskFileOperationEvent(
+                                 Path.GetFileName(path),
+                                 Actions.Write,
+                                 Convert.ToInt32(path.Length));
+
             image.Save(FileSystem.AbsolutePath(path));
 
             return image;

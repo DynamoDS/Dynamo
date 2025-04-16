@@ -1,7 +1,8 @@
 ## Informacje szczegółowe
-Węzeł SurfaceCount zwraca liczbę powierzchni w powierzchni PolySurface jako liczbę całkowitą. W poniższym przykładzie dla wyciągniętego sześciokąta zwracana jest liczba 8. Węzeł pobiera pojedynczą powierzchnie PolySurface, dlatego przed zliczeniem kolekcja powierzchni musi zostać połączona.
+Węzeł `PolySurface.SurfaceCount` zwraca liczbę powierzchni w danym obiekcie PolySurface.
+
+W poniższym przykładzie z prostopadłościanu zostaje utworzona powierzchnia PolySurface i za pomocą węzła `PolySurface.SurfaceCount` zostaje zwrócona liczba powierzchni.
 ___
 ## Plik przykładowy
 
-
-
+![PolySurface.SurfaceCount](./Autodesk.DesignScript.Geometry.PolySurface.SurfaceCount_img.jpg)
