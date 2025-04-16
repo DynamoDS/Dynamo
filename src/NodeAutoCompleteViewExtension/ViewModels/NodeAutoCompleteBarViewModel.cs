@@ -806,7 +806,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             List<List<NodeItem>> nodeStacks = NodeAutoCompleteUtilities.ComputeNodePlacementHeuristics(clusterConnections, clusterNodes);
 
             //store our nodes and wires to allow for one undo
-            List<ModelBase> newNodesAddWires = new List<ModelBase>();
+            List<ModelBase> newNodesAndWires = new List<ModelBase>();
 
             double xoffset = node.X + node.NodeModel.Width;
             foreach (var nodeStack in nodeStacks)
@@ -816,8 +816,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 {
                     // Retrieve assembly name and node full name from type.id.
                     var typeInfo = wsViewModel.NodeAutoCompleteSearchViewModel.GetInfoFromTypeId(newNode.Type.Id);
-
-                    var nodeTest = dynamoViewModel.Model.SearchModel.Entries.Where(n => n.FullName.Contains("Slider")).ToList();
                     var foundNode = dynamoViewModel.Model.SearchModel.Entries.FirstOrDefault(n => n.CreationName.Contains(typeInfo.FullName));
                     var nodeModel = foundNode.CreateNode();
 
@@ -825,7 +823,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
                     var nodeFromCluster = wsViewModel.Nodes.LastOrDefault();
 
-                    newNodesAddWires.Add(nodeModel);
+                    newNodesAndWires.Add(nodeModel);
 
                     nodeFromCluster.IsTransient = true;
                     nodeFromCluster.IsHidden = true;
@@ -851,15 +849,15 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
                 var connector = ConnectorModel.Make(sourceNode, targetNode, connection.StartNode.PortIndex - 1, connection.EndNode.PortIndex - 1);
 
-                newNodesAddWires.Add(connector);
+                newNodesAndWires.Add(connector);
             });
 
             // Connect the cluster to the original node and port
             var connector = ConnectorModel.Make(node.NodeModel, targetNodeFromCluster.NodeModel, 0, ClusterResultItem.EntryNodeInPort);
-            newNodesAddWires.Add(connector);
+            newNodesAndWires.Add(connector);
 
             //record all node and wire creation as one undo
-            RecordUndoModels(wsViewModel.Model, newNodesAddWires);
+            RecordUndoModels(wsViewModel.Model, newNodesAndWires);
 
             //Make connectors invisible ( just like the cluster nodes ) before they get a chance to be drawn.
             var clusterNodesModel = clusterMapping.Values.ToList();
