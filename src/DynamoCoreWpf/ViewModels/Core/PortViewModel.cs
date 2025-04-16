@@ -444,11 +444,12 @@ namespace Dynamo.ViewModels
             // Calculate absolute popup halfheight to deduct from the overall y pos
             // Then add the header, port height and port index position
             var popupHeightOffset = - popupSize.Height * 0.5;
-            var headerHeightOffset = 2 * NodeModel.HeaderHeight * zoom;
+            var headerHeightOffset = NodeModel.HeaderHeight * zoom;
             var portHalfHeight = PortModel.Height * 0.5 * zoom;
-            var rowOffset = PortModel.Index * (1.5 * PortModel.Height) * zoom;
+            var rowOffset = PortModel.Index * PortModel.Height * zoom;
+            var customNodeOffset = NodeModel.CustomNodeTopBorderHeight * zoom;
 
-            var y = popupHeightOffset + headerHeightOffset + portHalfHeight + rowOffset;
+            var y = popupHeightOffset + headerHeightOffset + portHalfHeight + rowOffset + customNodeOffset;
 
             var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);
 
