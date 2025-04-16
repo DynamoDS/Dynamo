@@ -814,7 +814,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 xoffset += node.NodeModel.Width;
                 foreach(var newNode in nodeStack)
                 {
-                    // Retreive assembly name and node full name from type.id.
+                    // Retrieve assembly name and node full name from type.id.
                     var typeInfo = wsViewModel.NodeAutoCompleteSearchViewModel.GetInfoFromTypeId(newNode.Type.Id);
 
                     var nodeTest = dynamoViewModel.Model.SearchModel.Entries.Where(n => n.FullName.Contains("Slider")).ToList();
@@ -891,6 +891,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             //Add models that were newly created
             foreach (var undoItem in undoItems)
             {
+                if(undoItem is null) continue;
+
                 userActionDictionary.Add(undoItem, UndoRedoRecorder.UserAction.Creation);
             }
 
