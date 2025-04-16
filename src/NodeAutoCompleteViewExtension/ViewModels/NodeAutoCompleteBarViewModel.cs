@@ -821,14 +821,14 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 {
                     // Retrieve assembly name and node full name from type.id.
                     var typeInfo = wsViewModel.NodeAutoCompleteSearchViewModel.GetInfoFromTypeId(newNode.Type.Id);
-                    var foundNode = dynamoViewModel.Model.SearchModel.Entries.FirstOrDefault(n => n.CreationName.Contains(typeInfo.FullName));
-                    var nodeModel = foundNode.CreateNode();
+                    dynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, xoffset, node.NodeModel.Y, false, false));
 
-                    wsViewModel.Model.AddAndRegisterNode(nodeModel);
+                    //disallow the node creation command from the undo group, we are adding those later
+                    wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
 
                     var nodeFromCluster = wsViewModel.Nodes.LastOrDefault();
 
-                    newNodesAndWires.Add(nodeModel);
+                    newNodesAndWires.Add(nodeFromCluster.NodeModel);
 
                     nodeFromCluster.IsTransient = true;
                     nodeFromCluster.IsHidden = true;
