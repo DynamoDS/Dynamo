@@ -912,12 +912,12 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 {
                     if (!IsOpen)
                     {
-                        // view dissapeared while the background thread was waiting for the server response.
+                        // view disappeared while the background thread was waiting for the server response.
                         // Ignore the results are we're no longer interested.
                         return;
                     }
 
-                    // this runs synchronously on the UI thread, so the UI can't dissapear during execution
+                    // this runs synchronously on the UI thread, so the UI can't disappear during execution
                     ClusterResults = comboboxResults;
                     if (QualifiedResults.Any())
                     {
