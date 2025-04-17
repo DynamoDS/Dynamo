@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
-using System.Threading;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
 using Dynamo.Interfaces;
@@ -160,16 +159,6 @@ namespace Dynamo.Engine
     /// </summary>
     public class FunctionDescriptor : IFunctionDescriptor
     {
-        /// <summary>
-        /// A dictionary of loaded assemblies by assembly name to speed up Dynamo loading
-        /// </summary>
-        private static Dictionary<string, Assembly> assembliesByName;
-
-        /// <summary>
-        /// Ensure the assembly cache is kept around until all callers have finished using it
-        /// </summary>
-        private static int assemblyCachingRequests = 0;
-
         /// <summary>
         ///     A comment describing the Function
         /// </summary>
@@ -330,7 +319,6 @@ namespace Dynamo.Engine
         }
 
         private string category;
-
         /// <summary>
         ///     The category of this function.
         /// </summary>
@@ -342,7 +330,6 @@ namespace Dynamo.Engine
                 {
                     return category;
                 }
-
                 var categoryBuf = new StringBuilder();
                 categoryBuf.Append(GetRootCategory());
 
@@ -350,11 +337,16 @@ namespace Dynamo.Engine
                 if (ClassName != null)
                 {
                     //get function assembly
-                    var asmName = Path.GetFileNameWithoutExtension(Assembly);
+                    //var asm = AppDomain.CurrentDomain.GetAssemblies()
+                    //    .Where(x => x.GetName().Name == Path.GetFileNameWithoutExtension(Assembly))
+                    //    .ToArray();
+                    var asm = AppDomain.CurrentDomain.Load(Path.GetFileNameWithoutExtension(Assembly));
 
-                    //get class type of function
-                    if (TryGetAssembly(asmName, out var asm) && asm.GetType(ClassName) is System.Type type)
+                    if (asm != null && asm.GetType(ClassName) != null)
                     {
+                        //get class type of function
+                        var type = asm.GetType(ClassName);
+
                         //get NodeCategoryAttribute for this function if it was been defined
                         var nodeCat = type.GetMethods().Where(x => x.Name == FunctionName)
                             .Select(x => x.GetCustomAttribute(typeof(NodeCategoryAttribute)))
@@ -395,9 +387,7 @@ namespace Dynamo.Engine
                             "." + UnqualifedClassName + "." + LibraryServices.Categories.Properties);
                         break;
                 }
-
-                category = categoryBuf.ToString();
-                return category;
+                return categoryBuf.ToString();
             }
         }
 
@@ -601,56 +591,6 @@ namespace Dynamo.Engine
             return false;
         }
         internal bool IsExperimental { get;}
-
-        /// <summary>
-        /// Try to get an <see cref="System.Reflection.Assembly"/> by name
-        /// </summary>
-        /// <param name="assemblyName">Name of the assembly to load</param>
-        /// <param name="assembly">The assembly</param>
-        /// <returns><see langword="true"/> if a matching assembly was found</returns>
-        private static bool TryGetAssembly(string assemblyName, out Assembly assembly)
-        {
-            // Use the lookup dictionary if it exists, to avoid doing .GetName calls.
-            if (assembliesByName != null)
-            {
-                return assembliesByName.TryGetValue(assemblyName, out assembly);
-            }
-
-            assembly = AppDomain.CurrentDomain.GetAssemblies()
-                .FirstOrDefault(x => x.GetName().Name == assemblyName);
-
-            return assembly != null;
-        }
-
-
-        /// <summary>
-        /// Load all assemblies by name in the current domain for faster <see cref="Category"/> lookup.
-        /// </summary>
-        /// <returns>An <see cref="IDisposable"/> that removes the assembly dictionary on <see cref="IDisposable.Dispose"/></returns>
-        internal static IDisposable CacheAssemblyNamesForZeroTouchNodeSearch()
-        {
-            return Scheduler.Disposable.Create(() => {
-                // If in a nested call, the assembliesByName cache should already exist,
-                // and 'assemblyCachingRequests' should be higher than 0
-                if (Interlocked.Increment(ref assemblyCachingRequests) == 1)
-                {
-                    assembliesByName = new();
-                    foreach(var asm in AppDomain.CurrentDomain.GetAssemblies())
-                    {
-                        // Only add the first occurence of an assembly name, to match the
-                        // functionality of TryGetAssembly
-                        assembliesByName.TryAdd(asm.GetName().Name, asm);
-                    }
-                }
-            },
-            () => {
-                // If in a nested call, the count should be larger than 1, and the outer
-                // caller should be responsible for deleting the cache
-                if (Interlocked.Decrement(ref assemblyCachingRequests) == 0)
-                {
-                    assembliesByName = null;
-                }
-            });
-        }
     }
+
 }
