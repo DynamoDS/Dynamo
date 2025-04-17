@@ -889,21 +889,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(wsViewModel.DynamoViewModel.CurrentSpace, node.NodeModel, clusterNodesModel.Select(x => x.NodeModel), false, false, false, finalizer);
 
             //record all node and wire creation as one undo
-            RecordUndoModels(wsViewModel.Model, newNodesAndWires);
-        }
-
-        private void RecordUndoModels(WorkspaceModel workspace, List<ModelBase> undoItems)
-        {
-            var userActionDictionary = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
-            //Add models that were newly created
-            foreach (var undoItem in undoItems)
-            {
-                if(undoItem is null) continue;
-
-                userActionDictionary.Add(undoItem, UndoRedoRecorder.UserAction.Creation);
-            }
-
-            WorkspaceModel.RecordModelsForUndo(userActionDictionary, workspace.UndoRecorder);
+            DynamoModel.RecordUndoModels(wsViewModel.Model, newNodesAndWires);
         }
 
         /// <summary>
