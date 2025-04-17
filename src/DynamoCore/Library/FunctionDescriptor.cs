@@ -336,38 +336,41 @@ namespace Dynamo.Engine
                 //if this is not BuiltIn function search NodeCategoryAttribute for it
                 if (ClassName != null)
                 {
-                    //get function assembly
-                    //var asm = AppDomain.CurrentDomain.GetAssemblies()
-                    //    .Where(x => x.GetName().Name == Path.GetFileNameWithoutExtension(Assembly))
-                    //    .ToArray();
-                    var asm = AppDomain.CurrentDomain.Load(Path.GetFileNameWithoutExtension(Assembly));
-
-                    if (asm != null && asm.GetType(ClassName) != null)
+                    try
                     {
-                        //get class type of function
-                        var type = asm.GetType(ClassName);
+                        var asm = AppDomain.CurrentDomain.Load(Path.GetFileNameWithoutExtension(Assembly));
 
-                        //get NodeCategoryAttribute for this function if it was been defined
-                        var nodeCat = type.GetMethods().Where(x => x.Name == FunctionName)
-                            .Select(x => x.GetCustomAttribute(typeof(NodeCategoryAttribute)))
-                            .Where(x => x != null)
-                            .Cast<NodeCategoryAttribute>()
-                            .Select(x => x.ElementCategory)
-                            .FirstOrDefault();
 
-                        //if attribute is found compose node category string with last part from attribute
-                        if (!string.IsNullOrEmpty(nodeCat) && (
-                            nodeCat == LibraryServices.Categories.Constructors
-                            || nodeCat == LibraryServices.Categories.Properties
-                            || nodeCat == LibraryServices.Categories.MemberFunctions))
+                        if (asm != null && asm.GetType(ClassName) != null)
                         {
-                            categoryBuf.Append("." + UnqualifedClassName + "." + nodeCat);
-                            category = categoryBuf.ToString();
-                            return category;
+                            //get class type of function
+                            var type = asm.GetType(ClassName);
+
+                            //get NodeCategoryAttribute for this function if it was been defined
+                            var nodeCat = type.GetMethods().Where(x => x.Name == FunctionName)
+                                .Select(x => x.GetCustomAttribute(typeof(NodeCategoryAttribute)))
+                                .Where(x => x != null)
+                                .Cast<NodeCategoryAttribute>()
+                                .Select(x => x.ElementCategory)
+                                .FirstOrDefault();
+
+                            //if attribute is found compose node category string with last part from attribute
+                            if (!string.IsNullOrEmpty(nodeCat) && (
+                                nodeCat == LibraryServices.Categories.Constructors
+                                || nodeCat == LibraryServices.Categories.Properties
+                                || nodeCat == LibraryServices.Categories.MemberFunctions))
+                            {
+                                categoryBuf.Append("." + UnqualifedClassName + "." + nodeCat);
+                                category = categoryBuf.ToString();
+                                return category;
+                            }
                         }
                     }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine($"Error while generating function descriptor category:{Assembly} {ClassName} {FunctionName} {e}");
+                    }
                 }
-
                 switch (Type)
                 {
                     case FunctionType.Constructor:
@@ -590,7 +593,7 @@ namespace Dynamo.Engine
             }
             return false;
         }
-        internal bool IsExperimental { get;}
+        internal bool IsExperimental { get; }
     }
 
 }
