@@ -1,3 +1,4 @@
-stage ('Dynamo UI Test') {
-    build job: '../DynamoAGTTests/master', wait: false, propagate: false
+stage ('UI Test') {
+    def averageBuildTime = 7200 // '../DynamoBuildscripts/master' average build time in seconds
+    build job: '../DynamoAGTTests/master', propagate: false, quietPeriod: averageBuildTime
 }
