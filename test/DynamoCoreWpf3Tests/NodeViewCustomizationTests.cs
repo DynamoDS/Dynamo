@@ -411,7 +411,8 @@ namespace DynamoCoreWpfTests
         {
             var guid0 = Guid.Parse("1a245b04-ad9e-4b9c-8301-730afbd4e6fc");
             var guid1 = Guid.Parse("cece298a-22de-4f4a-a323-fdb04af406a4");
-
+            
+            DispatcherUtil.DoEvents();
             OpenAndRun(@"UI\InvalidValueShouldNotCrashColorRangeNode.dyn");
             var node0 = Model.CurrentWorkspace.Nodes.First(n => n.GUID == guid0);
             var node1 = Model.CurrentWorkspace.Nodes.First(n => n.GUID == guid1);
