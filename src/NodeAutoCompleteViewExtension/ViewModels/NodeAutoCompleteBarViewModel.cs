@@ -32,6 +32,9 @@ using RestSharp;
 using Dynamo.Wpf.Utilities;
 using Dynamo.ViewModels;
 using System.Reflection;
+using Dynamo.Core;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Graph;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
@@ -780,6 +783,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             if (transientNodes.Any())
             {
                 dynamoViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(transientNodes.Select(x => x.Id)));
+
+                //remove the initial layout of the transient nodes from the undo stack
+                wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
+                //remove the deletion of the transient nodes from the undo stack
+                wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
             }
         }
 
@@ -802,16 +810,26 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             List<List<NodeItem>> nodeStacks = NodeAutoCompleteUtilities.ComputeNodePlacementHeuristics(clusterConnections, clusterNodes);
 
+            //store our nodes and wires to allow for one undo
+            List<ModelBase> newNodesAndWires = new List<ModelBase>();
+
             double xoffset = node.X + node.NodeModel.Width;
             foreach (var nodeStack in nodeStacks)
             {
                 xoffset += node.NodeModel.Width;
                 foreach(var newNode in nodeStack)
                 {
-                    // Retreive assembly name and node full name from type.id.
+                    // Retrieve assembly name and node full name from type.id.
                     var typeInfo = wsViewModel.NodeAutoCompleteSearchViewModel.GetInfoFromTypeId(newNode.Type.Id);
                     dynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, xoffset, node.NodeModel.Y, false, false));
+
+                    //disallow the node creation command from the undo group, we group node creation and wires below
+                    wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
+
                     var nodeFromCluster = wsViewModel.Nodes.LastOrDefault();
+
+                    newNodesAndWires.Add(nodeFromCluster.NodeModel);
+
                     nodeFromCluster.IsTransient = true;
                     nodeFromCluster.IsHidden = true;
                     clusterMapping.Add(newNode.Id, nodeFromCluster);
@@ -824,33 +842,30 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     index++;
                 }
             }
-            using (var undoGroup = wsViewModel.Model.UndoRecorder.BeginActionGroup())
+
+            clusterConnections.ForEach(connection =>
             {
-                clusterConnections.ForEach(connection =>
-                {
-                    // Connect the nodes    
-                    var sourceNode = clusterMapping[connection.StartNode.NodeId].NodeModel;
-                    var targetNode = clusterMapping[connection.EndNode.NodeId].NodeModel;
-                    // The port index is 1- based (currently a hack and not expected from service)
-                    var sourcePort = sourceNode.OutPorts.FirstOrDefault(p => p.Index == connection.StartNode.PortIndex - 1);
-                    var targetPort = targetNode.InPorts.FirstOrDefault(p => p.Index == connection.EndNode.PortIndex - 1);
+                // Connect the nodes    
+                var sourceNode = clusterMapping[connection.StartNode.NodeId].NodeModel;
+                var targetNode = clusterMapping[connection.EndNode.NodeId].NodeModel;
+                // The port index is 1- based (currently a hack and not expected from service)
+                var sourcePort = sourceNode.OutPorts.FirstOrDefault(p => p.Index == connection.StartNode.PortIndex - 1);
+                var targetPort = targetNode.InPorts.FirstOrDefault(p => p.Index == connection.EndNode.PortIndex - 1);
 
+                if (targetPort != null && targetPort.Connectors.Count == 0)
+                {
                     var connector = ConnectorModel.Make(sourceNode, targetNode, connection.StartNode.PortIndex - 1, connection.EndNode.PortIndex - 1);
-                    if (connector != null && !targetPort.IsConnected)
-                    {
-                        wsViewModel.Model.UndoRecorder.RecordCreationForUndo(connector);
-                    }
-                });
 
-                // Connect the cluster to the original node and port
-                var connector = ConnectorModel.Make(node.NodeModel, targetNodeFromCluster.NodeModel, 0, ClusterResultItem.EntryNodeInPort);
-                if (connector != null && !targetNodeFromCluster.OutPorts.FirstOrDefault().IsConnected)
-                {
-                    wsViewModel.Model.UndoRecorder.RecordCreationForUndo(connector);
+                    newNodesAndWires.Add(connector);
                 }
-            }
 
-            //Make connectors invisible ( just like the cluster nodes ) before they get a chance to be drawn.
+            });
+
+            // Connect the cluster to the original node and port
+            var connector = ConnectorModel.Make(node.NodeModel, targetNodeFromCluster.NodeModel, 0, ClusterResultItem.EntryNodeInPort);
+            newNodesAndWires.Add(connector);
+
+            // Make connectors invisible ( just like the cluster nodes ) before they get a chance to be drawn.
             var clusterNodesModel = clusterMapping.Values.ToList();
             clusterNodesModel.ForEach(nodeInCluster => nodeInCluster?.NodeModel?.AllConnectors?.ToList().ForEach(connector =>
             {
@@ -872,7 +887,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             // AutoLayout should be called after all nodes are connected.
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(wsViewModel.DynamoViewModel.CurrentSpace, node.NodeModel, clusterNodesModel.Select(x => x.NodeModel), false, false, false, finalizer);
+
+            //record all node and wire creation as one undo
+            DynamoModel.RecordUndoModels(wsViewModel.Model, newNodesAndWires);
         }
+
         /// <summary>
         /// Key function to populate node autocomplete results to display
         /// </summary>
@@ -890,17 +909,17 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 fullResults = GetMLNodeClusterAutocompleteResults();
                 var comboboxResults = QualifiedResults.Select(x => new NodeAutoCompleteClusterResult { Description = x.Description });
                 dynamoViewModel.UIDispatcher.BeginInvoke(() =>
-                {                    
+                {
                     if (!IsOpen)
                     {
-                        // view dissapeared while the background thread was waiting for the server response.
+                        // view disappeared while the background thread was waiting for the server response.
                         // Ignore the results are we're no longer interested.
                         return;
                     }
-                    
-                    // this runs synchronously on the UI thread, so the UI can't dissapear during execution
+
+                    // this runs synchronously on the UI thread, so the UI can't disappear during execution
                     ClusterResults = comboboxResults;
-                    if(QualifiedResults.Any())
+                    if (QualifiedResults.Any())
                     {
                         var ClusterResultItem = QualifiedResults.First();
                         AddCluster(ClusterResultItem);
@@ -1058,7 +1077,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
                     //Write the Lucene documents to memory
                     LuceneUtility.CommitWriterChanges();
-                        
+
                     var luceneResults = SearchNodeAutocomplete(input);
                     var foundNodesModels = luceneResults.Select(x => x.Model);
                     var foundNodes = foundNodesModels.Select(MakeNodeSearchElementVM);
@@ -1129,9 +1148,9 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             ParseResult parseResult = null;
             try
             {
-                parseResult = ParserUtils.ParseWithCore($"dummyName:{ portType};", core);
+                parseResult = ParserUtils.ParseWithCore($"dummyName:{portType};", core);
             }
-            catch(ProtoCore.BuildHaltException)
+            catch (ProtoCore.BuildHaltException)
             { }
 
             var ast = parseResult?.CodeBlockNode.Children().FirstOrDefault() as IdentifierNode;
@@ -1205,7 +1224,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             elements.Sort(comparer);
             //then sort by node library group (create, action, or query node)
             //this results in a list of elements with 3 major groups(create,action,query), each group is sub sorted into types and then sorted by name.
-            return elements.OrderBy(x => x.Group).ThenBy(x => x.OutputParameters.FirstOrDefault().ToString()).ThenBy(x => x.Name);           
+            return elements.OrderBy(x => x.Group).ThenBy(x => x.OutputParameters.FirstOrDefault().ToString()).ThenBy(x => x.Name);
         }
 
         /// <summary>
@@ -1292,7 +1311,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 else
                 {
                     //if inputPortType is an array, lets just use the class name to match 
-                    xTypeNames = xTypeNames.Select(type => (ParserUtils.ParseWithCore($"dummyName:{ type};", core).
+                    xTypeNames = xTypeNames.Select(type => (ParserUtils.ParseWithCore($"dummyName:{type};", core).
                     CodeBlockNode.Children().ElementAt(0) as TypedIdentifierNode).datatype.Name);
                 }
                 if (y is ZeroTouchSearchElement yzt)
@@ -1302,7 +1321,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 // for non ZT nodes, we don't have concrete return types, so we need to parse the typename. 
                 else
                 {
-                    yTypeNames = yTypeNames.Select(type => (ParserUtils.ParseWithCore($"dummyName:{ type};", core).
+                    yTypeNames = yTypeNames.Select(type => (ParserUtils.ParseWithCore($"dummyName:{type};", core).
                     CodeBlockNode.Children().ElementAt(0) as TypedIdentifierNode).datatype.Name);
                 }
 
