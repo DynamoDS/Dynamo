@@ -420,6 +420,7 @@ namespace DynamoCoreWpfTests
             node1.OnNodeModified(); // Mark node as dirty to trigger an immediate run.
 
             Assert.Pass(); // We should reach here safely without exception.
+            DispatcherUtil.DoEvents();
         }
 
         [Test, Category("DisplayHardwareDependent")]
