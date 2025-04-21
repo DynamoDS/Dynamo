@@ -3507,6 +3507,7 @@ namespace Dynamo.Models
         {
             var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
             List<NodeSearchElement> nodes = new();
+
             foreach (var funcGroup in functionGroups)
             {
                 foreach (var functionDescriptor in funcGroup.Functions)
