@@ -198,6 +198,9 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
 
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, false, null);
+
+            //unlock undo/redo
+            node.WorkspaceViewModel.Model.UndoRedoLocked = false;
         }
 
         /// <summary>
@@ -798,6 +801,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             var node = PortViewModel.NodeViewModel;
             var wsViewModel = node.WorkspaceViewModel;
+            //lock undo/redo
+            wsViewModel.Model.UndoRedoLocked = true;
 
             DeleteTransientNodes();
 

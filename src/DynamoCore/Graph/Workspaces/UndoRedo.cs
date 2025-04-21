@@ -34,7 +34,14 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public bool CanUndo
         {
-            get { return ((null != undoRecorder) && undoRecorder.CanUndo); }
+            get
+            {
+                if (UndoRedoLocked)
+                {
+                    return false;
+                }
+                return ((null != undoRecorder) && undoRecorder.CanUndo);
+            }
         }
 
         /// <summary>
@@ -42,7 +49,20 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         public bool CanRedo
         {
-            get { return ((null != undoRecorder) && undoRecorder.CanRedo); }
+            get
+            {
+                if (UndoRedoLocked)
+                {
+                    return false;
+                }
+                return ((null != undoRecorder) && undoRecorder.CanRedo);
+            }
+        }
+
+        internal bool UndoRedoLocked
+        {
+            get;
+            set;
         }
 
         internal void Undo()
