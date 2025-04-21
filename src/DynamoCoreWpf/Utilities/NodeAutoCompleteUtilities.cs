@@ -129,6 +129,7 @@ namespace Dynamo.Wpf.Utilities
                 {
                     DynamoSelection.Instance.Selection.AddRange(intersectedNodes);
                     wsModel.DoGraphAutoLayout(reuseUndoGroup, true, queryNode.GUID);
+                    DynamoSelection.Instance.Selection.RemoveRange(intersectedNodes);
                 }
             }
 
