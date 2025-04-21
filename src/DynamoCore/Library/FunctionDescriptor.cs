@@ -338,9 +338,9 @@ namespace Dynamo.Engine
                 var categoryBuf = new StringBuilder();
                 categoryBuf.Append(GetRootCategory());
 
-                //if this is not BuiltIn function or function defined in a .ds file
+                //if this is not BuiltIn function or not a function defined in a .ds file
                 //search the containing assembly for the NodeCategoryAttribute.
-                if (ClassName != null || Assembly.ToLower().EndsWith(".ds"))
+                if (ClassName != null || !Assembly.ToLower().EndsWith(".ds"))
                 {
                     try
                     {
