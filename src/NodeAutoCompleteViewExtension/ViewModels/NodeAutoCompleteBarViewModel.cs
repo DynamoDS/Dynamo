@@ -32,6 +32,7 @@ using RestSharp;
 using Dynamo.Wpf.Utilities;
 using Dynamo.ViewModels;
 using System.Reflection;
+using System.Windows.Input;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Graph;
@@ -191,6 +192,10 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         internal void ConsolidateTransientNodes()
         {
             var node = PortViewModel.NodeViewModel;
+
+            //unlock undo/redo
+            node.WorkspaceViewModel.Model.UndoRedoLocked = false;
+            
             var transientNodes = node.WorkspaceViewModel.Nodes.Where(x => x.IsTransient).ToList();
             foreach (var transientNode in transientNodes)
             {
@@ -199,8 +204,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, false, null);
 
-            //unlock undo/redo
-            node.WorkspaceViewModel.Model.UndoRedoLocked = false;
+            //this allows undo redo to become active again
+            node.WorkspaceViewModel.DynamoViewModel.ExecuteCommand(new DynamoModel.UndoRedoCommand(DynamoModel.UndoRedoCommand.Operation.Redo));
         }
 
         /// <summary>
@@ -801,6 +806,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             var node = PortViewModel.NodeViewModel;
             var wsViewModel = node.WorkspaceViewModel;
+
             //lock undo/redo
             wsViewModel.Model.UndoRedoLocked = true;
 

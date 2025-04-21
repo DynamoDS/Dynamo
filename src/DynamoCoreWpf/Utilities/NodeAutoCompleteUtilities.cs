@@ -132,8 +132,6 @@ namespace Dynamo.Wpf.Utilities
                 }
             }
 
-            DynamoSelection.Instance.ClearSelection();
-
             if (finalizer != null)
             {
                 finalizer();
