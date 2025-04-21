@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -68,7 +69,9 @@ namespace Dynamo.Engine
         }
 
         /// <summary>
-        ///     Returns full path to the assembly the defined this function
+        ///     Returns full path to the assembly the defined this function.
+        ///     This is not always an assembly path, it might be a path to a .ds file
+        ///     or builtin token like 'operators'.
         /// </summary>
         public string Assembly { get; set; }
 
@@ -221,7 +224,9 @@ namespace Dynamo.Engine
         public bool IsOverloaded { get; set; }
 
         /// <summary>
-        ///     Full path to the assembly which defined this function
+        ///     Returns full path to the assembly the defined this function.
+        ///     This is not always an assembly path, it might be a path to a .ds file
+        ///     or builtin token like 'operators'.
         /// </summary>
         public string Assembly { get; private set; }
 
@@ -333,41 +338,52 @@ namespace Dynamo.Engine
                 var categoryBuf = new StringBuilder();
                 categoryBuf.Append(GetRootCategory());
 
-                //if this is not BuiltIn function search NodeCategoryAttribute for it
-                if (ClassName != null)
+                //if this is not BuiltIn function or function defined in a .ds file
+                //search the containing assembly for the NodeCategoryAttribute.
+                if (ClassName != null || Assembly.EndsWith(".ds"))
                 {
                     try
                     {
+#if DEBUG
+                        var LoadedAssemblyCount = AppDomain.CurrentDomain.GetAssemblies().Length;
+#endif
                         var asm = AppDomain.CurrentDomain.Load(Path.GetFileNameWithoutExtension(Assembly));
+#if DEBUG
 
+                        Debug.Assert(AppDomain.CurrentDomain.GetAssemblies().Length == LoadedAssemblyCount,
+                            "Assembly count should not have changed, because should not have actually performed a load.");
 
-                        if (asm != null && asm.GetType(ClassName) != null)
+#endif
+                        if (asm != null)
                         {
                             //get class type of function
                             var type = asm.GetType(ClassName);
-
-                            //get NodeCategoryAttribute for this function if it was been defined
-                            var nodeCat = type.GetMethods().Where(x => x.Name == FunctionName)
-                                .Select(x => x.GetCustomAttribute(typeof(NodeCategoryAttribute)))
-                                .Where(x => x != null)
-                                .Cast<NodeCategoryAttribute>()
-                                .Select(x => x.ElementCategory)
-                                .FirstOrDefault();
-
-                            //if attribute is found compose node category string with last part from attribute
-                            if (!string.IsNullOrEmpty(nodeCat) && (
-                                nodeCat == LibraryServices.Categories.Constructors
-                                || nodeCat == LibraryServices.Categories.Properties
-                                || nodeCat == LibraryServices.Categories.MemberFunctions))
+                            if (type != null)
                             {
-                                categoryBuf.Append("." + UnqualifedClassName + "." + nodeCat);
-                                category = categoryBuf.ToString();
-                                return category;
+                                //get NodeCategoryAttribute for this function if it was defined
+                                var nodeCat = type.GetMethods().Where(x => x.Name == FunctionName)
+                                    .Select(x => x.GetCustomAttribute(typeof(NodeCategoryAttribute)))
+                                    .Where(x => x != null)
+                                    .Cast<NodeCategoryAttribute>()
+                                    .Select(x => x.ElementCategory)
+                                    .FirstOrDefault();
+
+                                //if attribute is found compose node category string with last part from attribute
+                                if (!string.IsNullOrEmpty(nodeCat) && (
+                                    nodeCat == LibraryServices.Categories.Constructors
+                                    || nodeCat == LibraryServices.Categories.Properties
+                                    || nodeCat == LibraryServices.Categories.MemberFunctions))
+                                {
+                                    categoryBuf.Append("." + UnqualifedClassName + "." + nodeCat);
+                                    category = categoryBuf.ToString();
+                                    return category;
+                                }
                             }
                         }
                     }
                     catch (Exception e)
                     {
+                        //TODO ideally this would surface to dynamo logger somehow.
                         Console.WriteLine($"Error while generating function descriptor category:{Assembly} {ClassName} {FunctionName} {e}");
                     }
                 }
