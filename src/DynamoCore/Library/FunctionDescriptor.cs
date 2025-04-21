@@ -340,7 +340,7 @@ namespace Dynamo.Engine
 
                 //if this is not BuiltIn function or function defined in a .ds file
                 //search the containing assembly for the NodeCategoryAttribute.
-                if (ClassName != null || Assembly.EndsWith(".ds"))
+                if (ClassName != null || Assembly.ToLower().EndsWith(".ds"))
                 {
                     try
                     {
