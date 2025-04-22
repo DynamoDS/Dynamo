@@ -894,15 +894,15 @@ namespace CoreNodeModels
 
             AssociativeNode buildResultNodeX =
                 AstFactory.BuildFunctionCall(
-                    new Func<List<double>, double, object, object, object, object, List<double>, string, List<double>>(
-                        CurveMapperGenerator.CalculateValuesX),
+                    new Func<List<double>, double, object, object, object, object, object, string, List<double>>(
+                        CurveMapperGenerator.CalculateValuesForX),
                     curveInputs
                 );
 
             AssociativeNode buildResultNodeY =
                 AstFactory.BuildFunctionCall(
-                    new Func<List<double>, double, object, object, object, object, List<double>, string, List<double>>(
-                        CurveMapperGenerator.CalculateValuesY),
+                    new Func<List<double>, double, object, object, object, object, object, string, List<double>>(
+                        CurveMapperGenerator.CalculateValuesForY),
                     curveInputs
                 );
 

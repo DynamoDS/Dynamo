@@ -158,6 +158,7 @@ namespace DSCore.CurveMapper
             return mappedValues;
         }
 
+        [Obsolete("Use CalculateValuesForX with object pointsCount instead.")]
         public static List<double> CalculateValuesX(
             List<double> controlPoints,
             double canvasSize,
@@ -169,15 +170,13 @@ namespace DSCore.CurveMapper
             string graphType
             )
         {
-            return PrivateCalculateValuesX(
-                controlPoints, canvasSize,
-                minX, maxX, minY, maxY,
-                (object)pointsCount,
-                graphType);
+            // X values must always be calculated first to initialize the cache.
+            // CalculateValuesY() depends on this to avoid redundant calculation.
+            cachedValues = CalculateValues(controlPoints, canvasSize, minX, maxX, minY, maxY, pointsCount, graphType);
+            return cachedValues?[0];
         }
 
-        
-
+        [Obsolete("Use CalculateValuesForY with object pointsCount instead.")]
         public static List<double> CalculateValuesY(
             List<double> controlPoints,
             double canvasSize,
@@ -189,39 +188,40 @@ namespace DSCore.CurveMapper
             string graphType
             )
         {
-            return PrivateCalculateValuesY(
-                controlPoints, canvasSize,
-                minX, maxX, minY, maxY,
-                (object)pointsCount,
-                graphType);
+            if (cachedValues == null)
+            {
+                cachedValues = CalculateValues(controlPoints, canvasSize, minX, maxX, minY, maxY, pointsCount, graphType);
+            }
+            return cachedValues?[1];
         }
 
-        // Preserve original API signature by wrapping to internal object-based version
-        // This allows handling of both scalars and lists while avoiding replication
-        private static List<double> PrivateCalculateValuesX(
+        public static List<double> CalculateValuesForX(
             List<double> controlPoints,
             double canvasSize,
-            object minX,
-            object maxX,
-            object minY,
-            object maxY,
-            object pointsCount,
-            string graphType)
+            [ArbitraryDimensionArrayImport] object minX,
+            [ArbitraryDimensionArrayImport] object maxX,
+            [ArbitraryDimensionArrayImport] object minY,
+            [ArbitraryDimensionArrayImport] object maxY,
+            [ArbitraryDimensionArrayImport] object pointsCount,
+            string graphType
+            )
         {
             // X values must always be calculated first to initialize the cache.
             // CalculateValuesY() depends on this to avoid redundant calculation.
             cachedValues = CalculateValues(controlPoints, canvasSize, minX, maxX, minY, maxY, pointsCount, graphType);
             return cachedValues?[0];
         }
-        private static List<double> PrivateCalculateValuesY(
+
+        public static List<double> CalculateValuesForY(
             List<double> controlPoints,
             double canvasSize,
-            object minX,
-            object maxX,
-            object minY,
-            object maxY,
-            object pointsCount,
-            string graphType)
+            [ArbitraryDimensionArrayImport] object minX,
+            [ArbitraryDimensionArrayImport] object maxX,
+            [ArbitraryDimensionArrayImport] object minY,
+            [ArbitraryDimensionArrayImport] object maxY,
+            [ArbitraryDimensionArrayImport] object pointsCount,
+            string graphType
+            )
         {
             if (cachedValues == null)
             {
@@ -229,5 +229,7 @@ namespace DSCore.CurveMapper
             }
             return cachedValues?[1];
         }
+
+
     }
 }
