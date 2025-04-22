@@ -1,3 +1,4 @@
+using Autodesk.DesignScript.Runtime;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,6 +8,8 @@ namespace DSCore.CurveMapper
     /// Represents a square root curve in the CurveMapper.
     /// The curve follows a square root function and is influenced by two control points.
     /// </summary>
+
+    [IsVisibleInDynamoLibrary(false)]
     public class SquareRootCurve : CurveBase
     {
         private double ControlPoint1X;

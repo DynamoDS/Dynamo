@@ -11,10 +11,8 @@ namespace DSCore.CurveMapper
         private static int rounding = 10;
         private static List<List<double>> cachedValues = null;
 
-        [IsVisibleInDynamoLibrary(false)]
         private static List<List<double>> CalculateValues(
-            List<double>
-            controlPoints,
+            List<double> controlPoints,
             double canvasSize,
             [ArbitraryDimensionArrayImport] object minX,
             [ArbitraryDimensionArrayImport] object maxX,
@@ -161,34 +159,69 @@ namespace DSCore.CurveMapper
         }
 
         public static List<double> CalculateValuesX(
-            List<double>
-            controlPoints,
+            List<double> controlPoints,
             double canvasSize,
             [ArbitraryDimensionArrayImport] object minX,
             [ArbitraryDimensionArrayImport] object maxX,
             [ArbitraryDimensionArrayImport] object minY,
             [ArbitraryDimensionArrayImport] object maxY,
-            [ArbitraryDimensionArrayImport] object pointsCount,
+            List<double> pointsCount,
             string graphType
             )
+        {
+            return PrivateCalculateValuesX(
+                controlPoints, canvasSize,
+                minX, maxX, minY, maxY,
+                (object)pointsCount,
+                graphType);
+        }
+
+        
+
+        public static List<double> CalculateValuesY(
+            List<double> controlPoints,
+            double canvasSize,
+            [ArbitraryDimensionArrayImport] object minX,
+            [ArbitraryDimensionArrayImport] object maxX,
+            [ArbitraryDimensionArrayImport] object minY,
+            [ArbitraryDimensionArrayImport] object maxY,
+            List<double> pointsCount,
+            string graphType
+            )
+        {
+            return PrivateCalculateValuesY(
+                controlPoints, canvasSize,
+                minX, maxX, minY, maxY,
+                (object)pointsCount,
+                graphType);
+        }
+
+        // Preserve original API signature by wrapping to internal object-based version
+        // This allows handling of both scalars and lists while avoiding replication
+        private static List<double> PrivateCalculateValuesX(
+            List<double> controlPoints,
+            double canvasSize,
+            object minX,
+            object maxX,
+            object minY,
+            object maxY,
+            object pointsCount,
+            string graphType)
         {
             // X values must always be calculated first to initialize the cache.
             // CalculateValuesY() depends on this to avoid redundant calculation.
             cachedValues = CalculateValues(controlPoints, canvasSize, minX, maxX, minY, maxY, pointsCount, graphType);
             return cachedValues?[0];
         }
-
-        public static List<double> CalculateValuesY(
-            List<double>
-            controlPoints,
+        private static List<double> PrivateCalculateValuesY(
+            List<double> controlPoints,
             double canvasSize,
-            [ArbitraryDimensionArrayImport] object minX,
-            [ArbitraryDimensionArrayImport] object maxX,
-            [ArbitraryDimensionArrayImport] object minY,
-            [ArbitraryDimensionArrayImport] object maxY,
-            [ArbitraryDimensionArrayImport] object pointsCount,
-            string graphType
-            )
+            object minX,
+            object maxX,
+            object minY,
+            object maxY,
+            object pointsCount,
+            string graphType)
         {
             if (cachedValues == null)
             {
