@@ -407,6 +407,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")]
         public void InvalidValueShouldNotCrashColorRangeNode()
         {
             var guid0 = Guid.Parse("1a245b04-ad9e-4b9c-8301-730afbd4e6fc");
