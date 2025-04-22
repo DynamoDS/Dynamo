@@ -89,6 +89,14 @@ namespace Dynamo.NodeAutoComplete.Views
             MoveIndex(+1);
         }
 
+        private void DockButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel.ResultsLoaded)
+            {
+                ViewModel.PortViewModel.NodeViewModel.WorkspaceViewModel.OnRequestNodeAutoCompleteViewExtension(ViewModel.FullResults);
+            }
+        }
+
         //Removes nodeautocomplete menu when the associated parent node is removed.
         private void OnParentNodeRemoved(NodeModel node)
         {
