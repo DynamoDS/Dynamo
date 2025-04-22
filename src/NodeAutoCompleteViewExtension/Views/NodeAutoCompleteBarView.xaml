@@ -352,6 +352,7 @@
                     </Button.Style>
                 </Button>
                 <Button x:Name="btnDock"
+                        Click="DockButton_OnClick"
                         Grid.Column="8">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">

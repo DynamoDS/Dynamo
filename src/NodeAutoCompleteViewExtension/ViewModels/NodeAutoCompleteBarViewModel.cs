@@ -137,11 +137,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         {
             get
             {
-                if (fullResults == null)
+                if (FullResults == null)
                 {
                     return null;
                 }
-                return fullResults.Results.Where(x => double.Parse(x.Probability) * 100 > minClusterConfidenceScore);
+                return FullResults.Results.Where(x => double.Parse(x.Probability) * 100 > minClusterConfidenceScore);
             }
         }
 
@@ -177,7 +177,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
         private void ReAddNode(int index)
         {
-            if(fullResults == null)
+            if(FullResults == null)
             {
                 return;
             }
@@ -295,7 +295,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
         internal event Action<NodeModel> ParentNodeRemoved;
 
-        private MLNodeClusterAutoCompletionResponse fullResults;
+        internal MLNodeClusterAutoCompletionResponse FullResults { private set; get; }
 
         /// <summary>
         /// Constructor
@@ -902,11 +902,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
             ResetAutoCompleteSearchViewState();
 
-            fullResults = null;
+            FullResults = null;
             SelectedIndex = 0;
             Task.Run(() =>
             {
-                fullResults = GetMLNodeClusterAutocompleteResults();
+                FullResults = GetMLNodeClusterAutocompleteResults();
                 var comboboxResults = QualifiedResults.Select(x => new NodeAutoCompleteClusterResult { Description = x.Description });
                 dynamoViewModel.UIDispatcher.BeginInvoke(() =>
                 {
