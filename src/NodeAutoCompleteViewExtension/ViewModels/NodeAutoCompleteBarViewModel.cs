@@ -193,7 +193,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             var node = PortViewModel.NodeViewModel;
 
             //unlock undo/redo
-            node.WorkspaceViewModel.Model.UndoRedoLocked = false;
+            node.WorkspaceViewModel.Model.IsUndoRedoLocked = false;
             
             var transientNodes = node.WorkspaceViewModel.Nodes.Where(x => x.IsTransient).ToList();
             foreach (var transientNode in transientNodes)
@@ -807,7 +807,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             var wsViewModel = node.WorkspaceViewModel;
 
             //lock undo/redo
-            wsViewModel.Model.UndoRedoLocked = true;
+            wsViewModel.Model.IsUndoRedoLocked = true;
 
             DeleteTransientNodes();
 
