@@ -191,7 +191,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         internal void ConsolidateTransientNodes()
         {
             var node = PortViewModel.NodeViewModel;
-
             var transientNodes = node.WorkspaceViewModel.Nodes.Where(x => x.IsTransient).ToList();
             foreach (var transientNode in transientNodes)
             {
