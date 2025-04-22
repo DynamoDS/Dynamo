@@ -3714,6 +3714,15 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to This group is frozen. Click to unfreeze..
+        /// </summary>
+        public static string GroupFrozenButtonToolTip {
+            get {
+                return ResourceManager.GetString("GroupFrozenButtonToolTip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Title &lt;Double click here to edit group title&gt;.
         /// </summary>
         public static string GroupNameDefaultText {

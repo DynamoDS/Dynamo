@@ -4898,6 +4898,7 @@ static Dynamo.Wpf.Properties.Resources.GroupContextMenuGraphLayout.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuPreview.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuUngroup.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupDefaultText.get -> string
+static Dynamo.Wpf.Properties.Resources.GroupFrozenButtonToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupNameDefaultText.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupStyleContextAnnotation.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupStyleFontSizeToolTip.get -> string
