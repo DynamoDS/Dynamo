@@ -296,7 +296,6 @@ namespace Dynamo.PackageManager
                     BeginInvoke(() =>
                     {
                         SubmitCommand.RaiseCanExecuteChanged();
-                        PublishLocallyCommand.RaiseCanExecuteChanged();
                     });
                 }
             }
@@ -379,7 +378,6 @@ namespace Dynamo.PackageManager
                     BeginInvoke(() =>
                     {
                         SubmitCommand.RaiseCanExecuteChanged();
-                        PublishLocallyCommand.RaiseCanExecuteChanged();
                     });
                 }
             }
@@ -406,7 +404,6 @@ namespace Dynamo.PackageManager
                     BeginInvoke(() =>
                     {
                         SubmitCommand.RaiseCanExecuteChanged();
-                        PublishLocallyCommand.RaiseCanExecuteChanged();
                     });
                 }
             }
@@ -433,7 +430,6 @@ namespace Dynamo.PackageManager
                     BeginInvoke(() =>
                     {
                         SubmitCommand.RaiseCanExecuteChanged();
-                        PublishLocallyCommand.RaiseCanExecuteChanged();
                     });
                 }
             }
@@ -543,7 +539,6 @@ namespace Dynamo.PackageManager
                     BeginInvoke(() =>
                     {
                         SubmitCommand.RaiseCanExecuteChanged();
-                        PublishLocallyCommand.RaiseCanExecuteChanged();
                     });
 
                     RaisePropertyChanged(nameof(HasChanges));
@@ -656,6 +651,48 @@ namespace Dynamo.PackageManager
             {
                 markdownFilesDirectory = value;
                 RaisePropertyChanged(nameof(MarkdownFilesDirectory));
+            }
+        }
+
+
+        private string publishDirectory;
+
+        /// <summary>
+        /// A public property to surface the folder to publish the package locally
+        /// </summary>
+        public string PublishDirectory
+        {
+            get => publishDirectory;
+            set
+            {
+                publishDirectory = value;
+                RaisePropertyChanged(nameof(PublishDirectory));
+            }
+        }
+
+        private ICollection<PackageCompatibility> compatibilityMatrix;
+        public ICollection<PackageCompatibility> CompatibilityMatrix
+        {
+            get => compatibilityMatrix;
+            set
+            {
+                compatibilityMatrix = value;
+                RaisePropertyChanged(nameof(CompatibilityMatrix));
+                BeginInvoke(() =>
+                {
+                    SubmitCommand.RaiseCanExecuteChanged();
+                });
+            }
+        }
+
+        private string releaseNotesUrl;
+        public string ReleaseNotesUrl
+        {
+            get => releaseNotesUrl;
+            set
+            {
+                releaseNotesUrl = value;
+                RaisePropertyChanged(nameof(ReleaseNotesUrl));
             }
         }
 
@@ -949,6 +986,11 @@ namespace Dynamo.PackageManager
         /// </summary>
         private bool IsPublishFromLocalPackage = false;
 
+        /// <summary>
+        /// Notifies the view model that the user has cancelled the upload
+        /// </summary>
+        public event Action UploadCancelled;
+
         #endregion
 
         internal PublishPackageViewModel()
@@ -1090,7 +1132,7 @@ namespace Dynamo.PackageManager
             if (!rootItems.Any()) return rootItems;
 
             var roots = new List<PackageItemRootViewModel>();
-                      
+
             var commonPaths = GetCommonPaths(items.Keys.ToArray());
             if (commonPaths == null) return null;
 
@@ -1307,6 +1349,9 @@ namespace Dynamo.PackageManager
             this.ClearMarkdownDirectory();
             this.ClearPackageContents();
             this.KeywordsCollection?.Clear();
+            this.PublishDirectory = string.Empty;
+            this.CompatibilityMatrix?.Clear();
+            this.ReleaseNotesUrl = string.Empty;
         }
 
         /// <summary>
@@ -1333,6 +1378,8 @@ namespace Dynamo.PackageManager
             if (!String.IsNullOrEmpty(this.copyrightHolder)) return true;
             if (!String.IsNullOrEmpty(this.copyrightYear)) return true;
             if (!String.IsNullOrEmpty(this.RootFolder)) return true;
+            if (this.CompatibilityMatrix != null && this.CompatibilityMatrix.Any()) return true;
+            if (!String.IsNullOrEmpty(this.ReleaseNotesUrl)) return true;
 
             return false;
         }
@@ -1373,7 +1420,6 @@ namespace Dynamo.PackageManager
             {
                 CanSubmit();
                 SubmitCommand.RaiseCanExecuteChanged();
-                PublishLocallyCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -1500,6 +1546,8 @@ namespace Dynamo.PackageManager
         /// <summary>
         /// The method is used to create a PublishPackageViewModel from a Package object.
         /// If retainFolderStructure is set to true, the folder structure of the package will be retained. Else, the default folder structure will be imposed.
+        /// TODO: This process heavily relies on the pkg.json of the locally installed package providing all of the header-related inforamtion
+        /// This leads to potential mismatch from the local package and the current package on the server
         /// </summary>
         /// <param name="dynamoViewModel"></param>
         /// <param name="pkg">The package to be loaded</param>
@@ -1532,6 +1580,27 @@ namespace Dynamo.PackageManager
                 }
             }
 
+            // First check if the local package has the compatibility info
+            var compatibility_matrix = pkg.CompatibilityMatrix  ?? pkg.Header?.compatibility_matrix;
+            //If we do not find compatibility info in the local package, we will check the cached packages
+            if (compatibility_matrix == null)
+            {
+                // We need to get the compatibility matrix from the cached package list
+                // in order to show the correct compatibility matrix in the UI.
+                // We are still running the risk of having a higher version of the local package 
+                // leading to a null result for the compatibility matrix, in which case we will not pre-fill the compatibility info..
+                var cachedPackage = dynamoViewModel.PackageManagerClientViewModel.CachedPackageList
+                    .FirstOrDefault(x => x.Name == pkg.Name);
+                var version = cachedPackage?.Header.versions
+                    .FirstOrDefault(v => v.version.Equals(pkg.VersionName));
+                compatibility_matrix = version?.compatibility_matrix?
+                    .Select(entry => new PackageCompatibility(
+                    entry.name,
+                    entry.versions != null ? new List<string>(entry.versions) : null,
+                    entry.min,
+                    entry.max));
+            }
+
             var pkgViewModel = new PublishPackageViewModel(dynamoViewModel)
             {
                 Group = pkg.Group,
@@ -1550,7 +1619,8 @@ namespace Dynamo.PackageManager
                 IsPublishFromLocalPackage = true,
                 CurrentPackageRootDirectories = new List<string> { pkg.RootDirectory },
                 //default retain folder structure to true when publishing a new version from local.
-                RetainFolderStructureOverride = retainFolderStructure
+                RetainFolderStructureOverride = retainFolderStructure,
+                CompatibilityMatrix = compatibility_matrix?.ToList(),
             };
 
             // add additional files
@@ -1914,6 +1984,7 @@ namespace Dynamo.PackageManager
             }
         }
 
+
         private void ShowAddFileDialogAndAdd()
         {
             // show file open dialog
@@ -2049,13 +2120,20 @@ namespace Dynamo.PackageManager
                     "*",
                     SearchOption.AllDirectories
                 ).ToList();
+
+            RaisePropertyChanged(nameof(MarkdownFiles));
         }
 
         /// <summary>
         /// Method linked to the ClearMarkdownDirectoryCommand.
         /// Sets the MarkdownFilesDirectory to an empty string.
+        /// Also, cleans up the markdown files.
         /// </summary>
-        private void ClearMarkdownDirectory() => MarkdownFilesDirectory = string.Empty;
+        private void ClearMarkdownDirectory()
+        {
+            MarkdownFilesDirectory = string.Empty;
+            this.MarkdownFiles = new List<string>();
+        }
 
         /// <summary>
         /// Removes an item from the package contents list.
@@ -2108,14 +2186,13 @@ namespace Dynamo.PackageManager
             if (fileType.Equals(DependencyType.Assembly))
             {
                 Assemblies.Remove(Assemblies
-                    .First(x => x.Name == fileName));
+                    .FirstOrDefault(x => x.Name == fileName));
             }
             else if (fileName.ToLower().EndsWith(".dll"))
             {
                 fileName = vm.FilePath;
                 AdditionalFiles.Remove(AdditionalFiles
-                    .First(x => x == fileName));
-
+                    .FirstOrDefault(x => x == fileName));
             }
             else if (fileType.Equals(DependencyType.CustomNode) || fileType.Equals(DependencyType.CustomNodePreview))
             {
@@ -2149,7 +2226,7 @@ namespace Dynamo.PackageManager
             {
                 fileName = vm.FilePath;
                 AdditionalFiles.Remove(AdditionalFiles
-                    .First(x => x == fileName));
+                    .FirstOrDefault(x => x == fileName));
             }
         }
 
@@ -2277,9 +2354,12 @@ namespace Dynamo.PackageManager
         /// Delegate used to submit the publish online request</summary>
         private void Submit()
         {
+            if (!dynamoViewModel.IsIDSDKInitialized(true, Owner)) return;
             MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK : MessageBoxService.Show(Owner, Resources.PrePackagePublishMessage, Resources.PrePackagePublishTitle, MessageBoxButton.OKCancel, MessageBoxImage.Information);
             if (response == MessageBoxResult.Cancel)
             {
+                // Notify the front-end that the user has cancelled the upload
+                UploadCancelled?.Invoke();
                 return;
             }
 
@@ -2495,6 +2575,8 @@ namespace Dynamo.PackageManager
                 Package.RepositoryUrl = RepositoryUrl;
                 Package.CopyrightHolder = string.IsNullOrEmpty(CopyrightHolder) ? dynamoViewModel.Model.AuthenticationManager?.Username : CopyrightHolder;
                 Package.CopyrightYear = string.IsNullOrEmpty(CopyrightYear) ? DateTime.Now.Year.ToString() : copyrightYear;
+                Package.SetCompatibility(CompatibilityMatrix); // New - CompatibilityMatrix, Dynamo 3.5
+                Package.Header.release_notes_url = ReleaseNotesUrl; // New - ReleaseNotesUrl, Dynamo 3.5
 
                 AppendPackageContents();
 
@@ -2584,6 +2666,8 @@ namespace Dynamo.PackageManager
                 Dynamo.Wpf.Utilities.MessageBoxService.Show(Owner, ErrorMessage, Resources.FileNotPublishCaption, MessageBoxButton.OK, MessageBoxImage.Warning);
                 return string.Empty;
             }
+
+            PublishDirectory = folder;
 
             var pkgSubFolder = Path.Combine(folder, PathManager.PackagesDirectoryName);
 
@@ -2725,11 +2809,20 @@ namespace Dynamo.PackageManager
                 return false;
             }
 
+            /* Enable to make compatilibity matrix obligatory */
+            /*
+            if (CompatibilityMatrix == null || !CompatibilityMatrix.Any())
+            {
+                ErrorString = Resources.PackageCompatibilityMatrixMissing;
+                return false;
+            }
+            */
+
             if (UploadState != PackageUploadHandle.State.Error) ErrorString = "";
 
             if (Uploading) return false;
 
-            this.ErrorString = Resources.PackageManagerReadyToPublish;
+            this.ErrorString = Resources.PackageManagerNoValidationErrors;
             return true;
         }
 
@@ -2798,12 +2891,13 @@ namespace Dynamo.PackageManager
         internal PackageItemRootViewModel GetExistingRootItemViewModel(string publishPath, string packageName)
         {
             if (!PackageContents.Any()) return null;
-            if (PackageContents.Count(x => x.DependencyType.Equals(DependencyType.Folder)) == 1) {
+            if (PackageContents.Count(x => x.DependencyType.Equals(DependencyType.Folder)) == 1)
+            {
                 // If there is only one root item, this root item becomes the new folder
                 var item = PackageContents.First(x => x.DependencyType.Equals(DependencyType.Folder));
 
                 item = new PackageItemRootViewModel(Path.Combine(publishPath, packageName));
-                item.AddChildren( PackageContents.First().ChildItems.ToList() );
+                item.AddChildren(PackageContents.First().ChildItems.ToList());
 
                 return item;
             }
@@ -2813,7 +2907,7 @@ namespace Dynamo.PackageManager
             foreach (var item in PackageContents)
             {
                 // Skip 'bare' custom nodes, they will be represented by their CustomNodePreview counterparts
-                if(item.DependencyType.Equals(DependencyType.CustomNode)) { continue; }
+                if (item.DependencyType.Equals(DependencyType.CustomNode)) { continue; }
 
                 item.isChild = true;
                 rootItem.AddChildren(item);
@@ -2852,7 +2946,9 @@ namespace Dynamo.PackageManager
                 }
                 else if (file.ToLower().EndsWith(".dll") || PackageDirectoryBuilder.IsXmlDocFile(file, files) || PackageDirectoryBuilder.IsDynamoCustomizationFile(file, files))
                 {
-                    // Assemblies carry the information if they are NodeLibrary or not  
+                    // Assemblies carry the information if they are NodeLibrary or not
+                    // TODO: Propose - check if x.LocalFilePath.Equals(file) instead
+                    // There are cases where the Assembly name is different than the actual file name on disc. The filepath will be a way to match those
                     if (Assemblies.Any(x => x.Name.Equals(Path.GetFileNameWithoutExtension(fileName))))
                     {
                         var packageContents = PackageItemRootViewModel.GetFiles(PackageContents.ToList());

@@ -242,6 +242,8 @@ Dynamo.Configuration.PreferenceSettings.ShowConnector.get -> bool
 Dynamo.Configuration.PreferenceSettings.ShowConnector.set -> void
 Dynamo.Configuration.PreferenceSettings.ShowConnectorToolTip.get -> bool
 Dynamo.Configuration.PreferenceSettings.ShowConnectorToolTip.set -> void
+Dynamo.Configuration.PreferenceSettings.ShowDefaultGroupDescription.get -> bool
+Dynamo.Configuration.PreferenceSettings.ShowDefaultGroupDescription.set -> void
 Dynamo.Configuration.PreferenceSettings.ShowDetailedLayout.get -> bool
 Dynamo.Configuration.PreferenceSettings.ShowDetailedLayout.set -> void
 Dynamo.Configuration.PreferenceSettings.ShowEdges.get -> bool
@@ -364,6 +366,7 @@ Dynamo.Core.IDSDKManager
 Dynamo.Core.IDSDKManager.Dispose() -> void
 Dynamo.Core.IDSDKManager.GetAccessToken() -> string
 Dynamo.Core.IDSDKManager.IDSDKManager() -> void
+Dynamo.Core.IDSDKManager.IsIDSDKInitialized.get -> bool
 Dynamo.Core.IDSDKManager.IsLoggedIn() -> bool
 Dynamo.Core.IDSDKManager.Login() -> bool
 Dynamo.Core.IDSDKManager.LoginState.get -> Greg.AuthProviders.LoginState
@@ -703,6 +706,7 @@ Dynamo.Graph.Annotations.AnnotationModel.InitialTop.get -> double
 Dynamo.Graph.Annotations.AnnotationModel.InitialTop.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.IsExpanded.get -> bool
 Dynamo.Graph.Annotations.AnnotationModel.IsExpanded.set -> void
+Dynamo.Graph.Annotations.AnnotationModel.IsFrozen.get -> bool
 Dynamo.Graph.Annotations.AnnotationModel.IsVisible.get -> bool
 Dynamo.Graph.Annotations.AnnotationModel.loadFromXML.get -> bool
 Dynamo.Graph.Annotations.AnnotationModel.loadFromXML.set -> void
@@ -1003,6 +1007,7 @@ Dynamo.Graph.Nodes.NodeModel.MarkNodeAsModified(bool forceExecute = false) -> vo
 Dynamo.Graph.Nodes.NodeModel.Modified -> System.Action<Dynamo.Graph.Nodes.NodeModel>
 Dynamo.Graph.Nodes.NodeModel.Name.get -> string
 Dynamo.Graph.Nodes.NodeModel.Name.set -> void
+Dynamo.Graph.Nodes.NodeModel.NameOfAssemblyReferencedByNode -> System.Reflection.AssemblyName
 Dynamo.Graph.Nodes.NodeModel.NeedsForceExecution.get -> bool
 Dynamo.Graph.Nodes.NodeModel.NodeExecutionBegin -> System.Action<Dynamo.Graph.Nodes.NodeModel>
 Dynamo.Graph.Nodes.NodeModel.NodeExecutionEnd -> System.Action<Dynamo.Graph.Nodes.NodeModel>
@@ -1586,6 +1591,8 @@ Dynamo.Interfaces.IPreferences.Save(string filePath) -> bool
 Dynamo.Interfaces.IPreferences.SetIsBackgroundPreviewActive(string name, bool value) -> void
 Dynamo.Interfaces.IPreferences.ShowConnector.get -> bool
 Dynamo.Interfaces.IPreferences.ShowConnector.set -> void
+Dynamo.Interfaces.IPreferences.ShowDefaultGroupDescription.get -> bool
+Dynamo.Interfaces.IPreferences.ShowDefaultGroupDescription.set -> void
 Dynamo.Interfaces.IPreferences.ShowEdges.get -> bool
 Dynamo.Interfaces.IPreferences.ShowEdges.set -> void
 Dynamo.Interfaces.IPreferences.ShowPreviewBubbles.get -> bool
@@ -3067,6 +3074,7 @@ virtual Dynamo.Graph.Nodes.NodeModel.InputData.get -> Dynamo.Graph.Nodes.NodeInp
 virtual Dynamo.Graph.Nodes.NodeModel.IsConvertible.get -> bool
 virtual Dynamo.Graph.Nodes.NodeModel.IsInputNode.get -> bool
 virtual Dynamo.Graph.Nodes.NodeModel.IsOutputNode.get -> bool
+virtual Dynamo.Graph.Nodes.NodeModel.IsResizable.get -> bool
 virtual Dynamo.Graph.Nodes.NodeModel.NodeType.get -> string
 virtual Dynamo.Graph.Nodes.NodeModel.OnBuilt() -> void
 virtual Dynamo.Graph.Nodes.NodeModel.OnConnectorAdded(Dynamo.Graph.Connectors.ConnectorModel obj) -> void

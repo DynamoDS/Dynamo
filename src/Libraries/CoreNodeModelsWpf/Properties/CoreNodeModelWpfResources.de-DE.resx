@@ -321,4 +321,25 @@ Dictionary&lt;string, List&lt;List&lt;double&gt;&gt;&gt;</value>
   <data name="GateOpen" xml:space="preserve">
     <value>Öffnen</value>
   </data>
+  <data name="CurveMapperControlPointCoordinatesLabel" xml:space="preserve">
+    <value>Koordinaten</value>
+  </data>
+  <data name="CurveMapperControlPointToolTip" xml:space="preserve">
+    <value>Ziehen Sie den Mauszeiger, um die Kurve zu ändern.</value>
+  </data>
+  <data name="CurveMapperCurveTypesLabel" xml:space="preserve">
+    <value>Kurventyp</value>
+  </data>
+  <data name="CurveMapperLockedResetToolTip" xml:space="preserve">
+    <value>Die Kurve wurde gesperrt und kann nicht zurückgesetzt werden. Entsperren Sie zuerst die Kurve.</value>
+  </data>
+  <data name="CurveMapperLockToolTip" xml:space="preserve">
+    <value>Klicken Sie, um die Kurve zu sperren.</value>
+  </data>
+  <data name="CurveMapperResetToolTip" xml:space="preserve">
+    <value>Setzen Sie die Kurve zurück.</value>
+  </data>
+  <data name="CurveMapperUnlockToolTip" xml:space="preserve">
+    <value>Kurve kann nicht geändert werden. Klicken Sie zum Entsperren mit der Maus.</value>
+  </data>
 </root>

@@ -177,7 +177,7 @@ namespace Dynamo.PackageManager.UI
             commandParameterBinding.Source = button.DataContext;
 
             var contextMenuStyle = new Style(typeof(ContextMenu));
-            contextMenuStyle.BasedOn = (Style)SharedDictionaryManager.DynamoModernDictionary["ContextMenuStyle"];
+            contextMenuStyle.BasedOn = (Style)SharedDictionaryManager.DynamoModernDictionary["DarkContextMenuStyle"];
 
             //Apply the Style to the ContextMenu
             contextMenu.Style = contextMenuStyle;

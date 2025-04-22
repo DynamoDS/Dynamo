@@ -1,7 +1,8 @@
 <!--- Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.InnerVertices --->
 <!--- UZ7LZDBGWQPVR7727ZYQZDLUW55DWAGDHV5P5O7EVZL4HMD3B7TQ --->
-## InnerVertices - Documentazione
-Questo file di documentazione viene generato automaticamente da NodeDocumentationMarkdownGenerator, Version=2.14.0.3986, Culture=neutral, PublicKeyToken=null.
+## In profondità
+`TSplineTopology.InnerVertices` restituisce i vertici all'interno della topologia specificata. Nell'esempio seguente, viene creata una superficie TSpline e vengono quindi restituiti i vertici interni con `TSplineTopology.InnerVertices`.
 
-Per ulteriori informazioni su come aggiungere documentazione ai nodi personalizzati, vedere https://github.com/DynamoDS/Dynamo/wiki/Create-and-Add-Custom-Documentation-to-Nodes.
+## File di esempio
 
+![Example](./UZ7LZDBGWQPVR7727ZYQZDLUW55DWAGDHV5P5O7EVZL4HMD3B7TQ_img.jpg)

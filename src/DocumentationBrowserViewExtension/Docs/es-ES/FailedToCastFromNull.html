@@ -1,0 +1,36 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>El valor nulo no se puede convertir en tipo</h2>
+<p>Esta advertencia indica que el nodo que está intentando utilizar espera una entrada de un determinado tipo de datos y que ese tipo no puede ser nulo. Un valor nulo simplemente indica &quot;sin objeto&quot;, por lo que el nodo emite una advertencia que indica que no se está intentando introducir ningún objeto en el nodo, lo que no está permitido.</p>
+
+<h4>Cómo solucionar este error</h4>
+<p>El error puede deberse a otros nodos del gráfico. Compruebe los nodos ascendentes para ver si se ejecutan correctamente; es habitual que los nodos ascendentes no se ejecuten correctamente y transfieran los valores nulos de forma descendente a un nodo que muestre a continuación este mensaje de error. Comience desde el nodo que provoca esta advertencia y retroceda en el proceso, comprobando la salida de cada nodo hasta que encuentre el nodo que provoca este problema.</p>
+
+<p>Si el mensaje de error indica el parámetro que es nulo, compruebe los nodos de la ruta ascendente de ese parámetro para ver si se ejecutan correctamente y transfieren los valores que no son nulos de forma descendente.</p>
+
+<h4>Más información</h4>
+<p>Para obtener más información, consulte <a href="https://forum.dynamobim.com/search?q=null%20value%20cannot%20be%20cast%20to"><span>&quot;<strong>null value cannot be cast to type</strong>&quot;</span></a>.</p>
+
+</body>

@@ -589,10 +589,11 @@ namespace Dynamo.ViewModels
         {
             bool isCollectionofFiveorMore = false;
 
-            //if model is null or enginecontroller is disposed, return
+            // if model is null or node in Transient state or enginecontroller is disposed, return
             if (model is null ||
                 model.Start is null ||
                 model.Start.Owner is null||
+                model.Start.Owner.IsTransient ||
                 workspaceViewModel.DynamoViewModel.EngineController.IsDisposed == true)
             { return; }
 
@@ -1222,15 +1223,19 @@ namespace Dynamo.ViewModels
             {
                 NodeEnd.PropertyChanged -= nodeEndViewModel_PropertyChanged;
             }
-            ConnectorPinViewCollection.CollectionChanged -= HandleCollectionChanged;
+
+            if (ConnectorPinViewCollection != null)
+            {
+                ConnectorPinViewCollection.CollectionChanged -= HandleCollectionChanged;
+
+                foreach (var pin in ConnectorPinViewCollection.ToList())
+                {
+                    pin.RequestRedraw -= HandlerRedrawRequest;
+                    pin.RequestSelect -= HandleRequestSelected;
+                }
+            }
 
             workspaceViewModel.PropertyChanged -= WorkspaceViewModel_PropertyChanged;
-
-            foreach (var pin in ConnectorPinViewCollection.ToList())
-            {
-                pin.RequestRedraw -= HandlerRedrawRequest;
-                pin.RequestSelect -= HandleRequestSelected;
-            }
 
             this.PropertyChanged -= ConnectorViewModelPropertyChanged;
             DiscardAllConnectorPinModels();
@@ -1451,17 +1456,27 @@ namespace Dynamo.ViewModels
         /// </summary>
         public void Redraw()
         {
-            if (this.ConnectorModel?.End != null && ConnectorPinViewCollection?.Count > 0)
+            try
             {
-                RedrawBezierManyPoints();
-            }
-            else if (this.ConnectorModel?.End != null)
-            {
-                this.Redraw(this.ConnectorModel.End.Center);
-            }
+                if (this.ConnectorModel != null && ConnectorPinViewCollection != null)
+                {
+                    if (this.ConnectorModel?.End != null && ConnectorPinViewCollection?.Count > 0)
+                    {
+                        RedrawBezierManyPoints();
+                    }
+                    else if (this.ConnectorModel?.End != null)
+                    {
+                        this.Redraw(this.ConnectorModel.End.Center);
+                    }
+                }
 
-            this.SetCollapsedByNodeViewModel();
-            RaisePropertyChanged(nameof(ZIndex));
+                this.SetCollapsedByNodeViewModel();
+                RaisePropertyChanged(nameof(ZIndex));
+            }
+            catch (Exception ex)
+            {
+                workspaceViewModel.DynamoViewModel.Model.Logger.Log("Error when redrawing the connector: " + ex.StackTrace);
+            }
         }
 
         /// <summary>
@@ -1472,9 +1487,9 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void SetCollapsedByNodeViewModel()
         {
-            if (this.Nodevm.IsCollapsed && this.NodeEnd.IsCollapsed)
+            if (Nodevm?.IsCollapsed == true && NodeEnd?.IsCollapsed == true)
             {
-                this.IsCollapsed = true;
+                IsCollapsed = true;
             }
         }
 

@@ -1,6 +1,8 @@
 using Dynamo.Utilities;
+using HelixToolkit.SharpDX.Core.Utilities;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 
 namespace Dynamo.DocumentationBrowser
 {
@@ -30,10 +32,18 @@ namespace Dynamo.DocumentationBrowser
         /// </summary>
         /// <param name="resourceName"></param>
         /// <returns></returns>
-        internal static string GetContentFromEmbeddedResource(string resourceName)
+        internal static string GetContentFromEmbeddedResource(string resourceName, string locale = "")
         {
             var assembly = Assembly.GetExecutingAssembly();
+            var resourcePrefix = "Dynamo.DocumentationBrowser.Docs.";
             var result = "";
+            if (!string.IsNullOrEmpty(locale))
+            {
+                if (locale == "Default")
+                    locale = Thread.CurrentThread.CurrentCulture.Name;
+
+                resourceName = resourceName.Replace(resourcePrefix, resourcePrefix + locale.Replace('-', '_') + ".");
+            }
 
             using (Stream stream = assembly.GetManifestResourceStream(resourceName))
             using (StreamReader reader = new StreamReader(stream))
@@ -50,9 +60,9 @@ namespace Dynamo.DocumentationBrowser
         /// Inject syntax highlighting into a html string.
         /// </summary>
         /// <param name="content"></param>
-        internal static string GetSyntaxHighlighting()
+        internal static string GetSyntaxHighlighting(string locale = "")
         {
-            var syntaxHighlightingContent = DocumentationBrowserUtils.GetContentFromEmbeddedResource(SYNTAX_HIGHLIGHTING);
+            var syntaxHighlightingContent = DocumentationBrowserUtils.GetContentFromEmbeddedResource(SYNTAX_HIGHLIGHTING, locale);
             if (string.IsNullOrWhiteSpace(syntaxHighlightingContent))
                 return string.Empty;
 

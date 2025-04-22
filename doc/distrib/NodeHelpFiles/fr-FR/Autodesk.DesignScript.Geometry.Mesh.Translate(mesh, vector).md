@@ -3,4 +3,4 @@ Le noeud 'Mesh.Translate' (vecteur) transpose tout type de maillage selon la dir
 
 ## Exemple de fichier
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh.vector)_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh,%20vector)_img.jpg)

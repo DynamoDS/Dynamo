@@ -5,13 +5,13 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Dynamo.Configuration;
-using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
-using Dynamo.Selection;
+using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 using FontAwesome5;
 using Prism.Commands;
 
@@ -23,7 +23,6 @@ namespace Dynamo.Wpf.ViewModels
 
         private bool isSelected;
         private SearchViewModel searchViewModel;
-        private IDisposable undoRecorderGroup;
         private int spacingBetweenNodes = 50;
         private int spacingforHigherWidthNodes = 450;
 
@@ -247,6 +246,7 @@ namespace Dynamo.Wpf.ViewModels
         /// <summary>
         /// Create the search element as node and connect to target port
         /// </summary>
+        [Obsolete("This command will be removed in a future version of Dynamo")]
         public ICommand CreateAndConnectCommand { get; }
 
         /// <summary>
@@ -255,19 +255,16 @@ namespace Dynamo.Wpf.ViewModels
         /// <param name="parameter">Port model to connect to</param>
         protected virtual void CreateAndConnectToPort(object parameter)
         {
-            var portModel = (PortModel) parameter;
+            var portModel = parameter as PortModel;
+
+            if (portModel is null) return;
+
             var dynamoViewModel = searchViewModel.dynamoViewModel;
 
             // Initialize a new undo action group before calling 
             // node CreateAndConnect and AutoLayout commands.
-            if (undoRecorderGroup == null)
-            {
-                undoRecorderGroup = dynamoViewModel.CurrentSpace.UndoRecorder.BeginActionGroup();
+            IDisposable undoRecorderGroup = dynamoViewModel.CurrentSpace.UndoRecorder.BeginActionGroup();
 
-                // Node auto layout can be performed correctly only when the positions and sizes
-                // of nodes are known, which is possible only after the node views are ready.
-                dynamoViewModel.NodeViewReady += AutoLayoutNodes;
-            }
 
             var initialNode = portModel.Owner;
             var initialNodeVm = dynamoViewModel.CurrentSpaceViewModel.Nodes.FirstOrDefault(x => x.Id == initialNode.GUID);
@@ -278,11 +275,7 @@ namespace Dynamo.Wpf.ViewModels
 
             var createAsDownStreamNode = portModel.PortType == PortType.Output;
 
-            // Clear current selections.
-            DynamoSelection.Instance.ClearSelection();
-
-            //Add initial node in the selection in order to be considered while auto layout
-            DynamoSelection.Instance.Selection.Add(initialNode);
+            IEnumerable<NodeModel> misplacedNodes;
 
             // Placing the new node based on which port it is connecting to.
             if (createAsDownStreamNode)
@@ -294,9 +287,8 @@ namespace Dynamo.Wpf.ViewModels
                 dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, initialNode.GUID,
                     Model.CreationName, portModel.Index, Model.AutoCompletionNodeElementInfo.PortToConnect, adjustedX, adjustedY, createAsDownStreamNode, false, true));
 
-                //Select all output nodes as we need to perform Auto layout on only the output nodes
-                var outputNodes = initialNode.OutputNodes.Values.Where(x => x != null).SelectMany(y => y.Select(z => z.Item2));
-                DynamoSelection.Instance.Selection.AddRange(outputNodes);
+                //Collect all output nodes as we need to perform Auto layout on only the output nodes
+                misplacedNodes = initialNode.OutputNodes.Values.Where(x => x != null).SelectMany(y => y.Select(z => z.Item2));                
             }
             else
             {
@@ -313,46 +305,30 @@ namespace Dynamo.Wpf.ViewModels
                 dynamoViewModel.ExecuteCommand(new DynamoModel.CreateAndConnectNodeCommand(id, initialNode.GUID,
                       Model.CreationName, 0, portModel.Index, adjustedX, adjustedY, createAsDownStreamNode, false, true));
 
-                //Select all input nodes as we need to perform Auto layout on only the input nodes
-                var inputNodes = initialNode.InputNodes.Values.Where(x => x != null).Select(y => y.Item2);
-                DynamoSelection.Instance.Selection.AddRange(inputNodes);
-            }            
+                //Collect all input nodes as we need to perform Auto layout on only the input nodes
+                misplacedNodes = initialNode.InputNodes.Values.Where(x => x != null).Select(y => y.Item2);
+
+                //Add the node that is about to be replaced in the selection in order to be considered while AutoLayout
+                NodeModel prevNode = portModel?.Connectors?.FirstOrDefault()?.Start?.Owner; //upstream we only have one node to check
+                if (prevNode != null)
+                {
+                    misplacedNodes.Append(prevNode);
+                }
+            }
+
+            Action ensureUndoGroup = () => undoRecorderGroup?.Dispose();
+
+            NodeAutoCompleteUtilities.PostAutoLayoutNodes(dynamoViewModel.CurrentSpace, initialNode, misplacedNodes, false, true, true, ensureUndoGroup);
         }
 
         protected virtual bool CanCreateAndConnectToPort(object parameter)
         {
             // Do not auto connect code block node since default code block node do not have output port
             if (Model.CreationName.Contains("Code Block")) return false;
-
-            return true;
-        }
-
-        private void AutoLayoutNodes(object sender, EventArgs e)
-        {
-            var nodeView = (NodeView) sender;
-            var dynamoViewModel = nodeView.ViewModel.DynamoViewModel;
-
-            if (nodeView.ViewModel.NodeModel.OutputNodes.Count() > 0)
-            {
-                var originalNodeId = nodeView.ViewModel.NodeModel.OutputNodes.Values.SelectMany(s => s.Select(t => t.Item2)).Distinct().FirstOrDefault().GUID;
-                dynamoViewModel.CurrentSpace.DoGraphAutoLayout(true, true, originalNodeId);
-            }
-            else if (nodeView.ViewModel.NodeModel.InputNodes.Count() > 0)
-            {
-                var originalNodeId = nodeView.ViewModel.NodeModel.InputNodes.Values.Select(s => s.Item2).Distinct().FirstOrDefault().GUID;
-                dynamoViewModel.CurrentSpace.DoGraphAutoLayout(true, true, originalNodeId);
-            }
-          
-            DynamoSelection.Instance.ClearSelection();
-
-            // Close the undo action group once the node is created, connected and placed.
-            if (undoRecorderGroup != null)
-            {
-                undoRecorderGroup.Dispose();
-                undoRecorderGroup = null;
-
-                dynamoViewModel.NodeViewReady -= AutoLayoutNodes;
-            }
+            
+            // Avoid triggering auto complete for an already connected input.
+            PortModel portModel = parameter as PortModel;
+            return portModel?.PortType != PortType.Input || portModel?.Connectors?.FirstOrDefault()?.Start?.Owner is null;
         }
 
         public ICommand ClickedCommand { get; private set; }
@@ -367,8 +343,31 @@ namespace Dynamo.Wpf.ViewModels
                 // This is a best effort to create the node and log the error both in console and toast notification if it fails.
                 try
                 {
-                    var nodeModel = Model.CreateNode();
-                    Clicked(nodeModel, Position);
+                    var newNode = Model.CreateNode();
+
+                    // check to make sure a custom node cannot be added to its own workspace.
+                    var dynamoViewModel = searchViewModel.dynamoViewModel;
+                    var homeworkspace = dynamoViewModel.HomeSpaceViewModel;
+
+                    if (newNode.IsCustomFunction && dynamoViewModel.CurrentSpace is CustomNodeWorkspaceModel customNodeWorkspaceModel)
+                    {
+                        var nodeGuid = Guid.Parse(newNode.CreationName);
+
+                        if (nodeGuid.Equals(customNodeWorkspaceModel.CustomNodeId))
+                        {
+                            if (!customNodeWorkspaceModel.Nodes.Any(n => n.GetOriginalName().Contains("ScopeIf")))
+                            {
+                                dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.CannotAddNodeToWorkspace);
+                                return;
+                            }
+                            else
+                            {
+                                homeworkspace.RunSettingsViewModel.Model.RunType = RunType.Manual;
+                            }
+                        }
+                    }
+
+                    Clicked(newNode, Position);
                 }
                 catch (Exception ex)
                 {

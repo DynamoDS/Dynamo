@@ -1,0 +1,85 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>DesignScriptBuiltin</name>
+    </assembly>
+    <members>
+        <member name="M:DesignScript.Builtin.Dictionary.CustomKeyComparer.GetHashCode(System.String)">
+            <summary>이 코드는 결정적 해싱 알고리즘을 사용하는 .NET Framework 4.8의 String.GetHashCode()에서
+            복사되었습니다. 더 구체적으로 설명하면 https://referencesource.microsoft.com/mscorlib/R/42c2b7ffc7c3111f.html에
+            있는 String.GetLegacyNonRandomizedHashCode() 함수입니다.</summary>
+            <param name="obj"/>
+            <returns/>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ByKeysValues(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>제공된 키 및 값을 포함하는 사전을 생성합니다. 항목 수는
+                키 또는 값보다 적습니다.</summary>
+            <param name="keys">사전의 키</param>
+            <param name="values">사전의 값</param>
+            <returns name="dictionary">키 및 값의 사전</returns>
+            <search>map,{},table</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.Components">
+            <summary>구성요소의 사전을 생성합니다. Dictionary.ByKeysValues의 반전입니다.</summary>
+            <returns name="keys">사전의 키</returns>
+            <returns name="values">사전의 값</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Keys">
+            <summary>사전의 키를 생성합니다.</summary>
+            <returns name="keys">사전의 키</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Values">
+            <summary>사전의 값을 생성합니다.</summary>
+            <returns name="values">사전의 값</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Count">
+            <summary>사전 내의 키 값 쌍 숫자입니다.</summary> 
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.SetValueAtKeys(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>새 값으로 설정된 키 리스트를 포함하는 새 사전을 생성합니다. 기존 키-값 쌍을 덮어쓸 가능성이 있습니다.
+                이러한 두 개의 리스트는 길이가 동일할 것으로 예상됩니다. 그렇지 않으면 둘 중 짧은 쪽이 삽입 개수의 경계가 됩니다.</summary>
+            <param name="keys">설정할 사전의 키입니다. 동일한 키가 이미 있으면 해당 키 값이 수정됩니다.</param>
+            <param name="values">삽입할 대응 값입니다.</param>
+            <returns name="dictionary">항목이 삽입된 새 사전</returns>
+            <search>insert,add</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.RemoveKeys(System.Collections.Generic.IList{System.String})">
+            <summary>주어진 키가 제거된 새 사전을 생성합니다.</summary>
+            <param name="keys">제거할 사전의 키</param>
+            <returns name="dictionary">키가 제거된 새 사전</returns>
+            <search>drop,delete</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ValueAtKey(System.String)">
+            <summary>지정된 키의 값 가져오기</summary>
+            <param name="key">값을 가져올 사전의 키</param>
+            <returns name="value">지정된 키의 값이거나 설정되지 않은 경우 null</returns>
+            <search>lookup,valueatkey,find</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ToString">
+            <summary>사전의 친숙한 문자열 표현을 반환합니다.</summary>
+            <returns>사전의 문자열 표현입니다.</returns>
+        </member>
+        <member name="T:DesignScript.Builtin.BuiltinNullReferenceException">
+            <summary>null DS 기본 제공 유형과 함께 Null 참조 예외 발생:
+            리스트, 사전 및 문자열</summary>
+        </member>
+        <member name="T:Builtin.Properties.DesignScriptBuiltin">
+            <summary>현지화된 문자열 등을 조회하기 위한 강력한 유형의 리소스 클래스</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.ResourceManager">
+            <summary>이 클래스에서 사용하는 캐시된 ResourceManager 인스턴스를 반환합니다.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.Culture">
+            <summary>이러한 강력한 유형의 리소스 클래스를 사용하여 모든 리소스 
+              조회에 대한 현재 스레드의 CurrentUICulture 특성을 재지정합니다.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.IndexOutOfRangeExceptionMessage">
+            <summary>'색인이 범위를 벗어났습니다. 음수가 아닌 경우 리스트 크기보다 작아야 합니다.'와 유사한 현지화된 문자열을 조회합니다. href=kIndexOutOfRange.html.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.NullReferenceExceptionMessage">
+            <summary>'null 리스트, 사전 또는 문자열로 색인 처리할 수 없습니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.StringOverIndexingExceptionMessage">
+            <summary>'색인이 범위를 벗어났습니다. 음수가 아닌 경우 문자열 크기보다 작아야 합니다.'와 유사한 현지화된 문자열을 조회합니다. href=kIndexOutOfRange.html.</summary>
+        </member>
+    </members>
+</doc>

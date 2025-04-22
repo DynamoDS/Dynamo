@@ -3,4 +3,4 @@
 
 ## Файл примера
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh.vector)_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh,%20vector)_img.jpg)

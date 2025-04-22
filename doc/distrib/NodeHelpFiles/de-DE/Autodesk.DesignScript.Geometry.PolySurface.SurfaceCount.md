@@ -1,7 +1,8 @@
 ## Im Detail
-SurfaceCount gibt die Anzahl der Oberflächen in einer PolySurface als Ganzzahl zurück. Im folgenden Beispiel gibt ein extrudiertes Sechseck den Wert 8 zurück. Der Block benötigt eine einzelne PolySurface als Eingabe, sodass vor dem Zählen eine Sammlung von Oberflächen verbunden werden muss.
+`PolySurface.SurfaceCount` gibt die Anzahl der Oberflächen im angegebenen PolySurface-Objekt zurück.
+
+Im folgenden Beispiel wird eine PolySurface anhand eines Quaders erstellt, und die Anzahl der Oberflächen wird mit `PolySurface.SurfaceCount` angegeben.
 ___
 ## Beispieldatei
 
-
-
+![PolySurface.SurfaceCount](./Autodesk.DesignScript.Geometry.PolySurface.SurfaceCount_img.jpg)

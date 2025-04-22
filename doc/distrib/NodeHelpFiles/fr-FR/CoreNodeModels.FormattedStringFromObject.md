@@ -15,3 +15,7 @@ N : numéro N2 1000 -> "1,000.00"
 La valeur par défaut de ce nœud est 'G', ce qui génère une représentation compacte mais variable.
 
 [Pour plus d'informations, reportez-vous à la documentation Microsoft.](https://learn.microsoft.com/fr-fr/dotnet/standard/base-types/standard-numeric-format-strings#standard-format-specifiers)
+___
+## Exemple de fichier
+
+![Formatted String from Object](./CoreNodeModels.FormattedStringFromObject_img.jpg)

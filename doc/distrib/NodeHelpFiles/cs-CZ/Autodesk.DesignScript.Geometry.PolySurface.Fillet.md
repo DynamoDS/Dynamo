@@ -1,7 +1,10 @@
 ## Podrobnosti
-Uzel Fillet vrátí nové těleso se zaoblenými hranami. Vstup edges určuje, které hrany mají být zaobleny, zatímco vstup offset určuje poloměr zaoblení. V níže uvedeném příkladu začneme krychlí s výchozími vstupy. Pokud potřebujeme získat vhodné hrany krychle, nejprve je třeba rozložit krychli a získat tak plochy jako seznam povrchů. Poté pomocí uzlu Face.Edges extrahujte hrany z krychle. Extrahujeme první hranu každé plochy pomocí uzlu GetItemAtIndex. Číselný posuvník řídí poloměr každého zaoblení.
+Uzel `PolySurface.Fillet` vytvoří zaoblení (zaoblenou hranu) mezi hranami dané křivky PolySurface.
+
+Tento uzel je zvlášť užitečný při vyhlazování ostrých hran v modelu PolySurface, což vylepší vizuální a fyzikální vlastnosti geometrie.
+
+V následujícím příkladu se vytvoří kvádr, který je převeden na objekt PolySurface a nakonec zaoblen uzlem `PolySurface.Fillet`.
 ___
 ## Vzorový soubor
 
-
-
+![PolySurface.Fillet](./Autodesk.DesignScript.Geometry.PolySurface.Fillet_img.jpg)

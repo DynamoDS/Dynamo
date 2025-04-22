@@ -3,4 +3,4 @@
 
 ## 範例檔案
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.Scale(mesh.x.y.z)_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.Scale(mesh,%20x,%20y,%20z)_img.jpg)

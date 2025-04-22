@@ -1,0 +1,84 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>DesignScriptBuiltin</name>
+    </assembly>
+    <members>
+        <member name="M:DesignScript.Builtin.Dictionary.CustomKeyComparer.GetHashCode(System.String)">
+            <summary>Tento kód byl zkopírován z položky String.GetHashCode() pro rozhraní .NET framework 4.8, která používá
+            deterministický algoritmus hashingu. Konkrétně se jedná o funkci
+            String.GetLegacyNonRandomizedHashCode(), která je uvedena zde: https://referencesource.microsoft.com/mscorlib/R/42c2b7ffc7c3111f.html</summary>
+            <param name="obj"/>
+            <returns/>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ByKeysValues(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>Vytvoří slovník se zadanými klíči a hodnotami. Počet položek je
+                kratší z klíčů nebo hodnot.</summary>
+            <param name="keys">Klíče slovníku</param>
+            <param name="values">Hodnoty slovníku</param>
+            <returns name="dictionary">Slovníky z klíčů a hodnot</returns>
+            <search>map,{},table</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.Components">
+            <summary>Vytváří komponenty slovníku. Opakem je funkce Dictionary.ByKeysValues.</summary>
+            <returns name="keys">Klíče slovníku</returns>
+            <returns name="values">Hodnoty slovníku</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Keys">
+            <summary>Vytváří klíče ve slovníku.</summary>
+            <returns name="keys">Klíče slovníku</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Values">
+            <summary>Vytváří hodnoty ve slovníku.</summary>
+            <returns name="values">Hodnoty slovníku</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Count">
+            <summary>Počet dvojic klíčů a hodnot ve slovníku.</summary> 
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.SetValueAtKeys(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>Vytvoření nového slovníku se seznamem klíčů nastaveným na nové hodnoty, případně přepsání existujících dvojic klíč-hodnota. 
+                Tyto dva seznamy by měly mít stejnou délku. Pokud nemají, kratší z nich určuje počet vložení.</summary>
+            <param name="keys">Klíče ve slovníku k nastavení. Jestliže stejný klíč již existuje, hodnota v daném klíči bude upravena.</param>
+            <param name="values">Odpovídající hodnoty pro vložení.</param>
+            <returns name="dictionary">Nový slovník s vloženými položkami</returns>
+            <search>insert,add</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.RemoveKeys(System.Collections.Generic.IList{System.String})">
+            <summary>Vytvoření nového slovníku s odstraněnými klíči.</summary>
+            <param name="keys">Klíč ve slovníku k odstranění</param>
+            <returns name="dictionary">Nový slovník s odstraněnými klíči</returns>
+            <search>drop,delete</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ValueAtKey(System.String)">
+            <summary>Získání hodnoty v zadaném klíči</summary>
+            <param name="key">Klíč ve slovníku k získání hodnoty</param>
+            <returns name="value">Hodnota v určeném klíči nebo hodnota NULL, pokud není nastaven</returns>
+            <search>lookup,valueatkey,find</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ToString">
+            <summary>Vrací reprezentaci slovníku ve formě řetězců čitelných pro uživatele.</summary>
+            <returns>Reprezentace slovníku ve formě řetězců</returns>
+        </member>
+        <member name="T:DesignScript.Builtin.BuiltinNullReferenceException">
+            <summary>Byla vyvolána výjimka reference Null s vestavěnými typy DS nastavenými na null:
+            seznamy, slovníky a řetězce.</summary>
+        </member>
+        <member name="T:Builtin.Properties.DesignScriptBuiltin">
+            <summary>Třída prostředků silného typu k vyhledávání lokalizovaných řetězců apod.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.ResourceManager">
+            <summary>Vrátí instanci třídy ResourceManager uloženou ve vyrovnávací paměti, která je použita touto třídou.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.Culture">
+            <summary>Přepíše vlastnost CurrentUICulture aktuálního vlákna pro všechna vyhledávání prostředků pomocí této třídy prostředků silného typu.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.IndexOutOfRangeExceptionMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Index byl mimo rozsah. Pokud je nezáporný, musí být menší než velikost seznamu.“ href=kIndexOutOfRange.html.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.NullReferenceExceptionMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci Nelze Indexovat do seznamu, slovníku nebo řetězce nastaveného na null.</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.StringOverIndexingExceptionMessage">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Index byl mimo rozsah. Pokud je nezáporný, musí být menší než velikost řetězce.“ href=kIndexOutOfRange.html.</summary>
+        </member>
+    </members>
+</doc>

@@ -1,18 +1,14 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
 using System.Windows.Input;
-using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Models;
 using Dynamo.PythonServices;
 using Dynamo.ViewModels;
 using Dynamo.Wpf;
@@ -65,7 +61,15 @@ namespace PythonNodeModelsWpf
         private readonly MenuItem editWindowItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.EditHeader, IsCheckable = false };
         private MenuItem pythonEngineVersionMenu;
         private readonly MenuItem learnMoreItem = new MenuItem { Header = PythonNodeModels.Properties.Resources.PythonNodeContextMenuLearnMoreButton };
+        private class ScriptEditEventArgs : EventArgs
+        {
+            internal string ScriptContent { get; }
 
+            internal ScriptEditEventArgs(string scriptContent)
+            {
+                ScriptContent = scriptContent;
+            }
+        }
         public void CustomizeView(PythonNode nodeModel, NodeView nodeView)
         {
             base.CustomizeView(nodeModel, nodeView);
@@ -208,6 +212,14 @@ namespace PythonNodeModelsWpf
             editWindow = null;
         }
 
+        /// <summary>
+        /// The method to open the script editor window.
+        /// In default state, the editor will be opened as a floating window, or docked if previously recorded.
+        /// The editor displays the saved script by default, the method can be triggered with unsaved text/script
+        /// to be displayed when provided using <see cref="ScriptEditEventArgs">ScriptEditEventArgs</see>.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void EditScriptContent(object sender, EventArgs e)
         {
             try
@@ -218,19 +230,27 @@ namespace PythonNodeModelsWpf
                     {
                         editWindow.Activate();
                         dynamoView = editWindow.Owner as DynamoView;
+                        if (editWindow.WindowState == WindowState.Minimized)
+                        {
+                            editWindow.WindowState = WindowState.Normal;
+                        }
                     }
                     else
                     {
                         editWindow = new ScriptEditorWindow(dynamoViewModel, pythonNodeModel, pythonNodeView, ref editorWindowRect);
 
-                        if (pythonNodeModel.ScriptContentSaved || sender == null)
+                        if (pythonNodeModel.ScriptContentSaved)
                         {
                             editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", pythonNodeModel.Script);
                         }
+                        else if (e is ScriptEditEventArgs se && se != null)
+                        {
+                            editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", se.ScriptContent);
+                            editWindow.IsSaved = false;
+                        }
                         else
                         {
-                            editWindow.Initialize(workspaceModel.Guid, pythonNodeModel.GUID, "ScriptContent", sender.ToString());
-                            editWindow.IsSaved = false;
+                            throw new InvalidOperationException("Failed to initialize the script editor window.");
                         }
 
                         editWindow.Closed += editWindow_Closed;
@@ -273,7 +293,8 @@ namespace PythonNodeModelsWpf
 
         private void EditScriptContent(string text)
         {
-            EditScriptContent(text, null);
+            var args = new ScriptEditEventArgs(text);
+            EditScriptContent(null, args);
         }
 
         private void NodeModel_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

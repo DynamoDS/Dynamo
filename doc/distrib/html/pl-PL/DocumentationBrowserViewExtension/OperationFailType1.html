@@ -1,0 +1,43 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>Niepowodzenie operacji</h2>
+<p><code>Operation failed</code> (niepowodzenie operacji) to ogólny komunikat o błędzie, który wskazuje, że jeden z węzłów nie został uruchomiony. Zazwyczaj do komunikatu dołączone są dodatkowe informacje dotyczące tego, która operacja się nie powiodła i dlaczego. Niektóre z operacji najczęściej kończących się niepowodzeniem:</p>
+
+<ul>
+    <li><code>IronPythonEvaluator.EvaluateIronPythonScript</code> — ten komunikat jest wyświetlany, gdy nie można poprawnie wykonać węzła uruchamiającego kod w języku <tt>Python</tt>. Przyczyny tej sytuacji mogą być różne, ale najczęściej źródłem problemu jest błąd w kodzie w języku <tt>Python</tt>. Ten komunikat o błędzie jest często wyświetlany z dodatkowymi informacjami dotyczącymi wiersza kodu w języku <tt>Python</tt>, którego nie można było wykonać, oraz tego, dlaczego tak się stało. Więcej informacji na temat tego komunikatu o błędzie podano <a href="https://forum.dynamobim.comsearch?q=IronPythonEvaluator.EvaluateIronPythonScript"><span>tutaj</span></a>.</li>
+    
+    <li><code>Element.SetParameterByName</code> — więcej informacji na temat tego komunikatu o błędzie podano <a href="https://forum.dynamobim.com/search?q=Element.SetParameterByName"><span>tutaj</span></a>.</li>
+
+    <li><code>Floor.ByOutlineTypeAndLevel</code> — więcej informacji na temat tego komunikatu o błędzie podano <a href="https://forum.dynamobim.com/search?q=Floor.ByOutlineTypeAndLevel"><span>tutaj</span></a>.</li>
+
+    <li><code>Dictionary.ByKeysValues</code> — więcej informacji na temat tego komunikatu o błędzie podano <a href="https://forum.dynamobim.com/search?q=Dictionary.ByKeysValues"><span>tutaj</span></a>.</li>
+    
+    <li><code>List.GetItemAtIndex</code> — więcej informacji na temat tego komunikatu o błędzie podano <a href="https://forum.dynamobim.com/search?q=List.GetItemAtIndex"><span>tutaj</span></a>.</li>
+</ul>
+
+<h4>Więcej informacji</h4>
+<p>Aby dowiedzieć się więcej, sprawdź <a href="https://forum.dynamobim.com/search?q=operation%20failed"><span>wpisy na forum Dynamobim z frazą „<strong>operation failed</strong>”</span></a>.</p>
+
+</body>

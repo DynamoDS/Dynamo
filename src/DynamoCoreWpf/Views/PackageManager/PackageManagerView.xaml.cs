@@ -50,6 +50,19 @@ namespace Dynamo.PackageManager.UI
         public PackageManagerViewModel PackageManagerViewModel { get; set; }
         private DynamoView dynamoView;
 
+        /// <summary>
+        /// A bool controlling the appearance of the Package Publish component from feature flag
+        /// TODO: remove this public property and archive the feature flag in Dynamo 4.0 ?
+        /// </summary>
+        public bool IsNewPMPublishWizardEnabled
+        {
+            get
+            {
+                return DynamoModel.FeatureFlags?.CheckFeatureFlag("IsNewPMPublishWizardEnabled", true) ?? true;
+            }
+        }
+
+
         public PackageManagerView(DynamoView dynamoView, PackageManagerViewModel packageManagerViewModel)
         {
             this.DataContext = this;
@@ -210,34 +223,67 @@ namespace Dynamo.PackageManager.UI
 
             if (prevTab.Name.Equals("publishTab") && !selectedTab.Name.Equals("publishTab"))
             {
+                var isPublishing = PackageManagerViewModel.PublishPackageViewModel.UploadState.Equals(PackageUploadHandle.State.Uploading) ||
+                    PackageManagerViewModel.PublishPackageViewModel.UploadState.Equals(PackageUploadHandle.State.Copying) ||
+                    PackageManagerViewModel.PublishPackageViewModel.UploadState.Equals(PackageUploadHandle.State.Compressing);
 
-                if (!PackageManagerViewModel.PublishPackageViewModel.AnyUserChanges())
+                if (!PackageManagerViewModel.PublishPackageViewModel.AnyUserChanges() || isPublishing)
                 {
                     selectedTab.IsSelected = true;
                     return;
                 }
 
                 MessageBoxResult response = DynamoModel.IsTestMode ? MessageBoxResult.OK :
-                        MessageBoxService.Show(
-                            this,
-                            Dynamo.Wpf.Properties.Resources.DiscardChangesWarningPopupMessage,
-                            Dynamo.Wpf.Properties.Resources.DiscardChangesWarningPopupCaption,
-                            MessageBoxButton.OKCancel,
-                            MessageBoxImage.Warning);
+                    MessageBoxService.Show(
+                    this,
+                    Dynamo.Wpf.Properties.Resources.DiscardChangesWarningPopupMessage,
+                    Dynamo.Wpf.Properties.Resources.DiscardChangesWarningPopupCaption,
+                    MessageBoxButton.YesNoCancel,
+                    new System.Collections.Generic.List<string> {
+                        Dynamo.Wpf.Properties.Resources.SaveButton,
+                        Dynamo.Wpf.Properties.Resources.DiscardButton,
+                        Dynamo.Wpf.Properties.Resources.CancelButton },
+                    MessageBoxImage.Warning);
 
-                if (response == MessageBoxResult.OK)
+                if (response == MessageBoxResult.Yes || response == MessageBoxResult.No)
                 {
-                    PackageManagerViewModel.PublishPackageViewModel.CancelCommand.Execute();
-                    selectedTab.IsSelected = true;
-                    var pmPublishControl = this.packageManagerPublish as PackageManagerPublishControl;
-                    if (pmPublishControl != null)
-                    {
-                        pmPublishControl.ResetPageOrder();
-                    }
+                    HandlePackageManagerNavigation(response, selectedTab);
                 }
                 else
                 {
+                    // Don't do anything
                     e.Handled = true;
+                }
+            }
+
+        }
+
+        /// <summary>
+        /// Handles communicating the result to the front end
+        /// Yes - navigate away, but save the progress done so far
+        /// No - navigate away, and discard the progress
+        /// </summary>
+        /// <param name="response"></param>
+        /// <param name="selectedTab"></param>
+        private void HandlePackageManagerNavigation(MessageBoxResult response, TabItem selectedTab)
+        {
+            selectedTab.IsSelected = true;
+
+            var pmPublishControl = this.packageManagerPublish as PackageManagerPublishControl;
+            pmPublishControl?.ResetPageOrder();
+
+            var pmHost = this.packageManagerPublishHost;
+            if (pmHost?.Wizard != null)
+            {
+                if (response == MessageBoxResult.Yes)
+                {
+                    pmHost.Wizard.NavigateToPage(1);
+                }
+                else if (response == MessageBoxResult.No)
+                {
+                    PackageManagerViewModel.PublishPackageViewModel.CancelCommand.Execute();
+
+                    pmHost.Wizard.ResetProgress();
                 }
             }
         }
