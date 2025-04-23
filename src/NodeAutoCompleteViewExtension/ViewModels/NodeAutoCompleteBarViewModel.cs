@@ -425,7 +425,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
                 if (startNode.Equals(nodeInfo) || endNode.Equals(nodeInfo) || upstreamAndDownstreamNodes.Contains(startNode) || upstreamAndDownstreamNodes.Contains(endNode))
                 {
-                    var startPortName = (startNode is VariableInputNode || startNode is DSVarArgFunction) ? ParseVariableInputPortName(connector.Start.Name) : connector.Start.Name;
+                    var startPortName = (startNode is VariableInputNode || startNode is DSVarArgFunction) ? ParseVariableInputPortName(connector.Start.Name): connector.Start.Name;
                     var endPortName = (endNode is VariableInputNode || endNode is DSVarArgFunction) ? ParseVariableInputPortName(connector.End.Name) : connector.End.Name;
 
                     var connectorRequest = new ConnectionItem
@@ -611,13 +611,13 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 {
                     var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
                     var client = new RestClient(uri);
-                    var request = new RestRequest(string.Empty, Method.Post);
+                    var request = new RestRequest(string.Empty,Method.Post);
                     var tkn = tokenprovider?.GetAccessToken();
                     if (string.IsNullOrEmpty(tkn))
                     {
                         throw new Exception("Authentication required.");
                     }
-                    request.AddHeader("Authorization", $"Bearer {tkn}");
+                    request.AddHeader("Authorization",$"Bearer {tkn}");
                     request = request.AddJsonBody(requestJSON);
                     request.RequestFormat = DataFormat.Json;
                     RestResponse response = client.Execute(request);
@@ -838,7 +838,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             foreach (var nodeStack in nodeStacks)
             {
                 xoffset += node.NodeModel.Width;
-                foreach (var newNode in nodeStack)
+                foreach(var newNode in nodeStack)
                 {
                     // Retrieve assembly name and node full name from type.id.
                     var typeInfo = wsViewModel.NodeAutoCompleteSearchViewModel.GetInfoFromTypeId(newNode.Type.Id);
