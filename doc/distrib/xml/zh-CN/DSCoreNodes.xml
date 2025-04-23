@@ -1606,6 +1606,18 @@
         <member name="P:DSCore.Properties.Resources.BitmapOverflowError">
             <summary>查找类似“提供的颜色数据太大，无法适应图像边界。”的本地化字符串。</summary>
         </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperEqualMinMaxWarning">
+            <summary>Looks up a localized string similar to • Min and Max values must not be the same..</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCountWarning">
+            <summary>Looks up a localized string similar to • Values must be a list of numbers or a single number ≥ 2..</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCurveWarning">
+            <summary>Looks up a localized string similar to • Control points for the selected curve are not valid..</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidXYFormatWarning">
+            <summary>Looks up a localized string similar to • X and Y inputs must be single numbers (not lists)..</summary>
+        </member>
         <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
             <summary>查找类似“输入必须是单个值或非嵌套列表。”的本地化字符串。</summary>
         </member>
