@@ -441,15 +441,10 @@ namespace CoreNodeModels
         /// </summary>
         public void GenerateRenderValues()
         {
-            if (SelectedGraphType == GraphTypes.Empty)
+            if (SelectedGraphType == GraphTypes.Empty || !IsValidCurve())
             {
                 RenderValuesX = RenderValuesY = null;
-                OnNodeModified();
-                return;
-            }
-            if (!IsValidCurve())
-            {
-                RenderValuesX = RenderValuesY = null;
+                // Trigger an update to force the node to output nulls and display a warning bubble
                 OnNodeModified();
                 return;
             }
@@ -680,20 +675,6 @@ namespace CoreNodeModels
 
         #region Private Methods
 
-        private bool IsValidInput()
-        {
-            if (pointsCount == null || pointsCount.Count == 0)
-                return false;
-
-            if (pointsCount.Count == 1 && pointsCount.FirstOrDefault() < 2)
-                return false;
-
-            if (MinLimitX == MaxLimitX || MinLimitY == MaxLimitY)
-                return false;
-
-            return true;
-        }
-
         private bool IsValidCurve()
         {
             // Dictionary mapping graph types to control point validation logic
@@ -832,7 +813,7 @@ namespace CoreNodeModels
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             // If input is missing or invalid, return nulls
-            if (inputAstNodes == null || inputAstNodes.Count < 5 || SelectedGraphType == GraphTypes.Empty || !IsValidCurve())
+            if (inputAstNodes == null || inputAstNodes.Count < 5 || SelectedGraphType == GraphTypes.Empty)
             {
                 return new[]
                 {
@@ -913,15 +894,15 @@ namespace CoreNodeModels
 
             AssociativeNode buildResultNodeX =
                 AstFactory.BuildFunctionCall(
-                    new Func<List<double>, double, object, object, object, object, List<double>, string, List<double>>(
-                        CurveMapperGenerator.CalculateValuesX),
+                    new Func<List<double>, double, object, object, object, object, object, string, List<double>>(
+                        CurveMapperGenerator.CalculateValuesForX),
                     curveInputs
                 );
 
             AssociativeNode buildResultNodeY =
                 AstFactory.BuildFunctionCall(
-                    new Func<List<double>, double, object, object, object, object, List<double>, string, List<double>>(
-                        CurveMapperGenerator.CalculateValuesY),
+                    new Func<List<double>, double, object, object, object, object, object, string, List<double>>(
+                        CurveMapperGenerator.CalculateValuesForY),
                     curveInputs
                 );
 
