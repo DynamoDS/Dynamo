@@ -955,76 +955,53 @@ namespace CoreNodeModels
         {
             base.SerializeCore(element, context);
 
-            element.SetAttribute("SelectedGraphType", SelectedGraphType.ToString());
+            element.SetAttribute(nameof(SelectedGraphType), SelectedGraphType.ToString());
+            element.SetAttribute(nameof(IsLocked), IsLocked.ToString());
 
-            //// Save only the points needed for the current curve
-            //switch (SelectedGraphType)
-            //{               
-            //    case GraphTypes.LinearCurve:
-            //        SavePointData(element, "Linear1", LinearCurveControlPointData1);
-            //        SavePointData(element, "Linear2", LinearCurveControlPointData2);
-            //        break;
-            //    case GraphTypes.BezierCurve:
-            //        SavePointData(element, "Bezier1", BezierCurveControlPointData1);
-            //        SavePointData(element, "Bezier2", BezierCurveControlPointData2);
-            //        SavePointData(element, "Bezier3", BezierCurveControlPointData3);
-            //        SavePointData(element, "Bezier4", BezierCurveControlPointData4);
-            //        break;
-            //    case GraphTypes.SineWave:
-            //        SavePointData(element, "Sine1", SineWaveControlPointData1);
-            //        SavePointData(element, "Sine2", SineWaveControlPointData2);
-            //        break;
-            //    case GraphTypes.CosineWave:
-            //        SavePointData(element, "Cosine1", CosineWaveControlPointData1);
-            //        SavePointData(element, "Cosine2", CosineWaveControlPointData2);
-            //        break;
-            //    case GraphTypes.ParabolicCurve:
-            //        SavePointData(element, "Parabolic1", ParabolicCurveControlPointData1);
-            //        SavePointData(element, "Parabolic2", ParabolicCurveControlPointData2);
-            //        break;
-            //    case GraphTypes.PerlinNoiseCurve:
-            //        SavePointData(element, "Perlin1", PerlinNoiseControlPointData1);
-            //        SavePointData(element, "Perlin2", PerlinNoiseControlPointData2);
-            //        SavePointData(element, "Perlin3", PerlinNoiseControlPointData3);
-            //        break;
-            //    case GraphTypes.PowerCurve:
-            //        SavePointData(element, "Power1", PowerCurveControlPointData1);
-            //        break;
-            //    case GraphTypes.SquareRootCurve:
-            //        SavePointData(element, "SquareRoot1", SquareRootCurveControlPointData1);
-            //        SavePointData(element, "SquareRoot2", SquareRootCurveControlPointData2);
-            //        break;
-            //    case GraphTypes.GaussianCurve:
-            //        SavePointData(element, "Gaussian1", GaussianCurveControlPointData1);
-            //        SavePointData(element, "Gaussian2", GaussianCurveControlPointData2);
-            //        SavePointData(element, "Gaussian3", GaussianCurveControlPointData3);
-            //        SavePointData(element, "Gaussian4", GaussianCurveControlPointData4);
-            //        break;
-            //}
             // Save only the points needed for the current curve
-            SavePointData(element, "Linear1", LinearCurveControlPointData1);
-            SavePointData(element, "Linear2", LinearCurveControlPointData2);
-            SavePointData(element, "Bezier1", BezierCurveControlPointData1);
-            SavePointData(element, "Bezier2", BezierCurveControlPointData2);
-            SavePointData(element, "Bezier3", BezierCurveControlPointData3);
-            SavePointData(element, "Bezier4", BezierCurveControlPointData4);
-            SavePointData(element, "Sine1", SineWaveControlPointData1);
-            SavePointData(element, "Sine2", SineWaveControlPointData2);
-            SavePointData(element, "Cosine1", CosineWaveControlPointData1);
-            SavePointData(element, "Cosine2", CosineWaveControlPointData2);
-            SavePointData(element, "Parabolic1", ParabolicCurveControlPointData1);
-            SavePointData(element, "Parabolic2", ParabolicCurveControlPointData2);
-            SavePointData(element, "Perlin1", PerlinNoiseControlPointData1);
-            SavePointData(element, "Perlin2", PerlinNoiseControlPointData2);
-            SavePointData(element, "Perlin3", PerlinNoiseControlPointData3);
-            SavePointData(element, "Power1", PowerCurveControlPointData1);
-            SavePointData(element, "SquareRoot1", SquareRootCurveControlPointData1);
-            SavePointData(element, "SquareRoot2", SquareRootCurveControlPointData2);
-            SavePointData(element, "Gaussian1", GaussianCurveControlPointData1);
-            SavePointData(element, "Gaussian2", GaussianCurveControlPointData2);
-            SavePointData(element, "Gaussian3", GaussianCurveControlPointData3);
-            SavePointData(element, "Gaussian4", GaussianCurveControlPointData4);
-
+            switch (SelectedGraphType)
+            {
+                case GraphTypes.LinearCurve:
+                    SavePointData(element, "Linear1", LinearCurveControlPointData1);
+                    SavePointData(element, "Linear2", LinearCurveControlPointData2);
+                    break;
+                case GraphTypes.BezierCurve:
+                    SavePointData(element, "Bezier1", BezierCurveControlPointData1);
+                    SavePointData(element, "Bezier2", BezierCurveControlPointData2);
+                    SavePointData(element, "Bezier3", BezierCurveControlPointData3);
+                    SavePointData(element, "Bezier4", BezierCurveControlPointData4);
+                    break;
+                case GraphTypes.SineWave:
+                    SavePointData(element, "Sine1", SineWaveControlPointData1);
+                    SavePointData(element, "Sine2", SineWaveControlPointData2);
+                    break;
+                case GraphTypes.CosineWave:
+                    SavePointData(element, "Cosine1", CosineWaveControlPointData1);
+                    SavePointData(element, "Cosine2", CosineWaveControlPointData2);
+                    break;
+                case GraphTypes.ParabolicCurve:
+                    SavePointData(element, "Parabolic1", ParabolicCurveControlPointData1);
+                    SavePointData(element, "Parabolic2", ParabolicCurveControlPointData2);
+                    break;
+                case GraphTypes.PerlinNoiseCurve:
+                    SavePointData(element, "Perlin1", PerlinNoiseControlPointData1);
+                    SavePointData(element, "Perlin2", PerlinNoiseControlPointData2);
+                    SavePointData(element, "Perlin3", PerlinNoiseControlPointData3);
+                    break;
+                case GraphTypes.PowerCurve:
+                    SavePointData(element, "Power1", PowerCurveControlPointData1);
+                    break;
+                case GraphTypes.SquareRootCurve:
+                    SavePointData(element, "SquareRoot1", SquareRootCurveControlPointData1);
+                    SavePointData(element, "SquareRoot2", SquareRootCurveControlPointData2);
+                    break;
+                case GraphTypes.GaussianCurve:
+                    SavePointData(element, "Gaussian1", GaussianCurveControlPointData1);
+                    SavePointData(element, "Gaussian2", GaussianCurveControlPointData2);
+                    SavePointData(element, "Gaussian3", GaussianCurveControlPointData3);
+                    SavePointData(element, "Gaussian4", GaussianCurveControlPointData4);
+                    break;
+            }
         }        
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
@@ -1032,89 +1009,72 @@ namespace CoreNodeModels
             base.DeserializeCore(element, context);
 
             // Restore the selected graph type
-            var typeAttr = element.GetAttribute("SelectedGraphType");
+            var typeAttr = element.GetAttribute(nameof(SelectedGraphType));
             if (!string.IsNullOrEmpty(typeAttr) && Enum.TryParse(typeAttr, out GraphTypes parsedType))
             {
                 SelectedGraphType = parsedType;
             }
+            if (bool.TryParse(element.GetAttribute(nameof(IsLocked)), out var locked))
+            {
+                IsLocked = locked;
+            }
 
-            //switch (SelectedGraphType)
-            //{                
-            //    case GraphTypes.LinearCurve:
-            //        LinearCurveControlPointData1 = LoadPointData(element, "Linear1");
-            //        LinearCurveControlPointData2 = LoadPointData(element, "Linear2");
-            //        break;
-            //    case GraphTypes.BezierCurve:
-            //        BezierCurveControlPointData1 = LoadPointData(element, "Bezier1");
-            //        BezierCurveControlPointData2 = LoadPointData(element, "Bezier2");
-            //        BezierCurveControlPointData3 = LoadPointData(element, "Bezier3");
-            //        BezierCurveControlPointData4 = LoadPointData(element, "Bezier4");
-            //        break;
-            //    case GraphTypes.SineWave:
-            //        SineWaveControlPointData1 = LoadPointData(element, "Sine1");
-            //        SineWaveControlPointData2 = LoadPointData(element, "Sine2");
-            //        break;
-            //    case GraphTypes.CosineWave:
-            //        CosineWaveControlPointData1 = LoadPointData(element, "Cosine1");
-            //        CosineWaveControlPointData2 = LoadPointData(element, "Cosine2");
-            //        break;
-            //    case GraphTypes.ParabolicCurve:
-            //        ParabolicCurveControlPointData1 = LoadPointData(element, "Parabolic1");
-            //        ParabolicCurveControlPointData2 = LoadPointData(element, "Parabolic2");
-            //        break;
-            //    case GraphTypes.PerlinNoiseCurve:
-            //        PerlinNoiseControlPointData1 = LoadPointData(element, "Perlin1");
-            //        PerlinNoiseControlPointData2 = LoadPointData(element, "Perlin2");
-            //        PerlinNoiseControlPointData3 = LoadPointData(element, "Perlin3");
-            //        break;
-            //    case GraphTypes.PowerCurve:
-            //        PowerCurveControlPointData1 = LoadPointData(element, "Power1");
-            //        break;
-            //    case GraphTypes.SquareRootCurve:
-            //        SquareRootCurveControlPointData1 = LoadPointData(element, "SquareRoot1");
-            //        SquareRootCurveControlPointData2 = LoadPointData(element, "SquareRoot2");
-            //        break;
-            //    case GraphTypes.GaussianCurve:
-            //        GaussianCurveControlPointData1 = LoadPointData(element, "Gaussian1");
-            //        GaussianCurveControlPointData2 = LoadPointData(element, "Gaussian2");
-            //        GaussianCurveControlPointData3 = LoadPointData(element, "Gaussian3");
-            //        GaussianCurveControlPointData4 = LoadPointData(element, "Gaussian4");
-            //        break;
-            //}
-            LinearCurveControlPointData1 = LoadPointData(element, "Linear1");
-            LinearCurveControlPointData2 = LoadPointData(element, "Linear2");
-            BezierCurveControlPointData1 = LoadPointData(element, "Bezier1");
-            BezierCurveControlPointData2 = LoadPointData(element, "Bezier2");
-            BezierCurveControlPointData3 = LoadPointData(element, "Bezier3");
-            BezierCurveControlPointData4 = LoadPointData(element, "Bezier4");
-            SineWaveControlPointData1 = LoadPointData(element, "Sine1");
-            SineWaveControlPointData2 = LoadPointData(element, "Sine2");
-            CosineWaveControlPointData1 = LoadPointData(element, "Cosine1");
-            CosineWaveControlPointData2 = LoadPointData(element, "Cosine2");
-            ParabolicCurveControlPointData1 = LoadPointData(element, "Parabolic1");
-            ParabolicCurveControlPointData2 = LoadPointData(element, "Parabolic2");
-            PerlinNoiseControlPointData1 = LoadPointData(element, "Perlin1");
-            PerlinNoiseControlPointData2 = LoadPointData(element, "Perlin2");
-            PerlinNoiseControlPointData3 = LoadPointData(element, "Perlin3");
-            PowerCurveControlPointData1 = LoadPointData(element, "Power1");
-            SquareRootCurveControlPointData1 = LoadPointData(element, "SquareRoot1");
-            SquareRootCurveControlPointData2 = LoadPointData(element, "SquareRoot2");
-            GaussianCurveControlPointData1 = LoadPointData(element, "Gaussian1");
-            GaussianCurveControlPointData2 = LoadPointData(element, "Gaussian2");
-            GaussianCurveControlPointData3 = LoadPointData(element, "Gaussian3");
-            GaussianCurveControlPointData4 = LoadPointData(element, "Gaussian4");
+            switch (SelectedGraphType)
+            {
+                case GraphTypes.LinearCurve:
+                    LinearCurveControlPointData1 = LoadPointData(element, "Linear1");
+                    LinearCurveControlPointData2 = LoadPointData(element, "Linear2");
+                    break;
+                case GraphTypes.BezierCurve:
+                    BezierCurveControlPointData1 = LoadPointData(element, "Bezier1");
+                    BezierCurveControlPointData2 = LoadPointData(element, "Bezier2");
+                    BezierCurveControlPointData3 = LoadPointData(element, "Bezier3");
+                    BezierCurveControlPointData4 = LoadPointData(element, "Bezier4");
+                    break;
+                case GraphTypes.SineWave:
+                    SineWaveControlPointData1 = LoadPointData(element, "Sine1");
+                    SineWaveControlPointData2 = LoadPointData(element, "Sine2");
+                    break;
+                case GraphTypes.CosineWave:
+                    CosineWaveControlPointData1 = LoadPointData(element, "Cosine1");
+                    CosineWaveControlPointData2 = LoadPointData(element, "Cosine2");
+                    break;
+                case GraphTypes.ParabolicCurve:
+                    ParabolicCurveControlPointData1 = LoadPointData(element, "Parabolic1");
+                    ParabolicCurveControlPointData2 = LoadPointData(element, "Parabolic2");
+                    break;
+                case GraphTypes.PerlinNoiseCurve:
+                    PerlinNoiseControlPointData1 = LoadPointData(element, "Perlin1");
+                    PerlinNoiseControlPointData2 = LoadPointData(element, "Perlin2");
+                    PerlinNoiseControlPointData3 = LoadPointData(element, "Perlin3");
+                    break;
+                case GraphTypes.PowerCurve:
+                    PowerCurveControlPointData1 = LoadPointData(element, "Power1");
+                    break;
+                case GraphTypes.SquareRootCurve:
+                    SquareRootCurveControlPointData1 = LoadPointData(element, "SquareRoot1");
+                    SquareRootCurveControlPointData2 = LoadPointData(element, "SquareRoot2");
+                    break;
+                case GraphTypes.GaussianCurve:
+                    GaussianCurveControlPointData1 = LoadPointData(element, "Gaussian1");
+                    GaussianCurveControlPointData2 = LoadPointData(element, "Gaussian2");
+                    GaussianCurveControlPointData3 = LoadPointData(element, "Gaussian3");
+                    GaussianCurveControlPointData4 = LoadPointData(element, "Gaussian4");
+                    break;
+            }
 
             GenerateRenderValues();
         }
+
         private void SavePointData(XmlElement parent, string name, ControlPointData point)
         {
             if (point == null) return;
 
-            var ptElem = parent.OwnerDocument.CreateElement(name);
-            ptElem.SetAttribute("X", point.X.ToString());
-            ptElem.SetAttribute("Y", point.Y.ToString());
-            ptElem.SetAttribute("Tag", point.Tag ?? "");
-            parent.AppendChild(ptElem);
+            var pointElement = parent.OwnerDocument.CreateElement(name);
+            pointElement.SetAttribute("X", point.X.ToString());
+            pointElement.SetAttribute("Y", point.Y.ToString());
+            pointElement.SetAttribute("Tag", point.Tag ?? "");
+            parent.AppendChild(pointElement);
         }
 
         private ControlPointData LoadPointData(XmlElement parent, string name)
