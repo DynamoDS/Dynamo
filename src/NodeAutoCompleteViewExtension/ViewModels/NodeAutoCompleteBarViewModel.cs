@@ -163,7 +163,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
             set
             {
-                if(selectedIndex != value && value >= 0)
+                if (selectedIndex != value && value >= 0)
                 {
                     ReAddNode(value);
                 }
@@ -177,12 +177,12 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
         private void ReAddNode(int index)
         {
-            if(FullResults == null)
+            if (FullResults == null)
             {
                 return;
             }
             var results = QualifiedResults.ToList();
-            if(index >=  0 && index  < results.Count)
+            if (index >= 0 && index < results.Count)
             {
                 AddCluster(results[index]);
             }
@@ -195,6 +195,13 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             foreach (var transientNode in transientNodes)
             {
                 transientNode.IsTransient = false;
+            }
+
+            //set the last connector to be connected
+            var transientConnectors = node.WorkspaceViewModel.Connectors.Where(c => c.IsConnecting).ToList();
+            foreach (var connector in transientConnectors)
+            {
+                connector.IsConnecting = false;
             }
 
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, false, null);
@@ -418,7 +425,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
                 if (startNode.Equals(nodeInfo) || endNode.Equals(nodeInfo) || upstreamAndDownstreamNodes.Contains(startNode) || upstreamAndDownstreamNodes.Contains(endNode))
                 {
-                    var startPortName = (startNode is VariableInputNode || startNode is DSVarArgFunction) ? ParseVariableInputPortName(connector.Start.Name): connector.Start.Name;
+                    var startPortName = (startNode is VariableInputNode || startNode is DSVarArgFunction) ? ParseVariableInputPortName(connector.Start.Name) : connector.Start.Name;
                     var endPortName = (endNode is VariableInputNode || endNode is DSVarArgFunction) ? ParseVariableInputPortName(connector.End.Name) : connector.End.Name;
 
                     var connectorRequest = new ConnectionItem
@@ -604,13 +611,13 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 {
                     var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
                     var client = new RestClient(uri);
-                    var request = new RestRequest(string.Empty,Method.Post);
+                    var request = new RestRequest(string.Empty, Method.Post);
                     var tkn = tokenprovider?.GetAccessToken();
                     if (string.IsNullOrEmpty(tkn))
                     {
                         throw new Exception("Authentication required.");
                     }
-                    request.AddHeader("Authorization",$"Bearer {tkn}");
+                    request.AddHeader("Authorization", $"Bearer {tkn}");
                     request = request.AddJsonBody(requestJSON);
                     request.RequestFormat = DataFormat.Json;
                     RestResponse response = client.Execute(request);
@@ -831,7 +838,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             foreach (var nodeStack in nodeStacks)
             {
                 xoffset += node.NodeModel.Width;
-                foreach(var newNode in nodeStack)
+                foreach (var newNode in nodeStack)
                 {
                     // Retrieve assembly name and node full name from type.id.
                     var typeInfo = wsViewModel.NodeAutoCompleteSearchViewModel.GetInfoFromTypeId(newNode.Type.Id);
@@ -876,8 +883,17 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             });
 
             // Connect the cluster to the original node and port
-            var connector = ConnectorModel.Make(node.NodeModel, targetNodeFromCluster.NodeModel, 0, ClusterResultItem.EntryNodeInPort);
-            newNodesAndWires.Add(connector);
+            dynamoViewModel.Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(node.NodeModel.GUID, 0,
+                PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin));
+            dynamoViewModel.Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(targetNodeFromCluster.NodeModel.GUID, ClusterResultItem.EntryNodeInPort,
+                PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End));
+            //remove the connector creation from undo, we handle that below
+            wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
+
+            //set connector to be connecting until complete
+            var lastConnector = wsViewModel.Connectors.Last();
+            lastConnector.IsConnecting = true;
+            newNodesAndWires.Add(lastConnector.ConnectorModel);
 
             // Make connectors invisible ( just like the cluster nodes ) before they get a chance to be drawn.
             var clusterNodesModel = clusterMapping.Values.ToList();
