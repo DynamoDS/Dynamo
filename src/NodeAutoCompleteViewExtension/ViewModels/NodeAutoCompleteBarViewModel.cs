@@ -885,25 +885,20 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             // Connect the cluster to the original node and port
             if (targetNodeFromCluster.InPorts.Any())
             {
-                dynamoViewModel.Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(node.NodeModel.GUID, 0,
-                    PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin));
-                dynamoViewModel.Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(targetNodeFromCluster.NodeModel.GUID, ClusterResultItem.EntryNodeInPort,
-                    PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End));
+                var newConnector = ConnectorModel.Make(node.NodeModel, targetNodeFromCluster.NodeModel, 0,
+                    ClusterResultItem.EntryNodeInPort);
 
                 var lastConnector = wsViewModel.Connectors.Last();
 
                 //check if the last connector is the one we just made
-                if (lastConnector.ConnectorModel.Start.Owner.GUID.Equals(node.NodeModel.GUID))
+                if (lastConnector.ConnectorModel.GUID.Equals(newConnector.GUID))
                 {
-                    //remove the connector creation from undo, we handle that below
-                    wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
-
                     //set connector to be connecting until complete
                     lastConnector.IsConnecting = true;
-                    newNodesAndWires.Add(lastConnector.ConnectorModel);
+                    newNodesAndWires.Add(newConnector);
                 }
             }
-            
+
             // Make connectors invisible ( just like the cluster nodes ) before they get a chance to be drawn.
             var clusterNodesModel = clusterMapping.Values.ToList();
             clusterNodesModel.ForEach(nodeInCluster => nodeInCluster?.NodeModel?.AllConnectors?.ToList().ForEach(connector =>
