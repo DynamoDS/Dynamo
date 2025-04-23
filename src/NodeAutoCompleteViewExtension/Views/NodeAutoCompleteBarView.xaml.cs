@@ -146,6 +146,7 @@ namespace Dynamo.NodeAutoComplete.Views
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 ViewModel?.DeleteTransientNodes();
+                ViewModel?.ToggleUndoRedoLocked(false);
             }), DispatcherPriority.Loaded);
             
             Close();
