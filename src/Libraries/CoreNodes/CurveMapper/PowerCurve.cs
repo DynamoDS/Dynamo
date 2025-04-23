@@ -1,3 +1,4 @@
+using Autodesk.DesignScript.Runtime;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,6 +8,8 @@ namespace DSCore.CurveMapper
     /// Represents a power function curve in the CurveMapper.
     /// The curve is defined by a power equation derived from a control point.
     /// </summary>
+
+    [IsVisibleInDynamoLibrary(false)]
     public class PowerCurve : CurveBase
     {
         private double ControlPoint1X;

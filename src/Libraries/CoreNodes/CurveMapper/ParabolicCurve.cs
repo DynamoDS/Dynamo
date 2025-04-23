@@ -1,3 +1,4 @@
+using Autodesk.DesignScript.Runtime;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,6 +8,8 @@ namespace DSCore.CurveMapper
     /// Represents a parabolic curve in the CurveMapper.
     /// The curve follows a quadratic equation based on two control points.
     /// </summary>
+
+    [IsVisibleInDynamoLibrary(false)]
     public class ParabolicCurve : CurveBase
     {
         private double ControlPoint1X;
