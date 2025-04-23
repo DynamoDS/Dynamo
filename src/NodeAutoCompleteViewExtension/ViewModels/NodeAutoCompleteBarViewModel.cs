@@ -163,7 +163,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
             set
             {
-                if (selectedIndex != value && value >= 0)
+                if(selectedIndex != value && value >= 0)
                 {
                     ReAddNode(value);
                 }
@@ -177,12 +177,12 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
         private void ReAddNode(int index)
         {
-            if (FullResults == null)
+            if(FullResults == null)
             {
                 return;
             }
             var results = QualifiedResults.ToList();
-            if (index >= 0 && index < results.Count)
+            if(index >= 0 && index < results.Count)
             {
                 AddCluster(results[index]);
             }
