@@ -1,3 +1,4 @@
+using Autodesk.DesignScript.Runtime;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,6 +8,8 @@ namespace DSCore.CurveMapper
     /// Represents a sine wave curve in the CurveMapper.
     /// The sine wave is defined by two control points and follows a trigonometric function.
     /// </summary>
+
+    [IsVisibleInDynamoLibrary(false)]
     public class SineWave : CurveBase
     {
         private double ControlPoint1X;

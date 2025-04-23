@@ -1,3 +1,4 @@
+using Autodesk.DesignScript.Runtime;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,6 +8,8 @@ namespace DSCore.CurveMapper
     /// Represents a Bezier curve in the CurveMapper.
     /// A Bezier curve is defined by four control points and provides smooth interpolation.
     /// </summary>
+    
+    [IsVisibleInDynamoLibrary(false)]
     public class BezierCurve : CurveBase
     {
         private double ControlPoint1X;
