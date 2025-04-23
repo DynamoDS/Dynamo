@@ -182,7 +182,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 return;
             }
             var results = QualifiedResults.ToList();
-            if(index >= 0 && index < results.Count)
+            if(index >=  0 && index  < results.Count)
             {
                 AddCluster(results[index]);
             }
