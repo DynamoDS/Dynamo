@@ -822,7 +822,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             DeleteTransientNodes();
 
-            var index = 0;
             // A map of the cluster result v.s. actual nodes created for node connection look up
             var clusterMapping = new Dictionary<string, NodeViewModel>();
             // Convert topology to actual cluster
@@ -830,6 +829,9 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             var clusterConnections = ClusterResultItem.Topology.Connections.ToList();
 
             List<List<NodeItem>> nodeStacks = NodeAutoCompleteUtilities.ComputeNodePlacementHeuristics(clusterConnections, clusterNodes);
+
+            //node to connect to from query node
+            var entryNodeId = new Guid(ClusterResultItem.Topology.Nodes.ToList()[ClusterResultItem.EntryNodeIndex].Id).ToString();
 
             //store our nodes and wires to allow for one undo
             List<ModelBase> newNodesAndWires = new List<ModelBase>();
@@ -842,7 +844,9 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 {
                     // Retrieve assembly name and node full name from type.id.
                     var typeInfo = wsViewModel.NodeAutoCompleteSearchViewModel.GetInfoFromTypeId(newNode.Type.Id);
-                    dynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, xoffset, node.NodeModel.Y, false, false));
+
+                    //create node with guid from the cluster response for matching later
+                    dynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(newNode.Id, typeInfo.FullName, xoffset, node.NodeModel.Y, false, false));
 
                     //disallow the node creation command from the undo group, we group node creation and wires below
                     wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
@@ -854,13 +858,13 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     nodeFromCluster.IsTransient = true;
                     nodeFromCluster.IsHidden = true;
                     clusterMapping.Add(newNode.Id, nodeFromCluster);
+                    
                     // Add the node to the selection to prepare for autolayout later
-                    if (index == ClusterResultItem.EntryNodeIndex)
+                    if (nodeFromCluster.NodeModel.GUID.ToString().Equals(entryNodeId))
                     {
                         // This is the target node from cluster that should connect to the query node
                         targetNodeFromCluster = nodeFromCluster;
                     }
-                    index++;
                 }
             }
 
