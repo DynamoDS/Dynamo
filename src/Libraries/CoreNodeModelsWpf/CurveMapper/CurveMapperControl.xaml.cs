@@ -69,6 +69,32 @@ namespace Dynamo.Wpf.CurveMapper
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        [Obsolete("Use the overload with NodeViewModel.")]
+        public CurveMapperControl(CurveMapperNodeModel model, double canvasSize)
+        {
+            InitializeComponent();
+            this.curveMapperNodeModel = model;
+            DataContext = model;
+
+            Width = canvasSize + controlLabelsWidth;
+            Height = canvasSize + controlLabelsHeight;
+
+
+            model.PropertyChanged += NodeModel_PropertyChanged;
+            this.Unloaded += Unload;
+
+            DrawGrid();
+
+            // Dictionary to map UI control points to their corresponding data
+            var controlPointsMap = BuildControlPointsDictionary();
+            RecreateControlPoints(controlPointsMap);
+
+            RenderCurve();
+
+            ToggleControlPointsLock();
+            UpdateLockButton();
+        }
+
         public CurveMapperControl(CurveMapperNodeModel model, double canvasSize, NodeViewModel nodeViewModel)
         {
             InitializeComponent();
