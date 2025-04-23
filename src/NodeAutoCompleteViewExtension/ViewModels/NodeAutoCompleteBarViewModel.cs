@@ -919,7 +919,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(wsViewModel.DynamoViewModel.CurrentSpace, node.NodeModel, clusterNodesModel.Select(x => x.NodeModel), false, false, false, finalizer);
 
             //record all node and wire creation as one undo
-            DynamoModel.RecordUndoModels(wsViewModel.Model, newNodesAndWires);
+            DynamoModel.RecordUndoModels(wsViewModel.Model, newNodesAndWires.Where(n => n != null).ToList());
         }
 
         /// <summary>
