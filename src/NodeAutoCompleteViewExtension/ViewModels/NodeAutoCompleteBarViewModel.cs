@@ -883,17 +883,25 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             });
 
             // Connect the cluster to the original node and port
-            dynamoViewModel.Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(node.NodeModel.GUID, 0,
-                PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin));
-            dynamoViewModel.Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(targetNodeFromCluster.NodeModel.GUID, ClusterResultItem.EntryNodeInPort,
-                PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End));
-            //remove the connector creation from undo, we handle that below
-            wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
+            try
+            {
+                dynamoViewModel.Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(node.NodeModel.GUID, 0,
+                    PortType.Output, DynamoModel.MakeConnectionCommand.Mode.Begin));
+                dynamoViewModel.Model.ExecuteCommand(new DynamoModel.MakeConnectionCommand(targetNodeFromCluster.NodeModel.GUID, ClusterResultItem.EntryNodeInPort,
+                    PortType.Input, DynamoModel.MakeConnectionCommand.Mode.End));
+                //remove the connector creation from undo, we handle that below
+                wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
 
-            //set connector to be connecting until complete
-            var lastConnector = wsViewModel.Connectors.Last();
-            lastConnector.IsConnecting = true;
-            newNodesAndWires.Add(lastConnector.ConnectorModel);
+                //set connector to be connecting until complete
+                var lastConnector = wsViewModel.Connectors.Last();
+                lastConnector.IsConnecting = true;
+                newNodesAndWires.Add(lastConnector.ConnectorModel);
+            }
+            catch (Exception e)
+            {
+                //ignore for now as we need to work out the cluster predictions as the wrong targetNode is reported sometimes.
+            }
+
 
             // Make connectors invisible ( just like the cluster nodes ) before they get a chance to be drawn.
             var clusterNodesModel = clusterMapping.Values.ToList();
