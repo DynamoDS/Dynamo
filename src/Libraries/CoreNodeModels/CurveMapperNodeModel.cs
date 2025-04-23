@@ -957,6 +957,7 @@ namespace CoreNodeModels
 
             element.SetAttribute(nameof(SelectedGraphType), SelectedGraphType.ToString());
             element.SetAttribute(nameof(IsLocked), IsLocked.ToString());
+            element.SetAttribute(nameof(DynamicCanvasSize), DynamicCanvasSize.ToString());
 
             // Save only the points needed for the current curve
             switch (SelectedGraphType)
@@ -1011,13 +1012,13 @@ namespace CoreNodeModels
             // Restore the selected graph type
             var typeAttr = element.GetAttribute(nameof(SelectedGraphType));
             if (!string.IsNullOrEmpty(typeAttr) && Enum.TryParse(typeAttr, out GraphTypes parsedType))
-            {
                 SelectedGraphType = parsedType;
-            }
+
             if (bool.TryParse(element.GetAttribute(nameof(IsLocked)), out var locked))
-            {
                 IsLocked = locked;
-            }
+
+            if (double.TryParse(element.GetAttribute(nameof(DynamicCanvasSize)), out var canvasSize))
+                DynamicCanvasSize = canvasSize;
 
             switch (SelectedGraphType)
             {
@@ -1064,6 +1065,7 @@ namespace CoreNodeModels
             }
 
             GenerateRenderValues();
+            RaisePropertyChanged("ControlPointsDeserialized");
         }
 
         private void SavePointData(XmlElement parent, string name, ControlPointData point)

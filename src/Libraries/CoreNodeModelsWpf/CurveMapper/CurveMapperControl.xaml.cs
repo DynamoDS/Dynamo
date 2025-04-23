@@ -243,6 +243,13 @@ namespace Dynamo.Wpf.CurveMapper
             {
                 UpdateGaussianControlPoint(gaussianCurveControlPoint4, curveMapperNodeModel.GaussianCurveControlPointData4);
             }
+
+            if (e.PropertyName == "ControlPointsDeserialized")
+            {
+                var controlPointsMap = BuildControlPointsDictionary();
+                RecreateControlPoints(controlPointsMap);
+                RenderCurve();
+            }
         }
 
         private void Unload(object sender, RoutedEventArgs e)
