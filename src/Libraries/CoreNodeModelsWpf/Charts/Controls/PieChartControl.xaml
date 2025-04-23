@@ -23,7 +23,8 @@
         <lvc:PieChart Style="{StaticResource PieLiveChart}"  x:Name="PieChart" LegendPosition="Bottom"/>
         <Thumb Name ="resizeThumb"
                Style="{StaticResource ChartsThumb}"
-               DragDelta="ThumbResizeThumbOnDragDeltaHandler">
+               DragDelta="ThumbResizeThumbOnDragDeltaHandler"
+               Cursor="SizeNWSE">
             <Thumb.ToolTip>
                 <ToolTip Content="{x:Static p:CoreNodeModelWpfResources.ResizeThumbToolTip}" Style="{StaticResource GenericToolTipLight}"/>
             </Thumb.ToolTip>
