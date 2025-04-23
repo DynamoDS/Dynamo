@@ -64,6 +64,7 @@ namespace DSCore.CurveMapper
         {
             var valuesX = new List<double>();
             var valuesY = new List<double>();
+            bool outOfRange = false;
 
             double sqrtFactor = ComputeSquareRootFactor();
 
@@ -92,7 +93,13 @@ namespace DSCore.CurveMapper
                         valuesX.Add(x);
                         valuesY.Add(y);
                     }
+                    else
+                    {
+                        outOfRange = true;
+                    }
                 }
+
+                IsYOutOfRange = outOfRange || startX > 0;
             }
             else if (pointsDomain.Count == 1)
             {

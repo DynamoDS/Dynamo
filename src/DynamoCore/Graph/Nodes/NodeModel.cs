@@ -209,6 +209,19 @@ namespace Dynamo.Graph.Nodes
             NodeInfoMessagesClearing?.Invoke(this);
         }
 
+        /// <summary>
+        /// Event triggered when the node clears only warning messages
+        /// </summary>
+        public event Action<NodeModel> NodeWarningMessagesClearing;
+
+        /// <summary>
+        /// Fires on each node that is modified to clear only warning messages, when the graph executes.
+        /// </summary>
+        internal void OnNodeWarningMessagesClearing()
+        {
+            NodeWarningMessagesClearing?.Invoke(this);
+        }
+
         internal void OnNodeExecutionBegin()
         {
             NodeExecutionBegin?.Invoke(this);
@@ -1731,7 +1744,16 @@ namespace Dynamo.Graph.Nodes
 
             SetNodeStateBasedOnConnectionAndDefaults();
             ClearTransientWarningsAndErrors();
-            OnNodeMessagesClearing();
+
+            // If persistent info is still present, ensure it is reflected in the node state
+            if (Infos.Any(x => x.State == ElementState.PersistentInfo))
+            {
+                OnNodeWarningMessagesClearing();
+            }
+            else
+            {
+                OnNodeMessagesClearing();
+            }
         }
 
         /// <summary>
@@ -1740,6 +1762,8 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public virtual void ClearInfoMessages()
         {
+            var c1 = State; // active!
+
             // It is very unlikely a node could be in both info state and persistent info state from the current design
             // If that exception happens, we should redesign this function or have particular node override the behavior
             if (State == ElementState.Info)
@@ -1749,6 +1773,11 @@ namespace Dynamo.Graph.Nodes
             else if (State == ElementState.PersistentInfo)
             {
                 infos.RemoveWhere(x => x.State == ElementState.PersistentInfo);
+            }
+            // If there are still warnings/errors, keep the state unchanged.
+            else if (State == ElementState.Warning || State == ElementState.Error)
+            {
+                infos.RemoveWhere(x => x.State == ElementState.PersistentInfo || x.State == ElementState.Info);
             }
             State = ElementState.Active;
             OnNodeInfoMessagesClearing();
@@ -1893,20 +1922,70 @@ namespace Dynamo.Graph.Nodes
         /// <param name="p">The info text.</param>
         /// <param name="isPersistent">Is the info persistent? If true, the info will not be
         /// cleared when the node is next evaluated. If false, the info will be cleared on the next evaluation.</param>
+        //public void Info(string p, bool isPersistent = false)
+        //{
+        //    var initialState = State;
+
+        //    if (isPersistent)
+        //    {
+        //        if (!Infos.Any(x => x.Message.Equals(p) && x.State == ElementState.PersistentInfo))
+        //        {
+        //            State = ElementState.PersistentInfo;
+        //            infos.Add(new Info(p, ElementState.PersistentInfo));
+        //        }
+        //    }
+        //    else
+        //    {
+        //        State = ElementState.Info;
+        //        infos.Add(new Info(p, ElementState.Info));
+        //    }
+
+        //    // Preserve more critical states such as Warning, PersistentWarning, or Error.
+        //    // We don't want to downgrade the node visually or functionally if it already has
+        //    // more important issues that should take precedence over an informational message.
+        //    if (initialState == ElementState.Warning ||
+        //        initialState == ElementState.PersistentWarning ||
+        //        initialState == ElementState.Error)
+        //    {
+        //        State = initialState;
+        //    }
+        //    // ip test
+        //    if (initialState == ElementState.Active)
+        //    {
+        //        State = ElementState.Info;
+        //    }
+
+        //    var c1 = State;
+        //}
         public void Info(string p, bool isPersistent = false)
         {
+            var initialState = State;
+
             if (isPersistent)
             {
                 if (!Infos.Any(x => x.Message.Equals(p) && x.State == ElementState.PersistentInfo))
                 {
-                    State = ElementState.PersistentInfo;
                     infos.Add(new Info(p, ElementState.PersistentInfo));
+
+                    // Only set state if it's not already something more critical
+                    if (initialState != ElementState.Warning &&
+                        initialState != ElementState.PersistentWarning &&
+                        initialState != ElementState.Error)
+                    {
+                        State = ElementState.PersistentInfo;
+                    }
                 }
             }
             else
             {
-                State = ElementState.Info;
                 infos.Add(new Info(p, ElementState.Info));
+
+                if (initialState != ElementState.Warning &&
+                    initialState != ElementState.PersistentWarning &&
+                    initialState != ElementState.Error)
+                {
+                    State = ElementState.Info;
+                }
             }
         }
 
