@@ -3791,6 +3791,9 @@
   <data name="PublishPackageBackToFileButton" xml:space="preserve">
     <value>Назад к выбору файлов</value>
   </data>
+  <data name="GroupFrozenButtonToolTip" xml:space="preserve">
+    <value>This group is frozen. Click to unfreeze.</value>
+  </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\ViewModels\Watch3D\compiledShaders\psDynamoMesh;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
