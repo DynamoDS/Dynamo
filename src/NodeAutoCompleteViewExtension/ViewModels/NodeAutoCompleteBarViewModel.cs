@@ -32,6 +32,7 @@ using RestSharp;
 using Dynamo.Wpf.Utilities;
 using Dynamo.ViewModels;
 using System.Reflection;
+using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Graph;
@@ -195,6 +196,13 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             foreach (var transientNode in transientNodes)
             {
                 transientNode.IsTransient = false;
+            }
+
+            //set the last connector to be connected
+            var transientConnectors = node.WorkspaceViewModel.Connectors.Where(c => c.IsConnecting).ToList();
+            foreach (var connector in transientConnectors)
+            {
+                connector.IsConnecting = false;
             }
 
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, false, null);
@@ -815,7 +823,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             DeleteTransientNodes();
 
-            var index = 0;
             // A map of the cluster result v.s. actual nodes created for node connection look up
             var clusterMapping = new Dictionary<string, NodeViewModel>();
             // Convert topology to actual cluster
@@ -824,8 +831,12 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             List<List<NodeItem>> nodeStacks = NodeAutoCompleteUtilities.ComputeNodePlacementHeuristics(clusterConnections, clusterNodes);
 
+            //node to connect to from query node
+            var entryNodeId = ClusterResultItem.Topology.Nodes.Any() ? ClusterResultItem.Topology.Nodes.ToList()[ClusterResultItem.EntryNodeIndex].Id : string.Empty;
+            
             //store our nodes and wires to allow for one undo
             List<ModelBase> newNodesAndWires = new List<ModelBase>();
+            Dictionary<string, NodeViewModel> createdNodes = new Dictionary<string, NodeViewModel>();
 
             double xoffset = node.X + node.NodeModel.Width;
             foreach (var nodeStack in nodeStacks)
@@ -835,26 +846,26 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 {
                     // Retrieve assembly name and node full name from type.id.
                     var typeInfo = wsViewModel.NodeAutoCompleteSearchViewModel.GetInfoFromTypeId(newNode.Type.Id);
+
+                    //create node with guid from the cluster response for matching later
                     dynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, xoffset, node.NodeModel.Y, false, false));
 
                     //disallow the node creation command from the undo group, we group node creation and wires below
                     wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
 
                     var nodeFromCluster = wsViewModel.Nodes.LastOrDefault();
-
+                    createdNodes.Add(newNode.Id,nodeFromCluster);
                     newNodesAndWires.Add(nodeFromCluster.NodeModel);
 
                     nodeFromCluster.IsTransient = true;
                     nodeFromCluster.IsHidden = true;
                     clusterMapping.Add(newNode.Id, nodeFromCluster);
-                    // Add the node to the selection to prepare for autolayout later
-                    if (index == ClusterResultItem.EntryNodeIndex)
-                    {
-                        // This is the target node from cluster that should connect to the query node
-                        targetNodeFromCluster = nodeFromCluster;
-                    }
-                    index++;
                 }
+            }
+
+            if (createdNodes.Any())
+            {
+                targetNodeFromCluster = createdNodes[entryNodeId];
             }
 
             clusterConnections.ForEach(connection =>
@@ -876,8 +887,21 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             });
 
             // Connect the cluster to the original node and port
-            var connector = ConnectorModel.Make(node.NodeModel, targetNodeFromCluster.NodeModel, 0, ClusterResultItem.EntryNodeInPort);
-            newNodesAndWires.Add(connector);
+            if (targetNodeFromCluster != null && targetNodeFromCluster.InPorts.Any() && wsViewModel.Connectors.Any())
+            {
+                var newConnector = ConnectorModel.Make(node.NodeModel, targetNodeFromCluster.NodeModel, 0,
+                    ClusterResultItem.EntryNodeInPort);
+
+                var lastConnector = wsViewModel.Connectors.Last();
+
+                //check if the last connector is the one we just made
+                if (lastConnector.ConnectorModel.GUID.Equals(newConnector.GUID))
+                {
+                    //set connector to be connecting until complete
+                    lastConnector.IsConnecting = true;
+                    newNodesAndWires.Add(newConnector);
+                }
+            }
 
             // Make connectors invisible ( just like the cluster nodes ) before they get a chance to be drawn.
             var clusterNodesModel = clusterMapping.Values.ToList();
