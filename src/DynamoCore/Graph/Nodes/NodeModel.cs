@@ -1766,8 +1766,6 @@ namespace Dynamo.Graph.Nodes
         /// </summary>
         public virtual void ClearInfoMessages()
         {
-            var c1 = State; // active!
-
             // It is very unlikely a node could be in both info state and persistent info state from the current design
             // If that exception happens, we should redesign this function or have particular node override the behavior
             if (State == ElementState.Info)
