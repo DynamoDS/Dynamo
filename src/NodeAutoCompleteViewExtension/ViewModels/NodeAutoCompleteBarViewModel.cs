@@ -832,8 +832,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             List<List<NodeItem>> nodeStacks = NodeAutoCompleteUtilities.ComputeNodePlacementHeuristics(clusterConnections, clusterNodes);
 
             //node to connect to from query node
-            var entryNodeId = ClusterResultItem.Topology.Nodes.ToList()[ClusterResultItem.EntryNodeIndex].Id;
-
+            var entryNodeId = ClusterResultItem.Topology.Nodes.Any() ? ClusterResultItem.Topology.Nodes.ToList()[ClusterResultItem.EntryNodeIndex].Id : string.Empty;
+            
             //store our nodes and wires to allow for one undo
             List<ModelBase> newNodesAndWires = new List<ModelBase>();
             Dictionary<string, NodeViewModel> createdNodes = new Dictionary<string, NodeViewModel>();
@@ -863,7 +863,10 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 }
             }
 
-            targetNodeFromCluster = createdNodes[entryNodeId];
+            if (createdNodes.Any())
+            {
+                targetNodeFromCluster = createdNodes[entryNodeId];
+            }
 
             clusterConnections.ForEach(connection =>
             {
@@ -884,7 +887,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             });
 
             // Connect the cluster to the original node and port
-            if (targetNodeFromCluster.InPorts.Any() && wsViewModel.Connectors.Any())
+            if (targetNodeFromCluster != null && targetNodeFromCluster.InPorts.Any() && wsViewModel.Connectors.Any())
             {
                 var newConnector = ConnectorModel.Make(node.NodeModel, targetNodeFromCluster.NodeModel, 0,
                     ClusterResultItem.EntryNodeInPort);
