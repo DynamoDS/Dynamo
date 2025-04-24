@@ -585,16 +585,16 @@ namespace Dynamo.ViewModels
             {
                 switch (PortViewModel.PortModel.GetInputPortType())
                 {
-                    case "int":
+                    case string inputPortType when inputPortType.Contains("int"):
                         FilteredResults = DefaultResults.Where(e => e.Name == "Number Slider" || e.Name == "Integer Slider").ToList();
                         break;
-                    case "double":
+                    case { } inputPortType when inputPortType.Contains("double"):
                         FilteredResults = DefaultResults.Where(e => e.Name == "Number Slider" || e.Name == "Integer Slider").ToList();
                         break;
-                    case "string":
+                    case { } inputPortType when inputPortType.Contains("string"):
                         FilteredResults = DefaultResults.Where(e => e.Name == "String").ToList();
                         break;
-                    case "bool":
+                    case { } inputPortType when inputPortType.Contains("bool"):
                         FilteredResults = DefaultResults.Where(e => e.Name == "Boolean").ToList();
                         break;
                     default:
