@@ -1748,6 +1748,10 @@ namespace Dynamo.Graph.Nodes
             // If persistent info is still present, ensure it is reflected in the node state
             if (Infos.Any(x => x.State == ElementState.PersistentInfo))
             {
+                // Ensure state reflects PersistentInfo if any such messages remain.
+                // Prevents info from being stuck or skipped in future updates.
+                // Without this, ClearInfoMessages won't remove them properly.
+                State = ElementState.PersistentInfo;
                 OnNodeWarningMessagesClearing();
             }
             else
@@ -1922,41 +1926,6 @@ namespace Dynamo.Graph.Nodes
         /// <param name="p">The info text.</param>
         /// <param name="isPersistent">Is the info persistent? If true, the info will not be
         /// cleared when the node is next evaluated. If false, the info will be cleared on the next evaluation.</param>
-        //public void Info(string p, bool isPersistent = false)
-        //{
-        //    var initialState = State;
-
-        //    if (isPersistent)
-        //    {
-        //        if (!Infos.Any(x => x.Message.Equals(p) && x.State == ElementState.PersistentInfo))
-        //        {
-        //            State = ElementState.PersistentInfo;
-        //            infos.Add(new Info(p, ElementState.PersistentInfo));
-        //        }
-        //    }
-        //    else
-        //    {
-        //        State = ElementState.Info;
-        //        infos.Add(new Info(p, ElementState.Info));
-        //    }
-
-        //    // Preserve more critical states such as Warning, PersistentWarning, or Error.
-        //    // We don't want to downgrade the node visually or functionally if it already has
-        //    // more important issues that should take precedence over an informational message.
-        //    if (initialState == ElementState.Warning ||
-        //        initialState == ElementState.PersistentWarning ||
-        //        initialState == ElementState.Error)
-        //    {
-        //        State = initialState;
-        //    }
-        //    // ip test
-        //    if (initialState == ElementState.Active)
-        //    {
-        //        State = ElementState.Info;
-        //    }
-
-        //    var c1 = State;
-        //}
         public void Info(string p, bool isPersistent = false)
         {
             var initialState = State;
@@ -1965,27 +1934,24 @@ namespace Dynamo.Graph.Nodes
             {
                 if (!Infos.Any(x => x.Message.Equals(p) && x.State == ElementState.PersistentInfo))
                 {
+                    State = ElementState.PersistentInfo;
                     infos.Add(new Info(p, ElementState.PersistentInfo));
-
-                    // Only set state if it's not already something more critical
-                    if (initialState != ElementState.Warning &&
-                        initialState != ElementState.PersistentWarning &&
-                        initialState != ElementState.Error)
-                    {
-                        State = ElementState.PersistentInfo;
-                    }
                 }
             }
             else
             {
+                State = ElementState.Info;
                 infos.Add(new Info(p, ElementState.Info));
+            }
 
-                if (initialState != ElementState.Warning &&
-                    initialState != ElementState.PersistentWarning &&
-                    initialState != ElementState.Error)
-                {
-                    State = ElementState.Info;
-                }
+            // Preserve more critical states such as Warning, PersistentWarning, or Error.
+            // We don't want to downgrade the node visually or functionally if it already has
+            // more important issues that should take precedence over an informational message.
+            if (initialState == ElementState.Warning ||
+                initialState == ElementState.PersistentWarning ||
+                initialState == ElementState.Error)
+            {
+                State = initialState;
             }
         }
 

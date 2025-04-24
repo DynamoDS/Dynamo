@@ -446,11 +446,6 @@ namespace CoreNodeModels
                 OnNodeModified();
                 return;
             }
-            //// DO WE NEED THSI?
-            //if(!IsResizing)
-            //{
-            //    ClearErrorsAndWarnings();
-            //}
 
             object curve = null;
 
