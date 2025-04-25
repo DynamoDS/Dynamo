@@ -207,6 +207,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, false, null);
 
+            (node.WorkspaceViewModel.Model as HomeWorkspaceModel)?.MarkNodesAsModifiedAndRequestRun(transientNodes.Select(x => x.NodeModel));
+
             ToggleUndoRedoLocked(false);
         }
 
