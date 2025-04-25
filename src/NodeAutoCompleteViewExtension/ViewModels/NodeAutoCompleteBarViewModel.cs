@@ -207,6 +207,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, false, null);
 
+            (node.WorkspaceViewModel.Model as HomeWorkspaceModel)?.MarkNodesAsModifiedAndRequestRun(transientNodes.Select(x => x.NodeModel));
+
             ToggleUndoRedoLocked(false);
         }
 
@@ -848,7 +850,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     var typeInfo = wsViewModel.NodeAutoCompleteSearchViewModel.GetInfoFromTypeId(newNode.Type.Id);
 
                     //create node with guid from the cluster response for matching later
-                    dynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, xoffset, node.NodeModel.Y, false, false));
+                    dynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, xoffset, node.NodeModel.Y, false, false, true));
 
                     //disallow the node creation command from the undo group, we group node creation and wires below
                     wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
@@ -857,7 +859,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     createdNodes.Add(newNode.Id,nodeFromCluster);
                     newNodesAndWires.Add(nodeFromCluster.NodeModel);
 
-                    nodeFromCluster.IsTransient = true;
                     nodeFromCluster.IsHidden = true;
                     clusterMapping.Add(newNode.Id, nodeFromCluster);
                 }
