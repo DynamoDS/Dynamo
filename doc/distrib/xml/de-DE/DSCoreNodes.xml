@@ -1607,6 +1607,18 @@ Suchen Sie nach "Benutzerdefinierte Zeichenfolgen für Datum und Uhrzeit bei MSD
         <member name="P:DSCore.Properties.Resources.BitmapOverflowError">
             <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie Die bereitgestellten Farbdaten sind zu groß, um in die Bildumgrenzungen zu passen.</summary>
         </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperEqualMinMaxWarning">
+            <summary>Looks up a localized string similar to • Min and Max values must not be the same..</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCountWarning">
+            <summary>Looks up a localized string similar to • Values must be a list of numbers or a single number ≥ 2..</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCurveWarning">
+            <summary>Looks up a localized string similar to • Control points for the selected curve are not valid..</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidXYFormatWarning">
+            <summary>Looks up a localized string similar to • X and Y inputs must be single numbers (not lists)..</summary>
+        </member>
         <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
             <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Eingabe muss ein einzelner Wert oder eine nicht verschachtelte Liste sein'.</summary>
         </member>

@@ -70,6 +70,42 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to • Min and Max values must not be the same..
+        /// </summary>
+        internal static string CurveMapperEqualMinMaxWarning {
+            get {
+                return ResourceManager.GetString("CurveMapperEqualMinMaxWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Values must be a list of numbers or a single number ≥ 2..
+        /// </summary>
+        internal static string CurveMapperInvalidCountWarning {
+            get {
+                return ResourceManager.GetString("CurveMapperInvalidCountWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • Control points for the selected curve are not valid..
+        /// </summary>
+        internal static string CurveMapperInvalidCurveWarning {
+            get {
+                return ResourceManager.GetString("CurveMapperInvalidCurveWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to • X and Y inputs must be single numbers (not lists)..
+        /// </summary>
+        internal static string CurveMapperInvalidXYFormatWarning {
+            get {
+                return ResourceManager.GetString("CurveMapperInvalidXYFormatWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Input must be a single value or a non-nested list..
         /// </summary>
         internal static string DefineDataSupportedInputValueExceptionMessage {
