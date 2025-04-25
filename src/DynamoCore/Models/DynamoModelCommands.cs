@@ -96,6 +96,7 @@ namespace Dynamo.Models
 
             node.X = command.X;
             node.Y = command.Y;
+            node.IsTransient = command.IsTransient;
 
             AddNodeToCurrentWorkspace(node, centered: command.DefaultPosition);
             CurrentWorkspace.RecordCreatedModel(node);
