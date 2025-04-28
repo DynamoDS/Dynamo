@@ -699,6 +699,10 @@ namespace Dynamo.Views
             Dispatcher.BeginInvoke(UpdateNodeViewCacheScale, DispatcherPriority.Normal);
         }
 
+        /// <summary>
+        /// Clear the node view bitmap cache
+        /// </summary>
+
         private void ClearNodeViewCache()
         {
             var nodes = this.ChildrenOfType<NodeView>();
@@ -710,20 +714,26 @@ namespace Dynamo.Views
             currentRenderScale = -1;
         }
 
+        /// <summary>
+        /// Update the node view bitmap cache scale
+        /// </summary>
         private void UpdateNodeViewCacheScale()
         {
             var nodes = this.ChildrenOfType<NodeView>();
+            BitmapCache sharedCache = null;
             foreach (var node in nodes)
             {
-                var cache = node.CacheMode as BitmapCache;
-                if (cache == null)
+                if (node.CacheMode is BitmapCache cache)
                 {
-                    cache = new BitmapCache(currentRenderScale);
-                    node.CacheMode = cache;
+                    cache.RenderAtScale = currentRenderScale;
                 }
                 else
                 {
-                    cache.RenderAtScale = currentRenderScale;
+                    if (sharedCache == null)
+                    {
+                        sharedCache = new BitmapCache(currentRenderScale);
+                    }
+                    node.CacheMode = sharedCache;
                 }
             }
         }
