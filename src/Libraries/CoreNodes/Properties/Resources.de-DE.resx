@@ -234,8 +234,7 @@
   <data name="DefineDataSupportedInputValueExceptionMessage" xml:space="preserve">
     <value>Eingabe muss ein einzelner Wert oder eine nicht verschachtelte Liste sein.</value>
   </data>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="WebRequestOfflineWarning" type="System.Resources.ResXNullRef, System.Windows.Forms">
+  <data name="WebRequestOfflineWarning" xml:space="preserve">
     <value />
   </data>
   <data name="CurveMapperEqualMinMaxWarning" xml:space="preserve">
