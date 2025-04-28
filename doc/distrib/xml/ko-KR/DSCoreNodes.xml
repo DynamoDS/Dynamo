@@ -1595,6 +1595,18 @@
         <member name="P:DSCore.Properties.Resources.BitmapOverflowError">
             <summary>"제공된 색상 데이터가 너무 커서 이미지 경계에 맞지 않습니다."와 유사한 현지화된 문자열을 조회합니다.</summary>
         </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperEqualMinMaxWarning">
+            <summary>Looks up a localized string similar to • Min and Max values must not be the same..</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCountWarning">
+            <summary>Looks up a localized string similar to • Values must be a list of numbers or a single number ≥ 2..</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCurveWarning">
+            <summary>Looks up a localized string similar to • Control points for the selected curve are not valid..</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidXYFormatWarning">
+            <summary>Looks up a localized string similar to • X and Y inputs must be single numbers (not lists)..</summary>
+        </member>
         <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
             <summary>"입력은 단일 값 또는 내포되지 않은 리스트여야 합니다."와 유사한 현지화된 문자열을 조회합니다.</summary>
         </member>
