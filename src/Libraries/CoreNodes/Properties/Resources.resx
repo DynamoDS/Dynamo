@@ -234,4 +234,7 @@
   <data name="DefineDataSupportedInputValueExceptionMessage" xml:space="preserve">
     <value>Input must be a single value or a non-nested list.</value>
   </data>
+  <data name="WebRequestOfflineWarning" xml:space="preserve">
+    <value>The Web Request node is unavailable in No Network mode.</value>
+  </data>
 </root>

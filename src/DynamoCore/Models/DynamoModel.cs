@@ -664,7 +664,8 @@ namespace Dynamo.Models
             Context = config.Context;
             IsTestMode = config.StartInTestMode;
             IsHeadless = config.IsHeadless;
-            NoNetworkMode = config.NoNetworkMode;
+            //NoNetworkMode = config.NoNetworkMode;
+            NoNetworkMode = true;
             HostAnalyticsInfo = config.HostAnalyticsInfo;
 
             DebugSettings = new DebugSettings();

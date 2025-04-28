@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -233,5 +233,9 @@
   </data>
   <data name="DefineDataSupportedInputValueExceptionMessage" xml:space="preserve">
     <value>Входное значение должно быть одним значением или не являться вложенным списком.</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="WebRequestOfflineWarning" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
 </root>

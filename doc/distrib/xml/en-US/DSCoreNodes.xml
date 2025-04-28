@@ -2370,6 +2370,11 @@
               Looks up a localized string similar to The url cannot be null..
             </summary>
         </member>
+        <member name="P:DSCore.Properties.Resources.WebRequestOfflineWarning">
+            <summary>
+              Looks up a localized string similar to The Web Request node is unavailable in No Network mode..
+            </summary>
+        </member>
         <member name="P:DSCore.Properties.Resources.WriteImageObsolete">
             <summary>
               Looks up a localized string similar to Use Image.WriteToFile node instead.

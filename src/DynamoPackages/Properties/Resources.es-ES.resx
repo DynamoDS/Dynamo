@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -122,6 +122,10 @@
   </data>
   <data name="CannotRemovePackageAssemblyTitle" xml:space="preserve">
     <value>No se puede actualizar el conjunto</value>
+  </data>
+  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
+  <data name="DownloadPackageDisabled" type="System.Resources.ResXNullRef, System.Windows.Forms">
+    <value />
   </data>
   <data name="InvalidPackageFolderWarning" xml:space="preserve">
     <value>La carpeta '{0}' no existe</value>

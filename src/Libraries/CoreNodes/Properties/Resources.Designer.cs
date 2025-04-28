@@ -403,6 +403,15 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The Web Request node is unavailable in No Network mode..
+        /// </summary>
+        internal static string WebRequestOfflineWarning {
+            get {
+                return ResourceManager.GetString("WebRequestOfflineWarning", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Use Image.WriteToFile node instead.
         /// </summary>
         internal static string WriteImageObsolete {

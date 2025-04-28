@@ -157,11 +157,12 @@ namespace Dynamo.PackageManager
 
             var packageUploadDirectory = startupParams.PathManager.DefaultPackagesDirectory;
 
+            noNetworkMode = startupParams.NoNetworkMode;
+
             PackageManagerClient = new PackageManagerClient(
                 new GregClient(startupParams.AuthProvider, url),
-                uploadBuilder, packageUploadDirectory);
+                uploadBuilder, packageUploadDirectory, noNetworkMode);
 
-            noNetworkMode = startupParams.NoNetworkMode;
 
             //we don't ask dpm for the compatibility map in offline mode.
             if (!noNetworkMode)
