@@ -200,6 +200,8 @@ namespace DynamoCoreWpfTests
         [TearDown]
         public void Exit()
         {
+            testDiagnostics.BeforeCleanupDiagnostics();
+
             //Ensure that we leave the workspace marked as
             //not having changes.
             ViewModel.HomeSpace.HasUnsavedChanges = false;
