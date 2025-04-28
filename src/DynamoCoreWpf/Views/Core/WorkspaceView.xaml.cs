@@ -68,6 +68,7 @@ namespace Dynamo.Views
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
 
         static internal event Action<Window, ViewModelBase> RequesNodeAutoCompleteBar;
+        private double currentRenderScale = -1;
 
         public WorkspaceViewModel ViewModel
         {
@@ -663,11 +664,11 @@ namespace Dynamo.Views
         }
 
         #region NodeView_BitmapCache
-        private double currentRenderScale = -1;
-        const double maxZoomScaleForCache = .8;
-
         private void CheckZoomScaleAndApplyNodeViewCache(double newZoomScale)
         {
+            //disable bitmap caching if max zoom scale set to 0, or feature flag was unable to fetch;
+            if (ViewModel.MaxZoomScaleForBitmapCache == 0) return;
+
             if (!ViewModel.StopNodeViewOpacityAnimations)
             {
                 if (currentRenderScale > 0) // number of nodes reduced below max threshold
@@ -678,7 +679,7 @@ namespace Dynamo.Views
                 return;
             }
 
-            if (newZoomScale > maxZoomScaleForCache)
+            if (newZoomScale > ViewModel.MaxZoomScaleForBitmapCache)
             {
                 if (currentRenderScale > 0)
                 {

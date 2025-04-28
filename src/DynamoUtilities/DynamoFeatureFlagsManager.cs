@@ -94,7 +94,7 @@ namespace DynamoUtilities
         /// <returns></returns>
         internal T CheckFeatureFlag<T>(string featureFlagKey, T defaultval)
         {
-            if(!(defaultval is bool || defaultval is string || defaultval is long)){
+            if(!(defaultval is bool || defaultval is string || defaultval is long || defaultval is double)){
                 throw new ArgumentException("unsupported flag type", defaultval.GetType().ToString());
             }
             // if we have not retrieved flags from the cli return empty

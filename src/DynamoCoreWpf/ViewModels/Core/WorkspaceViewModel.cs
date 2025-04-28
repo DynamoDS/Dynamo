@@ -509,6 +509,21 @@ namespace Dynamo.ViewModels
 
         private int zoomAnimationThresholdFeatureFlagVal = 0;
 
+        [JsonIgnore]
+        internal double MaxZoomScaleForBitmapCache
+        {
+            get => maxZoomScaleForBitmapCache;
+            set
+            {
+                if (maxZoomScaleForBitmapCache != value)
+                {
+                    maxZoomScaleForBitmapCache = value;
+                    RaisePropertyChanged(nameof(MaxZoomScaleForBitmapCache));
+                }
+            }
+        }
+        private double maxZoomScaleForBitmapCache = 0;
+
 
 
 
@@ -647,6 +662,8 @@ namespace Dynamo.ViewModels
             //if we've already retrieved flags, grab the value,
             zoomAnimationThresholdFeatureFlagVal = (int)(DynamoModel.FeatureFlags?.CheckFeatureFlag<long>("zoom_opacity_animation_nodenum_threshold", 0) ?? 0);
             SetStopNodeZoomAnimationBehavior(zoomAnimationThresholdFeatureFlagVal);
+
+            maxZoomScaleForBitmapCache = (double)(DynamoModel.FeatureFlags?.CheckFeatureFlag<double>("zoom_bitmap_cache_threshold", 0) ?? 0);
         }
 
         private void OnFlagsRetrieved()
