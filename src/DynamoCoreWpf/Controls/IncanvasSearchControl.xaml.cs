@@ -92,6 +92,7 @@ namespace Dynamo.UI.Controls
 
         private void OnMouseLeave(object sender, MouseEventArgs e)
         {
+            if(HighlightedItem == null || toolTipPopup == null) return;
             HighlightedItem.IsSelected = true;
             toolTipPopup.DataContext = null;
             toolTipPopup.IsOpen = false;
