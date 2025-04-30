@@ -476,14 +476,10 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         {
             MLNodeAutoCompletionResponse MLresults = null;
 
-            var request = GenerateRequestForMLAutocomplete();
-
-            string jsonRequest = JsonConvert.SerializeObject(request);
-
             // Get results from the ML API.
             try
             {
-                MLresults = GetMLNodeAutocompleteResults(jsonRequest);
+                MLresults = GetMLNodeAutocompleteResults();
             }
             catch (Exception ex)
             {
@@ -590,61 +586,13 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             return results;
         }
-
-        private MLNodeAutoCompletionResponse GetMLNodeAutocompleteResults(string requestJSON)
-        {
-            MLNodeAutoCompletionResponse results = null;
+        internal T GetGenericAutocompleteResult<T>(string endpoint)
+        {   
+            var requestDTO = GenerateRequestForMLAutocomplete();
+            var jsonRequest = JsonConvert.SerializeObject(requestDTO);
+            T results = default;
             try
             {
-                var authProvider = dynamoViewModel.Model.AuthenticationManager.AuthProvider;
-                if (!dynamoViewModel.IsIDSDKInitialized())
-                {
-                    throw new Exception("IDSDK missing or failed initialization.");
-                }
-
-                if (authProvider is IOAuth2AuthProvider oauth2AuthProvider && authProvider is IOAuth2AccessTokenProvider tokenprovider)
-                {
-                    if (dynamoCoreWpfAssembly is null)
-                    {
-                        dynamoCoreWpfAssembly = AppDomain.CurrentDomain
-                            .GetAssemblies()
-                            .FirstOrDefault(a => a.GetName().Name.Equals("DynamoCoreWPF", StringComparison.OrdinalIgnoreCase));
-                    }
-
-                    var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(dynamoCoreWpfAssembly, nodeAutocompleteMLEndpoint);
-                    var client = new RestClient(uri);
-                    var request = new RestRequest(string.Empty,Method.Post);
-                    var tkn = tokenprovider?.GetAccessToken();
-                    if (string.IsNullOrEmpty(tkn))
-                    {
-                        throw new Exception("Authentication required.");
-                    }
-                    request.AddHeader("Authorization",$"Bearer {tkn}");
-                    request = request.AddJsonBody(requestJSON);
-                    request.RequestFormat = DataFormat.Json;
-                    RestResponse response = client.Execute(request);
-                    //TODO maybe worth moving to system.text json in phases?
-                    results = JsonConvert.DeserializeObject<MLNodeAutoCompletionResponse>(response.Content);
-                }
-            }
-            catch (Exception ex)
-            {
-                dynamoViewModel.Model.Logger.Log(ex.Message);
-                throw new Exception("Authentication failed.");
-            }
-
-            return results;
-        }
-
-        // Rest API call to get the Node cluster Autocomlete results from the service.
-        internal MLNodeClusterAutoCompletionResponse GetMLNodeClusterAutocompleteResults()
-        {
-            MLNodeClusterAutoCompletionResponse results = null;
-            try
-            {
-                var MLRequest = GenerateRequestForMLAutocomplete();
-                string jsonRequest = JsonConvert.SerializeObject(MLRequest);
-
                 var authProvider = dynamoViewModel.Model.AuthenticationManager.AuthProvider;
                 if (!dynamoViewModel.IsIDSDKInitialized())
                 {
@@ -663,7 +611,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                         }
 
 
-                        var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(dynamoCoreWpfAssembly, nodeClusterAutocompleteMLEndpoint);
+                        var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(dynamoCoreWpfAssembly, endpoint);
                         var client = new RestClient(uri);
                         var request = new RestRequest(string.Empty, Method.Post);
                         var tkn = tokenprovider?.GetAccessToken();
@@ -676,7 +624,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                         request.RequestFormat = DataFormat.Json;
                         RestResponse response = client.Execute(request);
 
-                        results = JsonConvert.DeserializeObject<MLNodeClusterAutoCompletionResponse>(response.Content);
+                        results = JsonConvert.DeserializeObject<T>(response.Content);
                     }
                     catch (Exception ex)
                     {
@@ -692,6 +640,16 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
 
             return results;
+        }
+
+        private MLNodeAutoCompletionResponse GetMLNodeAutocompleteResults()
+        {
+            return GetGenericAutocompleteResult<MLNodeAutoCompletionResponse>(nodeAutocompleteMLEndpoint);
+        }
+
+        private MLNodeClusterAutoCompletionResponse GetMLNodeClusterAutocompleteResults()
+        {
+            return GetGenericAutocompleteResult<MLNodeClusterAutoCompletionResponse>(nodeClusterAutocompleteMLEndpoint);
         }
 
         /// <summary>
