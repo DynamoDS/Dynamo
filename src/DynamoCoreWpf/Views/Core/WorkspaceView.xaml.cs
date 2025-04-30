@@ -669,7 +669,7 @@ namespace Dynamo.Views
             //disable bitmap caching if max zoom scale set to 0, or feature flag was unable to fetch;
             if (ViewModel.MaxZoomScaleForBitmapCache == 0) return;
 
-            if (!ViewModel.StopNodeViewOpacityAnimations)
+            if (!ViewModel.NodeCountOptimizationEnabled)
             {
                 if (currentRenderScale > 0) // number of nodes reduced below max threshold
                 {
