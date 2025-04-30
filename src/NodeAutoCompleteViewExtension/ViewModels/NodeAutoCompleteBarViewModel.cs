@@ -825,7 +825,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 foreach(var newNode in nodeStack)
                 {
                     // Retrieve assembly name and node full name from type.id.
-                    var typeInfo = wsViewModel.NodeAutoCompleteSearchViewModel.GetInfoFromTypeId(newNode.Type.Id);
+                    var typeInfo = new NodeModelTypeId(newNode.Type.Id);
 
                     //create node with guid from the cluster response for matching later
                     dynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, xoffset, node.NodeModel.Y, false, false, true));
