@@ -2791,6 +2791,9 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <conv:NodeModelToPortStyleConverter
+        x:Key="NodeModelToPortStyleConverter"
+        PortStyle="{StaticResource InOutPortControlStyle}" />
 
     <Style x:Key="{x:Type dynui:ImageCheckBox}" TargetType="{x:Type dynui:ImageCheckBox}">
         <Setter Property="SnapsToDevicePixels" Value="true" />

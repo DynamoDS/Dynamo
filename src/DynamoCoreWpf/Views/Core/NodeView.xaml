@@ -407,7 +407,7 @@
                       HorizontalContentAlignment="Stretch"
                       Canvas.ZIndex="6"
                       ItemsSource="{Binding Path=InPorts}"
-                      Style="{StaticResource InOutPortControlStyle}" />
+                      Style="{Binding Path=NodeModel, Converter={StaticResource NodeModelToPortStyleConverter}}" />
 
         <!--  OUTPUT PORTS  -->
         <ItemsControl Name="outputPortControl"
@@ -418,7 +418,7 @@
                       HorizontalContentAlignment="Stretch"
                       Canvas.ZIndex="4"
                       ItemsSource="{Binding Path=OutPorts}"
-                      Style="{StaticResource InOutPortControlStyle}" />
+                      Style="{Binding Path=NodeModel, Converter={StaticResource NodeModelToPortStyleConverter}}" />
 
         <Grid Name="centralGrid"
               Grid.Row="2"
