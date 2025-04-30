@@ -586,6 +586,12 @@ namespace Dynamo.Models
                 modelsToDelete.AddRange(command.ModelGuids.Select(guid => CurrentWorkspace.GetModelInternal(guid)));
             }
 
+            if (!command.CanDeleteTransientNodes)
+            {
+                // Remove transient nodes from the list of models to delete.
+                modelsToDelete.RemoveAll(model => (model as NodeModel)?.IsTransient == true);
+            }
+
             DeleteModelInternal(modelsToDelete);
         }
 

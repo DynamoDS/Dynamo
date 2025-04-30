@@ -803,7 +803,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             var transientNodes = wsViewModel.Nodes.Where(x => x.IsTransient).ToList();
             if (transientNodes.Any())
             {
-                dynamoViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(transientNodes.Select(x => x.Id)));
+                dynamoViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(transientNodes.Select(x => x.Id), true));
 
                 //remove the initial layout of the transient nodes from the undo stack
                 wsViewModel.Model.UndoRecorder.PopFromUndoGroup();

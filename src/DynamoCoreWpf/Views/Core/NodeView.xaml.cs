@@ -799,6 +799,14 @@ namespace Dynamo.Controls
         /// </summary>
         private void DisplayNodeContextMenu(object sender, RoutedEventArgs e)
         {
+            if (ViewModel?.NodeModel?.IsTransient is true ||
+                ViewModel?.NodeModel?.HasTransientConnections() is true)
+            {
+                e.Handled = true;
+                return;
+            }
+
+
             Guid nodeGuid = ViewModel.NodeModel.GUID;
             ViewModel.WorkspaceViewModel.HideAllPopupCommand.Execute(sender);
             ViewModel.DynamoViewModel.ExecuteCommand(

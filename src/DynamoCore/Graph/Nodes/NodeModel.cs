@@ -1008,6 +1008,23 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
+        /// Return a value indicating whether this node is connected to a transient node.
+        /// </summary>
+        internal bool HasTransientConnections()
+        {
+            var allPorts = InPorts.Concat(OutPorts);
+            foreach (var port in allPorts)
+            {
+                if (port?.HasTransientConnections() is true)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// The default behavior for ModelBase objects is to not serialize the X and Y
         /// properties. This overload allows the serialization of the X property
         /// for NodeModel.
