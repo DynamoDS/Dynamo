@@ -163,7 +163,21 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
         public bool ResultsLoaded => DropdownResults != null;
 
-        public bool IsOpen { get; set; }
+        private bool isOpen;
+        public bool IsOpen
+        {
+            get
+            {
+                return isOpen;
+            }
+            set
+            {
+                if (isOpen == value) return;
+                isOpen = value;
+                if (isOpen) SubscribeWindowEvents();
+                else UnsubscribeWindowEvents();
+            }
+        }
 
         private int ClusterResultsCount => DropdownResults == null ? 0 : DropdownResults.Count();
 
@@ -342,7 +356,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             // Off load some time consuming operation here
             DefaultResults = dynamoViewModel.DefaultAutocompleteCandidates.Values;
             ServiceVersion = string.Empty;
-            dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
         }
 
         /// <summary>
@@ -1006,7 +1019,12 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
-        internal void OnNodeAutoCompleteWindowClosed()
+        private void SubscribeWindowEvents()
+        {
+            dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
+        }
+
+        private void UnsubscribeWindowEvents()
         {
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved -= NodeViewModel_Removed;
         }

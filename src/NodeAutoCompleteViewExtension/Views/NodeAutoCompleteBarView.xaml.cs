@@ -151,7 +151,6 @@ namespace Dynamo.NodeAutoComplete.Views
             
             Close();
             UnsubscribeEvents(this, null);
-            ViewModel?.OnNodeAutoCompleteWindowClosed();
         }
 
     }
