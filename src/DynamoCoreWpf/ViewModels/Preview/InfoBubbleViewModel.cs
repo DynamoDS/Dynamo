@@ -4,7 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
+using Dynamo.Controls;
 using Dynamo.Logging;
+using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels.Core;
 
 namespace Dynamo.ViewModels
@@ -26,7 +28,7 @@ namespace Dynamo.ViewModels
 
     public delegate void InfoBubbleEventHandler(object sender, InfoBubbleEventArgs e);
 
-    public partial class InfoBubbleViewModel : ViewModelBase
+    public partial class InfoBubbleViewModel : ViewModelBase, IWorkspaceElement
     {
         public enum Style
         {
@@ -444,7 +446,23 @@ namespace Dynamo.ViewModels
         /// and cannot have their Width (or Visibility) set manually.
         /// </summary>
         public bool NodeErrorsIteratorVisible => GetMessagesOfStyle(NodeMessages, Style.Error).Count > 1;
-        
+
+        /// <summary>
+        /// This signifies if the node should be rendered
+        /// </summary>
+        public bool IsVisibleInCanvas
+        {
+            get => isVisibleInCanvas;
+            set
+            {
+                isVisibleInCanvas = value;
+                RaisePropertyChanged(nameof(isVisibleInCanvas));
+            }
+        }
+        private bool isVisibleInCanvas = false;
+
+        public Rect2D Rect => default;
+
         #endregion
 
         #region Event Handlers
