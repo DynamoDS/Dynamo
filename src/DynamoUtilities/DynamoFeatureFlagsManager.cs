@@ -115,7 +115,20 @@ namespace DynamoUtilities
             }
             if (AllFlagsCache.TryGetValue(featureFlagKey, out var flagVal))
             {
-                return (T)flagVal;
+                try
+                {
+                    if (typeof(T) == typeof(double) && flagVal is int intValue)
+                    {
+                        flagVal = Convert.ToDouble(intValue);
+                    }
+                    return (T)flagVal;
+                }
+                catch (InvalidCastException e)
+                {
+                    RaiseMessageLogged(
+                        $"failed to cast feature flag value for {featureFlagKey} to {typeof(T)}, ex: {e.Message}, returning default value: {defaultval}");
+                    return defaultval;
+                }
             }
             else
             {
