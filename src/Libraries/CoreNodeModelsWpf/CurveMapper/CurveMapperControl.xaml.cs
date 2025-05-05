@@ -1,16 +1,14 @@
 using CoreNodeModels;
+using Dynamo.Graph.Workspaces;
+using Dynamo.ViewModels;
 using Dynamo.Wpf.Properties;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -21,6 +19,8 @@ namespace Dynamo.Wpf.CurveMapper
     /// </summary>
     public partial class CurveMapperControl : UserControl, INotifyPropertyChanged
     {
+        private NodeViewModel nodeViewModel;
+
         private readonly CurveMapperNodeModel curveMapperNodeModel;
         private CurveMapperControlPoint linearCurveControlPoint1;
         private CurveMapperControlPoint linearCurveControlPoint2;
@@ -69,6 +69,7 @@ namespace Dynamo.Wpf.CurveMapper
         /// </summary>
         public event PropertyChangedEventHandler PropertyChanged;
 
+        [Obsolete("Use the overload with NodeViewModel.")]
         public CurveMapperControl(CurveMapperNodeModel model, double canvasSize)
         {
             InitializeComponent();
@@ -92,6 +93,40 @@ namespace Dynamo.Wpf.CurveMapper
 
             ToggleControlPointsLock();
             UpdateLockButton();
+        }
+
+        public CurveMapperControl(CurveMapperNodeModel model, double canvasSize, NodeViewModel nodeViewModel)
+        {
+            InitializeComponent();
+            this.curveMapperNodeModel = model;
+            this.nodeViewModel = nodeViewModel;
+            DataContext = model;
+
+            Width = canvasSize + controlLabelsWidth;
+            Height = canvasSize + controlLabelsHeight;
+
+            model.PropertyChanged += NodeModel_PropertyChanged;
+            resizeThumb.DragStarted += ResizeThumb_DragStarted;
+            Unloaded += Unload;
+
+            DrawGrid();
+
+            // Dictionary to map UI control points to their corresponding data
+            UpdateUIFromModel();
+            ToggleControlPointsLock();
+            UpdateLockButton();
+        }
+
+        private void RecordUndo()
+        {
+            var undoRecorder = nodeViewModel.WorkspaceViewModel.Model.UndoRecorder;
+            WorkspaceModel.RecordModelForModification(curveMapperNodeModel, undoRecorder);
+        }
+
+        private void OnControlPointDragStarted()
+        {
+            if (!curveMapperNodeModel.IsLocked)
+                RecordUndo();
         }
 
         private void RenderCurve()
@@ -165,23 +200,30 @@ namespace Dynamo.Wpf.CurveMapper
         {
             if (curveMapperNodeModel.IsLocked) return;
 
+            RecordUndo();
+
             curveMapperNodeModel.ResetControlPointData();
 
-            // Dictionary to map UI control points to their corresponding data
-            var controlPointsResetMap = BuildControlPointsDictionary();
-            RecreateControlPoints(controlPointsResetMap);
-            RenderCurve();
+            UpdateUIFromModel();
         }
 
         private void LockButton_Click(object sender, RoutedEventArgs e)
         {
-            var button = sender as Button;
-            if (button != null)
-            {
-                curveMapperNodeModel.IsLocked = !curveMapperNodeModel.IsLocked;
-                UpdateLockButton();
-                ToggleControlPointsLock();
-            }
+            RecordUndo();
+
+            curveMapperNodeModel.IsLocked = !curveMapperNodeModel.IsLocked;
+            UpdateLockButton();
+            ToggleControlPointsLock();
+        }
+
+        private void GraphTypeComboBox_DropDownOpened(object sender, EventArgs e)
+        {
+            RecordUndo();
+        }
+
+        private void ResizeThumb_DragStarted(object sender, DragStartedEventArgs e)
+        {
+            RecordUndo();
         }
 
         private void NodeModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -209,17 +251,24 @@ namespace Dynamo.Wpf.CurveMapper
                 }
 
                 RenderCurve();
+
+                if (curveMapperNodeModel.IsRestoringUndo)
+                {
+                    double canvasSize = curveMapperNodeModel.DynamicCanvasSize;
+                    Width = canvasSize + controlLabelsWidth;
+                    Height = canvasSize + controlLabelsHeight;
+                    DrawGrid();
+                }
             }
 
             if (e.PropertyName == nameof(curveMapperNodeModel.SelectedGraphType))
             {
-                var controlPointsMap = BuildControlPointsDictionary();
-                RecreateControlPoints(controlPointsMap);
+                UpdateUIFromModel();
 
-                curveMapperNodeModel.GenerateRenderValues();
-                RenderCurve();
-
-                ToggleControlPointsLock();
+                if (!curveMapperNodeModel.IsRestoringUndo)
+                {
+                    ToggleControlPointsLock();
+                }
             }
 
             if (e.PropertyName == nameof(curveMapperNodeModel.RenderValuesX) ||
@@ -235,6 +284,17 @@ namespace Dynamo.Wpf.CurveMapper
             if (e.PropertyName == nameof(curveMapperNodeModel.GaussianCurveControlPointData4))
             {
                 UpdateGaussianControlPoint(gaussianCurveControlPoint4, curveMapperNodeModel.GaussianCurveControlPointData4);
+            }
+
+            if (e.PropertyName == "ControlPointsDeserialized")
+            {
+                UpdateUIFromModel();
+            }
+
+            if (e.PropertyName == nameof(curveMapperNodeModel.IsLocked))
+            {
+                UpdateLockButton();
+                ToggleControlPointsLock();
             }
         }
 
@@ -272,7 +332,16 @@ namespace Dynamo.Wpf.CurveMapper
                         ? props
                         : (false, false);
 
-                    var newPoint = new CurveMapperControlPoint(dataPoints[i], curveMapperNodeModel.DynamicCanvasSize, curveMapperNodeModel, RenderCurve, isOrthogonal, isVertical);
+                    var newPoint = new CurveMapperControlPoint(
+                        dataPoints[i],
+                        curveMapperNodeModel.DynamicCanvasSize,
+                        curveMapperNodeModel,
+                        RenderCurve,
+                        isOrthogonal,
+                        isVertical);
+
+                    newPoint.DragStarted += (s, e) => OnControlPointDragStarted();
+
                     pointField?.SetValue(this, newPoint);
                     GraphCanvas.Children.Add(newPoint);
 
@@ -288,6 +357,13 @@ namespace Dynamo.Wpf.CurveMapper
                     Canvas.SetTop(newPoint, dataPoints[i].Y - offsetValue);
                 }
             }
+        }
+
+        private void UpdateUIFromModel()
+        {
+            var controlPointsMap = BuildControlPointsDictionary();
+            RecreateControlPoints(controlPointsMap);
+            RenderCurve();
         }
 
         private void UpdateControlPointPosition(UIElement controlPoint, ControlPointData dataPoint, double newSize)
@@ -320,7 +396,6 @@ namespace Dynamo.Wpf.CurveMapper
                     : Visibility.Visible;
             }
         }
-
 
         private void DrawGrid()
         {

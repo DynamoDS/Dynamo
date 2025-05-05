@@ -11,7 +11,7 @@ namespace Dynamo.Wpf.CurveMapper
         public void CustomizeView(CurveMapperNodeModel model, NodeView nodeView)
         {
             curveMapperNodeModel = model;
-            curveMapperControl = new CurveMapperControl(model, model.DynamicCanvasSize);
+            curveMapperControl = new CurveMapperControl(model, model.DynamicCanvasSize, nodeView.ViewModel);
             curveMapperControl.DataContext = model;
             curveMapperNodeModel = model;
 
