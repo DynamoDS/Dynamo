@@ -1,3 +1,12 @@
+using Dynamo.Configuration;
+using Dynamo.Graph.Nodes;
+using Dynamo.Selection;
+using Dynamo.UI;
+using Dynamo.UI.Controls;
+using Dynamo.UI.Prompts;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.Wpf.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -8,16 +17,8 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using System.Windows.Threading;
-using Dynamo.Configuration;
-using Dynamo.Graph.Nodes;
-using Dynamo.Selection;
-using Dynamo.UI;
-using Dynamo.UI.Controls;
-using Dynamo.UI.Prompts;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.Wpf.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
 
 
@@ -110,16 +111,466 @@ namespace Dynamo.Controls
 
         #region constructors
 
+        internal Grid grid;
+        internal Border nodeBorder;
+        internal TextBlock NameBlock;
+        internal TextBox EditableNameBox;
+        internal Canvas expansionBay;
+        internal Grid centralGrid;
+        //TODO real property getter for public objects
+        public Grid inputGrid;
+        public ContextMenu MainContextMenu;
+        public Grid PresentationGrid;
+
         public NodeView()
         {
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.InPortsDictionary);
-            Resources.MergedDictionaries.Add(SharedDictionaryManager.OutPortsDictionary);
+            //Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
+            //Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
+            //Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
+            //Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
+            //Resources.MergedDictionaries.Add(SharedDictionaryManager.InPortsDictionary);
+            //Resources.MergedDictionaries.Add(SharedDictionaryManager.OutPortsDictionary);
 
+            //Not sure if InitializeComponent() should be called first or later?
             InitializeComponent();
+
+            //TODO See if this can work vs adding it to the DataTemplatesDictionary
+            //DataTemplate InPortsDataTemplate = new DataTemplate()
+            //{
+            //    DataType = typeof(InPortViewModel)
+            //};
+
+            //InPortsDataTemplate.VisualTree = new FrameworkElementFactory(typeof(InPorts));
+            //Resources.Add(typeof(InPortViewModel), InPortsDataTemplate);
+
+            #region shared objects
+
+            //Maybe these can be static on the view?
+            var inverseBooleanToVisibilityCollapsedConverter = new InverseBooleanToVisibilityCollapsedConverter();
+            var boolToVisibilityCollapsedConverter = new BoolToVisibilityCollapsedConverter();
+            var booleanToVisibilityConverter = new BooleanToVisibilityConverter();
+            var artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
+
+            #endregion
+
+
+            this.grid = new Grid()
+            {
+                Name = "grid",
+                HorizontalAlignment = HorizontalAlignment.Left,
+                //Height = 189,
+                //Width = 234.5
+            };
+
+            grid.SetBinding(Grid.VisibilityProperty, new Binding("IsCollapsed") { Converter = inverseBooleanToVisibilityCollapsedConverter });
+            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(46) });
+            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto }); //new GridLength(102)
+            grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(24) });
+            grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(12) });
+            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto }); //new GridLength(98.5)
+            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star) }); //new GridLength(55.5)
+            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto }); //new GridLength(80.5)
+
+            //Todo Need to init ContextMenu?  Should it be instantiated later or now.
+
+            var customNodeBorder0 = new Border()
+            {
+                Name = "customNodeBorder0",
+                Height = 8,
+                Margin = new System.Windows.Thickness(0, 16, 0, 16),
+                VerticalAlignment = VerticalAlignment.Bottom,
+                CornerRadius = new CornerRadius(6, 6, 0, 0),
+                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#959595"))
+            };
+
+            Grid.SetRow(customNodeBorder0, 0);
+            Grid.SetColumnSpan(customNodeBorder0, 3);
+            Canvas.SetZIndex(customNodeBorder0, 0);
+
+            var customNodeBorder1 = new Border()
+            {
+                Name = "customNodeBorder1",
+                Height = 4,
+                Margin = new System.Windows.Thickness(0, 8, 0, 8),
+                VerticalAlignment = VerticalAlignment.Bottom,
+                CornerRadius = new CornerRadius(6, 6, 0, 0),
+                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#747474"))
+            };
+
+            Grid.SetRow(customNodeBorder0, 0);
+            Grid.SetColumnSpan(customNodeBorder0, 3);
+            Canvas.SetZIndex(customNodeBorder0, 0);
+
+            var IsCustomNodeBinding = new Binding("IsCustomFunction")
+            {
+                Converter = booleanToVisibilityConverter,
+                Mode = BindingMode.OneWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            };
+
+            //Todo from the documentation is it not clear if you need to clear bindings manually when instantiating controls
+            //Progromatically.  Seems like it might be a good idea -> BindingOperations.ClearAllBindings(myControl);
+            customNodeBorder0.SetBinding(Border.VisibilityProperty, IsCustomNodeBinding);
+            customNodeBorder1.SetBinding(Border.VisibilityProperty, IsCustomNodeBinding);
+
+            var nodeBackground = new System.Windows.Shapes.Rectangle()
+            {
+                Name = "nodeBackground",
+                Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C3C"))
+            };
+
+            Grid.SetRow(nodeBackground, 2);
+            Grid.SetRowSpan(nodeBackground, 3);
+            Grid.SetColumnSpan(nodeBackground, 3);
+            Canvas.SetZIndex(nodeBackground, 1);
+
+            var nameBackground = new Border()
+            {
+                Name = "nameBackground",
+                CornerRadius = new CornerRadius(8, 8, 0, 0),
+                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#535353")),
+                IsHitTestVisible = true,
+            };
+
+            Grid.SetRow(nameBackground, 1);
+            Grid.SetColumnSpan(nameBackground, 3);
+            Canvas.SetZIndex(nameBackground, 2);
+            //TODO unhook event handler
+            nameBackground.MouseDown += NameBlock_OnMouseDown;
+            ToolTipService.SetShowDuration(nameBackground, 60000);
+
+            //TODO Add DynamoToolTip to nameBackground
+
+            var nodeHeaderContent = new DockPanel()
+            {
+                Name = "nodeHeaderContent",
+                VerticalAlignment = VerticalAlignment.Top,
+                Margin = new System.Windows.Thickness(6),
+                //HorizontalAlignment = HorizontalAlignment.Stretch,
+                //FlowDirection = FlowDirection.LeftToRight,
+            };
+
+            Grid.SetRow(nodeHeaderContent, 1);
+            Grid.SetColumnSpan(nodeHeaderContent, 3);
+            Canvas.SetZIndex(nodeHeaderContent, 3);
+
+            var nodeIcon = new System.Windows.Shapes.Rectangle()
+            {
+                Name = "nodeIcon",
+                Width = 34,
+                Height = 34,
+
+                //TODO ADD STYLE Trigger for setting actual icon
+                Fill = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/default-node-icon.png")))
+                {
+                    Stretch = Stretch.UniformToFill
+                },
+            };
+
+            nodeHeaderContent.Children.Add(nodeIcon);
+
+            this.NameBlock = new TextBlock()
+            {
+                Name = "NameBlock",
+                Margin = new System.Windows.Thickness(6, 3, 6, 0),
+                VerticalAlignment = VerticalAlignment.Center,
+                FontSize = 16,
+                FontWeight = FontWeights.Medium,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCDCDC")),
+                IsHitTestVisible = false,
+                TextAlignment = TextAlignment.Center,
+                FontFamily = artifactElementReg
+            };
+
+            NameBlock.SetBinding(TextBlock.TextProperty, new Binding("Name")
+            {
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
+            nodeHeaderContent.Children.Add(NameBlock);
+
+            this.EditableNameBox = new TextBox()
+            {
+                Name = "EditableNameBox",
+                Margin = new System.Windows.Thickness(6, 3, 6, 0),
+                VerticalAlignment = VerticalAlignment.Center,
+                FontSize = 16,
+                FontWeight = FontWeights.Medium,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCDCDC")),
+                SelectionBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6ac0e7")),
+                IsHitTestVisible = true,
+                BorderThickness = new System.Windows.Thickness(0),
+                TextAlignment = TextAlignment.Center,
+                Visibility = Visibility.Collapsed,
+                FontFamily = artifactElementReg
+            };
+
+            //Todo unhook event handlers
+            EditableNameBox.LostFocus += EditableNameBox_OnLostFocus;
+            EditableNameBox.KeyDown += EditableNameBox_KeyDown;
+            EditableNameBox.SetBinding(TextBlock.TextProperty, new Binding("Name")
+            {
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
+            nodeHeaderContent.Children.Add(EditableNameBox);
+
+            //TODO Add Grid / Ellipse / DynamoToolTip
+
+            var inPortControl = new ItemsControl()
+            {
+                Name = "inPortControl",
+                Margin = new System.Windows.Thickness(-25, 3, 0, 0),
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalContentAlignment = HorizontalAlignment.Stretch
+            };
+
+            inPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("InPorts"));
+            Grid.SetRow(inPortControl, 2);
+            Grid.SetColumn(inPortControl, 0);
+            Canvas.SetZIndex(inPortControl, 6);
+
+            //TODO Add Output Ports
+
+            this.centralGrid = new Grid()
+            {
+                Name = "centralGrid",
+                Margin = new System.Windows.Thickness(6, 6, 6, 3),
+                VerticalAlignment = VerticalAlignment.Top
+            };
+
+            centralGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+            centralGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+            centralGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+            Grid.SetRow(centralGrid, 2);
+            Grid.SetColumn(centralGrid, 1);
+            Canvas.SetZIndex(centralGrid, 4);
+
+            this.inputGrid = new Grid()
+            {
+                Name = "inputGrid",
+                MinHeight = Configuration.Configurations.PortHeightInPixels,
+                Margin = new System.Windows.Thickness(6, 6, 6, 3)
+            };
+
+            Canvas.SetZIndex(inputGrid, 5);
+            inputGrid.SetBinding(Grid.IsEnabledProperty, new Binding("IsInteractionEnabled"));
+
+            centralGrid.Children.Add(inputGrid);
+
+            var GlyphStackPanel = new StackPanel()
+            {
+                Name = "GlyphStackPanel",
+                Margin = new System.Windows.Thickness(0, 0, 2, 2),
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                //FlowDirection = FlowDirection.LeftToRight,
+                Orientation = Orientation.Horizontal
+            };
+
+            var experimentalIcon = new FontAwesome5.ImageAwesome()
+            {
+                Name = "experimentalIcon",
+                Icon = FontAwesome5.EFontAwesomeIcon.Solid_Flask,
+                Width = 16,
+                Height = 16,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#38ABDF")),
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                ToolTip = new ToolTip() { Content = Dynamo.Properties.Resources.DocsExperimentalPrefixMessage }
+            };
+
+            experimentalIcon.SetBinding(Grid.VisibilityProperty, new Binding("IsExperimental")
+            {
+                Converter = boolToVisibilityCollapsedConverter,
+                Mode = BindingMode.OneWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
+            var FrozenImage = new Image()
+            {
+                Name = "FrozenImage",
+                Width = 16,
+                Height = 16,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Stretch = Stretch.UniformToFill,
+                Source = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png"))
+            };
+
+            FrozenImage.SetBinding(Grid.VisibilityProperty, new Binding("IsFrozen")
+            {
+                Converter = boolToVisibilityCollapsedConverter,
+                Mode = BindingMode.OneWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
+            var TransientImage = new Image()
+            {
+                Name = "TransientImage",
+                Width = 16,
+                Height = 16,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Stretch = Stretch.UniformToFill,
+                Source = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/NodeStates/transient-64px.png"))
+            };
+
+            TransientImage.SetBinding(Grid.VisibilityProperty, new Binding("IsTransient")
+            {
+                Converter = boolToVisibilityCollapsedConverter,
+                Mode = BindingMode.OneWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
+            var HiddenEyeImage = new Image()
+            {
+                Name = "HiddenEyeImage",
+                Width = 16,
+                Height = 16,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Center,
+                Stretch = Stretch.UniformToFill,
+                Source = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/hidden.png"))
+            };
+
+            HiddenEyeImage.SetBinding(Grid.VisibilityProperty, new Binding("IsVisible")
+            {
+                Converter = inverseBooleanToVisibilityCollapsedConverter,
+                Mode = BindingMode.OneWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
+            var LacingIconGlyph = new Label()
+            {
+                Name = "LacingIconGlyp",
+                Margin = new System.Windows.Thickness(0, 1, 2, -1),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                FontFamily = artifactElementReg,
+                FontSize = 10,
+                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EBEBEB"))
+            };
+
+            var lacingToolTip = new ToolTip();
+
+            lacingToolTip.SetBinding(ContentControl.ContentProperty, new Binding("ArgumentLacing")
+            {
+                Converter = new LacingToTooltipConverter()
+            });
+
+            LacingIconGlyph.ToolTip = lacingToolTip;
+
+            LacingIconGlyph.SetBinding(Label.VisibilityProperty, new Binding("ArgumentLacing")
+            {
+                Converter = new LacingToVisibilityConverter(),
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
+            LacingIconGlyph.SetBinding(Label.ContentProperty, new Binding("ArgumentLacing")
+            {
+                Converter = new LacingToAbbreviationConverter(),
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
+            Grid.SetRow(GlyphStackPanel, 3);
+            Grid.SetColumnSpan(GlyphStackPanel, 3);
+            Canvas.SetZIndex(GlyphStackPanel, 4);
+
+            GlyphStackPanel.Children.Add(experimentalIcon);
+            GlyphStackPanel.Children.Add(FrozenImage);
+            GlyphStackPanel.Children.Add(TransientImage);
+            GlyphStackPanel.Children.Add(HiddenEyeImage);
+            GlyphStackPanel.Children.Add(LacingIconGlyph);
+            //TODO Finish GlyphStackPanel
+
+            this.PresentationGrid = new Grid()
+            {
+                Name = "PresentationGrid",
+                Margin = new System.Windows.Thickness(6, 6, 6, -3),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                VerticalAlignment = VerticalAlignment.Bottom,
+                Visibility = Visibility.Collapsed
+            };
+
+            Grid.SetRow(PresentationGrid, 2);
+            Grid.SetColumn(PresentationGrid, 1);
+            Canvas.SetZIndex(PresentationGrid, 3);
+
+            this.nodeBorder = new Border()
+            {
+                Name = "nodeBorder",
+                CornerRadius = new CornerRadius(8, 8, 0, 0),
+                Margin = new System.Windows.Thickness(-1),
+                BorderThickness = new System.Windows.Thickness(1),
+                BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#F9F9F9")),
+                IsHitTestVisible = true,
+                SnapsToDevicePixels = true
+            };
+
+            Grid.SetRow(nodeBorder, 1);
+            Grid.SetRowSpan(nodeBorder, 4);
+            Grid.SetColumnSpan(nodeBorder, 3);
+            Canvas.SetZIndex(nodeBorder, 5);
+
+            var selectionBorder = new Border()
+            {
+                Name = "selectionBorder",
+                CornerRadius = new CornerRadius(10, 10, 0, 0),
+                Margin = new System.Windows.Thickness(-3),
+                BorderThickness = new System.Windows.Thickness(4),
+                BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6AC0E7")),
+                IsHitTestVisible = false
+            };
+
+            //TODO nodeColorOverlayZoomin Transient Out
+            //TODO zoomGlyphsGrid
+
+            selectionBorder.SetBinding(Border.VisibilityProperty, new Binding("IsSelected")
+            {
+                Converter = booleanToVisibilityConverter,
+                Mode = BindingMode.OneWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
+            Grid.SetRow(selectionBorder, 1);
+            Grid.SetRowSpan(selectionBorder, 4);
+            Grid.SetColumnSpan(selectionBorder, 3);
+            Canvas.SetZIndex(selectionBorder, 6);
+
+            //TODO nodeHoveringStateBorder
+            //TODO warningBar
+
+            this.expansionBay = new Canvas()
+            {
+                Name = "expansionBay",
+                Margin = new System.Windows.Thickness(0, 4, 0, 0),
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Background = new SolidColorBrush(Colors.Blue)
+            };
+
+            //TODO DebugAST Canvas.  Do we need this?
+            //TODO IsCustomFunction section.  Do we need this?
+
+            Grid.SetRow(expansionBay, 5);
+            Grid.SetColumnSpan(expansionBay, 3);
+
+            grid.Children.Add(customNodeBorder0);
+            grid.Children.Add(customNodeBorder1);
+            grid.Children.Add(nodeBackground);
+            grid.Children.Add(nameBackground);
+            grid.Children.Add(nodeHeaderContent);
+            grid.Children.Add(inPortControl);
+            grid.Children.Add(centralGrid);
+            grid.Children.Add(GlyphStackPanel);
+            grid.Children.Add(PresentationGrid);
+            grid.Children.Add(nodeBorder);
+            grid.Children.Add(selectionBorder);
+            grid.Children.Add(expansionBay);
+
+            this.Content = grid;
 
             Loaded += OnNodeViewLoaded;
             Unloaded += OnNodeViewUnloaded;
