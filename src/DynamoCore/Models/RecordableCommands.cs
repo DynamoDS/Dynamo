@@ -1689,6 +1689,8 @@ namespace Dynamo.Models
         [DataContract]
         public class DeleteModelCommand : ModelBasedRecordableCommand
         {
+            internal bool CanDeleteTransientNodes { get; set; } = false;
+
             #region Public Class Methods
 
             /// <summary>
@@ -1709,6 +1711,16 @@ namespace Dynamo.Models
             /// </summary>
             /// <param name="modelGuids"></param>
             public DeleteModelCommand(IEnumerable<Guid> modelGuids) : base(modelGuids) { }
+
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="modelGuids"></param>
+            /// <param name="canDeleteTransientNodes"></param>
+            internal DeleteModelCommand(IEnumerable<Guid> modelGuids, bool canDeleteTransientNodes) : base(modelGuids)
+            {
+                CanDeleteTransientNodes = canDeleteTransientNodes;
+            }
 
             internal static DeleteModelCommand DeserializeCore(XmlElement element)
             {

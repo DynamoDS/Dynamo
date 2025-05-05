@@ -56,13 +56,13 @@ namespace Dynamo.NodeAutoComplete.Views
             Analytics.TrackEvent(
             Dynamo.Logging.Actions.Open,
             Dynamo.Logging.Categories.NodeAutoCompleteOperations);
-            ViewModel.ClusterResults = null;
+            ViewModel.DropdownResults = null;
 
             // Visibility of textbox changed, but text box has not been initialized(rendered) yet.
             // Call asynchronously focus, when textbox will be ready.
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                ViewModel.PopulateClusterAutoComplete();
+                ViewModel.PopulateAutoComplete();
                 //ViewModel.PopulateAutoCompleteCandidates();
             }), DispatcherPriority.Loaded);
 
@@ -76,7 +76,7 @@ namespace Dynamo.NodeAutoComplete.Views
 
         private void MoveIndex(int step)
         {
-            ViewModel.SelectedIndex = Math.Min(ViewModel.ClusterResults.Count() - 1, Math.Max(0, ViewModel.SelectedIndex + step));
+            ViewModel.SelectedIndex = Math.Min(ViewModel.DropdownResults.Count() - 1, Math.Max(0, ViewModel.SelectedIndex + step));
         }
 
         private void PrevButton_OnClick(object sender, RoutedEventArgs e)
@@ -151,7 +151,6 @@ namespace Dynamo.NodeAutoComplete.Views
             
             Close();
             UnsubscribeEvents(this, null);
-            ViewModel?.OnNodeAutoCompleteWindowClosed();
         }
 
     }
