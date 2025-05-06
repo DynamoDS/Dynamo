@@ -38,6 +38,9 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Graph;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using Dynamo.Graph.Annotations;
+using Dynamo.Graph.Notes;
+using Dynamo.Selection;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
@@ -195,7 +198,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
             set
             {
-                if(selectedIndex != value && value >= 0)
+                if(selectedIndex != value && value >= 0 && selectedIndex != -1)
                 {
                     ReAddNode(value);
                 }
@@ -732,9 +735,9 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             {
                 dynamoViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(transientNodes.Select(x => x.Id), true));
 
-                //remove the initial layout of the transient nodes from the undo stack
-                wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
                 //remove the deletion of the transient nodes from the undo stack
+                wsViewModel.Model.UndoRecorder.PopActionGroupFromUndoStack();
+                //remove the initial layout of the transient nodes from the undo stack
                 wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
             }
         }
@@ -780,7 +783,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     dynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, xoffset, node.NodeModel.Y, false, false, true));
 
                     //disallow the node creation command from the undo group, we group node creation and wires below
-                    wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
+                    wsViewModel.Model.UndoRecorder.PopActionGroupFromUndoStack();
 
                     var nodeFromCluster = wsViewModel.Nodes.LastOrDefault();
                     createdNodes.Add(newNode.Id,nodeFromCluster);
@@ -854,6 +857,17 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             // AutoLayout should be called after all nodes are connected.
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(wsViewModel.DynamoViewModel.CurrentSpace, node.NodeModel, clusterNodesModel.Select(x => x.NodeModel), false, false, false, finalizer);
 
+            //group the new nodes
+            DynamoSelection.Instance.Selection.Clear();
+            DynamoSelection.Instance.Selection.AddRange(clusterNodesModel.Select(x => x.NodeModel));
+
+            wsViewModel.DynamoViewModel.ExecuteCommand(new DynamoModel.CreateAnnotationCommand(Guid.NewGuid(), ClusterResultItem.Title, "✨ Cluster result ✨", 0, 0, false));
+
+            var newGroup = wsViewModel.Annotations.Last();
+            newGroup.AnnotationModel.Background = "#D5BCF7";
+            wsViewModel.Model.UndoRecorder.PopActionGroupFromUndoStack();
+
+            newNodesAndWires.Add(newGroup.AnnotationModel);
             //record all node and wire creation as one undo
             DynamoModel.RecordUndoModels(wsViewModel.Model, newNodesAndWires);
         }
