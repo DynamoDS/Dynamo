@@ -85,16 +85,28 @@ namespace Dynamo.UI.Controls
         {
             if (!(sender is FrameworkElement fromSender)) return;
 
-            HighlightedItem.IsSelected = false;
-            toolTipPopup.DataContext = fromSender.DataContext;
-            toolTipPopup.IsOpen = true;
+            if (HighlightedItem != null)
+            {
+                HighlightedItem.IsSelected = false;
+            }
+            if (toolTipPopup != null)
+            {
+                toolTipPopup.DataContext = fromSender.DataContext;
+                toolTipPopup.IsOpen = true;
+            }
         }
 
         private void OnMouseLeave(object sender, MouseEventArgs e)
         {
-            HighlightedItem.IsSelected = true;
-            toolTipPopup.DataContext = null;
-            toolTipPopup.IsOpen = false;
+            if (HighlightedItem != null)
+            {   
+                HighlightedItem.IsSelected = true;
+            }
+            if (toolTipPopup != null)
+            {
+                toolTipPopup.DataContext = null;
+                toolTipPopup.IsOpen = false;
+            }
         }
 
         private void OnInCanvasSearchControlVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)

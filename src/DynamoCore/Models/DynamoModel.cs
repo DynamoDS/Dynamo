@@ -1460,7 +1460,7 @@ namespace Dynamo.Models
             }
 
             // Lucene disposals (just if LuceneNET was initialized)
-            LuceneUtility.DisposeAll();
+            LuceneUtility?.DisposeAll();
 
 #if DEBUG
             CurrentWorkspace.NodeAdded -= CrashOnDemand.CurrentWorkspace_NodeAdded;
