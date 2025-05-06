@@ -36,6 +36,8 @@ using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Graph;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
@@ -346,6 +348,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         internal event Action<NodeModel> ParentNodeRemoved;
 
         internal MLNodeClusterAutoCompletionResponse FullResults { private set; get; }
+        internal List<SingleAutocompleteResult> FullSingleResults { set; get; }
 
         /// <summary>
         /// Constructor
@@ -472,14 +475,14 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             return request;
         }
 
-        internal IEnumerable<NodeSearchElementViewModel> GetNodeAutocompleMLResults()
+        private IEnumerable<SingleAutocompleteResult> GetNodeAutocompleMLResults()
         {
             MLNodeAutoCompletionResponse MLresults = null;
 
             // Get results from the ML API.
             try
             {
-                MLresults = GetMLNodeAutocompleteResults();
+                MLresults = GetGenericAutocompleteResult<MLNodeAutoCompletionResponse>(nodeAutocompleteMLEndpoint);
             }
             catch (Exception ex)
             {
@@ -488,7 +491,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 AutocompleteMLTitle = Resources.LoginNeededTitle;
                 AutocompleteMLMessage = Resources.LoginNeededMessage;
                 Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "UnabletoFetch");
-                return new List<NodeSearchElementViewModel>();
+                return new List<SingleAutocompleteResult>();
             }
 
             // no results
@@ -498,10 +501,10 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 AutocompleteMLTitle = Resources.AutocompleteNoRecommendationsTitle;
                 AutocompleteMLMessage = Resources.AutocompleteNoRecommendationsMessage;
                 Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "NoRecommendation");
-                return new List<NodeSearchElementViewModel>();
+                return new List<SingleAutocompleteResult>();
             }
             ServiceVersion = MLresults.Version;
-            var results = new List<NodeSearchElementViewModel>();
+            var results = new List<SingleAutocompleteResult>();
 
             var zeroTouchSearchElements = Model.Entries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
             var nodeModelSearchElements = Model.Entries.OfType<NodeModelSearchElement>().Where(x => x.IsVisibleInSearch);
@@ -541,13 +544,9 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                         }
                     }
 
-                    var viewModelElement = GetViewModelForNodeSearchElement(nodeSearchElement);
+                    var viewModelElement = new SingleAutocompleteResult(nodeSearchElement, result.Score);
 
-                    if (viewModelElement != null)
-                    {
-                        viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, Math.Round(result.Score * 100));
-                        results.Add(viewModelElement);
-                    }
+                    results.Add(viewModelElement);
                 }
                 // Matching known node types of node-model nodes.
                 else if (Enum.IsDefined(typeof(NodeModelNodeTypes), result.Node.Type.NodeType))
@@ -574,19 +573,16 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                         };
                     }
 
-                    var viewModelElement = GetViewModelForNodeSearchElement(nodeSearchElement);
+                    var viewModelElement = new SingleAutocompleteResult(nodeSearchElement, result.Score);
 
-                    if (viewModelElement != null)
-                    {
-                        viewModelElement.AutoCompletionNodeMachineLearningInfo = new AutoCompletionNodeMachineLearningInfo(true, true, Math.Round(result.Score * 100));
-                        results.Add(viewModelElement);
-                    }
+                    
+                    results.Add(viewModelElement);
                 }
             }
 
             return results;
         }
-        internal T GetGenericAutocompleteResult<T>(string endpoint)
+        private T GetGenericAutocompleteResult<T>(string endpoint)
         {   
             var requestDTO = GenerateRequestForMLAutocomplete();
             var jsonRequest = JsonConvert.SerializeObject(requestDTO);
@@ -640,16 +636,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
 
             return results;
-        }
-
-        private MLNodeAutoCompletionResponse GetMLNodeAutocompleteResults()
-        {
-            return GetGenericAutocompleteResult<MLNodeAutoCompletionResponse>(nodeAutocompleteMLEndpoint);
-        }
-
-        private MLNodeClusterAutoCompletionResponse GetMLNodeClusterAutocompleteResults()
-        {
-            return GetGenericAutocompleteResult<MLNodeClusterAutoCompletionResponse>(nodeClusterAutocompleteMLEndpoint);
         }
 
         /// <summary>
@@ -708,7 +694,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         /// <summary>
         /// Key function to populate node autocomplete results to display
         /// </summary>
-        internal IEnumerable<NodeSearchElementViewModel> GetSingleAutocompleteResults()
+        internal IEnumerable<SingleAutocompleteResult> GetSingleAutocompleteResults()
         {
             if (PortViewModel == null) return null;
 
@@ -734,11 +720,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 // These default suggestions will be populated based on the port type.
                 if (!objectTypeMatchingElements.Any())
                 {
-                    return DefaultAutoCompleteCandidates();
+                    return DefaultAutoCompleteCandidates().Select(x => new SingleAutocompleteResult(x));
                 }
                 else
                 {
-                    return GetViewModelForNodeSearchElements(objectTypeMatchingElements);
+                    return objectTypeMatchingElements.Select(x => new SingleAutocompleteResult(x));
                 }
             }
         }
@@ -894,28 +880,28 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             {
                 DropdownResults = null;
             }
+
             Task.Run(() =>
             {
-                IEnumerable<NodeAutoCompleteClusterResult> comboboxResults;
                 if (IsSingleAutocomplete)
                 {
-                    var fullSingleResults = GetSingleAutocompleteResults().ToList();
+                    FullSingleResults = GetSingleAutocompleteResults().ToList();
                     FullResults = new MLNodeClusterAutoCompletionResponse
                     {
                         Version = "0.0",
-                        NumberOfResults = fullSingleResults.Count,
-                        Results = fullSingleResults.Select(x => new ClusterResultItem
+                        NumberOfResults = FullSingleResults.Count,
+                        Results = FullSingleResults.Select(x => new ClusterResultItem
                         {
                             Description = x.Description,
-                            Title = x.Description,
-                            Probability = (x.AutoCompletionNodeMachineLearningInfo.ConfidenceScore / 100).ToString(),
+                            Title = x.Description,  
+                            Probability = x.Score.ToString(),
                             EntryNodeIndex = 0,
-                            EntryNodeInPort = x.Model.AutoCompletionNodeElementInfo.PortToConnect,
+                            EntryNodeInPort = x.PortToConnect,
                             Topology = new TopologyItem
                             {
                                 Nodes = new List<NodeItem> { new NodeItem {
                                     Id = new Guid().ToString(),
-                                    Type = new NodeType { Id = x.Model.CreationName } } },
+                                    Type = new NodeType { Id = x.CreationName } } },
                                 Connections = new List<ConnectionItem>()
                             }
                         })
@@ -923,9 +909,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 }
                 else
                 {
-                    FullResults = GetMLNodeClusterAutocompleteResults();
+                    FullResults = GetGenericAutocompleteResult<MLNodeClusterAutoCompletionResponse>(nodeClusterAutocompleteMLEndpoint);
                 }
-                comboboxResults = QualifiedResults.Select(x => new NodeAutoCompleteClusterResult { Description = x.Description });
 
                 dynamoViewModel.UIDispatcher.BeginInvoke(() =>
                 {
@@ -936,6 +921,35 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                         return;
                     }
 
+                    IEnumerable<NodeAutoCompleteClusterResult> comboboxResults;
+                    if (IsSingleAutocomplete)
+                    {
+                        //getting bitmaps from resources necessarily has to be done in the UI thread
+                        Dictionary<string, ImageSource> dict = [];
+                        foreach (var singleResult in FullSingleResults)
+                        {
+                            if (dict.ContainsKey(singleResult.CreationName))
+                            {
+                                continue;
+                            }
+                            var iconRequest = new IconRequestEventArgs(singleResult.Assembly, singleResult.IconName + Configurations.SmallIconPostfix);
+                            SearchViewModelRequestBitmapSource(iconRequest);
+                            dict[singleResult.CreationName] = iconRequest.Icon;
+                        }
+                        comboboxResults = QualifiedResults.Select(x => new NodeAutoCompleteClusterResult
+                        {
+                            Description = x.Description,
+                            SmallIcon = dict[x.Topology.Nodes.First().Type.Id],
+                        });
+                    }
+                    else
+                    {
+                        comboboxResults = QualifiedResults.Select(x => new NodeAutoCompleteClusterResult
+                        {
+                            Description = x.Description
+                            //default icon (cluster) is set in the xaml view
+                        });
+                    }
                     // this runs synchronously on the UI thread, so the UI can't disappear during execution
                     DropdownResults = comboboxResults;
                     SelectedIndex = 0;
@@ -990,84 +1004,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         internal void NodeViewModel_Removed(NodeModel node)
         {
             ParentNodeRemoved?.Invoke(node);
-        }
-
-        /// <summary>
-        /// Returns a IEnumberable of NodeSearchElementViewModel for respective NodeSearchElements.
-        /// </summary>
-        private IEnumerable<NodeSearchElementViewModel> GetViewModelForNodeSearchElements(List<NodeSearchElement> searchElementsCache)
-        {
-            return searchElementsCache.Select(e =>
-            {
-                var vm = new NodeSearchElementViewModel(e, this);
-                vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
-                return vm;
-            });
-        }
-
-        /// <summary>
-        /// Returns a NodeSearchElementViewModel for a NodeSearchElement
-        /// </summary>
-        private NodeSearchElementViewModel GetViewModelForNodeSearchElement(NodeSearchElement nodeSearchElement)
-        {
-            if (nodeSearchElement != null)
-            {
-                var vm = new NodeSearchElementViewModel(nodeSearchElement, this);
-                vm.RequestBitmapSource += SearchViewModelRequestBitmapSource;
-                return vm;
-            }
-            return null;
-        }
-
-
-        /// <summary>
-        ///     Performs a search using the given string as query and subset, if provided.
-        /// </summary>
-        /// <returns> Returns a list with a maximum MaxNumSearchResults elements.</returns>
-        /// <param name="search"> The search query </param>
-        internal IEnumerable<NodeSearchElementViewModel> SearchNodeAutocomplete(string search)
-        {
-            if (LuceneUtility != null)
-            {
-                //The DirectoryReader and IndexSearcher have to be assigned after commiting indexing changes and before executing the Searcher.Search() method, otherwise new indexed info won't be reflected
-                LuceneUtility.dirReader = LuceneUtility.writer?.GetReader(applyAllDeletes: true);
-                if (LuceneUtility.dirReader == null) return null;
-
-                LuceneUtility.Searcher = new IndexSearcher(LuceneUtility.dirReader);
-
-                string searchTerm = search.Trim();
-                var candidates = new List<NodeSearchElementViewModel>();
-                var parser = new MultiFieldQueryParser(LuceneConfig.LuceneNetVersion, LuceneConfig.NodeIndexFields, LuceneUtility.Analyzer)
-                {
-                    AllowLeadingWildcard = true,
-                    DefaultOperator = LuceneConfig.DefaultOperator,
-                    FuzzyMinSim = LuceneConfig.MinimumSimilarity
-                };
-
-                Query query = parser.Parse(LuceneUtility.CreateSearchQuery(LuceneConfig.NodeIndexFields, searchTerm));
-                TopDocs topDocs = LuceneUtility.Searcher.Search(query, n: LuceneConfig.DefaultResultsCount);
-
-                for (int i = 0; i < topDocs.ScoreDocs.Length; i++)
-                {
-                    // read back a Lucene doc from results
-                    Document resultDoc = LuceneUtility.Searcher.Doc(topDocs.ScoreDocs[i].Doc);
-
-                    string name = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Name));
-                    string docName = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.DocName));
-                    string cat = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.FullCategoryName));
-                    string parameters = resultDoc.Get(nameof(LuceneConfig.NodeFieldsEnum.Parameters));
-
-
-                    var foundNode = FindViewModelForNodeNameAndCategory(name, cat, parameters);
-                    if (foundNode != null)
-                    {
-                        candidates.Add(foundNode);
-                    }
-                }
-
-                return candidates;
-            }
-            return null;
         }
 
         /// <summary>

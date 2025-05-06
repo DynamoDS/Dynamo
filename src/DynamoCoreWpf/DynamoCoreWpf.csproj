@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <UILib>true</UILib>
   </PropertyGroup>
@@ -1308,6 +1308,7 @@
     <Resource Include="UI\Images\closetab_hover.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="UI\Images\cluster_32px.png" />
     <Resource Include="UI\Images\gripper-default.png" />
     <Resource Include="UI\Images\gripper-hover.png" />
     <Resource Include="UI\Images\caret-left-disabled.png" />
