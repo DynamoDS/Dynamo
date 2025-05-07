@@ -839,7 +839,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             // Connect the cluster to the original node and port
             if (targetNodeFromCluster != null && targetNodeFromCluster.InPorts.Any())
             {
-                var newConnector = ConnectorModel.Make(node.NodeModel, targetNodeFromCluster.NodeModel, 0,
+                var newConnector = ConnectorModel.Make(node.NodeModel, targetNodeFromCluster.NodeModel, PortViewModel.PortModel.Index,
                     ClusterResultItem.EntryNodeInPort);
 
                 var lastConnector = wsViewModel.Connectors.Last();
