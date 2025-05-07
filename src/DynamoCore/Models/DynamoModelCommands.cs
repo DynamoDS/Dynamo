@@ -216,7 +216,7 @@ namespace Dynamo.Models
             return null;
         }
 
-        private NodeModel CreateNodeFromNameOrType(Guid nodeId, string name)
+        internal NodeModel CreateNodeFromNameOrType(Guid nodeId, string name)
         {
             NodeModel node;
 
