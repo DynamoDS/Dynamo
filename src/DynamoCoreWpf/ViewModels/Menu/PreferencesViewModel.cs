@@ -1346,6 +1346,21 @@ namespace Dynamo.ViewModels
         /// </summary>
         public TrustedPathViewModel TrustedPathsViewModel { get; set; }
 
+        //public bool NoNetworkMode => dynamoViewModel.Model.NoNetworkMode;
+        private bool noNetworkMode;
+        public bool NoNetworkMode
+        {
+            get => noNetworkMode;
+            private set
+            {
+                if (noNetworkMode != value)
+                {
+                    noNetworkMode = value;
+                    RaisePropertyChanged(nameof(NoNetworkMode));
+                }
+            }
+        }
+
         /// <summary>
         /// Returns a boolean value indicating if the Settings importing was successful or not
         /// </summary>
@@ -1468,6 +1483,8 @@ namespace Dynamo.ViewModels
             this.preferenceSettings.PropertyChanged += PreferenceSettings_PropertyChanged;
             this.pythonScriptEditorTextOptions = dynamoViewModel.PythonScriptEditorTextOptions;
             this.dynamoViewModel = dynamoViewModel;
+
+            NoNetworkMode = dynamoViewModel.Model.NoNetworkMode;
 
             if (dynamoViewModel.PackageManagerClientViewModel != null)
             {
