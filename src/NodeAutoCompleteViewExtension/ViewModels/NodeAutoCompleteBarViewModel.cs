@@ -847,7 +847,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     connector.IsHidden = !PreferenceSettings.Instance.ShowConnector;
                 }
             }
-        
+
 
             //// Perform auto-layout for the newly added nodes
             //NodeAutoCompleteUtilities.PostAutoLayoutNodes(
@@ -873,17 +873,17 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
 
             //// Group the newly created nodes
-            //AnnotationModel annotationModel = new AnnotationModel(createdNodes.Values, new List<NoteModel>())
-            //    {
-            //        AnnotationText = clusterResultItem.Title,
-            //        AnnotationDescriptionText = clusterResultItem.Description
-            //    };
-            //workspaceModel.AddAnnotation(annotationModel);
-            //if (annotationModel != null)
-            //{
-            //    annotationModel.Background = "#D5BCF7";
-            //    createdClusterItems.Add(annotationModel);
-            //}
+            AnnotationModel annotationModel = new AnnotationModel(createdNodes.Values, new List<NoteModel>())
+            {
+                AnnotationText = clusterResultItem.Title,
+                AnnotationDescriptionText = clusterResultItem.Description
+            };
+            workspaceModel.AddAnnotation(annotationModel);
+            if (annotationModel != null)
+            {
+                annotationModel.Background = "#D5BCF7";
+                //createdClusterItems.Add(annotationModel);
+            }
 
             // Unlock undo/redo
             ToggleUndoRedoLocked(false);
