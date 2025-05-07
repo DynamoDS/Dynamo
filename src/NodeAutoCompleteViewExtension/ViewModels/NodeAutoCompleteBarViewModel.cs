@@ -242,12 +242,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 connector.IsConnecting = false;
             }
 
-            NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, false, null);
+            //NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, false, null);
 
-            (node.WorkspaceViewModel.Model as HomeWorkspaceModel)?.MarkNodesAsModifiedAndRequestRun(transientNodes.Select(x => x.NodeModel));
+            //(node.WorkspaceViewModel.Model as HomeWorkspaceModel)?.MarkNodesAsModifiedAndRequestRun(transientNodes.Select(x => x.NodeModel));
 
             ToggleUndoRedoLocked(false);
-
             DynamoModel.RecordUndoModels(node.WorkspaceViewModel.Model, createdClusterItems);
         }
 
@@ -739,6 +738,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             if (transientNodes.Any())
             {
                 dynamoViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(transientNodes.Select(x => x.Id), true));
+
+                wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
             }
         }
 
@@ -836,41 +837,54 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     }
                 }
             }
-
-            // Perform auto-layout for the newly added nodes
-            NodeAutoCompleteUtilities.PostAutoLayoutNodes(
-                workspaceViewModel.DynamoViewModel.CurrentSpace,
-                PortViewModel.NodeViewModel.NodeModel,
-                createdNodes.Values,
-                false,
-                false,
-                false,
-                () =>
-                {
-                    // Finalize visibility of nodes and connectors
-                    foreach (var node in createdNodes.Values)
-                    {
-                        workspaceViewModel.Nodes.FirstOrDefault(n => n.NodeModel.GUID.Equals(node.GUID)).IsHidden = false;
-                        foreach (var connector in node.AllConnectors)
-                        {
-                            connector.IsHidden = !PreferenceSettings.Instance.ShowConnector;
-                        }
-                    }
-                });
-
-            // Group the newly created nodes
-            AnnotationModel annotationModel = new AnnotationModel(createdNodes.Values, new List<NoteModel>())
-                {
-                    AnnotationText = clusterResultItem.Title,
-                    AnnotationDescriptionText = clusterResultItem.Description
-                };
-            workspaceModel.AddAnnotation(annotationModel);
-            if (annotationModel != null)
-            {
-                annotationModel.Background = "#D5BCF7";
-                createdClusterItems.Add(annotationModel);
-            }
             
+            // Finalize visibility of nodes and connectors
+            foreach (var node in createdNodes.Values)
+            {
+                workspaceViewModel.Nodes.FirstOrDefault(n => n.NodeModel.GUID.Equals(node.GUID)).IsHidden = false;
+                foreach (var connector in node.AllConnectors)
+                {
+                    connector.IsHidden = !PreferenceSettings.Instance.ShowConnector;
+                }
+            }
+        
+
+            //// Perform auto-layout for the newly added nodes
+            //NodeAutoCompleteUtilities.PostAutoLayoutNodes(
+            //    workspaceViewModel.DynamoViewModel.CurrentSpace,
+            //    PortViewModel.NodeViewModel.NodeModel,
+            //    createdNodes.Values,
+            //    false,
+            //    false,
+            //    false,
+            //    () =>
+            //    {
+            //        // Finalize visibility of nodes and connectors
+            //        foreach (var node in createdNodes.Values)
+            //        {
+            //            workspaceViewModel.Nodes.FirstOrDefault(n => n.NodeModel.GUID.Equals(node.GUID)).IsHidden = false;
+            //            foreach (var connector in node.AllConnectors)
+            //            {
+            //                connector.IsHidden = !PreferenceSettings.Instance.ShowConnector;
+            //            }
+            //        }
+            //    });
+
+
+
+            //// Group the newly created nodes
+            //AnnotationModel annotationModel = new AnnotationModel(createdNodes.Values, new List<NoteModel>())
+            //    {
+            //        AnnotationText = clusterResultItem.Title,
+            //        AnnotationDescriptionText = clusterResultItem.Description
+            //    };
+            //workspaceModel.AddAnnotation(annotationModel);
+            //if (annotationModel != null)
+            //{
+            //    annotationModel.Background = "#D5BCF7";
+            //    createdClusterItems.Add(annotationModel);
+            //}
+
             // Unlock undo/redo
             ToggleUndoRedoLocked(false);
 
