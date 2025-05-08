@@ -216,7 +216,7 @@ namespace Dynamo.Models
             return null;
         }
 
-        internal NodeModel CreateNodeFromNameOrType(Guid nodeId, string name)
+        internal NodeModel CreateNodeFromNameOrType(Guid nodeId, string name, bool isTransient = false)
         {
             NodeModel node;
 
@@ -228,6 +228,7 @@ namespace Dynamo.Models
                     ? new DSVarArgFunction(functionItem) as NodeModel
                     : new DSFunction(functionItem);
                 node.GUID = nodeId;
+                node.IsTransient = isTransient;
                 return node;
             }
 
@@ -235,7 +236,10 @@ namespace Dynamo.Models
             if (NodeFactory.CreateNodeFromTypeName(name, out node))
             {
                 node.GUID = nodeId;
+                node.IsTransient = isTransient;
             }
+
+           
             return node;
         }
 
