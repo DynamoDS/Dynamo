@@ -524,13 +524,10 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     if (element != null)
                     {
                         nodeSearchElement = (NodeSearchElement)element.Clone();
-                    }
 
-                    // Set PortToConnect for each element based on port-index and port-name
-                    if (nodeSearchElement != null)
-                    {
+                        // Set PortToConnect for each element based on port-index and port-name
                         nodeSearchElement.AutoCompletionNodeElementInfo = new AutoCompletionNodeElementInfo
-                        {
+                        {   
                             PortToConnect = portIndex
                         };
 
@@ -542,11 +539,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                                 break;
                             }
                         }
+
+                        var viewModelElement = new SingleAutocompleteResult(nodeSearchElement, result.Score);
+
+                        results.Add(viewModelElement);
                     }
-
-                    var viewModelElement = new SingleAutocompleteResult(nodeSearchElement, result.Score);
-
-                    results.Add(viewModelElement);
                 }
                 // Matching known node types of node-model nodes.
                 else if (Enum.IsDefined(typeof(NodeModelNodeTypes), result.Node.Type.NodeType))
@@ -563,20 +560,15 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     if (element != null)
                     {
                         nodeSearchElement = (NodeSearchElement)element.Clone();
-                    }
 
-                    if (nodeSearchElement != null)
-                    {
                         nodeSearchElement.AutoCompletionNodeElementInfo = new AutoCompletionNodeElementInfo
                         {
                             PortToConnect = portIndex
                         };
+
+                        var viewModelElement = new SingleAutocompleteResult(nodeSearchElement, result.Score);
+                        results.Add(viewModelElement);
                     }
-
-                    var viewModelElement = new SingleAutocompleteResult(nodeSearchElement, result.Score);
-
-                    
-                    results.Add(viewModelElement);
                 }
             }
 
