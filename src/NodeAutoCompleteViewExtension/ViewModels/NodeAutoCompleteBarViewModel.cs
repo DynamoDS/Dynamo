@@ -43,6 +43,7 @@ using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Notes;
 using Dynamo.Selection;
 using System.IO.Packaging;
+using System.Windows.Threading;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
@@ -242,12 +243,10 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 connector.IsConnecting = false;
             }
 
-            //NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, false, null);
-
-            //(node.WorkspaceViewModel.Model as HomeWorkspaceModel)?.MarkNodesAsModifiedAndRequestRun(transientNodes.Select(x => x.NodeModel));
+            (node.WorkspaceViewModel.Model as HomeWorkspaceModel)?.MarkNodesAsModifiedAndRequestRun(transientNodes.Select(x => x.NodeModel));
 
             ToggleUndoRedoLocked(false);
-            DynamoModel.RecordUndoModels(node.WorkspaceViewModel.Model, createdClusterItems);
+            DynamoSelection.Instance.ClearSelection();
         }
 
         internal void ToggleUndoRedoLocked(bool toggle = true)
@@ -737,9 +736,12 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             var transientNodes = wsViewModel.Nodes.Where(x => x.IsTransient).ToList();
             if (transientNodes.Any())
             {
+                
                 dynamoViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(transientNodes.Select(x => x.Id), true));
 
-                wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
+                /*We can't remove the undo from the undo group at this time, because the elements and their modifications still exist in the cache.
+                With the deletion not in the undo cache, this results in errors if the user hits undo*/
+                //wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
             }
         }
 
@@ -837,53 +839,45 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     }
                 }
             }
-            
-            // Finalize visibility of nodes and connectors
-            foreach (var node in createdNodes.Values)
-            {
-                workspaceViewModel.Nodes.FirstOrDefault(n => n.NodeModel.GUID.Equals(node.GUID)).IsHidden = false;
-                foreach (var connector in node.AllConnectors)
+
+            //add the new items to the undo recorder (this ensures the elements are valid at this point in time before any other manipulation occurs)
+            DynamoModel.RecordUndoModels(workspaceModel, createdClusterItems);
+
+            // Perform auto-layout for the newly added nodes
+            NodeAutoCompleteUtilities.PostAutoLayoutNodes(
+                workspaceViewModel.DynamoViewModel.CurrentSpace,
+                PortViewModel.NodeViewModel.NodeModel,
+                createdNodes.Values,
+                false,
+                false,
+                false,
+                () =>
                 {
-                    connector.IsHidden = !PreferenceSettings.Instance.ShowConnector;
-                }
-            }
-
-
-            //// Perform auto-layout for the newly added nodes
-            //NodeAutoCompleteUtilities.PostAutoLayoutNodes(
-            //    workspaceViewModel.DynamoViewModel.CurrentSpace,
-            //    PortViewModel.NodeViewModel.NodeModel,
-            //    createdNodes.Values,
-            //    false,
-            //    false,
-            //    false,
-            //    () =>
-            //    {
-            //        // Finalize visibility of nodes and connectors
-            //        foreach (var node in createdNodes.Values)
-            //        {
-            //            workspaceViewModel.Nodes.FirstOrDefault(n => n.NodeModel.GUID.Equals(node.GUID)).IsHidden = false;
-            //            foreach (var connector in node.AllConnectors)
-            //            {
-            //                connector.IsHidden = !PreferenceSettings.Instance.ShowConnector;
-            //            }
-            //        }
-            //    });
+                    // Finalize visibility of nodes and connectors
+                    foreach (var node in createdNodes.Values)
+                    {
+                        workspaceViewModel.Nodes.FirstOrDefault(n => n.NodeModel.GUID.Equals(node.GUID)).IsHidden = false;
+                        foreach (var connector in node.AllConnectors)
+                        {
+                            connector.IsHidden = !PreferenceSettings.Instance.ShowConnector;
+                        }
+                    }
+                });
 
 
 
             //// Group the newly created nodes
-            AnnotationModel annotationModel = new AnnotationModel(createdNodes.Values, new List<NoteModel>())
-            {
-                AnnotationText = clusterResultItem.Title,
-                AnnotationDescriptionText = clusterResultItem.Description
-            };
-            workspaceModel.AddAnnotation(annotationModel);
-            if (annotationModel != null)
-            {
-                annotationModel.Background = "#D5BCF7";
-                //createdClusterItems.Add(annotationModel);
-            }
+            //AnnotationModel annotationModel = new AnnotationModel(createdNodes.Values, new List<NoteModel>())
+            //{
+            //    AnnotationText = clusterResultItem.Title,
+            //    AnnotationDescriptionText = clusterResultItem.Description
+            //};
+            //workspaceModel.AddAnnotation(annotationModel);
+            //if (annotationModel != null)
+            //{
+            //    annotationModel.Background = "#D5BCF7";
+            //    //createdClusterItems.Add(annotationModel);
+            //}
 
             // Unlock undo/redo
             ToggleUndoRedoLocked(false);
