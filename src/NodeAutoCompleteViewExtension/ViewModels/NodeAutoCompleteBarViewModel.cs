@@ -736,9 +736,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             var transientNodes = wsViewModel.Nodes.Where(x => x.IsTransient).ToList();
             if (transientNodes.Any())
             {
-                
                 dynamoViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(transientNodes.Select(x => x.Id), true));
-
                 /*We can't remove the undo from the undo group at this time, because the elements and their modifications still exist in the cache.
                 With the deletion not in the undo cache, this results in errors if the user hits undo*/
                 //wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
@@ -778,7 +776,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 foreach (var nodeItem in nodeStack)
                 {
                     var typeInfo = new NodeModelTypeId(nodeItem.Type.Id);
-                    var newNode = dynamoModel.CreateNodeFromNameOrType(Guid.NewGuid(), typeInfo.FullName);
+                    var newNode = dynamoModel.CreateNodeFromNameOrType(Guid.NewGuid(), typeInfo.FullName, true);
                     if (newNode != null)
                     {
                         newNode.X = offset; // Adjust X position
@@ -788,7 +786,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                         createdClusterItems.Add(newNode);
 
                         var newNodeViewModel = workspaceViewModel.Nodes.Last();
-                        newNodeViewModel.IsTransient = true; // Mark as transient
                         newNodeViewModel.IsHidden = true; // Hide the node initially
                     }
                 }
