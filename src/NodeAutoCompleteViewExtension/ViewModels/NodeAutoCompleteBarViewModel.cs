@@ -32,7 +32,6 @@ using RestSharp;
 using Dynamo.Wpf.Utilities;
 using Dynamo.ViewModels;
 using System.Reflection;
-using System.Windows.Media;
 using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
@@ -42,8 +41,6 @@ using System.Windows.Media.Imaging;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Notes;
 using Dynamo.Selection;
-using System.IO.Packaging;
-using System.Windows.Threading;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
