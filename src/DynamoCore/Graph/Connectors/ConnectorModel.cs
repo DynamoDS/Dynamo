@@ -240,8 +240,15 @@ namespace Dynamo.Graph.Connectors
         /// </summary>
         internal void Delete()
         {
-            Start?.Connectors.Remove(this);
-            End?.Connectors.Remove(this);
+            try
+            {
+                Start?.Connectors.Remove(this);
+                End?.Connectors.Remove(this);
+            }
+            catch (Exception ex)
+            {
+                Log("Exception caught when deleting connectors: "+ ex.Message);
+            }
 
             OnDeleted();
         }
