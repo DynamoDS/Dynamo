@@ -238,8 +238,6 @@ namespace Dynamo.Models
                 node.GUID = nodeId;
                 node.IsTransient = isTransient;
             }
-
-           
             return node;
         }
 
