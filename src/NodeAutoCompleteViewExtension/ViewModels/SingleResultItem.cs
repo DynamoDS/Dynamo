@@ -3,10 +3,10 @@ using Dynamo.Wpf.ViewModels;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
-    internal class SingleAutocompleteResult
+    internal class SingleResultItem
     {
 
-        public SingleAutocompleteResult(NodeSearchElement model, double score = 1.0)
+        public SingleResultItem(NodeSearchElement model, double score = 1.0)
         {
             Assembly = model.Assembly;
             IconName = model.IconName;
@@ -16,7 +16,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             Score = score;
         }
 
-        public SingleAutocompleteResult(NodeSearchElementViewModel x) : this(x.Model)
+        public SingleResultItem(NodeSearchElementViewModel x) : this(x.Model)
         {
             //Convert percent to probability
             Score = x.AutoCompletionNodeMachineLearningInfo.ConfidenceScore / 100.0;

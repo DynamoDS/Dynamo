@@ -126,19 +126,19 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
-        private IEnumerable<NodeAutoCompleteClusterResult> clusterResults;
+        private IEnumerable<DNADropdownViewModel> dropdownResults;
         /// <summary>
         /// Cluster autocomplete search results.
         /// </summary>
-        public IEnumerable<NodeAutoCompleteClusterResult> DropdownResults
+        public IEnumerable<DNADropdownViewModel> DropdownResults
         {
             get
             {
-                return clusterResults;
+                return dropdownResults;
             }
             set
             {
-                clusterResults = value;
+                dropdownResults = value;
                 RaisePropertyChanged(nameof(DropdownResults));
                 RaisePropertyChanged(nameof(NthofTotal));
                 RaisePropertyChanged(nameof(ResultsLoaded));
@@ -348,7 +348,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         internal event Action<NodeModel> ParentNodeRemoved;
 
         internal MLNodeClusterAutoCompletionResponse FullResults { private set; get; }
-        internal List<SingleAutocompleteResult> FullSingleResults { set; get; }
+        internal List<SingleResultItem> FullSingleResults { set; get; }
 
         /// <summary>
         /// Constructor
@@ -475,7 +475,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             return request;
         }
 
-        private IEnumerable<SingleAutocompleteResult> GetNodeAutocompleMLResults()
+        private IEnumerable<SingleResultItem> GetNodeAutocompleMLResults()
         {
             MLNodeAutoCompletionResponse MLresults = null;
 
@@ -491,7 +491,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 AutocompleteMLTitle = Resources.LoginNeededTitle;
                 AutocompleteMLMessage = Resources.LoginNeededMessage;
                 Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "UnabletoFetch");
-                return new List<SingleAutocompleteResult>();
+                return new List<SingleResultItem>();
             }
 
             // no results
@@ -501,10 +501,10 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 AutocompleteMLTitle = Resources.AutocompleteNoRecommendationsTitle;
                 AutocompleteMLMessage = Resources.AutocompleteNoRecommendationsMessage;
                 Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "NoRecommendation");
-                return new List<SingleAutocompleteResult>();
+                return new List<SingleResultItem>();
             }
             ServiceVersion = MLresults.Version;
-            var results = new List<SingleAutocompleteResult>();
+            var results = new List<SingleResultItem>();
 
             var zeroTouchSearchElements = Model.Entries.OfType<ZeroTouchSearchElement>().Where(x => x.IsVisibleInSearch);
             var nodeModelSearchElements = Model.Entries.OfType<NodeModelSearchElement>().Where(x => x.IsVisibleInSearch);
@@ -540,7 +540,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                             }
                         }
 
-                        var viewModelElement = new SingleAutocompleteResult(nodeSearchElement, result.Score);
+                        var viewModelElement = new SingleResultItem(nodeSearchElement, result.Score);
 
                         results.Add(viewModelElement);
                     }
@@ -566,7 +566,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                             PortToConnect = portIndex
                         };
 
-                        var viewModelElement = new SingleAutocompleteResult(nodeSearchElement, result.Score);
+                        var viewModelElement = new SingleResultItem(nodeSearchElement, result.Score);
                         results.Add(viewModelElement);
                     }
                 }
@@ -686,7 +686,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         /// <summary>
         /// Key function to populate node autocomplete results to display
         /// </summary>
-        internal IEnumerable<SingleAutocompleteResult> GetSingleAutocompleteResults()
+        internal IEnumerable<SingleResultItem> GetSingleAutocompleteResults()
         {
             if (PortViewModel == null) return null;
 
@@ -712,11 +712,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 // These default suggestions will be populated based on the port type.
                 if (!objectTypeMatchingElements.Any())
                 {
-                    return DefaultAutoCompleteCandidates().Select(x => new SingleAutocompleteResult(x));
+                    return DefaultAutoCompleteCandidates().Select(x => new SingleResultItem(x));
                 }
                 else
                 {
-                    return objectTypeMatchingElements.Select(x => new SingleAutocompleteResult(x));
+                    return objectTypeMatchingElements.Select(x => new SingleResultItem(x));
                 }
             }
         }
@@ -913,7 +913,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                         return;
                     }
 
-                    IEnumerable<NodeAutoCompleteClusterResult> comboboxResults;
+                    IEnumerable<DNADropdownViewModel> comboboxResults;
                     if (IsSingleAutocomplete)
                     {
                         //getting bitmaps from resources necessarily has to be done in the UI thread
@@ -928,7 +928,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                             SearchViewModelRequestBitmapSource(iconRequest);
                             dict[singleResult.CreationName] = iconRequest.Icon;
                         }
-                        comboboxResults = QualifiedResults.Select(x => new NodeAutoCompleteClusterResult
+                        comboboxResults = QualifiedResults.Select(x => new DNADropdownViewModel
                         {
                             Description = x.Description,
                             SmallIcon = dict[x.Topology.Nodes.First().Type.Id],
@@ -936,7 +936,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     }
                     else
                     {
-                        comboboxResults = QualifiedResults.Select(x => new NodeAutoCompleteClusterResult
+                        comboboxResults = QualifiedResults.Select(x => new DNADropdownViewModel
                         {
                             Description = x.Description
                             //default icon (cluster) is set in the xaml view
