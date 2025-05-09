@@ -147,5 +147,47 @@ namespace CoreNodeModels.Input
         {
             serializedItems = Items.ToList();
         }
+
+        protected override void SerializeCore(XmlElement nodeElement, SaveContext context)
+        {
+            base.SerializeCore(nodeElement, context);
+
+            if (context == SaveContext.Copy)
+            {
+                var doc = nodeElement.OwnerDocument;
+
+                foreach (var item in Items)
+                {
+                    var itemElement = doc.CreateElement("CustomItem");
+                    itemElement.SetAttribute("Name", item.Name);
+                    itemElement.SetAttribute("Value", item.Item?.ToString() ?? string.Empty);
+                    nodeElement.AppendChild(itemElement);
+                }
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement nodeElement, SaveContext context)
+        {
+            base.DeserializeCore(nodeElement, context);
+
+            if (context == SaveContext.Copy)
+            {
+                Items.Clear();
+                foreach (XmlNode child in nodeElement.ChildNodes)
+                {
+                    if (child is XmlElement itemElement && itemElement.Name == "CustomItem")
+                    {
+                        var name = itemElement.GetAttribute("Name");
+                        var value = itemElement.GetAttribute("Value");
+                        Items.Add(new DynamoDropDownItem(name, value));
+                    }
+                }
+                // Restore default selection to the first item
+                if (Items.Count > 0)
+                {
+                    SelectedIndex = 0;
+                }
+            }
+        }
     }
 }
