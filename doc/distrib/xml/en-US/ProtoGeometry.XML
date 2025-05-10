@@ -6225,6 +6225,17 @@
             mesh,meshes
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndexGroups(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.IndexGroup})">
+            <summary>
+            Create a mesh from a collection of Points and a collection of IndexGroups referencing the Point collection
+            </summary>
+            <param name="points"> List of points</param>
+            <param name="indexGroups"> Index groups for points </param>
+            <returns> Mesh </returns>
+            <search>
+            mesh,meshes
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ImportFile(System.String)">
             <summary>
             Imports a file, parsing it into a number of Meshes.
@@ -6256,6 +6267,14 @@
             Create a new Mesh from supplied vertices and indices. Vertices should 
             not overlap. Indices should be sets of three integers 
             indicating the three locations in the virtices array
+            of the three points of a triangle
+            </summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>
+            Create a new Mesh from supplied points and indices. Points should 
+            not overlap. Indices should be sets of three integers 
+            indicating the three locations in the points array
             of the three points of a triangle
             </summary>
         </member>
@@ -7299,6 +7318,16 @@
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.LessThanZero">
             <summary>
               Looks up a localized string similar to the {0} is less than zero.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_bypointsfaceindices_deprecated">
+            <summary>
+              Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use  Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[]) instead.
+            </summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_byverticesandindices_deprecated">
+            <summary>
+              Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Mesh.ByPointsIndices (Point[] points, Indices : int[]) instead.
             </summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.MeshPrecisionInfo">
