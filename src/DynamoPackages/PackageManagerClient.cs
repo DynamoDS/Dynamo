@@ -49,18 +49,24 @@ namespace Dynamo.PackageManager
             get { return this.client.BaseUrl; }
         }
 
+        internal readonly bool NoNetworkMode;
+
         #endregion
 
-        internal PackageManagerClient(IGregClient client, IPackageUploadBuilder builder, string packageUploadDirectory)
+        internal PackageManagerClient(IGregClient client, IPackageUploadBuilder builder, string packageUploadDirectory,
+            bool noNetworkMode = false)
         {
             this.packageUploadDirectory = packageUploadDirectory;
             this.uploadBuilder = builder;
             this.client = client;
             this.packageMaintainers = new Dictionary<string, bool>();
+            this.NoNetworkMode = noNetworkMode;
         }
 
         internal bool Upvote(string packageId)
         {
+            if (NoNetworkMode) return false;
+
             return FailFunc.TryExecute(() =>
             {
                 var pkgResponse = this.client.ExecuteAndDeserialize(new Upvote(packageId));
@@ -70,6 +76,8 @@ namespace Dynamo.PackageManager
 
         internal List<string> UserVotes()
         {
+            if (NoNetworkMode) return null;
+
             var votes = FailFunc.TryExecute(() =>
             {
                 var nv = new GetUserVotes();
@@ -82,6 +90,8 @@ namespace Dynamo.PackageManager
 
         internal List<JObject> CompatibilityMap()
         {
+            if (NoNetworkMode) return null;
+
             var compatibilityMap = FailFunc.TryExecute(() =>
             {
                 var cm = new GetCompatibilityMap();
@@ -99,6 +109,8 @@ namespace Dynamo.PackageManager
         {
             try
             {
+                if (NoNetworkMode) throw new Exception(DynamoPackages.Properties.Resources.DownloadPackageDisabled);
+
                 var response = this.client.Execute(new PackageDownload(packageId, version));
                 pathToPackage = PackageDownload.GetFileFromResponse(response);
                 return PackageManagerResult.Succeeded();
@@ -112,6 +124,8 @@ namespace Dynamo.PackageManager
 
         internal IEnumerable<PackageHeader> ListAll()
         {
+            if (NoNetworkMode) return new List<PackageHeader>();
+
             return FailFunc.TryExecute(() => {
                 var nv = HeaderCollectionDownload.ByEngine("dynamo");
                 var pkgResponse = this.client.ExecuteAndDeserializeWithContent<List<PackageHeader>>(nv);                
@@ -146,6 +160,8 @@ namespace Dynamo.PackageManager
         /// <returns></returns>
         internal PackageHeader GetPackageMaintainers(IPackageInfo packageInfo)
         {
+            if (NoNetworkMode) return null;
+
             var header = FailFunc.TryExecute(() =>
             {
                 var nv = new GetMaintainers("dynamo", packageInfo.Name);
@@ -162,6 +178,8 @@ namespace Dynamo.PackageManager
         /// <returns></returns>
         internal UserPackages GetUsersLatestPackages()
         {
+            if (NoNetworkMode) return null;
+
             var packages = FailFunc.TryExecute(() =>
             {
                 var nv = new GetMyPackages();
@@ -179,6 +197,8 @@ namespace Dynamo.PackageManager
         /// <returns>Package version metadata</returns>
         internal PackageVersion GetPackageVersionHeader(IPackageInfo packageInfo)
         {
+            if (NoNetworkMode) return null;
+
             var req = new HeaderVersionDownload("dynamo", packageInfo.Name, packageInfo.Version.ToString());
             var pkgResponse = this.client.ExecuteAndDeserializeWithContent<PackageVersion>(req);
             if (!pkgResponse.success)
@@ -196,6 +216,8 @@ namespace Dynamo.PackageManager
         /// <returns>Package version metadata</returns>
         internal virtual PackageVersion GetPackageVersionHeader(string id, string version)
         {
+            if (NoNetworkMode) return null;
+
             var req = new HeaderVersionDownload(id, version);
             var pkgResponse = this.client.ExecuteAndDeserializeWithContent<PackageVersion>(req);
             if (!pkgResponse.success)
@@ -211,6 +233,8 @@ namespace Dynamo.PackageManager
         /// </summary>
         internal virtual IEnumerable<string> GetKnownHosts()
         {
+            if (NoNetworkMode) return null;
+
             if (cachedHosts == null)
             {
                 cachedHosts = FailFunc.TryExecute(() =>
@@ -235,6 +259,8 @@ namespace Dynamo.PackageManager
 
         private bool ExecuteTermsOfUseCall(bool queryAcceptanceStatus)
         {
+            if (NoNetworkMode) return false;
+
             return FailFunc.TryExecute(() =>
             {
                 var request = new TermsOfUse(queryAcceptanceStatus);
@@ -258,6 +284,8 @@ namespace Dynamo.PackageManager
         /// <returns>A <see cref="PackageUploadHandle"/> Used to track the upload status.</returns>
         internal PackageUploadHandle PublishAsync(Package package, object files, IEnumerable<string> markdownFiles, bool isNewVersion, IEnumerable<string> roots, bool retainFolderStructure)
         {
+            if (NoNetworkMode) return null;
+
             var packageUploadHandle = new PackageUploadHandle(PackageUploadBuilder.NewRequestBody(package));
 
             Task.Factory.StartNew(() =>
@@ -321,6 +349,8 @@ namespace Dynamo.PackageManager
 
         internal PackageManagerResult Deprecate(string name)
         {
+            if (NoNetworkMode) return null;
+
             return FailFunc.TryExecute(() =>
             {
                 var pkgResponse = this.client.ExecuteAndDeserialize(new Deprecate(name, PackageEngineName));
@@ -330,6 +360,8 @@ namespace Dynamo.PackageManager
 
         internal PackageManagerResult Undeprecate(string name)
         {
+            if (NoNetworkMode) return null;
+
             return FailFunc.TryExecute(() =>
             {
                 var pkgResponse = this.client.ExecuteAndDeserialize(new Undeprecate(name, PackageEngineName));
@@ -339,14 +371,16 @@ namespace Dynamo.PackageManager
 
         internal bool DoesCurrentUserOwnPackage(Package package,string username) 
         {
+            if (NoNetworkMode) return false;
+
             bool value;
-            if (this.packageMaintainers.Count > 0 && this.packageMaintainers.TryGetValue(package.Name, out value)) {
+            if (packageMaintainers.Count > 0 && packageMaintainers.TryGetValue(package.Name, out value)) {
                 return value;
             }
             var pkg = new PackageInfo(package.Name, new Version(package.VersionName));
             var mnt = GetPackageMaintainers(pkg);
             value = (mnt != null) && (mnt.maintainers.Any(maintainer => maintainer.username.Equals(username)));
-            this.packageMaintainers[package.Name] = value;
+            packageMaintainers[package.Name] = value;
             return value;
         }
 
@@ -386,7 +420,7 @@ namespace Dynamo.PackageManager
             {
                 compatibilityMap = new Dictionary<string, Dictionary<string, string>>();
 
-                var compatibilityMapList = this.CompatibilityMap();
+                var compatibilityMapList = CompatibilityMap();
                 PackageManagerClient.compatibilityMapList = compatibilityMapList;    // Loads the full CompatibilityMap as a side-effect
 
                 foreach (var host in compatibilityMapList)
