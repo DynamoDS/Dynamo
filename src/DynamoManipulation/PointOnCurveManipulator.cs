@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
-using Autodesk.DesignScript.Geometry;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.ZeroTouch;
+using Autodesk.GeometryPrimitives.Dynamo.Math;
+using Autodesk.GeometryPrimitives.Dynamo.Geometry;
+using Vector = Autodesk.GeometryPrimitives.Dynamo.Math.Vector3d;
 
 namespace Dynamo.Manipulation
 {
@@ -18,7 +20,7 @@ namespace Dynamo.Manipulation
     {
         private Point pointOnCurve;
 
-        private Curve curve;
+        private Autodesk.DesignScript.Geometry.Curve curve;
 
         private Vector tangent;
 
@@ -33,10 +35,7 @@ namespace Dynamo.Manipulation
 
         #region abstract method implementation
 
-        internal override Point Origin
-        {
-            get { return pointOnCurve; }
-        }
+        internal override Point Origin => pointOnCurve;
 
         /// <summary>
         /// Returns all the gizmos supported by this manipulator
@@ -69,8 +68,7 @@ namespace Dynamo.Manipulation
         protected override void AssignInputNodes()
         {
             curve = null;
-            NodeModel curveNode;
-            CanManipulateInputNode(0, out curveNode);
+            CanManipulateInputNode(0, out var curveNode);
             if (null == curveNode)
                 return; //Not enough input to manipulate
 
@@ -79,14 +77,44 @@ namespace Dynamo.Manipulation
 
             try
             {
-                curve = GetFirstValueFromNode(curveNode) as Curve;
+                curve = GetFirstValueFromNode(curveNode) as Autodesk.DesignScript.Geometry.Curve;
                 if (null == curve)
                     return;
             }
-            catch (Exception) 
-            { 
-                return; 
+            catch
+            {
             }
+        }
+
+        // TODO: Implement this method 
+        private static Point PointAtParameter(Autodesk.DesignScript.Geometry.Curve curve, double param)
+        {
+            var pt = curve.PointAtParameter(param);
+            return new Point(pt.X, pt.Y, pt.Z);
+        }
+
+        // TODO: Implement this method
+        private static double ParameterAtPoint(Autodesk.DesignScript.Geometry.Curve curve, Point pt)
+        {
+            var point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(
+                pt.Position.X, pt.Position.Y, pt.Position.Z);
+            return curve.ParameterAtPoint(point);
+        }
+
+        // TODO: Implement this method
+        private static Vector TangentAtParameter(Autodesk.DesignScript.Geometry.Curve curve, double param)
+        {
+            var tangent = curve.TangentAtParameter(param);
+            return new Vector(tangent.X, tangent.Y, tangent.Z);
+        }
+
+        // TODO: Implement this method
+        private static Point ClosestPointTo(Autodesk.DesignScript.Geometry.Curve curve, Point3d pt)
+        {
+            var point = Autodesk.DesignScript.Geometry.Point.ByCoordinates(
+                pt.X, pt.Y, pt.Z);
+            var closestPt = curve.ClosestPointTo(point);
+            return new Point(closestPt.X, closestPt.Y, closestPt.Z);
         }
 
         protected override bool UpdatePosition()
@@ -94,19 +122,15 @@ namespace Dynamo.Manipulation
             if (curve == null) //Curve is not initialized, can't be manipulated now.
                 return false;
 
-            if (pointOnCurve == null)
-                pointOnCurve = curve.StartPoint;
+            pointOnCurve ??= PointAtParameter(curve, 0);
 
             //Node output could be a collection, consider the first item as origin.
-            Point pt = GetFirstValueFromNode(Node) as Point;
+            var pt = GetFirstValueFromNode(Node) as Autodesk.DesignScript.Geometry.Point;
             if (pt == null) return false; //The node output is not Point, could be a function object.
 
-            var param = curve.ParameterAtPoint(pt);
-            tangent = curve.TangentAtParameter(param);
-            
-            //Don't cache pt directly here, need to create a copy, because 
-            //pt may be GC'ed by VM.
-            pointOnCurve = Point.ByCoordinates(pt.X, pt.Y, pt.Z);
+            pointOnCurve = new Point(pt.X, pt.Y, pt.Z);
+            var param = ParameterAtPoint(curve, pointOnCurve);
+            tangent = TangentAtParameter(curve, param);
 
             return tangent != null;
         }
@@ -127,29 +151,23 @@ namespace Dynamo.Manipulation
         protected override void OnGizmoMoved(IGizmo gizmoInAction, Vector offset)
         {
             double param;
-            using (var offsetPosition = pointOnCurve.Add(offset))
-            {
-                using (var closestPosition = curve.ClosestPointTo(offsetPosition))
-                {
-                    param = curve.ParameterAtPoint(closestPosition);
-                }
-            }
+            var offsetPosition = pointOnCurve.Position + offset;
+            var closestPosition = ClosestPointTo(curve, offsetPosition);
+            param = ParameterAtPoint(curve, closestPosition);
             param = Math.Round(param, ROUND_UP_PARAM);
 
-            tangent = curve.TangentAtParameter(param);
-            pointOnCurve = curve.PointAtParameter(param);
+            tangent = TangentAtParameter(curve, param);
+            pointOnCurve = PointAtParameter(curve, param);
         }
 
         protected override List<(NodeModel inputNode, double amount)> InputNodesToUpdateAfterMove(Vector offset)
         {
-            double param = curve.ParameterAtPoint(pointOnCurve);
+            double param = ParameterAtPoint(curve, pointOnCurve);
             return new List<(NodeModel, double)>() { (inputNode, param) };
         }
 
         protected override void Dispose(bool disposing)
         {
-            if(tangent != null) tangent.Dispose();
-
             base.Dispose(disposing);
         }
 
