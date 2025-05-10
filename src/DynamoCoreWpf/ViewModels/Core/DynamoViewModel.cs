@@ -518,9 +518,9 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private ObservableCollection<string> recentFiles =
-            new ObservableCollection<string>();
-        public ObservableCollection<string> RecentFiles
+        private SmartObservableCollection<string> recentFiles =
+            new SmartObservableCollection<string>();
+        public SmartObservableCollection<string> RecentFiles
         {
             get { return recentFiles; }
             set
@@ -1128,7 +1128,7 @@ namespace Dynamo.ViewModels
 
         private void InitializeRecentFiles()
         {
-            this.RecentFiles = new ObservableCollection<string>(model.PreferenceSettings.RecentFiles);
+            this.RecentFiles = new SmartObservableCollection<string>(model.PreferenceSettings.RecentFiles);
             this.RecentFiles.CollectionChanged += (sender, args) =>
             {
                 model.PreferenceSettings.RecentFiles = this.RecentFiles.ToList();
@@ -1830,17 +1830,35 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged(nameof(LinterIssuesCount));
         }
 
+        /// <summary>
+        /// Adds the path to the list of recent files.
+        /// We don't do anyything if the file is already added and is at the first place,
+        /// we move the file to the start of the list if it is already present,
+        /// or add it to the start of the list if it is not present.
+        /// Every other event, except Move will refresh all the recent files.
+        /// </summary>
+        /// <param name="path"></param>
         internal void AddToRecentFiles(string path)
         {
             if (path == null) return;
 
-            if (RecentFiles.Contains(path))
+            var currIdx = RecentFiles.IndexOf(path);
+            if (currIdx == 0) return;
+            else if (currIdx > 0)
             {
-                RecentFiles.Remove(path);
+                RecentFiles.Move(currIdx, 0);
+                return;
             }
 
             RecentFiles.Insert(0, path);
+            UpdateRecentFiles();
+        }
 
+        /// <summary>
+        /// Update recent files list and limits the number of recent files to the maximum number of recent files as set in the preferences.
+        /// </summary>
+        internal void UpdateRecentFiles()
+        {
             int maxNumRecentFiles = Model.PreferenceSettings.MaxNumRecentFiles;
             if (RecentFiles.Count > maxNumRecentFiles)
             {
