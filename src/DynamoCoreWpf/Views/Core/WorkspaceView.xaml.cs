@@ -1292,6 +1292,7 @@ namespace Dynamo.Views
         public void Dispose()
         {
             RemoveViewModelsubscriptions(ViewModel);
+            DataContextChanged -= OnWorkspaceViewDataContextChanged;
         }
     }
 }
