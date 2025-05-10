@@ -60,6 +60,8 @@ namespace DSCore.CurveMapper
                 double minX = Math.Max(0, Math.Min(startX, endX));
                 double maxX = Math.Min(CanvasSize, Math.Max(startX, endX));
 
+                IsYOutOfRange = minX > 0 || maxX < CanvasSize;
+
                 // First point
                 double firstY = SolveParabolaForY(minX);
 
