@@ -332,6 +332,7 @@ namespace Dynamo.ViewModels
                     foreach (ConnectorViewModel a in activeConnectors)
                     {
                         this.WorkspaceElements.Remove(a);
+                        a.Dispose();
                     }
                 }
                 this.activeConnectors = null;
