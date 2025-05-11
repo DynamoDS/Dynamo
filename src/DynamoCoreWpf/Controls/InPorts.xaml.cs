@@ -1,3 +1,4 @@
+using Dynamo.Microsoft.Xaml.Behaviors;
 using Dynamo.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -48,8 +49,6 @@ namespace Dynamo.UI.Controls
             MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "GapBetweenPortNameAndUseLevelSpinner", Width = new GridLength(6) });
             MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "UseLevelSpinnerColumn", Width = new GridLength(0) });
             MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "ChevronColumn", Width = new GridLength(0) });
-
-            //TODO Set up Grid Interactivity Triggers
 
             var PortSnapping = new System.Windows.Shapes.Rectangle()
             {
@@ -133,7 +132,7 @@ namespace Dynamo.UI.Controls
 
             var mainBorderHighlightOverlay = new Border
             {
-                Name = "MainBorderHighlightOverlay",
+                Name = "mainBorderHighlightOverlay",
                 Height = 29,
                 BorderBrush = Brushes.Transparent,
                 CornerRadius = new CornerRadius(0, 11, 11, 0),
@@ -141,7 +140,6 @@ namespace Dynamo.UI.Controls
                 Opacity = 0.2,
                 SnapsToDevicePixels = true,
                 Background = Brushes.Transparent, // Initial background
-                //ToolTip = CreateToolTip()
             };
 
             Grid.SetColumn(mainBorderHighlightOverlay, 1);
@@ -150,6 +148,24 @@ namespace Dynamo.UI.Controls
             // Event handlers for mouse enter and leave
             mainBorderHighlightOverlay.MouseEnter += (s, e) => mainBorderHighlightOverlay.Background = Brushes.White;
             mainBorderHighlightOverlay.MouseLeave += (s, e) => mainBorderHighlightOverlay.Background = Brushes.Transparent;
+
+            DynamoToolTip dynamoToolTip = new DynamoToolTip
+            {
+                AttachmentSide = DynamoToolTip.Side.Top,
+                OverridesDefaultStyle = true,
+                HasDropShadow = false,
+                Style = Dynamo.Controls.NodeView.DynamoToolTipTopStyle
+            };
+
+            TextBlock textBlock = new TextBlock
+            {
+                MaxWidth = 320,
+                TextWrapping = TextWrapping.Wrap
+            };
+
+            textBlock.SetBinding(TextBlock.TextProperty, new Binding("ToolTipContent"));
+            dynamoToolTip.Content = textBlock;
+            mainBorderHighlightOverlay.ToolTip = dynamoToolTip;
 
             // Create the Border
             Border portBorderBrush = new Border
@@ -172,9 +188,8 @@ namespace Dynamo.UI.Controls
             };
             portBorderBrush.SetBinding(Border.BorderBrushProperty, borderBrushBinding);
 
-
-            //TODO WIP 
-
+            //TODO NodeAutoCompleteHover
+            //TODO PortBorderHighlight
 
             MainGrid.Children.Add(PortSnapping);
             MainGrid.Children.Add(PortBackgroundBorder);
@@ -195,7 +210,32 @@ namespace Dynamo.UI.Controls
 
             viewModel = e.NewValue as InPortViewModel;
 
-            if(viewModel.UseLevelVisibility == Visibility.Visible)
+            var mouseLeftButtonDownTrigger = new Dynamo.UI.Views.HandlingEventTrigger()
+            {
+                EventName = "MouseLeftButtonDown",
+            };
+            var mouseLeftButtonDownAction = new InvokeCommandAction()
+            {
+                Command = viewModel.ConnectCommand,
+            };
+
+            mouseLeftButtonDownTrigger.Actions.Add(mouseLeftButtonDownAction);
+            Dynamo.Microsoft.Xaml.Behaviors.Interaction.GetTriggers(MainGrid).Add(mouseLeftButtonDownTrigger);
+
+            var mouseRightButtonDownTrigger = new Dynamo.UI.Views.HandlingEventTrigger()
+            {
+                EventName = "MouseRightButtonDown",
+            };
+            var mouseRightButtonDownAction = new InvokeCommandAction()
+            {
+                Command = viewModel.NodePortContextMenuCommand,
+                CommandParameter = viewModel
+            };
+
+            mouseRightButtonDownTrigger.Actions.Add(mouseRightButtonDownAction);
+            Dynamo.Microsoft.Xaml.Behaviors.Interaction.GetTriggers(MainGrid).Add(mouseRightButtonDownTrigger);
+
+            if (viewModel.UseLevelVisibility == Visibility.Visible)
             {
                 var chevron = new TextBlock()
                 {

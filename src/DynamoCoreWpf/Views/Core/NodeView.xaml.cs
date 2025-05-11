@@ -163,6 +163,7 @@ namespace Dynamo.Controls
         private static BoolToVisibilityCollapsedConverter boolToVisibilityCollapsedConverter = new BoolToVisibilityCollapsedConverter();
         private static BooleanToVisibilityConverter booleanToVisibilityConverter = new BooleanToVisibilityConverter();
         private static FontFamily artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
+        internal static readonly Style DynamoToolTipTopStyle = GetDynamoToolTipTopStyle();
 
         public NodeView()
         {
@@ -246,7 +247,7 @@ namespace Dynamo.Controls
                 AttachmentSide = DynamoToolTip.Side.Top,
                 OverridesDefaultStyle = true,
                 HasDropShadow = false,
-                Style = GetDynamoToolTipTopStyle()
+                Style = DynamoToolTipTopStyle
             };
 
             // Create outer StackPanel
