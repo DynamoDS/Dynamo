@@ -1,3 +1,4 @@
+using Dynamo.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,14 +21,19 @@ namespace Dynamo.UI.Controls
     /// </summary>
     public partial class InPorts : UserControl
     {
+        private InPortViewModel viewModel = null;
+        private Grid MainGrid = null;
+
+        private static SolidColorBrush primaryCharcoal200Brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCDCDC"));
+        private static SolidColorBrush chevronHighlightOverlayBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E5E2DE"));
+        private static BooleanToVisibilityConverter booleanToVisibilityConverter = new BooleanToVisibilityConverter();
+        private static FontFamily artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
+
         public InPorts()
         {
             InitializeComponent();
 
-            var artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
-            var primaryCharcoal200Brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCDCDC"));
-
-            var MainGrid = new Grid()
+            this.MainGrid = new Grid()
             {
                 Name = "MainGrid",
                 Height = 34,
@@ -40,8 +46,8 @@ namespace Dynamo.UI.Controls
             MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "GapBetweenValueMarkerAndPortName", Width = new GridLength(6) });
             MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "PortNameColumn", Width = new GridLength(1, GridUnitType.Star) });
             MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "GapBetweenPortNameAndUseLevelSpinner", Width = new GridLength(6) });
-            MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "UseLevelSpinnerColumn", Width = GridLength.Auto });
-            MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "ChevronColumn", Width = GridLength.Auto });
+            MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "UseLevelSpinnerColumn", Width = new GridLength(0) });
+            MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "ChevronColumn", Width = new GridLength(0) });
 
             //TODO Set up Grid Interactivity Triggers
 
@@ -57,7 +63,10 @@ namespace Dynamo.UI.Controls
             Canvas.SetZIndex(PortSnapping, 7);
 
             PortSnapping.SetBinding(Rectangle.IsHitTestVisibleProperty, new Binding("IsHitTestVisible"));
-            //TODO Set up Rectangle Interactivity Triggers
+
+            //TODO deregister event handler?
+            PortSnapping.MouseEnter += (s, e) => viewModel.MouseEnterCommand.Execute(DataContext);
+            PortSnapping.MouseLeave += (s, e) => viewModel.MouseLeaveCommand.Execute(DataContext);
 
             var PortBackgroundBorder = new Border()
             {
@@ -74,10 +83,11 @@ namespace Dynamo.UI.Controls
             Grid.SetColumn(PortBackgroundBorder, 1);
             Grid.SetColumnSpan(PortBackgroundBorder, 6);
 
-            var PortValueMarker = new System.Windows.Shapes.Rectangle()
+            var PortValueMarker = new Rectangle()
             {
                 Name = "PortValueMarker",
                 Height = 29,
+                Width = 5,
                 VerticalAlignment = VerticalAlignment.Center,
                 IsHitTestVisible = false,
                 SnapsToDevicePixels = true,
@@ -87,6 +97,7 @@ namespace Dynamo.UI.Controls
 
             Grid.SetColumn(PortValueMarker, 1);
 
+            //TODO Lazy Load
             var PortDefaultValueMarker = new Border()
             {
                 Name = "PortDefaultValueMarker",
@@ -120,33 +131,137 @@ namespace Dynamo.UI.Controls
 
             Grid.SetColumn(PortNameTextBox, 3);
 
-            var Chevron = new TextBlock()
+            var mainBorderHighlightOverlay = new Border
             {
-                Name = "Chevron",
-                Width = 20,
-                Padding = new Thickness(0, 1, 1, 0),
-                VerticalAlignment = VerticalAlignment.Center,
-                FontSize = 16,
-                Foreground = primaryCharcoal200Brush,
-                IsHitTestVisible = false,
-                Text = "&gt;",
-                TextAlignment = TextAlignment.Center
+                Name = "MainBorderHighlightOverlay",
+                Height = 29,
+                BorderBrush = Brushes.Transparent,
+                CornerRadius = new CornerRadius(0, 11, 11, 0),
+                IsHitTestVisible = true,
+                Opacity = 0.2,
+                SnapsToDevicePixels = true,
+                Background = Brushes.Transparent, // Initial background
+                //ToolTip = CreateToolTip()
             };
 
-            Chevron.SetBinding(TextBlock.VisibilityProperty, new Binding("UseLevelVisibility"));
+            Grid.SetColumn(mainBorderHighlightOverlay, 1);
+            Grid.SetColumnSpan(mainBorderHighlightOverlay, 6);
 
-            //TODO WIP
+            // Event handlers for mouse enter and leave
+            mainBorderHighlightOverlay.MouseEnter += (s, e) => mainBorderHighlightOverlay.Background = Brushes.White;
+            mainBorderHighlightOverlay.MouseLeave += (s, e) => mainBorderHighlightOverlay.Background = Brushes.Transparent;
 
-            Grid.SetColumn(Chevron, 6);
+            // Create the Border
+            Border portBorderBrush = new Border
+            {
+                Name = "PortBorderBrush",
+                Height = 29,
+                BorderThickness = new Thickness(0, 1, 1, 1),
+                CornerRadius = new CornerRadius(0, 11, 11, 0),
+                IsHitTestVisible = true,
+                SnapsToDevicePixels = true
+            };
+
+            Grid.SetColumn(portBorderBrush, 1);
+            Grid.SetColumnSpan(portBorderBrush, 6);
+
+            // Bind BorderBrush property
+            Binding borderBrushBinding = new Binding("PortBorderBrushColor")
+            {
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            };
+            portBorderBrush.SetBinding(Border.BorderBrushProperty, borderBrushBinding);
+
+
+            //TODO WIP 
+
 
             MainGrid.Children.Add(PortSnapping);
             MainGrid.Children.Add(PortBackgroundBorder);
             MainGrid.Children.Add(PortValueMarker);
             MainGrid.Children.Add(PortDefaultValueMarker);
             MainGrid.Children.Add(PortNameTextBox);
+            MainGrid.Children.Add(mainBorderHighlightOverlay);
+            MainGrid.Children.Add(portBorderBrush);
 
             this.Content = MainGrid;
 
+            DataContextChanged += OnDataContextChanged;
+        }
+
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            if (null != viewModel) return;
+
+            viewModel = e.NewValue as InPortViewModel;
+
+            if(viewModel.UseLevelVisibility == Visibility.Visible)
+            {
+                var chevron = new TextBlock()
+                {
+                    Name = "Chevron",
+                    Width = 20,
+                    Padding = new Thickness(0, 1, 1, 0),
+                    VerticalAlignment = VerticalAlignment.Center,
+                    FontSize = 16,
+                    Foreground = primaryCharcoal200Brush,
+                    IsHitTestVisible = false,
+                    Text = ">",
+                    TextAlignment = TextAlignment.Center
+                };
+
+                Grid.SetColumn(chevron, 6);
+
+                var useLevelControl = new UseLevelSpinner()
+                {
+                    Name = "useLevelControl",
+                    Width = 50,
+                    Height = 25,
+                    VerticalAlignment = VerticalAlignment.Center,
+                    Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4A4A4A")), //DarkGrey
+                };
+
+                DockPanel.SetDock(useLevelControl, Dock.Right);
+                Grid.SetColumn(useLevelControl, 5);
+
+                useLevelControl.SetBinding(UseLevelSpinner.KeepListStructureProperty, new Binding("ShouldKeepListStructure"));
+                useLevelControl.SetBinding(UseLevelSpinner.LevelProperty, new Binding("Level") { Mode = BindingMode.TwoWay });
+                useLevelControl.SetBinding(Border.VisibilityProperty, new Binding("UseLevels")
+                {
+                    Converter = booleanToVisibilityConverter
+                });
+
+                // Create the Border
+                Border chevronHighlightOverlay = new Border
+                {
+                    Name = "ChevronHighlightOverlay",
+                    Width = 20,
+                    Height = 27,
+                    CornerRadius = new CornerRadius(0, 11, 11, 0),
+                    IsHitTestVisible = true,
+                    Background = chevronHighlightOverlayBackground,
+                    Opacity = 0.0 // Initial opacity
+                };
+
+                Grid.SetColumn(chevronHighlightOverlay, 6);
+
+                // InputBindings for MouseBinding
+                MouseBinding mouseBinding = new MouseBinding
+                {
+                    Command = viewModel.NodePortContextMenuCommand,
+                    MouseAction = MouseAction.LeftClick
+                };
+                chevronHighlightOverlay.InputBindings.Add(mouseBinding); 
+
+                chevronHighlightOverlay.MouseEnter += (s, e) => chevronHighlightOverlay.Opacity = 0.3;
+                chevronHighlightOverlay.MouseLeave += (s, e) => chevronHighlightOverlay.Opacity = 0.0;
+
+                MainGrid.ColumnDefinitions[6].Width = new GridLength(20);
+                MainGrid.Children.Add(chevron);
+                MainGrid.Children.Add(chevronHighlightOverlay);
+                MainGrid.ColumnDefinitions[5].Width = new GridLength(50);
+                MainGrid.Children.Add(useLevelControl);
+            }
         }
     }
 }
