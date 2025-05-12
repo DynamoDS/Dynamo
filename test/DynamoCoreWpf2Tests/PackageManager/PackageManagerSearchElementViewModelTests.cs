@@ -49,7 +49,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             string formItFilterName = "FormIt";
 
             var mockGreg = new Mock<IGregClient>();
-            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty, false);
             var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true }; ;
 
             var ext = Model.GetPackageManagerExtension();
@@ -203,7 +203,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             List<string> intersectionPackagesName = new List<string> { "DynamoTestPackage1", "DynamoTestPackage2" };
 
             var mockGreg = new Mock<IGregClient>();
-            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty, false);
             var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) {CallBase=true };
 
             var packageManagerSearchViewModel = new PackageManagerSearchViewModel(pmCVM.Object);
@@ -306,7 +306,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             List<string> deprecatedPackagesName = new List<string> { "DynamoTestPackage1", "DynamoTestPackage2" };
 
             var mockGreg = new Mock<IGregClient>();
-            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty, false);
             var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true };
 
             var packageManagerSearchViewModel = new PackageManagerSearchViewModel(pmCVM.Object);
@@ -454,7 +454,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             List<string> noDependencyPackagesName = new List<string> { "DynamoIronPython2.7", "dynamo", "mise en barre", "Test-PackageDependencyFilter" };
 
             var mockGreg = new Mock<IGregClient>();
-            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty, false);
             var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true };
 
             var packageManagerSearchViewModel = new PackageManagerSearchViewModel(pmCVM.Object);
@@ -579,7 +579,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             List<string> unknownCompatibilityPackagesName = new List<string> { "DynamoXCompatPackage" };
 
             var mockGreg = new Mock<IGregClient>();
-            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty, false);
             var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true };
 
             var packageManagerSearchViewModel = new PackageManagerSearchViewModel(pmCVM.Object);
@@ -696,7 +696,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             List<PackageHeader> packageHeaders = new List<PackageHeader>();
             var mockGreg = new Mock<IGregClient>();
 
-            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty, false);
             var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true };
             List<PackageManagerSearchElement> cachedPackages = new List<PackageManagerSearchElement>();
             foreach (var packageName in packagesNameDifferentLanguages)
@@ -762,7 +762,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             List<int> packagesVotes = new List<int> { 50, 60, 90, 40 };
 
             var mockGreg = new Mock<IGregClient>();
-            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var clientmock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty, false);
             var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true };   
             var packageManagerSearchVM = new PackageManagerSearchViewModel(pmCVM.Object);
             packageManagerSearchVM.RegisterTransientHandlers();
@@ -859,7 +859,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
             List<PackageHeader> packageHeaders = new List<PackageHeader>();
             var mockGreg = new Mock<IGregClient>();
 
-            var clientMock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var clientMock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty, false);
             var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientMock.Object) { CallBase = true };
             List<PackageManagerSearchElement> cachedPackages = new List<PackageManagerSearchElement>();
             foreach (var packageName in packagesListNames)
@@ -1225,7 +1225,7 @@ namespace Dynamo.PackageManager.Wpf.Tests
         {
             var mockGreg = new Mock<IGregClient>();
 
-            var clientMock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var clientMock = new Mock<PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty, false);
             var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientMock.Object) { CallBase = true };
             var pmSVM = new PackageManagerSearchViewModel(pmCVM.Object);
             pmSVM.RegisterTransientHandlers();
