@@ -6,6 +6,7 @@ using Dynamo.UI.Controls;
 using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
+using Dynamo.Views;
 using Dynamo.Wpf.Utilities;
 using System;
 using System.Collections.Generic;
@@ -203,8 +204,34 @@ namespace Dynamo.Controls
             }
         }
 
+        private Grid _presentationGrid = null;
+        public Grid PresentationGrid
+        {
+            get
+            {
+                if(_presentationGrid == null)
+                {
+                    _presentationGrid = new Grid()
+                    {
+                        Name = "PresentationGrid",
+                        Margin = new Thickness(6, 6, 6, -3),
+                        HorizontalAlignment = HorizontalAlignment.Left,
+                        VerticalAlignment = VerticalAlignment.Bottom,
+                        Visibility = Visibility.Collapsed
+                    };
+
+                    Grid.SetRow(_presentationGrid, 2);
+                    Grid.SetColumn(_presentationGrid, 1);
+                    Canvas.SetZIndex(_presentationGrid, 3);
+
+                    grid.Children.Add(_presentationGrid);
+                }
+
+                return _presentationGrid;
+            }
+        }
+
         public ContextMenu MainContextMenu = new ContextMenu();
-        public Grid PresentationGrid;
 
         private static ImageBrush defaultIcon = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/default-node-icon.png")))
         {
@@ -221,9 +248,32 @@ namespace Dynamo.Controls
         private static SolidColorBrush nodeContextMenuSeparatorColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AFAFAF"));
         private static InverseBooleanToVisibilityCollapsedConverter inverseBooleanToVisibilityCollapsedConverter = new InverseBooleanToVisibilityCollapsedConverter();
         private static BoolToVisibilityCollapsedConverter boolToVisibilityCollapsedConverter = new BoolToVisibilityCollapsedConverter();
-        private static BooleanToVisibilityConverter booleanToVisibilityConverter = new BooleanToVisibilityConverter();
+        private static BoolToVisibilityConverter booleanToVisibilityConverter = new BoolToVisibilityConverter();
         private static FontFamily artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
         internal static readonly Style DynamoToolTipTopStyle = GetDynamoToolTipTopStyle();
+
+        private static readonly BitmapImage FrozenImageSource = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png"));
+        private static readonly BitmapImage TransientImageSource = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/NodeStates/transient-64px.png"));
+        private static readonly BitmapImage HiddenEyeImageSource = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/hidden.png"));
+
+        //Todo reset this to animimation vs simple when NodeCountOptimizationEnabled changes.
+        private static Style ZoomFadeStyle = GetZoomFadeStyle();
+
+        static NodeView()
+        {
+            primaryCharcoal100.Freeze();
+            primaryCharcoal200.Freeze();
+            blue300.Freeze();
+            nodeDismissedWarningsGlyphBackground.Freeze();
+            nodeDismissedWarningsGlyphForeground.Freeze();
+            midGrey.Freeze();
+            nodeContextMenuBackgroundHighlight.Freeze();
+            nodeContextMenuSeparatorColor.Freeze();
+            FrozenImageSource.Freeze();
+            TransientImageSource.Freeze();
+            HiddenEyeImageSource.Freeze();
+            defaultIcon.Freeze();
+        }
 
         public NodeView()
         {
@@ -233,12 +283,10 @@ namespace Dynamo.Controls
             {
                 Name = "grid",
                 HorizontalAlignment = HorizontalAlignment.Left,
-                //Height = 189,
-                //Width = 234.5
             };
 
             grid.SetBinding(Grid.VisibilityProperty, new Binding("IsCollapsed") { Converter = inverseBooleanToVisibilityCollapsedConverter });
-            grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(8) });  // Todo set this to 0 now and then set it taller if custom node
+            grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(8) });
             grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(46) });
             grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
             grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(24) });
@@ -248,7 +296,7 @@ namespace Dynamo.Controls
             grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star), MinWidth = 10 });
             grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
 
-            grid.ContextMenu = GetNodeContextMenu();
+            grid.ContextMenu = new ContextMenu();
 
             var nodeBackground = new Rectangle()
             {
@@ -265,13 +313,14 @@ namespace Dynamo.Controls
             {
                 Name = "nameBackground",
                 CornerRadius = new CornerRadius(8, 8, 0, 0),
-                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#535353")),
+                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#535353")), //DarkMidGreyBrush
                 IsHitTestVisible = true,
             };
 
             Grid.SetRow(nameBackground, 1);
             Grid.SetColumnSpan(nameBackground, 3);
             Canvas.SetZIndex(nameBackground, 2);
+
             //TODO unhook event handler
             nameBackground.MouseDown += NameBlock_OnMouseDown;
             ToolTipService.SetShowDuration(nameBackground, 60000);
@@ -324,7 +373,6 @@ namespace Dynamo.Controls
             runPackageName.SetBinding(Run.TextProperty, new Binding("PackageName") { Mode = BindingMode.OneWay });
             textBlock2.Inlines.Add(runPackageName);
 
-
             TextBlock textBlock3 = new TextBlock
             {
                 Text = "\x0a"
@@ -356,7 +404,7 @@ namespace Dynamo.Controls
             {
                 Name = "nodeHeaderContent",
                 VerticalAlignment = VerticalAlignment.Top,
-                Margin = new System.Windows.Thickness(6),
+                Margin = new Thickness(6),
             };
 
             Grid.SetRow(nodeHeaderContent, 1);
@@ -382,7 +430,8 @@ namespace Dynamo.Controls
                 Foreground = primaryCharcoal200,
                 IsHitTestVisible = false,
                 TextAlignment = TextAlignment.Center,
-                FontFamily = artifactElementReg
+                FontFamily = artifactElementReg,
+                Style = ZoomFadeStyle
             };
 
             NameBlock.SetBinding(TextBlock.TextProperty, new Binding("Name")
@@ -395,7 +444,7 @@ namespace Dynamo.Controls
             this.EditableNameBox = new TextBox()
             {
                 Name = "EditableNameBox",
-                Margin = new System.Windows.Thickness(6, 3, 6, 0),
+                Margin = new Thickness(6, 3, 6, 0),
                 VerticalAlignment = VerticalAlignment.Center,
                 FontSize = 16,
                 FontWeight = FontWeights.Medium,
@@ -403,7 +452,7 @@ namespace Dynamo.Controls
                 SelectionBrush = blue300,
                 SelectionOpacity = 0.2,
                 IsHitTestVisible = true,
-                BorderThickness = new System.Windows.Thickness(0),
+                BorderThickness = new Thickness(0),
                 TextAlignment = TextAlignment.Center,
                 Visibility = Visibility.Collapsed,
                 FontFamily = artifactElementReg
@@ -419,7 +468,65 @@ namespace Dynamo.Controls
 
             nodeHeaderContent.Children.Add(EditableNameBox);
 
-            //TODO Add Grid / Ellipse / DynamoToolTip
+            var renameIndicator = new Grid()
+            {
+                HorizontalAlignment = HorizontalAlignment.Right,
+                VerticalAlignment = VerticalAlignment.Center,
+                Background = Brushes.Transparent,
+            };
+
+            SetValue(Panel.ZIndexProperty, 5);
+            renameIndicator.SetValue(DockPanel.DockProperty, Dock.Right);
+
+            // Create and configure the Ellipse
+            Ellipse nodeRenamedBlueDot = new Ellipse
+            {
+                Name = "nodeRenamedBlueDot",
+                Width = 8,
+                Height = 8,
+                Margin = new Thickness(0, 2, 6, 0),
+                Fill = blue300,
+                Visibility = Visibility.Hidden // Default visibility; will be updated by binding
+            };
+
+            // Bind the Ellipse's Visibility to the IsRenamed property using a BooleanToVisibilityConverter
+            nodeRenamedBlueDot.SetBinding(UIElement.VisibilityProperty, new Binding("IsRenamed")
+            {
+                Converter = booleanToVisibilityConverter
+            });
+
+            // Add the Ellipse to the Grid's children
+            renameIndicator.Children.Add(nodeRenamedBlueDot);
+            nodeHeaderContent.Children.Add(renameIndicator);
+
+            // Create and configure the ToolTip
+            DynamoToolTip dynamoRenameToolTip = new DynamoToolTip
+            {
+                AttachmentSide = DynamoToolTip.Side.Top,
+                OverridesDefaultStyle = true,
+                HasDropShadow = false,
+                Style = DynamoToolTipTopStyle
+            };
+
+            TextBlock toolTipTextBlock = new TextBlock
+            {
+                Padding = new Thickness(10),
+                FontFamily = artifactElementReg,
+                FontSize = 14,
+                FontWeight = FontWeights.Medium,
+                TextAlignment = TextAlignment.Center,
+                TextWrapping = TextWrapping.Wrap,
+            };
+
+            toolTipTextBlock.SetBinding(TextBlock.TextProperty, new Binding("OriginalName")
+            {
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
+                StringFormat = Wpf.Properties.Resources.NodeTooltipRenamed
+            });
+
+            dynamoRenameToolTip.Content = toolTipTextBlock;
+            renameIndicator.ToolTip = dynamoToolTip;
+
 
             var inPortControl = new ItemsControl()
             {
@@ -429,6 +536,7 @@ namespace Dynamo.Controls
                 HorizontalContentAlignment = HorizontalAlignment.Stretch
             };
 
+            //Todo add style or set it at OnDataContextSet
             inPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("InPorts"));
             Grid.SetRow(inPortControl, 2);
             Grid.SetColumn(inPortControl, 0);
@@ -442,6 +550,7 @@ namespace Dynamo.Controls
                 HorizontalContentAlignment = HorizontalAlignment.Stretch,
             };
 
+            //Todo add style or set it at OnDataContextSet
             outPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("OutPorts"));
             Grid.SetRow(outPortControl, 2);
             Grid.SetColumn(outPortControl, 2);
@@ -454,9 +563,11 @@ namespace Dynamo.Controls
                 Margin = new System.Windows.Thickness(0, 0, 2, 2),
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Bottom,
-                //FlowDirection = FlowDirection.LeftToRight,
-                Orientation = Orientation.Horizontal
+                Orientation = Orientation.Horizontal,
+                Style = ZoomFadeStyle
             };
+
+            //Todo Set NodeCountOptimizationEnabled style
 
             var experimentalIcon = new FontAwesome5.ImageAwesome()
             {
@@ -485,7 +596,7 @@ namespace Dynamo.Controls
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Stretch = Stretch.UniformToFill,
-                Source = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png"))
+                Source = FrozenImageSource
             };
 
             FrozenImage.SetBinding(Grid.VisibilityProperty, new Binding("IsFrozen")
@@ -503,7 +614,7 @@ namespace Dynamo.Controls
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Stretch = Stretch.UniformToFill,
-                Source = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/NodeStates/transient-64px.png"))
+                Source = TransientImageSource
             };
 
             TransientImage.SetBinding(Grid.VisibilityProperty, new Binding("IsTransient")
@@ -521,7 +632,7 @@ namespace Dynamo.Controls
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Stretch = Stretch.UniformToFill,
-                Source = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/hidden.png"))
+                Source = HiddenEyeImageSource
             };
 
             HiddenEyeImage.SetBinding(Grid.VisibilityProperty, new Binding("IsVisible")
@@ -534,7 +645,7 @@ namespace Dynamo.Controls
             var LacingIconGlyph = new Label()
             {
                 Name = "LacingIconGlyp",
-                Margin = new System.Windows.Thickness(0, 1, 2, -1),
+                Margin = new Thickness(0, 1, 2, -1),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
                 FontFamily = artifactElementReg,
@@ -563,6 +674,82 @@ namespace Dynamo.Controls
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
 
+            var alertsGlyph = new Grid
+            {
+                Name = "AlertsGlyph",
+                Height = 16,
+                MinWidth = 16,
+                Margin = new Thickness(0,0,3,0)
+            };
+
+            // Create the Border
+            Border border = new Border
+            {
+                Background = nodeDismissedWarningsGlyphBackground,
+                CornerRadius = new CornerRadius(8)
+            };
+
+            // Create the Label
+            Label label = new Label
+            {
+                Padding = new Thickness(3, 2, 3, 0),
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalContentAlignment = HorizontalAlignment.Center,
+                VerticalContentAlignment = VerticalAlignment.Center,
+                FontFamily = artifactElementReg,
+                FontSize = 10,
+                Foreground = Brushes.Black
+            };
+
+            // Create the binding for NumberOfDismissedAlerts
+            label.SetBinding(ContentControl.ContentProperty, new Binding("NumberOfDismissedAlerts")
+            {
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
+            // Add the Label to the Border
+            border.Child = label;
+            // Add the Border to the Grid
+            alertsGlyph.Children.Add(border);
+
+            // Create the style for the Grid
+            Style gridStyle = new Style(typeof(Grid));
+            gridStyle.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Visible));
+            gridStyle.Setters.Add(new Setter(FrameworkElement.MinWidthProperty, 16.0));
+            gridStyle.Setters.Add(new Setter(FrameworkElement.MarginProperty, new Thickness(0, 0, 3, 0)));
+
+            // Create the DataTrigger
+            DataTrigger dataTrigger = new DataTrigger
+            {
+                Binding = new Binding("NumberOfDismissedAlerts"),
+                Value = 0
+            };
+            dataTrigger.Setters.Add(new Setter(FrameworkElement.MinWidthProperty, 0.0));
+            dataTrigger.Setters.Add(new Setter(FrameworkElement.MarginProperty, new Thickness(0)));
+            dataTrigger.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Collapsed));
+
+            // Add the DataTrigger to the style
+            gridStyle.Triggers.Add(dataTrigger);
+
+            // Apply the style to the Grid
+            alertsGlyph.Style = gridStyle;
+
+            var spacerBorder = new Border
+            {
+                Width = 16,
+                Height = 16,
+                Background = Brushes.Transparent,
+                BorderThickness = new Thickness(0),
+                IsHitTestVisible = false
+            };
+
+            spacerBorder.SetBinding(UIElement.VisibilityProperty, new Binding("IsResizable")
+            {
+                Converter = boolToVisibilityCollapsedConverter,
+                Mode = BindingMode.OneWay
+            });
+
             Grid.SetRow(GlyphStackPanel, 3);
             Grid.SetColumnSpan(GlyphStackPanel, 3);
             Canvas.SetZIndex(GlyphStackPanel, 4);
@@ -572,21 +759,8 @@ namespace Dynamo.Controls
             GlyphStackPanel.Children.Add(TransientImage);
             GlyphStackPanel.Children.Add(HiddenEyeImage);
             GlyphStackPanel.Children.Add(LacingIconGlyph);
-            //TODO Finish GlyphStackPanel
-
-            //TODO Lazy Load
-            //this.PresentationGrid = new Grid()
-            //{
-            //    Name = "PresentationGrid",
-            //    Margin = new System.Windows.Thickness(6, 6, 6, -3),
-            //    HorizontalAlignment = HorizontalAlignment.Left,
-            //    VerticalAlignment = VerticalAlignment.Bottom,
-            //    Visibility = Visibility.Collapsed
-            //};
-
-            //Grid.SetRow(PresentationGrid, 2);
-            //Grid.SetColumn(PresentationGrid, 1);
-            //Canvas.SetZIndex(PresentationGrid, 3);
+            GlyphStackPanel.Children.Add(alertsGlyph);
+            GlyphStackPanel.Children.Add(spacerBorder);
 
             this.nodeBorder = new Border()
             {
@@ -604,6 +778,9 @@ namespace Dynamo.Controls
             Grid.SetColumnSpan(nodeBorder, 3);
             Canvas.SetZIndex(nodeBorder, 5);
 
+            //TODO nodeColorOverlayZoomin Transient Out
+            //TODO zoomGlyphsGrid
+
             var selectionBorder = new Border()
             {
                 Name = "selectionBorder",
@@ -613,9 +790,6 @@ namespace Dynamo.Controls
                 BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6AC0E7")),
                 IsHitTestVisible = false
             };
-
-            //TODO nodeColorOverlayZoomin Transient Out
-            //TODO zoomGlyphsGrid
 
             selectionBorder.SetBinding(Border.VisibilityProperty, new Binding("IsSelected")
             {
@@ -641,7 +815,6 @@ namespace Dynamo.Controls
             grid.Children.Add(inPortControl);
             grid.Children.Add(outPortControl);
             grid.Children.Add(GlyphStackPanel);
-            //grid.Children.Add(PresentationGrid);
             grid.Children.Add(nodeBorder);
             grid.Children.Add(selectionBorder);
 
@@ -736,6 +909,32 @@ namespace Dynamo.Controls
             return customTooltipStyle;
         }
 
+        private static Style GetZoomFadeStyle()
+        {
+            Binding zoomBinding = new Binding("DataContext.Zoom")
+            {
+                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
+                Converter = new ZoomToBooleanConverter()
+            };
+
+            // Define the DataTrigger
+            DataTrigger dataTrigger = new DataTrigger
+            {
+                Binding = zoomBinding,
+                Value = true
+            };
+
+            // Define the setter for the DataTrigger to change Opacity to 1
+            Setter opacitySetter = new Setter(UIElement.OpacityProperty, 1.0);
+            dataTrigger.Setters.Add(opacitySetter);
+
+            // Create a Style to hold the DataTrigger and initial Opacity setter
+            Style controlStyle = new Style(typeof(FrameworkElement));
+            controlStyle.Setters.Add(new Setter(UIElement.OpacityProperty, 0.0));
+            controlStyle.Triggers.Add(dataTrigger);
+
+            return controlStyle;
+        }
 
         private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)
         {
@@ -809,10 +1008,12 @@ namespace Dynamo.Controls
             }
             else
             {
-                nodeIcon.Fill = new ImageBrush(ViewModel.ImageSource)
+                var icon = new ImageBrush(ViewModel.ImageSource)
                 {
                     Stretch = Stretch.UniformToFill
                 };
+                icon.Freeze();
+                nodeIcon.Fill = icon;
             }
 
             if (ViewModel.IsCustomFunction)
