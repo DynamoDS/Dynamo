@@ -20,10 +20,6 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Greg;
-using J2N.Text;
-using Lucene.Net.Documents;
-using Lucene.Net.QueryParsers.Classic;
-using Lucene.Net.Search;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
@@ -32,14 +28,9 @@ using RestSharp;
 using Dynamo.Wpf.Utilities;
 using Dynamo.ViewModels;
 using System.Reflection;
-using Dynamo.Controls;
-using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Graph;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using Dynamo.Graph.Annotations;
-using Dynamo.Graph.Notes;
 using Dynamo.Selection;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
