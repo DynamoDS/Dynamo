@@ -182,8 +182,14 @@ namespace CoreNodeModels.Input
                         Items.Add(new DynamoDropDownItem(name, value));
                     }
                 }
-                // Restore default selection to the first item
-                if (Items.Count > 0)
+                // Restore the selected index from the attribute
+                var attrib = nodeElement.Attributes["index"];
+                if (attrib != null && Items.Count > 0)
+                {
+                    var indexStr = attrib.Value;
+                    SelectedIndex = ParseSelectedIndex(indexStr, Items);
+                }
+                else
                 {
                     SelectedIndex = 0;
                 }
