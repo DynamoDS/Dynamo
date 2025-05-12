@@ -486,28 +486,45 @@ namespace Dynamo.ViewModels
         }
 
        /// <summary>
-       /// When enabled, some child wpf framework elements will not animate opacity changes.
+       /// When enabled, some child WPF framework elements will not animate opacity changes,
+       /// and will enable bitmap cache on zoomed out state.
+       /// Depends on the node count threshold set via feature flag.
        /// Useful for improving performance during zoom.
-       /// TODO DYN-8193 a future optimiztion if found to be neccesary is to modify the styles this flag controls
-       /// to set visibility instead of opacity, this will likely lead to many fewers elements in the visual tree to
+       /// TODO DYN-8193 a future optimization if found to be necessary is to modify the styles this flag controls
+       /// to set visibility instead of opacity, this will likely lead to many fewer elements in the visual tree to
        /// layout and render.
        /// </summary>
         [JsonIgnore]
-        public bool StopNodeViewOpacityAnimations
+        public bool NodeCountOptimizationEnabled
         {
-            get => stopNodeViewOpacityAnimations;
+            get => nodeCountOptimizationEnabled;
             set
             {
-                if (stopNodeViewOpacityAnimations != value)
+                if (nodeCountOptimizationEnabled != value)
                 {
-                    stopNodeViewOpacityAnimations = value;
-                    RaisePropertyChanged(nameof(StopNodeViewOpacityAnimations));
+                    nodeCountOptimizationEnabled = value;
+                    RaisePropertyChanged(nameof(NodeCountOptimizationEnabled));
                 }
             }
         }
-        private  bool stopNodeViewOpacityAnimations = false;
+        private  bool nodeCountOptimizationEnabled = false;
 
         private int zoomAnimationThresholdFeatureFlagVal = 0;
+
+        [JsonIgnore]
+        internal double MaxZoomScaleForBitmapCache
+        {
+            get => maxZoomScaleForBitmapCache;
+            set
+            {
+                if (maxZoomScaleForBitmapCache != value)
+                {
+                    maxZoomScaleForBitmapCache = value;
+                    RaisePropertyChanged(nameof(MaxZoomScaleForBitmapCache));
+                }
+            }
+        }
+        private double maxZoomScaleForBitmapCache = 0;
 
 
 
@@ -646,32 +663,34 @@ namespace Dynamo.ViewModels
             DynamoFeatureFlagsManager.FlagsRetrieved += OnFlagsRetrieved;
             //if we've already retrieved flags, grab the value,
             zoomAnimationThresholdFeatureFlagVal = (int)(DynamoModel.FeatureFlags?.CheckFeatureFlag<long>("zoom_opacity_animation_nodenum_threshold", 0) ?? 0);
-            SetStopNodeZoomAnimationBehavior(zoomAnimationThresholdFeatureFlagVal);
+            SetNodeCountOptimizationEnabled(zoomAnimationThresholdFeatureFlagVal);
+
+            maxZoomScaleForBitmapCache = (double)(DynamoModel.FeatureFlags?.CheckFeatureFlag<double>("zoom_bitmap_cache_threshold", 0) ?? 0);
         }
 
         private void OnFlagsRetrieved()
         {
             zoomAnimationThresholdFeatureFlagVal = (int)(DynamoModel.FeatureFlags?.CheckFeatureFlag<long>("zoom_opacity_animation_nodenum_threshold", 0) ?? 0);
-            SetStopNodeZoomAnimationBehavior(zoomAnimationThresholdFeatureFlagVal);
+            SetNodeCountOptimizationEnabled(zoomAnimationThresholdFeatureFlagVal);
             DynamoFeatureFlagsManager.FlagsRetrieved -= OnFlagsRetrieved;
         }
 
-        private void SetStopNodeZoomAnimationBehavior(int featureFlagValue)
+        private void SetNodeCountOptimizationEnabled(int featureFlagValue)
         {
             //threshold mode so we can tune the cutoff.
             if (featureFlagValue>0)
             {
-                StopNodeViewOpacityAnimations = Nodes.Count > featureFlagValue;
+                NodeCountOptimizationEnabled = Nodes.Count > featureFlagValue;
             }
             //always enable animations (ie, disable the feature flag)
             else if (featureFlagValue == 0)
             {
-                StopNodeViewOpacityAnimations = false;
+                NodeCountOptimizationEnabled = false;
             }
             //always disable animations
             else if (featureFlagValue<0)
             {
-                StopNodeViewOpacityAnimations = true;
+                NodeCountOptimizationEnabled = true;
             }
         }
 
@@ -965,7 +984,7 @@ namespace Dynamo.ViewModels
 
             PostNodeChangeActions();
 
-            SetStopNodeZoomAnimationBehavior(zoomAnimationThresholdFeatureFlagVal);
+            SetNodeCountOptimizationEnabled(zoomAnimationThresholdFeatureFlagVal);
         }
 
         void Model_NodeAdded(NodeModel node)
@@ -982,7 +1001,7 @@ namespace Dynamo.ViewModels
 
             PostNodeChangeActions();
 
-            SetStopNodeZoomAnimationBehavior(zoomAnimationThresholdFeatureFlagVal);
+            SetNodeCountOptimizationEnabled(zoomAnimationThresholdFeatureFlagVal);
         }
 
         void PostNodeChangeActions()

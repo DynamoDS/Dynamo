@@ -1827,7 +1827,7 @@
                                        FontSize="{TemplateBinding FontSize}"
                                        FontWeight="Bold"
                                        Foreground="{TemplateBinding Foreground}"
-                                       Style="{Binding Path=DataContext.StopNodeViewOpacityAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}"
+                                       Style="{Binding Path=DataContext.NodeCountOptimizationEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}"
                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
                         </Border>
                     </Grid>
@@ -1872,7 +1872,7 @@
                                        FontSize="28px"
                                        FontWeight="Bold"
                                        Foreground="#999999"
-                                       Style="{Binding Path=DataContext.StopNodeViewOpacityAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}"
+                                       Style="{Binding Path=DataContext.NodeCountOptimizationEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controls:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}"
                                        Text="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=Content}" />
                         </Border>
                     </Grid>
@@ -2791,6 +2791,9 @@
             </Setter.Value>
         </Setter>
     </Style>
+    <conv:NodeModelToPortStyleConverter
+        x:Key="NodeModelToPortStyleConverter"
+        PortStyle="{StaticResource InOutPortControlStyle}" />
 
     <Style x:Key="{x:Type dynui:ImageCheckBox}" TargetType="{x:Type dynui:ImageCheckBox}">
         <Setter Property="SnapsToDevicePixels" Value="true" />

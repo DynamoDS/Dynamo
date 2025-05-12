@@ -126,7 +126,7 @@
                                FontWeight="Medium"
                                Foreground="{StaticResource PrimaryCharcoal200Brush}"
                                IsHitTestVisible="False"
-                            Style="{Binding Path=DataContext.StopNodeViewOpacityAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controlsWpf:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}" />
+                            Style="{Binding Path=DataContext.NodeCountOptimizationEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controlsWpf:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}" />
                         <Grid.Style>
                             <Style TargetType="Grid">
                                 <Setter Property="Height" Value="{Binding Path=Height}" />
@@ -327,7 +327,7 @@
                            Foreground="Transparent"
                            IsHitTestVisible="False"
                            Opacity="0.4"
-                           Style="{Binding Path=DataContext.StopNodeViewOpacityAnimations, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controlsWpf:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}"
+                           Style="{Binding Path=DataContext.NodeCountOptimizationEnabled, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type controlsWpf:WorkspaceView}}, Converter={StaticResource SZoomFadeControl}}"
                            Text="{Binding Path=PortName}" />
                 <dynui:UseLevelSpinner x:Name="useLevelControl"
                                        Width="50"

@@ -3176,6 +3176,8 @@ Dynamo.ViewModels.WorkspaceViewModel.IsSnapping.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.IsSnapping.set -> void
 Dynamo.ViewModels.WorkspaceViewModel.Name.get -> string
 Dynamo.ViewModels.WorkspaceViewModel.NodeAutoCompleteSearchViewModel.get -> Dynamo.ViewModels.NodeAutoCompleteSearchViewModel
+Dynamo.ViewModels.WorkspaceViewModel.NodeCountOptimizationEnabled.get -> bool
+Dynamo.ViewModels.WorkspaceViewModel.NodeCountOptimizationEnabled.set -> void
 Dynamo.ViewModels.WorkspaceViewModel.NodeFromSelectionCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.WorkspaceViewModel.Nodes.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.NodeViewModel>
 Dynamo.ViewModels.WorkspaceViewModel.NodeToCodeCommand.get -> Dynamo.UI.Commands.DelegateCommand
@@ -3201,8 +3203,6 @@ Dynamo.ViewModels.WorkspaceViewModel.SetZoomCommand.get -> Dynamo.UI.Commands.De
 Dynamo.ViewModels.WorkspaceViewModel.ShowAllWiresCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.WorkspaceViewModel.ShowHideAllGeometryPreviewCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.WorkspaceViewModel.ShowInCanvasSearchCommand.get -> Dynamo.UI.Commands.DelegateCommand
-Dynamo.ViewModels.WorkspaceViewModel.StopNodeViewOpacityAnimations.get -> bool
-Dynamo.ViewModels.WorkspaceViewModel.StopNodeViewOpacityAnimations.set -> void
 Dynamo.ViewModels.WorkspaceViewModel.UnpinAllPreviewBubblesTriggered -> Dynamo.ViewModels.ViewEventHandler
 Dynamo.ViewModels.WorkspaceViewModel.Watch3DViewModels.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.Watch3DFullscreenViewModel>
 Dynamo.ViewModels.WorkspaceViewModel.Watch3DViewModels.set -> void

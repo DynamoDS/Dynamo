@@ -1762,6 +1762,30 @@ namespace Dynamo.Controls
         }
     }
 
+    /// <summary>
+    /// Used to set the port style of a Code Block node.
+    /// </summary>
+    [System.Diagnostics.CodeAnalysis.SuppressMessage("ApiDesign",
+        "RS0016:Add public types and members to the declared API",
+        Justification = "Converters are not part of the API")]
+    public class NodeModelToPortStyleConverter : IValueConverter
+    {
+        public Style PortStyle { get; set; }
+        public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            if (value is CodeBlockNodeModel)
+            {
+                return PortStyle;
+            }
+            return DependencyProperty.UnsetValue;
+        }
+
+        public object ConvertBack(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
+        {
+            throw new NotSupportedException();
+        }
+    }
+
     public class LacingToVisibilityConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)

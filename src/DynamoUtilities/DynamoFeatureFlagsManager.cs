@@ -88,13 +88,13 @@ namespace DynamoUtilities
         /// <summary>
         /// Check feature flag value, if it does not exist, return the defaultval.
         /// </summary>
-        /// <typeparam name="T">Must be a bool or string, only bool or string flags should be created unless this implementation is improved.</typeparam>
+        /// <typeparam name="T">Must be a bool, string or double, flags of only these types should be created unless this implementation is improved.</typeparam>
         /// <param name="featureFlagKey">feature flag name</param>
-        /// <param name="defaultval">Currently the flag and default val MUST be a bool, or long(int64).</param>
+        /// <param name="defaultval">Currently the flag and default val MUST be a bool, or long(int64) or double.</param>
         /// <returns></returns>
         internal T CheckFeatureFlag<T>(string featureFlagKey, T defaultval)
         {
-            if(!(defaultval is bool || defaultval is string || defaultval is long)){
+            if(!(defaultval is bool || defaultval is string || defaultval is long || defaultval is double)){
                 throw new ArgumentException("unsupported flag type", defaultval.GetType().ToString());
             }
             // if we have not retrieved flags from the cli return empty
@@ -115,7 +115,20 @@ namespace DynamoUtilities
             }
             if (AllFlagsCache.TryGetValue(featureFlagKey, out var flagVal))
             {
-                return (T)flagVal;
+                try
+                {
+                    if (typeof(T) == typeof(double) && flagVal is int intValue)
+                    {
+                        flagVal = Convert.ToDouble(intValue);
+                    }
+                    return (T)flagVal;
+                }
+                catch (InvalidCastException e)
+                {
+                    RaiseMessageLogged(
+                        $"failed to cast feature flag value for {featureFlagKey} to {typeof(T)}, ex: {e.Message}, returning default value: {defaultval}");
+                    return defaultval;
+                }
             }
             else
             {

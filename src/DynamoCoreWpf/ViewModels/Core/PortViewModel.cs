@@ -542,6 +542,12 @@ namespace Dynamo.ViewModels
 
         protected bool CanConnect(object parameter)
         {
+            if (node?.IsTransient is true ||
+                PortModel?.HasTransientConnections() is true)
+            {
+                return false;
+            }
+
             return true;
         }
 
@@ -600,6 +606,17 @@ namespace Dynamo.ViewModels
             
             wsViewModel.CancelActiveState();
             wsViewModel.OnRequestPortContextMenu(ShowHideFlags.Show, this);
+        }
+
+        private bool CanShowContextMenu(object obj)
+        {
+            if (node?.IsTransient is true ||
+                PortModel?.HasTransientConnections() is true)
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private bool CanAutoComplete(object parameter)
