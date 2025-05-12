@@ -22,6 +22,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using DynCmd = Dynamo.Models.DynamoModel;
+using Label = System.Windows.Controls.Label;
 using Thickness = System.Windows.Thickness;
 
 
@@ -118,7 +119,9 @@ namespace Dynamo.Controls
         internal Border nodeBorder;
         internal TextBlock NameBlock;
         internal TextBox EditableNameBox;
+
         private Canvas _expansionBay;
+
         internal Canvas expansionBay
         {
             get
@@ -136,21 +139,71 @@ namespace Dynamo.Controls
                     //TODO DebugAST Canvas.Do we need this ?
                     //TODO IsCustomFunction section.Do we need this ?
 
-                    Grid.SetRow(expansionBay, 5);
-                    Grid.SetColumnSpan(expansionBay, 3);
+                    Grid.SetRow(_expansionBay, 5);
+                    Grid.SetColumnSpan(_expansionBay, 3);
 
-                    grid.Children.Add(expansionBay);
+                    grid.Children.Add(_expansionBay);
                 }
 
                 return _expansionBay;
                         
             }
         }
-        internal Grid centralGrid;
+
+        private Grid _centralGrid;
+        internal Grid centralGrid
+        {
+            get
+            {
+                if(_centralGrid == null)
+                {
+                    _centralGrid = new Grid()
+                    {
+                        Name = "centralGrid",
+                        Margin = new System.Windows.Thickness(6, 6, 6, 3),
+                        VerticalAlignment = VerticalAlignment.Top
+                    };
+
+                    _centralGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+                    _centralGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+                    _centralGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
+                    Grid.SetRow(_centralGrid, 2);
+                    Grid.SetColumn(_centralGrid, 1);
+                    Canvas.SetZIndex(_centralGrid, 4);
+
+                    grid.Children.Add(_centralGrid);
+                }
+
+                return _centralGrid;
+            }
+        }
         internal Rectangle nodeIcon;
-        //TODO real property getter for public objects
-        public Grid inputGrid;
-        public ContextMenu MainContextMenu;
+
+        private Grid _inputGrid = null;
+        public Grid inputGrid
+        {
+            get
+            {
+                if(_inputGrid == null)
+                {
+                    _inputGrid = new Grid()
+                    {
+                        Name = "inputGrid",
+                        MinHeight = Configuration.Configurations.PortHeightInPixels,
+                        Margin = new System.Windows.Thickness(6, 6, 6, 3)
+                    };
+
+                    Canvas.SetZIndex(_inputGrid, 5);
+                    _inputGrid.SetBinding(Grid.IsEnabledProperty, new Binding("IsInteractionEnabled"));
+
+                    centralGrid.Children.Add(_inputGrid);
+                }
+
+                return _inputGrid;
+            }
+        }
+
+        public ContextMenu MainContextMenu = new ContextMenu();
         public Grid PresentationGrid;
 
         private static ImageBrush defaultIcon = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/default-node-icon.png")))
@@ -158,7 +211,14 @@ namespace Dynamo.Controls
             Stretch = Stretch.UniformToFill
         };
 
-        private static SolidColorBrush primaryCharcoal200 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCDCDC"));
+        private static SolidColorBrush primaryCharcoal100 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCDCDC"));
+        private static SolidColorBrush primaryCharcoal200 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EEEEEE"));
+        private static SolidColorBrush blue300 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6ac0e7"));
+        private static SolidColorBrush nodeDismissedWarningsGlyphForeground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4B4B4B"));
+        private static SolidColorBrush nodeDismissedWarningsGlyphBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EBEBEB"));
+        private static SolidColorBrush midGrey = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#666666"));
+        private static SolidColorBrush nodeContextMenuBackgroundHighlight = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#808080"));
+        private static SolidColorBrush nodeContextMenuSeparatorColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AFAFAF"));
         private static InverseBooleanToVisibilityCollapsedConverter inverseBooleanToVisibilityCollapsedConverter = new InverseBooleanToVisibilityCollapsedConverter();
         private static BoolToVisibilityCollapsedConverter boolToVisibilityCollapsedConverter = new BoolToVisibilityCollapsedConverter();
         private static BooleanToVisibilityConverter booleanToVisibilityConverter = new BooleanToVisibilityConverter();
@@ -167,32 +227,7 @@ namespace Dynamo.Controls
 
         public NodeView()
         {
-            //Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
-            //Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoColorsAndBrushesDictionary);
-            //Resources.MergedDictionaries.Add(SharedDictionaryManager.DataTemplatesDictionary);
-            //Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
-            //Resources.MergedDictionaries.Add(SharedDictionaryManager.InPortsDictionary);
-            //Resources.MergedDictionaries.Add(SharedDictionaryManager.OutPortsDictionary);
-
-            //Not sure if InitializeComponent() should be called first or later?
             InitializeComponent();
-
-            //TODO See if this can work vs adding it to the DataTemplatesDictionary
-            //DataTemplate InPortsDataTemplate = new DataTemplate()
-            //{
-            //    DataType = typeof(InPortViewModel)
-            //};
-
-            //InPortsDataTemplate.VisualTree = new FrameworkElementFactory(typeof(InPorts));
-            //Resources.Add(typeof(InPortViewModel), InPortsDataTemplate);
-
-            #region shared objects
-
-            //Maybe these can be static on the view?
-            
-
-            #endregion
-
 
             this.grid = new Grid()
             {
@@ -203,19 +238,19 @@ namespace Dynamo.Controls
             };
 
             grid.SetBinding(Grid.VisibilityProperty, new Binding("IsCollapsed") { Converter = inverseBooleanToVisibilityCollapsedConverter });
-            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });  // Todo set this to 0 now and then set it taller if custome node
+            grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(8) });  // Todo set this to 0 now and then set it taller if custom node
             grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(46) });
             grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
             grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(24) });
             grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(12) });
             grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto }); //new GridLength(98.5)
-            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star), MinWidth = 10 }); //new GridLength(55.5)
-            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto }); //new GridLength(80.5)
+            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star), MinWidth = 10 });
+            grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
 
-            //Todo context menu
+            grid.ContextMenu = GetNodeContextMenu();
 
-            var nodeBackground = new System.Windows.Shapes.Rectangle()
+            var nodeBackground = new Rectangle()
             {
                 Name = "nodeBackground",
                 Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C3C")),  //DarkGreyBrush
@@ -259,6 +294,8 @@ namespace Dynamo.Controls
             };
 
             // Create TextBlocks
+            // TODO Maybe bound the whole text on the model with a string constructor vs this set of inline constructors
+            // That would remoe the stackPanel also
             TextBlock textBlock1 = new TextBlock
             {
                 FontFamily = artifactElementReg,
@@ -326,7 +363,7 @@ namespace Dynamo.Controls
             Grid.SetColumnSpan(nodeHeaderContent, 3);
             Canvas.SetZIndex(nodeHeaderContent, 3);
 
-            nodeIcon = new System.Windows.Shapes.Rectangle()
+            nodeIcon = new Rectangle()
             {
                 Name = "nodeIcon",
                 Width = 34,
@@ -338,7 +375,7 @@ namespace Dynamo.Controls
             this.NameBlock = new TextBlock()
             {
                 Name = "NameBlock",
-                Margin = new System.Windows.Thickness(6, 3, 6, 0),
+                Margin = new Thickness(6, 3, 6, 0),
                 VerticalAlignment = VerticalAlignment.Center,
                 FontSize = 16,
                 FontWeight = FontWeights.Medium,
@@ -363,7 +400,7 @@ namespace Dynamo.Controls
                 FontSize = 16,
                 FontWeight = FontWeights.Medium,
                 Foreground = primaryCharcoal200,
-                SelectionBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6ac0e7")),
+                SelectionBrush = blue300,
                 SelectionOpacity = 0.2,
                 IsHitTestVisible = true,
                 BorderThickness = new System.Windows.Thickness(0),
@@ -387,7 +424,7 @@ namespace Dynamo.Controls
             var inPortControl = new ItemsControl()
             {
                 Name = "inPortControl",
-                Margin = new System.Windows.Thickness(-25, 3, 0, 0),
+                Margin = new Thickness(-25, 3, 0, 0),
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalContentAlignment = HorizontalAlignment.Stretch
             };
@@ -397,34 +434,19 @@ namespace Dynamo.Controls
             Grid.SetColumn(inPortControl, 0);
             Canvas.SetZIndex(inPortControl, 6);
 
-            //TODO Add Output Ports
+            var outPortControl = new ItemsControl()
+            {
+                Name = "outPortControl",
+                Margin = new Thickness(0, 3, -24, 5),
+                VerticalAlignment = VerticalAlignment.Top,
+                HorizontalContentAlignment = HorizontalAlignment.Stretch,
+            };
 
-            //TODO LazyLoad
-            //this.centralGrid = new Grid()
-            //{
-            //    Name = "centralGrid",
-            //    Margin = new System.Windows.Thickness(6, 6, 6, 3),
-            //    VerticalAlignment = VerticalAlignment.Top
-            //};
-
-            //centralGrid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-            //centralGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
-            //centralGrid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star) });
-            //Grid.SetRow(centralGrid, 2);
-            //Grid.SetColumn(centralGrid, 1);
-            //Canvas.SetZIndex(centralGrid, 4);
-
-            //this.inputGrid = new Grid()
-            //{
-            //    Name = "inputGrid",
-            //    MinHeight = Configuration.Configurations.PortHeightInPixels,
-            //    Margin = new System.Windows.Thickness(6, 6, 6, 3)
-            //};
-
-            //Canvas.SetZIndex(inputGrid, 5);
-            //inputGrid.SetBinding(Grid.IsEnabledProperty, new Binding("IsInteractionEnabled"));
-
-            //centralGrid.Children.Add(inputGrid);
+            outPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("OutPorts"));
+            Grid.SetRow(outPortControl, 2);
+            Grid.SetColumn(outPortControl, 2);
+            Canvas.SetZIndex(outPortControl, 4);
+            //TODO set margin for codeblock to be lower
 
             var GlyphStackPanel = new StackPanel()
             {
@@ -517,7 +539,7 @@ namespace Dynamo.Controls
                 VerticalAlignment = VerticalAlignment.Center,
                 FontFamily = artifactElementReg,
                 FontSize = 10,
-                Foreground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EBEBEB"))
+                Foreground = nodeDismissedWarningsGlyphBackground
             };
 
             var lacingToolTip = new ToolTip();
@@ -610,31 +632,18 @@ namespace Dynamo.Controls
             //TODO nodeHoveringStateBorder
             //TODO warningBar
 
-            //TODO Lazy Load
-            //this.expansionBay = new Canvas()
-            //{
-            //    Name = "expansionBay",
-            //    Margin = new System.Windows.Thickness(0, 4, 0, 0),
-            //    HorizontalAlignment = HorizontalAlignment.Left,
-            //    Background = new SolidColorBrush(Colors.Blue)
-            //};
-
             //TODO DebugAST Canvas.  Do we need this?
             //TODO IsCustomFunction section.  Do we need this?
-
-            //Grid.SetRow(expansionBay, 5);
-            //Grid.SetColumnSpan(expansionBay, 3);
 
             grid.Children.Add(nodeBackground);
             grid.Children.Add(nameBackground);
             grid.Children.Add(nodeHeaderContent);
             grid.Children.Add(inPortControl);
-            //grid.Children.Add(centralGrid);
+            grid.Children.Add(outPortControl);
             grid.Children.Add(GlyphStackPanel);
             //grid.Children.Add(PresentationGrid);
             grid.Children.Add(nodeBorder);
             grid.Children.Add(selectionBorder);
-            //grid.Children.Add(expansionBay);
 
             this.Content = grid;
 
@@ -813,7 +822,7 @@ namespace Dynamo.Controls
                 {
                     Name = "customNodeBorder0",
                     Height = 8,
-                    Margin = new System.Windows.Thickness(0, 16, 0, 16),
+                    Margin = new Thickness(16, 0, 16, 0),
                     VerticalAlignment = VerticalAlignment.Bottom,
                     CornerRadius = new CornerRadius(6, 6, 0, 0),
                     Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#959595")) //
@@ -827,7 +836,7 @@ namespace Dynamo.Controls
                 {
                     Name = "customNodeBorder1",
                     Height = 4,
-                    Margin = new System.Windows.Thickness(0, 8, 0, 8),
+                    Margin = new Thickness(8, 0, 8, 0),
                     VerticalAlignment = VerticalAlignment.Bottom,
                     CornerRadius = new CornerRadius(6, 6, 0, 0),
                     Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#747474"))
@@ -1438,6 +1447,9 @@ namespace Dynamo.Controls
             }
         }
 
+
+        private static ContextMenu nodeContextMenu = GetNodeContextMenu();
+
         /// <summary>
         /// A common method to handle the node Options Button being clicked and
         /// the user right-clicking on the node body to open its ContextMenu.
@@ -1467,18 +1479,277 @@ namespace Dynamo.Controls
 
             // Clearing any existing items in the node's ContextMenu.
             contextMenu.Items.Clear();
-            NodeContextMenuBuilder.Build(contextMenu, viewModel, NodeViewCustomizationMenuItems);
+            nodeContextMenu.Items.Clear();
+            NodeContextMenuBuilder.Build(nodeContextMenu, viewModel, NodeViewCustomizationMenuItems);
 
-            contextMenu.DataContext = viewModel;
-            contextMenu.IsOpen = true;
+            nodeContextMenu.DataContext = viewModel;
+            nodeContextMenu.Closed += MainContextMenu_OnClosed;
+            nodeContextMenu.IsOpen = true;
 
             e.Handled = true;
         }
 
         private void MainContextMenu_OnClosed(object sender, RoutedEventArgs e)
         {
-            grid.ContextMenu.Items.Clear();
+            nodeContextMenu.Closed -= MainContextMenu_OnClosed;
+            nodeContextMenu.Items.Clear();
             e.Handled = true;
+        }
+
+        private static Style GetContextMenuStyle()
+        {
+            var contextMenuStyle = new Style(typeof(ContextMenu));
+            contextMenuStyle.Setters.Add(new Setter(ContextMenu.PlacementProperty, PlacementMode.MousePoint));
+            contextMenuStyle.Setters.Add(new Setter(ContextMenu.ForegroundProperty, primaryCharcoal200));
+            contextMenuStyle.Setters.Add(new Setter(ContextMenu.FontSizeProperty, 13.0));
+            contextMenuStyle.Setters.Add(new Setter(ContextMenu.FontFamilyProperty, artifactElementReg));
+            contextMenuStyle.Setters.Add(new Setter(ContextMenu.FontWeightProperty, FontWeights.Medium));
+            contextMenuStyle.Setters.Add(new Setter(ContextMenu.SnapsToDevicePixelsProperty, true));
+            contextMenuStyle.Setters.Add(new Setter(ContextMenu.OverridesDefaultStyleProperty, true));
+
+            var contextMenuTemplate = new ControlTemplate(typeof(ContextMenu));
+            var border = new FrameworkElementFactory(typeof(Border));
+            border.Name = "Border";
+            border.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(ContextMenu.BackgroundProperty));
+            border.SetValue(Border.BorderThicknessProperty, new Thickness(0));
+
+            var stackPanel = new FrameworkElementFactory(typeof(StackPanel));
+            stackPanel.SetValue(StackPanel.MarginProperty, new Thickness(0, 10, 0, 0));
+            stackPanel.SetValue(StackPanel.ClipToBoundsProperty, true);
+            stackPanel.SetValue(StackPanel.OrientationProperty, Orientation.Vertical);
+            stackPanel.SetValue(StackPanel.IsItemsHostProperty, true);
+
+            border.AppendChild(stackPanel);
+            contextMenuTemplate.VisualTree = border;
+            contextMenuStyle.Setters.Add(new Setter(ContextMenu.TemplateProperty, contextMenuTemplate));
+
+            return contextMenuStyle;
+        }
+
+        private static ContextMenu GetNodeContextMenu()
+        {
+            var mainContextMenu = new ContextMenu
+            {
+                Name = "MainContextMenu",
+                Background = midGrey,
+                Style = GetContextMenuStyle(),
+            };
+
+            //mainContextMenu.Closed += MainContextMenu_OnClosed;
+
+            var menuItemStyle = new Style(typeof(MenuItem));
+            menuItemStyle.Setters.Add(new Setter(MenuItem.IsCheckedProperty, new DynamicResourceExtension("IsChecked")));
+            menuItemStyle.Setters.Add(new Setter(MenuItem.HeightProperty, 30.0));
+            menuItemStyle.Setters.Add(new Setter(MenuItem.WidthProperty, 240.0));
+            menuItemStyle.Setters.Add(new Setter(MenuItem.PaddingProperty, new Thickness(20, 0, 20, 0)));
+
+            var menuItemTemplate = new ControlTemplate(typeof(MenuItem));
+            var dockPanel = new FrameworkElementFactory(typeof(DockPanel));
+            dockPanel.Name = "dockPanel";
+            dockPanel.SetValue(DockPanel.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
+            dockPanel.SetValue(DockPanel.BackgroundProperty, Brushes.Transparent);
+            dockPanel.SetValue(DockPanel.SnapsToDevicePixelsProperty, true);
+
+            var checkBox = new FrameworkElementFactory(typeof(Label));
+            checkBox.Name = "checkBox";
+            checkBox.SetValue(Label.MarginProperty, new Thickness(2, 0, -20, 0));
+            checkBox.SetValue(Label.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+            checkBox.SetValue(Label.VerticalAlignmentProperty, VerticalAlignment.Center);
+            checkBox.SetValue(Label.HorizontalContentAlignmentProperty, HorizontalAlignment.Center);
+            checkBox.SetValue(Label.VerticalContentAlignmentProperty, VerticalAlignment.Center);
+            checkBox.SetValue(Label.ContentProperty, "✓");
+            checkBox.SetValue(Label.FontSizeProperty, 9.0);
+            checkBox.SetValue(Label.ForegroundProperty, Brushes.White);
+            checkBox.SetValue(Label.VisibilityProperty, Visibility.Collapsed);
+            checkBox.SetValue(DockPanel.DockProperty, Dock.Left);
+
+            var contentPresenter = new FrameworkElementFactory(typeof(ContentPresenter));
+            contentPresenter.Name = "ContentPresenter";
+            contentPresenter.SetValue(ContentPresenter.MarginProperty, new TemplateBindingExtension(MenuItem.PaddingProperty));
+            contentPresenter.SetValue(ContentPresenter.VerticalAlignmentProperty, VerticalAlignment.Center);
+            contentPresenter.SetValue(ContentPresenter.ContentSourceProperty, "Header");
+            contentPresenter.SetValue(DockPanel.DockProperty, Dock.Left);
+            contentPresenter.SetValue(ContentPresenter.RecognizesAccessKeyProperty, true);
+            contentPresenter.SetValue(ContentPresenter.SnapsToDevicePixelsProperty, new TemplateBindingExtension(MenuItem.SnapsToDevicePixelsProperty));
+
+            //var contentPresenterTextBlockStyle = new Style(typeof(TextBlock));
+            //contentPresenterTextBlockStyle.Setters.Add(new Setter(TextBlock.MaxWidthProperty, 200.0));
+            //contentPresenterTextBlockStyle.Setters.Add(new Setter(TextBlock.TextTrimmingProperty, TextTrimming.CharacterEllipsis));
+            //contentPresenter.Resources.Add(typeof(TextBlock), contentPresenterTextBlockStyle);
+
+            var dismissedAlertsBadge = new FrameworkElementFactory(typeof(Border));
+            dismissedAlertsBadge.Name = "dismissedAlertsBadge";
+            dismissedAlertsBadge.SetValue(Border.HeightProperty, 15.0);
+            dismissedAlertsBadge.SetValue(Border.MinWidthProperty, 15.0);
+            dismissedAlertsBadge.SetValue(Border.MarginProperty, new Thickness(-15, 0, 0, 1));
+            dismissedAlertsBadge.SetValue(Border.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+            dismissedAlertsBadge.SetValue(Border.VerticalAlignmentProperty, VerticalAlignment.Center);
+            dismissedAlertsBadge.SetValue(Border.BackgroundProperty, nodeDismissedWarningsGlyphBackground);
+            dismissedAlertsBadge.SetValue(Border.CornerRadiusProperty, new CornerRadius(7.5));
+            dismissedAlertsBadge.SetValue(DockPanel.DockProperty, Dock.Left);
+            dismissedAlertsBadge.SetValue(Border.VisibilityProperty, Visibility.Hidden);
+
+            var dismissedAlertsBadgeLabel = new FrameworkElementFactory(typeof(Label));
+            dismissedAlertsBadgeLabel.SetValue(Label.PaddingProperty, new Thickness(2, 2, 2, 0));
+            dismissedAlertsBadgeLabel.SetValue(Label.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            dismissedAlertsBadgeLabel.SetValue(Label.VerticalAlignmentProperty, VerticalAlignment.Center);
+            dismissedAlertsBadgeLabel.SetValue(Label.HorizontalContentAlignmentProperty, HorizontalAlignment.Center);
+            dismissedAlertsBadgeLabel.SetValue(Label.VerticalContentAlignmentProperty, VerticalAlignment.Center);
+            dismissedAlertsBadgeLabel.SetValue(Label.ContentProperty, new Binding("NumberOfDismissedAlerts") { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
+            dismissedAlertsBadgeLabel.SetValue(Label.FontFamilyProperty, artifactElementReg);
+            dismissedAlertsBadgeLabel.SetValue(Label.FontSizeProperty, 9.0);
+            dismissedAlertsBadgeLabel.SetValue(Label.ForegroundProperty, nodeDismissedWarningsGlyphForeground);
+
+            dismissedAlertsBadge.AppendChild(dismissedAlertsBadgeLabel);
+
+            var subMenuArrow = new FrameworkElementFactory(typeof(Label));
+            subMenuArrow.Name = "subMenuArrow";
+            subMenuArrow.SetValue(Label.MarginProperty, new Thickness(0, 0, 20, 7));
+            subMenuArrow.SetValue(Label.PaddingProperty, new Thickness(0));
+            subMenuArrow.SetValue(Label.VerticalAlignmentProperty, VerticalAlignment.Center);
+            subMenuArrow.SetValue(Label.ContentProperty, ">");
+            subMenuArrow.SetValue(DockPanel.DockProperty, Dock.Right);
+            subMenuArrow.SetValue(Label.FontFamilyProperty, artifactElementReg);
+            subMenuArrow.SetValue(Label.FontSizeProperty, 13.0);
+            subMenuArrow.SetValue(Label.ForegroundProperty, blue300);
+
+            var subMenuArrowTransform = new ScaleTransform { ScaleX = 1, ScaleY = 1.5 };
+            subMenuArrow.SetValue(Label.RenderTransformProperty, subMenuArrowTransform);
+
+            var subMenuArrowStyle = new Style(typeof(Label));
+            subMenuArrowStyle.Setters.Add(new Setter(Label.VisibilityProperty, Visibility.Hidden));
+            var subMenuArrowDataTrigger = new DataTrigger
+            {
+                Binding = new Binding("HasItems") { RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(MenuItem), 1) },
+                Value = true
+            };
+            subMenuArrowDataTrigger.Setters.Add(new Setter(Label.VisibilityProperty, Visibility.Visible));
+            subMenuArrowStyle.Triggers.Add(subMenuArrowDataTrigger);
+            subMenuArrow.SetValue(Label.StyleProperty, subMenuArrowStyle);
+
+            var inputGestureText = new FrameworkElementFactory(typeof(TextBlock));
+            inputGestureText.Name = "InputGestureText";
+            inputGestureText.SetValue(TextBlock.MarginProperty, new Thickness(0, 2, 2, 2));
+            inputGestureText.SetValue(DockPanel.DockProperty, Dock.Right);
+            inputGestureText.SetValue(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Right);
+            inputGestureText.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
+            inputGestureText.SetValue(TextBlock.FontFamilyProperty, artifactElementReg);
+            inputGestureText.SetValue(TextBlock.FontSizeProperty, 13.0);
+            inputGestureText.SetValue(TextBlock.TextProperty, new TemplateBindingExtension(MenuItem.InputGestureTextProperty));
+
+            dockPanel.AppendChild(checkBox);
+            dockPanel.AppendChild(contentPresenter);
+            dockPanel.AppendChild(dismissedAlertsBadge);
+            dockPanel.AppendChild(subMenuArrow);
+            dockPanel.AppendChild(inputGestureText);
+
+            var partPopup = new FrameworkElementFactory(typeof(Popup));
+            partPopup.Name = "PART_Popup";
+            partPopup.SetValue(Popup.AllowsTransparencyProperty, true);
+            partPopup.SetValue(Popup.FocusableProperty, false);
+            partPopup.SetValue(Popup.HorizontalOffsetProperty, 0.0);
+            partPopup.SetValue(Popup.IsOpenProperty, new Binding("IsSubmenuOpen") { RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent) });
+            partPopup.SetValue(Popup.PlacementProperty, PlacementMode.Right);
+            partPopup.SetValue(Popup.VerticalOffsetProperty, -2.0);
+
+            var popupBorder = new FrameworkElementFactory(typeof(Border));
+            popupBorder.SetValue(Border.BackgroundProperty, new TemplateBindingExtension(MenuItem.BackgroundProperty));
+            popupBorder.SetValue(Border.BorderBrushProperty, Brushes.Transparent);
+            popupBorder.SetValue(Border.BorderThicknessProperty, new Thickness(0));
+
+            var subMenuScrollViewer = new FrameworkElementFactory(typeof(ScrollViewer));
+            subMenuScrollViewer.SetValue(ScrollViewer.CanContentScrollProperty, true);
+            subMenuScrollViewer.SetValue(ScrollViewer.StyleProperty, new DynamicResourceExtension(new ComponentResourceKey(typeof(FrameworkElement), "MenuScrollViewer")));
+
+            var itemsPresenter = new FrameworkElementFactory(typeof(ItemsPresenter));
+            itemsPresenter.SetValue(Grid.IsSharedSizeScopeProperty, true);
+            itemsPresenter.SetValue(KeyboardNavigation.DirectionalNavigationProperty, KeyboardNavigationMode.Cycle);
+            itemsPresenter.SetValue(KeyboardNavigation.TabNavigationProperty, KeyboardNavigationMode.Cycle);
+            itemsPresenter.SetValue(ItemsPresenter.SnapsToDevicePixelsProperty, new TemplateBindingExtension(MenuItem.SnapsToDevicePixelsProperty));
+
+            subMenuScrollViewer.AppendChild(itemsPresenter);
+            popupBorder.AppendChild(subMenuScrollViewer);
+            partPopup.AppendChild(popupBorder);
+            dockPanel.AppendChild(partPopup);
+
+            // Trigger for IsEnabled property
+            var isEnabledTrigger = new Trigger
+            {
+                Property = UIElement.IsEnabledProperty,
+                Value = false
+            };
+            isEnabledTrigger.Setters.Add(new Setter(TextBlock.OpacityProperty, 0.5, "ContentPresenter"));
+
+            // Trigger for IsMouseOver property (true)
+            var isMouseOverTrueTrigger = new Trigger
+            {
+                Property = UIElement.IsMouseOverProperty,
+                Value = true
+            };
+            isMouseOverTrueTrigger.Setters.Add(new Setter(TextBlock.ForegroundProperty, Brushes.White, "ContentPresenter"));
+            isMouseOverTrueTrigger.Setters.Add(new Setter(DockPanel.BackgroundProperty, nodeContextMenuBackgroundHighlight, "dockPanel"));
+
+            // Trigger for IsMouseOver property (false)
+            var isMouseOverFalseTrigger = new Trigger
+            {
+                Property = UIElement.IsMouseOverProperty,
+                Value = false
+            };
+            isMouseOverFalseTrigger.Setters.Add(new Setter(DockPanel.BackgroundProperty, midGrey, "dockPanel"));
+
+            // DataTrigger for Content property
+            var dataTrigger = new DataTrigger
+            {
+                Binding = new Binding("Content") { ElementName = "ContentPresenter" },
+                Value = Dynamo.Wpf.Properties.Resources.NodeInformationalStateDismissedAlerts
+            };
+            dataTrigger.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Visible, "dismissedAlertsBadge"));
+
+            // Trigger for IsChecked property
+            var isCheckedTrigger = new Trigger
+            {
+                Property = MenuItem.IsCheckedProperty,
+                Value = true
+            };
+            isCheckedTrigger.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Visible, "checkBox"));
+
+            menuItemTemplate.VisualTree = dockPanel;
+
+            // Add the triggers to the ControlTemplate
+            menuItemTemplate.Triggers.Add(isEnabledTrigger);
+            menuItemTemplate.Triggers.Add(isMouseOverTrueTrigger);
+            menuItemTemplate.Triggers.Add(isMouseOverFalseTrigger);
+            menuItemTemplate.Triggers.Add(dataTrigger);
+            menuItemTemplate.Triggers.Add(isCheckedTrigger);
+
+            menuItemStyle.Setters.Add(new Setter(MenuItem.TemplateProperty, menuItemTemplate));
+           
+            var separatorStyle = new Style(typeof(Separator));
+            separatorStyle.Setters.Add(new Setter(Control.OverridesDefaultStyleProperty, true));
+
+            // Define the ControlTemplate for the Separator
+            var separatorTemplate = new ControlTemplate(typeof(Separator));
+            var separatorBorder = new FrameworkElementFactory(typeof(Border));
+            separatorBorder.SetValue(Border.HeightProperty, 1.0);
+            separatorBorder.SetValue(Border.MarginProperty, new Thickness(20, 8, 20, 8));
+            separatorBorder.SetValue(Border.BackgroundProperty, nodeContextMenuSeparatorColor);
+            separatorTemplate.VisualTree = separatorBorder;
+
+            // Add the ControlTemplate to the style
+            separatorStyle.Setters.Add(new Setter(Control.TemplateProperty, separatorTemplate));
+
+            var resourceDictionary = new ResourceDictionary();
+            resourceDictionary.Add(typeof(MenuItem), menuItemStyle);
+            resourceDictionary.Add(MenuItem.SeparatorStyleKey, separatorStyle);
+
+            mainContextMenu.Resources = resourceDictionary;
+
+            return mainContextMenu;
+
+            //// Define the ContextMenu for the Grid
+            //var gridContextMenu = new ContextMenu();
+            //gridContextMenu.Name = "GridContextMenu";
+            //gridContextMenu.Items.Add(mainContextMenu);
         }
 
     }

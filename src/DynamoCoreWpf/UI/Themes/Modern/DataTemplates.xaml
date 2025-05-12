@@ -32,4 +32,8 @@
         <uiControls:InPorts></uiControls:InPorts>
     </DataTemplate>
 
+    <DataTemplate DataType="{x:Type viewModels:OutPortViewModel}">
+        <uiControls:OutPorts></uiControls:OutPorts>
+    </DataTemplate>
+
 </ResourceDictionary>

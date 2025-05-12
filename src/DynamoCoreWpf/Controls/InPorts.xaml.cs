@@ -38,7 +38,7 @@ namespace Dynamo.UI.Controls
             {
                 Name = "MainGrid",
                 Height = 34,
-                Background = new SolidColorBrush(Colors.Transparent),
+                Background = Brushes.Transparent,
                 IsHitTestVisible = true
             };
 
@@ -50,10 +50,10 @@ namespace Dynamo.UI.Controls
             MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "UseLevelSpinnerColumn", Width = new GridLength(0) });
             MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "ChevronColumn", Width = new GridLength(0) });
 
-            var PortSnapping = new System.Windows.Shapes.Rectangle()
+            var PortSnapping = new Rectangle()
             {
                 Name = "PortSnapping",
-                Fill = new SolidColorBrush(Colors.Transparent),
+                Fill = Brushes.Transparent,
                 SnapsToDevicePixels = true,
             };
 
@@ -63,7 +63,7 @@ namespace Dynamo.UI.Controls
 
             PortSnapping.SetBinding(Rectangle.IsHitTestVisibleProperty, new Binding("IsHitTestVisible"));
 
-            //TODO deregister event handler?
+            //TODO change to trigger handler?
             PortSnapping.MouseEnter += (s, e) => viewModel.MouseEnterCommand.Execute(DataContext);
             PortSnapping.MouseLeave += (s, e) => viewModel.MouseLeaveCommand.Execute(DataContext);
 
@@ -201,6 +201,7 @@ namespace Dynamo.UI.Controls
 
             this.Content = MainGrid;
 
+            //TODO unregister
             DataContextChanged += OnDataContextChanged;
         }
 
