@@ -1604,7 +1604,7 @@
             <summary>Поиск локализованной строки, подобной строке «Предоставленные данные цвета слишком велики для вписывания в границы изображения».</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.CurveMapperEqualMinMaxWarning">
-            <summary>Looks up a localized string similar to • Min and Max values must not be the same..</summary>
+            <summary>Looks up a localized string similar to • Min and Max values must be different..</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCountWarning">
             <summary>Looks up a localized string similar to • Values must be a list of numbers or a single number ≥ 2..</summary>

@@ -1592,7 +1592,7 @@
             <summary>查找類似於「提供的顏色資料太大，無法佈滿影像邊界。」的本土化字串。</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.CurveMapperEqualMinMaxWarning">
-            <summary>Looks up a localized string similar to • Min and Max values must not be the same..</summary>
+            <summary>Looks up a localized string similar to • Min and Max values must be different..</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCountWarning">
             <summary>Looks up a localized string similar to • Values must be a list of numbers or a single number ≥ 2..</summary>

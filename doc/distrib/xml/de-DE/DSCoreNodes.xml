@@ -1608,7 +1608,7 @@ Suchen Sie nach "Benutzerdefinierte Zeichenfolgen für Datum und Uhrzeit bei MSD
             <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie Die bereitgestellten Farbdaten sind zu groß, um in die Bildumgrenzungen zu passen.</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.CurveMapperEqualMinMaxWarning">
-            <summary>Looks up a localized string similar to • Min and Max values must not be the same..</summary>
+            <summary>Looks up a localized string similar to • Min and Max values must be different..</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCountWarning">
             <summary>Looks up a localized string similar to • Values must be a list of numbers or a single number ≥ 2..</summary>
