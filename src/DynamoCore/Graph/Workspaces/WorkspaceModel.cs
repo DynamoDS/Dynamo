@@ -143,6 +143,11 @@ namespace Dynamo.Graph.Workspaces
         public string PinnedNode;
         public double WidthAdjustment;
         public double HeightAdjustment;
+        public double WidthAdjustmentCollapsed;
+        public double HeightAdjustmentCollapsed;
+        public double WidthAdjustmentExpanded;
+        public double HeightAdjustmentExpanded;
+        public bool IsResizedWhileCollapsed;
 
         // TODO, Determine if these are required
         public double Left;
@@ -2703,6 +2708,11 @@ namespace Dynamo.Graph.Workspaces
             annotationModel.GUID = annotationGuidValue;
             annotationModel.HeightAdjustment = annotationViewInfo.HeightAdjustment;
             annotationModel.WidthAdjustment = annotationViewInfo.WidthAdjustment;
+            annotationModel.HeightAdjustmentCollapsed = annotationViewInfo.HeightAdjustmentCollapsed;
+            annotationModel.WidthAdjustmentCollapsed = annotationViewInfo.WidthAdjustmentCollapsed;
+            annotationModel.HeightAdjustmentExpanded = annotationViewInfo.HeightAdjustmentExpanded;
+            annotationModel.WidthAdjustmentExpanded = annotationViewInfo.WidthAdjustmentExpanded;
+            annotationModel.IsResizedWhileCollapsed = annotationViewInfo.IsResizedWhileCollapsed;
             annotationModel.UpdateGroupFrozenStatus();
 
             annotationModel.ModelBaseRequested += annotationModel_GetModelBase;

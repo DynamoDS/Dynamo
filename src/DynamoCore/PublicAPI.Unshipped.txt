@@ -47,6 +47,7 @@ const Dynamo.Engine.LibraryServices.Categories.Constructors = "Create" -> string
 const Dynamo.Engine.LibraryServices.Categories.MemberFunctions = "Actions" -> string
 const Dynamo.Engine.LibraryServices.Categories.Operators = "Operators" -> string
 const Dynamo.Engine.LibraryServices.Categories.Properties = "Query" -> string
+const Dynamo.Graph.Annotations.AnnotationModel.CollapsedContentHeight = 82 -> double
 const Dynamo.Graph.Nodes.BuiltinNodeCategories.ANALYZE_SOLAR = "Analyze.Solar" -> string
 const Dynamo.Graph.Nodes.BuiltinNodeCategories.CORE = "Core" -> string
 const Dynamo.Graph.Nodes.BuiltinNodeCategories.CORE_EVALUATE = "Core.Evaluate" -> string
@@ -700,6 +701,10 @@ Dynamo.Graph.Annotations.AnnotationModel.GroupStyleId.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.HasNestedGroups.get -> bool
 Dynamo.Graph.Annotations.AnnotationModel.HeightAdjustment.get -> double
 Dynamo.Graph.Annotations.AnnotationModel.HeightAdjustment.set -> void
+Dynamo.Graph.Annotations.AnnotationModel.HeightAdjustmentCollapsed.get -> double
+Dynamo.Graph.Annotations.AnnotationModel.HeightAdjustmentCollapsed.set -> void
+Dynamo.Graph.Annotations.AnnotationModel.HeightAdjustmentExpanded.get -> double
+Dynamo.Graph.Annotations.AnnotationModel.HeightAdjustmentExpanded.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.InitialHeight.get -> double
 Dynamo.Graph.Annotations.AnnotationModel.InitialHeight.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.InitialTop.get -> double
@@ -707,9 +712,15 @@ Dynamo.Graph.Annotations.AnnotationModel.InitialTop.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.IsExpanded.get -> bool
 Dynamo.Graph.Annotations.AnnotationModel.IsExpanded.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.IsFrozen.get -> bool
+Dynamo.Graph.Annotations.AnnotationModel.IsResizedWhileCollapsed.get -> bool
+Dynamo.Graph.Annotations.AnnotationModel.IsResizedWhileCollapsed.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.IsVisible.get -> bool
 Dynamo.Graph.Annotations.AnnotationModel.loadFromXML.get -> bool
 Dynamo.Graph.Annotations.AnnotationModel.loadFromXML.set -> void
+Dynamo.Graph.Annotations.AnnotationModel.MinCollapsedPortAreaHeight.get -> double
+Dynamo.Graph.Annotations.AnnotationModel.MinCollapsedPortAreaHeight.set -> void
+Dynamo.Graph.Annotations.AnnotationModel.MinWidthOnCollapsed.get -> double
+Dynamo.Graph.Annotations.AnnotationModel.MinWidthOnCollapsed.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.ModelAreaHeight.get -> double
 Dynamo.Graph.Annotations.AnnotationModel.ModelAreaHeight.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.ModelBaseRequested -> System.Func<System.Guid, Dynamo.Graph.ModelBase>
@@ -725,6 +736,10 @@ Dynamo.Graph.Annotations.AnnotationModel.TextMaxWidth.get -> double
 Dynamo.Graph.Annotations.AnnotationModel.TextMaxWidth.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.WidthAdjustment.get -> double
 Dynamo.Graph.Annotations.AnnotationModel.WidthAdjustment.set -> void
+Dynamo.Graph.Annotations.AnnotationModel.WidthAdjustmentCollapsed.get -> double
+Dynamo.Graph.Annotations.AnnotationModel.WidthAdjustmentCollapsed.set -> void
+Dynamo.Graph.Annotations.AnnotationModel.WidthAdjustmentExpanded.get -> double
+Dynamo.Graph.Annotations.AnnotationModel.WidthAdjustmentExpanded.set -> void
 Dynamo.Graph.ConnectorPinModel
 Dynamo.Graph.ConnectorPinModel.ConnectorId.get -> System.Guid
 Dynamo.Graph.ConnectorPinModel.ConnectorId.set -> void
@@ -1280,10 +1295,13 @@ Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.GroupStyleId -> System.Guid
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.HasNestedGroups -> bool
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.Height -> double
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.HeightAdjustment -> double
+Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.HeightAdjustmentCollapsed -> double
+Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.HeightAdjustmentExpanded -> double
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.Id -> string
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.InitialHeight -> double
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.InitialTop -> double
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.IsExpanded -> bool
+Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.IsResizedWhileCollapsed -> bool
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.Left -> double
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.Nodes -> System.Collections.Generic.IEnumerable<string>
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.PinnedNode -> string
@@ -1292,6 +1310,8 @@ Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.Title -> string
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.Top -> double
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.Width -> double
 Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.WidthAdjustment -> double
+Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.WidthAdjustmentCollapsed -> double
+Dynamo.Graph.Workspaces.ExtraAnnotationViewInfo.WidthAdjustmentExpanded -> double
 Dynamo.Graph.Workspaces.ExtraConnectorPinInfo
 Dynamo.Graph.Workspaces.ExtraConnectorPinInfo.ConnectorGuid -> string
 Dynamo.Graph.Workspaces.ExtraConnectorPinInfo.ExtraConnectorPinInfo() -> void
