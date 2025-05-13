@@ -8,6 +8,7 @@ using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Views;
 using Dynamo.Wpf.Utilities;
+using HelixToolkit.Wpf.SharpDX;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -58,6 +59,33 @@ namespace Dynamo.Controls
         public Grid ContentGrid
         {
             get { return inputGrid; }
+        }
+
+        private Grid _inputGrid = null;
+
+        //Todo add message to mark this as dreprecated or ContentGrid?  Currenlty only one item references ContentGrid.  Most use inputGrid
+        public Grid inputGrid
+        {
+            get
+            {
+                if (_inputGrid == null)
+                {
+                    _inputGrid = new Grid()
+                    {
+                        Name = "inputGrid",
+                        MinHeight = Configuration.Configurations.PortHeightInPixels,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        HorizontalAlignment = HorizontalAlignment.Center,
+                    };
+
+                    Canvas.SetZIndex(_inputGrid, 5);
+                    _inputGrid.SetBinding(Grid.IsEnabledProperty, new Binding("IsInteractionEnabled"));
+
+                    centralGrid.Children.Add(_inputGrid);
+                }
+
+                return _inputGrid;
+            }
         }
 
         public NodeViewModel ViewModel
@@ -116,13 +144,17 @@ namespace Dynamo.Controls
 
         #region constructors
 
-        internal Grid grid;
+        //View items referenced outside of NodevView previously from xaml
         internal Border nodeBorder;
         internal TextBlock NameBlock;
         internal TextBox EditableNameBox;
+        internal Rectangle nodeIcon;
+        internal Rectangle nodeBackground;
+        internal ItemsControl inPortControl;
+        internal ItemsControl outPortControl;
 
+        //View items referenced outside of Nodeview previously from xaml but now loaded as requried.
         private Canvas _expansionBay;
-
         internal Canvas expansionBay
         {
             get
@@ -178,31 +210,6 @@ namespace Dynamo.Controls
                 return _centralGrid;
             }
         }
-        internal Rectangle nodeIcon;
-
-        private Grid _inputGrid = null;
-        public Grid inputGrid
-        {
-            get
-            {
-                if(_inputGrid == null)
-                {
-                    _inputGrid = new Grid()
-                    {
-                        Name = "inputGrid",
-                        MinHeight = Configuration.Configurations.PortHeightInPixels,
-                        Margin = new System.Windows.Thickness(6, 6, 6, 3)
-                    };
-
-                    Canvas.SetZIndex(_inputGrid, 5);
-                    _inputGrid.SetBinding(Grid.IsEnabledProperty, new Binding("IsInteractionEnabled"));
-
-                    centralGrid.Children.Add(_inputGrid);
-                }
-
-                return _inputGrid;
-            }
-        }
 
         private Grid _presentationGrid = null;
         public Grid PresentationGrid
@@ -231,13 +238,12 @@ namespace Dynamo.Controls
             }
         }
 
+        //View items referenced outside of NodevView previously from xaml outside of DynamoWPF
         public ContextMenu MainContextMenu = new ContextMenu();
+        public Grid grid;
 
-        private static ImageBrush defaultIcon = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/default-node-icon.png")))
-        {
-            Stretch = Stretch.UniformToFill
-        };
-
+        // Static resources mostly from DynamoModern themes but some from NodeView xaml
+        // Brushes
         private static SolidColorBrush primaryCharcoal100 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCDCDC"));
         private static SolidColorBrush primaryCharcoal200 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EEEEEE"));
         private static SolidColorBrush blue300 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6ac0e7"));
@@ -246,19 +252,34 @@ namespace Dynamo.Controls
         private static SolidColorBrush midGrey = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#666666"));
         private static SolidColorBrush nodeContextMenuBackgroundHighlight = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#808080"));
         private static SolidColorBrush nodeContextMenuSeparatorColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AFAFAF"));
+        private static SolidColorBrush nodeOptionsButtonBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#282828"));
+
+        // Converters
         private static InverseBooleanToVisibilityCollapsedConverter inverseBooleanToVisibilityCollapsedConverter = new InverseBooleanToVisibilityCollapsedConverter();
         private static BoolToVisibilityCollapsedConverter boolToVisibilityCollapsedConverter = new BoolToVisibilityCollapsedConverter();
         private static BoolToVisibilityConverter booleanToVisibilityConverter = new BoolToVisibilityConverter();
-        private static FontFamily artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
-        internal static readonly Style DynamoToolTipTopStyle = GetDynamoToolTipTopStyle();
 
+        // Font
+        private static FontFamily artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
+
+        // Images
         private static readonly BitmapImage FrozenImageSource = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png"));
         private static readonly BitmapImage TransientImageSource = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/NodeStates/transient-64px.png"));
         private static readonly BitmapImage HiddenEyeImageSource = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/hidden.png"));
+        private static readonly BitmapImage NodeButtonDotsSelected = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/more-vertical_selected_16px.png"));
+        private static readonly BitmapImage NodeButtonDots = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/more-vertical.png"));
+        private static ImageBrush defaultIcon = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/default-node-icon.png")))
+        {
+            Stretch = Stretch.UniformToFill
+        };
 
         //Todo reset this to animimation vs simple when NodeCountOptimizationEnabled changes.
         private static Style ZoomFadeStyle = GetZoomFadeStyle();
+        private static Style NodeButtonStyle = GetNodeButtonStyle();
+        private static Style CodeBlockNodeItemControlStyle = GetCodeBlockNodeItemControlStyle();
+        internal static readonly Style DynamoToolTipTopStyle = GetDynamoToolTipTopStyle();
 
+        //Freeze the static resource to reduce memory overhaead... Not sure we need this. 
         static NodeView()
         {
             primaryCharcoal100.Freeze();
@@ -269,9 +290,12 @@ namespace Dynamo.Controls
             midGrey.Freeze();
             nodeContextMenuBackgroundHighlight.Freeze();
             nodeContextMenuSeparatorColor.Freeze();
+            nodeOptionsButtonBackground.Freeze();
             FrozenImageSource.Freeze();
             TransientImageSource.Freeze();
             HiddenEyeImageSource.Freeze();
+            NodeButtonDotsSelected.Freeze();
+            NodeButtonDots.Freeze();
             defaultIcon.Freeze();
         }
 
@@ -298,7 +322,7 @@ namespace Dynamo.Controls
 
             grid.ContextMenu = new ContextMenu();
 
-            var nodeBackground = new Rectangle()
+            nodeBackground = new Rectangle()
             {
                 Name = "nodeBackground",
                 Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C3C")),  //DarkGreyBrush
@@ -309,6 +333,7 @@ namespace Dynamo.Controls
             Grid.SetColumnSpan(nodeBackground, 3);
             Canvas.SetZIndex(nodeBackground, 1);
 
+            // Node Body Background 
             var nameBackground = new Border()
             {
                 Name = "nameBackground",
@@ -528,7 +553,7 @@ namespace Dynamo.Controls
             renameIndicator.ToolTip = dynamoToolTip;
 
 
-            var inPortControl = new ItemsControl()
+            inPortControl = new ItemsControl()
             {
                 Name = "inPortControl",
                 Margin = new Thickness(-25, 3, 0, 0),
@@ -536,13 +561,12 @@ namespace Dynamo.Controls
                 HorizontalContentAlignment = HorizontalAlignment.Stretch
             };
 
-            //Todo add style or set it at OnDataContextSet
             inPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("InPorts"));
             Grid.SetRow(inPortControl, 2);
             Grid.SetColumn(inPortControl, 0);
             Canvas.SetZIndex(inPortControl, 6);
 
-            var outPortControl = new ItemsControl()
+            outPortControl = new ItemsControl()
             {
                 Name = "outPortControl",
                 Margin = new Thickness(0, 3, -24, 5),
@@ -550,12 +574,10 @@ namespace Dynamo.Controls
                 HorizontalContentAlignment = HorizontalAlignment.Stretch,
             };
 
-            //Todo add style or set it at OnDataContextSet
             outPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("OutPorts"));
             Grid.SetRow(outPortControl, 2);
             Grid.SetColumn(outPortControl, 2);
             Canvas.SetZIndex(outPortControl, 4);
-            //TODO set margin for codeblock to be lower
 
             var GlyphStackPanel = new StackPanel()
             {
@@ -566,8 +588,6 @@ namespace Dynamo.Controls
                 Orientation = Orientation.Horizontal,
                 Style = ZoomFadeStyle
             };
-
-            //Todo Set NodeCountOptimizationEnabled style
 
             var experimentalIcon = new FontAwesome5.ImageAwesome()
             {
@@ -679,7 +699,7 @@ namespace Dynamo.Controls
                 Name = "AlertsGlyph",
                 Height = 16,
                 MinWidth = 16,
-                Margin = new Thickness(0,0,3,0)
+                Margin = new Thickness(0, 0, 3, 0)
             };
 
             // Create the Border
@@ -735,8 +755,11 @@ namespace Dynamo.Controls
             // Apply the style to the Grid
             alertsGlyph.Style = gridStyle;
 
+
+            //Todo Can this be adjusted with margin on the stack panel instead?
+            //Spacer for embedded resize thumb(visible only on resizable nodes)
             var spacerBorder = new Border
-            {
+            {   
                 Width = 16,
                 Height = 16,
                 Background = Brushes.Transparent,
@@ -744,11 +767,31 @@ namespace Dynamo.Controls
                 IsHitTestVisible = false
             };
 
-            spacerBorder.SetBinding(UIElement.VisibilityProperty, new Binding("IsResizable")
+            spacerBorder.SetBinding(UIElement.VisibilityProperty, new Binding("NodeModel.IsResizable")
             {
                 Converter = boolToVisibilityCollapsedConverter,
                 Mode = BindingMode.OneWay
             });
+
+            //Todo Does this need to be a button
+            // Button to open node context menu from lower right corner
+            // Create the Button
+            Button optionsButton = new Button
+            {
+                Name = "OptionsButton"
+            };
+
+            // Set the Click event handler
+            optionsButton.Click += DisplayNodeContextMenu;
+
+            // Create the ToolTip
+            ToolTip toolTip = new ToolTip
+            {
+                Content = Wpf.Properties.Resources.ContextMenu
+            };
+            optionsButton.ToolTip = toolTip;
+
+            optionsButton.Style = NodeButtonStyle;
 
             Grid.SetRow(GlyphStackPanel, 3);
             Grid.SetColumnSpan(GlyphStackPanel, 3);
@@ -761,6 +804,7 @@ namespace Dynamo.Controls
             GlyphStackPanel.Children.Add(LacingIconGlyph);
             GlyphStackPanel.Children.Add(alertsGlyph);
             GlyphStackPanel.Children.Add(spacerBorder);
+            GlyphStackPanel.Children.Add(optionsButton);
 
             this.nodeBorder = new Border()
             {
@@ -804,7 +848,35 @@ namespace Dynamo.Controls
             Canvas.SetZIndex(selectionBorder, 6);
 
             //TODO nodeHoveringStateBorder
-            //TODO warningBar
+
+            // Warning Bar: Displays when node is in Info/Warning/Error state
+            // Create the Rectangle
+            Rectangle warningBar = new Rectangle
+            {
+                Name = "warningBar",
+                Height = 12,
+            };
+
+            // Set Grid.Row, Grid.Column, and Grid.ColumnSpan
+            Grid.SetRow(warningBar, 4);
+            Grid.SetColumn(warningBar, 0);
+            Grid.SetColumnSpan(warningBar, 3);
+
+            // Set Canvas.ZIndex
+            Canvas.SetZIndex(warningBar, 1);
+
+            // Create and set the binding for Fill
+            warningBar.SetBinding(Rectangle.FillProperty, new Binding("WarningBarColor")
+            {
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
+            // Create and set the binding for Visibility
+            warningBar.SetBinding(Rectangle.VisibilityProperty, new Binding("NodeWarningBarVisible")
+            {
+                Converter = boolToVisibilityCollapsedConverter,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
 
             //TODO DebugAST Canvas.  Do we need this?
             //TODO IsCustomFunction section.  Do we need this?
@@ -817,6 +889,7 @@ namespace Dynamo.Controls
             grid.Children.Add(GlyphStackPanel);
             grid.Children.Add(nodeBorder);
             grid.Children.Add(selectionBorder);
+            grid.Children.Add(warningBar);
 
             this.Content = grid;
 
@@ -829,6 +902,64 @@ namespace Dynamo.Controls
 
 
             Panel.SetZIndex(this, 1);
+        }
+
+        private static Style GetNodeButtonStyle()
+        {
+            // Create the Style
+            Style buttonStyle = new Style(typeof(Button));
+
+            // Create the ControlTemplate
+            ControlTemplate controlTemplate = new ControlTemplate(typeof(Button));
+            FrameworkElementFactory gridFactory = new FrameworkElementFactory(typeof(Grid));
+
+            // Create the Border
+            FrameworkElementFactory borderFactory = new FrameworkElementFactory(typeof(Border));
+            borderFactory.Name = "DotsBackgroundBorder";
+            borderFactory.SetValue(Border.WidthProperty, 24.0);
+            borderFactory.SetValue(Border.HeightProperty, 24.0);
+            borderFactory.SetValue(Border.BackgroundProperty, Brushes.Transparent);
+            borderFactory.SetValue(Border.CornerRadiusProperty, new CornerRadius(2));
+
+            // Create the Image
+            FrameworkElementFactory imageFactory = new FrameworkElementFactory(typeof(Image));
+            imageFactory.Name = "DotsImage";
+            imageFactory.SetValue(Image.WidthProperty, 16.0);
+            imageFactory.SetValue(Image.HeightProperty, 16.0);
+            imageFactory.SetValue(Image.MarginProperty, new Thickness(1.5, 0, 0, 0));
+            imageFactory.SetValue(Image.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            imageFactory.SetValue(Image.VerticalAlignmentProperty, VerticalAlignment.Center);
+            imageFactory.SetValue(Image.StretchProperty, Stretch.UniformToFill);
+
+            // Add Border and Image to Grid
+            gridFactory.AppendChild(borderFactory);
+            gridFactory.AppendChild(imageFactory);
+
+            controlTemplate.VisualTree = gridFactory;
+
+            // Create the Triggers
+            Trigger isMouseOverTrueTrigger = new Trigger
+            {
+                Property = UIElement.IsMouseOverProperty,
+                Value = true
+            };
+            isMouseOverTrueTrigger.Setters.Add(new Setter(Border.BackgroundProperty, nodeOptionsButtonBackground, "DotsBackgroundBorder"));
+            isMouseOverTrueTrigger.Setters.Add(new Setter(Image.SourceProperty, NodeButtonDotsSelected, "DotsImage"));
+
+            Trigger isMouseOverFalseTrigger = new Trigger
+            {
+                Property = UIElement.IsMouseOverProperty,
+                Value = false
+            };
+            isMouseOverFalseTrigger.Setters.Add(new Setter(Border.BackgroundProperty, Brushes.Transparent, "DotsBackgroundBorder"));
+            isMouseOverFalseTrigger.Setters.Add(new Setter(Image.SourceProperty, new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/more-vertical.png")), "DotsImage"));
+
+            controlTemplate.Triggers.Add(isMouseOverTrueTrigger);
+            controlTemplate.Triggers.Add(isMouseOverFalseTrigger);
+
+            // Set the ControlTemplate in the Style
+            buttonStyle.Setters.Add(new Setter(Control.TemplateProperty, controlTemplate));
+            return buttonStyle;
         }
 
         private static Style GetDynamoToolTipTopStyle()
@@ -936,6 +1067,30 @@ namespace Dynamo.Controls
             return controlStyle;
         }
 
+        private static Style GetCodeBlockNodeItemControlStyle()
+        {
+            Style inOutPortControlStyle = new Style(typeof(ItemsControl));
+
+            // Create the ItemsPanelTemplate
+            ItemsPanelTemplate itemsPanelTemplate = new ItemsPanelTemplate();
+
+            // Create the InOutPortPanel (assuming dynui:InOutPortPanel is defined in the project)
+            FrameworkElementFactory inOutPortPanelFactory = new FrameworkElementFactory(typeof(InOutPortPanel));
+            inOutPortPanelFactory.SetValue(InOutPortPanel.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            inOutPortPanelFactory.SetValue(InOutPortPanel.VerticalAlignmentProperty, VerticalAlignment.Stretch);
+
+            // Set the visual tree for the ItemsPanelTemplate
+            itemsPanelTemplate.VisualTree = inOutPortPanelFactory;
+
+            // Create the Setter for ItemsPanel
+            Setter itemsPanelSetter = new Setter(ItemsControl.ItemsPanelProperty, itemsPanelTemplate);
+
+            // Add the setter to the style
+            inOutPortControlStyle.Setters.Add(itemsPanelSetter);
+
+            return inOutPortControlStyle;
+        }
+
         private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)
         {
             ViewModel.NodeLogic.DispatchedToUI -= NodeLogic_DispatchedToUI;
@@ -958,6 +1113,7 @@ namespace Dynamo.Controls
                 previewControl = null;
             }
             nodeBorder.SizeChanged -= OnSizeChanged;
+            nodeBackground.Loaded -= NodeViewReady;
         }
 
         #endregion
@@ -1014,6 +1170,14 @@ namespace Dynamo.Controls
                 };
                 icon.Freeze();
                 nodeIcon.Fill = icon;
+            }
+
+            //Add the addjusted Sytle for CodeBlockNodeModel to add overrides for Measure / Layout
+            if(ViewModel.NodeModel is CodeBlockNodeModel)
+            {
+                inPortControl.Style = CodeBlockNodeItemControlStyle;
+                outPortControl.Margin = new Thickness(0, 12, -24, 0);
+                outPortControl.Style = CodeBlockNodeItemControlStyle;
             }
 
             //Add items for custom nodes

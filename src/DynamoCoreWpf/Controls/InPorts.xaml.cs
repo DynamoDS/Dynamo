@@ -70,6 +70,7 @@ namespace Dynamo.UI.Controls
             PortSnapping.SetBinding(Rectangle.IsHitTestVisibleProperty, new Binding("IsHitTestVisible"));
 
             //TODO change to trigger handler?
+            //TODO deregister event handler
             PortSnapping.MouseEnter += (s, e) => viewModel.MouseEnterCommand.Execute(DataContext);
             PortSnapping.MouseLeave += (s, e) => viewModel.MouseLeaveCommand.Execute(DataContext);
 

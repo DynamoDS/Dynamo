@@ -1,3 +1,4 @@
+using Dynamo.Configuration;
 using Dynamo.Controls;
 using Dynamo.Microsoft.Xaml.Behaviors;
 using Dynamo.ViewModels;
@@ -34,6 +35,7 @@ namespace Dynamo.UI.Controls
         private static BoolToVisibilityCollapsedConverter boolToVisibilityCollapsedConverter = new BoolToVisibilityCollapsedConverter();
         private static FontFamily artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
         private static SolidColorBrush primaryCharcoal200Brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCDCDC"));
+        private static SolidColorBrush midGrey = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#666666"));
 
         public OutPorts()
         {
@@ -134,7 +136,7 @@ namespace Dynamo.UI.Controls
 
             BorderHighlightOverlay = new Border()
             {
-                Name = "PortBackgroundBorder",
+                Name = "BorderHighlightOverlay",
                 BorderBrush = Brushes.Transparent,
                 Opacity = 0.2,
                 SnapsToDevicePixels = true,
@@ -185,6 +187,8 @@ namespace Dynamo.UI.Controls
             };
 
             //TODO Finish NodeAutoCompletHover
+
+            //TODO Finish PortBoderHighlight
 
             Grid.SetColumn(NodeAutoCompleteHover, 2);
 
@@ -258,6 +262,27 @@ namespace Dynamo.UI.Controls
 
             mouseLeaveTrigger.Actions.Add(mouseLeaveAction);
             Dynamo.Microsoft.Xaml.Behaviors.Interaction.GetTriggers(PortSnapping).Add(mouseLeaveTrigger);
+
+            if (viewModel.IsPortCondensed)
+            {
+                MainGrid.Height = 14;
+                MainGrid.Margin = new Thickness(0,3,0,0);
+
+                PortBackgroundBorder.CornerRadius = new CornerRadius(0);
+                PortBackgroundBorder.BorderThickness = new Thickness(0);
+                PortBackgroundBorder.Height = 14;
+                PortBackgroundBorder.Width = 20;
+                PortBackgroundBorder.Background = midGrey;
+                PortBackgroundBorder.BorderBrush = Brushes.Transparent;
+                PortNameTextBox.Margin = new Thickness(12,1,0,0);
+                PortNameGrid.Height = 14;
+                PortNameGrid.Margin = new Thickness(0, 1, 2, 0);
+                BorderHighlightOverlay.CornerRadius = new CornerRadius(0);
+                BorderHighlightOverlay.BorderThickness = new Thickness(0);
+                BorderHighlightOverlay.Height = Configurations.CodeBlockOutputPortHeightInPixels;
+                BorderHighlightOverlay.Width = 20;
+                BorderHighlightOverlay.Margin = new Thickness(5,0,0,0);
+            }
 
         }
     }
