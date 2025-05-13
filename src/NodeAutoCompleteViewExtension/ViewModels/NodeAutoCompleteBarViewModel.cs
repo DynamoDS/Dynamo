@@ -811,6 +811,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 var entryPortIndex = clusterResultItem.EntryNodeInPort;
                 if (entryNode.InPorts.Count > entryPortIndex)
                 {
+                    //only connect to the entry node when it does not have connections already.
                     if (!entryNode.InPorts[entryPortIndex].Connectors.Any())
                     {
                         var entryConnector = ConnectorModel.Make(PortViewModel.NodeViewModel.NodeModel, entryNode, 0, entryPortIndex);
@@ -819,7 +820,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                             entryConnector.IsHidden = true;
                             var entryConnectorViewModel = workspaceViewModel.Connectors.First(c => c.ConnectorModel.Equals(entryConnector));
                             entryConnectorViewModel.IsConnecting = true;
-
                             createdClusterItems.Add(entryConnector);
                         }
                     }
