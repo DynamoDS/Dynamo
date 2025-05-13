@@ -128,7 +128,6 @@ namespace Dynamo.Controls
             nodeBorder.SizeChanged += OnSizeChanged;
             DataContextChanged += OnDataContextChanged;
 
-
             Panel.SetZIndex(this, 1);
         }
 
@@ -154,6 +153,8 @@ namespace Dynamo.Controls
                 previewControl = null;
             }
             nodeBorder.SizeChanged -= OnSizeChanged;
+            DataContextChanged -= OnDataContextChanged;
+            Loaded -= OnNodeViewLoaded;
         }
 
         #endregion
