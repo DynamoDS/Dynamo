@@ -1346,7 +1346,6 @@ namespace Dynamo.ViewModels
         /// </summary>
         public TrustedPathViewModel TrustedPathsViewModel { get; set; }
 
-        //public bool NoNetworkMode => dynamoViewModel.Model.NoNetworkMode;
         private bool noNetworkMode;
         public bool NoNetworkMode
         {
