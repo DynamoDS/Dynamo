@@ -74,7 +74,7 @@ launchSettings.json
 
 # GitHub #
 ###############
-*.github/
+.github/
 
 #documentation files
 doc/html/
