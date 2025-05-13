@@ -499,7 +499,7 @@ namespace Dynamo.Models
             {
                 // Log file open action and the number of nodes in the opened workspace
                 Dynamo.Logging.Analytics.TrackTaskFileOperationEvent(
-                    FilePath,
+                    Path.GetFileName(FilePath),
                     Logging.Actions.Open,
                     dynamoModel.CurrentWorkspace.Nodes.Count());
 
@@ -599,7 +599,7 @@ namespace Dynamo.Models
             {
                 // Log file open action and the number of nodes in the opened workspace
                 Dynamo.Logging.Analytics.TrackTaskFileOperationEvent(
-                    FilePath,
+                    Path.GetFileName(FilePath),
                     Logging.Actions.Open,
                     dynamoModel.CurrentWorkspace.Nodes.Count());
 
@@ -791,12 +791,13 @@ namespace Dynamo.Models
         [DataContract]
         public class CreateNodeCommand : ModelBasedRecordableCommand
         {
-            private void SetProperties(double x, double y, bool defaultPosition, bool transformCoordinates)
+            private void SetProperties(double x, double y, bool defaultPosition, bool transformCoordinates, bool isTransient)
             {
                 X = x;
                 Y = y;
                 DefaultPosition = defaultPosition;
                 TransformCoordinates = transformCoordinates;
+                IsTransient = isTransient;
             }
 
             #region Public Class Methods
@@ -813,7 +814,7 @@ namespace Dynamo.Models
                 : base(node != null ? new[] { node.GUID } : new[] { Guid.Empty })
             {
                 Node = node;
-                SetProperties(x, y, defaultPosition, transformCoordinates);
+                SetProperties(x, y, defaultPosition, transformCoordinates, false);
             }
 
             /// <summary>
@@ -829,7 +830,7 @@ namespace Dynamo.Models
                 : base(new[] { Guid.Empty })
             {
                 NodeXml = node;
-                SetProperties(x, y, defaultPosition, transformCoordinates);
+                SetProperties(x, y, defaultPosition, transformCoordinates, false);
             }
 
             /// <summary>
@@ -846,7 +847,7 @@ namespace Dynamo.Models
                 : base(nodeId)
             {
                 Name = nodeName;
-                SetProperties(x, y, defaultPosition, transformCoordinates);
+                SetProperties(x, y, defaultPosition, transformCoordinates, false);
             }
 
             /// <summary>
@@ -864,7 +865,26 @@ namespace Dynamo.Models
                 : base(new[] { Guid.Parse(nodeId) })
             {
                 Name = nodeName;
-                SetProperties(x, y, defaultPosition, transformCoordinates);
+                SetProperties(x, y, defaultPosition, transformCoordinates, false);
+            }
+
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="nodeId"></param>
+            /// <param name="nodeName"></param>
+            /// <param name="x"></param>
+            /// <param name="y"></param>
+            /// <param name="defaultPosition"></param>
+            /// <param name="transformCoordinates"></param>
+            /// <param name="isTransient"></param>
+            [JsonConstructor]
+            internal CreateNodeCommand(string nodeId, string nodeName,
+                double x, double y, bool defaultPosition, bool transformCoordinates, bool isTransient)
+                : base(new[] { Guid.Parse(nodeId) })
+            {
+                Name = nodeName;
+                SetProperties(x, y, defaultPosition, transformCoordinates, isTransient);
             }
 
             internal static CreateNodeCommand DeserializeCore(XmlElement element)
@@ -899,6 +919,8 @@ namespace Dynamo.Models
             // If it was deserialized
             internal XmlElement NodeXml { get; private set; }
 
+            // Node will be creted in transient state.
+            internal bool IsTransient { get; private set; } = false;
 
             [DataMember]
             internal double X { get; private set; }
@@ -1667,6 +1689,8 @@ namespace Dynamo.Models
         [DataContract]
         public class DeleteModelCommand : ModelBasedRecordableCommand
         {
+            internal bool CanDeleteTransientNodes { get; set; } = false;
+
             #region Public Class Methods
 
             /// <summary>
@@ -1687,6 +1711,16 @@ namespace Dynamo.Models
             /// </summary>
             /// <param name="modelGuids"></param>
             public DeleteModelCommand(IEnumerable<Guid> modelGuids) : base(modelGuids) { }
+
+            /// <summary>
+            ///
+            /// </summary>
+            /// <param name="modelGuids"></param>
+            /// <param name="canDeleteTransientNodes"></param>
+            internal DeleteModelCommand(IEnumerable<Guid> modelGuids, bool canDeleteTransientNodes) : base(modelGuids)
+            {
+                CanDeleteTransientNodes = canDeleteTransientNodes;
+            }
 
             internal static DeleteModelCommand DeserializeCore(XmlElement element)
             {
@@ -2251,7 +2285,12 @@ namespace Dynamo.Models
                 {
                     annotationText = Resources.GroupNameDefaultText;
                 }
-                if (string.IsNullOrEmpty(annotationDescriptionText))
+
+                if (!PreferenceSettings.Instance.ShowDefaultGroupDescription)
+                {
+                    annotationDescriptionText = string.Empty;
+                }
+                else if (string.IsNullOrEmpty(annotationDescriptionText))
                 {
                     annotationDescriptionText = Resources.GroupDefaultText;
                 }

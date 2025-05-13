@@ -11,6 +11,7 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Threading;
 using Dynamo.Controls;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
@@ -65,6 +66,9 @@ namespace Dynamo.Views
         private double currentNodeCascadeOffset;
         private Point inCanvasSearchPosition;
         private List<DependencyObject> hitResultsList = new List<DependencyObject>();
+
+        static internal event Action<Window, ViewModelBase> RequesNodeAutoCompleteBar;
+        private double currentRenderScale = -1;
 
         public WorkspaceViewModel ViewModel
         {
@@ -131,6 +135,7 @@ namespace Dynamo.Views
             ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
             ViewModel.RequestHideAllPopup -= HideAllPopUp;
             ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
+            ViewModel.RequestNodeAutoCompleteBar -= ShowNodeAutoCompleteBar;
             ViewModel.RequestPortContextMenu -= ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged -= ViewModel_PropertyChanged;
 
@@ -151,6 +156,7 @@ namespace Dynamo.Views
             infiniteGridView.DetachFromZoomBorder(zoomBorder);
 
             zoomBorder.ViewSettingsChanged -= CallUpdateWorkspaceElementVisibility;
+            currentRenderScale = -1;
         }
 
         /// <summary>
@@ -162,6 +168,7 @@ namespace Dynamo.Views
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
             ViewModel.RequestHideAllPopup += HideAllPopUp;
             ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
+            ViewModel.RequestNodeAutoCompleteBar += ShowNodeAutoCompleteBar;
             ViewModel.RequestPortContextMenu += ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
@@ -203,6 +210,11 @@ namespace Dynamo.Views
         private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
         {
             ShowHidePopup(flag, NodeAutoCompleteSearchBar);
+        }
+
+        private void ShowNodeAutoCompleteBar(PortViewModel viewModel)
+        {
+            RequesNodeAutoCompleteBar?.Invoke(Window.GetWindow(this), viewModel);
         }
 
         private void ShowHidePortContextMenu(ShowHideFlags flag, PortViewModel portViewModel)
@@ -255,7 +267,7 @@ namespace Dynamo.Views
                             // 2. Dynamo rely on child visibility change hander to setup Node AutoComplete control
                             // 3. This should not be set to in canvas search control
                             popup.Child.Visibility = Visibility.Collapsed;
-                            ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
+                            ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutoCompleteWindowPlacement(popup);
                         }
 
                         else if (popup == PortContextMenu)
@@ -660,9 +672,97 @@ namespace Dynamo.Views
 
         void vm_ZoomChanged(object sender, EventArgs e)
         {
-            zoomBorder.SetZoom((e as ZoomEventArgs).Zoom);
-            if (PortContextMenu.IsOpen) DestroyPortContextMenu();
+            var newZoomScale = (e as ZoomEventArgs).Zoom;
+            zoomBorder.SetZoom(newZoomScale);
+            if (PortContextMenu.IsOpen)
+            {
+                DestroyPortContextMenu();
+            }
+
+            CheckZoomScaleAndApplyNodeViewCache(newZoomScale);
         }
+
+        #region NodeView_BitmapCache
+        private void CheckZoomScaleAndApplyNodeViewCache(double newZoomScale)
+        {
+            //disable bitmap caching if max zoom scale set to 0, or feature flag was unable to fetch;
+            if (ViewModel.MaxZoomScaleForBitmapCache == 0) return;
+
+            if (!ViewModel.NodeCountOptimizationEnabled)
+            {
+                if (currentRenderScale > 0) // number of nodes reduced below max threshold
+                {
+                    Dispatcher.BeginInvoke(ClearNodeViewCache, DispatcherPriority.Normal);
+                }
+
+                return;
+            }
+
+            if (newZoomScale > ViewModel.MaxZoomScaleForBitmapCache)
+            {
+                if (currentRenderScale > 0)
+                {
+                    Dispatcher.BeginInvoke(ClearNodeViewCache, DispatcherPriority.Normal);
+                }
+                
+                return;
+            }
+
+            var newRenderScale = newZoomScale switch
+            {
+                <= 0.2 => 0.2,
+                <= 0.5 => 0.5,
+                _ => 1
+            };
+
+            if (Math.Abs(newRenderScale - currentRenderScale) <= 0.01)
+            {
+                return;
+            }
+
+            currentRenderScale = newRenderScale;
+            Dispatcher.BeginInvoke(UpdateNodeViewCacheScale, DispatcherPriority.Normal);
+        }
+
+        /// <summary>
+        /// Clear the node view bitmap cache
+        /// </summary>
+
+        private void ClearNodeViewCache()
+        {
+            var nodes = this.ChildrenOfType<NodeView>();
+            foreach (var node in nodes)
+            {
+                node.CacheMode = null;
+            }
+
+            currentRenderScale = -1;
+        }
+
+        /// <summary>
+        /// Update the node view bitmap cache scale
+        /// </summary>
+        private void UpdateNodeViewCacheScale()
+        {
+            var nodes = this.ChildrenOfType<NodeView>();
+            BitmapCache sharedCache = null;
+            foreach (var node in nodes)
+            {
+                if (node.CacheMode is BitmapCache cache)
+                {
+                    cache.RenderAtScale = currentRenderScale;
+                }
+                else
+                {
+                    if (sharedCache == null)
+                    {
+                        sharedCache = new BitmapCache(currentRenderScale);
+                    }
+                    node.CacheMode = sharedCache;
+                }
+            }
+        }
+        #endregion
 
         void vm_ZoomAtViewportCenter(object sender, EventArgs e)
         {

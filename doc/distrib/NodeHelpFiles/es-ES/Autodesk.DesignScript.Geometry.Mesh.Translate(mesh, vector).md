@@ -3,4 +3,4 @@ El nodo `Mesh.Translate` (vector) traslada cualquier tipo de malla en la direcci
 
 ## Archivo de ejemplo
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh.vector)_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh,%20vector)_img.jpg)

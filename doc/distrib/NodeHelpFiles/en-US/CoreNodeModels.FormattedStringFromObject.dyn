@@ -1,0 +1,188 @@
+{
+  "Uuid": "78947778-f07c-4841-9d1e-ceb8b08687f0",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "CoreNodeModels.FormattedStringFromObject",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "CoreNodeModels.Input.StringInput, CoreNodeModels",
+      "SerializedWidth": 0.0,
+      "SerializedHeight": 0.0,
+      "Id": "e6537ae36a8740658b0df8c70a417cd5",
+      "NodeType": "StringInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "ff73492bccb840a18ae7af972582da26",
+          "Name": "",
+          "Description": "String",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a string",
+      "InputValue": "N"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.FormattedStringFromObject, CoreNodeModels",
+      "Id": "171565cf3c894ea4b87e1703ba08a0b7",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "a9c97b8ed73b4bad9deb3ac91b5d6496",
+          "Name": "object",
+          "Description": "Object to be serialized",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        },
+        {
+          "Id": "5f4492ac1deb410dbf0dd8bbd4d48ea3",
+          "Name": "formatSpecifier",
+          "Description": "Format specifier for numeric values, see extended node help for more info.\r\ndefault value: G",
+          "UsingDefaultValue": true,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "e035027d8cae48dc82b085a6ceefed39",
+          "Name": "string",
+          "Description": "String representation of the object",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Converts an object to a string representation"
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Input.DoubleInput, CoreNodeModels",
+      "NumberType": "Double",
+      "Id": "dcccf95e529c400e983c1680bd7bf2cb",
+      "NodeType": "NumberInputNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "a47007d1dd9a4bf7ba35c7fffd6723f4",
+          "Name": "",
+          "Description": "Double",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Creates a number",
+      "InputValue": 10000000.0
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "ff73492bccb840a18ae7af972582da26",
+      "End": "5f4492ac1deb410dbf0dd8bbd4d48ea3",
+      "Id": "5248147294ee4a219343f4a055f83d52",
+      "IsHidden": "False"
+    },
+    {
+      "Start": "a47007d1dd9a4bf7ba35c7fffd6723f4",
+      "End": "a9c97b8ed73b4bad9deb3ac91b5d6496",
+      "Id": "0d0c14044201441ab1d74f4528e02973",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": null,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.5",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.5.0.6885",
+      "RunType": "Automatic",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "e6537ae36a8740658b0df8c70a417cd5",
+        "Name": "String",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 693.8306219396744,
+        "Y": 539.1330615953249
+      },
+      {
+        "Id": "171565cf3c894ea4b87e1703ba08a0b7",
+        "Name": "Formatted String from Object",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 1036.765067322417,
+        "Y": 410.4094218799543
+      },
+      {
+        "Id": "dcccf95e529c400e983c1680bd7bf2cb",
+        "Name": "Number",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 693.8306219396744,
+        "Y": 410.4094218799543
+      }
+    ],
+    "Annotations": [],
+    "X": -547.0915277170136,
+    "Y": -351.9594953189561,
+    "Zoom": 1.4425890929331342
+  }
+}

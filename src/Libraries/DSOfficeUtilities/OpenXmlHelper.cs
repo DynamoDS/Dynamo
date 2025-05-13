@@ -256,6 +256,10 @@ namespace DSOffice
             foreach (var row in sheetData.Elements<Row>())
             {
                 var lastCell = row.LastChild as Cell;
+
+                //When we have an empty row sometimes the Row.LastChild is null, so this validation will avoid the "Object reference not set to an instance of an object" error.
+                if (lastCell == null) continue;
+
                 var current = GetColumnIndex(lastCell.CellReference);
                 if (current > result)
                 {

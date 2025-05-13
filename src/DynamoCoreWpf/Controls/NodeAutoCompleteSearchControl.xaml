@@ -23,8 +23,8 @@
             <Style x:Key="SearchMemberStyle"
                    BasedOn="{StaticResource MemberGroupMemberStyle}"
                    TargetType="{x:Type ListBoxItem}">
-                <EventSetter Event="PreviewMouseLeftButtonUp"
-                             Handler="OnMouseLeftButtonUp" />
+                <EventSetter Event="PreviewMouseLeftButtonDown"
+                             Handler="OnMouseLeftButtonDown" />
                 <EventSetter Event="MouseEnter"
                              Handler="OnMouseEnter" />
                 <EventSetter Event="MouseLeave"

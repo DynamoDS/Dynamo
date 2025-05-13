@@ -1,0 +1,153 @@
+﻿<!--
+    Dynamo: https://github.com/DynamoDS/Dynamo
+-->
+<!-- These headers are required to force the browser embedded in the DocumentationBrowser extension to render in modern IE11 mode. -->
+
+<head>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width initial-scale=1">
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; } table { border-collapse: collapse; border: 1px solid white; } th, td { border: 1px solid white; padding-right: 10px; padding-left: 10px; padding-bottom: 10px; padding-top: 10px; } samp { margin-top: 10px; display: block; color: lightgrey; } code .k { color: #dcdcaa; font-weight: bold; } code .s { color: #ce9178; } code .v { color: #b5cea8; } code .o { color: #c586c0; font-weight: bold; } code .i { color: #569cd6; font-weight: bold; } code .b { color: #9cdcfe; font-weight: bold; } code .e { color: #43c9b0; } code > .nl .nl { padding-left: 10px; } code .nl { display: block; } thead { text-align: center; } .hidden-lg { display: none; } .button { background-color: transparent; border-color: #3c3c3c; color: #bbbbbb; } .button:hover { border-color: #656565; background-color: #373737; opacity: 1.0; } @media screen and (max-width: 600px) { table { width: 100%; } table, th, td { border: none; } tr { border: 1px solid white; display: block; } td, th { display: block; } .hidden-lg { display: block; font-weight: bold; text-align: center; border-bottom: 1px solid white; } .hidden-sm { display: none; } .spaced-sm { margin-top: 20px; } tbody tr:first-of-type { border-bottom: none; } }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+    <h1>Package Manager</h1>
+
+    <p>Dynamo Package Manager es un sistema centralizado para explorar, instalar y publicar paquetes. Acceda a él desde el área de navegación superior en <b>Paquetes - Package Manager</b>.</p>
+
+    <h2>¿Qué es un paquete?</h2>
+
+    <p>Dynamo ofrece un gran número de funciones listas para usar y también mantiene una amplia biblioteca de paquetes que puede ampliar considerablemente la capacidad de Dynamo. Un paquete es un conjunto de nodos personalizados o funciones adicionales. Dynamo Package Manager es un portal para que la comunidad descargue cualquier paquete que se haya publicado en línea. Estos conjuntos de herramientas los desarrollan terceros y el equipo de Dynamo para ampliar la funcionalidad principal de la herramienta. Están disponibles para todos los usuarios y listos para descargar con solo hacer clic.</p>
+
+    <h2>Instalación de paquetes de Dynamo</h2>
+
+    <p>Puede examinar e instalar paquetes en la ficha <b>Buscar paquetes</b> de Package Manager. Utilice el campo de búsqueda para localizar paquetes específicos. También puede aplicar filtros y ordenar para limitar la lista y cumplir los criterios, como un programa anfitrión o la falta de dependencias.</p>
+
+    <p>La compatibilidad de versiones se muestra a través de iconos en toda la página Buscar paquetes:</p>
+
+    <ul>
+        <li>Un indicador con una marca de verificación verde indica que es probable que la versión sea compatible con la versión actual de Dynamo y del programa anfitrión (si utiliza uno) como, por ejemplo, Revit.</li>
+        <li>Un indicador con un rombo rojo indica que es probable que la versión sea incompatible con la versión actual de Dynamo y el anfitrión (si utiliza uno).</li>
+        <li>Un indicador con un signo de interrogación azul indica que se desconoce la información de compatibilidad de la versión del paquete. Es posible que funcione o no con su configuración.</li>
+    </ul>
+
+    <p>Para ver más información sobre un paquete, haga clic en <b>Información</b> o en el nombre del paquete. Se abrirá un panel lateral en el que puede leer una descripción del paquete, buscar información sobre la versión y la licencia, etc.</p>
+
+    <p>Para instalar un paquete, haga clic en <b>Instalar</b> en la vista de búsqueda. Si el autor del paquete ha añadido información de compatibilidad, se instalará por defecto la versión compatible más reciente. De lo contrario, se instalará la versión más reciente, a menos que elija otra versión en el menú desplegable. En el panel de detalles del paquete, puede hacer clic en <b>Instalar</b> en la parte superior de una versión específica en la sección Versiones y requisitos de paquetes para instalar esa versión.</p>
+
+    <p>Para especificar la carpeta en la que se instalará el paquete, haga clic en la flecha desplegable situada junto al botón Instalar.</p>
+
+    <p>Puede encontrar una lista de los paquetes que ha instalado en la ficha <b>Paquetes instalados</b> de Package Manager. En esta ficha, puede ver archivos, desinstalar paquetes y mucho más.</p>
+
+    <h2>Votación de paquetes</h2>
+
+    <p>Si desea expresar su agradecimiento al autor, puede votar por un paquete que haya instalado. Vaya a <b>Buscar información de paquetes</b> y haga clic en el icono de <b>corazón</b> en la parte superior de los detalles del paquete. Solo está disponible para los paquetes instalados.</p>
+
+    <h2>Publicación de paquetes de Dynamo</h2>
+
+    <p>Package Manager permite publicar paquetes en Dynamo. Abra la ficha <b>Publicar un paquete</b> para comenzar con el proceso paso a paso de publicación de un paquete. La ficha Publicar un paquete solicita toda la información necesaria y opcional relacionada con el paquete que desea publicar.</p>
+
+    <h3>Paso 1: detalles del paquete</h3>
+
+    <p>En esta página, puede añadir información sobre el paquete en su conjunto, así como sobre la versión individual. Solo el nombre del paquete, la descripción y el número de versión son obligatorios; el resto de campos son opcionales, pero recomendables, para ayudar a los usuarios a localizar y comprender mejor la finalidad del paquete.</p>
+
+    <h4>Información del paquete</h4>
+
+    <p><b>Nombre (campo obligatorio):</b></p>
+    <p>Nombre del paquete que desea publicar. Este se mostrará en la biblioteca, la búsqueda de paquetes y el sitio web de Package Manager. Los nombres de paquete deben tener al menos 3 caracteres.</p>
+
+    <p><b>Descripción (campo obligatorio):</b></p>
+    <p>La descripción es una oportunidad para añadir más detalles sobre el paquete, como una enumeración de las excepciones y los requisitos previos. También puede utilizarse para informar a los usuarios sobre la finalidad del paquete y cómo puede utilizarse en las áreas de trabajo.</p>
+
+    <p>Para obtener información específica de la versión, es más eficaz añadir un vínculo a las Notas de la versión. Tenga en cuenta que la información de compatibilidad se añade en el siguiente paso, por lo que no es necesario que añada información de compatibilidad específica de la versión a la descripción del paquete.</p>
+
+    <p><b>Grupo:</b></p>
+    <p>Este campo permite especificar un grupo al que pertenece un paquete, como la empresa o la organización.</p>
+
+    <p><b>Palabras clave:</b></p>
+    <p>Palabras clave que pueden utilizarse como etiquetas relacionadas con el paquete, por ejemplo, Diseño generativo, Aprendizaje automático, etc. Las palabras clave pueden ayudar a los usuarios a encontrar el paquete mediante una búsqueda. Puede escribir varias palabras clave a la vez en el campo. Para ello, sepárelas con una coma y, a continuación, pulse Intro.</p>
+
+    <p><b>Vínculo al sitio web:</b></p>
+    <p>Un vínculo a un sitio web que proporciona al usuario más información sobre el paquete, la organización o el autor.</p>
+
+    <p><b>Vínculo del repositorio:</b></p>
+    <p>Un vínculo al repositorio del paquete que permite a los usuarios ver el paquete o contribuir a su desarrollo.</p>
+
+    <p><b>Titular del copyright:</b></p>
+    <p>Nombre de la persona que posee el copyright del paquete. Si se deja en blanco, se utilizará por defecto su nombre de usuario.</p><b>Información de versión</b><p><b>Versión (campo obligatorio):</b></p>
+    <p>El campo de versión se divide en tres secciones, principal, secundaria y compilación, lo que le permite, como autor de un paquete, cargar nuevas versiones que sigan <a href="https://semver.org/">la semántica de versiones</a>. Es posible que los autores deseen publicar más versiones de sus paquetes con funciones nuevas y mejoradas, pulir algunos aspectos que se quedaron en el tintero en la primera versión o corregir algún fallo.</p>
+
+    <p><b>Vínculo a las Notas de la versión:</b></p>
+    <p>Un vínculo a las Notas de la versión. Puede añadir un vínculo independiente a cada versión que publique.</p>
+
+    <p><b>Año de copyright:</b></p>
+    <p>El año de copyright del paquete. Si se deja en blanco, se utilizará por defecto el año de publicación del paquete.</p>
+
+    <p><b>Licencia:</b></p>
+    <p>La licencia con la que se ha publicado el paquete. La licencia se aplica a la última versión del paquete. Si se deja en blanco, se le concederá al paquete una licencia conforme a MIT.</p>
+
+    <h2>Paso 2: compatibilidad</h2>
+    <p>Añada información de compatibilidad para la versión del paquete. Esta información ayudará a los usuarios a encontrar e instalar solo aquellas versiones del paquete que sean compatibles con su configuración, lo que reducirá posibles problemas y confusiones. Cuando se asigna información de compatibilidad de versiones, los usuarios pueden filtrar solo por versiones compatibles; recibirán una notificación del estado de compatibilidad mediante iconos en la ficha Buscar paquetes.</p>
+    <p>Para comenzar a añadir información de compatibilidad, seleccione si la versión del paquete solo funciona en un programa anfitrión, como Revit o Civil 3D, en un programa anfitrión y Dynamo Core o solo en Dynamo Core. Después de realizar la selección, aparecerán controles adicionales de la interfaz de usuario para empezar a asignar una o varias versiones al paquete.</p>
+    <p>En el caso de Dynamo Core o de un programa anfitrión, puede utilizar los menús desplegables <b>Desde</b> y <b>Hasta</b> para seleccionar un rango o añadir versiones una a una en el menú desplegable <b>Añadir versiones individuales</b>. En el menú desplegable <b>Hasta</b>, también tiene la opción de seleccionar un carácter comodín, por ejemplo, 2025.x (todas las versiones). Esto significa que la versión del paquete es compatible con todas las versiones de esa versión principal.</p>
+    <p>A medida que vaya añadiendo versiones, podrá añadirlas a la tabla <b>Todas las versiones compatibles</b> de la derecha. Para ello, haga clic en el botón <b>Añadir</b> del centro. Si ha cometido un error, puede eliminar las versiones de esta tabla. Para ello, haga clic en el icono x de la etiqueta de versión.</p>
+    <p>Los autores pueden actualizar la información de compatibilidad de sus paquetes de Dynamo a través del sitio web de Dynamo Package Manager (<a href="https://www.dynamopackages.com">www.dynamopackages.com</a>). Para ello, inicie sesión en el sitio web, vaya a la ficha Mis paquetes, localice el paquete y siga los pasos descritos anteriormente.</p>
+
+    <h2>Paso 3: seleccionar archivos</h2>
+    <h3>Añadir archivos/directorio:</h3>
+    <p>Seleccione y añada todos los archivos relacionados con el paquete. Por lo general, se añaden la carpeta bin, los archivos binarios y las dependencias. Puede añadir archivos o carpetas individuales.</p>
+
+    <h3>Seleccionar archivos de paquetes:</h3>
+    <p>Esta sección permite organizar el contenido del paquete antes de publicarlo. Una vez que haya seleccionado los archivos o las carpetas que desea añadir, puede ver, eliminar o añadir archivos en la página <b>Seleccionar archivos de paquetes</b>. Puede ver la estructura de carpetas de los archivos seleccionados en el panel izquierdo y el contenido de cada carpeta en el panel derecho.</p>
+    <p>Para eliminar un archivo del paquete, haga clic en él y, a continuación, haga clic en el icono de papelera (eliminar) de la fila superior. También puede seleccionar y eliminar varios archivos de esta forma. Para eliminar carpetas enteras del paquete, haga clic en la carpeta y, a continuación, haga clic en el icono de papelera que aparece junto a ella.</p>
+
+    <h3>Seleccionar bibliotecas de nodos:</h3>
+    <p>Active la casilla de la columna <b>Biblioteca de nodos</b> para especificar cuáles de los archivos que ha añadido al paquete son bibliotecas de nodos. Las bibliotecas de nodos contienen los tipos y los métodos que Dynamo importará como nodos. En general, debe marcar como biblioteca de nodos cualquier montaje que contenga tipos que desee importar a Dynamo. Los montajes ZeroTouch, NodeModel o NodeViewCustomization deben marcarse como una biblioteca de nodos.</p>
+    <p>Para cargar las NodeViewCustomizations de la interfaz de usuario, estas deben definirse en el mismo montaje que contiene las definiciones de NodeModel correspondientes O definirse en un montaje independiente. En cualquier caso, el montaje debe etiquetarse como biblioteca de nodos. Actualmente, para los montajes marcados como biblioteca de nodos que contienen tipos NodeModel o NodeCustomization, se omitirán todos los demás tipos. Por este motivo, es importante separar los tipos NodeModel/NodeViewCustomization de los tipos que desee importar mediante la importación de ZeroTouch.</p>
+
+    <h3>Conservar estructura de carpetas:</h3>
+    <p>Al crear un paquete, Dynamo reorganiza automáticamente sus archivos en las carpetas "bin", "doc", "dyf" y "extra". Es posible que los autores de paquetes avanzados con estructuras de carpetas complejas deseen seleccionar la casilla <b>Conservar estructura de carpetas</b> situada debajo del panel de vista preliminar del contenido del paquete. Si esta opción está activada, Dynamo no realizará cambios en la estructura de carpetas del paquete; en su lugar, los archivos del paquete se cargarán tal cual.</p>
+    <p>Para garantizar su funcionamiento y evitar problemas, los paquetes deben configurarse de una determinada forma. En caso de duda, asegúrese de que la casilla de verificación esté desactivada para permitir que Dynamo configure la estructura de carpetas.</p>
+
+    <h2>Paso 4: vista preliminar de los archivos</h2>
+    <p>Cuando le satisfaga el contenido del paquete, haga clic en Siguiente para ver una vista preliminar de cómo se configurarán los archivos del paquete una vez publicados. Esta página es solo para su visualización. Si desea realizar más cambios en el contenido del paquete, vuelva al paso anterior.</p>
+
+    <h2>Paso 5: confirmar</h2>
+    <p>Este paso permite ver todos los detalles del paquete, la compatibilidad y los archivos antes de la publicación. Para evitar cambios accidentales, las opciones seleccionadas en los pasos anteriores son de solo lectura en la página Confirmar. Para realizar cambios en ellos, vuelva a los pasos anteriores mediante el botón Atrás o los controles de navegación de la parte superior de la página.</p>
+
+    <p><b>Añadir ruta de archivo de anotaciones (opcional):</b></p>
+    <p>Tiene la opción de especificar una ruta de archivo que aloje la documentación de anotaciones (.md) para el paquete en la sección <b>Ruta de archivos de anotaciones</b>. La documentación del nodo aparecerá en el <b>Navegador de documentación</b>, disponible en <b>Extensiones</b>, en el menú de navegación superior de Dynamo o haciendo clic con el botón derecho en un nodo y seleccionando <b>Ayuda</b>.</p>
+
+    <p><b>Dependencias de paquetes externos:</b></p>
+    <p>En función de los archivos seleccionados en el paso 3, Dynamo detecta las dependencias de paquetes externos, que se muestran aquí.</p>
+
+    <h2>Publicación del paquete</h2>
+    <p>Después de rellenar todos los detalles necesarios, puede publicar el paquete de forma local o en línea. Al publicar de forma local, el paquete se incluirá en el directorio raíz local. Al publicar en línea, el paquete se cargará en Package Manager para que otros usuarios puedan buscarlo una vez que se haya borrado el análisis antivirus. También lo encontrará en la ficha <b>Mis paquetes</b>.</p>
+
+    <h2>Análisis antivirus</h2>
+    <p>Para proporcionar un entorno seguro a todos los usuarios de paquetes de Dynamo, hemos introducido análisis antivirus de los nuevos paquetes. Cuando un usuario cargue un paquete, este se analizará en busca de virus y solo estará disponible públicamente una vez que se haya marcado como seguro. El análisis se realiza durante el proceso de carga del paquete y no se sumará a los pocos minutos habituales que tarda el nuevo paquete en estar disponible en línea.</p>
+    <p>Si el paquete se marca como infectado, la página de búsqueda de Package Manager mostrará una notificación en la que se indica que se ha detectado que el paquete cargado no es seguro, por lo que no se publicará en línea. Para que el paquete esté disponible públicamente, compruebe los archivos incluidos en él y cargue una nueva versión a través de Package Manager.</p>
+
+    <h2>Administración de paquetes</h2>
+    <p>Puede encontrar una lista de los paquetes publicados en la ficha <b>Mis paquetes</b> de Package Manager, donde puede establecer paquetes como obsoletos, publicar una nueva versión, etc.</p>
+
+    <h2>Establecer un paquete como obsoleto</h2>
+    <p>Como propietario de un paquete, puede establecerlo como obsoleto. Esto incluye una etiqueta en el paquete para notificar a otros usuarios que se ha dejado de utilizar y que ya no se realiza su mantenimiento. La búsqueda de paquetes filtra por defecto los paquetes obsoletos, aunque puede aplicar el filtro Obsoleto para incluirlos en los resultados de la búsqueda.</p>
+    <p>Para establecer como obsoleto un paquete, búsquelo en Package Manager, en la ficha <b>Paquetes instalados</b> o <b>Mis paquetes</b>. Haga clic en el menú Opciones (tres puntos) y seleccione Obsoleto.</p>
+
+    <h2>Transferencia de la propiedad de un paquete</h2>
+    <p>Actualmente, no se puede transferir la propiedad del paquete mediante Package Manager. Puede solicitar al equipo de Dynamo que añada un propietario adicional. Tenga en cuenta que no podemos eliminar a los propietarios existentes, solo añadir más responsables del paquete.</p>
+    <p>Si desea añadir una cuenta como propietario al paquete existente, envíe un mensaje de correo electrónico a <a href="mailto:dynamoteam@dynamobim.org">dynamoteam@dynamobim.org</a>. Asegúrese de especificar el nombre del paquete y el nombre de la cuenta que desea añadir.</p>
+
+    <h2>Supresión de un paquete</h2>
+    <p>Si desea enviar una solicitud de supresión, envíe un mensaje de correo electrónico a <a href="mailto:dynamoteam@dynamobim.org">dynamoteam@dynamobim.org</a> con el asunto "Solicitud de supresión de paquete" y asegúrese de indicar el nombre del paquete. Una vez recibida la solicitud, se envía un mensaje de confirmación al correo electrónico del autor del paquete asociado a este. Una vez que el autor haya aprobado la solicitud, la supresión se producirá en un plazo de 30 días. Si el autor no responde en un plazo de 30 días, se requiere una nueva solicitud de supresión.</p>
+    <p>Tenga en cuenta que la supresión de un paquete no libera su nombre para poder reutilizarlo.</p>
+
+    <h2>Configuración de paquetes</h2>
+    <p>Puede ver la configuración relacionada con los paquetes en la ficha <b>Configuración de paquetes</b> de Package Manager, incluidas las nuevas rutas de descarga de paquetes y las rutas de búsqueda de paquetes o bibliotecas. Para editar los parámetros, haga clic en el vínculo Preferencias de la ficha Configuración de paquetes para acceder al panel Preferencias.</p>
+
+</body>

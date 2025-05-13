@@ -32,6 +32,15 @@ namespace CoreNodeModels
     [AlsoKnownAs("DSCoreNodesUI.ColorRange")]
     public class ColorRange : NodeModel
     {
+        private IEnumerable<Color> defaultColors;
+        private IEnumerable<Color> DefaultColors => defaultColors ??= DefaultColorRanges.Analysis.ToList();
+
+        private AssociativeNode defaultColorsNode;
+        private AssociativeNode DefaultColorsNode => defaultColorsNode ??= CreateDefaultColorsNode(DefaultColors);
+
+        private AssociativeNode defaultIndicesNode;
+        private AssociativeNode DefaultIndicesNode => defaultIndicesNode ??= CreateDefaultIndicesNode(DefaultColors);
+
         public event Action RequestChangeColorRange;
         protected virtual void OnRequestChangeColorRange()
         {
@@ -42,6 +51,18 @@ namespace CoreNodeModels
         [JsonConstructor]
         private ColorRange(IEnumerable<PortModel> inPorts, IEnumerable<PortModel> outPorts) : base(inPorts, outPorts)
         {
+            if (inPorts.Count() == 3 && outPorts.Count() == 1)
+            {
+                inPorts.ElementAt(0).DefaultValue = DefaultColorsNode;
+                inPorts.ElementAt(1).DefaultValue = DefaultIndicesNode;
+            }
+            else
+            {
+                // If information from json does not look correct, clear the default ports and add ones with default value
+                InPorts.Clear();
+                InitializePorts();
+            }
+
             this.PropertyChanged += ColorRange_PropertyChanged;
             foreach (var port in InPorts)
             {
@@ -51,6 +72,8 @@ namespace CoreNodeModels
 
         public ColorRange()
         {
+            // Initialize default values of the ports
+            InitializePorts();
             RegisterAllPorts();
 
             this.PropertyChanged += ColorRange_PropertyChanged;
@@ -58,6 +81,14 @@ namespace CoreNodeModels
             {
                 port.Connectors.CollectionChanged += Connectors_CollectionChanged;
             }
+        }
+
+        private void InitializePorts()
+        {
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("colors", Resources.ColorRangePortDataColorsToolTip, DefaultColorsNode)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("indices", Resources.ColorRangePortDataIndicesToolTip, DefaultIndicesNode)));
+            InPorts.Add(new PortModel(PortType.Input, this, new PortData("value", Resources.ColorRangePortDataValueToolTip)));
+            OutPorts.Add(new PortModel(PortType.Output, this, new PortData("color", Resources.ColorRangePortDataResultToolTip)));            
         }
 
         void Connectors_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -119,7 +150,7 @@ namespace CoreNodeModels
             List<double> parameters;
 
             // If there are colors supplied
-            if (InPorts[0].IsConnected)
+            if (InPorts[0].Connectors.Any())
             {
                 var colorsNode = InPorts[0].Connectors[0].Start.Owner;
                 var colorsIndex = InPorts[0].Connectors[0].Start.Index;
@@ -131,10 +162,14 @@ namespace CoreNodeModels
             {
                 colors = new List<Color>();
                 colors.AddRange(DefaultColorRanges.Analysis);
+
+                // Create an AssociativeNode for the default colors
+                InPorts[0].DefaultValue = DefaultColorsNode;
+                InPorts[0].UsingDefaultValue = true;
             }
 
             // If there are indices supplied
-            if (InPorts[1].IsConnected)
+            if (InPorts[1].Connectors.Any())
             {
                 var valuesNode = InPorts[1].Connectors[0].Start.Owner;
                 var valuesIndex = InPorts[1].Connectors[0].Start.Index;
@@ -145,12 +180,44 @@ namespace CoreNodeModels
             else
             {
                 parameters = CreateParametersForColors(colors);
+
+                // Create an AssociativeNode for the default indices
+                InPorts[1].DefaultValue = DefaultIndicesNode;
+                InPorts[1].UsingDefaultValue = true;
             }
 
             return ColorRange1D.ByColorsAndParameters(colors, parameters);
         }
 
-        private static List<double> CreateParametersForColors(List<Color> colors)
+        private AssociativeNode CreateDefaultColorsNode(IEnumerable<Color> defaultColors)
+        {
+            return AstFactory.BuildExprList(
+                    defaultColors.Select(color =>
+                        AstFactory.BuildFunctionCall(
+                            new Func<int, int, int, int, Color>(DSCore.Color.ByARGB),
+                            new List<AssociativeNode>
+                            {
+                                AstFactory.BuildIntNode(color.Red),
+                                AstFactory.BuildIntNode(color.Green),
+                                AstFactory.BuildIntNode(color.Blue)
+                            }
+                        )
+                    ).ToList()
+                );
+        }
+
+        private AssociativeNode CreateDefaultIndicesNode(IEnumerable<Color> defaultColors)
+        {
+            var parameters = CreateParametersForColors(defaultColors);
+
+            return AstFactory.BuildExprList(
+                parameters.Select(AstFactory.BuildDoubleNode)
+                .Cast<AssociativeNode>()
+                .ToList()
+            );
+        }
+
+        private static List<double> CreateParametersForColors(IEnumerable<Color> colors)
         {
             var parameters = new List<double>();
 

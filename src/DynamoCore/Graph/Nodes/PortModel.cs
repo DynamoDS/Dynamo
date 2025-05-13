@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -330,6 +330,21 @@ namespace Dynamo.Graph.Nodes
         #endregion
 
         internal bool IsProxyPort { get; set; } = false;
+
+        /// <summary>
+        /// Return a value indicating whether this port is connected to a transient node.
+        /// </summary>
+        internal bool HasTransientConnections()
+        {
+            foreach(var connector in Connectors)
+            {
+                var connectedNode = PortType == PortType.Input ? connector?.Start?.Owner : connector?.End?.Owner;
+                if (connectedNode?.IsTransient is true)
+                    return true;
+            }
+
+            return false;
+        }
 
         [JsonConstructor]
         internal PortModel(string name, string toolTip)

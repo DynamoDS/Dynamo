@@ -106,6 +106,7 @@ namespace Dynamo.Graph.Nodes
         #endregion
 
         internal const double HeaderHeight = 46;
+        internal const double CustomNodeTopBorderHeight = 8;
         internal static string ExtensionNode = "ExtensionNode";
 
         #region public members
@@ -206,6 +207,19 @@ namespace Dynamo.Graph.Nodes
         internal void OnNodeInfoMessagesClearing()
         {
             NodeInfoMessagesClearing?.Invoke(this);
+        }
+
+        /// <summary>
+        /// Event triggered when the node clears only warning messages
+        /// </summary>
+        public event Action<NodeModel> NodeWarningMessagesClearing;
+
+        /// <summary>
+        /// Fires on each node that is modified to clear only warning messages, when the graph executes.
+        /// </summary>
+        internal void OnNodeWarningMessagesClearing()
+        {
+            NodeWarningMessagesClearing?.Invoke(this);
         }
 
         internal void OnNodeExecutionBegin()
@@ -996,6 +1010,34 @@ namespace Dynamo.Graph.Nodes
         }
 
         /// <summary>
+        /// A flag indicating whether the node is in transient mode.
+        /// When a node is in transient mode, the node will not participate in execution,
+        /// Or saved to the graph. It is only used for previewing the AutoComplete result in the canvas.
+        /// </summary>
+        internal bool IsTransient
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Return a value indicating whether this node is connected to a transient node.
+        /// </summary>
+        internal bool HasTransientConnections()
+        {
+            var allPorts = InPorts.Concat(OutPorts);
+            foreach (var port in allPorts)
+            {
+                if (port?.HasTransientConnections() is true)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// The default behavior for ModelBase objects is to not serialize the X and Y
         /// properties. This overload allows the serialization of the X property
         /// for NodeModel.
@@ -1081,6 +1123,12 @@ namespace Dynamo.Graph.Nodes
                 }
             }
         }
+
+        /// <summary>
+        ///     Indicates whether this node supports user-resizable UI elements
+        /// </summary>
+        [JsonIgnore]
+        public virtual bool IsResizable => false;
 
         #endregion
 
@@ -1713,7 +1761,20 @@ namespace Dynamo.Graph.Nodes
 
             SetNodeStateBasedOnConnectionAndDefaults();
             ClearTransientWarningsAndErrors();
-            OnNodeMessagesClearing();
+
+            // If persistent info is still present, ensure it is reflected in the node state
+            if (Infos.Any(x => x.State == ElementState.PersistentInfo))
+            {
+                // Ensure state reflects PersistentInfo if any such messages remain.
+                // Prevents info from being stuck or skipped in future updates.
+                // Without this, ClearInfoMessages won't remove them properly.
+                State = ElementState.PersistentInfo;
+                OnNodeWarningMessagesClearing();
+            }
+            else
+            {
+                OnNodeMessagesClearing();
+            }
         }
 
         /// <summary>
@@ -1731,6 +1792,11 @@ namespace Dynamo.Graph.Nodes
             else if (State == ElementState.PersistentInfo)
             {
                 infos.RemoveWhere(x => x.State == ElementState.PersistentInfo);
+            }
+            // If there are still warnings/errors, keep the state unchanged.
+            else if (State == ElementState.Warning || State == ElementState.Error)
+            {
+                infos.RemoveWhere(x => x.State == ElementState.PersistentInfo || x.State == ElementState.Info);
             }
             State = ElementState.Active;
             OnNodeInfoMessagesClearing();
@@ -1877,6 +1943,8 @@ namespace Dynamo.Graph.Nodes
         /// cleared when the node is next evaluated. If false, the info will be cleared on the next evaluation.</param>
         public void Info(string p, bool isPersistent = false)
         {
+            var initialState = State;
+
             if (isPersistent)
             {
                 if (!Infos.Any(x => x.Message.Equals(p) && x.State == ElementState.PersistentInfo))
@@ -1889,6 +1957,16 @@ namespace Dynamo.Graph.Nodes
             {
                 State = ElementState.Info;
                 infos.Add(new Info(p, ElementState.Info));
+            }
+
+            // Preserve more critical states such as Warning, PersistentWarning, or Error.
+            // We don't want to downgrade the node visually or functionally if it already has
+            // more important issues that should take precedence over an informational message.
+            if (initialState == ElementState.Warning ||
+                initialState == ElementState.PersistentWarning ||
+                initialState == ElementState.Error)
+            {
+                State = initialState;
             }
         }
 

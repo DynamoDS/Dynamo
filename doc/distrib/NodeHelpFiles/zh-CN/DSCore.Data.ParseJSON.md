@@ -1,5 +1,8 @@
-## ParseJSON - 文档
-此文档文件由 NodeDocumentationMarkdownGenerator (Version=2.14.0.3986，Culture=neutral，PublicKeyToken=null)自动生成。
+## 详细
+“Data.ParseJSON”从 JSON 格式转换值。JSON 文件格式是用于构造想要存储的数据的约定。实际上，Dynamo 自己的文件格式即被构造为 JSON。
 
-有关如何将文档添加到节点的详细信息，请参见 https://github.com/DynamoDS/Dynamo/wiki/Create-and-Add-Custom-Documentation-to-Nodes。
+在下面的示例中，字典(JSON 格式)被反序列化为 Dynamo 字典。
+___
+## 示例文件
 
+![Data.ParseJSON](./DSCore.Data.ParseJSON_img.jpg)

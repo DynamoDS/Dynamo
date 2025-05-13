@@ -1,0 +1,85 @@
+<?xml version="1.0"?><doc>
+    <assembly>
+        <name>DesignScriptBuiltin</name>
+    </assembly>
+    <members>
+        <member name="M:DesignScript.Builtin.Dictionary.CustomKeyComparer.GetHashCode(System.String)">
+            <summary>此程式碼已從 .NET Framework 4.8 的 String.GetHashCode() 複製，
+            該函式使用確定性雜湊演算法。更具體來說是 String.GetLegacyNonRandomizedHashCode()
+            函式 (位於: https://referencesource.microsoft.com/mscorlib/R/42c2b7ffc7c3111f.html)</summary>
+            <param name="obj"/>
+            <returns/>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ByKeysValues(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>以提供的鍵和值產生字典。項目的數目會以
+                鍵或值兩者較短的為準。</summary>
+            <param name="keys">字典的鍵</param>
+            <param name="values">字典的值</param>
+            <returns name="dictionary">來自鍵和值的字典</returns>
+            <search>map,{},table</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.Components">
+            <summary>產生字典的元件。Dictionary.ByKeysValues 的反轉。</summary>
+            <returns name="keys">字典的鍵</returns>
+            <returns name="values">字典的值</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Keys">
+            <summary>產生字典中的鍵。</summary>
+            <returns name="keys">字典的鍵</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Values">
+            <summary>產生字典中的值。</summary>
+            <returns name="values">字典的值</returns>
+        </member>
+        <member name="P:DesignScript.Builtin.Dictionary.Count">
+            <summary>字典中鍵值對的數目。</summary> 
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.SetValueAtKeys(System.Collections.Generic.IList{System.String},System.Collections.Generic.IList{System.Object})">
+            <summary>以設定為新值的鍵清單產生新字典，可能會覆蓋既有的鍵-值對。
+                這兩個清單必須是相同的長度。如果不是，會以兩個清單中較短的清單限制插入項目的數目。</summary>
+            <param name="keys">字典中要設定的鍵。如果相同的鍵已存在，將修改該鍵的值。</param>
+            <param name="values">要插入的對應值。</param>
+            <returns name="dictionary">已插入項目的新字典</returns>
+            <search>insert,add</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.RemoveKeys(System.Collections.Generic.IList{System.String})">
+            <summary>產生已移除指定鍵的新字典。</summary>
+            <param name="keys">字典中要移除的鍵</param>
+            <returns name="dictionary">已移除鍵的新字典</returns>
+            <search>drop,delete</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ValueAtKey(System.String)">
+            <summary>取得指定鍵的值</summary>
+            <param name="key">字典中要取得其值的鍵</param>
+            <returns name="value">指定鍵的值，如果未設定則為空值</returns>
+            <search>lookup,valueatkey,find</search>
+        </member>
+        <member name="M:DesignScript.Builtin.Dictionary.ToString">
+            <summary>傳回字典的易記字串表現法。</summary>
+            <returns>字典的字串表現法。</returns>
+        </member>
+        <member name="T:DesignScript.Builtin.BuiltinNullReferenceException">
+            <summary>擲出空值參考例外，以及空值 DS 內建類型:
+            清單、字典和字串。</summary>
+        </member>
+        <member name="T:Builtin.Properties.DesignScriptBuiltin">
+            <summary>一種強類型資源類別，用於查找本土化的字串等等。</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.ResourceManager">
+            <summary>傳回此類別所使用的已快取 ResourceManager 例證。</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.Culture">
+            <summary>為使用此強類型資源類別查找的所有資源，
+              取代目前執行緒的 CurrentUICulture 性質。</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.IndexOutOfRangeExceptionMessage">
+            <summary>查找類似於「索引超出範圍。如果是非負數，則必須小於清單的大小。href=kIndexOutOfRange.html」的本土化字串。</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.NullReferenceExceptionMessage">
+            <summary>查找類似於「無法索引成空值清單、字典或字串。」的本土化字串。</summary>
+        </member>
+        <member name="P:Builtin.Properties.DesignScriptBuiltin.StringOverIndexingExceptionMessage">
+            <summary>查找類似於「索引超出範圍。如果是非負數，則必須小於字串的大小。href=kIndexOutOfRange.html」的本土化字串。</summary>
+        </member>
+    </members>
+</doc>

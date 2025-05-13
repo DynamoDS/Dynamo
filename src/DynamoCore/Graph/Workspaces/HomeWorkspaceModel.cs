@@ -880,7 +880,7 @@ namespace Dynamo.Graph.Workspaces
         /// trace data but do not exist in the current CallSite data.
         /// </summary>
         /// <returns></returns>
-        internal IList<string> GetOrphanedSerializablesAndClearHistoricalTraceData()
+        internal List<string> GetOrphanedSerializablesAndClearHistoricalTraceData()
         {
             var orphans = new List<string>();
 
@@ -891,13 +891,14 @@ namespace Dynamo.Graph.Workspaces
             // then add the serializables for that guid to the list of
             // orphans.
 
+            var nodeLookup = Nodes.Select(n => n.GUID).ToHashSet();
             foreach (var nodeData in historicalTraceData)
             {
                 var nodeGuid = nodeData.Key;
 
-                if (Nodes.All(n => n.GUID != nodeGuid))
+                if (!nodeLookup.Contains(nodeGuid))
                 {
-                    orphans.AddRange(nodeData.Value.SelectMany(CallSite.GetAllSerializablesFromSingleRunTraceData).ToList());
+                    orphans.AddRange(nodeData.Value.SelectMany(CallSite.GetAllSerializablesFromSingleRunTraceData));
                 }
             }
 

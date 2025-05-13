@@ -1,7 +1,10 @@
 ## Em profundidade
-Fillet retornará um novo sólido com arestas arredondadas. A entrada de arestas especifica quais arestas serão arredondadas, enquanto a entrada de deslocamento determina o raio da concordância. No exemplo abaixo, começaremos com um cubo usando as entradas padrão. Para obter as arestas apropriadas do cubo, explodimos primeiro o cubo para obter as faces como uma lista de superfícies. Em seguida, usamos um nó Face.Edges para extrair as arestas do cubo. Extraímos a primeira aresta de cada face com GetItemAtIndex. Um controle deslizante de número controla o raio de cada concordância.
+`PolySurface.Fillet` cria um arredondamento (aresta arredondada) entre as arestas da PolySurface fornecida.
+
+Esse nó é particularmente útil para suavizar arestas agudas em modelo de PolySurface, aprimorando as propriedades visuais e físicas da geometria.
+
+No exemplo abaixo, um cuboide é criado, convertido em uma PolySurface e, por fim, arredondado com `PolySurface.Fillet`.
 ___
 ## Arquivo de exemplo
 
-
-
+![PolySurface.Fillet](./Autodesk.DesignScript.Geometry.PolySurface.Fillet_img.jpg)

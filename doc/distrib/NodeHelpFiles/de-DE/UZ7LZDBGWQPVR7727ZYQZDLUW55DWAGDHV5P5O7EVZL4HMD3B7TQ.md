@@ -1,7 +1,8 @@
 <!--- Autodesk.DesignScript.Geometry.TSpline.TSplineTopology.InnerVertices --->
 <!--- UZ7LZDBGWQPVR7727ZYQZDLUW55DWAGDHV5P5O7EVZL4HMD3B7TQ --->
-## InnerVertices - Dokumentation
-Diese Dokumentationsdatei wird automatisch von NodeDocumentationMarkdownGenerator, Version=2.14.0.3986, Culture=neutral, PublicKeyToken=null generiert.
+## Im Detail
+`TSplineTopology.InnerVertices` gibt die Scheitelpunkte innerhalb der angegebenen Topologie zurück. Im folgenden Beispiel wird eine TSpline-Oberfläche erstellt, und anschließend werden die inneren Scheitelpunkte mit `TSplineTopology.InnerVertices` zurückgegeben.
 
-Weitere Informationen zum Hinzufügen einer Dokumentation zu Blöcken finden Sie unter https://github.com/DynamoDS/Dynamo/wiki/Create-and-Add-Custom-Documentation-to-Nodes
+## Beispieldatei
 
+![Example](./UZ7LZDBGWQPVR7727ZYQZDLUW55DWAGDHV5P5O7EVZL4HMD3B7TQ_img.jpg)

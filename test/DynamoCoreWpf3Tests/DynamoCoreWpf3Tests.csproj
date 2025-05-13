@@ -1,0 +1,223 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <UILib>true</UILib>
+    </PropertyGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(SolutionDir)Config/CS_SDK.props" />
+  </ImportGroup>
+  <PropertyGroup>
+    <ProductVersion>8.0.30703</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>DynamoCoreWpf3Tests</RootNamespace>
+    <AssemblyName>DynamoCoreWpf3Tests</AssemblyName>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+    <ItemGroup>
+        <PackageReference Include="HelixToolkit" Version="2.24.0" />
+        <PackageReference Include="HelixToolkit.Core.Wpf" Version="2.24.0" />
+        <PackageReference Include="HelixToolkit.SharpDX.Core.Wpf" Version="2.24.0" />
+    </ItemGroup>
+  <ItemGroup>
+	  <PackageReference Include="AvalonEdit" Version="6.3.0.90" />
+
+      <!--roslyn compiler apis direct references so we can copy them to the test_dependencies folder-->
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.11.0" GeneratePathProperty="true">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="3.11.0" GeneratePathProperty="true">
+          <PrivateAssets>all</PrivateAssets>
+          <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
+      
+    <PackageReference Include="Moq" Version="4.18.4" />
+	  <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
+	  <PackageReference Include="Greg" Version="3.0.2.6533">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+	  <PackageReference Include="NUnit" Version="3.13.3" />
+	  <PackageReference Include="RestSharp" Version="112.0.0">
+	    <PrivateAssets>all</PrivateAssets>
+	    <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+	  </PackageReference>
+	  <PackageReference Include="SharpDX" Version="4.2.0" />
+	  <PackageReference Include="SharpDX.D3DCompiler" Version="4.2.0" />
+	  <PackageReference Include="SharpDX.Direct2D1" Version="4.2.0" />
+	  <PackageReference Include="SharpDX.Direct3D11" Version="4.2.0" />
+	  <PackageReference Include="SharpDX.Direct3D9" Version="4.2.0" />
+	  <PackageReference Include="SharpDX.DXGI" Version="4.2.0" />
+	  <PackageReference Include="SharpDX.Mathematics" Version="4.2.0" />
+      <PackageReference Include="NUnit3TestAdapter" Version="4.2.1" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.3.2" />
+      <PackageReference Include="Prism.Core" Version="8.1.97" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\DocumentationBrowserViewExtension\DocumentationBrowserViewExtension.csproj">
+      <Project>{BE6D0644-05AF-4580-8597-B95920CE923F}</Project>
+      <Name>DocumentationBrowserViewExtension</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\DynamoCoreWpf\DynamoCoreWpf.csproj">
+      <Project>{51bb6014-43f7-4f31-b8d3-e3c37ebedaf4}</Project>
+      <Name>DynamoCoreWpf</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\DynamoManipulation\DynamoManipulation.csproj">
+      <Project>{33f88e8c-cc3c-4237-8aa9-cc891efcabfa}</Project>
+      <Name>DynamoManipulation</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\DynamoPackagesWPF\DynamoPackagesWPF.csproj">
+      <Project>{47D2166C-5261-4093-9660-E72B7035E666}</Project>
+      <Name>DynamoPackagesWPF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\DynamoPackages\DynamoPackages.csproj">
+      <Project>{47533b7c-0e1a-44a4-8511-b438645f052a}</Project>
+      <Name>DynamoPackages</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Engine\GraphLayout\GraphLayout.csproj">
+      <Project>{c2595b04-856d-40ae-8b99-4804c7a70708}</Project>
+      <Name>GraphLayout</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Engine\ProtoAssociative\ProtoAssociative.csproj">
+      <Project>{7318d5e5-9d15-4abe-8a51-92f58d4f0b85}</Project>
+      <Name>ProtoAssociative</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Engine\ProtoCore\ProtoCore.csproj">
+      <Project>{7a9e0314-966f-4584-baa3-7339cbb849d1}</Project>
+      <Name>ProtoCore</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\DynamoCore\DynamoCore.csproj">
+      <Project>{7858FA8C-475F-4B8E-B468-1F8200778CF8}</Project>
+      <Name>DynamoCore</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Engine\ProtoImperative\ProtoImperative.csproj">
+      <Project>{0d3d43dc-bd7e-46f0-93f7-1c6a6cc79948}</Project>
+      <Name>ProtoImperative</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\GraphMetadataViewExtension\GraphMetadataViewExtension.csproj">
+      <Project>{A42563F1-2B8B-4C4D-BFAD-2CA981524E00}</Project>
+      <Name>GraphMetadataViewExtension</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\CoreNodeModelsWpf\CoreNodeModelsWpf.csproj">
+      <Project>{f5932f7d-8e34-4787-80b8-e7f9d996edff}</Project>
+      <Name>CoreNodeModelsWpf</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\CoreNodeModels\CoreNodeModels.csproj">
+      <Project>{d8262d40-4880-41e4-91e4-af8f480c8637}</Project>
+      <Name>CoreNodeModels</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\CoreNodes\CoreNodes.csproj">
+      <Project>{87550B2B-6CB8-461E-8965-DFAFE3AAFB5C}</Project>
+      <Name>CoreNodes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\DesignScriptBuiltin\DesignScriptBuiltin.csproj">
+      <Project>{c0d6dee5-5532-4345-9c66-4c00d7fdb8be}</Project>
+      <Name>DesignScriptBuiltin</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\DynamoConVersions\DynamoConVersions.csproj">
+      <Project>{C5ADC05B-34E8-47BF-8E78-9C7BF96418C2}</Project>
+      <Name>DynamoConVersions</Name>
+      <Private>False</Private>
+    </ProjectReference>
+      <ProjectReference Include="..\..\src\Libraries\DynamoUnits\UnitsCore.csproj">
+        <Private>False</Private>
+      </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\PythonNodeModelsWpf\PythonNodeModelsWpf.csproj">
+      <Project>{01DE9B06-0BCB-4D8A-862E-E8170F5D6B4F}</Project>
+      <Name>PythonNodeModelsWpf</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\PythonNodeModels\PythonNodeModels.csproj">
+      <Project>{8872ca17-c10d-43b9-8393-5c5a57065eb0}</Project>
+      <Name>PythonNodeModels</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Libraries\UnitsUI\UnitsUI.csproj">
+      <Project>{C67A7E80-73E6-4BBF-9D3F-DCD86CE306BE}</Project>
+      <Name>UnitsUI</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\NodeAutoCompleteViewExtension\NodeAutoCompleteViewExtension.csproj">
+      <Project>{51511AFD-F326-4995-8E27-5D711419EF6F}</Project>
+      <Name>NodeAutoCompleteViewExtension</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\NodeServices\DynamoServices.csproj">
+      <Project>{ef879a10-041d-4c68-83e7-3192685f1bae}</Project>
+      <Name>DynamoServices</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Notifications\Notifications.csproj" />
+    <ProjectReference Include="..\..\src\PackageDetailsViewExtension\PackageDetailsViewExtension.csproj">
+      <Project>{12FB4DA4-7E9C-4C2E-91CD-1D0B523A9535}</Project>
+      <Name>PackageDetailsViewExtension</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\Tools\DynamoShapeManager\DynamoShapeManager.csproj">
+      <Project>{263fa9c1-f81e-4a8e-95e0-8cdae20f177b}</Project>
+      <Name>DynamoShapeManager</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\WorkspaceDependencyViewExtension\WorkspaceDependencyViewExtension.csproj">
+      <Project>{5E76AAB3-6302-473E-9655-081B53FB1419}</Project>
+      <Name>WorkspaceDependencyViewExtension</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\GraphNodeManagerViewExtension\GraphNodeManagerViewExtension.csproj">
+      <Project>{1E92CDB0-644C-4EAA-8AB8-EFDD193A0484}</Project>
+      <Name>GraphNodeManagerViewExtension</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoCoreTests\DynamoCoreTests.csproj">
+      <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
+      <Name>DynamoCoreTests</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoCoreTests\DynamoCoreTests.csproj">
+      <Project>{472084ed-1067-4b2c-8737-3839a6143eb2}</Project>
+      <Name>DynamoCoreTests</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\src\DynamoUtilities\DynamoUtilities.csproj">
+      <Project>{B5F435CB-0D8A-40B1-A4F7-5ECB3CE792A9}</Project>
+      <Name>DynamoUtilities</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\DynamoCoreWpfTests\DynamoCoreWpfTests.csproj" />
+    <ProjectReference Include="..\Libraries\PackageManagerTests\PackageManagerTests.csproj" />
+    <ProjectReference Include="..\Libraries\SystemTestServices\SystemTestServices.csproj">
+      <Project>{89563cd0-509b-40a5-8728-9d3ec6fe8410}</Project>
+      <Name>SystemTestServices</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\Libraries\TestServices\TestServices.csproj">
+      <Project>{6cd0f0cf-8199-49f9-b0ea-0b9598b44419}</Project>
+      <Name>TestServices</Name>
+      <Private>False</Private>
+    </ProjectReference>
+    <ProjectReference Include="..\TestUINodes\TestUINodes.csproj">
+      <Project>{ED1EA294-1BA1-45D6-A669-ECD2E24E21A9}</Project>
+      <Name>TestUINodes</Name>
+      <Private>False</Private>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
+  </ItemGroup>
+
+    <Target Name="CopyRoslynToTestDepsFolder" AfterTargets="Build">
+        <Message Importance="High" Text="copying test dependencies to test dependencies folder" />
+        <!--roslyn compiler api and deps-->
+        <Copy SourceFiles="$(PkgMicrosoft_CodeAnalysis_CSharp)\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll" DestinationFolder="$(TestDependenciesPath)" />
+        <Copy SourceFiles="$(PkgMicrosoft_CodeAnalysis_Common)\lib\netstandard2.0\Microsoft.CodeAnalysis.dll" DestinationFolder="$(TestDependenciesPath)" />
+
+    </Target>
+</Project>

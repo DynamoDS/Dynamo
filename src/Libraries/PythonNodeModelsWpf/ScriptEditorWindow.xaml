@@ -416,9 +416,9 @@
                         <TextBlock Margin="15 5" FontSize="14" Foreground="Black" FontFamily="{StaticResource ArtifaktElementRegular}" TextWrapping="WrapWithOverflow" Text="{x:Static p:Resources.PythonScriptUnsavedChangesPromptText}"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" VerticalAlignment="Center" Grid.Column="2">
-                        <Button 
+                        <Button Name="ResumeButton"
                             Style="{StaticResource UnSaveButtonStyle}" Content="Keep editing" Click="ResumeButton_OnClick"></Button>
-                        <Button 
+                        <Button Name="CloseWarningBarButton"
                             Style="{StaticResource UnSaveButtonStyle}" Content="Close" Click="CloseWarningBarButton_OnClick"></Button>
                     </StackPanel>
                 </Grid>

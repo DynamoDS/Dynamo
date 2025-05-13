@@ -1,7 +1,10 @@
 ## Informacje szczegółowe
-Węzeł Fillet zwraca nową bryłę z zaokrąglonymi krawędziami. Wartość wejściowa edges określa, które krawędzie mają zostać zaokrąglone, natomiast wartość wejściowa odsunięcia określa promień zaokrąglenia. W poniższym przykładzie zaczynamy od sześcianu, używając domyślnych danych wejściowych. Aby uzyskać odpowiednie krawędzie sześcianu, najpierw rozbijamy go w celu uzyskania powierzchni jako listy powierzchni. Następnie za pomocą węzła Face.Edges wyodrębniamy krawędzie sześcianu. Pierwszą krawędź każdej powierzchni wyodrębniamy za pomocą węzła GetItemAtIndex. Suwak Number Slider steruje promieniem każdego zaokrąglenia.
+Węzeł `PolySurface.Fillet` tworzy zaokrąglenie (zaokrągloną krawędź) między krawędziami danej powierzchni PolySurface.
+
+Ten węzeł jest szczególnie przydatny do wygładzania ostrych krawędzi w modelu PolySurface w celu poprawienia wizualnych i fizycznych właściwości geometrii.
+
+W poniższym przykładzie zostaje utworzony prostopadłościan, który zostaje następnie przekonwertowany na powierzchnię PolySurface i ostatecznie zaokrąglony za pomocą węzła `PolySurface.Fillet`.
 ___
 ## Plik przykładowy
 
-
-
+![PolySurface.Fillet](./Autodesk.DesignScript.Geometry.PolySurface.Fillet_img.jpg)

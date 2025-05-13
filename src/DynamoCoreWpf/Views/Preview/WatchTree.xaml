@@ -110,7 +110,7 @@
                 <Setter Property="Foreground" Value="{DynamicResource {x:Static SystemColors.ControlTextBrushKey}}" />
                 <Setter Property="FocusVisualStyle" Value="{StaticResource TreeViewItemFocusVisual}" />
                 <EventSetter Event="MouseLeftButtonUp" Handler="treeviewItem_MouseLeftButtonUp" />
-                <EventSetter Event="KeyUp" Handler="treeviewItem_KeyUp" />
+                <EventSetter Event="KeyDown" Handler="treeviewItem_KeyDown" />
 
                 <Setter Property="Template">
                     <Setter.Value>
@@ -353,6 +353,7 @@
                         </TextBlock>
 
                         <TextBlock Width="Auto"
+                                   x:Name="NodeValue"
                                    Margin="{Binding Path=IsTopLevel, Converter={StaticResource TopLevelLabelMarginConverter}}"
                                    VerticalAlignment="Center"                                                                      
                                    FontFamily="{StaticResource SourceCodePro}"
