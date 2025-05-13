@@ -30,12 +30,19 @@ namespace Dynamo.UI.Controls
         private Border PortBackgroundBorder = null;
         private Grid PortNameGrid = null;
         private TextBlock PortNameTextBox = null;
-        private Border BorderHighlightOverlay = null;
+        private Border nodeAutoCompleteMarker = null;
+        private Grid NodeAutoCompleteHover = null;
 
         private static BoolToVisibilityCollapsedConverter boolToVisibilityCollapsedConverter = new BoolToVisibilityCollapsedConverter();
         private static FontFamily artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
         private static SolidColorBrush primaryCharcoal200Brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCDCDC"));
         private static SolidColorBrush midGrey = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#666666"));
+        private static SolidColorBrush nodeTransientOverlayColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D5BCF7"));
+        private static SolidColorBrush portMouseOverColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#636363")); //This is the equivolent direct color vs with opacity
+        private static SolidColorBrush portValueMarkerColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#999999"));
+
+        //Hold the instance color for the port Backroudn Color.  This is so it can be set differently for CodeBlock
+        private SolidColorBrush portBackGroundColor = PortViewModel.PortBackgroundColorDefault;
 
         public OutPorts()
         {
@@ -53,8 +60,6 @@ namespace Dynamo.UI.Controls
             MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "PortNameColumn", Width = new GridLength(1, GridUnitType.Star) });
             MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "ValueMarkerColumn", Width = new GridLength(5) });
             MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "PortSnappingColumn", Width = new GridLength(25) });
-
-            //TODO IsPortCondensed setting in OnDataContextChanged
 
             PortSnapping = new Rectangle()
             {
@@ -76,18 +81,14 @@ namespace Dynamo.UI.Controls
                 Height = 29,
                 BorderThickness = new Thickness(1, 1, 0, 1),
                 CornerRadius = new CornerRadius(11, 0, 0, 11),
-                IsHitTestVisible = false,
-                SnapsToDevicePixels = true
+                IsHitTestVisible = true,
+                SnapsToDevicePixels = true,
+                Background = portBackGroundColor,
+                BorderBrush = PortViewModel.PortBorderBrushColorDefault
             };
-
-            PortBackgroundBorder.SetBinding(Border.BackgroundProperty, new Binding("PortBackgroundColor") { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
-            PortBackgroundBorder.SetBinding(Border.BorderBrushProperty, new Binding("PortBorderBrushColor") { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged }); //DO we need this?
 
             Grid.SetColumn(PortBackgroundBorder, 0);
             Grid.SetColumnSpan(PortBackgroundBorder, 2);
-            //TODO IsPortCondensed setting in OnDataContextChanged for PortBackgroundBorder
-
-            var portValueMarkerColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#999999"));
 
             var PortValueMarker = new Rectangle()
             {
@@ -117,6 +118,7 @@ namespace Dynamo.UI.Controls
 
             Grid.SetColumn(PortNameGrid, 0);
 
+            //Unclear if we ever disable ports
             PortNameGrid.SetBinding(TextBlock.IsEnabledProperty, new Binding("IsEnabled"));
 
             this.PortNameTextBox = new TextBlock
@@ -132,41 +134,13 @@ namespace Dynamo.UI.Controls
 
             PortNameTextBox.SetBinding(TextBlock.TextProperty, new Binding("PortName"));
             PortNameGrid.Children.Add(PortNameTextBox);
-            //TODO IsPortCondensed setting in OnDataContextChanged for PortNameGrid & PortNameTextBox
-
-            BorderHighlightOverlay = new Border()
-            {
-                Name = "BorderHighlightOverlay",
-                BorderBrush = Brushes.Transparent,
-                Opacity = 0.2,
-                SnapsToDevicePixels = true,
-                Height = 29,
-                CornerRadius = new CornerRadius(11, 0, 0, 11),
-                BorderThickness = new Thickness(1, 1, 0, 1),
-                Background = Brushes.Transparent
-            };
-
-            Grid.SetColumn(BorderHighlightOverlay, 0);
-            Grid.SetColumnSpan(BorderHighlightOverlay, 2);
-
-            BorderHighlightOverlay.MouseEnter += (s, e) =>
-            {
-                PortValueMarker.Fill = Brushes.White;
-                BorderHighlightOverlay.Background = Brushes.White;
-            };
-
-            BorderHighlightOverlay.MouseLeave += (s, e) =>
-            {
-                PortValueMarker.Fill = portValueMarkerColor;
-                BorderHighlightOverlay.Background = Brushes.Transparent;
-            };
 
             DynamoToolTip dynamoToolTip = new DynamoToolTip
             {
                 AttachmentSide = DynamoToolTip.Side.Top,
                 OverridesDefaultStyle = true,
                 HasDropShadow = false,
-                Style = Dynamo.Controls.NodeView.DynamoToolTipTopStyle
+                Style = NodeView.DynamoToolTipTopStyle
             };
 
             TextBlock textBlock = new TextBlock
@@ -177,31 +151,56 @@ namespace Dynamo.UI.Controls
 
             textBlock.SetBinding(TextBlock.TextProperty, new Binding("ToolTipContent"));
             dynamoToolTip.Content = textBlock;
-            BorderHighlightOverlay.ToolTip = dynamoToolTip;
+            PortBackgroundBorder.ToolTip = dynamoToolTip;
 
-            var NodeAutoCompleteHover = new Border()
+            NodeAutoCompleteHover = new Grid()
             {
                 Name = "NodeAutoCompleteHover",
                 Margin = new Thickness(0, 0, -18, 0),
                 Background = Brushes.Transparent
             };
 
-            //TODO Finish NodeAutoCompletHover
-
-            //TODO Finish PortBoderHighlight
-
             Grid.SetColumn(NodeAutoCompleteHover, 2);
+
+            nodeAutoCompleteMarker = new Border
+            {
+                Name = "NodeAutoCompleteMarker",
+                Cursor = Cursors.Hand,
+                CornerRadius = new CornerRadius(10),
+                Height = 20,
+                Width = 20,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Right,
+                Background = nodeTransientOverlayColor,
+                SnapsToDevicePixels = true,
+                Visibility = Visibility.Collapsed
+            };
+
+            var nodeAutoCompleteMarkerLabel = new Label
+            {
+                Name = "NodeAutoCompleteMarkerLabel",
+                FontSize = 12,
+                Width = 25,
+                Height = 25,
+                Margin = new Thickness(-3, -3, 0, 0),
+                Content = "✨"
+            };
+
+            nodeAutoCompleteMarker.Child = nodeAutoCompleteMarkerLabel; 
+            NodeAutoCompleteHover.Children.Add(nodeAutoCompleteMarker);
+
+            //TODO Finish NodeAutoCompletHover Tooltip
+
+            //TODO Finish PortBoderHighlight move it to changeing the PortBackgroundBorder
 
             MainGrid.Children.Add(PortSnapping);
             MainGrid.Children.Add(PortBackgroundBorder);
             MainGrid.Children.Add(PortValueMarker);
             MainGrid.Children.Add(PortNameGrid);
-            MainGrid.Children.Add(BorderHighlightOverlay);
             MainGrid.Children.Add(NodeAutoCompleteHover);
 
             this.Content = MainGrid;
 
-            //TODO unregister
             DataContextChanged += OnDataContextChanged;
 
         }
@@ -263,6 +262,43 @@ namespace Dynamo.UI.Controls
             mouseLeaveTrigger.Actions.Add(mouseLeaveAction);
             Dynamo.Microsoft.Xaml.Behaviors.Interaction.GetTriggers(PortSnapping).Add(mouseLeaveTrigger);
 
+            var previewMouseLeftDownTrigger = new Dynamo.UI.Views.HandlingEventTrigger()
+            {
+                EventName = "PreviewMouseLeftButtonDown",
+            };
+            var previewMouseLeftDownAction = new InvokeCommandAction()
+            {
+                Command = viewModel.NodeAutoCompleteCommand,
+                PassEventArgsToCommand = true
+            };
+
+            previewMouseLeftDownTrigger.Actions.Add(previewMouseLeftDownAction);
+            Dynamo.Microsoft.Xaml.Behaviors.Interaction.GetTriggers(nodeAutoCompleteMarker).Add(previewMouseLeftDownTrigger);
+
+            //todo dispatch on UI thead
+            //Todo move to method so can unregister
+            PortBackgroundBorder.MouseEnter += (s, e) =>
+            {
+                PortBackgroundBorder.Background = portMouseOverColor;
+                if(viewModel.NodeAutoCompleteMarkerEnabled)
+                    nodeAutoCompleteMarker.Visibility = Visibility.Visible;
+            };
+            PortBackgroundBorder.MouseLeave += (s, e) =>
+            {
+                PortBackgroundBorder.Background = portBackGroundColor;
+                nodeAutoCompleteMarker.Visibility = Visibility.Collapsed;
+            };
+
+            NodeAutoCompleteHover.MouseEnter += (s, e) =>
+            {
+                if (viewModel.NodeAutoCompleteMarkerEnabled)
+                    nodeAutoCompleteMarker.Visibility = Visibility.Visible;
+            };
+            NodeAutoCompleteHover.MouseLeave += (s, e) =>
+            {
+                nodeAutoCompleteMarker.Visibility = Visibility.Collapsed;
+            };
+
             if (viewModel.IsPortCondensed)
             {
                 MainGrid.Height = 14;
@@ -273,15 +309,11 @@ namespace Dynamo.UI.Controls
                 PortBackgroundBorder.Height = 14;
                 PortBackgroundBorder.Width = 20;
                 PortBackgroundBorder.Background = midGrey;
+                portBackGroundColor = midGrey;
                 PortBackgroundBorder.BorderBrush = Brushes.Transparent;
                 PortNameTextBox.Margin = new Thickness(12,1,0,0);
                 PortNameGrid.Height = 14;
                 PortNameGrid.Margin = new Thickness(0, 1, 2, 0);
-                BorderHighlightOverlay.CornerRadius = new CornerRadius(0);
-                BorderHighlightOverlay.BorderThickness = new Thickness(0);
-                BorderHighlightOverlay.Height = Configurations.CodeBlockOutputPortHeightInPixels;
-                BorderHighlightOverlay.Width = 20;
-                BorderHighlightOverlay.Margin = new Thickness(5,0,0,0);
             }
 
         }

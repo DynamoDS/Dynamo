@@ -81,11 +81,26 @@ namespace Dynamo.UI.Controls
                 BorderThickness = new Thickness(0, 1, 1, 1),
                 CornerRadius = new CornerRadius(0, 11, 11, 0),
                 IsHitTestVisible = true,
-                SnapsToDevicePixels = true
+                SnapsToDevicePixels = true,
             };
 
-            //Try to unify the Port Borders
-            //PortBackgroundBorder.SetBinding(Border.BackgroundProperty, new Binding("PortBackgroundColor") { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
+            // Bind BorderBrush property
+            PortBackgroundBorder.SetBinding(Border.BorderBrushProperty, new Binding("PortBorderBrushColor")
+            {
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
+            //todo dispatch on UI thead
+            //Todo move to method so can unregister
+            //Todo move to the OnDataContext set so we can avoid the caching
+            // Event handlers for mouse enter and leave
+            PortBackgroundBorder.MouseEnter += (s, e) =>
+            {
+                //Todo add check for KeepListStructure
+                cachedPortBackgroundColor = PortBackgroundBorder.Background;
+                PortBackgroundBorder.Background = portMouseOverColor;
+            };
+            PortBackgroundBorder.MouseLeave += (s, e) => PortBackgroundBorder.Background = cachedPortBackgroundColor;
 
             Grid.SetColumn(PortBackgroundBorder, 1);
             Grid.SetColumnSpan(PortBackgroundBorder, 6);
@@ -137,32 +152,6 @@ namespace Dynamo.UI.Controls
 
             Grid.SetColumn(PortNameTextBox, 3);
 
-            //Try to unify the Port Borders
-            //var mainBorderHighlightOverlay = new Border
-            //{
-            //    Name = "mainBorderHighlightOverlay",
-            //    Height = 29,
-            //    BorderBrush = Brushes.Transparent,
-            //    CornerRadius = new CornerRadius(0, 11, 11, 0),
-            //    IsHitTestVisible = true,
-            //    Opacity = 0.2,
-            //    SnapsToDevicePixels = true,
-            //    Background = Brushes.Transparent, // Initial background
-            //};
-
-            //Grid.SetColumn(mainBorderHighlightOverlay, 1);
-            //Grid.SetColumnSpan(mainBorderHighlightOverlay, 6);
-
-            //Try to unify the Port Borders setting these event bindings to PortBackgroundBorder 
-            // Event handlers for mouse enter and leave
-            PortBackgroundBorder.MouseEnter += (s, e) =>
-            {
-                //Todo add check for KeepListStructure
-                cachedPortBackgroundColor = PortBackgroundBorder.Background;
-                PortBackgroundBorder.Background = portMouseOverColor;
-            };
-            PortBackgroundBorder.MouseLeave += (s, e) => PortBackgroundBorder.Background = cachedPortBackgroundColor;
-
             DynamoToolTip dynamoToolTip = new DynamoToolTip
             {
                 AttachmentSide = DynamoToolTip.Side.Top,
@@ -181,29 +170,6 @@ namespace Dynamo.UI.Controls
             dynamoToolTip.Content = textBlock;
             PortBackgroundBorder.ToolTip = dynamoToolTip;
 
-            //Try to unify the Port Borders
-            // Create the Border
-            //Border portBorderBrush = new Border
-            //{
-            //    Name = "PortBorderBrush",
-            //    Height = 29,
-            //    BorderThickness = new Thickness(0, 1, 1, 1),
-            //    CornerRadius = new CornerRadius(0, 11, 11, 0),
-            //    IsHitTestVisible = true,
-            //    SnapsToDevicePixels = true
-            //};
-
-            //Grid.SetColumn(portBorderBrush, 1);
-            //Grid.SetColumnSpan(portBorderBrush, 6);
-
-            //Try to unify the Port Borders setting these event bindings to PortBackgroundBorder 
-            // Bind BorderBrush property
-            Binding borderBrushBinding = new Binding("PortBorderBrushColor")
-            {
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-            };
-            PortBackgroundBorder.SetBinding(Border.BorderBrushProperty, borderBrushBinding);
-
             //TODO NodeAutoCompleteHover
             //TODO PortBorderHighlight
 
@@ -212,12 +178,9 @@ namespace Dynamo.UI.Controls
             MainGrid.Children.Add(PortValueMarker);
             MainGrid.Children.Add(PortDefaultValueMarker);
             MainGrid.Children.Add(PortNameTextBox);
-            //MainGrid.Children.Add(mainBorderHighlightOverlay);
-            //MainGrid.Children.Add(portBorderBrush);
 
             this.Content = MainGrid;
 
-            //TODO unregister
             DataContextChanged += OnDataContextChanged;
         }
 
@@ -228,6 +191,9 @@ namespace Dynamo.UI.Controls
             viewModel = e.NewValue as InPortViewModel;
 
             MainGrid.BeginInit();
+
+            //Intialize the PortBackgroundColor
+            PortBackgroundBorder.Background = viewModel.PortBackgroundColor;
 
             //Todo deregister event
             viewModel.PropertyChanged += (s, e) =>
