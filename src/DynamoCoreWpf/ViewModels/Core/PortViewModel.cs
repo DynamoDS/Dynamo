@@ -30,7 +30,7 @@ namespace Dynamo.ViewModels
         private const double autocompletePopupSpacing = 2.5;
         private const double proxyPortContextMenuOffset = 20;
         protected static readonly SolidColorBrush PortBackgroundColorPreviewOff = new SolidColorBrush(Color.FromRgb(102, 102, 102));
-        protected static readonly SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
+        internal static readonly SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
         protected static readonly SolidColorBrush PortBorderBrushColorDefault = new SolidColorBrush(Color.FromRgb(161, 161, 161));
         private SolidColorBrush portBorderBrushColor = PortBorderBrushColorDefault;
         private SolidColorBrush portBackgroundColor = PortBackgroundColorDefault;

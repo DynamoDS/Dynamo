@@ -24,11 +24,17 @@ namespace Dynamo.UI.Controls
     {
         private InPortViewModel viewModel = null;
         private Grid MainGrid = null;
+        private Border PortBackgroundBorder = null;
+        private bool UseLevelSpinnerInit = false;  
 
         private static SolidColorBrush primaryCharcoal200Brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCDCDC"));
         private static SolidColorBrush chevronHighlightOverlayBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E5E2DE"));
+        private static SolidColorBrush portMouseOverColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#636363")); //This is the equivolent direct color vs with opacity
         private static BooleanToVisibilityConverter booleanToVisibilityConverter = new BooleanToVisibilityConverter();
         private static FontFamily artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
+
+        //Try to unify the Port Borders
+        private Brush cachedPortBackgroundColor = PortViewModel.PortBackgroundColorDefault;
 
         public InPorts()
         {
@@ -67,17 +73,18 @@ namespace Dynamo.UI.Controls
             PortSnapping.MouseEnter += (s, e) => viewModel.MouseEnterCommand.Execute(DataContext);
             PortSnapping.MouseLeave += (s, e) => viewModel.MouseLeaveCommand.Execute(DataContext);
 
-            var PortBackgroundBorder = new Border()
+            PortBackgroundBorder = new Border()
             {
                 Name = "PortBackgroundBorder",
                 Height = 29,
-                BorderThickness = new System.Windows.Thickness(0),
+                BorderThickness = new Thickness(0, 1, 1, 1),
                 CornerRadius = new CornerRadius(0, 11, 11, 0),
-                IsHitTestVisible = false,
+                IsHitTestVisible = true,
                 SnapsToDevicePixels = true
             };
 
-            PortBackgroundBorder.SetBinding(Border.BackgroundProperty, new Binding("PortBackgroundColor") { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
+            //Try to unify the Port Borders
+            //PortBackgroundBorder.SetBinding(Border.BackgroundProperty, new Binding("PortBackgroundColor") { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
 
             Grid.SetColumn(PortBackgroundBorder, 1);
             Grid.SetColumnSpan(PortBackgroundBorder, 6);
@@ -96,13 +103,12 @@ namespace Dynamo.UI.Controls
 
             Grid.SetColumn(PortValueMarker, 1);
 
-            //TODO Lazy Load
             var PortDefaultValueMarker = new Border()
             {
                 Name = "PortDefaultValueMarker",
                 Width = 4,
                 Height = 27,
-                Margin = new Thickness(0, 0, 1, 0),
+                Margin = new Thickness(0, 0, 1, 1),
                 HorizontalAlignment = HorizontalAlignment.Right,
             };
 
@@ -130,24 +136,31 @@ namespace Dynamo.UI.Controls
 
             Grid.SetColumn(PortNameTextBox, 3);
 
-            var mainBorderHighlightOverlay = new Border
-            {
-                Name = "mainBorderHighlightOverlay",
-                Height = 29,
-                BorderBrush = Brushes.Transparent,
-                CornerRadius = new CornerRadius(0, 11, 11, 0),
-                IsHitTestVisible = true,
-                Opacity = 0.2,
-                SnapsToDevicePixels = true,
-                Background = Brushes.Transparent, // Initial background
-            };
+            //Try to unify the Port Borders
+            //var mainBorderHighlightOverlay = new Border
+            //{
+            //    Name = "mainBorderHighlightOverlay",
+            //    Height = 29,
+            //    BorderBrush = Brushes.Transparent,
+            //    CornerRadius = new CornerRadius(0, 11, 11, 0),
+            //    IsHitTestVisible = true,
+            //    Opacity = 0.2,
+            //    SnapsToDevicePixels = true,
+            //    Background = Brushes.Transparent, // Initial background
+            //};
 
-            Grid.SetColumn(mainBorderHighlightOverlay, 1);
-            Grid.SetColumnSpan(mainBorderHighlightOverlay, 6);
+            //Grid.SetColumn(mainBorderHighlightOverlay, 1);
+            //Grid.SetColumnSpan(mainBorderHighlightOverlay, 6);
 
+            //Try to unify the Port Borders setting these event bindings to PortBackgroundBorder 
             // Event handlers for mouse enter and leave
-            mainBorderHighlightOverlay.MouseEnter += (s, e) => mainBorderHighlightOverlay.Background = Brushes.White;
-            mainBorderHighlightOverlay.MouseLeave += (s, e) => mainBorderHighlightOverlay.Background = Brushes.Transparent;
+            PortBackgroundBorder.MouseEnter += (s, e) =>
+            {
+                //Todo add check for KeepListStructure
+                cachedPortBackgroundColor = PortBackgroundBorder.Background;
+                PortBackgroundBorder.Background = portMouseOverColor;
+            };
+            PortBackgroundBorder.MouseLeave += (s, e) => PortBackgroundBorder.Background = cachedPortBackgroundColor;
 
             DynamoToolTip dynamoToolTip = new DynamoToolTip
             {
@@ -165,28 +178,30 @@ namespace Dynamo.UI.Controls
 
             textBlock.SetBinding(TextBlock.TextProperty, new Binding("ToolTipContent"));
             dynamoToolTip.Content = textBlock;
-            mainBorderHighlightOverlay.ToolTip = dynamoToolTip;
+            PortBackgroundBorder.ToolTip = dynamoToolTip;
 
+            //Try to unify the Port Borders
             // Create the Border
-            Border portBorderBrush = new Border
-            {
-                Name = "PortBorderBrush",
-                Height = 29,
-                BorderThickness = new Thickness(0, 1, 1, 1),
-                CornerRadius = new CornerRadius(0, 11, 11, 0),
-                IsHitTestVisible = true,
-                SnapsToDevicePixels = true
-            };
+            //Border portBorderBrush = new Border
+            //{
+            //    Name = "PortBorderBrush",
+            //    Height = 29,
+            //    BorderThickness = new Thickness(0, 1, 1, 1),
+            //    CornerRadius = new CornerRadius(0, 11, 11, 0),
+            //    IsHitTestVisible = true,
+            //    SnapsToDevicePixels = true
+            //};
 
-            Grid.SetColumn(portBorderBrush, 1);
-            Grid.SetColumnSpan(portBorderBrush, 6);
+            //Grid.SetColumn(portBorderBrush, 1);
+            //Grid.SetColumnSpan(portBorderBrush, 6);
 
+            //Try to unify the Port Borders setting these event bindings to PortBackgroundBorder 
             // Bind BorderBrush property
             Binding borderBrushBinding = new Binding("PortBorderBrushColor")
             {
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             };
-            portBorderBrush.SetBinding(Border.BorderBrushProperty, borderBrushBinding);
+            PortBackgroundBorder.SetBinding(Border.BorderBrushProperty, borderBrushBinding);
 
             //TODO NodeAutoCompleteHover
             //TODO PortBorderHighlight
@@ -196,8 +211,8 @@ namespace Dynamo.UI.Controls
             MainGrid.Children.Add(PortValueMarker);
             MainGrid.Children.Add(PortDefaultValueMarker);
             MainGrid.Children.Add(PortNameTextBox);
-            MainGrid.Children.Add(mainBorderHighlightOverlay);
-            MainGrid.Children.Add(portBorderBrush);
+            //MainGrid.Children.Add(mainBorderHighlightOverlay);
+            //MainGrid.Children.Add(portBorderBrush);
 
             this.Content = MainGrid;
 
@@ -210,6 +225,70 @@ namespace Dynamo.UI.Controls
             if (null != viewModel) return;
 
             viewModel = e.NewValue as InPortViewModel;
+
+            MainGrid.BeginInit();
+
+            //Todo deregister event
+            viewModel.PropertyChanged += (s, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case "PortBackgroundColor":
+                        if (PortBackgroundBorder.Dispatcher.CheckAccess())
+                        {
+                            PortBackgroundBorder.Background = viewModel.PortBackgroundColor;
+                        }
+                        else
+                        {
+                            PortBackgroundBorder.Dispatcher.Invoke(() =>
+                            {
+                                PortBackgroundBorder.Background = viewModel.PortBackgroundColor;
+                            });
+                        }
+                        break;
+                    case "UseLevels":
+
+                        //Add the spinner if it was not added in the constructor
+                        if (viewModel.UseLevels == true)
+                        {
+                            if (!UseLevelSpinnerInit)
+                            {
+                                var useLevelControl = new UseLevelSpinner()
+                                {
+                                    Name = "useLevelControl",
+                                    Width = 50,
+                                    Height = 25,
+                                    VerticalAlignment = VerticalAlignment.Center,
+                                    Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4A4A4A")), //DarkGrey
+                                };
+
+                                DockPanel.SetDock(useLevelControl, Dock.Right);
+                                Grid.SetColumn(useLevelControl, 5);
+
+                                useLevelControl.SetBinding(UseLevelSpinner.KeepListStructureProperty, new Binding("ShouldKeepListStructure"));
+                                useLevelControl.SetBinding(UseLevelSpinner.LevelProperty, new Binding("Level") { Mode = BindingMode.TwoWay });
+                                useLevelControl.SetBinding(Border.VisibilityProperty, new Binding("UseLevels")
+                                {
+                                    Converter = booleanToVisibilityConverter
+                                });
+
+                                if (MainGrid.Dispatcher.CheckAccess())
+                                {
+                                    MainGrid.Children.Add(useLevelControl);
+                                }
+                                else
+                                {
+                                    MainGrid.Dispatcher.Invoke(() =>
+                                    {
+                                        MainGrid.Children.Add(useLevelControl);
+                                    });
+                                }
+                            }
+                            
+                        }
+                        break;
+                }
+            };
 
             var mouseLeftButtonDownTrigger = new Dynamo.UI.Views.HandlingEventTrigger()
             {
@@ -253,31 +332,12 @@ namespace Dynamo.UI.Controls
 
                 Grid.SetColumn(chevron, 6);
 
-                var useLevelControl = new UseLevelSpinner()
-                {
-                    Name = "useLevelControl",
-                    Width = 50,
-                    Height = 25,
-                    VerticalAlignment = VerticalAlignment.Center,
-                    Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4A4A4A")), //DarkGrey
-                };
-
-                DockPanel.SetDock(useLevelControl, Dock.Right);
-                Grid.SetColumn(useLevelControl, 5);
-
-                useLevelControl.SetBinding(UseLevelSpinner.KeepListStructureProperty, new Binding("ShouldKeepListStructure"));
-                useLevelControl.SetBinding(UseLevelSpinner.LevelProperty, new Binding("Level") { Mode = BindingMode.TwoWay });
-                useLevelControl.SetBinding(Border.VisibilityProperty, new Binding("UseLevels")
-                {
-                    Converter = booleanToVisibilityConverter
-                });
-
                 // Create the Border
                 Border chevronHighlightOverlay = new Border
                 {
                     Name = "ChevronHighlightOverlay",
                     Width = 20,
-                    Height = 27,
+                    Height = 28,
                     CornerRadius = new CornerRadius(0, 11, 11, 0),
                     IsHitTestVisible = true,
                     Background = chevronHighlightOverlayBackground,
@@ -292,7 +352,7 @@ namespace Dynamo.UI.Controls
                     Command = viewModel.NodePortContextMenuCommand,
                     MouseAction = MouseAction.LeftClick
                 };
-                chevronHighlightOverlay.InputBindings.Add(mouseBinding); 
+                chevronHighlightOverlay.InputBindings.Add(mouseBinding);
 
                 chevronHighlightOverlay.MouseEnter += (s, e) => chevronHighlightOverlay.Opacity = 0.3;
                 chevronHighlightOverlay.MouseLeave += (s, e) => chevronHighlightOverlay.Opacity = 0.0;
@@ -301,8 +361,34 @@ namespace Dynamo.UI.Controls
                 MainGrid.Children.Add(chevron);
                 MainGrid.Children.Add(chevronHighlightOverlay);
                 MainGrid.ColumnDefinitions[5].Width = new GridLength(50);
-                MainGrid.Children.Add(useLevelControl);
+
+                // Add the UseLevelSpinner if visable in the nodes initial state
+                if (viewModel.UseLevels == true)
+                { 
+                    var useLevelControl = new UseLevelSpinner()
+                    {
+                        Name = "useLevelControl",
+                        Width = 50,
+                        Height = 25,
+                        VerticalAlignment = VerticalAlignment.Center,
+                        Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4A4A4A")), //DarkGrey
+                    };
+
+                    DockPanel.SetDock(useLevelControl, Dock.Right);
+                    Grid.SetColumn(useLevelControl, 5);
+
+                    useLevelControl.SetBinding(UseLevelSpinner.KeepListStructureProperty, new Binding("ShouldKeepListStructure"));
+                    useLevelControl.SetBinding(UseLevelSpinner.LevelProperty, new Binding("Level") { Mode = BindingMode.TwoWay });
+                    useLevelControl.SetBinding(Border.VisibilityProperty, new Binding("UseLevels")
+                    {
+                        Converter = booleanToVisibilityConverter
+                    });
+
+                    MainGrid.Children.Add(useLevelControl);
+                }
             }
+
+            MainGrid.EndInit();
         }
     }
 }

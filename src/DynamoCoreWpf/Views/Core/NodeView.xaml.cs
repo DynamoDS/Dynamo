@@ -874,7 +874,7 @@ namespace Dynamo.Controls
                     new Point(10,0)
                 })
             };
-
+                
             var tooltipPathFigure = new PathFigure()
             {
                 IsClosed = false,
@@ -1016,6 +1016,7 @@ namespace Dynamo.Controls
                 nodeIcon.Fill = icon;
             }
 
+            //Add items for custom nodes
             if (ViewModel.IsCustomFunction)
             {
 
