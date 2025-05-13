@@ -725,7 +725,9 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             if (transientNodes.Any())
             {
                 dynamoViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(transientNodes.Select(x => x.Id), true));
-                wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
+                /*We can't remove the undo from the undo group at this time, because the elements and their modifications still exist in the cache.
+                With the deletion not in the undo cache, this results in errors if the user hits undo*/
+                //wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
             }
         }
 
