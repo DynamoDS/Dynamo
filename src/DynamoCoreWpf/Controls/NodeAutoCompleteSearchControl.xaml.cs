@@ -57,7 +57,7 @@ namespace Dynamo.UI.Controls
             HomeWorkspaceModel.WorkspaceClosed += this.CloseAutoCompletion;
         }
 
-        public NodeAutoCompleteSearchControl(Window window, NodeAutoCompleteSearchViewModel viewModel)
+        internal NodeAutoCompleteSearchControl(Window window, NodeAutoCompleteSearchViewModel viewModel)
         {
             Owner = window;
             DataContext = viewModel;

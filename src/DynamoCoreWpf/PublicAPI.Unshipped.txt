@@ -1457,7 +1457,6 @@ Dynamo.UI.Controls.NodeAutoCompleteSearchControl
 Dynamo.UI.Controls.NodeAutoCompleteSearchControl.Dispose() -> void
 Dynamo.UI.Controls.NodeAutoCompleteSearchControl.InitializeComponent() -> void
 Dynamo.UI.Controls.NodeAutoCompleteSearchControl.NodeAutoCompleteSearchControl() -> void
-Dynamo.UI.Controls.NodeAutoCompleteSearchControl.NodeAutoCompleteSearchControl(System.Windows.Window window, Dynamo.ViewModels.NodeAutoCompleteSearchViewModel viewModel) -> void
 Dynamo.UI.Controls.NodeAutoCompleteSearchControl.ViewModel.get -> Dynamo.ViewModels.NodeAutoCompleteSearchViewModel
 Dynamo.UI.Controls.OutPortContextMenu
 Dynamo.UI.Controls.OutPortContextMenu.InitializeComponent() -> void
