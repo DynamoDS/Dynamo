@@ -25,11 +25,15 @@ namespace Dynamo.UI.Controls
         private InPortViewModel viewModel = null;
         private Grid MainGrid = null;
         private Border PortBackgroundBorder = null;
-        private bool UseLevelSpinnerInit = false;  
+        private Grid NodeAutoCompleteHover = null;
+        private Border nodeAutoCompleteMarker = null;
+        private bool UseLevelSpinnerInit = false;
 
         private static SolidColorBrush primaryCharcoal200Brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCDCDC"));
         private static SolidColorBrush chevronHighlightOverlayBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E5E2DE"));
         private static SolidColorBrush portMouseOverColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#636363")); //This is the equivolent direct color vs with opacity
+        private static SolidColorBrush nodeTransientOverlayColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D5BCF7"));
+
         private static BooleanToVisibilityConverter booleanToVisibilityConverter = new BooleanToVisibilityConverter();
         private static FontFamily artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
 
@@ -85,22 +89,11 @@ namespace Dynamo.UI.Controls
             };
 
             // Bind BorderBrush property
+            // Might need to move this to the property handler in OnDataContextChanged
             PortBackgroundBorder.SetBinding(Border.BorderBrushProperty, new Binding("PortBorderBrushColor")
             {
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
-
-            //todo dispatch on UI thead
-            //Todo move to method so can unregister
-            //Todo move to the OnDataContext set so we can avoid the caching
-            // Event handlers for mouse enter and leave
-            PortBackgroundBorder.MouseEnter += (s, e) =>
-            {
-                //Todo add check for KeepListStructure
-                cachedPortBackgroundColor = PortBackgroundBorder.Background;
-                PortBackgroundBorder.Background = portMouseOverColor;
-            };
-            PortBackgroundBorder.MouseLeave += (s, e) => PortBackgroundBorder.Background = cachedPortBackgroundColor;
 
             Grid.SetColumn(PortBackgroundBorder, 1);
             Grid.SetColumnSpan(PortBackgroundBorder, 6);
@@ -170,7 +163,42 @@ namespace Dynamo.UI.Controls
             dynamoToolTip.Content = textBlock;
             PortBackgroundBorder.ToolTip = dynamoToolTip;
 
-            //TODO NodeAutoCompleteHover
+            NodeAutoCompleteHover = new Grid()
+            {
+                Name = "NodeAutoCompleteHover",
+                Margin = new Thickness(-18, 0, 0, 0),
+                Background = Brushes.Transparent
+            };
+
+            Grid.SetColumn(NodeAutoCompleteHover, 0);
+
+            nodeAutoCompleteMarker = new Border
+            {
+                Name = "NodeAutoCompleteMarker",
+                Cursor = Cursors.Hand,
+                CornerRadius = new CornerRadius(10),
+                Height = 20,
+                Width = 20,
+                VerticalAlignment = VerticalAlignment.Center,
+                HorizontalAlignment = HorizontalAlignment.Left,
+                Background = nodeTransientOverlayColor,
+                SnapsToDevicePixels = true,
+                Visibility = Visibility.Collapsed
+            };
+
+            var nodeAutoCompleteMarkerLabel = new Label
+            {
+                Name = "NodeAutoCompleteMarkerLabel",
+                FontSize = 12,
+                Width = 25,
+                Height = 25,
+                Margin = new Thickness(-3, -3, 0, 0),
+                Content = "✨"
+            };
+
+            nodeAutoCompleteMarker.Child = nodeAutoCompleteMarkerLabel;
+            NodeAutoCompleteHover.Children.Add(nodeAutoCompleteMarker);
+
             //TODO PortBorderHighlight
 
             MainGrid.Children.Add(PortSnapping);
@@ -178,6 +206,7 @@ namespace Dynamo.UI.Controls
             MainGrid.Children.Add(PortValueMarker);
             MainGrid.Children.Add(PortDefaultValueMarker);
             MainGrid.Children.Add(PortNameTextBox);
+            MainGrid.Children.Add(NodeAutoCompleteHover);
 
             this.Content = MainGrid;
 
@@ -211,6 +240,40 @@ namespace Dynamo.UI.Controls
                             {
                                 PortBackgroundBorder.Background = viewModel.PortBackgroundColor;
                             });
+                        }
+                        break;
+                    case "Highlight":
+                        if (viewModel.Highlight == Visibility.Visible)
+                        {
+                            if (PortBackgroundBorder.Dispatcher.CheckAccess())
+                            {
+                                PortBackgroundBorder.BorderBrush = nodeTransientOverlayColor;
+                                PortBackgroundBorder.BorderThickness = new Thickness(3, 3, 3, 3);
+                            }
+                            else
+                            {
+                                PortBackgroundBorder.Dispatcher.Invoke(() =>
+                                {
+                                    PortBackgroundBorder.BorderBrush = nodeTransientOverlayColor;
+                                    PortBackgroundBorder.BorderThickness = new Thickness(3, 3, 3, 3);
+                                });
+                            }
+                        }
+                        else
+                        {
+                            if (PortBackgroundBorder.Dispatcher.CheckAccess())
+                            {
+                                PortBackgroundBorder.BorderBrush = viewModel.PortBorderBrushColor;
+                                PortBackgroundBorder.BorderThickness = new Thickness(1, 1, 1, 1);
+                            }
+                            else
+                            {
+                                PortBackgroundBorder.Dispatcher.Invoke(() =>
+                                {
+                                    PortBackgroundBorder.BorderBrush = viewModel.PortBorderBrushColor;
+                                    PortBackgroundBorder.BorderThickness = new Thickness(1, 1, 1, 1);
+                                });
+                            }
                         }
                         break;
                     case "UseLevels":
@@ -281,6 +344,45 @@ namespace Dynamo.UI.Controls
 
             mouseRightButtonDownTrigger.Actions.Add(mouseRightButtonDownAction);
             Dynamo.Microsoft.Xaml.Behaviors.Interaction.GetTriggers(MainGrid).Add(mouseRightButtonDownTrigger);
+
+            var previewMouseLeftDownTrigger = new Dynamo.UI.Views.HandlingEventTrigger()
+            {
+                EventName = "PreviewMouseLeftButtonDown",
+            };
+            var previewMouseLeftDownAction = new InvokeCommandAction()
+            {
+                Command = viewModel.NodeAutoCompleteCommand,
+                PassEventArgsToCommand = true
+            };
+
+            previewMouseLeftDownTrigger.Actions.Add(previewMouseLeftDownAction);
+            Dynamo.Microsoft.Xaml.Behaviors.Interaction.GetTriggers(nodeAutoCompleteMarker).Add(previewMouseLeftDownTrigger);
+
+            //todo dispatch on UI thead
+            //Todo move to method so can unregister
+            // Event handlers for mouse enter and leave
+            PortBackgroundBorder.MouseEnter += (s, e) =>
+            {
+                //Todo add check for KeepListStructure
+                PortBackgroundBorder.Background = portMouseOverColor;
+                if (viewModel.NodeAutoCompleteMarkerEnabled)
+                    nodeAutoCompleteMarker.Visibility = Visibility.Visible;
+            };
+            PortBackgroundBorder.MouseLeave += (s, e) =>
+            {
+                PortBackgroundBorder.Background = viewModel.PortBackgroundColor;
+                nodeAutoCompleteMarker.Visibility = Visibility.Collapsed;
+            };
+
+            NodeAutoCompleteHover.MouseEnter += (s, e) =>
+            {
+                if (viewModel.NodeAutoCompleteMarkerEnabled)
+                    nodeAutoCompleteMarker.Visibility = Visibility.Visible;
+            };
+            NodeAutoCompleteHover.MouseLeave += (s, e) =>
+            {
+                nodeAutoCompleteMarker.Visibility = Visibility.Collapsed;
+            };
 
             if (viewModel.UseLevelVisibility == Visibility.Visible)
             {

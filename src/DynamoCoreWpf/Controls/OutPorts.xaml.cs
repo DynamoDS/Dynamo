@@ -316,6 +316,49 @@ namespace Dynamo.UI.Controls
                 PortNameGrid.Margin = new Thickness(0, 1, 2, 0);
             }
 
+            //Todo deregister event
+            viewModel.PropertyChanged += (s, e) =>
+            {
+                switch (e.PropertyName)
+                {
+                    case "Highlight":
+                        if (viewModel.Highlight == Visibility.Visible)
+                        {
+                            if (PortBackgroundBorder.Dispatcher.CheckAccess())
+                            {
+                                PortBackgroundBorder.BorderBrush = nodeTransientOverlayColor;
+                                PortBackgroundBorder.BorderThickness = new Thickness(3, 3, 3, 3);
+                            }
+                            else
+                            {
+                                PortBackgroundBorder.Dispatcher.Invoke(() =>
+                                {
+                                    PortBackgroundBorder.BorderBrush = nodeTransientOverlayColor;
+                                    PortBackgroundBorder.BorderThickness = new Thickness(3, 3, 3, 3);
+                                });
+                            }
+                        }
+                        else
+                        {
+                            if (PortBackgroundBorder.Dispatcher.CheckAccess())
+                            {
+                                PortBackgroundBorder.BorderBrush = PortViewModel.PortBorderBrushColorDefault;
+                                PortBackgroundBorder.BorderThickness = new Thickness(1, 1, 1, 1);
+                            }
+                            else
+                            {
+                                PortBackgroundBorder.Dispatcher.Invoke(() =>
+                                {
+                                    PortBackgroundBorder.BorderBrush = PortViewModel.PortBorderBrushColorDefault;
+                                    PortBackgroundBorder.BorderThickness = new Thickness(1, 1, 1, 1);
+                                });
+                            }
+                        }
+                        break;
+                }
+            };
+
+
         }
     }
 }
