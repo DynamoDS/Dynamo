@@ -300,11 +300,21 @@ namespace Dynamo.Controls
             return targetPoints;
         }
 
-        private void ViewModel_RequestAutoCompletePopupPlacementTarget(Window window, double spacing, double verticalOffset)
+        private void ViewModel_RequestAutoCompletePopupPlacementTarget(Window window, PortType portType, double spacing, double verticalOffset)
         {
-            Point targetPoints = PointToLocal(ActualWidth, 0);
+            Point targetPoints;
+            if (portType == PortType.Input)
+            {
+                targetPoints = PointToLocal(0, 0);
 
-            window.Left = targetPoints.X + spacing;
+                window.Left = targetPoints.X - spacing - window.Width   ;
+            }
+            else
+            {
+                targetPoints = PointToLocal(ActualWidth, 0);
+
+                window.Left = targetPoints.X + spacing;
+            }
             window.Top = targetPoints.Y + verticalOffset;
         }
 
