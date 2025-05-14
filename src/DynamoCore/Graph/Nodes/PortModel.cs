@@ -495,7 +495,7 @@ namespace Dynamo.Graph.Nodes
                 try
                 {
                     var portType = inPortAttribute?.PortTypes.ElementAt(Index);
-                    return portType != null && (portType.EndsWith("[]") || Regex.IsMatch(portType, @"(^|\.)List<[^>]+>$")) ? "[]" : portType;
+                    return portType != null && Regex.IsMatch(portType, @"(^|\.)List<[^>]+>$|(\[\])$") ? "[]" : portType;
                 }
                 catch (Exception e)
                 {
