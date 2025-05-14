@@ -333,10 +333,7 @@ namespace Dynamo.ViewModels
         /// <param name="window">Node autocomplete popup.</param>
         internal void SetupNodeAutoCompleteWindowPlacement(Window window)
         {
-            node.OnRequestAutoCompletePopupPlacementTarget(window,
-                PortModel.PortType,
-                2 * autocompletePopupSpacing,
-                node.WorkspaceViewModel.Zoom * (NodeModel.HeaderHeight + (PortModel.Index * PortModel.Height)));
+            node.OnRequestAutoCompletePopupPlacementTarget(window, PortModel);
         }
 
         /// <summary>

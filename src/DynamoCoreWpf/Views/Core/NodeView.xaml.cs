@@ -292,35 +292,37 @@ namespace Dynamo.Controls
             }));
         }
 
-        private Point PointToLocal(double x, double y)
+        private Point PointToLocal(double x, double y, UIElement target)
         {
-            Point positionFromScreen = PointToScreen(new Point(x, y));
-            PresentationSource source = PresentationSource.FromVisual(this);
+            Point positionFromScreen = target.PointToScreen(new Point(x, y));
+            PresentationSource source = PresentationSource.FromVisual(target);
             Point targetPoints = source.CompositionTarget.TransformFromDevice.Transform(positionFromScreen);
             return targetPoints;
         }
 
-        private void ViewModel_RequestAutoCompletePopupPlacementTarget(Window window, PortType portType, double spacing, double verticalOffset)
+        private void ViewModel_RequestAutoCompletePopupPlacementTarget(Window window, PortModel portModel)
         {
             Point targetPoints;
-            if (portType == PortType.Input)
+            if (portModel.PortType == PortType.Input)
             {
-                targetPoints = PointToLocal(0, 0);
+                var portView = inputPortControl.ItemContainerGenerator.ContainerFromIndex(portModel.Index) as FrameworkElement;
+                targetPoints = PointToLocal(0, 0, portView);
 
-                window.Left = targetPoints.X - spacing - window.Width   ;
+                window.Left = targetPoints.X - window.Width;
             }
             else
             {
-                targetPoints = PointToLocal(ActualWidth, 0);
+                var portView = outputPortControl.ItemContainerGenerator.ContainerFromIndex(portModel.Index) as FrameworkElement;
+                targetPoints = PointToLocal(portView.ActualWidth, 0, portView);
 
-                window.Left = targetPoints.X + spacing;
+                window.Left = targetPoints.X;
             }
-            window.Top = targetPoints.Y + verticalOffset;
+            window.Top = targetPoints.Y;
         }
 
         private void ViewModel_RequestClusterAutoCompletePopupPlacementTarget(Window window, double spacing)
         {
-            Point targetPoints = PointToLocal(0, ActualHeight);
+            Point targetPoints = PointToLocal(0, ActualHeight, this);
                 
             window.Left = targetPoints.X;
             window.Top = targetPoints.Y + spacing;
