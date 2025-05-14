@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -122,9 +122,6 @@
   </data>
   <data name="CannotRemovePackageAssemblyTitle" xml:space="preserve">
     <value>アセンブリを更新できません</value>
-  </data>
-  <data name="DownloadPackageDisabled" xml:space="preserve">
-    <value />
   </data>
   <data name="InvalidPackageFolderWarning" xml:space="preserve">
     <value>フォルダ '{0}' は存在しません</value>

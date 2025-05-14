@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <root>
   <!-- 
     Microsoft ResX Schema 
@@ -233,9 +233,6 @@
   </data>
   <data name="DefineDataSupportedInputValueExceptionMessage" xml:space="preserve">
     <value>輸入必須是單一值或非巢狀清單。</value>
-  </data>
-  <data name="WebRequestOfflineWarning" xml:space="preserve">
-    <value />
   </data>
   <data name="CurveMapperEqualMinMaxWarning" xml:space="preserve">
     <value>• Min and Max values must not be the same.</value>
