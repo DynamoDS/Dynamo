@@ -57,6 +57,23 @@ namespace Dynamo.UI.Controls
             HomeWorkspaceModel.WorkspaceClosed += this.CloseAutoCompletion;
         }
 
+        public NodeAutoCompleteSearchControl(Window window, NodeAutoCompleteSearchViewModel viewModel)
+        {
+            Owner = window;
+            DataContext = viewModel;
+            ViewModel.IsOpen = true;
+            InitializeComponent();
+            if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
+            {
+                Application.Current.Deactivated += CurrentApplicationDeactivated;
+                if (Application.Current?.MainWindow != null)
+                {
+                    Application.Current.MainWindow.Closing += NodeAutoCompleteSearchControl_Unloaded;
+                }
+            }
+            HomeWorkspaceModel.WorkspaceClosed += this.CloseAutoCompletion;
+        }
+
         private void NodeAutoCompleteSearchControl_Unloaded(object sender, System.ComponentModel.CancelEventArgs e)
         {
             if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
@@ -72,12 +89,13 @@ namespace Dynamo.UI.Controls
 
         private void CurrentApplicationDeactivated(object sender, EventArgs e)
         {
-            OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+            OnRequestHideNodeAutoCompleteSearch();
         }
 
-        private void OnRequestShowNodeAutoCompleteSearch(ShowHideFlags flags)
+        private void OnRequestHideNodeAutoCompleteSearch()
         {
-            RequestShowNodeAutoCompleteSearch?.Invoke(flags);
+            this.ViewModel.IsOpen = false;
+            this.Close();
         }
 
         private void OnSearchTextBoxTextChanged(object sender, TextChangedEventArgs e)
@@ -101,7 +119,7 @@ namespace Dynamo.UI.Controls
             if (!(sender is ListBoxItem listBoxItem) || e.OriginalSource is Thumb) return;
 
             ExecuteSearchElement(listBoxItem);
-            OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+            OnRequestHideNodeAutoCompleteSearch();
             e.Handled = true;
         }
 
@@ -236,7 +254,7 @@ namespace Dynamo.UI.Controls
             NodeModel parent_node = ViewModel.PortViewModel?.PortModel.Owner;
             if (node == parent_node)
             {
-                OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+                OnRequestHideNodeAutoCompleteSearch();
                 ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
             }
         }
@@ -307,13 +325,13 @@ namespace Dynamo.UI.Controls
             switch (key)
             {
                 case Key.Escape:
-                    OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+                    OnRequestHideNodeAutoCompleteSearch();
                     break;
                 case Key.Enter:
                     if (HighlightedItem != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
                     {
                         ExecuteSearchElement(HighlightedItem);
-                        OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+                        OnRequestHideNodeAutoCompleteSearch();
                     }
                     break;
                 case Key.Up:
@@ -382,7 +400,7 @@ namespace Dynamo.UI.Controls
 
         internal void CloseAutoCompletion()
         {
-            OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+            OnRequestHideNodeAutoCompleteSearch();
             ViewModel?.OnNodeAutoCompleteWindowClosed();
         }
 

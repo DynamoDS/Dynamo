@@ -292,19 +292,25 @@ namespace Dynamo.Controls
             }));
         }
 
-        private void ViewModel_RequestAutoCompletePopupPlacementTarget(Popup popup)
+        private Point PointToLocal(double x, double y)
         {
-            popup.PlacementTarget = this;
+            Point positionFromScreen = PointToScreen(new Point(x, y));
+            PresentationSource source = PresentationSource.FromVisual(this);
+            Point targetPoints = source.CompositionTarget.TransformFromDevice.Transform(positionFromScreen);
+            return targetPoints;
+        }
 
-            ViewModel.ActualHeight = ActualHeight;
-            ViewModel.ActualWidth = ActualWidth;
+        private void ViewModel_RequestAutoCompletePopupPlacementTarget(Window window, double spacing, double verticalOffset)
+        {
+            Point targetPoints = PointToLocal(ActualWidth, 0);
+
+            window.Left = targetPoints.X + spacing;
+            window.Top = targetPoints.Y + verticalOffset;
         }
 
         private void ViewModel_RequestClusterAutoCompletePopupPlacementTarget(Window window, double spacing)
         {
-            Point positionFromScreen = PointToScreen(new Point(0, this.ActualHeight));
-            PresentationSource source = PresentationSource.FromVisual(this);
-            Point targetPoints = source.CompositionTarget.TransformFromDevice.Transform(positionFromScreen);
+            Point targetPoints = PointToLocal(0, ActualHeight);
                 
             window.Left = targetPoints.X;
             window.Top = targetPoints.Y + spacing;

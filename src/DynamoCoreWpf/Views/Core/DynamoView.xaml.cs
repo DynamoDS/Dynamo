@@ -3147,7 +3147,6 @@ namespace Dynamo.Controls
             //TODO code smell.
             var workspaceView = this.ChildOfType<WorkspaceView>();
             workspaceView?.Dispose();
-            (workspaceView?.NodeAutoCompleteSearchBar?.Child as IDisposable)?.Dispose();
         }
     }
 }
