@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Engine;
@@ -462,7 +463,7 @@ namespace Dynamo.Graph.Nodes
                     if (Index > 0)
                     {
                         var param = fd.Parameters.ElementAt(Index - 1);
-                        type = param.Type.ToString();
+                        type = param.Type.IsIndexable ? "[]" : param.Type.ToString();
                     }
                     else
                     {
@@ -472,7 +473,7 @@ namespace Dynamo.Graph.Nodes
                 else
                 {
                     var param = fd.Parameters.ElementAt(Index);
-                    type = param.Type.ToString();
+                    type = param.Type.IsIndexable ? "[]" : param.Type.ToString();
                 }
                 return type;
             }
@@ -481,8 +482,8 @@ namespace Dynamo.Graph.Nodes
             {
                 var cd = cusNode.Controller.Definition;
                 var param = cd.Parameters.ElementAt(Index);
-                string type = param.Type.ToString();
-                
+                string type = type = param.Type.IsIndexable ? "[]" : param.Type.ToString();
+
                 return type;
             }
 
@@ -493,7 +494,8 @@ namespace Dynamo.Graph.Nodes
 
                 try
                 {
-                    return inPortAttribute?.PortTypes.ElementAt(Index);
+                    var portType = inPortAttribute?.PortTypes.ElementAt(Index);
+                    return portType != null && (portType.EndsWith("[]") || Regex.IsMatch(portType, @"(^|\.)List<[^>]+>$")) ? "[]" : portType;
                 }
                 catch (Exception e)
                 {
