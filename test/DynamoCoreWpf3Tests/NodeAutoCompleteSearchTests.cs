@@ -502,8 +502,8 @@ namespace DynamoCoreWpfTests
 
             // The initial list will fill the FilteredResults with a few options - all basic input types
             searchViewModel.PopulateAutoCompleteCandidates();
-            Assert.AreEqual(5, searchViewModel.FilteredResults.Count());
-            Assert.AreEqual("String", searchViewModel.FilteredResults.FirstOrDefault().Name);
+            Assert.AreEqual(3, searchViewModel.FilteredResults.Count());
+            Assert.AreEqual("List Create", searchViewModel.FilteredResults.FirstOrDefault().Name);
         }
 
         [Test]

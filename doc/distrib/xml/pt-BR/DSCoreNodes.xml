@@ -1596,7 +1596,7 @@ Pesquise "Cadeias de caracteres de formato de data e hora personalizado" no MSDN
             <summary>Procura uma sequência de caracteres localizada, que seja semelhante a “Os dados de cor fornecidos são muito grandes para caber nos limites da imagem”.</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.CurveMapperEqualMinMaxWarning">
-            <summary>Looks up a localized string similar to • Min and Max values must not be the same..</summary>
+            <summary>Looks up a localized string similar to • Min and Max values must be different..</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCountWarning">
             <summary>Looks up a localized string similar to • Values must be a list of numbers or a single number ≥ 2..</summary>

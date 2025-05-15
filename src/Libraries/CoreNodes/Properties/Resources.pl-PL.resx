@@ -235,7 +235,7 @@
     <value>Dane wejściowe muszą być pojedynczą wartością lub listą niezagnieżdżoną.</value>
   </data>
   <data name="CurveMapperEqualMinMaxWarning" xml:space="preserve">
-    <value>• Min and Max values must not be the same.</value>
+    <value>• Min and Max values must be different.</value>
   </data>
   <data name="CurveMapperInvalidCountWarning" xml:space="preserve">
     <value>• Values must be a list of numbers or a single number ≥ 2.</value>

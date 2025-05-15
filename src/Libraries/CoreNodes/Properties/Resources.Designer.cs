@@ -70,7 +70,7 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to • Min and Max values must not be the same..
+        ///   Looks up a localized string similar to • Min and Max values must be different..
         /// </summary>
         internal static string CurveMapperEqualMinMaxWarning {
             get {

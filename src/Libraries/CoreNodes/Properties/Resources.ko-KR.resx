@@ -235,7 +235,7 @@
     <value>입력은 단일 값 또는 내포되지 않은 리스트여야 합니다.</value>
   </data>
   <data name="CurveMapperEqualMinMaxWarning" xml:space="preserve">
-    <value>• Min and Max values must not be the same.</value>
+    <value>• Min and Max values must be different.</value>
   </data>
   <data name="CurveMapperInvalidCountWarning" xml:space="preserve">
     <value>• Values must be a list of numbers or a single number ≥ 2.</value>

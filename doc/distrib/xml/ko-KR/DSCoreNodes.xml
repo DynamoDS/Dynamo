@@ -1596,7 +1596,7 @@
             <summary>"제공된 색상 데이터가 너무 커서 이미지 경계에 맞지 않습니다."와 유사한 현지화된 문자열을 조회합니다.</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.CurveMapperEqualMinMaxWarning">
-            <summary>Looks up a localized string similar to • Min and Max values must not be the same..</summary>
+            <summary>Looks up a localized string similar to • Min and Max values must be different..</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCountWarning">
             <summary>Looks up a localized string similar to • Values must be a list of numbers or a single number ≥ 2..</summary>

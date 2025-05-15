@@ -1129,7 +1129,6 @@ namespace Dynamo.Controls
             nodeBorder.SizeChanged += OnSizeChanged;
             DataContextChanged += OnDataContextChanged;
 
-
             Panel.SetZIndex(this, 1);
         }
 
@@ -1395,8 +1394,12 @@ namespace Dynamo.Controls
                 expansionBay.Children.Remove(previewControl);
                 previewControl = null;
             }
-            nodeBorder.SizeChanged -= OnSizeChanged;
-            nodeBackground.Loaded -= NodeViewReady;
+            inputGrid.Loaded += NodeViewReady;
+
+            nodeBorder.SizeChanged += OnSizeChanged;
+            DataContextChanged += OnDataContextChanged;
+
+            Panel.SetZIndex(this, 1);   
         }
 
         #endregion

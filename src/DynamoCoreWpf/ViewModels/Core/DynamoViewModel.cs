@@ -31,6 +31,7 @@ using Dynamo.Models;
 using Dynamo.PackageManager;
 using Dynamo.PackageManager.UI;
 using Dynamo.Scheduler;
+using Dynamo.Search.SearchElements;
 using Dynamo.Selection;
 using Dynamo.Services;
 using Dynamo.UI;
@@ -739,19 +740,29 @@ namespace Dynamo.ViewModels
             // TODO: These are basic input types in Dynamo
             // This should be only served as a temporary default case.
             var queries = new List<string>() { "String", "Number Slider", "Integer Slider", "Number", "Boolean", "Watch", "Watch 3D", "Python Script" };
+            var categories = new List<(string, SearchElementGroup)> { (".List", SearchElementGroup.Create), (".List", SearchElementGroup.Query) };
+
+            var addNodeIfValid = (NodeSearchElement nse) =>
+            {
+                var node = nse != null ? tempSearchViewModel.MakeNodeSearchElementVM(nse) : null;
+                if (node != null)
+                    DefaultAutocompleteCandidates.Add(node.Name, node);
+            };
+
             foreach (var query in queries)
             {
-                var nodeSearchElement = tempSearchViewModel.Model.Entries.FirstOrDefault(n => n.Name == query);
-                if(nodeSearchElement == null)
+                addNodeIfValid(tempSearchViewModel.Model.Entries.FirstOrDefault(n => n.Name == query));
+            }
+
+            foreach(var query in categories)
+            {
+                var categoryNse = tempSearchViewModel.Model.Entries.Where(n => n.FullCategoryName.EndsWith(query.Item1) && n.Group == query.Item2);
+                foreach (var item in categoryNse)
                 {
-                    continue;
-                }
-                var foundNode = tempSearchViewModel.MakeNodeSearchElementVM(nodeSearchElement);
-                if (foundNode != null)
-                {
-                    DefaultAutocompleteCandidates.Add(foundNode.Name, foundNode);
+                    addNodeIfValid(item);
                 }
             }
+
             tempSearchViewModel.Dispose();
         }
 
