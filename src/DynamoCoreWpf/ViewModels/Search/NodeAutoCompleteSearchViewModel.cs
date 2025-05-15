@@ -628,8 +628,7 @@ namespace Dynamo.ViewModels
             if (PortViewModel.PortModel.PortType == PortType.Input)
             {
                 string portType = PortViewModel.PortModel.GetInputPortType();
-                
-                switch (PortViewModel.PortModel.GetInputPortType())
+                switch (portType)
                 {
                     case "int":
                         FilteredResults = DefaultResults.Where(e => e.Name == "Number Slider" || e.Name == "Integer Slider").ToList();
