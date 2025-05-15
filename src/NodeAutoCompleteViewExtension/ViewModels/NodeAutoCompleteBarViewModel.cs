@@ -189,7 +189,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
             set
             {
-                if(selectedIndex != value && value >= 0 && selectedIndex != -1)
+                if(selectedIndex != value && value >= 0)
                 {
                     ReAddNode(value);
                 }
