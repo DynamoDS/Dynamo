@@ -74,8 +74,8 @@ namespace Dynamo.Controls
                     {
                         Name = "inputGrid",
                         MinHeight = Configuration.Configurations.PortHeightInPixels,
-                        VerticalAlignment = VerticalAlignment.Center,
-                        HorizontalAlignment = HorizontalAlignment.Center,
+                        VerticalAlignment = VerticalAlignment.Stretch,
+                        HorizontalAlignment = HorizontalAlignment.Stretch,
                     };
 
                     Canvas.SetZIndex(_inputGrid, 5);
