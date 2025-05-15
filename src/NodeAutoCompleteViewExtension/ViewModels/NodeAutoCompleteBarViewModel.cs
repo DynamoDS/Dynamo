@@ -49,7 +49,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         private const string nodeClusterAutocompleteMLEndpoint = "MLNodeClusterAutocomplete";
         private const double minClusterConfidenceScore = 0.1;
         private static Assembly dynamoCoreWpfAssembly;
-        private List<ModelBase> createdClusterItems = new List<ModelBase>();
 
         private bool _isSingleAutocomplete;
         public bool IsSingleAutocomplete
@@ -231,10 +230,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 connector.IsConnecting = false;
             }
 
+            NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, false, null);
+
             (node.WorkspaceViewModel.Model as HomeWorkspaceModel)?.MarkNodesAsModifiedAndRequestRun(transientNodes.Select(x => x.NodeModel));
 
             ToggleUndoRedoLocked(false);
-            DynamoSelection.Instance.ClearSelection();
         }
 
         internal void ToggleUndoRedoLocked(bool toggle = true)
@@ -738,7 +738,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             if (clusterResultItem == null || clusterResultItem.Topology == null)
                 return;
 
-            createdClusterItems.Clear();
+            List<ModelBase> createdClusterItems = [];
 
             var workspaceViewModel = PortViewModel.NodeViewModel.WorkspaceViewModel;
             var workspaceModel = workspaceViewModel.Model;
@@ -780,6 +780,27 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 }
             }
 
+            // Connect the cluster to the original node and port
+            if (entryNodeId != null && createdNodes.TryGetValue(entryNodeId, out var entryNode))
+            {
+                var entryPortIndex = clusterResultItem.EntryNodeInPort;
+                if (entryNode.InPorts.Count > entryPortIndex)
+                {
+                    //only connect to the entry node when it does not have connections already.
+                    if (!entryNode.InPorts[entryPortIndex].Connectors.Any())
+                    {
+                        var entryConnector = ConnectorModel.Make(PortViewModel.NodeViewModel.NodeModel, entryNode, 0, entryPortIndex);
+                        if (entryConnector != null)
+                        {
+                            entryConnector.IsHidden = true;
+                            var entryConnectorViewModel = workspaceViewModel.Connectors.First(c => c.ConnectorModel.Equals(entryConnector));
+                            entryConnectorViewModel.IsConnecting = true;
+                            createdClusterItems.Add(entryConnector);
+                        }
+                    }
+                }
+            }
+
             // Create connections between nodes
             foreach (var connection in clusterResultItem.Topology.Connections)
             {
@@ -800,27 +821,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                                 newConnector.IsHidden = true; // Hide the connector initially
                                 createdClusterItems.Add(newConnector);
                             }
-                        }
-                    }
-                }
-            }
-
-            // Connect the cluster to the original node and port
-            if (entryNodeId != null && createdNodes.TryGetValue(entryNodeId, out var entryNode))
-            {
-                var entryPortIndex = clusterResultItem.EntryNodeInPort;
-                if (entryNode.InPorts.Count > entryPortIndex)
-                {
-                    //only connect to the entry node when it does not have connections already.
-                    if (!entryNode.InPorts[entryPortIndex].Connectors.Any())
-                    {
-                        var entryConnector = ConnectorModel.Make(PortViewModel.NodeViewModel.NodeModel, entryNode, 0, entryPortIndex);
-                        if (entryConnector != null)
-                        {
-                            entryConnector.IsHidden = true;
-                            var entryConnectorViewModel = workspaceViewModel.Connectors.First(c => c.ConnectorModel.Equals(entryConnector));
-                            entryConnectorViewModel.IsConnecting = true;
-                            createdClusterItems.Add(entryConnector);
                         }
                     }
                 }
@@ -849,26 +849,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                         }
                     }
                 });
-
-
-
-            //// Group the newly created nodes
-            //AnnotationModel annotationModel = new AnnotationModel(createdNodes.Values, new List<NoteModel>())
-            //{
-            //    AnnotationText = clusterResultItem.Title,
-            //    AnnotationDescriptionText = clusterResultItem.Description
-            //};
-            //workspaceModel.AddAnnotation(annotationModel);
-            //if (annotationModel != null)
-            //{
-            //    annotationModel.Background = "#D5BCF7";
-            //    //createdClusterItems.Add(annotationModel);
-            //}
-
-            // Unlock undo/redo
-            ToggleUndoRedoLocked(false);
-
-          
         }
 
         /// <summary>
