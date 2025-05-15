@@ -130,7 +130,7 @@ namespace Dynamo.Views
         {
             ViewModel.RequestShowInCanvasSearch -= ShowHideInCanvasControl;
             ViewModel.RequestHideAllPopup -= HideAllPopUp;
-            ViewModel.RequestNodeAutoCompleteSearch -= ShowHideNodeAutoCompleteControl;
+            ViewModel.RequestNodeAutoCompleteSearch -= ShowNodeAutoCompleteControl;
             ViewModel.RequestPortContextMenu -= ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged -= ViewModel_PropertyChanged;
 
@@ -159,7 +159,7 @@ namespace Dynamo.Views
         {
             ViewModel.RequestShowInCanvasSearch += ShowHideInCanvasControl;
             ViewModel.RequestHideAllPopup += HideAllPopUp;
-            ViewModel.RequestNodeAutoCompleteSearch += ShowHideNodeAutoCompleteControl;
+            ViewModel.RequestNodeAutoCompleteSearch += ShowNodeAutoCompleteControl;
             ViewModel.RequestPortContextMenu += ShowHidePortContextMenu;
             ViewModel.DynamoViewModel.PropertyChanged += ViewModel_PropertyChanged;
 
@@ -180,9 +180,22 @@ namespace Dynamo.Views
             infiniteGridView.AttachToZoomBorder(zoomBorder);
         }
 
-        private void ShowHideNodeAutoCompleteControl(ShowHideFlags flag)
+        private void ShowNodeAutoCompleteControl()
         {
-            ShowHidePopup(flag, NodeAutoCompleteSearchBar);
+            if (ViewModel.NodeAutoCompleteSearchViewModel.IsOpen) return;
+            if (ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel == null) return;
+            // if the MLRecommendation is default but user not accepting TOU, display notification
+            if (ViewModel.NodeAutoCompleteSearchViewModel.IsDisplayingMLRecommendation && !ViewModel.NodeAutoCompleteSearchViewModel.IsMLAutocompleteTOUApproved)
+            {
+                ViewModel.DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.NotificationToAgreeMLNodeautocompleteTOU, true);
+                return;
+            }
+
+            //TODO : Reuse this window?
+            var nodeAutoCompleteBarWindow = new NodeAutoCompleteSearchControl(Window.GetWindow(this), ViewModel.NodeAutoCompleteSearchViewModel);
+            nodeAutoCompleteBarWindow.Show();
+
+            ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutoCompleteWindowPlacement(nodeAutoCompleteBarWindow);
         }
 
         private void ShowHidePortContextMenu(ShowHideFlags flag, PortViewModel portViewModel)
@@ -221,24 +234,7 @@ namespace Dynamo.Views
 
                     if (displayPopup)
                     {
-                        if (popup == NodeAutoCompleteSearchBar)
-                        {
-                            if (ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel == null) return;
-                            // if the MLRecommendation is default but user not accepting TOU, display notification
-                            if (ViewModel.NodeAutoCompleteSearchViewModel.IsDisplayingMLRecommendation && !ViewModel.NodeAutoCompleteSearchViewModel.IsMLAutocompleteTOUApproved)
-                            {
-                                ViewModel.DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.NotificationToAgreeMLNodeautocompleteTOU, true);
-                                return;
-                            }
-                            // Force the Child visibility to change here because
-                            // 1. Popup isOpen change does not necessarily update the child control before it take effect
-                            // 2. Dynamo rely on child visibility change hander to setup Node AutoComplete control
-                            // 3. This should not be set to in canvas search control
-                            popup.Child.Visibility = Visibility.Collapsed;
-                            ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutocompleteWindowPlacement(popup);
-                        }
-
-                        else if (popup == PortContextMenu)
+                        if (popup == PortContextMenu)
                         {
                             popup.Child.Visibility = Visibility.Hidden;
                             if (!(PortContextMenu.DataContext is PortViewModel portViewModel)) return;
@@ -299,10 +295,9 @@ namespace Dynamo.Views
                 ShowHideGeoScalingPopup(ShowHideFlags.Hide);
             }
             // If triggered on node level, make sure node popups are also hidden
-            if(sender is NodeView && (PortContextMenu.IsOpen || NodeAutoCompleteSearchBar.IsOpen) )
+            if(sender is NodeView && PortContextMenu.IsOpen)
             {
                 ShowHidePopup(ShowHideFlags.Hide, PortContextMenu);
-                ShowHidePopup(ShowHideFlags.Hide, NodeAutoCompleteSearchBar);
             }
         }
 
