@@ -463,7 +463,7 @@ namespace Dynamo.Graph.Nodes
                     if (Index > 0)
                     {
                         var param = fd.Parameters.ElementAt(Index - 1);
-                        type = param.Type.IsIndexable ? "[]" : param.Type.ToString();
+                        type = param.Type.ToString();
                     }
                     else
                     {
@@ -473,7 +473,7 @@ namespace Dynamo.Graph.Nodes
                 else
                 {
                     var param = fd.Parameters.ElementAt(Index);
-                    type = param.Type.IsIndexable ? "[]" : param.Type.ToString();
+                    type = param.Type.ToString();
                 }
                 return type;
             }
@@ -482,7 +482,7 @@ namespace Dynamo.Graph.Nodes
             {
                 var cd = cusNode.Controller.Definition;
                 var param = cd.Parameters.ElementAt(Index);
-                string type = type = param.Type.IsIndexable ? "[]" : param.Type.ToString();
+                string type = param.Type.ToString();
 
                 return type;
             }
@@ -494,8 +494,7 @@ namespace Dynamo.Graph.Nodes
 
                 try
                 {
-                    var portType = inPortAttribute?.PortTypes.ElementAt(Index);
-                    return portType != null && Regex.IsMatch(portType, @"(^|\.)List<[^>]+>$|(\[\])$") ? "[]" : portType;
+                    return inPortAttribute?.PortTypes.ElementAt(Index);
                 }
                 catch (Exception e)
                 {

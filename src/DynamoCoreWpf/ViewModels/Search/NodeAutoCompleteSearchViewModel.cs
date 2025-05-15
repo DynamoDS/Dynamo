@@ -583,6 +583,8 @@ namespace Dynamo.ViewModels
         {
             if (PortViewModel.PortModel.PortType == PortType.Input)
             {
+                string portType = PortViewModel.PortModel.GetInputPortType();
+                
                 switch (PortViewModel.PortModel.GetInputPortType())
                 {
                     case "int":
@@ -597,11 +599,16 @@ namespace Dynamo.ViewModels
                     case "bool":
                         FilteredResults = DefaultResults.Where(e => e.Name == "Boolean").ToList();
                         break;
-                    case "[]":
-                        FilteredResults = DefaultResults.Where(e => e.Model.FullCategoryName.EndsWith(".List"))?.ToList();
-                        break;
                     default:
-                        FilteredResults = DefaultResults.Where(e => e.Name == "String" || e.Name == "Number Slider" || e.Name == "Integer Slider" || e.Name == "Number" || e.Name == "Boolean");
+                        bool isArray = portType != null && Regex.IsMatch(portType, @"(^|\.)List<[^>]+>$|(\[\])$");
+                        if (isArray)
+                        {
+                            FilteredResults = DefaultResults.Where(e => e.Model.FullCategoryName.EndsWith(".List"))?.ToList();
+                        }
+                        else
+                        {
+                            FilteredResults = DefaultResults.Where(e => e.Name == "String" || e.Name == "Number Slider" || e.Name == "Integer Slider" || e.Name == "Number" || e.Name == "Boolean");
+                        }
                         break;
                 }
             }
@@ -781,7 +788,7 @@ namespace Dynamo.ViewModels
             }
 
             //List of input types that are skipped temporarily, and will display list of default suggestions instead.
-            var skippedInputTypes = new List<string>() { "var", "object", "string", "bool", "int", "double", "[]" };
+            var skippedInputTypes = new List<string>() { "var", "object", "string", "bool", "int", "double" };
 
             if (portType == null)
             {
