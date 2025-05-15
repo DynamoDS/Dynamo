@@ -189,7 +189,9 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
             set
             {
-                if(selectedIndex != value && value >= 0)
+                /*don't try to add a node if the index is out of range or a selection is not made yet (-1)
+                an index of -1 occurs when using the switch to change between modes.*/
+                if (selectedIndex != value && value >= 0 && selectedIndex != -1)
                 {
                     ReAddNode(value);
                 }
@@ -938,11 +940,10 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     // this runs synchronously on the UI thread, so the UI can't disappear during execution
                     DropdownResults = comboboxResults;
                     SelectedIndex = 0;
-                    if (QualifiedResults.Any())
-                    {
-                        var ClusterResultItem = QualifiedResults.First();
-                        AddCluster(ClusterResultItem);
-                    }
+
+                    var ClusterResultItem = QualifiedResults.First();
+                    AddCluster(ClusterResultItem);
+                    
                 });
             });
             //Tracking Analytics when raising Node Autocomplete with the Recommended Nodes option selected (Machine Learning)
