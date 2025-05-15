@@ -144,16 +144,22 @@ namespace Dynamo.Controls
 
         #region constructors
 
-        //View items referenced outside of NodevView previously from xaml
-        internal Border nodeBorder;
-        internal TextBlock NameBlock;
-        internal TextBox EditableNameBox;
-        internal Rectangle nodeIcon;
-        internal Rectangle nodeBackground;
-        internal ItemsControl inPortControl;
-        internal ItemsControl outPortControl;
+        //View items referenced in the constructor and other internal methods to NodeView
+        //TODO do we rationalize the capitalization?
+        private Border nameBackground;
+        private TextBlock NameBlock;
+        private TextBox EditableNameBox;
+        private Rectangle nodeIcon;
+        private Rectangle nodeBackground;
+        private ItemsControl inPortControl;
+        private ItemsControl outPortControl;
+        private Button optionsButton;
 
-        //View items referenced outside of Nodeview previously from xaml but now loaded as requried.
+        //View items referenced outside of NodeView internal to DynamoCoreWPF previously from xaml
+        //TODO do we rationalize the capitalization?
+        internal Border nodeBorder;
+
+        //View items referenced outside of NodeView internal to DynamoCoreWPF previously from xaml but now loaded on demand.
         private Canvas _expansionBay;
         internal Canvas expansionBay
         {
@@ -164,13 +170,10 @@ namespace Dynamo.Controls
                     _expansionBay = new Canvas()
                     {
                         Name = "expansionBay",
-                        Margin = new System.Windows.Thickness(0, 4, 0, 0),
+                        Margin = new Thickness(0, 4, 0, 0),
                         HorizontalAlignment = HorizontalAlignment.Left,
                         Background = Brushes.Blue
                     };
-
-                    //TODO DebugAST Canvas.Do we need this ?
-                    //TODO IsCustomFunction section.Do we need this ?
 
                     Grid.SetRow(_expansionBay, 5);
                     Grid.SetColumnSpan(_expansionBay, 3);
@@ -193,7 +196,7 @@ namespace Dynamo.Controls
                     _centralGrid = new Grid()
                     {
                         Name = "centralGrid",
-                        Margin = new System.Windows.Thickness(6, 6, 6, 3),
+                        Margin = new Thickness(6, 6, 6, 3),
                         VerticalAlignment = VerticalAlignment.Top
                     };
 
@@ -210,6 +213,10 @@ namespace Dynamo.Controls
                 return _centralGrid;
             }
         }
+
+        //View items referenced outside of NodeView as previously from xaml outside of DynamoCoreWPF
+        public ContextMenu MainContextMenu = new ContextMenu();
+        public Grid grid;
 
         private Grid _presentationGrid = null;
         public Grid PresentationGrid
@@ -238,73 +245,73 @@ namespace Dynamo.Controls
             }
         }
 
-        //View items referenced outside of NodevView previously from xaml outside of DynamoWPF
-        public ContextMenu MainContextMenu = new ContextMenu();
-        public Grid grid;
-
-        // Static resources mostly from DynamoModern themes but some from NodeView xaml
+        // Static resources mostly from DynamoModern themes but some from DynamoColorsAndBrushes.xaml
         // Brushes
-        private static SolidColorBrush primaryCharcoal100 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCDCDC"));
-        private static SolidColorBrush primaryCharcoal200 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EEEEEE"));
-        private static SolidColorBrush blue300 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6ac0e7"));
-        private static SolidColorBrush darkBlue200 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#BCD3EE"));
-        private static SolidColorBrush nodeDismissedWarningsGlyphForeground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4B4B4B"));
-        private static SolidColorBrush nodeDismissedWarningsGlyphBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EBEBEB"));
-        private static SolidColorBrush midGrey = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#666666"));
-        private static SolidColorBrush nodeContextMenuBackgroundHighlight = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#808080"));
-        private static SolidColorBrush nodeContextMenuSeparatorColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AFAFAF"));
-        private static SolidColorBrush nodeOptionsButtonBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#282828"));
-        private static SolidColorBrush nodeHoverColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CCCCCC"));
-        private static SolidColorBrush nodeTransientOverlayColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D5BCF7"));
+        private static SolidColorBrush _primaryCharcoal100 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCDCDC"));
+        private static SolidColorBrush _primaryCharcoal200 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EEEEEE"));
+        private static SolidColorBrush _blue300 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6ac0e7"));
+        private static SolidColorBrush _darkBlue200 = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#BCD3EE"));
+        private static SolidColorBrush _nodeDismissedWarningsGlyphForeground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4B4B4B"));
+        private static SolidColorBrush _nodeDismissedWarningsGlyphBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#EBEBEB"));
+        private static SolidColorBrush _midGrey = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#666666"));
+        private static SolidColorBrush _darkGreyBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C3C"));  //DarkGreyBrush
+        private static SolidColorBrush _darkMidGreyBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#535353")); //DarkMidGreyBrush
+        private static SolidColorBrush _nodeContextMenuBackgroundHighlight = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#808080"));
+        private static SolidColorBrush _nodeContextMenuSeparatorColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#AFAFAF"));
+        private static SolidColorBrush _nodeOptionsButtonBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#282828"));
+        private static SolidColorBrush _nodeHoverColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#CCCCCC"));
+        private static SolidColorBrush _nodeTransientOverlayColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D5BCF7"));
 
         // Converters
-        private static InverseBooleanToVisibilityCollapsedConverter inverseBooleanToVisibilityCollapsedConverter = new InverseBooleanToVisibilityCollapsedConverter();
-        private static BoolToVisibilityCollapsedConverter boolToVisibilityCollapsedConverter = new BoolToVisibilityCollapsedConverter();
-        private static BoolToVisibilityConverter booleanToVisibilityConverter = new BoolToVisibilityConverter();
-        private static EmptyToVisibilityCollapsedConverter emptyToVisibilityCollapsedConverter = new EmptyToVisibilityCollapsedConverter();
-        private static ZoomToVisibilityCollapsedConverter zoomToVisibilityCollapsedConverter = new ZoomToVisibilityCollapsedConverter();
+        private static InverseBooleanToVisibilityCollapsedConverter _inverseBooleanToVisibilityCollapsedConverter = new InverseBooleanToVisibilityCollapsedConverter();
+        private static BoolToVisibilityCollapsedConverter _boolToVisibilityCollapsedConverter = new BoolToVisibilityCollapsedConverter();
+        private static BoolToVisibilityConverter _booleanToVisibilityConverter = new BoolToVisibilityConverter();
+        private static EmptyToVisibilityCollapsedConverter _emptyToVisibilityCollapsedConverter = new EmptyToVisibilityCollapsedConverter();
+        private static ZoomToVisibilityCollapsedConverter _zoomToVisibilityCollapsedConverter = new ZoomToVisibilityCollapsedConverter();
 
         // Font
-        private static FontFamily artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
+        private static FontFamily _artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
 
         // Images
-        private static readonly BitmapImage FrozenImageSource = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png"));
-        private static readonly BitmapImage TransientImageSource = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/NodeStates/transient-64px.png"));
-        private static readonly BitmapImage HiddenEyeImageSource = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/hidden.png"));
-        private static readonly BitmapImage NodeButtonDotsSelected = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/more-vertical_selected_16px.png"));
-        private static readonly BitmapImage NodeButtonDots = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/more-vertical.png"));
-        private static ImageBrush defaultIcon = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/default-node-icon.png")))
+        private static readonly BitmapImage _frozenImageSource = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png"));
+        private static readonly BitmapImage _transientImageSource = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/NodeStates/transient-64px.png"));
+        private static readonly BitmapImage _hiddenEyeImageSource = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/hidden.png"));
+        private static readonly BitmapImage _nodeButtonDotsSelected = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/more-vertical_selected_16px.png"));
+        private static readonly BitmapImage _nodeButtonDots = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/more-vertical.png"));
+        private static ImageBrush _defaultNodeIcon = new ImageBrush(new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/default-node-icon.png")))
         {
             Stretch = Stretch.UniformToFill
         };
 
-        //Todo reset this to animimation vs simple when NodeCountOptimizationEnabled changes.
-        private static Style ZoomFadeOpacity_OneToZeroStyle = GetZoomFadeOpacity_OneToZeroStyle();
-        private static Style ZoomFadeOpacity_50PercentToZeroStyle = GetZoomFadeOpacity_50PercentToZeroStyle();
-        private static Style ZoomFadeInOpacity_ZeroTo50PercentStyle = GetZoomFadeInOpacity_ZeroTo50PercentStyle();
-        private static Style NodeButtonStyle = GetNodeButtonStyle();
-        private static Style CodeBlockNodeItemControlStyle = GetCodeBlockNodeItemControlStyle();
+        //Todo reset this to animation vs simple when NodeCountOptimizationEnabled changes.
+        private static Style _zoomFadeOpacity_OneToZeroStyle = GetZoomFadeOpacity_OneToZeroStyle();
+        private static Style _zoomFadeOpacity_50PercentToZeroStyle = GetZoomFadeOpacity_50PercentToZeroStyle();
+        private static Style _zoomFadeInOpacity_ZeroTo50PercentStyle = GetZoomFadeInOpacity_ZeroTo50PercentStyle();
+        private static Style _nodeButtonStyle = GetNodeButtonStyle();
+        private static Style _codeBlockNodeItemControlStyle = GetCodeBlockPortItemControlStyle();
         internal static readonly Style DynamoToolTipTopStyle = GetDynamoToolTipTopStyle();
 
-        //Freeze the static resource to reduce memory overhaead... Not sure we need this. 
+        //Freeze the static resource to reduce memory overhead... Not sure we need this. 
         static NodeView()
         {
-            primaryCharcoal100.Freeze();
-            primaryCharcoal200.Freeze();
-            blue300.Freeze();
-            nodeDismissedWarningsGlyphBackground.Freeze();
-            nodeDismissedWarningsGlyphForeground.Freeze();
-            midGrey.Freeze();
-            nodeContextMenuBackgroundHighlight.Freeze();
-            nodeContextMenuSeparatorColor.Freeze();
-            nodeOptionsButtonBackground.Freeze();
-            nodeHoverColor.Freeze();
-            FrozenImageSource.Freeze();
-            TransientImageSource.Freeze();
-            HiddenEyeImageSource.Freeze();
-            NodeButtonDotsSelected.Freeze();
-            NodeButtonDots.Freeze();
-            defaultIcon.Freeze();
+            _primaryCharcoal100.Freeze();
+            _primaryCharcoal200.Freeze();
+            _blue300.Freeze();
+            _nodeDismissedWarningsGlyphBackground.Freeze();
+            _nodeDismissedWarningsGlyphForeground.Freeze();
+            _midGrey.Freeze();
+            _darkGreyBrush.Freeze();
+            _darkMidGreyBrush.Freeze();
+            _nodeContextMenuBackgroundHighlight.Freeze();
+            _nodeContextMenuSeparatorColor.Freeze();
+            _nodeOptionsButtonBackground.Freeze();
+            _nodeHoverColor.Freeze();
+            _frozenImageSource.Freeze();
+            _transientImageSource.Freeze();
+            _hiddenEyeImageSource.Freeze();
+            _nodeButtonDotsSelected.Freeze();
+            _nodeButtonDots.Freeze();
+            _defaultNodeIcon.Freeze();
         }
 
         public NodeView()
@@ -317,7 +324,7 @@ namespace Dynamo.Controls
                 HorizontalAlignment = HorizontalAlignment.Left,
             };
 
-            grid.SetBinding(Grid.VisibilityProperty, new Binding("IsCollapsed") { Converter = inverseBooleanToVisibilityCollapsedConverter });
+            grid.SetBinding(Grid.VisibilityProperty, new Binding("IsCollapsed") { Converter = _inverseBooleanToVisibilityCollapsedConverter });
             grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(8) });
             grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(46) });
             grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
@@ -333,7 +340,7 @@ namespace Dynamo.Controls
             nodeBackground = new Rectangle()
             {
                 Name = "nodeBackground",
-                Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#3C3C3C")),  //DarkGreyBrush
+                Fill = _darkGreyBrush
             };
 
             Grid.SetRow(nodeBackground, 2);
@@ -341,12 +348,14 @@ namespace Dynamo.Controls
             Grid.SetColumnSpan(nodeBackground, 3);
             Canvas.SetZIndex(nodeBackground, 1);
 
+            #region Node Header
+
             // Node Body Background 
-            var nameBackground = new Border()
+            nameBackground = new Border()
             {
                 Name = "nameBackground",
                 CornerRadius = new CornerRadius(8, 8, 0, 0),
-                Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#535353")), //DarkMidGreyBrush
+                Background = _darkMidGreyBrush,
                 IsHitTestVisible = true,
             };
 
@@ -354,7 +363,6 @@ namespace Dynamo.Controls
             Grid.SetColumnSpan(nameBackground, 3);
             Canvas.SetZIndex(nameBackground, 2);
 
-            //TODO unhook event handler
             nameBackground.MouseDown += NameBlock_OnMouseDown;
             ToolTipService.SetShowDuration(nameBackground, 60000);
 
@@ -377,10 +385,10 @@ namespace Dynamo.Controls
 
             // Create TextBlocks
             // TODO Maybe bound the whole text on the model with a string constructor vs this set of inline constructors
-            // That would remoe the stackPanel also
+            // That would remove the stackPanel also
             TextBlock textBlock1 = new TextBlock
             {
-                FontFamily = artifactElementReg,
+                FontFamily = _artifactElementReg,
                 FontWeight = FontWeights.Medium,
                 TextWrapping = TextWrapping.Wrap
             };
@@ -391,15 +399,14 @@ namespace Dynamo.Controls
             runOriginalName.SetBinding(Run.TextProperty, new Binding("OriginalName") { Mode = BindingMode.OneWay });
             textBlock1.Inlines.Add(runOriginalName);
 
-
             TextBlock textBlock2 = new TextBlock
             {
-                FontFamily = artifactElementReg,
+                FontFamily = _artifactElementReg,
                 FontWeight = FontWeights.Light,
                 TextWrapping = TextWrapping.Wrap
             };
 
-            textBlock2.SetBinding(UIElement.VisibilityProperty, new Binding("IsCustomFunction") { Converter = boolToVisibilityCollapsedConverter });
+            textBlock2.SetBinding(UIElement.VisibilityProperty, new Binding("IsCustomFunction") { Converter = _boolToVisibilityCollapsedConverter });
             textBlock2.Inlines.Add(new Run { Text = Dynamo.Wpf.Properties.Resources.NodeTooltipOriginalName });
 
             var runPackageName = new Run();
@@ -413,7 +420,7 @@ namespace Dynamo.Controls
 
             TextBlock textBlock4 = new TextBlock
             {
-                FontFamily = artifactElementReg,
+                FontFamily = _artifactElementReg,
                 FontWeight = FontWeights.Medium,
                 TextWrapping = TextWrapping.Wrap
             };
@@ -460,11 +467,11 @@ namespace Dynamo.Controls
                 VerticalAlignment = VerticalAlignment.Center,
                 FontSize = 16,
                 FontWeight = FontWeights.Medium,
-                Foreground = primaryCharcoal200,
+                Foreground = _primaryCharcoal200,
                 IsHitTestVisible = false,
                 TextAlignment = TextAlignment.Center,
-                FontFamily = artifactElementReg,
-                Style = ZoomFadeOpacity_OneToZeroStyle
+                FontFamily = _artifactElementReg,
+                Style = _zoomFadeOpacity_OneToZeroStyle
             };
 
             NameBlock.SetBinding(TextBlock.TextProperty, new Binding("Name")
@@ -481,17 +488,16 @@ namespace Dynamo.Controls
                 VerticalAlignment = VerticalAlignment.Center,
                 FontSize = 16,
                 FontWeight = FontWeights.Medium,
-                Foreground = primaryCharcoal200,
-                SelectionBrush = blue300,
+                Foreground = _primaryCharcoal200,
+                SelectionBrush = _blue300,
                 SelectionOpacity = 0.2,
                 IsHitTestVisible = true,
                 BorderThickness = new Thickness(0),
                 TextAlignment = TextAlignment.Center,
                 Visibility = Visibility.Collapsed,
-                FontFamily = artifactElementReg
+                FontFamily = _artifactElementReg
             };
 
-            //Todo unhook event handlers
             EditableNameBox.LostFocus += EditableNameBox_OnLostFocus;
             EditableNameBox.KeyDown += EditableNameBox_KeyDown;
             EditableNameBox.SetBinding(TextBox.TextProperty, new Binding("Name")
@@ -518,14 +524,13 @@ namespace Dynamo.Controls
                 Width = 8,
                 Height = 8,
                 Margin = new Thickness(0, 2, 6, 0),
-                Fill = blue300,
+                Fill = _blue300,
                 Visibility = Visibility.Hidden // Default visibility; will be updated by binding
             };
 
-            // Bind the Ellipse's Visibility to the IsRenamed property using a BooleanToVisibilityConverter
             nodeRenamedBlueDot.SetBinding(UIElement.VisibilityProperty, new Binding("IsRenamed")
             {
-                Converter = booleanToVisibilityConverter
+                Converter = _booleanToVisibilityConverter
             });
 
             // Add the Ellipse to the Grid's children
@@ -544,7 +549,7 @@ namespace Dynamo.Controls
             TextBlock toolTipTextBlock = new TextBlock
             {
                 Padding = new Thickness(10),
-                FontFamily = artifactElementReg,
+                FontFamily = _artifactElementReg,
                 FontSize = 14,
                 FontWeight = FontWeights.Medium,
                 TextAlignment = TextAlignment.Center,
@@ -560,6 +565,9 @@ namespace Dynamo.Controls
             dynamoRenameToolTip.Content = toolTipTextBlock;
             renameIndicator.ToolTip = dynamoToolTip;
 
+            #endregion
+
+            #region InPorts and OutPorts
 
             inPortControl = new ItemsControl()
             {
@@ -587,6 +595,10 @@ namespace Dynamo.Controls
             Grid.SetColumn(outPortControl, 2);
             Canvas.SetZIndex(outPortControl, 4);
 
+            #endregion
+
+            #region Glyph StackPanel
+
             var GlyphStackPanel = new StackPanel()
             {
                 Name = "GlyphStackPanel",
@@ -594,7 +606,7 @@ namespace Dynamo.Controls
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Bottom,
                 Orientation = Orientation.Horizontal,
-                Style = ZoomFadeOpacity_OneToZeroStyle
+                Style = _zoomFadeOpacity_OneToZeroStyle
             };
 
             var experimentalIcon = new FontAwesome5.ImageAwesome()
@@ -611,7 +623,7 @@ namespace Dynamo.Controls
 
             experimentalIcon.SetBinding(Grid.VisibilityProperty, new Binding("IsExperimental")
             {
-                Converter = boolToVisibilityCollapsedConverter,
+                Converter = _boolToVisibilityCollapsedConverter,
                 Mode = BindingMode.OneWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
@@ -624,12 +636,12 @@ namespace Dynamo.Controls
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Stretch = Stretch.UniformToFill,
-                Source = FrozenImageSource
+                Source = _frozenImageSource
             };
 
             FrozenImage.SetBinding(Grid.VisibilityProperty, new Binding("IsFrozen")
             {
-                Converter = boolToVisibilityCollapsedConverter,
+                Converter = _boolToVisibilityCollapsedConverter,
                 Mode = BindingMode.OneWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
@@ -642,12 +654,12 @@ namespace Dynamo.Controls
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Stretch = Stretch.UniformToFill,
-                Source = TransientImageSource
+                Source = _transientImageSource
             };
 
             TransientImage.SetBinding(Grid.VisibilityProperty, new Binding("IsTransient")
             {
-                Converter = boolToVisibilityCollapsedConverter,
+                Converter = _boolToVisibilityCollapsedConverter,
                 Mode = BindingMode.OneWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
@@ -660,25 +672,25 @@ namespace Dynamo.Controls
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Center,
                 Stretch = Stretch.UniformToFill,
-                Source = HiddenEyeImageSource
+                Source = _hiddenEyeImageSource
             };
 
             HiddenEyeImage.SetBinding(Grid.VisibilityProperty, new Binding("IsVisible")
             {
-                Converter = inverseBooleanToVisibilityCollapsedConverter,
+                Converter = _inverseBooleanToVisibilityCollapsedConverter,
                 Mode = BindingMode.OneWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
 
             var LacingIconGlyph = new Label()
             {
-                Name = "LacingIconGlyp",
+                Name = "LacingIconGlyph",
                 Margin = new Thickness(0, 1, 2, -1),
                 HorizontalAlignment = HorizontalAlignment.Center,
                 VerticalAlignment = VerticalAlignment.Center,
-                FontFamily = artifactElementReg,
+                FontFamily = _artifactElementReg,
                 FontSize = 10,
-                Foreground = nodeDismissedWarningsGlyphBackground
+                Foreground = _nodeDismissedWarningsGlyphBackground
             };
 
             var lacingToolTip = new ToolTip();
@@ -713,7 +725,7 @@ namespace Dynamo.Controls
             // Create the Border
             Border border = new Border
             {
-                Background = nodeDismissedWarningsGlyphBackground,
+                Background = _nodeDismissedWarningsGlyphBackground,
                 CornerRadius = new CornerRadius(8)
             };
 
@@ -725,7 +737,7 @@ namespace Dynamo.Controls
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalContentAlignment = HorizontalAlignment.Center,
                 VerticalContentAlignment = VerticalAlignment.Center,
-                FontFamily = artifactElementReg,
+                FontFamily = _artifactElementReg,
                 FontSize = 10,
                 Foreground = Brushes.Black
             };
@@ -777,14 +789,14 @@ namespace Dynamo.Controls
 
             spacerBorder.SetBinding(UIElement.VisibilityProperty, new Binding("NodeModel.IsResizable")
             {
-                Converter = boolToVisibilityCollapsedConverter,
+                Converter = _boolToVisibilityCollapsedConverter,
                 Mode = BindingMode.OneWay
             });
 
             //Todo Does this need to be a button
             // Button to open node context menu from lower right corner
             // Create the Button
-            Button optionsButton = new Button
+            optionsButton = new Button
             {
                 Name = "OptionsButton"
             };
@@ -798,8 +810,7 @@ namespace Dynamo.Controls
                 Content = Wpf.Properties.Resources.ContextMenu
             };
             optionsButton.ToolTip = toolTip;
-
-            optionsButton.Style = NodeButtonStyle;
+            optionsButton.Style = _nodeButtonStyle;
 
             Grid.SetRow(GlyphStackPanel, 3);
             Grid.SetColumnSpan(GlyphStackPanel, 3);
@@ -814,6 +825,11 @@ namespace Dynamo.Controls
             GlyphStackPanel.Children.Add(spacerBorder);
             GlyphStackPanel.Children.Add(optionsButton);
 
+            #endregion
+
+            #region Node Borders and Overlays
+
+            // Standard Border
             this.nodeBorder = new Border()
             {
                 Name = "nodeBorder",
@@ -830,14 +846,66 @@ namespace Dynamo.Controls
             Grid.SetColumnSpan(nodeBorder, 3);
             Canvas.SetZIndex(nodeBorder, 5);
 
-            // nodeColorOverlayZoomIn
+            // Selected Border
+            var selectionBorder = new Border()
+            {
+                Name = "selectionBorder",
+                CornerRadius = new CornerRadius(10, 10, 0, 0),
+                Margin = new System.Windows.Thickness(-3),
+                BorderThickness = new System.Windows.Thickness(4),
+                BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6AC0E7")),
+                IsHitTestVisible = false
+            };
+
+            selectionBorder.SetBinding(Border.VisibilityProperty, new Binding("IsSelected")
+            {
+                Converter = _booleanToVisibilityConverter,
+                Mode = BindingMode.OneWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
+            Grid.SetRow(selectionBorder, 1);
+            Grid.SetRowSpan(selectionBorder, 4);
+            Grid.SetColumnSpan(selectionBorder, 3);
+            Canvas.SetZIndex(selectionBorder, 6);
+
+            //If a note is dragged over this group
+            //this border is activated, indicating that the node can be dropped into the group.
+            //The visibility of this is controlled by the NodeViewModel property 'NodeHoveringState'
+            //which is set in the StateMachine.
+            var nodeHoveringStateBorder = new Border
+            {
+                Name = "nodeHoveringStateBorder",
+                Margin = new Thickness(-3),
+                Background = Brushes.Transparent,
+                IsHitTestVisible = false,
+                CornerRadius = new CornerRadius(10, 10, 0, 0),
+                BorderBrush = _nodeHoverColor,
+                BorderThickness = new Thickness(6),
+            };
+
+            // Set Grid and Canvas properties
+            Grid.SetRow(nodeHoveringStateBorder, 1);
+            Grid.SetRowSpan(nodeHoveringStateBorder, 4);
+            Grid.SetColumnSpan(nodeHoveringStateBorder, 3);
+            Canvas.SetZIndex(nodeHoveringStateBorder, 41);
+
+            // Set up the Visibility binding
+            nodeHoveringStateBorder.SetBinding(Border.VisibilityProperty, new Binding("NodeHoveringState")
+            {
+                Converter = new BooleanToVisibilityConverter(),
+                Mode = BindingMode.OneWay,
+                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
+            });
+
+            // Node color overlay when zoomed In for Frozen state
             var nodeColorOverlayZoomIn = new Rectangle
             {
                 Name = "nodeColorOverlayZoomIn",
                 Margin = new Thickness(-8),
-                Fill = darkBlue200,
+                Fill = _darkBlue200,
                 IsHitTestVisible = false,
-                Style = ZoomFadeOpacity_50PercentToZeroStyle 
+                Style = _zoomFadeOpacity_50PercentToZeroStyle 
             };
             Grid.SetRow(nodeColorOverlayZoomIn, 1);
             Grid.SetRowSpan(nodeColorOverlayZoomIn, 4);
@@ -847,19 +915,19 @@ namespace Dynamo.Controls
             // Visibility binding
             nodeColorOverlayZoomIn.SetBinding(UIElement.VisibilityProperty, new Binding("IsFrozen")
             {
-                Converter = boolToVisibilityCollapsedConverter,
+                Converter = _boolToVisibilityCollapsedConverter,
                 Mode = BindingMode.OneWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
 
-            // nodeTransientColorOverlayZoomIn
+            // Node color overlay when zoomed In for Transient state
             var nodeTransientColorOverlayZoomIn = new Rectangle
             {
                 Name = "nodeTransientColorOverlayZoomIn",
                 Margin = new Thickness(-8),
-                Fill = nodeTransientOverlayColor,
+                Fill = _nodeTransientOverlayColor,
                 IsHitTestVisible = false,
-                Style = ZoomFadeOpacity_50PercentToZeroStyle
+                Style = _zoomFadeOpacity_50PercentToZeroStyle
             };
             Grid.SetRow(nodeTransientColorOverlayZoomIn, 1);
             Grid.SetRowSpan(nodeTransientColorOverlayZoomIn, 4);
@@ -869,10 +937,14 @@ namespace Dynamo.Controls
             // Visibility binding
             nodeTransientColorOverlayZoomIn.SetBinding(UIElement.VisibilityProperty, new Binding("IsTransient")
             {
-                Converter = boolToVisibilityCollapsedConverter,
+                Converter = _boolToVisibilityCollapsedConverter,
                 Mode = BindingMode.OneWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
+
+            #endregion
+
+            #region Zoomed out overlays and glyphs
 
             // nodeColorOverlayZoomOut
             var nodeColorOverlayZoomOut = new Rectangle
@@ -880,7 +952,7 @@ namespace Dynamo.Controls
                 Name = "nodeColorOverlayZoomOut",
                 Margin = new Thickness(-8),
                 IsHitTestVisible = false,
-                Style = ZoomFadeInOpacity_ZeroTo50PercentStyle
+                Style = _zoomFadeInOpacity_ZeroTo50PercentStyle
             };
             Grid.SetRow(nodeColorOverlayZoomOut, 1);
             Grid.SetRowSpan(nodeColorOverlayZoomOut, 4);
@@ -902,7 +974,7 @@ namespace Dynamo.Controls
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 IsHitTestVisible = false,
-                Style = ZoomFadeInOpacity_ZeroTo50PercentStyle
+                Style = _zoomFadeInOpacity_ZeroTo50PercentStyle
             };
             Grid.SetRow(zoomGlyphsGrid, 0);
             Grid.SetRowSpan(zoomGlyphsGrid, 4);
@@ -914,7 +986,7 @@ namespace Dynamo.Controls
             zoomGlyphsGrid.SetBinding(UIElement.VisibilityProperty, new Binding("DataContext.Zoom")
             {
                 RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
-                Converter = zoomToVisibilityCollapsedConverter
+                Converter = _zoomToVisibilityCollapsedConverter
             });
 
             // StackPanel
@@ -939,7 +1011,7 @@ namespace Dynamo.Controls
             // UniformGrid Visibility binding
             zoomGlyphRowZero.SetBinding(UIElement.VisibilityProperty, new Binding("ImgGlyphThreeSource")
             {
-                Converter = emptyToVisibilityCollapsedConverter,
+                Converter = _emptyToVisibilityCollapsedConverter,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
 
@@ -985,7 +1057,7 @@ namespace Dynamo.Controls
             });
             zoomStateImgTwo.SetBinding(UIElement.VisibilityProperty, new Binding("ImgGlyphOneSource")
             {
-                Converter = emptyToVisibilityCollapsedConverter,
+                Converter = _emptyToVisibilityCollapsedConverter,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
 
@@ -1008,7 +1080,7 @@ namespace Dynamo.Controls
             });
             zoomStateImgThree.SetBinding(UIElement.VisibilityProperty, new Binding("ImgGlyphTwoSource")
             {
-                Converter = emptyToVisibilityCollapsedConverter,
+                Converter = _emptyToVisibilityCollapsedConverter,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
 
@@ -1022,57 +1094,7 @@ namespace Dynamo.Controls
             // Add StackPanel to main Grid
             zoomGlyphsGrid.Children.Add(stackPanel);
 
-
-            var selectionBorder = new Border()
-            {
-                Name = "selectionBorder",
-                CornerRadius = new CornerRadius(10, 10, 0, 0),
-                Margin = new System.Windows.Thickness(-3),
-                BorderThickness = new System.Windows.Thickness(4),
-                BorderBrush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#6AC0E7")),
-                IsHitTestVisible = false
-            };
-
-            selectionBorder.SetBinding(Border.VisibilityProperty, new Binding("IsSelected")
-            {
-                Converter = booleanToVisibilityConverter,
-                Mode = BindingMode.OneWay,
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-            });
-
-            Grid.SetRow(selectionBorder, 1);
-            Grid.SetRowSpan(selectionBorder, 4);
-            Grid.SetColumnSpan(selectionBorder, 3);
-            Canvas.SetZIndex(selectionBorder, 6);
-
-            //If a note is dragged over this group
-            //this border is activated, indicating that the node can be dropped into the group.
-            //The visibility of this is controlled by the NodeViewModel property 'NodeHoveringState'
-            //which is set in the StateMachine.
-            var nodeHoveringStateBorder = new Border
-            {
-                Name = "nodeHoveringStateBorder",
-                Margin = new Thickness(-3),
-                Background = Brushes.Transparent,
-                IsHitTestVisible = false,
-                CornerRadius = new CornerRadius(10, 10, 0, 0),
-                BorderBrush = nodeHoverColor,
-                BorderThickness = new Thickness(6),
-            };
-
-            // Set Grid and Canvas properties
-            Grid.SetRow(nodeHoveringStateBorder, 1);
-            Grid.SetRowSpan(nodeHoveringStateBorder, 4);
-            Grid.SetColumnSpan(nodeHoveringStateBorder, 3);
-            Canvas.SetZIndex(nodeHoveringStateBorder, 41);
-
-            // Set up the Visibility binding
-            nodeHoveringStateBorder.SetBinding(Border.VisibilityProperty, new Binding("NodeHoveringState")
-            {
-                Converter = new BooleanToVisibilityConverter(),
-                Mode = BindingMode.OneWay,
-                UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
-            });
+            #endregion
 
             // Warning Bar: Displays when node is in Info/Warning/Error state
             // Create the Rectangle
@@ -1099,7 +1121,7 @@ namespace Dynamo.Controls
             // Create and set the binding for Visibility
             warningBar.SetBinding(Rectangle.VisibilityProperty, new Binding("NodeWarningBarVisible")
             {
-                Converter = boolToVisibilityCollapsedConverter,
+                Converter = _boolToVisibilityCollapsedConverter,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
 
@@ -1171,8 +1193,8 @@ namespace Dynamo.Controls
                 Property = UIElement.IsMouseOverProperty,
                 Value = true
             };
-            isMouseOverTrueTrigger.Setters.Add(new Setter(Border.BackgroundProperty, nodeOptionsButtonBackground, "DotsBackgroundBorder"));
-            isMouseOverTrueTrigger.Setters.Add(new Setter(Image.SourceProperty, NodeButtonDotsSelected, "DotsImage"));
+            isMouseOverTrueTrigger.Setters.Add(new Setter(Border.BackgroundProperty, _nodeOptionsButtonBackground, "DotsBackgroundBorder"));
+            isMouseOverTrueTrigger.Setters.Add(new Setter(Image.SourceProperty, _nodeButtonDotsSelected, "DotsImage"));
 
             Trigger isMouseOverFalseTrigger = new Trigger
             {
@@ -1349,7 +1371,7 @@ namespace Dynamo.Controls
             return controlStyle;
         }
 
-        private static Style GetCodeBlockNodeItemControlStyle()
+        private static Style GetCodeBlockPortItemControlStyle()
         {
             Style inOutPortControlStyle = new Style(typeof(ItemsControl));
 
@@ -1386,6 +1408,13 @@ namespace Dynamo.Controls
             ViewModel.NodeModel.ConnectorAdded -= NodeModel_ConnectorAdded;
             MouseLeave -= NodeView_MouseLeave;
 
+            nameBackground.MouseDown -= NameBlock_OnMouseDown;
+            EditableNameBox.LostFocus -= EditableNameBox_OnLostFocus;
+            EditableNameBox.KeyDown -= EditableNameBox_KeyDown;
+            optionsButton.Click -= DisplayNodeContextMenu;
+            nodeBorder.SizeChanged -= OnSizeChanged;
+            nodeBackground.Loaded -= NodeViewReady;
+
             if (previewControl != null)
             {
                 previewControl.StateChanged -= OnPreviewControlStateChanged;
@@ -1394,12 +1423,9 @@ namespace Dynamo.Controls
                 expansionBay.Children.Remove(previewControl);
                 previewControl = null;
             }
-            inputGrid.Loaded += NodeViewReady;
-
-            nodeBorder.SizeChanged += OnSizeChanged;
-            DataContextChanged += OnDataContextChanged;
-
-            Panel.SetZIndex(this, 1);   
+            DataContextChanged -= OnDataContextChanged;
+            Loaded -= OnNodeViewLoaded;
+            Unloaded -= OnNodeViewUnloaded;
         }
 
         #endregion
@@ -1446,7 +1472,7 @@ namespace Dynamo.Controls
             //Set NodeIcon
             if (ViewModel.ImageSource == null)
             {
-                nodeIcon.Fill = defaultIcon;
+                nodeIcon.Fill = _defaultNodeIcon;
             }
             else
             {
@@ -1458,15 +1484,14 @@ namespace Dynamo.Controls
                 nodeIcon.Fill = icon;
             }
 
-            //Add the addjusted Sytle for CodeBlockNodeModel to add overrides for Measure / Layout
+            //Add the adjusted Style for CodeBlockNodeModel to add overrides for Measure / Layout
             if(ViewModel.NodeModel is CodeBlockNodeModel)
             {
-                inPortControl.Style = CodeBlockNodeItemControlStyle;
                 outPortControl.Margin = new Thickness(0, 12, -24, 0);
-                outPortControl.Style = CodeBlockNodeItemControlStyle;
+                outPortControl.Style = _codeBlockNodeItemControlStyle;
             }
 
-            //Add items for custom nodes
+            //Add view items for custom nodes
             if (ViewModel.IsCustomFunction)
             {
 
@@ -2187,9 +2212,9 @@ namespace Dynamo.Controls
         {
             var contextMenuStyle = new Style(typeof(ContextMenu));
             contextMenuStyle.Setters.Add(new Setter(ContextMenu.PlacementProperty, PlacementMode.MousePoint));
-            contextMenuStyle.Setters.Add(new Setter(ContextMenu.ForegroundProperty, primaryCharcoal200));
+            contextMenuStyle.Setters.Add(new Setter(ContextMenu.ForegroundProperty, _primaryCharcoal200));
             contextMenuStyle.Setters.Add(new Setter(ContextMenu.FontSizeProperty, 13.0));
-            contextMenuStyle.Setters.Add(new Setter(ContextMenu.FontFamilyProperty, artifactElementReg));
+            contextMenuStyle.Setters.Add(new Setter(ContextMenu.FontFamilyProperty, _artifactElementReg));
             contextMenuStyle.Setters.Add(new Setter(ContextMenu.FontWeightProperty, FontWeights.Medium));
             contextMenuStyle.Setters.Add(new Setter(ContextMenu.SnapsToDevicePixelsProperty, true));
             contextMenuStyle.Setters.Add(new Setter(ContextMenu.OverridesDefaultStyleProperty, true));
@@ -2218,7 +2243,7 @@ namespace Dynamo.Controls
             var mainContextMenu = new ContextMenu
             {
                 Name = "MainContextMenu",
-                Background = midGrey,
+                Background = _midGrey,
                 Style = GetContextMenuStyle(),
             };
 
@@ -2271,7 +2296,7 @@ namespace Dynamo.Controls
             dismissedAlertsBadge.SetValue(Border.MarginProperty, new Thickness(-15, 0, 0, 1));
             dismissedAlertsBadge.SetValue(Border.HorizontalAlignmentProperty, HorizontalAlignment.Left);
             dismissedAlertsBadge.SetValue(Border.VerticalAlignmentProperty, VerticalAlignment.Center);
-            dismissedAlertsBadge.SetValue(Border.BackgroundProperty, nodeDismissedWarningsGlyphBackground);
+            dismissedAlertsBadge.SetValue(Border.BackgroundProperty, _nodeDismissedWarningsGlyphBackground);
             dismissedAlertsBadge.SetValue(Border.CornerRadiusProperty, new CornerRadius(7.5));
             dismissedAlertsBadge.SetValue(DockPanel.DockProperty, Dock.Left);
             dismissedAlertsBadge.SetValue(Border.VisibilityProperty, Visibility.Hidden);
@@ -2283,9 +2308,9 @@ namespace Dynamo.Controls
             dismissedAlertsBadgeLabel.SetValue(Label.HorizontalContentAlignmentProperty, HorizontalAlignment.Center);
             dismissedAlertsBadgeLabel.SetValue(Label.VerticalContentAlignmentProperty, VerticalAlignment.Center);
             dismissedAlertsBadgeLabel.SetValue(Label.ContentProperty, new Binding("NumberOfDismissedAlerts") { UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged });
-            dismissedAlertsBadgeLabel.SetValue(Label.FontFamilyProperty, artifactElementReg);
+            dismissedAlertsBadgeLabel.SetValue(Label.FontFamilyProperty, _artifactElementReg);
             dismissedAlertsBadgeLabel.SetValue(Label.FontSizeProperty, 9.0);
-            dismissedAlertsBadgeLabel.SetValue(Label.ForegroundProperty, nodeDismissedWarningsGlyphForeground);
+            dismissedAlertsBadgeLabel.SetValue(Label.ForegroundProperty, _nodeDismissedWarningsGlyphForeground);
 
             dismissedAlertsBadge.AppendChild(dismissedAlertsBadgeLabel);
 
@@ -2296,9 +2321,9 @@ namespace Dynamo.Controls
             subMenuArrow.SetValue(Label.VerticalAlignmentProperty, VerticalAlignment.Center);
             subMenuArrow.SetValue(Label.ContentProperty, ">");
             subMenuArrow.SetValue(DockPanel.DockProperty, Dock.Right);
-            subMenuArrow.SetValue(Label.FontFamilyProperty, artifactElementReg);
+            subMenuArrow.SetValue(Label.FontFamilyProperty, _artifactElementReg);
             subMenuArrow.SetValue(Label.FontSizeProperty, 13.0);
-            subMenuArrow.SetValue(Label.ForegroundProperty, blue300);
+            subMenuArrow.SetValue(Label.ForegroundProperty, _blue300);
 
             var subMenuArrowTransform = new ScaleTransform { ScaleX = 1, ScaleY = 1.5 };
             subMenuArrow.SetValue(Label.RenderTransformProperty, subMenuArrowTransform);
@@ -2320,7 +2345,7 @@ namespace Dynamo.Controls
             inputGestureText.SetValue(DockPanel.DockProperty, Dock.Right);
             inputGestureText.SetValue(TextBlock.HorizontalAlignmentProperty, HorizontalAlignment.Right);
             inputGestureText.SetValue(TextBlock.VerticalAlignmentProperty, VerticalAlignment.Center);
-            inputGestureText.SetValue(TextBlock.FontFamilyProperty, artifactElementReg);
+            inputGestureText.SetValue(TextBlock.FontFamilyProperty, _artifactElementReg);
             inputGestureText.SetValue(TextBlock.FontSizeProperty, 13.0);
             inputGestureText.SetValue(TextBlock.TextProperty, new TemplateBindingExtension(MenuItem.InputGestureTextProperty));
 
@@ -2374,7 +2399,7 @@ namespace Dynamo.Controls
                 Value = true
             };
             isMouseOverTrueTrigger.Setters.Add(new Setter(TextBlock.ForegroundProperty, Brushes.White, "ContentPresenter"));
-            isMouseOverTrueTrigger.Setters.Add(new Setter(DockPanel.BackgroundProperty, nodeContextMenuBackgroundHighlight, "dockPanel"));
+            isMouseOverTrueTrigger.Setters.Add(new Setter(DockPanel.BackgroundProperty, _nodeContextMenuBackgroundHighlight, "dockPanel"));
 
             // Trigger for IsMouseOver property (false)
             var isMouseOverFalseTrigger = new Trigger
@@ -2382,7 +2407,7 @@ namespace Dynamo.Controls
                 Property = UIElement.IsMouseOverProperty,
                 Value = false
             };
-            isMouseOverFalseTrigger.Setters.Add(new Setter(DockPanel.BackgroundProperty, midGrey, "dockPanel"));
+            isMouseOverFalseTrigger.Setters.Add(new Setter(DockPanel.BackgroundProperty, _midGrey, "dockPanel"));
 
             // DataTrigger for Content property
             var dataTrigger = new DataTrigger
@@ -2419,7 +2444,7 @@ namespace Dynamo.Controls
             var separatorBorder = new FrameworkElementFactory(typeof(Border));
             separatorBorder.SetValue(Border.HeightProperty, 1.0);
             separatorBorder.SetValue(Border.MarginProperty, new Thickness(20, 8, 20, 8));
-            separatorBorder.SetValue(Border.BackgroundProperty, nodeContextMenuSeparatorColor);
+            separatorBorder.SetValue(Border.BackgroundProperty, _nodeContextMenuSeparatorColor);
             separatorTemplate.VisualTree = separatorBorder;
 
             // Add the ControlTemplate to the style
