@@ -199,8 +199,6 @@ namespace Dynamo.UI.Controls
             nodeAutoCompleteMarker.Child = nodeAutoCompleteMarkerLabel;
             NodeAutoCompleteHover.Children.Add(nodeAutoCompleteMarker);
 
-            //TODO PortBorderHighlight
-
             MainGrid.Children.Add(PortSnapping);
             MainGrid.Children.Add(PortBackgroundBorder);
             MainGrid.Children.Add(PortValueMarker);
