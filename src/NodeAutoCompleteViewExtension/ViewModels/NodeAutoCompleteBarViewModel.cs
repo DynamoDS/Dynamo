@@ -844,7 +844,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     // Finalize visibility of nodes and connectors
                     foreach (var node in createdNodes.Values)
                     {
-                        workspaceViewModel.Nodes.FirstOrDefault(n => n.NodeModel.GUID.Equals(node.GUID)).IsHidden = false;
+                        var matchingNode = workspaceViewModel.Nodes.FirstOrDefault(n => n.NodeModel.GUID.Equals(node.GUID));
+                        if (matchingNode != null)
+                        {
+                            matchingNode.IsHidden = false;
+                        }
                         foreach (var connector in node.AllConnectors)
                         {
                             connector.IsHidden = !PreferenceSettings.Instance.ShowConnector;
