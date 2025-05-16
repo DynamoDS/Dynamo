@@ -18,7 +18,7 @@
     <PreferredToolArchitecture>x64</PreferredToolArchitecture> 
   </PropertyGroup> 
   <PropertyGroup>
-    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672;CA1416</NoWarn>
   </PropertyGroup>
 
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">

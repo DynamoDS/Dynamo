@@ -2374,10 +2374,12 @@ namespace Dynamo.Controls
             popupBorder.SetValue(Border.BorderThicknessProperty, new Thickness(0));
 
             var subMenuScrollViewer = new FrameworkElementFactory(typeof(ScrollViewer));
+            subMenuScrollViewer.Name = "SubMenuScrollViewer";
             subMenuScrollViewer.SetValue(ScrollViewer.CanContentScrollProperty, true);
             subMenuScrollViewer.SetValue(ScrollViewer.StyleProperty, new DynamicResourceExtension(new ComponentResourceKey(typeof(FrameworkElement), "MenuScrollViewer")));
 
             var itemsPresenter = new FrameworkElementFactory(typeof(ItemsPresenter));
+            itemsPresenter.Name = "ItemsPresenter";
             itemsPresenter.SetValue(Grid.IsSharedSizeScopeProperty, true);
             itemsPresenter.SetValue(KeyboardNavigation.DirectionalNavigationProperty, KeyboardNavigationMode.Cycle);
             itemsPresenter.SetValue(KeyboardNavigation.TabNavigationProperty, KeyboardNavigationMode.Cycle);
