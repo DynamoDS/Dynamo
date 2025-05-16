@@ -234,6 +234,11 @@ namespace Dynamo.Graph
         }
 
         /// <summary>
+        /// Has this <see cref="ModelBase"/> been disposed? Gets set when <see cref="Dispose"/> is called.
+        /// </summary>
+        protected bool HasBeenDisposed { get; private set; }
+
+        /// <summary>
         /// Protected constructor.
         /// </summary>
         protected ModelBase()
@@ -286,7 +291,11 @@ namespace Dynamo.Graph
         /// </summary>
         public virtual void Dispose()
         {
-            Disposed?.Invoke(this);
+            if (!HasBeenDisposed)
+            {
+                HasBeenDisposed = true;
+                Disposed?.Invoke(this);
+            }
         }
 
         /// <summary>
