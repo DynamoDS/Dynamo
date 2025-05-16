@@ -740,7 +740,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             if (clusterResultItem == null || clusterResultItem.Topology == null)
                 return;
 
-            List<ModelBase> createdClusterItems = [];
+            List<ModelBase> createdClusterItems = new List<ModelBase>();
 
             var workspaceViewModel = PortViewModel.NodeViewModel.WorkspaceViewModel;
             var workspaceModel = workspaceViewModel.Model;
