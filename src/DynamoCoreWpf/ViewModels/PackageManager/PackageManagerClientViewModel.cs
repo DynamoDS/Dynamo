@@ -343,7 +343,7 @@ namespace Dynamo.ViewModels
 
         public bool CanPublishCurrentWorkspace(object m)
         {
-            return DynamoViewModel.Model.CurrentWorkspace is CustomNodeWorkspaceModel && AuthenticationManager.HasAuthProvider;
+            return DynamoViewModel.Model.CurrentWorkspace is CustomNodeWorkspaceModel && AuthenticationManager.HasAuthProvider && !Model.NoNetworkMode;
         }
 
         public void PublishNewPackage(object m)
@@ -363,7 +363,7 @@ namespace Dynamo.ViewModels
 
         public bool CanPublishNewPackage(object m)
         {
-            return AuthenticationManager.HasAuthProvider;
+            return AuthenticationManager.HasAuthProvider && !Model.NoNetworkMode;
         }
 
         public void PublishCustomNode(Function m)
@@ -393,7 +393,7 @@ namespace Dynamo.ViewModels
 
         public bool CanPublishCustomNode(Function m)
         {
-            return AuthenticationManager.HasAuthProvider && m != null;
+            return AuthenticationManager.HasAuthProvider && m != null && !Model.NoNetworkMode;
         }
 
         public void PublishSelectedNodes(object m)
@@ -453,7 +453,7 @@ namespace Dynamo.ViewModels
         public bool CanPublishSelectedNodes(object m)
         {
             return DynamoSelection.Instance.Selection.Count > 0 &&
-                   DynamoSelection.Instance.Selection.All(x => x is Function) && AuthenticationManager.HasAuthProvider; ;
+                   DynamoSelection.Instance.Selection.All(x => x is Function) && AuthenticationManager.HasAuthProvider && !Model.NoNetworkMode;
         }
 
         private void ShowNodePublishInfo()

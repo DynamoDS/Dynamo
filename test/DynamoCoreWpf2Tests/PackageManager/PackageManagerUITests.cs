@@ -1202,7 +1202,7 @@ namespace DynamoCoreWpfTests.PackageManager
 
             var mockGreg = new Mock<IGregClient>();
 
-            var clientmock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var clientmock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty, false);
             var pmVmMock = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true };
             var sharedEngineVersion = DynamoModel.Version;
 
@@ -1318,7 +1318,7 @@ namespace DynamoCoreWpfTests.PackageManager
 
             var mockGreg = new Mock<IGregClient>();
 
-            var clientmock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var clientmock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty, false);
             var pmVmMock = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object);
             var pmMock = new Mock<PackageManagerExtension>();
 
@@ -1424,7 +1424,7 @@ namespace DynamoCoreWpfTests.PackageManager
         public void InstallsPackagesEvenIfSomeFailToDownloadShouldNotThrow()
         {
             var mockGreg = new Mock<IGregClient>();
-            var clientmock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var clientmock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty, false);
             var pmVmMock = new PackageManagerClientViewModel(ViewModel, clientmock.Object);
             Assert.DoesNotThrow(() =>
             {

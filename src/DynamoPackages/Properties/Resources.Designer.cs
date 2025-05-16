@@ -79,6 +79,15 @@ namespace DynamoPackages.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Package download is disabled in no-network mode..
+        /// </summary>
+        public static string DownloadPackageDisabled {
+            get {
+                return ResourceManager.GetString("DownloadPackageDisabled", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to The folder &apos;{0}&apos; does not exist.
         /// </summary>
         public static string InvalidPackageFolderWarning {

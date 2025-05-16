@@ -81,5 +81,10 @@ namespace Dynamo.Session
         /// The return value is an ILogger
         /// </summary>
         public static readonly string Logger = nameof(Logger);
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public static readonly string NoNetworkMode = nameof(NoNetworkMode);
     }
 }
