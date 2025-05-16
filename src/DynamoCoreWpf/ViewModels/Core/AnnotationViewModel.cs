@@ -702,9 +702,15 @@ namespace Dynamo.ViewModels
             // owner
             newPortViewModels = CreateProxyInPorts(originalInPorts);
 
-            if (newPortViewModels == null) return;
+            // Set the minimum required vertical space to fit the input ports when collapsed
+            if (newPortViewModels == null)
+            {
+                annotationModel.MinCollapsedPortAreaHeight = 0;
+                return;
+            }
+
+            annotationModel.MinCollapsedPortAreaHeight = newPortViewModels.Sum(p => p.Height);
             InPorts.AddRange(newPortViewModels);
-            return;
         }
 
         /// <summary>
@@ -717,7 +723,7 @@ namespace Dynamo.ViewModels
             List<PortViewModel> newPortViewModels;
 
             // we need to store the original ports here
-            // as we need thoese later for when we
+            // as we need these later for when we
             // need to collapse the groups content
             if (this.AnnotationModel.HasNestedGroups)
             {
@@ -735,13 +741,19 @@ namespace Dynamo.ViewModels
 
             // Create proxies of the ports so we can
             // visually add them to the group but they
-            // should still reference their NodeModel
-            // owner
+            // should still reference their NodeModel owner
             newPortViewModels = CreateProxyOutPorts(originalOutPorts);
 
-            if (newPortViewModels == null) return;
+            // If no view models were created, we leave the existing height as is
+            if (newPortViewModels == null)
+                return;
+
+            // Update the collapsed port area height to be the greater of the existing value
+            // and the height needed to render all output ports
+            var outportsHeight = newPortViewModels.Sum(p => p.Height);
+            annotationModel.MinCollapsedPortAreaHeight = Math.Max(annotationModel.MinCollapsedPortAreaHeight, outportsHeight);
+
             OutPorts.AddRange(newPortViewModels);
-            return;
         }
 
         internal IEnumerable<PortModel> GetGroupInPorts(IEnumerable<NodeModel> ownerNodes = null)
@@ -976,8 +988,11 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private void RedrawConnectors()
+        private void RedrawConnectors(bool isCollapsedCheck = false)
         {
+            if (isCollapsedCheck && IsExpanded && !annotationModel.IsResizedWhileCollapsed)
+                return;
+
             var allNodes = this.Nodes
                 .OfType<AnnotationModel>()
                 .SelectMany(x => x.Nodes.OfType<NodeModel>())
@@ -1068,6 +1083,7 @@ namespace Dynamo.ViewModels
 
             if (annotationModel.IsExpanded)
             {
+                ToggleSizeAdjustmentsForCollapse(false);
                 this.ShowGroupContents();
             }
             else
@@ -1075,6 +1091,9 @@ namespace Dynamo.ViewModels
                 this.SetGroupInputPorts();
                 this.SetGroupOutPorts();
                 this.CollapseGroupContents(true);
+                ToggleSizeAdjustmentsForCollapse(true);
+
+                RaisePropertyChanged(nameof(Height));
                 RaisePropertyChanged(nameof(NodeContentCount));
             }
             WorkspaceViewModel.HasUnsavedChanges = true;
@@ -1082,6 +1101,35 @@ namespace Dynamo.ViewModels
             RaisePropertyChanged(nameof(IsExpanded));
             RedrawConnectors();
             ReportNodesPosition();
+        }
+
+        /// <summary>
+        /// Switches the width and height adjustment values when toggling
+        /// between collapsed and expanded group states.
+        /// </summary>
+        private void ToggleSizeAdjustmentsForCollapse(bool isCollapsing)
+        {
+            if (isCollapsing)
+            {
+                annotationModel.WidthAdjustmentExpanded = annotationModel.WidthAdjustment;
+                annotationModel.HeightAdjustmentExpanded = annotationModel.HeightAdjustment;
+
+                // Reset to collapsed value so first resize ignores expanded height adjustment
+                annotationModel.HeightAdjustment = annotationModel.HeightAdjustmentCollapsed;
+
+                if (annotationModel.IsResizedWhileCollapsed)
+                {
+                    annotationModel.WidthAdjustment = annotationModel.WidthAdjustmentCollapsed;
+                }
+            }
+            else
+            {
+                annotationModel.WidthAdjustmentCollapsed = annotationModel.WidthAdjustment;
+                annotationModel.HeightAdjustmentCollapsed = annotationModel.HeightAdjustment;
+
+                annotationModel.WidthAdjustment = annotationModel.WidthAdjustmentExpanded;
+                annotationModel.HeightAdjustment = annotationModel.HeightAdjustmentExpanded;
+            }
         }
 
         private void UpdateFontSize(object parameter)
@@ -1199,6 +1247,7 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("Width");
                     RaisePropertyChanged(nameof(ModelAreaRect));
                     UpdateAllGroupedGroups();
+                    RedrawConnectors(false);
                     break;
                 case "Height":
                     RaisePropertyChanged("Height");
