@@ -211,7 +211,7 @@ namespace Dynamo.UI.Controls
             #endregion
 
             var dvm = this.DynamoViewModel;
-            RefreshRecentFileList(dvm.RecentFiles);
+            RefreshRecentFileList(dvm.RecentFiles, true);
             RefreshBackupFileList(dvm.Model.PreferenceSettings.BackupFiles);
             dvm.RecentFiles.CollectionChanged += OnRecentFilesChanged;
         }
@@ -404,27 +404,57 @@ namespace Dynamo.UI.Controls
 
         private void OnRecentFilesChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            RefreshRecentFileList(sender as IEnumerable<string>);
+            //when we are just moving existing files, no need to refresh the complete list
+            if (e.Action == NotifyCollectionChangedAction.Move)
+            {
+                recentFiles.Move(e.OldStartingIndex, e.NewStartingIndex);
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Add)
+            {
+                var newItems = e.NewItems?.Cast<string>();
+                if (newItems != null)
+                {
+                    RefreshRecentFileList(newItems);
+                }
+            }
+            else if (e.Action == NotifyCollectionChangedAction.Remove)
+            {
+                recentFiles.RemoveRange(e.OldStartingIndex, recentFiles.Count - e.OldStartingIndex);
+            }
+            else
+            {
+                RefreshRecentFileList(sender as IEnumerable<string>, true);
+            }
         }
 
         #endregion
 
         #region Private Class Helper Methods
 
-        private void RefreshRecentFileList(IEnumerable<string> filePaths)
+        private void RefreshRecentFileList(IEnumerable<string> filePaths, bool fullRefresh = false)
         {
-            RefreshFileList(recentFiles, filePaths);
+            RefreshFileList(recentFiles, filePaths, fullRefresh);
         }
 
         private void RefreshBackupFileList(IEnumerable<string> filePaths)
         {
-            RefreshFileList(backupFiles, filePaths);
+            RefreshFileList(backupFiles, filePaths, true);
         }
 
+        /// <summary>
+        /// Refreshes the list of files in the specified collection. If fullRefresh is true,
+        /// discards the current list and regenerates all file items based on the provided file paths.
+        /// </summary>
+        /// <param name="files">Files currently in the recent files list</param>
+        /// <param name="filePaths">New files path which will be used to update the current list</param>
+        /// <param name="fullRefresh">If true, will discard the current list and regenerate all file items based on the provided file paths</param>
         private void RefreshFileList(ObservableCollection<StartPageListItem> files,
-            IEnumerable<string> filePaths)
+            IEnumerable<string> filePaths, bool fullRefresh = false)
         {
-            files.Clear();
+            if (fullRefresh)
+            {
+                files.Clear();
+            }
             foreach (var filePath in filePaths.Where(x => x != null))
             {
                 try
@@ -441,7 +471,7 @@ namespace Dynamo.UI.Controls
                     // deserializes the file only once
                     var properties = GetFileProperties(filePath);
 
-                    files.Add(new StartPageListItem(caption)
+                    var startItem = new StartPageListItem(caption)
                     {
                         ContextData = filePath,
                         ToolTip = filePath,
@@ -451,8 +481,16 @@ namespace Dynamo.UI.Controls
                         Author = properties.author,
                         DateModified = properties.date,
                         ClickAction = StartPageListItem.Action.FilePath,
+                    };
 
-                    }); 
+                    if (fullRefresh)
+                    {
+                        files.Add(startItem);
+                    }
+                    else
+                    {
+                        files.Insert(0, startItem);
+                    }
                 }
                 catch (ArgumentException ex)
                 {
