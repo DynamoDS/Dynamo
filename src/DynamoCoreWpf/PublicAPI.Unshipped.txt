@@ -729,7 +729,6 @@ Dynamo.Controls.Watch3DView.InitializeComponent() -> void
 Dynamo.Controls.Watch3DView.inputGrid -> System.Windows.Controls.Grid
 Dynamo.Controls.Watch3DView.inputGrid.get -> System.Windows.Controls.Grid
 Dynamo.Controls.Watch3DView.MainContextMenu -> System.Windows.Controls.ContextMenu
-Dynamo.Controls.Watch3DView.View.get -> HelixToolkit.Wpf.SharpDX.Viewport3DX
 Dynamo.Controls.Watch3DView.Watch3DView() -> void
 Dynamo.Controls.WatchTree
 Dynamo.Controls.WatchTree.InitializeComponent() -> void
