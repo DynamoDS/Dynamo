@@ -2,6 +2,7 @@ using Dynamo.Microsoft.Xaml.Behaviors;
 using Dynamo.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,22 +24,38 @@ namespace Dynamo.UI.Controls
     public partial class InPorts : UserControl
     {
         private InPortViewModel viewModel = null;
+
+        //View components that are accessed between constructor and OnDataContextChanged
         private Grid MainGrid = null;
         private Border PortBackgroundBorder = null;
         private Grid NodeAutoCompleteHover = null;
         private Border nodeAutoCompleteMarker = null;
-        private bool UseLevelSpinnerInit = false;
+        private Rectangle PortSnapping = null;
+        private Border chevronHighlightOverlay = null;
 
-        private static SolidColorBrush primaryCharcoal200Brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCDCDC"));
-        private static SolidColorBrush chevronHighlightOverlayBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E5E2DE"));
-        private static SolidColorBrush portMouseOverColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#636363")); //This is the equivolent direct color vs with opacity
-        private static SolidColorBrush nodeTransientOverlayColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D5BCF7"));
+        private bool _useLevelSpinnerInit = false;
 
-        private static BooleanToVisibilityConverter booleanToVisibilityConverter = new BooleanToVisibilityConverter();
-        private static FontFamily artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
+        // Static resources mostly from DynamoModern themes but some from DynamoColorsAndBrushes.xaml
+        private static SolidColorBrush _primaryCharcoal200Brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCDCDC"));
+        private static SolidColorBrush _chevronHighlightOverlayBackground = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#E5E2DE"));
+        private static SolidColorBrush _portMouseOverColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#636363")); //This is the equivalent direct color vs with opacity
+        private static SolidColorBrush _nodeTransientOverlayColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D5BCF7"));
+        private static SolidColorBrush _darkGrey = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4A4A4A")); //DarkGrey
 
-        //Try to unify the Port Borders
+        private static BooleanToVisibilityConverter _booleanToVisibilityConverter = new BooleanToVisibilityConverter();
+        private static FontFamily _artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
+
+        //Try to unify the Port Borders binding so we don't need to user the cache
         private Brush cachedPortBackgroundColor = PortViewModel.PortBackgroundColorDefault;
+
+        static InPorts()
+        {
+            _primaryCharcoal200Brush.Freeze();
+            _chevronHighlightOverlayBackground.Freeze();
+            _portMouseOverColor.Freeze();
+            _nodeTransientOverlayColor.Freeze();
+            _darkGrey.Freeze();
+        }
 
         public InPorts()
         {
@@ -60,7 +77,7 @@ namespace Dynamo.UI.Controls
             MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "UseLevelSpinnerColumn", Width = new GridLength(0) });
             MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "ChevronColumn", Width = new GridLength(0) });
 
-            var PortSnapping = new Rectangle()
+            PortSnapping = new Rectangle()
             {
                 Name = "PortSnapping",
                 Fill = Brushes.Transparent,
@@ -72,11 +89,6 @@ namespace Dynamo.UI.Controls
             Canvas.SetZIndex(PortSnapping, 7);
 
             PortSnapping.SetBinding(Rectangle.IsHitTestVisibleProperty, new Binding("IsHitTestVisible"));
-
-            //TODO change to trigger handler?
-            //TODO deregister event handler
-            PortSnapping.MouseEnter += (s, e) => viewModel.MouseEnterCommand.Execute(DataContext);
-            PortSnapping.MouseLeave += (s, e) => viewModel.MouseLeaveCommand.Execute(DataContext);
 
             PortBackgroundBorder = new Border()
             {
@@ -135,9 +147,9 @@ namespace Dynamo.UI.Controls
                 Width = Double.NaN,
                 Margin = new Thickness(0, 1, 5, 0),
                 VerticalAlignment = VerticalAlignment.Center,
-                FontFamily = artifactElementReg,
+                FontFamily = _artifactElementReg,
                 FontSize = 12,
-                Foreground = primaryCharcoal200Brush,
+                Foreground = _primaryCharcoal200Brush,
                 IsHitTestVisible = false,
             };
 
@@ -181,7 +193,7 @@ namespace Dynamo.UI.Controls
                 Width = 20,
                 VerticalAlignment = VerticalAlignment.Center,
                 HorizontalAlignment = HorizontalAlignment.Left,
-                Background = nodeTransientOverlayColor,
+                Background = _nodeTransientOverlayColor,
                 SnapsToDevicePixels = true,
                 Visibility = Visibility.Collapsed
             };
@@ -209,6 +221,7 @@ namespace Dynamo.UI.Controls
             this.Content = MainGrid;
 
             DataContextChanged += OnDataContextChanged;
+            Unloaded += OnPortViewUnloaded;
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -216,107 +229,12 @@ namespace Dynamo.UI.Controls
             if (null != viewModel) return;
 
             viewModel = e.NewValue as InPortViewModel;
+            viewModel.PropertyChanged += OnPropertyChanged;
 
             MainGrid.BeginInit();
 
-            //Intialize the PortBackgroundColor
+            //Initialize the PortBackgroundColor
             PortBackgroundBorder.Background = viewModel.PortBackgroundColor;
-
-            //Todo deregister event
-            viewModel.PropertyChanged += (s, e) =>
-            {
-                switch (e.PropertyName)
-                {
-                    case "PortBackgroundColor":
-                        if (PortBackgroundBorder.Dispatcher.CheckAccess())
-                        {
-                            PortBackgroundBorder.Background = viewModel.PortBackgroundColor;
-                        }
-                        else
-                        {
-                            PortBackgroundBorder.Dispatcher.Invoke(() =>
-                            {
-                                PortBackgroundBorder.Background = viewModel.PortBackgroundColor;
-                            });
-                        }
-                        break;
-                    case "Highlight":
-                        if (viewModel.Highlight == Visibility.Visible)
-                        {
-                            if (PortBackgroundBorder.Dispatcher.CheckAccess())
-                            {
-                                PortBackgroundBorder.BorderBrush = nodeTransientOverlayColor;
-                                PortBackgroundBorder.BorderThickness = new Thickness(3, 3, 3, 3);
-                            }
-                            else
-                            {
-                                PortBackgroundBorder.Dispatcher.Invoke(() =>
-                                {
-                                    PortBackgroundBorder.BorderBrush = nodeTransientOverlayColor;
-                                    PortBackgroundBorder.BorderThickness = new Thickness(3, 3, 3, 3);
-                                });
-                            }
-                        }
-                        else
-                        {
-                            if (PortBackgroundBorder.Dispatcher.CheckAccess())
-                            {
-                                PortBackgroundBorder.BorderBrush = viewModel.PortBorderBrushColor;
-                                PortBackgroundBorder.BorderThickness = new Thickness(1, 1, 1, 1);
-                            }
-                            else
-                            {
-                                PortBackgroundBorder.Dispatcher.Invoke(() =>
-                                {
-                                    PortBackgroundBorder.BorderBrush = viewModel.PortBorderBrushColor;
-                                    PortBackgroundBorder.BorderThickness = new Thickness(1, 1, 1, 1);
-                                });
-                            }
-                        }
-                        break;
-                    case "UseLevels":
-
-                        //Add the spinner if it was not added in the constructor
-                        if (viewModel.UseLevels == true)
-                        {
-                            if (!UseLevelSpinnerInit)
-                            {
-                                var useLevelControl = new UseLevelSpinner()
-                                {
-                                    Name = "useLevelControl",
-                                    Width = 50,
-                                    Height = 25,
-                                    VerticalAlignment = VerticalAlignment.Center,
-                                    Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4A4A4A")), //DarkGrey
-                                };
-
-                                DockPanel.SetDock(useLevelControl, Dock.Right);
-                                Grid.SetColumn(useLevelControl, 5);
-
-                                useLevelControl.SetBinding(UseLevelSpinner.KeepListStructureProperty, new Binding("ShouldKeepListStructure"));
-                                useLevelControl.SetBinding(UseLevelSpinner.LevelProperty, new Binding("Level") { Mode = BindingMode.TwoWay });
-                                useLevelControl.SetBinding(Border.VisibilityProperty, new Binding("UseLevels")
-                                {
-                                    Converter = booleanToVisibilityConverter
-                                });
-
-                                if (MainGrid.Dispatcher.CheckAccess())
-                                {
-                                    MainGrid.Children.Add(useLevelControl);
-                                }
-                                else
-                                {
-                                    MainGrid.Dispatcher.Invoke(() =>
-                                    {
-                                        MainGrid.Children.Add(useLevelControl);
-                                    });
-                                }
-                            }
-                            
-                        }
-                        break;
-                }
-            };
 
             var mouseLeftButtonDownTrigger = new Dynamo.UI.Views.HandlingEventTrigger()
             {
@@ -340,9 +258,6 @@ namespace Dynamo.UI.Controls
                 CommandParameter = viewModel
             };
 
-            mouseRightButtonDownTrigger.Actions.Add(mouseRightButtonDownAction);
-            Dynamo.Microsoft.Xaml.Behaviors.Interaction.GetTriggers(MainGrid).Add(mouseRightButtonDownTrigger);
-
             var previewMouseLeftDownTrigger = new Dynamo.UI.Views.HandlingEventTrigger()
             {
                 EventName = "PreviewMouseLeftButtonDown",
@@ -356,31 +271,13 @@ namespace Dynamo.UI.Controls
             previewMouseLeftDownTrigger.Actions.Add(previewMouseLeftDownAction);
             Dynamo.Microsoft.Xaml.Behaviors.Interaction.GetTriggers(nodeAutoCompleteMarker).Add(previewMouseLeftDownTrigger);
 
-            //todo dispatch on UI thead
-            //Todo move to method so can unregister
             // Event handlers for mouse enter and leave
-            PortBackgroundBorder.MouseEnter += (s, e) =>
-            {
-                //Todo add check for KeepListStructure
-                PortBackgroundBorder.Background = portMouseOverColor;
-                if (viewModel.NodeAutoCompleteMarkerEnabled)
-                    nodeAutoCompleteMarker.Visibility = Visibility.Visible;
-            };
-            PortBackgroundBorder.MouseLeave += (s, e) =>
-            {
-                PortBackgroundBorder.Background = viewModel.PortBackgroundColor;
-                nodeAutoCompleteMarker.Visibility = Visibility.Collapsed;
-            };
-
-            NodeAutoCompleteHover.MouseEnter += (s, e) =>
-            {
-                if (viewModel.NodeAutoCompleteMarkerEnabled)
-                    nodeAutoCompleteMarker.Visibility = Visibility.Visible;
-            };
-            NodeAutoCompleteHover.MouseLeave += (s, e) =>
-            {
-                nodeAutoCompleteMarker.Visibility = Visibility.Collapsed;
-            };
+            PortSnapping.MouseEnter += OnMouseEnterSnapping;
+            PortSnapping.MouseLeave += OnMouseLeaveSnapping;
+            PortBackgroundBorder.MouseEnter += OnMouseEnterBackground;
+            PortBackgroundBorder.MouseLeave += OnMouseLeaveBackground;
+            NodeAutoCompleteHover.MouseEnter += OnMouseEnterHover;
+            NodeAutoCompleteHover.MouseLeave += OnMouseLeaveHover;
 
             if (viewModel.UseLevelVisibility == Visibility.Visible)
             {
@@ -391,7 +288,7 @@ namespace Dynamo.UI.Controls
                     Padding = new Thickness(0, 1, 1, 0),
                     VerticalAlignment = VerticalAlignment.Center,
                     FontSize = 16,
-                    Foreground = primaryCharcoal200Brush,
+                    Foreground = _primaryCharcoal200Brush,
                     IsHitTestVisible = false,
                     Text = ">",
                     TextAlignment = TextAlignment.Center
@@ -400,14 +297,14 @@ namespace Dynamo.UI.Controls
                 Grid.SetColumn(chevron, 6);
 
                 // Create the Border
-                Border chevronHighlightOverlay = new Border
+                chevronHighlightOverlay = new Border
                 {
                     Name = "ChevronHighlightOverlay",
                     Width = 20,
                     Height = 28,
                     CornerRadius = new CornerRadius(0, 11, 11, 0),
                     IsHitTestVisible = true,
-                    Background = chevronHighlightOverlayBackground,
+                    Background = _chevronHighlightOverlayBackground,
                     Opacity = 0.0 // Initial opacity
                 };
 
@@ -421,24 +318,24 @@ namespace Dynamo.UI.Controls
                 };
                 chevronHighlightOverlay.InputBindings.Add(mouseBinding);
 
-                chevronHighlightOverlay.MouseEnter += (s, e) => chevronHighlightOverlay.Opacity = 0.3;
-                chevronHighlightOverlay.MouseLeave += (s, e) => chevronHighlightOverlay.Opacity = 0.0;
+                chevronHighlightOverlay.MouseEnter += OnMouseEnterChevron;
+                chevronHighlightOverlay.MouseLeave += OnMouseLeaveChevron;
 
                 MainGrid.ColumnDefinitions[6].Width = new GridLength(20);
                 MainGrid.Children.Add(chevron);
                 MainGrid.Children.Add(chevronHighlightOverlay);
                 MainGrid.ColumnDefinitions[5].Width = new GridLength(50);
 
-                // Add the UseLevelSpinner if visable in the nodes initial state
+                // Add the UseLevelSpinner if visible in the nodes initial state
                 if (viewModel.UseLevels == true)
-                { 
+                {
                     var useLevelControl = new UseLevelSpinner()
                     {
                         Name = "useLevelControl",
                         Width = 50,
                         Height = 25,
                         VerticalAlignment = VerticalAlignment.Center,
-                        Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#4A4A4A")), //DarkGrey
+                        Background = _darkGrey
                     };
 
                     DockPanel.SetDock(useLevelControl, Dock.Right);
@@ -448,14 +345,177 @@ namespace Dynamo.UI.Controls
                     useLevelControl.SetBinding(UseLevelSpinner.LevelProperty, new Binding("Level") { Mode = BindingMode.TwoWay });
                     useLevelControl.SetBinding(Border.VisibilityProperty, new Binding("UseLevels")
                     {
-                        Converter = booleanToVisibilityConverter
+                        Converter = _booleanToVisibilityConverter
                     });
 
                     MainGrid.Children.Add(useLevelControl);
+                    _useLevelSpinnerInit = true;
                 }
             }
 
             MainGrid.EndInit();
+        }
+
+        private void OnMouseEnterSnapping(object sender, MouseEventArgs args)
+        {
+            viewModel.MouseEnterCommand.Execute(DataContext);
+        }
+
+        private void OnMouseLeaveSnapping(object sender, MouseEventArgs args)
+        {
+            viewModel.MouseLeaveCommand.Execute(DataContext);
+        }
+
+        //todo validate if these need to checked and dispatched on UI thread
+        private void OnMouseEnterBackground(object sender, MouseEventArgs args)
+        {
+            //Todo add check for KeepListStructure
+            PortBackgroundBorder.Background = _portMouseOverColor;
+            if (viewModel.NodeAutoCompleteMarkerEnabled)
+                nodeAutoCompleteMarker.Visibility = Visibility.Visible;
+        }
+
+        private void OnMouseLeaveBackground(object sender, MouseEventArgs args)
+        {
+            PortBackgroundBorder.Background = viewModel.PortBackgroundColor;
+            nodeAutoCompleteMarker.Visibility = Visibility.Collapsed;
+        }
+
+        private void OnMouseEnterHover(object sender, MouseEventArgs args)
+        {
+            if (viewModel.NodeAutoCompleteMarkerEnabled)
+                nodeAutoCompleteMarker.Visibility = Visibility.Visible;
+        }
+
+        private void OnMouseLeaveHover(object sender, MouseEventArgs args)
+        {
+            nodeAutoCompleteMarker.Visibility = Visibility.Collapsed;
+        }
+
+        private void OnMouseEnterChevron(object sender, MouseEventArgs args)
+        {
+            chevronHighlightOverlay.Opacity = 0.3;
+        }
+
+        private void OnMouseLeaveChevron(object sender, MouseEventArgs args)
+        {
+            chevronHighlightOverlay.Opacity = 0.0;
+        }
+
+        private void OnPropertyChanged(object sender, PropertyChangedEventArgs args)
+        {
+            switch (args.PropertyName)
+            {
+                case "PortBackgroundColor":
+                    if (PortBackgroundBorder.Dispatcher.CheckAccess())
+                    {
+                        PortBackgroundBorder.Background = viewModel.PortBackgroundColor;
+                    }
+                    else
+                    {
+                        PortBackgroundBorder.Dispatcher.Invoke(() =>
+                        {
+                            PortBackgroundBorder.Background = viewModel.PortBackgroundColor;
+                        });
+                    }
+                    break;
+                case "Highlight":
+                    if (viewModel.Highlight == Visibility.Visible)
+                    {
+                        if (PortBackgroundBorder.Dispatcher.CheckAccess())
+                        {
+                            PortBackgroundBorder.BorderBrush = _nodeTransientOverlayColor;
+                            PortBackgroundBorder.BorderThickness = new Thickness(3, 3, 3, 3);
+                        }
+                        else
+                        {
+                            PortBackgroundBorder.Dispatcher.Invoke(() =>
+                            {
+                                PortBackgroundBorder.BorderBrush = _nodeTransientOverlayColor;
+                                PortBackgroundBorder.BorderThickness = new Thickness(3, 3, 3, 3);
+                            });
+                        }
+                    }
+                    else
+                    {
+                        if (PortBackgroundBorder.Dispatcher.CheckAccess())
+                        {
+                            PortBackgroundBorder.BorderBrush = viewModel.PortBorderBrushColor;
+                            PortBackgroundBorder.BorderThickness = new Thickness(1, 1, 1, 1);
+                        }
+                        else
+                        {
+                            PortBackgroundBorder.Dispatcher.Invoke(() =>
+                            {
+                                PortBackgroundBorder.BorderBrush = viewModel.PortBorderBrushColor;
+                                PortBackgroundBorder.BorderThickness = new Thickness(1, 1, 1, 1);
+                            });
+                        }
+                    }
+                    break;
+                case "UseLevels":
+
+                    //Add the spinner if it was not added in the constructor
+                    if (viewModel.UseLevels == true)
+                    {
+                        if (!_useLevelSpinnerInit)
+                        {
+                            var useLevelControl = new UseLevelSpinner()
+                            {
+                                Name = "useLevelControl",
+                                Width = 50,
+                                Height = 25,
+                                VerticalAlignment = VerticalAlignment.Center,
+                                Background = _darkGrey
+                            };
+
+                            DockPanel.SetDock(useLevelControl, Dock.Right);
+                            Grid.SetColumn(useLevelControl, 5);
+
+                            useLevelControl.SetBinding(UseLevelSpinner.KeepListStructureProperty, new Binding("ShouldKeepListStructure"));
+                            useLevelControl.SetBinding(UseLevelSpinner.LevelProperty, new Binding("Level") { Mode = BindingMode.TwoWay });
+                            useLevelControl.SetBinding(Border.VisibilityProperty, new Binding("UseLevels")
+                            {
+                                Converter = _booleanToVisibilityConverter
+                            });
+
+                            if (MainGrid.Dispatcher.CheckAccess())
+                            {
+                                MainGrid.Children.Add(useLevelControl);
+                            }
+                            else
+                            {
+                                MainGrid.Dispatcher.Invoke(() =>
+                                {
+                                    MainGrid.Children.Add(useLevelControl);
+                                });
+                            }
+                        }
+
+                    }
+                    break;
+            }
+        }
+
+        private void OnPortViewUnloaded(object sender, RoutedEventArgs e)
+        {
+            viewModel.PropertyChanged -= OnPropertyChanged;
+
+            PortSnapping.MouseEnter -= OnMouseEnterSnapping;
+            PortSnapping.MouseLeave -= OnMouseLeaveSnapping;
+            PortBackgroundBorder.MouseEnter -= OnMouseEnterBackground;
+            PortBackgroundBorder.MouseLeave -= OnMouseLeaveBackground;
+            NodeAutoCompleteHover.MouseEnter -= OnMouseEnterHover;
+            NodeAutoCompleteHover.MouseLeave -= OnMouseLeaveHover;
+
+            if (chevronHighlightOverlay != null)
+            {
+                chevronHighlightOverlay.MouseEnter -= OnMouseEnterChevron;
+                chevronHighlightOverlay.MouseLeave -= OnMouseLeaveChevron;
+            }
+
+            DataContextChanged -= OnDataContextChanged;
+            Unloaded -= OnPortViewUnloaded;
         }
     }
 }
