@@ -45,7 +45,7 @@ namespace Dynamo.UI.Controls
         private static BooleanToVisibilityConverter _booleanToVisibilityConverter = new BooleanToVisibilityConverter();
         private static FontFamily _artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
 
-        //Try to unify the Port Borders binding so we don't need to user the cache
+        //Todo Try to unify the Port Borders binding so we don't need to user the cache
         private Brush cachedPortBackgroundColor = PortViewModel.PortBackgroundColorDefault;
 
         static InPorts()

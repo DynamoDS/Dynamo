@@ -151,13 +151,17 @@ namespace Dynamo.Controls
         private TextBox EditableNameBox;
         private Rectangle nodeIcon;
         private Rectangle nodeBackground;
-        private ItemsControl inPortControl;
-        private ItemsControl outPortControl;
+        private ItemsControl outputPortControl;
         private Button optionsButton;
 
         //View items referenced outside of NodeView internal to DynamoCoreWPF previously from xaml
         //TODO do we rationalize the capitalization?
         internal Border nodeBorder;
+        internal ItemsControl inputPortControl; //for testing
+        internal Border customNodeBorder0; //for testing
+        internal Grid zoomGlyphsGrid; //for testing
+        internal Rectangle nodeColorOverlayZoomOut; //for testing
+
 
         //View items referenced outside of NodeView internal to DynamoCoreWPF previously from xaml but now loaded on demand.
         private Canvas _expansionBay;
@@ -569,31 +573,31 @@ namespace Dynamo.Controls
 
             #region InPorts and OutPorts
 
-            inPortControl = new ItemsControl()
+            inputPortControl = new ItemsControl()
             {
-                Name = "inPortControl",
+                Name = "inputPortControl",
                 Margin = new Thickness(-25, 3, 0, 0),
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalContentAlignment = HorizontalAlignment.Stretch
             };
 
-            inPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("InPorts"));
-            Grid.SetRow(inPortControl, 2);
-            Grid.SetColumn(inPortControl, 0);
-            Canvas.SetZIndex(inPortControl, 6);
+            inputPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("InPorts"));
+            Grid.SetRow(inputPortControl, 2);
+            Grid.SetColumn(inputPortControl, 0);
+            Canvas.SetZIndex(inputPortControl, 6);
 
-            outPortControl = new ItemsControl()
+            outputPortControl = new ItemsControl()
             {
-                Name = "outPortControl",
+                Name = "outputPortControl",
                 Margin = new Thickness(0, 3, -24, 5),
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalContentAlignment = HorizontalAlignment.Stretch,
             };
 
-            outPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("OutPorts"));
-            Grid.SetRow(outPortControl, 2);
-            Grid.SetColumn(outPortControl, 2);
-            Canvas.SetZIndex(outPortControl, 4);
+            outputPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("OutPorts"));
+            Grid.SetRow(outputPortControl, 2);
+            Grid.SetColumn(outputPortControl, 2);
+            Canvas.SetZIndex(outputPortControl, 4);
 
             #endregion
 
@@ -947,7 +951,7 @@ namespace Dynamo.Controls
             #region Zoomed out overlays and glyphs
 
             // nodeColorOverlayZoomOut
-            var nodeColorOverlayZoomOut = new Rectangle
+            nodeColorOverlayZoomOut = new Rectangle
             {
                 Name = "nodeColorOverlayZoomOut",
                 Margin = new Thickness(-8),
@@ -966,7 +970,7 @@ namespace Dynamo.Controls
             });
 
             // Create the main Grid
-            var zoomGlyphsGrid = new Grid
+            zoomGlyphsGrid = new Grid
             {
                 Name = "zoomGlyphsGrid",
                 MinWidth = 48,
@@ -1130,8 +1134,8 @@ namespace Dynamo.Controls
             grid.Children.Add(nodeBackground);
             grid.Children.Add(nameBackground);
             grid.Children.Add(nodeHeaderContent);
-            grid.Children.Add(inPortControl);
-            grid.Children.Add(outPortControl);
+            grid.Children.Add(inputPortControl);
+            grid.Children.Add(outputPortControl);
             grid.Children.Add(GlyphStackPanel);
             grid.Children.Add(nodeBorder);
             grid.Children.Add(selectionBorder);
@@ -1487,15 +1491,15 @@ namespace Dynamo.Controls
             //Add the adjusted Style for CodeBlockNodeModel to add overrides for Measure / Layout
             if(ViewModel.NodeModel is CodeBlockNodeModel)
             {
-                outPortControl.Margin = new Thickness(0, 12, -24, 0);
-                outPortControl.Style = _codeBlockNodeItemControlStyle;
+                outputPortControl.Margin = new Thickness(0, 12, -24, 0);
+                outputPortControl.Style = _codeBlockNodeItemControlStyle;
             }
 
             //Add view items for custom nodes
             if (ViewModel.IsCustomFunction)
             {
 
-                var customNodeBorder0 = new Border()
+                customNodeBorder0 = new Border()
                 {
                     Name = "customNodeBorder0",
                     Height = 8,
