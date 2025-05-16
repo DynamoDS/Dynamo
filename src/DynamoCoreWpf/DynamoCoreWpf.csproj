@@ -159,6 +159,9 @@
     <None Remove="Packages\SplashScreen\build\index.html" />
     <None Remove="Packages\DynamoHome\build\index.bundle.js" />
     <None Remove="Packages\DynamoHome\build\index.html" />
+    <None Remove="UI\Images\Annotations\frozen-dark-64px.png" />
+    <None Remove="UI\Images\Annotations\frozen-hover-64px.png" />
+    <None Remove="UI\Images\Annotations\frozen-light-64px.png" />
     <None Remove="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
     <None Remove="UI\Images\caret_down_white_48px.png" />
     <None Remove="UI\Images\caret_up_white_48px.png" />
@@ -1163,6 +1166,9 @@
     <Resource Include="UI\Images\Alignment\align_x_distribute.png" />
     <Resource Include="UI\Images\Alignment\align_y_average.png" />
     <Resource Include="UI\Images\Alignment\align_y_distribute.png" />
+    <Resource Include="UI\Images\Annotations\frozen-dark-64px.png" />
+    <Resource Include="UI\Images\Annotations\frozen-hover-64px.png" />
+    <Resource Include="UI\Images\Annotations\frozen-light-64px.png" />
     <Resource Include="UI\Images\Canvas\canvas-button-geometry-scaling.png" />
     <Resource Include="UI\Images\caret_down_white_48px.png" />
     <Resource Include="UI\Images\caret_drop_down.png" />
