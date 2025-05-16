@@ -18,6 +18,7 @@ namespace CoreNodeModels
     [NodeCategory("Math.Graph.Create")]
     [NodeDescription("CurveMapperDescription", typeof(Properties.Resources))]
     [NodeSearchTags("CurveMapperSearchTags", typeof(Properties.Resources))]
+    [InPortTypes("double", "double", "double", "double", "int")]
     public class CurveMapperNodeModel : NodeModel
     {
         private double minLimitX = 0;
