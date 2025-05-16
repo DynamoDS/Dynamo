@@ -231,8 +231,6 @@ namespace Dynamo.UI.Controls
             viewModel = e.NewValue as InPortViewModel;
             viewModel.PropertyChanged += OnPropertyChanged;
 
-            MainGrid.BeginInit();
-
             //Initialize the PortBackgroundColor
             PortBackgroundBorder.Background = viewModel.PortBackgroundColor;
 
@@ -352,8 +350,6 @@ namespace Dynamo.UI.Controls
                     _useLevelSpinnerInit = true;
                 }
             }
-
-            MainGrid.EndInit();
         }
 
         private void OnMouseEnterSnapping(object sender, MouseEventArgs args)
