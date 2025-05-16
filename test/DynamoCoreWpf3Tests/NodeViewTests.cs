@@ -397,12 +397,12 @@ namespace DynamoCoreWpfTests
             // Zoom out, less than 0.4
             wvm.Zoom = 0.3;
             Assert.AreEqual(nodeViewWarningWarningFrozenHidden.zoomGlyphsGrid.Visibility, System.Windows.Visibility.Visible);   // The Grid containing the Glyphs
-            Assert.AreEqual(nodeViewWarningWarningFrozenHidden.nodeColorOverlayZoomOut.Visibility, System.Windows.Visibility.Visible);  // The Color State Border overlay
+            Assert.AreEqual(nodeViewWarningWarningFrozenHidden.nodeColorOverlayZoomOut.Opacity, 0.5);  // The Color State Border overlay
 
             // Zoom in, more than 0.4
             wvm.Zoom = 0.6;
             Assert.AreEqual(nodeViewWarningWarningFrozenHidden.zoomGlyphsGrid.Visibility, System.Windows.Visibility.Collapsed);
-            Assert.AreEqual(nodeViewWarningWarningFrozenHidden.nodeColorOverlayZoomOut.Visibility, System.Windows.Visibility.Collapsed);  
+            Assert.AreEqual(nodeViewWarningWarningFrozenHidden.nodeColorOverlayZoomOut.Opacity, 0);  
         }
 
         [Test]
@@ -433,7 +433,7 @@ namespace DynamoCoreWpfTests
 
             wvm.Zoom = 0.6;
 
-            Assert.AreEqual(fileFromPathNode.nodeColorOverlayZoomOut.Visibility, System.Windows.Visibility.Collapsed);
+            Assert.AreEqual(fileFromPathNode.nodeColorOverlayZoomOut.Opacity, 0);
             Assert.AreEqual(fileFromPathNode.zoomGlyphsGrid.Visibility, System.Windows.Visibility.Collapsed);
         }
 

@@ -332,8 +332,8 @@ namespace Dynamo.Controls
             grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(8) });
             grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(46) });
             grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(24) });
-            grid.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(12) });
+            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto, MinHeight = 24 });
+            grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
             grid.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
             grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
             grid.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star), MinWidth = 10 });
