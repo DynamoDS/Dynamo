@@ -63,7 +63,7 @@ namespace Dynamo.Controls
 
         private Grid _inputGrid = null;
 
-        //Todo add message to mark this as dreprecated or ContentGrid?  Currenlty only one item references ContentGrid.  Most use inputGrid
+        //Todo add message to mark this as deprecated or ContentGrid?  Currently only one item references ContentGrid.  Most use inputGrid
         public Grid inputGrid
         {
             get
