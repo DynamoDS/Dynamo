@@ -89,13 +89,12 @@ namespace Dynamo.Engine
             this.pathManager = pathManager;
             preferenceSettings = preferences;
 
+            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
             PreloadLibraries(pathManager.PreloadedLibraries);
             PopulateBuiltIns();
             PopulateOperators();
             PopulatePreloadLibraries();
-            LibraryLoadFailed += new EventHandler<LibraryLoadFailedEventArgs>(LibraryLoadFailureHandler);
-
-            AppDomain.CurrentDomain.AssemblyResolve += ResolveAssembly;
+            LibraryLoadFailed += new EventHandler<LibraryLoadFailedEventArgs>(LibraryLoadFailureHandler);         
         }
 
         private Assembly ResolveAssembly(object sender, ResolveEventArgs args)
