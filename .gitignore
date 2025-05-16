@@ -64,9 +64,17 @@ launchSettings.json
 ###############
 *_ReSharper*
 
-# IDE #
+# IDEA #
 ###############
 .idea
+
+# VS Code #
+###############
+.vscode/
+
+# GitHub #
+###############
+.github/
 
 #documentation files
 doc/html/
