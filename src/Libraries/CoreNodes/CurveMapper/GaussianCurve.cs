@@ -64,6 +64,8 @@ namespace DSCore.CurveMapper
 
             if (isRender)
             {
+                IsYOutOfRange = A > CanvasSize;
+
                 for (double x = 0; x <= ControlPoint2X; x += renderIncrementX)
                 {
                     double y = CanvasSize - ComputeGaussianY(x, A, mu, sigma);
