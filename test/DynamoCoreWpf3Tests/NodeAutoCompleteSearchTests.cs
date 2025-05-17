@@ -115,10 +115,10 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(0, suggestions.Count());
 
             // Show Node AutoCompleteSearchBar in custom node workspace
-            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch();
             DispatcherUtil.DoEvents();
             var currentWs = View.ChildOfType<WorkspaceView>();
-            Assert.IsTrue(currentWs.NodeAutoCompleteSearchBar.IsOpen);
+            Assert.IsTrue(ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel.IsOpen);
         }
 
         [Test]
@@ -253,14 +253,10 @@ namespace DynamoCoreWpfTests
             }
 
             // Show Node AutoCompleteSearchBar
-            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch();
             DispatcherUtil.DoEvents();
             var currentWs = View.ChildOfType<WorkspaceView>();
-            Assert.IsTrue(currentWs.NodeAutoCompleteSearchBar.IsOpen);
-
-            // Hide Node AutoCompleteSearchBar
-            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Hide);
-            Assert.IsFalse(currentWs.NodeAutoCompleteSearchBar.IsOpen);
+            Assert.IsTrue(ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel.IsOpen);
         }
 
         [Test]
@@ -553,13 +549,13 @@ namespace DynamoCoreWpfTests
             // Get the matching node elements for the specific node port.
             searchViewModel.PopulateAutoCompleteCandidates();
             // Show Node AutoCompleteSearchBar
-            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+            ViewModel.CurrentSpaceViewModel.OnRequestNodeAutoCompleteSearch();
             //remove the parent node
             searchViewModel.dynamoViewModel.CurrentSpaceViewModel.Model.RemoveAndDisposeNode(nodeView.ViewModel.NodeModel);
 
             var currentWs = View.ChildOfType<WorkspaceView>();
             //confirm if the AutoCompleteSearchBar is closed.
-            Assert.IsFalse(currentWs.NodeAutoCompleteSearchBar.IsOpen);
+            Assert.IsFalse(ViewModel.CurrentSpaceViewModel.NodeAutoCompleteSearchViewModel.IsOpen);
 
         }
 
