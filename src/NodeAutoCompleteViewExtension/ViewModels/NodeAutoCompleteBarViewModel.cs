@@ -120,6 +120,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
+
         private IEnumerable<DNADropdownViewModel> dropdownResults;
         /// <summary>
         /// Cluster autocomplete search results.
@@ -708,11 +709,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 // These default suggestions will be populated based on the port type.
                 if (!objectTypeMatchingElements.Any())
                 {
-                    return DefaultAutoCompleteCandidates().Select(x => new SingleResultItem(x));
+                    return DefaultAutoCompleteCandidates().Select(x => new SingleResultItem(x.Model, 1.0));
                 }
                 else
                 {
-                    return objectTypeMatchingElements.Select(x => new SingleResultItem(x));
+                    return objectTypeMatchingElements.Select(x => new SingleResultItem(x, 1.0));
                 }
             }
         }
@@ -874,7 +875,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             Task.Run(() =>
             {
-                if (IsSingleAutocomplete)
+                if (IsSingleAutocomplete || !IsDisplayingMLRecommendation)
                 {
                     FullSingleResults = GetSingleAutocompleteResults().ToList();
                     FullResults = new MLNodeClusterAutoCompletionResponse
@@ -913,7 +914,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     }
 
                     IEnumerable<DNADropdownViewModel> comboboxResults;
-                    if (IsSingleAutocomplete)
+                    if (IsSingleAutocomplete || !IsDisplayingMLRecommendation)
                     {
                         //getting bitmaps from resources necessarily has to be done in the UI thread
                         Dictionary<string, ImageSource> dict = [];
@@ -981,14 +982,22 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
+        private void OnPreferencesChanged()
+        {
+            RaisePropertyChanged(nameof(IsDisplayingMLRecommendation));
+            PopulateAutoComplete();
+        }
+
         private void SubscribeWindowEvents()
         {
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
+            dynamoViewModel.PreferencesViewModel.PreferencesChanged += OnPreferencesChanged;
         }
 
         private void UnsubscribeWindowEvents()
         {
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved -= NodeViewModel_Removed;
+            dynamoViewModel.PreferencesViewModel.PreferencesChanged -= OnPreferencesChanged;
         }
 
         internal void NodeViewModel_Removed(NodeModel node)
