@@ -78,9 +78,10 @@ namespace CoreNodeModels
         private double dynamicCanvasSize = defaultCanvasSize;
         private bool isLocked;
         private bool isResizing;
+        private bool isRestoringUndo;
 
         #region Curves & Point Data
-        
+
         /// <summary> Point data for the 1st control point of the linear curve. </summary>
         [JsonProperty]
         public ControlPointData LinearCurveControlPointData1 { get; private set; }
@@ -334,6 +335,7 @@ namespace CoreNodeModels
                 selectedGraphType = value;
                 GenerateRenderValues();
                 RaisePropertyChanged(nameof(SelectedGraphType));
+                RaisePropertyChanged(nameof(SelectedGraphTypeDescription));
             }
         }
 
@@ -367,9 +369,24 @@ namespace CoreNodeModels
             }
         }
 
+        /// <summary> Indicates whether the node is currently restoring its state during undo. </summary>
+        [JsonIgnore]
+        public bool IsRestoringUndo
+        {
+            get => isRestoringUndo;
+            private set
+            {
+                if (isRestoringUndo != value)
+                {
+                    isRestoringUndo = value;
+                }
+            }
+        }
+
         /// <summary> Indicates that this node supports resizing via UI. </summary>
         [JsonIgnore]
         public override bool IsResizable => true;
+
 
         #region Constructors
 
@@ -980,22 +997,47 @@ namespace CoreNodeModels
                     SavePointData(element, "Gaussian4", GaussianCurveControlPointData4);
                     break;
             }
-        }        
+        }
 
         protected override void DeserializeCore(XmlElement element, SaveContext context)
         {
             base.DeserializeCore(element, context);
 
+            // Suppress undo-related reactions
+            IsRestoringUndo = true;
+
             // Restore the selected graph type
             var typeAttr = element.GetAttribute(nameof(SelectedGraphType));
             if (!string.IsNullOrEmpty(typeAttr) && Enum.TryParse(typeAttr, out GraphTypes parsedType))
-                SelectedGraphType = parsedType;
+            {
+                if (SelectedGraphType != parsedType)
+                {
+                    SelectedGraphType = parsedType;
+                    RaisePropertyChanged(nameof(SelectedGraphType));
+                }
+            }
 
+            // Restore locked state
             if (bool.TryParse(element.GetAttribute(nameof(IsLocked)), out var locked))
-                IsLocked = locked;
+            {
+                if (IsLocked != locked)
+                {
+                    IsLocked = locked;
+                    RaisePropertyChanged(nameof(IsLocked));
+                }
+            }
 
+            // Restore canvas size
             if (double.TryParse(element.GetAttribute(nameof(DynamicCanvasSize)), out var canvasSize))
-                DynamicCanvasSize = canvasSize;
+            {
+                if (DynamicCanvasSize != canvasSize)
+                {
+                    DynamicCanvasSize = canvasSize;
+                    RaisePropertyChanged(nameof(DynamicCanvasSize));
+                }
+            }
+
+            IsRestoringUndo = false;
 
             switch (SelectedGraphType)
             {
