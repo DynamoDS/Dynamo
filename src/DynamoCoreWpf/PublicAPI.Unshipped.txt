@@ -2870,6 +2870,7 @@ Dynamo.ViewModels.PreferencesViewModel.PackagePathsViewModel.get -> Dynamo.ViewM
 Dynamo.ViewModels.PreferencesViewModel.PackagePathsViewModel.set -> void
 Dynamo.ViewModels.PreferencesViewModel.PersistExtensionsIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.PersistExtensionsIsChecked.set -> void
+Dynamo.ViewModels.PreferencesViewModel.PreferencesChanged -> System.Action
 Dynamo.ViewModels.PreferencesViewModel.PreferencesTabs.get -> System.Collections.Generic.Dictionary<string, Dynamo.ViewModels.TabSettings>
 Dynamo.ViewModels.PreferencesViewModel.PreferencesTabs.set -> void
 Dynamo.ViewModels.PreferencesViewModel.PreferencesViewModel(Dynamo.ViewModels.DynamoViewModel dynamoViewModel) -> void

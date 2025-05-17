@@ -11,6 +11,7 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using Dynamo.Configuration;
 using Dynamo.Controls;
@@ -86,7 +87,6 @@ namespace Dynamo.Wpf.Views
 
             ResetGroupStyleForm();
             StoreOriginalCustomGroupStyles();
-            displayConfidenceLevel();
 
             this.viewModel.InitializeGeometryScaling();
 
@@ -172,6 +172,7 @@ namespace Dynamo.Wpf.Views
 
             dynViewModel.PreferencesViewModel.TrustedPathsViewModel.PropertyChanged -= TrustedPathsViewModel_PropertyChanged;
             dynViewModel.CheckCustomGroupStylesChanges(originalCustomGroupStyles);
+            dynViewModel.PreferencesViewModel.OnPreferencesChanged();
             (this.Owner as DynamoView).EnableOverlayBlocker(false);
 
             Close();
@@ -602,22 +603,6 @@ namespace Dynamo.Wpf.Views
                 }
             }
             return value;
-        }       
-
-        private void sliderConfidenceLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            displayConfidenceLevel();
-        }
-
-        private void displayConfidenceLevel()
-        {
-            if (this.lblConfidenceLevel != null && this.lblConfidenceLevelLabelStart != null)
-            {
-                int confidenceLevel = (int)lblConfidenceLevel.Content;
-
-                int left = ((int)lblConfidenceLevel.Content * 3) + getExtraLeftSpace(confidenceLevel);
-                this.lblConfidenceLevel.Margin = new Thickness(left, -15, 0, 0);
-            }
         }
 
         private void ZoomScaleLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
