@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+             xmlns:properties="clr-namespace:Dynamo.NodeAutoComplete.Properties"
              xmlns:local="clr-namespace:Dynamo.PackageManager.UI;assembly=DynamoCoreWpf"
              xmlns:dynconverters="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
              mc:Ignorable="d"
@@ -411,7 +412,8 @@
                       Width="100" Margin="0,0,10,0"
                       Foreground="{StaticResource AutocompletionWindowFontColor}"
                       Visibility="{Binding IsDisplayingMLRecommendation, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
-                      Text="Node Type Match"/>
+                      Text="{x:Static properties:Resources.NodeTypeMatch}"
+                       />
                     <ToggleButton
                       Visibility="{Binding IsDisplayingMLRecommendation, Converter={StaticResource BooleanToVisibilityConverter}}" 
                       x:Name="SwitchButton"
@@ -428,7 +430,7 @@
                                         <Grid>
                                             <Border x:Name="SwitchKnob" Background="{StaticResource NodeTransientOverlayColor}"
                                                     BorderThickness="2" CornerRadius="16" Width="70" HorizontalAlignment="Left">
-                                                <TextBlock x:Name="KnobText" Text="Cluster" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                <TextBlock x:Name="KnobText" Text="{x:Static properties:Resources.Cluster}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                                             </Border>
                                         </Grid>
                                     </Border>
@@ -436,7 +438,7 @@
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsChecked" Value="True">
                                         <Setter TargetName="SwitchKnob" Property="HorizontalAlignment" Value="Right"/>
-                                        <Setter TargetName="KnobText" Property="Text" Value="Single"/>
+                                        <Setter TargetName="KnobText" Property="Text" Value="{x:Static properties:Resources.Single}"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
