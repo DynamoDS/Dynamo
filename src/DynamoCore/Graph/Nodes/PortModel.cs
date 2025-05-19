@@ -9,7 +9,6 @@ using Dynamo.Engine;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes.ZeroTouch;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Logging;
 using Dynamo.Utilities;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
@@ -467,7 +466,7 @@ namespace Dynamo.Graph.Nodes
                 var cd = cusNode.Controller.Definition;
                 var param = cd.Parameters.ElementAt(Index);
                 string type = param.Type.ToString();
-                
+
                 return type;
             }
 

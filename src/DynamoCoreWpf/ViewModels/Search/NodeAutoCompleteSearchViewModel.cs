@@ -627,7 +627,8 @@ namespace Dynamo.ViewModels
         {
             if (PortViewModel.PortModel.PortType == PortType.Input)
             {
-                switch (PortViewModel.PortModel.GetInputPortType())
+                string portType = PortViewModel.PortModel.GetInputPortType();
+                switch (portType)
                 {
                     case "int":
                         FilteredResults = DefaultResults.Where(e => e.Name == "Number Slider" || e.Name == "Integer Slider").ToList();
@@ -642,7 +643,15 @@ namespace Dynamo.ViewModels
                         FilteredResults = DefaultResults.Where(e => e.Name == "Boolean").ToList();
                         break;
                     default:
-                        FilteredResults = DefaultResults.Where(e => e.Name == "String" || e.Name == "Number Slider" || e.Name == "Integer Slider" || e.Name == "Number" || e.Name == "Boolean");
+                        bool isArray = portType != null && Regex.IsMatch(portType, @"(^|\.)List<[^>]+>$|(\[\])$");
+                        if (isArray)
+                        {
+                            FilteredResults = DefaultResults.Where(e => e.Model.FullCategoryName.EndsWith(".List"))?.ToList();
+                        }
+                        else
+                        {
+                            FilteredResults = DefaultResults.Where(e => e.Name == "String" || e.Name == "Number Slider" || e.Name == "Integer Slider" || e.Name == "Number" || e.Name == "Boolean");
+                        }
                         break;
                 }
             }
