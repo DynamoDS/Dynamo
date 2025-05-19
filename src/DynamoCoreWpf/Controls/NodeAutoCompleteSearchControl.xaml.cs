@@ -28,13 +28,33 @@ namespace Dynamo.UI.Controls
     [Obsolete("This class will be removed in a future version of Dynamo")]
     public partial class NodeAutoCompleteSearchControl : IDisposable
     {
-        ListBoxItem HighlightedItem;
+        private double currentX;
+        private ListBoxItem HighlightedItem;
+        private ListBoxItem currentListBoxItem;
+        private static NodeAutoCompleteSearchControl _instance;
 
         internal event Action<ShowHideFlags> RequestShowNodeAutoCompleteSearch;
 
-        double currentX;
 
-        ListBoxItem currentListBoxItem;
+        static internal void PrepareAndShowNodeAutoCompleteSearch(Window window, NodeAutoCompleteSearchViewModel viewModel)
+        {
+            if (_instance is null)
+            {
+                _instance = new NodeAutoCompleteSearchControl(window, viewModel);
+            }
+
+            if (_instance.IsVisible)
+            {
+                Analytics.TrackEvent(Actions.Open, Categories.NodeAutoCompleteOperations);
+                _instance.ViewModel.PortViewModel.Highlight = Visibility.Visible;
+                _instance.ViewModel.PortViewModel.SetupNodeAutoCompleteWindowPlacement(_instance);
+                _instance.ViewModel.PopulateAutoCompleteCandidates();
+            }
+            else
+            {
+                _instance.OnShowNodeAutoCompleteSearch();
+            }
+        }
 
         /// <summary>
         /// Node AutoComplete Search ViewModel DataContext
@@ -46,57 +66,81 @@ namespace Dynamo.UI.Controls
         public NodeAutoCompleteSearchControl()
         {
             InitializeComponent();
-            if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
-            {
-                Application.Current.Deactivated += CurrentApplicationDeactivated;
-                if (Application.Current?.MainWindow != null)
-                {
-                    Application.Current.MainWindow.Closing += NodeAutoCompleteSearchControl_Unloaded;
-                }
-            }
-            HomeWorkspaceModel.WorkspaceClosed += this.CloseAutoCompletion;
         }
 
-        internal NodeAutoCompleteSearchControl(Window window, NodeAutoCompleteSearchViewModel viewModel)
+        private NodeAutoCompleteSearchControl(Window window, NodeAutoCompleteSearchViewModel viewModel)
         {
             Owner = window;
-            DataContext = viewModel;
-            ViewModel.IsOpen = true;
+            DataContext = viewModel;            
             InitializeComponent();
+        }
+
+        private void ResetNodeAutoCompleteSearch()
+        {
+            OnHideNodeAutoCompleteSearch();
+            Close();
+            _instance = null;
+        }
+
+        private void OnMainAppClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ResetNodeAutoCompleteSearch();
+        }
+
+        private void OnWorkspaceClosed()
+        {
+            ResetNodeAutoCompleteSearch();
+        }
+
+        internal void OnHideNodeAutoCompleteSearch()
+        {            
             if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
-                Application.Current.Deactivated += CurrentApplicationDeactivated;
                 if (Application.Current?.MainWindow != null)
                 {
-                    Application.Current.MainWindow.Closing += NodeAutoCompleteSearchControl_Unloaded;
+                    Application.Current.MainWindow.Closing -= OnMainAppClosing;
                 }
             }
-            HomeWorkspaceModel.WorkspaceClosed += this.CloseAutoCompletion;
+
+            HomeWorkspaceModel.WorkspaceClosed -= OnWorkspaceClosed;
+
+            ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
+
+            ViewModel.OnNodeAutoCompleteWindowClosed();
+
+            Hide();
         }
 
-        private void NodeAutoCompleteSearchControl_Unloaded(object sender, System.ComponentModel.CancelEventArgs e)
+        internal void OnShowNodeAutoCompleteSearch()
         {
+            Analytics.TrackEvent(Actions.Open, Categories.NodeAutoCompleteOperations);
+                        
             if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
-                Application.Current.Deactivated -= CurrentApplicationDeactivated;
                 if (Application.Current?.MainWindow != null)
                 {
-                    Application.Current.MainWindow.Closing -= NodeAutoCompleteSearchControl_Unloaded;
+                    Application.Current.MainWindow.Closing += OnMainAppClosing;
                 }
             }
-            HomeWorkspaceModel.WorkspaceClosed -= this.CloseAutoCompletion;
+
+            HomeWorkspaceModel.WorkspaceClosed += OnWorkspaceClosed;
+
+            ViewModel.ParentNodeRemoved += OnParentNodeRemoved;
+
+            ViewModel.PortViewModel.SetupNodeAutoCompleteWindowPlacement(this);
+            ViewModel.OnNodeAutoCompleteWindowOpened();
+
+            Show();
+
+            // Visibility of textbox changed, but text box has not been initialized(rendered) yet.
+            // Call asynchronously focus, when textbox will be ready.
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                SearchTextBox.Focus();
+                ViewModel.PopulateAutoCompleteCandidates();
+            }), DispatcherPriority.Loaded);
         }
 
-        private void CurrentApplicationDeactivated(object sender, EventArgs e)
-        {
-            OnRequestHideNodeAutoCompleteSearch();
-        }
-
-        private void OnRequestHideNodeAutoCompleteSearch()
-        {
-            this.ViewModel.IsOpen = false;
-            this.Close();
-        }
 
         private void OnSearchTextBoxTextChanged(object sender, TextChangedEventArgs e)
         {
@@ -119,7 +163,7 @@ namespace Dynamo.UI.Controls
             if (!(sender is ListBoxItem listBoxItem) || e.OriginalSource is Thumb) return;
 
             ExecuteSearchElement(listBoxItem);
-            OnRequestHideNodeAutoCompleteSearch();
+            OnHideNodeAutoCompleteSearch();
             e.Handled = true;
         }
 
@@ -182,7 +226,11 @@ namespace Dynamo.UI.Controls
         {
             if (!(sender is FrameworkElement fromSender)) return;
 
-            HighlightedItem.IsSelected = false;
+            if (HighlightedItem != null)
+            {
+                HighlightedItem.IsSelected = false;
+            }
+            
             toolTipPopup.DataContext = fromSender.DataContext;
             toolTipPopup.IsOpen = true;
             confidenceToolTip.IsOpen = false;
@@ -215,47 +263,13 @@ namespace Dynamo.UI.Controls
             ViewModel.dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Res.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
         }
 
-        private void OnNodeAutoCompleteSearchControlVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            bool visible = (bool)e.NewValue;
-
-            if (ViewModel?.PortViewModel != null)
-            {
-                ViewModel.PortViewModel.Highlight = visible ? Visibility.Visible : Visibility.Collapsed;
-            }
-                
-            // If visibility  is false, then stop processing it.
-            if (!visible)
-            {
-                return;
-            }
-
-            // When launching this control, always start with clear search term.
-            SearchTextBox.Clear();
-
-            Analytics.TrackEvent(
-            Dynamo.Logging.Actions.Open,
-            Dynamo.Logging.Categories.NodeAutoCompleteOperations);
-
-            // Visibility of textbox changed, but text box has not been initialized(rendered) yet.
-            // Call asynchronously focus, when textbox will be ready.
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                SearchTextBox.Focus();
-                ViewModel.PopulateAutoCompleteCandidates();
-            }), DispatcherPriority.Loaded);
-
-            ViewModel.ParentNodeRemoved += OnParentNodeRemoved;
-        }
-
         //Removes nodeautocomplete menu when the associated parent node is removed.
         private void OnParentNodeRemoved(NodeModel node)
         {
             NodeModel parent_node = ViewModel.PortViewModel?.PortModel.Owner;
             if (node == parent_node)
             {
-                OnRequestHideNodeAutoCompleteSearch();
-                ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
+                OnHideNodeAutoCompleteSearch();                
             }
         }
 
@@ -325,13 +339,13 @@ namespace Dynamo.UI.Controls
             switch (key)
             {
                 case Key.Escape:
-                    OnRequestHideNodeAutoCompleteSearch();
+                    OnHideNodeAutoCompleteSearch();
                     break;
                 case Key.Enter:
-                    if (HighlightedItem != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
+                    if (HighlightedItem != null)
                     {
                         ExecuteSearchElement(HighlightedItem);
-                        OnRequestHideNodeAutoCompleteSearch();
+                        OnHideNodeAutoCompleteSearch();
                     }
                     break;
                 case Key.Up:
@@ -393,15 +407,9 @@ namespace Dynamo.UI.Controls
             ViewModel.dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Dynamo.Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
         }
 
-        internal void CloseAutocompletionWindow(object sender, RoutedEventArgs e)
+        internal void CloseAutoCompleteWindow(object sender, RoutedEventArgs e)
         {
-            CloseAutoCompletion();
-        }
-
-        internal void CloseAutoCompletion()
-        {
-            OnRequestHideNodeAutoCompleteSearch();
-            ViewModel?.OnNodeAutoCompleteWindowClosed();
+            OnHideNodeAutoCompleteSearch();
         }
 
         /// <summary>
@@ -455,7 +463,7 @@ namespace Dynamo.UI.Controls
         [Obsolete("This method will be removed in a future version of Dynamo")]
         public void Dispose()
         {
-            NodeAutoCompleteSearchControl_Unloaded(this,null);
+            OnHideNodeAutoCompleteSearch();
         }
     }
 }
