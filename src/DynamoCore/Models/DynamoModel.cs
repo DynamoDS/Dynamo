@@ -813,52 +813,51 @@ namespace Dynamo.Models
             var userCommonPackageFolder = pathManager.CommonPackageDirectory;
             AddPackagePath(userCommonPackageFolder);
 
-                // Load Python Template
-                // The loading pattern is conducted in the following order
-                // 1) Set from DynamoSettings.XML
-                // 2) Set from API via the configuration file
-                // 3) Set from PythonTemplate.py located in 'C:\Users\USERNAME\AppData\Roaming\Dynamo\Dynamo Core\2.X'
-                // 4) Set from OOTB hard-coded default template
+            // Load Python Template
+            // The loading pattern is conducted in the following order
+            // 1) Set from DynamoSettings.XML
+            // 2) Set from API via the configuration file
+            // 3) Set from PythonTemplate.py located in 'C:\Users\USERNAME\AppData\Roaming\Dynamo\Dynamo Core\2.X'
+            // 4) Set from OOTB hard-coded default template
 
-                // If a custom python template path doesn't already exists in the DynamoSettings.xml
-                if (string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) ||
-                    !File.Exists(PreferenceSettings.PythonTemplateFilePath) && !IsServiceMode)
+            // If a custom python template path doesn't already exists in the DynamoSettings.xml
+            if (string.IsNullOrEmpty(PreferenceSettings.PythonTemplateFilePath) ||
+                !File.Exists(PreferenceSettings.PythonTemplateFilePath) && !IsServiceMode)
+            {
+                // To supply a custom python template host integrators should supply a 'DefaultStartConfiguration' config file
+                // or create a new struct that inherits from 'DefaultStartConfiguration' making sure to set the 'PythonTemplatePath'
+                // while passing the config to the 'DynamoModel' constructor.
+                if (config is DefaultStartConfiguration)
                 {
-                    // To supply a custom python template host integrators should supply a 'DefaultStartConfiguration' config file
-                    // or create a new struct that inherits from 'DefaultStartConfiguration' making sure to set the 'PythonTemplatePath'
-                    // while passing the config to the 'DynamoModel' constructor.
-                    if (config is DefaultStartConfiguration)
+                    var configurationSettings = (DefaultStartConfiguration)config;
+                    var templatePath = configurationSettings.PythonTemplatePath;
+
+                    // If a custom python template path was set in the config apply that template
+                    if (!string.IsNullOrEmpty(templatePath) && File.Exists(templatePath))
                     {
-                        var configurationSettings = (DefaultStartConfiguration)config;
-                        var templatePath = configurationSettings.PythonTemplatePath;
-
-                        // If a custom python template path was set in the config apply that template
-                        if (!string.IsNullOrEmpty(templatePath) && File.Exists(templatePath))
-                        {
-                            PreferenceSettings.PythonTemplateFilePath = templatePath;
-                        Logger.Log(Resources.PythonTemplateDefinedByHost + " : " + PreferenceSettings.PythonTemplateFilePath);
-                        }
-
-                        // Otherwise fallback to the default
-                        else
-                        {
-                            SetDefaultPythonTemplate();
-                        }
+                        PreferenceSettings.PythonTemplateFilePath = templatePath;
+                        Logger.Log(Resources.PythonTemplateDefinedByHost + " : " +
+                                   PreferenceSettings.PythonTemplateFilePath);
                     }
 
+                    // Otherwise fallback to the default
                     else
                     {
-                        // Fallback to the default
                         SetDefaultPythonTemplate();
                     }
                 }
-
                 else
                 {
-                    // A custom python template path already exists in the DynamoSettings.xml
-                    Logger.Log(Resources.PythonTemplateUserFile + " : " + PreferenceSettings.PythonTemplateFilePath);
+                    // Fallback to the default
+                    SetDefaultPythonTemplate();
                 }
-            
+            }
+            else
+            {
+                // A custom python template path already exists in the DynamoSettings.xml
+                Logger.Log(Resources.PythonTemplateUserFile + " : " + PreferenceSettings.PythonTemplateFilePath);
+            }
+
             pathManager.Preferences = PreferenceSettings;
             PreferenceSettings.RequestUserDataFolder += pathManager.GetUserDataFolder;
 
@@ -930,8 +929,7 @@ namespace Dynamo.Models
 
             AuthenticationManager = new AuthenticationManager(config.AuthProvider);
   
-            Logger.Log(string.Format("Dynamo -- Build {0}",
-                                        Assembly.GetExecutingAssembly().GetName().Version));
+            Logger.Log($"Dynamo -- Build {Assembly.GetExecutingAssembly().GetName().Version}");
 
             DynamoModel.OnRequestUpdateLoadBarStatus(new SplashScreenLoadEventArgs(Resources.SplashScreenLoadNodeLibrary, 50));
             InitializeNodeLibrary();
@@ -1012,7 +1010,7 @@ namespace Dynamo.Models
             //Disposed writer if it is in file system mode so that the index files can be used by other processes (potentially a second Dynamo session)
             if (LuceneUtility.startConfig.StorageType == LuceneSearchUtility.LuceneStorage.FILE_SYSTEM)
             {
-                    LuceneUtility.DisposeWriter();
+                LuceneUtility.DisposeWriter();
             }
             
 
@@ -1656,10 +1654,8 @@ namespace Dynamo.Models
             // Initialize all nodes inside of this assembly.
             InitializeIncludedNodes();
 
-            List<TypeLoadData> modelTypes;
-            List<TypeLoadData> migrationTypes;
             Loader.LoadNodeModelsAndMigrations(pathManager.NodeDirectories,
-                Context, out modelTypes, out migrationTypes);
+                Context, out var modelTypes, out var migrationTypes);
 
             LoadNodeModels(modelTypes, false);
 
