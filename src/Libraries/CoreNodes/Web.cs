@@ -13,14 +13,7 @@ namespace DSCore
         public static string WebRequestByUrl(string url)
         {
             // Prevent the node from executing in no network mode.
-            var session = ExecutionEvents.ActiveSession;
-            if (session != null)
-            {
-                if ((bool)session.GetParameterValue(ParameterKeys.NoNetworkMode))
-                {
-                    throw new Exception(Properties.Resources.WebRequestOfflineWarning);
-                }
-            }
+            ExecutionSessionHelper.ThrowIfNoNetworkMode();
 
             if (string.IsNullOrEmpty(url))
             {

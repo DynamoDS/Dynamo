@@ -70,7 +70,7 @@ namespace DSCore.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to • Min and Max values must not be the same..
+        ///   Looks up a localized string similar to • Min and Max values must be different..
         /// </summary>
         internal static string CurveMapperEqualMinMaxWarning {
             get {
@@ -435,15 +435,6 @@ namespace DSCore.Properties {
         internal static string WebRequestNullUrlMessage {
             get {
                 return ResourceManager.GetString("WebRequestNullUrlMessage", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to The Web Request node is unavailable in No Network mode..
-        /// </summary>
-        internal static string WebRequestOfflineWarning {
-            get {
-                return ResourceManager.GetString("WebRequestOfflineWarning", resourceCulture);
             }
         }
         

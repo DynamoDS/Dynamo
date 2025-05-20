@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using Dynamo.Events;
 
 namespace Dynamo.Session
 {
@@ -83,8 +85,29 @@ namespace Dynamo.Session
         public static readonly string Logger = nameof(Logger);
 
         /// <summary>
-        /// 
+        /// True if Dynamo is used in offline mode.
         /// </summary>
         public static readonly string NoNetworkMode = nameof(NoNetworkMode);
+    }
+
+    public static class ExecutionSessionHelper
+    {
+        /// <summary>
+        /// Throw exception in no-network mode.
+        /// This helper method can be used to display a warning on a node that
+        /// needs to be prevented from running when no-network mode is enabled.
+        /// </summary>
+        /// <exception cref="Exception"></exception>
+        public static void ThrowIfNoNetworkMode()
+        {
+            var session = ExecutionEvents.ActiveSession;
+            if (session != null)
+            {
+                if ((bool)session.GetParameterValue(ParameterKeys.NoNetworkMode))
+                {
+                    throw new Exception(DynamoServices.Properties.Resources.WebRequestOfflineWarning);
+                }
+            }
+        }
     }
 }

@@ -1347,6 +1347,10 @@ namespace Dynamo.ViewModels
         public TrustedPathViewModel TrustedPathsViewModel { get; set; }
 
         private bool noNetworkMode;
+
+        /// <summary>
+        /// True if Dynamo is used in offline mode.
+        /// </summary>
         public bool NoNetworkMode
         {
             get => noNetworkMode;
