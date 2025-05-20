@@ -518,9 +518,9 @@ namespace Dynamo.ViewModels
             }
         }
 
-        private SmartObservableCollection<string> recentFiles =
-            new SmartObservableCollection<string>();
-        public SmartObservableCollection<string> RecentFiles
+        private ObservableCollection<string> recentFiles =
+            new ObservableCollection<string>();
+        public ObservableCollection<string> RecentFiles
         {
             get { return recentFiles; }
             set
@@ -1128,7 +1128,7 @@ namespace Dynamo.ViewModels
 
         private void InitializeRecentFiles()
         {
-            this.RecentFiles = new SmartObservableCollection<string>(model.PreferenceSettings.RecentFiles);
+            this.RecentFiles = new ObservableCollection<string>(model.PreferenceSettings.RecentFiles);
             this.RecentFiles.CollectionChanged += (sender, args) =>
             {
                 model.PreferenceSettings.RecentFiles = this.RecentFiles.ToList();
