@@ -933,7 +933,6 @@ namespace Dynamo.ViewModels
             var matchingAnnotation = Annotations.First(x => x.AnnotationModel == annotation);
             Annotations.Remove(matchingAnnotation);
             matchingAnnotation.Dispose();
-           
         }
 
         private void Model_AnnotationsCleared()
@@ -949,11 +948,6 @@ namespace Dynamo.ViewModels
         {
             lock (Nodes)
             {
-                foreach (var nodeViewModel in Nodes)
-                {
-                    this.unsubscribeNodeEvents(nodeViewModel);
-                    nodeViewModel.Dispose();
-                }
                 Nodes.Clear();
             }
             Errors.Clear();
