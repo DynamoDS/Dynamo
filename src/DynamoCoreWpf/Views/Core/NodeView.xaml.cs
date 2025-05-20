@@ -153,6 +153,8 @@ namespace Dynamo.Controls
         private Rectangle nodeBackground;
         private ItemsControl outputPortControl;
         private Button optionsButton;
+        private Image imageControl;
+        private DockPanel nodeHeaderContent;
 
         //View items referenced outside of NodeView internal to DynamoCoreWPF previously from xaml
         //TODO do we rationalize the capitalization?
@@ -344,7 +346,8 @@ namespace Dynamo.Controls
             nodeBackground = new Rectangle()
             {
                 Name = "nodeBackground",
-                Fill = _darkGreyBrush
+                Fill = _darkGreyBrush,
+                Visibility = Visibility.Collapsed
             };
 
             Grid.SetRow(nodeBackground, 2);
@@ -361,6 +364,7 @@ namespace Dynamo.Controls
                 CornerRadius = new CornerRadius(8, 8, 0, 0),
                 Background = _darkMidGreyBrush,
                 IsHitTestVisible = true,
+                Visibility = Visibility.Collapsed
             };
 
             Grid.SetRow(nameBackground, 1);
@@ -444,11 +448,12 @@ namespace Dynamo.Controls
             dynamoToolTip.Content = tooltipStackPanel;
             nameBackground.ToolTip = dynamoToolTip;
 
-            var nodeHeaderContent = new DockPanel()
+            nodeHeaderContent = new DockPanel()
             {
                 Name = "nodeHeaderContent",
                 VerticalAlignment = VerticalAlignment.Top,
                 Margin = new Thickness(6),
+                Visibility = Visibility.Collapsed
             };
 
             Grid.SetRow(nodeHeaderContent, 1);
@@ -567,7 +572,7 @@ namespace Dynamo.Controls
             });
 
             dynamoRenameToolTip.Content = toolTipTextBlock;
-            renameIndicator.ToolTip = dynamoToolTip;
+            renameIndicator.ToolTip = dynamoRenameToolTip;
 
             #endregion
 
@@ -578,7 +583,8 @@ namespace Dynamo.Controls
                 Name = "inputPortControl",
                 Margin = new Thickness(-25, 3, 0, 0),
                 VerticalAlignment = VerticalAlignment.Top,
-                HorizontalContentAlignment = HorizontalAlignment.Stretch
+                HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                Visibility = Visibility.Collapsed
             };
 
             inputPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("InPorts"));
@@ -592,6 +598,7 @@ namespace Dynamo.Controls
                 Margin = new Thickness(0, 3, -24, 5),
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalContentAlignment = HorizontalAlignment.Stretch,
+                Visibility = Visibility.Collapsed
             };
 
             outputPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("OutPorts"));
@@ -1158,6 +1165,17 @@ namespace Dynamo.Controls
             Panel.SetZIndex(this, 1);
         }
 
+        private void SetNodeBackgroundHeaderAndPortsVisible()
+        {
+            
+            nodeBackground.Visibility = Visibility.Visible;
+            nameBackground.Visibility = Visibility.Visible;
+            nodeHeaderContent.Visibility = Visibility.Visible;
+            inputPortControl.Visibility = Visibility.Visible;
+            outputPortControl.Visibility = Visibility.Visible;
+
+        }
+
         private static Style GetNodeButtonStyle()
         {
             // Create the Style
@@ -1472,6 +1490,44 @@ namespace Dynamo.Controls
             if (null != ViewModel) return;
 
             ViewModel = e.NewValue as NodeViewModel;
+
+            //Todo move to static resource file
+            //Todo handle cases where Name is the same for multiple nodes (ie Point.ByCoordinate)
+            var path = "C:\\Temp\\NodeCache\\" + ViewModel.Name + ".png";
+            if (System.IO.File.Exists(path))
+            {
+                var bitmap = new BitmapImage(new Uri(path, UriKind.Absolute));
+
+                // Create the Image control
+                imageControl = new Image
+                {
+                    Source = bitmap,
+                    Width = bitmap.PixelWidth,   // Set width to pixel width
+                    Height = bitmap.PixelHeight, // Set height to pixel height
+                    Stretch = System.Windows.Media.Stretch.None // Prevent scaling
+                };
+
+                Grid.SetRow(imageControl, 1);
+                Grid.SetRowSpan(imageControl, 4);
+                Grid.SetColumnSpan(imageControl, 3);
+
+                grid.Children.Add(imageControl);
+
+                Dispatcher.CurrentDispatcher.BeginInvoke(() =>
+                {
+                    if (imageControl != null)
+                    {
+                        grid.Children.Remove(imageControl);
+                        imageControl = null;
+
+                        SetNodeBackgroundHeaderAndPortsVisible();
+                    }
+                }, DispatcherPriority.Input);
+            }
+            else
+            {
+                SetNodeBackgroundHeaderAndPortsVisible();
+            }
 
             //Set NodeIcon
             if (ViewModel.ImageSource == null)
@@ -1885,6 +1941,16 @@ namespace Dynamo.Controls
 
         private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
         {
+            if (imageControl != null)
+            {
+                grid.Dispatcher.Invoke(() =>
+                {
+                    grid.Children.Remove(imageControl);
+                    imageControl = null;
+
+                    SetNodeBackgroundHeaderAndPortsVisible();
+                });
+            }
             // if the node is located under "Hide preview bubbles" menu item and the item is clicked,
             // ViewModel.DynamoViewModel.ShowPreviewBubbles will be updated AFTER node mouse enter event occurs
             // so, wait while ShowPreviewBubbles binding updates value
