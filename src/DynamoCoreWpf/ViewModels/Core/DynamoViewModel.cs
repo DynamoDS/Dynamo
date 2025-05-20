@@ -1832,7 +1832,7 @@ namespace Dynamo.ViewModels
 
         /// <summary>
         /// Adds the path to the list of recent files.
-        /// We don't do anyything if the file is already added and is at the first place,
+        /// We don't do anything if the file is already added and is at the first place,
         /// we move the file to the start of the list if it is already present,
         /// or add it to the start of the list if it is not present.
         /// Every other event, except Move will refresh all the recent files.
