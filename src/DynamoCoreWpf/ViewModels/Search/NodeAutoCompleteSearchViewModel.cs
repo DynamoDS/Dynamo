@@ -45,6 +45,7 @@ namespace Dynamo.ViewModels
         private bool displayLowConfidence;
         private const string nodeAutocompleteMLEndpoint = "MLNodeAutocomplete";
         private const string nodeClusterAutocompleteMLEndpoint = "MLNodeClusterAutocomplete";
+        internal bool IsOpen { get; set; }
 
         // Lucene search utility to perform indexing operations just for NodeAutocomplete.
         internal LuceneSearchUtility LuceneUtility
@@ -621,12 +622,14 @@ namespace Dynamo.ViewModels
 
         internal void OnNodeAutoCompleteWindowOpened()
         {
+            IsOpen = true;
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
             PortViewModel.Highlight = System.Windows.Visibility.Visible;
         }
 
         internal void OnNodeAutoCompleteWindowClosed()
         {
+            IsOpen = false;
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved -= NodeViewModel_Removed;
             PortViewModel.Highlight = System.Windows.Visibility.Collapsed;
         }
