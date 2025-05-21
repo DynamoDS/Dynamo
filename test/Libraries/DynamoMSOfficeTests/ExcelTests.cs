@@ -1452,19 +1452,19 @@ namespace Dynamo.Tests
 
         [Test]
         [Category("UnitTests")]
-        public static void OpemXML_ImportExcelTestWhenHavingEmptyRow()
+        public static void OpenXML_ImportExcelTestWhenHavingEmptyRow()
         {
             // The spreadsheet OpenXML-ImportExcelEmptyRows contains empty rows
             string filePath = Path.Combine(TestDirectory, @"core\importExport\OpenXML-ImportExcelEmptyRows.xlsx");
             var data = Data.OpenXMLImportExcel(filePath, "Sheet1", 0, 0, false);
 
-            //Validates tha the spreadsheet was imported successfully (not sending any exception)
+            //Validates that the spreadsheet was imported successfully (not sending any exception)
             Assert.That(data.Length > 0);
         }
 
         [Test]
         [Category("UnitTests")]
-        public static void OpemXML_ExportExcelTestWhenHavingEmptyRow()
+        public static void OpenXML_ExportExcelTestWhenHavingEmptyRow()
         {
             //The spreadsheet OpenXML-ExportExcelEmptyRows.xlsx contains at the first rows text but later numbers 
             string filePath = Path.Combine(TestDirectory, @"core\importExport\OpenXML-ExportExcelEmptyRows.xlsx");
