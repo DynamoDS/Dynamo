@@ -1449,7 +1449,6 @@ namespace Dynamo.Tests
             Assert.AreEqual(cellValueWithFormula, cellValueWithoutFormula);
         }
 
-
         [Test]
         [Category("UnitTests")]
         public static void OpenXML_ImportExcelTestWhenHavingEmptyRow()
