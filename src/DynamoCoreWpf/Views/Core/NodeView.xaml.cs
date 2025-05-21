@@ -519,7 +519,7 @@ namespace Dynamo.Controls
                 Background = Brushes.Transparent,
             };
 
-            SetValue(Panel.ZIndexProperty, 5);
+            Canvas.SetZIndex(renameIndicator, 5);
             renameIndicator.SetValue(DockPanel.DockProperty, Dock.Right);
 
             // Create and configure the Ellipse
@@ -568,7 +568,7 @@ namespace Dynamo.Controls
             });
 
             dynamoRenameToolTip.Content = toolTipTextBlock;
-            renameIndicator.ToolTip = dynamoToolTip;
+            nodeRenamedBlueDot.ToolTip = dynamoRenameToolTip;
 
             #endregion
 
