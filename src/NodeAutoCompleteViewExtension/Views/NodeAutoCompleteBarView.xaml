@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-             xmlns:properties="clr-namespace:Dynamo.NodeAutoComplete.Properties"
              xmlns:local="clr-namespace:Dynamo.PackageManager.UI;assembly=DynamoCoreWpf"
              xmlns:dynconverters="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
              mc:Ignorable="d"
@@ -15,6 +14,7 @@
              ResizeMode="NoResize"
              Width="600"
              Height="45"
+             PreviewKeyDown="OnAutoCompleteKeyDown"
         >
     <Window.Resources>
         <ResourceDictionary>
@@ -51,7 +51,7 @@
                 Panel.ZIndex="1"
                 IsHitTestVisible="False" />
 
-        <Grid PreviewKeyDown="OnAutoCompleteKeyDown">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="45" />
             </Grid.RowDefinitions>
@@ -78,7 +78,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Button
                     x:Name="gripHandle"
@@ -150,7 +150,8 @@
                             SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
                             Width="240"
                             ItemsSource="{Binding DropdownResults, NotifyOnTargetUpdated=True}"
-                            Visibility="{Binding ResultsLoaded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                            Visibility="{Binding ResultsLoaded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            TabIndex="0"
                         >
                             <ComboBox.Style>
                                 <Style BasedOn="{StaticResource PackageManagerSmallComboBox}" TargetType="ComboBox">
@@ -194,7 +195,8 @@
                 </Border>
                 <Button x:Name="btnPrev"
                         Click="PrevButton_OnClick"
-                        Grid.Column="3">
+                        Grid.Column="3"
+                        TabIndex="1">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="Template">
@@ -245,7 +247,8 @@
                 </StackPanel>
                 <Button x:Name="btnNext"
                         Click="NextButton_OnClick"
-                        Grid.Column="5">
+                        Grid.Column="5"
+                        TabIndex="2">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="Template">
@@ -285,7 +288,8 @@
                 </Button>
                 <Button x:Name="btnCheck"
                         Click="ConfirmAutoCompleteWindow"
-                        Grid.Column="6">
+                        Grid.Column="6"
+                        TabIndex="3">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="Template">
@@ -326,7 +330,8 @@
                 </Button>
                 <Button x:Name="btnClose"
                         Click="CloseAutoCompleteWindow"
-                        Grid.Column="7">
+                        Grid.Column="7"
+                        TabIndex="4">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="Template">
@@ -365,9 +370,38 @@
                         </Style>
                     </Button.Style>
                 </Button>
+                <Grid Grid.Column="8">
+                    <ToggleButton x:Name="SwitchButton" Width="100" Height="36" FocusVisualStyle="{x:Null}"
+                      HorizontalAlignment="Center" VerticalAlignment="Center"
+                      Background="{StaticResource DarkGreyBrush}" BorderBrush="DarkGray" BorderThickness="2"
+                      IsChecked="{Binding IsSingleAutocomplete, Mode=TwoWay}"
+                      IsEnabled="{Binding ResultsLoaded}" TabIndex="5">
+                        <ToggleButton.Template>
+                            <ControlTemplate TargetType="ToggleButton">
+                                <Grid Width="100" Height="32">
+                                    <Border x:Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="2" CornerRadius="16">
+                                        <Grid>
+                                            <Border x:Name="SwitchKnob" Background="{StaticResource NodeTransientOverlayColor}"
+                                                    BorderThickness="2" CornerRadius="16" Width="70" HorizontalAlignment="Left">
+                                                <TextBlock x:Name="KnobText" Text="Cluster" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter TargetName="SwitchKnob" Property="HorizontalAlignment" Value="Right"/>
+                                        <Setter TargetName="KnobText" Property="Text" Value="Single"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </ToggleButton.Template>
+                    </ToggleButton>
+                </Grid>
                 <Button x:Name="btnDock"
                         Click="DockButton_OnClick"
-                        Grid.Column="8">
+                        Grid.Column="9"
+                        TabIndex="6">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="Template">
@@ -406,45 +440,6 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                <Grid Grid.Column="9">
-                    <TextBlock
-                      VerticalAlignment="Center"
-                      Width="100" Margin="0,0,10,0"
-                      Foreground="{StaticResource AutocompletionWindowFontColor}"
-                      Visibility="{Binding IsDisplayingMLRecommendation, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
-                      Text="{x:Static properties:Resources.NodeTypeMatch}"
-                       />
-                    <ToggleButton
-                      Visibility="{Binding IsDisplayingMLRecommendation, Converter={StaticResource BooleanToVisibilityConverter}}" 
-                      x:Name="SwitchButton"
-                      Width="100" Height="36" Margin="0,0,10,0"
-                      FocusVisualStyle="{x:Null}"
-                      HorizontalAlignment="Center" VerticalAlignment="Center"
-                      Background="{StaticResource DarkGreyBrush}" BorderBrush="DarkGray" BorderThickness="2"
-                      IsChecked="{Binding IsSingleAutocomplete, Mode=TwoWay}"
-                      IsEnabled="{Binding ResultsLoaded}">
-                        <ToggleButton.Template>
-                            <ControlTemplate TargetType="ToggleButton">
-                                <Grid Width="100" Height="32">
-                                    <Border x:Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="2" CornerRadius="16">
-                                        <Grid>
-                                            <Border x:Name="SwitchKnob" Background="{StaticResource NodeTransientOverlayColor}"
-                                                    BorderThickness="2" CornerRadius="16" Width="70" HorizontalAlignment="Left">
-                                                <TextBlock x:Name="KnobText" Text="{x:Static properties:Resources.Cluster}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                        </Grid>
-                                    </Border>
-                                </Grid>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsChecked" Value="True">
-                                        <Setter TargetName="SwitchKnob" Property="HorizontalAlignment" Value="Right"/>
-                                        <Setter TargetName="KnobText" Property="Text" Value="{x:Static properties:Resources.Single}"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </ToggleButton.Template>
-                    </ToggleButton>
-                </Grid>
             </Grid>
         </Grid>
     </Grid>
