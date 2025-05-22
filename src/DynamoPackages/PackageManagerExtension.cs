@@ -2,7 +2,11 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
@@ -15,6 +19,25 @@ namespace Dynamo.PackageManager
 {
     public class PackageManagerExtension : IExtension, ILogSource, IExtensionSource 
     {
+        private class NoNetworkModeHandler : DelegatingHandler
+        {
+            public NoNetworkModeHandler() : base(new HttpClientHandler())
+            {
+            }
+
+            protected override Task<HttpResponseMessage> SendAsync(
+                HttpRequestMessage request, CancellationToken cancellationToken)
+            {
+                var json = "{\"success\":false,\"message\":\"Application is in offline mode\",\"content\":null}";
+                var response = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+                {
+                    Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"),
+                    ReasonPhrase = "Offline Mode Enabled"
+                };
+                return Task.FromResult(response);
+            }
+        }
+
         #region Fields & Properties
 
         private Action<Assembly> RequestLoadNodeLibraryHandler;
@@ -159,9 +182,9 @@ namespace Dynamo.PackageManager
 
             noNetworkMode = startupParams.NoNetworkMode;
 
-            PackageManagerClient = new PackageManagerClient(
-                new GregClient(startupParams.AuthProvider, url),
-                uploadBuilder, packageUploadDirectory, noNetworkMode);
+            var client = noNetworkMode ? new GregClient(startupParams.AuthProvider, url,
+                new HttpClient(new NoNetworkModeHandler())) : new GregClient(startupParams.AuthProvider, url);
+            PackageManagerClient = new PackageManagerClient(client, uploadBuilder, packageUploadDirectory, noNetworkMode);
 
 
             //we don't ask dpm for the compatibility map in offline mode.
