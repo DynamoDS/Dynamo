@@ -1586,16 +1586,6 @@ namespace Dynamo.ViewModels
             dynamoViewModel.Model.ResetPreferenceItemLocation(Core.PathManager.PreferenceItem.Backup);
         }
 
-        /// <summary>
-        ///     Event that is fired when a node is removed from the workspace.
-        /// </summary>
-        public event Action PreferencesChanged;
-        internal void OnPreferencesChanged()
-        {
-            var handler = PreferencesChanged;
-            if (handler != null) handler();
-        }
-
         public event EventHandler<PythonTemplatePathEventArgs> RequestShowFileDialog;
         public virtual void OnRequestShowFileDialog(object sender, PythonTemplatePathEventArgs e)
         {

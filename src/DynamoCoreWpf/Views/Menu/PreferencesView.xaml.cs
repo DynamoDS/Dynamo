@@ -11,7 +11,6 @@ using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media;
 using Dynamo.Configuration;
 using Dynamo.Controls;
@@ -19,7 +18,6 @@ using Dynamo.Core;
 using Dynamo.Logging;
 using Dynamo.UI;
 using Dynamo.ViewModels;
-using static Dynamo.ViewModels.SearchViewModel;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.Wpf.Views
@@ -172,7 +170,6 @@ namespace Dynamo.Wpf.Views
 
             dynViewModel.PreferencesViewModel.TrustedPathsViewModel.PropertyChanged -= TrustedPathsViewModel_PropertyChanged;
             dynViewModel.CheckCustomGroupStylesChanges(originalCustomGroupStyles);
-            dynViewModel.PreferencesViewModel.OnPreferencesChanged();
             (this.Owner as DynamoView).EnableOverlayBlocker(false);
 
             Close();

@@ -346,6 +346,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
         internal MLNodeClusterAutoCompletionResponse FullResults { private set; get; }
         internal List<SingleResultItem> FullSingleResults { set; get; }
+        private Guid LastRequestGuid;
 
         /// <summary>
         /// Constructor
@@ -873,16 +874,24 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 DropdownResults = null;
             }
 
+            //this should run on the UI thread, so thread safety is not a concern
+            LastRequestGuid = Guid.NewGuid();
+            var myRequest = LastRequestGuid;
+
+            //start a background thread to make the http request
             Task.Run(() =>
             {
+                List<SingleResultItem> fullSingleResults = null;
+                MLNodeClusterAutoCompletionResponse fullResults = null;
+
                 if (IsSingleAutocomplete || !IsDisplayingMLRecommendation)
                 {
-                    FullSingleResults = GetSingleAutocompleteResults().ToList();
-                    FullResults = new MLNodeClusterAutoCompletionResponse
+                    fullSingleResults = GetSingleAutocompleteResults().ToList();
+                    fullResults = new MLNodeClusterAutoCompletionResponse
                     {
                         Version = "0.0",
-                        NumberOfResults = FullSingleResults.Count,
-                        Results = FullSingleResults.Select(x => new ClusterResultItem
+                        NumberOfResults = fullSingleResults.Count,
+                        Results = fullSingleResults.Select(x => new ClusterResultItem
                         {
                             Description = x.Description,
                             Title = x.Description,  
@@ -901,17 +910,26 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 }
                 else
                 {
-                    FullResults = GetGenericAutocompleteResult<MLNodeClusterAutoCompletionResponse>(nodeClusterAutocompleteMLEndpoint);
+                    fullResults = GetGenericAutocompleteResult<MLNodeClusterAutoCompletionResponse>(nodeClusterAutocompleteMLEndpoint);
                 }
 
                 dynamoViewModel.UIDispatcher.BeginInvoke(() =>
                 {
+                    if(LastRequestGuid != myRequest)
+                    {
+                        //a newer request came, we're no longer interested in the results of this one
+                        //only latest request has the right to be committed to the UI and internal data structures
+                        return;
+                    }
                     if (!IsOpen)
                     {
                         // view disappeared while the background thread was waiting for the server response.
                         // Ignore the results are we're no longer interested.
                         return;
                     }
+
+                    FullSingleResults = fullSingleResults ?? FullSingleResults;
+                    FullResults = fullResults ?? FullResults;
 
                     IEnumerable<DNADropdownViewModel> comboboxResults;
                     if (IsSingleAutocomplete || !IsDisplayingMLRecommendation)
@@ -991,13 +1009,13 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         private void SubscribeWindowEvents()
         {
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
-            dynamoViewModel.PreferencesViewModel.PreferencesChanged += OnPreferencesChanged;
+            dynamoViewModel.PreferenceSettings.AutocompletePreferencesChanged += OnPreferencesChanged;
         }
 
         private void UnsubscribeWindowEvents()
         {
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved -= NodeViewModel_Removed;
-            dynamoViewModel.PreferencesViewModel.PreferencesChanged -= OnPreferencesChanged;
+            dynamoViewModel.PreferenceSettings.AutocompletePreferencesChanged -= OnPreferencesChanged;
         }
 
         internal void NodeViewModel_Removed(NodeModel node)
