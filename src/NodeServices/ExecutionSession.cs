@@ -1,5 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Net;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
 using Dynamo.Events;
 
 namespace Dynamo.Session
@@ -108,6 +112,30 @@ namespace Dynamo.Session
                     throw new Exception(DynamoServices.Properties.Resources.WebRequestOfflineWarning);
                 }
             }
+        }
+    }
+
+    /// <summary>
+    /// Custom HTTP message handler to simulate an "offline mode" (no-network mode) for network requests. 
+    /// It can be used to intercept all outgoing HTTP requests and returns a predefined response indicating that the
+    /// application is offline.
+    /// </summary>
+    public class NoNetworkModeHandler : DelegatingHandler
+    {
+        public NoNetworkModeHandler() : base(new HttpClientHandler())
+        {
+        }
+
+        protected override Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            var json = "{\"success\":false,\"message\":\"Application is in offline mode\",\"content\":null}";
+            var response = new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+            {
+                Content = new StringContent(json, System.Text.Encoding.UTF8, "application/json"),
+                ReasonPhrase = "Offline Mode Enabled"
+            };
+            return Task.FromResult(response);
         }
     }
 }
