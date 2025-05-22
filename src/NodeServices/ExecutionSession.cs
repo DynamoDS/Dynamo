@@ -105,7 +105,7 @@ namespace Dynamo.Session
             {
                 if ((bool)session.GetParameterValue(ParameterKeys.NoNetworkMode))
                 {
-                    throw new Exception(DynamoServices.Properties.Resources.WebRequestOfflineWarning);
+                    throw new InvalidOperationException(DynamoServices.Properties.Resources.WebRequestOfflineWarning);
                 }
             }
         }
