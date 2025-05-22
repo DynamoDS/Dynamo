@@ -1361,6 +1361,7 @@ namespace Dynamo.Controls
 
             // Create a Style to hold the DataTrigger and initial Opacity setter
             Style controlStyle = new Style(typeof(FrameworkElement));
+            controlStyle.Setters.Add(new Setter(UIElement.OpacityProperty, 0.0));
             controlStyle.Triggers.Add(dataTrigger);
 
             return controlStyle;
@@ -1432,6 +1433,7 @@ namespace Dynamo.Controls
 
             // Create a Style to hold the DataTrigger and initial Opacity setter
             Style controlStyle = new Style(typeof(FrameworkElement));
+            controlStyle.Setters.Add(new Setter(UIElement.OpacityProperty, 0.0));
             controlStyle.Triggers.Add(dataTrigger);
 
             return controlStyle;
@@ -1503,6 +1505,7 @@ namespace Dynamo.Controls
 
             // Create a Style to hold the DataTrigger and initial Opacity setter
             Style controlStyle = new Style(typeof(FrameworkElement));
+            controlStyle.Setters.Add(new Setter(UIElement.OpacityProperty, 0.5));
             controlStyle.Triggers.Add(dataTrigger);
 
             return controlStyle;
@@ -1658,9 +1661,9 @@ namespace Dynamo.Controls
                     Background = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#747474"))
                 };
 
-                Grid.SetRow(customNodeBorder0, 0);
-                Grid.SetColumnSpan(customNodeBorder0, 3);
-                Canvas.SetZIndex(customNodeBorder0, 0);
+                Grid.SetRow(customNodeBorder1, 0);
+                Grid.SetColumnSpan(customNodeBorder1, 3);
+                Canvas.SetZIndex(customNodeBorder1, 0);
 
                 // Create the Canvas
                 var customFunctionCanvas = new Canvas
@@ -1736,7 +1739,7 @@ namespace Dynamo.Controls
             switch (args.PropertyName)
             {
                 //Todo Does this need to dispatched on UIThread
-                case "PortBackgroundColor":
+                case "NodeCountOptimizationEnabled":
                     if (ViewModel.WorkspaceViewModel.NodeCountOptimizationEnabled)
                     {
                         _zoomFadeOpacity_OneToZeroStyle = GetZoomFadeOpacity_OneToZeroAnimatedStyle();
