@@ -120,6 +120,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
+
         private IEnumerable<DNADropdownViewModel> dropdownResults;
         /// <summary>
         /// Cluster autocomplete search results.
@@ -345,6 +346,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
         internal MLNodeClusterAutoCompletionResponse FullResults { private set; get; }
         internal List<SingleResultItem> FullSingleResults { set; get; }
+        private Guid LastRequestGuid;
 
         /// <summary>
         /// Constructor
@@ -708,11 +710,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 // These default suggestions will be populated based on the port type.
                 if (!objectTypeMatchingElements.Any())
                 {
-                    return DefaultAutoCompleteCandidates().Select(x => new SingleResultItem(x));
+                    return DefaultAutoCompleteCandidates().Select(x => new SingleResultItem(x.Model, 1.0));
                 }
                 else
                 {
-                    return objectTypeMatchingElements.Select(x => new SingleResultItem(x));
+                    return objectTypeMatchingElements.Select(x => new SingleResultItem(x, 1.0));
                 }
             }
         }
@@ -872,16 +874,24 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 DropdownResults = null;
             }
 
+            //this should run on the UI thread, so thread safety is not a concern
+            LastRequestGuid = Guid.NewGuid();
+            var myRequest = LastRequestGuid;
+
+            //start a background thread to make the http request
             Task.Run(() =>
             {
-                if (IsSingleAutocomplete)
+                List<SingleResultItem> fullSingleResults = null;
+                MLNodeClusterAutoCompletionResponse fullResults = null;
+
+                if (IsSingleAutocomplete || !IsDisplayingMLRecommendation)
                 {
-                    FullSingleResults = GetSingleAutocompleteResults().ToList();
-                    FullResults = new MLNodeClusterAutoCompletionResponse
+                    fullSingleResults = GetSingleAutocompleteResults().ToList();
+                    fullResults = new MLNodeClusterAutoCompletionResponse
                     {
                         Version = "0.0",
-                        NumberOfResults = FullSingleResults.Count,
-                        Results = FullSingleResults.Select(x => new ClusterResultItem
+                        NumberOfResults = fullSingleResults.Count,
+                        Results = fullSingleResults.Select(x => new ClusterResultItem
                         {
                             Description = x.Description,
                             Title = x.Description,  
@@ -900,11 +910,17 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 }
                 else
                 {
-                    FullResults = GetGenericAutocompleteResult<MLNodeClusterAutoCompletionResponse>(nodeClusterAutocompleteMLEndpoint);
+                    fullResults = GetGenericAutocompleteResult<MLNodeClusterAutoCompletionResponse>(nodeClusterAutocompleteMLEndpoint);
                 }
 
                 dynamoViewModel.UIDispatcher.BeginInvoke(() =>
                 {
+                    if(LastRequestGuid != myRequest)
+                    {
+                        //a newer request came, we're no longer interested in the results of this one
+                        //only latest request has the right to be committed to the UI and internal data structures
+                        return;
+                    }
                     if (!IsOpen)
                     {
                         // view disappeared while the background thread was waiting for the server response.
@@ -912,8 +928,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                         return;
                     }
 
+                    FullSingleResults = fullSingleResults ?? FullSingleResults;
+                    FullResults = fullResults ?? FullResults;
+
                     IEnumerable<DNADropdownViewModel> comboboxResults;
-                    if (IsSingleAutocomplete)
+                    if (IsSingleAutocomplete || !IsDisplayingMLRecommendation)
                     {
                         //getting bitmaps from resources necessarily has to be done in the UI thread
                         Dictionary<string, ImageSource> dict = [];
@@ -981,14 +1000,22 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
+        private void OnPreferencesChanged()
+        {
+            RaisePropertyChanged(nameof(IsDisplayingMLRecommendation));
+            PopulateAutoComplete();
+        }
+
         private void SubscribeWindowEvents()
         {
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
+            dynamoViewModel.PreferenceSettings.AutocompletePreferencesChanged += OnPreferencesChanged;
         }
 
         private void UnsubscribeWindowEvents()
         {
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved -= NodeViewModel_Removed;
+            dynamoViewModel.PreferenceSettings.AutocompletePreferencesChanged -= OnPreferencesChanged;
         }
 
         internal void NodeViewModel_Removed(NodeModel node)
