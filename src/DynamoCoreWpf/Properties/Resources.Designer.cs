@@ -5048,7 +5048,7 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Number of results.
+        ///   Looks up a localized string similar to Number of results for Recommended Nodes.
         /// </summary>
         public static string MLRecommendationNumberOfResults {
             get {

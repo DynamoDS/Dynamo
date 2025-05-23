@@ -369,15 +369,6 @@
             <ui:InCanvasSearchControl RequestShowInCanvasSearch="ShowHideInCanvasControl" />
         </Popup>
 
-        <Popup Name="NodeAutoCompleteSearchBar"
-               StaysOpen="True"
-               AllowsTransparency="True"
-               IsOpen="False"
-               Placement="Custom"
-               DataContext="{Binding NodeAutoCompleteSearchViewModel}">
-            <ui:NodeAutoCompleteSearchControl RequestShowNodeAutoCompleteSearch="ShowHideNodeAutoCompleteControl" />
-        </Popup>
-       
         <Popup Name="ContextMenuPopup"
                AllowsTransparency="True"
                Opened="OnContextMenuOpened"
