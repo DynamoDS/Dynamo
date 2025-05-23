@@ -2,9 +2,7 @@ using System;
 using System.Collections.Generic;
 using CoreNodeModels.Properties;
 using DSCore;
-using Dynamo.Events;
 using Dynamo.Graph.Nodes;
-using Dynamo.Session;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 
