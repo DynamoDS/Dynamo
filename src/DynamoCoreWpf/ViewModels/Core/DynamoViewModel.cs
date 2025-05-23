@@ -3343,6 +3343,7 @@ namespace Dynamo.ViewModels
             {
                 Model.CurrentWorkspace = HomeSpace;
 
+                DeferredContent.ClearDeferredQueue();
                 model.ClearCurrentWorkspace();
 
                 var defaultWorkspace = Workspaces.FirstOrDefault();

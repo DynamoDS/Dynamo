@@ -190,7 +190,7 @@ namespace Dynamo.Views
 
             zoomBorder.ViewSettingsChanged += CallUpdateWorkspaceElementVisibility;
             // load the initially visible nodes as soon as the context is loaded
-            Dispatcher.BeginInvoke(UpdateWorkspaceElementVisibility, System.Windows.Threading.DispatcherPriority.ContextIdle);
+            //Dispatcher.BeginInvoke(UpdateWorkspaceElementVisibility, System.Windows.Threading.DispatcherPriority.ContextIdle);
         }
 
         private void CallUpdateWorkspaceElementVisibility(ViewSettingsChangedEventArgs _) => UpdateWorkspaceElementVisibility();

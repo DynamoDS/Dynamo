@@ -4,7 +4,7 @@ namespace Dynamo.Controls
 {
     internal interface IWorkspaceElement
     {
-        bool IsVisibleInCanvas { get; set; }
-        Rect2D Rect { get; }
+        //bool IsVisibleInCanvas { get; set; }
+        //Rect2D Rect { get; }
     }
 }

@@ -10,29 +10,31 @@
     <ResourceDictionary.MergedDictionaries>
         <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
     </ResourceDictionary.MergedDictionaries>
-    <DataTemplate DataType="{x:Type viewModels:NodeViewModel}">
-        <controls:DeferredContent>
-            <controls:DeferredContent.Content>
-                <Border
-                    Opacity="0.7"
-                    CornerRadius="10 10 0 0"
-                    Background="#3C3C3C"
-                    Width="150"
-                    Height="100">
-                    <TextBlock
-                        Text="loading..."
-                        Foreground="White"
-                        VerticalAlignment="Center"
-                        HorizontalAlignment="Center" />
-                </Border>
-            </controls:DeferredContent.Content>
-            <controls:DeferredContent.DeferredContentTemplate>
-                <DataTemplate>
-                    <controls:NodeView />
-                </DataTemplate>
-            </controls:DeferredContent.DeferredContentTemplate>
-        </controls:DeferredContent>
-    </DataTemplate>
+
+    <controls:NodeViewTemplateSelector x:Key="NodeViewModelTemplateSelector">
+        <controls:NodeViewTemplateSelector.DeferredTemplate>
+            <DataTemplate>
+                <controls:DeferredContent>
+                    <controls:DeferredContent.Content>
+                        <Border CornerRadius="10 10 0 0" Background="#3C3C3C">
+                            <TextBlock Text="Loading..." Foreground="White"
+                                   VerticalAlignment="Center" HorizontalAlignment="Center" />
+                        </Border>
+                    </controls:DeferredContent.Content>
+                    <controls:DeferredContent.DeferredContentTemplate>
+                        <DataTemplate>
+                            <controls:NodeView />
+                        </DataTemplate>
+                    </controls:DeferredContent.DeferredContentTemplate>
+                </controls:DeferredContent>
+            </DataTemplate>
+        </controls:NodeViewTemplateSelector.DeferredTemplate>
+        <controls:NodeViewTemplateSelector.DirectTemplate>
+            <DataTemplate>
+                <controls:NodeView />
+            </DataTemplate>
+        </controls:NodeViewTemplateSelector.DirectTemplate>
+    </controls:NodeViewTemplateSelector>
 
     <DataTemplate DataType="{x:Type viewModels:NoteViewModel}">
         <nodes:NoteView></nodes:NoteView>

@@ -2,15 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Media;
 using DSCore;
+using Dynamo.Controls;
 using Dynamo.Core;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.UI.Commands;
@@ -31,6 +34,8 @@ namespace Dynamo.Wpf.ViewModels.Core
         private ObservableCollection<FooterNotificationItem> footerNotificationItems;
         private int notificationsCounter = 0;
         private FooterNotificationItem.FooterNotificationType footerNotificationType;
+        private bool isDeferredNodeLoadNotificationVisible;
+        private int totalDeferredNodeLoadedCount;
 
         #endregion
 
@@ -107,6 +112,46 @@ namespace Dynamo.Wpf.ViewModels.Core
                 RaisePropertyChanged(nameof(FooterNotificationItems));
             }
         }
+        private DynamoLogger logger;
+        /// <summary>
+        /// Total number of deferred nodes currently loaded
+        /// </summary>
+        [JsonIgnore]
+        public int TotalDeferredNodeLoadedCount
+        {
+            get
+            {
+                return totalDeferredNodeLoadedCount;
+            }
+            set
+            {
+                totalDeferredNodeLoadedCount = value;
+                if (totalDeferredNodeLoadedCount > 0 && totalDeferredNodeLoadedCount >= Nodes.Count)
+                {
+                    stp.Stop();
+                    logger?.Log($"Deferred nodes loaded in: {stp.ElapsedMilliseconds} ms");
+                    double avg = (double)stp.ElapsedMilliseconds / Nodes.Count;
+                    logger?.Log($"Average node load time: {avg:F2} ms");
+                }
+                RaisePropertyChanged(nameof(TotalDeferredNodeLoadedCount));
+                RaisePropertyChanged(nameof(IsDeferredNodeLoadNotificationVisible));
+            }
+
+        }
+
+        /// <summary>
+        /// Boolean indicates if the deferred node load notification is visible
+        /// </summary>
+        [JsonIgnore]
+        public bool IsDeferredNodeLoadNotificationVisible
+        {
+            get { return TotalDeferredNodeLoadedCount < Nodes.Count; }
+            set
+            {
+                isDeferredNodeLoadNotificationVisible = value;
+                RaisePropertyChanged(nameof(IsDeferredNodeLoadNotificationVisible));
+            }
+        }
 
         #endregion
 
@@ -126,10 +171,12 @@ namespace Dynamo.Wpf.ViewModels.Core
             hwm.EvaluationStarted += hwm_EvaluationStarted;
             hwm.EvaluationCompleted += hwm_EvaluationCompleted;
             hwm.SetNodeDeltaState +=hwm_SetNodeDeltaState;
+            DeferredContent.TotalDeferredNodeLoadedCountChanged += OnTotalDeferredNodeLoadedCountChanged;
 
             dynamoViewModel.Model.ShutdownStarted += Model_ShutdownStarted;
             dynamoViewModel.PropertyChanged += DynamoViewModel_PropertyChanged;
             SetupFooterNotificationItems();
+            logger = dynamoViewModel.Model.Logger;
         }
 
         private void DynamoViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -138,6 +185,16 @@ namespace Dynamo.Wpf.ViewModels.Core
             {
                 ClearWarning();
             }
+        }
+        Stopwatch stp = new Stopwatch();
+        private void OnTotalDeferredNodeLoadedCountChanged(int count)
+        {
+            if (count == 1)
+            {
+                stp.Restart();
+            }
+            
+            TotalDeferredNodeLoadedCount = count;
         }
 
         /// <summary>
@@ -501,6 +558,7 @@ namespace Dynamo.Wpf.ViewModels.Core
             hwm.EvaluationStarted -= hwm_EvaluationStarted;
             hwm.EvaluationCompleted -= hwm_EvaluationCompleted;
             hwm.SetNodeDeltaState -= hwm_SetNodeDeltaState;
+            DeferredContent.TotalDeferredNodeLoadedCountChanged -= OnTotalDeferredNodeLoadedCountChanged;
             RunSettingsViewModel.PropertyChanged -= RunSettingsViewModel_PropertyChanged;
             RunSettingsViewModel.Dispose();
             RunSettingsViewModel = null;

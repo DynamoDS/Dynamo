@@ -597,17 +597,32 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// This signifies if the node should be rendered
         /// </summary>
+        //[JsonIgnore]
+        //public bool IsVisibleInCanvas
+        //{
+        //    get => isVisibleInCanvas;
+        //    set
+        //    {
+        //        isVisibleInCanvas = value;
+        //        RaisePropertyChanged(nameof(isVisibleInCanvas));
+        //    }
+        //}
+        //private bool isVisibleInCanvas = false;
+
+        /// <summary>
+        /// This signifies if the node has been rendered
+        /// </summary>
         [JsonIgnore]
-        public bool IsVisibleInCanvas
+        public bool IsDeferredContentLoaded
         {
-            get => isVisibleInCanvas;
+            get => isDeferredContentLoaded;
             set
             {
-                isVisibleInCanvas = value;
-                RaisePropertyChanged(nameof(isVisibleInCanvas));
+                isDeferredContentLoaded = value;
+                RaisePropertyChanged(nameof(isDeferredContentLoaded));
             }
         }
-        private bool isVisibleInCanvas = false;
+        private bool isDeferredContentLoaded = false;
 
         public Rect2D Rect => NodeModel.Rect;
 

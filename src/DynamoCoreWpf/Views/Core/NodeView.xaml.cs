@@ -196,6 +196,12 @@ namespace Dynamo.Controls
             if (null != ViewModel) return;
 
             ViewModel = e.NewValue as NodeViewModel;
+            if (ViewModel.NodeModel.Height != 100 && ViewModel.NodeModel.Width != 100)
+            {
+                nodeBorder.Height = ViewModel.NodeModel.Height;
+                nodeBorder.Width = ViewModel.NodeModel.Width;
+                nodeBorder.RenderSize = new Size(ViewModel.NodeModel.Width, ViewModel.NodeModel.Height);
+            }
             if (!ViewModel.PreferredSize.HasValue) return;
 
             var size = ViewModel.PreferredSize.Value;

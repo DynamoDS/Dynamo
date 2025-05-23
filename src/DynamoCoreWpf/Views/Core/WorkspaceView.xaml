@@ -149,7 +149,8 @@
             </controls:ZoomBorder.IsHitTestVisible>
 
             <ItemsControl Name="WorkspaceElements"
-                          ItemsSource="{Binding WorkspaceElements}">
+                          ItemsSource="{Binding WorkspaceElements}"
+                          ItemTemplateSelector="{StaticResource NodeViewTemplateSelector}">
 
                 <!--Resources for the ItemsControl can now be found in DataTemplates.xml-->
 
@@ -185,9 +186,9 @@
                                 Value="{Binding Top}" />
                         <Setter Property="Panel.ZIndex"
                                 Value="{Binding ZIndex}" />
-                        <Setter
+                        <!--<Setter
                             Property="Visibility"
-                            Value="{Binding IsVisibleInCanvas, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, FallbackValue=Visible}" />
+                            Value="{Binding IsVisibleInCanvas, Converter={StaticResource BooleanToVisibilityConverter}, Mode=OneWay, FallbackValue=Visible}" />-->
                     </Style>
                 </ItemsControl.ItemContainerStyle>
 

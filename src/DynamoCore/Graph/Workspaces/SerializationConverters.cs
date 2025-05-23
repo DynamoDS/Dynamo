@@ -285,8 +285,11 @@ namespace Dynamo.Graph.Workspaces
             {
                 RemapPorts(node, inPorts, outPorts, resolver, manager.AsLogger());
             }
-               
 
+            if (obj["Height"] != null)
+                node.Height = obj["Height"].Value<double>();
+            if (obj["Width"] != null)
+                node.Width = obj["Width"].Value<double>();
             // Cannot set Lacing directly as property is protected
             node.UpdateValue(new UpdateValueParams("ArgumentLacing", replication));
             node.GUID = guid;

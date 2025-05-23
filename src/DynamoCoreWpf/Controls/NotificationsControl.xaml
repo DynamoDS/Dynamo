@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="Dynamo.Wpf.Controls.NotificationsControl"
+<UserControl x:Class="Dynamo.Wpf.Controls.NotificationsControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -35,6 +35,7 @@
             <core:NotificationLevelToColorConverter x:Key="NotificationLevelToColorConverter"></core:NotificationLevelToColorConverter>
             <core:ZeroToVisibilityCollapsedConverter x:Key="ZeroToVisibilityCollapsedConverter" />
             <converters:EmptyStringToHiddenConverter x:Key="EmptyStringToHiddenConverter" />
+            <converters:BoolToVisibilityCollapsedConverter x:Key="BoolToVisibilityCollapsedConverter" />
             <converters:LinterIssueCountToVisibilityConverter x:Key="LinterIssueCountToVisibilityConverter" />
             <ResourceDictionary.MergedDictionaries>
                 <ui:SharedResourceDictionary Source="{x:Static ui:SharedDictionaryManager.DynamoConvertersDictionaryUri}" />
@@ -127,6 +128,53 @@
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
         </ItemsControl>
+
+        <Border Style="{StaticResource FooterNotificationItemStyle}"
+            Grid.Column="2"
+            MaxWidth="230"
+            HorizontalAlignment="Left"
+            Visibility="{Binding HomeSpaceViewModel.IsDeferredNodeLoadNotificationVisible, Converter={StaticResource BoolToVisibilityCollapsedConverter}}">
+            <StackPanel Orientation="Horizontal"
+                VerticalAlignment="Center"
+                        HorizontalAlignment="Center"
+                Margin="8,0" >
+                <Image
+                    Name="downloadingIcon"
+                    Width="16"
+                    Height="16"
+                    VerticalAlignment="Center"
+                    RenderTransformOrigin="0.5,0.5"
+                    Source="/DynamoCoreWpf;component/UI/Images/Progress circle.png">
+                    <Image.RenderTransform>
+                        <RotateTransform x:Name="AnimatedRotateTransform" Angle="0" />
+                    </Image.RenderTransform>
+                    <Image.Triggers>
+                        <EventTrigger RoutedEvent="Window.Loaded">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation
+                                        By="10"
+                                        FillBehavior="Stop"
+                                        RepeatBehavior="Forever"
+                                        Storyboard.TargetName="AnimatedRotateTransform"
+                                        Storyboard.TargetProperty="Angle"
+                                        To="360"
+                                        Duration="0:0:0.5" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Image.Triggers>
+                </Image>
+                <TextBlock Margin="5,0,0,0"
+                    Foreground="White">
+                        <Run Text=" Loading nodes (" />
+                        <Run Text="{Binding HomeSpaceViewModel.TotalDeferredNodeLoadedCount, Mode=OneWay}" />
+                        <Run Text="/" />
+                        <Run Text="{Binding HomeSpaceViewModel.Nodes.Count, Mode=OneWay}" />
+                        <Run Text=") " />
+                </TextBlock>
+            </StackPanel>
+        </Border>
 
         <StackPanel Orientation="Horizontal"
                     Grid.Column="2"

@@ -638,8 +638,6 @@ namespace Dynamo.ViewModels
             DynamoViewModel.CopyCommand.CanExecuteChanged += CopyPasteChanged;
             DynamoViewModel.PasteCommand.CanExecuteChanged += CopyPasteChanged;
 
-
-
             // InCanvasSearchViewModel needs to happen before the nodes are created
             // as we rely upon it to retrieve node icon images
             if (!dynamoViewModel.Model.IsServiceMode)
@@ -661,11 +659,6 @@ namespace Dynamo.ViewModels
             foreach (ConnectorModel connector in Model.Connectors) Connectors_ConnectorAdded(connector);
 
             FinishedLoading = true;
-
-            NodeAutoCompleteSearchViewModel = new NodeAutoCompleteSearchViewModel(DynamoViewModel)
-            {
-                Visible = true
-            };
 
             geoScalingViewModel = new GeometryScalingViewModel(this.DynamoViewModel);
             geoScalingViewModel.ScaleValue = Convert.ToInt32(Math.Log10(Model.ScaleFactor));
@@ -915,10 +908,10 @@ namespace Dynamo.ViewModels
             var viewModel = new NoteViewModel(this, note);
             Notes.Add(viewModel);
 
-            if (FinishedLoading)
-            {
-                viewModel.IsVisibleInCanvas = true;
-            }
+            //if (FinishedLoading)
+            //{
+            //    viewModel.IsVisibleInCanvas = true;
+            //}
         }
 
         private void Model_NoteRemoved(NoteModel note)
@@ -942,10 +935,10 @@ namespace Dynamo.ViewModels
             var viewModel = new AnnotationViewModel(this, annotation);
             Annotations.Add(viewModel);
 
-            if (FinishedLoading)
-            {
-                viewModel.IsVisibleInCanvas = true;
-            }
+            //if (FinishedLoading)
+            //{
+            //    viewModel.IsVisibleInCanvas = true;
+            //}
         }
 
         private void Model_AnnotationRemoved(AnnotationModel annotation)
@@ -1019,14 +1012,14 @@ namespace Dynamo.ViewModels
             }
             if (nodeViewModel.ErrorBubble != null)
             {
-                nodeViewModel.ErrorBubble.IsVisibleInCanvas = FinishedLoading;
+                //nodeViewModel.ErrorBubble.IsVisibleInCanvas = FinishedLoading;
                 Errors.Add(nodeViewModel.ErrorBubble);
             }
 
-            if (FinishedLoading)
-            {
-                nodeViewModel.IsVisibleInCanvas = true;
-            }
+            //if (FinishedLoading)
+            //{
+            //    nodeViewModel.IsVisibleInCanvas = true;
+            //}
 
             PostNodeChangeActions();
 
@@ -1986,28 +1979,29 @@ namespace Dynamo.ViewModels
 
             DeferredContent.Focus(left + width/2, top + height/2);
 
-            var visibleRect = new Rect2D(left, top, width, height);
+            //var visibleRect = new Rect2D(left, top, width, height);
             var itemsToTest = Nodes.Cast<IWorkspaceElement>()
                                    .Concat(Notes)
                                    .Concat(Annotations);
 
-            foreach (var item in itemsToTest)
-            {
-                item.IsVisibleInCanvas = visibleRect.IntersectsWith(item.Rect);
+            //foreach (var item in itemsToTest)
+            //{
+            //    item.IsVisibleInCanvas = true;
 
-                if (item is NodeViewModel nvm && item.IsVisibleInCanvas && nvm.ErrorBubble != null)
-                {
-                    nvm.ErrorBubble.IsVisibleInCanvas = true;
-                }
-            }
+            //    if (item is NodeViewModel nvm && item.IsVisibleInCanvas && nvm.ErrorBubble != null)
+            //    {
+            //        nvm.ErrorBubble.IsVisibleInCanvas = true;
+            //    }
+            //}
 
-#if DEBUG
-            var total = Nodes.Count + Notes.Count + Annotations.Count;
-            var hidden = Nodes.Count(n => !n.IsVisibleInCanvas) +
-                         Notes.Count(n => !n.IsVisibleInCanvas) +
-                         Annotations.Count(a => !a.IsVisibleInCanvas);
-            Debug.WriteLine($"{hidden}/{total} workspace elements hidden");
-#endif
+            //#if DEBUG
+            //            var total = Nodes.Count + Notes.Count + Annotations.Count;
+            //            var hidden = Nodes.Count(n => !n.IsVisibleInCanvas) +
+            //                         Notes.Count(n => !n.IsVisibleInCanvas) +
+            //                         Annotations.Count(a => !a.IsVisibleInCanvas);
+            //            DynamoViewModel.Model.Logger.Log($"{hidden}/{total} elements not visible in canvas");
+            //            Debug.WriteLine($"{hidden}/{total} workspace elements hidden");
+            //#endif
         }
     }
 

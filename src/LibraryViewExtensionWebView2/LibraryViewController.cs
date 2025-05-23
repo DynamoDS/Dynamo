@@ -793,7 +793,7 @@ namespace Dynamo.LibraryViewExtensionWebView2
             }
             if (this.browser != null)
             {
-                browser.CoreWebView2.RemoveHostObjectFromScript("bridgeTwoWay");
+                browser.CoreWebView2?.RemoveHostObjectFromScript("bridgeTwoWay");
                 browser.SizeChanged -= Browser_SizeChanged;
                 browser.Loaded -= Browser_Loaded;
                 browser.Dispose();

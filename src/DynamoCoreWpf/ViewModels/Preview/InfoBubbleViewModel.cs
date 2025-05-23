@@ -450,18 +450,18 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// This signifies if the node should be rendered
         /// </summary>
-        public bool IsVisibleInCanvas
-        {
-            get => isVisibleInCanvas;
-            set
-            {
-                isVisibleInCanvas = value;
-                RaisePropertyChanged(nameof(isVisibleInCanvas));
-            }
-        }
-        private bool isVisibleInCanvas = false;
+        //public bool IsVisibleInCanvas
+        //{
+        //    get => isVisibleInCanvas;
+        //    set
+        //    {
+        //        isVisibleInCanvas = value;
+        //        RaisePropertyChanged(nameof(isVisibleInCanvas));
+        //    }
+        //}
+        //private bool isVisibleInCanvas = false;
 
-        public Rect2D Rect => default;
+        //public Rect2D Rect => default;
 
         #endregion
 

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Xml;
 using Dynamo.Core;
@@ -164,7 +164,7 @@ namespace Dynamo.Graph
         /// <summary>
         /// The height of the object.
         /// </summary>
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual double Height
         {
             get { return height; }
@@ -178,7 +178,7 @@ namespace Dynamo.Graph
         /// <summary>
         /// The width of the object.
         /// </summary>
-        [JsonIgnore]
+        //[JsonIgnore]
         public virtual double Width
         {
             get { return width; }
