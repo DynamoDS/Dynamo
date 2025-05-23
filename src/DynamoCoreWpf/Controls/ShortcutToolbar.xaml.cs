@@ -101,8 +101,16 @@ namespace Dynamo.UI.Controls
                 };
 
                 // Retrieve the style from resources
-                var style = (Style)FindResource("GenericToolTipLight");
-                toolTip.Style = style;
+                var style = (Style)TryFindResource("GenericToolTipLight");
+                if (style != null)
+                {
+                    toolTip.Style = style;
+                }
+                else
+                {
+                    // Optionally log a warning or handle the missing resource gracefully
+                    System.Diagnostics.Debug.WriteLine("Warning: 'GenericToolTipLight' resource not found.");
+                }
 
                 // Assign the styled tooltip to the Login Button
                 LoginButton.ToolTip = toolTip;
