@@ -1522,7 +1522,7 @@ namespace Dynamo.Controls
 
                         SetNodeBackgroundHeaderAndPortsVisible();
                     }
-                }, DispatcherPriority.Input);
+                }, DispatcherPriority.Background);
             }
             else
             {
