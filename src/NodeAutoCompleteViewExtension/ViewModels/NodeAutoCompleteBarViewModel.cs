@@ -576,10 +576,14 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         {   
             var requestDTO = GenerateRequestForMLAutocomplete();
             var jsonRequest = JsonConvert.SerializeObject(requestDTO);
+
+#if DEBUG
+            dynamoViewModel?.Model?.Logger?.Log(LogMessage.Info($"DNA Request: \n {jsonRequest}"));
+#endif
             T results = default;
             try
             {
-                var authProvider = dynamoViewModel.Model.AuthenticationManager.AuthProvider;
+                var authProvider = dynamoViewModel?.Model?.AuthenticationManager?.AuthProvider;
                 if (!dynamoViewModel.IsIDSDKInitialized())
                 {
                     throw new Exception("IDSDK missing or failed initialization.");
