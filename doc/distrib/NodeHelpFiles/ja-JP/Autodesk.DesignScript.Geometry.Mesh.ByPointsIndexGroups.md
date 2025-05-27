@@ -1,5 +1,5 @@
 ## 詳細
-ByPointsIndexGroups will return a Mesh based on input vertices as Points and input indices. In the example below, a four-sided Mesh is created with four Points and an IndexGroup of four indices.
+ByPointsIndexGroups は、Point として入力された頂点と、入力されたインデックスに基づいて Mesh を返します。次の例では、4 つの Point と、4 つのインデックスの IndexGroup で、4 辺の Mesh が作成されています。
 ___
 ## サンプル ファイル
 

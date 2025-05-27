@@ -20,10 +20,6 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.Wpf.ViewModels;
 using Greg;
-using J2N.Text;
-using Lucene.Net.Documents;
-using Lucene.Net.QueryParsers.Classic;
-using Lucene.Net.Search;
 using Newtonsoft.Json;
 using ProtoCore.AST.AssociativeAST;
 using ProtoCore.Mirror;
@@ -32,12 +28,10 @@ using RestSharp;
 using Dynamo.Wpf.Utilities;
 using Dynamo.ViewModels;
 using System.Reflection;
-using Dynamo.Controls;
-using Dynamo.Core;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Graph;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
+using Dynamo.Selection;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
@@ -126,6 +120,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
+
         private IEnumerable<DNADropdownViewModel> dropdownResults;
         /// <summary>
         /// Cluster autocomplete search results.
@@ -195,7 +190,9 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
             set
             {
-                if(selectedIndex != value && value >= 0)
+                /*don't try to add a node if the index is out of range or a selection is not made yet (-1)
+                an index of -1 occurs when using the switch to change between modes.*/
+                if (selectedIndex != value && value >= 0 && selectedIndex != -1)
                 {
                     ReAddNode(value);
                 }
@@ -349,6 +346,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
         internal MLNodeClusterAutoCompletionResponse FullResults { private set; get; }
         internal List<SingleResultItem> FullSingleResults { set; get; }
+        private Guid LastRequestGuid;
 
         /// <summary>
         /// Constructor
@@ -712,11 +710,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 // These default suggestions will be populated based on the port type.
                 if (!objectTypeMatchingElements.Any())
                 {
-                    return DefaultAutoCompleteCandidates().Select(x => new SingleResultItem(x));
+                    return DefaultAutoCompleteCandidates().Select(x => new SingleResultItem(x.Model, 1.0));
                 }
                 else
                 {
-                    return objectTypeMatchingElements.Select(x => new SingleResultItem(x));
+                    return objectTypeMatchingElements.Select(x => new SingleResultItem(x, 1.0));
                 }
             }
         }
@@ -731,131 +729,134 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             if (transientNodes.Any())
             {
                 dynamoViewModel.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(transientNodes.Select(x => x.Id), true));
-
-                //remove the initial layout of the transient nodes from the undo stack
+                //remove the deletion of the elements from the undo stack
                 wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
-                //remove the deletion of the transient nodes from the undo stack
+                //remove the layout of the elements from the undo stack
                 wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
             }
         }
 
         // Add Cluster from server result into the workspace
-        internal void AddCluster(ClusterResultItem ClusterResultItem)
+        internal void AddCluster(ClusterResultItem clusterResultItem)
         {
-            NodeViewModel targetNodeFromCluster = null;
+            if (clusterResultItem == null || clusterResultItem.Topology == null)
+                return;
 
-            var node = PortViewModel.NodeViewModel;
-            var wsViewModel = node.WorkspaceViewModel;
+            List<ModelBase> createdClusterItems = new List<ModelBase>();
 
-            //lock undo/redo
+            var workspaceViewModel = PortViewModel.NodeViewModel.WorkspaceViewModel;
+            var workspaceModel = workspaceViewModel.Model;
+            var dynamoModel = PortViewModel.NodeViewModel.DynamoViewModel.Model;
+            var entryNodeId = clusterResultItem.Topology.Nodes.ElementAtOrDefault(clusterResultItem.EntryNodeIndex)?.Id;
+
+            // Lock undo/redo
             ToggleUndoRedoLocked(true);
 
+            // Delete any existing transient nodes
             DeleteTransientNodes();
 
-            // A map of the cluster result v.s. actual nodes created for node connection look up
-            var clusterMapping = new Dictionary<string, NodeViewModel>();
-            // Convert topology to actual cluster
-            var clusterNodes = ClusterResultItem.Topology.Nodes.ToList();
-            var clusterConnections = ClusterResultItem.Topology.Connections.ToList();
+            // Map to store created nodes for connection lookup
+            var createdNodes = new Dictionary<string, NodeModel>();
 
-            List<List<NodeItem>> nodeStacks = NodeAutoCompleteUtilities.ComputeNodePlacementHeuristics(clusterConnections, clusterNodes);
+            // Create nodes from the cluster topology
+            var offset = PortViewModel.NodeViewModel.X + PortViewModel.NodeViewModel.NodeModel.Width;
 
-            //node to connect to from query node
-            var entryNodeId = ClusterResultItem.Topology.Nodes.Any() ? ClusterResultItem.Topology.Nodes.ToList()[ClusterResultItem.EntryNodeIndex].Id : string.Empty;
-            
-            //store our nodes and wires to allow for one undo
-            List<ModelBase> newNodesAndWires = new List<ModelBase>();
-            Dictionary<string, NodeViewModel> createdNodes = new Dictionary<string, NodeViewModel>();
+            List<List<NodeItem>> nodeStacks = NodeAutoCompleteUtilities.ComputeNodePlacementHeuristics(clusterResultItem.Topology.Connections.ToList(), clusterResultItem.Topology.Nodes.ToList());
 
-            double xoffset = node.X + node.NodeModel.Width;
             foreach (var nodeStack in nodeStacks)
             {
-                xoffset += node.NodeModel.Width;
-                foreach(var newNode in nodeStack)
+                offset += PortViewModel.NodeViewModel.NodeModel.Width;
+                foreach (var nodeItem in nodeStack)
                 {
-                    // Retrieve assembly name and node full name from type.id.
-                    var typeInfo = new NodeModelTypeId(newNode.Type.Id);
+                    var typeInfo = new NodeModelTypeId(nodeItem.Type.Id);
+                    var newNode = dynamoModel.CreateNodeFromNameOrType(Guid.NewGuid(), typeInfo.FullName, true);
+                    if (newNode != null)
+                    {
+                        newNode.X = offset; // Adjust X position
+                        newNode.Y = PortViewModel.NodeViewModel.NodeModel.Y; // Adjust Y position
+                        workspaceModel.AddAndRegisterNode(newNode);
+                        createdNodes[nodeItem.Id] = newNode;
+                        createdClusterItems.Add(newNode);
 
-                    //create node with guid from the cluster response for matching later
-                    dynamoViewModel.Model.ExecuteCommand(new DynamoModel.CreateNodeCommand(Guid.NewGuid().ToString(), typeInfo.FullName, xoffset, node.NodeModel.Y, false, false, true));
-
-                    //disallow the node creation command from the undo group, we group node creation and wires below
-                    wsViewModel.Model.UndoRecorder.PopFromUndoGroup();
-
-                    var nodeFromCluster = wsViewModel.Nodes.LastOrDefault();
-                    createdNodes.Add(newNode.Id,nodeFromCluster);
-                    newNodesAndWires.Add(nodeFromCluster.NodeModel);
-
-                    nodeFromCluster.IsHidden = true;
-                    clusterMapping.Add(newNode.Id, nodeFromCluster);
+                        var newNodeViewModel = workspaceViewModel.Nodes.Last();
+                        newNodeViewModel.IsHidden = true; // Hide the node initially
+                    }
                 }
             }
-
-            if (createdNodes.Any())
-            {
-                targetNodeFromCluster = createdNodes[entryNodeId];
-            }
-
-            clusterConnections.ForEach(connection =>
-            {
-                // Connect the nodes    
-                var sourceNode = clusterMapping[connection.StartNode.NodeId].NodeModel;
-                var targetNode = clusterMapping[connection.EndNode.NodeId].NodeModel;
-                // The port index is 1- based (currently a hack and not expected from service)
-                var sourcePort = sourceNode.OutPorts.FirstOrDefault(p => p.Index == connection.StartNode.PortIndex - 1);
-                var targetPort = targetNode.InPorts.FirstOrDefault(p => p.Index == connection.EndNode.PortIndex - 1);
-
-                if (targetPort != null && targetPort.Connectors.Count == 0)
-                {
-                    var connector = ConnectorModel.Make(sourceNode, targetNode, connection.StartNode.PortIndex - 1, connection.EndNode.PortIndex - 1);
-
-                    newNodesAndWires.Add(connector);
-                }
-
-            });
 
             // Connect the cluster to the original node and port
-            if (targetNodeFromCluster != null && targetNodeFromCluster.InPorts.Any())
+            if (entryNodeId != null && createdNodes.TryGetValue(entryNodeId, out var entryNode))
             {
-                var newConnector = ConnectorModel.Make(node.NodeModel, targetNodeFromCluster.NodeModel, PortViewModel.PortModel.Index,
-                    ClusterResultItem.EntryNodeInPort);
-
-                var lastConnector = wsViewModel.Connectors.Last();
-
-                //check if the last connector is the one we just made
-                if (lastConnector.ConnectorModel.GUID.Equals(newConnector.GUID))
+                var entryPortIndex = clusterResultItem.EntryNodeInPort;
+                if (entryNode.InPorts.Count > entryPortIndex)
                 {
-                    //set connector to be connecting until complete
-                    lastConnector.IsConnecting = true;
-                    newNodesAndWires.Add(newConnector);
+                    //only connect to the entry node when it does not have connections already.
+                    if (!entryNode.InPorts[entryPortIndex].Connectors.Any())
+                    {
+                        var entryConnector = ConnectorModel.Make(PortViewModel.NodeViewModel.NodeModel, entryNode, 0, entryPortIndex);
+                        if (entryConnector != null)
+                        {
+                            entryConnector.IsHidden = true;
+                            var entryConnectorViewModel = workspaceViewModel.Connectors.First(c => c.ConnectorModel.Equals(entryConnector));
+                            entryConnectorViewModel.IsConnecting = true;
+                            createdClusterItems.Add(entryConnector);
+                        }
+                    }
                 }
             }
 
-            // Make connectors invisible ( just like the cluster nodes ) before they get a chance to be drawn.
-            var clusterNodesModel = clusterMapping.Values.ToList();
-            clusterNodesModel.ForEach(nodeInCluster => nodeInCluster?.NodeModel?.AllConnectors?.ToList().ForEach(connector =>
+            // Create connections between nodes
+            foreach (var connection in clusterResultItem.Topology.Connections)
             {
-                if (connector != null) connector.IsHidden = true;
-            }));
-
-            //Finalizer will make cluster nodes and their connections visible after autolayout has determined their final positions.
-            Action finalizer = () =>
-            {
-                clusterNodesModel.ForEach(nodeInCluster =>
+                if (createdNodes.TryGetValue(connection.StartNode.NodeId, out var sourceNode) &&
+                    createdNodes.TryGetValue(connection.EndNode.NodeId, out var targetNode))
                 {
-                    nodeInCluster.IsHidden = false;
-                    nodeInCluster.NodeModel?.AllConnectors?.ToList().ForEach(connector =>
+                    var sourcePortIndex = connection.StartNode.PortIndex - 1;
+                    var targetPortIndex = connection.EndNode.PortIndex - 1;
+
+                    if (sourceNode.OutPorts.Count > sourcePortIndex && targetNode.InPorts.Count > targetPortIndex)
                     {
-                        if (connector != null) connector.IsHidden = !PreferenceSettings.Instance.ShowConnector;
-                    });
+                        if (!targetNode.InPorts[targetPortIndex].Connectors.Any())
+                        {
+                            var newConnector = ConnectorModel.Make(sourceNode, targetNode, sourcePortIndex, targetPortIndex);
+
+                            if (newConnector != null)
+                            {
+                                newConnector.IsHidden = true; // Hide the connector initially
+                                createdClusterItems.Add(newConnector);
+                            }
+                        }
+                    }
+                }
+            }
+
+            //add the new items to the undo recorder (this ensures the elements are valid at this point in time before any other manipulation occurs)
+            DynamoModel.RecordUndoModels(workspaceModel, createdClusterItems);
+
+            // Perform auto-layout for the newly added nodes
+            NodeAutoCompleteUtilities.PostAutoLayoutNodes(
+                workspaceViewModel.DynamoViewModel.CurrentSpace,
+                PortViewModel.NodeViewModel.NodeModel,
+                createdNodes.Values,
+                false,
+                false,
+                false,
+                () =>
+                {
+                    // Finalize visibility of nodes and connectors
+                    foreach (var node in createdNodes.Values)
+                    {
+                        var matchingNode = workspaceViewModel.Nodes.FirstOrDefault(n => n.NodeModel.GUID.Equals(node.GUID));
+                        if (matchingNode != null)
+                        {
+                            matchingNode.IsHidden = false;
+                        }
+                        foreach (var connector in node.AllConnectors)
+                        {
+                            connector.IsHidden = !PreferenceSettings.Instance.ShowConnector;
+                        }
+                    }
                 });
-            };
-
-            // AutoLayout should be called after all nodes are connected.
-            NodeAutoCompleteUtilities.PostAutoLayoutNodes(wsViewModel.DynamoViewModel.CurrentSpace, node.NodeModel, clusterNodesModel.Select(x => x.NodeModel), false, false, false, finalizer);
-
-            //record all node and wire creation as one undo
-            DynamoModel.RecordUndoModels(wsViewModel.Model, newNodesAndWires);
         }
 
         /// <summary>
@@ -873,16 +874,24 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 DropdownResults = null;
             }
 
+            //this should run on the UI thread, so thread safety is not a concern
+            LastRequestGuid = Guid.NewGuid();
+            var myRequest = LastRequestGuid;
+
+            //start a background thread to make the http request
             Task.Run(() =>
             {
-                if (IsSingleAutocomplete)
+                List<SingleResultItem> fullSingleResults = null;
+                MLNodeClusterAutoCompletionResponse fullResults = null;
+
+                if (IsSingleAutocomplete || !IsDisplayingMLRecommendation)
                 {
-                    FullSingleResults = GetSingleAutocompleteResults().ToList();
-                    FullResults = new MLNodeClusterAutoCompletionResponse
+                    fullSingleResults = GetSingleAutocompleteResults().ToList();
+                    fullResults = new MLNodeClusterAutoCompletionResponse
                     {
                         Version = "0.0",
-                        NumberOfResults = FullSingleResults.Count,
-                        Results = FullSingleResults.Select(x => new ClusterResultItem
+                        NumberOfResults = fullSingleResults.Count,
+                        Results = fullSingleResults.Select(x => new ClusterResultItem
                         {
                             Description = x.Description,
                             Title = x.Description,  
@@ -901,11 +910,17 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 }
                 else
                 {
-                    FullResults = GetGenericAutocompleteResult<MLNodeClusterAutoCompletionResponse>(nodeClusterAutocompleteMLEndpoint);
+                    fullResults = GetGenericAutocompleteResult<MLNodeClusterAutoCompletionResponse>(nodeClusterAutocompleteMLEndpoint);
                 }
 
                 dynamoViewModel.UIDispatcher.BeginInvoke(() =>
                 {
+                    if(LastRequestGuid != myRequest)
+                    {
+                        //a newer request came, we're no longer interested in the results of this one
+                        //only latest request has the right to be committed to the UI and internal data structures
+                        return;
+                    }
                     if (!IsOpen)
                     {
                         // view disappeared while the background thread was waiting for the server response.
@@ -913,8 +928,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                         return;
                     }
 
+                    FullSingleResults = fullSingleResults ?? FullSingleResults;
+                    FullResults = fullResults ?? FullResults;
+
                     IEnumerable<DNADropdownViewModel> comboboxResults;
-                    if (IsSingleAutocomplete)
+                    if (IsSingleAutocomplete || !IsDisplayingMLRecommendation)
                     {
                         //getting bitmaps from resources necessarily has to be done in the UI thread
                         Dictionary<string, ImageSource> dict = [];
@@ -945,11 +963,10 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     // this runs synchronously on the UI thread, so the UI can't disappear during execution
                     DropdownResults = comboboxResults;
                     SelectedIndex = 0;
-                    if (QualifiedResults.Any())
-                    {
-                        var ClusterResultItem = QualifiedResults.First();
-                        AddCluster(ClusterResultItem);
-                    }
+
+                    var ClusterResultItem = QualifiedResults.First();
+                    AddCluster(ClusterResultItem);
+                    
                 });
             });
             //Tracking Analytics when raising Node Autocomplete with the Recommended Nodes option selected (Machine Learning)
@@ -983,14 +1000,22 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
+        private void OnPreferencesChanged()
+        {
+            RaisePropertyChanged(nameof(IsDisplayingMLRecommendation));
+            PopulateAutoComplete();
+        }
+
         private void SubscribeWindowEvents()
         {
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
+            dynamoViewModel.PreferenceSettings.AutocompletePreferencesChanged += OnPreferencesChanged;
         }
 
         private void UnsubscribeWindowEvents()
         {
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved -= NodeViewModel_Removed;
+            dynamoViewModel.PreferenceSettings.AutocompletePreferencesChanged -= OnPreferencesChanged;
         }
 
         internal void NodeViewModel_Removed(NodeModel node)

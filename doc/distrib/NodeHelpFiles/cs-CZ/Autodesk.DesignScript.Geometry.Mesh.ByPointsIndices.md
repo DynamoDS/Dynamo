@@ -1,7 +1,7 @@
 ## Podrobnosti
-`Mesh.ByPointsIndices` takes a list of `Points`, representing the `vertices` of the mesh triangles, and a list of `indices`, representing how the mesh is stitched together, and creates a new mesh. The `points` input should be a flat list of unique vertices in the mesh. The `indices` input should be a flat list of integers. Each set of three integers designates a triangle in the mesh. The integers specify the index of the vertex in the vertices list. The indices input should be 0-indexed, with the first point of the vertices list having the index 0.
+Uzel 'Mesh.ByPointsIndices' přijímá seznam bodů, které představují vrcholy trojúhelníků sítě, a seznam indexů, které představují způsob, jakým je síť sešita, a vytvoří novou síť. Vstup 'points' by měl být plochý seznam jedinečných vrcholů v síti. Vstup 'indices' by měl být plochý seznam celých čísel. Každá sada tří celých čísel označuje trojúhelník v síti. Celá čísla určují index vrcholu v seznamu vrcholů. Vstup indexů by měl být indexovaný 0, přičemž první bod seznamu vrcholů by měl mít index 0.
 
-In the example below, a `Mesh.ByPointsIndices` node is used to create a mesh using a list of nine `points` and a list of 36 `indices`, specifying the vertex combination for each of the 12 triangles of the mesh.
+V níže uvedeném příkladu je pomocí uzlu 'Mesh.ByPointsIndices' vytvořena síť pomocí seznamu devíti „bodů“ a seznamu 36 „indexů“, které určují kombinaci vrcholů pro každý z 12 trojúhelníků sítě.
 
 ## Vzorový soubor
 

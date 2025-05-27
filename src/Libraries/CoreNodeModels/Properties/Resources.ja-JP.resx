@@ -694,6 +694,6 @@ double[]</value>
     <value>選択した色</value>
   </data>
   <data name="CurveMapperInfoMessage" xml:space="preserve">
-    <value>When mapping numbers along the curve, some Y values fall outside the specified Y-value domain range.</value>
+    <value>曲線に沿って数値をマッピングすると、一部の Y 値が指定した Y 値の範囲外になります。</value>
   </data>
 </root>

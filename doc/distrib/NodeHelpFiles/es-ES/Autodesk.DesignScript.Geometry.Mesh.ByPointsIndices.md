@@ -1,7 +1,7 @@
 ## En detalle
-`Mesh.ByPointsIndices` takes a list of `Points`, representing the `vertices` of the mesh triangles, and a list of `indices`, representing how the mesh is stitched together, and creates a new mesh. The `points` input should be a flat list of unique vertices in the mesh. The `indices` input should be a flat list of integers. Each set of three integers designates a triangle in the mesh. The integers specify the index of the vertex in the vertices list. The indices input should be 0-indexed, with the first point of the vertices list having the index 0.
+`Mesh.ByPointsIndices` utiliza una lista de puntos, que representan los vértices de los triángulos de la malla, y una lista de índices, que representan cómo se une la malla, y crea una nueva malla. La entrada `points` debe ser una lista plana de vértices únicos en la malla. La entrada `indices` debe ser una lista plana de enteros. Cada conjunto de tres enteros designa un triángulo en la malla. Los enteros especifican el índice del vértice en la lista de vértices. La entrada `indices` debe estar indexada a 0, con el primer punto de la lista de vértices con el índice 0.
 
-In the example below, a `Mesh.ByPointsIndices` node is used to create a mesh using a list of nine `points` and a list of 36 `indices`, specifying the vertex combination for each of the 12 triangles of the mesh.
+En el ejemplo siguiente, se utiliza un nodo `Mesh.ByPointsIndices` para crear una malla mediante una lista de nueve puntos y una lista de 36 índices, que especifican la combinación de vértices para cada uno de los 12 triángulos de la malla.
 
 ## Archivo de ejemplo
 

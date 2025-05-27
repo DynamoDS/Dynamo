@@ -694,6 +694,6 @@ double[]</value>
     <value>選取的顏色</value>
   </data>
   <data name="CurveMapperInfoMessage" xml:space="preserve">
-    <value>When mapping numbers along the curve, some Y values fall outside the specified Y-value domain range.</value>
+    <value>沿著曲線對映數字時，某些 Y 值超出指定的 Y 值定義域範圍。</value>
   </data>
 </root>

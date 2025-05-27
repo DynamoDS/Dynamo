@@ -18,7 +18,6 @@ using Dynamo.Core;
 using Dynamo.Logging;
 using Dynamo.UI;
 using Dynamo.ViewModels;
-using static Dynamo.ViewModels.SearchViewModel;
 using Res = Dynamo.Wpf.Properties.Resources;
 
 namespace Dynamo.Wpf.Views
@@ -86,7 +85,6 @@ namespace Dynamo.Wpf.Views
 
             ResetGroupStyleForm();
             StoreOriginalCustomGroupStyles();
-            displayConfidenceLevel();
 
             this.viewModel.InitializeGeometryScaling();
 
@@ -602,22 +600,6 @@ namespace Dynamo.Wpf.Views
                 }
             }
             return value;
-        }       
-
-        private void sliderConfidenceLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            displayConfidenceLevel();
-        }
-
-        private void displayConfidenceLevel()
-        {
-            if (this.lblConfidenceLevel != null && this.lblConfidenceLevelLabelStart != null)
-            {
-                int confidenceLevel = (int)lblConfidenceLevel.Content;
-
-                int left = ((int)lblConfidenceLevel.Content * 3) + getExtraLeftSpace(confidenceLevel);
-                this.lblConfidenceLevel.Margin = new Thickness(left, -15, 0, 0);
-            }
         }
 
         private void ZoomScaleLevel_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

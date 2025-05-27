@@ -1717,19 +1717,33 @@ namespace Dynamo.Controls
             }));
         }
 
-        private void ViewModel_RequestAutoCompletePopupPlacementTarget(Popup popup)
+        private Point PointToLocal(double x, double y, UIElement target)
         {
-            popup.PlacementTarget = this;
+            Point positionFromScreen = target.PointToScreen(new Point(x, y));
+            PresentationSource source = PresentationSource.FromVisual(target);
+            Point targetPoints = source.CompositionTarget.TransformFromDevice.Transform(positionFromScreen);
+            return targetPoints;
+        }
 
-            ViewModel.ActualHeight = ActualHeight;
-            ViewModel.ActualWidth = ActualWidth;
+        private void ViewModel_RequestAutoCompletePopupPlacementTarget(Window window, PortModel portModel, double spacing)
+        {
+            if (portModel.PortType == PortType.Input)
+            {
+                var portView = inputPortControl.ItemContainerGenerator.ContainerFromIndex(portModel.Index) as FrameworkElement;
+                window.Top = PointToLocal(0, 0, portView).Y;
+                window.Left = PointToLocal(0, 0, this).X - window.Width - spacing;
+            }
+            else
+            {
+                var portView = outputPortControl.ItemContainerGenerator.ContainerFromIndex(portModel.Index) as FrameworkElement;
+                window.Top = PointToLocal(0, 0, portView).Y;
+                window.Left = PointToLocal(ActualWidth, 0, this).X + spacing;
+            }
         }
 
         private void ViewModel_RequestClusterAutoCompletePopupPlacementTarget(Window window, double spacing)
         {
-            Point positionFromScreen = PointToScreen(new Point(0, this.ActualHeight));
-            PresentationSource source = PresentationSource.FromVisual(this);
-            Point targetPoints = source.CompositionTarget.TransformFromDevice.Transform(positionFromScreen);
+            Point targetPoints = PointToLocal(0, ActualHeight, this);
                 
             window.Left = targetPoints.X;
             window.Top = targetPoints.Y + spacing;
