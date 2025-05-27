@@ -580,6 +580,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 #if DEBUG
             dynamoViewModel?.Model?.Logger?.Log(LogMessage.Info($"DNA Request: \n {jsonRequest}"));
 #endif
+
             T results = default;
             try
             {
