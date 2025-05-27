@@ -3230,7 +3230,7 @@ Tato umístění můžete spravovat v části Předvolby -&gt; Zabezpečení.</v
     <value>Vedle každého doporučeného uzlu se zobrazí úroveň spolehlivosti, která představuje odhadovanou pravděpodobnost, že uzel je vhodnou volbou. Pokud je tato možnost zapnuta, skryjí se doporučené uzly, které nesplňují zadanou úroveň spolehlivosti. Chcete-li takové uzly zobrazit, klikněte na záhlaví Nízká spolehlivost.</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Počet výsledků</value>
+    <value>Number of results for Recommended Nodes</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Importovat</value>
@@ -3791,7 +3791,7 @@ Chcete-li vytvořit z tohoto souboru novou šablonu, uložte ho do jiné složky
     <value>Zpět na výběr souboru</value>
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
-    <value>This group is frozen. Click to unfreeze.</value>
+    <value>Tato skupina je zmrazená. Kliknutím ji rozmrazíte.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

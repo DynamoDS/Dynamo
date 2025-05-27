@@ -4818,9 +4818,9 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndexGroups(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.IndexGroup})">
-            <summary>Utwórz siatkę z kolekcji punktów oraz kolekcji IndexGroups odwołujących się do kolekcji punktów</summary>
+            <summary>Utwórz siatkę z kolekcji punktów oraz kolekcji elementów IndexGroup odwołujących się do kolekcji punktów</summary>
             <param name="points">Lista punktów</param>
-            <param name="indexGroups">Index groups for points</param>
+            <param name="indexGroups">Grupy indeksów dla punktów</param>
             <returns>Siatka</returns>
             <search>
             mesh,meshes
@@ -4853,10 +4853,10 @@
             trzech punktów trójkąta</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
-            <summary>Create a new Mesh from supplied points and indices. Points should 
-            not overlap. Indices should be sets of three integers 
-            indicating the three locations in the points array
-            of the three points of a triangle</summary>
+            <summary>Utwórz nową siatkę z podanych punktów i indeksów. Punkty nie powinny 
+            się nakładać. Indeksy powinny być zestawami trzech liczb całkowitych 
+            wskazujących trzy lokalizacje w szyku punktów
+            trzech punktów trójkąta</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Plane(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32)">
             <summary>Utwórz płaszczyznę siatki na podstawie bieżących ustawień.</summary>
@@ -5610,10 +5610,10 @@
             <summary>Wyszukuje zlokalizowany ciąg podobny do Wartość {0} jest mniejsza niż zero.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_bypointsfaceindices_deprecated">
-            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use  Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[]) instead.</summary>
+            <summary>Wyszukuje zlokalizowany ciąg podobny do: Ta metoda została wycofana i zostanie usunięta w przyszłej wersji dodatku Dynamo. Zamiast tego użyj metody Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[]).</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_byverticesandindices_deprecated">
-            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Mesh.ByPointsIndices (Point[] points, Indices : int[]) instead.</summary>
+            <summary>Wyszukuje zlokalizowany ciąg podobny do: Ta metoda została wycofana i zostanie usunięta w przyszłej wersji dodatku Dynamo. Zamiast tego użyj metody Mesh.ByPointsIndices (Point[] points, Indices : int[]).</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.MeshPrecisionInfo">
             <summary>Wyszukuje zlokalizowany ciąg podobny do: Węzły Mesh korzystają z dokładności 32-bitowej (7 miejsc po przecinku), co może prowadzić do błędów zaokrągleń w przypadku dużych liczb lub liczb z więcej niż 7 miejscami po przecinku. Aby uzyskać większą dokładność (64-bitową, 15 miejsc po przecinku), użyj węzłów z biblioteki Geometry.</summary>

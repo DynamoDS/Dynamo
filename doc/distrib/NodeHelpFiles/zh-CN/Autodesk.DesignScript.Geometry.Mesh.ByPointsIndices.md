@@ -1,7 +1,7 @@
 ## 详细
-`Mesh.ByPointsIndices` takes a list of `Points`, representing the `vertices` of the mesh triangles, and a list of `indices`, representing how the mesh is stitched together, and creates a new mesh. The `points` input should be a flat list of unique vertices in the mesh. The `indices` input should be a flat list of integers. Each set of three integers designates a triangle in the mesh. The integers specify the index of the vertex in the vertices list. The indices input should be 0-indexed, with the first point of the vertices list having the index 0.
+“Mesh.ByPointsIndices”获取一列“点”(表示网格三角形的“顶点”)和一列“索引”(表示如何缝合网格，然后创建新网格)。“点” 输入应该是网格中唯一顶点的平面列表。“索引”输入应是一个整数的平面列表。每组三个整数用于指定网格中的一个三角形。整数指定顶点列表中顶点的索引。索引输入的索引应为 0，顶点列表的第一个点的索引为 0。
 
-In the example below, a `Mesh.ByPointsIndices` node is used to create a mesh using a list of nine `points` and a list of 36 `indices`, specifying the vertex combination for each of the 12 triangles of the mesh.
+在下面的示例中，“Mesh.ByPointsIndices”节点用于使用一列 9 个“点”和 36 个“索引”列表创建一个网格，并为网格的 12 个三角形中的每个三角形指定顶点组合。
 
 ## 示例文件
 
