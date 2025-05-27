@@ -457,7 +457,7 @@ namespace Dynamo.ViewModels
                 if (authProvider is IOAuth2AuthProvider oauth2AuthProvider && authProvider is IOAuth2AccessTokenProvider tokenprovider)
                 {
                     var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
-                    var options = new RestClientOptions(uri) { Timeout = new TimeSpan(0, 0, 7) };;
+                    var options = new RestClientOptions(uri) { Timeout = new TimeSpan(0, 0, 7) };
                     var client = new RestClient(options);
                     var request = new RestRequest(string.Empty,Method.Post);
 
