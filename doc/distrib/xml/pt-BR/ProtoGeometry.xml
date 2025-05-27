@@ -4793,9 +4793,9 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndexGroups(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.IndexGroup})">
-            <summary>Cria uma malha a partir de uma coleção de pontos e uma coleção de grupos de indexação referenciando a coleção de pontos</summary>
+            <summary>Crie uma malha com base em uma coleção de pontos e uma coleção de IndexGroups referenciando a coleção de pontos</summary>
             <param name="points">Lista de pontos</param>
-            <param name="indexGroups">Index groups for points</param>
+            <param name="indexGroups">Indexar grupos de pontos</param>
             <returns>Malha</returns>
             <search>
             mesh,meshes
@@ -4828,10 +4828,10 @@
             dos três pontos de um triângulo</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
-            <summary>Create a new Mesh from supplied points and indices. Points should 
-            not overlap. Indices should be sets of three integers 
-            indicating the three locations in the points array
-            of the three points of a triangle</summary>
+            <summary>Crie uma nova malha com base em pontos e índices fornecidos. Os pontos não devem 
+            se sobrepor. Os índices devem ser conjuntos de três números inteiros 
+            indicando as três localizações na matriz de pontos
+            dos três pontos de um triângulo</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Plane(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32)">
             <summary>Criar um plano de malha com base nas configurações atuais.</summary>
@@ -5586,10 +5586,10 @@ Basicamente, a malha é preenchida com várias pequenas caixas, e uma nova
             <summary>A pesquisa de sequência de caracteres localizada similar a {0} é menor que zero.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_bypointsfaceindices_deprecated">
-            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use  Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[]) instead.</summary>
+            <summary>Procura uma sequência de caracteres localizada semelhante a "Esse método está obsoleto e será removido em uma versão futura do Dynamo. Use Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[])”.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_byverticesandindices_deprecated">
-            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Mesh.ByPointsIndices (Point[] points, Indices : int[]) instead.</summary>
+            <summary>Procura uma sequência de caracteres localizada semelhante a "Esse método está obsoleto e será removido em uma versão futura do Dynamo. Use Mesh.ByPointsIndices (Point[] points, Indices : int[])”.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.MeshPrecisionInfo">
             <summary>Procura uma sequência de caracteres localizada similar a “Os nós de malha usam precisão de 32 bits (7 casas decimais), o que pode levar a erros de arredondamento com números grandes ou números com mais de 7 casas decimais. Para maior precisão (64 bits, 15 casas decimais), use nós da biblioteca Geometria”.</summary>

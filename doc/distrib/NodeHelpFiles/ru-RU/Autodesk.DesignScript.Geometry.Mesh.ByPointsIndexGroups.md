@@ -1,5 +1,5 @@
 ## Подробности
-ByPointsIndexGroups will return a Mesh based on input vertices as Points and input indices. In the example below, a four-sided Mesh is created with four Points and an IndexGroup of four indices.
+ByPointsIndexGroups возвращает сеть на основе входных вершин в виде точек и входных индексов. В приведенном ниже примере создается четырехсторонняя сеть с четырьмя точками и объектом IndexGroup из четырех индексов.
 ___
 ## Файл примера
 

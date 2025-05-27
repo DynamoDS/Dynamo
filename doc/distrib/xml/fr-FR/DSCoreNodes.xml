@@ -1608,16 +1608,16 @@ Recherchez "Chaînes de format de date et d'heure personnalisées MSDN" pour obt
             <summary>Recherche une chaîne localisée similaire à Les données de couleur fournies sont trop grandes pour tenir dans les limites de l'image.</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.CurveMapperEqualMinMaxWarning">
-            <summary>Looks up a localized string similar to • Min and Max values must be different..</summary>
+            <summary>Recherche une chaîne localisée similaire à • Les valeurs Min et Max doivent être différentes.</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCountWarning">
-            <summary>Looks up a localized string similar to • Values must be a list of numbers or a single number ≥ 2..</summary>
+            <summary>Recherche une chaîne localisée similaire à • Les valeurs doivent être indiquées sous forme de liste de nombres ou en un seul nombre ≥ 2.</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCurveWarning">
-            <summary>Looks up a localized string similar to • Control points for the selected curve are not valid..</summary>
+            <summary>Recherche une chaîne localisée semblable à • Les points de contrôle de la courbe sélectionnée ne sont pas valides.</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.CurveMapperInvalidXYFormatWarning">
-            <summary>Looks up a localized string similar to • X and Y inputs must be single numbers (not lists)..</summary>
+            <summary>Recherche une chaîne localisée similaire à • Les entrées X et Y doivent être des nombres uniques (et non des listes).</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
             <summary>Recherche une chaîne localisée similaire à "L'entrée doit être une valeur unique ou une liste non imbriquée.".</summary>

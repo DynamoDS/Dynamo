@@ -1605,16 +1605,16 @@
             <summary>「指定されたカラー データは大きすぎるため、イメージの境界に収まりません」に類似するローカライズされた文字列を検索します。</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.CurveMapperEqualMinMaxWarning">
-            <summary>Looks up a localized string similar to • Min and Max values must be different..</summary>
+            <summary>「• 最小値と最大値は異なる値である必要があります。」に類似するローカライズされた文字列を検索します。</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCountWarning">
-            <summary>Looks up a localized string similar to • Values must be a list of numbers or a single number ≥ 2..</summary>
+            <summary>「• 値は数値のリストまたは ≥ 2 の単一の数値である必要があります。」に類似するローカライズされた文字列を検索します。</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCurveWarning">
-            <summary>Looks up a localized string similar to • Control points for the selected curve are not valid..</summary>
+            <summary>「• 選択した曲線の制御点が無効です。」に類似するローカライズされた文字列を検索します。</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.CurveMapperInvalidXYFormatWarning">
-            <summary>Looks up a localized string similar to • X and Y inputs must be single numbers (not lists)..</summary>
+            <summary>「• X と Y の入力値は(リストではなく)単一の数値である必要があります。」に類似するローカライズされた文字列を検索します。</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
             <summary>「入力は単一の値またはネストされていないリストである必要があります」に類似するローカライズされた文字列を検索します。</summary>
