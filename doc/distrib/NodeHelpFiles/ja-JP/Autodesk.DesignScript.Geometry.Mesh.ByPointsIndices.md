@@ -1,7 +1,7 @@
 ## 詳細
-`Mesh.ByPointsIndices` takes a list of `Points`, representing the `vertices` of the mesh triangles, and a list of `indices`, representing how the mesh is stitched together, and creates a new mesh. The `points` input should be a flat list of unique vertices in the mesh. The `indices` input should be a flat list of integers. Each set of three integers designates a triangle in the mesh. The integers specify the index of the vertex in the vertices list. The indices input should be 0-indexed, with the first point of the vertices list having the index 0.
+`Mesh.ByPointsIndices` は、三角形のメッシュにおける `vertices` を表す `Points` のリストと、メッシュのステッチ方法を表す `indices` のリストを受け取り、新しいメッシュを作成します。`points` 入力は、メッシュ内における一意の頂点のフラット リストである必要があります。`indices` 入力は整数のフラット リストである必要があります。3 つの整数の各セットは、メッシュ内の三角形を表します。その整数は、vertices リスト内の頂点のインデックスを指定します。indices 入力はゼロから始まり、vertices リストにおける最初の点のインデックスはゼロである必要があります。
 
-In the example below, a `Mesh.ByPointsIndices` node is used to create a mesh using a list of nine `points` and a list of 36 `indices`, specifying the vertex combination for each of the 12 triangles of the mesh.
+次の例では、`Mesh.ByPointsIndices` ノードを使用して、9 個の `points` リストと 36 個の `indices` のリストを使用してメッシュを作成しています。この `indices` リストは、メッシュの 12 個の各三角形における頂点の組み合わせを指定します。
 
 ## サンプル ファイル
 

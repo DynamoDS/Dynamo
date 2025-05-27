@@ -1,7 +1,7 @@
 ## Profondeur
-`Mesh.ByPointsIndices` takes a list of `Points`, representing the `vertices` of the mesh triangles, and a list of `indices`, representing how the mesh is stitched together, and creates a new mesh. The `points` input should be a flat list of unique vertices in the mesh. The `indices` input should be a flat list of integers. Each set of three integers designates a triangle in the mesh. The integers specify the index of the vertex in the vertices list. The indices input should be 0-indexed, with the first point of the vertices list having the index 0.
+'Mesh.ByPointsIndices' prend une liste de 'Points', représentant les 'sommets' des triangles de maillage et une liste contenant des 'index', représentant la façon dont le maillage est assemblé, et crée un nouveau maillage. L'entrée 'points' doit être une liste simple de sommets uniques dans le maillage. L'entrée 'index' doit être une liste simple d'entiers. Chaque ensemble de trois entiers désigne un triangle dans le maillage. Les entiers spécifient l'index du sommet dans la liste des sommets. L'entrée d'index doit être indexée à 0, le premier point de la liste des sommets ayant l'index 0.
 
-In the example below, a `Mesh.ByPointsIndices` node is used to create a mesh using a list of nine `points` and a list of 36 `indices`, specifying the vertex combination for each of the 12 triangles of the mesh.
+Dans l'exemple ci-dessous, un noeud 'Mesh.ByPointsIndices' est utilisé pour créer un maillage à l'aide d'une liste de neuf 'points' et d'une liste de 36 'index', en spécifiant la combinaison de sommets pour chacun des 12 triangles du maillage.
 
 ## Exemple de fichier
 

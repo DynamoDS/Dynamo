@@ -1,7 +1,7 @@
 ## Подробности
-`Mesh.ByPointsIndices` takes a list of `Points`, representing the `vertices` of the mesh triangles, and a list of `indices`, representing how the mesh is stitched together, and creates a new mesh. The `points` input should be a flat list of unique vertices in the mesh. The `indices` input should be a flat list of integers. Each set of three integers designates a triangle in the mesh. The integers specify the index of the vertex in the vertices list. The indices input should be 0-indexed, with the first point of the vertices list having the index 0.
+`Mesh.ByPointsIndices` принимает список значений `Points`, которые представляют вершины (`vertices`) треугольников сети, и список `indices`, представляющий способ сшивания сети, и создает сеть. Входной параметр `points` должен содержать неструктурированный список уникальных вершин в сети. Входной параметр `indices` должен содержать неструктурированный список целых чисел. Каждое множество из трех целых чисел определяет треугольник в сети. Целые числа обозначают индекс вершины в списке вершин. Входной параметр indices должен начинаться индексом 0, т. е. первая точка в списке вершин должна иметь индекс 0.
 
-In the example below, a `Mesh.ByPointsIndices` node is used to create a mesh using a list of nine `points` and a list of 36 `indices`, specifying the vertex combination for each of the 12 triangles of the mesh.
+В приведенном ниже примере с помощью узла `Mesh.ByPointsIndices` создается сеть на основе списка из девяти точек (`points`) и списка из 36 индексов (`indices`), представляющих собой комбинацию вершин для каждого из 12 треугольников сети.
 
 ## Файл примера
 

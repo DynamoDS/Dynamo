@@ -59,9 +59,10 @@ jobs:
           else
             BRANCH_NAME="RC${MILESTONE}_master"
           fi
-          echo "Branch name: $BRANCH_NAME"
+          echo "Branch Name: $BRANCH_NAME"
           echo "BRANCH_NAME=$BRANCH_NAME" >> "$GITHUB_OUTPUT"
-          BRANCH_URL="https://api.github.com/repos/${{ github.repository }}/branches/RC${{ steps.check_constants.outputs.milestone }}.0_master"
+          BRANCH_URL="https://api.github.com/repos/${{ github.repository }}/branches/$BRANCH_NAME"
+          echo "Branch URL: $BRANCH_URL" 
           branch_response=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: token ${{ secrets.GITHUB_TOKEN }}" $BRANCH_URL)
           echo $branch_response
           if [ $branch_response -eq 200 ]; then
