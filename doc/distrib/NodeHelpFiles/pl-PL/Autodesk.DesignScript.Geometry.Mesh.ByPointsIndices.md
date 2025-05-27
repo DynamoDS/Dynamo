@@ -1,7 +1,7 @@
 ## Informacje szczegółowe
-`Mesh.ByPointsIndices` takes a list of `Points`, representing the `vertices` of the mesh triangles, and a list of `indices`, representing how the mesh is stitched together, and creates a new mesh. The `points` input should be a flat list of unique vertices in the mesh. The `indices` input should be a flat list of integers. Each set of three integers designates a triangle in the mesh. The integers specify the index of the vertex in the vertices list. The indices input should be 0-indexed, with the first point of the vertices list having the index 0.
+Węzeł `Mesh.ByPointsIndices` pobiera listę punktów (`Points`) reprezentujących wierzchołki `vertices` trójkątów siatki oraz listę indeksów `indices` reprezentującą sposób zszywania siatki i tworzy nową siatkę. Pozycja danych wejściowych `points` powinna być płaską listą unikatowych wierzchołków w siatce. Pozycja danych wejściowych `indices` powinna być płaską listą liczb całkowitych. Każdy zestaw trzech liczb całkowitych wyznacza trójkąt w siatce. Liczby całkowite określają indeks wierzchołka na liście wierzchołków. Dane wejściowe indeksów powinny być indeksowane od 0 i pierwszy punkt listy wierzchołków powinien mieć indeks 0.
 
-In the example below, a `Mesh.ByPointsIndices` node is used to create a mesh using a list of nine `points` and a list of 36 `indices`, specifying the vertex combination for each of the 12 triangles of the mesh.
+W poniższym przykładzie węzeł `Mesh.ByPointsIndices` tworzy siatkę przy użyciu listy dziewięciu punktów, `points`, i listy 36 indeksów, `indices`, określających kombinację wierzchołków dla każdego z 12 trójkątów siatki.
 
 ## Plik przykładowy
 

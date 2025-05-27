@@ -1,7 +1,7 @@
 ## In profondità
-`Mesh.ByPointsIndices` takes a list of `Points`, representing the `vertices` of the mesh triangles, and a list of `indices`, representing how the mesh is stitched together, and creates a new mesh. The `points` input should be a flat list of unique vertices in the mesh. The `indices` input should be a flat list of integers. Each set of three integers designates a triangle in the mesh. The integers specify the index of the vertex in the vertices list. The indices input should be 0-indexed, with the first point of the vertices list having the index 0.
+`Mesh.ByPointsIndices` utilizza un elenco di `Points`, che rappresentano i `vertices` dei triangoli della mesh, e un elenco di `indices`, che rappresentano il modo in cui la mesh viene unita insieme, e crea una nuova mesh. L'input `points` deve essere un elenco semplice di vertici univoci nella mesh. L'input `indices` deve essere un elenco semplice di numeri interi. Ogni gruppo di tre numeri interi indica un triangolo nella mesh. I numeri interi specificano l'indice del vertice nell'elenco dei vertici. L'input indices deve essere indicizzato in base 0, dove il primo punto dell'elenco dei vertici ha l'indice 0.
 
-In the example below, a `Mesh.ByPointsIndices` node is used to create a mesh using a list of nine `points` and a list of 36 `indices`, specifying the vertex combination for each of the 12 triangles of the mesh.
+Nell'esempio seguente, viene utilizzato un nodo `Mesh.ByPointsIndices` per creare una mesh utilizzando un elenco di nove `points` e un elenco di 36 `indices`, specificando la combinazione di vertici per ciascuno dei 12 triangoli della mesh.
 
 ## File di esempio
 

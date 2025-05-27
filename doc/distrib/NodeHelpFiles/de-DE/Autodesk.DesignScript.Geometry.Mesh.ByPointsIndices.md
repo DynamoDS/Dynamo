@@ -1,7 +1,7 @@
 ## Im Detail
-`Mesh.ByPointsIndices` takes a list of `Points`, representing the `vertices` of the mesh triangles, and a list of `indices`, representing how the mesh is stitched together, and creates a new mesh. The `points` input should be a flat list of unique vertices in the mesh. The `indices` input should be a flat list of integers. Each set of three integers designates a triangle in the mesh. The integers specify the index of the vertex in the vertices list. The indices input should be 0-indexed, with the first point of the vertices list having the index 0.
+`Mesh.ByPointsIndices` erstellt anhand einer Liste mit `Points`, die die `vertices` der Netzdreiecke repräsentieren, und einer Liste mit `indices`, die darstellen, wie das Netz zusammengefügt wird, ein neues Netz. Die Eingabe `points` muss eine einfache Liste eindeutiger Scheitelpunkte im Netz sein. Die Eingabe `indices` muss eine einfache Liste mit Ganzzahlen sein. Jeder Satz mit drei Ganzzahlen bezeichnet ein Dreieck im Netz. Die Ganzzahlen geben den Index des Scheitelpunkts in der Scheitelpunktliste an. Die Eingabe indices muss 0-indiziert sein, wobei der erste Punkt der Scheitelpunktliste den Index 0 aufweisen muss.
 
-In the example below, a `Mesh.ByPointsIndices` node is used to create a mesh using a list of nine `points` and a list of 36 `indices`, specifying the vertex combination for each of the 12 triangles of the mesh.
+Im folgenden Beispiel wird ein `Mesh.ByPointsIndices`-Block verwendet, um ein Netz anhand einer Liste mit neun `points` und einer Liste mit 36 `indices` zu erstellen, wobei die Scheitelpunktkombination für jedes der 12 Dreiecke des Netzes angegeben wird.
 
 ## Beispieldatei
 

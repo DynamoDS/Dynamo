@@ -1,5 +1,5 @@
 ## Description approfondie
-ByPointsIndexGroups will return a Mesh based on input vertices as Points and input indices. In the example below, a four-sided Mesh is created with four Points and an IndexGroup of four indices.
+ByPointsIndexGroups renvoie un maillage basé sur des sommets entrés sous forme de points et des index entrés. Dans l'exemple ci-dessous, un maillage à quatre côtés est créé avec quatre points et un IndexGroup de quatre index.
 ___
 ## Exemple de fichier
 

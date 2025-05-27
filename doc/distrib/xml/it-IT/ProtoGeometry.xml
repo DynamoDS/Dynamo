@@ -4796,7 +4796,7 @@
             <summary>Ottiene una rappresentazione stringa della mesh</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsFaceIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.IndexGroup})">
-            <summary>Crea una mesh da una raccolta di punti e una raccolta di IndexGroup che fanno riferimento alla raccolta di punti</summary>
+            <summary>Crea una mesh da una raccolta di punti e una raccolta di IndexGroup che fanno riferimento alla raccolta di punti.</summary>
             <param name="vertexPositions">Elenco di punti che determinano le posizioni dei vertici</param>
             <param name="indices">Indici per vertici</param>
             <returns>Mesh creata da punti</returns>
@@ -4805,10 +4805,10 @@
             </search>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndexGroups(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.IndexGroup})">
-            <summary>Crea una mesh da una raccolta di punti e una raccolta di IndexGroup che fanno riferimento alla raccolta di punti</summary>
+            <summary>Crea una mesh da una raccolta di punti e una raccolta di IndexGroup che fanno riferimento alla raccolta di punti.</summary>
             <param name="points">Elenco di punti</param>
-            <param name="indexGroups">Index groups for points</param>
-            <returns>Retino</returns>
+            <param name="indexGroups">Gruppi di indici per punti</param>
+            <returns>Mesh</returns>
             <search>
             mesh,meshes
             </search>
@@ -4840,10 +4840,10 @@
             dei tre punti di un triangolo.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
-            <summary>Create a new Mesh from supplied points and indices. Points should 
-            not overlap. Indices should be sets of three integers 
-            indicating the three locations in the points array
-            of the three points of a triangle</summary>
+            <summary>Crea una nuova mesh dai punti e dagli indici forniti. I punti non devono 
+            sovrapporsi. Gli indici devono essere gruppi di tre numeri interi 
+            che indicano le tre posizioni nella matrice di punti
+            dei tre punti di un triangolo.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Plane(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32)">
             <summary>Crea un piano mesh in base alle impostazioni correnti.</summary>
@@ -5597,10 +5597,10 @@
             <summary>Cerca una stringa localizzata simile a L'elemento {0} è minore di zero.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_bypointsfaceindices_deprecated">
-            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use  Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[]) instead.</summary>
+            <summary>Cerca una stringa localizzata simile a Questo metodo è obsoleto e verrà rimosso in una versione futura di Dynamo. Utilizzare Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[]).</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_byverticesandindices_deprecated">
-            <summary>Looks up a localized string similar to This method is deprecated and will be removed in a future version of Dynamo. Use Mesh.ByPointsIndices (Point[] points, Indices : int[]) instead.</summary>
+            <summary>Cerca una stringa localizzata simile a Questo metodo è obsoleto e verrà rimosso in una versione futura di Dynamo. Utilizzare Mesh.ByPointsIndices (Point[] points, Indices : int[]).</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.MeshPrecisionInfo">
             <summary>Cerca una stringa localizzata simile a I nodi della mesh utilizzano una precisione di 32 bit (7 cifre decimali), che può portare a errori di arrotondamento con numeri grandi o con più di 7 cifre decimali. Per una precisione maggiore (64 bit, 15 cifre decimali), utilizzare i nodi della libreria della geometria.</summary>

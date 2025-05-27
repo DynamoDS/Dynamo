@@ -1,5 +1,5 @@
 ## In profondità
-ByPointsIndexGroups will return a Mesh based on input vertices as Points and input indices. In the example below, a four-sided Mesh is created with four Points and an IndexGroup of four indices.
+ByPointsIndexGroups restituirà una mesh in base ai vertici di input come punti e indici di input. Nell'esempio seguente, viene creata una mesh a quattro lati con quattro punti e un IndexGroup di quattro indici.
 ___
 ## File di esempio
 
