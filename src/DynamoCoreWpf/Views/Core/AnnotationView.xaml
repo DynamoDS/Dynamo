@@ -586,7 +586,7 @@
             </ContextMenu>
         </Grid.ContextMenu>
 
-        <!--  Frozen button on zoomed out  -->
+        <!--  Frozen button on zoomed out  --><!--
         <Grid
             Grid.Row="0"
             Grid.RowSpan="2"
@@ -619,7 +619,7 @@
                     </ToolTip>
                 </Button.ToolTip>
             </Button>
-        </Grid>
+        </Grid>-->
 
         <!--Persistent border shows around the entire group at all time-->
         <Border Name="persistentBorder"

@@ -17,6 +17,12 @@ using Dynamo.Wpf.Utilities;
 using Dynamo.Graph.Annotations;
 using Dynamo.Logging;
 using Dynamo.Configuration;
+using Dynamo.Controls;
+using Dynamo.Views;
+using Thickness = System.Windows.Thickness;
+using System.Windows.Media.Imaging;
+using Dynamo.Microsoft.Xaml.Behaviors;
+using static Dynamo.ViewModels.SearchViewModel;
 
 namespace Dynamo.Nodes
 {
@@ -25,8 +31,27 @@ namespace Dynamo.Nodes
     /// </summary>
     public partial class AnnotationView : IViewModelView<AnnotationViewModel>
     {
+        //public Grid annotationGrid;
+        private Grid frozenButtonZoomedOutGrid;
+
+        //Converters
+        private static ZoomToVisibilityCollapsedConverter _zoomToVisibilityCollapsedConverter = new ZoomToVisibilityCollapsedConverter();
+
+        //Styles
+        private static Style _createGenericToolTipLightStyle = CreateGenericToolTipLightStyle();
+
+        //Images
+        private static readonly BitmapImage _frozenDarkImage = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/Annotations/frozen-dark-64px.png"));
+        private static readonly BitmapImage _frozenHoverImage = new BitmapImage(new Uri("pack://application:,,,/DynamoCoreWpf;component/UI/Images/Annotations/frozen-hover-64px.png"));
+
         public AnnotationViewModel ViewModel { get; private set; }
         public static DependencyProperty SelectAllTextOnFocus;
+        static AnnotationView()
+        {
+            // Freeze the bitmaps to improve performance
+            _frozenDarkImage.Freeze();
+            _frozenHoverImage.Freeze();
+        }
         public AnnotationView()
         {
             Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoModernDictionary);
@@ -35,6 +60,19 @@ namespace Dynamo.Nodes
             Resources.MergedDictionaries.Add(SharedDictionaryManager.DynamoConvertersDictionary);
 
             InitializeComponent();
+            InitializeUI();
+            //// Create the Grid
+            //annotationGrid = new Grid
+            //{
+            //    Name = "AnnotationGrid",
+            //    Height = Double.NaN, // "Auto" in XAML is Double.NaN in C#
+            //    IsHitTestVisible = true
+            //};
+
+            //// Add RowDefinitions
+            //annotationGrid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            //annotationGrid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
+
             Unloaded += AnnotationView_Unloaded;
             Loaded += AnnotationView_Loaded;
             DataContextChanged += AnnotationView_DataContextChanged;
@@ -45,6 +83,11 @@ namespace Dynamo.Nodes
             // to IsVisibleChanged. Both of these handlers will set the ModelAreaHeight on the ViewModel
             this.CollapsedAnnotationRectangle.SizeChanged += CollapsedAnnotationRectangle_SizeChanged;
             this.CollapsedAnnotationRectangle.IsVisibleChanged += CollapsedAnnotationRectangle_IsVisibleChanged;
+        }
+
+        private void InitializeUI()
+        {
+            AnnotationGrid.Children.Add(CreateFrozenButtonZoomedOutGrid());
         }
 
         private void AnnotationView_Unloaded(object sender, RoutedEventArgs e)
@@ -78,9 +121,236 @@ namespace Dynamo.Nodes
                     SetTextMaxWidth();
                     SetTextHeight();
                 }
-
                 ViewModel.UpdateProxyPortsPosition();
+
+                if (frozenButtonZoomedOutGrid != null)
+                {
+                    var frozenButton = frozenButtonZoomedOutGrid.Children.OfType<Button>().FirstOrDefault();
+                    if (frozenButton != null)
+                    {
+                        // Create the trigger for the button click
+                        var mouseLeftButtonDownTrigger = new Dynamo.UI.Views.HandlingEventTrigger()
+                        {
+                            EventName = "Click"
+                        };
+
+                        // Create the command action
+                        var mouseLeftButtonDownAction = new InvokeCommandAction()
+                        {
+                            Command = ViewModel.ToggleIsFrozenGroupCommand
+                        };
+
+                        // Add the action to the trigger
+                        mouseLeftButtonDownTrigger.Actions.Add(mouseLeftButtonDownAction);
+
+                        // Add the trigger to the button
+                        Dynamo.Microsoft.Xaml.Behaviors.Interaction.GetTriggers(frozenButton).Add(mouseLeftButtonDownTrigger);
+
+                        // Set the button template
+                        frozenButton.Template = (ControlTemplate)FindResource("FrozenButtonZoomedOutTemplate");
+                    }
+                }
             }
+        }
+
+        private Grid CreateFrozenButtonZoomedOutGrid()
+        {
+            var grid = new Grid
+            {
+                Name = "FrozenButtonGrid"
+            };
+            Grid.SetRow(grid, 0);
+            Grid.SetRowSpan(grid, 2);
+            Grid.SetColumn(grid, 0);
+            Grid.SetColumnSpan(grid, 4);
+            Panel.SetZIndex(grid, 1);
+
+            // Create the Style for the Grid
+            var gridStyle = new Style(typeof(Grid));
+            gridStyle.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Collapsed));
+
+            // MultiDataTrigger
+            var multiTrigger = new MultiDataTrigger();
+
+            // Condition 1: DataContext.AnnotationModel.IsFrozen == true
+            multiTrigger.Conditions.Add(new Condition
+            {
+                Binding = new Binding("DataContext.AnnotationModel.IsFrozen")
+                {
+                    RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(UserControl), 1)
+                },
+                Value = true
+            });
+
+            // Condition 2: DataContext.IsExpanded == false
+            multiTrigger.Conditions.Add(new Condition
+            {
+                Binding = new Binding("DataContext.IsExpanded")
+                {
+                    RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(UserControl), 1)
+                },
+                Value = false
+            });
+
+            // Condition 3: DataContext.Zoom (with converter) == Visible
+            multiTrigger.Conditions.Add(new Condition
+            {
+                Binding = new Binding("DataContext.Zoom")
+                {
+                    RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
+                    Converter = _zoomToVisibilityCollapsedConverter
+                },
+                Value = Visibility.Visible
+            });
+
+            // Setter for the trigger
+            multiTrigger.Setters.Add(new Setter(UIElement.VisibilityProperty, Visibility.Visible));
+
+            // Add the trigger to the style
+            gridStyle.Triggers.Add(multiTrigger);
+
+            // Assign the style to the grid
+            grid.Style = gridStyle;
+
+            // Create the Button
+            var button = new Button
+            {
+                Width = 64,
+                Height = 64,
+                Template = CreateFrozenButtonZoomedOutTemplate(),
+            };
+
+            // Create the ToolTip
+            var toolTip = new ToolTip
+            {
+                Style = _createGenericToolTipLightStyle,
+                Content = new TextBlock
+                {
+                    Text = Wpf.Properties.Resources.GroupFrozenButtonToolTip
+                }
+            };
+            button.ToolTip = toolTip;
+
+            // Add the Button to the Grid
+            grid.Children.Add(button);
+            frozenButtonZoomedOutGrid = grid;
+            return frozenButtonZoomedOutGrid;
+        }
+        private static Style CreateGenericToolTipLightStyle()
+        {
+            // Main Style for ToolTip
+            var style = new Style(typeof(ToolTip));
+            style.Setters.Add(new Setter(System.Windows.Controls.ToolTip.OverridesDefaultStyleProperty, true));
+            style.Setters.Add(new Setter(System.Windows.Controls.ToolTip.MaxWidthProperty, 300.0));
+
+            // ControlTemplate for ToolTip
+            var template = new ControlTemplate(typeof(ToolTip));
+            var popupGrid = new FrameworkElementFactory(typeof(Grid));
+            popupGrid.Name = "PopupGrid";
+
+            var shadowBackground = new FrameworkElementFactory(typeof(Grid));
+            shadowBackground.Name = "ShadowBackground";
+            shadowBackground.SetValue(Grid.BackgroundProperty, Brushes.Transparent);
+
+            // Path (pointer)
+            var pointerPath = new FrameworkElementFactory(typeof(Path));
+            pointerPath.SetValue(Path.WidthProperty, 20.0);
+            pointerPath.SetValue(Path.HeightProperty, 6.0);
+            pointerPath.SetValue(Path.MarginProperty, new Thickness(5, 0, 0, 0));
+            pointerPath.SetValue(Path.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+            pointerPath.SetValue(Path.VerticalAlignmentProperty, VerticalAlignment.Top);
+            pointerPath.SetValue(Path.DataProperty, Geometry.Parse("M0,6 L6,0 12,6Z"));
+            pointerPath.SetValue(Path.FillProperty, Brushes.White);
+            pointerPath.SetValue(Path.StretchProperty, Stretch.None);
+            pointerPath.SetValue(Path.StrokeProperty, Brushes.Gray);
+
+            // Main Border
+            var mainBorder = new FrameworkElementFactory(typeof(Border));
+            mainBorder.SetValue(Border.MarginProperty, new Thickness(0, 5, 7, 7));
+            mainBorder.SetValue(Border.PaddingProperty, new Thickness(10, 8, 10, 8));
+            mainBorder.SetValue(Border.BackgroundProperty, Brushes.White);
+            mainBorder.SetValue(Border.BorderBrushProperty, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#999999")));
+            mainBorder.SetValue(Border.BorderThicknessProperty, new Thickness(1, 0, 1, 1));
+            mainBorder.SetValue(Border.CornerRadiusProperty, new CornerRadius(3));
+            mainBorder.AppendChild(new FrameworkElementFactory(typeof(ContentPresenter)));
+
+            // Top Border
+            var topBorder = new FrameworkElementFactory(typeof(Border));
+            topBorder.SetValue(Border.HeightProperty, 7.0);
+            topBorder.SetValue(Border.MarginProperty, new Thickness(16, 5, 9, 0));
+            topBorder.SetValue(Border.HorizontalAlignmentProperty, HorizontalAlignment.Stretch);
+            topBorder.SetValue(Border.VerticalAlignmentProperty, VerticalAlignment.Top);
+            topBorder.SetValue(Border.BorderBrushProperty, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#999999")));
+            topBorder.SetValue(Border.BorderThicknessProperty, new Thickness(0, 1, 0, 0));
+            topBorder.SetValue(Border.CornerRadiusProperty, new CornerRadius(0, 0, 3, 0));
+
+            // Left Border
+            var leftBorder = new FrameworkElementFactory(typeof(Border));
+            leftBorder.SetValue(Border.WidthProperty, 6.0);
+            leftBorder.SetValue(Border.HeightProperty, 7.0);
+            leftBorder.SetValue(Border.MarginProperty, new Thickness(0, 5, 0, 0));
+            leftBorder.SetValue(Border.HorizontalAlignmentProperty, HorizontalAlignment.Left);
+            leftBorder.SetValue(Border.VerticalAlignmentProperty, VerticalAlignment.Top);
+            leftBorder.SetValue(Border.BorderBrushProperty, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#999999")));
+            leftBorder.SetValue(Border.BorderThicknessProperty, new Thickness(0, 1, 0, 0));
+            leftBorder.SetValue(Border.CornerRadiusProperty, new CornerRadius(3, 0, 0, 0));
+
+            // Compose visual tree
+            shadowBackground.AppendChild(pointerPath);
+            shadowBackground.AppendChild(mainBorder);
+            shadowBackground.AppendChild(topBorder);
+            shadowBackground.AppendChild(leftBorder);
+            popupGrid.AppendChild(shadowBackground);
+            template.VisualTree = popupGrid;
+
+            style.Setters.Add(new Setter(System.Windows.Controls.ToolTip.TemplateProperty, template));
+
+            // TextBlock style for ContentPresenter
+            var textBlockStyle = new Style(typeof(TextBlock));
+            textBlockStyle.Setters.Add(new Setter(TextBlock.TextWrappingProperty, TextWrapping.Wrap));
+            textBlockStyle.Setters.Add(new Setter(TextBlock.FontFamilyProperty, new FontFamily("Artifakt Element Regular"))); // Adjust as needed
+            textBlockStyle.Setters.Add(new Setter(TextBlock.FontSizeProperty, 12.0));
+            textBlockStyle.Setters.Add(new Setter(TextBlock.ForegroundProperty, new SolidColorBrush((Color)ColorConverter.ConvertFromString("#232323"))));
+
+            //var contentPresenterStyle = new Style(typeof(ContentPresenter));
+            //contentPresenterStyle.Resources.Add(typeof(TextBlock), textBlockStyle);
+
+            //style.Resources.Add(typeof(ContentPresenter), contentPresenterStyle);
+
+            return style;
+        }
+        private ControlTemplate CreateFrozenButtonZoomedOutTemplate()
+        {
+            var template = new ControlTemplate(typeof(Button));
+
+            var imageFactory = new FrameworkElementFactory(typeof(Image));
+            imageFactory.Name = "FrozenImageZoomedOut";
+            imageFactory.SetValue(Image.WidthProperty, new TemplateBindingExtension(Button.WidthProperty));
+            imageFactory.SetValue(Image.HeightProperty, new TemplateBindingExtension(Button.HeightProperty));
+            imageFactory.SetValue(Image.SourceProperty, _frozenDarkImage);
+
+            template.VisualTree = imageFactory;
+
+            var multiTrigger = new MultiDataTrigger();
+            multiTrigger.Conditions.Add(new Condition
+            {
+                Binding = new Binding("IsMouseOver")
+                {
+                    RelativeSource = new RelativeSource(RelativeSourceMode.Self)
+                },
+                Value = true
+            });
+
+            multiTrigger.Setters.Add(new Setter
+            {
+                TargetName = "FrozenImageZoomedOut",
+                Property = Image.SourceProperty,
+                Value = _frozenHoverImage
+            });
+
+            template.Triggers.Add(multiTrigger);
+
+            return template;
         }
 
         //Set the max width of text area based on the width of the longest word in the text
