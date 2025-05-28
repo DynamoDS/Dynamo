@@ -1926,6 +1926,8 @@ Dynamo.ViewModels.ConnectorViewModel.IsDataFlowCollection.set -> void
 Dynamo.ViewModels.ConnectorViewModel.IsFrozen.get -> bool
 Dynamo.ViewModels.ConnectorViewModel.IsHidden.get -> bool
 Dynamo.ViewModels.ConnectorViewModel.IsHidden.set -> void
+Dynamo.ViewModels.ConnectorViewModel.IsTransient.get -> bool
+Dynamo.ViewModels.ConnectorViewModel.IsTransient.set -> void
 Dynamo.ViewModels.ConnectorViewModel.IsTemporarilyDisplayed.get -> bool
 Dynamo.ViewModels.ConnectorViewModel.IsTemporarilyDisplayed.set -> void
 Dynamo.ViewModels.ConnectorViewModel.Left.get -> double
@@ -4343,8 +4345,6 @@ override Dynamo.ViewModels.ConnectorPinViewModel.IsCollapsed.set -> void
 override Dynamo.ViewModels.ConnectorViewModel.Dispose() -> void
 override Dynamo.ViewModels.ConnectorViewModel.IsCollapsed.get -> bool
 override Dynamo.ViewModels.ConnectorViewModel.IsCollapsed.set -> void
-override Dynamo.ViewModels.ConnectorViewModel.IsTransient.get -> bool
-override Dynamo.ViewModels.ConnectorViewModel.IsTransient.set -> void
 override Dynamo.ViewModels.InfoBubbleViewModel.Dispose() -> void
 override Dynamo.ViewModels.InfoBubbleViewModel.IsCollapsed.get -> bool
 override Dynamo.ViewModels.InfoBubbleViewModel.IsCollapsed.set -> void
