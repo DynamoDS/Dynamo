@@ -2469,6 +2469,7 @@ override Dynamo.Graph.Nodes.Info.ToString() -> string
 override Dynamo.Graph.Nodes.NodeInputData.Equals(object obj) -> bool
 override Dynamo.Graph.Nodes.NodeModel.Deselect() -> void
 override Dynamo.Graph.Nodes.NodeModel.DeserializeCore(System.Xml.XmlElement nodeElement, Dynamo.Graph.SaveContext context) -> void
+override Dynamo.Graph.Nodes.NodeModel.Dispose() -> void
 override Dynamo.Graph.Nodes.NodeModel.GUID.get -> System.Guid
 override Dynamo.Graph.Nodes.NodeModel.GUID.set -> void
 override Dynamo.Graph.Nodes.NodeModel.SerializeCore(System.Xml.XmlElement element, Dynamo.Graph.SaveContext context) -> void
