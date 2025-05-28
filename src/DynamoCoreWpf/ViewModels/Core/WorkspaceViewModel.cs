@@ -915,7 +915,10 @@ namespace Dynamo.ViewModels
 
         private void Model_NotesCleared()
         {
-            Notes.ToList().ForEach(noteViewModel => noteViewModel.Dispose());
+            foreach (var noteViewModel in Notes)
+            {
+                noteViewModel.Dispose();
+            }
             Notes.Clear();
         }
 
@@ -934,7 +937,10 @@ namespace Dynamo.ViewModels
 
         private void Model_AnnotationsCleared()
         {
-            Annotations.ToList().ForEach(annotationViewModel => annotationViewModel.Dispose());
+            foreach (var annotationViewModel in Annotations)
+            {
+                annotationViewModel.Dispose();
+            }
             Annotations.Clear();
         }
 
