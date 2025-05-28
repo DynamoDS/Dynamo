@@ -34,7 +34,7 @@
         </PackageReference>
     </ItemGroup>
     <ItemGroup>
-        <PackageReference Include="Greg" Version="3.0.2.6533">
+        <PackageReference Include="Greg" Version="3.0.2.8780">
           <PrivateAssets>all</PrivateAssets>
           <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>

@@ -37,7 +37,7 @@
       
     <PackageReference Include="Moq" Version="4.18.4" />
 	  <PackageReference Include="Cyotek.Drawing.BitmapFont" Version="2.0.0" />
-	  <PackageReference Include="Greg" Version="3.0.2.6533">
+	  <PackageReference Include="Greg" Version="3.0.2.8780">
 	    <PrivateAssets>all</PrivateAssets>
 	    <IncludeAssets>compile; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
 	  </PackageReference>
