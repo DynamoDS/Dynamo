@@ -1349,31 +1349,6 @@ namespace Dynamo.Graph.Nodes
             OutPorts.CollectionChanged += PortsCollectionChanged;
         }
 
-        private void SubscribeToPort(PortModel portModel)
-        {
-            portModel.PropertyChanged += OnPortPropertyChanged;
-
-            // eventHandler must be initialized before OnCollectionChanged can reference it(self)
-            NotifyCollectionChangedEventHandler eventHandler = null;
-            eventHandler = OnCollectionChanged;
-
-            portModel.Connectors.CollectionChanged += eventHandler;
-
-            void OnCollectionChanged(object connectorCollection, NotifyCollectionChangedEventArgs e)
-            {
-                if (HasBeenDisposed && eventHandler != null)
-                {
-                    portModel.Connectors.CollectionChanged -= eventHandler;
-                    return;
-                }
-
-                // Call the collection changed handler, replacing
-                // the 'sender' with the port, which is required
-                // for the disconnect operations.
-                ConnectorsCollectionChanged(portModel, e);
-            }
-        }
-
         private void DisposePort(PortModel portModel, bool nodeDisposing = false)
         {
             portModel.PropertyChanged -= OnPortPropertyChanged;
@@ -1397,7 +1372,16 @@ namespace Dynamo.Graph.Nodes
                     ConfigureSnapEdges(sender == InPorts ? InPorts : OutPorts);
                     foreach (PortModel p in e.NewItems)
                     {
-                        SubscribeToPort(p);
+                        p.PropertyChanged += OnPortPropertyChanged;
+
+                        p.Connectors.CollectionChanged += (coll, args) =>
+                        {
+                            // Call the collection changed handler, replacing
+                            // the 'sender' with the port, which is required
+                            // for the disconnect operations.
+                            ConnectorsCollectionChanged(p, args);
+                        };
+
                         SetNodeStateBasedOnConnectionAndDefaults();
                     }
                     break;
