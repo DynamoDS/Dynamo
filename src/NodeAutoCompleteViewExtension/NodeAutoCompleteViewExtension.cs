@@ -177,6 +177,11 @@ namespace Dynamo.NodeAutoComplete
                 nodeAutoCompleteBarViewModel = new NodeAutoCompleteBarViewModel(dynamoViewModel);
             }
 
+            if(nodeAutoCompleteBarViewModel.IsOpen)
+            {
+                return;
+            }
+
             if (nodeAutoCompleteBarViewModel.PortViewModel != null)
             {
                 nodeAutoCompleteBarViewModel.PortViewModel.Highlight = Visibility.Collapsed;

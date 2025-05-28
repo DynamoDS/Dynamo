@@ -139,6 +139,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 RaisePropertyChanged(nameof(DropdownResults));
                 RaisePropertyChanged(nameof(NthofTotal));
                 RaisePropertyChanged(nameof(ResultsLoaded));
+                RaisePropertyChanged(nameof(SwitchIsEnabled));
                 RaisePropertyChanged(nameof(ConfirmSource));
                 RaisePropertyChanged(nameof(PreviousSource));
                 RaisePropertyChanged(nameof(NextSource));
@@ -913,7 +914,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                             Title = x.Description,  
                             Probability = x.Score.ToString(),
                             EntryNodeIndex = 0,
-                            EntryNodeInPort = PortViewModel.PortType == PortType.Output ? x.PortToConnect : 0, //single autocomplete service doesnt specify port for input
+                            EntryNodeInPort = PortViewModel.PortType == PortType.Output ? x.PortToConnect : -1,
+                            EntryNodeOutPort = PortViewModel.PortType == PortType.Input ? x.PortToConnect : -1,
                             Topology = new TopologyItem
                             {
                                 Nodes = new List<NodeItem> { new NodeItem {
