@@ -38,23 +38,14 @@ namespace Dynamo.UI.Controls
         // Static resources mostly from DynamoModern themes but some from DynamoColorsAndBrushes.xaml
         private static BoolToVisibilityCollapsedConverter _boolToVisibilityCollapsedConverter = new BoolToVisibilityCollapsedConverter();
         private static FontFamily _artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
-        private static SolidColorBrush _primaryCharcoal200Brush = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#DCDCDC"));
-        private static SolidColorBrush _midGrey = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#666666"));
-        private static SolidColorBrush _nodeTransientOverlayColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#D5BCF7"));
-        private static SolidColorBrush _portMouseOverColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#636363")); //This is the equivalent direct color vs with opacity
-        private static SolidColorBrush _portValueMarkerColor = new SolidColorBrush((Color)ColorConverter.ConvertFromString("#999999"));
+        private static SolidColorBrush _primaryCharcoal200Brush = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PrimaryCharcoal200Brush"] as SolidColorBrush;
+        private static SolidColorBrush _midGrey = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MidGreyBrush"] as SolidColorBrush;
+        private static SolidColorBrush _nodeTransientOverlayColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["NodeTransientOverlayColor"] as SolidColorBrush;
+        private static SolidColorBrush _portMouseOverColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PortMouseOverColor"] as SolidColorBrush;
+        private static SolidColorBrush _portValueMarkerColor = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["UnSelectedLayoutForeground"] as SolidColorBrush;
 
         //Hold the instance color for the port Background Color.  This is so it can be set differently for CodeBlock
         private SolidColorBrush portBackGroundColor = PortViewModel.PortBackgroundColorDefault;
-
-        static OutPorts()
-        {
-            _primaryCharcoal200Brush.Freeze();
-            _midGrey.Freeze();
-            _portMouseOverColor.Freeze();
-            _nodeTransientOverlayColor.Freeze();
-            _portValueMarkerColor.Freeze();
-        }
 
         public OutPorts()
         {
@@ -72,6 +63,9 @@ namespace Dynamo.UI.Controls
             MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "PortNameColumn", Width = new GridLength(1, GridUnitType.Star) });
             MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "ValueMarkerColumn", Width = new GridLength(5) });
             MainGrid.ColumnDefinitions.Add(new ColumnDefinition() { Name = "PortSnappingColumn", Width = new GridLength(25) });
+            MainGrid.ContextMenuOpening += (s, e) => {
+                e.Handled = true; // Suppress the default context menu
+            };
 
             PortSnapping = new Rectangle()
             {
@@ -210,12 +204,18 @@ namespace Dynamo.UI.Controls
             this.Content = MainGrid;
 
             DataContextChanged += OnDataContextChanged;
+            Loaded += OnPortViewLoaded;
             Unloaded += OnPortViewUnloaded;
         }
 
         private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (null != viewModel) return;
+            if (viewModel != null) return;
+
+            if (e.OldValue != null)
+            {
+                CleanupUITriggers();
+            }
 
             viewModel = e.NewValue as OutPortViewModel;
             viewModel.PropertyChanged += OnPropertyChanged;
@@ -309,18 +309,64 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        //todo validate if these need to checked and dispatched on UI thread
-        private void OnMouseEnterBackground(object sender, MouseEventArgs args)
+        private void CleanupTriggersFromElement(FrameworkElement element)
         {
-            PortBackgroundBorder.Background = _portMouseOverColor;
-            if (viewModel.NodeAutoCompleteMarkerEnabled)
-                nodeAutoCompleteMarker.Visibility = Visibility.Visible;
+            if (element != null)
+            {
+                var triggers = Dynamo.Microsoft.Xaml.Behaviors.Interaction.GetTriggers(element);
+                if (triggers != null && triggers.Count > 0)
+                {
+                    triggers.Clear();
+                }
+            }
+        }
+        private void CleanupUITriggers()
+        {
+            CleanupTriggersFromElement(MainGrid);
+            CleanupTriggersFromElement(nodeAutoCompleteMarker);
+            CleanupTriggersFromElement(PortSnapping);
         }
 
+        private void OnMouseEnterBackground(object sender, MouseEventArgs args)
+        {
+            if (PortBackgroundBorder.Dispatcher.CheckAccess())
+            {
+                HandleMouseHover(_portMouseOverColor, viewModel.NodeAutoCompleteMarkerEnabled);
+            }
+            else
+            {
+                PortBackgroundBorder.Dispatcher.Invoke(() =>
+                {
+                    HandleMouseHover(_portMouseOverColor, viewModel.NodeAutoCompleteMarkerEnabled);
+                });
+            }
+        }
         private void OnMouseLeaveBackground(object sender, MouseEventArgs args)
         {
-            PortBackgroundBorder.Background = portBackGroundColor;
-            nodeAutoCompleteMarker.Visibility = Visibility.Collapsed;
+            if (PortBackgroundBorder.Dispatcher.CheckAccess())
+            {
+                HandleMouseHover(portBackGroundColor);
+            }
+            else
+            {
+                PortBackgroundBorder.Dispatcher.Invoke(() =>
+                {
+                    HandleMouseHover(portBackGroundColor);
+                });
+            }
+        }
+
+        private void HandleMouseHover(SolidColorBrush background, bool isVisible = false)
+        {
+            PortBackgroundBorder.Background = background;
+            if (isVisible)
+            {
+                nodeAutoCompleteMarker.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                nodeAutoCompleteMarker.Visibility = Visibility.Collapsed;
+            }
         }
 
         private void OnMouseEnterHover(object sender, MouseEventArgs args)
@@ -379,6 +425,8 @@ namespace Dynamo.UI.Controls
         {
             viewModel.PropertyChanged -= OnPropertyChanged;
 
+            CleanupUITriggers();
+
             PortBackgroundBorder.MouseEnter -= OnMouseEnterBackground;
             PortBackgroundBorder.MouseLeave -= OnMouseLeaveBackground;
             NodeAutoCompleteHover.MouseEnter -= OnMouseEnterHover;
@@ -386,6 +434,11 @@ namespace Dynamo.UI.Controls
 
             DataContextChanged -= OnDataContextChanged;
             Unloaded -= OnPortViewUnloaded;
+        }
+        private void OnPortViewLoaded(object sender, RoutedEventArgs e)
+        {
+            viewModel.PropertyChanged += OnPropertyChanged;
+            Loaded -= OnPortViewLoaded;
         }
     }
 }
