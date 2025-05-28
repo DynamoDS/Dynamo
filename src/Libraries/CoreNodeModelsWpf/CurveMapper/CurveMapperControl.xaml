@@ -39,9 +39,7 @@
     <Grid>
         <Grid x:Name="MainGrid"
           MinWidth="325"
-          MinHeight="340"
-          Width="{Binding MainGridWidth, Mode=TwoWay}"
-          Height="{Binding MainGridHeight, Mode=TwoWay}">
+          MinHeight="340">
             <Grid.RowDefinitions>
                 <RowDefinition Height="*" />
                 <RowDefinition Height="35" />
@@ -156,7 +154,8 @@
                           Margin="10,0,0,0"
                           VerticalAlignment="Center"
                           ItemsSource="{Binding GraphTypesList}"
-                          SelectedItem="{Binding SelectedGraphTypeDescription, Mode=TwoWay}">
+                          SelectedItem="{Binding SelectedGraphTypeDescription, Mode=TwoWay}"
+                          DropDownOpened="GraphTypeComboBox_DropDownOpened">
                     <ComboBox.Style>
                         <Style BasedOn="{StaticResource RefreshComboBox}" TargetType="ComboBox">
                             <Style.Triggers>

@@ -297,6 +297,15 @@ namespace CoreNodeModels.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to When mapping numbers along the curve, some Y values fall outside the specified Y-value domain range..
+        /// </summary>
+        public static string CurveMapperInfoMessage {
+            get {
+                return ResourceManager.GetString("CurveMapperInfoMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to graph;curve;mapper;math.
         /// </summary>
         public static string CurveMapperSearchTags {

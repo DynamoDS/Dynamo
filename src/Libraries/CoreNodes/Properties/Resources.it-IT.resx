@@ -235,15 +235,15 @@
     <value>L'input deve essere un singolo valore o un elenco non nidificato.</value>
   </data>
   <data name="CurveMapperEqualMinMaxWarning" xml:space="preserve">
-    <value>• Min and Max values must not be the same.</value>
+    <value>• I valori minimo e massimo devono essere diversi.</value>
   </data>
   <data name="CurveMapperInvalidCountWarning" xml:space="preserve">
-    <value>• Values must be a list of numbers or a single number ≥ 2.</value>
+    <value>• I valori devono essere un elenco di numeri o un numero singolo ≥ 2.</value>
   </data>
   <data name="CurveMapperInvalidCurveWarning" xml:space="preserve">
-    <value>• Control points for the selected curve are not valid.</value>
+    <value>• I punti di controllo per la curva selezionata non sono validi.</value>
   </data>
   <data name="CurveMapperInvalidXYFormatWarning" xml:space="preserve">
-    <value>• X and Y inputs must be single numbers (not lists).</value>
+    <value>• Gli input X e Y devono essere numeri singoli (non elenchi).</value>
   </data>
 </root>

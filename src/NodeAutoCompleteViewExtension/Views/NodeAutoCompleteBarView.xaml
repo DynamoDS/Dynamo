@@ -14,6 +14,7 @@
              ResizeMode="NoResize"
              Width="600"
              Height="45"
+             PreviewKeyDown="OnAutoCompleteKeyDown"
         >
     <Window.Resources>
         <ResourceDictionary>
@@ -50,7 +51,7 @@
                 Panel.ZIndex="1"
                 IsHitTestVisible="False" />
 
-        <Grid PreviewKeyDown="OnAutoCompleteKeyDown">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="45" />
             </Grid.RowDefinitions>
@@ -141,7 +142,7 @@
                 <Border BorderThickness="1"
                         CornerRadius="5"
                         Padding="0"
-                        Margin="8,8,0,8"
+                        Margin="8,0,0,0"
                         Grid.Column="2">
                     <Grid>
                         <ComboBox
@@ -149,7 +150,8 @@
                             SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
                             Width="240"
                             ItemsSource="{Binding DropdownResults, NotifyOnTargetUpdated=True}"
-                            Visibility="{Binding ResultsLoaded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                            Visibility="{Binding ResultsLoaded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            TabIndex="0"
                         >
                             <ComboBox.Style>
                                 <Style BasedOn="{StaticResource PackageManagerSmallComboBox}" TargetType="ComboBox">
@@ -157,11 +159,23 @@
                             </ComboBox.Style>
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" Margin="0" Height="30" VerticalAlignment="Center">
-                                        <Image Source="pack://application:,,,/DynamoCoreWpf;component/UI/Images/more-vertical_selected_16px.png"
-                                               Width="15"
-                                               Height="15"
-                                               Margin="0,0,0,0"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0" Height="34" VerticalAlignment="Center">
+                                        <Image
+                                               Width="32"
+                                               Height="32"
+                                               Margin="2,0,6,0">
+                                            <Image.Style>
+                                                <Style TargetType="Image">
+                                                    <Setter Property="Source" Value="{Binding SmallIcon}" />
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding SmallIcon}" Value="{x:Null}">
+                                                            <Setter Property="Source" 
+                                                            Value="/DynamoCoreWpf;component/UI/Images/cluster_32px.png" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Image.Style>
+                                        </Image>
                                         <TextBlock Text="{Binding Description}" FontSize="12" Foreground="White" Height="15"/>
                                     </StackPanel>
                                 </DataTemplate>
@@ -181,7 +195,8 @@
                 </Border>
                 <Button x:Name="btnPrev"
                         Click="PrevButton_OnClick"
-                        Grid.Column="3">
+                        Grid.Column="3"
+                        TabIndex="1">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="Template">
@@ -232,7 +247,8 @@
                 </StackPanel>
                 <Button x:Name="btnNext"
                         Click="NextButton_OnClick"
-                        Grid.Column="5">
+                        Grid.Column="5"
+                        TabIndex="2">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="Template">
@@ -272,7 +288,8 @@
                 </Button>
                 <Button x:Name="btnCheck"
                         Click="ConfirmAutoCompleteWindow"
-                        Grid.Column="6">
+                        Grid.Column="6"
+                        TabIndex="3">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="Template">
@@ -313,7 +330,8 @@
                 </Button>
                 <Button x:Name="btnClose"
                         Click="CloseAutoCompleteWindow"
-                        Grid.Column="7">
+                        Grid.Column="7"
+                        TabIndex="4">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="Template">
@@ -357,7 +375,7 @@
                       HorizontalAlignment="Center" VerticalAlignment="Center"
                       Background="{StaticResource DarkGreyBrush}" BorderBrush="DarkGray" BorderThickness="2"
                       IsChecked="{Binding IsSingleAutocomplete, Mode=TwoWay}"
-                      IsEnabled="{Binding ResultsLoaded}">
+                      IsEnabled="{Binding ResultsLoaded}" TabIndex="5">
                         <ToggleButton.Template>
                             <ControlTemplate TargetType="ToggleButton">
                                 <Grid Width="100" Height="32">
@@ -382,7 +400,8 @@
                 </Grid>
                 <Button x:Name="btnDock"
                         Click="DockButton_OnClick"
-                        Grid.Column="9">
+                        Grid.Column="9"
+                        TabIndex="6">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="Template">

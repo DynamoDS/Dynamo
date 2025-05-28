@@ -1016,6 +1016,7 @@ Dynamo.Graph.Nodes.NodeModel.NodeInfos.get -> System.Collections.Generic.List<Dy
 Dynamo.Graph.Nodes.NodeModel.NodeMessagesClearing -> System.Action<Dynamo.Graph.Nodes.NodeModel>
 Dynamo.Graph.Nodes.NodeModel.NodeModel() -> void
 Dynamo.Graph.Nodes.NodeModel.NodeModel(System.Collections.Generic.IEnumerable<Dynamo.Graph.Nodes.PortModel> inPorts, System.Collections.Generic.IEnumerable<Dynamo.Graph.Nodes.PortModel> outPorts) -> void
+Dynamo.Graph.Nodes.NodeModel.NodeWarningMessagesClearing -> System.Action<Dynamo.Graph.Nodes.NodeModel>
 Dynamo.Graph.Nodes.NodeModel.NotifyAstBuildBroken(string p) -> void
 Dynamo.Graph.Nodes.NodeModel.OutPorts.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.Graph.Nodes.PortModel>
 Dynamo.Graph.Nodes.NodeModel.OutputNodes.get -> System.Collections.Generic.IDictionary<int, System.Collections.Generic.HashSet<System.Tuple<int, Dynamo.Graph.Nodes.NodeModel>>>

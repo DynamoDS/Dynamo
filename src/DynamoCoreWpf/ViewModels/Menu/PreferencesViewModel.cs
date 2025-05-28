@@ -1840,7 +1840,7 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(MaxNumRecentFiles):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesSettingMaxRecentFiles), System.Globalization.CultureInfo.InvariantCulture);
-                    UpdateRecentFiles();
+                    dynamoViewModel.UpdateRecentFiles();
                     goto default;
                 case nameof(PythonTemplateFilePath):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesSettingCustomPythomTemplate), System.Globalization.CultureInfo.InvariantCulture);
@@ -1982,14 +1982,6 @@ namespace Dynamo.ViewModels
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 AddPythonEnginesOptions();
-            }
-        }
-
-        private void UpdateRecentFiles()
-        {
-            if (dynamoViewModel.RecentFiles.Count > MaxNumRecentFiles)
-            {
-                dynamoViewModel.RecentFiles.RemoveRange(MaxNumRecentFiles, dynamoViewModel.RecentFiles.Count - MaxNumRecentFiles);
             }
         }
     }

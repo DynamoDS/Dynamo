@@ -3229,7 +3229,7 @@ Sie können dies unter Voreinstellungen -&gt; Sicherheit verwalten.</value>
     <value>Die Zuverlässigkeit wird neben jedem empfohlenen Block angezeigt und stellt die geschätzte Wahrscheinlichkeit dar, die aussagt, ob der Block eine gute Wahl ist. Wenn diese Option aktiviert ist, werden empfohlene Blöcke, die nicht die angegebene Zuverlässigkeit erfüllen, ausgeblendet. Sie können auf die Kopfzeile Niedrige Zuverlässigkeit klicken, um die Blöcke anzuzeigen.</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Anzahl der Ergebnisse</value>
+    <value>Number of results for Recommended Nodes</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Importieren</value>
@@ -3790,7 +3790,7 @@ Führen Sie #Download und Installation=https://manage.autodesk.com/products/upda
     <value>Zurück zur Dateiauswahl</value>
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
-    <value>This group is frozen. Click to unfreeze.</value>
+    <value>Diese Gruppe ist eingefroren. Klicken Sie, um sie freizugeben.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

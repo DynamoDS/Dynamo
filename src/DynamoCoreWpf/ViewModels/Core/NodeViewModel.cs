@@ -39,7 +39,7 @@ namespace Dynamo.ViewModels
         public delegate void SnapInputEventHandler(PortViewModel portViewModel);
         public delegate void PreviewPinStatusHandler(bool pinned);
 
-        internal delegate void NodeAutoCompletePopupEventHandler(Popup popup);
+        internal delegate void NodeAutoCompletePopupEventHandler(Window window, PortModel portType, double spacing);
         internal delegate void NodeClusterAutoCompletePopupEventHandler(Window window, double spacing);
         internal delegate void PortContextMenuPopupEventHandler(Popup popup);
         #endregion
@@ -831,9 +831,9 @@ namespace Dynamo.ViewModels
         internal event NodeAutoCompletePopupEventHandler RequestAutoCompletePopupPlacementTarget;
         internal event PortContextMenuPopupEventHandler RequestPortContextMenuPopupPlacementTarget;
 
-        internal void OnRequestAutoCompletePopupPlacementTarget(Popup popup)
+        internal void OnRequestAutoCompletePopupPlacementTarget(Window window, PortModel portModel, double spacing)
         {
-            RequestAutoCompletePopupPlacementTarget?.Invoke(popup);
+            RequestAutoCompletePopupPlacementTarget?.Invoke(window, portModel, spacing);
         }
 
         internal void OnClusterRequestAutoCompletePopupPlacementTarget(Window window, double spacing)
@@ -942,6 +942,7 @@ namespace Dynamo.ViewModels
             }
             logic.NodeMessagesClearing += Logic_NodeMessagesClearing;
             logic.NodeInfoMessagesClearing += Logic_NodeInfoMessagesClearing;
+            logic.NodeWarningMessagesClearing += Logic_NodeWarningMessagesClearing;
 
             logic_PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsVisible)));
             UpdateBubbleContent();
@@ -1030,6 +1031,36 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Clears only warning messages from the node's info bubble, preserving any existing info messages.
+        /// </summary>
+        /// <param name="obj"></param>
+        private void Logic_NodeWarningMessagesClearing(NodeModel obj)
+        {
+            if (ErrorBubble == null) return;
+
+            var warningsToRemove = ErrorBubble.NodeMessages.Where(x => x.Style == InfoBubbleViewModel.Style.Warning).ToList();
+
+            if (DynamoViewModel.UIDispatcher != null)
+            {
+                DynamoViewModel.UIDispatcher.Invoke(() =>
+                {
+                    foreach (var itemToRemove in warningsToRemove)
+                    {
+                        ErrorBubble.NodeMessages.Remove(itemToRemove);
+                    }
+                });
+            }
+            else
+            {
+                foreach (var itemToRemove in warningsToRemove)
+                {
+                    ErrorBubble.NodeMessages.Remove(itemToRemove);
+                }
+            }
+            return;
+        }
+
         private void DismissedNodeMessages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (!(sender is ObservableCollection<InfoBubbleDataPacket> observableCollection)) return;
@@ -1087,7 +1118,8 @@ namespace Dynamo.ViewModels
 
             NodeModel.NodeMessagesClearing -= Logic_NodeMessagesClearing;
             NodeModel.NodeInfoMessagesClearing -= Logic_NodeInfoMessagesClearing;
-            
+            NodeModel.NodeWarningMessagesClearing -= Logic_NodeWarningMessagesClearing;
+
             if (ErrorBubble != null) DisposeErrorBubble();
 
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;

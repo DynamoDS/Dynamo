@@ -3230,7 +3230,7 @@
     <value>信賴水準會出現在每個建議的節點旁邊，表示適合使用該節點的預估機率。開啟時，此設定會隱藏未達到指定信賴水準的建議節點。您可以按一下「低信賴」標頭以顯示節點。</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>結果數</value>
+    <value>Number of results for Recommended Nodes</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>匯入</value>
@@ -3791,7 +3791,7 @@
     <value>回到檔案選取</value>
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
-    <value>This group is frozen. Click to unfreeze.</value>
+    <value>此群組已凍結。按一下可解凍。</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

@@ -235,15 +235,15 @@
     <value>Входное значение должно быть одним значением или не являться вложенным списком.</value>
   </data>
   <data name="CurveMapperEqualMinMaxWarning" xml:space="preserve">
-    <value>• Min and Max values must not be the same.</value>
+    <value>• Минимальное и максимальное значения должны отличаться.</value>
   </data>
   <data name="CurveMapperInvalidCountWarning" xml:space="preserve">
-    <value>• Values must be a list of numbers or a single number ≥ 2.</value>
+    <value>• Значения должны быть списком чисел или одиночным числом ≥ 2.</value>
   </data>
   <data name="CurveMapperInvalidCurveWarning" xml:space="preserve">
-    <value>• Control points for the selected curve are not valid.</value>
+    <value>• Недопустимые управляющие точки для выбранной кривой.</value>
   </data>
   <data name="CurveMapperInvalidXYFormatWarning" xml:space="preserve">
-    <value>• X and Y inputs must be single numbers (not lists).</value>
+    <value>• Входные данные X и Y должны быть одиночными числами (не списками).</value>
   </data>
 </root>

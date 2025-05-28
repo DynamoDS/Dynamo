@@ -4818,6 +4818,15 @@
             mesh,meshes
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndexGroups(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.IndexGroup})">
+            <summary>Создание сети на основе коллекции точек и коллекции элементов IndexGroups, ссылающихся на коллекцию точек</summary>
+            <param name="points">Список точек</param>
+            <param name="indexGroups">Группы индексов для точек</param>
+            <returns>Сеть</returns>
+            <search>
+            mesh,meshes
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ImportFile(System.String)">
             <summary>Импорт файла с разбором на несколько сеток.
             В настоящее время поддерживаются следующие форматы:
@@ -4843,6 +4852,12 @@
             перекрываться. Индексы должны состоять из трех целых чисел, 
             обозначающих три расположения в массиве вершин
             трех точек треугольника</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>Создание сети на основе заданных точек и индексов. Точки не должны 
+            перекрываться. Индексы должны представлять собой множества из трех целых чисел, 
+            указывающие на три расположения в массиве точек
+            из трех точек треугольника</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Plane(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32)">
             <summary>Создание плоскости сети на основе текущих параметров.</summary>
@@ -5596,6 +5611,12 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.LessThanZero">
             <summary>Поиск локализованной строки, подобной строке «значение {0} меньше нуля».</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_bypointsfaceindices_deprecated">
+            <summary>Поиск локализованной строки, подобной строке «Этот метод исключен и будет удален в следующей версии Dynamo. Используйте вместо него Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[])».</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_byverticesandindices_deprecated">
+            <summary>Поиск локализованной строки, подобной строке «Этот метод исключен и будет удален в следующей версии Dynamo. Используйте вместо него Mesh.ByPointsIndices (Point[] points, Indices : int[])».</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.MeshPrecisionInfo">
             <summary>Поиск локализованной строки, подобной строке «Узлы сетки используют 32-разрядную точность (до 7 десятичных знаков), что может привести к ошибкам при округлении больших значений или чисел с более чем 7 десятичными знаками. Для более высокой точности (64-разрядной, 15 десятичных знаков) используйте узлы из библиотеки геометрии.».</summary>

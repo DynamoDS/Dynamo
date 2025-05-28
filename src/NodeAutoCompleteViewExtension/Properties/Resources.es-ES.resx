@@ -117,7 +117,16 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Cluster" xml:space="preserve">
+    <value>Clúster</value>
+  </data>
   <data name="ExtensionName" xml:space="preserve">
     <value>Extensión de vista de Autocompletar nodo</value>
+  </data>
+  <data name="NodeTypeMatch" xml:space="preserve">
+    <value>Coincidencia de tipo de nodo</value>
+  </data>
+  <data name="Single" xml:space="preserve">
+    <value>Simple</value>
   </data>
 </root>

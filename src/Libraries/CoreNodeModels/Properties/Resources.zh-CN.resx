@@ -693,4 +693,7 @@ double[]</value>
   <data name="ColorPalettePortDataResultToolTip" xml:space="preserve">
     <value>选定的颜色</value>
   </data>
+  <data name="CurveMapperInfoMessage" xml:space="preserve">
+    <value>沿曲线映射数字时，某些 Y 值超出指定的 Y 值域范围。</value>
+  </data>
 </root>

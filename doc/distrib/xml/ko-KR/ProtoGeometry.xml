@@ -4811,6 +4811,15 @@
             mesh,meshes
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndexGroups(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.IndexGroup})">
+            <summary>점 모음 및 점 모음을 참조하는 IndexGroup 모음을 기반으로 메쉬를 작성합니다.</summary>
+            <param name="points">점 리스트</param>
+            <param name="indexGroups">점에 대한 색인 그룹</param>
+            <returns>메쉬</returns>
+            <search>
+            mesh,meshes
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ImportFile(System.String)">
             <summary>파일을 가져와서 여러 메쉬로 구문 분석합니다.
             현재 지원되는 형식은 다음과 같습니다.
@@ -4836,6 +4845,12 @@
             겹치지 않아야 합니다. 인덱스는 세 개의 정수로 이루어진 세트여야 하며, 
             이 세 정수는 정점 배열에서 삼각형의 세 점에 대한
             세 개의 위치를 나타냅니다.</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>제공된 점 및 색인을 기반으로 새 메쉬를 작성합니다. 점은 
+            겹치지 않아야 합니다. 색인은 삼각형을 구성하는 세 점의 
+            점 배열에서 3개의 위치를 나타내는 
+            3개의 정수로 이루어진 집합이어야 합니다.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Plane(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32)">
             <summary>현재 설정을 기반으로 메쉬 평면을 작성합니다.</summary>
@@ -5588,6 +5603,12 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.LessThanZero">
             <summary>'{0}이(가) 0보다 작습니다.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_bypointsfaceindices_deprecated">
+            <summary>'이 메서드는 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다. 대신 Mesh.ByPointsIndexGroups(Point[] points, IndexGroups : IndexGroup[])를 사용하십시오.'와 유사한 현지화된 문자열을 조회합니다.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_byverticesandindices_deprecated">
+            <summary>'이 메서드는 더 이상 사용되지 않으며 이후 버전의 Dynamo에서 제거될 예정입니다. 대신 Mesh.ByPointsIndices(Point[] points, Indices : int[])를 사용하십시오.'와 유사한 현지화된 문자열을 조회합니다.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.MeshPrecisionInfo">
             <summary>'메시 노드는 32비트 정밀도(소수점 이하 7자리)를 사용하므로 숫자가 크거나 소수점 이하 7자리를 초과하는 숫자에서는 반올림 오류가 발생할 수 있습니다. 더 높은 정밀도(64비트, 소수점 이하 15자리)를 사용하려면 형상 라이브러리의 노드를 사용하십시오.'와 유사한 현지화된 문자열을 조회합니다.</summary>

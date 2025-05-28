@@ -235,15 +235,15 @@
     <value>Dane wejściowe muszą być pojedynczą wartością lub listą niezagnieżdżoną.</value>
   </data>
   <data name="CurveMapperEqualMinMaxWarning" xml:space="preserve">
-    <value>• Min and Max values must not be the same.</value>
+    <value>• Wartości minimalne i maksymalne muszą się różnić.</value>
   </data>
   <data name="CurveMapperInvalidCountWarning" xml:space="preserve">
-    <value>• Values must be a list of numbers or a single number ≥ 2.</value>
+    <value>• Wartości muszą być listą liczb lub pojedynczą liczbą ≥ 2.</value>
   </data>
   <data name="CurveMapperInvalidCurveWarning" xml:space="preserve">
-    <value>• Control points for the selected curve are not valid.</value>
+    <value>• Punkty sterowania dla wybranej krzywej nie są prawidłowe.</value>
   </data>
   <data name="CurveMapperInvalidXYFormatWarning" xml:space="preserve">
-    <value>• X and Y inputs must be single numbers (not lists).</value>
+    <value>• Dane wejściowe X i Y muszą być pojedynczymi liczbami (nie listami).</value>
   </data>
 </root>

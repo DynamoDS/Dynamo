@@ -693,4 +693,7 @@ double[]</value>
   <data name="ColorPalettePortDataResultToolTip" xml:space="preserve">
     <value>Vybraná barva</value>
   </data>
+  <data name="CurveMapperInfoMessage" xml:space="preserve">
+    <value>Při mapování čísel podél křivky spadají některé hodnoty Y mimo zadaný rozsah domény hodnoty Y.</value>
+  </data>
 </root>

@@ -3231,7 +3231,7 @@ Dynamo を再起動してアンインストールを完了します。
     <value>信頼度レベルは、各推奨ノードの横に表示され、そのノードが適切な選択である推定確率を表します。この設定をオンにすると、指定した信頼度レベルを満たさない推奨ノードは非表示になります。それらのノードを表示するには、[低信頼度]ヘッダをクリックします。</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>結果数</value>
+    <value>Number of results for Recommended Nodes</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>読み込み</value>
@@ -3792,7 +3792,7 @@ Dynamo を再起動してアンインストールを完了します。
     <value>ファイル選択に戻る</value>
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
-    <value>This group is frozen. Click to unfreeze.</value>
+    <value>このグループはフリーズされています。クリックすると、フリーズが解除されます。</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
