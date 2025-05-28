@@ -20,7 +20,7 @@ using Point = System.Windows.Point;
 
 namespace Dynamo.ViewModels
 {
-    public enum PreviewState { Selection, ExecutionPreview, Hover, None }
+    public enum PreviewState { Selection, ExecutionPreview, Hover, Transient, None }
 
     public partial class ConnectorViewModel : ViewModelBase
     {
@@ -38,6 +38,7 @@ namespace Dynamo.ViewModels
         private bool isConnecting = false;
         private bool isCollapsed = false;
         private bool isHidden = false;
+        private bool isTransient = false;
         private bool isTemporarilyVisible = false;
         private string connectorDataToolTip;
         private bool canShowConnectorTooltip = true;
@@ -196,6 +197,21 @@ namespace Dynamo.ViewModels
                 RaisePropertyChanged(nameof(IsHidden));
                 SetVisibilityOfPins(IsHidden);
                 SetPartialVisibilityOfPins(IsHidden);
+            }
+        }
+
+        public bool IsTransient
+        {
+            get => isTransient;
+            set
+            {
+                if (isTransient == value)
+                {
+                    return;
+                }
+
+                isTransient = value;
+                RaisePropertyChanged(nameof(IsTransient));
             }
         }
 
@@ -505,13 +521,17 @@ namespace Dynamo.ViewModels
                     return PreviewState.None;
                 }
 
-                if (Nodevm.ShowExecutionPreview || NodeEnd.ShowExecutionPreview)
+                if (IsTransient)
+                {
+                    return PreviewState.Transient;
+                }
+                if (Nodevm.ShowExecutionPreview || NodeEnd.ShowExecutionPreview && !IsTransient)
                 {
                     return PreviewState.ExecutionPreview;
                 }
 
                 if (model.Start.Owner.IsSelected ||
-                    model.End.Owner.IsSelected || AnyPinSelected)
+                    model.End.Owner.IsSelected || AnyPinSelected && !IsTransient)
                 {
                     return PreviewState.Selection;
                 }

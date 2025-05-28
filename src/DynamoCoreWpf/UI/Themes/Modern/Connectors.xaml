@@ -1,4 +1,4 @@
-﻿<ResourceDictionary   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" 
                       xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
                       xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
@@ -42,6 +42,9 @@
     <Style x:Key="SConnector" TargetType="Path">
         <Style.Triggers>
             <DataTrigger Binding="{Binding Path=IsConnecting, Mode=OneWay}" Value="True">
+                <Setter Property="StrokeDashArray" Value="2"/>
+            </DataTrigger>
+            <DataTrigger Binding="{Binding Path=IsTransient, Mode=OneWay}" Value="True">
                 <Setter Property="StrokeDashArray" Value="2"/>
             </DataTrigger>
             <DataTrigger Binding="{Binding Path=IsFrozen, Mode=OneWay}" Value="True">
