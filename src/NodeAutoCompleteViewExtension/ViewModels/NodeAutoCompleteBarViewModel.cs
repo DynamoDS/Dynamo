@@ -51,12 +51,14 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         private static Assembly dynamoCoreWpfAssembly;
 
         private bool _isSingleAutocomplete;
+        public bool IsInput => PortViewModel.PortType == PortType.Input;
+        public bool SwitchIsEnabled => ResultsLoaded && !IsInput;
         public bool IsSingleAutocomplete
         {
-            get => _isSingleAutocomplete;
+            get => _isSingleAutocomplete || IsInput;
             set
             {
-                if (_isSingleAutocomplete != value)
+                if (PortViewModel.PortType == PortType.Output && _isSingleAutocomplete != value)
                 {
                     _isSingleAutocomplete = value;
                     RaisePropertyChanged(nameof(IsSingleAutocomplete));
@@ -137,6 +139,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 RaisePropertyChanged(nameof(DropdownResults));
                 RaisePropertyChanged(nameof(NthofTotal));
                 RaisePropertyChanged(nameof(ResultsLoaded));
+                RaisePropertyChanged(nameof(SwitchIsEnabled));
                 RaisePropertyChanged(nameof(ConfirmSource));
                 RaisePropertyChanged(nameof(PreviousSource));
                 RaisePropertyChanged(nameof(NextSource));
@@ -792,21 +795,30 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             // Connect the cluster to the original node and port
             if (entryNodeId != null && createdNodes.TryGetValue(entryNodeId, out var entryNode))
             {
-                var entryPortIndex = clusterResultItem.EntryNodeInPort;
-                if (entryNode.InPorts.Count > entryPortIndex)
+
+                ConnectorModel entryConnector = null;
+                if (PortViewModel.PortType == PortType.Output)
                 {
-                    //only connect to the entry node when it does not have connections already.
-                    if (!entryNode.InPorts[entryPortIndex].Connectors.Any())
+                    var portIndex = clusterResultItem.EntryNodeInPort;
+                    if (entryNode.InPorts.Count > portIndex &&!entryNode.InPorts[portIndex].Connectors.Any())
                     {
-                        var entryConnector = ConnectorModel.Make(PortViewModel.NodeViewModel.NodeModel, entryNode, 0, entryPortIndex);
-                        if (entryConnector != null)
-                        {
-                            entryConnector.IsHidden = true;
-                            var entryConnectorViewModel = workspaceViewModel.Connectors.First(c => c.ConnectorModel.Equals(entryConnector));
-                            entryConnectorViewModel.IsConnecting = true;
-                            createdClusterItems.Add(entryConnector);
-                        }
+                        entryConnector = ConnectorModel.Make(PortViewModel.NodeViewModel.NodeModel, entryNode, PortViewModel.PortModel.Index, portIndex);
                     }
+                }
+                else
+                {
+                    var portIndex = clusterResultItem.EntryNodeOutPort;
+                    if (entryNode.OutPorts.Count > portIndex && !entryNode.OutPorts[portIndex].Connectors.Any())
+                    {
+                        entryConnector = ConnectorModel.Make(entryNode, PortViewModel.NodeViewModel.NodeModel, portIndex, PortViewModel.PortModel.Index);
+                    }
+                }
+                if (entryConnector != null)
+                {
+                    entryConnector.IsHidden = true;
+                    var entryConnectorViewModel = workspaceViewModel.Connectors.First(c => c.ConnectorModel.Equals(entryConnector));
+                    entryConnectorViewModel.IsConnecting = true;
+                    createdClusterItems.Add(entryConnector);
                 }
             }
 
@@ -902,7 +914,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                             Title = x.Description,  
                             Probability = x.Score.ToString(),
                             EntryNodeIndex = 0,
-                            EntryNodeInPort = x.PortToConnect,
+                            EntryNodeInPort = PortViewModel.PortType == PortType.Output ? x.PortToConnect : -1,
+                            EntryNodeOutPort = PortViewModel.PortType == PortType.Input ? x.PortToConnect : -1,
                             Topology = new TopologyItem
                             {
                                 Nodes = new List<NodeItem> { new NodeItem {

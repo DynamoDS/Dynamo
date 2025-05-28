@@ -375,7 +375,7 @@
                       HorizontalAlignment="Center" VerticalAlignment="Center"
                       Background="{StaticResource DarkGreyBrush}" BorderBrush="DarkGray" BorderThickness="2"
                       IsChecked="{Binding IsSingleAutocomplete, Mode=TwoWay}"
-                      IsEnabled="{Binding ResultsLoaded}" TabIndex="5">
+                      IsEnabled="{Binding SwitchIsEnabled}" TabIndex="5">
                         <ToggleButton.Template>
                             <ControlTemplate TargetType="ToggleButton">
                                 <Grid Width="100" Height="32">
@@ -392,6 +392,9 @@
                                     <Trigger Property="IsChecked" Value="True">
                                         <Setter TargetName="SwitchKnob" Property="HorizontalAlignment" Value="Right"/>
                                         <Setter TargetName="KnobText" Property="Text" Value="Single"/>
+                                    </Trigger>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter TargetName="SwitchKnob" Property="Background" Value="{StaticResource LightGreyBrush}"/>
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>

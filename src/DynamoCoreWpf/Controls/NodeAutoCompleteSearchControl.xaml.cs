@@ -166,6 +166,7 @@ namespace Dynamo.UI.Controls
 
             // Visibility of textbox changed, but text box has not been initialized(rendered) yet.
             // Call asynchronously focus, when textbox will be ready.
+            ViewModel.ResetAutoCompleteSearchViewState();
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 SearchTextBox?.Focus();
