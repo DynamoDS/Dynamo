@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -1348,6 +1349,31 @@ namespace Dynamo.Graph.Nodes
             OutPorts.CollectionChanged += PortsCollectionChanged;
         }
 
+        private void SubscribeToPort(PortModel portModel)
+        {
+            portModel.PropertyChanged += OnPortPropertyChanged;
+
+            // eventHandler must be initialized before OnCollectionChanged can reference it(self)
+            NotifyCollectionChangedEventHandler eventHandler = null;
+            eventHandler = OnCollectionChanged;
+
+            portModel.Connectors.CollectionChanged += eventHandler;
+
+            void OnCollectionChanged(object connectorCollection, NotifyCollectionChangedEventArgs e)
+            {
+                if (HasBeenDisposed && eventHandler != null)
+                {
+                    portModel.Connectors.CollectionChanged -= eventHandler;
+                    return;
+                }
+
+                // Call the collection changed handler, replacing
+                // the 'sender' with the port, which is required
+                // for the disconnect operations.
+                ConnectorsCollectionChanged(portModel, e);
+            }
+        }
+
         private void DisposePort(PortModel portModel, bool nodeDisposing = false)
         {
             portModel.PropertyChanged -= OnPortPropertyChanged;
@@ -1371,8 +1397,7 @@ namespace Dynamo.Graph.Nodes
                     ConfigureSnapEdges(sender == InPorts ? InPorts : OutPorts);
                     foreach (PortModel p in e.NewItems)
                     {
-                        p.PropertyChanged += OnPortPropertyChanged;
-                        p.ConnectorCollectionChanged += ConnectorsCollectionChanged;
+                        SubscribeToPort(p);
                         SetNodeStateBasedOnConnectionAndDefaults();
                     }
                     break;
