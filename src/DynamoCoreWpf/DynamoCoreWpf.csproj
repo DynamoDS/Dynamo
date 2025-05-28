@@ -129,6 +129,7 @@
 
     <ItemGroup>
     <None Remove="Controls\OutPorts.xaml" />
+    <None Remove="Controls\InPorts.xaml" />
     <None Remove="Packages\PackageManagerWizard\dist\index.html" />
     <None Remove="Controls\Docs\cs-CZ\FileTrustWarningDocumentation.html" />
     <None Remove="Controls\Docs\cs-CZ\NodeAutocompleteDocumentation.html" />
