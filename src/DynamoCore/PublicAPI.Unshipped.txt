@@ -2478,6 +2478,7 @@ override Dynamo.Graph.Nodes.NodeModel.ShouldSerializeY() -> bool
 override Dynamo.Graph.Nodes.NodeModel.UpdateValueCore(Dynamo.Graph.UpdateValueParams updateValueParams) -> bool
 override Dynamo.Graph.Nodes.NodeOutputData.Equals(object obj) -> bool
 override Dynamo.Graph.Nodes.PortModel.DeserializeCore(System.Xml.XmlElement nodeElement, Dynamo.Graph.SaveContext context) -> void
+override Dynamo.Graph.Nodes.PortModel.Dispose() -> void
 override Dynamo.Graph.Nodes.PortModel.GetHashCode() -> int
 override Dynamo.Graph.Nodes.PortModel.GUID.get -> System.Guid
 override Dynamo.Graph.Nodes.PortModel.GUID.set -> void
