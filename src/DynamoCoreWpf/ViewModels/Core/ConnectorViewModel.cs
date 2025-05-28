@@ -525,7 +525,7 @@ namespace Dynamo.ViewModels
                 {
                     return PreviewState.Transient;
                 }
-                if (Nodevm.ShowExecutionPreview || NodeEnd.ShowExecutionPreview && !IsTransient)
+                if (Nodevm.ShowExecutionPreview || (NodeEnd.ShowExecutionPreview && !IsTransient))
                 {
                     return PreviewState.ExecutionPreview;
                 }
