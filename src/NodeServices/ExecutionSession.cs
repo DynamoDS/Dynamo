@@ -101,7 +101,7 @@ namespace Dynamo.Session
         /// This helper method can be used to display a warning on a node that
         /// needs to be prevented from running when no-network mode is enabled.
         /// </summary>
-        /// <exception cref="Exception"></exception>
+        /// <exception cref="InvalidOperationException"></exception>
         public static void ThrowIfNoNetworkMode()
         {
             var session = ExecutionEvents.ActiveSession;
