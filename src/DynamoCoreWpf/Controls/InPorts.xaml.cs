@@ -45,6 +45,14 @@ namespace Dynamo.UI.Controls
         private static BooleanToVisibilityConverter _booleanToVisibilityConverter = new BooleanToVisibilityConverter();
         private static FontFamily _artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
 
+        static InPorts()
+        {
+            _primaryCharcoal200Brush.Freeze();
+            _chevronHighlightOverlayBackground.Freeze();
+            _portMouseOverColor.Freeze();
+            _nodeTransientOverlayColor.Freeze();
+            _darkGrey.Freeze();
+        }
         public InPorts()
         {
             InitializeComponent();

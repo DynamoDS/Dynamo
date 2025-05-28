@@ -47,6 +47,15 @@ namespace Dynamo.UI.Controls
         //Hold the instance color for the port Background Color.  This is so it can be set differently for CodeBlock
         private SolidColorBrush portBackGroundColor = PortViewModel.PortBackgroundColorDefault;
 
+        static OutPorts()
+        {
+            _primaryCharcoal200Brush.Freeze();
+            _midGrey.Freeze();
+            _portMouseOverColor.Freeze();
+            _nodeTransientOverlayColor.Freeze();
+            _portValueMarkerColor.Freeze();
+        }
+
         public OutPorts()
         {
             InitializeComponent();

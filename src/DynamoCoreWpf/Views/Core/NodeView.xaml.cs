@@ -246,8 +246,9 @@ namespace Dynamo.Controls
             }
         }
 
-        // Static resources mostly from DynamoModern themes but some from DynamoColorsAndBrushes.xaml
-        // Brushes
+        //Static resources mostly from DynamoModern themes but some from DynamoColorsAndBrushes.xaml
+
+        //Brushes
         private static SolidColorBrush _primaryCharcoal100 = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["PrimaryCharcoal100Brush"] as SolidColorBrush;
         private static SolidColorBrush _blue300 = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["Blue300Brush"] as SolidColorBrush;
         private static SolidColorBrush _darkBlue200 = SharedDictionaryManager.DynamoColorsAndBrushesDictionary["DarkBlue200Brush"] as SolidColorBrush;
@@ -301,6 +302,17 @@ namespace Dynamo.Controls
             _nodeButtonDotsSelected.Freeze();
             _nodeButtonDots.Freeze();
             _defaultNodeIcon.Freeze();
+            _primaryCharcoal100.Freeze();
+            _blue300.Freeze();
+            _nodeDismissedWarningsGlyphBackground.Freeze();
+            _nodeDismissedWarningsGlyphForeground.Freeze();
+            _midGrey.Freeze();
+            _darkerGreyBrush.Freeze();
+            _darkMidGreyBrush.Freeze();
+            _nodeContextMenuBackgroundHighlight.Freeze();
+            _nodeContextMenuSeparatorColor.Freeze();
+            _nodeOptionsButtonBackground.Freeze();
+            _nodeHoverColor.Freeze();
         }
 
         public NodeView()
