@@ -20,7 +20,7 @@ using Point = System.Windows.Point;
 
 namespace Dynamo.ViewModels
 {
-    public enum PreviewState { Selection, ExecutionPreview, Hover, Transient, None }
+    public enum PreviewState { Selection, ExecutionPreview, Hover, None, Transient  }
 
     public partial class ConnectorViewModel : ViewModelBase
     {
