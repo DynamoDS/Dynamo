@@ -1897,8 +1897,9 @@ var06 = g;
             // FFITarget.Dummy.Point, FFITarget.Dynamo.Point
             const string libraryPath = "FFITarget.dll";
 
+            string importStatement = @"import (""" + CompilerUtils.ToLiteral(libraryPath) + @""");";
             CompilerUtils.TryLoadAssemblyIntoCore(
-                CurrentDynamoModel.LibraryServices.LibraryManagementCore, libraryPath);
+                CurrentDynamoModel.LibraryServices.LibraryManagementCore, importStatement);
 
             code = "Point.ByCoordinates(0,0,0);";
             UpdateCodeBlockNodeContent(cbn, code);
