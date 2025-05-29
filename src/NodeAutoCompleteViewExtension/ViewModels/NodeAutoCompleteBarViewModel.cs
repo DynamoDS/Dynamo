@@ -792,6 +792,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                         dummyNode.Y = PortViewModel.NodeViewModel.NodeModel.Y; // Adjust Y position
                         workspaceModel.AddAndRegisterNode(dummyNode);
                         createdNodes[nodeItem.Id] = dummyNode;
+                        createdClusterItems.Add(dummyNode);
 
                         var newNodeViewModel = workspaceViewModel.Nodes.Last();
                         newNodeViewModel.IsHidden = true; // Hide the node initially
