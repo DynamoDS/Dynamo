@@ -3229,7 +3229,7 @@ Vous pouvez gérer ce paramètre dans Préférences -&gt; Sécurité.</value>
     <value>Le niveau de confiance apparaît en regard de chaque noeud recommandé et représente la probabilité estimée que le noeud soit un bon choix. Lorsque cette option est activée, ce paramètre masque les noeuds recommandés qui ne répondent pas au niveau de confiance spécifié. Vous pouvez cliquer sur l'en-tête Qualité faible pour afficher les noeuds.</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Nombre de résultats</value>
+    <value>Number of results for Recommended Nodes</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Importer</value>
@@ -3786,7 +3786,7 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
     <value>Retour à la sélection de fichiers</value>
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
-    <value>This group is frozen. Click to unfreeze.</value>
+    <value>Ce groupe est bloqué. Cliquez pour le débloquer.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
@@ -1361,6 +1362,21 @@ namespace Dynamo.Graph.Nodes
             OutPorts.CollectionChanged += PortsCollectionChanged;
         }
 
+        private void DisposePort(PortModel portModel, bool nodeDisposing = false)
+        {
+            portModel.PropertyChanged -= OnPortPropertyChanged;
+            portModel.ConnectorCollectionChanged -= ConnectorsCollectionChanged;
+
+            // if this node is being disposed, we don't need to set node state and destroy the connectors,
+            // as the connectors will be deleted elsewhere
+            if (!nodeDisposing)
+            {
+                portModel.DestroyConnectors();
+                SetNodeStateBasedOnConnectionAndDefaults();
+            }
+            portModel.Dispose();
+        }
+
         private void PortsCollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
@@ -1369,6 +1385,8 @@ namespace Dynamo.Graph.Nodes
                     ConfigureSnapEdges(sender == InPorts ? InPorts : OutPorts);
                     foreach (PortModel p in e.NewItems)
                     {
+                        p.PropertyChanged += OnPortPropertyChanged;
+
                         p.Connectors.CollectionChanged += (coll, args) =>
                         {
                             // Call the collection changed handler, replacing
@@ -1376,18 +1394,14 @@ namespace Dynamo.Graph.Nodes
                             // for the disconnect operations.
                             ConnectorsCollectionChanged(p, args);
                         };
-                        p.PropertyChanged += OnPortPropertyChanged;
+
                         SetNodeStateBasedOnConnectionAndDefaults();
                     }
                     break;
                 case System.Collections.Specialized.NotifyCollectionChangedAction.Remove:
                     foreach (PortModel p in e.OldItems)
                     {
-                        p.PropertyChanged -= OnPortPropertyChanged;
-
-                        p.DestroyConnectors();
-
-                        SetNodeStateBasedOnConnectionAndDefaults();
+                        DisposePort(p);
                     }
                     break;
             }
@@ -2970,6 +2984,26 @@ namespace Dynamo.Graph.Nodes
             if (RenderPackagesUpdated != null)
             {
                 RenderPackagesUpdated(this, packages);
+            }
+        }
+
+
+        public override void Dispose()
+        {
+            if (HasBeenDisposed) return;
+
+            base.Dispose();
+
+            InPorts.CollectionChanged -= PortsCollectionChanged;
+            foreach(var port in InPorts)
+            {
+                DisposePort(port, nodeDisposing: true);
+            }
+
+            OutPorts.CollectionChanged -= PortsCollectionChanged;
+            foreach(var port in OutPorts)
+            {
+                DisposePort(port, nodeDisposing: true);
             }
         }
     }

@@ -3,7 +3,6 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.NodeAutoComplete.ViewModels;
-using Dynamo.ViewModels;
 using System;
 using System.Linq;
 using System.Windows;
@@ -116,10 +115,24 @@ namespace Dynamo.NodeAutoComplete.Views
             {
                 case Key.Escape:
                     CloseAutoComplete();
+                    e.Handled = true;
                     break;
                 case Key.Enter:
                     ViewModel?.ConsolidateTransientNodes();
                     CloseAutoComplete();
+                    e.Handled = true;
+                    break;
+                case Key.Up:
+                case Key.Left:
+                    MoveIndex(-1);
+                    e.Handled = true;
+                    break;
+                case Key.Down:
+                case Key.Right:
+                    MoveIndex(+1);
+                    e.Handled = true;
+                    break;
+                default:
                     break;
             }
         }

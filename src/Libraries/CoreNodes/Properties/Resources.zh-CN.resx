@@ -235,15 +235,15 @@
     <value>输入必须是单个值或非嵌套列表。</value>
   </data>
   <data name="CurveMapperEqualMinMaxWarning" xml:space="preserve">
-    <value>• Min and Max values must be different.</value>
+    <value>• 最小值和最大值必须不同。</value>
   </data>
   <data name="CurveMapperInvalidCountWarning" xml:space="preserve">
-    <value>• Values must be a list of numbers or a single number ≥ 2.</value>
+    <value>• 值必须是数字列表或单个数字 ≥ 2。</value>
   </data>
   <data name="CurveMapperInvalidCurveWarning" xml:space="preserve">
-    <value>• Control points for the selected curve are not valid.</value>
+    <value>• 选定曲线的控制点无效。</value>
   </data>
   <data name="CurveMapperInvalidXYFormatWarning" xml:space="preserve">
-    <value>• X and Y inputs must be single numbers (not lists).</value>
+    <value>• X 和 Y 输入必须是单个数字(而不是列表)。</value>
   </data>
 </root>

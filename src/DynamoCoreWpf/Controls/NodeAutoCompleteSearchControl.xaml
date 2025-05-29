@@ -14,8 +14,7 @@
              ShowInTaskbar="False"
              ResizeMode="NoResize"
              Width="280"
-             Height="350"
-             IsVisibleChanged="OnNodeAutoCompleteSearchControlVisibilityChanged">
+             Height="350">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -99,7 +98,7 @@
                         <Image Width="14"
                                    Height="14"
                                    Margin="0,5,10,5"
-                                   MouseDown="CloseAutocompletionWindow"
+                                   MouseDown="CloseAutoCompleteWindow"
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Center"
                                    Grid.Column="2">

@@ -3229,7 +3229,7 @@
     <value>置信度会显示在每个建议节点的旁边，表示该节点是理想选择的估计概率。启用后，该设置会隐藏不符合指定置信度的建议节点。可以单击“低置信度”标题以显示相应节点。</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>结果数</value>
+    <value>Number of results for Recommended Nodes</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>输入</value>
@@ -3790,7 +3790,7 @@
     <value>回到文件选择</value>
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
-    <value>This group is frozen. Click to unfreeze.</value>
+    <value>此组已冻结。单击以取消冻结。</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">
