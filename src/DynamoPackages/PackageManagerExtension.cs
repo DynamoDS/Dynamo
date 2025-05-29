@@ -2,12 +2,14 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using Dynamo.Extensions;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
+using Dynamo.Session;
 using Greg;
 using Greg.Responses;
 
@@ -157,11 +159,12 @@ namespace Dynamo.PackageManager
 
             var packageUploadDirectory = startupParams.PathManager.DefaultPackagesDirectory;
 
-            PackageManagerClient = new PackageManagerClient(
-                new GregClient(startupParams.AuthProvider, url),
-                uploadBuilder, packageUploadDirectory);
-
             noNetworkMode = startupParams.NoNetworkMode;
+
+            var client = noNetworkMode ? new GregClient(startupParams.AuthProvider, url,
+                new HttpClient(new NoNetworkModeHandler())) : new GregClient(startupParams.AuthProvider, url);
+            PackageManagerClient = new PackageManagerClient(client, uploadBuilder, packageUploadDirectory, noNetworkMode);
+
 
             //we don't ask dpm for the compatibility map in offline mode.
             if (!noNetworkMode)

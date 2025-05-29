@@ -14,6 +14,7 @@
         xmlns:fa="clr-namespace:FontAwesome5;assembly=FontAwesome5.Net" 
         xmlns:packagemanager="clr-namespace:Dynamo.Wpf.Views.PackageManager"
         xmlns:trustedpaths="clr-namespace:Dynamo.Wpf.Views"
+        xmlns:converters="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
         xmlns:wpfControls="clr-namespace:Dynamo.Wpf.Controls"
         d:DataContext="{d:DesignInstance Type=viewModels:PreferencesViewModel}"
         WindowStartupLocation="CenterOwner"
@@ -1900,7 +1901,19 @@
                                     <Hyperlink Click="OnInstalledPackagesHyperlinkClicked"
                                                 Foreground="{StaticResource TextBlockLinkForegroundColor}">
                                         <TextBlock Name="PackageManagerLink"
-                                                    Text="{x:Static p:Resources.InstalledPackagePartialHyperlinkMessage}" />
+                                                    Text="{x:Static p:Resources.InstalledPackagePartialHyperlinkMessage}"
+                                                    IsHitTestVisible="{Binding NoNetworkMode, Converter={StaticResource InverseBooleanConverter}}">
+                                            <TextBlock.Style>
+                                                <Style TargetType="TextBlock">
+                                                    <!--<Setter Property="Foreground" Value="Black" />-->
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding NoNetworkMode}" Value="True">
+                                                            <Setter Property="Foreground" Value="Gray" />
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
                                     </Hyperlink>
                                     <Run>.</Run>        
                                 </TextBlock>

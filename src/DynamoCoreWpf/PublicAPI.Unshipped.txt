@@ -2930,6 +2930,7 @@ Dynamo.ViewModels.PreferencesViewModel.UseHardwareAcceleration.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.UseHardwareAcceleration.set -> void
 Dynamo.ViewModels.PreferencesViewModel.UseHostScaleUnits.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.UseHostScaleUnits.set -> void
+Dynamo.ViewModels.PreferencesViewModel.NoNetworkMode.get -> bool
 Dynamo.ViewModels.PreviewState
 Dynamo.ViewModels.PreviewState.ExecutionPreview = 1 -> Dynamo.ViewModels.PreviewState
 Dynamo.ViewModels.PreviewState.Hover = 2 -> Dynamo.ViewModels.PreviewState
