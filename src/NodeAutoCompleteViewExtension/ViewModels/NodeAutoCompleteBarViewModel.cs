@@ -786,17 +786,14 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     //throw away the node for now
                     newNode.Dispose();
 
-                    if (dummyNode != null)
-                    {
-                        dummyNode.X = offset; // Adjust X position
-                        dummyNode.Y = PortViewModel.NodeViewModel.NodeModel.Y; // Adjust Y position
-                        workspaceModel.AddAndRegisterNode(dummyNode);
-                        createdNodes[nodeItem.Id] = dummyNode;
-                        createdClusterItems.Add(dummyNode);
+                    dummyNode.X = offset; // Adjust X position
+                    dummyNode.Y = PortViewModel.NodeViewModel.NodeModel.Y; // Adjust Y position
+                    workspaceModel.AddAndRegisterNode(dummyNode);
+                    createdNodes[nodeItem.Id] = dummyNode;
+                    createdClusterItems.Add(dummyNode);
 
-                        var newNodeViewModel = workspaceViewModel.Nodes.Last();
-                        newNodeViewModel.IsHidden = true; // Hide the node initially
-                    }
+                    var newNodeViewModel = workspaceViewModel.Nodes.Last();
+                    newNodeViewModel.IsHidden = true; // Hide the node initially
                 }
             }
   
