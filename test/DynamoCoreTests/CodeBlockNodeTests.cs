@@ -2136,7 +2136,8 @@ var06 = g;
             libraryServicesCore.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(libraryServicesCore));
             libraryServicesCore.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(libraryServicesCore));
 
-            CompilerUtils.TryLoadAssemblyIntoCore(libraryServicesCore, libraryPath);
+            var importStatement = @"import (""" + CompilerUtils.ToLiteral(libraryPath) + @""");";
+            CompilerUtils.TryLoadAssemblyIntoCore(libraryServicesCore, importStatement);
         }
 
         [TearDown]
@@ -2388,8 +2389,9 @@ var06 = g;
         public void TestBuiltInMethodSignatureCompletion()
         {
             const string libraryPath = "BuiltIn.ds";
+            string importStatement = @"import (""" + CompilerUtils.ToLiteral(libraryPath) + @""");";
 
-            CompilerUtils.TryLoadAssemblyIntoCore(libraryServicesCore, libraryPath);
+            CompilerUtils.TryLoadAssemblyIntoCore(libraryServicesCore, importStatement);
 
             var codeCompletionServices = new CodeCompletionServices(libraryServicesCore);
 

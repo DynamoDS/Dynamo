@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using Dynamo.Engine.CodeCompletion;
 using NUnit.Framework;
@@ -25,7 +25,8 @@ namespace Dynamo.Tests.Engine.CodeCompletion
             libraryServicesCore.Compilers.Add(ProtoCore.Language.Associative, new ProtoAssociative.Compiler(libraryServicesCore));
             libraryServicesCore.Compilers.Add(ProtoCore.Language.Imperative, new ProtoImperative.Compiler(libraryServicesCore));
 
-            CompilerUtils.TryLoadAssemblyIntoCore(libraryServicesCore, libraryPath);
+            var importStmt = @"import (""" + CompilerUtils.ToLiteral(libraryPath) + @""");";
+            CompilerUtils.TryLoadAssemblyIntoCore(libraryServicesCore, importStmt);
         }
 
 
