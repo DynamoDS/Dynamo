@@ -778,20 +778,27 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 {
                     var typeInfo = new NodeModelTypeId(nodeItem.Type.Id);
                     var newNode = dynamoModel.CreateNodeFromNameOrType(Guid.NewGuid(), typeInfo.FullName, true);
-                    if (newNode != null)
+
+                    //work with dummy nodes first for memory consumption
+                    DummyNode dummyNode = new DummyNode(nodeItem.Id, newNode.InPorts.Count, newNode.OutPorts.Count, newNode.Name);
+                    dummyNode.IsTransient = true;
+
+                    //throw away the node for now
+                    newNode.Dispose();
+
+                    if (dummyNode != null)
                     {
-                        newNode.X = offset; // Adjust X position
-                        newNode.Y = PortViewModel.NodeViewModel.NodeModel.Y; // Adjust Y position
-                        workspaceModel.AddAndRegisterNode(newNode);
-                        createdNodes[nodeItem.Id] = newNode;
-                        createdClusterItems.Add(newNode);
+                        dummyNode.X = offset; // Adjust X position
+                        dummyNode.Y = PortViewModel.NodeViewModel.NodeModel.Y; // Adjust Y position
+                        workspaceModel.AddAndRegisterNode(dummyNode);
+                        createdNodes[nodeItem.Id] = dummyNode;
 
                         var newNodeViewModel = workspaceViewModel.Nodes.Last();
                         newNodeViewModel.IsHidden = true; // Hide the node initially
                     }
                 }
             }
-
+  
             // Connect the cluster to the original node and port
             if (entryNodeId != null && createdNodes.TryGetValue(entryNodeId, out var entryNode))
             {

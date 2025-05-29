@@ -12,6 +12,12 @@ namespace CoreNodeModelsWpf.Nodes
     {
         public void CustomizeView(DummyNode model, Dynamo.Controls.NodeView nodeView)
         {
+            if (model.IsTransient)
+            {
+                model.State = ElementState.Active;
+                return;
+            }
+
             var fileName = "DeprecatedNode.png";
             if (model.NodeNature == DummyNode.Nature.Unresolved)
                 fileName = "MissingNode.png";
