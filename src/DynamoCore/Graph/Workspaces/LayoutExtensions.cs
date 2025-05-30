@@ -38,6 +38,14 @@ namespace Dynamo.Graph.Workspaces
 
             GenerateCombinedGraph(workspace, isGroupLayout, out layoutSubgraphs, out subgraphClusters);
 
+            foreach (var node in layoutSubgraphs.First().Nodes)
+            {
+                if(originalNodeGUID != null && node.Id == originalNodeGUID.Value)
+                {
+                    node.IsSelected = true;//always consider original node as selected
+                }
+            }
+
             //only record graph layout undo when it is not node autocomplete
             if (!isNodeAutoComplete)
             {
@@ -51,9 +59,28 @@ namespace Dynamo.Graph.Workspaces
             // Deselect all nodes
             subgraphClusters.ForEach(c => c.ForEach(x => x.IsSelected = false));
 
+            var activeComponents = layoutSubgraphs.Skip(1).ToList();
             // Run layout algorithm for each subgraph
-            layoutSubgraphs.Skip(1).ToList().ForEach(g => RunLayoutSubgraph(g, isGroupLayout));
-            AvoidSubgraphOverlap(layoutSubgraphs);
+            activeComponents.ForEach(g => RunLayoutSubgraph(g, isGroupLayout));
+
+            if (isNodeAutoComplete)
+            {
+                //original node shouldn't move: move others around
+                var targetSubgraph = activeComponents.FirstOrDefault(x=>x.Nodes.Any(x=>x.Id == originalNodeGUID));
+                if (targetSubgraph != null)
+                {
+                    var node = targetSubgraph.Nodes.First(x=>x.Id == originalNodeGUID);
+                    var diffX = node.X - node.InitialX;
+                    var diffY = node.Y - node.InitialY;
+                    foreach (var relatedNode in targetSubgraph.Nodes)
+                    {
+                        relatedNode.X -= diffX;
+                        relatedNode.Y -= diffY;
+                    }
+                }
+            }
+
+            AvoidSubgraphOverlap(layoutSubgraphs, originalNodeGUID);
 
             if (isNodeAutoComplete)
             {
@@ -444,7 +471,7 @@ namespace Dynamo.Graph.Workspaces
         /// This method repeatedly shifts subgraphs away vertically from each other
         /// when there are any two nodes from different subgraphs overlapping.
         /// </summary>
-        private static void AvoidSubgraphOverlap(List<GraphLayout.Graph> layoutSubgraphs)
+        private static void AvoidSubgraphOverlap(List<GraphLayout.Graph> layoutSubgraphs, Guid? anchorNodeGuid = null)
         {
             bool done;
 
@@ -454,8 +481,10 @@ namespace Dynamo.Graph.Workspaces
 
                 foreach (var g1 in layoutSubgraphs.Skip(1))
                 {
+                    var g1HasAnchor = anchorNodeGuid != null && g1.Nodes.Any(x=>x.Id == anchorNodeGuid.Value);
                     foreach (var g2 in layoutSubgraphs.Skip(1))
                     {
+                        var g2HasAnchor = anchorNodeGuid != null && g2.Nodes.Any(x => x.Id == anchorNodeGuid.Value);
                         // The first subgraph's center point must be higher than the second subgraph
                         if (!g1.Equals(g2) && (g1.GraphCenterY + g1.OffsetY <= g2.GraphCenterY + g2.OffsetY))
                         {
@@ -472,8 +501,9 @@ namespace Dynamo.Graph.Workspaces
                                         ((node2.X <= node1.X) && (node2.X + node2.Width + GraphLayout.Graph.HorizontalNodeDistance > node1.X))))
                                     {
                                         // Shift the first subgraph to the top and the second subgraph to the bottom
-                                        g1.OffsetY -= 5;
-                                        g2.OffsetY += 5;
+                                        // both cant have anchors simultaneously, since are different groups and there is only one anchor
+                                        if (!g1HasAnchor) g1.OffsetY -= 5;
+                                        if (!g2HasAnchor) g2.OffsetY += 5;
                                         done = false;
                                     }
                                     if (!done) break;
