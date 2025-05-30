@@ -178,6 +178,8 @@
     <!--  Port color  -->
     <SolidColorBrush x:Key="PortKeepListStructureBackground" Color="#537E91" />
     <SolidColorBrush x:Key="PortUseLevelsCheckBoxColor" Color="#808080" />
+    <SolidColorBrush x:Key="ChevronHighlightOverlayBackground" Color="#E5E2DE" />
+    <SolidColorBrush x:Key="PortMouseOverColor" Color="#636363" />
 
     <!--  Connector  -->
     <SolidColorBrush x:Key="ConnectorHoverStateColor" Color="#808080" />
