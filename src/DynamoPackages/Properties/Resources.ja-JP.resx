@@ -123,6 +123,9 @@
   <data name="CannotRemovePackageAssemblyTitle" xml:space="preserve">
     <value>アセンブリを更新できません</value>
   </data>
+  <data name="DownloadPackageDisabled" xml:space="preserve">
+    <value>Package download is disabled in no-network mode.</value>
+  </data>
   <data name="InvalidPackageFolderWarning" xml:space="preserve">
     <value>フォルダ '{0}' は存在しません</value>
   </data>
