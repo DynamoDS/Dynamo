@@ -423,7 +423,9 @@ namespace Dynamo.ViewModels
             var portHalfHeight = PortModel.Height * 0.5 * zoom;
             var rowOffset = PortModel.Index * PortModel.Height * zoom;
             var customNodeOffset = NodeModel.CustomNodeTopBorderHeight * zoom;
-            
+
+            // popupSize.Height is already DPI-scaled (in screen pixels), so we do NOT apply dpiScale to it
+            // All other layout values are in logical units and must be multiplied by dpiScale for correct placement
             var y = popupHeightOffset + (headerHeightOffset + portHalfHeight + rowOffset + customNodeOffset) * dpiScale;
 
             var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);
