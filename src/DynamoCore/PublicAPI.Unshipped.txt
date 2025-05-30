@@ -736,6 +736,8 @@ Dynamo.Graph.Connectors.ConnectorModel.Deleted -> System.Action
 Dynamo.Graph.Connectors.ConnectorModel.End.get -> Dynamo.Graph.Nodes.PortModel
 Dynamo.Graph.Connectors.ConnectorModel.IsHidden.get -> bool
 Dynamo.Graph.Connectors.ConnectorModel.IsHidden.set -> void
+Dynamo.Graph.Connectors.ConnectorModel.IsTransient.get -> bool
+Dynamo.Graph.Connectors.ConnectorModel.IsTransient.set -> void
 Dynamo.Graph.Connectors.ConnectorModel.Start.get -> Dynamo.Graph.Nodes.PortModel
 Dynamo.Graph.Connectors.ConnectorType
 Dynamo.Graph.Connectors.ConnectorType.BEZIER = 0 -> Dynamo.Graph.Connectors.ConnectorType

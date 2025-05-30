@@ -47,6 +47,20 @@ namespace Dynamo.Graph.Connectors
                 RaisePropertyChanged(nameof(IsHidden));
             }
         }
+
+        private bool isTransient = false;
+        /// <summary>
+        /// IsTransient flag controlling the transient state of the connector
+        /// </summary>
+        public bool IsTransient
+        {
+            get { return isTransient; }
+            set
+            {
+                isTransient = value;
+                RaisePropertyChanged(nameof(IsTransient));
+            }
+        }
         /// <summary>
         /// Returns start port model.
         /// </summary>

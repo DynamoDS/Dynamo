@@ -35,13 +35,15 @@
                                               ExecutionPreview="#F2930C"
                                               Hover="#808080"
                                               None="#444"
-                                              Selection="#6AC0E7" />
+                                              Selection="#6AC0E7"
+                                              Transient="#D5BCF7"/>
 
     <controls:ConnectionStateToBrushConverter x:Key="ConnectionStateToBrushConverter"
                                               ExecutionPreviewBrush="#F2930C"
                                               HoverBrush="#808080"
                                               NoneBrush="#444"
-                                              SelectionBrush="#6AC0E7" />
+                                              SelectionBrush="#6AC0E7"
+                                              TransientBrush="#D5BCF7"/>
 
     <controls:ConnectionStateToVisibilityCollapsedConverter x:Key="ConnectionStateToVisibilityCollapsedConverter" />
     <controls:AttachmentToPathConverter x:Key="AttachmentToPathConverter" />
