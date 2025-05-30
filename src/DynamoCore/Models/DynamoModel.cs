@@ -706,7 +706,7 @@ namespace Dynamo.Models
 
             bool areAnalyticsDisabledFromConfig = false;
             if (!IsServiceMode)
-            {   // Skip getting the value for areAnalyticsDisabledFromConfig because analytics is disabled for searvice mode anyway
+            {   // Skip getting the value for areAnalyticsDisabledFromConfig because analytics is disabled for service mode anyway
                 try
                 {
                     // Dynamo, behind a proxy server, has been known to have issues loading the Analytics binaries.
@@ -798,7 +798,9 @@ namespace Dynamo.Models
             // is no additional location specified. Otherwise, update pathManager.PackageDirectories to include
             // PackageFolders
             if (PreferenceSettings.CustomPackageFolders.Count == 0)
+            {
                 PreferenceSettings.CustomPackageFolders = new List<string> { BuiltInPackagesToken, pathManager.UserDataDirectory };
+            }
 
             if (!PreferenceSettings.CustomPackageFolders.Contains(BuiltInPackagesToken))
             {
