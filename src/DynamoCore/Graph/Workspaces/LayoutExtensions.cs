@@ -59,13 +59,14 @@ namespace Dynamo.Graph.Workspaces
             // Deselect all nodes
             subgraphClusters.ForEach(c => c.ForEach(x => x.IsSelected = false));
 
+            var activeComponents = layoutSubgraphs.Skip(1).ToList();
             // Run layout algorithm for each subgraph
-            layoutSubgraphs.Skip(1).ToList().ForEach(g => RunLayoutSubgraph(g, isGroupLayout));
+            activeComponents.ForEach(g => RunLayoutSubgraph(g, isGroupLayout));
 
             if (isNodeAutoComplete)
             {
                 //original node shouldn't move: move others around
-                var targetSubgraph = layoutSubgraphs.Skip(1).ToList().FirstOrDefault(x=>x.Nodes.Any(x=>x.Id == originalNodeGUID));
+                var targetSubgraph = activeComponents.FirstOrDefault(x=>x.Nodes.Any(x=>x.Id == originalNodeGUID));
                 if (targetSubgraph != null)
                 {
                     var node = targetSubgraph.Nodes.First(x=>x.Id == originalNodeGUID);
