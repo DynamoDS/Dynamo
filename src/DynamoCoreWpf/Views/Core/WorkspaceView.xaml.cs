@@ -189,8 +189,7 @@ namespace Dynamo.Views
         }
 
         private void ShowNodeAutoCompleteControl()
-        {
-            if (ViewModel.NodeAutoCompleteSearchViewModel.IsOpen) return;
+        {            
             if (ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel == null) return;
             // if the MLRecommendation is default but user not accepting TOU, display notification
             if (ViewModel.NodeAutoCompleteSearchViewModel.IsDisplayingMLRecommendation && !ViewModel.NodeAutoCompleteSearchViewModel.IsMLAutocompleteTOUApproved)
@@ -199,11 +198,7 @@ namespace Dynamo.Views
                 return;
             }
 
-            //TODO : Reuse this window?
-            var nodeAutoCompleteBarWindow = new NodeAutoCompleteSearchControl(Window.GetWindow(this), ViewModel.NodeAutoCompleteSearchViewModel);
-            nodeAutoCompleteBarWindow.Show();
-
-            ViewModel.NodeAutoCompleteSearchViewModel.PortViewModel.SetupNodeAutoCompleteWindowPlacement(nodeAutoCompleteBarWindow);
+            NodeAutoCompleteSearchControl.PrepareAndShowNodeAutoCompleteSearch(Window.GetWindow(this), ViewModel.NodeAutoCompleteSearchViewModel);
         }
 
         private void ShowNodeAutoCompleteBar(PortViewModel viewModel)

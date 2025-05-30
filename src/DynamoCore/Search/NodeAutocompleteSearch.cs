@@ -291,6 +291,9 @@ namespace Dynamo.Search.SearchElements
         [DataMember(Name = "entryNodeInPort")]
         internal int EntryNodeInPort { get; set; }
 
+        [DataMember(Name = "entryNodeOutPort")]
+        internal int EntryNodeOutPort { get; set; }
+
         [DataMember(Name = "topology")]
         internal TopologyItem Topology { get; set; }
     }

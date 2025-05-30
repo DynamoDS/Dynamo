@@ -31,7 +31,7 @@
   </ItemGroup>
   <ItemGroup Label="Common dependencies">
     <PackageReference Include="Autodesk.IDSDK" Version="1.2.4" />
-    <PackageReference Include="Greg" Version="3.0.2.6533" />
+    <PackageReference Include="Greg" Version="3.0.2.8780" />
     <PackageReference Include="DynamoVisualProgramming.LibG_230_0_0" Version="3.0.0.8595" GeneratePathProperty="true" ExcludeAssets="all"/>
     <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0" Version="3.4.0.4945" Condition=" '$(Configuration)' == 'Release' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
     <PackageReference Include="DynamoVisualProgramming.LibG_231_0_0_debug" Version="3.4.0.4945" Condition=" '$(Configuration)' == 'Debug' " GeneratePathProperty="true" ExcludeAssets="runtime"/>
@@ -130,22 +130,22 @@
         <LibGMain Include="$(LibGMainPackagePath)\tools\netstandard2.0\$(LibGOsToken)\$(LIBGVerMain)\*" />
         <LibGSecondary Include="$(LibGSecondaryPackagePath)\tools\netstandard2.0\$(LibGOsToken)\$(LIBGVerSecondary)\*" />
         <SampleFiles Include="$(SolutionDir)..\doc\distrib\Samples\**\*.*" />
-		<NodeHelpCsCZMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\cs-CZ\**\*.md"/>
-		<NodeHelpDeDEMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\de-DE\**\*.md"/>
-		<NodeHelpEnUSMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\en-US\**\*.md"/>
-		<NodeHelpEsESMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\es-ES\**\*.md"/>
-		<NodeHelpFrFRMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\fr-FR\**\*.md"/>
-		<NodeHelpItITMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\it-IT\**\*.md"/>
-		<NodeHelpJaJPMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\ja-JP\**\*.md"/>
-		<NodeHelpKoKRMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\ko-KR\**\*.md"/>
-		<NodeHelpPlPLMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\pl-PL\**\*.md"/>
-		<NodeHelpPtBRMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\pt-BR\**\*.md"/>
-		<NodeHelpRuRUMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\ru-RU\**\*.md"/>
-		<NodeHelpZhCNMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\zh-CN\**\*.md"/>
-		<NodeHelpZhTWMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\zh-TW\**\*.md"/>
-		<NodeHelpDYNFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.dyn"/>
-		<NodeHelpTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\en-US\**\*.txt"/>
-		<NodeHelpSATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\en-US\**\*.sat"/>
+		<NodeHelpCsCZMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\cs-CZ\**\*.md" />
+		<NodeHelpDeDEMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\de-DE\**\*.md" />
+		<NodeHelpEnUSMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\en-US\**\*.md" />
+		<NodeHelpEsESMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\es-ES\**\*.md" />
+		<NodeHelpFrFRMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\fr-FR\**\*.md" />
+		<NodeHelpItITMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\it-IT\**\*.md" />
+		<NodeHelpJaJPMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\ja-JP\**\*.md" />
+		<NodeHelpKoKRMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\ko-KR\**\*.md" />
+		<NodeHelpPlPLMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\pl-PL\**\*.md" />
+		<NodeHelpPtBRMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\pt-BR\**\*.md" />
+		<NodeHelpRuRUMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\ru-RU\**\*.md" />
+		<NodeHelpZhCNMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\zh-CN\**\*.md" />
+		<NodeHelpZhTWMDFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\zh-TW\**\*.md" />
+		<NodeHelpDYNFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.dyn" />
+		<NodeHelpTXTFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\en-US\**\*.txt" />
+		<NodeHelpSATFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\en-US\**\*.sat" />
         <NodeHelpJpgImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.jpg" />
         <NodeHelpPngImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.png" />
         <NodeHelpGifImageFiles Include="$(SolutionDir)..\doc\distrib\NodeHelpFiles\**\*.gif" />
@@ -158,49 +158,49 @@
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\TermsOfUse.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\ADPAnalyticsConsent.rtf" DestinationFolder="$(OutputPath)" />
     <Copy SourceFiles="$(SolutionDir)..\doc\distrib\MLNodeAutocompleteConsent.rtf" DestinationFolder="$(OutputPath)" />
-    <Copy SourceFiles="@(NodeHelpCsCZMDFiles)" DestinationFolder="$(OutputPath)\cs-CZ\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpDeDEMDFiles)" DestinationFolder="$(OutputPath)\de-DE\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpEnUSMDFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpEsESMDFiles)" DestinationFolder="$(OutputPath)\es-ES\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpFrFRMDFiles)" DestinationFolder="$(OutputPath)\fr-FR\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpItITMDFiles)" DestinationFolder="$(OutputPath)\it-IT\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpJaJPMDFiles)" DestinationFolder="$(OutputPath)\ja-JP\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpKoKRMDFiles)" DestinationFolder="$(OutputPath)\ko-KR\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpPlPLMDFiles)" DestinationFolder="$(OutputPath)\pl-PL\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpPtBRMDFiles)" DestinationFolder="$(OutputPath)\pt-BR\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpRuRUMDFiles)" DestinationFolder="$(OutputPath)\ru-RU\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpZhCNMDFiles)" DestinationFolder="$(OutputPath)\zh-CN\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpZhTWMDFiles)" DestinationFolder="$(OutputPath)\zh-TW\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpDYNFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\cs-CZ\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\de-DE\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\es-ES\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\fr-FR\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\it-IT\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\ja-JP\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\ko-KR\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\pl-PL\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\pt-BR\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\ru-RU\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\zh-CN\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\zh-TW\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\cs-CZ\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\de-DE\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\es-ES\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\fr-FR\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\it-IT\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\ja-JP\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\ko-KR\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\pl-PL\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\pt-BR\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\ru-RU\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\zh-CN\fallback_docs\" SkipUnchangedFiles="True"/>
-	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\zh-TW\fallback_docs\" SkipUnchangedFiles="True"/>
-    <Copy SourceFiles="@(NodeHelpJpgImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" SkipUnchangedFiles="True"/>
-    <Copy SourceFiles="@(NodeHelpPngImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" SkipUnchangedFiles="True"/>
-    <Copy SourceFiles="@(NodeHelpGifImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" SkipUnchangedFiles="True"/>
+    <Copy SourceFiles="@(NodeHelpCsCZMDFiles)" DestinationFolder="$(OutputPath)\cs-CZ\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpDeDEMDFiles)" DestinationFolder="$(OutputPath)\de-DE\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpEnUSMDFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpEsESMDFiles)" DestinationFolder="$(OutputPath)\es-ES\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpFrFRMDFiles)" DestinationFolder="$(OutputPath)\fr-FR\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpItITMDFiles)" DestinationFolder="$(OutputPath)\it-IT\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpJaJPMDFiles)" DestinationFolder="$(OutputPath)\ja-JP\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpKoKRMDFiles)" DestinationFolder="$(OutputPath)\ko-KR\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpPlPLMDFiles)" DestinationFolder="$(OutputPath)\pl-PL\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpPtBRMDFiles)" DestinationFolder="$(OutputPath)\pt-BR\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpRuRUMDFiles)" DestinationFolder="$(OutputPath)\ru-RU\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpZhCNMDFiles)" DestinationFolder="$(OutputPath)\zh-CN\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpZhTWMDFiles)" DestinationFolder="$(OutputPath)\zh-TW\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpDYNFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\cs-CZ\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\de-DE\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\es-ES\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\fr-FR\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\it-IT\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\ja-JP\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\ko-KR\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\pl-PL\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\pt-BR\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\ru-RU\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\zh-CN\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpTXTFiles)" DestinationFolder="$(OutputPath)\zh-TW\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\cs-CZ\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\de-DE\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\en-US\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\es-ES\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\fr-FR\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\it-IT\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\ja-JP\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\ko-KR\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\pl-PL\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\pt-BR\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\ru-RU\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\zh-CN\fallback_docs\" SkipUnchangedFiles="True" />
+	<Copy SourceFiles="@(NodeHelpSATFiles)" DestinationFolder="$(OutputPath)\zh-TW\fallback_docs\" SkipUnchangedFiles="True" />
+    <Copy SourceFiles="@(NodeHelpJpgImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" SkipUnchangedFiles="True" />
+    <Copy SourceFiles="@(NodeHelpPngImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" SkipUnchangedFiles="True" />
+    <Copy SourceFiles="@(NodeHelpGifImageFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" SkipUnchangedFiles="True" />
     <Copy SourceFiles="@(NodeHelpXLSXFiles)" DestinationFolder="$(OutputPath)\NodeHelpSharedDocs\" />
     <Copy SourceFiles="@(OpenSourceLicenses)" DestinationFolder="$(OutputPath)Open Source Licenses\" />
     <Copy SourceFiles="@(LibGInterface)" DestinationFolder="$(OutputPath)" />

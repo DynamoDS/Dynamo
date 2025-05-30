@@ -457,8 +457,10 @@ namespace Dynamo.ViewModels
                 if (authProvider is IOAuth2AuthProvider oauth2AuthProvider && authProvider is IOAuth2AccessTokenProvider tokenprovider)
                 {
                     var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
-                    var client = new RestClient(uri);
+                    var options = new RestClientOptions(uri) { Timeout = new TimeSpan(0, 0, 7) };
+                    var client = new RestClient(options);
                     var request = new RestRequest(string.Empty,Method.Post);
+
                     var tkn = tokenprovider?.GetAccessToken();
                     if (string.IsNullOrEmpty(tkn))
                     {
@@ -542,8 +544,7 @@ namespace Dynamo.ViewModels
         internal void PopulateAutoCompleteCandidates()
         {
             if (PortViewModel == null) return;
-
-            dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
+            
             ResetAutoCompleteSearchViewState();
 
             if (IsDisplayingMLRecommendation)
@@ -619,9 +620,18 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal void OnNodeAutoCompleteWindowOpened()
+        {
+            IsOpen = true;
+            dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
+            PortViewModel.Highlight = System.Windows.Visibility.Visible;
+        }
+
         internal void OnNodeAutoCompleteWindowClosed()
         {
+            IsOpen = false;
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved -= NodeViewModel_Removed;
+            PortViewModel.Highlight = System.Windows.Visibility.Collapsed;
         }
 
         internal void NodeViewModel_Removed(NodeModel node)
