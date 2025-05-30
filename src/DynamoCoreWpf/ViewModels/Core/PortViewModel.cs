@@ -399,6 +399,9 @@ namespace Dynamo.ViewModels
             // What matters is the zoom factor measured from the scaled : unscaled node size
             var zoom = node.WorkspaceViewModel.Zoom;
 
+            var source = PresentationSource.FromVisual(Application.Current.MainWindow);
+            var dpiScale = source?.CompositionTarget?.TransformToDevice.M22 ?? 1.0;
+
             double x;
             var scaledWidth = autocompletePopupSpacing * targetSize.Width / node.ActualWidth;
 
@@ -421,7 +424,9 @@ namespace Dynamo.ViewModels
             var rowOffset = PortModel.Index * PortModel.Height * zoom;
             var customNodeOffset = NodeModel.CustomNodeTopBorderHeight * zoom;
 
-            var y = popupHeightOffset + headerHeightOffset + portHalfHeight + rowOffset + customNodeOffset;
+            // popupSize.Height is already DPI-scaled (in screen pixels), so we do NOT apply dpiScale to it
+            // All other layout values are in logical units and must be multiplied by dpiScale for correct placement
+            var y = popupHeightOffset + (headerHeightOffset + portHalfHeight + rowOffset + customNodeOffset) * dpiScale;
 
             var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);
 
