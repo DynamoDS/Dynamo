@@ -1,4 +1,5 @@
 using DSCore.CurveMapper;
+using Dynamo.Graph;
 using Dynamo.Graph.Nodes;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -8,6 +9,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Xml;
 
 namespace CoreNodeModels
 {
@@ -16,6 +18,9 @@ namespace CoreNodeModels
     [NodeCategory("Math.Graph.Create")]
     [NodeDescription("CurveMapperDescription", typeof(Properties.Resources))]
     [NodeSearchTags("CurveMapperSearchTags", typeof(Properties.Resources))]
+    [InPortNames("x-MinLimit", "x-MaxLimit", "y-MinLimit", "y-MaxLimit", "values")]
+    [InPortTypes("int", "int", "int", "int", "double")]
+
     public class CurveMapperNodeModel : NodeModel
     {
         private double minLimitX = 0;
@@ -24,8 +29,6 @@ namespace CoreNodeModels
         private double maxLimitY = 1;
         private List<Double> pointsCount = new List<double>() { 10.0 };
 
-        private List<double> outputValuesY;
-        private List<double> outputValuesX;
         private List<double> renderValuesY;
         private List<double> renderValuesX;
 
@@ -78,9 +81,10 @@ namespace CoreNodeModels
         private double dynamicCanvasSize = defaultCanvasSize;
         private bool isLocked;
         private bool isResizing;
+        private bool isRestoringUndo;
 
         #region Curves & Point Data
-        
+
         /// <summary> Point data for the 1st control point of the linear curve. </summary>
         [JsonProperty]
         public ControlPointData LinearCurveControlPointData1 { get; private set; }
@@ -334,6 +338,7 @@ namespace CoreNodeModels
                 selectedGraphType = value;
                 GenerateRenderValues();
                 RaisePropertyChanged(nameof(SelectedGraphType));
+                RaisePropertyChanged(nameof(SelectedGraphTypeDescription));
             }
         }
 
@@ -367,9 +372,24 @@ namespace CoreNodeModels
             }
         }
 
+        /// <summary> Indicates whether the node is currently restoring its state during undo. </summary>
+        [JsonIgnore]
+        public bool IsRestoringUndo
+        {
+            get => isRestoringUndo;
+            private set
+            {
+                if (isRestoringUndo != value)
+                {
+                    isRestoringUndo = value;
+                }
+            }
+        }
+
         /// <summary> Indicates that this node supports resizing via UI. </summary>
         [JsonIgnore]
         public override bool IsResizable => true;
+
 
         #region Constructors
 
@@ -441,21 +461,12 @@ namespace CoreNodeModels
         /// </summary>
         public void GenerateRenderValues()
         {
-            if (SelectedGraphType == GraphTypes.Empty)
+            if (SelectedGraphType == GraphTypes.Empty || !IsValidCurve())
             {
                 RenderValuesX = RenderValuesY = null;
+                // Trigger an update to force the node to output nulls and display a warning bubble
                 OnNodeModified();
                 return;
-            }
-            if (!IsValidCurve())
-            {
-                RenderValuesX = RenderValuesY = null;
-                OnNodeModified();
-                return;
-            }
-            if(!IsResizing)
-            {
-                ClearErrorsAndWarnings();
             }
 
             object curve = null;
@@ -531,16 +542,18 @@ namespace CoreNodeModels
                     break;
             }
 
-            if (curve is not null)
+            if (curve is CurveBase dynamicCurve)
             {
-                dynamic dynamicCurve = curve;
                 RenderValuesX = dynamicCurve.GetCurveXValues(PointsCount, true);
                 RenderValuesY = dynamicCurve.GetCurveYValues(PointsCount, true);
 
+                if (dynamicCurve.IsYOutOfRange)
+                    Info(Properties.Resources.CurveMapperInfoMessage, true);
+                else
+                    ClearInfoMessages();
+
                 if (!IsResizing)
-                {
                     OnNodeModified();
-                }
             }
         }
 
@@ -680,20 +693,6 @@ namespace CoreNodeModels
 
         #region Private Methods
 
-        private bool IsValidInput()
-        {
-            if (pointsCount == null || pointsCount.Count == 0)
-                return false;
-
-            if (pointsCount.Count == 1 && pointsCount.FirstOrDefault() < 2)
-                return false;
-
-            if (MinLimitX == MaxLimitX || MinLimitY == MaxLimitY)
-                return false;
-
-            return true;
-        }
-
         private bool IsValidCurve()
         {
             // Dictionary mapping graph types to control point validation logic
@@ -832,7 +831,7 @@ namespace CoreNodeModels
         public override IEnumerable<AssociativeNode> BuildOutputAst(List<AssociativeNode> inputAstNodes)
         {
             // If input is missing or invalid, return nulls
-            if (inputAstNodes == null || inputAstNodes.Count < 5 || SelectedGraphType == GraphTypes.Empty || !IsValidCurve())
+            if (inputAstNodes == null || inputAstNodes.Count < 5 || SelectedGraphType == GraphTypes.Empty)
             {
                 return new[]
                 {
@@ -913,15 +912,15 @@ namespace CoreNodeModels
 
             AssociativeNode buildResultNodeX =
                 AstFactory.BuildFunctionCall(
-                    new Func<List<double>, double, object, object, object, object, List<double>, string, List<double>>(
-                        CurveMapperGenerator.CalculateValuesX),
+                    new Func<List<double>, double, object, object, object, object, object, string, List<double>>(
+                        CurveMapperGenerator.CalculateValuesForX),
                     curveInputs
                 );
 
             AssociativeNode buildResultNodeY =
                 AstFactory.BuildFunctionCall(
-                    new Func<List<double>, double, object, object, object, object, List<double>, string, List<double>>(
-                        CurveMapperGenerator.CalculateValuesY),
+                    new Func<List<double>, double, object, object, object, object, object, string, List<double>>(
+                        CurveMapperGenerator.CalculateValuesForY),
                     curveInputs
                 );
 
@@ -943,6 +942,175 @@ namespace CoreNodeModels
             );
 
             return new[] { xValuesAssignment, yValuesAssignment, dataBridgeCall };
+        }
+
+        #endregion
+
+        #region Serialization/Deserialization Methods
+
+        protected override void SerializeCore(XmlElement element, SaveContext context)
+        {
+            base.SerializeCore(element, context);
+
+            element.SetAttribute(nameof(SelectedGraphType), SelectedGraphType.ToString());
+            element.SetAttribute(nameof(IsLocked), IsLocked.ToString());
+            element.SetAttribute(nameof(DynamicCanvasSize), DynamicCanvasSize.ToString());
+
+            // Save only the points needed for the current curve
+            switch (SelectedGraphType)
+            {
+                case GraphTypes.LinearCurve:
+                    SavePointData(element, "Linear1", LinearCurveControlPointData1);
+                    SavePointData(element, "Linear2", LinearCurveControlPointData2);
+                    break;
+                case GraphTypes.BezierCurve:
+                    SavePointData(element, "Bezier1", BezierCurveControlPointData1);
+                    SavePointData(element, "Bezier2", BezierCurveControlPointData2);
+                    SavePointData(element, "Bezier3", BezierCurveControlPointData3);
+                    SavePointData(element, "Bezier4", BezierCurveControlPointData4);
+                    break;
+                case GraphTypes.SineWave:
+                    SavePointData(element, "Sine1", SineWaveControlPointData1);
+                    SavePointData(element, "Sine2", SineWaveControlPointData2);
+                    break;
+                case GraphTypes.CosineWave:
+                    SavePointData(element, "Cosine1", CosineWaveControlPointData1);
+                    SavePointData(element, "Cosine2", CosineWaveControlPointData2);
+                    break;
+                case GraphTypes.ParabolicCurve:
+                    SavePointData(element, "Parabolic1", ParabolicCurveControlPointData1);
+                    SavePointData(element, "Parabolic2", ParabolicCurveControlPointData2);
+                    break;
+                case GraphTypes.PerlinNoiseCurve:
+                    SavePointData(element, "Perlin1", PerlinNoiseControlPointData1);
+                    SavePointData(element, "Perlin2", PerlinNoiseControlPointData2);
+                    SavePointData(element, "Perlin3", PerlinNoiseControlPointData3);
+                    break;
+                case GraphTypes.PowerCurve:
+                    SavePointData(element, "Power1", PowerCurveControlPointData1);
+                    break;
+                case GraphTypes.SquareRootCurve:
+                    SavePointData(element, "SquareRoot1", SquareRootCurveControlPointData1);
+                    SavePointData(element, "SquareRoot2", SquareRootCurveControlPointData2);
+                    break;
+                case GraphTypes.GaussianCurve:
+                    SavePointData(element, "Gaussian1", GaussianCurveControlPointData1);
+                    SavePointData(element, "Gaussian2", GaussianCurveControlPointData2);
+                    SavePointData(element, "Gaussian3", GaussianCurveControlPointData3);
+                    SavePointData(element, "Gaussian4", GaussianCurveControlPointData4);
+                    break;
+            }
+        }
+
+        protected override void DeserializeCore(XmlElement element, SaveContext context)
+        {
+            base.DeserializeCore(element, context);
+
+            // Suppress undo-related reactions
+            IsRestoringUndo = true;
+
+            // Restore the selected graph type
+            var typeAttr = element.GetAttribute(nameof(SelectedGraphType));
+            if (!string.IsNullOrEmpty(typeAttr) && Enum.TryParse(typeAttr, out GraphTypes parsedType))
+            {
+                if (SelectedGraphType != parsedType)
+                {
+                    SelectedGraphType = parsedType;
+                    RaisePropertyChanged(nameof(SelectedGraphType));
+                }
+            }
+
+            // Restore locked state
+            if (bool.TryParse(element.GetAttribute(nameof(IsLocked)), out var locked))
+            {
+                if (IsLocked != locked)
+                {
+                    IsLocked = locked;
+                    RaisePropertyChanged(nameof(IsLocked));
+                }
+            }
+
+            // Restore canvas size
+            if (double.TryParse(element.GetAttribute(nameof(DynamicCanvasSize)), out var canvasSize))
+            {
+                if (DynamicCanvasSize != canvasSize)
+                {
+                    DynamicCanvasSize = canvasSize;
+                    RaisePropertyChanged(nameof(DynamicCanvasSize));
+                }
+            }
+
+            IsRestoringUndo = false;
+
+            switch (SelectedGraphType)
+            {
+                case GraphTypes.LinearCurve:
+                    LinearCurveControlPointData1 = LoadPointData(element, "Linear1");
+                    LinearCurveControlPointData2 = LoadPointData(element, "Linear2");
+                    break;
+                case GraphTypes.BezierCurve:
+                    BezierCurveControlPointData1 = LoadPointData(element, "Bezier1");
+                    BezierCurveControlPointData2 = LoadPointData(element, "Bezier2");
+                    BezierCurveControlPointData3 = LoadPointData(element, "Bezier3");
+                    BezierCurveControlPointData4 = LoadPointData(element, "Bezier4");
+                    break;
+                case GraphTypes.SineWave:
+                    SineWaveControlPointData1 = LoadPointData(element, "Sine1");
+                    SineWaveControlPointData2 = LoadPointData(element, "Sine2");
+                    break;
+                case GraphTypes.CosineWave:
+                    CosineWaveControlPointData1 = LoadPointData(element, "Cosine1");
+                    CosineWaveControlPointData2 = LoadPointData(element, "Cosine2");
+                    break;
+                case GraphTypes.ParabolicCurve:
+                    ParabolicCurveControlPointData1 = LoadPointData(element, "Parabolic1");
+                    ParabolicCurveControlPointData2 = LoadPointData(element, "Parabolic2");
+                    break;
+                case GraphTypes.PerlinNoiseCurve:
+                    PerlinNoiseControlPointData1 = LoadPointData(element, "Perlin1");
+                    PerlinNoiseControlPointData2 = LoadPointData(element, "Perlin2");
+                    PerlinNoiseControlPointData3 = LoadPointData(element, "Perlin3");
+                    break;
+                case GraphTypes.PowerCurve:
+                    PowerCurveControlPointData1 = LoadPointData(element, "Power1");
+                    break;
+                case GraphTypes.SquareRootCurve:
+                    SquareRootCurveControlPointData1 = LoadPointData(element, "SquareRoot1");
+                    SquareRootCurveControlPointData2 = LoadPointData(element, "SquareRoot2");
+                    break;
+                case GraphTypes.GaussianCurve:
+                    GaussianCurveControlPointData1 = LoadPointData(element, "Gaussian1");
+                    GaussianCurveControlPointData2 = LoadPointData(element, "Gaussian2");
+                    GaussianCurveControlPointData3 = LoadPointData(element, "Gaussian3");
+                    GaussianCurveControlPointData4 = LoadPointData(element, "Gaussian4");
+                    break;
+            }
+
+            GenerateRenderValues();
+            RaisePropertyChanged("ControlPointsDeserialized");
+        }
+
+        private void SavePointData(XmlElement parent, string name, ControlPointData point)
+        {
+            if (point == null) return;
+
+            var pointElement = parent.OwnerDocument.CreateElement(name);
+            pointElement.SetAttribute("X", point.X.ToString());
+            pointElement.SetAttribute("Y", point.Y.ToString());
+            pointElement.SetAttribute("Tag", point.Tag ?? "");
+            parent.AppendChild(pointElement);
+        }
+
+        private ControlPointData LoadPointData(XmlElement parent, string name)
+        {
+            var node = parent[name];
+            if (node == null) return null;
+
+            double.TryParse(node.GetAttribute("X"), out var x);
+            double.TryParse(node.GetAttribute("Y"), out var y);
+            var tag = node.GetAttribute("Tag");
+
+            return new ControlPointData(x, y, tag);
         }
 
         #endregion

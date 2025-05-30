@@ -1591,6 +1591,18 @@
         <member name="P:DSCore.Properties.Resources.BitmapOverflowError">
             <summary>查找類似於「提供的顏色資料太大，無法佈滿影像邊界。」的本土化字串。</summary>
         </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperEqualMinMaxWarning">
+            <summary>查找類似於「• 最小值和最大值必須不同。」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCountWarning">
+            <summary>查找類似於「• 值必須是一個數字清單或一個 ≥ 2 的數字。」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCurveWarning">
+            <summary>查找類似於「• 所選曲線的控制點無效。」的本土化字串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidXYFormatWarning">
+            <summary>查找類似於「• X 和 Y 輸入必須是一個數字 (不是清單)。」的本土化字串。</summary>
+        </member>
         <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
             <summary>查找類似於「輸入必須是單一值或非巢狀清單。」的本土化字串。</summary>
         </member>

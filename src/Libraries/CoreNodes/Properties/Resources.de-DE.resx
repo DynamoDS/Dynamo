@@ -234,4 +234,16 @@
   <data name="DefineDataSupportedInputValueExceptionMessage" xml:space="preserve">
     <value>Eingabe muss ein einzelner Wert oder eine nicht verschachtelte Liste sein.</value>
   </data>
+  <data name="CurveMapperEqualMinMaxWarning" xml:space="preserve">
+    <value>• Mindest- und Maximalwerte müssen unterschiedlich sein.</value>
+  </data>
+  <data name="CurveMapperInvalidCountWarning" xml:space="preserve">
+    <value>• Werte müssen eine Liste von Zahlen oder eine einzelne Zahl ≥ 2 sein.</value>
+  </data>
+  <data name="CurveMapperInvalidCurveWarning" xml:space="preserve">
+    <value>• Steuerpunkte für die ausgewählte Kurve sind nicht gültig.</value>
+  </data>
+  <data name="CurveMapperInvalidXYFormatWarning" xml:space="preserve">
+    <value>• X- und Y-Eingaben müssen einzelne Zahlen sein (keine Listen).</value>
+  </data>
 </root>

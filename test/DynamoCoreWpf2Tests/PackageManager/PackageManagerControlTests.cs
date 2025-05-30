@@ -23,7 +23,7 @@ namespace DynamoCoreWpfTests.PackageManager
         {
             // Setup
             var mockGreg = new Mock<IGregClient>();
-            var clientmock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty);
+            var clientmock = new Mock<Dynamo.PackageManager.PackageManagerClient>(mockGreg.Object, MockMaker.Empty<IPackageUploadBuilder>(), string.Empty, false);
             var pmCVM = new Mock<PackageManagerClientViewModel>(ViewModel, clientmock.Object) { CallBase = true };
             var packageManagerSearchViewModel = new PackageManagerSearchViewModel(pmCVM.Object);
             packageManagerSearchViewModel.RegisterTransientHandlers();

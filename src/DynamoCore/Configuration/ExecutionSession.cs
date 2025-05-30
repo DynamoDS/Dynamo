@@ -26,6 +26,7 @@ namespace Dynamo.Configuration
             parameters[ParameterKeys.LastExecutionDuration] = new TimeSpan(updateTask.ExecutionEndTime.TickCount - updateTask.ExecutionStartTime.TickCount);
             parameters[ParameterKeys.PackagePaths] = pathManager.PackagesDirectories;
             parameters[ParameterKeys.Logger] = model.Logger;
+            parameters[ParameterKeys.NoNetworkMode] = model.NoNetworkMode;
         }
 
         /// <summary>

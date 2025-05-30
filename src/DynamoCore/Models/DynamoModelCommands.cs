@@ -96,6 +96,7 @@ namespace Dynamo.Models
 
             node.X = command.X;
             node.Y = command.Y;
+            node.IsTransient = command.IsTransient;
 
             AddNodeToCurrentWorkspace(node, centered: command.DefaultPosition);
             CurrentWorkspace.RecordCreatedModel(node);
@@ -215,7 +216,7 @@ namespace Dynamo.Models
             return null;
         }
 
-        private NodeModel CreateNodeFromNameOrType(Guid nodeId, string name)
+        internal NodeModel CreateNodeFromNameOrType(Guid nodeId, string name, bool isTransient = false)
         {
             NodeModel node;
 
@@ -227,6 +228,7 @@ namespace Dynamo.Models
                     ? new DSVarArgFunction(functionItem) as NodeModel
                     : new DSFunction(functionItem);
                 node.GUID = nodeId;
+                node.IsTransient = isTransient;
                 return node;
             }
 
@@ -234,6 +236,7 @@ namespace Dynamo.Models
             if (NodeFactory.CreateNodeFromTypeName(name, out node))
             {
                 node.GUID = nodeId;
+                node.IsTransient = isTransient;
             }
             return node;
         }
@@ -583,6 +586,12 @@ namespace Dynamo.Models
             else
             {
                 modelsToDelete.AddRange(command.ModelGuids.Select(guid => CurrentWorkspace.GetModelInternal(guid)));
+            }
+
+            if (!command.CanDeleteTransientNodes)
+            {
+                // Remove transient nodes from the list of models to delete.
+                modelsToDelete.RemoveAll(model => (model as NodeModel)?.IsTransient == true);
             }
 
             DeleteModelInternal(modelsToDelete);

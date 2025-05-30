@@ -1,3 +1,4 @@
+using Autodesk.DesignScript.Runtime;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,6 +8,8 @@ namespace DSCore.CurveMapper
     /// Represents a linear curve in the CurveMapper.
     /// A linear curve is a straight line between two control points.
     /// </summary>
+
+    [IsVisibleInDynamoLibrary(false)]
     public class LinearCurve : CurveBase
     {
         private double ControlPoint1X;
@@ -71,6 +74,8 @@ namespace DSCore.CurveMapper
 
             if (isRender)
             {
+                IsYOutOfRange = (lowY < 0 || lowY > CanvasSize || highY < 0 || highY > CanvasSize);
+
                 valuesX = new List<double> { System.Math.Clamp(leftX, 0, CanvasSize), System.Math.Clamp(rightX, 0, CanvasSize) };
 
                 valuesY = (flipHorizontally ^ flipVertically)

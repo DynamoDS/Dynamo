@@ -4812,6 +4812,15 @@
             mesh,meshes
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndexGroups(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.IndexGroup})">
+            <summary>Vytvořit síť z kolekce bodů a kolekce objektů IndexGroup odkazujících na danou kolekci bodů</summary>
+            <param name="points">Seznam bodů</param>
+            <param name="indexGroups">Indexové skupiny pro body</param>
+            <returns>Síť</returns>
+            <search>
+            mesh,meshes
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ImportFile(System.String)">
             <summary>Importuje soubor a analyzuje jej do řady sítí.
             Aktuálně podporované formáty:
@@ -4836,6 +4845,12 @@
             <summary>Vytvoří novou síť ze zadaných vrcholů a indexů. Vrcholy by se neměly 
             překrývat. Indexy by měly být množinami tří celých čísel
             označujících tři umístění v poli vrcholů
+            ze tří bodů trojúhelníku</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>Vytvořit novou síť ze zadaných bodů a indexů. Body by se neměly 
+            překrývat. Indexy by měly být množinami tří celých čísel. 
+            určujících tři umístění v poli bodů
             ze tří bodů trojúhelníku</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Plane(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32)">
@@ -5589,6 +5604,12 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.LessThanZero">
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „{0} je menší než nula.“.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_bypointsfaceindices_deprecated">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda byla vyřazena a bude odebrána v budoucí verzi aplikace Dynamo.“. Místo ní použijte uzel Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[]).</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_byverticesandindices_deprecated">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Tato metoda byla vyřazena a bude odebrána v budoucí verzi aplikace Dynamo.“. Místo ní použijte uzel Mesh.ByPointsIndices (Point[] points, Indices : int[]).</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.MeshPrecisionInfo">
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci Uzly sítě používají 32bitovou přesnost (7 desetinných míst), což může vést k chybám zaokrouhlení u velkých čísel nebo čísel se více než 7 desetinnými místy. Za účelem dosažení vyšší přesnosti (64 bitů, 15 desetinných míst) použijte uzly z knihovny Geometrie.</summary>

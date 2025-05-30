@@ -17,15 +17,14 @@ Please Note:
 
 Check these if you believe they are true
 
-- [ ] The codebase is in a better state after this PR
 - [ ] Is documented according to the [standards](https://github.com/DynamoDS/Dynamo/wiki/Coding-Standards)
 - [ ] The level of testing this PR includes is appropriate
 - [ ] User facing strings, if any, are extracted into `*.resx` files
-- [ ] All tests pass using the self-service CI.
 - [ ] Snapshot of UI changes, if any.
 - [ ] Changes to the API follow [Semantic Versioning](https://github.com/DynamoDS/Dynamo/wiki/Dynamo-Versions) and are documented in the [API Changes](https://github.com/DynamoDS/Dynamo/wiki/API-Changes) document.
 - [ ] This PR modifies some build requirements and the readme is updated
 - [ ] This PR contains no files larger than 50 MB
+- [ ] This PR introduces new feature code involve network connecting and is tested with no-network mode.
 
 ### Release Notes
 

@@ -38,8 +38,11 @@ namespace Dynamo.Graph.Workspaces
 
             GenerateCombinedGraph(workspace, isGroupLayout, out layoutSubgraphs, out subgraphClusters);
 
-
-            RecordUndoGraphLayout(workspace, isGroupLayout, reuseUndoRedoGroup);
+            //only record graph layout undo when it is not node autocomplete
+            if (!isNodeAutoComplete)
+            {
+                RecordUndoGraphLayout(workspace, isGroupLayout, reuseUndoRedoGroup);
+            }
             
             // Generate subgraphs separately for each cluster
             subgraphClusters.ForEach(

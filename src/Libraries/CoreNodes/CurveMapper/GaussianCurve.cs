@@ -1,3 +1,4 @@
+using Autodesk.DesignScript.Runtime;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -7,6 +8,8 @@ namespace DSCore.CurveMapper
     /// Represents a Gaussian curve in the CurveMapper.
     /// The Gaussian curve follows a bell-shaped distribution defined by four control points.
     /// </summary>
+
+    [IsVisibleInDynamoLibrary(false)]
     public class GaussianCurve : CurveBase
     {
         private double ControlPoint1X;
@@ -61,6 +64,8 @@ namespace DSCore.CurveMapper
 
             if (isRender)
             {
+                IsYOutOfRange = A > CanvasSize;
+
                 for (double x = 0; x <= ControlPoint2X; x += renderIncrementX)
                 {
                     double y = CanvasSize - ComputeGaussianY(x, A, mu, sigma);

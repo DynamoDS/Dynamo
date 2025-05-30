@@ -3231,7 +3231,7 @@ Tente colocar o nó **ByOrigin** realçado.</value>
     <value>O nível de confiança aparece próximo a cada nó recomendado e representa a probabilidade estimada de que o nó seja uma boa escolha. Quando ativada, essa configuração oculta os nós recomendados que não atendem ao nível de confiança especificado. É possível clicar no cabeçalho Baixa confiança para mostrar os nós.</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Número de resultados</value>
+    <value>Number of results for Recommended Nodes</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Importar</value>
@@ -3790,6 +3790,9 @@ Para transformar este arquivo em um novo modelo, salve-o em uma pasta diferente 
   </data>
   <data name="PublishPackageBackToFileButton" xml:space="preserve">
     <value>Voltar para Seleção de arquivos</value>
+  </data>
+  <data name="GroupFrozenButtonToolTip" xml:space="preserve">
+    <value>Esse grupo está congelado. Clique para descongelar.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

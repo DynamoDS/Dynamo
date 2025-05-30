@@ -3231,7 +3231,7 @@
     <value>Уровень надежности отображается рядом с каждым рекомендуемым узлом и представляет собой предполагаемую вероятность удачного выбора узла. При включении этого параметра рекомендуемые узлы, которые не соответствуют заданному уровню надежности, скрываются. Для отображения узлов можно щелкнуть заголовок «Низкая надежность».</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Количество результатов</value>
+    <value>Number of results for Recommended Nodes</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Импорт</value>
@@ -3790,6 +3790,9 @@
   </data>
   <data name="PublishPackageBackToFileButton" xml:space="preserve">
     <value>Назад к выбору файлов</value>
+  </data>
+  <data name="GroupFrozenButtonToolTip" xml:space="preserve">
+    <value>Эта группа заморожена. Щелкните, чтобы разморозить.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

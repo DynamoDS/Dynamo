@@ -3213,7 +3213,7 @@ Provare a posizionare il nodo **ByOrigin** evidenziato.</value>
     <value>Il livello di affidabilità viene visualizzato accanto a ciascun nodo consigliato e rappresenta la probabilità stimata che il nodo sia una buona scelta. Quando è attivata, questa impostazione nasconde i nodi consigliati che non soddisfano il livello di affidabilità specificato. È possibile fare clic sull'intestazione Bassa affidabilità per mostrare i nodi.</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Numero di risultati</value>
+    <value>Number of results for Recommended Nodes</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Importa</value>
@@ -3772,6 +3772,9 @@ Per trasformare questo file in un nuovo modello, salvarlo in un'altra cartella e
   </data>
   <data name="PublishPackageBackToFileButton" xml:space="preserve">
     <value>Torna alla selezione di file</value>
+  </data>
+  <data name="GroupFrozenButtonToolTip" xml:space="preserve">
+    <value>Questo gruppo è congelato. Fare clic per scongelare.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

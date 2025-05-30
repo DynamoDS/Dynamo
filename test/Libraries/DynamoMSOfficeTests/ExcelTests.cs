@@ -1448,5 +1448,32 @@ namespace Dynamo.Tests
             string cellValueWithoutFormula = data[1][2].ToString();
             Assert.AreEqual(cellValueWithFormula, cellValueWithoutFormula);
         }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void OpenXML_ImportExcelTestWhenHavingEmptyRow()
+        {
+            // The spreadsheet OpenXML-ImportExcelEmptyRows contains empty rows
+            string filePath = Path.Combine(TestDirectory, @"core\importExport\OpenXML-ImportExcelEmptyRows.xlsx");
+            var data = Data.OpenXMLImportExcel(filePath, "Sheet1", 0, 0, false);
+
+            //Validates that the spreadsheet was imported successfully (not sending any exception)
+            Assert.That(data.Length > 0);
+        }
+
+        [Test]
+        [Category("UnitTests")]
+        public static void OpenXML_ExportExcelTestWhenHavingEmptyRow()
+        {
+            //The spreadsheet OpenXML-ExportExcelEmptyRows.xlsx contains at the first rows text but later numbers 
+            string filePath = Path.Combine(TestDirectory, @"core\importExport\OpenXML-ExportExcelEmptyRows.xlsx");
+
+            //Create a object array with strings (previous was generating a exception this case, when using just numbers the exception was not generated)
+            object[][] data = [["21", "22"], ["22", "23"], ["23", "24"], ["24", "25"], ["25", "26"], ["26", "27"], ["27", "28"], ["28", "29"]];
+
+            //Validates that the data array was successfully inserted to the excel file (not sending any exception)
+            var result = Data.OpenXMLExportExcel(filePath, "Sheet1", data, 1, 1);
+            Assert.IsTrue(result);
+        }
     }
 }

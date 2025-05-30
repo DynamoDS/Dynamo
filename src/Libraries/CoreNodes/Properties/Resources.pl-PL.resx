@@ -234,4 +234,16 @@
   <data name="DefineDataSupportedInputValueExceptionMessage" xml:space="preserve">
     <value>Dane wejściowe muszą być pojedynczą wartością lub listą niezagnieżdżoną.</value>
   </data>
+  <data name="CurveMapperEqualMinMaxWarning" xml:space="preserve">
+    <value>• Wartości minimalne i maksymalne muszą się różnić.</value>
+  </data>
+  <data name="CurveMapperInvalidCountWarning" xml:space="preserve">
+    <value>• Wartości muszą być listą liczb lub pojedynczą liczbą ≥ 2.</value>
+  </data>
+  <data name="CurveMapperInvalidCurveWarning" xml:space="preserve">
+    <value>• Punkty sterowania dla wybranej krzywej nie są prawidłowe.</value>
+  </data>
+  <data name="CurveMapperInvalidXYFormatWarning" xml:space="preserve">
+    <value>• Dane wejściowe X i Y muszą być pojedynczymi liczbami (nie listami).</value>
+  </data>
 </root>

@@ -1,3 +1,4 @@
+using Autodesk.DesignScript.Runtime;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,6 +9,8 @@ namespace DSCore.CurveMapper
     /// Represents a Perlin noise curve in the CurveMapper.
     /// The curve generates procedural noise based on control points and Perlin noise functions.
     /// </summary>
+
+    [IsVisibleInDynamoLibrary(false)]
     public class PerlinNoiseCurve : CurveBase
     {
         private double ControlPoint1X;
@@ -164,6 +167,7 @@ namespace DSCore.CurveMapper
         {
             var valuesX = new List<double>();
             var valuesY = new List<double>();
+            bool outOfRange = false;
 
             double scalingFactor = CanvasSize / initialWidth;
             scale = (CanvasSize - ControlPoint1X) / (CanvasSize * 3.0);
@@ -181,7 +185,13 @@ namespace DSCore.CurveMapper
                         valuesX.Add(x);
                         valuesY.Add(y);
                     }
+                    else
+                    {
+                        outOfRange = true;
+                    }
                 }
+
+                IsYOutOfRange = outOfRange;
 
                 // Add the intersection points & sort the values
                 var intersectionValuesX = GetBoundaryIntersections();

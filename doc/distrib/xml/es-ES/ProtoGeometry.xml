@@ -4816,6 +4816,15 @@ un objeto LibG.</summary>
             mesh,meshes
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndexGroups(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.IndexGroup})">
+            <summary>Crea una malla a partir de una colección de puntos y una colección de IndexGroups que hacen referencia a la colección de puntos.</summary>
+            <param name="points">Lista de puntos</param>
+            <param name="indexGroups">Grupos de índice para puntos</param>
+            <returns>Malla</returns>
+            <search>
+            mesh,meshes
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ImportFile(System.String)">
             <summary>Importa un archivo y lo analiza en varias mallas.
             Los formatos admitidos actualmente son los siguientes:
@@ -4840,6 +4849,12 @@ un objeto LibG.</summary>
             <summary>Crea una malla nueva a partir de los vértices e índices especificados. Los vértices no deben 
             solaparse. Los índices deben ser conjuntos de tres enteros 
             que indican las tres ubicaciones en la matriz de vértices
+            de los tres puntos de un triángulo.</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>Crea una nueva malla a partir de los puntos e índices proporcionados. Los puntos no deben 
+            solaparse. Los índices deben ser conjuntos de tres enteros 
+            que indican las tres ubicaciones de la matriz de puntos
             de los tres puntos de un triángulo.</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Plane(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32)">
@@ -5594,6 +5609,12 @@ Básicamente, la malla está llena de innumerables cuadros diminutos y se crea u
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.LessThanZero">
             <summary>Busca una cadena localizada similar a {0} es menor que cero.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_bypointsfaceindices_deprecated">
+            <summary>Busca una cadena localizada similar a Este método se ha dejado de usar y se eliminará en una versión futura de Dynamo. En su lugar, utilice Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[]).</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_byverticesandindices_deprecated">
+            <summary>Busca una cadena localizada similar a Este método se ha dejado de usar y se eliminará en una versión futura de Dynamo. En su lugar, utilice Mesh.ByPointsIndices (Point[] points, Indices : int[]).</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.MeshPrecisionInfo">
             <summary>Busca una cadena localizada similar a Los nodos de malla utilizan una precisión de 32 bits (7 decimales), lo que puede provocar errores de redondeo con números grandes o con números con más de 7 decimales. Para obtener una mayor precisión (64 bits, 15 decimales), utilice nodos de la biblioteca de geometría.</summary>

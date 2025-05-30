@@ -234,4 +234,16 @@
   <data name="DefineDataSupportedInputValueExceptionMessage" xml:space="preserve">
     <value>輸入必須是單一值或非巢狀清單。</value>
   </data>
+  <data name="CurveMapperEqualMinMaxWarning" xml:space="preserve">
+    <value>• 最小值和最大值必須不同。</value>
+  </data>
+  <data name="CurveMapperInvalidCountWarning" xml:space="preserve">
+    <value>• 值必須是一個數字清單或一個 ≥ 2 的數字。</value>
+  </data>
+  <data name="CurveMapperInvalidCurveWarning" xml:space="preserve">
+    <value>• 所選曲線的控制點無效。</value>
+  </data>
+  <data name="CurveMapperInvalidXYFormatWarning" xml:space="preserve">
+    <value>• X 和 Y 輸入必須是一個數字 (不是清單)。</value>
+  </data>
 </root>

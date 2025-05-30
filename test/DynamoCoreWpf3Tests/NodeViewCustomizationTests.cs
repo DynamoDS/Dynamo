@@ -28,14 +28,14 @@ namespace DynamoCoreWpfTests
         {
             base.Open(path);
 
-            DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEventsLoop();
         }
 
         public override void Run()
         {
             base.Run();
 
-            DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEventsLoop();
         }
 
         protected override void GetLibrariesToPreload(List<string> libraries)
@@ -108,10 +108,10 @@ namespace DynamoCoreWpfTests
         {
             var number = new DoubleInput();
             Model.AddNodeToCurrentWorkspace(number, true);
-            DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEventsLoop();
             var nodeView = NodeViewWithGuid(number.GUID.ToString());
             nodeView.inputGrid.ChildrenOfType<DynamoTextBox>().First().Text = "0..10";
-            DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEventsLoop();
             Assert.IsTrue(number.Value != "0..10");
             Assert.IsTrue(number.Value == "0");
             Assert.IsTrue(number.IsInErrorState);
@@ -123,10 +123,10 @@ namespace DynamoCoreWpfTests
         {
             var number = new DoubleInput();
             Model.AddNodeToCurrentWorkspace(number, true);
-            DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEventsLoop();
             var nodeView = NodeViewWithGuid(number.GUID.ToString());
             nodeView.inputGrid.ChildrenOfType<DynamoTextBox>().First().Text = "start..end";
-            DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEventsLoop();
             Assert.IsTrue(number.Value != "start..end");
             Assert.IsTrue(number.Value == "0");
             Assert.IsTrue(number.IsInErrorState);
@@ -411,7 +411,8 @@ namespace DynamoCoreWpfTests
         {
             var guid0 = Guid.Parse("1a245b04-ad9e-4b9c-8301-730afbd4e6fc");
             var guid1 = Guid.Parse("cece298a-22de-4f4a-a323-fdb04af406a4");
-
+            
+            DispatcherUtil.DoEventsLoop();
             OpenAndRun(@"UI\InvalidValueShouldNotCrashColorRangeNode.dyn");
             var node0 = Model.CurrentWorkspace.Nodes.First(n => n.GUID == guid0);
             var node1 = Model.CurrentWorkspace.Nodes.First(n => n.GUID == guid1);
@@ -419,6 +420,7 @@ namespace DynamoCoreWpfTests
             node1.OnNodeModified(); // Mark node as dirty to trigger an immediate run.
 
             Assert.Pass(); // We should reach here safely without exception.
+            DispatcherUtil.DoEventsLoop();
         }
 
         [Test, Category("DisplayHardwareDependent")]
@@ -463,7 +465,7 @@ namespace DynamoCoreWpfTests
                 DynamoModel.MakeConnectionCommand.Mode.End));
 
             Run();
-            DispatcherUtil.DoEvents();
+            DispatcherUtil.DoEventsLoop();
             tree = nodeView.ChildrenOfType<WatchTree>();
             items = tree.First().treeView1.ChildrenOfType<TextBlock>();
             Assert.AreEqual(8, items.Count());

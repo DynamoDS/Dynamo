@@ -234,4 +234,16 @@
   <data name="DefineDataSupportedInputValueExceptionMessage" xml:space="preserve">
     <value>Vstup musí být jedna hodnota nebo nevnořený seznam.</value>
   </data>
+  <data name="CurveMapperEqualMinMaxWarning" xml:space="preserve">
+    <value>• Minimální a maximální hodnoty se musí lišit.</value>
+  </data>
+  <data name="CurveMapperInvalidCountWarning" xml:space="preserve">
+    <value>• Hodnoty musí být seznam čísel nebo jedno číslo ≥ 2.</value>
+  </data>
+  <data name="CurveMapperInvalidCurveWarning" xml:space="preserve">
+    <value>• Řídicí body pro vybranou křivku nejsou platné.</value>
+  </data>
+  <data name="CurveMapperInvalidXYFormatWarning" xml:space="preserve">
+    <value>• Vstupy X a Y musí být jednotlivá čísla (ne seznamy).</value>
+  </data>
 </root>

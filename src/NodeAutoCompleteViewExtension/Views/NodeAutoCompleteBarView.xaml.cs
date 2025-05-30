@@ -3,7 +3,6 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.NodeAutoComplete.ViewModels;
-using Dynamo.ViewModels;
 using System;
 using System.Linq;
 using System.Windows;
@@ -56,13 +55,13 @@ namespace Dynamo.NodeAutoComplete.Views
             Analytics.TrackEvent(
             Dynamo.Logging.Actions.Open,
             Dynamo.Logging.Categories.NodeAutoCompleteOperations);
-            ViewModel.ClusterResults = null;
+            ViewModel.DropdownResults = null;
 
             // Visibility of textbox changed, but text box has not been initialized(rendered) yet.
             // Call asynchronously focus, when textbox will be ready.
             Dispatcher.BeginInvoke(new Action(() =>
             {
-                ViewModel.PopulateClusterAutoComplete();
+                ViewModel.PopulateAutoComplete();
                 //ViewModel.PopulateAutoCompleteCandidates();
             }), DispatcherPriority.Loaded);
 
@@ -76,7 +75,7 @@ namespace Dynamo.NodeAutoComplete.Views
 
         private void MoveIndex(int step)
         {
-            ViewModel.SelectedIndex = Math.Min(ViewModel.ClusterResults.Count() - 1, Math.Max(0, ViewModel.SelectedIndex + step));
+            ViewModel.SelectedIndex = Math.Min(ViewModel.DropdownResults.Count() - 1, Math.Max(0, ViewModel.SelectedIndex + step));
         }
 
         private void PrevButton_OnClick(object sender, RoutedEventArgs e)
@@ -87,6 +86,14 @@ namespace Dynamo.NodeAutoComplete.Views
         private void NextButton_OnClick(object sender, RoutedEventArgs e)
         {
             MoveIndex(+1);
+        }
+
+        private void DockButton_OnClick(object sender, RoutedEventArgs e)
+        {
+            if (ViewModel.ResultsLoaded)
+            {
+                ViewModel.PortViewModel.NodeViewModel.WorkspaceViewModel.OnRequestNodeAutoCompleteViewExtension(ViewModel.FullResults);
+            }
         }
 
         //Removes nodeautocomplete menu when the associated parent node is removed.
@@ -108,10 +115,24 @@ namespace Dynamo.NodeAutoComplete.Views
             {
                 case Key.Escape:
                     CloseAutoComplete();
+                    e.Handled = true;
                     break;
                 case Key.Enter:
                     ViewModel?.ConsolidateTransientNodes();
                     CloseAutoComplete();
+                    e.Handled = true;
+                    break;
+                case Key.Up:
+                case Key.Left:
+                    MoveIndex(-1);
+                    e.Handled = true;
+                    break;
+                case Key.Down:
+                case Key.Right:
+                    MoveIndex(+1);
+                    e.Handled = true;
+                    break;
+                default:
                     break;
             }
         }
@@ -138,11 +159,11 @@ namespace Dynamo.NodeAutoComplete.Views
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 ViewModel?.DeleteTransientNodes();
+                ViewModel?.ToggleUndoRedoLocked(false);
             }), DispatcherPriority.Loaded);
             
             Close();
             UnsubscribeEvents(this, null);
-            ViewModel?.OnNodeAutoCompleteWindowClosed();
         }
 
     }

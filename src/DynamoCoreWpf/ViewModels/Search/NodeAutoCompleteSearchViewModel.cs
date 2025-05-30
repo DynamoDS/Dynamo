@@ -45,6 +45,7 @@ namespace Dynamo.ViewModels
         private bool displayLowConfidence;
         private const string nodeAutocompleteMLEndpoint = "MLNodeAutocomplete";
         private const string nodeClusterAutocompleteMLEndpoint = "MLNodeClusterAutocomplete";
+        internal bool IsOpen { get; set; }
 
         // Lucene search utility to perform indexing operations just for NodeAutocomplete.
         internal LuceneSearchUtility LuceneUtility
@@ -456,8 +457,10 @@ namespace Dynamo.ViewModels
                 if (authProvider is IOAuth2AuthProvider oauth2AuthProvider && authProvider is IOAuth2AccessTokenProvider tokenprovider)
                 {
                     var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
-                    var client = new RestClient(uri);
+                    var options = new RestClientOptions(uri) { Timeout = new TimeSpan(0, 0, 7) };
+                    var client = new RestClient(options);
                     var request = new RestRequest(string.Empty,Method.Post);
+
                     var tkn = tokenprovider?.GetAccessToken();
                     if (string.IsNullOrEmpty(tkn))
                     {
@@ -541,8 +544,7 @@ namespace Dynamo.ViewModels
         internal void PopulateAutoCompleteCandidates()
         {
             if (PortViewModel == null) return;
-
-            dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
+            
             ResetAutoCompleteSearchViewState();
 
             if (IsDisplayingMLRecommendation)
@@ -583,6 +585,8 @@ namespace Dynamo.ViewModels
         {
             if (PortViewModel.PortModel.PortType == PortType.Input)
             {
+                string portType = PortViewModel.PortModel.GetInputPortType();
+                
                 switch (PortViewModel.PortModel.GetInputPortType())
                 {
                     case "int":
@@ -598,7 +602,15 @@ namespace Dynamo.ViewModels
                         FilteredResults = DefaultResults.Where(e => e.Name == "Boolean").ToList();
                         break;
                     default:
-                        FilteredResults = DefaultResults.Where(e => e.Name == "String" || e.Name == "Number Slider" || e.Name == "Integer Slider" || e.Name == "Number" || e.Name == "Boolean");
+                        bool isArray = portType != null && Regex.IsMatch(portType, @"(^|\.)List<[^>]+>$|(\[\])$");
+                        if (isArray)
+                        {
+                            FilteredResults = DefaultResults.Where(e => e.Model.FullCategoryName.EndsWith(".List"))?.ToList();
+                        }
+                        else
+                        {
+                            FilteredResults = DefaultResults.Where(e => e.Name == "String" || e.Name == "Number Slider" || e.Name == "Integer Slider" || e.Name == "Number" || e.Name == "Boolean");
+                        }
                         break;
                 }
             }
@@ -608,9 +620,18 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal void OnNodeAutoCompleteWindowOpened()
+        {
+            IsOpen = true;
+            dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
+            PortViewModel.Highlight = System.Windows.Visibility.Visible;
+        }
+
         internal void OnNodeAutoCompleteWindowClosed()
         {
+            IsOpen = false;
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved -= NodeViewModel_Removed;
+            PortViewModel.Highlight = System.Windows.Visibility.Collapsed;
         }
 
         internal void NodeViewModel_Removed(NodeModel node)

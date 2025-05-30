@@ -47,7 +47,7 @@ namespace Dynamo.ViewModels
             {
                 if (nodePortContextMenuCommand == null)
                 {
-                    nodePortContextMenuCommand = new DelegateCommand(NodePortContextMenu);
+                    nodePortContextMenuCommand = new DelegateCommand(NodePortContextMenu, CanShowContextMenu);
                 }
                 return nodePortContextMenuCommand;
             }

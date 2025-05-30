@@ -1594,6 +1594,18 @@ tale elemento nell'elenco. Se l'elemento non viene trovato nell'elenco, restitui
         <member name="P:DSCore.Properties.Resources.BitmapOverflowError">
             <summary>Cerca una stringa localizzata simile a I dati del colore forniti sono troppo grandi per essere adattati ai limiti dell'immagine.</summary>
         </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperEqualMinMaxWarning">
+            <summary>Cerca una stringa localizzata simile a • I valori min e max devono essere diversi.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCountWarning">
+            <summary>Cerca una stringa localizzata simile a • I valori devono essere un elenco di numeri o un numero singolo ≥ 2.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCurveWarning">
+            <summary>Cerca una stringa localizzata simile a • I punti di controllo per la curva selezionata non sono validi.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidXYFormatWarning">
+            <summary>Cerca una stringa localizzata simile a • Gli input X e Y devono essere numeri singoli (non elenchi).</summary>
+        </member>
         <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
             <summary>Cerca una stringa localizzata simile a L'input deve essere un valore singolo o un elenco non nidificato.</summary>
         </member>

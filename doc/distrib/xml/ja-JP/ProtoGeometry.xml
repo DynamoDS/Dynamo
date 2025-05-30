@@ -4814,6 +4814,15 @@
             mesh,meshes
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndexGroups(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.IndexGroup})">
+            <summary>点群の集合と、点群の集合を参照する IndexGroup の集合からメッシュを作成します</summary>
+            <param name="points">点群のリスト</param>
+            <param name="indexGroups">点群のインデックス グループ</param>
+            <returns>メッシュ</returns>
+            <search>
+            mesh,meshes
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ImportFile(System.String)">
             <summary>ファイルをインポートし、いくつかのメッシュに解析します。
             現在サポートされている形式は次のとおりです。
@@ -4839,6 +4848,12 @@
             重複しないようにする必要があります。インデックスは 3 つの整数のセットである必要があり
             三角形の 3 点の頂点配列の
              3 つの位置を示します。</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>与えられた点とインデックスから新しいメッシュを作成します。点は
+            重複しないようにする必要があります。インデックスは
+            三角形の 3 点の点群配列の 3 つの位置を示す
+            3 つの整数のセットである必要があります</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Plane(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32)">
             <summary>現在の設定に基づいてメッシュ平面を作成します。</summary>
@@ -5591,6 +5606,12 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.LessThanZero">
             <summary>「{0} はゼロ未満です」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_bypointsfaceindices_deprecated">
+            <summary>「このメソッドは廃止され、Dynamo の今後のバージョンで削除される予定です。代わりに Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[])を使用してください」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_byverticesandindices_deprecated">
+            <summary>「このメソッドは廃止され、Dynamo の今後のバージョンで削除される予定です。代わりに Mesh.ByPointsIndices (Point[] points, Indices : int[])を使用してください」に類似するローカライズされた文字列を検索します。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.MeshPrecisionInfo">
             <summary>「メッシュ ノードは 32 ビット精度(小数点以下 7 桁)を使用するため、大きな数値や小数点以下 7 桁を超える数値では、丸めエラーが発生する可能性があります。より高い精度(64 ビット、小数点以下 15 桁)を必要とする場合は、Geometry ライブラリのノードを使用してください。」に類似するローカライズされた文字列を検索します。</summary>

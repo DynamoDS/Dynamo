@@ -3231,7 +3231,7 @@ Puede administrar esto en Preferencias - &gt; Seguridad.</value>
     <value>El nivel de confianza aparece junto a cada nodo recomendado y representa la probabilidad estimada de que el nodo sea una buena opción. Si se activa este parámetro, oculta los nodos recomendados que no cumplen el nivel de confianza especificado. Puede hacer clic en el encabezado Confianza baja para visualizar los nodos.</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Número de resultados</value>
+    <value>Number of results for Recommended Nodes</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Importar</value>
@@ -3790,6 +3790,9 @@ Para convertir este archivo en una nueva plantilla, guárdelo en una carpeta dif
   </data>
   <data name="PublishPackageBackToFileButton" xml:space="preserve">
     <value>Volver a la selección de archivos</value>
+  </data>
+  <data name="GroupFrozenButtonToolTip" xml:space="preserve">
+    <value>Este grupo está inutilizado. Haga clic para reutilizarlo.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

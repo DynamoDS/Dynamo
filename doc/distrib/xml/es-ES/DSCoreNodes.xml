@@ -1607,6 +1607,18 @@ Busque "Cadenas de formato de fecha y hora personalizadas de MSDN" para obtener 
         <member name="P:DSCore.Properties.Resources.BitmapOverflowError">
             <summary>Busca una cadena localizada similar a Los datos de color proporcionados son demasiado grandes para que quepan en los límites de la imagen.</summary>
         </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperEqualMinMaxWarning">
+            <summary>Busca una cadena localizada similar a • Los valores mínimo y máximo deben ser diferentes.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCountWarning">
+            <summary>Busca una cadena localizada similar a • Los valores deben ser una lista de números o un solo número ≥ 2..</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCurveWarning">
+            <summary>Busca una cadena localizada similar a • Los puntos de control de la curva seleccionada no son válidos.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidXYFormatWarning">
+            <summary>Busca una cadena localizada similar a • Las entradas X e Y deben ser números únicos (no listas).</summary>
+        </member>
         <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
             <summary>Busca una cadena localizada similar a La entrada debe ser un único valor o una lista no anidada.</summary>
         </member>

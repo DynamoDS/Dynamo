@@ -1606,6 +1606,18 @@ Jako výchozí je nastaven standardní formát „F“: „Úterý, 21. února 2
         <member name="P:DSCore.Properties.Resources.BitmapOverflowError">
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Zadaná data barev jsou příliš velká, aby se vešla do hranic obrázku.“.</summary>
         </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperEqualMinMaxWarning">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci • Minimální a maximální hodnoty se musí lišit.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCountWarning">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci • Hodnoty musí být seznam čísel nebo jedno číslo ≥ 2.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCurveWarning">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci • Řídicí body pro vybranou křivku nejsou platné.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidXYFormatWarning">
+            <summary>Vyhledá lokalizovaný řetězec podobný řetězci • Vstupy X a Y musí být jednotlivá čísla (ne seznamy).</summary>
+        </member>
         <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
             <summary>Vyhledá lokalizovaný řetězec podobný řetězci „Vstup musí být jedna hodnota nebo seznam bez vnoření.“</summary>
         </member>

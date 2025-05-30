@@ -3231,7 +3231,7 @@ Można tym zarządzać w obszarze Preferencje -&gt; Zabezpieczenia.</value>
     <value>Poziom pewności jest wyświetlany obok każdego zalecanego węzła i oddaje szacowane prawdopodobieństwo, że węzeł jest dobrym wyborem. Po włączeniu to ustawienie ukrywa zalecane węzły, które nie spełniają określonego poziomu pewności. Można kliknąć nagłówek Niska pewność, aby wyświetlić te węzły.</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Liczba wyników</value>
+    <value>Number of results for Recommended Nodes</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Importuj</value>
@@ -3790,6 +3790,9 @@ Aby ustawić ten plik jako nowy szablon, zapisz go w innym folderze, a następni
   </data>
   <data name="PublishPackageBackToFileButton" xml:space="preserve">
     <value>Powrót do wyboru pliku</value>
+  </data>
+  <data name="GroupFrozenButtonToolTip" xml:space="preserve">
+    <value>Ta grupa jest zablokowana. Kliknij, aby odblokować.</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

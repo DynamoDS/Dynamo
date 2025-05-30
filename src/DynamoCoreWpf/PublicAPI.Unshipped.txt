@@ -2930,6 +2930,7 @@ Dynamo.ViewModels.PreferencesViewModel.UseHardwareAcceleration.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.UseHardwareAcceleration.set -> void
 Dynamo.ViewModels.PreferencesViewModel.UseHostScaleUnits.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.UseHostScaleUnits.set -> void
+Dynamo.ViewModels.PreferencesViewModel.NoNetworkMode.get -> bool
 Dynamo.ViewModels.PreviewState
 Dynamo.ViewModels.PreviewState.ExecutionPreview = 1 -> Dynamo.ViewModels.PreviewState
 Dynamo.ViewModels.PreviewState.Hover = 2 -> Dynamo.ViewModels.PreviewState
@@ -3176,6 +3177,8 @@ Dynamo.ViewModels.WorkspaceViewModel.IsSnapping.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.IsSnapping.set -> void
 Dynamo.ViewModels.WorkspaceViewModel.Name.get -> string
 Dynamo.ViewModels.WorkspaceViewModel.NodeAutoCompleteSearchViewModel.get -> Dynamo.ViewModels.NodeAutoCompleteSearchViewModel
+Dynamo.ViewModels.WorkspaceViewModel.NodeCountOptimizationEnabled.get -> bool
+Dynamo.ViewModels.WorkspaceViewModel.NodeCountOptimizationEnabled.set -> void
 Dynamo.ViewModels.WorkspaceViewModel.NodeFromSelectionCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.WorkspaceViewModel.Nodes.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.NodeViewModel>
 Dynamo.ViewModels.WorkspaceViewModel.NodeToCodeCommand.get -> Dynamo.UI.Commands.DelegateCommand
@@ -3201,8 +3204,6 @@ Dynamo.ViewModels.WorkspaceViewModel.SetZoomCommand.get -> Dynamo.UI.Commands.De
 Dynamo.ViewModels.WorkspaceViewModel.ShowAllWiresCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.WorkspaceViewModel.ShowHideAllGeometryPreviewCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.WorkspaceViewModel.ShowInCanvasSearchCommand.get -> Dynamo.UI.Commands.DelegateCommand
-Dynamo.ViewModels.WorkspaceViewModel.StopNodeViewOpacityAnimations.get -> bool
-Dynamo.ViewModels.WorkspaceViewModel.StopNodeViewOpacityAnimations.set -> void
 Dynamo.ViewModels.WorkspaceViewModel.UnpinAllPreviewBubblesTriggered -> Dynamo.ViewModels.ViewEventHandler
 Dynamo.ViewModels.WorkspaceViewModel.Watch3DViewModels.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.Watch3DFullscreenViewModel>
 Dynamo.ViewModels.WorkspaceViewModel.Watch3DViewModels.set -> void
@@ -4898,6 +4899,7 @@ static Dynamo.Wpf.Properties.Resources.GroupContextMenuGraphLayout.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuPreview.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupContextMenuUngroup.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupDefaultText.get -> string
+static Dynamo.Wpf.Properties.Resources.GroupFrozenButtonToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupNameDefaultText.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupStyleContextAnnotation.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupStyleFontSizeToolTip.get -> string
