@@ -18,7 +18,7 @@
     <PreferredToolArchitecture>x64</PreferredToolArchitecture> 
   </PropertyGroup> 
   <PropertyGroup>
-    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672;CA1416</NoWarn>
   </PropertyGroup>
 
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
@@ -128,6 +128,8 @@
     </Target>
 
     <ItemGroup>
+    <None Remove="Controls\OutPorts.xaml" />
+    <None Remove="Controls\InPorts.xaml" />
     <None Remove="Packages\PackageManagerWizard\dist\index.html" />
     <None Remove="Controls\Docs\cs-CZ\FileTrustWarningDocumentation.html" />
     <None Remove="Controls\Docs\cs-CZ\NodeAutocompleteDocumentation.html" />
@@ -492,6 +494,7 @@
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\InPorts.xaml.cs" />
     <Compile Include="Controls\InstalledPackagesControl.xaml.cs">
       <DependentUpon>InstalledPackagesControl.xaml</DependentUpon>
     </Compile>
@@ -514,6 +517,7 @@
     <Compile Include="Controls\OutPortContextMenu.xaml.cs">
       <DependentUpon>OutPortContextMenu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\OutPorts.xaml.cs" />
     <Compile Include="Controls\ParentMenuItem.cs" />
     <Compile Include="Controls\RunSettingsControl.xaml.cs">
       <DependentUpon>RunSettingsControl.xaml</DependentUpon>
@@ -898,6 +902,9 @@
     <Compile Include="Windows\ModelessChildWindow.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\InPorts.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\InstalledPackagesControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -906,16 +913,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <None Include="UI\Themes\Modern\InPorts.xaml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="UI\Themes\Modern\OutPorts.xaml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <Page Include="Controls\OutPortContextMenu.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\OutPorts.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Prompts\DynamoMessageBox.xaml">
