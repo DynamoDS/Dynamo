@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -176,7 +176,10 @@ namespace ProtoCore.DSASM
             {
                 rmem.PushFrameForLocals(locals);
                 rmem.PushStackFrame(stackFrame);
-                runtimeCore.DebugProps.SetUpBounce(exec, stackFrame.FunctionCallerBlock, stackFrame.ReturnPC);
+                if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.Expression)
+                {
+                    runtimeCore.DebugProps.SetUpBounce(exec, stackFrame.FunctionCallerBlock, stackFrame.ReturnPC);
+                }
             }
             executive.Execute(exeblock, entry, breakpoints);
             return executive.RX;
