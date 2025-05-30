@@ -123,6 +123,9 @@
   <data name="CannotRemovePackageAssemblyTitle" xml:space="preserve">
     <value>Impossibile aggiornare l'assieme</value>
   </data>
+  <data name="DownloadPackageDisabled" xml:space="preserve">
+    <value>Package download is disabled in no-network mode.</value>
+  </data>
   <data name="InvalidPackageFolderWarning" xml:space="preserve">
     <value>La cartella '{0}' non esiste</value>
   </data>
