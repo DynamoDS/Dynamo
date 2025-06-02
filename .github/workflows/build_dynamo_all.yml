@@ -19,7 +19,7 @@ jobs:
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4.3.1
         with:
-          dotnet-version: '8.0.0'
+          dotnet-version: '8.0.313'
       - name: Disable problem matcher
         run: Write-Output "::remove-matcher owner=csc::"
       - name: Setup msbuild
