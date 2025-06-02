@@ -678,39 +678,33 @@ namespace Dynamo.Core
         /// <returns>The custom node info object - null if we failed</returns>
         internal bool TryGetInfoFromPath(string path, bool isTestMode, out CustomNodeInfo info)
         {
-            WorkspaceInfo header = null;
-            XmlDocument xmlDoc;
-            string jsonDoc;
             Exception ex;
             try
             {
-                if (DynamoUtilities.PathHelper.isValidJson(path, out jsonDoc, out ex))
+                //if (DynamoUtilities.PathHelper.isValidJson(path, out jsonDoc, out ex))
+                if (CustomNodeInfo.GetFromJsonDocument(path, out info, out ex))
                 {
-                    if (!WorkspaceInfo.FromJsonDocument(jsonDoc, path, isTestMode, false, AsLogger(), out header))
-                    {
-                        Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
-                        info = null;
-                        return false;
-                    }
+                    return true;
                 }
-                else if (DynamoUtilities.PathHelper.isValidXML(path, out xmlDoc, out ex))
+                else if (DynamoUtilities.PathHelper.isValidXML(path, out var xmlDoc, out ex))
                 {
-                    if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(), out header))
+                    if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(), out var header))
                     {
                         Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
                         info = null;
                         return false;
                     }
+
+                    info = new CustomNodeInfo(
+                        Guid.Parse(header.ID),
+                        header.Name,
+                        header.Category,
+                        header.Description,
+                        path,
+                        header.IsVisibleInDynamoLibrary);
+                    return true;
                 }
                 else throw ex;
-                info = new CustomNodeInfo(
-                    Guid.Parse(header.ID),
-                    header.Name,
-                    header.Category,
-                    header.Description,
-                    path,
-                    header.IsVisibleInDynamoLibrary);
-                return true;
             }
             catch (Exception e)
             {
