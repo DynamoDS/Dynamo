@@ -163,17 +163,21 @@ namespace DSOffice
                     }
 
                     Row row;
+                    //This case is when we need to append a new row at the end of the spreadsheet
                     if (rowsIndex >= rows.Count)
                     {
                         // Add a new row to the end
                         row = new Row() { RowIndex = currentRowIndex };
                         sheetData.AppendChild(row);
                     }
+                    //This case is when there are empty rows before or in between the populated rows
                     else if (rows[rowsIndex].RowIndex > currentRowIndex)
                     {
                         // Add a new row before this one
                         row = new Row() { RowIndex = currentRowIndex };
-                        sheetData.InsertBefore(rows[rowsIndex], row);
+
+                        //This is the method definition - InsertBefore(newChild, referenceChild), so we need to pass row as first argument
+                        sheetData.InsertBefore(row, rows[rowsIndex]);
                     }
                     else
                     {
@@ -256,6 +260,10 @@ namespace DSOffice
             foreach (var row in sheetData.Elements<Row>())
             {
                 var lastCell = row.LastChild as Cell;
+
+                //When we have an empty row sometimes the Row.LastChild is null, so this validation will avoid the "Object reference not set to an instance of an object" error.
+                if (lastCell == null) continue;
+
                 var current = GetColumnIndex(lastCell.CellReference);
                 if (current > result)
                 {
@@ -604,6 +612,14 @@ namespace DSOffice
                 {
                     // The string is not in the table, so we add it
                     sharedStringTable.AppendChild(new SharedStringItem(new Text((string)value)));
+
+                    //Means that the current (row, column) is probably empty so we should start from 0
+                    if (sharedStringTable.Count == null)
+                    {
+                        sharedStringTable.Count = 0;
+                        sharedStringTable.UniqueCount = 0;
+                    }
+
                     index = (int)sharedStringTable.Count.Value;
                     // Yes, you need to update these manually
                     sharedStringTable.Count++;

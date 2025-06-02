@@ -193,7 +193,7 @@
     <comment>Description for Directory Path</comment>
   </data>
   <data name="DoubleInputNodeDescription" xml:space="preserve">
-    <value>Creates a number</value>
+    <value>Creates a number.</value>
   </data>
   <data name="DoubleSliderDescription" xml:space="preserve">
     <value>Produces numeric values</value>
@@ -216,7 +216,7 @@
     <value>Creates a file object from the given path</value>
   </data>
   <data name="FileObjectPortDataPathToolTip" xml:space="preserve">
-    <value>Path to the file.</value>
+    <value>Path to the file as string.</value>
   </data>
   <data name="FileObjectPortDataResultToolTip" xml:space="preserve">
     <value>File object</value>
@@ -340,7 +340,7 @@
     <comment>search tags List.LaceShortest</comment>
   </data>
   <data name="ListMapDescription" xml:space="preserve">
-    <value>Applies a function over all elements of a list, generating a new list from the results</value>
+    <value>Applies a function over all elements of a list, generating a new list from the results.</value>
     <comment>Description for List.Map</comment>
   </data>
   <data name="ListMapSearchTags" xml:space="preserve">
@@ -377,7 +377,7 @@
     <comment>Description for Number Range</comment>
   </data>
   <data name="SequenceDescription" xml:space="preserve">
-    <value>Creates a sequence of numbers</value>
+    <value>Creates a sequence of numbers.</value>
     <comment>Description for Number Sequence</comment>
   </data>
   <data name="OrDescription" xml:space="preserve">
@@ -462,7 +462,7 @@
     <comment>Description for String from Object</comment>
   </data>
   <data name="StringInputNodeDescription" xml:space="preserve">
-    <value>Creates a string</value>
+    <value>Creates a string.</value>
   </data>
   <data name="WatchDescription" xml:space="preserve">
     <value>Visualizes a node's output</value>
@@ -617,14 +617,14 @@ Default value: {0}</value>
   <data name="IFNodeWarningMessage" xml:space="preserve">
     <value>This node has been updated and will be removed in a future version of Dynamo. Existing behavior is retained, but a new version now supports Empty Lists, Null values and inputs of varying length. Please replace this node if you wish to use this improved behavior.</value>
   </data>
-  <data name="CustomSelectionSearchTags" xml:space="preserve">
-    <value>dropdown;custom;custom dropdown;enum;custom enum</value>
+  <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
+    <value>is obsolete, please use the new Convert Units node.</value>
   </data>
   <data name="CustomSelectionNodeDescription" xml:space="preserve">
     <value>A dropdown menu with customizable values.</value>
   </data>
-  <data name="ConversionNodeObsoleteMessage" xml:space="preserve">
-    <value>is obsolete, please use the new Convert Units node.</value>
+  <data name="CustomSelectionSearchTags" xml:space="preserve">
+    <value>dropdown;custom;custom dropdown;enum;custom enum</value>
   </data>
   <data name="IntegerSliderInfoMessage" xml:space="preserve">
     <value>The value entered is not in the int64 range.</value>
@@ -679,5 +679,76 @@ In Generative Design workflows, this node should be used to control and block th
   <data name="FromObjectPortDataFormatToolTip" xml:space="preserve">
     <value>Format specifier for numeric values, see extended node help for more info.
 default value: G</value>
+  </data>
+  <data name="CurveMapperCountInputPortName" xml:space="preserve">
+    <value>values</value>
+  </data>
+  <data name="CurveMapperCountInputPortToolTip" xml:space="preserve">
+    <value>Number of values to map or List of values to map.
+
+Default value (int): {0}</value>
+  </data>
+  <data name="CurveMapperDescription" xml:space="preserve">
+    <value>Redistributes a series of input values within the given range and maps them along a specified curve. If a single count is provided, it generates a series of values distributed along the x direction within the given range and then maps these values to the curve.</value>
+  </data>
+  <data name="CurveMapperSearchTags" xml:space="preserve">
+    <value>graph;curve;mapper;math</value>
+  </data>
+  <data name="CurveMapperWarningMessage" xml:space="preserve">
+    <value>The provided original values cannot be redistributed using the curve equation.</value>
+  </data>
+  <data name="CurveMapperXMaxLimitInputPortName" xml:space="preserve">
+    <value>x-MaxLimit</value>
+  </data>
+  <data name="CurveMapperXMaxLimitInputPortToolTip" xml:space="preserve">
+    <value>Maximum value for the X-axis domain.
+
+Default value (double): {0}</value>
+  </data>
+  <data name="CurveMapperXMinLimitInputPortName" xml:space="preserve">
+    <value>x-MinLimit</value>
+  </data>
+  <data name="CurveMapperXMinLimitInputPortToolTip" xml:space="preserve">
+    <value>Minimum value for the X-axis domain.
+
+Default value (double): {0}</value>
+  </data>
+  <data name="CurveMapperXValuesOutputPortName" xml:space="preserve">
+    <value>x-Values</value>
+  </data>
+  <data name="CurveMapperXValuesOutputPortToolTip" xml:space="preserve">
+    <value>X values derived from the curve.
+
+double[]</value>
+  </data>
+  <data name="CurveMapperYMaxLimitInputPortName" xml:space="preserve">
+    <value>y-MaxLimit</value>
+  </data>
+  <data name="CurveMapperYMaxLimitInputPortToolTip" xml:space="preserve">
+    <value>Maximum value for the Y-axis domain.
+
+Default value (double): {0}</value>
+  </data>
+  <data name="CurveMapperYMinLimitInputPortName" xml:space="preserve">
+    <value>y-MinLimit</value>
+  </data>
+  <data name="CurveMapperYMinLimitInputPortToolTip" xml:space="preserve">
+    <value>Minimum value for the Y-axis domain.
+
+Default value (double): {0}</value>
+  </data>
+  <data name="CurveMapperYValuesOutputPortName" xml:space="preserve">
+    <value>y-Values</value>
+  </data>
+  <data name="CurveMapperYValuesOutputPortToolTip" xml:space="preserve">
+    <value>Y values derived from the curve.
+
+double[]</value>
+  </data>
+  <data name="ColorPalettePortDataResultToolTip" xml:space="preserve">
+    <value>Selected color</value>
+  </data>
+  <data name="CurveMapperInfoMessage" xml:space="preserve">
+    <value>When mapping numbers along the curve, some Y values fall outside the specified Y-value domain range.</value>
   </data>
 </root>

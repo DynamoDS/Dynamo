@@ -812,6 +812,24 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Indicates if groups should display the default description.
+        /// </summary>
+        public bool ShowDefaultGroupDescription
+        {
+            get
+            {
+                return preferenceSettings.ShowDefaultGroupDescription;
+            }
+            set
+            {
+                preferenceSettings.ShowDefaultGroupDescription = value;
+                RaisePropertyChanged(nameof(ShowDefaultGroupDescription));
+
+                dynamoViewModel.RefreshAnnotationDescriptions();
+            }
+        }
+
+        /// <summary>
         /// Indicates if Host units should be used for graphic helpers for Dynamo Revit
         /// Also toggles between Host and Dynamo units 
         /// </summary>
@@ -1328,6 +1346,24 @@ namespace Dynamo.ViewModels
         /// </summary>
         public TrustedPathViewModel TrustedPathsViewModel { get; set; }
 
+        private bool noNetworkMode;
+
+        /// <summary>
+        /// True if Dynamo is used in offline mode.
+        /// </summary>
+        public bool NoNetworkMode
+        {
+            get => noNetworkMode;
+            private set
+            {
+                if (noNetworkMode != value)
+                {
+                    noNetworkMode = value;
+                    RaisePropertyChanged(nameof(NoNetworkMode));
+                }
+            }
+        }
+
         /// <summary>
         /// Returns a boolean value indicating if the Settings importing was successful or not
         /// </summary>
@@ -1451,6 +1487,8 @@ namespace Dynamo.ViewModels
             this.pythonScriptEditorTextOptions = dynamoViewModel.PythonScriptEditorTextOptions;
             this.dynamoViewModel = dynamoViewModel;
 
+            NoNetworkMode = dynamoViewModel.Model.NoNetworkMode;
+
             if (dynamoViewModel.PackageManagerClientViewModel != null)
             {
                 installedPackagesViewModel = new InstalledPackagesViewModel(dynamoViewModel, dynamoViewModel.PackageManagerClientViewModel.PackageManagerExtension.PackageLoader);
@@ -1468,7 +1506,7 @@ namespace Dynamo.ViewModels
 
             // Fill language list using supported locale dictionary keys in current thread locale
             LanguagesList = Configurations.SupportedLocaleDic.Keys.ToObservableCollection();
-            SelectedLanguage = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == preferenceSettings.Locale).Key;
+            SelectedLanguage = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == preferenceSettings.Locale).Key ?? Configurations.SupportedLocaleDic.FirstOrDefault().Key;
 
             LocalizedUnitsMap = new Dictionary<string, string>();
             foreach (var unit in Configurations.SupportedUnits)
@@ -1802,7 +1840,7 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(MaxNumRecentFiles):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesSettingMaxRecentFiles), System.Globalization.CultureInfo.InvariantCulture);
-                    UpdateRecentFiles();
+                    dynamoViewModel.UpdateRecentFiles();
                     goto default;
                 case nameof(PythonTemplateFilePath):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesSettingCustomPythomTemplate), System.Globalization.CultureInfo.InvariantCulture);
@@ -1827,6 +1865,9 @@ namespace Dynamo.ViewModels
                     goto default;
                 case nameof(ShowPreviewBubbles):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowPreviewBubbles), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
+                case nameof(ShowDefaultGroupDescription):
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowDefaultGroupDescription), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
                 case nameof(ShowCodeBlockLineNumber):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewShowCodeBlockNodeLineNumber), System.Globalization.CultureInfo.InvariantCulture);
@@ -1941,14 +1982,6 @@ namespace Dynamo.ViewModels
             if (e.Action == NotifyCollectionChangedAction.Add)
             {
                 AddPythonEnginesOptions();
-            }
-        }
-
-        private void UpdateRecentFiles()
-        {
-            if (dynamoViewModel.RecentFiles.Count > MaxNumRecentFiles)
-            {
-                dynamoViewModel.RecentFiles.RemoveRange(MaxNumRecentFiles, dynamoViewModel.RecentFiles.Count - MaxNumRecentFiles);
             }
         }
     }

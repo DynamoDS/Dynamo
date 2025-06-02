@@ -1,0 +1,36 @@
+﻿<!-- 
+    There are two versions of this HTML file. One that is part of the Dynamo Dictionary 
+    codebase and one that is part of the Dynamo codebase, used for displaying additional
+    error information in the Dynamo side panel.  
+    
+    These files need to kept in sync manually: if making edits to one version of the file,
+    make sure to update the other version as well.
+
+    Dynamo: https://github.com/DynamoDS/Dynamo
+    Dynamo Dictionary: https://github.com/DynamoDS/DynamoDictionary_React
+-->
+
+
+<head>
+    
+    <meta charset="utf-8" />
+</head>
+
+<style>body { color: white; font-size: 14px; font-family: "Artifakt Element"; src: url("fonts/ArtifaktElement-Regular.woff") format("woff"); padding: 1%; } a { color: lightgray; cursor: pointer; background-color: transparent; }</style>
+
+<!-- Use inline styles to keep Dynamo Dictionary styling in the dictionary -->
+<!-- and custom styling in Dynamo sidepanel. -->
+<body style="background-color: #353535; font-family: 'Artifakt Element', 'Open Sans';">
+
+<h2>일부 인수가 잘못됨</h2>
+<p>이 오류 메시지는 사용 중인 노드가 특정 유형의 입력 데이터를 예상하고 있지만 사용할 수 없는 입력 유형을 받았음을 나타냅니다. 이는 &quot;인수 유형을 예상하지만 다음으로 호출됨&quot; 오류와 유사하며, 일반적으로 사용 중인 노드로 전달해야 하는 인수 유형을 식별하는 데 도움이 될 수 있는 추가 정보를 표시합니다. </p>
+
+<h4>수정 방법</h4>
+<p>일반적으로, 사용 중인 노드에서 예상하는 입력 유형을 확인하고 (a) 올바른 유형의 입력이 노드에 전달되는지 또는 (b) 입력 유형을 노드에서 사용할 수 있는 유형으로 변경(예: <a href="https://forum.dynamobim.com/t/springs-number-tostring/35562/2">이 예</a>에 나와 있듯이 다른 유형으로 입력 변경)할 수 있는지 확인하십시오.</p>
+
+<p>예를 들어, <code>Warning: Element.SetParameterByName operation failed. The best overloaded method match for ‘Revit.Elements.InternalUtilities.ElementUtils.SetParameterValue(Autodesk.Revit.DB.Parameter, double)’ has some invalid arguments</code>와 같은 메시지가 표시되는 경우 괄호 안의 추가 정보는 문제가 무엇인지 이해하는 데 도움이 될 수 있습니다. 이 경우 <code>SetParameterValue(Autodesk.Revit.DB.Parameter, double)</code>는 사용 중인 노드가 <code>double</code> 유형의 입력을 예상함을 나타내므로 다른 모든 유형의 입력이 작동하지 않습니다.</p>
+
+<h4>추가 정보</h4>
+<p>자세한 내용을 보려면 <a href="https://forum.dynamobim.com/search?q=has%20some%20invalid%20arguments"><span>&quot;<strong>has some invalid arguments</strong>&quot;에 대해 논의하는 Dynamobim 포럼의 게시물</span></a>을 확인하십시오.</p>
+
+</body>

@@ -1,8 +1,10 @@
-﻿using System;
+using System;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Xml;
 using Dynamo.Configuration;
 using Dynamo.Engine;
@@ -331,6 +333,21 @@ namespace Dynamo.Graph.Nodes
 
         internal bool IsProxyPort { get; set; } = false;
 
+        /// <summary>
+        /// Return a value indicating whether this port is connected to a transient node.
+        /// </summary>
+        internal bool HasTransientConnections()
+        {
+            foreach(var connector in Connectors)
+            {
+                var connectedNode = PortType == PortType.Input ? connector?.Start?.Owner : connector?.End?.Owner;
+                if (connectedNode?.IsTransient is true)
+                    return true;
+            }
+
+            return false;
+        }
+
         [JsonConstructor]
         internal PortModel(string name, string toolTip)
         {
@@ -346,6 +363,8 @@ namespace Dynamo.Graph.Nodes
             MarginThickness = new Thickness(0);
             Height = Math.Abs(Height) < 0.001 ? Configurations.PortHeightInPixels : Height;
         }
+
+        internal event NotifyCollectionChangedEventHandler ConnectorCollectionChanged;
 
         /// <summary>
         /// Creates PortModel.
@@ -370,6 +389,12 @@ namespace Dynamo.Graph.Nodes
             
             MarginThickness = new Thickness(0);
             Height = Math.Abs(data.Height) < 0.001 ? Configurations.PortHeightInPixels : data.Height;
+            Connectors.CollectionChanged += Connectors_CollectionChanged;
+        }
+
+        private void Connectors_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            ConnectorCollectionChanged?.Invoke(this, e);
         }
 
         internal void RaisePortIsConnectedChanged()
@@ -385,10 +410,9 @@ namespace Dynamo.Graph.Nodes
             if (Owner == null)
                 return;
 
-            while (Connectors.Any())
+            for (int i = Connectors.Count - 1; i >= 0; i--)
             {
-                ConnectorModel connector = Connectors[0];
-                connector.Delete();
+                Connectors[i].Delete();
             }
         }
 
@@ -467,7 +491,7 @@ namespace Dynamo.Graph.Nodes
                 var cd = cusNode.Controller.Definition;
                 var param = cd.Parameters.ElementAt(Index);
                 string type = param.Type.ToString();
-                
+
                 return type;
             }
 
@@ -534,6 +558,14 @@ namespace Dynamo.Graph.Nodes
             }
 
             return null;
+        }
+
+        public override void Dispose()
+        {
+            if (HasBeenDisposed) return;
+
+            base.Dispose();
+            Connectors.CollectionChanged -= Connectors_CollectionChanged;
         }
     }
 

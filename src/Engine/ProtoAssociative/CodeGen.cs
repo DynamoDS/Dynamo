@@ -2156,7 +2156,8 @@ namespace ProtoAssociative
                 hasReturnStatement = EmitCodeBlock(codeblock.Body, ref inferedType, ProtoCore.CompilerDefinitions.SubCompilePass.UnboundIdentifier, false);
                 if (compilePass == ProtoCore.CompilerDefinitions.CompilePass.GlobalScope && !hasReturnStatement)
                 {
-                    EmitReturnNull(); 
+                    var guidList = codeblock.Body.Select(x=> (x as BinaryExpressionNode)?.guid).Where(x=>x!=null).ToList();
+                    EmitReturnNull(guidList.Any() ? guidList.Last() : null); 
                 }
 
                 compilePass++;
@@ -5909,7 +5910,7 @@ namespace ProtoAssociative
             }
         }
 
-        protected override void EmitReturnNull()
+        protected override void EmitReturnNull(Guid? guid)
         {
             int startpc = pc;
 
@@ -5928,8 +5929,16 @@ namespace ProtoAssociative
             retNode.updateBlock.startpc = startpc;
             retNode.updateBlock.endpc = pc - 1;
             retNode.isReturn = true;
+            if (guid != null)
+            {
+                retNode.guid = (Guid)guid;
+            }
 
             PushGraphNode(retNode);
+        }
+        protected override void EmitReturnNull()
+        {
+            EmitReturnNull(null);
         }
 
         private ProtoCore.Type BuildArgumentTypeFromVarDeclNode(VarDeclNode argNode, GraphNode graphNode = null)

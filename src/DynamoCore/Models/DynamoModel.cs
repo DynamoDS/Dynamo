@@ -237,7 +237,7 @@ namespace Dynamo.Models
         internal bool IsServiceMode { get; set; }
 
         /// <summary>
-        /// True if Dynamo starts up in offline mode.
+        /// True if Dynamo is used in offline mode.
         /// </summary>
         internal bool NoNetworkMode { get; }
 
@@ -928,11 +928,8 @@ namespace Dynamo.Models
 
             AddHomeWorkspace();
 
-            if (!IsServiceMode)
-            {
-                AuthenticationManager = new AuthenticationManager(config.AuthProvider);
-            }
-
+            AuthenticationManager = new AuthenticationManager(config.AuthProvider);
+  
             Logger.Log(string.Format("Dynamo -- Build {0}",
                                         Assembly.GetExecutingAssembly().GetName().Version));
 
@@ -991,6 +988,11 @@ namespace Dynamo.Models
 
             LogWarningMessageEvents.LogWarningMessage += LogWarningMessage;
             LogWarningMessageEvents.LogInfoMessage += LogInfoMessage;
+
+#pragma warning disable AUTH_SERVICES
+            AuthServices.RequestAuthProvider += AuthServicesEvents_AuthProviderRequested;
+#pragma warning restore AUTH_SERVICES
+
             DynamoConsoleLogger.LogMessageToDynamoConsole += LogMessageWrapper;
             DynamoConsoleLogger.LogErrorToDynamoConsole += LogErrorMessageWrapper;
             if (!IsServiceMode)
@@ -1018,6 +1020,11 @@ namespace Dynamo.Models
                  
             // This event should only be raised at the end of this method.
             DynamoReady(new ReadyParams(this));
+        }
+
+        private void AuthServicesEvents_AuthProviderRequested(RequestAuthProviderEventArgs args)
+        {
+            args.AuthProvider = AuthenticationManager.AuthProvider;
         }
 
         /// <summary>
@@ -1453,7 +1460,7 @@ namespace Dynamo.Models
             }
 
             // Lucene disposals (just if LuceneNET was initialized)
-            LuceneUtility.DisposeAll();
+            LuceneUtility?.DisposeAll();
 
 #if DEBUG
             CurrentWorkspace.NodeAdded -= CrashOnDemand.CurrentWorkspace_NodeAdded;
@@ -1461,6 +1468,11 @@ namespace Dynamo.Models
 
             LogWarningMessageEvents.LogWarningMessage -= LogWarningMessage;
             LogWarningMessageEvents.LogInfoMessage -= LogInfoMessage;
+
+#pragma warning disable AUTH_SERVICES
+            AuthServices.RequestAuthProvider -= AuthServicesEvents_AuthProviderRequested;
+#pragma warning restore AUTH_SERVICES
+
             DynamoConsoleLogger.LogMessageToDynamoConsole -= LogMessageWrapper;
             DynamoConsoleLogger.LogErrorToDynamoConsole -= LogErrorMessageWrapper;
             foreach (var ws in _workspaces)
@@ -1621,7 +1633,7 @@ namespace Dynamo.Models
 
             SearchModel?.Add(symbolSearchElement);
             SearchModel?.Add(outputSearchElement);
-            LuceneUtility.AddNodeTypeToSearchIndexBulk([cnbNode, symbolSearchElement, outputSearchElement], iDoc);
+            LuceneUtility.AddNodeTypeToSearchIndex([cnbNode, symbolSearchElement, outputSearchElement], iDoc);
 
         }
 
@@ -1785,7 +1797,7 @@ namespace Dynamo.Models
                     Logger.Log(e);
                 }
             }
-            LuceneUtility.AddNodeTypeToSearchIndexBulk(nodeSearchElements, iDoc);
+            LuceneUtility.AddNodeTypeToSearchIndex(nodeSearchElements, iDoc);
         }
 
         private void InitializePreferences()
@@ -2732,7 +2744,7 @@ namespace Dynamo.Models
                     }
                 }
 
-                if (annotation.Nodes.Any() && !annotation.Nodes.Except(modelsToDelete).Any())
+                if (annotation.Nodes.Any() && !annotation.Nodes.Except(modelsToDelete).Any(n => n is not ConnectorPinModel))
                 {
                     //Annotation Model has to be serialized first - before the nodes.
                     //so, store the Annotation model as first object. This will serialize the
@@ -2778,12 +2790,19 @@ namespace Dynamo.Models
                             CurrentWorkspace.RecordGroupModelBeforeUngroup(annotation);
                             if (list.Remove(model))
                             {
-                                if (model is ConnectorPinModel pinModel)
+                                if (!list.Any(n => n is not ConnectorPinModel))
                                 {
-                                    annotation.MarkPinAsRemoved(pinModel);
+                                    emptyGroup.Add(annotation);
                                 }
-                                annotation.Nodes = list;
-                                annotation.UpdateBoundaryFromSelection();                               
+                                else
+                                {
+                                    if (model is ConnectorPinModel pinModel)
+                                    {
+                                        annotation.MarkPinAsRemoved(pinModel);
+                                    }
+                                    annotation.Nodes = list;
+                                    annotation.UpdateBoundaryFromSelection();
+                                }
                             }
                         }
                         else
@@ -2872,6 +2891,9 @@ namespace Dynamo.Models
         public static void SetUICulture(string locale)
         {
             if (string.IsNullOrWhiteSpace(locale)) return;
+
+            //Validate that the provided locale against the supported locales
+            locale = Configurations.SupportedLocaleDic.FirstOrDefault(x => x.Value == locale).Value ?? Configurations.SupportedLocaleDic.FirstOrDefault().Value;
 
             // Setting the locale for Dynamo from loaded Preferences, with Default handled differently
             // between a non-in-process integration case (when HostAnalyticsInfo.HostName is unspecified)
@@ -3488,6 +3510,7 @@ namespace Dynamo.Models
         {
             var iDoc = LuceneUtility.InitializeIndexDocumentForNodes();
             List<NodeSearchElement> nodes = new();
+
             foreach (var funcGroup in functionGroups)
             {
                 foreach (var functionDescriptor in funcGroup.Functions)
@@ -3500,7 +3523,7 @@ namespace Dynamo.Models
                     }
                 }
             }
-            LuceneUtility.AddNodeTypeToSearchIndexBulk(nodes, iDoc);
+            LuceneUtility.AddNodeTypeToSearchIndex(nodes, iDoc);
         }
 
         /// <summary>
@@ -3744,7 +3767,7 @@ namespace Dynamo.Models
             return result;
         }
 
-        private void RecordUndoModels(WorkspaceModel workspace, List<ModelBase> undoItems)
+        internal static void RecordUndoModels(WorkspaceModel workspace, List<ModelBase> undoItems)
         {
             var userActionDictionary = new Dictionary<ModelBase, UndoRedoRecorder.UserAction>();
             //Add models that were newly created

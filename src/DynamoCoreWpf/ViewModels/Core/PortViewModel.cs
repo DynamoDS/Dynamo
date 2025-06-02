@@ -1,15 +1,18 @@
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls.Primitives;
+using System.Windows.Input;
 using System.Windows.Media;
-using Dynamo.Controls;
 using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
+using static Dynamo.ViewModels.SearchViewModel;
 
 namespace Dynamo.ViewModels
 {
@@ -19,7 +22,6 @@ namespace Dynamo.ViewModels
     public partial class PortViewModel : ViewModelBase
     {
         #region Properties/Fields
-
         protected readonly PortModel port;
         protected readonly NodeViewModel node;
         private DelegateCommand useLevelsCommand;
@@ -27,12 +29,14 @@ namespace Dynamo.ViewModels
         private bool showUseLevelMenu;
         private const double autocompletePopupSpacing = 2.5;
         private const double proxyPortContextMenuOffset = 20;
-        internal bool inputPortDisconnectedByConnectCommand = false;
         protected static readonly SolidColorBrush PortBackgroundColorPreviewOff = new SolidColorBrush(Color.FromRgb(102, 102, 102));
         protected static readonly SolidColorBrush PortBackgroundColorDefault = new SolidColorBrush(Color.FromRgb(60, 60, 60));
         protected static readonly SolidColorBrush PortBorderBrushColorDefault = new SolidColorBrush(Color.FromRgb(161, 161, 161));
         private SolidColorBrush portBorderBrushColor = PortBorderBrushColorDefault;
         private SolidColorBrush portBackgroundColor = PortBackgroundColorDefault;
+        private Visibility highlight = Visibility.Collapsed;
+        private bool nodeAutoCompleteMarkerEnabled = false;
+
         /// <summary>
         /// Port model.
         /// </summary>
@@ -139,6 +143,7 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
         /// IsHitTestVisible property gets a value that declares whether 
         /// a Snapping rectangle can possibly be returned as a hit test result.
         /// When FirstActiveConnector is not null, Snapping rectangle handles click events.
@@ -196,8 +201,55 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Highlight or clear highlight of the port.
+        /// </summary>
+        public Visibility Highlight
+        {
+            get => highlight;
+            set
+            {
+                highlight = value;
+                RaisePropertyChanged(nameof(Highlight));
+            }
+        }
+
+        /// <summary>
+        /// Controls whether the node autocomplete marker is visible
+        /// </summary>
+        public bool NodeAutoCompleteMarkerEnabled
+        {
+            get
+            {
+                if (node.WorkspaceViewModel.FirstActiveConnector != null || !NodeViewModel.DynamoViewModel.EnableNodeAutoComplete)
+                {
+                    return false;
+                }
+
+                return CanHaveAutoCompleteMarker() && nodeAutoCompleteMarkerEnabled;
+            }
+            set
+            {
+                nodeAutoCompleteMarkerEnabled = value;
+                RaisePropertyChanged(nameof(NodeAutoCompleteMarkerEnabled));
+            }
+        }
+
+        internal bool CanHaveAutoCompleteMarker()
+        {
+            return (this is InPortViewModel && PortModel.Connectors.Count == 0 || this is OutPortViewModel)
+                   && !this.PortModel.IsProxyPort
+                   && NodeViewModel.NodeModel is not CodeBlockNodeModel
+                   && NodeViewModel.NodeModel is not CoreNodeModels.Watch
+                   && NodeViewModel.NodeModel is not Watch3DNodeModels.Watch3D
+                   && NodeViewModel.NodeModel is not PythonNodeModels.PythonNode
+                   && NodeViewModel.NodeModel is not PythonNodeModels.PythonStringNode
+                   && !NodeViewModel.IsTransient
+                   && !NodeViewModel.IsFrozen;
+        }
+
+        /// <summary>
         /// Sets the color of the port's background - affected by multiple factors such as
-        /// MouseOver, IsConnected, Node States (active, inactie, frozen 
+        /// MouseOver, IsConnected, Node States (active, inactive, frozen 
         /// </summary>
         public SolidColorBrush PortBackgroundColor
         {
@@ -226,6 +278,10 @@ namespace Dynamo.ViewModels
             this.port.PropertyChanged += PortPropertyChanged;
             this.node.PropertyChanged += NodePropertyChanged;
             this.node.WorkspaceViewModel.PropertyChanged += WorkspacePropertyChanged;
+            this.node.WorkspaceViewModel.DynamoViewModel.PreferencesViewModel.PropertyChanged += PreferencesViewModelPropertyChanged;
+
+            //turn on the autocomplete marker if enabled
+            NodeAutoCompleteMarkerEnabled = NodeViewModel.DynamoViewModel.EnableNodeAutoComplete;
 
             RefreshPortColors();
         }
@@ -235,6 +291,7 @@ namespace Dynamo.ViewModels
             port.PropertyChanged -= PortPropertyChanged;
             node.PropertyChanged -= NodePropertyChanged;
             node.WorkspaceViewModel.PropertyChanged -= WorkspacePropertyChanged;
+            node.WorkspaceViewModel.DynamoViewModel.PreferencesViewModel.PropertyChanged -= PreferencesViewModelPropertyChanged;
         }
 
         internal virtual PortViewModel CreateProxyPortViewModel(PortModel portModel)
@@ -273,12 +330,21 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Sets up the node autocomplete window to be placed relative to the node.
         /// </summary>
-        /// <param name="popup">Node autocomplete popup.</param>
-        internal void SetupNodeAutocompleteWindowPlacement(Popup popup)
+        /// <param name="window">Node autocomplete popup.</param>
+        internal void SetupNodeAutoCompleteWindowPlacement(Window window)
         {
-            node.OnRequestAutoCompletePopupPlacementTarget(popup);
-            popup.CustomPopupPlacementCallback = PlaceAutocompletePopup;
+            node.OnRequestAutoCompletePopupPlacementTarget(window, PortModel, autocompletePopupSpacing);
         }
+
+        /// <summary>
+        /// Sets up the node cluster autocomplete flyout window to be placed relative to the node.
+        /// </summary>
+        /// <param name="window">Node cluster autocomplete window.</param>
+        internal void SetupNodeAutoCompleteClusterWindowPlacement(Window window)
+        {
+            node.OnClusterRequestAutoCompletePopupPlacementTarget(window, autocompletePopupSpacing);
+        }
+
 
         /// <summary>
         /// Sets up the PortContextMenu window to be placed relative to the port.
@@ -327,33 +393,6 @@ namespace Dynamo.ViewModels
             };
         }
 
-        private CustomPopupPlacement[] PlaceAutocompletePopup(Size popupSize, Size targetSize, Point offset)
-        {
-            var zoom = node.WorkspaceViewModel.Zoom;
-
-            double x;
-            var scaledSpacing = autocompletePopupSpacing * targetSize.Width / node.ActualWidth;
-            if (PortModel.PortType == PortType.Input)
-            {
-                // Offset popup to the left by its width from left edge of node and spacing.
-                x = -scaledSpacing - popupSize.Width;
-            }
-            else
-            {
-                // Offset popup to the right by node width and spacing from left edge of node.
-                x = scaledSpacing + targetSize.Width;
-            }
-            // Offset popup down from the upper edge of the node by the node header and corresponding to the respective port.
-            // Scale the absolute heights by the target height (passed to the callback) and the actual height of the node.
-            var scaledHeight = targetSize.Height / node.ActualHeight;
-            var absoluteHeight = NodeModel.HeaderHeight + (PortModel.Index * PortModel.Height);
-            var y = absoluteHeight * scaledHeight;
-
-            var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);
-
-            return new[] { placement };
-        }
-
         private CustomPopupPlacement[] PlacePortContextMenu(Size popupSize, Size targetSize, Point offset)
         {
             // The actual zoom here is confusing
@@ -377,11 +416,12 @@ namespace Dynamo.ViewModels
             // Calculate absolute popup halfheight to deduct from the overall y pos
             // Then add the header, port height and port index position
             var popupHeightOffset = - popupSize.Height * 0.5;
-            var headerHeightOffset = 2 * NodeModel.HeaderHeight * zoom;
+            var headerHeightOffset = NodeModel.HeaderHeight * zoom;
             var portHalfHeight = PortModel.Height * 0.5 * zoom;
-            var rowOffset = PortModel.Index * (1.5 * PortModel.Height) * zoom;
+            var rowOffset = PortModel.Index * PortModel.Height * zoom;
+            var customNodeOffset = NodeModel.CustomNodeTopBorderHeight * zoom;
 
-            var y = popupHeightOffset + headerHeightOffset + portHalfHeight + rowOffset;
+            var y = popupHeightOffset + headerHeightOffset + portHalfHeight + rowOffset + customNodeOffset;
 
             var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);
 
@@ -394,8 +434,16 @@ namespace Dynamo.ViewModels
             {
                 case "ActiveConnector":
                     RaisePropertyChanged(nameof(IsHitTestVisible));
+                    RaisePropertyChanged(nameof(NodeAutoCompleteMarkerEnabled));
                     break;
-                default:
+            }
+        }
+        private void PreferencesViewModelPropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case "NodeAutocompleteIsChecked":
+                    RaisePropertyChanged(nameof(NodeAutoCompleteMarkerEnabled));
                     break;
             }
         }
@@ -438,6 +486,7 @@ namespace Dynamo.ViewModels
                     break;
                 case nameof(IsConnected):
                     RaisePropertyChanged(nameof(IsConnected));
+                    RaisePropertyChanged(nameof(NodeAutoCompleteMarkerEnabled));
                     RefreshPortColors();
                     break;
                 case nameof(IsEnabled):
@@ -465,53 +514,54 @@ namespace Dynamo.ViewModels
 
         protected bool CanConnect(object parameter)
         {
+            if (node?.IsTransient is true ||
+                PortModel?.HasTransientConnections() is true)
+            {
+                return false;
+            }
+
             return true;
         }
 
         // Handler to invoke node Auto Complete
         private void AutoComplete(object parameter)
         {
-            var wsViewModel = node.WorkspaceViewModel;
-            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
-
-            // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
-            if (this.inputPortDisconnectedByConnectCommand)
+            //handle the mouse event to prevent connection from starting
+            MouseButtonEventArgs evArgs = parameter as MouseButtonEventArgs;
+            if (evArgs != null)
             {
-                wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
+                evArgs.Handled = true;
             }
 
-            // Bail out from connect state
-            wsViewModel.CancelActiveState();
-            wsViewModel.OnRequestNodeAutoCompleteSearch(ShowHideFlags.Show);
+            var wsViewModel = node?.WorkspaceViewModel;
+            if (wsViewModel is null || wsViewModel.NodeAutoCompleteSearchViewModel is null)
+            {
+                return;
+            }
+
+            var existingPort = wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel;
+            if (existingPort != null)
+            {
+                existingPort.Highlight = Visibility.Collapsed;
+            }
+
+            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
+
+            wsViewModel.OnRequestNodeAutoCompleteSearch();
         }
 
         // Handler to invoke Node autocomplete cluster
         private void AutoCompleteCluster(object parameter)
         {
+            //handle the mouse event to prevent connection from starting
+            MouseButtonEventArgs evArgs = parameter as MouseButtonEventArgs;
+            if (evArgs != null)
+            {
+                evArgs.Handled = true;
+            }
+
             var wsViewModel = node.WorkspaceViewModel;
-            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
-
-            // If the input port is disconnected by the 'Connect' command while triggering Node AutoComplete, undo the port disconnection.
-            if (this.inputPortDisconnectedByConnectCommand)
-            {
-                wsViewModel.DynamoViewModel.Model.CurrentWorkspace.Undo();
-            }
-
-            // Bail out from connect state
-            wsViewModel.CancelActiveState();
-
-            if (wsViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled)
-            {
-                try
-                {
-                    MLNodeClusterAutoCompletionResponse results = wsViewModel.NodeAutoCompleteSearchViewModel.GetMLNodeClusterAutocompleteResults();
-                    wsViewModel.OnRequestNodeAutoCompleteViewExtension(results);
-                }
-                catch (Exception e)
-                {
-                    // Log the exception and show a notification to the user
-                }
-            }
+            wsViewModel?.OnRequestNodeAutocompleteBar(this);
         }
 
         private void NodePortContextMenu(object obj)
@@ -530,6 +580,17 @@ namespace Dynamo.ViewModels
             wsViewModel.OnRequestPortContextMenu(ShowHideFlags.Show, this);
         }
 
+        private bool CanShowContextMenu(object obj)
+        {
+            if (node?.IsTransient is true ||
+                PortModel?.HasTransientConnections() is true)
+            {
+                return false;
+            }
+
+            return true;
+        }
+
         private bool CanAutoComplete(object parameter)
         {
             DynamoViewModel dynamoViewModel = node.DynamoViewModel;
@@ -539,8 +600,11 @@ namespace Dynamo.ViewModels
             {
                 dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Wpf.Properties.Resources.NodeAutoCompleteNotAvailableForCollapsedGroups);
             }
-            // If the feature is enabled from Dynamo experiment setting and if user interaction is not on proxy ports.
-            return dynamoViewModel.EnableNodeAutoComplete && !port.IsProxyPort;
+
+            // We can AutoComplete if the feature is enabled from Dynamo experiment setting,
+            // if user interaction is not on proxy ports and if the port is not an input already connected.
+            return dynamoViewModel.EnableNodeAutoComplete && !port.IsProxyPort &&
+                !(PortType == PortType.Input && PortModel?.Connectors?.FirstOrDefault()?.Start?.Owner != null);
         }
 
         /// <summary>

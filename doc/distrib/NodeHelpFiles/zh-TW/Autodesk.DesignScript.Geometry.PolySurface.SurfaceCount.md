@@ -1,7 +1,8 @@
 ## 深入資訊
-SurfaceCount 會以整數傳回 PolySurface 的曲面數。在以下範例中，擠出的六角形會傳回 8 的計數。由於節點以單一 PolySurface 當作輸入，因此在計數之前，必須先將曲面集合接合。
+`PolySurface.SurfaceCount` 會傳回給定 PolySurface 物件內的曲面數。
+
+以下範例從立方體建立 PolySurface，然後使用 `PolySurface.SurfaceCount` 提供曲面計數。
 ___
 ## 範例檔案
 
-
-
+![PolySurface.SurfaceCount](./Autodesk.DesignScript.Geometry.PolySurface.SurfaceCount_img.jpg)

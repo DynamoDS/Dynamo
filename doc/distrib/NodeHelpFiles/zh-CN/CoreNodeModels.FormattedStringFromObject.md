@@ -15,3 +15,7 @@ N : 编号 N2 1000 -> "1,000.00"
 此节点的默认值为“G”，这将输出紧凑但可变的表示。
 
 [有关详细信息，请参见 Microsoft 文档。](https://learn.microsoft.com/en-us/dotnet/standard/base-types/standard-numeric-format-strings#standard-format-specifiers)
+___
+## 示例文件
+
+![Formatted String from Object](./CoreNodeModels.FormattedStringFromObject_img.jpg)

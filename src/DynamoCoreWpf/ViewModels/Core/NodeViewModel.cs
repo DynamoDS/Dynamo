@@ -39,7 +39,8 @@ namespace Dynamo.ViewModels
         public delegate void SnapInputEventHandler(PortViewModel portViewModel);
         public delegate void PreviewPinStatusHandler(bool pinned);
 
-        internal delegate void NodeAutoCompletePopupEventHandler(Popup popup);
+        internal delegate void NodeAutoCompletePopupEventHandler(Window window, PortModel portType, double spacing);
+        internal delegate void NodeClusterAutoCompletePopupEventHandler(Window window, double spacing);
         internal delegate void PortContextMenuPopupEventHandler(Popup popup);
         #endregion
 
@@ -63,6 +64,7 @@ namespace Dynamo.ViewModels
         private bool isNodeInCollapsedGroup = false;
         private const string WatchNodeName = "Watch";
         private bool nodeHoveringState;
+        private bool isHidden;
         #endregion
 
         #region public members
@@ -368,6 +370,23 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        ///     This property controls node view visibility in canvas.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsHidden
+        {
+            get => isHidden;
+            set
+            {
+                if (isHidden != value)
+                {
+                    isHidden = value;
+                    RaisePropertyChanged(nameof(IsHidden));
+                }
+            }
+        }
+
+        /// <summary>
         /// Determines whether or not the semi-transparent overlay is displaying on the node.
         /// This reflects whether the node is in a info/warning/error/frozen state
         /// </summary>
@@ -584,7 +603,8 @@ namespace Dynamo.ViewModels
         private static readonly string warningGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/alert-64px.png";
         private static readonly string errorGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/error-64px.png";
         private static readonly string infoGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/info-64px.png";
-        private static readonly string previewGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/hidden-64px.png";
+        private static readonly string previewGeometryGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/hidden-64px.png";
+        private static readonly string previewClusterGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/transient-light-64px.png";
         private static readonly string frozenGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/frozen-64px.png";
         private static readonly string packageGlyph = "/DynamoCoreWpf;component/UI/Images/NodeStates/package-64px.png";
 
@@ -620,6 +640,20 @@ namespace Dynamo.ViewModels
             {
                 NodeModel.IsFrozen = value;
             }
+        }
+
+        /// <summary>
+        /// Return a value indicating whether this node is in transient state.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsTransient
+        {
+            set
+            {
+                NodeModel.IsTransient = value;
+                RaisePropertyChanged(nameof(IsTransient));
+            }
+            get { return NodeModel.IsTransient; }
         }
 
         /// <summary>
@@ -793,12 +827,18 @@ namespace Dynamo.ViewModels
 
         #region events
 
+        internal event NodeClusterAutoCompletePopupEventHandler RequestClusterAutoCompletePopupPlacementTarget;
         internal event NodeAutoCompletePopupEventHandler RequestAutoCompletePopupPlacementTarget;
         internal event PortContextMenuPopupEventHandler RequestPortContextMenuPopupPlacementTarget;
 
-        internal void OnRequestAutoCompletePopupPlacementTarget(Popup popup)
+        internal void OnRequestAutoCompletePopupPlacementTarget(Window window, PortModel portModel, double spacing)
         {
-            RequestAutoCompletePopupPlacementTarget?.Invoke(popup);
+            RequestAutoCompletePopupPlacementTarget?.Invoke(window, portModel, spacing);
+        }
+
+        internal void OnClusterRequestAutoCompletePopupPlacementTarget(Window window, double spacing)
+        {
+            RequestClusterAutoCompletePopupPlacementTarget?.Invoke(window, spacing);
         }
 
         public void OnRequestPortContextMenuPlacementTarget(Popup popup)
@@ -902,6 +942,7 @@ namespace Dynamo.ViewModels
             }
             logic.NodeMessagesClearing += Logic_NodeMessagesClearing;
             logic.NodeInfoMessagesClearing += Logic_NodeInfoMessagesClearing;
+            logic.NodeWarningMessagesClearing += Logic_NodeWarningMessagesClearing;
 
             logic_PropertyChanged(this, new PropertyChangedEventArgs(nameof(IsVisible)));
             UpdateBubbleContent();
@@ -990,6 +1031,36 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        /// Clears only warning messages from the node's info bubble, preserving any existing info messages.
+        /// </summary>
+        /// <param name="obj"></param>
+        private void Logic_NodeWarningMessagesClearing(NodeModel obj)
+        {
+            if (ErrorBubble == null) return;
+
+            var warningsToRemove = ErrorBubble.NodeMessages.Where(x => x.Style == InfoBubbleViewModel.Style.Warning).ToList();
+
+            if (DynamoViewModel.UIDispatcher != null)
+            {
+                DynamoViewModel.UIDispatcher.Invoke(() =>
+                {
+                    foreach (var itemToRemove in warningsToRemove)
+                    {
+                        ErrorBubble.NodeMessages.Remove(itemToRemove);
+                    }
+                });
+            }
+            else
+            {
+                foreach (var itemToRemove in warningsToRemove)
+                {
+                    ErrorBubble.NodeMessages.Remove(itemToRemove);
+                }
+            }
+            return;
+        }
+
         private void DismissedNodeMessages_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (!(sender is ObservableCollection<InfoBubbleDataPacket> observableCollection)) return;
@@ -1047,7 +1118,8 @@ namespace Dynamo.ViewModels
 
             NodeModel.NodeMessagesClearing -= Logic_NodeMessagesClearing;
             NodeModel.NodeInfoMessagesClearing -= Logic_NodeInfoMessagesClearing;
-            
+            NodeModel.NodeWarningMessagesClearing -= Logic_NodeWarningMessagesClearing;
+
             if (ErrorBubble != null) DisposeErrorBubble();
 
             DynamoSelection.Instance.Selection.CollectionChanged -= SelectionOnCollectionChanged;
@@ -1301,9 +1373,10 @@ namespace Dynamo.ViewModels
         private static SolidColorBrush warningColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#FAA21B"));
         private static SolidColorBrush infoColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#6AC0E7"));
         private static SolidColorBrush noPreviewColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BBBBBB"));
-        private static SolidColorBrush nodeCustomColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#B385F2"));
-        private static SolidColorBrush nodePreviewColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BBBBBB"));
+        private static SolidColorBrush nodeCustomColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#32BCAD"));
+        private static SolidColorBrush nodePreviewGeometryColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BBBBBB"));
         private static SolidColorBrush nodeFrozenOverlayColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#BCD3EE"));
+        private static SolidColorBrush nodeTransientOverlayColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#D5BCF7"));
         private static SolidColorBrush nodeInfoColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#6AC0E7"));        
 
         /// <summary>
@@ -1360,10 +1433,10 @@ namespace Dynamo.ViewModels
 
             if (!this.IsVisible)
             {
-                result = nodePreviewColor;
+                result = nodePreviewGeometryColor;
                 if (result != null)
                 {
-                    ImgGlyphOneSource = previewGlyph;
+                    ImgGlyphOneSource = previewGeometryGlyph;
                 } 
             }
 
@@ -1379,7 +1452,7 @@ namespace Dynamo.ViewModels
                     else
                     {
                         ImgGlyphOneSource = packageGlyph;
-                        ImgGlyphTwoSource = previewGlyph;
+                        ImgGlyphTwoSource = previewGeometryGlyph;
                     }
                 }
             }
@@ -1396,10 +1469,28 @@ namespace Dynamo.ViewModels
                     else
                     {
                         ImgGlyphOneSource = frozenGlyph;
-                        ImgGlyphTwoSource = previewGlyph;
+                        ImgGlyphTwoSource = previewGeometryGlyph;
                     }
                 }
             }
+
+            if (this.IsTransient)
+            {
+                result = nodeTransientOverlayColor;
+                if (result != null)
+                {
+                    if (ImgGlyphOneSource == null)
+                    {
+                        ImgGlyphOneSource = previewClusterGlyph;
+                    }
+                    else
+                    {
+                        ImgGlyphOneSource = previewClusterGlyph;
+                        ImgGlyphTwoSource = previewGeometryGlyph;
+                    }
+                }
+            }
+
             if (NodeModel.State == ElementState.Info || NodeModel.State == ElementState.PersistentInfo)
             {
                 result = nodeInfoColor;
@@ -1974,6 +2065,7 @@ namespace Dynamo.ViewModels
                 if (current != null)
                 {
                     current.RaisePropertyChanged("IsFrozen");
+                    current.HandleColorOverlayChange();
                 }
             }
         }

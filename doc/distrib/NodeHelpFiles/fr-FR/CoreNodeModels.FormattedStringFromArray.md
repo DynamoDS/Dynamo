@@ -1,5 +1,5 @@
 ## Description approfondie
-Ce noeud convertit un oject en chaîne. Le deuxième spécificateur de format d'entrée contrôle la façon dont les entrées numériques sont converties en leurs représentations sous forme de chaîne.
+Ce noeud convertit un réseau en chaîne. Le deuxième spécificateur de format d'entrée contrôle la façon dont les entrées numériques sont converties en leurs représentations sous forme de chaîne.
 Ce 'spécificateur de format' doit être l'un des spécificateurs numériques du format standard C#.
 
 Les spécificateurs de format doivent se présenter sous la forme:
@@ -15,3 +15,7 @@ N : numéro N2 1000 -> "1,000.00"
 La valeur par défaut de ce noeud est 'G', ce qui génère une représentation compacte mais variable.
 
 [Pour plus d'informations, reportez-vous à la documentation Microsoft.](https://learn.microsoft.com/fr-fr/dotnet/standard/base-types/standard-numeric-format-strings#standard-format-specifiers)
+___
+## Exemple de fichier
+
+![Formatted String from Array](./CoreNodeModels.FormattedStringFromArray_img.jpg)

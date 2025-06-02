@@ -5,7 +5,6 @@ using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Dynamo.Configuration;
-using Dynamo.Controls;
 using Dynamo.Engine;
 using Dynamo.Graph.Connectors;
 using Dynamo.Graph.Nodes;
@@ -35,6 +34,7 @@ namespace Dynamo.ViewModels
     /// <summary>
     /// Search View Model for Node AutoComplete Search Bar
     /// </summary>
+    [Obsolete("This class will be removed in a future version of Dynamo")]
     public class NodeAutoCompleteSearchViewModel : SearchViewModel
     {
         internal PortViewModel PortViewModel { get; set; }
@@ -45,6 +45,7 @@ namespace Dynamo.ViewModels
         private bool displayLowConfidence;
         private const string nodeAutocompleteMLEndpoint = "MLNodeAutocomplete";
         private const string nodeClusterAutocompleteMLEndpoint = "MLNodeClusterAutocomplete";
+        internal bool IsOpen { get; set; }
 
         // Lucene search utility to perform indexing operations just for NodeAutocomplete.
         internal LuceneSearchUtility LuceneUtility
@@ -70,6 +71,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// For checking if the ML method is selected
         /// </summary>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public bool IsDisplayingMLRecommendation
         {
             get
@@ -81,6 +83,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// If MLAutocompleteTOU is approved
         /// </summary>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public bool IsMLAutocompleteTOUApproved
         {
             get
@@ -92,6 +95,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// If true, autocomplete method options are hidden from UI 
         /// </summary>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public bool HideAutocompleteMethodOptions
         {
             get
@@ -100,10 +104,10 @@ namespace Dynamo.ViewModels
             }
         }
 
-
         /// <summary>
         /// The No Recommendations or Low Confidence Title
         /// </summary>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public string AutocompleteMLTitle
         {
             get { return autocompleteMLTitle; }
@@ -117,6 +121,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// The No Recommendations or Low Confidence message
         /// </summary>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public string AutocompleteMLMessage
         {
             get { return autocompleteMLMessage; }
@@ -130,6 +135,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Indicates the No recommendations / Low confidence message should be displayed (image and texts)
         /// </summary>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public bool DisplayAutocompleteMLStaticPage
         {
             get { return displayAutocompleteMLStaticPage; }
@@ -143,6 +149,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Indicates if display the Low confidence option and Tooltip
         /// </summary>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public bool DisplayLowConfidence
         {
             get { return displayLowConfidence; }
@@ -399,31 +406,41 @@ namespace Dynamo.ViewModels
                     }
                 }
 
-                foreach (var result in results)
-                {
-                    if (result.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= dynamoViewModel.PreferenceSettings.MLRecommendationConfidenceLevel)
-                    {
-                        FilteredHighConfidenceResults = FilteredHighConfidenceResults.Append(result);
-                    }
-                    else {
-                        FilteredLowConfidenceResults = FilteredLowConfidenceResults.Append(result);
-                    }
-                }
-
-                // Show low confidence section if there are some results under threshold and feature enabled
-                DisplayLowConfidence = FilteredLowConfidenceResults.Any() && dynamoViewModel.PreferenceSettings.HideNodesBelowSpecificConfidenceLevel;
-
-                if (!FilteredHighConfidenceResults.Any())
-                {
-                    DisplayAutocompleteMLStaticPage = true;
-                    AutocompleteMLTitle = Resources.AutocompleteLowConfidenceTitle;
-                    AutocompleteMLMessage = Resources.AutocompleteLowConfidenceMessage;
-                    return;
-                }
-
-                // By default, show only the results which are above the threshold
-                FilteredResults = dynamoViewModel.PreferenceSettings.HideNodesBelowSpecificConfidenceLevel? FilteredHighConfidenceResults : results    ;
+                OrganizeConfidenceSection(results);
             }
+        }
+
+        /// <summary>
+        /// Compare to low confidence threadhold defined by user can origanize the results into high and low confidence sections.
+        /// </summary>
+        /// <param name="results"></param>
+        internal void OrganizeConfidenceSection(List<NodeSearchElementViewModel> results)
+        {
+            foreach (var result in results)
+            {
+                if (result.AutoCompletionNodeMachineLearningInfo.ConfidenceScore >= dynamoViewModel.PreferenceSettings.MLRecommendationConfidenceLevel)
+                {
+                    FilteredHighConfidenceResults = FilteredHighConfidenceResults.Append(result);
+                }
+                else
+                {
+                    FilteredLowConfidenceResults = FilteredLowConfidenceResults.Append(result);
+                }
+            }
+
+            // Show low confidence section if there are some results under threshold and feature enabled
+            DisplayLowConfidence = FilteredLowConfidenceResults.Any() && dynamoViewModel.PreferenceSettings.HideNodesBelowSpecificConfidenceLevel;
+
+            if (!FilteredHighConfidenceResults.Any())
+            {
+                DisplayAutocompleteMLStaticPage = true;
+                AutocompleteMLTitle = Resources.AutocompleteLowConfidenceTitle;
+                AutocompleteMLMessage = Resources.AutocompleteLowConfidenceMessage;
+                return;
+            }
+
+            // By default, show only the results which are above the threshold
+            FilteredResults = dynamoViewModel.PreferenceSettings.HideNodesBelowSpecificConfidenceLevel ? FilteredHighConfidenceResults : results;
         }
 
         private MLNodeAutoCompletionResponse GetMLNodeAutocompleteResults(string requestJSON)
@@ -440,8 +457,10 @@ namespace Dynamo.ViewModels
                 if (authProvider is IOAuth2AuthProvider oauth2AuthProvider && authProvider is IOAuth2AccessTokenProvider tokenprovider)
                 {
                     var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, nodeAutocompleteMLEndpoint);
-                    var client = new RestClient(uri);
+                    var options = new RestClientOptions(uri) { Timeout = new TimeSpan(0, 0, 7) };
+                    var client = new RestClient(options);
                     var request = new RestRequest(string.Empty,Method.Post);
+
                     var tkn = tokenprovider?.GetAccessToken();
                     if (string.IsNullOrEmpty(tkn))
                     {
@@ -453,56 +472,6 @@ namespace Dynamo.ViewModels
                     RestResponse response = client.Execute(request);
                     //TODO maybe worth moving to system.text json in phases?
                     results = JsonConvert.DeserializeObject<MLNodeAutoCompletionResponse>(response.Content);
-                }
-            }
-            catch (Exception ex)
-            {
-                dynamoViewModel.Model.Logger.Log(ex.Message);
-                throw new Exception("Authentication failed.");
-            }
-
-            return results;
-        }
-
-        // Rest API call to get the Node cluster Autocomlete results from the service.
-        internal MLNodeClusterAutoCompletionResponse GetMLNodeClusterAutocompleteResults()
-        {
-            MLNodeClusterAutoCompletionResponse results = null;
-            try
-            {
-                var MLRequest = GenerateRequestForMLAutocomplete();
-                string jsonRequest = JsonConvert.SerializeObject(MLRequest);
-
-                var authProvider = dynamoViewModel.Model.AuthenticationManager.AuthProvider;
-                if (!dynamoViewModel.IsIDSDKInitialized())
-                {
-                    throw new Exception("IDSDK missing or failed initialization.");
-                }
-
-                if (authProvider is IOAuth2AuthProvider oauth2AuthProvider && authProvider is IOAuth2AccessTokenProvider tokenprovider)
-                {
-                    try
-                    {
-                        var uri = DynamoUtilities.PathHelper.GetServiceBackendAddress(this, nodeClusterAutocompleteMLEndpoint);
-                        var client = new RestClient(uri);
-                        var request = new RestRequest(string.Empty, Method.Post);
-                        var tkn = tokenprovider?.GetAccessToken();
-                        if (string.IsNullOrEmpty(tkn))
-                        {
-                            throw new Exception("Authentication required.");
-                        }
-                        request.AddHeader("Authorization", $"Bearer {tkn}");
-                        request = request.AddJsonBody(jsonRequest);
-                        request.RequestFormat = DataFormat.Json;
-                        RestResponse response = client.Execute(request);
-
-                        results = JsonConvert.DeserializeObject<MLNodeClusterAutoCompletionResponse>(response.Content);
-                    }
-                    catch (Exception ex)
-                    {
-                        dynamoViewModel.Model.Logger.Log(ex.Message);
-                        throw new Exception("Authentication failed.");
-                    }
                 }
             }
             catch (Exception ex)
@@ -528,7 +497,7 @@ namespace Dynamo.ViewModels
         }
 
         // Full name and assembly name 
-        private NodeModelTypeId GetInfoFromTypeId(string typeId)
+        internal NodeModelTypeId GetInfoFromTypeId(string typeId)
         {
             if (typeId.Contains(','))
             {
@@ -575,8 +544,7 @@ namespace Dynamo.ViewModels
         internal void PopulateAutoCompleteCandidates()
         {
             if (PortViewModel == null) return;
-
-            dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
+            
             ResetAutoCompleteSearchViewState();
 
             if (IsDisplayingMLRecommendation)
@@ -617,6 +585,8 @@ namespace Dynamo.ViewModels
         {
             if (PortViewModel.PortModel.PortType == PortType.Input)
             {
+                string portType = PortViewModel.PortModel.GetInputPortType();
+                
                 switch (PortViewModel.PortModel.GetInputPortType())
                 {
                     case "int":
@@ -632,7 +602,15 @@ namespace Dynamo.ViewModels
                         FilteredResults = DefaultResults.Where(e => e.Name == "Boolean").ToList();
                         break;
                     default:
-                        FilteredResults = DefaultResults.Where(e => e.Name == "String" || e.Name == "Number Slider" || e.Name == "Integer Slider" || e.Name == "Number" || e.Name == "Boolean");
+                        bool isArray = portType != null && Regex.IsMatch(portType, @"(^|\.)List<[^>]+>$|(\[\])$");
+                        if (isArray)
+                        {
+                            FilteredResults = DefaultResults.Where(e => e.Model.FullCategoryName.EndsWith(".List"))?.ToList();
+                        }
+                        else
+                        {
+                            FilteredResults = DefaultResults.Where(e => e.Name == "String" || e.Name == "Number Slider" || e.Name == "Integer Slider" || e.Name == "Number" || e.Name == "Boolean");
+                        }
                         break;
                 }
             }
@@ -642,9 +620,18 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal void OnNodeAutoCompleteWindowOpened()
+        {
+            IsOpen = true;
+            dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved += NodeViewModel_Removed;
+            PortViewModel.Highlight = System.Windows.Visibility.Visible;
+        }
+
         internal void OnNodeAutoCompleteWindowClosed()
         {
+            IsOpen = false;
             dynamoViewModel.CurrentSpaceViewModel.Model.NodeRemoved -= NodeViewModel_Removed;
+            PortViewModel.Highlight = System.Windows.Visibility.Collapsed;
         }
 
         internal void NodeViewModel_Removed(NodeModel node)
@@ -750,7 +737,7 @@ namespace Dynamo.ViewModels
                     //Memory indexing process for Node Autocomplete (indexing just the nodes returned by the NodeAutocomplete service so we limit the scope of the query search)
                     var doc = LuceneUtility.InitializeIndexDocumentForNodes();
                     List<NodeSearchElement> nodeSearchElements = [.. searchElementsCache.Select(x => x.Model)];
-                    LuceneUtility.AddNodeTypeToSearchIndexBulk(nodeSearchElements, doc);
+                    LuceneUtility.AddNodeTypeToSearchIndex(nodeSearchElements, doc);
 
                     //Write the Lucene documents to memory
                     LuceneUtility.CommitWriterChanges();
@@ -948,6 +935,7 @@ namespace Dynamo.ViewModels
                 this.core = core;
             }
 
+            [Obsolete("This method will be removed in a future version of Dynamo")]
             public int Compare(NodeSearchElement x, NodeSearchElement y)
             {
                 return CompareNodeSearchElementByTypeDistance(x, y, typeNameToCompareTo, core);

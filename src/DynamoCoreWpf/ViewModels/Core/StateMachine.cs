@@ -332,6 +332,7 @@ namespace Dynamo.ViewModels
                     foreach (ConnectorViewModel a in activeConnectors)
                     {
                         this.WorkspaceElements.Remove(a);
+                        a.Dispose();
                     }
                 }
                 this.activeConnectors = null;
@@ -1065,10 +1066,6 @@ namespace Dynamo.ViewModels
                     return false;
 
                 var portModel = portViewModel.PortModel;
-
-                // When the connect command is triggered, set portDisconnectedByConnectCommand flag based on the port connectors.
-                // If the current port has any connectors, then it will be disconnected. Otherwise a new connection will be made. 
-                portViewModel.inputPortDisconnectedByConnectCommand = portViewModel.PortType == PortType.Input && portModel.Connectors.Count > 0;
 
                 var workspaceViewModel = owningWorkspace.DynamoViewModel.CurrentSpaceViewModel;
 

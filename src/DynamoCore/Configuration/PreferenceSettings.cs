@@ -186,6 +186,11 @@ namespace Dynamo.Configuration
         public bool ShowPreviewBubbles { get; set; }
 
         /// <summary>
+        /// Indicates if groups should display the default description.
+        /// </summary>
+        public bool ShowDefaultGroupDescription { get; set; }
+
+        /// <summary>
         /// Indicates if Host units should be used for graphic helpers for Dynamo Revit
         /// </summary>
         public bool UseHostScaleUnits { get; set; }
@@ -677,10 +682,22 @@ namespace Dynamo.Configuration
         /// </summary>
         public int MLRecommendationConfidenceLevel { get; set; }
 
+        private int mLRecommendationNumberOfResults;
         /// <summary>
         /// This defines the number of results of the  ML recommendation
         /// </summary>
-        public int MLRecommendationNumberOfResults { get; set; }
+        public int MLRecommendationNumberOfResults
+        {
+            get => mLRecommendationNumberOfResults;
+            set
+            {
+                if (mLRecommendationNumberOfResults != value)
+                {
+                    mLRecommendationNumberOfResults = value;
+                    AutocompletePreferencesChanged?.Invoke();
+                }
+            }
+        }
 
         /// <summary>
         /// If true, autocomplete method options are hidden from UI 
@@ -848,10 +865,27 @@ namespace Dynamo.Configuration
         /// </summary>
         public RunType DefaultRunType { get; set; }
 
+        private NodeAutocompleteSuggestion defaultNodeAutocompleteSuggestion;
         /// <summary>
         /// Defines the default method of the Node Autocomplete
         /// </summary>
-        public NodeAutocompleteSuggestion DefaultNodeAutocompleteSuggestion { get; set; }
+        public NodeAutocompleteSuggestion DefaultNodeAutocompleteSuggestion
+        {
+            get => defaultNodeAutocompleteSuggestion;
+            set
+            {
+                if(defaultNodeAutocompleteSuggestion != value)
+                {
+                    defaultNodeAutocompleteSuggestion = value;
+                    AutocompletePreferencesChanged?.Invoke();
+                }
+            }
+        }
+
+        /// <summary>
+        ///     Event that is fired when autocomplete-specific preferences are changed
+        /// </summary>
+        internal event Action AutocompletePreferencesChanged;
 
         /// <summary>
         /// Show Run Preview flag.
@@ -956,6 +990,7 @@ namespace Dynamo.Configuration
             NamespacesToExcludeFromLibrary = new List<string>();
             DefaultRunType = RunType.Automatic;
             DefaultNodeAutocompleteSuggestion = NodeAutocompleteSuggestion.MLRecommendation;
+            ShowDefaultGroupDescription = true;
 
             BackupInterval = DefaultBackupInterval;
             BackupFilesCount = 1;

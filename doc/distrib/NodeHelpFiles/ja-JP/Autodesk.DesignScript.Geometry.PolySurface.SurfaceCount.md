@@ -1,7 +1,8 @@
 ## 詳細
-SurfaceCount は、PolySurface 内の Surface の数を整数として返します。次の例では、押し出された六角形がカウント 8 を返しています。ノードは単一の PolySurface を入力として受け取るため、カウントするには、Surface の集合を結合する必要があります。
+`PolySurface.SurfaceCount` は、指定された PolySurface オブジェクト内のサーフェスの数を返します。
+
+次の例では、PolySurface が立方体から作成され、サーフェスの数が `PolySurface.SurfaceCount` で指定されます。
 ___
 ## サンプル ファイル
 
-
-
+![PolySurface.SurfaceCount](./Autodesk.DesignScript.Geometry.PolySurface.SurfaceCount_img.jpg)

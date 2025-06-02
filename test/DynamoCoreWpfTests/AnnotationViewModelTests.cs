@@ -1486,6 +1486,132 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        public void CanFreezeAndUnfreezeAllNodesInAGroup()
+        {
+            // Arrange
+            var parentGroupName = "parentGroup";
+            var nestedGroupName = "nestedGroup";
+
+            OpenModel(@"core\annotationViewModelTests\connectorsRemainCollapsedAfterUndo.dyn");
+
+            var parentGroupVM = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == parentGroupName);
+            var nestedGroupVM = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == nestedGroupName);
+
+            // Ensure groups exist
+            Assert.NotNull(parentGroupVM);
+            Assert.NotNull(nestedGroupVM);
+
+            // Verify initial state - everything should be unfrozen
+            Assert.AreEqual(0, parentGroupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
+            Assert.AreEqual(0, nestedGroupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
+            Assert.IsTrue(!parentGroupVM.AnnotationModel.IsFrozen);
+            Assert.IsTrue(!nestedGroupVM.AnnotationModel.IsFrozen);
+
+            // Freeze parent group - should freeze both parent and nested group nodes
+            parentGroupVM.ToggleIsFrozenGroupCommand.Execute(null);
+
+            Assert.AreEqual(2, parentGroupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
+            Assert.AreEqual(2, nestedGroupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
+            Assert.IsTrue(parentGroupVM.AnnotationModel.IsFrozen);
+            Assert.IsTrue(nestedGroupVM.AnnotationModel.IsFrozen);
+
+            // Unfreeze only nested group - parent should also become unfrozen
+            nestedGroupVM.ToggleIsFrozenGroupCommand.Execute(null);
+
+            Assert.AreEqual(2, parentGroupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
+            Assert.AreEqual(0, nestedGroupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
+            Assert.IsTrue(!parentGroupVM.AnnotationModel.IsFrozen);
+            Assert.IsTrue(!nestedGroupVM.AnnotationModel.IsFrozen);
+
+            // Freeze nested group again
+            nestedGroupVM.ToggleIsFrozenGroupCommand.Execute(null);
+
+            Assert.AreEqual(2, parentGroupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
+            Assert.AreEqual(2, nestedGroupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
+            Assert.IsTrue(parentGroupVM.AnnotationModel.IsFrozen);
+            Assert.IsTrue(nestedGroupVM.AnnotationModel.IsFrozen);
+
+            // Unfreeze parent group - should unfreeze everything
+            parentGroupVM.ToggleIsFrozenGroupCommand.Execute(null);
+
+            Assert.AreEqual(0, parentGroupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
+            Assert.AreEqual(0, nestedGroupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
+            Assert.IsTrue(!parentGroupVM.AnnotationModel.IsFrozen);
+            Assert.IsTrue(!nestedGroupVM.AnnotationModel.IsFrozen);
+        }
+
+        [Test]
+        public void CanFreezeAndUnfreezeCollapsedGroups()
+        {
+            // Arrange
+            var parentGroupName = "GroupWithGroupedGroup2";
+            var nestedGroupName = "CollapsedGroupInside";
+
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+
+            var parentGroupVM = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == parentGroupName);
+            var nestedGroupVM = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == nestedGroupName);
+
+            // Ensure groups exist
+            Assert.NotNull(parentGroupVM);
+            Assert.NotNull(nestedGroupVM);
+
+            // Verify initial state - everything should be unfrozen
+            Assert.AreEqual(0, parentGroupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
+            Assert.AreEqual(0, nestedGroupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
+            Assert.IsFalse(parentGroupVM.AnnotationModel.IsFrozen);
+            Assert.IsFalse(nestedGroupVM.AnnotationModel.IsFrozen);
+
+            // Freeze parent group - should freeze both parent and nested group nodes
+            parentGroupVM.ToggleIsFrozenGroupCommand.Execute(null);
+
+            Assert.AreEqual(2, parentGroupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
+            Assert.AreEqual(2, nestedGroupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
+            Assert.IsTrue(parentGroupVM.AnnotationModel.IsFrozen);
+            Assert.IsTrue(nestedGroupVM.AnnotationModel.IsFrozen);
+
+            // Unfreeze parent group - should unfreeze everything
+            parentGroupVM.ToggleIsFrozenGroupCommand.Execute(null);
+
+            Assert.AreEqual(0, parentGroupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
+            Assert.AreEqual(0, nestedGroupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
+            Assert.IsFalse(parentGroupVM.AnnotationModel.IsFrozen);
+            Assert.IsFalse(nestedGroupVM.AnnotationModel.IsFrozen);
+        }
+
+        [Test]
+        public void CanUnfreezeSingleNodeInFrozenAGroup()
+        {
+            // Arrange
+            var groupName = "GroupToCollapse";
+            var nodeGuid = new Guid("ebb5a1ec-cc86-4bc4-bfcd-4e5c84ed8ba9");
+
+            OpenModel(@"core\annotationViewModelTests\groupsTestFile.dyn");
+
+            var groupVM = ViewModel.CurrentSpaceViewModel.Annotations.FirstOrDefault(x => x.AnnotationText == groupName);
+            var nodeVM = groupVM.Nodes.OfType<NodeModel>().FirstOrDefault(n => n.GUID == nodeGuid);
+
+            // Ensure node is found
+            Assert.NotNull(nodeVM);
+
+            // Verify initial state - everything should be unfrozen
+            Assert.AreEqual(0, groupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
+            Assert.IsTrue(!groupVM.AnnotationModel.IsFrozen);
+
+            // Freeze parent group - all grouped nodes should be frozen
+            groupVM.ToggleIsFrozenGroupCommand.Execute(null);
+
+            Assert.AreEqual(5, groupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
+            Assert.IsTrue(groupVM.AnnotationModel.IsFrozen);
+
+            // Unfreeze only one node - the group and the rest of the nodes should remain frozen
+            nodeVM.IsFrozen = false;
+
+            Assert.AreEqual(4, groupVM.Nodes.OfType<NodeModel>().Count(x => x.IsFrozen));
+            Assert.IsTrue(!groupVM.AnnotationModel.IsFrozen);
+        }
+
+        [Test]
         public void ConnectorsRemainCollapsedOnUndoCollapsedGroup()
         {
             // Arrange

@@ -782,7 +782,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(ztNode.InPorts.First().ToolTip, "1st point of arc\n\nPoint");
 
             var nodeModelNode = this.CurrentDynamoModel.CurrentWorkspace.Nodes.Where(x => x.GUID == new Guid("c848cc3cb24a477f8248e53fc9304cc1")).First();
-            Assert.AreEqual(nodeModelNode.InPorts.First().ToolTip, "List of colors to include in the range");
+            Assert.AreEqual(nodeModelNode.InPorts.First().ToolTip, "List of colors to include in the range (disabled)");
 
         }
         [Test]

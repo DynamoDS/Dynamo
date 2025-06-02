@@ -478,7 +478,7 @@ namespace DynamoUtilities
             string url = null;
             if (o != null)
             {
-                var path = o.GetType().Assembly.Location;
+                var path = o is Assembly ? (o as Assembly).Location : o.GetType().Assembly.Location;
                 var config = ConfigurationManager.OpenExeConfiguration(path);
                 var key = config.AppSettings.Settings[serviceKey];
 

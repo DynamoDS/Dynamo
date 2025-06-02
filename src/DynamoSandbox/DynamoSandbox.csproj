@@ -19,7 +19,7 @@
   </PropertyGroup>
 
   <PropertyGroup>
-    <ApplicationIcon>logo_square_32x32.ico</ApplicationIcon>
+    <ApplicationIcon>DynamoSandboxIcon.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
@@ -56,7 +56,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="logo_square_32x32.ico" />
+    <Resource Include="DynamoSandboxIcon.ico" />
   </ItemGroup>
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">

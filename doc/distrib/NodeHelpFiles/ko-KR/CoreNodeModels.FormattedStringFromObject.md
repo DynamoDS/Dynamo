@@ -15,3 +15,7 @@ N: 번호 N2 1000 -> "1,000.00"
 이 노드의 기본값은 'G'이며, 이는 간결하지만 가변적인 표현을 출력합니다.
 
 [자세한 내용은 Microsoft 설명서를 참고하십시오.](https://learn.microsoft.com/ko-kr/dotnet/standard/base-types/standard-numeric-format-strings#standard-format-specifiers)
+___
+## 예제 파일
+
+![Formatted String from Object](./CoreNodeModels.FormattedStringFromObject_img.jpg)

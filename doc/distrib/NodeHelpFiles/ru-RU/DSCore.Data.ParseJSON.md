@@ -1,5 +1,8 @@
-## ParseJSON — документация
-Этот файл документации создан автоматически с помощью NodeDocumentationMarkdownGenerator, Version=2.14.0.3986, Culture=neutral, PublicKeyToken=null.
+## Подробности
+`Data.ParseJSON` позволяет преобразовать значения из формата JSON. Формат файлов JSON — это соглашение о структурировании данных, которые требуется сохранить. В сущности, формат файлов Dynamo структурирован по формату JSON.
 
-Дополнительные сведения о том, как добавлять документацию к узлам, см. на странице https://github.com/DynamoDS/Dynamo/wiki/Create-and-Add-Custom-Documentation-to-Nodes.
+В приведенном ниже примере словарь в формате JSON десериализуется в словарь Dynamo.
+___
+## Файл примера
 
+![Data.ParseJSON](./DSCore.Data.ParseJSON_img.jpg)

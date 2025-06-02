@@ -3,4 +3,4 @@ Uzel `Mesh.Translate` (vector) přesune libovolný typ sítě ve směru a veliko
 
 ## Vzorový soubor
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh.vector)_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh,%20vector)_img.jpg)

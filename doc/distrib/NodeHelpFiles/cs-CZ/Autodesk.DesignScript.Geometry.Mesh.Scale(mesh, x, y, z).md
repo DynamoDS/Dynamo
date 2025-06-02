@@ -3,4 +3,4 @@ Uzel `Mesh.Scale` (x, y, z ) změní měřítko sítě nerovnoměrně v libovoln
 
 ## Vzorový soubor
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.Scale(mesh.x.y.z)_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.Scale(mesh,%20x,%20y,%20z)_img.jpg)

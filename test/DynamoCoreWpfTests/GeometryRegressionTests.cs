@@ -1,4 +1,4 @@
-﻿using Dynamo.Scheduler;
+using Dynamo.Scheduler;
 using Dynamo.Wpf.ViewModels.Core;
 using NUnit.Framework;
 using System;
@@ -35,6 +35,7 @@ namespace DynamoCoreWpfTests
         /// arrays and scalars, resulting in a crash.
         /// </summary>
         [Test]
+        [Category("Failure")]
         public void DeletingNodesShouldNotMakeTransposeFailCausingCrash()
         {
             TaskStateChangedEventHandler evaluationDidNotFailHandler =

@@ -1,0 +1,25 @@
+# This workflow extracts release notes from merged pull requests in a specified milestone.
+name: Extract Release Notes
+
+on:
+  workflow_dispatch:
+    inputs:
+      milestone:
+        description: Milestone (e.g. "3.5" <https://github.com/DynamoDS/Dynamo/milestones>)
+        required: true
+
+jobs:
+    extract_release_notes_from_merged_prs:
+        name: Extract Release notes from merged pull requests
+        runs-on: ubuntu-latest
+        steps:
+          - name: Extract Release notes from merged pull requests
+            env:
+                GH_TOKEN: ${{ secrets.DYNAMO_ISSUES_TOKEN }}
+            run: |
+                prs=$(gh pr list --repo ${{ github.repository }} --search "milestone:${{ github.event.inputs.milestone }}" --state merged --limit 1000 --json number --jq '.[].number')
+                echo "# Release notes" > $GITHUB_STEP_SUMMARY
+                for pr in $prs; do
+                    echo "Processing PR #$pr"
+                    gh pr view $pr --repo ${{ github.repository }} --json body --jq '.body' | awk '/### Release Notes/{flag=1; next} /###/{flag=0} flag' | awk '!/N\/A/' | awk '!/(FILL ME IN)/' >> $GITHUB_STEP_SUMMARY
+                done

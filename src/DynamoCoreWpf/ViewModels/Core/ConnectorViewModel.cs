@@ -589,10 +589,11 @@ namespace Dynamo.ViewModels
         {
             bool isCollectionofFiveorMore = false;
 
-            //if model is null or enginecontroller is disposed, return
+            // if model is null or node in Transient state or enginecontroller is disposed, return
             if (model is null ||
                 model.Start is null ||
                 model.Start.Owner is null||
+                model.Start.Owner.IsTransient ||
                 workspaceViewModel.DynamoViewModel.EngineController.IsDisposed == true)
             { return; }
 
@@ -1203,25 +1204,32 @@ namespace Dynamo.ViewModels
         /// </summary>
         public override void Dispose()
         {
-            model.PropertyChanged -= HandleConnectorPropertyChanged;
+            if (model != null)
+            {
+                model.PropertyChanged -= HandleConnectorPropertyChanged;
 
-            model.Start.PropertyChanged -= StartPortModel_PropertyChanged;
-            model.End.PropertyChanged -= EndPortModel_PropertyChanged;
+                model.Start.PropertyChanged -= StartPortModel_PropertyChanged;
+                model.End.PropertyChanged -= EndPortModel_PropertyChanged;
 
-            model.Start.Owner.PropertyChanged -= StartOwner_PropertyChanged;
-            model.End.Owner.PropertyChanged -= EndOwner_PropertyChanged;
-            model.ConnectorPinModels.CollectionChanged -= ConnectorPinModelCollectionChanged;
+                model.Start.Owner.PropertyChanged -= StartOwner_PropertyChanged;
+                model.End.Owner.PropertyChanged -= EndOwner_PropertyChanged;
+                model.ConnectorPinModels.CollectionChanged -= ConnectorPinModelCollectionChanged;
+
+                // Nodevm and NodeEnd props are found via model
+                if (Nodevm != null)
+                {
+                    Nodevm.PropertyChanged -= nodeViewModel_PropertyChanged;
+                }
+                if (NodeEnd != null)
+                {
+                    NodeEnd.PropertyChanged -= nodeEndViewModel_PropertyChanged;
+                }
+            }
+
+            workspaceViewModel.PropertyChanged -= WorkspaceViewModel_PropertyChanged;
 
             workspaceViewModel.DynamoViewModel.PropertyChanged -= DynamoViewModel_PropertyChanged;
             workspaceViewModel.DynamoViewModel.Model.PreferenceSettings.PropertyChanged -= DynamoViewModel_PropertyChanged;
-            if (Nodevm != null)
-            {
-                Nodevm.PropertyChanged -= nodeViewModel_PropertyChanged;
-            }
-            if (NodeEnd != null)
-            {
-                NodeEnd.PropertyChanged -= nodeEndViewModel_PropertyChanged;
-            }
 
             if (ConnectorPinViewCollection != null)
             {
@@ -1234,16 +1242,14 @@ namespace Dynamo.ViewModels
                 }
             }
 
-            workspaceViewModel.PropertyChanged -= WorkspaceViewModel_PropertyChanged;
-
             this.PropertyChanged -= ConnectorViewModelPropertyChanged;
             DiscardAllConnectorPinModels();
 
-            if(ConnectorContextMenuViewModel != null)
+            if (ConnectorContextMenuViewModel != null)
             {
                 ConnectorContextMenuViewModel.Dispose();
             }
-            if(ConnectorAnchorViewModel != null)
+            if (ConnectorAnchorViewModel != null)
             {
                 ConnectorAnchorViewModel.Dispose();
             }

@@ -5,4 +5,4 @@ Nell'esempio seguente, una semplice mesh viene traslata in una direzione definit
 
 ## File di esempio
 
-![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh.vector.distance)_img.jpg)
+![Example](./Autodesk.DesignScript.Geometry.Mesh.Translate(mesh,%20vector,%20distance)_img.jpg)

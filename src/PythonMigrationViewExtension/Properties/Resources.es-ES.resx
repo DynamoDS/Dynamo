@@ -1,0 +1,224 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AcceptButtonTooltip" xml:space="preserve">
+    <value>Acepte los cambios de código actuales.</value>
+  </data>
+  <data name="CustomNodesPythonDependencyHeader" xml:space="preserve">
+    <value>Nodos personalizados que tienen una dependencia de IronPython2</value>
+  </data>
+  <data name="DiffButtonTooltip" xml:space="preserve">
+    <value>Alterne entre la vista en paralelo y en línea.</value>
+  </data>
+  <data name="IronPythonDialogDescription" xml:space="preserve">
+    <value>Dynamo deja de trabajar con el antiguo motor IronPython2 (Python 2) para usar el nuevo motor CPython3 (Python 3). 
+El motor IronPython sigue estando disponible como paquete en Package Manager de Dynamo, pero solo se admitirá el motor CPython3.</value>
+  </data>
+  <data name="IronPythonDialogSummary" xml:space="preserve">
+    <value>Este gráfico contiene nodos que hacen referencia a un motor de Python obsoleto.</value>
+  </data>
+  <data name="IronPythonDialogTitle" xml:space="preserve">
+    <value>El gráfico contiene un motor de Python obsoleto</value>
+  </data>
+  <data name="IronPythonDisableAlertMessage" xml:space="preserve">
+    <value>No volver a mostrar.</value>
+  </data>
+  <data name="IronPythonNotificationDetailedMessage" xml:space="preserve">
+    <value>Este gráfico contiene actualmente nodos de Python que utilizan el anterior motor de IronPython, que se ha dejado de utilizar. Considere la posibilidad de actualizar estos nodos para utilizar el nuevo motor de CPython 3.7.</value>
+  </data>
+  <data name="IronPythonNotificationShortMessage" xml:space="preserve">
+    <value>Este gráfico contiene actualmente nodos que utilizan el motor anterior de IronPython2 (Python 2), que se ha dejado de utilizar. Se ha implementado un nuevo CPython3 (Python 3), al que se puede acceder en el editor de Python.</value>
+  </data>
+  <data name="MigrationAssistantDisclaimerContinueButtonContent" xml:space="preserve">
+    <value>Continuar</value>
+  </data>
+  <data name="MigrationAssistantDisclaimerDecline" xml:space="preserve">
+    <value>Rechazar</value>
+  </data>
+  <data name="MigrationAssistantDisclaimerDisable" xml:space="preserve">
+    <value>No volver a mostrar.</value>
+  </data>
+  <data name="MigrationAssistantDisclaimerHeader" xml:space="preserve">
+    <value>Está a punto de realizar cambios en el código de Python.</value>
+  </data>
+  <data name="MigrationAssistantDisclaimerMessage" xml:space="preserve">
+    <value>El Asistente de migración ayuda a los usuarios a actualizar secuencias de comandos de Python 2 a Python 3.
+Al hacer clic en "Continuar", acepta la implementación de los cambios de sintaxis en el código fuente según lo sugerido por el Asistente de migración. El Asistente de migración es un componente de Dynamo de código abierto, por lo que se le proporciona bajo licencia según los términos de Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0). Según los términos de Apache License 2.0, Dynamo y el Asistente de migración se proporcionan "TAL CUAL".</value>
+  </data>
+  <data name="MigrationAssistantDisclaimerWindowTitle" xml:space="preserve">
+    <value>Renuncia de responsabilidad del Asistente de migración</value>
+  </data>
+  <data name="MigrationAssistantNoChangesStateHeader" xml:space="preserve">
+    <value>No se ha realizado ningún cambio.</value>
+  </data>
+  <data name="MigrationAssistantNoChangesStateMessage" xml:space="preserve">
+    <value>El código está listo para ejecutarse con el motor de Python 3. Haga clic en Aceptar y pasaremos al motor de Python 3.</value>
+  </data>
+  <data name="MigrationAssistantErrorStateHeader" xml:space="preserve">
+    <value>Hay un error en el código.</value>
+  </data>
+  <data name="MigrationAssistantErrorStateMessage" xml:space="preserve">
+    <value>Solucione todos los problemas antes de intentar realizar la migración de código.</value>
+  </data>
+  <data name="PackagedCustomNodesHeader" xml:space="preserve">
+    <value>Empaquetados</value>
+  </data>
+  <data name="PackagedCustomNodesTooltip" xml:space="preserve">
+    <value>Indique al autor del paquete que lo actualice.</value>
+  </data>
+  <data name="PythonMigrationAssistantCodeAfter" xml:space="preserve">
+    <value>Después</value>
+  </data>
+  <data name="PythonMigrationAssistantCodeBefore" xml:space="preserve">
+    <value>Antes</value>
+  </data>
+  <data name="PythonMigrationAssistantInlinePaneTitle" xml:space="preserve">
+    <value>Antes -&gt; Después</value>
+  </data>
+  <data name="PythonMigrationAssistantWindowTitle" xml:space="preserve">
+    <value>Asistente de migración</value>
+  </data>
+  <data name="PythonMigrationBackupExtension" xml:space="preserve">
+    <value>Python2</value>
+  </data>
+  <data name="PythonMigrationBackupFileCreatedMessage" xml:space="preserve">
+    <value>Antes de aplicar la migración de código de Python, se ha guardado una copia de seguridad de este gráfico en la ubicación de copia de seguridad configurada: {0}</value>
+  </data>
+  <data name="RejectButtonTooltip" xml:space="preserve">
+    <value>Rechace los cambios de código actuales.</value>
+  </data>
+  <data name="UserDefinitionCustomNodesTooltip" xml:space="preserve">
+    <value>Haga doble clic en el nodo personalizado para abrir su espacio de trabajo.</value>
+  </data>
+  <data name="UserDefinitionsHeader" xml:space="preserve">
+    <value>Definiciones</value>
+  </data>
+  <data name="MoreInformationButton" xml:space="preserve">
+    <value>Más información</value>
+  </data>
+  <data name="AcceptButton" xml:space="preserve">
+    <value>Aceptar</value>
+  </data>
+  <data name="RejectButton" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="SwitchViewButton" xml:space="preserve">
+    <value>Cambiar vista</value>
+  </data>
+</root>

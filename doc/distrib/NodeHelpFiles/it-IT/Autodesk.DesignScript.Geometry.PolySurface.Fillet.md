@@ -1,7 +1,10 @@
 ## In profondità
-Fillet restituirà un nuovo solido con bordi arrotondati. L'input edges specifica quali bordi raccordare, mentre l'input offset determina il raggio del raccordo. Nell'esempio seguente, si inizia con un cubo utilizzando gli input di default. Per ottenere i bordi appropriati del cubo, si esplode prima il cubo per ottenere le facce come elenco di superfici. Si utilizza quindi un nodo Face.Edges per estrarre i bordi del cubo. Si estrae il primo bordo di ciascuna faccia con GetItemAtIndex. Un Number Slider controlla il raggio di ciascun raccordo.
+`PolySurface.Fillet` crea un raccordo (bordo arrotondato) tra i bordi della PolySurface specificata.
+
+Questo nodo è particolarmente utile per smussare i bordi taglienti di un modello di PolySurface, migliorando le proprietà visive e fisiche della geometria.
+
+Nell'esempio seguente, viene creato un cuboide, convertito in una PolySurface e infine arrotondato con `PolySurface.Fillet`.
 ___
 ## File di esempio
 
-
-
+![PolySurface.Fillet](./Autodesk.DesignScript.Geometry.PolySurface.Fillet_img.jpg)

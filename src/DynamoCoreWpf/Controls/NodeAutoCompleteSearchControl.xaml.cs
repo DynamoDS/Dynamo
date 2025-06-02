@@ -25,57 +25,155 @@ namespace Dynamo.UI.Controls
     /// Notice this control shares a lot of logic with InCanvasSearchControl for now
     /// But they will diverge eventually because of UI improvements to auto complete.
     /// </summary>
+    [Obsolete("This class will be removed in a future version of Dynamo")]
     public partial class NodeAutoCompleteSearchControl : IDisposable
     {
-        ListBoxItem HighlightedItem;
+        private double currentX;
+        private ListBoxItem HighlightedItem;
+        private ListBoxItem currentListBoxItem;
+        private static NodeAutoCompleteSearchControl _controlInstance;
 
-        internal event Action<ShowHideFlags> RequestShowNodeAutoCompleteSearch;
+        // Prepare the autocomplete window and reuse it whenever possible.
+        // Only a single instance of the window will be allowed at any given time.
+        static internal void PrepareAndShowNodeAutoCompleteSearch(Window window, NodeAutoCompleteSearchViewModel viewModel)
+        {
+            // A new window will be created (replacing any existing one) whenever a new viewModel is provided.
+            // Each workspace gets its own viewModel—for example, when opening a custom node alongside the current workspace.
+            if (_controlInstance is null || !ReferenceEquals(_controlInstance.ViewModel, viewModel))
+            {
+                _controlInstance?.ResetNodeAutoCompleteSearch();
+                _controlInstance = new NodeAutoCompleteSearchControl(window, viewModel);
+            }
 
-        double currentX;
-
-        ListBoxItem currentListBoxItem;
+            // When a window is already open, adjust its position to the target port without repeating the full event subscription setup.
+            if (_controlInstance?.IsVisible is true)
+            {
+                Analytics.TrackEvent(Actions.Open, Categories.NodeAutoCompleteOperations);
+                if (_controlInstance?.ViewModel?.PortViewModel != null)
+                {
+                    _controlInstance.ViewModel.PortViewModel.Highlight = Visibility.Collapsed;
+                    _controlInstance.ViewModel.PortViewModel?.SetupNodeAutoCompleteWindowPlacement(_controlInstance);
+                }
+                                
+                _controlInstance?.ViewModel?.PopulateAutoCompleteCandidates();
+            }
+            else
+            {
+                _controlInstance?.OnShowNodeAutoCompleteSearch();
+            }
+        }
 
         /// <summary>
         /// Node AutoComplete Search ViewModel DataContext
         /// </summary>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public NodeAutoCompleteSearchViewModel ViewModel => DataContext as NodeAutoCompleteSearchViewModel;
 
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public NodeAutoCompleteSearchControl()
         {
             InitializeComponent();
+        }
+
+        private NodeAutoCompleteSearchControl(Window window, NodeAutoCompleteSearchViewModel viewModel)
+        {
+            Owner = window;
+            DataContext = viewModel;
+            InitializeComponent();
+            SubscribeToAppEvents();
+        }
+
+        //Unsubscribe from events and destroy the node autocomplete window.
+        private void ResetNodeAutoCompleteSearch()
+        {
+            UnsubscribeFromAppEvents();
+            OnHideNodeAutoCompleteSearch();
+            Close();
+            _controlInstance = null;
+        }
+
+        private void OnMainAppClosing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            ResetNodeAutoCompleteSearch();
+        }
+
+        private void OnWorkspaceClosed()
+        {
+            ResetNodeAutoCompleteSearch();
+        }
+
+        void OnWorkspaceRemoved(WorkspaceModel workspace)
+        {
+            if (ViewModel?.PortViewModel?.NodeViewModel?.WorkspaceViewModel?.Model?.Guid == workspace?.Guid)
+            {
+                ResetNodeAutoCompleteSearch();
+            }
+        }
+        
+        // When triggered, they will result in the autocomplete window being destroyed.
+        private void SubscribeToAppEvents()
+        {
             if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
-                Application.Current.Deactivated += CurrentApplicationDeactivated;
                 if (Application.Current?.MainWindow != null)
                 {
-                    Application.Current.MainWindow.Closing += NodeAutoCompleteSearchControl_Unloaded;
+                    Application.Current.MainWindow.Closing += OnMainAppClosing;
                 }
             }
-            HomeWorkspaceModel.WorkspaceClosed += this.CloseAutoCompletion;
+
+            HomeWorkspaceModel.WorkspaceClosed += OnWorkspaceClosed; //Only hits for main workspace (does not hit for custom nodes workspace).
+            ViewModel.dynamoViewModel.Model.WorkspaceHidden += OnWorkspaceRemoved; //De-activating current workspace (including custom node workspace).
+            ViewModel.dynamoViewModel.Model.WorkspaceRemoveStarted  += OnWorkspaceRemoved; //Closing custom node workspace.
         }
 
-        private void NodeAutoCompleteSearchControl_Unloaded(object sender, System.ComponentModel.CancelEventArgs e)
+
+        private void UnsubscribeFromAppEvents()
         {
             if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
-                Application.Current.Deactivated -= CurrentApplicationDeactivated;
                 if (Application.Current?.MainWindow != null)
                 {
-                    Application.Current.MainWindow.Closing -= NodeAutoCompleteSearchControl_Unloaded;
+                    Application.Current.MainWindow.Closing -= OnMainAppClosing;
                 }
             }
-            HomeWorkspaceModel.WorkspaceClosed -= this.CloseAutoCompletion;
+
+            HomeWorkspaceModel.WorkspaceClosed -= OnWorkspaceClosed;
+            ViewModel.dynamoViewModel.Model.WorkspaceHidden -= OnWorkspaceRemoved;
+            ViewModel.dynamoViewModel.Model.WorkspaceRemoveStarted -= OnWorkspaceRemoved;
         }
 
-        private void CurrentApplicationDeactivated(object sender, EventArgs e)
-        {
-            OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+        //Hide the window and unsubscribe from model events.
+        //Note that the window is not destroyed, it is just hidden so that it can be reused.
+        internal void OnHideNodeAutoCompleteSearch()
+        {            
+            ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
+            ViewModel.OnNodeAutoCompleteWindowClosed();
+            Hide();
         }
 
-        private void OnRequestShowNodeAutoCompleteSearch(ShowHideFlags flags)
+        internal void OnShowNodeAutoCompleteSearch()
         {
-            RequestShowNodeAutoCompleteSearch?.Invoke(flags);
+            Analytics.TrackEvent(Actions.Open, Categories.NodeAutoCompleteOperations);
+
+            if (ViewModel != null)
+            {
+                ViewModel.ParentNodeRemoved += OnParentNodeRemoved;
+                ViewModel.PortViewModel?.SetupNodeAutoCompleteWindowPlacement(this);
+                ViewModel.OnNodeAutoCompleteWindowOpened();
+            }
+
+            Show();
+
+            // Visibility of textbox changed, but text box has not been initialized(rendered) yet.
+            // Call asynchronously focus, when textbox will be ready.
+            ViewModel.ResetAutoCompleteSearchViewState();
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                SearchTextBox?.Focus();
+                ViewModel?.PopulateAutoCompleteCandidates();
+            }), DispatcherPriority.Loaded);
         }
+
 
         private void OnSearchTextBoxTextChanged(object sender, TextChangedEventArgs e)
         {
@@ -93,12 +191,12 @@ namespace Dynamo.UI.Controls
             }
         }
 
-        private void OnMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        private void OnMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             if (!(sender is ListBoxItem listBoxItem) || e.OriginalSource is Thumb) return;
 
             ExecuteSearchElement(listBoxItem);
-            OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+            OnHideNodeAutoCompleteSearch();
             e.Handled = true;
         }
 
@@ -161,7 +259,11 @@ namespace Dynamo.UI.Controls
         {
             if (!(sender is FrameworkElement fromSender)) return;
 
-            HighlightedItem.IsSelected = false;
+            if (HighlightedItem != null)
+            {
+                HighlightedItem.IsSelected = false;
+            }
+            
             toolTipPopup.DataContext = fromSender.DataContext;
             toolTipPopup.IsOpen = true;
             confidenceToolTip.IsOpen = false;
@@ -194,38 +296,13 @@ namespace Dynamo.UI.Controls
             ViewModel.dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Res.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
         }
 
-        private void OnNodeAutoCompleteSearchControlVisibilityChanged(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            // If visibility  is false, then stop processing it.
-            if (!(bool)e.NewValue)
-                return;
-
-            // When launching this control, always start with clear search term.
-            SearchTextBox.Clear();
-
-            Analytics.TrackEvent(
-            Dynamo.Logging.Actions.Open,
-            Dynamo.Logging.Categories.NodeAutoCompleteOperations);
-
-            // Visibility of textbox changed, but text box has not been initialized(rendered) yet.
-            // Call asynchronously focus, when textbox will be ready.
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                SearchTextBox.Focus();
-                ViewModel.PopulateAutoCompleteCandidates();
-            }), DispatcherPriority.Loaded);
-
-            ViewModel.ParentNodeRemoved += OnParentNodeRemoved;
-        }
-
         //Removes nodeautocomplete menu when the associated parent node is removed.
         private void OnParentNodeRemoved(NodeModel node)
         {
-            NodeModel parent_node = ViewModel.PortViewModel?.PortModel.Owner;
-            if (node == parent_node)
+            NodeModel parent_node = ViewModel?.PortViewModel?.PortModel?.Owner;
+            if (ReferenceEquals(node,parent_node))
             {
-                OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
-                ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
+                OnHideNodeAutoCompleteSearch();
             }
         }
 
@@ -295,13 +372,13 @@ namespace Dynamo.UI.Controls
             switch (key)
             {
                 case Key.Escape:
-                    OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+                    OnHideNodeAutoCompleteSearch();
                     break;
                 case Key.Enter:
-                    if (HighlightedItem != null && ViewModel.CurrentMode != SearchViewModel.ViewMode.LibraryView)
+                    if (HighlightedItem != null)
                     {
                         ExecuteSearchElement(HighlightedItem);
-                        OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
+                        OnHideNodeAutoCompleteSearch();
                     }
                     break;
                 case Key.Up:
@@ -363,15 +440,9 @@ namespace Dynamo.UI.Controls
             ViewModel.dynamoViewModel.OpenDocumentationLinkCommand.Execute(new OpenDocumentationLinkEventArgs(new Uri(Dynamo.Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString, UriKind.Relative)));
         }
 
-        internal void CloseAutocompletionWindow(object sender, RoutedEventArgs e)
+        internal void CloseAutoCompleteWindow(object sender, RoutedEventArgs e)
         {
-            CloseAutoCompletion();
-        }
-
-        internal void CloseAutoCompletion()
-        {
-            OnRequestShowNodeAutoCompleteSearch(ShowHideFlags.Hide);
-            ViewModel?.OnNodeAutoCompleteWindowClosed();
+            OnHideNodeAutoCompleteSearch();
         }
 
         /// <summary>
@@ -422,9 +493,10 @@ namespace Dynamo.UI.Controls
         /// <summary>
         /// Dispose the control
         /// </summary>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public void Dispose()
         {
-            NodeAutoCompleteSearchControl_Unloaded(this,null);
+            ResetNodeAutoCompleteSearch();
         }
     }
 }
