@@ -237,7 +237,10 @@ namespace Dynamo.Nodes
 
             SetTextMaxWidth();
             SetTextHeight();
-            ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+            if (GroupTextBox.ActualHeight > 0 && GroupTextBox.ActualWidth > 0)
+            {
+                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+            }
         }
 
 
@@ -357,7 +360,10 @@ namespace Dynamo.Nodes
             if (ViewModel is null || !IsLoaded) return;
 
             SetTextHeight();
-            ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+            if (GroupDescriptionTextBox.ActualHeight > 0 && GroupDescriptionTextBox.ActualWidth > 0)
+            {
+                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+            }
 
         }
 
