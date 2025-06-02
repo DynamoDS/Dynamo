@@ -343,7 +343,7 @@ namespace Dynamo
         /// Indicates if custom node is part of the library search.
         /// If true, then custom node is part of library search.
         /// </summary>
-        public bool IsVisibleInDynamoLibrary { get; private set; }
+        public bool IsVisibleInDynamoLibrary { get; set; }
 
         /// <summary>
         /// Only valid if IsPackageMember is true.
@@ -353,8 +353,9 @@ namespace Dynamo
         public PackageInfo PackageInfo { get;  internal set; }
 
 
-        private static readonly string[] jsonKeys = { "Uuid", "Category", "Description", "Name", "IsVisibleInDynamoLibrary" };
+        private static readonly string[] topLevelJsonKeys = { "Uuid", "Category", "Description", "Name" };
         private static readonly Dictionary<string, object> propertyLookup = [];
+        private static object isVisibleInDynamoLibraryProp = null;
         private static DefaultJsonNameTable propertyTable = null;
 
         internal static bool GetFromJsonDocument(string path, out CustomNodeInfo info, out Exception ex)
@@ -362,10 +363,11 @@ namespace Dynamo
             if (propertyTable == null)
             {
                 propertyTable = new DefaultJsonNameTable();
-                foreach (var pn in jsonKeys)
+                foreach (var pn in topLevelJsonKeys)
                 {
                     propertyLookup[pn] = propertyTable.Add(pn);
                 }
+                isVisibleInDynamoLibraryProp = propertyTable.Add(nameof(IsVisibleInDynamoLibrary));
             }
 
             try
@@ -377,31 +379,35 @@ namespace Dynamo
                 {
                     while (jr.Read())
                     {
-                        if (data.Count == jsonKeys.Length)
+                        if (data.Count == topLevelJsonKeys.Length + 1)
                         {
-                            break;
+                            break; // we have all of the 
                         }
 
                         if (jr.TokenType == JsonToken.PropertyName)
                         {
-                            foreach (var prop in propertyLookup)
+                            if (jr.Depth == 1)
                             {
-                                if (jr.Value == prop.Value)
+                                foreach (var prop in propertyLookup)
                                 {
-                                    data[prop.Key] = jr.ReadAsString() ?? "";
-                                    break;
+                                    if (jr.Value == prop.Value)
+                                    {
+                                        data[prop.Key] = jr.ReadAsString() ?? "";
+                                        break;
+                                    }
                                 }
+                            }
+                            else if (jr.Value == isVisibleInDynamoLibraryProp)
+                            {
+                                data[nameof(IsVisibleInDynamoLibrary)] = jr.ReadAsBoolean();
                             }
                         }
                     }
                 }
 
                 ex = null;
-                if (data.TryGetValue("Uuid", out var v))
-                {
-                    data["FunctionId"] = v;
-                }
-
+                data["FunctionId"] = data.GetValue("Uuid");
+                data["Path"] = path;
                 info = data.ToObject<CustomNodeInfo>();
                 return true;
             }
