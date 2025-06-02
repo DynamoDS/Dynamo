@@ -52,7 +52,7 @@ namespace Dynamo.Graph.Connectors
         /// <summary>
         /// IsTransient flag controlling the transient state of the connector
         /// </summary>
-        public bool IsTransient
+        internal bool IsTransient
         {
             get { return isTransient; }
             set

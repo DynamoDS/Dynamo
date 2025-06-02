@@ -200,7 +200,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        public bool IsTransient
+        internal bool IsTransient
         {
             get => isTransient;
             set
@@ -525,13 +525,14 @@ namespace Dynamo.ViewModels
                 {
                     return PreviewState.Transient;
                 }
-                if (Nodevm.ShowExecutionPreview || (NodeEnd.ShowExecutionPreview && !IsTransient))
+
+                if (Nodevm.ShowExecutionPreview || NodeEnd.ShowExecutionPreview)
                 {
                     return PreviewState.ExecutionPreview;
                 }
 
                 if (model.Start.Owner.IsSelected ||
-                    model.End.Owner.IsSelected || AnyPinSelected && !IsTransient)
+                    model.End.Owner.IsSelected || AnyPinSelected)
                 {
                     return PreviewState.Selection;
                 }

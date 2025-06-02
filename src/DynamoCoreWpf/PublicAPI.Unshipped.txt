@@ -1926,8 +1926,6 @@ Dynamo.ViewModels.ConnectorViewModel.IsDataFlowCollection.set -> void
 Dynamo.ViewModels.ConnectorViewModel.IsFrozen.get -> bool
 Dynamo.ViewModels.ConnectorViewModel.IsHidden.get -> bool
 Dynamo.ViewModels.ConnectorViewModel.IsHidden.set -> void
-Dynamo.ViewModels.ConnectorViewModel.IsTransient.get -> bool
-Dynamo.ViewModels.ConnectorViewModel.IsTransient.set -> void
 Dynamo.ViewModels.ConnectorViewModel.IsTemporarilyDisplayed.get -> bool
 Dynamo.ViewModels.ConnectorViewModel.IsTemporarilyDisplayed.set -> void
 Dynamo.ViewModels.ConnectorViewModel.Left.get -> double
