@@ -17,9 +17,9 @@ jobs:
           path: Dynamo
           repository: DynamoDS/Dynamo
       - name: Setup dotnet
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v4.3.1
         with:
-          dotnet-version: '8.0.x'
+          dotnet-version: '8.0.0'
       - name: Disable problem matcher
         run: Write-Output "::remove-matcher owner=csc::"
       - name: Setup msbuild
