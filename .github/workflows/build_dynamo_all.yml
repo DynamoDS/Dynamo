@@ -32,8 +32,7 @@ jobs:
           dotnet --info
       - name: Build Dynamo with MSBuild for Windows
         run: |
-          cd "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\Bin\"
-          .\MSBuild.exe ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release /warnAsError:RS0016,RS0017 /p:PublicApiAnalyzers=true
+          msbuild ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release /warnAsError:RS0016,RS0017 /p:PublicApiAnalyzers=true
       - name: Look for DynamoCLI.exe
         run: |
           Write-Output "***Locating DynamoCLI.exe!***"
