@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk/8.0.0">
+<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <UILib>true</UILib>
     </PropertyGroup>
