@@ -2839,12 +2839,12 @@ namespace Dynamo.ViewModels
 
         internal bool CanShowPackageManagerSearch(object parameters)
         {
-            return !model.IsServiceMode;
+            return !model.IsServiceMode && !model.NoNetworkMode;
         }
 
         internal bool CanShowPackageManager(object parameters)
         {
-            return !model.IsServiceMode;
+            return !model.IsServiceMode && !model.NoNetworkMode;
         }
 
         /// <summary>
