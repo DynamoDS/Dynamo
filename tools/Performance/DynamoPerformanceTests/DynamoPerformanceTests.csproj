@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk/8.0.0">
     <PropertyGroup>
         <Platforms>AnyCPU</Platforms>
         <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
