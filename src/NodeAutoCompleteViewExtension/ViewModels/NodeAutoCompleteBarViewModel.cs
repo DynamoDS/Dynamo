@@ -994,7 +994,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     if (!IsOpen)
                     {
                         // view disappeared while the background thread was waiting for the server response.
-                        // Ignore the results are we're no longer interested.
+                        // Ignore the results as we're no longer interested.
                         return;
                     }
 
