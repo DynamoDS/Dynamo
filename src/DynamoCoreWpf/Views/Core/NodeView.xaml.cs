@@ -197,6 +197,18 @@ namespace Dynamo.Controls
             if (null != ViewModel) return;
 
             ViewModel = e.NewValue as NodeViewModel;
+
+            //This code should be only executed when loading a graph, if the node is being added to the workspace manually then the Width and Height should be auto-calculated.
+            //The default Width and Height values for nodes is 100 so only should be executed on graph loading
+            if (ViewModel.Width > 100 && ViewModel.Height > 100)
+            {
+                nodeBorder.Width = ViewModel.Width;
+                nodeBorder.Height = ViewModel.Height;
+                nameBackground.Width = ViewModel.Width;
+                Width = ViewModel.Width;
+                Height = ViewModel.Height;
+            }
+
             if (!ViewModel.PreferredSize.HasValue) return;
 
             var size = ViewModel.PreferredSize.Value;
@@ -851,5 +863,14 @@ namespace Dynamo.Controls
             e.Handled = true;
         }
 
+        private void topControl_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            //This is executed several times when the NodeView is being re-sized (so e.NewSize will be changing) then we should take the last NodeView size.
+            if (e.NewSize != null && ViewModel != null)
+            {
+                ViewModel.Width = e.NewSize.Width;
+                ViewModel.Height = e.NewSize.Height;
+            }
+        }
     }
 }

@@ -18,6 +18,7 @@
              MouseRightButtonDown="DisplayNodeContextMenu"
              PreviewMouseLeftButtonDown="OnPreviewMouseLeftButtonDown"
              PreviewMouseMove="OnNodeViewMouseMove"
+             SizeChanged="topControl_SizeChanged"
              Visibility="{Binding IsHidden, Converter={StaticResource InverseBoolToVisibilityConverter}}">
 
 
@@ -816,15 +817,17 @@
                 HorizontalAlignment="Left"
                 Background="Blue" />
 
-        <Canvas Grid.Row="5"
+        <Canvas x:Name="ASTTextCanvas"
+                Grid.Row="5"
                 Grid.Column="0"
                 Grid.ColumnSpan="3"
                 ClipToBounds="False"
                 Visibility="{Binding ShowDebugASTs, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
             <Label HorizontalContentAlignment="Center" Content="{Binding ASTText}" />
-
         </Canvas>
-        <Canvas Grid.Row="3" Canvas.ZIndex="51" 
+        <Canvas x:Name="CustomFunctionCanvas"
+                Grid.Row="3"
+                Canvas.ZIndex="51" 
                 HorizontalAlignment="Left"
                 VerticalAlignment="Bottom"
                 Visibility="{Binding IsCustomFunction, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
