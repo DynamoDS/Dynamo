@@ -212,6 +212,7 @@ namespace Dynamo.ViewModels
 
                 isTransient = value;
                 RaisePropertyChanged(nameof(IsTransient));
+                RaisePropertyChanged(nameof(PreviewState));
             }
         }
 
