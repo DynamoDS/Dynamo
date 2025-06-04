@@ -2468,6 +2468,8 @@ Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.DisplayLowConfidence.set -> vo
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.HideAutocompleteMethodOptions.get -> bool
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.IsDisplayingMLRecommendation.get -> bool
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.IsMLAutocompleteTOUApproved.get -> bool
+Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.ResultsLoaded.get -> bool
+Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.ResultsLoaded.set -> void
 Dynamo.ViewModels.NodeDialogEventArgs
 Dynamo.ViewModels.NodeDialogEventArgs.Handled.get -> bool
 Dynamo.ViewModels.NodeDialogEventArgs.Handled.set -> void
