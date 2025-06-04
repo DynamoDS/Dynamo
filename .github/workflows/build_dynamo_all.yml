@@ -20,7 +20,7 @@ jobs:
         run: |
           $globalJson = @"
           {
-            "projects": ["src", "test"]
+            "projects": ["src", "test"],
             "sdk": {
               "version": "8.0.100",
               "rollForward": "latestFeature"
