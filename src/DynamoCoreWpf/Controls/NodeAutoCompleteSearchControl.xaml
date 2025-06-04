@@ -7,6 +7,8 @@
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
+             xmlns:local="clr-namespace:Dynamo.PackageManager.UI"
+             xmlns:dynconverters="clr-namespace:Dynamo.Controls"
              mc:Ignorable="d"
              WindowStyle="None"
              AllowsTransparency="True"
@@ -43,6 +45,7 @@
                         Value="{StaticResource LibraryScrollViewerControlTemplate}" />
             </Style>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <dynconverters:InverseBoolToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
         </ResourceDictionary>
     </Window.Resources>
 
@@ -256,7 +259,17 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+                <local:LoadingAnimationStripeControl
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Height="35"
+                    MinWidth="240"
+                    AnimationSpeed="10"
+                    Visibility="{Binding ResultsLoaded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBooleanToVisibilityConverter}}" 
+                    Margin="8,8,0,8"
+                />
                 <Border BorderThickness="1"
+                        Visibility="{Binding ResultsLoaded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}" 
                         Background="{StaticResource WorkspaceBackgroundHomeBrush}"
                         CornerRadius="5"
                         Padding="5"
@@ -311,6 +324,7 @@
                 </Border>
 
                 <Button x:Name="btnSuggestions"
+                        IsEnabled="{Binding ResultsLoaded}"
                         Click="DisplaySuggestions"
                         Grid.Column="1">
                     <Button.ToolTip>

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Graph.Connectors;
@@ -46,6 +47,17 @@ namespace Dynamo.ViewModels
         private const string nodeAutocompleteMLEndpoint = "MLNodeAutocomplete";
         private const string nodeClusterAutocompleteMLEndpoint = "MLNodeClusterAutocomplete";
         internal bool IsOpen { get; set; }
+
+        private bool resultsLoaded;
+        public bool ResultsLoaded
+        {
+            get { return resultsLoaded; }
+            set
+            {
+                resultsLoaded = value;
+                RaisePropertyChanged(nameof(ResultsLoaded));
+            }
+        }
 
         // Lucene search utility to perform indexing operations just for NodeAutocomplete.
         internal LuceneSearchUtility LuceneUtility
@@ -297,20 +309,32 @@ namespace Dynamo.ViewModels
             string jsonRequest = JsonConvert.SerializeObject(request);
 
             // Get results from the ML API.
-            try
+            ResultsLoaded = false;
+            Task.Run(() =>
             {
-                MLresults = GetMLNodeAutocompleteResults(jsonRequest);
-            }
-            catch (Exception ex)
-            {
-                dynamoViewModel.Model.Logger.Log("Unable to fetch ML Node autocomplete results: " + ex.Message);
-                DisplayAutocompleteMLStaticPage = true;
-                AutocompleteMLTitle = Resources.LoginNeededTitle;
-                AutocompleteMLMessage = Resources.LoginNeededMessage;
-                Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "UnabletoFetch");
-                return;
-            }
-
+                try
+                {
+                    MLresults = GetMLNodeAutocompleteResults(jsonRequest);
+                }
+                catch (Exception ex)
+                {
+                    this.dynamoViewModel.UIDispatcher.BeginInvoke(() =>
+                    {
+                        ResultsLoaded = true; //fail gracefullly
+                        dynamoViewModel.Model.Logger.Log("Unable to fetch ML Node autocomplete results: " + ex.Message);
+                        DisplayAutocompleteMLStaticPage = true;
+                        AutocompleteMLTitle = Resources.LoginNeededTitle;
+                        AutocompleteMLMessage = Resources.LoginNeededMessage;
+                        Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "UnabletoFetch");
+                        return;
+                    });
+                }
+                this.dynamoViewModel.UIDispatcher.BeginInvoke(() => UpdateUIWithRresults(MLresults));
+            });
+        }
+        private void UpdateUIWithRresults(MLNodeAutoCompletionResponse MLresults)
+        {
+            ResultsLoaded = true;
             // no results
             if (MLresults == null || MLresults.Results.Count() == 0)
             {
