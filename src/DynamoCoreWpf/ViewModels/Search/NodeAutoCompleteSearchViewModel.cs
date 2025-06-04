@@ -332,7 +332,7 @@ namespace Dynamo.ViewModels
                 {
                     this.dynamoViewModel.UIDispatcher.BeginInvoke(() =>
                     {
-                        ResultsLoaded = true; //fail gracefullly
+                        ResultsLoaded = true; //fail gracefully
                         dynamoViewModel.Model.Logger.Log("Unable to fetch ML Node autocomplete results: " + ex.Message);
                         DisplayAutocompleteMLStaticPage = true;
                         AutocompleteMLTitle = Resources.LoginNeededTitle;
