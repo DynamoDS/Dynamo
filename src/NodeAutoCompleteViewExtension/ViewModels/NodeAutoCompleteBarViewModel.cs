@@ -1032,10 +1032,12 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     }
                     // this runs synchronously on the UI thread, so the UI can't disappear during execution
                     DropdownResults = comboboxResults;
-                    SelectedIndex = 0;
-
-                    var ClusterResultItem = QualifiedResults.First();
-                    AddCluster(ClusterResultItem);
+                    if (comboboxResults.Any())
+                    {
+                        SelectedIndex = 0;
+                        var ClusterResultItem = QualifiedResults.First();
+                        AddCluster(ClusterResultItem);
+                    }
                     
                 });
             });
