@@ -49,6 +49,12 @@ namespace Dynamo.ViewModels
         internal bool IsOpen { get; set; }
 
         private bool resultsLoaded;
+
+        /// <summary>
+        /// Flag that indicates whether results are loading (false) or they have loaded (true).
+        /// This is set as true for both succesfully and unsuccessfully loading the results.
+        /// </summary>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
         public bool ResultsLoaded
         {
             get { return resultsLoaded; }
@@ -173,6 +179,7 @@ namespace Dynamo.ViewModels
         }
 
         internal event Action<NodeModel> ParentNodeRemoved;
+        private Guid LastRequestGuid;
 
         /// <summary>
         /// Constructor
@@ -302,6 +309,10 @@ namespace Dynamo.ViewModels
 
         internal void ShowNodeAutocompleMLResults()
         {
+            //this should run on the UI thread, so thread safety is not a concern
+            LastRequestGuid = Guid.NewGuid();
+            var myRequest = LastRequestGuid;
+
             MLNodeAutoCompletionResponse MLresults = null;
 
             var request = GenerateRequestForMLAutocomplete();
@@ -329,11 +340,23 @@ namespace Dynamo.ViewModels
                         return;
                     });
                 }
-                this.dynamoViewModel.UIDispatcher.BeginInvoke(() => UpdateUIWithRresults(MLresults));
+                this.dynamoViewModel.UIDispatcher.BeginInvoke(() => UpdateUIWithRresults(MLresults, myRequest));
             });
         }
-        private void UpdateUIWithRresults(MLNodeAutoCompletionResponse MLresults)
+        private void UpdateUIWithRresults(MLNodeAutoCompletionResponse MLresults, Guid myRequest)
         {
+            if (LastRequestGuid != myRequest)
+            {
+                //a newer request came, we're no longer interested in the results of this one
+                //only latest request has the right to be committed to the UI and internal data structures
+                return;
+            }
+            if (!IsOpen)
+            {
+                // view disappeared while the background thread was waiting for the server response.
+                // Ignore the results as we're no longer interested.
+                return;
+            }
             ResultsLoaded = true;
             // no results
             if (MLresults == null || MLresults.Results.Count() == 0)
