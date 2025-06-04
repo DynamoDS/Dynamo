@@ -1035,7 +1035,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     if (comboboxResults.Any())
                     {
                         SelectedIndex = 0;
-
                         var ClusterResultItem = QualifiedResults.First();
                         AddCluster(ClusterResultItem);
                     }
