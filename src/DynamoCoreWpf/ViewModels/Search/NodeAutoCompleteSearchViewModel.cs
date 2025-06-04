@@ -326,6 +326,7 @@ namespace Dynamo.ViewModels
                 try
                 {
                     MLresults = GetMLNodeAutocompleteResults(jsonRequest);
+                    this.dynamoViewModel.UIDispatcher.BeginInvoke(() => UpdateUIWithRresults(MLresults, myRequest));
                 }
                 catch (Exception ex)
                 {
@@ -340,7 +341,6 @@ namespace Dynamo.ViewModels
                         return;
                     });
                 }
-                this.dynamoViewModel.UIDispatcher.BeginInvoke(() => UpdateUIWithRresults(MLresults, myRequest));
             });
         }
         private void UpdateUIWithRresults(MLNodeAutoCompletionResponse MLresults, Guid myRequest)
