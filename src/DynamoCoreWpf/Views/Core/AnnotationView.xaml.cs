@@ -381,12 +381,10 @@ namespace Dynamo.Nodes
                 // Measure port widths and update min width
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
-                    double maxInPortWidth = MeasureMaxPortWidth(inputPortControl);
-                    double maxOutPortWidth = MeasureMaxPortWidth(outputPortControl);
-                    model.MinWidthOnCollapsed = maxInPortWidth + maxOutPortWidth + 10;
+                    var (maxInPortWidth, totalInPortHeight) = MeasurePortBounds(inputPortControl);
+                    var (maxOutPortWidth, totalOutPortHeight) = MeasurePortBounds(outputPortControl);
 
-                    double totalInPortHeight = MeasureCombinedPortHeight(inputPortControl);
-                    double totalOutPortHeight = MeasureCombinedPortHeight(outputPortControl);
+                    model.MinWidthOnCollapsed = maxInPortWidth + maxOutPortWidth + 10;
                     model.MinCollapsedPortAreaHeight = Math.Max(totalInPortHeight, totalOutPortHeight);
 
                     model.UpdateBoundaryFromSelection();
@@ -494,36 +492,24 @@ namespace Dynamo.Nodes
             Logging.Analytics.TrackEvent(Actions.Load, Categories.GroupStyleOperations, nameof(GroupStyleItem) + "s");
         }
 
-        private double MeasureMaxPortWidth(ItemsControl portControl)
+        private (double maxWidth, double totalHeight) MeasurePortBounds(ItemsControl portControl)
         {
-            portControl.UpdateLayout();
+            double maxWidth = 0;
+            double totalHeight = 0;
 
-            double max = 0;
-            foreach (var item in portControl.Items)
-            {
-                if (portControl.ItemContainerGenerator.ContainerFromItem(item) is FrameworkElement container)
-                {
-                    container.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-                    max = Math.Max(max, container.DesiredSize.Width);
-                }
-            }
-            return max;
-        }
-
-        private double MeasureCombinedPortHeight(ItemsControl portControl)
-        {
-            portControl.UpdateLayout();
-
-            double total = 0;
             foreach (var item in portControl.Items)
             {
                 if (portControl.ItemContainerGenerator.ContainerFromItem(item) is FrameworkElement container && container.IsVisible)
                 {
                     container.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-                    total += container.DesiredSize.Height;
+                    var size = container.DesiredSize;
+
+                    maxWidth = Math.Max(maxWidth, size.Width);
+                    totalHeight += size.Height;
                 }
             }
-            return total;
+
+            return (maxWidth, totalHeight);
         }
     }
 }
