@@ -1,9 +1,10 @@
-﻿<ResourceDictionary   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+<ResourceDictionary   xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                       xmlns:viewModels="clr-namespace:Dynamo.ViewModels;assembly=DynamoCoreWpf"
                       xmlns:controls="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
                       xmlns:nodes="clr-namespace:Dynamo.Nodes;assembly=DynamoCoreWpf"
                       xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
+                      xmlns:uiControls="clr-namespace:Dynamo.UI.Controls;assembly=DynamoCoreWpf"
                       xmlns:sys="clr-namespace:System;assembly=mscorlib"
                       xmlns:models="clr-namespace:Dynamo.Models;assembly=DynamoCore">
 
@@ -25,6 +26,14 @@
 
     <DataTemplate DataType="{x:Type viewModels:AnnotationViewModel}">
         <nodes:AnnotationView></nodes:AnnotationView>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModels:InPortViewModel}">
+        <uiControls:InPorts></uiControls:InPorts>
+    </DataTemplate>
+
+    <DataTemplate DataType="{x:Type viewModels:OutPortViewModel}">
+        <uiControls:OutPorts></uiControls:OutPorts>
     </DataTemplate>
 
 </ResourceDictionary>
