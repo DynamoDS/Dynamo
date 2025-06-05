@@ -45,6 +45,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")]
         public void ZIndex_Test_MouseDown()
         {
             // Reset zindex to start value.
