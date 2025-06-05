@@ -3892,8 +3892,12 @@ namespace Dynamo.Controls
     /// <summary>
     /// Returns a dark or light color depending on the contrast ration of the color with the background color
     /// If the control is a Thumb (passed via the converter parameter), the dark color is slightly different
-    /// Contrast ration should be larger than 4.5:1
+    /// Contrast ratio should be larger than 4.5:1
     /// Contrast calculation algorithm from https://stackoverflow.com/questions/70187918/adapt-given-color-pairs-to-adhere-to-w3c-accessibility-standard-for-epubs/70192373#70192373
+    ///
+    /// Expected values for controlType:
+    /// - "Thumb" : applies alternate dark color for thumb controls
+    /// - null    : applies default dark color for annotation text and description
     /// </summary>
     public class TextForegroundSaturationColorConverter : IValueConverter
     {
