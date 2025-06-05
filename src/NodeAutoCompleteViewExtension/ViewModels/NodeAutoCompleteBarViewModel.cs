@@ -234,7 +234,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             foreach (var connector in transientConnectors)
             {
                 connector.IsTransient = false;
-                connector.IsConnecting = false;
             }
 
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, false, null);
@@ -819,7 +818,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     entryConnector.IsHidden = true;
                     var entryConnectorViewModel = workspaceViewModel.Connectors.First(c => c.ConnectorModel.Equals(entryConnector));
                     entryConnectorViewModel.IsTransient = true;
-                    entryConnectorViewModel.IsConnecting = true;
                     createdClusterItems.Add(entryConnector);
                 }
             }
@@ -847,7 +845,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                                 // toggle to be transient for preview purposes
                                 var newConnectorViewModel = workspaceViewModel.Connectors.First(c => c.ConnectorModel.Equals(newConnector));
                                 newConnectorViewModel.IsTransient = true;
-                                newConnectorViewModel.IsConnecting = true;
                             }
                         }
                     }
