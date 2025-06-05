@@ -971,7 +971,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                             Topology = new TopologyItem
                             {
                                 Nodes = new List<NodeItem> { new NodeItem {
-                                    Id = new Guid().ToString(),
+                                    Id = Guid.NewGuid().ToString(),
                                     Type = new NodeType { Id = x.CreationName } } },
                                 Connections = new List<ConnectionItem>()
                             }
@@ -1016,10 +1016,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                             SearchViewModelRequestBitmapSource(iconRequest);
                             dict[singleResult.CreationName] = iconRequest.Icon;
                         }
-                        comboboxResults = QualifiedResults.Select(x => new DNADropdownViewModel
+                        comboboxResults = FullSingleResults.Where(x => x.Score * 100 > minClusterConfidenceScore).Select(x => new DNADropdownViewModel
                         {
                             Description = x.Description,
-                            SmallIcon = dict[x.Topology.Nodes.First().Type.Id],
+                            Parameters = x.Parameters,
+                            SmallIcon = dict[x.CreationName],
                         });
                     }
                     else
