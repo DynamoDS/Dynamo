@@ -971,7 +971,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                             Topology = new TopologyItem
                             {
                                 Nodes = new List<NodeItem> { new NodeItem {
-                                    Id = new Guid().ToString(),
+                                    Id = Guid.NewGuid().ToString(),
                                     Type = new NodeType { Id = x.CreationName } } },
                                 Connections = new List<ConnectionItem>()
                             }
@@ -994,7 +994,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     if (!IsOpen)
                     {
                         // view disappeared while the background thread was waiting for the server response.
-                        // Ignore the results are we're no longer interested.
+                        // Ignore the results as we're no longer interested.
                         return;
                     }
 
@@ -1016,10 +1016,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                             SearchViewModelRequestBitmapSource(iconRequest);
                             dict[singleResult.CreationName] = iconRequest.Icon;
                         }
-                        comboboxResults = QualifiedResults.Select(x => new DNADropdownViewModel
+                        comboboxResults = FullSingleResults.Where(x => x.Score * 100 > minClusterConfidenceScore).Select(x => new DNADropdownViewModel
                         {
                             Description = x.Description,
-                            SmallIcon = dict[x.Topology.Nodes.First().Type.Id],
+                            Parameters = x.Parameters,
+                            SmallIcon = dict[x.CreationName],
                         });
                     }
                     else
@@ -1032,10 +1033,12 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     }
                     // this runs synchronously on the UI thread, so the UI can't disappear during execution
                     DropdownResults = comboboxResults;
-                    SelectedIndex = 0;
-
-                    var ClusterResultItem = QualifiedResults.First();
-                    AddCluster(ClusterResultItem);
+                    if (comboboxResults.Any())
+                    {
+                        SelectedIndex = 0;
+                        var ClusterResultItem = QualifiedResults.First();
+                        AddCluster(ClusterResultItem);
+                    }
                     
                 });
             });
