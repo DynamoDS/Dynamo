@@ -1576,7 +1576,7 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="eventArgs"></param>
-        private void OnSizeChanged(object sender, EventArgs eventArgs)
+        private void OnSizeChanged(object sender, SizeChangedEventArgs eventArgs)
         {
             if (ViewModel == null || ViewModel.PreferredSize.HasValue) return;
 
@@ -1584,6 +1584,12 @@ namespace Dynamo.Controls
             if (ViewModel.SetModelSizeCommand.CanExecute(size))
             {
                 ViewModel.SetModelSizeCommand.Execute(size);
+            }
+
+            if (eventArgs.NewSize != null && ViewModel != null)
+            {
+                ViewModel.Width = eventArgs.NewSize.Width;
+                ViewModel.Height = eventArgs.NewSize.Height;
             }
         }
 
@@ -1608,6 +1614,18 @@ namespace Dynamo.Controls
             if (null != ViewModel) return;
 
             ViewModel = e.NewValue as NodeViewModel;
+
+            //This code should be only executed when loading a graph, if the node is being added to the workspace manually then the Width and Height should be auto-calculated.
+            //The default Width and Height values for nodes is 100 so only should be executed on graph loading if both values are 100
+            if (ViewModel.Width > NodeModel.DefaultWidth && ViewModel.Height > NodeModel.DefaultHeight)
+            {
+                nodeBorder.Width = ViewModel.Width;
+                nodeBorder.Height = ViewModel.Height;
+                nameBackground.Width = ViewModel.Width;
+                Width = ViewModel.Width;
+                Height = ViewModel.Height;
+            }
+
 
             //Set NodeIcon
             if (ViewModel.ImageSource == null)

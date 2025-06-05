@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Xml;
 using Dynamo.Core;
@@ -71,13 +71,16 @@ namespace Dynamo.Graph
         /// </summary>
         public event EventHandler<CancelEventArgs> DeletionStarted;
 
+        internal static readonly double DefaultHeight = 100;
+        internal static readonly double DefaultWidth = 100;
+
         private Guid guid;
         private bool isSelected;
         private bool belongsToGroup;
         private double x;
         private double y;
-        private double height = 100;
-        private double width = 100;
+        private double height = DefaultHeight;
+        private double width = DefaultWidth;
 
         /// <summary>
         /// X coordinate of center point.
@@ -164,7 +167,6 @@ namespace Dynamo.Graph
         /// <summary>
         /// The height of the object.
         /// </summary>
-        [JsonIgnore]
         public virtual double Height
         {
             get { return height; }
@@ -178,7 +180,6 @@ namespace Dynamo.Graph
         /// <summary>
         /// The width of the object.
         /// </summary>
-        [JsonIgnore]
         public virtual double Width
         {
             get { return width; }

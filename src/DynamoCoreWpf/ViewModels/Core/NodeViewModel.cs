@@ -729,6 +729,32 @@ namespace Dynamo.ViewModels
             }
         }
 
+        /// <summary>
+        ///     Returns or set the Y position of the Node.
+        /// </summary>
+        [JsonProperty(Order = 9)]
+        public double Width
+        {
+            get { return NodeModel.Width; }
+            set
+            {
+                NodeModel.Width = value;
+            }
+        }
+
+        /// <summary>
+        ///     Returns or set the Y position of the Node.
+        /// </summary>
+        [JsonProperty(Order = 10)]
+        public double Height
+        {
+            get { return NodeModel.Height; }
+            set
+            {
+                NodeModel.Height = value;
+            }
+        }
+
         [JsonIgnore]
         public ImageSource ImageSource
         {
