@@ -1009,22 +1009,6 @@
                                                      Content="{x:Static p:Resources.RecommendedNodes}"
                                                      Click="RecommendedNodesRadioButton_Click"
                                                      IsEnabled="{Binding Path=NodeAutocompleteIsChecked}"/>
-                                                <!--Beta tag-->
-                                                <Label Grid.Column="1"
-                                                    Name="NodeRecommendationBetaTag"
-                                                    Content="{x:Static p:Resources.PreferencesViewBetaTag}"
-                                                    Background="{StaticResource SecondaryGray}"
-                                                    Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                    Margin="10,-5,0,0"
-                                                    FontSize="10"
-                                                    FontWeight="SemiBold"
-                                                    Visibility="{Binding NodeAutocompleteMachineLearningIsBeta, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                                <Label.Resources>
-                                                        <Style TargetType="Border">
-                                                            <Setter Property="CornerRadius" Value="10"></Setter>
-                                                        </Style>
-                                                    </Label.Resources>
-                                                </Label>
                                             </Grid>
                                         </Grid>
                                     </StackPanel>

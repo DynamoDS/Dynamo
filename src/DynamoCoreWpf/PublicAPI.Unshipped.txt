@@ -5368,7 +5368,6 @@ static Dynamo.Wpf.Properties.Resources.PreferencesSettingUpdateTemplateLocationT
 static Dynamo.Wpf.Properties.Resources.PreferencesUseHostScaleUnits.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesUseHostScaleUnitsToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewAlreadyExistingStyleWarning.get -> string
-static Dynamo.Wpf.Properties.Resources.PreferencesViewBetaTag.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewDefaultPythonEngine.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewDefaultRunSettingsInfoTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewDisableBuiltInPackages.get -> string
