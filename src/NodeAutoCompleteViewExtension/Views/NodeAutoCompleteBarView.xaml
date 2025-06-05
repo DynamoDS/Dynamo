@@ -195,7 +195,12 @@
                                                 </Style>
                                             </Image.Style>
                                         </Image>
-                                        <TextBlock Text="{Binding Description}" FontSize="12" Foreground="White" Height="15"/>
+                                        <TextBlock FontSize="12" Height="15">
+                                            <Run Text="{Binding Description, Mode=OneWay}"
+                                                 Foreground="White" />
+                                            <Run Text="{Binding Parameters, Mode=OneWay}"
+                                                 Foreground="#abafb3" />
+                                        </TextBlock>
                                     </StackPanel>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
