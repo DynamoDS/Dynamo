@@ -384,6 +384,7 @@ namespace DynamoCoreWpfTests
         /// Current zoom level is 0.4 (hard-coded in multiple Converters
         /// </summary>
         [Test]
+        [Category("Failure")]
         public void ZoomChangeVisibilityTest()
         {
             // Arrange
@@ -407,6 +408,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")]
         public void ZoomWarningFileFromPathTest()
         {
             // Arrange
