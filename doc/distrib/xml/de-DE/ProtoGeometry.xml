@@ -4809,6 +4809,15 @@
             mesh,meshes
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndexGroups(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.IndexGroup})">
+            <summary>Netz aus einer Sammlung von Punkten und einer Sammlung von IndexGroups-Objekten erstellen, die die Punktsammlung referenzieren</summary>
+            <param name="points">Punktliste</param>
+            <param name="indexGroups">Indexgruppen für Punkte</param>
+            <returns>Netz</returns>
+            <search>
+            mesh,meshes
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ImportFile(System.String)">
             <summary>Importiert eine Datei und analysiert sie in einer Reihe von Netzen.
             Derzeit werden folgende Formate unterstützt:
@@ -4833,6 +4842,12 @@
             <summary>Erstellt ein neues Netz aus bereitgestellten Scheitelpunkten und Indizes. Scheitelpunkte sollten 
             nicht überlappen. Indizes müssen Sätze aus drei ganzen Zahlen sein und 
             die drei Positionen im Scheitelpunkt-Array
+            der drei Punkte eines Dreiecks angeben</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>Erstellen Sie ein neues Netz aus bereitgestellten Punkten und Indizes. Punkte dürfen sich 
+            nicht überlappen. Indizes müssen Sätze aus drei Ganzzahlen sein, 
+            die die drei Positionen im Punkt-Array
             der drei Punkte eines Dreiecks angeben</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Plane(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32)">
@@ -5586,6 +5601,12 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.LessThanZero">
             <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie '{0} ist kleiner als Null.'.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_bypointsfaceindices_deprecated">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Diese Methode ist veraltet und wird in einer zukünftigen Version von Dynamo entfernt. Verwenden Sie stattdessen Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[])'.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_byverticesandindices_deprecated">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Diese Methode ist veraltet und wird in einer zukünftigen Version von Dynamo entfernt. Verwenden Sie stattdessen Mesh.ByPointsIndices (Point[] points, Indices : int[])'.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.MeshPrecisionInfo">
             <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Netzblöcke verwenden 32-Bit-Genauigkeit (7 Dezimalstellen). Dies kann bei größeren Zahlen oder Zahlen mit mehr als 7 Dezimalstellen zu Rundungsfehlern führen. Verwenden Sie Blöcke aus der Geometriebibliothek, um eine höhere Genauigkeit (64 Bit, 15 Dezimalstellen) zu erzielen.'.</summary>

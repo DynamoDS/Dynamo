@@ -693,4 +693,7 @@ double[]</value>
   <data name="ColorPalettePortDataResultToolTip" xml:space="preserve">
     <value>선택된 색상</value>
   </data>
+  <data name="CurveMapperInfoMessage" xml:space="preserve">
+    <value>곡선을 따라 숫자를 매핑할 때 일부 Y 값이 지정된 Y 값 도메인 범위를 벗어납니다.</value>
+  </data>
 </root>

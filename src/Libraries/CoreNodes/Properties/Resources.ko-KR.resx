@@ -234,4 +234,16 @@
   <data name="DefineDataSupportedInputValueExceptionMessage" xml:space="preserve">
     <value>입력은 단일 값 또는 내포되지 않은 리스트여야 합니다.</value>
   </data>
+  <data name="CurveMapperEqualMinMaxWarning" xml:space="preserve">
+    <value>• 최소값과 최대값은 달라야 합니다.</value>
+  </data>
+  <data name="CurveMapperInvalidCountWarning" xml:space="preserve">
+    <value>• 값은 숫자 리스트이거나 2 이상의 단일 숫자여야 합니다.</value>
+  </data>
+  <data name="CurveMapperInvalidCurveWarning" xml:space="preserve">
+    <value>• 선택한 곡선의 제어점이 유효하지 않습니다.</value>
+  </data>
+  <data name="CurveMapperInvalidXYFormatWarning" xml:space="preserve">
+    <value>• X 및 Y 입력은 리스트가 아닌 단일 숫자여야 합니다.</value>
+  </data>
 </root>

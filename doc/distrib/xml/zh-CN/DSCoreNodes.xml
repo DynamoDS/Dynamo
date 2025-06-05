@@ -940,7 +940,7 @@
         </member>
         <member name="M:DSCore.List.LevenshteinDistance(System.String,System.String)">
             <summary>编辑距离是用于获取 2 个字符串之间距离的算法
-            |<请参见>源</请参见></summary>
+            |<see href="https://gist.github.com/Davidblkx/e12ab0bb2aff7fd8072632b396538560">源</see></summary>
         </member>
         <member name="M:DSCore.List.AddItemToFront(System.Object,System.Collections.IList)">
             <summary>在列表开头添加一项。</summary>
@@ -1605,6 +1605,18 @@
         </member>
         <member name="P:DSCore.Properties.Resources.BitmapOverflowError">
             <summary>查找类似“提供的颜色数据太大，无法适应图像边界。”的本地化字符串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperEqualMinMaxWarning">
+            <summary>查找类似“• 最小值和最大值必须不同。”的本地化字符串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCountWarning">
+            <summary>查找类似“• 值必须是数字列表或单个数字≥ 2。”的本地化字符串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCurveWarning">
+            <summary>查找类似“• 选定曲线的控制点无效。”的本地化字符串。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidXYFormatWarning">
+            <summary>查找类似“• X 和 Y 输入必须是单个数字(而非列表)。”的本地化字符串。</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
             <summary>查找类似“输入必须是单个值或非嵌套列表。”的本地化字符串。</summary>

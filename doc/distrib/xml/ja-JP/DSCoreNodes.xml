@@ -1604,6 +1604,18 @@
         <member name="P:DSCore.Properties.Resources.BitmapOverflowError">
             <summary>「指定されたカラー データは大きすぎるため、イメージの境界に収まりません」に類似するローカライズされた文字列を検索します。</summary>
         </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperEqualMinMaxWarning">
+            <summary>「• 最小値と最大値は異なる値である必要があります。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCountWarning">
+            <summary>「• 値は数値のリストまたは ≥ 2 の単一の数値である必要があります。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCurveWarning">
+            <summary>「• 選択した曲線の制御点が無効です。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidXYFormatWarning">
+            <summary>「• X と Y の入力値は(リストではなく)単一の数値である必要があります。」に類似するローカライズされた文字列を検索します。</summary>
+        </member>
         <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
             <summary>「入力は単一の値またはネストされていないリストである必要があります」に類似するローカライズされた文字列を検索します。</summary>
         </member>

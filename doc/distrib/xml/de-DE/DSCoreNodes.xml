@@ -1605,7 +1605,19 @@ Suchen Sie nach "Benutzerdefinierte Zeichenfolgen für Datum und Uhrzeit bei MSD
               Ressourcenabrufe, die diese stark typisierte Ressourcenklasse verwenden.</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.BitmapOverflowError">
-            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie Die bereitgestellten Farbdaten sind zu groß, um in die Bildumgrenzungen zu passen.</summary>
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Die bereitgestellten Farbdaten sind zu groß, um in die Bildumgrenzungen zu passen.'.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperEqualMinMaxWarning">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie '• Mindest- und Maximalwerte müssen unterschiedlich sein.'.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCountWarning">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie '• Werte müssen eine Liste von Zahlen oder eine einzelne Zahl ≥ 2 sein.'.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCurveWarning">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie '• Steuerpunkte für die ausgewählte Kurve sind nicht gültig.'.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidXYFormatWarning">
+            <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie '• X- und Y-Eingaben müssen einzelne Zahlen sein (keine Listen).'.</summary>
         </member>
         <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
             <summary>Sucht eine lokalisierte Zeichenfolge ähnlich wie 'Eingabe muss ein einzelner Wert oder eine nicht verschachtelte Liste sein'.</summary>

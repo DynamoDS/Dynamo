@@ -1603,6 +1603,18 @@
         <member name="P:DSCore.Properties.Resources.BitmapOverflowError">
             <summary>Поиск локализованной строки, подобной строке «Предоставленные данные цвета слишком велики для вписывания в границы изображения».</summary>
         </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperEqualMinMaxWarning">
+            <summary>Поиск локализованной строки, подобной строке «• Минимальное и максимальное значения должны отличаться».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCountWarning">
+            <summary>Поиск локализованной строки, подобной строке «• Значения должны быть списком чисел или одиночным числом ≥ 2».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCurveWarning">
+            <summary>Поиск локализованной строки, подобной строке «• Недопустимые управляющие точки для выбранной кривой».</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidXYFormatWarning">
+            <summary>Поиск локализованной строки, подобной строке «• Входные данные X и Y должны быть одиночными числами (не списками)».</summary>
+        </member>
         <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
             <summary>Поиск локализованной строки, подобной строке «Входное значение должно быть одним значением или не являться вложенным списком».</summary>
         </member>
