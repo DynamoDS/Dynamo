@@ -149,7 +149,9 @@
                             x:Name="AutocompleteCombobox"
                             SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
                             Width="240"
-                            ItemsSource="{Binding DropdownResults, NotifyOnTargetUpdated=True}"
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            Foreground="{StaticResource DefaultSearchTextBlockText}"
+                            ItemsSource="{Binding FilteredView, NotifyOnTargetUpdated=True}"
                             Visibility="{Binding ResultsLoaded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"
                             TabIndex="0"
                         >
@@ -157,6 +159,23 @@
                                 <Style BasedOn="{StaticResource PackageManagerSmallComboBox}" TargetType="ComboBox">
                                 </Style>
                             </ComboBox.Style>
+                            <ComboBox.Tag>
+                                <TextBox x:Name="AutoCompleteSearchBox"                                            
+                                    HorizontalAlignment="Stretch"
+                                    Height="24"
+                                    Margin="16,5,16,5"
+                                    Padding="2"                                                 
+                                    Width="Auto"                                    
+                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                    Background="{Binding Background, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                    FontFamily="{Binding FontFamily, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                    CaretBrush="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                    FontSize="14">
+                                    <TextBox.Text>
+                                        <Binding Path="SearchInput" Mode="OneWayToSource" UpdateSourceTrigger="PropertyChanged" />
+                                    </TextBox.Text>
+                                </TextBox>
+                            </ComboBox.Tag>
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Margin="0" Height="34" VerticalAlignment="Center">
@@ -176,7 +195,12 @@
                                                 </Style>
                                             </Image.Style>
                                         </Image>
-                                        <TextBlock Text="{Binding Description}" FontSize="12" Foreground="White" Height="15"/>
+                                        <TextBlock FontSize="12" Height="15">
+                                            <Run Text="{Binding Description, Mode=OneWay}"
+                                                 Foreground="White" />
+                                            <Run Text="{Binding Parameters, Mode=OneWay}"
+                                                 Foreground="#abafb3" />
+                                        </TextBlock>
                                     </StackPanel>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>

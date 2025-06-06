@@ -17,6 +17,18 @@ jobs:
         with:
           path: Dynamo
           repository: DynamoDS/Dynamo
+      - name: Create global.json
+        run: |
+          $globalJson = @"
+          {
+            "projects": ["src", "test"],
+            "sdk": {
+              "version": "8.0.100",
+              "rollForward": "latestFeature"
+            }
+          }
+          "@
+          $globalJson | Out-File -FilePath ${{ github.workspace }}\Dynamo\global.json -Encoding utf8
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:
@@ -26,12 +38,9 @@ jobs:
       - name: Setup msbuild
         uses: microsoft/setup-msbuild@v2
       - name: Install dependencies for windows runtime
-        run: |
-          dotnet restore ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release --runtime=win-x64 -p:DotNet=net8.0
+        run: dotnet restore ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release --runtime=win-x64
       - name: Build Dynamo with MSBuild
-        run: |
-          Write-Output "***Continue with the build, Good luck developer!***"
-          msbuild ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release /p:DotNet=net8.0
+        run: msbuild ${{ github.workspace }}\Dynamo\src\Dynamo.All.sln /p:Configuration=Release
       - name: Look for DynamoCLI.exe
         run: |
           Write-Output "***Locating DynamoCLI.exe!***"
@@ -57,6 +66,18 @@ jobs:
           path: master
           ref: master
           repository: DynamoDS/Dynamo
+      - name: Create global.json
+        run: |
+          $globalJson = @"
+          {
+            "projects": ["src", "test"],
+            "sdk": {
+              "version": "8.0.100",
+              "rollForward": "latestFeature"
+            }
+          }
+          "@
+          $globalJson | Out-File -FilePath ${{ github.workspace }}\master\global.json -Encoding utf8
       - name: Setup dotnet
         uses: actions/setup-dotnet@v4
         with:
@@ -66,12 +87,9 @@ jobs:
       - name: Setup msbuild
         uses: microsoft/setup-msbuild@v2
       - name: Install dependencies for windows runtime
-        run: |
-          dotnet restore ${{ github.workspace }}\master\src\Dynamo.All.sln /p:Configuration=Release --runtime=win-x64 -p:DotNet=net8.0
+        run: dotnet restore ${{ github.workspace }}\master\src\Dynamo.All.sln /p:Configuration=Release --runtime=win-x64
       - name: Build Dynamo with MSBuild
-        run: |
-          Write-Output "***Continue with the build, Good luck developer!***"
-          msbuild ${{ github.workspace }}\master\src\Dynamo.All.sln /p:Configuration=Release /p:DotNet=net8.0
+        run: msbuild ${{ github.workspace }}\master\src\Dynamo.All.sln /p:Configuration=Release
       - name: Look for DynamoCLI.exe
         run: |
           Write-Output "***Locating DynamoCLI.exe!***"

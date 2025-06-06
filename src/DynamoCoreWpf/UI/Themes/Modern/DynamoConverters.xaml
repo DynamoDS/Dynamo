@@ -120,6 +120,7 @@
     <controls:LibraryTreeItemsHostVisibilityConverter x:Key="LibraryTreeItemsHostVisibilityConverter" />
     <controls:NullValueToCollapsedConverter x:Key="NullValueToCollapsedConverter" />
     <controls:NullValueToGridRow1Converter x:Key="NullValueToGridRow1Converter" />
+    <controls:NullToVisibiltyConverter x:Key="NullToVisibiltyConverter" />
     <controls:SearchHighlightMarginConverter x:Key="SearchHighlightMarginConverter" />
     <controls:ConfidenceScoreFormattingConverter x:Key="ConfidenceScoreFormattingConverter" />
     <controls:InOutParamTypeConverter x:Key="InOutParamTypeConverter" />

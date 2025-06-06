@@ -31,7 +31,8 @@ using System.Reflection;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Graph;
 using System.Windows.Media;
-using Dynamo.Selection;
+using System.ComponentModel;
+using System.Windows.Data;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
@@ -127,7 +128,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         /// <summary>
         /// Cluster autocomplete search results.
         /// </summary>
-        public IEnumerable<DNADropdownViewModel> DropdownResults
+        internal IEnumerable<DNADropdownViewModel> DropdownResults
         {
             get
             {
@@ -136,16 +137,27 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             set
             {
                 dropdownResults = value;
-                RaisePropertyChanged(nameof(DropdownResults));
+                FilteredView = CollectionViewSource.GetDefaultView(dropdownResults);
+                if (FilteredView != null)
+                {
+                    FilteredView.Filter = FilterLogic;
+                }
+
                 RaisePropertyChanged(nameof(NthofTotal));
                 RaisePropertyChanged(nameof(ResultsLoaded));
                 RaisePropertyChanged(nameof(SwitchIsEnabled));
                 RaisePropertyChanged(nameof(ConfirmSource));
                 RaisePropertyChanged(nameof(PreviousSource));
                 RaisePropertyChanged(nameof(NextSource));
+                RaisePropertyChanged(nameof(FilteredView));
             }
         }
 
+        /// <summary>
+        /// Return the filter associated currently with dropdown results.
+        /// </summary>
+        public ICollectionView FilteredView { get; set; }
+                
         /// <summary>
         /// Return the qualified results from the ML service above preferred confidence threshold
         /// </summary>
@@ -182,6 +194,46 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         private int ClusterResultsCount => DropdownResults == null ? 0 : DropdownResults.Count();
 
         private int selectedIndex = 0;
+
+        private string _searchInput = string.Empty;
+
+        private bool FilterLogic(object item)
+        {
+            var dnaModel = item as DNADropdownViewModel;
+            if (dnaModel != null)
+            {
+                if (dnaModel.Description.IndexOf(SearchInput.Trim(), StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            return true;
+        }
+
+        public string SearchInput
+        {
+            get
+            {
+                return _searchInput;
+            }
+            set
+            {
+                if (_searchInput == value)
+                {
+                    return;
+                }
+
+                _searchInput = value;
+
+                if (FilteredView != null)
+                {                    
+                    FilteredView.Refresh();
+                }
+            }
+        }
+
         /// <summary>
         /// Selected index of the current cluster autocomplete option
         /// </summary>
@@ -919,7 +971,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                             Topology = new TopologyItem
                             {
                                 Nodes = new List<NodeItem> { new NodeItem {
-                                    Id = new Guid().ToString(),
+                                    Id = Guid.NewGuid().ToString(),
                                     Type = new NodeType { Id = x.CreationName } } },
                                 Connections = new List<ConnectionItem>()
                             }
@@ -942,7 +994,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     if (!IsOpen)
                     {
                         // view disappeared while the background thread was waiting for the server response.
-                        // Ignore the results are we're no longer interested.
+                        // Ignore the results as we're no longer interested.
                         return;
                     }
 
@@ -964,10 +1016,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                             SearchViewModelRequestBitmapSource(iconRequest);
                             dict[singleResult.CreationName] = iconRequest.Icon;
                         }
-                        comboboxResults = QualifiedResults.Select(x => new DNADropdownViewModel
+                        comboboxResults = FullSingleResults.Where(x => x.Score * 100 > minClusterConfidenceScore).Select(x => new DNADropdownViewModel
                         {
                             Description = x.Description,
-                            SmallIcon = dict[x.Topology.Nodes.First().Type.Id],
+                            Parameters = x.Parameters,
+                            SmallIcon = dict[x.CreationName],
                         });
                     }
                     else
@@ -980,10 +1033,12 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     }
                     // this runs synchronously on the UI thread, so the UI can't disappear during execution
                     DropdownResults = comboboxResults;
-                    SelectedIndex = 0;
-
-                    var ClusterResultItem = QualifiedResults.First();
-                    AddCluster(ClusterResultItem);
+                    if (comboboxResults.Any())
+                    {
+                        SelectedIndex = 0;
+                        var ClusterResultItem = QualifiedResults.First();
+                        AddCluster(ClusterResultItem);
+                    }
                     
                 });
             });
