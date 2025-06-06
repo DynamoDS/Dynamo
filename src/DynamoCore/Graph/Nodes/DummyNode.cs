@@ -51,7 +51,24 @@ namespace Dynamo.Graph.Nodes
             Description = GetDescription();
             ShouldDisplayPreviewCore = false;
         }
-
+        /// <summary>
+        /// This function creates DummyNode.
+        /// DummyNode is used for tests or in case if node couldn't be loaded.
+        /// </summary>
+        internal DummyNode(string id,
+            int inputCount,
+            int outputCount,
+            string legacyName)
+        {
+            GUID = new Guid(id);
+            InputCount = inputCount;
+            OutputCount = outputCount;
+            Name = legacyName;
+            LegacyNodeName = legacyName;
+            LegacyFullName = legacyName;
+            ShouldDisplayPreviewCore = false;
+            UpdatePorts();
+        }
         /// <summary>
         /// This function creates DummyNode with specified number of ports.
         /// </summary>
