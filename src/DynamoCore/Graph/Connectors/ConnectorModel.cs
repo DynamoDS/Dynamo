@@ -61,6 +61,7 @@ namespace Dynamo.Graph.Connectors
                 RaisePropertyChanged(nameof(IsTransient));
             }
         }
+        
         /// <summary>
         /// Returns start port model.
         /// </summary>
