@@ -139,6 +139,8 @@ Dynamo.Controls.ConnectionStateToBrushConverter.NoneBrush.get -> System.Windows.
 Dynamo.Controls.ConnectionStateToBrushConverter.NoneBrush.set -> void
 Dynamo.Controls.ConnectionStateToBrushConverter.SelectionBrush.get -> System.Windows.Media.SolidColorBrush
 Dynamo.Controls.ConnectionStateToBrushConverter.SelectionBrush.set -> void
+Dynamo.Controls.ConnectionStateToBrushConverter.TransientBrush.get -> System.Windows.Media.SolidColorBrush
+Dynamo.Controls.ConnectionStateToBrushConverter.TransientBrush.set -> void
 Dynamo.Controls.ConnectionStateToColorConverter
 Dynamo.Controls.ConnectionStateToColorConverter.ConnectionStateToColorConverter() -> void
 Dynamo.Controls.ConnectionStateToColorConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -151,6 +153,8 @@ Dynamo.Controls.ConnectionStateToColorConverter.None.get -> System.Windows.Media
 Dynamo.Controls.ConnectionStateToColorConverter.None.set -> void
 Dynamo.Controls.ConnectionStateToColorConverter.Selection.get -> System.Windows.Media.Color
 Dynamo.Controls.ConnectionStateToColorConverter.Selection.set -> void
+Dynamo.Controls.ConnectionStateToColorConverter.Transient.get -> System.Windows.Media.Color
+Dynamo.Controls.ConnectionStateToColorConverter.Transient.set -> void
 Dynamo.Controls.ConnectionStateToVisibilityCollapsedConverter
 Dynamo.Controls.ConnectionStateToVisibilityCollapsedConverter.ConnectionStateToVisibilityCollapsedConverter() -> void
 Dynamo.Controls.ConnectionStateToVisibilityCollapsedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -2943,6 +2947,7 @@ Dynamo.ViewModels.PreviewState
 Dynamo.ViewModels.PreviewState.ExecutionPreview = 1 -> Dynamo.ViewModels.PreviewState
 Dynamo.ViewModels.PreviewState.Hover = 2 -> Dynamo.ViewModels.PreviewState
 Dynamo.ViewModels.PreviewState.None = 3 -> Dynamo.ViewModels.PreviewState
+Dynamo.ViewModels.PreviewState.Transient = 4 -> Dynamo.ViewModels.PreviewState
 Dynamo.ViewModels.PreviewState.Selection = 0 -> Dynamo.ViewModels.PreviewState
 Dynamo.ViewModels.PythonTemplatePathEventArgs
 Dynamo.ViewModels.PythonTemplatePathEventArgs.Cancel.get -> bool
