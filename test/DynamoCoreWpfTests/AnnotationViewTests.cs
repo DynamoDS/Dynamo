@@ -105,7 +105,7 @@ namespace DynamoCoreWpfTests
             // Act
             var ungrp = annotationView.AnnotationGrid.ContextMenu.Items
                 .OfType<MenuItem>()
-                .FirstOrDefault(x => x.Name.ToString() == "UngroupAnnotation");
+                .FirstOrDefault(x => x.Name == "UngroupAnnotation");
             ungrp.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
 
             // Assert
