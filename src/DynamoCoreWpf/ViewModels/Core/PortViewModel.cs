@@ -375,6 +375,8 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void ConfigurePopupPlacement(Popup popup, double zoom)
         {
+            var dpiScale = GetDpiScale();
+
             popup.CustomPopupPlacementCallback = (popupSize, targetSize, offset) =>
             {
                 double x;
@@ -382,11 +384,11 @@ namespace Dynamo.ViewModels
 
                 if (this is InPortViewModel)
                 {
-                    x = -popupSize.Width + proxyPortContextMenuOffset * zoom;                    
+                    x = -popupSize.Width + proxyPortContextMenuOffset * zoom * dpiScale;                    
                 }
                 else
                 {
-                    x = targetSize.Width - proxyPortContextMenuOffset * zoom;
+                    x = targetSize.Width - proxyPortContextMenuOffset * zoom * dpiScale;
                 }
 
                 return new[] { new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None) };
@@ -398,6 +400,10 @@ namespace Dynamo.ViewModels
             // The actual zoom here is confusing
             // What matters is the zoom factor measured from the scaled : unscaled node size
             var zoom = node.WorkspaceViewModel.Zoom;
+            var dpiScale = GetDpiScale();
+
+            var source = PresentationSource.FromVisual(Application.Current.MainWindow);
+            var dpiScale = source?.CompositionTarget?.TransformToDevice.M22 ?? 1.0;
 
             double x;
             var scaledWidth = autocompletePopupSpacing * targetSize.Width / node.ActualWidth;
@@ -421,11 +427,29 @@ namespace Dynamo.ViewModels
             var rowOffset = PortModel.Index * PortModel.Height * zoom;
             var customNodeOffset = NodeModel.CustomNodeTopBorderHeight * zoom;
 
-            var y = popupHeightOffset + headerHeightOffset + portHalfHeight + rowOffset + customNodeOffset;
+            // popupSize.Height is already DPI-scaled (in screen pixels), so we do NOT apply dpiScale to it
+            // All other layout values are in logical units and must be multiplied by dpiScale for correct placement
+            var y = popupHeightOffset + (headerHeightOffset + portHalfHeight + rowOffset + customNodeOffset) * dpiScale;
 
             var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);
 
             return new[] { placement };
+        }
+
+        private static double GetDpiScale()
+        {
+            double dpiScale = 1.0;
+            try
+            {
+                var source = PresentationSource.FromVisual(Application.Current.MainWindow);
+                dpiScale = source?.CompositionTarget?.TransformToDevice.M22 ?? 1.0;
+            }
+            catch
+            {
+                // fallback to default DPI scale of 1.0 if anything fails
+            }
+
+            return dpiScale;
         }
 
         private void WorkspacePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)

@@ -139,6 +139,8 @@ Dynamo.Controls.ConnectionStateToBrushConverter.NoneBrush.get -> System.Windows.
 Dynamo.Controls.ConnectionStateToBrushConverter.NoneBrush.set -> void
 Dynamo.Controls.ConnectionStateToBrushConverter.SelectionBrush.get -> System.Windows.Media.SolidColorBrush
 Dynamo.Controls.ConnectionStateToBrushConverter.SelectionBrush.set -> void
+Dynamo.Controls.ConnectionStateToBrushConverter.TransientBrush.get -> System.Windows.Media.SolidColorBrush
+Dynamo.Controls.ConnectionStateToBrushConverter.TransientBrush.set -> void
 Dynamo.Controls.ConnectionStateToColorConverter
 Dynamo.Controls.ConnectionStateToColorConverter.ConnectionStateToColorConverter() -> void
 Dynamo.Controls.ConnectionStateToColorConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -151,6 +153,8 @@ Dynamo.Controls.ConnectionStateToColorConverter.None.get -> System.Windows.Media
 Dynamo.Controls.ConnectionStateToColorConverter.None.set -> void
 Dynamo.Controls.ConnectionStateToColorConverter.Selection.get -> System.Windows.Media.Color
 Dynamo.Controls.ConnectionStateToColorConverter.Selection.set -> void
+Dynamo.Controls.ConnectionStateToColorConverter.Transient.get -> System.Windows.Media.Color
+Dynamo.Controls.ConnectionStateToColorConverter.Transient.set -> void
 Dynamo.Controls.ConnectionStateToVisibilityCollapsedConverter
 Dynamo.Controls.ConnectionStateToVisibilityCollapsedConverter.ConnectionStateToVisibilityCollapsedConverter() -> void
 Dynamo.Controls.ConnectionStateToVisibilityCollapsedConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -2474,6 +2478,8 @@ Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.DisplayLowConfidence.set -> vo
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.HideAutocompleteMethodOptions.get -> bool
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.IsDisplayingMLRecommendation.get -> bool
 Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.IsMLAutocompleteTOUApproved.get -> bool
+Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.ResultsLoaded.get -> bool
+Dynamo.ViewModels.NodeAutoCompleteSearchViewModel.ResultsLoaded.set -> void
 Dynamo.ViewModels.NodeDialogEventArgs
 Dynamo.ViewModels.NodeDialogEventArgs.Handled.get -> bool
 Dynamo.ViewModels.NodeDialogEventArgs.Handled.set -> void
@@ -2941,6 +2947,7 @@ Dynamo.ViewModels.PreviewState
 Dynamo.ViewModels.PreviewState.ExecutionPreview = 1 -> Dynamo.ViewModels.PreviewState
 Dynamo.ViewModels.PreviewState.Hover = 2 -> Dynamo.ViewModels.PreviewState
 Dynamo.ViewModels.PreviewState.None = 3 -> Dynamo.ViewModels.PreviewState
+Dynamo.ViewModels.PreviewState.Transient = 4 -> Dynamo.ViewModels.PreviewState
 Dynamo.ViewModels.PreviewState.Selection = 0 -> Dynamo.ViewModels.PreviewState
 Dynamo.ViewModels.PythonTemplatePathEventArgs
 Dynamo.ViewModels.PythonTemplatePathEventArgs.Cancel.get -> bool
@@ -4313,6 +4320,8 @@ override Dynamo.UI.Controls.CodeBlockEditor.OnCommitChange() -> void
 override Dynamo.UI.Controls.CodeBlockEditor.OnEscape() -> void
 override Dynamo.UI.Controls.CodeBlockEditor.OnTextAreaGotFocus(object sender, System.Windows.RoutedEventArgs e) -> void
 override Dynamo.UI.Controls.CodeCompletionEditor.OnPreviewKeyDown(System.Windows.Input.KeyEventArgs e) -> void
+override Dynamo.UI.Controls.DynamoToolTip.OnClosed(System.Windows.RoutedEventArgs e) -> void
+override Dynamo.UI.Controls.DynamoToolTip.OnOpened(System.Windows.RoutedEventArgs e) -> void
 override Dynamo.UI.Controls.ImageButton.OnApplyTemplate() -> void
 override Dynamo.UI.Controls.ImageCheckBox.OnApplyTemplate() -> void
 override Dynamo.UI.Controls.ImageRepeatButton.OnApplyTemplate() -> void
@@ -5370,7 +5379,6 @@ static Dynamo.Wpf.Properties.Resources.PreferencesSettingUpdateTemplateLocationT
 static Dynamo.Wpf.Properties.Resources.PreferencesUseHostScaleUnits.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesUseHostScaleUnitsToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewAlreadyExistingStyleWarning.get -> string
-static Dynamo.Wpf.Properties.Resources.PreferencesViewBetaTag.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewDefaultPythonEngine.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewDefaultRunSettingsInfoTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewDisableBuiltInPackages.get -> string

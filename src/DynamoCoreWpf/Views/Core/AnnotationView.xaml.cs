@@ -405,27 +405,29 @@ namespace Dynamo.Nodes
         /// <param name="e">The <see cref="TextChangedEventArgs"/> instance containing the event data.</param>
         private void GroupTextBox_OnTextChanged(object sender, TextChangedEventArgs e)
         {
-            if (ViewModel is null || !IsLoaded) return;
+            if (ViewModel is null || !IsLoaded || _isUpdatingLayout) return;
 
-            if (ViewModel != null && IsLoaded && !_isUpdatingLayout)
+            _isUpdatingLayout = true;
+
+            // Use Dispatcher.BeginInvoke to batch layout updates
+            Dispatcher.BeginInvoke(new Action(() =>
             {
-                _isUpdatingLayout = true;
-                
-                // Use Dispatcher.BeginInvoke to batch layout updates
-                Dispatcher.BeginInvoke(new Action(() =>
+                try
                 {
-                    try
-                    {
-                        SetTextMaxWidth();
-                        SetTextHeight();
-                    }
-                    finally
-                    {
-                        _isUpdatingLayout = false;
-                    }
-                }), DispatcherPriority.Background);
+                    SetTextMaxWidth();
+                    SetTextHeight();
+                }
+                finally
+                {
+                    _isUpdatingLayout = false;
+                }
+            }), DispatcherPriority.Background);
+
+            if (GroupTextBox.ActualHeight > 0 && GroupTextBox.ActualWidth > 0)
+            {
+                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
             }
-            ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+            
         }
 
         /// <summary>
@@ -555,7 +557,10 @@ namespace Dynamo.Nodes
             if (ViewModel is null || !IsLoaded) return;
 
             SetTextHeight();
-            ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+            if (GroupDescriptionTextBox.ActualHeight > 0 && GroupDescriptionTextBox.ActualWidth > 0)
+            {
+                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+            }
 
         }
 
@@ -563,10 +568,38 @@ namespace Dynamo.Nodes
         {
             SetModelAreaHeight();
         }
+        
+        private void SetTextHeight()
+        {
+            if (GroupDescriptionTextBlock is null || GroupTextBlock is null || ViewModel is null)
+            {
+                return;
+            }
+
+            // Use the DesiredSize and not the Actual height. Because when Textblock is collapsed,
+            // Actual height is same as previous size.
+            ViewModel.AnnotationModel.TextBlockHeight =
+                this.GroupDescriptionControls.DesiredSize.Height +
+                this.GroupNameControl.DesiredSize.Height;
+        }
 
         private void CollapsedAnnotationRectangle_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            SetModelAreaHeight();
+            var model = ViewModel.AnnotationModel;
+            if (!model.IsExpanded)
+            {
+                // Measure port widths and update min width
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    var (maxInPortWidth, totalInPortHeight) = MeasurePortBounds(inputPortControl);
+                    var (maxOutPortWidth, totalOutPortHeight) = MeasurePortBounds(outputPortControl);
+
+                    model.MinWidthOnCollapsed = maxInPortWidth + maxOutPortWidth + 10;
+                    model.MinCollapsedPortAreaHeight = Math.Max(totalInPortHeight, totalOutPortHeight);
+
+                    model.UpdateBoundaryFromSelection();
+                }), System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+            }
         }
 
         private void contextMenu_Click(object sender, RoutedEventArgs e)
@@ -592,6 +625,30 @@ namespace Dynamo.Nodes
                 ViewModel.AnnotationModel.HeightAdjustment += e.VerticalChange;
                 ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
 
+            }
+        }
+
+        private void CollapsedAnnotationRectangleThumb_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
+        {
+            // Mark the group as being resized while collapsed
+            ViewModel.AnnotationModel.IsResizedWhileCollapsed = true;
+
+            var model = ViewModel.AnnotationModel;
+            var xAdjust = ViewModel.Width + e.HorizontalChange;
+            var yAdjust = ViewModel.Height + e.VerticalChange;
+
+            double minHeight = model.MinCollapsedPortAreaHeight + model.TextBlockHeight + AnnotationModel.CollapsedContentHeight;
+
+            if (xAdjust >= Math.Max(model.TextMaxWidth, model.MinWidthOnCollapsed))
+            {
+                model.WidthAdjustment += e.HorizontalChange;
+                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
+            }
+
+            if (yAdjust >= minHeight)
+            {
+                model.HeightAdjustment += e.VerticalChange;
+                ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
             }
         }
 
@@ -2820,6 +2877,26 @@ namespace Dynamo.Nodes
             ViewModel.AnnotationModel.TextBlockHeight =
                 this.groupDescriptionControls.DesiredSize.Height +
                 this.groupNameControl.DesiredSize.Height;
+        }
+        
+        private (double maxWidth, double totalHeight) MeasurePortBounds(ItemsControl portControl)
+        {
+            double maxWidth = 0;
+            double totalHeight = 0;
+
+            foreach (var item in portControl.Items)
+            {
+                if (portControl.ItemContainerGenerator.ContainerFromItem(item) is FrameworkElement container && container.IsVisible)
+                {
+                    container.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                    var size = container.DesiredSize;
+
+                    maxWidth = Math.Max(maxWidth, size.Width);
+                    totalHeight += size.Height;
+                }
+            }
+
+            return (maxWidth, totalHeight);
         }
     }
 }

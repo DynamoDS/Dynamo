@@ -282,10 +282,10 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
 
             //set the last connector to be connected
-            var transientConnectors = node.WorkspaceViewModel.Connectors.Where(c => c.IsConnecting).ToList();
+            var transientConnectors = node.WorkspaceViewModel.Connectors.Where(c => c.IsTransient).ToList();
             foreach (var connector in transientConnectors)
             {
-                connector.IsConnecting = false;
+                connector.IsTransient = false;
             }
 
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, false, null);
@@ -869,7 +869,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 {
                     entryConnector.IsHidden = true;
                     var entryConnectorViewModel = workspaceViewModel.Connectors.First(c => c.ConnectorModel.Equals(entryConnector));
-                    entryConnectorViewModel.IsConnecting = true;
+                    entryConnectorViewModel.IsTransient = true;
                     createdClusterItems.Add(entryConnector);
                 }
             }
@@ -893,6 +893,10 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                             {
                                 newConnector.IsHidden = true; // Hide the connector initially
                                 createdClusterItems.Add(newConnector);
+
+                                // toggle to be transient for preview purposes
+                                var newConnectorViewModel = workspaceViewModel.Connectors.First(c => c.ConnectorModel.Equals(newConnector));
+                                newConnectorViewModel.IsTransient = true;
                             }
                         }
                     }
@@ -971,7 +975,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                             Topology = new TopologyItem
                             {
                                 Nodes = new List<NodeItem> { new NodeItem {
-                                    Id = new Guid().ToString(),
+                                    Id = Guid.NewGuid().ToString(),
                                     Type = new NodeType { Id = x.CreationName } } },
                                 Connections = new List<ConnectionItem>()
                             }
@@ -994,7 +998,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     if (!IsOpen)
                     {
                         // view disappeared while the background thread was waiting for the server response.
-                        // Ignore the results are we're no longer interested.
+                        // Ignore the results as we're no longer interested.
                         return;
                     }
 
@@ -1016,10 +1020,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                             SearchViewModelRequestBitmapSource(iconRequest);
                             dict[singleResult.CreationName] = iconRequest.Icon;
                         }
-                        comboboxResults = QualifiedResults.Select(x => new DNADropdownViewModel
+                        comboboxResults = FullSingleResults.Where(x => x.Score * 100 > minClusterConfidenceScore).Select(x => new DNADropdownViewModel
                         {
                             Description = x.Description,
-                            SmallIcon = dict[x.Topology.Nodes.First().Type.Id],
+                            Parameters = x.Parameters,
+                            SmallIcon = dict[x.CreationName],
                         });
                     }
                     else
@@ -1032,10 +1037,12 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     }
                     // this runs synchronously on the UI thread, so the UI can't disappear during execution
                     DropdownResults = comboboxResults;
-                    SelectedIndex = 0;
-
-                    var ClusterResultItem = QualifiedResults.First();
-                    AddCluster(ClusterResultItem);
+                    if (comboboxResults.Any())
+                    {
+                        SelectedIndex = 0;
+                        var ClusterResultItem = QualifiedResults.First();
+                        AddCluster(ClusterResultItem);
+                    }
                     
                 });
             });

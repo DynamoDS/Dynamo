@@ -444,12 +444,11 @@ namespace Dynamo.Controls
             dynamoToolTip.Content = tooltipStackPanel;
             nameBackground.ToolTip = dynamoToolTip;
 
-            nodeHeaderContent = new DockPanel()
+            var nodeHeaderContent = new DockPanel()
             {
                 Name = "nodeHeaderContent",
                 VerticalAlignment = VerticalAlignment.Top,
                 Margin = new Thickness(6),
-                Visibility = Visibility.Collapsed
             };
 
             Grid.SetRow(nodeHeaderContent, 1);
@@ -579,8 +578,7 @@ namespace Dynamo.Controls
                 Name = "inputPortControl",
                 Margin = new Thickness(-25, 3, 0, 0),
                 VerticalAlignment = VerticalAlignment.Top,
-                HorizontalContentAlignment = HorizontalAlignment.Stretch,
-                Visibility = Visibility.Collapsed
+                HorizontalContentAlignment = HorizontalAlignment.Stretch
             };
 
             inputPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("InPorts"));
@@ -594,7 +592,6 @@ namespace Dynamo.Controls
                 Margin = new Thickness(0, 3, -24, 5),
                 VerticalAlignment = VerticalAlignment.Top,
                 HorizontalContentAlignment = HorizontalAlignment.Stretch,
-                Visibility = Visibility.Collapsed
             };
 
             outputPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("OutPorts"));
@@ -1162,17 +1159,6 @@ namespace Dynamo.Controls
         }
         #endregion
 
-        private void SetNodeBackgroundHeaderAndPortsVisible()
-        {
-            
-            nodeBackground.Visibility = Visibility.Visible;
-            nameBackground.Visibility = Visibility.Visible;
-            nodeHeaderContent.Visibility = Visibility.Visible;
-            inputPortControl.Visibility = Visibility.Visible;
-            outputPortControl.Visibility = Visibility.Visible;
-
-        }
-
         #region Styles methods
         private static Style GetNodeButtonStyle()
         {
@@ -1625,44 +1611,6 @@ namespace Dynamo.Controls
             if (null != ViewModel) return;
 
             ViewModel = e.NewValue as NodeViewModel;
-
-            //Todo move to static resource file
-            //Todo handle cases where Name is the same for multiple nodes (ie Point.ByCoordinate)
-            var path = "C:\\Temp\\NodeCache\\" + ViewModel.Name + ".png";
-            if (System.IO.File.Exists(path))
-            {
-                var bitmap = new BitmapImage(new Uri(path, UriKind.Absolute));
-
-                // Create the Image control
-                imageControl = new Image
-                {
-                    Source = bitmap,
-                    Width = bitmap.PixelWidth,   // Set width to pixel width
-                    Height = bitmap.PixelHeight, // Set height to pixel height
-                    Stretch = System.Windows.Media.Stretch.None // Prevent scaling
-                };
-
-                Grid.SetRow(imageControl, 1);
-                Grid.SetRowSpan(imageControl, 4);
-                Grid.SetColumnSpan(imageControl, 3);
-
-                grid.Children.Add(imageControl);
-
-                Dispatcher.CurrentDispatcher.BeginInvoke(() =>
-                {
-                    if (imageControl != null)
-                    {
-                        grid.Children.Remove(imageControl);
-                        imageControl = null;
-
-                        SetNodeBackgroundHeaderAndPortsVisible();
-                    }
-                }, DispatcherPriority.Input);
-            }
-            else
-            {
-                SetNodeBackgroundHeaderAndPortsVisible();
-            }
 
             //Set NodeIcon
             if (ViewModel.ImageSource == null)
