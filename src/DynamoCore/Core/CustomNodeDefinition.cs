@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using Dynamo.Engine;
 using Dynamo.Engine.CodeGeneration;
@@ -7,6 +8,8 @@ using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Nodes.CustomNodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Library;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using ProtoCore;
 using ProtoCore.AST.AssociativeAST;
 
@@ -302,6 +305,9 @@ namespace Dynamo
             if (String.IsNullOrWhiteSpace(Category))
                 Category = Dynamo.Properties.Resources.DefaultCustomNodeCategory;
         }
+
+        [JsonConstructor] public CustomNodeInfo() { }
+
         /// <summary>
         /// Returns custom node unique ID
         /// </summary>
@@ -345,5 +351,72 @@ namespace Dynamo
         /// requested this CustomNode to load.
         /// </summary>
         public PackageInfo PackageInfo { get;  internal set; }
+
+
+        private static readonly string[] topLevelJsonKeys = { "Uuid", "Category", "Description", "Name" };
+        private static readonly Dictionary<string, object> propertyLookup = [];
+        private static object isVisibleInDynamoLibraryProp = null;
+        private static DefaultJsonNameTable propertyTable = null;
+
+        internal static bool GetFromJsonDocument(string path, out CustomNodeInfo info, out Exception ex)
+        {
+            if (propertyTable == null)
+            {
+                propertyTable = new DefaultJsonNameTable();
+                foreach (var pn in topLevelJsonKeys)
+                {
+                    propertyLookup[pn] = propertyTable.Add(pn);
+                }
+                isVisibleInDynamoLibraryProp = propertyTable.Add(nameof(IsVisibleInDynamoLibrary));
+            }
+
+            try
+            {
+                var data = new JObject();
+                // JsonTextRead will automatically dispose of the stream reader
+                using (var fs = new FileStream(path, FileMode.Open, FileAccess.Read))
+                using (var jr = new JsonTextReader(new StreamReader(fs)) { PropertyNameTable = propertyTable })
+                {
+                    while (jr.Read())
+                    {
+                        if (data.Count == topLevelJsonKeys.Length + 1)
+                        {
+                            break; // we have all of the 
+                        }
+
+                        if (jr.TokenType == JsonToken.PropertyName)
+                        {
+                            if (jr.Depth == 1)
+                            {
+                                foreach (var prop in propertyLookup)
+                                {
+                                    if (jr.Value == prop.Value)
+                                    {
+                                        data[prop.Key] = jr.ReadAsString() ?? "";
+                                        break;
+                                    }
+                                }
+                            }
+                            else if (jr.Value == isVisibleInDynamoLibraryProp)
+                            {
+                                data[nameof(IsVisibleInDynamoLibrary)] = jr.ReadAsBoolean();
+                            }
+                        }
+                    }
+                }
+
+                ex = null;
+                data["FunctionId"] = data.GetValue("Uuid");
+                data["Path"] = path;
+                info = data.ToObject<CustomNodeInfo>();
+                return true;
+            }
+            catch (Exception e)
+            {
+                ex = e;
+                info = null;
+                return false;
+            }
+        }
     }
 }
