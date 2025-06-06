@@ -627,7 +627,6 @@ namespace Dynamo.ViewModels
                 {
                     FilteredResults = GetViewModelForNodeSearchElements(objectTypeMatchingElements);
                 }
-
                 // Save the filtered results for search.
                 searchElementsCache = FilteredResults.ToList();
             }
