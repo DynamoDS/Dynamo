@@ -151,8 +151,6 @@ namespace Dynamo.Controls
         private Rectangle nodeBackground;
         private ItemsControl outputPortControl;
         private Button optionsButton;
-        private Image imageControl;
-        private DockPanel nodeHeaderContent;
 
         //View items referenced outside of NodeView internal to DynamoCoreWPF previously from xaml
         internal Border nodeBorder;
@@ -360,7 +358,6 @@ namespace Dynamo.Controls
                 CornerRadius = new CornerRadius(8, 8, 0, 0),
                 Background = _darkMidGreyBrush,
                 IsHitTestVisible = true,
-                Visibility = Visibility.Collapsed
             };
 
             Grid.SetRow(nameBackground, 1);
@@ -2064,16 +2061,6 @@ namespace Dynamo.Controls
 
         private void OnNodeViewMouseEnter(object sender, MouseEventArgs e)
         {
-            if (imageControl != null)
-            {
-                grid.Dispatcher.Invoke(() =>
-                {
-                    grid.Children.Remove(imageControl);
-                    imageControl = null;
-
-                    SetNodeBackgroundHeaderAndPortsVisible();
-                });
-            }
             // if the node is located under "Hide preview bubbles" menu item and the item is clicked,
             // ViewModel.DynamoViewModel.ShowPreviewBubbles will be updated AFTER node mouse enter event occurs
             // so, wait while ShowPreviewBubbles binding updates value
