@@ -1580,7 +1580,7 @@ namespace Dynamo.Controls
         /// <param name="eventArgs"></param>
         private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (e.NewSize != null && ViewModel != null)
+            if (ViewModel != null)
             {
                 ViewModel.WidthBorder = e.NewSize.Width;
                 ViewModel.HeightBorder = e.NewSize.Height;
@@ -1589,7 +1589,7 @@ namespace Dynamo.Controls
 
         private void OnSizeChangedNodeView(object sender, SizeChangedEventArgs e)
         {
-            if (e.NewSize != null && ViewModel != null)
+            if (ViewModel != null)
             {
                 ViewModel.Width = e.NewSize.Width;
                 ViewModel.Height = e.NewSize.Height;
