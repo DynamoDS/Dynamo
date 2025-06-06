@@ -90,6 +90,10 @@ namespace Dynamo.Graph.Workspaces
         public string Name;
         public double X;
         public double Y;
+        public double Width;
+        public double Height;
+        public double WidthBorder;
+        public double HeightBorder;
         public bool ShowGeometry;
         public bool Excluded;
         public bool IsSetAsInput;
@@ -2500,6 +2504,10 @@ namespace Dynamo.Graph.Workspaces
                         nodeModel.X = nodeViewInfo.X + offsetX;
                         nodeModel.Y = nodeViewInfo.Y + offsetY;
                     }
+                    nodeModel.Width = nodeViewInfo.Width;
+                    nodeModel.Height = nodeViewInfo.Height;
+                    nodeModel.WidthBorder = nodeViewInfo.WidthBorder;
+                    nodeModel.HeightBorder = nodeViewInfo.HeightBorder;
                     nodeModel.IsFrozen = nodeViewInfo.Excluded;
                     nodeModel.IsSetAsInput = nodeViewInfo.IsSetAsInput;
                     nodeModel.IsSetAsOutput = nodeViewInfo.IsSetAsOutput;
