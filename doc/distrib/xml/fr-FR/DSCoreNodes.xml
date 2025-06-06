@@ -1607,6 +1607,18 @@ Recherchez "Chaînes de format de date et d'heure personnalisées MSDN" pour obt
         <member name="P:DSCore.Properties.Resources.BitmapOverflowError">
             <summary>Recherche une chaîne localisée similaire à Les données de couleur fournies sont trop grandes pour tenir dans les limites de l'image.</summary>
         </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperEqualMinMaxWarning">
+            <summary>Recherche une chaîne localisée similaire à • Les valeurs Min et Max doivent être différentes.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCountWarning">
+            <summary>Recherche une chaîne localisée similaire à • Les valeurs doivent être indiquées sous forme de liste de nombres ou en un seul nombre ≥ 2.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCurveWarning">
+            <summary>Recherche une chaîne localisée semblable à • Les points de contrôle de la courbe sélectionnée ne sont pas valides.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidXYFormatWarning">
+            <summary>Recherche une chaîne localisée similaire à • Les entrées X et Y doivent être des nombres uniques (et non des listes).</summary>
+        </member>
         <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
             <summary>Recherche une chaîne localisée similaire à "L'entrée doit être une valeur unique ou une liste non imbriquée.".</summary>
         </member>

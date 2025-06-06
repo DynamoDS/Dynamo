@@ -234,4 +234,16 @@
   <data name="DefineDataSupportedInputValueExceptionMessage" xml:space="preserve">
     <value>入力は単一の値またはネストされていないリストである必要があります。</value>
   </data>
+  <data name="CurveMapperEqualMinMaxWarning" xml:space="preserve">
+    <value>• 最小値と最大値は異なる値である必要があります。</value>
+  </data>
+  <data name="CurveMapperInvalidCountWarning" xml:space="preserve">
+    <value>• 値は数値のリストまたは ≥ 2 の単一の数値である必要があります。</value>
+  </data>
+  <data name="CurveMapperInvalidCurveWarning" xml:space="preserve">
+    <value>• 選択した曲線の制御点が無効です。</value>
+  </data>
+  <data name="CurveMapperInvalidXYFormatWarning" xml:space="preserve">
+    <value>• X と Y の入力値は(リストではなく)単一の数値である必要があります。</value>
+  </data>
 </root>

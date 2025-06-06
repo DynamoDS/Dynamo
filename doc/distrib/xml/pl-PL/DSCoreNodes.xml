@@ -1603,6 +1603,18 @@ Obszerna lista opcji dostosowania formatu jest dostępna po wyszukaniu ciągu "N
         <member name="P:DSCore.Properties.Resources.BitmapOverflowError">
             <summary>Wyszukuje zlokalizowany ciąg podobny do: Podane dane kolorów są zbyt duże, aby zmieściły się w granicach obrazu.</summary>
         </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperEqualMinMaxWarning">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do: • Wartości minimalne i maksymalne muszą się różnić.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCountWarning">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do: • Wartości muszą być listą liczb lub pojedynczą liczbą ≥ 2.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidCurveWarning">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do: • Punkty sterowania dla wybranej krzywej nie są prawidłowe.</summary>
+        </member>
+        <member name="P:DSCore.Properties.Resources.CurveMapperInvalidXYFormatWarning">
+            <summary>Wyszukuje zlokalizowany ciąg podobny do: • Dane wejściowe X i Y muszą być pojedynczymi liczbami (nie listami).</summary>
+        </member>
         <member name="P:DSCore.Properties.Resources.DefineDataSupportedInputValueExceptionMessage">
             <summary>Wyszukuje zlokalizowany ciąg podobny do: Dane wejściowe muszą być pojedynczą wartością lub listą niezagnieżdżoną.</summary>
         </member>

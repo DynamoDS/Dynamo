@@ -234,4 +234,16 @@
   <data name="DefineDataSupportedInputValueExceptionMessage" xml:space="preserve">
     <value>L'input deve essere un singolo valore o un elenco non nidificato.</value>
   </data>
+  <data name="CurveMapperEqualMinMaxWarning" xml:space="preserve">
+    <value>• I valori minimo e massimo devono essere diversi.</value>
+  </data>
+  <data name="CurveMapperInvalidCountWarning" xml:space="preserve">
+    <value>• I valori devono essere un elenco di numeri o un numero singolo ≥ 2.</value>
+  </data>
+  <data name="CurveMapperInvalidCurveWarning" xml:space="preserve">
+    <value>• I punti di controllo per la curva selezionata non sono validi.</value>
+  </data>
+  <data name="CurveMapperInvalidXYFormatWarning" xml:space="preserve">
+    <value>• Gli input X e Y devono essere numeri singoli (non elenchi).</value>
+  </data>
 </root>

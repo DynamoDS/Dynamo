@@ -4817,6 +4817,15 @@
             mesh,meshes
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndexGroups(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.IndexGroup})">
+            <summary>Créer un maillage à partir d'un ensemble de points et un ensemble d'IndexGroups référençant l'ensemble de points</summary>
+            <param name="points">Liste de points</param>
+            <param name="indexGroups">Groupes d'index pour les points</param>
+            <returns>Maillage</returns>
+            <search>
+            mesh,meshes
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ImportFile(System.String)">
             <summary>Importe un fichier, en l’analysant dans un certain nombre de maillages.
             Les formats actuellement pris en charge sont les suivants:
@@ -4842,6 +4851,12 @@
             pas se chevaucher. Les index doivent être des ensembles de trois entiers 
             indiquant les trois emplacements dans le tableau des sommets
             des trois points d’un triangle</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>Créez un maillage à partir de points et d'index fournis. Les points ne doivent 
+            pas se chevaucher. Les index doivent être des ensembles de trois entiers 
+            indiquant les trois emplacements dans le réseau de points
+            des trois pointes d'un triangle</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Plane(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32)">
             <summary>Créez un plan de maillage basé sur les paramètres actuels.</summary>
@@ -5594,6 +5609,12 @@ Fondamentalement, le maillage est rempli d’un tas de petites boîtes, et un no
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.LessThanZero">
             <summary>Recherche une chaîne localisée similaire à {0} est inférieur à zéro.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_bypointsfaceindices_deprecated">
+            <summary>Recherche une chaîne localisée similaire à Cette méthode est obsolète et sera supprimée dans une prochaine version de Dynamo. Utilisez Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[]) à la place.</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_byverticesandindices_deprecated">
+            <summary>Recherche une chaîne localisée similaire à Cette méthode est obsolète et sera supprimée dans une prochaine version de Dynamo. Utilisez Mesh.ByPointsIndices (Point[] points, Indices : int[]) à la place.</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.MeshPrecisionInfo">
             <summary>Recherche une chaîne similaire aux noeuds maillés qui utilisent la précision de 32 bits (7 décimales), ce qui peut entraîner des erreurs d'arrondi avec de grands nombres ou des nombres comportant plus de 7 décimales. Pour une précision plus élevée (64 bits, 15 décimales), utilisez des noeuds de la Bibliothèque de géométrie.</summary>

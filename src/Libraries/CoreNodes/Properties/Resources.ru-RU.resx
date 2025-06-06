@@ -234,4 +234,16 @@
   <data name="DefineDataSupportedInputValueExceptionMessage" xml:space="preserve">
     <value>Входное значение должно быть одним значением или не являться вложенным списком.</value>
   </data>
+  <data name="CurveMapperEqualMinMaxWarning" xml:space="preserve">
+    <value>• Минимальное и максимальное значения должны отличаться.</value>
+  </data>
+  <data name="CurveMapperInvalidCountWarning" xml:space="preserve">
+    <value>• Значения должны быть списком чисел или одиночным числом ≥ 2.</value>
+  </data>
+  <data name="CurveMapperInvalidCurveWarning" xml:space="preserve">
+    <value>• Недопустимые управляющие точки для выбранной кривой.</value>
+  </data>
+  <data name="CurveMapperInvalidXYFormatWarning" xml:space="preserve">
+    <value>• Входные данные X и Y должны быть одиночными числами (не списками).</value>
+  </data>
 </root>

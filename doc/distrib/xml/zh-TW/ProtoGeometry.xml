@@ -4809,6 +4809,15 @@
             mesh,meshes
             </search>
         </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndexGroups(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.IndexGroup})">
+            <summary>從點集合和參考點集合的 IndexGroups 集合建立網格</summary>
+            <param name="points">點清單</param>
+            <param name="indexGroups">點的索引群組</param>
+            <returns>網格</returns>
+            <search>
+            mesh,meshes
+            </search>
+        </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.ImportFile(System.String)">
             <summary>匯入檔案，並將其剖析為多個網格。
             目前支援的格式為:
@@ -4834,6 +4843,12 @@
             重疊。索引為一組三個整數，
             指出三角形三個點形成之
             頂點陣列中的三個位置</summary>
+        </member>
+        <member name="M:Autodesk.DesignScript.Geometry.Mesh.ByPointsIndices(System.Collections.Generic.IEnumerable{Autodesk.DesignScript.Geometry.Point},System.Collections.Generic.IEnumerable{System.Int32})">
+            <summary>從提供的點和索引建立新網格。點不能
+            重疊。索引為一組三個整數，
+            指出三角形三個點形成之
+            點陣列中的三個位置</summary>
         </member>
         <member name="M:Autodesk.DesignScript.Geometry.Mesh.Plane(Autodesk.DesignScript.Geometry.Point,System.Double,System.Double,System.Int32,System.Int32)">
             <summary>根據目前設定建立網格平面。</summary>
@@ -5586,6 +5601,12 @@
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.LessThanZero">
             <summary>查找類似於「{0} 小於零」的本土化字串。</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_bypointsfaceindices_deprecated">
+            <summary>查找類似於「此方法已棄用，未來版本的 Dynamo 將移除。請改用 Mesh.ByPointsIndexGroups (Point[] points, IndexGroups : IndexGroup[])」的本土化字串。</summary>
+        </member>
+        <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.mesh_byverticesandindices_deprecated">
+            <summary>查找類似於「此方法已棄用，未來版本的 Dynamo 將移除。請改用 Mesh.ByPointsIndices (Point[] points, Indices : int[])」的本土化字串。</summary>
         </member>
         <member name="P:Autodesk.DesignScript.Geometry.Properties.Resources.MeshPrecisionInfo">
             <summary>查找類似於「Mesh 節點使用 32 位元的精確度 (7 位小數)，很大或超過 7 位小數的數字可能會產生捨入誤差。如果需要較高精確度 (64 位元，15 位小數)，請使用 Geometry 資源庫的節點。」的本土化字串。</summary>

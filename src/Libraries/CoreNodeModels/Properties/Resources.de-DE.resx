@@ -693,4 +693,7 @@ double[]</value>
   <data name="ColorPalettePortDataResultToolTip" xml:space="preserve">
     <value>Ausgewählte Farbe</value>
   </data>
+  <data name="CurveMapperInfoMessage" xml:space="preserve">
+    <value>Beim Zuordnen von Zahlen entlang der Kurve liegen einige Y-Werte außerhalb des angegebenen Y-Wert-Domänenbereichs.</value>
+  </data>
 </root>
