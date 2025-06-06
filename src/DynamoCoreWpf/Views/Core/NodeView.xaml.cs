@@ -1150,6 +1150,7 @@ namespace Dynamo.Controls
             nodeBackground.Loaded += NodeViewReady;
 
             nodeBorder.SizeChanged += OnSizeChanged;
+            this.SizeChanged += OnSizeChangedNodeView;
             DataContextChanged += OnDataContextChanged;
 
             Panel.SetZIndex(this, 1);
@@ -1555,6 +1556,7 @@ namespace Dynamo.Controls
             EditableNameBox.KeyDown -= EditableNameBox_KeyDown;
             optionsButton.Click -= DisplayNodeContextMenu;
             nodeBorder.SizeChanged -= OnSizeChanged;
+            this.SizeChanged -= OnSizeChangedNodeView;
             nodeBackground.Loaded -= NodeViewReady;
 
             if (previewControl != null)
@@ -1576,20 +1578,21 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="eventArgs"></param>
-        private void OnSizeChanged(object sender, SizeChangedEventArgs eventArgs)
+        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
         {
-            if (ViewModel == null || ViewModel.PreferredSize.HasValue) return;
-
-            var size = new[] { ActualWidth, nodeBorder.ActualHeight };
-            if (ViewModel.SetModelSizeCommand.CanExecute(size))
+            if (e.NewSize != null && ViewModel != null)
             {
-                ViewModel.SetModelSizeCommand.Execute(size);
+                ViewModel.WidthBorder = e.NewSize.Width;
+                ViewModel.HeightBorder = e.NewSize.Height;
             }
+        }
 
-            if (eventArgs.NewSize != null && ViewModel != null)
+        private void OnSizeChangedNodeView(object sender, SizeChangedEventArgs e)
+        {
+            if (e.NewSize != null && ViewModel != null)
             {
-                ViewModel.Width = eventArgs.NewSize.Width;
-                ViewModel.Height = eventArgs.NewSize.Height;
+                ViewModel.Width = e.NewSize.Width;
+                ViewModel.Height = e.NewSize.Height;
             }
         }
 
@@ -1619,11 +1622,15 @@ namespace Dynamo.Controls
             //The default Width and Height values for nodes is 100 so only should be executed on graph loading if both values are 100
             if (ViewModel.Width > NodeModel.DefaultWidth && ViewModel.Height > NodeModel.DefaultHeight)
             {
-                nodeBorder.Width = ViewModel.Width;
-                nodeBorder.Height = ViewModel.Height;
-                nameBackground.Width = ViewModel.Width;
                 Width = ViewModel.Width;
                 Height = ViewModel.Height;
+            }
+
+            if (ViewModel.WidthBorder > NodeModel.DefaultWidth && ViewModel.HeightBorder > NodeModel.DefaultHeight)
+            {
+                nodeBorder.Width = ViewModel.WidthBorder;
+                nodeBorder.Height = ViewModel.HeightBorder;
+                nameBackground.Width = ViewModel.WidthBorder;
             }
 
 
@@ -1662,7 +1669,7 @@ namespace Dynamo.Controls
             nodeBorder.Height = size.Height;
             nodeBorder.RenderSize = size;
         }
-    
+
         private void SetCustomNodeVisuals()
         {
             customNodeBorder0 = new Border()

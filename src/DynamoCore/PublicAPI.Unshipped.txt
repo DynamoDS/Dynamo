@@ -1500,10 +1500,10 @@ Dynamo.Graph.Workspaces.WorkspaceModel.X.get -> double
 Dynamo.Graph.Workspaces.WorkspaceModel.X.set -> void
 Dynamo.Graph.Workspaces.WorkspaceModel.Y.get -> double
 Dynamo.Graph.Workspaces.WorkspaceModel.Y.set -> void
-Dynamo.Graph.Workspaces.WorkspaceModel.Width.get -> double
-Dynamo.Graph.Workspaces.WorkspaceModel.Width.set -> void
-Dynamo.Graph.Workspaces.WorkspaceModel.Height.get -> double
-Dynamo.Graph.Workspaces.WorkspaceModel.Height.set -> void
+Dynamo.Graph.Workspaces.WorkspaceModel.WidthBorder.get -> double
+Dynamo.Graph.Workspaces.WorkspaceModel.WidthBorder.set -> void
+Dynamo.Graph.Workspaces.WorkspaceModel.HeightBorder.get -> double
+Dynamo.Graph.Workspaces.WorkspaceModel.HeightBorder.set -> void
 Dynamo.Graph.Workspaces.WorkspaceModel.Zoom.get -> double
 Dynamo.Graph.Workspaces.WorkspaceModel.Zoom.set -> void
 Dynamo.Graph.Workspaces.WorkspaceReadConverter
