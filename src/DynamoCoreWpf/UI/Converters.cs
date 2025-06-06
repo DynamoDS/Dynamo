@@ -3897,21 +3897,32 @@ namespace Dynamo.Controls
 
     /// <summary>
     /// Returns a dark or light color depending on the contrast ration of the color with the background color
-    /// Contrast ration should be larger than 4.5:1
+    /// If the control is a Thumb (passed via the converter parameter), the dark color is slightly different
+    /// Contrast ratio should be larger than 4.5:1
     /// Contrast calculation algorithm from https://stackoverflow.com/questions/70187918/adapt-given-color-pairs-to-adhere-to-w3c-accessibility-standard-for-epubs/70192373#70192373
+    ///
+    /// Expected values for controlType:
+    /// - "Thumb" : applies alternate dark color for thumb controls
+    /// - null    : applies default dark color for annotation text and description
     /// </summary>
     public class TextForegroundSaturationColorConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            var controlType = parameter as string;
+
             var lightColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["WhiteColor"];
-            var darkColor = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["DarkerGrey"];
+            var darkColorText = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["DarkerGrey"];
+            var darkColorThumb = (System.Windows.Media.Color)SharedDictionaryManager.DynamoColorsAndBrushesDictionary["MidGrey"];
 
             var backgroundColor = (System.Windows.Media.Color)value;
 
-            var contrastRatio = GetContrastRatio(darkColor, backgroundColor);
+            var contrastRatio = GetContrastRatio(darkColorText, backgroundColor);
 
-            return contrastRatio < 4.5 ? new SolidColorBrush(lightColor) : new SolidColorBrush(darkColor);
+            if (contrastRatio < 4.5)
+                return new SolidColorBrush(lightColor);
+            else
+                return controlType == "Thumb" ? new SolidColorBrush(darkColorThumb) : new SolidColorBrush(darkColorText);
         }
 
         public object ConvertBack(object value, Type targetType, object parameter,
