@@ -402,9 +402,6 @@ namespace Dynamo.ViewModels
             var zoom = node.WorkspaceViewModel.Zoom;
             var dpiScale = GetDpiScale();
 
-            var source = PresentationSource.FromVisual(Application.Current.MainWindow);
-            var dpiScale = source?.CompositionTarget?.TransformToDevice.M22 ?? 1.0;
-
             double x;
             var scaledWidth = autocompletePopupSpacing * targetSize.Width / node.ActualWidth;
 
