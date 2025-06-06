@@ -139,13 +139,13 @@
         <Path Grid.Column="1"
               HorizontalAlignment="Right"
               VerticalAlignment="Center"
-              Data="M 12,10 L -1,5 -1,15 Z"
+              Data="M 12,6 L -1,1 -1,11 Z"
               Fill="White"
               Stroke="#999999" />
         <Path Grid.Column="0"
               HorizontalAlignment="Right"
               VerticalAlignment="Center"
-              Data="M 2,5 0,5 L0,10 L2,10 Z"
+              Data="M 2,1 0,1 L0,6 L2,6 Z"
               Stretch="None"
               Fill="White"
               Stroke="White" />
