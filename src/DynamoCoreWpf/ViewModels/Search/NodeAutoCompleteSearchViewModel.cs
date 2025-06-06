@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using Dynamo.Configuration;
 using Dynamo.Engine;
 using Dynamo.Graph.Connectors;
@@ -46,6 +47,23 @@ namespace Dynamo.ViewModels
         private const string nodeAutocompleteMLEndpoint = "MLNodeAutocomplete";
         private const string nodeClusterAutocompleteMLEndpoint = "MLNodeClusterAutocomplete";
         internal bool IsOpen { get; set; }
+
+        private bool resultsLoaded;
+
+        /// <summary>
+        /// Flag that indicates whether results are loading (false) or they have loaded (true).
+        /// This is set as true for both succesfully and unsuccessfully loading the results.
+        /// </summary>
+        [Obsolete("This method will be removed in a future version of Dynamo")]
+        public bool ResultsLoaded
+        {
+            get { return resultsLoaded; }
+            set
+            {
+                resultsLoaded = value;
+                RaisePropertyChanged(nameof(ResultsLoaded));
+            }
+        }
 
         // Lucene search utility to perform indexing operations just for NodeAutocomplete.
         internal LuceneSearchUtility LuceneUtility
@@ -161,6 +179,7 @@ namespace Dynamo.ViewModels
         }
 
         internal event Action<NodeModel> ParentNodeRemoved;
+        private Guid LastRequestGuid;
 
         /// <summary>
         /// Constructor
@@ -290,6 +309,10 @@ namespace Dynamo.ViewModels
 
         internal void ShowNodeAutocompleMLResults()
         {
+            //this should run on the UI thread, so thread safety is not a concern
+            LastRequestGuid = Guid.NewGuid();
+            var myRequest = LastRequestGuid;
+
             MLNodeAutoCompletionResponse MLresults = null;
 
             var request = GenerateRequestForMLAutocomplete();
@@ -297,20 +320,44 @@ namespace Dynamo.ViewModels
             string jsonRequest = JsonConvert.SerializeObject(request);
 
             // Get results from the ML API.
-            try
+            ResultsLoaded = false;
+            Task.Run(() =>
             {
-                MLresults = GetMLNodeAutocompleteResults(jsonRequest);
-            }
-            catch (Exception ex)
+                try
+                {
+                    MLresults = GetMLNodeAutocompleteResults(jsonRequest);
+                    this.dynamoViewModel.UIDispatcher.BeginInvoke(() => UpdateUIWithRresults(MLresults, myRequest));
+                }
+                catch (Exception ex)
+                {
+                    this.dynamoViewModel.UIDispatcher.BeginInvoke(() =>
+                    {
+                        ResultsLoaded = true; //fail gracefully
+                        dynamoViewModel.Model.Logger.Log("Unable to fetch ML Node autocomplete results: " + ex.Message);
+                        DisplayAutocompleteMLStaticPage = true;
+                        AutocompleteMLTitle = Resources.LoginNeededTitle;
+                        AutocompleteMLMessage = Resources.LoginNeededMessage;
+                        Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "UnabletoFetch");
+                        return;
+                    });
+                }
+            });
+        }
+        private void UpdateUIWithRresults(MLNodeAutoCompletionResponse MLresults, Guid myRequest)
+        {
+            if (LastRequestGuid != myRequest)
             {
-                dynamoViewModel.Model.Logger.Log("Unable to fetch ML Node autocomplete results: " + ex.Message);
-                DisplayAutocompleteMLStaticPage = true;
-                AutocompleteMLTitle = Resources.LoginNeededTitle;
-                AutocompleteMLMessage = Resources.LoginNeededMessage;
-                Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "UnabletoFetch");
+                //a newer request came, we're no longer interested in the results of this one
+                //only latest request has the right to be committed to the UI and internal data structures
                 return;
             }
-
+            if (!IsOpen)
+            {
+                // view disappeared while the background thread was waiting for the server response.
+                // Ignore the results as we're no longer interested.
+                return;
+            }
+            ResultsLoaded = true;
             // no results
             if (MLresults == null || MLresults.Results.Count() == 0)
             {

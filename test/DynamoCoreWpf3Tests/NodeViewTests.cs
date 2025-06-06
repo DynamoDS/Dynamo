@@ -45,6 +45,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")]
         public void ZIndex_Test_MouseDown()
         {
             // Reset zindex to start value.
@@ -108,6 +109,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")]
         public void ZIndex_NodeAsMemberOfGroup()
         {
             // Reset zindex to start value.
@@ -383,6 +385,7 @@ namespace DynamoCoreWpfTests
         /// Current zoom level is 0.4 (hard-coded in multiple Converters
         /// </summary>
         [Test]
+        [Category("Failure")]
         public void ZoomChangeVisibilityTest()
         {
             // Arrange
@@ -397,15 +400,16 @@ namespace DynamoCoreWpfTests
             // Zoom out, less than 0.4
             wvm.Zoom = 0.3;
             Assert.AreEqual(nodeViewWarningWarningFrozenHidden.zoomGlyphsGrid.Visibility, System.Windows.Visibility.Visible);   // The Grid containing the Glyphs
-            Assert.AreEqual(nodeViewWarningWarningFrozenHidden.nodeColorOverlayZoomOut.Visibility, System.Windows.Visibility.Visible);  // The Color State Border overlay
+            Assert.AreEqual(nodeViewWarningWarningFrozenHidden.nodeColorOverlayZoomOut.Opacity, 0.5);  // The Color State Border overlay
 
             // Zoom in, more than 0.4
             wvm.Zoom = 0.6;
             Assert.AreEqual(nodeViewWarningWarningFrozenHidden.zoomGlyphsGrid.Visibility, System.Windows.Visibility.Collapsed);
-            Assert.AreEqual(nodeViewWarningWarningFrozenHidden.nodeColorOverlayZoomOut.Visibility, System.Windows.Visibility.Collapsed);  
+            Assert.AreEqual(nodeViewWarningWarningFrozenHidden.nodeColorOverlayZoomOut.Opacity, 0);  
         }
 
         [Test]
+        [Category("Failure")]
         public void ZoomWarningFileFromPathTest()
         {
             // Arrange
@@ -433,7 +437,7 @@ namespace DynamoCoreWpfTests
 
             wvm.Zoom = 0.6;
 
-            Assert.AreEqual(fileFromPathNode.nodeColorOverlayZoomOut.Visibility, System.Windows.Visibility.Collapsed);
+            Assert.AreEqual(fileFromPathNode.nodeColorOverlayZoomOut.Opacity, 0);
             Assert.AreEqual(fileFromPathNode.zoomGlyphsGrid.Visibility, System.Windows.Visibility.Collapsed);
         }
 

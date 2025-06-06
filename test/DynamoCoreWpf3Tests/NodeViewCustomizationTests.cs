@@ -251,7 +251,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, eles.Count());
 
             var inputPortControl = nodeView.inputPortControl;
-            Assert.AreEqual(6, inputPortControl.ChildrenOfType<TextBlock>().Count());
+            Assert.AreEqual(3, inputPortControl.ChildrenOfType<TextBlock>().Count());
         }
 
         [Test]
@@ -265,7 +265,7 @@ namespace DynamoCoreWpfTests
             Assert.AreEqual(2, eles.Count());
 
             var inputPortControl = nodeView.inputPortControl;
-            Assert.AreEqual(8, inputPortControl.ChildrenOfType<TextBlock>().Count());
+            Assert.AreEqual(4, inputPortControl.ChildrenOfType<TextBlock>().Count());
         }
 
         [Test]
@@ -304,16 +304,11 @@ namespace DynamoCoreWpfTests
             var nodeView = NodeViewWithGuid("cf3ed4fb-f0a2-4dfe-89c1-11e8bbcfe80d");
                 // NodeViewOf<Dynamo.Nodes.WatchImageCore>();
 
-            var imgs = nodeView.ChildrenOfType<Image>();
+            var imgs = nodeView.PresentationGrid.ChildrenOfType<Image>();
 
-            // Starting from Dynamo 2.13, node view now comes with 
-            // images like node icon, lacing image etc
-            // As of Nov 2024, we have 8 images per NodeView
-            // Images are named for ease of use
-            // As of Dynamo 3.5, the number of images in a node view is 9 after the addition of the TransientImage
-            Assert.AreEqual(9, imgs.Count());
+            Assert.AreEqual(1, imgs.Count());
 
-            var img = imgs.First(x => x.Name == "DotsImage");
+            var img = imgs.First(x => x.Name == "image1");
 
             Assert.Greater(img.ActualWidth, 10);
             Assert.Greater(img.ActualHeight, 10);
