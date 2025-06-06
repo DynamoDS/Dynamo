@@ -680,7 +680,6 @@ namespace Dynamo.Core
         {
             try
             {
-                //if (DynamoUtilities.PathHelper.isValidJson(path, out jsonDoc, out ex))
                 if (CustomNodeInfo.GetFromJsonDocument(path, out info, out var ex))
                 {
                     return true;
