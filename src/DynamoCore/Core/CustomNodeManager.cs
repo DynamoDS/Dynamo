@@ -678,15 +678,15 @@ namespace Dynamo.Core
         /// <returns>The custom node info object - null if we failed</returns>
         internal bool TryGetInfoFromPath(string path, bool isTestMode, out CustomNodeInfo info)
         {
-            Exception ex;
             try
             {
                 //if (DynamoUtilities.PathHelper.isValidJson(path, out jsonDoc, out ex))
-                if (CustomNodeInfo.GetFromJsonDocument(path, out info, out ex))
+                if (CustomNodeInfo.GetFromJsonDocument(path, out info, out var ex))
                 {
                     return true;
                 }
-                else if (DynamoUtilities.PathHelper.isValidXML(path, out var xmlDoc, out ex))
+
+                if (DynamoUtilities.PathHelper.isValidXML(path, out var xmlDoc, out ex))
                 {
                     if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(), out var header))
                     {
@@ -704,7 +704,12 @@ namespace Dynamo.Core
                         header.IsVisibleInDynamoLibrary);
                     return true;
                 }
-                else throw ex;
+                if (ex == null)
+                {
+                    // TODO: Add resource string
+                    throw new InvalidOperationException("An unknown error occurred while processing the file.");
+                }
+                throw ex;
             }
             catch (Exception e)
             {
