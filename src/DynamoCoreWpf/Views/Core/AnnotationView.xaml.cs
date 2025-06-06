@@ -82,6 +82,7 @@ namespace Dynamo.Nodes
         private static readonly Style _groupStyleSeparatorStyle = CreateGroupStyleSeparatorStyle();
         private static readonly Style _colorSelectorListBoxStyle = CreateColorSelectorListBoxStyle();
         private static readonly Style _colorSelectorListBoxItemStyle = CreateColorSelectorListBoxItemStyle();
+        private static readonly Style _groupResizeThumbStyle = CreateGroupResizeThumbStyle();
 
         private static readonly StyleSelector _groupStyleItemSelector = new GroupStyleItemSelector();
 
@@ -1447,33 +1448,58 @@ namespace Dynamo.Nodes
             var thumb = new Thumb
             {
                 Name = "ResizeThumb",
-                Width = 10,
-                Height = 10,
-                HorizontalAlignment = HorizontalAlignment.Right,
-                VerticalAlignment = VerticalAlignment.Bottom
+                Style =  _groupResizeThumbStyle
             };
 
-            // Add event handlers
             thumb.DragDelta += AnnotationRectangleThumb_DragDelta;
             thumb.MouseEnter += Thumb_MouseEnter;
             thumb.MouseLeave += Thumb_MouseLeave;
 
-            // Create and set the style
+            return thumb;
+        }
+
+        private static Style CreateGroupResizeThumbStyle()
+        {
             var style = new Style(typeof(Thumb));
 
-            // Create the template
+            // Add basic property setters
+            style.Setters.Add(new Setter(UIElement.SnapsToDevicePixelsProperty, true));
+            style.Setters.Add(new Setter(FrameworkElement.MarginProperty, new Thickness(0, 0, 2.5, 2.5)));
+            style.Setters.Add(new Setter(FrameworkElement.WidthProperty, 10.0));
+            style.Setters.Add(new Setter(FrameworkElement.HeightProperty, 10.0));
+            style.Setters.Add(new Setter(FrameworkElement.HorizontalAlignmentProperty, HorizontalAlignment.Right));
+            style.Setters.Add(new Setter(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Bottom));
+
+            // Create the control template
             var template = new ControlTemplate(typeof(Thumb));
-            var factory = new FrameworkElementFactory(typeof(Border));
-            factory.SetValue(Border.BorderThicknessProperty, new Thickness(0));
-            factory.SetValue(Border.BorderBrushProperty, Brushes.Transparent);
-            factory.SetValue(Border.BackgroundProperty, Brushes.Transparent);
 
-            template.VisualTree = factory;
+            // Create the Polygon
+            var polygonFactory = new FrameworkElementFactory(typeof(Polygon));
+            
+            // Set Points collection
+            var points = new PointCollection
+            {
+                new Point(0, 8),
+                new Point(8, 8),
+                new Point(8, 0)
+            };
+            polygonFactory.SetValue(Polygon.PointsProperty, points);
 
+            // Set Fill binding
+            polygonFactory.SetBinding(Polygon.FillProperty, new Binding("DataContext.Background")
+            {
+                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(UserControl), 1),
+                Converter = _textForegroundSaturationColorConverter,
+                ConverterParameter = "Thumb"
+            });
+
+            // Set the template's visual tree
+            template.VisualTree = polygonFactory;
+
+            // Add the template setter to the style
             style.Setters.Add(new Setter(Control.TemplateProperty, template));
-            thumb.Style = style;
 
-            return thumb;
+            return style;
         }
 
         #endregion
