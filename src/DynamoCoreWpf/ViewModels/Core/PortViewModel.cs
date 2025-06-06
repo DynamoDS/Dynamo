@@ -435,8 +435,18 @@ namespace Dynamo.ViewModels
 
         private static double GetDpiScale()
         {
-            var source = PresentationSource.FromVisual(Application.Current.MainWindow);
-            return source?.CompositionTarget?.TransformToDevice.M22 ?? 1.0;
+            double dpiScale = 1.0;
+            try
+            {
+                var source = PresentationSource.FromVisual(Application.Current.MainWindow);
+                dpiScale = source?.CompositionTarget?.TransformToDevice.M22 ?? 1.0;
+            }
+            catch
+            {
+                // fallback to default DPI scale of 1.0 if anything fails
+            }
+
+            return dpiScale;
         }
 
         private void WorkspacePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
