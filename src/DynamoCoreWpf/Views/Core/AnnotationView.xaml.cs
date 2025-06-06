@@ -49,6 +49,8 @@ namespace Dynamo.Nodes
         private ContentControl groupDescriptionControls;
         private Border collapsedAnnotationRectangle;
         private Expander groupExpander;
+        private ItemsControl inputPortControl;
+        private ItemsControl outputPortControl;
 
         private bool _isUpdatingLayout = false;
 
@@ -423,7 +425,7 @@ namespace Dynamo.Nodes
                 }
             }), DispatcherPriority.Background);
 
-            if (GroupTextBox.ActualHeight > 0 && GroupTextBox.ActualWidth > 0)
+            if (groupTextBox.ActualHeight > 0 && groupTextBox.ActualWidth > 0)
             {
                 ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
             }
@@ -557,7 +559,7 @@ namespace Dynamo.Nodes
             if (ViewModel is null || !IsLoaded) return;
 
             SetTextHeight();
-            if (GroupDescriptionTextBox.ActualHeight > 0 && GroupDescriptionTextBox.ActualWidth > 0)
+            if (groupDescriptionTextBox.ActualHeight > 0 && groupDescriptionTextBox.ActualWidth > 0)
             {
                 ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
             }
@@ -567,20 +569,6 @@ namespace Dynamo.Nodes
         private void CollapsedAnnotationRectangle_SizeChanged(object sender, SizeChangedEventArgs e)
         {
             SetModelAreaHeight();
-        }
-        
-        private void SetTextHeight()
-        {
-            if (GroupDescriptionTextBlock is null || GroupTextBlock is null || ViewModel is null)
-            {
-                return;
-            }
-
-            // Use the DesiredSize and not the Actual height. Because when Textblock is collapsed,
-            // Actual height is same as previous size.
-            ViewModel.AnnotationModel.TextBlockHeight =
-                this.GroupDescriptionControls.DesiredSize.Height +
-                this.GroupNameControl.DesiredSize.Height;
         }
 
         private void CollapsedAnnotationRectangle_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -1539,8 +1527,8 @@ namespace Dynamo.Nodes
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
             // Add children
-            var inputPortControl = CreateInputPortControl();
-            var outputPortControl = CreateOutputPortControl();
+            inputPortControl = CreateInputPortControl();
+            outputPortControl = CreateOutputPortControl();
             var groupContent = CreateGroupContent();
 
             grid.Children.Add(inputPortControl);
