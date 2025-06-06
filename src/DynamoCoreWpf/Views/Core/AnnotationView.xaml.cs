@@ -51,6 +51,8 @@ namespace Dynamo.Nodes
         private Expander groupExpander;
         private ItemsControl inputPortControl;
         private ItemsControl outputPortControl;
+        private Thumb mainGroupThumb;
+        private Thumb collapsedGroupThumb;
 
         private bool _isUpdatingLayout = false;
 
@@ -227,6 +229,18 @@ namespace Dynamo.Nodes
                 groupDescriptionTextBox.IsVisibleChanged -= GroupDescriptionTextBox_OnIsVisibleChanged;
                 groupDescriptionTextBox.GotFocus -= GroupDescriptionTextBox_GotFocus;
                 groupDescriptionTextBox.TextChanged -= GroupDescriptionTextBox_TextChanged;
+            }
+            if (mainGroupThumb != null)
+            {
+                mainGroupThumb.DragDelta -= AnnotationRectangleThumb_DragDelta;
+                mainGroupThumb.MouseEnter -= Thumb_MouseEnter;
+                mainGroupThumb.MouseLeave -= Thumb_MouseLeave;
+            }
+            if (collapsedGroupThumb != null)
+            {
+                collapsedGroupThumb.DragDelta -= CollapsedAnnotationRectangleThumb_DragDelta;
+                collapsedGroupThumb.MouseEnter -= Thumb_MouseEnter;
+                collapsedGroupThumb.MouseLeave -= Thumb_MouseLeave;
             }
             UnregisterNamesFromScope();
         }
@@ -1383,8 +1397,8 @@ namespace Dynamo.Nodes
             grid.Children.Add(annotationRectangle);
 
             // Add the Resize Thumb
-            var resizeThumb = CreateResizeThumb();
-            grid.Children.Add(resizeThumb);
+            mainGroupThumb = CreateResizeThumb();
+            grid.Children.Add(mainGroupThumb);
 
             return grid;
         }
@@ -1443,15 +1457,24 @@ namespace Dynamo.Nodes
             return canvas;
         }
 
-        private Thumb CreateResizeThumb()
+        private Thumb CreateResizeThumb(bool isCollapsed = false)
         {
-            var thumb = new Thumb
+            var thumb = new Thumb();
+            if (isCollapsed)
             {
-                Name = "ResizeThumb",
-                Style =  _groupResizeThumbStyle
-            };
+                Grid.SetRow(thumb, 1);
+                Grid.SetColumn(thumb, 2);
 
-            thumb.DragDelta += AnnotationRectangleThumb_DragDelta;
+                thumb.Name = "ResizeThumbCollapsed";
+                thumb.DragDelta += CollapsedAnnotationRectangleThumb_DragDelta;
+            }
+            else
+            {
+                thumb.Name = "ResizeThumb";
+                thumb.DragDelta += AnnotationRectangleThumb_DragDelta;
+            }
+
+            thumb.Style = _groupResizeThumbStyle;
             thumb.MouseEnter += Thumb_MouseEnter;
             thumb.MouseLeave += Thumb_MouseLeave;
 
@@ -1515,6 +1538,7 @@ namespace Dynamo.Nodes
 
             // Set bindings
             border.SetBinding(FrameworkElement.WidthProperty, new Binding("Width"));
+            border.SetBinding(FrameworkElement.HeightProperty, new Binding("ModelAreaHeight"));
             border.SetBinding(UIElement.VisibilityProperty, new Binding("IsExpanded")
             {
                 ElementName = "GroupExpander",
@@ -1532,14 +1556,14 @@ namespace Dynamo.Nodes
             border.Background = backgroundBrush;
 
             // Create and set content
-            border.Child = CreateMainGrid();
+            border.Child = CreateCollapsedMainGrid();
 
             collapsedAnnotationRectangle = border;
 
             return collapsedAnnotationRectangle;
         }
 
-        private Grid CreateMainGrid()
+        private Grid CreateCollapsedMainGrid()
         {
             var grid = new Grid();
 
@@ -1550,16 +1574,18 @@ namespace Dynamo.Nodes
 
             // Add row definitions
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
-            grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
+            grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
             // Add children
             inputPortControl = CreateInputPortControl();
             outputPortControl = CreateOutputPortControl();
             var groupContent = CreateGroupContent();
+            collapsedGroupThumb = CreateResizeThumb(true);
 
             grid.Children.Add(inputPortControl);
             grid.Children.Add(outputPortControl);
             grid.Children.Add(groupContent);
+            grid.Children.Add(collapsedGroupThumb);
 
             return grid;
         }
@@ -1708,7 +1734,8 @@ namespace Dynamo.Nodes
                 MinWidth = 32,
                 Width = Double.NaN,
                 CornerRadius = new CornerRadius(32),
-                Margin = new Thickness(10)
+                Margin = new Thickness(10),
+                VerticalAlignment = VerticalAlignment.Bottom,
             };
 
             Grid.SetColumn(border, 1);
