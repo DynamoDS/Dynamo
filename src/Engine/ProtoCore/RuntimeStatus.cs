@@ -378,27 +378,7 @@ namespace ProtoCore
                 int startpc = prop.executingGraphNode.updateBlock.startpc;
                 int endpc = prop.executingGraphNode.updateBlock.endpc;
                 int block = prop.executingGraphNode.languageBlockId;
-
-                // Determine if the current executing graph node is in an imported file scope
-                // If so, continue searching in the outer graph nodes for the line and col in the outer-most context - pratapa
-
-                for (int i = startpc; i <= endpc; ++i)
-                {
-                    var instruction = runtimeCore.DSExecutable.instrStreamList[block].instrList[i];
-                    if (instruction.debug != null)
-                    {
-                        if (instruction.debug.Location.StartInclusive.SourceLocation.FilePath != null)
-                        {
-                            fileScope = true;
-                            break;
-                        }
-                        else
-                        {
-                            fileScope = false;
-                            break;
-                        }
-                    }
-                }
+                
                 if (fileScope)
                     continue;
 

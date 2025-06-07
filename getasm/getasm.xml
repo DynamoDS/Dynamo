@@ -1,0 +1,48 @@
+<Project
+    xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
+    ToolsVersion="4.0"
+    DefaultTargets="GetASM">
+<PropertyGroup>
+    <Configuration>Release</Configuration>
+    <ASMBranch>231_0_0</ASMBranch>
+	<ASM>asm-a-lib_win_release_intel64_v140</ASM>
+    <ASMVer>231.0.0</ASMVer>
+    <ASMBinPackageName>asm-a_win_release_intel64_v140</ASMBinPackageName>
+    <ASMBin>$(ASMBinPackagename).$(ASMVer)</ASMBin>
+	<ASMLib>$(ASM).$(ASMVer)</ASMLib>
+
+	<TBB>onetbb_win_release_intel64_v140</TBB>
+    <TBBVer>7.0.120</TBBVer>
+	<TBBBin>$(TBB).$(TBBVer)</TBBBin>
+
+	<TSPLINESVer>13.0.0</TSPLINESVer>
+	<TSPLINESBin>tsplines_win_release_intel64_v140.$(TSPLINESVer)</TSPLINESBin>
+
+    <AMT>amt_win_release_intel64_v140</AMT>
+    <AMTVer>9.0.0</AMTVer>
+    <AMTBin>$(AMT).$(AMTVer)</AMTBin>
+
+    <DynamoBinPath>$(MSBuildProjectDirectory)\..\bin\AnyCPU\$(Configuration)</DynamoBinPath>
+	<PackageDirectory>$(MSBuildProjectDirectory)\asm\asm_sdk_$(ASMBranch)\packages</PackageDirectory>
+	<NuGetConfig>$(MSBuildProjectDirectory)\asm-nuget.config</NuGetConfig>
+ <NuGetPath>$(MSBuildProjectDirectory)\nuget.exe</NuGetPath>
+</PropertyGroup>
+
+
+<Target Name="GetASM">
+  <MakeDir Directories="$(PackageDirectory)"/>
+	<!--Getting ASM"/>-->
+	<Exec WorkingDirectory="$(PackageDirectory)" Command="$(NuGetPath) install -configFile $(NugetConfig) $(ASM) -version $(ASMVer)"/>
+	<!--Copy Binaries"/>-->
+    <Exec Command="robocopy /MT:4 $(PackageDirectory)\$(ASMBin)\bin $(DynamoBinPath)\LibG_$(ASMBranch)
+    if %ERRORLEVEL% GTR 3 ( exit 1 ) else ( exit 0 )"/>
+    <Exec Command="robocopy /MT:4 $(PackageDirectory)\$(TSPLINESBin)\bin\ $(DynamoBinPath)\LibG_$(ASMBranch) *.dll
+    if %ERRORLEVEL% GTR 3 ( exit 1 ) else ( exit 0 )"/>
+    <Exec Command="robocopy /MT:4 $(PackageDirectory)\$(TBBBin)\bin\ $(DynamoBinPath)\LibG_$(ASMBranch) *.dll
+    if %ERRORLEVEL% GTR 3 ( exit 1 ) else ( exit 0 )"/>
+    <Exec Command="if exist $(PackageDirectory)\$(AMTBin)\bin\*.dll robocopy /MT:4 $(PackageDirectory)\$(AMTBin)\bin\ $(DynamoBinPath)\LibG_$(ASMBranch) *.dll
+    if %ERRORLEVEL% GTR 3 ( exit 1 ) else ( exit 0 )"/>
+</Target>
+
+
+</Project>

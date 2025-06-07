@@ -1740,12 +1740,6 @@ namespace ProtoCore
                 return StackValue.Null;
             }
 
-            if (runtimeCore.Options.IDEDebugMode && runtimeCore.Options.RunMode != InterpreterMode.Expression)
-            {
-                DebugFrame debugFrame = runtimeCore.DebugProps.DebugStackFrame.Peek();
-                debugFrame.FinalFepChosen = finalFep;
-            }
-
             List<StackValue> coercedParameters = finalFep.CoerceParameters(formalParameters, runtimeCore);
 
             // Correct block id where the function is defined. 
