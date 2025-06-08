@@ -46,6 +46,12 @@ namespace Dynamo.ViewModels
         public new bool IsPortCondensed => this.PortModel.Owner is CodeBlockNodeModel;
 
         /// <summary>
+        /// Sets the condensed styling on Code Block output ports for assignment statements.
+        /// This is used to style the output ports on Code Blocks to be smaller but displays the variable name as the port label.
+        /// </summary>
+        public new bool IsAssignmentOutputPort => this.PortModel.Owner is CodeBlockNodeModel && !string.IsNullOrEmpty(PortModel.Name);
+
+        /// <summary>
         /// If should display Use Levels popup menu. 
         /// </summary>
         public bool ShowContextMenu

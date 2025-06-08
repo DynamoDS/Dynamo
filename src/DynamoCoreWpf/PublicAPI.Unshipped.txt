@@ -2660,6 +2660,7 @@ Dynamo.ViewModels.OutPortViewModel.EditPortPropertiesCommand.get -> Dynamo.UI.Co
 Dynamo.ViewModels.OutPortViewModel.HideConnectionsCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.OutPortViewModel.HideWiresButtonEnabled.get -> bool
 Dynamo.ViewModels.OutPortViewModel.HideWiresButtonEnabled.set -> void
+Dynamo.ViewModels.OutPortViewModel.IsAssignmentOutputPort.get -> bool
 Dynamo.ViewModels.OutPortViewModel.IsPortCondensed.get -> bool
 Dynamo.ViewModels.OutPortViewModel.MouseLeftButtonDownOnContextCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.OutPortViewModel.OutPortViewModel(Dynamo.ViewModels.NodeViewModel node, Dynamo.Graph.Nodes.PortModel port) -> void
@@ -2774,6 +2775,7 @@ Dynamo.ViewModels.PortViewModel.EventType.set -> void
 Dynamo.ViewModels.PortViewModel.Height.get -> double
 Dynamo.ViewModels.PortViewModel.Highlight.get -> System.Windows.Visibility
 Dynamo.ViewModels.PortViewModel.Highlight.set -> void
+Dynamo.ViewModels.PortViewModel.IsAssignmentOutputPort.get -> bool
 Dynamo.ViewModels.PortViewModel.IsConnected.get -> bool
 Dynamo.ViewModels.PortViewModel.IsEnabled.get -> bool
 Dynamo.ViewModels.PortViewModel.IsHitTestVisible.get -> bool

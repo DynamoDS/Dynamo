@@ -41,6 +41,8 @@ namespace Dynamo.Graph.Nodes
         private string code = string.Empty;
         private List<string> inputIdentifiers = new List<string>();
         private List<string> inputPortNames = new List<string>();
+        private Dictionary<string, string> assignmentPortNames = new Dictionary<string, string>();
+        private Dictionary<string, string> outputPortTooltips = new Dictionary<string, string>();
         private string previewVariable;
         private readonly LibraryServices libraryServices;
 
@@ -808,6 +810,42 @@ namespace Dynamo.Graph.Nodes
                     }
                 }
 
+                // WRAP IN IF STATEMENT LIKE INPUT PORTS?
+                // ENSURE DICTIONARIES ARE CLEARED
+                // Collect output port labels and tooltips for assignment and expression statements.
+                assignmentPortNames.Clear();
+                outputPortTooltips.Clear();
+
+                foreach (var statement in codeStatements)
+                {
+                    var binExpr = statement.AstNode as BinaryExpressionNode;
+                    if (binExpr != null && binExpr.LeftNode != null)
+                    {
+                        var leftName = binExpr.LeftNode.Name;
+
+                        if (!IsTempIdentifier(leftName))
+                        {
+                            // Assignment: label and tooltip are variable name
+                            assignmentPortNames[leftName] = leftName;
+                            outputPortTooltips[leftName] = leftName;
+                        }
+                        else
+                        {
+                            // Expression: label is "", tooltip is right node
+                            string tooltip = string.Empty;
+                            if (binExpr.RightNode is IdentifierNode ident)
+                            {
+                                tooltip = ident.Name;
+                            }
+                            else
+                            {
+                                tooltip = binExpr.RightNode.ToString();
+                            }
+                            outputPortTooltips[leftName] = tooltip;
+                        }
+                    }
+                }
+
                 if (ParseParam.Errors.Any())
                 {
                     errorMessage = string.Join("\n", ParseParam.Errors.Select(m => m.Message));
@@ -1007,18 +1045,19 @@ namespace Dynamo.Graph.Nodes
             // Clear out all the output port models
             OutPorts.RemoveAll((p) => true);
 
+            // Add an output port for each definition, setting port label and tooltip based on statement type
             foreach (var def in allDefs)
             {
-                var tooltip = IsTempIdentifier(def.Key) ? string.Format(Resources.CodeBlockTempIdentifierOutputLabel, def.Value) : def.Key;
+                string portLabel = assignmentPortNames.ContainsKey(def.Key) ? assignmentPortNames[def.Key] : string.Empty;
+                string tooltip = outputPortTooltips.ContainsKey(def.Key) ? outputPortTooltips[def.Key] : def.Key;
 
-                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
+                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(portLabel, tooltip)
                 {
-                    LineIndex = def.Value - 1, // Logical line index.
+                    LineIndex = def.Value - 1,
                     Height = Configurations.CodeBlockOutputPortHeightInPixels,
                 }));
             }
         }
-
 
         /// <summary>
         ///     Deletes all the connections and saves their data (the start and end port)
