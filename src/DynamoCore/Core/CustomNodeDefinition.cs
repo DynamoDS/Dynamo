@@ -343,7 +343,7 @@ namespace Dynamo
         /// Indicates if custom node is part of the library search.
         /// If true, then custom node is part of library search.
         /// </summary>
-        public bool IsVisibleInDynamoLibrary { get; private set; }
+        public bool IsVisibleInDynamoLibrary { get; set; }
 
         /// <summary>
         /// Only valid if IsPackageMember is true.
