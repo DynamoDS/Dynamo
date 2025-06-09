@@ -110,7 +110,10 @@ namespace Dynamo.Graph.Workspaces
 
             AvoidSubgraphOverlap(layoutSubgraphs, originalNodeGUID);
 
-            SaveLayoutGraphForNodeAutoComplete(workspace, layoutSubgraphs, originalNodeGUID);
+            var maybeUpdateSet = workspace.Nodes.Any(x => x.IsTransient) ?
+                workspace.Nodes.Where(x => x.GUID == originalNodeGUID || guidSet.Contains(x.GUID)) :
+                workspace.Nodes;
+            SaveLayoutGraphForNodeAutoComplete(workspace, maybeUpdateSet.ToList(), layoutSubgraphs, originalNodeGUID);
 
             return layoutSubgraphs;
         }
@@ -636,10 +639,10 @@ namespace Dynamo.Graph.Workspaces
         /// This method pushes changes from the GraphLayout.Graph objects
         /// back to the workspace models, but only for nodes placed by NodeAutocomplete.
         /// </summary>
-        private static void SaveLayoutGraphForNodeAutoComplete(this WorkspaceModel workspace, List<GraphLayout.Graph> layoutSubgraphs, Guid? originalNodeGUID)
+        private static void SaveLayoutGraphForNodeAutoComplete(WorkspaceModel workspace, List<NodeModel> nodes, List<GraphLayout.Graph> layoutSubgraphs, Guid? originalNodeGUID)
         {
             // Assign coordinates to nodes outside groups
-            foreach (var node in workspace.Nodes)
+            foreach (var node in nodes)
             {
                 GraphLayout.Graph graph = layoutSubgraphs
                     .FirstOrDefault(g => g.FindNode(node.GUID) != null);
