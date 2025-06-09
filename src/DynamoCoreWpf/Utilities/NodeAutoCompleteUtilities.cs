@@ -116,7 +116,7 @@ namespace Dynamo.Wpf.Utilities
 
             if (!skipInitialAutoLayout)
             {
-                wsModel.DoGraphAutoLayout(reuseUndoGroup, true, queryNode.GUID);
+                wsModel.DoGraphAutoLayoutAutocomplete(queryNode.GUID, misplacedNodes);
             }
 
             // Check if the newly added nodes are still intersecting with other nodes in the workspace.
@@ -127,9 +127,8 @@ namespace Dynamo.Wpf.Utilities
                 bool redoAutoLayout = AutoLayoutNeeded(wsModel, queryNode, misplacedNodes, out List<NodeModel> intersectedNodes);
                 if (redoAutoLayout)
                 {
-                    DynamoSelection.Instance.Selection.AddRange(intersectedNodes);
-                    wsModel.DoGraphAutoLayout(reuseUndoGroup, true, queryNode.GUID);
-                    DynamoSelection.Instance.Selection.RemoveRange(intersectedNodes);
+                    misplacedNodes = misplacedNodes.Union(intersectedNodes);
+                    wsModel.DoGraphAutoLayoutAutocomplete(queryNode.GUID, misplacedNodes);
                 }
             }
 
