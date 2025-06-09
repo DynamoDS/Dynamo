@@ -172,7 +172,7 @@
                                     CaretBrush="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}"
                                     FontSize="14">
                                     <TextBox.Text>
-                                        <Binding Path="SearchInput" Mode="OneWayToSource" UpdateSourceTrigger="PropertyChanged" />
+                                        <Binding Path="SearchInput" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" />
                                     </TextBox.Text>
                                 </TextBox>
                             </ComboBox.Tag>

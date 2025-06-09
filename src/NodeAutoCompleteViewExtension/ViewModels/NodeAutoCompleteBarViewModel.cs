@@ -191,7 +191,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
-        private int ClusterResultsCount => DropdownResults == null ? 0 : DropdownResults.Count();
+        private int ClusterResultsCount => FilteredView == null ? 0 : FilteredView.Cast<object>().ToList().Count;
 
         private int selectedIndex = 0;
 
@@ -231,6 +231,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 {                    
                     FilteredView.Refresh();
                 }
+
+                RaisePropertyChanged(nameof(SearchInput));
             }
         }
 
@@ -245,30 +247,19 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
             set
             {
-                /*don't try to add a node if the index is out of range or a selection is not made yet (-1)
-                an index of -1 occurs when using the switch to change between modes.*/
-                if (selectedIndex != value && value >= 0 && selectedIndex != -1)
+                if (selectedIndex != value && value >= -1)
                 {
-                    ReAddNode(value);
-                }
-                selectedIndex = value;
-                RaisePropertyChanged(nameof(SelectedIndex));
-                RaisePropertyChanged(nameof(NthofTotal));
-                RaisePropertyChanged(nameof(PreviousSource));
-                RaisePropertyChanged(nameof(NextSource));
-            }
-        }
+                    selectedIndex = value;
+                    if (selectedIndex != -1)
+                    {
+                        AddCluster(selectedIndex);
+                    }
 
-        private void ReAddNode(int index)
-        {
-            if(FullResults == null)
-            {
-                return;
-            }
-            var results = QualifiedResults.ToList();
-            if(index >=  0 && index  < results.Count)
-            {
-                AddCluster(results[index]);
+                    RaisePropertyChanged(nameof(SelectedIndex));
+                    RaisePropertyChanged(nameof(NthofTotal));
+                    RaisePropertyChanged(nameof(PreviousSource));
+                    RaisePropertyChanged(nameof(NextSource));
+                }
             }
         }
 
@@ -426,6 +417,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             FilteredResults = new List<NodeSearchElementViewModel>();
             FilteredHighConfidenceResults = new List<NodeSearchElementViewModel>();
             FilteredLowConfidenceResults = new List<NodeSearchElementViewModel>();
+            SearchInput = string.Empty;            
         }
 
         internal MLNodeAutoCompletionRequest GenerateRequestForMLAutocomplete()
@@ -796,6 +788,19 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
+
+        internal void AddCluster(int filterredIndex)
+        {
+            var currentFilter = FilteredView.Cast<DNADropdownViewModel>().ToList();
+            var currentItem = filterredIndex >= 0 && filterredIndex < currentFilter.Count ? currentFilter[filterredIndex] : null;
+
+            var realCluster = QualifiedResults.FirstOrDefault(x => x.Description.Equals(currentItem.Description));
+            if (realCluster != null)
+            {
+                AddCluster(realCluster);
+            }
+        }
+
         // Add Cluster from server result into the workspace
         internal void AddCluster(ClusterResultItem clusterResultItem)
         {
@@ -1040,8 +1045,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     if (comboboxResults.Any())
                     {
                         SelectedIndex = 0;
-                        var ClusterResultItem = QualifiedResults.First();
-                        AddCluster(ClusterResultItem);
                     }
                     
                 });
