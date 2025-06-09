@@ -807,42 +807,8 @@ namespace Dynamo.Graph.Nodes
                         OutPorts.Clear();
                         InPorts.Clear();
                         inputPortNames.Clear();
-                    }
-                }
-
-                // WRAP IN IF STATEMENT LIKE INPUT PORTS?
-                // ENSURE DICTIONARIES ARE CLEARED
-                // Collect output port labels and tooltips for assignment and expression statements.
-                assignmentPortNames.Clear();
-                outputPortTooltips.Clear();
-
-                foreach (var statement in codeStatements)
-                {
-                    var binExpr = statement.AstNode as BinaryExpressionNode;
-                    if (binExpr != null && binExpr.LeftNode != null)
-                    {
-                        var leftName = binExpr.LeftNode.Name;
-
-                        if (!IsTempIdentifier(leftName))
-                        {
-                            // Assignment: label and tooltip are variable name
-                            assignmentPortNames[leftName] = leftName;
-                            outputPortTooltips[leftName] = leftName;
-                        }
-                        else
-                        {
-                            // Expression: label is "", tooltip is right node
-                            string tooltip = string.Empty;
-                            if (binExpr.RightNode is IdentifierNode ident)
-                            {
-                                tooltip = ident.Name;
-                            }
-                            else
-                            {
-                                tooltip = binExpr.RightNode.ToString();
-                            }
-                            outputPortTooltips[leftName] = tooltip;
-                        }
+                        assignmentPortNames.Clear();
+                        outputPortTooltips.Clear();
                     }
                 }
 
@@ -893,6 +859,40 @@ namespace Dynamo.Graph.Nodes
                 {
                     inputIdentifiers.Clear();
                     inputPortNames.Clear();
+                }
+
+                // Collect output port labels and tooltips for assignment and expression statements.
+                assignmentPortNames.Clear();
+                outputPortTooltips.Clear();
+
+                foreach (var statement in codeStatements)
+                {
+                    var binExpr = statement.AstNode as BinaryExpressionNode;
+                    if (binExpr != null && binExpr.LeftNode != null)
+                    {
+                        var leftName = binExpr.LeftNode.Name;
+
+                        if (!IsTempIdentifier(leftName))
+                        {
+                            // Assignment: label and tooltip are variable name
+                            assignmentPortNames[leftName] = leftName;
+                            outputPortTooltips[leftName] = leftName;
+                        }
+                        else
+                        {
+                            // Expression: label is "", tooltip is right node
+                            string tooltip = string.Empty;
+                            if (binExpr.RightNode is IdentifierNode ident)
+                            {
+                                tooltip = ident.Name;
+                            }
+                            else
+                            {
+                                tooltip = binExpr.RightNode.ToString();
+                            }
+                            outputPortTooltips[leftName] = tooltip;
+                        }
+                    }
                 }
 
                 // Set preview variable after gathering input identifiers. As a variable
