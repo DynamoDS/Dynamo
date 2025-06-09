@@ -553,6 +553,76 @@ namespace Dynamo.Graph.Annotations
             }
         }
 
+        private bool isOptionalInPortsCollapsed;
+        /// <summary>
+        /// Indicates whether optional input ports were manually expanded or collapsed when the graph was last saved.
+        /// Used only for serialization.
+        /// </summary>
+        public bool IsOptionalInPortsCollapsed
+        {
+            get => isOptionalInPortsCollapsed;
+            set
+            {
+                isOptionalInPortsCollapsed = value;
+            }
+        }
+
+        private bool isUnconnectedOutPortsCollapsed;
+        /// <summary>
+        /// Indicates whether unconnected output ports were manually expanded or collapsed when the graph was last saved.
+        /// Used only for serialization.
+        /// </summary>
+        public bool IsUnconnectedOutPortsCollapsed
+        {
+            get => isUnconnectedOutPortsCollapsed;
+            set
+            {
+                isUnconnectedOutPortsCollapsed = value;
+            }
+
+        }
+
+        private bool hasToggledOptionalInPorts;
+        /// <summary>
+        /// Indicates whether the user manually toggled the visibility of optional input ports.
+        /// If true, this overrides the global preference setting.
+        /// </summary>
+        public bool HasToggledOptionalInPorts
+        {
+            get => hasToggledOptionalInPorts;
+            set
+            {
+                hasToggledOptionalInPorts = value;
+            }
+        }
+
+        private bool hasToggledUnconnectedOutPorts;
+        /// <summary>
+        /// Indicates whether the user manually toggled the visibility of unconnected output ports.
+        /// If true, this overrides the global preference setting.
+        /// </summary>
+        public bool HasToggledUnconnectedOutPorts
+        {
+            get => hasToggledUnconnectedOutPorts;
+            set
+            {
+                hasToggledUnconnectedOutPorts = value;
+            }
+        }
+
+        private bool isCollapsedToMinSize;
+        /// <summary>
+        /// Gets or sets a value indicating whether the group was manually resized while collapsed
+        /// </summary>
+        public bool IsCollapsedToMinSize
+        {
+            get => isCollapsedToMinSize;
+            set
+            {
+                isCollapsedToMinSize = value;
+            }
+        }
+
         #endregion
 
         /// <summary>
@@ -735,15 +805,30 @@ namespace Dynamo.Graph.Annotations
                 if (this.InitialHeight <= 0.0)
                     this.InitialHeight = region.Height;
             }
-            else
-            {
-                // Width is based on group content when collapsed
-                Width = Math.Max(
-                    (!IsResizedWhileCollapsed ? xDistance : MinWidthOnCollapsed) + ExtendSize + WidthAdjustment,
-                    TextMaxWidth + ExtendSize
-                );
 
-                ModelAreaHeight = MinCollapsedPortAreaHeight + CollapsedContentHeight + (IsResizedWhileCollapsed ? HeightAdjustment : 0);
+            // If the group is collapsed we have a few options:
+            // 1. ResizedWhileCollapsed (any CollapseToMinSize by PreferencesSetting) --> width set to min + height set to min
+            else if (IsResizedWhileCollapsed) // !IsResizedWhileCollapsed --> width with adjustment | height with adjustment
+            {
+                Width = Math.Max(MinWidthOnCollapsed + ExtendSize + WidthAdjustment, TextMaxWidth + ExtendSize);
+
+                ModelAreaHeight = MinCollapsedPortAreaHeight + CollapsedContentHeight + HeightAdjustment;
+                Height = TextBlockHeight + ModelAreaHeight;
+            }
+            // 2. NOT CollapseToMinSize by PreferencesSetting and NOT yet ResizedWhileCollapsed --> same width as expanded + height set to min
+            else if (!IsResizedWhileCollapsed && IsCollapsedToMinSize) // width set to min | height set to min
+            {
+                Width = Math.Max(MinWidthOnCollapsed + ExtendSize, TextMaxWidth + ExtendSize);
+
+                ModelAreaHeight = MinCollapsedPortAreaHeight + CollapsedContentHeight;
+                Height = TextBlockHeight + ModelAreaHeight;
+            }
+            // 3. CollapseToMinSize by PreferencesSetting and NOT yet ResizedWhileCollapsed --> width set to min + height set to min
+            else if (!IsResizedWhileCollapsed && !IsCollapsedToMinSize) // width as expanded | height set to min
+            {
+                Width = Math.Max(xDistance + ExtendSize + WidthAdjustment, TextMaxWidth + ExtendSize);
+
+                ModelAreaHeight = MinCollapsedPortAreaHeight + CollapsedContentHeight;
                 Height = TextBlockHeight + ModelAreaHeight;
             }
 
@@ -753,6 +838,8 @@ namespace Dynamo.Graph.Annotations
             {
                 RaisePropertyChanged(nameof(Position));
             }
+
+            var c0 = IsOptionalInPortsCollapsed;
         }
 
         /// <summary>
@@ -873,6 +960,11 @@ namespace Dynamo.Graph.Annotations
             helper.SetAttribute("backgrouund", (this.Background == null ? "" : this.Background.ToString()));
             helper.SetAttribute(nameof(IsSelected), IsSelected);
             helper.SetAttribute(nameof(IsExpanded), this.IsExpanded);
+            //helper.SetAttribute(nameof(IsResizedWhileCollapsed), this.IsResizedWhileCollapsed);
+            helper.SetAttribute(nameof(IsOptionalInPortsCollapsed), this.IsOptionalInPortsCollapsed);
+            helper.SetAttribute(nameof(IsUnconnectedOutPortsCollapsed), this.IsUnconnectedOutPortsCollapsed);
+            helper.SetAttribute(nameof(HasToggledOptionalInPorts), this.HasToggledOptionalInPorts);
+            helper.SetAttribute(nameof(HasToggledUnconnectedOutPorts), this.HasToggledUnconnectedOutPorts);
 
             //Serialize Selected models
             XmlDocument xmlDoc = element.OwnerDocument;            
@@ -907,6 +999,10 @@ namespace Dynamo.Graph.Annotations
             this.IsSelected = helper.ReadBoolean(nameof(IsSelected), false);
             this.IsExpanded = helper.ReadBoolean(nameof(IsExpanded), true);
             this.IsResizedWhileCollapsed = helper.ReadBoolean(nameof(IsResizedWhileCollapsed), false);
+            this.IsOptionalInPortsCollapsed = helper.ReadBoolean(nameof(IsOptionalInPortsCollapsed), true);
+            this.IsUnconnectedOutPortsCollapsed = helper.ReadBoolean(nameof(IsUnconnectedOutPortsCollapsed), true);
+            this.HasToggledOptionalInPorts = helper.ReadBoolean(nameof(HasToggledOptionalInPorts), false);
+            this.HasToggledUnconnectedOutPorts = helper.ReadBoolean(nameof(HasToggledUnconnectedOutPorts), false);
 
             if (IsSelected)
                 DynamoSelection.Instance.Selection.Add(this);
@@ -953,6 +1049,8 @@ namespace Dynamo.Graph.Annotations
             RaisePropertyChanged(nameof(Nodes));
             RaisePropertyChanged(nameof(IsExpanded));
             RaisePropertyChanged(nameof(IsResizedWhileCollapsed));
+            RaisePropertyChanged(nameof(IsOptionalInPortsCollapsed));
+            RaisePropertyChanged(nameof(IsUnconnectedOutPortsCollapsed));
             this.ReportPosition();
         }
 

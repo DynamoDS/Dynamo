@@ -2,13 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Linq;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using CoreNodeModels.Logic;
 using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
+using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Selection;
@@ -29,6 +33,7 @@ namespace Dynamo.ViewModels
         // vertical offset accounts for the port margins
         private const int verticalOffset = 17;
         private const int portVerticalMidPoint = 17;
+        private const int portToggleOffset = 31;
         private ObservableCollection<Dynamo.Configuration.StyleItem> groupStyleList;
         private IEnumerable<Configuration.StyleItem> preferencesStyleItemsList;
         private PreferenceSettings preferenceSettings;
@@ -233,6 +238,21 @@ namespace Dynamo.ViewModels
             }
         }
 
+        private ObservableCollection<PortViewModel> optionalInPorts;
+        /// <summary>
+        /// Collection of optional input ports.
+        /// These are inputs using default values or unconnected.
+        /// </summary>
+        [JsonIgnore]
+        public ObservableCollection<PortViewModel> OptionalInPorts
+        {
+            get => optionalInPorts;
+            private set
+            {
+                optionalInPorts = value;
+            }
+        }
+
         private ObservableCollection<PortViewModel> outPorts;
         /// <summary>
         /// Collection of all output ports on this group.
@@ -247,6 +267,51 @@ namespace Dynamo.ViewModels
             private set
             {
                 outPorts = value;
+            }
+        }
+
+        private ObservableCollection<PortViewModel> unconnectedOutPorts;
+        /// <summary>
+        /// Collection of unconnected output ports in the group.
+        /// </summary>
+        [JsonIgnore]
+        public ObservableCollection<PortViewModel> UnconnectedOutPorts
+        {
+            get => unconnectedOutPorts;
+            private set
+            {
+                unconnectedOutPorts = value;
+            }
+        }
+
+        private bool isOptionalInPortsCollapsed;
+        /// <summary>
+        /// Controls visibility of optional input ports in the group.
+        /// </summary>
+        [JsonIgnore]
+        public bool IsOptionalInPortsCollapsed
+        {
+            get => isOptionalInPortsCollapsed;
+            set
+            {
+                isOptionalInPortsCollapsed = value;
+                annotationModel.IsOptionalInPortsCollapsed = value;
+                RaisePropertyChanged(nameof(IsOptionalInPortsCollapsed));
+            }
+        }
+
+        private bool isUnconnectedOutPortsCollapsed = true;
+        /// <summary>
+        /// Controls visibility of unconnected output ports in the group.
+        /// </summary>
+        public bool IsUnconnectedOutPortsCollapsed
+        {
+            get => isUnconnectedOutPortsCollapsed;
+            set
+            {
+                isUnconnectedOutPortsCollapsed = value;
+                annotationModel.IsUnconnectedOutPortsCollapsed = value;
+                RaisePropertyChanged(nameof(IsUnconnectedOutPortsCollapsed));
             }
         }
 
@@ -622,6 +687,16 @@ namespace Dynamo.ViewModels
 
             this.WorkspaceViewModel = workspaceViewModel;
             this.preferenceSettings = WorkspaceViewModel.DynamoViewModel.PreferenceSettings;
+            preferenceSettings.PropertyChanged += OnPreferenceChanged;
+
+            IsOptionalInPortsCollapsed = annotationModel.HasToggledOptionalInPorts
+                ? annotationModel.IsOptionalInPortsCollapsed
+                : preferenceSettings.OptionalInPortsCollapsed;
+
+            IsUnconnectedOutPortsCollapsed = annotationModel.HasToggledUnconnectedOutPorts
+                ? annotationModel.IsUnconnectedOutPortsCollapsed
+                : preferenceSettings.UnconnectedOutPortsCollapsed;
+
             model.PropertyChanged += model_PropertyChanged;
             model.RemovedFromGroup += OnModelRemovedFromGroup;
             model.AddedToGroup += OnModelAddedToGroup;
@@ -642,6 +717,8 @@ namespace Dynamo.ViewModels
 
             InPorts = new ObservableCollection<PortViewModel>();
             OutPorts = new ObservableCollection<PortViewModel>();
+            OptionalInPorts = new ObservableCollection<PortViewModel>();
+            UnconnectedOutPorts = new ObservableCollection<PortViewModel>();
 
             ViewModelBases = this.WorkspaceViewModel.GetViewModelsInternal(annotationModel.Nodes.Select(x => x.GUID));
 
@@ -666,6 +743,40 @@ namespace Dynamo.ViewModels
             groupStyleList = new ObservableCollection<Configuration.StyleItem>();
             //This will add the GroupStyles created in Preferences panel to the Group Style Context menu.
             LoadGroupStylesFromPreferences(preferenceSettings.GroupStyleItemsList);
+
+            // Passes the CollapseToMinSize from PreferenceSettings to the model
+            if (preferenceSettings.CollapseToMinSize)
+            {
+                annotationModel.IsCollapsedToMinSize = true;
+            }
+        }
+
+        private void OnPreferenceChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(IPreferences.OptionalInPortsCollapsed))
+            {
+                if (!annotationModel.HasToggledOptionalInPorts)
+                {
+                    IsOptionalInPortsCollapsed = preferenceSettings.OptionalInPortsCollapsed;
+                }
+            }
+            else if (e.PropertyName == nameof(IPreferences.UnconnectedOutPortsCollapsed))
+            {
+                if (!annotationModel.HasToggledUnconnectedOutPorts)
+                {
+                    IsUnconnectedOutPortsCollapsed = preferenceSettings.UnconnectedOutPortsCollapsed;
+                }
+            }
+            else if (e.PropertyName == nameof(IPreferences.CollapseToMinSize))
+            {
+                annotationModel.IsCollapsedToMinSize = preferenceSettings.CollapseToMinSize;
+
+                // Update the boundary only if the group is collapsed
+                if (!IsExpanded)
+                {
+                    annotationModel.UpdateBoundaryFromSelection();
+                }
+            }
         }
 
 
@@ -677,7 +788,8 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void SetGroupInputPorts()
         {
-            List<PortViewModel> newPortViewModels;
+            List<PortViewModel> mainPortViewModels;
+            List<PortViewModel> optionalPortViewModels;
 
             // we need to store the original ports here
             // as we need those later for when we
@@ -700,17 +812,15 @@ namespace Dynamo.ViewModels
             // visually add them to the group but they
             // should still reference their NodeModel
             // owner
-            newPortViewModels = CreateProxyInPorts(originalInPorts);
+            var newPortViewModels = CreateProxyInPorts(originalInPorts);
+            mainPortViewModels = newPortViewModels.Main;
+            optionalPortViewModels = newPortViewModels.Optional;
 
-            // Set the minimum required vertical space to fit the input ports when collapsed
-            if (newPortViewModels == null)
-            {
-                annotationModel.MinCollapsedPortAreaHeight = 0;
-                return;
-            }
+            if (mainPortViewModels != null)
+                InPorts.AddRange(mainPortViewModels);
 
-            annotationModel.MinCollapsedPortAreaHeight = newPortViewModels.Sum(p => p.Height);
-            InPorts.AddRange(newPortViewModels);
+            if (optionalPortViewModels != null)
+                OptionalInPorts.AddRange(optionalPortViewModels);
         }
 
         /// <summary>
@@ -720,10 +830,11 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void SetGroupOutPorts()
         {
-            List<PortViewModel> newPortViewModels;
+            List<PortViewModel> mainPortViewModels;
+            List<PortViewModel> unconnectedPortViewModels;
 
             // we need to store the original ports here
-            // as we need these later for when we
+            // as we need those later for when we
             // need to collapse the groups content
             if (this.AnnotationModel.HasNestedGroups)
             {
@@ -741,19 +852,17 @@ namespace Dynamo.ViewModels
 
             // Create proxies of the ports so we can
             // visually add them to the group but they
-            // should still reference their NodeModel owner
-            newPortViewModels = CreateProxyOutPorts(originalOutPorts);
+            // should still reference their NodeModel
+            // owner
+            var newPortViewModels = CreateProxyOutPorts(originalOutPorts);
+            mainPortViewModels = newPortViewModels.Main;
+            unconnectedPortViewModels = newPortViewModels.Unconnected;
 
-            // If no view models were created, we leave the existing height as is
-            if (newPortViewModels == null)
-                return;
+            if (mainPortViewModels != null)
+                OutPorts.AddRange(mainPortViewModels);
 
-            // Update the collapsed port area height to be the greater of the existing value
-            // and the height needed to render all output ports
-            var outportsHeight = newPortViewModels.Sum(p => p.Height);
-            annotationModel.MinCollapsedPortAreaHeight = Math.Max(annotationModel.MinCollapsedPortAreaHeight, outportsHeight);
-
-            OutPorts.AddRange(newPortViewModels);
+            if (unconnectedPortViewModels != null)
+                UnconnectedOutPorts.AddRange(unconnectedPortViewModels);
         }
 
         internal IEnumerable<PortModel> GetGroupInPorts(IEnumerable<NodeModel> ownerNodes = null)
@@ -828,53 +937,177 @@ namespace Dynamo.ViewModels
             return new Point2D();
         }
 
-        private List<PortViewModel> CreateProxyInPorts(IEnumerable<PortModel> groupPortModels)
+        private (List<PortViewModel> Main, List<PortViewModel> Optional) CreateProxyInPorts(IEnumerable<PortModel> groupPortModels)
         {
             var originalPortViewModels = WorkspaceViewModel.Nodes
                 .SelectMany(x => x.InPorts)
                 .Where(x => groupPortModels.Contains(x.PortModel))
                 .ToList();
 
-            var newPortViewModels = new List<PortViewModel>();
+            var mainPortViewModels = new List<PortViewModel>();
+            var optionalPortViewModels = new List<PortViewModel>();
+
             double verticalPosition = 0;
+
             foreach (var groupPort in groupPortModels)
             {
+                // Track proxy connection changes while group is collapsed
+                groupPort.PropertyChanged += OnPortConnectionChanged;
+
                 var originalPort = originalPortViewModels.FirstOrDefault(x => x.PortModel.GUID == groupPort.GUID);
                 if (originalPort != null)
                 {
                     var portViewModel = originalPort.CreateProxyPortViewModel(groupPort);
-                    newPortViewModels.Add(portViewModel);
-                    // calculate new position for the proxy outports
-                    groupPort.Center = CalculatePortPosition(groupPort, verticalPosition);
-                    verticalPosition += originalPort.Height;
+
+                    if (!originalPort.UsingDefaultValue || groupPort.Connectors.Any())
+                    {
+                        mainPortViewModels.Add(portViewModel);
+
+                        // Calculate new position for the proxy inports
+                        groupPort.Center = CalculatePortPosition(groupPort, verticalPosition);
+                        verticalPosition += originalPort.Height;
+                    }
+                    else
+                    {
+                        // Defer position setting for optional (unconnected) ports
+                        optionalPortViewModels.Add(portViewModel);
+                    }
                 }
             }
-            return newPortViewModels;
+            // Leave space for toggle button
+            verticalPosition += portToggleOffset;
+
+            // Position optional input ports
+            foreach (var portViewModel in optionalPortViewModels)
+            {
+                var groupPort = portViewModel.PortModel;
+                groupPort.Center = CalculatePortPosition(groupPort, verticalPosition);
+                verticalPosition += groupPort.Height;
+            }
+
+            return (mainPortViewModels, optionalPortViewModels);
         }
 
-        private List<PortViewModel> CreateProxyOutPorts(IEnumerable<PortModel> groupPortModels)
+        private (List<PortViewModel> Main, List<PortViewModel> Unconnected) CreateProxyOutPorts(IEnumerable<PortModel> groupPortModels)
         {
             var originalPortViewModels = WorkspaceViewModel.Nodes
                 .SelectMany(x => x.OutPorts)
                 .Where(x => groupPortModels.Contains(x.PortModel))
                 .ToList();
 
-            var newPortViewModels = new List<PortViewModel>();
+            var mainPortViewModels = new List<PortViewModel>();
+            var unconnectedPortViewModels = new List<PortViewModel>();
+
             double verticalPosition = 0;
-            foreach (var group in groupPortModels)
+
+            foreach (var groupPort in groupPortModels)
             {
-                var originalPort = originalPortViewModels.FirstOrDefault(x => x.PortModel.GUID == group.GUID);
+                // Track proxy connection changes while group is collapsed
+                groupPort.PropertyChanged += OnPortConnectionChanged;
+
+                var originalPort = originalPortViewModels.FirstOrDefault(x => x.PortModel.GUID == groupPort.GUID);
                 if (originalPort != null)
                 {
-                    var portViewModel = originalPort.CreateProxyPortViewModel(group);
-                    newPortViewModels.Add(portViewModel);
-                    // calculate new position for the proxy outports
-                    group.Center = CalculatePortPosition(group, verticalPosition);
-                    verticalPosition += originalPort.Height;
+                    var portViewModel = originalPort.CreateProxyPortViewModel(groupPort);
+
+                    if (originalPort.IsConnected)
+                    {
+                        mainPortViewModels.Add(portViewModel);
+
+                        // Calculate new position for the proxy inports
+                        groupPort.Center = CalculatePortPosition(groupPort, verticalPosition);
+                        verticalPosition += originalPort.Height;
+                    }
+                    else
+                    {
+                        // Defer position setting for unconnected ports
+                        unconnectedPortViewModels.Add(portViewModel);
+                    }
                 }
             }
+            // Leave space for toggle button
+            verticalPosition += portToggleOffset;
 
-            return newPortViewModels;
+            // Position unconnected output ports
+            foreach (var portViewModel in unconnectedPortViewModels)
+            {
+                var groupPort = portViewModel.PortModel;
+                groupPort.Center = CalculatePortPosition(groupPort, verticalPosition);
+                verticalPosition += groupPort.Height;
+            }
+
+            return (mainPortViewModels, unconnectedPortViewModels);
+        }
+
+        private void OnPortConnectionChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName != nameof(PortModel.IsConnected)) return;
+            if (sender is not PortModel port) return;
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
+                var proxyPortVM = FindPortViewModel(port);
+                if (proxyPortVM == null) return;
+
+                if (port.PortType == PortType.Input)
+                {
+                    if (port.Connectors.Any() && OptionalInPorts.Contains(proxyPortVM))
+                    {
+                        OptionalInPorts.Remove(proxyPortVM);
+                        InPorts.Add(proxyPortVM);
+                    }
+                    else if (!OptionalInPorts.Contains(proxyPortVM))
+                    {
+                        InPorts.Remove(proxyPortVM);
+                        OptionalInPorts.Add(proxyPortVM);
+                    }
+
+                    UpdateProxyPortsPosition();
+                    RaisePropertyChanged(nameof(InPorts));
+                    RaisePropertyChanged(nameof(OptionalInPorts));
+                }
+
+                if (port.PortType == PortType.Output)
+                {
+                    if (port.IsConnected && UnconnectedOutPorts.Contains(proxyPortVM))
+                    {
+                        UnconnectedOutPorts.Remove(proxyPortVM);
+                        OutPorts.Add(proxyPortVM);
+                    }
+                    else if (!UnconnectedOutPorts.Contains(proxyPortVM))
+                    {
+                        OutPorts.Remove(proxyPortVM);
+                        UnconnectedOutPorts.Add(proxyPortVM);
+                    }
+
+                    UpdateProxyPortsPosition();
+                    RaisePropertyChanged(nameof(OutPorts));
+                    RaisePropertyChanged(nameof(UnconnectedOutPorts));
+                }
+            });
+        }
+
+        private PortViewModel FindPortViewModel(PortModel model)
+        {
+            return OutPorts.Concat(UnconnectedOutPorts)
+                           .Concat(InPorts)
+                           .Concat(OptionalInPorts)
+                           .FirstOrDefault(pvm => pvm.PortModel == model);
+        }
+
+        private void UnsubscribeFromProxyPortEvents()
+        {
+            if (originalInPorts != null)
+            {
+                foreach (var port in originalInPorts)
+                    port.PropertyChanged -= OnPortConnectionChanged;
+            }
+
+            if (originalOutPorts != null)
+            {
+                foreach (var port in originalOutPorts)
+                    port.PropertyChanged -= OnPortConnectionChanged;
+            }
         }
 
         internal void UpdateProxyPortsPosition()
@@ -898,16 +1131,34 @@ namespace Dynamo.ViewModels
             }
 
             verticalPosition = 0;
-            for (int i = 0; i < outPorts.Count(); i++)
+            // Update all input ports
+            verticalPosition = PositionPorts(inPorts, verticalPosition);
+            verticalPosition += portToggleOffset;
+            verticalPosition = PositionPorts(optionalInPorts, verticalPosition);
+
+            // Reset vertical position for output ports
+            verticalPosition = 0;
+
+            verticalPosition = PositionPorts(outPorts, verticalPosition);
+            verticalPosition += portToggleOffset;
+            PositionPorts(unconnectedOutPorts, verticalPosition);
+        }
+
+        private double PositionPorts(IEnumerable<PortViewModel> portViewModels, double startY)
+        {
+            double y = startY;
+
+            foreach (var portVM in portViewModels)
             {
-                var model = outPorts[i]?.PortModel;
-                if (model != null && model.IsProxyPort)
+                var model = portVM?.PortModel;
+                if (model?.IsProxyPort == true)
                 {
-                    // calculate new position for the proxy outports.
-                    model.Center = CalculatePortPosition(model, verticalPosition);
-                    verticalPosition += model.Height;
+                    model.Center = CalculatePortPosition(model, y);
+                    y += model.Height;
                 }
             }
+
+            return y;
         }
 
         internal void ClearSelection()
@@ -1075,14 +1326,17 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void ManageAnnotationMVExpansionAndCollapse()
         {
-            if (InPorts.Any() || OutPorts.Any())
+            if (InPorts.Any() || OutPorts.Any() || OptionalInPorts.Any() || UnconnectedOutPorts.Any())
             {
                 InPorts.Clear();
                 OutPorts.Clear();
+                OptionalInPorts.Clear();
+                UnconnectedOutPorts.Clear();
             }
 
             if (annotationModel.IsExpanded)
             {
+                UnsubscribeFromProxyPortEvents();
                 ToggleSizeAdjustmentsForCollapse(false);
                 this.ShowGroupContents();
             }

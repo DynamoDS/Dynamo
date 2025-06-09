@@ -148,6 +148,10 @@ namespace Dynamo.Graph.Workspaces
         public double WidthAdjustmentExpanded;
         public double HeightAdjustmentExpanded;
         public bool IsResizedWhileCollapsed;
+        public bool IsOptionalInPortsCollapsed;
+        public bool IsUnconnectedOutPortsCollapsed;
+        public bool hasToggledOptionalInPorts;
+        public bool HasToggledUnconnectedOutPorts;
 
         // TODO, Determine if these are required
         public double Left;
@@ -176,7 +180,11 @@ namespace Dynamo.Graph.Workspaces
                 this.GroupStyleId == other.GroupStyleId &&
                 this.Background == other.Background &&
                 this.WidthAdjustment == other.WidthAdjustment &&
-                this.HeightAdjustment == other.HeightAdjustment;
+                this.HeightAdjustment == other.HeightAdjustment &&
+                this.IsOptionalInPortsCollapsed == other.IsOptionalInPortsCollapsed &&
+                this.IsUnconnectedOutPortsCollapsed == other.IsUnconnectedOutPortsCollapsed &&
+                this.hasToggledOptionalInPorts == other.hasToggledOptionalInPorts &&
+                this.HasToggledUnconnectedOutPorts == other.HasToggledUnconnectedOutPorts;
 
             //TODO try to get rid of these if possible
             //needs investigation if we are okay letting them get 
@@ -2717,6 +2725,11 @@ namespace Dynamo.Graph.Workspaces
             annotationModel.HeightAdjustmentExpanded = annotationViewInfo.HeightAdjustmentExpanded;
             annotationModel.WidthAdjustmentExpanded = annotationViewInfo.WidthAdjustmentExpanded;
             annotationModel.IsResizedWhileCollapsed = annotationViewInfo.IsResizedWhileCollapsed;
+            annotationModel.IsOptionalInPortsCollapsed = annotationViewInfo.IsOptionalInPortsCollapsed;
+            annotationModel.IsUnconnectedOutPortsCollapsed = annotationViewInfo.IsUnconnectedOutPortsCollapsed;
+            annotationModel.HasToggledOptionalInPorts = annotationViewInfo.hasToggledOptionalInPorts;
+            annotationModel.HasToggledUnconnectedOutPorts = annotationViewInfo.HasToggledUnconnectedOutPorts;
+
             annotationModel.UpdateGroupFrozenStatus();
 
             annotationModel.ModelBaseRequested += annotationModel_GetModelBase;
