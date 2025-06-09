@@ -20,7 +20,6 @@ namespace Dynamo.Wpf.Utilities
             IEnumerable<NodeModel> misplacedNodes,
             bool skipInitialAutoLayout,
             bool checkWorkspaceNodes,
-            bool reuseUndoGroup,
             Action finalizer)
         {
             if (Application.Current?.Dispatcher != null)
@@ -30,7 +29,6 @@ namespace Dynamo.Wpf.Utilities
                     misplacedNodes,
                     skipInitialAutoLayout,
                     checkWorkspaceNodes,
-                    reuseUndoGroup,
                     finalizer), DispatcherPriority.ApplicationIdle);
             }
         }
@@ -109,7 +107,6 @@ namespace Dynamo.Wpf.Utilities
             IEnumerable<NodeModel> misplacedNodes,
             bool skipInitialAutoLayout,
             bool checkWorkspaceNodes,
-            bool reuseUndoGroup,
             Action finalizer)
         {
             DynamoSelection.Instance.Selection.AddRange(misplacedNodes);
