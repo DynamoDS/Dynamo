@@ -560,29 +560,23 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            var existingPort = wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel;
-            if (existingPort != null)
+            if (wsViewModel.DynamoViewModel.IsNewDNAFlyoutEnabled)
             {
-                existingPort.Highlight = Visibility.Collapsed;
+                wsViewModel?.OnRequestNodeAutocompleteBar(this);
             }
-
-            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
-
-            wsViewModel.OnRequestNodeAutoCompleteSearch();
-        }
-
-        // Handler to invoke Node autocomplete cluster
-        private void AutoCompleteCluster(object parameter)
-        {
-            //handle the mouse event to prevent connection from starting
-            MouseButtonEventArgs evArgs = parameter as MouseButtonEventArgs;
-            if (evArgs != null)
+            else
             {
-                evArgs.Handled = true;
-            }
+                var existingPort = wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel;
+                if (existingPort != null)
+                {
+                    existingPort.Highlight = Visibility.Collapsed;
+                }
 
-            var wsViewModel = node.WorkspaceViewModel;
-            wsViewModel?.OnRequestNodeAutocompleteBar(this);
+                wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
+
+                wsViewModel.OnRequestNodeAutoCompleteSearch();
+            }
+          
         }
 
         private void NodePortContextMenu(object obj)

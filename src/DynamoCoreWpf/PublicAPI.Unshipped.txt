@@ -2867,6 +2867,8 @@ Dynamo.ViewModels.PreferencesViewModel.MLRecommendationNumberOfResults.get -> in
 Dynamo.ViewModels.PreferencesViewModel.MLRecommendationNumberOfResults.set -> void
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteIsChecked.set -> void
+Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteNewFlyoutIsChecked.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteNewFlyoutIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMachineLearningIsBeta.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMachineLearningIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMachineLearningIsChecked.set -> void
