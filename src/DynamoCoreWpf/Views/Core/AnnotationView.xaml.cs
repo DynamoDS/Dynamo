@@ -58,13 +58,16 @@ namespace Dynamo.Nodes
             }
         }
 
-        private double GetMinWidthOnCollapsed()                 // TAKE IsCollapsedWhileResized INTO CONSIDERATION
+        private double GetMinWidthOnCollapsed()
         {
             var model = ViewModel.AnnotationModel;
 
+            // Input ports
             double inPortWidth = MeasureMaxPortWidth(inputPortControl);
             double inToggleWidth = inputToggleControl.ActualWidth;
             double optionalInPortWidth = model.IsOptionalInPortsCollapsed ? 0 : MeasureMaxPortWidth(optionalInputPortControl);
+
+            // Output ports
             double outPortWidth = MeasureMaxPortWidth(outputPortControl);
             double outToggleWidth = outputToggleControl.ActualWidth;
             double unconnectedOutPortWidth = model.IsUnconnectedOutPortsCollapsed ? 0 : MeasureMaxPortWidth(unconnectedOutputPortControl);

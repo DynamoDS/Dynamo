@@ -834,10 +834,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool OptionalInputsCollapsed
         {
-            get
-            {
-                return preferenceSettings.OptionalInPortsCollapsed;
-            }
+            get => preferenceSettings.OptionalInPortsCollapsed;
             set
             {
                 preferenceSettings.OptionalInPortsCollapsed = value;
@@ -850,10 +847,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool UnconnectedOutputsCollapsed
         {
-            get
-            {
-                return preferenceSettings.UnconnectedOutPortsCollapsed;
-            }
+            get => preferenceSettings.UnconnectedOutPortsCollapsed;
             set
             {
                 preferenceSettings.UnconnectedOutPortsCollapsed = value;
@@ -866,10 +860,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         public bool CollapseToMinSize
         {
-            get
-            {
-                return preferenceSettings.CollapseToMinSize;
-            }
+            get => preferenceSettings.CollapseToMinSize;
             set
             {
                 preferenceSettings.CollapseToMinSize = value;

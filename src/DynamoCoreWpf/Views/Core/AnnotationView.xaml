@@ -464,7 +464,11 @@
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="{x:Type Thumb}">
-                        <Polygon Fill="{Binding DataContext.Background, RelativeSource={RelativeSource AncestorType=UserControl}, Converter={StaticResource TextForegroundSaturationColorConverter}, ConverterParameter=resizeThumb}" Points="0,8 8,8 8,0" />
+                        <Polygon Points="0,8 8,8 8,0"
+                         Fill="{Binding DataContext.Background,
+                                RelativeSource={RelativeSource AncestorType=UserControl},
+                                Converter={StaticResource TextForegroundSaturationColorConverter},
+                                ConverterParameter=Thumb}" />
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
@@ -721,10 +725,10 @@
         </Border>
 
         <!--
-            If a node is dragged over this group (and that node does not already belong to another group)
-            this border is activated, indicating that the node can be dropped into the group.
-            The visibility of this is controlled by the AnnotationViewModel property 'NodeHoveringState'
-            which is set in the StateMachine.
+        If a node is dragged over this group (and that node does not already belong to another group)
+        this border is activated, indicating that the node can be dropped into the group.
+        The visibility of this is controlled by the AnnotationViewModel property 'NodeHoveringState'
+        which is set in the StateMachine.
         -->
         <Border x:Name="nodeHoveringStateBorder"
                 Grid.RowSpan="2"
@@ -739,16 +743,16 @@
         </Border>
 
         <!--
-            The entire group is embedded in this expander, which is consist of two parts
-            - The header: holds the Title and Description of the group and also a context menu icon
+        The entire group is embedded in this expander, which is consist of two parts
+        - The header: holds the Title and Description of the group and also a context menu icon
             - The description is only visible when the Expander is expanded.
-            - The content grid: this grid holds all of the content in the group:
+        - The content grid: this grid holds all of the content in the group:
             - the AnnotationRectangle canvas: this is where the content (nodes, notes and groups) live
-            this is a Path with a background color set by the ViewModel, the canvas will cutout any
-            nested groups AnnotationRectangle to avoid overlaps
+              this is a Path with a background color set by the ViewModel, the canvas will cutout any
+              nested groups AnnotationRectangle to avoid overlaps
             - ResizeThumb: this is used to manually expand the size of the group, the thumb has no icon
-            but will convert the mouse courser to visually show the user that they can resize the group
-            when hovering over the bottom right corner.
+              but will convert the mouse courser to visually show the user that they can resize the group
+              when hovering over the bottom right corner.
         -->
         <Expander x:Name="GroupExpander"
                   Width="{Binding Width}"
@@ -1001,14 +1005,14 @@
             </Grid>
         </Expander>
         <!--
-            The CollapsedAnnotationRectangle is visible whenever the expander is collapsed. In this state the
-            expander header is still visible but will hide the group description text. This border has 3 children
+        The CollapsedAnnotationRectangle is visible whenever the expander is collapsed. In this state the
+        expander header is still visible but will hide the group description text. This border has 3 children
             - inputPortControl: This will display any input port of nodes that are either not connected or connected
-            to nodes outside of the group
+              to nodes outside of the group
             - outputPortControl: This will display any output port of nodes that are either not connected or connected
-            to nodes outside of the group
+              to nodes outside of the group
             - GroupContentIcons: This will display the node icons of all Input/Output ports that are on the group
-            it also shows a counter of all nodes that are in between the input/output nodes.
+              it also shows a counter of all nodes that are in between the input/output nodes.
         -->
         <Border x:Name="CollapsedAnnotationRectangle"
                 Width="{Binding Width}"
