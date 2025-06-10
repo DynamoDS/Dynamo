@@ -49,7 +49,6 @@ namespace Dynamo.Controls
         /// Old ZIndex of node. It's set, when mouse leaves node.
         /// </summary>
         private int oldZIndex;
-
         private bool nodeWasClicked;
 
         public NodeView TopControl
@@ -1547,6 +1546,21 @@ namespace Dynamo.Controls
 
         #endregion
 
+        private void DelayPreviewControlAction()
+        {
+            if (!IsMouseOver) return;
+
+            TryShowPreviewBubbles();
+        }
+
+        private void InitialTryShowPreviewBubble()
+        {
+            // Always set old ZIndex to the last value, even if mouse is not over the node.
+            oldZIndex = NodeViewModel.StaticZIndex;
+
+            viewModel.WorkspaceViewModel.DelayNodePreviewControl.Debounce(300, DelayPreviewControlAction);
+        }
+
         private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)
         {
             ViewModel.NodeLogic.DispatchedToUI -= NodeLogic_DispatchedToUI;
@@ -1772,10 +1786,7 @@ namespace Dynamo.Controls
         {
             // If the mouse does not leave the node after the connector is added,
             // try to show the preview bubble without new mouse enter event. 
-            if (IsMouseOver)
-            {
-                Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
-            }
+            if (IsMouseOver) InitialTryShowPreviewBubble();
         }
 
         void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -2076,15 +2087,12 @@ namespace Dynamo.Controls
             // if the node is located under "Hide preview bubbles" menu item and the item is clicked,
             // ViewModel.DynamoViewModel.ShowPreviewBubbles will be updated AFTER node mouse enter event occurs
             // so, wait while ShowPreviewBubbles binding updates value
-            Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
+            InitialTryShowPreviewBubble();
         }
 
         private void TryShowPreviewBubbles()
         {
             nodeWasClicked = false;
-
-            // Always set old ZIndex to the last value, even if mouse is not over the node.
-            oldZIndex = NodeViewModel.StaticZIndex;
 
             // There is no need run further.
             if (IsPreviewDisabled()) return;
@@ -2110,23 +2118,30 @@ namespace Dynamo.Controls
             // Or the user is selecting nodes
             // Or preview is disabled for this node
             // Or preview shouldn't be shown for some nodes (e.g. number sliders, watch nodes etc.)
-            // Or node is frozen.
-            // Or node is transient state.
+            // Or node is frozen
+            // Or we are panning the view.
             return !ViewModel.DynamoViewModel.ShowPreviewBubbles ||
                 ViewModel.WorkspaceViewModel.IsConnecting ||
                 ViewModel.WorkspaceViewModel.IsSelecting || !previewEnabled ||
-                !ViewModel.IsPreviewInsetVisible || ViewModel.IsFrozen || viewModel.IsTransient;
+                !ViewModel.IsPreviewInsetVisible || ViewModel.IsFrozen ||
+                ViewModel.WorkspaceViewModel.IsPanning;
         }
 
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
             ViewModel.ZIndex = oldZIndex;
+            viewModel.WorkspaceViewModel.DelayNodePreviewControl.Cancel();
 
-            //Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
+            // The preview hasn't been instantiated yet, we should stop here 
+            if (previewControl == null) return;
+
+            // Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
             if (ViewModel.NodeModel != null && ViewModel.NodeModel is CoreNodeModels.Watch) return;
 
             // If mouse in over node/preview control or preview control is pined, we can not hide preview control.
-            if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen || IsMouseInsidePreview(e) ||
+            // check the field and not the property because that will trigger the instantiation
+            if (IsMouseOver || previewControl?.IsMouseOver == true ||
+                previewControl?.StaysOpen == true || IsMouseInsidePreview(e) ||
                 (Mouse.Captured is DragCanvas && IsMouseInsideNodeOrPreview(e.GetPosition(this)))) return;
 
             // If it's expanded, then first condense it.
