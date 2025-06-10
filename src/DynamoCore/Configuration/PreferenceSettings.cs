@@ -201,6 +201,7 @@ namespace Dynamo.Configuration
             get => optionalInputsCollapsed;
             set
             {
+                if (optionalInputsCollapsed == value) return;
                 optionalInputsCollapsed = value;
                 RaisePropertyChanged(nameof(OptionalInPortsCollapsed));
             }
@@ -214,6 +215,7 @@ namespace Dynamo.Configuration
             get => unconnectedOutputsCollapsed;
             set
             {
+                if (unconnectedOutputsCollapsed == value) return;
                 unconnectedOutputsCollapsed = value;
                 RaisePropertyChanged(nameof(UnconnectedOutPortsCollapsed));
             }
@@ -227,6 +229,7 @@ namespace Dynamo.Configuration
             get => collapseToMinSize;
             set
             {
+                if (collapseToMinSize == value) return;
                 collapseToMinSize = value;
                 RaisePropertyChanged(nameof(CollapseToMinSize));
             }

@@ -1022,35 +1022,31 @@
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="*" />
                 </Grid.RowDefinitions>
-
                 <!--  INPUT PORTS  -->
-                <Grid
-                    Name="inputPortsGrid"
-                    Grid.Row="0"
-                    Grid.Column="0">
+                <Grid Name="inputPortsGrid"
+                      Grid.Row="0"
+                      Grid.Column="0">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="34" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <!--  Main Input Ports  -->
-                    <ItemsControl
-                        Name="inputPortControl"
-                        Grid.Row="0"
-                        Margin="-25,10"
-                        HorizontalContentAlignment="Left"
-                        Canvas.ZIndex="20"
-                        ItemsSource="{Binding Path=InPorts}" />
+                    <ItemsControl Name="inputPortControl"
+                                  Grid.Row="0"
+                                  Margin="-25,10"
+                                  HorizontalContentAlignment="Left"
+                                  Canvas.ZIndex="20"
+                                  ItemsSource="{Binding Path=InPorts}" />
                     <!--  Collapse/expand ports  -->
-                    <ToggleButton
-                        Name="inputToggleControl"
-                        Grid.Row="1"
-                        Margin="5,0,-20,0"
-                        HorizontalAlignment="Left"
-                        Click="OptionalPortsToggle_Click"
-                        Content="{x:Static p:Resources.GroupOptionalInportsText}"
-                        IsChecked="{Binding IsOptionalInPortsCollapsed, Mode=TwoWay}"
-                        Tag="{Binding OptionalInPorts.Count}">
+                    <ToggleButton Name="inputToggleControl"
+                                  Grid.Row="1"
+                                  Margin="5,0,-20,0"
+                                  HorizontalAlignment="Left"
+                                  Click="OptionalPortsToggle_Click"
+                                  Content="{x:Static p:Resources.GroupOptionalInportsText}"
+                                  IsChecked="{Binding IsOptionalInPortsCollapsed, Mode=TwoWay}"
+                                  Tag="{Binding OptionalInPorts.Count}">
                         <ToggleButton.Style>
                             <Style BasedOn="{StaticResource BaseCollapsedPortToggleStyle}" TargetType="ToggleButton">
                                 <Style.Triggers>
@@ -1062,13 +1058,12 @@
                         </ToggleButton.Style>
                     </ToggleButton>
                     <!--  Optional Input Ports  -->
-                    <ItemsControl
-                        Name="optionalInputPortControl"
-                        Grid.Row="2"
-                        Margin="-25,0"
-                        HorizontalContentAlignment="Left"
-                        Canvas.ZIndex="20"
-                        ItemsSource="{Binding Path=OptionalInPorts}">
+                    <ItemsControl Name="optionalInputPortControl"
+                                  Grid.Row="2"
+                                  Margin="-25,0"
+                                  HorizontalContentAlignment="Left"
+                                  Canvas.ZIndex="20"
+                                  ItemsSource="{Binding Path=OptionalInPorts}">
                         <ItemsControl.Style>
                             <Style TargetType="ItemsControl">
                                 <Setter Property="Visibility" Value="Collapsed" />
@@ -1083,33 +1078,30 @@
                 </Grid>
 
                 <!--  OUTPUT PORTS  -->
-                <Grid
-                    Name="outputPortsGrid"
-                    Grid.Row="0"
-                    Grid.Column="2">
+                <Grid Name="outputPortsGrid"
+                      Grid.Row="0"
+                      Grid.Column="2">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
                     <!--  Main Output Ports  -->
-                    <ItemsControl
-                        Name="outputPortControl"
-                        Grid.Row="0"
-                        Margin="-25,10"
-                        HorizontalContentAlignment="Right"
-                        Canvas.ZIndex="20"
-                        ItemsSource="{Binding Path=OutPorts}" />
+                    <ItemsControl Name="outputPortControl"
+                                  Grid.Row="0"
+                                  Margin="-25,10"
+                                  HorizontalContentAlignment="Right"
+                                  Canvas.ZIndex="20"
+                                  ItemsSource="{Binding Path=OutPorts}" />
                     <!--  Collapse/expand ports  -->
-                    <ToggleButton
-                        Name="outputToggleControl"
-                        Grid.Row="1"
-                        Margin="0,0,5,0"
-                        HorizontalAlignment="Right"
-                        Click="UnconnectedPortsToggle_Click"
-                        Content="{x:Static p:Resources.GroupUnconnectedOutportsText}"
-                        IsChecked="{Binding IsUnconnectedOutPortsCollapsed, Mode=TwoWay}"
-                        Tag="{Binding UnconnectedOutPorts.Count}">
+                    <ToggleButton Name="outputToggleControl"
+                                  Grid.Row="1"
+                                  Margin="0,0,5,0"
+                                  HorizontalAlignment="Right"
+                                  Click="UnconnectedPortsToggle_Click"
+                                  Content="{x:Static p:Resources.GroupUnconnectedOutportsText}"
+                                  IsChecked="{Binding IsUnconnectedOutPortsCollapsed, Mode=TwoWay}"
+                                  Tag="{Binding UnconnectedOutPorts.Count}">
                         <ToggleButton.Style>
                             <Style BasedOn="{StaticResource BaseCollapsedPortToggleStyle}" TargetType="ToggleButton">
                                 <Style.Triggers>
@@ -1121,13 +1113,12 @@
                         </ToggleButton.Style>
                     </ToggleButton>
                     <!--  Unconnected Output Ports  -->
-                    <ItemsControl
-                        Name="unconnectedOutputPortControl"
-                        Grid.Row="2"
-                        Margin="-25,0"
-                        HorizontalContentAlignment="Right"
-                        Canvas.ZIndex="20"
-                        ItemsSource="{Binding Path=UnconnectedOutPorts}">
+                    <ItemsControl Name="unconnectedOutputPortControl"
+                                  Grid.Row="2"
+                                  Margin="-25,0"
+                                  HorizontalContentAlignment="Right"
+                                  Canvas.ZIndex="20"
+                                  ItemsSource="{Binding Path=UnconnectedOutPorts}">
                         <ItemsControl.Style>
                             <Style TargetType="ItemsControl">
                                 <Setter Property="Visibility" Value="Collapsed" />

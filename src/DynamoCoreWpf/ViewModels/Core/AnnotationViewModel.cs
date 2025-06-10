@@ -294,6 +294,7 @@ namespace Dynamo.ViewModels
             get => isOptionalInPortsCollapsed;
             set
             {
+                if (isOptionalInPortsCollapsed == value) return;
                 isOptionalInPortsCollapsed = value;
                 annotationModel.IsOptionalInPortsCollapsed = value;
                 RaisePropertyChanged(nameof(IsOptionalInPortsCollapsed));
@@ -309,6 +310,7 @@ namespace Dynamo.ViewModels
             get => isUnconnectedOutPortsCollapsed;
             set
             {
+                if (isUnconnectedOutPortsCollapsed == value) return;
                 isUnconnectedOutPortsCollapsed = value;
                 annotationModel.IsUnconnectedOutPortsCollapsed = value;
                 RaisePropertyChanged(nameof(IsUnconnectedOutPortsCollapsed));
@@ -758,6 +760,12 @@ namespace Dynamo.ViewModels
                 if (!annotationModel.HasToggledOptionalInPorts)
                 {
                     IsOptionalInPortsCollapsed = preferenceSettings.OptionalInPortsCollapsed;
+
+                    //// Update the boundary only if the group is collapsed
+                    //if (!IsExpanded)
+                    //{
+                    //    annotationModel.UpdateBoundaryFromSelection();
+                    //}
                 }
             }
             else if (e.PropertyName == nameof(IPreferences.UnconnectedOutPortsCollapsed))
@@ -765,6 +773,12 @@ namespace Dynamo.ViewModels
                 if (!annotationModel.HasToggledUnconnectedOutPorts)
                 {
                     IsUnconnectedOutPortsCollapsed = preferenceSettings.UnconnectedOutPortsCollapsed;
+
+                    //// Update the boundary only if the group is collapsed
+                    //if (!IsExpanded)
+                    //{
+                    //    annotationModel.UpdateBoundaryFromSelection();
+                    //}
                 }
             }
             else if (e.PropertyName == nameof(IPreferences.CollapseToMinSize))
@@ -1049,22 +1063,25 @@ namespace Dynamo.ViewModels
                 var proxyPortVM = FindPortViewModel(port);
                 if (proxyPortVM == null) return;
 
+                bool updatedInputs = false;
+                bool updatedOutputs = false;
+
                 if (port.PortType == PortType.Input)
                 {
+                    // Connected input ports should be in the InPorts collection.
                     if (port.Connectors.Any() && OptionalInPorts.Contains(proxyPortVM))
                     {
                         OptionalInPorts.Remove(proxyPortVM);
                         InPorts.Add(proxyPortVM);
+                        updatedInputs = true;
                     }
-                    else if (!OptionalInPorts.Contains(proxyPortVM))
+                    // Disconnected optional ports using default value go to OptionalInPorts.
+                    else if (!port.Connectors.Any() && port.UsingDefaultValue)
                     {
                         InPorts.Remove(proxyPortVM);
                         OptionalInPorts.Add(proxyPortVM);
+                        updatedInputs = true;
                     }
-
-                    UpdateProxyPortsPosition();
-                    RaisePropertyChanged(nameof(InPorts));
-                    RaisePropertyChanged(nameof(OptionalInPorts));
                 }
 
                 if (port.PortType == PortType.Output)
@@ -1073,12 +1090,24 @@ namespace Dynamo.ViewModels
                     {
                         UnconnectedOutPorts.Remove(proxyPortVM);
                         OutPorts.Add(proxyPortVM);
+                        updatedOutputs = true;
                     }
                     else if (!UnconnectedOutPorts.Contains(proxyPortVM))
                     {
                         OutPorts.Remove(proxyPortVM);
                         UnconnectedOutPorts.Add(proxyPortVM);
+                        updatedOutputs = true;
                     }
+                }
+
+                if (updatedInputs)
+                {
+                    UpdateProxyPortsPosition();
+                    RaisePropertyChanged(nameof(InPorts));
+                    RaisePropertyChanged(nameof(OptionalInPorts));
+                }
+                if (updatedOutputs)
+                {
 
                     UpdateProxyPortsPosition();
                     RaisePropertyChanged(nameof(OutPorts));
@@ -1244,6 +1273,10 @@ namespace Dynamo.ViewModels
             if (isCollapsedCheck && IsExpanded && !annotationModel.IsResizedWhileCollapsed)
                 return;
 
+            // Suppress boundary updates while redrawing connectors to avoid
+            // redundant UpdateBoundaryFromSelection calls caused by connector repositioning
+            annotationModel.SuppressBoundaryUpdate = true;
+
             var allNodes = this.Nodes
                 .OfType<AnnotationModel>()
                 .SelectMany(x => x.Nodes.OfType<NodeModel>())
@@ -1259,6 +1292,9 @@ namespace Dynamo.ViewModels
                 connectorViewModel.Redraw();
                 connector.Start.Owner.ReportPosition();
             }
+
+            // Re-enable boundary updates once internal redraw is complete
+            annotationModel.SuppressBoundaryUpdate = false;
         }
 
         /// <summary>

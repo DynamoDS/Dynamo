@@ -563,6 +563,7 @@ namespace Dynamo.Graph.Annotations
             get => isOptionalInPortsCollapsed;
             set
             {
+                if (isOptionalInPortsCollapsed == value) return;
                 isOptionalInPortsCollapsed = value;
             }
         }
@@ -577,6 +578,7 @@ namespace Dynamo.Graph.Annotations
             get => isUnconnectedOutPortsCollapsed;
             set
             {
+                if (isUnconnectedOutPortsCollapsed == value) return;
                 isUnconnectedOutPortsCollapsed = value;
             }
 
@@ -592,6 +594,7 @@ namespace Dynamo.Graph.Annotations
             get => hasToggledOptionalInPorts;
             set
             {
+                if (hasToggledOptionalInPorts == value) return;
                 hasToggledOptionalInPorts = value;
             }
         }
@@ -606,6 +609,7 @@ namespace Dynamo.Graph.Annotations
             get => hasToggledUnconnectedOutPorts;
             set
             {
+                if (hasToggledUnconnectedOutPorts == value) return;
                 hasToggledUnconnectedOutPorts = value;
             }
         }
@@ -619,7 +623,24 @@ namespace Dynamo.Graph.Annotations
             get => isCollapsedToMinSize;
             set
             {
+                if (isCollapsedToMinSize == value) return;
                 isCollapsedToMinSize = value;
+            }
+        }
+
+        private bool suppressBoundaryUpdate;
+        /// <summary>
+        /// A temporary flag used to suppress boundary updates while internal operations,
+        /// such as connector redrawing, are in progress.
+        /// Should be set to true only during those operations to avoid redundant or recursive updates.
+        /// </summary>
+        internal bool SuppressBoundaryUpdate
+        {
+            get => suppressBoundaryUpdate;
+            set
+            {
+                if (value == suppressBoundaryUpdate) return;
+                suppressBoundaryUpdate = value;
             }
         }
 
@@ -687,9 +708,13 @@ namespace Dynamo.Graph.Annotations
         {
             removedPins.Clear();
         }
-
+        
         private void model_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
         {
+            // Skip boundary updates caused by connector redraws if group is collapsed
+            if (!IsExpanded && SuppressBoundaryUpdate && e.PropertyName == nameof(Position))
+                return;
+
             switch (e.PropertyName)
             {
                 case nameof(Position):
@@ -806,25 +831,30 @@ namespace Dynamo.Graph.Annotations
                     this.InitialHeight = region.Height;
             }
 
-            // If the group is collapsed we have a few options:
-            // 1. ResizedWhileCollapsed (any CollapseToMinSize by PreferencesSetting) --> width set to min + height set to min
-            else if (IsResizedWhileCollapsed) // !IsResizedWhileCollapsed --> width with adjustment | height with adjustment
+            // When collapsed, update size using the following rules:
+            // Case 1: Manually resized while collapsed.
+            // Use adjusted width and height regardless of preference.
+            else if (IsResizedWhileCollapsed)
             {
                 Width = Math.Max(MinWidthOnCollapsed + ExtendSize + WidthAdjustment, TextMaxWidth + ExtendSize);
 
                 ModelAreaHeight = MinCollapsedPortAreaHeight + CollapsedContentHeight + HeightAdjustment;
                 Height = TextBlockHeight + ModelAreaHeight;
             }
-            // 2. NOT CollapseToMinSize by PreferencesSetting and NOT yet ResizedWhileCollapsed --> same width as expanded + height set to min
-            else if (!IsResizedWhileCollapsed && IsCollapsedToMinSize) // width set to min | height set to min
+
+            // Case 2: Not manually resized, but preference is to collapse to minimum size.
+            // Use minimum width and height.
+            else if (!IsResizedWhileCollapsed && IsCollapsedToMinSize)
             {
                 Width = Math.Max(MinWidthOnCollapsed + ExtendSize, TextMaxWidth + ExtendSize);
 
                 ModelAreaHeight = MinCollapsedPortAreaHeight + CollapsedContentHeight;
                 Height = TextBlockHeight + ModelAreaHeight;
             }
-            // 3. CollapseToMinSize by PreferencesSetting and NOT yet ResizedWhileCollapsed --> width set to min + height set to min
-            else if (!IsResizedWhileCollapsed && !IsCollapsedToMinSize) // width as expanded | height set to min
+
+            // Case 3: Not resized and no collapse-to-min preference.
+            // Keep expanded width, shrink height only.
+            else if (!IsResizedWhileCollapsed && !IsCollapsedToMinSize)
             {
                 Width = Math.Max(xDistance + ExtendSize + WidthAdjustment, TextMaxWidth + ExtendSize);
 
@@ -838,8 +868,6 @@ namespace Dynamo.Graph.Annotations
             {
                 RaisePropertyChanged(nameof(Position));
             }
-
-            var c0 = IsOptionalInPortsCollapsed;
         }
 
         /// <summary>
@@ -960,7 +988,7 @@ namespace Dynamo.Graph.Annotations
             helper.SetAttribute("backgrouund", (this.Background == null ? "" : this.Background.ToString()));
             helper.SetAttribute(nameof(IsSelected), IsSelected);
             helper.SetAttribute(nameof(IsExpanded), this.IsExpanded);
-            //helper.SetAttribute(nameof(IsResizedWhileCollapsed), this.IsResizedWhileCollapsed);
+            helper.SetAttribute(nameof(IsResizedWhileCollapsed), this.IsResizedWhileCollapsed);
             helper.SetAttribute(nameof(IsOptionalInPortsCollapsed), this.IsOptionalInPortsCollapsed);
             helper.SetAttribute(nameof(IsUnconnectedOutPortsCollapsed), this.IsUnconnectedOutPortsCollapsed);
             helper.SetAttribute(nameof(HasToggledOptionalInPorts), this.HasToggledOptionalInPorts);

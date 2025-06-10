@@ -54,19 +54,11 @@ namespace Dynamo.Nodes
             if (e.PropertyName == nameof(ViewModel.IsUnconnectedOutPortsCollapsed) ||
                 e.PropertyName == nameof(ViewModel.IsOptionalInPortsCollapsed))
             {
-
-                var model = ViewModel.AnnotationModel;
-
-                Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    model.MinWidthOnCollapsed = GetMinWidthOnCollapsed();
-                    model.UpdateBoundaryFromSelection();
-                }),
-                System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                UpdateCollapsedBoundaryAsync();
             }
         }
 
-        private double GetMinWidthOnCollapsed()
+        private double GetMinWidthOnCollapsed()                 // TAKE IsCollapsedWhileResized INTO CONSIDERATION
         {
             var model = ViewModel.AnnotationModel;
 
@@ -85,25 +77,29 @@ namespace Dynamo.Nodes
 
         private double GetMinCollapsedPortAreaHeight()
         {
-            var inportsCtrlHeight = MeasureCombinedPortHeight(inputPortControl);
-            double optInortsCtrlHeight = 0;
+            // Measure input port heights
+            double requiredInputHeight = MeasureCombinedPortHeight(inputPortControl);
+            double optionalInputHeight = 0;
 
-            if (!ViewModel.IsOptionalInPortsCollapsed)
+            // If optional ports are visible or the user resized the group manually,
+            // include the height of optional input ports
+            if (!ViewModel.IsOptionalInPortsCollapsed || ViewModel.AnnotationModel.IsResizedWhileCollapsed)
             {
-                optInortsCtrlHeight = MeasureCombinedPortHeight(optionalInputPortControl);
+                optionalInputHeight = MeasureCombinedPortHeight(optionalInputPortControl);
             }
-            if (ViewModel.AnnotationModel.IsResizedWhileCollapsed)
+            double totalInputHeight = requiredInputHeight + optionalInputHeight + inputToggleControl.ActualHeight;
+
+            // Measure output port heights
+            double requiredOutputHeight = MeasureCombinedPortHeight(outputPortControl);
+            double unconnectedOutputHeight = 0;
+
+            if (!ViewModel.IsUnconnectedOutPortsCollapsed || ViewModel.AnnotationModel.IsResizedWhileCollapsed)
             {
-                optInortsCtrlHeight = MeasureCombinedPortHeight(optionalInputPortControl);
+                unconnectedOutputHeight = MeasureCombinedPortHeight(optionalInputPortControl);
             }
+            double totalOutputHeight = requiredOutputHeight + unconnectedOutputHeight + inputToggleControl.ActualHeight;
 
-            double totalInPortHeight = inportsCtrlHeight + optInortsCtrlHeight + 31; // private portToggleOffset
-
-            var outPortsCtrlHeight = MeasureCombinedPortHeight(outputPortControl);
-            var unconnectedOutportsCtrlHeight = ViewModel.IsUnconnectedOutPortsCollapsed ? 0 : MeasureCombinedPortHeight(unconnectedOutputPortControl);
-            double totalOutPortHeight = outPortsCtrlHeight + unconnectedOutportsCtrlHeight + 31; // private portToggleOffset
-
-            return Math.Max(totalInPortHeight, totalOutPortHeight);
+            return Math.Max(totalInputHeight, totalOutputHeight);
         }
 
         private void AnnotationView_Unloaded(object sender, RoutedEventArgs e)
@@ -443,18 +439,20 @@ namespace Dynamo.Nodes
 
         private void CollapsedAnnotationRectangle_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            var model = ViewModel.AnnotationModel;
-            if (!model.IsExpanded)
-            {
-                Dispatcher.BeginInvoke(new Action(() =>
-                {
-                    model.MinWidthOnCollapsed = GetMinWidthOnCollapsed();
-                    model.MinCollapsedPortAreaHeight = GetMinCollapsedPortAreaHeight();
+            if (!ViewModel.IsExpanded)
+                UpdateCollapsedBoundaryAsync();
+        }
 
-                    model.UpdateBoundaryFromSelection();
-                }),
-                System.Windows.Threading.DispatcherPriority.ApplicationIdle);
-            }
+        private void UpdateCollapsedBoundaryAsync()
+        {
+            var model = ViewModel.AnnotationModel;
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                model.MinWidthOnCollapsed = GetMinWidthOnCollapsed();
+                model.MinCollapsedPortAreaHeight = GetMinCollapsedPortAreaHeight();
+                model.UpdateBoundaryFromSelection();
+            }),
+            System.Windows.Threading.DispatcherPriority.ApplicationIdle);
         }
 
         private void contextMenu_Click(object sender, RoutedEventArgs e)
@@ -564,9 +562,6 @@ namespace Dynamo.Nodes
             {
                 ViewModel.AnnotationModel.HasToggledOptionalInPorts = true;                
             }
-
-            // Recalculate the minimal height and update the group boundary
-            ViewModel.AnnotationModel.MinCollapsedPortAreaHeight = GetMinCollapsedPortAreaHeight();
         }
 
         private void UnconnectedPortsToggle_Click(object sender, RoutedEventArgs e)
@@ -576,9 +571,6 @@ namespace Dynamo.Nodes
             {
                 ViewModel.AnnotationModel.HasToggledUnconnectedOutPorts = true;
             }
-
-            // Recalculate the minimal height and update the group boundary
-            ViewModel.AnnotationModel.MinCollapsedPortAreaHeight = GetMinCollapsedPortAreaHeight();
         }
 
         private double MeasureMaxPortWidth(ItemsControl portControl)
