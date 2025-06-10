@@ -409,7 +409,7 @@ namespace Dynamo
                 data["FunctionId"] = data.GetValue("Uuid");
                 data["Path"] = path;
                 
-                if (!data.TryGetValue("Category", out _))
+                if (!data.ContainsKey("Category"))
                 {
                     data["Category"] = "";
                 }
