@@ -295,6 +295,9 @@ namespace Dynamo.Controls
         #region constructors
         static NodeView()
         {
+            //Set bitmap scaling mode to low quality for default node icon.
+            RenderOptions.SetBitmapScalingMode(_defaultNodeIcon, BitmapScalingMode.LowQuality);
+
             //Freeze the static resource to reduce memory overhead
             _frozenImageSource.Freeze();
             _transientImageSource.Freeze();
@@ -640,6 +643,8 @@ namespace Dynamo.Controls
                 Source = _frozenImageSource
             };
 
+            RenderOptions.SetBitmapScalingMode(FrozenImage, BitmapScalingMode.LowQuality);
+
             FrozenImage.SetBinding(Grid.VisibilityProperty, new Binding("IsFrozen")
             {
                 Converter = _boolToVisibilityCollapsedConverter,
@@ -658,6 +663,8 @@ namespace Dynamo.Controls
                 Source = _transientImageSource
             };
 
+            RenderOptions.SetBitmapScalingMode(TransientImage, BitmapScalingMode.LowQuality);
+
             TransientImage.SetBinding(Grid.VisibilityProperty, new Binding("IsTransient")
             {
                 Converter = _boolToVisibilityCollapsedConverter,
@@ -675,6 +682,8 @@ namespace Dynamo.Controls
                 Stretch = Stretch.UniformToFill,
                 Source = _hiddenEyeImageSource
             };
+
+            RenderOptions.SetBitmapScalingMode(HiddenEyeImage, BitmapScalingMode.LowQuality);
 
             HiddenEyeImage.SetBinding(Grid.VisibilityProperty, new Binding("IsVisible")
             {
@@ -1030,6 +1039,7 @@ namespace Dynamo.Controls
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
                 TargetNullValue = null
             });
+            RenderOptions.SetBitmapScalingMode(zoomStateImgOne, BitmapScalingMode.LowQuality);
 
             zoomGlyphRowZero.Children.Add(zoomStateImgOne);
 
@@ -1061,6 +1071,7 @@ namespace Dynamo.Controls
                 Converter = _emptyToVisibilityCollapsedConverter,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
+            RenderOptions.SetBitmapScalingMode(zoomStateImgTwo, BitmapScalingMode.LowQuality);
 
             // Image in column 1
             var zoomStateImgThree = new Image
@@ -1084,6 +1095,7 @@ namespace Dynamo.Controls
                 Converter = _emptyToVisibilityCollapsedConverter,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
+            RenderOptions.SetBitmapScalingMode(zoomStateImgThree, BitmapScalingMode.LowQuality);
 
             zoomGlyphRowOne.Children.Add(zoomStateImgTwo);
             zoomGlyphRowOne.Children.Add(zoomStateImgThree);
