@@ -33,7 +33,6 @@ namespace Dynamo.ViewModels
             {
                 if (autoCompleteCommand == null)
                     autoCompleteCommand ??= new DelegateCommand(AutoComplete, CanAutoComplete);
-
                 return autoCompleteCommand;
             }
         }
