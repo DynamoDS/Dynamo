@@ -154,8 +154,8 @@ Dynamo.Configuration.PreferenceSettings.EnableDynamoPlayerRenamedWatchAsOutput.g
 Dynamo.Configuration.PreferenceSettings.EnableDynamoPlayerRenamedWatchAsOutput.set -> void
 Dynamo.Configuration.PreferenceSettings.EnableNodeAutoComplete.get -> bool
 Dynamo.Configuration.PreferenceSettings.EnableNodeAutoComplete.set -> void
-Dynamo.Configuration.PreferenceSettings.EnableNewNodeAutoCompleteFlyout.get -> bool
-Dynamo.Configuration.PreferenceSettings.EnableNewNodeAutoCompleteFlyout.set -> void
+Dynamo.Configuration.PreferenceSettings.EnableNewNodeAutoCompleteUI.get -> bool
+Dynamo.Configuration.PreferenceSettings.EnableNewNodeAutoCompleteUI.set -> void
 Dynamo.Configuration.PreferenceSettings.EnableNotificationCenter.get -> bool
 Dynamo.Configuration.PreferenceSettings.EnableNotificationCenter.set -> void
 Dynamo.Configuration.PreferenceSettings.EnablePersistExtensions.get -> bool

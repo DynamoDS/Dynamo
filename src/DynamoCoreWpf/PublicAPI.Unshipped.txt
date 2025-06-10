@@ -2867,8 +2867,8 @@ Dynamo.ViewModels.PreferencesViewModel.MLRecommendationNumberOfResults.get -> in
 Dynamo.ViewModels.PreferencesViewModel.MLRecommendationNumberOfResults.set -> void
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteIsChecked.set -> void
-Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteNewFlyoutIsChecked.get -> bool
-Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteNewFlyoutIsChecked.set -> void
+Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteNewUIIsChecked.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteNewUIIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMachineLearningIsBeta.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMachineLearningIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMachineLearningIsChecked.set -> void
@@ -5067,7 +5067,7 @@ static Dynamo.Wpf.Properties.Resources.NodeAutocomplete.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutoCompleteNotAvailableForCollapsedGroups.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutoCompleteToolTip.get -> string
-static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteNewFlyout.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteNewUI.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuEnablePeriodicUpdate.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuHelp.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuIsInput.get -> string

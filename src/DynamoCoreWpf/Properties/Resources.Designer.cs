@@ -8028,11 +8028,11 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Enable New Node Autocomplete Flyout.
+        ///   Looks up a localized string similar to Enable New Node Autocomplete UI.
         /// </summary>
-        public static string PreferencesViewEnableNodeAutoCompleteNewFlyout {
+        public static string PreferencesViewEnableNodeAutoCompleteNewUI {
             get {
-                return ResourceManager.GetString("PreferencesViewEnableNodeAutoCompleteNewFlyout", resourceCulture);
+                return ResourceManager.GetString("PreferencesViewEnableNodeAutoCompleteNewUI", resourceCulture);
             }
         }
         

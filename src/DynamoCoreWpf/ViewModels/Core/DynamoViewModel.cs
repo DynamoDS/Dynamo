@@ -233,11 +233,11 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Controls if the new DNA Flyout is enabled from preference settings.
         /// </summary>
-        internal bool IsNewDNAFlyoutEnabled
+        internal bool IsNewDNAUIEnabled
         {
             get
             {
-                return model.PreferenceSettings.EnableNewNodeAutoCompleteFlyout;
+                return model.PreferenceSettings.EnableNewNodeAutoCompleteUI;
             }
         }
 

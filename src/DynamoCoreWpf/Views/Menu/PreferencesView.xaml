@@ -947,9 +947,9 @@
                                                       Width="{StaticResource ToggleButtonWidth}"
                                                       Height="{StaticResource ToggleButtonHeight}"
                                                       VerticalAlignment="Center"
-                                                      IsChecked="{Binding Path=NodeAutocompleteNewFlyoutIsChecked}"
+                                                      IsChecked="{Binding Path=NodeAutocompleteNewUIIsChecked}"
                                                       Style="{StaticResource EllipseToggleButton1}"/>
-                                            <Label Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoCompleteNewFlyout}"
+                                            <Label Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoCompleteNewUI}"
                                                FontWeight="Normal"
                                                Margin="10,0,0,0"
                                                VerticalAlignment="Center"

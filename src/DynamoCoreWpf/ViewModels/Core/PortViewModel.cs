@@ -560,7 +560,7 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            if (wsViewModel.DynamoViewModel.IsNewDNAFlyoutEnabled)
+            if (wsViewModel.DynamoViewModel.IsNewDNAUIEnabled)
             {
                 wsViewModel?.OnRequestNodeAutocompleteBar(this);
             }
