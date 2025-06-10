@@ -428,6 +428,7 @@ namespace DynamoCoreWpfTests
                 nodeViewModelJobject.Properties().ElementAt(10).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.WidthBorder)) &&
                 nodeViewModelJobject.Properties().ElementAt(11).Name == GetJsonPropertydName<NodeViewModel>(nameof(NodeViewModel.HeightBorder));
 
+
             Assert.IsTrue(explicitOrder, "The order of the properties is not the expected");
         }
 
