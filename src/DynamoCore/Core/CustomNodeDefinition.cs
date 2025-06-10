@@ -321,7 +321,7 @@ namespace Dynamo
         /// <summary>
         /// Returns custom node category
         /// </summary>
-        public string Category { get; set; }
+        public string Category { get; set; } = string.Empty;
 
         /// <summary>
         /// Returns custom node description
@@ -409,10 +409,10 @@ namespace Dynamo
                 data["FunctionId"] = data.GetValue("Uuid");
                 data["Path"] = path;
                 
-                if (!data.ContainsKey("Category"))
-                {
-                    data["Category"] = "";
-                }
+                //if (!data.ContainsKey("Category"))
+                //{
+                //    data["Category"] = "";
+                //}
                 info = data.ToObject<CustomNodeInfo>();
                 return true;
             }
