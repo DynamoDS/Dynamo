@@ -1,54 +1,61 @@
-<UserControl
-    x:Class="Dynamo.Nodes.AnnotationView"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:System="clr-namespace:System;assembly=mscorlib"
-    xmlns:controls="clr-namespace:Dynamo.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
-    xmlns:fa="http://schemas.fontawesome.io/icons/"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:nodes="clr-namespace:Dynamo.Graph.Nodes;assembly=DynamoCore"
-    xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
-    xmlns:utilities="clr-namespace:Dynamo.Wpf.Utilities"
-    xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
-    xmlns:views="clr-namespace:Dynamo.Views"
-    Name="Group"
-    Canvas.Left="{Binding Left, Mode=TwoWay}"
-    Canvas.Top="{Binding Top, Mode=TwoWay}"
-    Width="Auto"
-    Height="Auto"
-    d:DataContext="{d:DesignInstance Type=viewModels:AnnotationViewModel}"
-    AllowDrop="True"
-    IsHitTestVisible="True"
-    MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"
-    MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"
-    Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
-    mc:Ignorable="d">
+<UserControl Name="Group"
+             x:Class="Dynamo.Nodes.AnnotationView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:System="clr-namespace:System;assembly=mscorlib"
+             xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
+             xmlns:controls="clr-namespace:Dynamo.Controls"
+             xmlns:views="clr-namespace:Dynamo.Views"
+             xmlns:viewModels="clr-namespace:Dynamo.ViewModels"
+             xmlns:dynui="clr-namespace:Dynamo.UI.Controls"
+             xmlns:fa="http://schemas.fontawesome.io/icons/"
+             xmlns:nodes="clr-namespace:Dynamo.Graph.Nodes;assembly=DynamoCore"
+             xmlns:utilities="clr-namespace:Dynamo.Wpf.Utilities"
+             mc:Ignorable="d"
+             Height="Auto"
+             Width="Auto"
+             Visibility="{Binding IsCollapsed, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
+             MouseLeftButtonDown="AnnotationView_OnMouseLeftButtonDown"
+             MouseRightButtonDown="AnnotationView_OnMouseRightButtonDown"
+             Canvas.Left="{Binding Left, Mode=TwoWay}"
+             Canvas.Top="{Binding Top, Mode=TwoWay}"
+             AllowDrop="True"
+             IsHitTestVisible="True"
+             d:DataContext="{d:DesignInstance Type=viewModels:AnnotationViewModel}">
 
     <UserControl.Resources>
-        <utilities:GroupStyleItemSelector x:Key="GroupStyleItemSelector" />
-        <controls:StringToBrushColorConverter x:Key="StringToBrushColorConverter" />
-        <controls:TextForegroundSaturationColorConverter x:Key="TextForegroundSaturationColorConverter" />
-        <controls:BackgroundConditionEvaluator x:Key="BackgroundConditionEvaluator" />
+        <utilities:GroupStyleItemSelector x:Key="GroupStyleItemSelector"/>
+        <controls:StringToBrushColorConverter x:Key="StringToBrushColorConverter"/>
+        <controls:TextForegroundSaturationColorConverter x:Key="TextForegroundSaturationColorConverter"/>
+        <controls:BackgroundConditionEvaluator x:Key="BackgroundConditionEvaluator"/>
         <controls:ZoomToVisibilityCollapsedConverter x:Key="ZoomToVisibilityCollapsedConverter" />
-        <CornerRadius
-            x:Key="ExpanderCornerRadius"
-            TopLeft="10"
-            TopRight="10" />
-        <Style x:Key="ColorSelectorListBox" TargetType="ListBox">
-            <Setter Property="SnapsToDevicePixels" Value="true" />
-            <Setter Property="OverridesDefaultStyle" Value="true" />
-            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
-            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Hidden" />
-            <Setter Property="ScrollViewer.CanContentScroll" Value="true" />
-            <Setter Property="Width" Value="150" />
-            <Setter Property="Height" Value="54" />
+        <CornerRadius x:Key="ExpanderCornerRadius"
+                      TopLeft="10"
+                      TopRight="10" />
+        <Style x:Key="ColorSelectorListBox"
+               TargetType="ListBox">
+            <Setter Property="SnapsToDevicePixels"
+                    Value="true" />
+            <Setter Property="OverridesDefaultStyle"
+                    Value="true" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility"
+                    Value="Disabled" />
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility"
+                    Value="Hidden" />
+            <Setter Property="ScrollViewer.CanContentScroll"
+                    Value="true" />
+            <Setter Property="Width"
+                    Value="150" />
+            <Setter Property="Height"
+                    Value="54" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBox">
                         <Grid Margin="0,13,4,8">
-                            <ScrollViewer Margin="0" Focusable="false">
+                            <ScrollViewer Margin="0"
+                                          Focusable="false">
                                 <WrapPanel IsItemsHost="True" />
                             </ScrollViewer>
                         </Grid>
@@ -57,32 +64,33 @@
             </Setter>
         </Style>
 
-        <Style x:Key="ColorSelectorListBoxItem" TargetType="ListBoxItem">
-            <Setter Property="SnapsToDevicePixels" Value="true" />
-            <Setter Property="OverridesDefaultStyle" Value="true" />
-            <Setter Property="Width" Value="18" />
-            <Setter Property="Height" Value="20" />
+        <Style x:Key="ColorSelectorListBoxItem"
+               TargetType="ListBoxItem">
+            <Setter Property="SnapsToDevicePixels"
+                    Value="true" />
+            <Setter Property="OverridesDefaultStyle"
+                    Value="true" />
+            <Setter Property="Width"
+                    Value="18" />
+            <Setter Property="Height"
+                    Value="20" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="ListBoxItem">
-                        <Grid Margin="0,0,4,5" SnapsToDevicePixels="true">
+                        <Grid Margin="0,0,4,5"
+                              SnapsToDevicePixels="true">
                             <Grid.Background>
                                 <SolidColorBrush Color="Transparent" />
                             </Grid.Background>
-                            <ContentPresenter />
-                            <Border
-                                x:Name="Border"
-                                Background="Transparent"
-                                BorderBrush="Black"
-                                BorderThickness="1"
-                                Opacity="0.25" />
                             <VisualStateManager.VisualStateGroups>
                                 <VisualStateGroup x:Name="CommonStates">
                                     <VisualState x:Name="Normal" />
                                     <VisualState x:Name="MouseOver">
                                         <Storyboard>
-                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Border" Storyboard.TargetProperty="Opacity">
-                                                <EasingDoubleKeyFrame KeyTime="0" Value="1.0" />
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Border"
+                                                                           Storyboard.TargetProperty="Opacity">
+                                                <EasingDoubleKeyFrame KeyTime="0"
+                                                                      Value="1.0" />
                                             </DoubleAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </VisualState>
@@ -91,37 +99,45 @@
                                     <VisualState x:Name="Unselected" />
                                     <VisualState x:Name="Selected">
                                         <Storyboard>
-                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Border" Storyboard.TargetProperty="Opacity">
-                                                <EasingDoubleKeyFrame KeyTime="0" Value="1.0" />
+                                            <DoubleAnimationUsingKeyFrames Storyboard.TargetName="Border"
+                                                                           Storyboard.TargetProperty="Opacity">
+                                                <EasingDoubleKeyFrame KeyTime="0"
+                                                                      Value="1.0" />
                                             </DoubleAnimationUsingKeyFrames>
                                         </Storyboard>
                                     </VisualState>
                                     <VisualState x:Name="SelectedUnfocused" />
                                 </VisualStateGroup>
                             </VisualStateManager.VisualStateGroups>
+                            <ContentPresenter />
+                            <Border x:Name="Border"
+                                    Opacity="0.25"
+                                    BorderThickness="1"
+                                    BorderBrush="Black"
+                                    Background="Transparent" />
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
         </Style>
 
-        <ControlTemplate x:Key="GroupExpanderTemplate" TargetType="{x:Type ToggleButton}">
-            <Border
-                x:Name="expanderBorder"
-                Padding="{TemplateBinding Padding}"
-                Background="{TemplateBinding Background}"
-                BorderBrush="{TemplateBinding BorderBrush}"
-                BorderThickness="{TemplateBinding BorderThickness}">
+        <ControlTemplate x:Key="GroupExpanderTemplate"
+                         TargetType="{x:Type ToggleButton}">
+            <Border x:Name="expanderBorder"
+                    Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    Padding="{TemplateBinding Padding}">
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Rectangle Grid.ColumnSpan="1" Fill="Transparent" />
-                    <Image
-                        x:Name="sign"
-                        Width="16"
-                        Height="16"
-                        Source="/DynamoCoreWpf;component/UI/Images/caret_down_grey_48px.png" />
+                    <Rectangle Fill="Transparent"
+                               Grid.ColumnSpan="1" />
+                    <Image x:Name="sign"
+                           Source="/DynamoCoreWpf;component/UI/Images/caret_down_grey_48px.png"
+                           Width="16"
+                           Height="16" />
                 </Grid>
             </Border>
             <ControlTemplate.Triggers>
@@ -131,7 +147,7 @@
                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="False" />
                         <Condition Binding="{Binding Background, Converter={StaticResource BackgroundConditionEvaluator}}" Value="False" />
                     </MultiDataTrigger.Conditions>
-                    <Setter TargetName="sign" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/caret_down_grey_48px.png" />
+                    <Setter Property="Source" TargetName="sign" Value="/DynamoCoreWpf;component/UI/Images/caret_down_grey_48px.png" />
                 </MultiDataTrigger>
 
                 <MultiDataTrigger>
@@ -140,7 +156,7 @@
                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="False" />
                         <Condition Binding="{Binding Background, Converter={StaticResource BackgroundConditionEvaluator}}" Value="True" />
                     </MultiDataTrigger.Conditions>
-                    <Setter TargetName="sign" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/caret_down_white_48px.png" />
+                    <Setter Property="Source" TargetName="sign" Value="/DynamoCoreWpf;component/UI/Images/caret_down_white_48px.png" />
                 </MultiDataTrigger>
 
                 <MultiDataTrigger>
@@ -148,7 +164,7 @@
                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="False" />
                     </MultiDataTrigger.Conditions>
-                    <Setter TargetName="sign" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/caret_down_hover_48px.png" />
+                    <Setter Property="Source" TargetName="sign" Value="/DynamoCoreWpf;component/UI/Images/caret_down_hover_48px.png" />
                 </MultiDataTrigger>
 
                 <MultiDataTrigger>
@@ -157,7 +173,7 @@
                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="True" />
                         <Condition Binding="{Binding Background, Converter={StaticResource BackgroundConditionEvaluator}}" Value="False" />
                     </MultiDataTrigger.Conditions>
-                    <Setter TargetName="sign" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/caret_up_grey_48px.png" />
+                    <Setter Property="Source" TargetName="sign" Value="/DynamoCoreWpf;component/UI/Images/caret_up_grey_48px.png" />
                 </MultiDataTrigger>
 
                 <MultiDataTrigger>
@@ -166,7 +182,7 @@
                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="True" />
                         <Condition Binding="{Binding Background, Converter={StaticResource BackgroundConditionEvaluator}}" Value="True" />
                     </MultiDataTrigger.Conditions>
-                    <Setter TargetName="sign" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/caret_up_white_48px.png" />
+                    <Setter Property="Source" TargetName="sign" Value="/DynamoCoreWpf;component/UI/Images/caret_up_white_48px.png" />
                 </MultiDataTrigger>
 
                 <MultiDataTrigger>
@@ -174,7 +190,7 @@
                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsMouseOver}" Value="True" />
                         <Condition Binding="{Binding RelativeSource={RelativeSource Self}, Path=IsChecked}" Value="True" />
                     </MultiDataTrigger.Conditions>
-                    <Setter TargetName="sign" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/caret_up_hover_48px.png" />
+                    <Setter Property="Source" TargetName="sign" Value="/DynamoCoreWpf;component/UI/Images/caret_up_hover_48px.png" />
                 </MultiDataTrigger>
             </ControlTemplate.Triggers>
         </ControlTemplate>
@@ -221,27 +237,28 @@
                         <Grid>
                             <Grid.RowDefinitions>
                                 <RowDefinition Height="Auto" />
-                                <RowDefinition x:Name="ContentRow" Height="0" />
+                                <RowDefinition x:Name="ContentRow"
+                                               Height="0" />
                             </Grid.RowDefinitions>
-                            <Border
-                                x:Name="headerBorder"
-                                Grid.Row="0"
-                                Margin="0"
-                                Padding="0"
-                                CornerRadius="{StaticResource ExpanderCornerRadius}"
-                                ToolTipService.IsEnabled="{TemplateBinding IsExpanded,
-                                                                           Converter={StaticResource InverseBooleanConverter}}">
+                            <Border x:Name="headerBorder"
+                                    Grid.Row="0"
+                                    CornerRadius="{StaticResource ExpanderCornerRadius}"
+                                    Padding="0"
+                                    Margin="0"
+                                    ToolTipService.IsEnabled="{TemplateBinding IsExpanded, Converter={StaticResource InverseBooleanConverter}}">
                                 <Border.Background>
-                                    <SolidColorBrush Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.Background}" />
+                                    <SolidColorBrush Color="{Binding RelativeSource={RelativeSource AncestorType={x:Type UserControl}}, Path=DataContext.Background}"></SolidColorBrush>
                                 </Border.Background>
                                 <Border.ToolTip>
-                                    <dynui:DynamoToolTip
-                                        Margin="5,0,0,0"
-                                        AttachmentSide="Top"
-                                        Style="{DynamicResource ResourceKey=SLightToolTip}">
-                                        <StackPanel MaxWidth="320" Orientation="Vertical">
-                                            <TextBlock Margin="0,0,0,10" Text="{Binding AnnotationText}" />
-                                            <TextBlock Text="{Binding AnnotationDescriptionText}" TextWrapping="WrapWithOverflow" />
+                                    <dynui:DynamoToolTip AttachmentSide="Top"
+                                                         Style="{DynamicResource ResourceKey=SLightToolTip}"
+                                                         Margin="5,0,0,0">
+                                        <StackPanel Orientation="Vertical"
+                                                    MaxWidth="320">
+                                            <TextBlock Text="{Binding AnnotationText}"
+                                                       Margin="0,0,0,10" />
+                                            <TextBlock Text="{Binding AnnotationDescriptionText}"
+                                                       TextWrapping="WrapWithOverflow" />
                                         </StackPanel>
                                     </dynui:DynamoToolTip>
                                 </Border.ToolTip>
@@ -252,29 +269,28 @@
                                         <ColumnDefinition Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
                                     </Grid.ColumnDefinitions>
-                                    <ContentPresenter
-                                        Grid.ColumnSpan="3"
-                                        Margin="4"
-                                        HorizontalAlignment="Left"
-                                        ContentSource="Header"
-                                        RecognizesAccessKey="True" />
+                                    <ContentPresenter Grid.ColumnSpan="3"
+                                                      Margin="4"
+                                                      ContentSource="Header"
+                                                      RecognizesAccessKey="True"
+                                                      HorizontalAlignment="Left">
+                                    </ContentPresenter>
 
                                     <!--  Warning/Error Icon  -->
-                                    <Image
-                                        Grid.Column="0"
-                                        Width="16px"
-                                        Height="16px"
-                                        Margin="0,0,2.5,2.5"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Bottom">
+                                    <Image Grid.Column="0"
+                                           Width="16px"
+                                           Height="16px"
+                                           VerticalAlignment="Bottom"
+                                           HorizontalAlignment="Right"
+                                           Margin="0,0,2.5,2.5">
                                         <Image.Style>
                                             <Style TargetType="Image">
                                                 <Style.Triggers>
                                                     <DataTrigger Binding="{Binding AnnotationModel.GroupState}" Value="{x:Static nodes:ElementState.Warning}">
-                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/warning.png" />
+                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/warning.png"/>
                                                     </DataTrigger>
                                                     <DataTrigger Binding="{Binding AnnotationModel.GroupState}" Value="{x:Static nodes:ElementState.Error}">
-                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/error.png" />
+                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/error.png"/>
                                                     </DataTrigger>
                                                 </Style.Triggers>
                                             </Style>
@@ -310,40 +326,33 @@
                                         </Button>
                                     </Grid>
 
-                                    <!--  Expander button  -->
-                                    <ToggleButton
-                                        Grid.Column="2"
-                                        Margin="0,0,0,2.5"
-                                        VerticalAlignment="Bottom"
-                                        IsChecked="{Binding IsExpanded, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}"
-                                        OverridesDefaultStyle="True"
-                                        Template="{StaticResource GroupExpanderTemplate}" />
+                                    <!--Expander button-->
+                                    <ToggleButton OverridesDefaultStyle="True"
+                                                  Grid.Column="2"
+                                                  Margin="0,0,0,2.5"
+                                                  Template="{StaticResource GroupExpanderTemplate}"
+                                                  IsChecked="{Binding IsExpanded, Mode=TwoWay, 
+                                                RelativeSource={RelativeSource TemplatedParent}}"
+                                                  VerticalAlignment="Bottom" />
 
-                                    <!--  Group context menu  -->
-                                    <Button
-                                        x:Name="contextMenu"
-                                        Grid.Column="3"
-                                        Height="16"
-                                        Margin="0,2.5,0,2.5"
-                                        VerticalAlignment="Bottom"
-                                        Background="Transparent"
-                                        BorderBrush="Transparent"
-                                        BorderThickness="0"
-                                        Click="contextMenu_Click">
+                                    <!--Group context menu-->
+                                    <Button x:Name="contextMenu"
+                                            Grid.Column="3"
+                                            Background="Transparent"
+                                            BorderBrush="Transparent"
+                                            BorderThickness="0"
+                                            Margin="0,2.5,0,2.5"
+                                            Height="16"
+                                            VerticalAlignment="Bottom"
+                                            Click="contextMenu_Click">
                                         <Button.Style>
                                             <Style TargetType="{x:Type Button}">
                                                 <Setter Property="OverridesDefaultStyle" Value="True" />
                                                 <Setter Property="Template">
                                                     <Setter.Value>
                                                         <ControlTemplate TargetType="Button">
-                                                            <Border
-                                                                Name="border"
-                                                                Background="{TemplateBinding Background}"
-                                                                BorderThickness="0">
-                                                                <Image
-                                                                    x:Name="menuIcon"
-                                                                    Width="16"
-                                                                    Height="16" />
+                                                            <Border Name="border" BorderThickness="0" Background="{TemplateBinding Background}">
+                                                                <Image x:Name="menuIcon" Width="16" Height="16" />
                                                             </Border>
                                                             <ControlTemplate.Triggers>
                                                                 <MultiDataTrigger>
@@ -376,14 +385,18 @@
                                 </Grid>
                             </Border>
 
-                            <Border x:Name="Content" Grid.Row="1">
+                            <Border x:Name="Content"
+                                    Grid.Row="1">
                                 <ContentPresenter />
                             </Border>
                         </Grid>
 
                         <ControlTemplate.Triggers>
-                            <Trigger Property="IsExpanded" Value="True">
-                                <Setter TargetName="ContentRow" Property="Height" Value="{Binding Height, ElementName=Content}" />
+                            <Trigger Property="IsExpanded"
+                                     Value="True">
+                                <Setter TargetName="ContentRow"
+                                        Property="Height"
+                                        Value="{Binding Height, ElementName=Content}" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -402,15 +415,14 @@
                             </MultiBinding>
                         </TextBlock.Text>
                     </TextBlock>
-                    <Path
-                        x:Name="ArrowPath"
-                        Width="8"
-                        Height="6"
-                        Margin="6,0,0,0"
-                        VerticalAlignment="Center"
-                        Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
-                        Fill="{Binding Background, Converter={StaticResource TextForegroundSaturationColorConverter}, ConverterParameter=groupPortToggle}"
-                        Stretch="Fill">
+                    <Path x:Name="ArrowPath"
+                          Width="8"
+                          Height="6"
+                          Margin="6,0,0,0"
+                          VerticalAlignment="Center"
+                          Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
+                          Fill="{Binding Background, Converter={StaticResource TextForegroundSaturationColorConverter}, ConverterParameter=groupPortToggle}"
+                          Stretch="Fill">
                         <Path.RenderTransform>
                             <RotateTransform x:Name="PathRotation" Angle="0" CenterX="4" CenterY="3" />
                         </Path.RenderTransform>
@@ -459,68 +471,59 @@
         </Style>
     </UserControl.Resources>
 
-    <Grid
-        Name="AnnotationGrid"
-        Height="Auto"
-        IsHitTestVisible="True">
+    <Grid Name="AnnotationGrid"
+          Height="Auto"
+          IsHitTestVisible="True">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <Grid.ContextMenu>
-            <ContextMenu
-                Name="AnnotationContextMenu"
-                Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}"
-                Style="{StaticResource ContextMenuStyle}">
-                <MenuItem
-                    Name="DeleteAnnotation"
-                    Click="OnDeleteAnnotation"
-                    Header="{x:Static p:Resources.GroupContextMenuDeleteGroup}" />
-                <MenuItem
-                    Name="FreezeAnnotation"
-                    Command="{Binding Path=ToggleIsFrozenGroupCommand}"
-                    Header="{x:Static p:Resources.GroupContextMenuFreezeGroup}"
-                    IsCheckable="true"
-                    IsChecked="{Binding Path=AnnotationModel.IsFrozen, Mode=OneWay}" />
-                <MenuItem
-                    Name="UngroupAnnotation"
-                    Click="OnUngroupAnnotation"
-                    Header="{x:Static p:Resources.GroupContextMenuUngroup}" />
-                <MenuItem
-                    Name="PreviewAnnotation"
-                    Command="{Binding Path=ToggleIsVisibleGroupCommand}"
-                    Header="{x:Static p:Resources.GroupContextMenuPreview}"
-                    IsCheckable="true"
-                    IsChecked="{Binding Path=AnnotationModel.IsVisible, Mode=OneWay}" />
-                <MenuItem
-                    Name="unGroup_cm"
-                    Command="{Binding Path=RemoveGroupFromGroupCommand}"
-                    Header="{x:Static p:Resources.ContextUnGroupFromSelection}" />
-                <MenuItem
-                    Name="AddGroupToGroup"
-                    Command="{Binding AddGroupToGroupCommand}"
-                    Header="{x:Static p:Resources.GroupContextMenuAddGroupToGroup}" />
-                <MenuItem
-                    Name="GraphLayoutAnnotation"
-                    Click="OnGraphLayoutAnnotation"
-                    Header="{x:Static p:Resources.GroupContextMenuGraphLayout}" />
-                <MenuItem
-                    Name="GroupStyleAnnotation"
-                    Header="{x:Static p:Resources.GroupStyleContextAnnotation}"
-                    ItemContainerStyleSelector="{StaticResource GroupStyleItemSelector}"
-                    ItemsSource="{Binding GroupStyleList}"
-                    Style="{StaticResource MenuItemGroupStyle}"
-                    SubmenuOpened="GroupStyleAnnotation_SubmenuOpened">
+            <ContextMenu Name="AnnotationContextMenu" 
+                         Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}" 
+                         Style="{StaticResource ContextMenuStyle}">
+                <MenuItem Name="DeleteAnnotation"
+                          Click="OnDeleteAnnotation"
+                          Header="{x:Static p:Resources.GroupContextMenuDeleteGroup}" />
+                <MenuItem Name="FreezeAnnotation"
+                          Command="{Binding Path=ToggleIsFrozenGroupCommand}"
+                          Header="{x:Static p:Resources.GroupContextMenuFreezeGroup}"
+                          IsCheckable="true"
+                          IsChecked="{Binding Path=AnnotationModel.IsFrozen, Mode=OneWay}"/>
+                <MenuItem Name="UngroupAnnotation"
+                          Click="OnUngroupAnnotation"
+                          Header="{x:Static p:Resources.GroupContextMenuUngroup}" />
+                <MenuItem Name="PreviewAnnotation"
+                          Command="{Binding Path=ToggleIsVisibleGroupCommand}"
+                          Header="{x:Static p:Resources.GroupContextMenuPreview}"
+                          IsCheckable="true"
+                          IsChecked="{Binding Path=AnnotationModel.IsVisible, Mode=OneWay}"/>
+                <MenuItem Name="unGroup_cm"
+                          Command="{Binding Path=RemoveGroupFromGroupCommand}"
+                          Header="{x:Static p:Resources.ContextUnGroupFromSelection}" />
+                <MenuItem Name="AddGroupToGroup"
+                          Command="{Binding AddGroupToGroupCommand}"
+                          Header="{x:Static p:Resources.GroupContextMenuAddGroupToGroup}" />
+                <MenuItem Name="GraphLayoutAnnotation"
+                          Click="OnGraphLayoutAnnotation"
+                          Header="{x:Static p:Resources.GroupContextMenuGraphLayout}" />
+                <MenuItem Name="GroupStyleAnnotation"
+                          ItemsSource="{Binding GroupStyleList}"
+                          Style="{StaticResource MenuItemGroupStyle}"
+                          SubmenuOpened="GroupStyleAnnotation_SubmenuOpened"
+                          Header="{x:Static p:Resources.GroupStyleContextAnnotation}"
+                          ItemContainerStyleSelector="{StaticResource GroupStyleItemSelector}">
                     <MenuItem.Resources>
                         <Style x:Key="GroupStyleSeparatorStyle" TargetType="{x:Type MenuItem}">
                             <Setter Property="Template">
                                 <Setter.Value>
                                     <ControlTemplate>
-                                        <Border Height="1" Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}">
-                                            <Border
-                                                Height="1"
-                                                MaxWidth="150"
-                                                Background="{StaticResource NodeContextMenuSeparatorColor}" />
+                                        <Border Height="1"
+                                                Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}">
+                                            <Border Height="1"
+                                                    MaxWidth="150"
+                                                    Background="{StaticResource NodeContextMenuSeparatorColor}">
+                                            </Border>
                                         </Border>
                                     </ControlTemplate>
                                 </Setter.Value>
@@ -528,33 +531,32 @@
                         </Style>
 
                         <Style x:Key="GroupStyleItemStyle" TargetType="{x:Type MenuItem}">
-                            <Setter Property="MenuItem.IsChecked" Value="{Binding IsChecked}" />
-                            <EventSetter Event="Click" Handler="GroupStyleCheckmark_Click" />
+                            <Setter Property="MenuItem.IsChecked"
+                                    Value="{Binding IsChecked}"/>
+                            <EventSetter Event="Click" 
+                                             Handler="GroupStyleCheckmark_Click"/>
                             <Setter Property="MenuItem.Template">
                                 <Setter.Value>
                                     <ControlTemplate TargetType="{x:Type MenuItem}">
-                                        <StackPanel
-                                            x:Name="groupStyleStackPanel"
-                                            MinWidth="150"
-                                            Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}"
-                                            Orientation="Horizontal">
-                                            <Label
-                                                x:Name="buttonColorPicker"
-                                                Width="15"
-                                                Height="15"
-                                                Margin="5,0,5,0"
-                                                Background="{Binding HexColorString, Converter={StaticResource StringToBrushColorConverter}}"
-                                                FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                FontSize="14px" />
-                                            <TextBlock
-                                                MaxWidth="148"
-                                                Margin="5,0,5,0"
-                                                FontFamily="{StaticResource ArtifaktElementRegular}"
-                                                FontSize="14px"
-                                                FontWeight="Medium"
-                                                Foreground="{StaticResource NodeContextMenuForeground}"
-                                                Text="{Binding Name}"
-                                                TextTrimming="CharacterEllipsis" />
+                                        <StackPanel x:Name="groupStyleStackPanel"
+                                                    Orientation="Horizontal"
+                                                    MinWidth="150"
+                                                    Background="{StaticResource PreferencesWindowVisualSettingsAddStyleBackground}">
+                                            <Label x:Name="buttonColorPicker"
+                                                   Margin="5,0,5,0"
+                                                   FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                   FontSize="14px"
+                                                   Background="{Binding HexColorString, Converter={StaticResource StringToBrushColorConverter}}" 
+                                                   Width="15" 
+                                                   Height="15"/>
+                                            <TextBlock Text="{Binding Name}" 
+                                                        TextTrimming="CharacterEllipsis"
+                                                        MaxWidth="148"
+                                                        Margin="5,0,5,0"
+                                                        Foreground="{StaticResource NodeContextMenuForeground}"
+                                                        FontFamily="{StaticResource ArtifaktElementRegular}"
+                                                        FontSize="14px"
+                                                        FontWeight="Medium"/>
                                         </StackPanel>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
@@ -570,15 +572,13 @@
                         </Style>
                     </MenuItem.Resources>
                 </MenuItem>
-                <MenuItem
-                    Name="ColorMenuItem"
-                    Header="{x:Static p:Resources.GroupContextMenuColor}"
-                    Style="{StaticResource ContextMenuItemFixedWidthStyle}">
-                    <ListBox
-                        Height="Auto"
-                        ItemContainerStyle="{StaticResource ColorSelectorListBoxItem}"
-                        SelectionChanged="OnNodeColorSelectionChanged"
-                        Style="{StaticResource ColorSelectorListBox}">
+                <MenuItem Name="ColorMenuItem" 
+                          Header="{x:Static p:Resources.GroupContextMenuColor}"
+                          Style="{StaticResource ContextMenuItemFixedWidthStyle}">
+                    <ListBox ItemContainerStyle="{StaticResource ColorSelectorListBoxItem}"
+                             SelectionChanged="OnNodeColorSelectionChanged"
+                             Height="Auto"
+                             Style="{StaticResource ColorSelectorListBox}">
                         <ListBox.Items>
                             <Rectangle Fill="#d4b6db" />
                             <Rectangle Fill="#ffb8d8" />
@@ -599,64 +599,54 @@
                         </ListBox.Items>
                     </ListBox>
                 </MenuItem>
-                <MenuItem
-                    Name="ChangeSize"
-                    Header="{x:Static p:Resources.GroupContextMenuFont}"
-                    Style="{StaticResource ContextMenuItemFixedWidthStyle}">
-                    <MenuItem
-                        Name="FontSize0"
-                        Command="{Binding ChangeFontSize}"
-                        CommandParameter="14"
-                        Header="14"
-                        IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=14}" />
-                    <MenuItem
-                        Name="FontSize1"
-                        Command="{Binding ChangeFontSize}"
-                        CommandParameter="18"
-                        Header="18"
-                        IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=18}" />
-                    <MenuItem
-                        Name="FontSize2"
-                        Command="{Binding ChangeFontSize}"
-                        CommandParameter="24"
-                        Header="24"
-                        IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=24}" />
-                    <MenuItem
-                        Name="FontSize3"
-                        Command="{Binding ChangeFontSize}"
-                        CommandParameter="30"
-                        Header="30"
-                        IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=30}" />
-                    <MenuItem
-                        Name="FontSize4"
-                        Command="{Binding ChangeFontSize}"
-                        CommandParameter="36"
-                        Header="36"
-                        IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=36}" />
-                    <MenuItem
-                        Name="FontSize5"
-                        Command="{Binding ChangeFontSize}"
-                        CommandParameter="48"
-                        Header="48"
-                        IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=48}" />
-                    <MenuItem
-                        Name="FontSize6"
-                        Command="{Binding ChangeFontSize}"
-                        CommandParameter="60"
-                        Header="60"
-                        IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=60}" />
-                    <MenuItem
-                        Name="FontSize7"
-                        Command="{Binding ChangeFontSize}"
-                        CommandParameter="72"
-                        Header="72"
-                        IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=72}" />
-                    <MenuItem
-                        Name="FontSize8"
-                        Command="{Binding ChangeFontSize}"
-                        CommandParameter="96"
-                        Header="96"
-                        IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=96}" />
+                <MenuItem Name="ChangeSize" 
+                          Header="{x:Static p:Resources.GroupContextMenuFont}"
+                          Style="{StaticResource ContextMenuItemFixedWidthStyle}">
+                    <MenuItem Name="FontSize0"
+                              Command="{Binding ChangeFontSize}"
+                              CommandParameter="14"
+                              Header="14"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=14}" />
+                    <MenuItem Name="FontSize1"
+                              Command="{Binding ChangeFontSize}"
+                              CommandParameter="18"
+                              Header="18"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=18}" />
+                    <MenuItem Name="FontSize2"
+                              Command="{Binding ChangeFontSize}"
+                              CommandParameter="24"
+                              Header="24"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=24}" />
+                    <MenuItem Name="FontSize3"
+                              Command="{Binding ChangeFontSize}"
+                              CommandParameter="30"
+                              Header="30"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=30}" />
+                    <MenuItem Name="FontSize4"
+                              Command="{Binding ChangeFontSize}"
+                              CommandParameter="36"
+                              Header="36"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=36}" />
+                    <MenuItem Name="FontSize5"
+                              Command="{Binding ChangeFontSize}"
+                              CommandParameter="48"
+                              Header="48"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=48}" />
+                    <MenuItem Name="FontSize6"
+                              Command="{Binding ChangeFontSize}"
+                              CommandParameter="60"
+                              Header="60"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=60}" />
+                    <MenuItem Name="FontSize7"
+                              Command="{Binding ChangeFontSize}"
+                              CommandParameter="72"
+                              Header="72"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=72}" />
+                    <MenuItem Name="FontSize8"
+                              Command="{Binding ChangeFontSize}"
+                              CommandParameter="96"
+                              Header="96"
+                              IsChecked="{Binding Path=FontSize, Converter={StaticResource MenuItemCheckConverter}, ConverterParameter=96}" />
 
                 </MenuItem>
             </ContextMenu>
@@ -697,38 +687,36 @@
             </Button>
         </Grid>
 
-        <!--  Persistent border shows around the entire group at all time  -->
-        <Border
-            Name="persistentBorder"
-            Grid.RowSpan="2"
-            Margin="-1"
-            BorderThickness="2"
-            Canvas.ZIndex="41"
-            CornerRadius="{StaticResource ExpanderCornerRadius}"
-            IsHitTestVisible="False"
-            Visibility="{Binding Nodes, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}">
+        <!--Persistent border shows around the entire group at all time-->
+        <Border Name="persistentBorder"
+                Grid.RowSpan="2"
+                BorderThickness="2"
+                CornerRadius="{StaticResource ExpanderCornerRadius}"
+                IsHitTestVisible="False"
+                Canvas.ZIndex="41"
+                Visibility="{Binding Nodes, Converter={StaticResource ListHasMoreThanNItemsToVisibilityConverter}}"
+                Margin="-1">
             <Border.BorderBrush>
                 <SolidColorBrush Color="{Binding Background}" />
             </Border.BorderBrush>
         </Border>
 
-        <!--  Selection border shows around the entire group when its selected in the workspace  -->
-        <Border
-            Name="selectionBorder"
-            Grid.RowSpan="2"
-            Margin="-1"
-            Background="Transparent"
-            BorderBrush="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}"
-            BorderThickness="2"
-            Canvas.ZIndex="41"
-            CornerRadius="{StaticResource ExpanderCornerRadius}"
-            IsHitTestVisible="False">
+        <!--Selection border shows around the entire group when its selected in the workspace-->
+        <Border Name="selectionBorder"
+                Grid.RowSpan="2"
+                Background="Transparent"
+                BorderBrush="{Binding PreviewState, Converter={StaticResource ConnectionStateToBrushConverter}}"
+                BorderThickness="2"
+                CornerRadius="{StaticResource ExpanderCornerRadius}"
+                IsHitTestVisible="False"
+                Canvas.ZIndex="41"
+                Margin="-1">
             <Border.Visibility>
-                <Binding
-                    Converter="{StaticResource ConnectionStateToVisibilityCollapsedConverter}"
-                    Mode="OneWay"
-                    Path="PreviewState"
-                    UpdateSourceTrigger="PropertyChanged" />
+                <Binding Path="PreviewState"
+                         UpdateSourceTrigger="PropertyChanged"
+                         Mode="OneWay"
+                         Converter="{StaticResource ConnectionStateToVisibilityCollapsedConverter}">
+                </Binding>
             </Border.Visibility>
         </Border>
 
@@ -738,17 +726,17 @@
             The visibility of this is controlled by the AnnotationViewModel property 'NodeHoveringState'
             which is set in the StateMachine.
         -->
-        <Border
-            x:Name="nodeHoveringStateBorder"
-            Grid.RowSpan="2"
-            Margin="-4px"
-            Background="Transparent"
-            BorderBrush="#CCCCCC"
-            BorderThickness="6px"
-            Canvas.ZIndex="41"
-            CornerRadius="{StaticResource ExpanderCornerRadius}"
-            IsHitTestVisible="False"
-            Visibility="{Binding NodeHoveringState, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
+        <Border x:Name="nodeHoveringStateBorder"
+                Grid.RowSpan="2"
+                Background="Transparent"
+                CornerRadius="{StaticResource ExpanderCornerRadius}"
+                IsHitTestVisible="False"
+                Canvas.ZIndex="41"
+                BorderBrush="#CCCCCC"
+                BorderThickness="6px"
+                Visibility="{Binding NodeHoveringState, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                Margin="-4px">
+        </Border>
 
         <!--
             The entire group is embedded in this expander, which is consist of two parts
@@ -762,98 +750,99 @@
             but will convert the mouse courser to visually show the user that they can resize the group
             when hovering over the bottom right corner.
         -->
-        <Expander
-            x:Name="GroupExpander"
-            Grid.Row="0"
-            Width="{Binding Width}"
-            IsExpanded="{Binding IsExpanded, Mode=TwoWay}">
+        <Expander x:Name="GroupExpander"
+                  Width="{Binding Width}"
+                  IsExpanded="{Binding IsExpanded, Mode=TwoWay}"
+                  Grid.Row="0">
             <Expander.Header>
-                <Grid
-                    x:Name="TextBlockGrid"
-                    Grid.Row="0"
-                    Height="auto"
-                    MaxWidth="{Binding Width}"
-                    Margin="5,0,5,0"
-                    VerticalAlignment="Top">
+                <Grid x:Name="TextBlockGrid"
+                      Grid.Row="0"
+                      Height="auto"
+                      MaxWidth="{Binding Width}"
+                      Margin="5,0,5,0"
+                      VerticalAlignment="Top">
                     <Grid.RowDefinitions>
-                        <RowDefinition x:Name="GroupNameRow" Height="Auto" />
-                        <RowDefinition x:Name="GroupDescriptionRow" Height="Auto" />
+                        <RowDefinition x:Name="GroupNameRow"
+                                       Height="Auto" />
+                        <RowDefinition x:Name="GroupDescriptionRow"
+                                       Height="Auto" />
                     </Grid.RowDefinitions>
-                    <ContentControl
-                        x:Name="GroupNameControl"
-                        Grid.Row="0"
-                        Width="{Binding Width}"
-                        MinHeight="20"
-                        Margin="0,0,0,10">
+                    <ContentControl x:Name="GroupNameControl"
+                                    Grid.Row="0"
+                                    Width="{Binding Width}"
+                                    MinHeight="20"
+                                    Margin="0,0,0,10">
                         <Grid Margin="0,0,20,0">
-                            <TextBlock
-                                x:Name="GroupTextBlock"
-                                FontFamily="Trebuchet"
-                                FontSize="{Binding FontSize}"
-                                Foreground="{Binding Background, Converter={StaticResource TextForegroundSaturationColorConverter}}"
-                                LineStackingStrategy="BlockLineHeight"
-                                Text="{Binding AnnotationText, Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBlock'}"
-                                TextWrapping="WrapWithOverflow"
-                                Visibility="Visible" />
-                            <TextBox
-                                Name="GroupTextBox"
-                                Grid.Column="0"
-                                AcceptsReturn="True"
-                                AcceptsTab="True"
-                                FontFamily="Trebuchet"
-                                FontSize="{Binding FontSize}"
-                                GotFocus="GroupTextBox_OnGotFocus"
-                                IsVisibleChanged="GroupTextBox_OnIsVisibleChanged"
-                                Text="{Binding AnnotationText, Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBox'}"
-                                TextChanged="GroupTextBox_OnTextChanged"
-                                TextWrapping="WrapWithOverflow"
-                                Visibility="Collapsed" />
+                            <TextBlock x:Name="GroupTextBlock"
+                                       Text="{Binding AnnotationText, Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBlock'}"
+                                       Foreground="{Binding Background, Converter={StaticResource TextForegroundSaturationColorConverter}}"
+                                       FontFamily="Trebuchet"
+                                       FontSize="{Binding FontSize}"
+                                       LineStackingStrategy="BlockLineHeight"
+                                       TextWrapping="WrapWithOverflow"
+                                       Visibility="Visible">
+                            </TextBlock>
+                            <TextBox Name="GroupTextBox"
+                                     Grid.Column="0"
+                                     Visibility="Collapsed"
+                                     Text="{Binding AnnotationText,Converter={StaticResource AnnotationTextConverter}, ConverterParameter='TextBox'}"
+                                     TextWrapping="WrapWithOverflow"
+                                     FontFamily="Trebuchet"
+                                     FontSize="{Binding FontSize}"
+                                     IsVisibleChanged="GroupTextBox_OnIsVisibleChanged"
+                                     GotFocus="GroupTextBox_OnGotFocus"
+                                     TextChanged="GroupTextBox_OnTextChanged"
+                                     AcceptsReturn="True"
+                                     AcceptsTab="True">
+                            </TextBox>
                         </Grid>
                     </ContentControl>
 
-                    <ContentControl
-                        x:Name="GroupDescriptionControls"
-                        Grid.Row="1"
-                        MinHeight="20"
-                        Margin="0,-10,30,0"
-                        IsVisibleChanged="GroupDescriptionTextBlock_IsVisibleChanged"
-                        SizeChanged="GroupDescriptionControls_SizeChanged">
+                    <ContentControl x:Name="GroupDescriptionControls"
+                                    Grid.Row="1"
+                                    MinHeight="20"
+                                    Margin="0,-10,30,0"
+                                    SizeChanged="GroupDescriptionControls_SizeChanged"
+                                    IsVisibleChanged="GroupDescriptionTextBlock_IsVisibleChanged">
                         <Grid>
-                            <TextBlock
-                                x:Name="GroupDescriptionTextBlock"
-                                FontFamily="Trebuchet"
-                                FontSize="12"
-                                Foreground="{Binding Background, Converter={StaticResource TextForegroundSaturationColorConverter}}"
-                                LineStackingStrategy="BlockLineHeight"
-                                Text="{Binding AnnotationDescriptionText, Converter={StaticResource AnnotationTextConverter}}"
-                                TextWrapping="Wrap"
-                                Visibility="Visible" />
-                            <TextBox
-                                Name="GroupDescriptionTextBox"
-                                AcceptsReturn="True"
-                                AcceptsTab="True"
-                                FontFamily="Trebuchet"
-                                FontSize="12"
-                                GotFocus="GroupDescriptionTextBox_GotFocus"
-                                IsVisibleChanged="GroupDescriptionTextBox_OnIsVisibleChanged"
-                                Text="{Binding AnnotationDescriptionText, Converter={StaticResource AnnotationTextConverter}}"
-                                TextChanged="GroupDescriptionTextBox_TextChanged"
-                                TextWrapping="Wrap"
-                                Visibility="Collapsed" />
+                            <TextBlock x:Name="GroupDescriptionTextBlock"
+                                       Text="{Binding AnnotationDescriptionText, Converter={StaticResource AnnotationTextConverter}}"
+                                       Foreground="{Binding Background, Converter={StaticResource TextForegroundSaturationColorConverter}}"
+                                       FontFamily="Trebuchet"
+                                       FontSize="12"
+                                       LineStackingStrategy="BlockLineHeight"
+                                       TextWrapping="Wrap"
+                                       Visibility="Visible">
+                            </TextBlock>
+                            <TextBox Name="GroupDescriptionTextBox"
+                                     Visibility="Collapsed"
+                                     Text="{Binding AnnotationDescriptionText, Converter={StaticResource AnnotationTextConverter}}"
+                                     TextWrapping="Wrap"
+                                     FontFamily="Trebuchet"
+                                     FontSize="12"
+                                     IsVisibleChanged="GroupDescriptionTextBox_OnIsVisibleChanged"
+                                     GotFocus="GroupDescriptionTextBox_GotFocus"
+                                     TextChanged="GroupDescriptionTextBox_TextChanged"
+                                     AcceptsReturn="True"
+                                     AcceptsTab="True">
+                            </TextBox>
                         </Grid>
                         <ContentControl.Style>
                             <Style TargetType="{x:Type ContentControl}">
-                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Setter Property="Visibility"
+                                        Value="Collapsed" />
                                 <Style.Triggers>
                                     <MultiDataTrigger>
                                         <MultiDataTrigger.Conditions>
                                             <Condition Value="True">
                                                 <Condition.Binding>
-                                                    <Binding ElementName="GroupExpander" Path="IsExpanded" />
+                                                    <Binding ElementName="GroupExpander"
+                                                             Path="IsExpanded" />
                                                 </Condition.Binding>
                                             </Condition>
                                         </MultiDataTrigger.Conditions>
-                                        <Setter Property="Visibility" Value="Visible" />
+                                        <Setter Property="Visibility"
+                                                Value="Visible" />
                                     </MultiDataTrigger>
                                 </Style.Triggers>
                             </Style>
@@ -861,96 +850,114 @@
                     </ContentControl>
                     <Grid.Triggers>
 
-                        <EventTrigger RoutedEvent="ContentControl.MouseDoubleClick" SourceName="GroupNameControl">
+                        <EventTrigger  SourceName="GroupNameControl"
+                                       RoutedEvent="ContentControl.MouseDoubleClick">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    <ObjectAnimationUsingKeyFrames
-                                        Storyboard.TargetName="GroupTextBlock"
-                                        Storyboard.TargetProperty="(TextBlock.Visibility)"
-                                        Duration="0">
-                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{Binding ElementName=TextBlockGrid, Path=Visibility, Converter={StaticResource GroupTitleVisibilityConverter}, ConverterParameter=FlipTextblock}" />
+                                    <ObjectAnimationUsingKeyFrames Duration="0"
+                                                                   Storyboard.TargetName="GroupTextBlock"
+                                                                   Storyboard.TargetProperty="(TextBlock.Visibility)">
+                                        <DiscreteObjectKeyFrame KeyTime="0"
+                                                                Value="{Binding ElementName=TextBlockGrid, Path=Visibility,
+                            Converter={StaticResource GroupTitleVisibilityConverter },ConverterParameter=FlipTextblock}">
+                                        </DiscreteObjectKeyFrame>
                                     </ObjectAnimationUsingKeyFrames>
 
-                                    <ObjectAnimationUsingKeyFrames
-                                        Storyboard.TargetName="GroupTextBox"
-                                        Storyboard.TargetProperty="(TextBox.Visibility)"
-                                        Duration="0">
-                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{Binding ElementName=TextBlockGrid, Path=Visibility, Converter={StaticResource GroupTitleVisibilityConverter}, ConverterParameter=FlipTextbox}" />
+                                    <ObjectAnimationUsingKeyFrames Duration="0"
+                                                                   Storyboard.TargetName="GroupTextBox"
+                                                                   Storyboard.TargetProperty="(TextBox.Visibility)">
+                                        <DiscreteObjectKeyFrame KeyTime="0"
+                                                                Value="{Binding ElementName=TextBlockGrid, Path=Visibility,
+                            Converter={StaticResource GroupTitleVisibilityConverter },ConverterParameter=FlipTextbox}" />
                                     </ObjectAnimationUsingKeyFrames>
 
-                                    <BooleanAnimationUsingKeyFrames Storyboard.TargetName="GroupTextBox" Storyboard.TargetProperty="(TextBox.Focusable)">
-                                        <DiscreteBooleanKeyFrame KeyTime="0" Value="True" />
+                                    <BooleanAnimationUsingKeyFrames Storyboard.TargetName="GroupTextBox"
+                                                                    Storyboard.TargetProperty="(TextBox.Focusable)">
+                                        <DiscreteBooleanKeyFrame KeyTime="0"
+                                                                 Value="True" />
                                     </BooleanAnimationUsingKeyFrames>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
 
-                        <EventTrigger RoutedEvent="ContentControl.MouseDoubleClick" SourceName="GroupDescriptionControls">
+                        <EventTrigger SourceName="GroupDescriptionControls"
+                                      RoutedEvent="ContentControl.MouseDoubleClick">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    <ObjectAnimationUsingKeyFrames
-                                        Storyboard.TargetName="GroupDescriptionTextBlock"
-                                        Storyboard.TargetProperty="(TextBlock.Visibility)"
-                                        Duration="0">
-                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{Binding ElementName=TextBlockGrid, Path=Visibility, Converter={StaticResource GroupTitleVisibilityConverter}, ConverterParameter=FlipTextblock}" />
+                                    <ObjectAnimationUsingKeyFrames Duration="0"
+                                                                   Storyboard.TargetName="GroupDescriptionTextBlock"
+                                                                   Storyboard.TargetProperty="(TextBlock.Visibility)">
+                                        <DiscreteObjectKeyFrame KeyTime="0"
+                                                                Value="{Binding ElementName=TextBlockGrid, Path=Visibility,
+                            Converter={StaticResource GroupTitleVisibilityConverter },ConverterParameter=FlipTextblock}">
+                                        </DiscreteObjectKeyFrame>
                                     </ObjectAnimationUsingKeyFrames>
-                                    <ObjectAnimationUsingKeyFrames
-                                        Storyboard.TargetName="GroupDescriptionTextBox"
-                                        Storyboard.TargetProperty="(TextBox.Visibility)"
-                                        Duration="0">
-                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{Binding ElementName=TextBlockGrid, Path=Visibility, Converter={StaticResource GroupTitleVisibilityConverter}, ConverterParameter=FlipTextbox}" />
+                                    <ObjectAnimationUsingKeyFrames Duration="0"
+                                                                   Storyboard.TargetName="GroupDescriptionTextBox"
+                                                                   Storyboard.TargetProperty="(TextBox.Visibility)">
+                                        <DiscreteObjectKeyFrame KeyTime="0"
+                                                                Value="{Binding ElementName=TextBlockGrid, Path=Visibility,
+                            Converter={StaticResource GroupTitleVisibilityConverter },ConverterParameter=FlipTextbox}" />
                                     </ObjectAnimationUsingKeyFrames>
 
-                                    <BooleanAnimationUsingKeyFrames Storyboard.TargetName="GroupDescriptionTextBox" Storyboard.TargetProperty="(TextBox.Focusable)">
-                                        <DiscreteBooleanKeyFrame KeyTime="0" Value="True" />
+                                    <BooleanAnimationUsingKeyFrames Storyboard.TargetName="GroupDescriptionTextBox"
+                                                                    Storyboard.TargetProperty="(TextBox.Focusable)">
+                                        <DiscreteBooleanKeyFrame KeyTime="0"
+                                                                 Value="True" />
                                     </BooleanAnimationUsingKeyFrames>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
 
 
-                        <EventTrigger RoutedEvent="TextBox.LostKeyboardFocus" SourceName="GroupTextBox">
+                        <EventTrigger  SourceName="GroupTextBox"
+                                       RoutedEvent="TextBox.LostKeyboardFocus">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    <ObjectAnimationUsingKeyFrames
-                                        Storyboard.TargetName="GroupTextBlock"
-                                        Storyboard.TargetProperty="(TextBlock.Visibility)"
-                                        Duration="0">
-                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
+                                    <ObjectAnimationUsingKeyFrames Duration="0"
+                                                                   Storyboard.TargetName="GroupTextBlock"
+                                                                   Storyboard.TargetProperty="(TextBlock.Visibility)">
+                                        <DiscreteObjectKeyFrame KeyTime="0"
+                                                                Value="{x:Static Visibility.Visible}" />
                                     </ObjectAnimationUsingKeyFrames>
 
-                                    <ObjectAnimationUsingKeyFrames
-                                        Storyboard.TargetName="GroupTextBox"
-                                        Storyboard.TargetProperty="(TextBox.Visibility)"
-                                        Duration="0">
-                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}" />
+                                    <ObjectAnimationUsingKeyFrames Duration="0"
+                                                                   Storyboard.TargetName="GroupTextBox"
+                                                                   Storyboard.TargetProperty="(TextBox.Visibility)">
+                                        <DiscreteObjectKeyFrame KeyTime="0"
+                                                                Value="{x:Static Visibility.Collapsed}" />
                                     </ObjectAnimationUsingKeyFrames>
 
-                                    <BooleanAnimationUsingKeyFrames Storyboard.TargetName="GroupTextBox" Storyboard.TargetProperty="(TextBox.Focusable)">
-                                        <DiscreteBooleanKeyFrame KeyTime="0" Value="True" />
+                                    <BooleanAnimationUsingKeyFrames Storyboard.TargetName="GroupTextBox"
+                                                                    Storyboard.TargetProperty="(TextBox.Focusable)">
+                                        <DiscreteBooleanKeyFrame KeyTime="0"
+                                                                 Value="True" />
                                     </BooleanAnimationUsingKeyFrames>
                                 </Storyboard>
                             </BeginStoryboard>
                         </EventTrigger>
-                        <EventTrigger RoutedEvent="TextBox.LostKeyboardFocus" SourceName="GroupDescriptionTextBox">
+                        <EventTrigger SourceName="GroupDescriptionTextBox"
+                                      RoutedEvent="TextBox.LostKeyboardFocus">
                             <BeginStoryboard>
                                 <Storyboard>
-                                    <ObjectAnimationUsingKeyFrames
-                                        Storyboard.TargetName="GroupDescriptionTextBlock"
-                                        Storyboard.TargetProperty="(TextBlock.Visibility)"
-                                        Duration="0">
-                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}" />
+                                    <ObjectAnimationUsingKeyFrames Duration="0"
+                                                                   Storyboard.TargetName="GroupDescriptionTextBlock"
+                                                                   Storyboard.TargetProperty="(TextBlock.Visibility)">
+                                        <DiscreteObjectKeyFrame KeyTime="0"
+                                                                Value="{x:Static Visibility.Visible}" />
                                     </ObjectAnimationUsingKeyFrames>
 
-                                    <ObjectAnimationUsingKeyFrames
-                                        Storyboard.TargetName="GroupDescriptionTextBox"
-                                        Storyboard.TargetProperty="(TextBox.Visibility)"
-                                        Duration="0">
-                                        <DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Collapsed}" />
+                                    <ObjectAnimationUsingKeyFrames Duration="0"
+                                                                   Storyboard.TargetName="GroupDescriptionTextBox"
+                                                                   Storyboard.TargetProperty="(TextBox.Visibility)">
+                                        <DiscreteObjectKeyFrame KeyTime="0"
+                                                                Value="{x:Static Visibility.Collapsed}" />
                                     </ObjectAnimationUsingKeyFrames>
 
-                                    <BooleanAnimationUsingKeyFrames Storyboard.TargetName="GroupDescriptionTextBox" Storyboard.TargetProperty="(TextBox.Focusable)">
-                                        <DiscreteBooleanKeyFrame KeyTime="0" Value="True" />
+                                    <BooleanAnimationUsingKeyFrames Storyboard.TargetName="GroupDescriptionTextBox"
+                                                                    Storyboard.TargetProperty="(TextBox.Focusable)">
+                                        <DiscreteBooleanKeyFrame KeyTime="0"
+                                                                 Value="True" />
                                     </BooleanAnimationUsingKeyFrames>
                                 </Storyboard>
                             </BeginStoryboard>
@@ -960,17 +967,17 @@
             </Expander.Header>
 
             <Grid>
-                <Canvas
-                    Name="AnnotationRectangle"
-                    Width="{Binding Width}"
-                    Height="{Binding ModelAreaHeight}"
-                    Background="Transparent"
-                    IsHitTestVisible="True"
-                    Opacity="0.5"
-                    Visibility="{Binding IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                    <Path Stroke="Transparent" StrokeThickness="0">
+                <Canvas  Name="AnnotationRectangle"
+                         Width="{Binding Width}"
+                         Height="{Binding ModelAreaHeight}"
+                         IsHitTestVisible="True"
+                         Background="Transparent"
+                         Opacity="0.5"
+                         Visibility="{Binding IsExpanded, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
+                    <Path Stroke="Transparent"
+                          StrokeThickness="0">
                         <Path.Fill>
-                            <SolidColorBrush Color="{Binding Background}" />
+                            <SolidColorBrush Color="{Binding Background}"></SolidColorBrush>
                         </Path.Fill>
                         <Path.Data>
                             <CombinedGeometry GeometryCombineMode="Exclude">
@@ -978,19 +985,19 @@
                                     <RectangleGeometry Rect="{Binding ModelAreaRect}" />
                                 </CombinedGeometry.Geometry1>
                                 <CombinedGeometry.Geometry2>
-                                    <GeometryGroup Children="{Binding NestedGroupsGeometries}" FillRule="EvenOdd" />
+                                    <GeometryGroup FillRule="EvenOdd"
+                                                   Children="{Binding NestedGroupsGeometries}" />
                                 </CombinedGeometry.Geometry2>
                             </CombinedGeometry>
                         </Path.Data>
                     </Path>
                 </Canvas>
 
-                <Thumb
-                    x:Name="ResizeThumb"
-                    DragDelta="AnnotationRectangleThumb_DragDelta"
-                    MouseEnter="Thumb_MouseEnter"
-                    MouseLeave="Thumb_MouseLeave"
-                    Style="{StaticResource GroupResizeThumbStyle}" />
+                <Thumb x:Name="ResizeThumb"
+                       Style="{StaticResource GroupResizeThumbStyle}"
+                       DragDelta="AnnotationRectangleThumb_DragDelta"
+                       MouseEnter="Thumb_MouseEnter"
+                       MouseLeave="Thumb_MouseLeave" />
             </Grid>
         </Expander>
         <!--
@@ -1003,14 +1010,13 @@
             - GroupContentIcons: This will display the node icons of all Input/Output ports that are on the group
             it also shows a counter of all nodes that are in between the input/output nodes.
         -->
-        <Border
-            x:Name="CollapsedAnnotationRectangle"
-            Grid.Row="1"
-            Width="{Binding Width}"
-            Height="{Binding ModelAreaHeight}"
-            Visibility="{Binding ElementName=GroupExpander, Path=IsExpanded, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
+        <Border x:Name="CollapsedAnnotationRectangle"
+                Width="{Binding Width}"
+                Height="{Binding ModelAreaHeight}"
+                Visibility="{Binding ElementName=GroupExpander, Path=IsExpanded, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
+                Grid.Row="1">
             <Border.Background>
-                <SolidColorBrush Opacity="0.5" Color="{Binding Background}" />
+                <SolidColorBrush Color="{Binding Background}" Opacity="0.5" />
             </Border.Background>
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -1132,42 +1138,45 @@
                     </ItemsControl>
                 </Grid>
 
-                <Grid
-                    x:Name="GroupContent"
-                    Grid.Row="1"
-                    Grid.ColumnSpan="3">
+                <Grid x:Name="GroupContent"
+                      Grid.Row="1"
+                      Grid.ColumnSpan="3">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="Auto" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-                    <Label
-                        x:Name="NestedGroups"
-                        Grid.Column="0"
-                        Margin="0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        Content="{Binding NestedGroups, Converter={StaticResource NestedGroupsLabelConverter}}"
-                        ToolTipService.IsEnabled="{Binding NestedGroups, Converter={StaticResource CollectionHasMoreThanNItemsToBoolConverter}}"
-                        ToolTipService.ShowOnDisabled="False">
+                    <Label x:Name="NestedGroups"
+                           Grid.Column="0"
+                           Content="{Binding NestedGroups, Converter={StaticResource NestedGroupsLabelConverter}}"
+                           Margin="0"
+                           VerticalAlignment="Center"
+                           HorizontalAlignment="Right"
+                           ToolTipService.ShowOnDisabled="False"
+                           ToolTipService.IsEnabled="{Binding NestedGroups, Converter={StaticResource CollectionHasMoreThanNItemsToBoolConverter}}">
                         <Label.ToolTip>
-                            <dynui:DynamoToolTip
-                                Margin="5,0,0,0"
-                                AttachmentSide="Bottom"
-                                Style="{DynamicResource ResourceKey=SLightToolTip}">
+                            <dynui:DynamoToolTip AttachmentSide="Bottom"
+                                                 Style="{DynamicResource ResourceKey=SLightToolTip}"
+                                                 Margin="5,0,0,0">
                                 <ListView ItemsSource="{Binding NestedGroups}">
                                     <ListView.Resources>
-                                        <DataTemplate x:Key="MultipleItems" DataType="{x:Type viewModels:AnnotationViewModel}">
+                                        <DataTemplate x:Key="MultipleItems"
+                                                      DataType="{x:Type viewModels:AnnotationViewModel}">
                                             <TextBlock Text="{Binding AnnotationText}" />
                                         </DataTemplate>
                                     </ListView.Resources>
                                     <ListView.Style>
                                         <Style TargetType="{x:Type ListView}">
-                                            <Setter Property="Background" Value="Transparent" />
-                                            <Setter Property="BorderThickness" Value="0" />
+                                            <Setter Property="Background"
+                                                    Value="Transparent" />
+                                            <Setter Property="BorderThickness"
+                                                    Value="0" />
                                             <Style.Triggers>
-                                                <DataTrigger Binding="{Binding NestedGroups, Converter={StaticResource CollectionHasMoreThanNItemsToBoolConverter}}" Value="True">
-                                                    <Setter Property="ItemTemplate" Value="{StaticResource MultipleItems}" />
+                                                <DataTrigger Binding="{Binding NestedGroups, 
+                                                                        Converter={StaticResource CollectionHasMoreThanNItemsToBoolConverter}}"
+                                                             Value="True">
+                                                    <Setter Property="ItemTemplate"
+                                                            Value="{StaticResource MultipleItems}" />
                                                 </DataTrigger>
                                             </Style.Triggers>
                                         </Style>
@@ -1177,33 +1186,30 @@
                         </Label.ToolTip>
                     </Label>
 
-                    <Border
-                        x:Name="NodeCount"
-                        Grid.Column="1"
-                        Width="{Binding Path=ActualHeight, ElementName=NodeCount}"
-                        Height="32"
-                        Margin="10"
-                        VerticalAlignment="Bottom"
-                        Background="#EEEEEE"
-                        BorderBrush="#FFFFFF"
-                        BorderThickness="1"
-                        CornerRadius="{Binding Path=ActualHeight, ElementName=NodeCount}">
-                        <TextBlock
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            FontSize="14"
-                            Text="{Binding NodeContentCount, Mode=OneWay, StringFormat='+{0}'}" />
+                    <Border x:Name="NodeCount"
+                            Grid.Column="1"
+                            BorderThickness="1"
+                            BorderBrush="#FFFFFF"
+                            Background="#EEEEEE"
+                            CornerRadius="{Binding Path=ActualHeight, ElementName=NodeCount}"
+                            Width="{Binding Path=ActualHeight, ElementName=NodeCount}"
+                            VerticalAlignment="Bottom"
+                            Height="32"
+                            Margin="10">
+                        <TextBlock Text="{Binding NodeContentCount, Mode=OneWay, StringFormat='+{0}'}"
+                                   HorizontalAlignment="Center"
+                                   VerticalAlignment="Center"
+                                   FontSize="14" />
                     </Border>
                 </Grid>
 
-                <Thumb
-                    x:Name="ResizeThumbCollapsed"
-                    Grid.Row="1"
-                    Grid.Column="2"
-                    DragDelta="CollapsedAnnotationRectangleThumb_DragDelta"
-                    MouseEnter="Thumb_MouseEnter"
-                    MouseLeave="Thumb_MouseLeave"
-                    Style="{StaticResource GroupResizeThumbStyle}" />
+                <Thumb x:Name="ResizeThumbCollapsed"
+                       Grid.Row="1"
+                       Grid.Column="2"
+                       Style="{StaticResource GroupResizeThumbStyle}"
+                       DragDelta="CollapsedAnnotationRectangleThumb_DragDelta"
+                       MouseEnter="Thumb_MouseEnter"
+                       MouseLeave="Thumb_MouseLeave" />
             </Grid>
         </Border>
     </Grid>
