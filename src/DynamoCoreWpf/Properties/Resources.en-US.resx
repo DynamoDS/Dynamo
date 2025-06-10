@@ -4155,4 +4155,7 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>This group is frozen. Click to unfreeze.</value>
   </data>
+  <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
+    <value>Click on the sparkle icon next to the port to activate Node Autocomplete.</value>
+  </data>
 </root>

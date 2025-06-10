@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
@@ -583,6 +584,11 @@ namespace Dynamo.ViewModels
 
             var wsViewModel = node.WorkspaceViewModel;
             wsViewModel?.OnRequestNodeAutocompleteBar(this);
+        }
+
+        private void ShowNodeAutoCompleteToast(object parameter)
+        {
+            node.DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.ToastFileNodeAutoCompleteDoubleClick, false);
         }
 
         private void NodePortContextMenu(object obj)

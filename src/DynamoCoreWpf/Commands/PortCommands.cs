@@ -6,6 +6,7 @@ namespace Dynamo.ViewModels
     {
         private DelegateCommand connectCommand;
         private DelegateCommand autoCompleteCommand;
+        private DelegateCommand nodeAutoCompleteToast;
         private DelegateCommand portMouseEnterCommand;
         private DelegateCommand portMouseLeaveCommand;
         private DelegateCommand portMouseLeftButtonCommand;
@@ -21,6 +22,19 @@ namespace Dynamo.ViewModels
                     connectCommand = new DelegateCommand(Connect, CanConnect);
 
                 return connectCommand;
+            }
+        }
+        /// <summary>
+        /// Command to show a toast notification for users who try to use the Node Auto Complete feature with double click
+        /// </summary>
+        public DelegateCommand NodeAutoCompleteToast
+        {
+            get
+            {
+                if (autoCompleteCommand == null)
+                    autoCompleteCommand = new DelegateCommand(ShowNodeAutoCompleteToast);
+
+                return autoCompleteCommand;
             }
         }
 
