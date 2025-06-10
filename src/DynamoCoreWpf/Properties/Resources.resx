@@ -2867,6 +2867,9 @@ Do you wish to uninstall {1}? Restart {2} to complete the uninstall and try down
   <data name="PreferencesViewEnableNodeAutoCompleteTooltipText" xml:space="preserve">
     <value>Learn more about Node Autocomplete feature.</value>
   </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
+    <value>Enable the new floating menu for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog.</value>
+  </data>
   <data name="AddStyleButton" xml:space="preserve">
     <value>Add Style</value>
   </data>
