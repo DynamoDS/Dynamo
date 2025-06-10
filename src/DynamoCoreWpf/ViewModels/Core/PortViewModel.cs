@@ -588,7 +588,7 @@ namespace Dynamo.ViewModels
 
         private void ShowNodeAutoCompleteToast(object parameter)
         {
-            node.DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.ToastFileNodeAutoCompleteDoubleClick, false);
+            node.DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.ToastFileNodeAutoCompleteDoubleClick, true);
         }
 
         private void NodePortContextMenu(object obj)

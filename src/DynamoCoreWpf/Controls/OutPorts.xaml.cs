@@ -280,6 +280,10 @@ namespace Dynamo.UI.Controls
             mouseLeaveTrigger.Actions.Add(mouseLeaveAction);
             Dynamo.Microsoft.Xaml.Behaviors.Interaction.GetTriggers(PortSnapping).Add(mouseLeaveTrigger);
 
+            //handle double click and alert user of new node autocomplete experience
+            MainGrid.InputBindings.Add(new MouseBinding(viewModel.NodeAutoCompleteToast,
+                new MouseGesture(MouseAction.LeftDoubleClick)));
+
             var previewMouseLeftDownTrigger = new Dynamo.UI.Views.HandlingEventTrigger()
             {
                 EventName = "PreviewMouseLeftButtonDown",
