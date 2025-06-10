@@ -408,6 +408,11 @@ namespace Dynamo
                 ex = null;
                 data["FunctionId"] = data.GetValue("Uuid");
                 data["Path"] = path;
+                
+                if (!data.TryGetValue("Category", out _))
+                {
+                    data["Category"] = "";
+                }
                 info = data.ToObject<CustomNodeInfo>();
                 return true;
             }
