@@ -4156,7 +4156,7 @@ To make this file into a new template, save it to a different folder, then move 
     <value>This group is frozen. Click to unfreeze.</value>
   </data>
   <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
-    <value>Enable New Node Autocomplete UI</value>
-    <comment>Preferences | Features | Experimental | Enable New Node AutoComplete UI</comment>
+    <value>Enable New UI</value>
+    <comment>Preferences | Features | Experimental | Enable Node AutoComplete New UI</comment>
   </data>
 </root>
