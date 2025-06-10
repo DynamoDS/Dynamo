@@ -90,8 +90,8 @@ namespace Dynamo.Graph.Workspaces
         public string Name;
         public double X;
         public double Y;
-        public double Width;
-        public double Height;
+        public double Width = ModelBase.DefaultWidth;
+        public double Height = ModelBase.DefaultWidth;
         public double WidthBorder;
         public double HeightBorder;
         public bool ShowGeometry;
