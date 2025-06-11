@@ -4162,8 +4162,4 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
     <value>Enable the new floating menu for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog.</value>
   </data>
-  <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
-    <value>_Dump Node Icons</value>
-    <comment>Debug menu | Dump all node icons</comment>
-  </data>
 </root>

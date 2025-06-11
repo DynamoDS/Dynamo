@@ -4146,8 +4146,4 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>This group is frozen. Click to unfreeze.</value>
   </data>
-  <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
-    <value>_Dump Node Icons</value>
-    <comment>Debug menu | Dump all node icons</comment>
-  </data>
 </root>
