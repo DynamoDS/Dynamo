@@ -23,7 +23,7 @@ namespace Dynamo.ViewModels
                 return connectCommand;
             }
         }
-        
+
         /// <summary>
         /// Command to trigger Node Auto Complete from node port interaction
         /// </summary>
