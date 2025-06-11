@@ -475,9 +475,6 @@ Sorry about that.</value>
   <data name="ToolTipForTempVar" xml:space="preserve">
     <value>Statement Output</value>
   </data>
-  <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
-    <value>Click on the sparkle icon next to the port to activate Node Autocomplete.</value>
-  </data>
   <data name="ToolTipReturnValue" xml:space="preserve">
     <value>return value</value>
   </data>
