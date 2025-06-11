@@ -216,7 +216,7 @@ namespace Dynamo.Controls
         }
 
         //View items referenced outside of NodeView as previously from xaml outside of DynamoCoreWPF
-        public ContextMenu MainContextMenu = GetNodeContextMenu();
+        public ContextMenu MainContextMenu = new ContextMenu();
         public Grid grid;
 
         private Grid _presentationGrid = null;
@@ -290,7 +290,7 @@ namespace Dynamo.Controls
         private static Style _nodeButtonStyle = GetNodeButtonStyle();
         private static Style _codeBlockNodeItemControlStyle = GetCodeBlockPortItemControlStyle();
         internal static readonly Style DynamoToolTipTopStyle = GetDynamoToolTipTopStyle();
-        //private static ContextMenu nodeContextMenu = GetNodeContextMenu();
+        private static ContextMenu nodeContextMenu = GetNodeContextMenu();
 
         #region constructors
         static NodeView()
@@ -2363,15 +2363,14 @@ namespace Dynamo.Controls
             ViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
 
-            var contextMenu = MainContextMenu;
-
             StashNodeViewCustomizationMenuItems();
 
             // Clearing any existing items in the node's ContextMenu.
-            contextMenu.Items.Clear();
             MainContextMenu.Items.Clear();
-            NodeContextMenuBuilder.Build(MainContextMenu, viewModel, NodeViewCustomizationMenuItems);
+            nodeContextMenu.Items.Clear();
+            NodeContextMenuBuilder.Build(nodeContextMenu, viewModel, NodeViewCustomizationMenuItems);
 
+            MainContextMenu = nodeContextMenu;
             MainContextMenu.DataContext = viewModel;
             MainContextMenu.Closed += MainContextMenu_OnClosed;
             MainContextMenu.IsOpen = true;
@@ -2382,6 +2381,7 @@ namespace Dynamo.Controls
         {
             MainContextMenu.Closed -= MainContextMenu_OnClosed;
             MainContextMenu.Items.Clear();
+            nodeContextMenu.Items.Clear();
             e.Handled = true;
         }
 
