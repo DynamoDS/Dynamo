@@ -4928,10 +4928,12 @@ static Dynamo.Wpf.Properties.Resources.GroupContextMenuUngroup.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupDefaultText.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupFrozenButtonToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupNameDefaultText.get -> string
+static Dynamo.Wpf.Properties.Resources.GroupOptionalInportsText.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupStyleContextAnnotation.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupStyleFontSizeToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupStylesCancelButtonText.get -> string
 static Dynamo.Wpf.Properties.Resources.GroupStylesSaveButtonText.get -> string
+static Dynamo.Wpf.Properties.Resources.GroupUnconnectedOutportsText.get -> string
 static Dynamo.Wpf.Properties.Resources.HideClassicNodeLibrary.get -> string
 static Dynamo.Wpf.Properties.Resources.HideWiresPopupMenuItem.get -> string
 static Dynamo.Wpf.Properties.Resources.IDSDKErrorMessage.get -> string
@@ -5391,6 +5393,8 @@ static Dynamo.Wpf.Properties.Resources.PreferencesSettingUpdateTemplateLocationT
 static Dynamo.Wpf.Properties.Resources.PreferencesUseHostScaleUnits.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesUseHostScaleUnitsToolTip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewAlreadyExistingStyleWarning.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewCollapsedGroupHeader.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewCollapseToMinSizeDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewDefaultPythonEngine.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewDefaultRunSettingsInfoTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewDisableBuiltInPackages.get -> string
@@ -5412,6 +5416,8 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsRun.get -> 
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralSettingsTemplate.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGeneralTab.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewGroupStylesHeader.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewHideInportsDescription.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewHideOutportsDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewIncludeTimestampExportPathTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageSwitchHelp.get -> string

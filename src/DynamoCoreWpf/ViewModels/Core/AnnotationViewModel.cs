@@ -760,12 +760,6 @@ namespace Dynamo.ViewModels
                 if (!annotationModel.HasToggledOptionalInPorts)
                 {
                     IsOptionalInPortsCollapsed = preferenceSettings.OptionalInPortsCollapsed;
-
-                    //// Update the boundary only if the group is collapsed
-                    //if (!IsExpanded)
-                    //{
-                    //    annotationModel.UpdateBoundaryFromSelection();
-                    //}
                 }
             }
             else if (e.PropertyName == nameof(IPreferences.UnconnectedOutPortsCollapsed))
@@ -773,12 +767,6 @@ namespace Dynamo.ViewModels
                 if (!annotationModel.HasToggledUnconnectedOutPorts)
                 {
                     IsUnconnectedOutPortsCollapsed = preferenceSettings.UnconnectedOutPortsCollapsed;
-
-                    //// Update the boundary only if the group is collapsed
-                    //if (!IsExpanded)
-                    //{
-                    //    annotationModel.UpdateBoundaryFromSelection();
-                    //}
                 }
             }
             else if (e.PropertyName == nameof(IPreferences.CollapseToMinSize))
