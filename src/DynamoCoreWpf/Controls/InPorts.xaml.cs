@@ -247,6 +247,7 @@ namespace Dynamo.UI.Controls
             var mouseLeftButtonDownAction = new InvokeCommandAction()
             {
                 Command = viewModel.ConnectCommand,
+                PassEventArgsToCommand = true
             };
 
             mouseLeftButtonDownTrigger.Actions.Add(mouseLeftButtonDownAction);
@@ -264,10 +265,6 @@ namespace Dynamo.UI.Controls
 
             mouseRightButtonDownTrigger.Actions.Add(mouseRightButtonDownAction);
             Dynamo.Microsoft.Xaml.Behaviors.Interaction.GetTriggers(MainGrid).Add(mouseRightButtonDownTrigger);
-
-            //handle double click and alert user of new node autocomplete experience
-            MainGrid.InputBindings.Add(new MouseBinding(viewModel.NodeAutoCompleteToast,
-                new MouseGesture(MouseAction.LeftDoubleClick)));
             
             var previewMouseLeftDownTrigger = new Dynamo.UI.Views.HandlingEventTrigger()
             {

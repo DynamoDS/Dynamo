@@ -24,20 +24,7 @@ namespace Dynamo.ViewModels
                 return connectCommand;
             }
         }
-        /// <summary>
-        /// Command to show a toast notification for users who try to use the Node Auto Complete feature with double click
-        /// </summary>
-        public DelegateCommand NodeAutoCompleteToast
-        {
-            get
-            {
-                if (autoCompleteCommand == null)
-                    autoCompleteCommand = new DelegateCommand(ShowNodeAutoCompleteToast);
-
-                return autoCompleteCommand;
-            }
-        }
-
+        
         /// <summary>
         /// Command to trigger Node Auto Complete from node port interaction
         /// </summary>

@@ -2,17 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
+using Dynamo.Wpf.Controls;
 using static Dynamo.ViewModels.SearchViewModel;
 
 namespace Dynamo.ViewModels
@@ -531,7 +535,33 @@ namespace Dynamo.ViewModels
         {
             DynamoViewModel dynamoViewModel = this.node.DynamoViewModel;
             WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
+
             workspaceViewModel.HandlePortClicked(this);
+
+            //handle double click
+            if (parameter is MouseButtonEventArgs { ClickCount: >= 2 })
+            {
+               HandleDoubleClick();
+            }
+        }
+
+        /// <summary>
+        /// Node AutoComplete used to be a double click. It isn't anymore, so we alert users to use the sparkle instead.
+        /// </summary>
+        private void HandleDoubleClick()
+        {
+            DynamoViewModel dynamoViewModel = this.node.DynamoViewModel;
+            WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
+
+            workspaceViewModel.CancelActiveState();
+            dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow("need to add this to a resource.",true);
+            var timer = new Timer(_ =>
+            {
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    dynamoViewModel.MainGuideManager.CloseRealTimeInfoWindow();
+                });
+            }, null, 4000, Timeout.Infinite);
         }
 
         protected bool CanConnect(object parameter)
@@ -584,11 +614,6 @@ namespace Dynamo.ViewModels
 
             var wsViewModel = node.WorkspaceViewModel;
             wsViewModel?.OnRequestNodeAutocompleteBar(this);
-        }
-
-        private void ShowNodeAutoCompleteToast(object parameter)
-        {
-            node.DynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.ToastFileNodeAutoCompleteDoubleClick, true);
         }
 
         private void NodePortContextMenu(object obj)
