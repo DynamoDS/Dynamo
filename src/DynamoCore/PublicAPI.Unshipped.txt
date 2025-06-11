@@ -2988,6 +2988,7 @@ static Dynamo.Properties.Resources.SubmitBugButton.get -> string
 static Dynamo.Properties.Resources.SubmitBugToGithub.get -> string
 static Dynamo.Properties.Resources.SymbolNodeDescription.get -> string
 static Dynamo.Properties.Resources.SymbolSearchTags.get -> string
+static Dynamo.Properties.Resources.ToastFileNodeAutoCompleteDoubleClick.get -> string
 static Dynamo.Properties.Resources.ToolTipForTempVar.get -> string
 static Dynamo.Properties.Resources.ToolTipFunctionOutput.get -> string
 static Dynamo.Properties.Resources.ToolTipInput.get -> string
