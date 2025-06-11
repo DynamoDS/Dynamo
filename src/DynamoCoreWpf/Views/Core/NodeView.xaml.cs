@@ -216,7 +216,7 @@ namespace Dynamo.Controls
         }
 
         //View items referenced outside of NodeView as previously from xaml outside of DynamoCoreWPF
-        public ContextMenu MainContextMenu = new ContextMenu();
+        public ContextMenu MainContextMenu = GetNodeContextMenu();
         public Grid grid;
 
         private Grid _presentationGrid = null;
@@ -290,7 +290,7 @@ namespace Dynamo.Controls
         private static Style _nodeButtonStyle = GetNodeButtonStyle();
         private static Style _codeBlockNodeItemControlStyle = GetCodeBlockPortItemControlStyle();
         internal static readonly Style DynamoToolTipTopStyle = GetDynamoToolTipTopStyle();
-        private static ContextMenu nodeContextMenu = GetNodeContextMenu();
+        //private static ContextMenu nodeContextMenu = GetNodeContextMenu();
 
         #region constructors
         static NodeView()
@@ -2324,18 +2324,21 @@ namespace Dynamo.Controls
         /// </summary>
         private void StashNodeViewCustomizationMenuItems()
         {
-            foreach (var obj in grid.ContextMenu.Items)
+            if (MainContextMenu != null && MainContextMenu.Items.Count > 0 && NodeViewCustomizationMenuItems.Count < 1)
             {
-                if (!(obj is MenuItem menuItem)) continue;
+                foreach (var obj in MainContextMenu.Items)
+                {
+                    if (!(obj is MenuItem menuItem)) continue;
 
-                // We don't stash default MenuItems, such as 'Freeze'.
-                if (NodeContextMenuBuilder.NodeContextMenuDefaultItemNames.Contains(menuItem.Header.ToString())) continue;
+                    // We don't stash default MenuItems, such as 'Freeze'.
+                    if (NodeContextMenuBuilder.NodeContextMenuDefaultItemNames.Contains(menuItem.Header.ToString())) continue;
 
-                // We don't stash the same MenuItem multiple times.
-                if (NodeViewCustomizationMenuItems.Contains(menuItem.Header.ToString())) continue;
+                    // We don't stash the same MenuItem multiple times.
+                    if (NodeViewCustomizationMenuItems.Contains(menuItem.Header.ToString())) continue;
 
-                // The MenuItem gets stashed.
-                NodeViewCustomizationMenuItems.Add(menuItem.Header.ToString(), menuItem);
+                    // The MenuItem gets stashed.
+                    NodeViewCustomizationMenuItems.Add(menuItem.Header.ToString(), menuItem);
+                }
             }
         }
 
@@ -2360,30 +2363,25 @@ namespace Dynamo.Controls
             ViewModel.DynamoViewModel.ExecuteCommand(
                 new DynCmd.SelectModelCommand(nodeGuid, Keyboard.Modifiers.AsDynamoType()));
 
-            var contextMenu = grid.ContextMenu;
+            var contextMenu = MainContextMenu;
 
-            // Stashing any injected MenuItems from the Node View Customization process.
-            if (contextMenu.Items.Count > 0 && NodeViewCustomizationMenuItems.Count < 1)
-            {
-                StashNodeViewCustomizationMenuItems();
-            }
+            StashNodeViewCustomizationMenuItems();
 
             // Clearing any existing items in the node's ContextMenu.
             contextMenu.Items.Clear();
-            nodeContextMenu.Items.Clear();
-            NodeContextMenuBuilder.Build(nodeContextMenu, viewModel, NodeViewCustomizationMenuItems);
+            MainContextMenu.Items.Clear();
+            NodeContextMenuBuilder.Build(MainContextMenu, viewModel, NodeViewCustomizationMenuItems);
 
-            nodeContextMenu.DataContext = viewModel;
-            nodeContextMenu.Closed += MainContextMenu_OnClosed;
-            nodeContextMenu.IsOpen = true;
-
+            MainContextMenu.DataContext = viewModel;
+            MainContextMenu.Closed += MainContextMenu_OnClosed;
+            MainContextMenu.IsOpen = true;
             e.Handled = true;
         }
 
         private void MainContextMenu_OnClosed(object sender, RoutedEventArgs e)
         {
-            nodeContextMenu.Closed -= MainContextMenu_OnClosed;
-            nodeContextMenu.Items.Clear();
+            MainContextMenu.Closed -= MainContextMenu_OnClosed;
+            MainContextMenu.Items.Clear();
             e.Handled = true;
         }
 
