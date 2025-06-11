@@ -468,7 +468,7 @@
                          Fill="{Binding DataContext.Background,
                                 RelativeSource={RelativeSource AncestorType=UserControl},
                                 Converter={StaticResource TextForegroundSaturationColorConverter},
-                                ConverterParameter=Thumb}" />
+                                ConverterParameter=resizeThumb}" />
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
