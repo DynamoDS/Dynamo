@@ -265,7 +265,7 @@ namespace Dynamo.UI.Controls
 
             mouseRightButtonDownTrigger.Actions.Add(mouseRightButtonDownAction);
             Dynamo.Microsoft.Xaml.Behaviors.Interaction.GetTriggers(MainGrid).Add(mouseRightButtonDownTrigger);
-            
+
             var previewMouseLeftDownTrigger = new Dynamo.UI.Views.HandlingEventTrigger()
             {
                 EventName = "PreviewMouseLeftButtonDown",

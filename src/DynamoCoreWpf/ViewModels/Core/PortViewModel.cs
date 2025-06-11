@@ -7,16 +7,12 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Threading;
-using CoreNodeModels.Properties;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
-using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.Search.SearchElements;
 using Dynamo.UI.Commands;
 using Dynamo.Utilities;
-using Dynamo.Wpf.Controls;
 using static Dynamo.ViewModels.SearchViewModel;
 
 namespace Dynamo.ViewModels
