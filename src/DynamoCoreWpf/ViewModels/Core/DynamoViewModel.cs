@@ -4307,13 +4307,13 @@ namespace Dynamo.ViewModels
             //set to manual run mode
             this.HomeSpace.RunSettings.RunType = RunType.Manual;
 
-            var stat = new System.Text.StringBuilder();
-
             string fileName = String.Format("NodesWithoutIcons_{0}.csv", DateTime.Now.ToString("yyyyMMddHmmss"));
             string fullFileName = Path.Combine(Model.PathManager.LogDirectory, fileName);
 
             //creating a copy to avoid collection changed exceptions
             var entriesCopy = Model.SearchModel.Entries.Where(n => n.IsVisibleInSearch).ToList();
+
+            StreamWriter sw = File.CreateText(fullFileName);
 
             foreach (var nse in entriesCopy)
             {
@@ -4325,14 +4325,14 @@ namespace Dynamo.ViewModels
                 //if image source is null, then no icon is found
                 if (imageSource is null)
                 {
-                    stat.AppendLine($"{placedNode.Name},");
+                    sw.WriteLine($"{nse.Assembly},{nse.Name}");
                 }
                 else
                 {
                     this.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(placedNode.Id));
                 }
             }
-            File.WriteAllText(fullFileName, stat.ToString());
+            sw.Close();
         }
 
         private FileInfo GetMatchingDocFromDirectory(string nodeName, string hash, List<string> suffix, DirectoryInfo dir)
