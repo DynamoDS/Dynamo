@@ -373,6 +373,10 @@ Dynamo.Controls.LeftThicknessConverter
 Dynamo.Controls.LeftThicknessConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.LeftThicknessConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.LeftThicknessConverter.LeftThicknessConverter() -> void
+Dynamo.Controls.LengthToVisibilityConverter
+Dynamo.Controls.LengthToVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.LengthToVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.LengthToVisibilityConverter.LengthToVisibilityConverter() -> void
 Dynamo.Controls.LibraryTreeItemsHostVisibilityConverter
 Dynamo.Controls.LibraryTreeItemsHostVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.LibraryTreeItemsHostVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
