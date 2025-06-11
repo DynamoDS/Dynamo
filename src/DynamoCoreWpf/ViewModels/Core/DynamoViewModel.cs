@@ -4302,6 +4302,32 @@ namespace Dynamo.ViewModels
             File.WriteAllText(fullFileName, stat.ToString());
         }
 
+        internal void DumpNodeIconData(object parameter)
+        {
+            var stat = new System.Text.StringBuilder();
+            //creating a copy to avoid collection changed exceptions
+            var entriesCopy = Model.SearchModel.Entries.Where(n => n.IsVisibleInSearch).ToList();
+
+            foreach (var nse in entriesCopy)
+            {
+                var newNode = nse.CreateNode();
+                this.CurrentSpace.AddAndRegisterNode(newNode);
+                var placedNode = this.CurrentSpaceViewModel.Nodes.Last();
+                var imageSource = placedNode.ImageSource;
+
+                //if image source is null, then no icon is found
+                if (imageSource is null)
+                {
+                    stat.AppendLine($"{nse.Name},");
+                    stat.AppendLine(Environment.NewLine);
+                }
+                else
+                {
+                    this.CurrentSpaceViewModel.DynamoViewModel.DeleteCommand.Execute(placedNode);
+                }
+            }
+        }
+
         private FileInfo GetMatchingDocFromDirectory(string nodeName, string hash, List<string> suffix, DirectoryInfo dir)
         {
             FileInfo matchingFile = null;
