@@ -1288,6 +1288,7 @@ namespace ProtoFFI
     public class FFIMethodAttributes : ProtoCore.AST.AssociativeAST.MethodAttributes
     {
         private List<Attribute> attributes;
+        private bool hasIsObsoleteAttribute;
         /// <summary>
         /// FFI method attributes.
         /// </summary>
@@ -1409,6 +1410,7 @@ namespace ProtoFFI
                 else if (attr is IsObsoleteAttribute)
                 {
                     HiddenInLibrary = true;
+                    hasIsObsoleteAttribute = true;
                     ObsoleteMessage = (attr as IsObsoleteAttribute).Message;
                     if (string.IsNullOrEmpty(ObsoleteMessage))
                         ObsoleteMessage = "Obsolete";
@@ -1416,9 +1418,14 @@ namespace ProtoFFI
                 else if (attr is ObsoleteAttribute)
                 {
                     HiddenInLibrary = true;
-                    ObsoleteMessage = (attr as ObsoleteAttribute).Message;
-                    if (string.IsNullOrEmpty(ObsoleteMessage))
-                        ObsoleteMessage = "Obsolete";
+                    // Obsolete message in IsObsoleteAttribute is overridden to support localization
+                    // and therefore should always be preferred over the ObsoleteAttribute message.
+                    if (!hasIsObsoleteAttribute || string.IsNullOrEmpty(ObsoleteMessage))
+                    {
+                        ObsoleteMessage = (attr as ObsoleteAttribute).Message;
+                        if (string.IsNullOrEmpty(ObsoleteMessage))
+                            ObsoleteMessage = "Obsolete";
+                    }
                 }
                 else if (attr is CanUpdatePeriodicallyAttribute)
                 {
