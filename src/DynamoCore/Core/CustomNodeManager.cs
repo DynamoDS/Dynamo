@@ -486,11 +486,24 @@ namespace Dynamo.Core
         /// </summary>
         private void SetNodeInfo(CustomNodeInfo newInfo)
         {
+            // TODO test if this code can be removed.
+            //var guids = NodeInfos.Where(x =>
+            //{
+            //    return !string.IsNullOrEmpty(x.Value.Path) &&
+            //           string.Compare(x.Value.Path, newInfo.Path, StringComparison.OrdinalIgnoreCase) == 0;
+            //}).Select(x => x.Key).ToList();
+
+
+            //foreach (var guid in guids)
+            //{
+            //    NodeInfos.Remove(guid);
+            //}
+
             // we need to check with the packageManager that this node if this node is in a package or not - 
             // currently the package data is lost when the customNode workspace is loaded.
             // we'll only do this check for customNode infos which don't have a package currently to verify if this
             // is correct.
-            if(newInfo.IsPackageMember == false)
+            if (newInfo.IsPackageMember == false)
             {
                 var owningPackage = this.OnRequestCustomNodeOwner(newInfo.FunctionId);
                 
@@ -829,7 +842,6 @@ namespace Dynamo.Core
                 var newInfo = newWorkspace.CustomNodeInfo;
 
                 SetNodeInfo(newInfo);
-                OnInfoUpdated(newInfo);
             };
 
             newWorkspace.FunctionIdChanged += oldGuid =>

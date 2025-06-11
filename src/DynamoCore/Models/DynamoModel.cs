@@ -1511,11 +1511,12 @@ namespace Dynamo.Models
                     return;
                 }
 
-                if (customNodeSearchRegistry.Contains(info.FunctionId)
-                        || !info.IsVisibleInDynamoLibrary)
+                if (customNodeSearchRegistry.Contains(info.FunctionId) || !info.IsVisibleInDynamoLibrary)
+                {
                     return;
+                }
 
-               
+
                 var elements = SearchModel?.Entries.OfType<CustomNodeSearchElement>().
                                 Where(x =>
                                 {
