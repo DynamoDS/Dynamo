@@ -6,7 +6,6 @@ namespace Dynamo.ViewModels
     {
         private DelegateCommand connectCommand;
         private DelegateCommand autoCompleteCommand;
-        private DelegateCommand nodeAutoCompleteToast;
         private DelegateCommand portMouseEnterCommand;
         private DelegateCommand portMouseLeaveCommand;
         private DelegateCommand portMouseLeftButtonCommand;
@@ -24,7 +23,7 @@ namespace Dynamo.ViewModels
                 return connectCommand;
             }
         }
-        
+
         /// <summary>
         /// Command to trigger Node Auto Complete from node port interaction
         /// </summary>
