@@ -4358,6 +4358,10 @@ namespace Dynamo.ViewModels
         {
             return true;
         }
+        internal bool CanDumpNodeIconData(object obj)
+        {
+            return true;
+        }
 
         #region Shutdown related methods
 
