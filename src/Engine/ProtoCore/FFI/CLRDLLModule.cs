@@ -1420,6 +1420,8 @@ namespace ProtoFFI
                     HiddenInLibrary = true;
                     // Obsolete message in IsObsoleteAttribute is overridden to support localization
                     // and therefore should always be preferred over the ObsoleteAttribute message.
+                    // The following logic ensures that the ObsoleteAttribute message is only used
+                    // if the IsObsoleteAttribute is not present or its message is empty.
                     if (!hasIsObsoleteAttribute || string.IsNullOrEmpty(ObsoleteMessage))
                     {
                         ObsoleteMessage = (attr as ObsoleteAttribute).Message;
