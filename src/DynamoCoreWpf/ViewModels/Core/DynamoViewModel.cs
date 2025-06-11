@@ -231,6 +231,17 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls if the new DNA Flyout is enabled from preference settings.
+        /// </summary>
+        internal bool IsNewDNAUIEnabled
+        {
+            get
+            {
+                return model.PreferenceSettings.EnableNewNodeAutoCompleteUI;
+            }
+        }
+
+        /// <summary>
         /// Count of unresolved issues on the linter manager.
         /// This is used for binding in the NotificationsControl
         /// </summary>

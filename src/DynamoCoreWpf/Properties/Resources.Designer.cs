@@ -8028,6 +8028,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Enable New UI.
+        /// </summary>
+        public static string PreferencesViewEnableNodeAutoCompleteNewUI {
+            get {
+                return ResourceManager.GetString("PreferencesViewEnableNodeAutoCompleteNewUI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the new floating menu for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog..
+        /// </summary>
+        public static string PreferencesViewEnableNodeAutoCompleteNewUITooltipText {
+            get {
+                return ResourceManager.GetString("PreferencesViewEnableNodeAutoCompleteNewUITooltipText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Learn more about Node Autocomplete feature..
         /// </summary>
         public static string PreferencesViewEnableNodeAutoCompleteTooltipText {
