@@ -4304,7 +4304,14 @@ namespace Dynamo.ViewModels
 
         internal void DumpNodeIconData(object parameter)
         {
+            //set to manual run mode
+            this.HomeSpace.RunSettings.RunType = RunType.Manual;
+
             var stat = new System.Text.StringBuilder();
+
+            string fileName = String.Format("NodesWithoutIcons_{0}.csv", DateTime.Now.ToString("yyyyMMddHmmss"));
+            string fullFileName = Path.Combine(Model.PathManager.LogDirectory, fileName);
+
             //creating a copy to avoid collection changed exceptions
             var entriesCopy = Model.SearchModel.Entries.Where(n => n.IsVisibleInSearch).ToList();
 
@@ -4319,13 +4326,13 @@ namespace Dynamo.ViewModels
                 if (imageSource is null)
                 {
                     stat.AppendLine($"{nse.Name},");
-                    stat.AppendLine(Environment.NewLine);
                 }
                 else
                 {
-                    this.CurrentSpaceViewModel.DynamoViewModel.DeleteCommand.Execute(placedNode);
+                    this.Model.ExecuteCommand(new DynamoModel.DeleteModelCommand(placedNode.Id));
                 }
             }
+            File.WriteAllText(fullFileName, stat.ToString());
         }
 
         private FileInfo GetMatchingDocFromDirectory(string nodeName, string hash, List<string> suffix, DirectoryInfo dir)
