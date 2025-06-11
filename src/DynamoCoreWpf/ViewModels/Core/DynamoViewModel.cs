@@ -4325,7 +4325,7 @@ namespace Dynamo.ViewModels
                 //if image source is null, then no icon is found
                 if (imageSource is null)
                 {
-                    stat.AppendLine($"{nse.Name},");
+                    stat.AppendLine($"{placedNode.Name},");
                 }
                 else
                 {
