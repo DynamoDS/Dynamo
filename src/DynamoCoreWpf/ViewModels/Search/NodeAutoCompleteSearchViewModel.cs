@@ -610,6 +610,7 @@ namespace Dynamo.ViewModels
             }
             else
             {
+                ResultsLoaded = true; //whether succesful or errored out, no need for the loading as its done synchronously
                 //Tracking Analytics when raising Node Autocomplete with the Object Types option selected.
                 Analytics.TrackEvent(
                     Actions.Show,
