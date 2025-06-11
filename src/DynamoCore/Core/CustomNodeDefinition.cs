@@ -409,10 +409,6 @@ namespace Dynamo
                 data["FunctionId"] = data.GetValue("Uuid");
                 data["Path"] = path;
                 
-                //if (!data.ContainsKey("Category"))
-                //{
-                //    data["Category"] = "";
-                //}
                 info = data.ToObject<CustomNodeInfo>();
                 return true;
             }
