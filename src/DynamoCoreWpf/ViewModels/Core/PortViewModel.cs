@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
@@ -535,9 +536,13 @@ namespace Dynamo.ViewModels
             workspaceViewModel.HandlePortClicked(this);
 
             //handle double click
-            if (parameter is MouseButtonEventArgs { ClickCount: >= 2 })
+            if (parameter is MouseButtonEventArgs evArgs)
             {
-               HandleDoubleClick();
+                evArgs.Handled = true;
+                if (evArgs.ClickCount >=2)
+                {
+                    HandleDoubleClick();
+                }
             }
         }
 
@@ -550,14 +555,20 @@ namespace Dynamo.ViewModels
             WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
 
             workspaceViewModel.CancelActiveState();
-            dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow("need to add this to a resource.",true);
-            var timer = new Timer(_ =>
+            dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.ToastFileNodeAutoCompleteDoubleClick, true);
+
+            var timer = new DispatcherTimer
             {
-                Application.Current.Dispatcher.Invoke(() =>
-                {
-                    dynamoViewModel.MainGuideManager.CloseRealTimeInfoWindow();
-                });
-            }, null, 4000, Timeout.Infinite);
+                Interval = TimeSpan.FromSeconds(4)
+            };
+
+            timer.Tick += (s, e) =>
+            {
+                timer.Stop();
+                dynamoViewModel.MainGuideManager.CloseRealTimeInfoWindow();
+            };
+
+            timer.Start();
         }
 
         protected bool CanConnect(object parameter)
