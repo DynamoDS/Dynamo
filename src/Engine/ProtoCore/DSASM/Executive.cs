@@ -2308,15 +2308,35 @@ namespace ProtoCore.DSASM
             }
         }
 
+        private int cacheBlockID = -1;
+        private int cacheClassIndex = -1;
+        private int cachesymbolIndex = -1;
+        private SymbolNode cachedSymbol = null;
+
         protected SymbolNode GetSymbolNode(int blockId, int classIndex, int symbolIndex)
         {
+            if (blockId == cacheBlockID && classIndex == cacheClassIndex && symbolIndex == cachesymbolIndex && cachedSymbol != null)
+            {
+                return cachedSymbol;
+            }
+
             if (Constants.kGlobalScope == classIndex)
             {
-                return exe.runtimeSymbols[blockId].symbolList[symbolIndex];
+                var symbol = exe.runtimeSymbols[blockId].symbolList[symbolIndex];
+                cacheBlockID = blockId;
+                cacheClassIndex = classIndex;
+                cachesymbolIndex = symbolIndex;
+                cachedSymbol = symbol;
+                return symbol;
             }
             else
             {
-                return exe.classTable.ClassNodes[classIndex].Symbols.symbolList[symbolIndex];
+                var symbol = exe.classTable.ClassNodes[classIndex].Symbols.symbolList[symbolIndex];
+                cacheBlockID = blockId;
+                cacheClassIndex = classIndex;
+                cachesymbolIndex = symbolIndex;
+                cachedSymbol = symbol;
+                return symbol;
             }
         }
 
