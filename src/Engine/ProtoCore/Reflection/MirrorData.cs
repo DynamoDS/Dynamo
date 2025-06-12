@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using Autodesk.DesignScript.Interfaces;
+using ProtoCore.AST.AssociativeAST;
 using ProtoCore.DSASM;
 using ProtoCore.Utils;
 
@@ -39,11 +40,8 @@ namespace ProtoCore
             //
             private ProtoCore.Core core;
             private ProtoCore.RuntimeCore runtimeCore;
-
-            /// <summary>
-            /// 
-            /// </summary>
-            private static GraphicDataProvider dataProvider = new GraphicDataProvider();
+            private ProtoCore.DSASM.Interpreter interpreter;
+            private ProtoFFI.FFIObjectMarshaler marshaler;
 
             /// <summary>
             /// Experimental constructor that takes in a core object
@@ -68,6 +66,21 @@ namespace ProtoCore
                 this.core = core;
                 this.runtimeCore = runtimeCore;
                 svData = sv;
+            }
+
+            /// <summary>
+            /// Takes a runtime core object to read runtime data
+            /// </summary>
+            /// <param name="core"></param>
+            /// <param name="runtimeCore"></param>
+            /// <param name="sv"></param>
+            public MirrorData(ProtoCore.Core core, ProtoCore.RuntimeCore runtimeCore, StackValue sv, Interpreter i, ProtoFFI.FFIObjectMarshaler m)
+            {
+                this.core = core;
+                this.runtimeCore = runtimeCore;
+                svData = sv;
+                interpreter = i;
+                marshaler = m;
             }
 
 
@@ -145,7 +158,20 @@ namespace ProtoCore
                     return null;
 
                 var array = runtimeCore.Heap.ToHeapObject<DSArray>(svData);
-                return array.Values.Select(x => new MirrorData(this.core, this.runtimeCore, x));
+
+                ProtoCore.DSASM.Interpreter interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore, false);
+                var helper = ProtoFFI.DLLFFIHandler.GetModuleHelper(ProtoFFI.FFILanguage.CSharp);
+                var marshaler = helper.GetMarshaler(runtimeCore);
+                var elements = new List<MirrorData>();
+
+                foreach(var item in array.Values)
+                {
+                    elements.Add(item.IsPointer
+                        ? new MirrorData(this.core, this.runtimeCore, item, interpreter, marshaler)
+                        : new MirrorData(this.core, this.runtimeCore, item));
+                }
+
+                return elements;
             }
 
             /// <summary>
@@ -162,7 +188,7 @@ namespace ProtoCore
             /// <param name="sv">StackValue</param>
             /// <param name="runtimeCore">ProtoCore.Core</param>
             /// <returns>System.Object</returns>
-            internal static object GetData(StackValue sv, RuntimeCore runtimeCore)
+            internal object GetData(StackValue sv, RuntimeCore runtimeCore)
             {
                 switch (sv.optype)
                 {
@@ -177,11 +203,40 @@ namespace ProtoCore
                     case AddressType.String:
                         return StringUtils.GetStringValue(sv, runtimeCore);
                     case AddressType.Pointer:
-                        return dataProvider.GetCLRObject(sv, runtimeCore);
+                        return GetCLRObject(sv, runtimeCore);
                     default:
                         break;
                 }
                 return null;
+            }
+
+            internal object GetCLRObject(StackValue svData, RuntimeCore runtimeCore)
+            {
+                if (null == runtimeCore.DSExecutable.classTable)
+                    return null;
+
+                IList<ClassNode> classNodes = runtimeCore.DSExecutable.classTable.ClassNodes;
+                if (null == classNodes || (classNodes.Count <= 0))
+                    return null;
+
+                ClassNode classnode = runtimeCore.DSExecutable.classTable.ClassNodes[svData.metaData.type];
+                if (!classnode.IsImportedClass) //TODO: look at properties to see if it contains any FFI objects.
+                    return null;
+
+                try
+                {
+                    if (this.marshaler == null)
+                    {
+                        interpreter = new ProtoCore.DSASM.Interpreter(runtimeCore, false);
+                        var helper = ProtoFFI.DLLFFIHandler.GetModuleHelper(ProtoFFI.FFILanguage.CSharp);
+                        marshaler = helper.GetMarshaler(runtimeCore);
+                    }
+                    return marshaler.UnMarshal(svData, null, interpreter, typeof(object));
+                }
+                catch (System.Exception)
+                {
+                    return null;
+                }
             }
 
             internal static string PrecisionFormat { get; set; } = "f3";
