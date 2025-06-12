@@ -297,8 +297,8 @@ namespace ProtoCore.DSASM
             Black // Objects that are in use (are not candidates for garbage collection) and have had all their references traced.
         }
 
-        private readonly List<int> freeList = new List<int>();
-        private readonly List<HeapElement> heapElements = new List<HeapElement>();
+        private readonly List<int> freeList = new List<int>(GC_THRESHOLD);
+        private readonly List<HeapElement> heapElements = new List<HeapElement>(GC_THRESHOLD);
         private HashSet<int> fixedHeapElements = new HashSet<int>(); 
         private readonly StringTable stringTable = new StringTable();
         // The expected lifetime of the sweepSet is start of GC to end of GC
