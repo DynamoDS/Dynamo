@@ -500,14 +500,30 @@ namespace ProtoFFI
             return string.Format(Resources.OperationFailType2, ReflectionInfo.DeclaringType.Name, ReflectionInfo.Name, msg);
         }
 
+        private object[] parameters = null;
+        private FFIObjectMarshaler marshaller;
+        private FFIParameterInfo[] paraminfos;
+        private List<StackValue> referencedParameters;
+        private object missing = Type.Missing;
+
         public override object Execute(ProtoCore.Runtime.Context c, Interpreter dsi, List<StackValue> s)
         {
-            var parameters = new List<object>();
+            if (parameters == null)
+            {
+                parameters = new object[mArgTypes.Length];
+                marshaller = Module.GetMarshaler(dsi.runtime.RuntimeCore);
+                paraminfos = ReflectionInfo.GetParameters();
+                referencedParameters = new List<StackValue>();
+            }
+            else
+            {
+                referencedParameters.Clear();
+            }
+
             if (s == null)
                 s = dsi.runtime.rmem.Stack;
 
             object thisObject = null;
-            FFIObjectMarshaler marshaller = Module.GetMarshaler(dsi.runtime.RuntimeCore);
             if (!ReflectionInfo.IsStatic)
             {
                 try
@@ -525,9 +541,6 @@ namespace ProtoFFI
                     return null; //Can't call a method on null object.
             }
 
-            FFIParameterInfo[] paraminfos = ReflectionInfo.GetParameters();
-            List<StackValue> referencedParameters = new List<StackValue>();
-
             for (int i = 0; i < mArgTypes.Length; ++i)
             {
                 var opArg = s[i];
@@ -536,7 +549,7 @@ namespace ProtoFFI
                     Type paramType = paraminfos[i].Info.ParameterType;
                     object param = null;
                     if (opArg.IsDefaultArgument)
-                        param = Type.Missing;
+                        param = missing;
                     else 
                         param = marshaller.UnMarshal(opArg, c, dsi, paramType);
 
@@ -559,7 +572,7 @@ namespace ProtoFFI
                         
                     }
 
-                    parameters.Add(param);
+                    parameters[i] = param;
                 }
                 catch (System.InvalidCastException ex)
                 {
@@ -574,7 +587,7 @@ namespace ProtoFFI
                 }
             }
 
-            var ret =  InvokeFunctionPointerNoThrow(c, dsi, thisObject, parameters.Count > 0 ? parameters.ToArray() : null);
+            var ret =  InvokeFunctionPointerNoThrow(c, dsi, thisObject, parameters);
             if (ReflectionInfo.KeepReferenceThis && thisObject != null)
             {
                 referencedParameters.Add(s.Last());
