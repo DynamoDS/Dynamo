@@ -2324,7 +2324,7 @@ namespace Dynamo.Controls
         /// </summary>
         private void StashNodeViewCustomizationMenuItems()
         {
-            if (MainContextMenu != null && MainContextMenu.Items.Count > 0 && NodeViewCustomizationMenuItems.Count < 1)
+            if (MainContextMenu != null && MainContextMenu.Items.Count > 0 && NodeViewCustomizationMenuItems.Count == 0)
             {
                 foreach (var obj in MainContextMenu.Items)
                 {
@@ -2381,7 +2381,6 @@ namespace Dynamo.Controls
         {
             MainContextMenu.Closed -= MainContextMenu_OnClosed;
             MainContextMenu.Items.Clear();
-            nodeContextMenu.Items.Clear();
             e.Handled = true;
         }
 
