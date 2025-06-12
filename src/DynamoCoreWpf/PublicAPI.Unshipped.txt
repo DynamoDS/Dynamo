@@ -5084,6 +5084,7 @@ static Dynamo.Wpf.Properties.Resources.NodeContextMenuPreview.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuRenameNode.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuShowLabels.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeHelpIsDumped.get -> string
+static Dynamo.Wpf.Properties.Resources.NodeIconDataIsDumped.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeHelpWindowNodeCategory.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeHelpWindowNodeDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeHelpWindowNodeInput.get -> string
