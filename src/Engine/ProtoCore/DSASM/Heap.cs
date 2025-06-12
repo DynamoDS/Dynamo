@@ -402,9 +402,7 @@ namespace ProtoCore.DSASM
         {
             try
             {
-                int index = AllocateInternal(size, PrimitiveType.Pointer);
-                var hpe = heapElements[index];
-                hpe.MetaData = metadata;
+                int index = AllocatePointerInternal(size, metadata);
                 return StackValue.BuildPointer(index, metadata);
             }
             catch (OutOfMemoryException)
@@ -581,6 +579,11 @@ namespace ProtoCore.DSASM
             }
 
             return AddHeapElement(hpe);
+        }
+
+        private int AllocatePointerInternal(int size, MetaData metaData)
+        {
+            return AddHeapElement(new DSObject(size, this, metaData));
         }
 
         private int AllocateInternal(StackValue[] values, PrimitiveType type)
