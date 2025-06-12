@@ -842,6 +842,7 @@ namespace Dynamo.Core
                 var newInfo = newWorkspace.CustomNodeInfo;
 
                 SetNodeInfo(newInfo);
+                OnInfoUpdated(newInfo);
             };
 
             newWorkspace.FunctionIdChanged += oldGuid =>
