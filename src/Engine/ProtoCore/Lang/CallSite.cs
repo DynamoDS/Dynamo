@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using DynamoServices;
 using Newtonsoft.Json;
@@ -1421,8 +1422,10 @@ namespace ProtoCore
             }
             else //replicated call
             {
+                ReadOnlySpan<ReplicationInstruction> replicationInstructionsSpan = CollectionsMarshal.AsSpan(replicationInstructions);
+
                 c.IsReplicating = true;
-                ret = ExecWithRISlowPath(functionEndPoints, c, formalParameters, replicationInstructions, stackFrame, runtimeCore, singleRunTraceData, newTraceData);
+                ret = ExecWithRISlowPath(functionEndPoints, c, formalParameters, replicationInstructionsSpan, stackFrame, runtimeCore, singleRunTraceData, newTraceData);
             }
 
             //Do a trace save here
@@ -1456,7 +1459,7 @@ namespace ProtoCore
             List<FunctionEndPoint> functionEndPoints,
             Context c,
             List<StackValue> formalParameters,
-            List<ReplicationInstruction> replicationInstructions,
+            ReadOnlySpan<ReplicationInstruction> replicationInstructions,
             StackFrame stackFrame,
             RuntimeCore runtimeCore,
             SingleRunTraceData previousTraceData,
@@ -1467,7 +1470,7 @@ namespace ProtoCore
                 throw new NotImplementedException("Parallel mode disabled: {BF417AD5-9EA9-4292-ABBC-3526FC5A149E}");
 
             //Recursion base case
-            if (replicationInstructions.Count == 0)
+            if (replicationInstructions.Length == 0)
             {
                 return ExecWithZeroRI(functionEndPoints, c, formalParameters, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFunctionEndPoint);
             }
@@ -1490,7 +1493,7 @@ namespace ProtoCore
                 List<int> repIndecies = ri.ZipIndecies;
 
                 //this will hold the heap elements for all the arrays that are going to be replicated over
-                List<StackValue[]> parameters = new List<StackValue[]>();
+                List<StackValue[]> parameters = new List<StackValue[]>(repIndecies.Count);
 
                 int retSize;
                 switch (algorithm)
@@ -1545,7 +1548,7 @@ namespace ProtoCore
 
                 StackValue[] retSVs = new StackValue[retSize];
                 SingleRunTraceData retTrace = newTraceData;
-                retTrace.NestedData = new List<SingleRunTraceData>(); //this will shadow the SVs as they are created
+                retTrace.NestedData = new List<SingleRunTraceData>(retSize); //this will shadow the SVs as they are created
 
                 //Populate out the size of the list with default values
                 //@TODO:Luke perf optimisation here
@@ -1595,7 +1598,7 @@ namespace ProtoCore
                         }
                     }
 
-                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
+                    ReadOnlySpan<ReplicationInstruction> newRIs = replicationInstructions[1..];
 
                     SingleRunTraceData cleanRetTrace = new SingleRunTraceData();
 
@@ -1658,7 +1661,7 @@ namespace ProtoCore
 
                 if (supressArray)
                 {
-                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
+                    ReadOnlySpan<ReplicationInstruction> newRIs = replicationInstructions[1..];
 
                     return ExecWithRISlowPath(functionEndPoints, c, newFormalParams, newRIs, stackFrame, runtimeCore, previousTraceData, newTraceData, finalFunctionEndPoint);
                 }
@@ -1669,7 +1672,7 @@ namespace ProtoCore
                     //It was an array pack the arg with the current value
                     newFormalParams[cartIndex] = array.GetValueFromIndex(i, runtimeCore);
 
-                    List<ReplicationInstruction> newRIs = replicationInstructions.GetRange(1, replicationInstructions.Count - 1);
+                    ReadOnlySpan<ReplicationInstruction> newRIs = replicationInstructions[1..];
 
                     SingleRunTraceData lastExecTrace;
 
