@@ -111,6 +111,17 @@ namespace ProtoCore.DSASM
             deferedGraphNodes = new List<AssociativeGraph.GraphNode>();
         }
 
+        public void Reset(bool isFep = false)
+        {
+            pc = Constants.kInvalidIndex;
+            executingBlock = Constants.kInvalidIndex;
+            RX = StackValue.BuildInvalid();
+            TX = StackValue.BuildInvalid();
+            fepRun = isFep;
+            terminate = false;
+            graphNodesInProgramScope = null;
+        }
+
         /// <summary>
         /// Cache the graphnodes in scope
         /// </summary>
