@@ -186,6 +186,20 @@ namespace ProtoCore
                 Stack[index] = data;
             }
 
+            /// <summary>
+            /// Set the value for symbol on current stack frame and get the previous item.
+            /// </summary>
+            /// <param name="symbol"></param>
+            /// <param name="data"></param>
+            /// <returns></returns>
+            public StackValue SetSymbolValueAndGetPreviousValue(SymbolNode symbol, StackValue data)
+            {
+                int index = GetStackIndex(symbol, FramePointer);
+                var prevVal = Stack[index];
+                Stack[index] = data;
+                return prevVal;
+            }
+
             // TO BE DELETED
             public int GetStackIndex(int offset)
             {

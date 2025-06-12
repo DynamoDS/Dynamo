@@ -2438,8 +2438,9 @@ namespace ProtoCore.DSASM
                 case AddressType.MemVarIndex:
 
                     SymbolNode symbol = GetSymbolNode(blockId, op2.ClassIndex, op1.SymbolIndex);
-                    opPrev = rmem.GetSymbolValue(symbol);
-                    rmem.SetSymbolValue(symbol, opVal);
+                    opPrev = rmem.SetSymbolValueAndGetPreviousValue(symbol, opVal);
+
+#if DEBUG
                     exe.UpdatedSymbols.Add(symbol);
 
                     if (IsDebugRun())
@@ -2452,14 +2453,15 @@ namespace ProtoCore.DSASM
                     {
                         logWatchWindow(blockId, op1.SymbolIndex);
                     }
-
+#endif
                     RecordExecutedGraphNode();
                     break;
 
                 case AddressType.StaticMemVarIndex:
                     var staticMember = GetSymbolNode(blockId, Constants.kGlobalScope, op1.StaticVariableIndex);
-                    opPrev = rmem.GetSymbolValue(staticMember);
-                    rmem.SetSymbolValue(staticMember, opVal);
+                    opPrev = rmem.SetSymbolValueAndGetPreviousValue(staticMember, opVal);
+
+#if DEBUG
                     exe.UpdatedSymbols.Add(staticMember);
 
                     if (IsDebugRun())
@@ -2469,6 +2471,7 @@ namespace ProtoCore.DSASM
                     }
 
                     logWatchWindow(blockId, op1.StaticVariableIndex);
+#endif
                     break;
                 case AddressType.Register:
                     {
