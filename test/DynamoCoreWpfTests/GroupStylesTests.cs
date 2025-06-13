@@ -108,7 +108,7 @@ namespace DynamoCoreWpfTests
             preferencesWindow.CloseButton.RaiseEvent(new RoutedEventArgs(ButtonBase.ClickEvent));
             DispatcherUtil.DoEvents();
 
-            var groupStylesMenuItem = annotationView.AnnotationContextMenu
+            var groupStylesMenuItem = annotationView.AnnotationGrid.ContextMenu
               .Items
               .OfType<MenuItem>()
               .First(x => x.Header.ToString() == "Group Style");
