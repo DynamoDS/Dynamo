@@ -2431,7 +2431,7 @@ namespace Dynamo.Models
             }
         }
 
-        private bool OpenJsonFile(
+        internal bool OpenJsonFile(
           string filePath,
           string fileContents,
           DynamoPreferencesData dynamoPreferences,
