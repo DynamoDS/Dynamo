@@ -536,7 +536,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 AutocompleteMLTitle = Resources.AutocompleteNoRecommendationsTitle;
                 AutocompleteMLMessage = Resources.AutocompleteNoRecommendationsMessage;
                 Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "NoRecommendation");
-                return new List<SingleResultItem>();
+
+                return TryGetLocalAutoCompleteResult();
             }
             ServiceVersion = MLresults.Version;
             var results = new List<SingleResultItem>();
@@ -609,6 +610,90 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             return results;
         }
+
+        /// <summary>
+        /// Use local node help files to at least return one result that will work.
+        /// </summary>
+        /// <returns></returns>
+        private List<SingleResultItem> TryGetLocalAutoCompleteResult()
+        {
+            var dynamoModel = this.dynamoViewModel.Model;
+
+            var nodeHelpDocPath = new DirectoryInfo(Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName,
+                Configurations.DynamoNodeHelpDocs));
+
+            var selectedNode = this.PortViewModel.NodeViewModel.NodeModel;
+            var selectedPortModel = this.PortViewModel.PortModel;
+
+            string nodeFullName;
+
+            switch (selectedNode)
+            {
+                case DSFunction dsFunction:
+                    string fullSignature = dsFunction.FunctionSignature;
+                    nodeFullName = fullSignature.Split('@')[0];
+                    break;
+                case Function function:
+                    string fullFunctionSignature = function.FunctionSignature.ToString();
+                    nodeFullName = fullFunctionSignature.Split('@')[0];
+                    break;
+                default:
+                    nodeFullName = selectedNode.GetType().ToString();
+                    break;
+            }
+
+            string sampleDynPath = Path.Combine(nodeHelpDocPath.FullName, $"{nodeFullName}.dyn");
+
+            if (!File.Exists(sampleDynPath))
+            {
+                var minimumQualifiedName = dynamoViewModel.GetMinimumQualifiedName(selectedNode);
+                var shortName = Hash.GetHashFilenameFromString(minimumQualifiedName);
+                sampleDynPath = Path.Combine(nodeHelpDocPath.FullName, $"{shortName}.dyn");
+            }
+
+            //no help file found, return nothing
+            if (!File.Exists(sampleDynPath))
+            {
+                return new List<SingleResultItem>();
+            }
+
+            Exception ex;
+            DynamoUtilities.PathHelper.isValidJson(sampleDynPath, out var fileContents, out ex);
+
+            //get the workspace model from the sample to lookup the node
+            var workspace = WorkspaceModel.FromJson(fileContents, dynamoModel.LibraryServices,
+                dynamoModel.EngineController, dynamoModel.Scheduler,
+                dynamoModel.NodeFactory, false, false,
+                dynamoModel.CustomNodeManager,
+                dynamoModel.LinterManager);
+
+            var matchingNode = workspace.Nodes
+                .FirstOrDefault(n => n.CreationName == selectedNode.CreationName);
+
+            //no matching node found, return nothing
+            if (matchingNode is null) return new List<SingleResultItem>();
+            
+            //find the port model and the node to place
+            NodeModel predictedNode = null;
+            PortModel matchingPortModel = null;
+            switch (selectedPortModel.PortType)
+            {
+                case PortType.Input:
+                    matchingPortModel = matchingNode.InPorts[selectedPortModel.Index];
+                    predictedNode = matchingPortModel.Connectors.First().Start.Owner;
+                    break;
+                case PortType.Output:
+                    matchingPortModel = matchingNode.OutPorts[selectedPortModel.Index];
+                    predictedNode = matchingPortModel.Connectors.First().End.Owner;
+                    break;
+            }
+
+            if (predictedNode is null) return new List<SingleResultItem>();
+
+            SingleResultItem singleResultItem = new SingleResultItem(predictedNode, matchingPortModel.Index);
+            return [singleResultItem];
+        }
+
         private T GetGenericAutocompleteResult<T>(string endpoint)
         {   
             var requestDTO = GenerateRequestForMLAutocomplete();
