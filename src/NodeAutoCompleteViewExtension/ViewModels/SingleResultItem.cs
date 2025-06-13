@@ -1,3 +1,4 @@
+using Dynamo.Graph.Nodes;
 using Dynamo.Search.SearchElements;
 using Dynamo.Wpf.ViewModels;
 
@@ -14,6 +15,16 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             Parameters = model.Parameters;
             CreationName = model.CreationName;
             PortToConnect = model.AutoCompletionNodeElementInfo.PortToConnect;
+            Score = score;
+        }
+
+        public SingleResultItem(NodeModel nodeModel, int portToConnect, double score = 1.0)
+        {
+            Assembly = nodeModel.GetType().Assembly.GetName().Name;
+            IconName = nodeModel.GetType().Name;
+            Description = nodeModel.Name;
+            CreationName = nodeModel.CreationName;
+            PortToConnect = portToConnect;
             Score = score;
         }
 
