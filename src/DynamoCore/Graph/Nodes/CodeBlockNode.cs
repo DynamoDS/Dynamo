@@ -41,8 +41,7 @@ namespace Dynamo.Graph.Nodes
         private string code = string.Empty;
         private List<string> inputIdentifiers = new List<string>();
         private List<string> inputPortNames = new List<string>();
-        private Dictionary<string, string> assignmentPortNames = new Dictionary<string, string>();
-        private Dictionary<string, string> outputPortTooltips = new Dictionary<string, string>();
+        private Dictionary<string, string> outputPortNames = new Dictionary<string, string>();
         private string previewVariable;
         private readonly LibraryServices libraryServices;
 
@@ -807,8 +806,7 @@ namespace Dynamo.Graph.Nodes
                         OutPorts.Clear();
                         InPorts.Clear();
                         inputPortNames.Clear();
-                        assignmentPortNames.Clear();
-                        outputPortTooltips.Clear();
+                        outputPortNames.Clear();
                     }
                 }
 
@@ -862,8 +860,7 @@ namespace Dynamo.Graph.Nodes
                 }
 
                 // Collect output port labels and tooltips for assignment and expression statements.
-                assignmentPortNames.Clear();
-                outputPortTooltips.Clear();
+                outputPortNames.Clear();
 
                 foreach (var statement in codeStatements)
                 {
@@ -872,26 +869,9 @@ namespace Dynamo.Graph.Nodes
                     {
                         var leftName = binExpr.LeftNode.Name;
 
-                        if (!IsTempIdentifier(leftName))
-                        {
-                            // Assignment: label and tooltip are variable name
-                            assignmentPortNames[leftName] = leftName;
-                            outputPortTooltips[leftName] = leftName;
-                        }
-                        else
-                        {
-                            // Expression: label is "", tooltip is right node
-                            string tooltip = string.Empty;
-                            if (binExpr.RightNode is IdentifierNode ident)
-                            {
-                                tooltip = ident.Name;
-                            }
-                            else
-                            {
-                                tooltip = binExpr.RightNode.ToString();
-                            }
-                            outputPortTooltips[leftName] = tooltip;
-                        }
+                        outputPortNames[leftName] = IsTempIdentifier(leftName) ?
+                            binExpr.RightNode.ToString() :
+                            leftName;
                     }
                 }
 
@@ -1045,16 +1025,19 @@ namespace Dynamo.Graph.Nodes
             // Clear out all the output port models
             OutPorts.RemoveAll((p) => true);
 
-            // Add an output port for each definition, setting port label and tooltip based on statement type
+            // Add an output port for each definition. If there is only one port, force it to the top (LineIndex = 0)
+            // regardless of code line, so it is not shifted by comments or empty lines.
+            int totalPorts = allDefs.Count();
             foreach (var def in allDefs)
             {
-                string portLabel = assignmentPortNames.ContainsKey(def.Key) ? assignmentPortNames[def.Key] : string.Empty;
-                string tooltip = outputPortTooltips.ContainsKey(def.Key) ? outputPortTooltips[def.Key] : def.Key;
+                string portLabel = outputPortNames.TryGetValue(def.Key, out var label) ? label : string.Empty;
+                int lineIndex = (totalPorts == 1) ? 0 : def.Value - 1;
+                int portHeight = (int)((totalPorts == 1) ? Configurations.PortHeightInPixels : Configurations.CodeBlockOutputPortHeightInPixels);
 
-                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(portLabel, tooltip)
+                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(portLabel, portLabel)
                 {
-                    LineIndex = def.Value - 1,
-                    Height = Configurations.CodeBlockOutputPortHeightInPixels,
+                    LineIndex = lineIndex,
+                    Height = portHeight,
                 }));
             }
         }
