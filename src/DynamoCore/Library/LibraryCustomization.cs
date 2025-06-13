@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
@@ -71,9 +71,9 @@ namespace Dynamo.Engine
         /// found, or null otherwise.</returns>
         public static LibraryCustomization GetForAssembly(string assemblyPath, IPathManager pathManager, bool useAdditionalPaths = true)
         {
-            if (triedPaths.ContainsKey(assemblyPath))
+            if (triedPaths.TryGetValue(assemblyPath, out var isCached))
             {
-                return triedPaths[assemblyPath] ? cache[assemblyPath] : null;
+                return isCached ? cache[assemblyPath] : null;
             }
 
             var customizationPath = "";
