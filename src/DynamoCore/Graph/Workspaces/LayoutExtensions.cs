@@ -64,10 +64,13 @@ namespace Dynamo.Graph.Workspaces
         /// </summary>
         /// <param name="workspace">Workspace on which graph layout will be performed.</param>
         /// <param name="originalNodeGUID"></param>
+        /// <param name="newNodes"></param>
         /// <param name="misplacedNodes"></param>
+        /// <param name="portType"></param>
         internal static List<GraphLayout.Graph> DoGraphAutoLayoutAutocomplete(this WorkspaceModel workspace,
             Guid originalNodeGUID,
-            IEnumerable<NodeModel> misplacedNodes)
+            IEnumerable<NodeModel> newNodes,
+            IEnumerable<NodeModel> misplacedNodes, PortType portType)
         {
             if (workspace.Nodes.Count() < 2) return null;
 
@@ -78,11 +81,11 @@ namespace Dynamo.Graph.Workspaces
 
             GenerateCombinedGraph(workspace, isGroupLayout, out layoutSubgraphs, out subgraphClusters);
 
-            var guidSet = misplacedNodes.Select(x => x.GUID).ToHashSet();
+            var misplacedGuidSet = misplacedNodes.Select(x => x.GUID).ToHashSet();
             foreach (var node in layoutSubgraphs.First().Nodes)
             {
                 //this is a virtual IsSelected - it doesnt change the workspace node models but marks it as touchable to the algorithm
-                node.IsSelected = node.Id == originalNodeGUID || guidSet.Contains(node.Id);
+                node.IsSelected = node.Id == originalNodeGUID || misplacedGuidSet.Contains(node.Id);
             }
 
             // Generate subgraphs separately for each cluster
@@ -108,10 +111,35 @@ namespace Dynamo.Graph.Workspaces
                 relatedNode.Y -= diffY;
             }
 
+            if (portType == PortType.Output)
+            {
+                double minX = double.MaxValue;
+                foreach (var relatedNode in targetSubgraph.Nodes)
+                {
+                    if (newNodes.Any(x => x.GUID == relatedNode.Id))
+                    {
+                        minX = Math.Min(minX, relatedNode.X);
+                    }
+                }
+                double targetMinX = targetNode.X + targetNode.Width + GraphLayout.Graph.HorizontalNodeDistance;
+                var displacement = minX == double.MaxValue ? 0 : targetMinX - minX;
+
+                foreach (var relatedNode in targetSubgraph.Nodes)
+                {
+                    if (newNodes.Any(x => x.GUID == relatedNode.Id))
+                    {
+                        relatedNode.X += displacement;
+                    }
+                }
+            }
+
+            // right now cluster nodes only work on outputs, single nodes dont need to be relayouted as above
+
+
             AvoidSubgraphOverlap(layoutSubgraphs, originalNodeGUID);
 
             var maybeUpdateSet = workspace.Nodes.Any(x => x.IsTransient) ?
-                workspace.Nodes.Where(x => x.GUID == originalNodeGUID || guidSet.Contains(x.GUID)) :
+                workspace.Nodes.Where(x => x.GUID == originalNodeGUID || misplacedGuidSet.Contains(x.GUID)) :
                 workspace.Nodes;
             SaveLayoutGraphForNodeAutoComplete(workspace, maybeUpdateSet.ToList(), layoutSubgraphs, originalNodeGUID);
 
