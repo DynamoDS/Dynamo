@@ -1495,6 +1495,24 @@ namespace Dynamo.Wpf.Properties {
             }
         }
         
+		/// <summary>
+        ///   Looks up a localized string similar to _Dump Node Icons.
+        /// </summary>
+        public static string DynamoViewDebugMenuDumpNodeIcons {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuDumpNodeIcons", resourceCulture);
+            }
+        }
+		        
+		/// <summary>
+        ///   Looks up a localized string similar to NodeIconDataIsDumped.
+        /// </summary>
+        public static string NodeIconDataIsDumped {
+            get {
+                return ResourceManager.GetString("NodeIconDataIsDumped", resourceCulture);
+            }
+        }
+		
         /// <summary>
         ///   Looks up a localized string similar to _Force Re-execute.
         /// </summary>
