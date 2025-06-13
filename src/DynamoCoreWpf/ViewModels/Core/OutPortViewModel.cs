@@ -302,9 +302,9 @@ namespace Dynamo.ViewModels
             Analytics.TrackEvent(Actions.Break, Categories.ConnectorOperations, port.PortType.ToString(), port.Connectors.Count);
             for (var i = port.Connectors.Count - 1; i >= 0; i--)
             {
+                var portConnectorGuid = port.Connectors[i].GUID;
                 // Attempting to get the relevant ConnectorViewModel via matching GUID
-                ConnectorViewModel connectorViewModel = node.WorkspaceViewModel.Connectors
-                    .FirstOrDefault(x => x.ConnectorModel.GUID == port.Connectors[i].GUID);
+                ConnectorViewModel connectorViewModel = node.WorkspaceViewModel.FindConnector(portConnectorGuid);
 
                 if (connectorViewModel == null)
                 {
@@ -325,8 +325,7 @@ namespace Dynamo.ViewModels
             foreach(var connector in port.Connectors)
             {
                 // Attempting to get the relevant ConnectorViewModel via matching GUID
-                var connectorViewModel = node.WorkspaceViewModel.Connectors
-                    .FirstOrDefault(x => x.ConnectorModel.GUID == connector.GUID);
+                var connectorViewModel = node.WorkspaceViewModel.FindConnector(connector.GUID);
                 connectorViewModel?.ShowhideConnectorCommand.Execute(!AreConnectorsHidden);
             }
             if (AreConnectorsHidden)
