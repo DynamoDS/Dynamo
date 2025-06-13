@@ -192,8 +192,24 @@ namespace Dynamo.Engine
         {
             importedLibraries.AddRange(preloadLibraries);
 
-            foreach (var library in importedLibraries)
-                CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
+            //foreach (var library in importedLibraries)
+            //{
+            //    CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
+            //}
+            // generate import node for each library in input list
+            var importNodes = new List<AssociativeNode>();
+            foreach (string lib in importedLibraries)
+            {
+                var importNode = new ImportNode
+                {
+                    ModuleName = lib
+                };
+
+                importNodes.Add(importNode);
+            }
+            var codeGen = new CodeGenDS(importNodes);
+            string code = codeGen.GenerateCode();
+            CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, code);
         }
 
         internal bool FunctionSignatureNeedsAdditionalAttributes(string functionSignature)
@@ -586,7 +602,8 @@ namespace Dynamo.Engine
                 var classTable = LibraryManagementCore.ClassTable;
                 int classNumber = classTable.ClassNodes.Count;
 
-                CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, library);
+                string importStatement = @"import (""" + CompilerUtils.ToLiteral(library) + @""");";
+                CompilerUtils.TryLoadAssemblyIntoCore(LibraryManagementCore, importStatement);
 
                 if(functionTable == null)
                 {
