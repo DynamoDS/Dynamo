@@ -671,6 +671,11 @@ namespace GraphLayout
         public double X;
 
         /// <summary>
+        /// The initial X coordinate of the node view.
+        /// </summary>
+        public double InitialX { get; private set; }
+
+        /// <summary>
         /// The y coordinate of the node view or the topmost note view linked to this node.
         /// </summary>
         public double Y;
@@ -738,6 +743,7 @@ namespace GraphLayout
             Width = width;
             Height = height;
             X = x;
+            InitialX = x;
             Y = y;
             InitialY = y;
             IsSelected = isSelected;
