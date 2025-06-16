@@ -302,7 +302,6 @@ namespace Dynamo.UI.Controls
             // Adjust the properties for the CodeBlock OutPort
             if (viewModel.IsOnlyOutputPortInCodeBlock)
             {
-                MainGrid.Margin = new Thickness(0, -18, 0, 0);
                 PortNameTextBox.MaxWidth = 135;
                 PortNameTextBox.TextTrimming = TextTrimming.CharacterEllipsis;
             }

@@ -1032,7 +1032,7 @@ namespace Dynamo.Graph.Nodes
             {
                 string portLabel = outputPortNames.TryGetValue(def.Key, out var label) ? label : string.Empty;
                 int lineIndex = (totalPorts == 1) ? 0 : def.Value - 1;
-                int portHeight = (int)((totalPorts == 1) ? Configurations.PortHeightInPixels : Configurations.CodeBlockOutputPortHeightInPixels);
+                var portHeight = ((totalPorts == 1) ? Configurations.PortHeightInPixels : Configurations.CodeBlockOutputPortHeightInPixels);
 
                 OutPorts.Add(new PortModel(PortType.Output, this, new PortData(portLabel, portLabel)
                 {

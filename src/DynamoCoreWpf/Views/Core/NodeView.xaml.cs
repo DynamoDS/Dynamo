@@ -1624,13 +1624,6 @@ namespace Dynamo.Controls
                 nodeIcon.Fill = icon;
             }
 
-            //Add the adjusted Style for CodeBlockNodeModel to add overrides for Measure / Layout
-            if(ViewModel.NodeModel is CodeBlockNodeModel)
-            {
-                outputPortControl.Margin = new Thickness(0, 12, -24, 0);
-                outputPortControl.Style = _codeBlockNodeItemControlStyle;
-            }
-
             //Add view items for custom nodes
             if (ViewModel.IsCustomFunction)
             {
@@ -1784,6 +1777,15 @@ namespace Dynamo.Controls
 
                 case "IsSetAsOutput":
                     (this.DataContext as NodeViewModel).DynamoViewModel.CurrentSpace.HasUnsavedChanges = true;
+                    break;
+                case nameof(CodeBlockNodeModel.Code):
+                    if (sender is CodeBlockNodeModel codeBlock)
+                    {
+                        outputPortControl.Margin = codeBlock.OutPorts.Count > 1
+                            ? new Thickness(0, 12, -24, 0)
+                            : new Thickness(0, 3, -24, 0);
+                        outputPortControl.Style = _codeBlockNodeItemControlStyle;
+                    }
                     break;
             }
         }
