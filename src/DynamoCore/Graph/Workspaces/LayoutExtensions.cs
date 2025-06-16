@@ -18,7 +18,7 @@ namespace Dynamo.Graph.Workspaces
         /// This function wraps a few methods on the workspace model layer
         /// to set up and run the graph layout algorithm.
         /// </summary>
-        /// <param name="workspace">Workspace on which graph layout will be performed.</param>i
+        /// <param name="workspace">Workspace on which graph layout will be performed.</param>
         internal static List<GraphLayout.Graph> DoGraphAutoLayout(this WorkspaceModel workspace)
         {
             if (workspace.Nodes.Count() < 2) return null;
