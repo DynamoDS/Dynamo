@@ -403,6 +403,56 @@
                 </Setter.Value>
             </Setter>
         </Style>
+
+        <ControlTemplate x:Key="CollapsedPortToggleButtonTemplate" TargetType="ToggleButton">
+            <Border Background="Transparent">
+                <StackPanel Margin="{TemplateBinding Margin}" Orientation="Horizontal">
+                    <TextBlock VerticalAlignment="Center" Foreground="{Binding Background, Converter={StaticResource TextForegroundSaturationColorConverter}, ConverterParameter=groupPortToggle}">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0} {1}">
+                                <Binding Path="Tag" RelativeSource="{RelativeSource TemplatedParent}" />
+                                <Binding Path="Content" RelativeSource="{RelativeSource TemplatedParent}" />
+                            </MultiBinding>
+                        </TextBlock.Text>
+                    </TextBlock>
+                    <Path x:Name="ArrowPath"
+                          Width="8"
+                          Height="6"
+                          Margin="6,0,0,0"
+                          VerticalAlignment="Center"
+                          Data="M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"
+                          Fill="{Binding Background, Converter={StaticResource TextForegroundSaturationColorConverter}, ConverterParameter=groupPortToggle}"
+                          Stretch="Fill">
+                        <Path.RenderTransform>
+                            <RotateTransform x:Name="PathRotation" Angle="0" CenterX="4" CenterY="3" />
+                        </Path.RenderTransform>
+                    </Path>
+                </StackPanel>
+            </Border>
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsChecked" Value="True">
+                    <Setter TargetName="ArrowPath" Property="RenderTransform">
+                        <Setter.Value>
+                            <RotateTransform Angle="0" CenterX="4" CenterY="3" />
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+                <Trigger Property="IsChecked" Value="False">
+                    <Setter TargetName="ArrowPath" Property="RenderTransform">
+                        <Setter.Value>
+                            <RotateTransform Angle="180" CenterX="4" CenterY="3" />
+                        </Setter.Value>
+                    </Setter>
+                </Trigger>
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <Style x:Key="BaseCollapsedPortToggleStyle" TargetType="ToggleButton">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Template" Value="{StaticResource CollapsedPortToggleButtonTemplate}" />
+        </Style>        
     </UserControl.Resources>
 
     <Grid Name="AnnotationGrid"
@@ -979,25 +1029,115 @@
                     <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
-                <!--INPUT PORTS-->
-                <ItemsControl Name="inputPortControl"
-                              Grid.Column="0"
-                              Grid.Row="0"
-                              Canvas.ZIndex="20"
-                              HorizontalContentAlignment="Left"
-                              ItemsSource="{Binding Path=InPorts}"
-                              Margin="-25,10">
-                </ItemsControl>
+                <!--  INPUT PORTS  -->
+                <Grid Name="inputPortsGrid"
+                      Grid.Row="0"
+                      Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="34" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <!--  Main Input Ports  -->
+                    <ItemsControl Name="inputPortControl"
+                                  Grid.Row="0"
+                                  Margin="-25,10"
+                                  HorizontalContentAlignment="Left"
+                                  Canvas.ZIndex="20"
+                                  ItemsSource="{Binding Path=InPorts}" />
+                    <!--  Collapse/expand ports  -->
+                    <ToggleButton Name="inputToggleControl"
+                                  Grid.Row="1"
+                                  Margin="5,0,-20,0"
+                                  HorizontalAlignment="Left"
+                                  Click="OptionalPortsToggle_Click"
+                                  Content="{x:Static p:Resources.GroupOptionalInportsText}"
+                                  IsChecked="{Binding IsOptionalInPortsCollapsed, Mode=TwoWay}"
+                                  Tag="{Binding OptionalInPorts.Count}">
+                        <ToggleButton.Style>
+                            <Style BasedOn="{StaticResource BaseCollapsedPortToggleStyle}" TargetType="ToggleButton">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding OptionalInPorts.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+                    <!--  Optional Input Ports  -->
+                    <ItemsControl Name="optionalInputPortControl"
+                                  Grid.Row="2"
+                                  Margin="-25,0"
+                                  HorizontalContentAlignment="Left"
+                                  Canvas.ZIndex="20"
+                                  ItemsSource="{Binding Path=OptionalInPorts}">
+                        <ItemsControl.Style>
+                            <Style TargetType="ItemsControl">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsOptionalInPortsCollapsed}" Value="False">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ItemsControl.Style>
+                    </ItemsControl>
+                </Grid>
 
-                <!--OUTPUT PORTS-->
-                <ItemsControl Name="outputPortControl"
-                              Grid.Column="2"
-                              Grid.Row="0"
-                              Canvas.ZIndex="20"
-                              HorizontalContentAlignment="Right"
-                              ItemsSource="{Binding Path=OutPorts}"
-                              Margin="-25,10">
-                </ItemsControl>
+                <!--  OUTPUT PORTS  -->
+                <Grid Name="outputPortsGrid"
+                      Grid.Row="0"
+                      Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <!--  Main Output Ports  -->
+                    <ItemsControl Name="outputPortControl"
+                                  Grid.Row="0"
+                                  Margin="-25,10"
+                                  HorizontalContentAlignment="Right"
+                                  Canvas.ZIndex="20"
+                                  ItemsSource="{Binding Path=OutPorts}" />
+                    <!--  Collapse/expand ports  -->
+                    <ToggleButton Name="outputToggleControl"
+                                  Grid.Row="1"
+                                  Margin="0,0,5,0"
+                                  HorizontalAlignment="Right"
+                                  Click="UnconnectedPortsToggle_Click"
+                                  Content="{x:Static p:Resources.GroupUnconnectedOutportsText}"
+                                  IsChecked="{Binding IsUnconnectedOutPortsCollapsed, Mode=TwoWay}"
+                                  Tag="{Binding UnconnectedOutPorts.Count}">
+                        <ToggleButton.Style>
+                            <Style BasedOn="{StaticResource BaseCollapsedPortToggleStyle}" TargetType="ToggleButton">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding UnconnectedOutPorts.Count}" Value="0">
+                                        <Setter Property="Visibility" Value="Collapsed" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ToggleButton.Style>
+                    </ToggleButton>
+                    <!--  Unconnected Output Ports  -->
+                    <ItemsControl Name="unconnectedOutputPortControl"
+                                  Grid.Row="2"
+                                  Margin="-25,0"
+                                  HorizontalContentAlignment="Right"
+                                  Canvas.ZIndex="20"
+                                  ItemsSource="{Binding Path=UnconnectedOutPorts}">
+                        <ItemsControl.Style>
+                            <Style TargetType="ItemsControl">
+                                <Setter Property="Visibility" Value="Collapsed" />
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsUnconnectedOutPortsCollapsed}" Value="False">
+                                        <Setter Property="Visibility" Value="Visible" />
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </ItemsControl.Style>
+                    </ItemsControl>
+                </Grid>
 
                 <Grid x:Name="GroupContent"
                       Grid.Row="1"

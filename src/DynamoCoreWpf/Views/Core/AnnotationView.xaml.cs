@@ -17,6 +17,7 @@ using Dynamo.Wpf.Utilities;
 using Dynamo.Graph.Annotations;
 using Dynamo.Logging;
 using Dynamo.Configuration;
+using System.ComponentModel;
 
 namespace Dynamo.Nodes
 {
@@ -42,9 +43,65 @@ namespace Dynamo.Nodes
 
             // Because the size of the CollapsedAnnotationRectangle doesn't necessarily change 
             // when going from Visible to collapse (and other way around), we need to also listen
-            // to IsVisibleChanged. Both of these handlers will set the ModelAreaHeight on the ViewModel
-            this.CollapsedAnnotationRectangle.SizeChanged += CollapsedAnnotationRectangle_SizeChanged;
+            // to IsVisibleChanged.
             this.CollapsedAnnotationRectangle.IsVisibleChanged += CollapsedAnnotationRectangle_IsVisibleChanged;
+        }
+
+        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (ViewModel.IsExpanded) return;
+
+            if (e.PropertyName == nameof(ViewModel.IsUnconnectedOutPortsCollapsed) ||
+                e.PropertyName == nameof(ViewModel.IsOptionalInPortsCollapsed))
+            {
+                UpdateCollapsedBoundaryAsync();
+            }
+        }
+
+        private double GetMinWidthOnCollapsed()
+        {
+            var model = ViewModel.AnnotationModel;
+
+            // Input ports
+            double inPortWidth = MeasureMaxPortWidth(inputPortControl);
+            double inToggleWidth = inputToggleControl.ActualWidth;
+            double optionalInPortWidth = model.IsOptionalInPortsCollapsed ? 0 : MeasureMaxPortWidth(optionalInputPortControl);
+
+            // Output ports
+            double outPortWidth = MeasureMaxPortWidth(outputPortControl);
+            double outToggleWidth = outputToggleControl.ActualWidth;
+            double unconnectedOutPortWidth = model.IsUnconnectedOutPortsCollapsed ? 0 : MeasureMaxPortWidth(unconnectedOutputPortControl);
+
+            double maxInPortWidth = Math.Max(inPortWidth, Math.Max(inToggleWidth, optionalInPortWidth));
+            double maxOutPortWidth = Math.Max(outPortWidth, Math.Max(outToggleWidth, unconnectedOutPortWidth));
+
+            return maxInPortWidth + maxOutPortWidth;
+        }
+
+        private double GetMinCollapsedPortAreaHeight()
+        {
+            // Measure input port heights
+            double requiredInputHeight = MeasureCombinedPortHeight(inputPortControl);
+            double optionalInputHeight = 0;
+
+            // Include the height of optional input ports if optional ports are visible
+            if (!ViewModel.IsOptionalInPortsCollapsed) 
+            {
+                optionalInputHeight = MeasureCombinedPortHeight(optionalInputPortControl);
+            }
+            double totalInputHeight = requiredInputHeight + optionalInputHeight + inputToggleControl.ActualHeight;
+
+            // Measure output port heights
+            double requiredOutputHeight = MeasureCombinedPortHeight(outputPortControl);
+            double unconnectedOutputHeight = 0;
+
+            if (!ViewModel.IsUnconnectedOutPortsCollapsed)
+            {
+                unconnectedOutputHeight = MeasureCombinedPortHeight(optionalInputPortControl);
+            }
+            double totalOutputHeight = requiredOutputHeight + unconnectedOutputHeight + inputToggleControl.ActualHeight;
+
+            return Math.Max(totalInputHeight, totalOutputHeight);
         }
 
         private void AnnotationView_Unloaded(object sender, RoutedEventArgs e)
@@ -52,8 +109,8 @@ namespace Dynamo.Nodes
             Loaded -= AnnotationView_Loaded;
             DataContextChanged -= AnnotationView_DataContextChanged;
             this.GroupTextBlock.SizeChanged -= GroupTextBlock_SizeChanged;
-            this.CollapsedAnnotationRectangle.SizeChanged -= CollapsedAnnotationRectangle_SizeChanged;
             this.CollapsedAnnotationRectangle.IsVisibleChanged -= CollapsedAnnotationRectangle_IsVisibleChanged;
+            ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
         }
 
         private void AnnotationView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
@@ -72,6 +129,8 @@ namespace Dynamo.Nodes
             ViewModel = this.DataContext as AnnotationViewModel;
             if (ViewModel != null)
             {
+                ViewModel.PropertyChanged += ViewModel_PropertyChanged;
+
                 //Set the height and width of Textblock based on the content.
                 if (!ViewModel.AnnotationModel.loadFromXML)
                 {
@@ -379,25 +438,21 @@ namespace Dynamo.Nodes
                 this.GroupNameControl.DesiredSize.Height;
         }
 
-        private void CollapsedAnnotationRectangle_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            SetModelAreaHeight();
-        }
-
         private void CollapsedAnnotationRectangle_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            SetModelAreaHeight();
+            if (!ViewModel.IsExpanded) UpdateCollapsedBoundaryAsync();
         }
 
-        private void SetModelAreaHeight()
+        private void UpdateCollapsedBoundaryAsync()
         {
-            // We only want to change the ModelAreaHeight
-            // if the CollapsedAnnotationRectangle is visible,
-            // as if its not it will be equal to the height of the
-            // contained nodes + the TextBlockHeight
-            if (ViewModel is null || !this.CollapsedAnnotationRectangle.IsVisible) return;
-            ViewModel.ModelAreaHeight = this.CollapsedAnnotationRectangle.ActualHeight;
-            ViewModel.AnnotationModel.UpdateBoundaryFromSelection();
+            var model = ViewModel.AnnotationModel;
+            Dispatcher.BeginInvoke(new Action(() =>
+            {
+                model.MinWidthOnCollapsed = GetMinWidthOnCollapsed();
+                model.MinCollapsedPortAreaHeight = GetMinCollapsedPortAreaHeight();
+                model.UpdateBoundaryFromSelection();
+            }),
+            System.Windows.Threading.DispatcherPriority.ApplicationIdle);
         }
 
         private void contextMenu_Click(object sender, RoutedEventArgs e)
@@ -474,6 +529,52 @@ namespace Dynamo.Nodes
             ViewModel.ReloadGroupStyles();
             // Tracking loading group style items
             Logging.Analytics.TrackEvent(Actions.Load, Categories.GroupStyleOperations, nameof(GroupStyleItem) + "s");
+        }
+
+        private void OptionalPortsToggle_Click(object sender, RoutedEventArgs e)
+        {
+            // Mark it as manually changed by user
+            if (!ViewModel.AnnotationModel.HasToggledOptionalInPorts)
+            {
+                ViewModel.AnnotationModel.HasToggledOptionalInPorts = true;
+            }
+        }
+
+        private void UnconnectedPortsToggle_Click(object sender, RoutedEventArgs e)
+        {
+            // Mark it as manually changed by user
+            if (!ViewModel.AnnotationModel.HasToggledUnconnectedOutPorts)
+            {
+                ViewModel.AnnotationModel.HasToggledUnconnectedOutPorts = true;
+            }
+        }
+
+        private double MeasureMaxPortWidth(ItemsControl portControl)
+        {
+            double max = 0;
+            foreach (var item in portControl.Items)
+            {
+                if (portControl.ItemContainerGenerator.ContainerFromItem(item) is FrameworkElement container)
+                {
+                    container.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                    max = Math.Max(max, container.DesiredSize.Width);
+                }
+            }
+            return max;
+        }
+
+        private double MeasureCombinedPortHeight(ItemsControl portControl)
+        {
+            double total = 0;
+            foreach (var item in portControl.Items)
+            {
+                if (portControl.ItemContainerGenerator.ContainerFromItem(item) is FrameworkElement container && container.IsVisible)
+                {
+                    container.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+                    total += container.DesiredSize.Height;
+                }
+            }
+            return total;
         }
     }
 }
