@@ -303,6 +303,8 @@ namespace Dynamo.UI.Controls
             if (viewModel.IsOnlyOutputPortInCodeBlock)
             {
                 MainGrid.Margin = new Thickness(0, -18, 0, 0);
+                PortNameTextBox.MaxWidth = 135;
+                PortNameTextBox.TextTrimming = TextTrimming.CharacterEllipsis;
             }
             else if (viewModel.IsPortCondensed)
             {

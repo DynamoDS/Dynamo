@@ -1140,7 +1140,6 @@ namespace Dynamo.Graph.Nodes
                                 connector.GUID = oldConnector.GUID;
                             }
                         }
-                        outportConnections[varName] = null;
                     }
                 }
             }
