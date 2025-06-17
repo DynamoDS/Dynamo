@@ -1786,7 +1786,17 @@ namespace Dynamo.Controls
         {
             // If the mouse does not leave the node after the connector is added,
             // try to show the preview bubble without new mouse enter event. 
-            if (IsMouseOver) InitialTryShowPreviewBubble();
+            if (IsMouseOver)
+            {
+                if (DynCmd.IsTestMode)
+                {
+                    Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
+                }
+                else
+                {
+                    InitialTryShowPreviewBubble();
+                }
+            }
         }
 
         void NodeLogic_PropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -2087,7 +2097,14 @@ namespace Dynamo.Controls
             // if the node is located under "Hide preview bubbles" menu item and the item is clicked,
             // ViewModel.DynamoViewModel.ShowPreviewBubbles will be updated AFTER node mouse enter event occurs
             // so, wait while ShowPreviewBubbles binding updates value
-            InitialTryShowPreviewBubble();
+            if (DynCmd.IsTestMode)
+            {
+                Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
+            }
+            else
+            {
+                InitialTryShowPreviewBubble();
+            }
         }
 
         private void TryShowPreviewBubbles()
