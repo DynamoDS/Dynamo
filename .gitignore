@@ -67,6 +67,7 @@ launchSettings.json
 # IDE #
 ###############
 .idea
+.vscode/
 
 #documentation files
 doc/html/
@@ -117,3 +118,6 @@ dynamods-splash-screen-*.tgz
 /src/DynamoCoreWpf/.npmrc
 /src/Notifications/.npmrc
 src/LibraryViewExtensionWebView2/.npmrc
+
+# Ignore Issues directory
+Issues/

@@ -4,7 +4,9 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Input;
 using Dynamo.Logging;
+using Dynamo.UI.Commands;
 using Dynamo.Wpf.ViewModels.Core;
 
 namespace Dynamo.ViewModels
@@ -65,6 +67,11 @@ namespace Dynamo.ViewModels
         // In order to stay above these, we need a high ZIndex value. 
         private double zIndex;
         private Style infoBubbleStyle;
+        
+        /// <summary>
+        /// Command that copies the content of an info bubble message to clipboard
+        /// </summary>
+        public ICommand CopyToClipboardCommand { get; private set; }
         
         [Obsolete]
         public Direction connectingDirection;
@@ -502,9 +509,46 @@ namespace Dynamo.ViewModels
             InfoBubbleStyle = Style.None;
             InfoBubbleState = State.Minimized;
 
+            // Initialize commands
+            CopyToClipboardCommand = new DelegateCommand(CopyTextToClipboard, CanCopyToClipboard);
+
             NodeMessages.CollectionChanged += NodeInformation_CollectionChanged;
 
             RefreshNodeInformationalStateDisplay();
+        }
+        
+        /// <summary>
+        /// Copies the text of an info bubble message to the clipboard
+        /// </summary>
+        /// <param name="parameter">The InfoBubbleDataPacket to copy</param>
+        private void CopyTextToClipboard(object parameter)
+        {
+            if (parameter is InfoBubbleDataPacket infoBubbleDataPacket)
+            {
+                try
+                {
+                    System.Windows.Clipboard.SetText(infoBubbleDataPacket.Text);
+                    // Optional: Add analytics tracking for copy events
+                    Analytics.TrackEvent(Actions.Copy, Categories.NodeOperations, 
+                        infoBubbleDataPacket.Style.ToString(), 1);
+                }
+                catch (Exception ex)
+                {
+                    // Log the error but don't crash
+                    DynamoViewModel.Model.Logger.Log("Error copying text to clipboard: " + ex.Message);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Determines if a message can be copied to clipboard
+        /// </summary>
+        /// <param name="parameter">The InfoBubbleDataPacket to check</param>
+        /// <returns>True if the message can be copied</returns>
+        private bool CanCopyToClipboard(object parameter)
+        {
+            return parameter is InfoBubbleDataPacket infoBubbleDataPacket && 
+                   !string.IsNullOrEmpty(infoBubbleDataPacket.Text);
         }
 
         #endregion

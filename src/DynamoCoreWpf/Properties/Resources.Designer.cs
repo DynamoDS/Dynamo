@@ -986,7 +986,16 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("ConverterMessageZoom", resourceCulture);
             }
         }
-        
+                
+        /// <summary>
+        ///   Looks up a localized string similar to Copy to clipboard.
+        /// </summary>
+        public static string CopyToClipboardTooltip {
+            get {
+                return ResourceManager.GetString("CopyToClipboardTooltip", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
