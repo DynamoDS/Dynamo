@@ -554,9 +554,8 @@ namespace Dynamo.Nodes
             double max = 0;
             foreach (var item in portControl.Items)
             {
-                if (portControl.ItemContainerGenerator.ContainerFromItem(item) is FrameworkElement container)
+                if (portControl.ItemContainerGenerator.ContainerFromItem(item) is FrameworkElement container && container.IsVisible)
                 {
-                    container.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
                     max = Math.Max(max, container.DesiredSize.Width);
                 }
             }
@@ -570,7 +569,6 @@ namespace Dynamo.Nodes
             {
                 if (portControl.ItemContainerGenerator.ContainerFromItem(item) is FrameworkElement container && container.IsVisible)
                 {
-                    container.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
                     total += container.DesiredSize.Height;
                 }
             }

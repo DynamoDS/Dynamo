@@ -754,29 +754,28 @@ namespace Dynamo.ViewModels
 
         private void OnPreferenceChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(IPreferences.OptionalInPortsCollapsed))
+            switch (e.PropertyName)
             {
-                if (!annotationModel.HasToggledOptionalInPorts)
-                {
-                    IsOptionalInPortsCollapsed = preferenceSettings.OptionalInPortsCollapsed;
-                }
-            }
-            else if (e.PropertyName == nameof(IPreferences.UnconnectedOutPortsCollapsed))
-            {
-                if (!annotationModel.HasToggledUnconnectedOutPorts)
-                {
-                    IsUnconnectedOutPortsCollapsed = preferenceSettings.UnconnectedOutPortsCollapsed;
-                }
-            }
-            else if (e.PropertyName == nameof(IPreferences.CollapseToMinSize))
-            {
-                annotationModel.IsCollapsedToMinSize = preferenceSettings.CollapseToMinSize;
-
-                // Update the boundary only if the group is collapsed
-                if (!IsExpanded)
-                {
-                    annotationModel.UpdateBoundaryFromSelection();
-                }
+                case nameof(IPreferences.OptionalInPortsCollapsed):
+                    if (!annotationModel.HasToggledOptionalInPorts)
+                    {
+                        IsOptionalInPortsCollapsed = preferenceSettings.OptionalInPortsCollapsed;
+                    }
+                    break;
+                case nameof(IPreferences.UnconnectedOutPortsCollapsed):
+                    if (!annotationModel.HasToggledUnconnectedOutPorts)
+                    {
+                        IsUnconnectedOutPortsCollapsed = preferenceSettings.UnconnectedOutPortsCollapsed;
+                    }
+                    break;
+                case nameof(IPreferences.CollapseToMinSize):
+                    annotationModel.IsCollapsedToMinSize = preferenceSettings.CollapseToMinSize;
+                    // Update the boundary only if the group is collapsed
+                    if (!IsExpanded)
+                    {
+                        annotationModel.UpdateBoundaryFromSelection();
+                    }
+                    break;
             }
         }
 
@@ -1366,8 +1365,6 @@ namespace Dynamo.ViewModels
                 this.SetGroupInputPorts();
                 this.SetGroupOutPorts();
                 this.CollapseGroupContents(true);
-
-                //RaisePropertyChanged(nameof(Height));                                                                                  // DO WE NEED THIS??
                 RaisePropertyChanged(nameof(NodeContentCount));
             }
             WorkspaceViewModel.HasUnsavedChanges = true;
