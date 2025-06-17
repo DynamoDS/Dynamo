@@ -673,7 +673,7 @@ namespace Dynamo.Tests
             //Verify that the initial run get the expected value
             Assert.That(watchNode.OutputData.InitialValue, Is.EqualTo("test2"));
 
-            //Verity that don't have warnings/errors in the python node
+            //Verify that don't have warnings/errors in the python node
             Assert.AreEqual(pythonNode.NodeInfos.Count, 0);
 
             var script = pythonNode.Script;
