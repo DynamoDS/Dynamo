@@ -290,6 +290,7 @@ namespace Dynamo.Controls
         private static Style _nodeButtonStyle = GetNodeButtonStyle();
         private static Style _codeBlockNodeItemControlStyle = GetCodeBlockPortItemControlStyle();
         internal static readonly Style DynamoToolTipTopStyle = GetDynamoToolTipTopStyle();
+        // Initiate context menu style as static resource.
         private static ContextMenu nodeContextMenu = GetNodeContextMenu();
 
         #region constructors
@@ -2371,6 +2372,7 @@ namespace Dynamo.Controls
             NodeContextMenuBuilder.Build(nodeContextMenu, viewModel, NodeViewCustomizationMenuItems);
 
             MainContextMenu = nodeContextMenu;
+            grid.ContextMenu = MainContextMenu;
             MainContextMenu.DataContext = viewModel;
             MainContextMenu.Closed += MainContextMenu_OnClosed;
             MainContextMenu.IsOpen = true;
