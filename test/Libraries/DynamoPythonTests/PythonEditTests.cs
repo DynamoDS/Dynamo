@@ -677,7 +677,7 @@ namespace Dynamo.Tests
             Assert.AreEqual(pythonNode.NodeInfos.Count, 0);
 
             var script = pythonNode.Script;
-            //This replacing this text in the code will generate an exception in PythonScript node
+            //Replacing this text in the code will generate an exception in the PythonScript node
             script = script.Replace("result = \"test2\"", line_update);
 
             UpdatePythonNodeContent(pythonNode, script);
