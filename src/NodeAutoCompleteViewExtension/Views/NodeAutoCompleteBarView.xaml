@@ -12,7 +12,7 @@
              Background="Transparent"
              ShowInTaskbar="False"
              ResizeMode="NoResize"
-             Width="600"
+             Width="{Binding BarViewWidth}"
              Height="45"
              PreviewKeyDown="OnAutoCompleteKeyDown"
         >
@@ -394,7 +394,7 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                <Grid Grid.Column="8">
+                <Grid Grid.Column="8" Visibility="{Binding IsDNAClusterPlacementEnabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapse}">
                     <ToggleButton x:Name="SwitchButton" Width="100" Height="36" FocusVisualStyle="{x:Null}"
                       HorizontalAlignment="Center" VerticalAlignment="Center"
                       Background="{StaticResource DarkGreyBrush}" BorderBrush="DarkGray" BorderThickness="2"
