@@ -2862,6 +2862,8 @@ Dynamo.ViewModels.PreferencesViewModel.LanguagesList.set -> void
 Dynamo.ViewModels.PreferencesViewModel.LocalPackages.get -> System.Collections.ObjectModel.ObservableCollection<Dynamo.ViewModels.PackageViewModel>
 Dynamo.ViewModels.PreferencesViewModel.MaxNumRecentFiles.get -> int
 Dynamo.ViewModels.PreferencesViewModel.MaxNumRecentFiles.set -> void
+Dynamo.ViewModels.PreferencesViewModel.MLEnableNewUIIsChecked.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.MLEnableNewUIIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.MLRecommendationConfidenceLevel.get -> int
 Dynamo.ViewModels.PreferencesViewModel.MLRecommendationConfidenceLevel.set -> void
 Dynamo.ViewModels.PreferencesViewModel.MLRecommendationNumberOfResults.get -> int
