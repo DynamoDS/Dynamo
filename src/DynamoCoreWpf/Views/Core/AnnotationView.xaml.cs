@@ -97,7 +97,7 @@ namespace Dynamo.Nodes
 
             if (!ViewModel.IsUnconnectedOutPortsCollapsed)
             {
-                unconnectedOutputHeight = MeasureCombinedPortHeight(optionalInputPortControl);
+                unconnectedOutputHeight = MeasureCombinedPortHeight(unconnectedOutputPortControl);
             }
             double totalOutputHeight = requiredOutputHeight + unconnectedOutputHeight + inputToggleControl.ActualHeight;
 
