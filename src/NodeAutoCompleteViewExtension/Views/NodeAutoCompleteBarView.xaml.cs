@@ -3,7 +3,6 @@ using Dynamo.Graph.Workspaces;
 using Dynamo.Logging;
 using Dynamo.Models;
 using Dynamo.NodeAutoComplete.ViewModels;
-using Dynamo.ViewModels;
 using System;
 using System.Linq;
 using System.Windows;
@@ -76,7 +75,7 @@ namespace Dynamo.NodeAutoComplete.Views
 
         private void MoveIndex(int step)
         {
-            ViewModel.SelectedIndex = Math.Min(ViewModel.DropdownResults.Count() - 1, Math.Max(0, ViewModel.SelectedIndex + step));
+            ViewModel.SelectedIndex = Math.Min(ViewModel.FilteredView.Cast<object>().Count() - 1, Math.Max(0, ViewModel.SelectedIndex + step));
         }
 
         private void PrevButton_OnClick(object sender, RoutedEventArgs e)
@@ -116,10 +115,24 @@ namespace Dynamo.NodeAutoComplete.Views
             {
                 case Key.Escape:
                     CloseAutoComplete();
+                    e.Handled = true;
                     break;
                 case Key.Enter:
                     ViewModel?.ConsolidateTransientNodes();
                     CloseAutoComplete();
+                    e.Handled = true;
+                    break;
+                case Key.Up:
+                case Key.Left:
+                    MoveIndex(-1);
+                    e.Handled = true;
+                    break;
+                case Key.Down:
+                case Key.Right:
+                    MoveIndex(+1);
+                    e.Handled = true;
+                    break;
+                default:
                     break;
             }
         }

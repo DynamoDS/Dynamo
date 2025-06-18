@@ -153,6 +153,8 @@ Dynamo.Configuration.PreferenceSettings.EnableDynamoPlayerRenamedWatchAsOutput.g
 Dynamo.Configuration.PreferenceSettings.EnableDynamoPlayerRenamedWatchAsOutput.set -> void
 Dynamo.Configuration.PreferenceSettings.EnableNodeAutoComplete.get -> bool
 Dynamo.Configuration.PreferenceSettings.EnableNodeAutoComplete.set -> void
+Dynamo.Configuration.PreferenceSettings.EnableNewNodeAutoCompleteUI.get -> bool
+Dynamo.Configuration.PreferenceSettings.EnableNewNodeAutoCompleteUI.set -> void
 Dynamo.Configuration.PreferenceSettings.EnableNotificationCenter.get -> bool
 Dynamo.Configuration.PreferenceSettings.EnableNotificationCenter.set -> void
 Dynamo.Configuration.PreferenceSettings.EnablePersistExtensions.get -> bool
@@ -763,6 +765,7 @@ Dynamo.Graph.ModelBase.CenterY.set -> void
 Dynamo.Graph.ModelBase.DeletionStarted -> System.EventHandler<System.ComponentModel.CancelEventArgs>
 Dynamo.Graph.ModelBase.Deserialize(System.Xml.XmlElement element, Dynamo.Graph.SaveContext context) -> void
 Dynamo.Graph.ModelBase.Disposed -> System.Action<Dynamo.Graph.ModelBase>
+Dynamo.Graph.ModelBase.HasBeenDisposed.get -> bool
 Dynamo.Graph.ModelBase.IsSelected.get -> bool
 Dynamo.Graph.ModelBase.IsSelected.set -> void
 Dynamo.Graph.ModelBase.Log(Dynamo.Logging.ILogMessage obj) -> void
@@ -2469,6 +2472,7 @@ override Dynamo.Graph.Nodes.Info.ToString() -> string
 override Dynamo.Graph.Nodes.NodeInputData.Equals(object obj) -> bool
 override Dynamo.Graph.Nodes.NodeModel.Deselect() -> void
 override Dynamo.Graph.Nodes.NodeModel.DeserializeCore(System.Xml.XmlElement nodeElement, Dynamo.Graph.SaveContext context) -> void
+override Dynamo.Graph.Nodes.NodeModel.Dispose() -> void
 override Dynamo.Graph.Nodes.NodeModel.GUID.get -> System.Guid
 override Dynamo.Graph.Nodes.NodeModel.GUID.set -> void
 override Dynamo.Graph.Nodes.NodeModel.SerializeCore(System.Xml.XmlElement element, Dynamo.Graph.SaveContext context) -> void
@@ -2477,6 +2481,7 @@ override Dynamo.Graph.Nodes.NodeModel.ShouldSerializeY() -> bool
 override Dynamo.Graph.Nodes.NodeModel.UpdateValueCore(Dynamo.Graph.UpdateValueParams updateValueParams) -> bool
 override Dynamo.Graph.Nodes.NodeOutputData.Equals(object obj) -> bool
 override Dynamo.Graph.Nodes.PortModel.DeserializeCore(System.Xml.XmlElement nodeElement, Dynamo.Graph.SaveContext context) -> void
+override Dynamo.Graph.Nodes.PortModel.Dispose() -> void
 override Dynamo.Graph.Nodes.PortModel.GetHashCode() -> int
 override Dynamo.Graph.Nodes.PortModel.GUID.get -> System.Guid
 override Dynamo.Graph.Nodes.PortModel.GUID.set -> void
@@ -2965,6 +2970,7 @@ static Dynamo.Properties.Resources.SubmitBugButton.get -> string
 static Dynamo.Properties.Resources.SubmitBugToGithub.get -> string
 static Dynamo.Properties.Resources.SymbolNodeDescription.get -> string
 static Dynamo.Properties.Resources.SymbolSearchTags.get -> string
+static Dynamo.Properties.Resources.ToastFileNodeAutoCompleteDoubleClick.get -> string
 static Dynamo.Properties.Resources.ToolTipForTempVar.get -> string
 static Dynamo.Properties.Resources.ToolTipFunctionOutput.get -> string
 static Dynamo.Properties.Resources.ToolTipInput.get -> string

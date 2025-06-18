@@ -7,6 +7,8 @@
              xmlns:p="clr-namespace:Dynamo.Wpf.Properties"
              xmlns:uicontrols="clr-namespace:Dynamo.UI.Controls"
              xmlns:resx="clr-namespace:Dynamo.Properties;assembly=DynamoCore"
+             xmlns:local="clr-namespace:Dynamo.PackageManager.UI"
+             xmlns:dynconverters="clr-namespace:Dynamo.Controls"
              mc:Ignorable="d"
              WindowStyle="None"
              AllowsTransparency="True"
@@ -14,8 +16,7 @@
              ShowInTaskbar="False"
              ResizeMode="NoResize"
              Width="280"
-             Height="350"
-             IsVisibleChanged="OnNodeAutoCompleteSearchControlVisibilityChanged">
+             Height="350">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -44,6 +45,7 @@
                         Value="{StaticResource LibraryScrollViewerControlTemplate}" />
             </Style>
             <BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter" />
+            <dynconverters:InverseBoolToVisibilityConverter x:Key="InverseBooleanToVisibilityConverter" />
         </ResourceDictionary>
     </Window.Resources>
 
@@ -99,7 +101,7 @@
                         <Image Width="14"
                                    Height="14"
                                    Margin="0,5,10,5"
-                                   MouseDown="CloseAutocompletionWindow"
+                                   MouseDown="CloseAutoCompleteWindow"
                                    HorizontalAlignment="Right"
                                    VerticalAlignment="Center"
                                    Grid.Column="2">
@@ -257,7 +259,17 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
+                <local:LoadingAnimationStripeControl
+                    Grid.Column="0"
+                    VerticalAlignment="Center"
+                    Height="35"
+                    MinWidth="240"
+                    AnimationSpeed="10"
+                    Visibility="{Binding ResultsLoaded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBooleanToVisibilityConverter}}" 
+                    Margin="8,8,0,8"
+                />
                 <Border BorderThickness="1"
+                        Visibility="{Binding ResultsLoaded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}" 
                         Background="{StaticResource WorkspaceBackgroundHomeBrush}"
                         CornerRadius="5"
                         Padding="5"
@@ -312,6 +324,7 @@
                 </Border>
 
                 <Button x:Name="btnSuggestions"
+                        IsEnabled="{Binding ResultsLoaded}"
                         Click="DisplaySuggestions"
                         Grid.Column="1">
                     <Button.ToolTip>

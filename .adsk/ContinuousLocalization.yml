@@ -9,7 +9,7 @@
  
 common:
   branch_section:
-    maintainer: [zeusongit, QilongTang, reddyashish]
+    maintainer: [zeusongit, QilongTang, reddyashish, DynamoDS/eidos]
     ignore_this_branch: true
     auto_merge_pr: false
 

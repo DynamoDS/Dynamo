@@ -47,6 +47,21 @@ namespace Dynamo.Graph.Connectors
                 RaisePropertyChanged(nameof(IsHidden));
             }
         }
+
+        private bool isTransient = false;
+        /// <summary>
+        /// IsTransient flag controlling the transient state of the connector
+        /// </summary>
+        internal bool IsTransient
+        {
+            get { return isTransient; }
+            set
+            {
+                isTransient = value;
+                RaisePropertyChanged(nameof(IsTransient));
+            }
+        }
+        
         /// <summary>
         /// Returns start port model.
         /// </summary>
@@ -240,14 +255,16 @@ namespace Dynamo.Graph.Connectors
         /// </summary>
         internal void Delete()
         {
-            if (Start != null && Start.Connectors.Contains(this))
+            try
             {
-                Start.Connectors.Remove(this);
+                Start?.Connectors.Remove(this);
+                End?.Connectors.Remove(this);
             }
-            if (End != null && End.Connectors.Contains(this))
+            catch (Exception ex)
             {
-                End.Connectors.Remove(this);
+                Log("Exception caught when deleting connectors: "+ ex.Message);
             }
+
             OnDeleted();
         }
 

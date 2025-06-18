@@ -1495,6 +1495,24 @@ namespace Dynamo.Wpf.Properties {
             }
         }
         
+		/// <summary>
+        ///   Looks up a localized string similar to _Dump Node Icons.
+        /// </summary>
+        public static string DynamoViewDebugMenuDumpNodeIcons {
+            get {
+                return ResourceManager.GetString("DynamoViewDebugMenuDumpNodeIcons", resourceCulture);
+            }
+        }
+		        
+		/// <summary>
+        ///   Looks up a localized string similar to NodeIconDataIsDumped.
+        /// </summary>
+        public static string NodeIconDataIsDumped {
+            get {
+                return ResourceManager.GetString("NodeIconDataIsDumped", resourceCulture);
+            }
+        }
+		
         /// <summary>
         ///   Looks up a localized string similar to _Force Re-execute.
         /// </summary>
@@ -7970,15 +7988,6 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Beta.
-        /// </summary>
-        public static string PreferencesViewBetaTag {
-            get {
-                return ResourceManager.GetString("PreferencesViewBetaTag", resourceCulture);
-            }
-        }
-        
-        /// <summary>
         ///   Looks up a localized string similar to Default Python Engine.
         /// </summary>
         public static string PreferencesViewDefaultPythonEngine {
@@ -8033,6 +8042,24 @@ namespace Dynamo.Wpf.Properties {
         public static string PreferencesViewEnableNodeAutoComplete {
             get {
                 return ResourceManager.GetString("PreferencesViewEnableNodeAutoComplete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable New UI.
+        /// </summary>
+        public static string PreferencesViewEnableNodeAutoCompleteNewUI {
+            get {
+                return ResourceManager.GetString("PreferencesViewEnableNodeAutoCompleteNewUI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Enable the new floating menu for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog..
+        /// </summary>
+        public static string PreferencesViewEnableNodeAutoCompleteNewUITooltipText {
+            get {
+                return ResourceManager.GetString("PreferencesViewEnableNodeAutoCompleteNewUITooltipText", resourceCulture);
             }
         }
         

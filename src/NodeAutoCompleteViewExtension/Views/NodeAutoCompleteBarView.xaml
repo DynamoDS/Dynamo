@@ -4,9 +4,9 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
-             xmlns:properties="clr-namespace:Dynamo.NodeAutoComplete.Properties"
              xmlns:local="clr-namespace:Dynamo.PackageManager.UI;assembly=DynamoCoreWpf"
              xmlns:dynconverters="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
+             xmlns:resxother="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
              mc:Ignorable="d"
              WindowStyle="None"
              AllowsTransparency="True"
@@ -15,6 +15,7 @@
              ResizeMode="NoResize"
              Width="600"
              Height="45"
+             PreviewKeyDown="OnAutoCompleteKeyDown"
         >
     <Window.Resources>
         <ResourceDictionary>
@@ -40,6 +41,7 @@
             </Style>
             <dynconverters:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <dynconverters:InverseBoolToVisibilityConverter  x:Key="InverseBooleanToVisibilityConverter"/>
+            <dynconverters:LengthToVisibilityConverter  x:Key="LengthToVisibilityConverter"/>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -51,7 +53,7 @@
                 Panel.ZIndex="1"
                 IsHitTestVisible="False" />
 
-        <Grid PreviewKeyDown="OnAutoCompleteKeyDown">
+        <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="45" />
             </Grid.RowDefinitions>
@@ -78,7 +80,7 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Button
                     x:Name="gripHandle"
@@ -149,13 +151,60 @@
                             x:Name="AutocompleteCombobox"
                             SelectedIndex="{Binding SelectedIndex, Mode=TwoWay}"
                             Width="240"
-                            ItemsSource="{Binding DropdownResults, NotifyOnTargetUpdated=True}"
-                            Visibility="{Binding ResultsLoaded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}" 
+                            FontFamily="{StaticResource ArtifaktElementRegular}"
+                            Foreground="{StaticResource DefaultSearchTextBlockText}"
+                            ItemsSource="{Binding FilteredView, NotifyOnTargetUpdated=True}"
+                            Visibility="{Binding ResultsLoaded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"
+                            TabIndex="0"
                         >
                             <ComboBox.Style>
                                 <Style BasedOn="{StaticResource PackageManagerSmallComboBox}" TargetType="ComboBox">
                                 </Style>
                             </ComboBox.Style>
+                            <ComboBox.Tag>
+                                <Grid>
+                                    <TextBox x:Name="AutoCompleteSearchBox"                                            
+                                        HorizontalAlignment="Stretch"
+                                        Height="28"
+                                        Margin="7,3,7,3"
+                                        Padding="2"                                                 
+                                        Width="Auto"
+                                        BorderThickness="0,0,0,1"
+                                        Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                        Background="{Binding Background, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                        FontFamily="{Binding FontFamily, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                        CaretBrush="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                        FontSize="14">
+                                        <TextBox.Text>
+                                            <Binding Path="SearchInput" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" />
+                                        </TextBox.Text>
+                                    </TextBox>
+
+                                    <StackPanel x:Name="PlaceholderPanel"
+                                        Orientation="Horizontal"
+                                        VerticalAlignment="Center"
+                                        IsHitTestVisible="False"
+                                        HorizontalAlignment="Stretch"
+                                        Height="28"
+                                        Margin="12,3,7,3"
+                                        Width="Auto"
+                                        Visibility="{Binding Text.Length, ElementName=AutoCompleteSearchBox, Converter={StaticResource LengthToVisibilityConverter}}">
+                                        <Image x:Name="SearchIcon"
+                                            Width="20px"
+                                            Height="20px"                                            
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            DockPanel.Dock="Left">
+                                            <Image.Style>
+                                                <Style TargetType="{x:Type Image}">
+                                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/searchmagnifier.png" />
+                                                </Style>
+                                            </Image.Style>
+                                        </Image>
+                                        <TextBlock Padding="2" FontSize="14" Text="{x:Static resxother:Resources.LibraryViewSearchText}" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Grid>
+                            </ComboBox.Tag>
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
                                     <StackPanel Orientation="Horizontal" Margin="0" Height="34" VerticalAlignment="Center">
@@ -175,7 +224,12 @@
                                                 </Style>
                                             </Image.Style>
                                         </Image>
-                                        <TextBlock Text="{Binding Description}" FontSize="12" Foreground="White" Height="15"/>
+                                        <TextBlock FontSize="12" Height="15">
+                                            <Run Text="{Binding Description, Mode=OneWay}"
+                                                 Foreground="White" />
+                                            <Run Text="{Binding Parameters, Mode=OneWay}"
+                                                 Foreground="#abafb3" />
+                                        </TextBlock>
                                     </StackPanel>
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
@@ -194,7 +248,8 @@
                 </Border>
                 <Button x:Name="btnPrev"
                         Click="PrevButton_OnClick"
-                        Grid.Column="3">
+                        Grid.Column="3"
+                        TabIndex="1">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="Template">
@@ -245,7 +300,8 @@
                 </StackPanel>
                 <Button x:Name="btnNext"
                         Click="NextButton_OnClick"
-                        Grid.Column="5">
+                        Grid.Column="5"
+                        TabIndex="2">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="Template">
@@ -285,7 +341,8 @@
                 </Button>
                 <Button x:Name="btnCheck"
                         Click="ConfirmAutoCompleteWindow"
-                        Grid.Column="6">
+                        Grid.Column="6"
+                        TabIndex="3">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="Template">
@@ -326,7 +383,8 @@
                 </Button>
                 <Button x:Name="btnClose"
                         Click="CloseAutoCompleteWindow"
-                        Grid.Column="7">
+                        Grid.Column="7"
+                        TabIndex="4">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="Template">
@@ -365,9 +423,41 @@
                         </Style>
                     </Button.Style>
                 </Button>
+                <Grid Grid.Column="8">
+                    <ToggleButton x:Name="SwitchButton" Width="100" Height="36" FocusVisualStyle="{x:Null}"
+                      HorizontalAlignment="Center" VerticalAlignment="Center"
+                      Background="{StaticResource DarkGreyBrush}" BorderBrush="DarkGray" BorderThickness="2"
+                      IsChecked="{Binding IsSingleAutocomplete, Mode=TwoWay}"
+                      IsEnabled="{Binding SwitchIsEnabled}" TabIndex="5">
+                        <ToggleButton.Template>
+                            <ControlTemplate TargetType="ToggleButton">
+                                <Grid Width="100" Height="32">
+                                    <Border x:Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="2" CornerRadius="16">
+                                        <Grid>
+                                            <Border x:Name="SwitchKnob" Background="{StaticResource NodeTransientOverlayColor}"
+                                                    BorderThickness="2" CornerRadius="16" Width="70" HorizontalAlignment="Left">
+                                                <TextBlock x:Name="KnobText" Text="Cluster" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter TargetName="SwitchKnob" Property="HorizontalAlignment" Value="Right"/>
+                                        <Setter TargetName="KnobText" Property="Text" Value="Single"/>
+                                    </Trigger>
+                                    <Trigger Property="IsEnabled" Value="False">
+                                        <Setter TargetName="SwitchKnob" Property="Background" Value="{StaticResource LightGreyBrush}"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </ToggleButton.Template>
+                    </ToggleButton>
+                </Grid>
                 <Button x:Name="btnDock"
                         Click="DockButton_OnClick"
-                        Grid.Column="8">
+                        Grid.Column="9"
+                        TabIndex="6">
                     <Button.Style>
                         <Style TargetType="{x:Type Button}">
                             <Setter Property="Template">
@@ -406,45 +496,6 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                <Grid Grid.Column="9">
-                    <TextBlock
-                      VerticalAlignment="Center"
-                      Width="100" Margin="0,0,10,0"
-                      Foreground="{StaticResource AutocompletionWindowFontColor}"
-                      Visibility="{Binding IsDisplayingMLRecommendation, Converter={StaticResource InverseBooleanToVisibilityConverter}}"
-                      Text="{x:Static properties:Resources.NodeTypeMatch}"
-                       />
-                    <ToggleButton
-                      Visibility="{Binding IsDisplayingMLRecommendation, Converter={StaticResource BooleanToVisibilityConverter}}" 
-                      x:Name="SwitchButton"
-                      Width="100" Height="36" Margin="0,0,10,0"
-                      FocusVisualStyle="{x:Null}"
-                      HorizontalAlignment="Center" VerticalAlignment="Center"
-                      Background="{StaticResource DarkGreyBrush}" BorderBrush="DarkGray" BorderThickness="2"
-                      IsChecked="{Binding IsSingleAutocomplete, Mode=TwoWay}"
-                      IsEnabled="{Binding ResultsLoaded}">
-                        <ToggleButton.Template>
-                            <ControlTemplate TargetType="ToggleButton">
-                                <Grid Width="100" Height="32">
-                                    <Border x:Name="Border" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="2" CornerRadius="16">
-                                        <Grid>
-                                            <Border x:Name="SwitchKnob" Background="{StaticResource NodeTransientOverlayColor}"
-                                                    BorderThickness="2" CornerRadius="16" Width="70" HorizontalAlignment="Left">
-                                                <TextBlock x:Name="KnobText" Text="{x:Static properties:Resources.Cluster}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            </Border>
-                                        </Grid>
-                                    </Border>
-                                </Grid>
-                                <ControlTemplate.Triggers>
-                                    <Trigger Property="IsChecked" Value="True">
-                                        <Setter TargetName="SwitchKnob" Property="HorizontalAlignment" Value="Right"/>
-                                        <Setter TargetName="KnobText" Property="Text" Value="{x:Static properties:Resources.Single}"/>
-                                    </Trigger>
-                                </ControlTemplate.Triggers>
-                            </ControlTemplate>
-                        </ToggleButton.Template>
-                    </ToggleButton>
-                </Grid>
             </Grid>
         </Grid>
     </Grid>

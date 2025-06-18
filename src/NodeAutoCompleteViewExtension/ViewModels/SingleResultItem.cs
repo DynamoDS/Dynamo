@@ -10,7 +10,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         {
             Assembly = model.Assembly;
             IconName = model.IconName;
-            Description = model.Description;
+            Description = model.Name;
+            Parameters = model.Parameters;
             CreationName = model.CreationName;
             PortToConnect = model.AutoCompletionNodeElementInfo.PortToConnect;
             Score = score;
@@ -27,6 +28,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         internal string IconName { get; set; }
 
         internal string Description { get; set; }
+
+        internal string Parameters { get; set; }
 
         internal string CreationName { get; set; }
 

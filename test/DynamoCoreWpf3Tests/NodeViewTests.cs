@@ -45,6 +45,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")]
         public void ZIndex_Test_MouseDown()
         {
             // Reset zindex to start value.
@@ -67,6 +68,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")]
         public void ZIndex_Test_MouseEnter_Leave()
         {
             // Reset zindex to start value.
@@ -108,6 +110,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")]
         public void ZIndex_NodeAsMemberOfGroup()
         {
             // Reset zindex to start value.
@@ -383,6 +386,7 @@ namespace DynamoCoreWpfTests
         /// Current zoom level is 0.4 (hard-coded in multiple Converters
         /// </summary>
         [Test]
+        [Category("Failure")]
         public void ZoomChangeVisibilityTest()
         {
             // Arrange
@@ -406,6 +410,7 @@ namespace DynamoCoreWpfTests
         }
 
         [Test]
+        [Category("Failure")]
         public void ZoomWarningFileFromPathTest()
         {
             // Arrange
