@@ -119,28 +119,25 @@ namespace Dynamo.NodeAutoComplete
             this.viewLoadedParamsReference = viewLoadedParams ?? throw new ArgumentNullException(nameof(viewLoadedParams));
             var dynamoViewModel = viewLoadedParams.DynamoWindow.DataContext as DynamoViewModel;
 
-            if (dynamoViewModel.IsDNAClusterPlacementEnabled)
+            DependencyView = new NodeAutoCompleteView(this, viewLoadedParams);
+            nodeAutoCompleteViewModel = new NodeAutoCompletePanelViewModel(viewLoadedParams.DynamoWindow, dynamoViewModel);
+            
+            // Adding a button in view menu to refresh and show manually
+            nodeAutocompleteMenuItem = new MenuItem { Header = "Show NodeAutocomplete view extension", IsCheckable = true, IsChecked = false };
+            nodeAutocompleteMenuItem.Click += (sender, args) =>
             {
-                DependencyView = new NodeAutoCompleteView(this, viewLoadedParams);
-                nodeAutoCompleteViewModel = new NodeAutoCompletePanelViewModel(viewLoadedParams.DynamoWindow, dynamoViewModel);
-
-                // Adding a button in view menu to refresh and show manually
-                nodeAutocompleteMenuItem = new MenuItem { Header = "Show NodeAutocomplete view extension", IsCheckable = true, IsChecked = false };
-                nodeAutocompleteMenuItem.Click += (sender, args) =>
+                if (nodeAutocompleteMenuItem.IsChecked)
                 {
-                    if (nodeAutocompleteMenuItem.IsChecked)
-                    {
-                        viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
-                        nodeAutocompleteMenuItem.IsChecked = true;
-                    }
-                    else
-                    {
-                        viewLoadedParams.CloseExtensioninInSideBar(this);
-                        nodeAutocompleteMenuItem.IsChecked = false;
-                    }
-                };
-                viewLoadedParams.AddExtensionMenuItem(nodeAutocompleteMenuItem);
-            }
+                    viewLoadedParams.AddToExtensionsSideBar(this, DependencyView);
+                    nodeAutocompleteMenuItem.IsChecked = true;
+                }
+                else
+                {
+                    viewLoadedParams.CloseExtensioninInSideBar(this);
+                    nodeAutocompleteMenuItem.IsChecked = false;
+                }
+            };
+            viewLoadedParams.AddExtensionMenuItem(nodeAutocompleteMenuItem);
 
             WorkspaceView.RequesNodeAutoCompleteBar += OnNodeAutoCompleteBarRequested;
 

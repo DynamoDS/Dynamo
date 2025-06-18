@@ -2842,7 +2842,6 @@ Dynamo.ViewModels.PreferencesViewModel.HideNodesBelowSpecificConfidenceLevelIsCh
 Dynamo.ViewModels.PreferencesViewModel.HostGenericScaleUnits.get -> string
 Dynamo.ViewModels.PreferencesViewModel.importSettings(string filePath) -> bool
 Dynamo.ViewModels.PreferencesViewModel.importSettingsContent(string content) -> bool
-Dynamo.ViewModels.PreferencesViewModel.IsDNAClusterPlacementEnabled.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.IsDynamoRevit.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.IsEnabledAddStyleButton.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.IsEnabledAddStyleButton.set -> void

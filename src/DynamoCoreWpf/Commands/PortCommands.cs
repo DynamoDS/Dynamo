@@ -34,8 +34,7 @@ namespace Dynamo.ViewModels
                 if (autoCompleteCommand == null)
                     autoCompleteCommand ??= new DelegateCommand(
                         (param) => {
-                            if (NodeViewModel.WorkspaceViewModel.DynamoViewModel.PreferenceSettings.MLEnableNewUI &&
-                                NodeViewModel.WorkspaceViewModel.DynamoViewModel.IsDNAClusterPlacementEnabled)
+                            if (NodeViewModel.WorkspaceViewModel.DynamoViewModel.PreferenceSettings.MLEnableNewUI)
                             {
                                 AutoCompleteCluster(param);
                             }

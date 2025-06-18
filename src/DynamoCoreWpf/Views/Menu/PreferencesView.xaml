@@ -943,8 +943,7 @@
                                         </Label>
                                     </StackPanel>
 
-                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="1"
-                                                Visibility="{Binding IsDNAClusterPlacementEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="1">
                                             <ToggleButton Name="MLNewUIToggle"
                                                   IsEnabled="{Binding Path=NodeAutocompleteIsChecked}"
                                                   Width="{StaticResource ToggleButtonWidth}"

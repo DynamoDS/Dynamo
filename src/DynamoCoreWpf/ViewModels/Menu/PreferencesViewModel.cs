@@ -1085,16 +1085,6 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
-        /// Expose IsDNAClusterPlacementEnabled feature flag as readonly in the viewmodel 
-        /// </summary>
-        public bool IsDNAClusterPlacementEnabled
-        {
-            get
-            {
-                return dynamoViewModel.IsDNAClusterPlacementEnabled;
-            }
-        }
-        /// <summary>
         /// Returns if the current session is Dynamo Revit
         /// </summary>
         public bool IsDynamoRevit
