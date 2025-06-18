@@ -1905,6 +1905,9 @@ namespace Dynamo.ViewModels
                 case nameof(DisableTrustWarnings):
                     description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewTrustWarningHeader), System.Globalization.CultureInfo.InvariantCulture);
                     goto default;
+                case nameof(MLEnableNewUIIsChecked):
+                    description = Res.ResourceManager.GetString(nameof(Res.PreferencesViewMLEnableNewUI), System.Globalization.CultureInfo.InvariantCulture);
+                    goto default;
                 // We track these this in two places, one in preference panel,
                 // one where user make such switch in Node AutoComplete UI
                 case nameof(nodeAutocompleteSuggestion):
