@@ -2842,6 +2842,7 @@ Dynamo.ViewModels.PreferencesViewModel.HideNodesBelowSpecificConfidenceLevelIsCh
 Dynamo.ViewModels.PreferencesViewModel.HostGenericScaleUnits.get -> string
 Dynamo.ViewModels.PreferencesViewModel.importSettings(string filePath) -> bool
 Dynamo.ViewModels.PreferencesViewModel.importSettingsContent(string content) -> bool
+Dynamo.ViewModels.PreferencesViewModel.IsDNAClusterPlacementEnabled.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.IsDynamoRevit.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.IsEnabledAddStyleButton.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.IsEnabledAddStyleButton.set -> void
@@ -5404,6 +5405,8 @@ static Dynamo.Wpf.Properties.Resources.PreferencesViewIncludeTimestampExportPath
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageLabel.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewLanguageSwitchHelp.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewMarkdownDirectoryTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewMLEnableNewUI.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewMLEnableNewUITooltipText.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewNodeAutocomplete.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewNotificationCenter.get -> string
 static Dynamo.Wpf.Properties.Resources.PreferencesViewPackageDownloadDirectory.get -> string

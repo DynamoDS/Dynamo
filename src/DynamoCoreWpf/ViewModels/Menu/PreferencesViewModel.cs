@@ -1085,6 +1085,16 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Expose IsDNAClusterPlacementEnabled feature flag as readonly in the viewmodel 
+        /// </summary>
+        public bool IsDNAClusterPlacementEnabled
+        {
+            get
+            {
+                return dynamoViewModel.IsDNAClusterPlacementEnabled;
+            }
+        }
+        /// <summary>
         /// Returns if the current session is Dynamo Revit
         /// </summary>
         public bool IsDynamoRevit
@@ -1122,9 +1132,29 @@ namespace Dynamo.ViewModels
             set
             {
                 preferenceSettings.EnableNodeAutoComplete = value;
+                if(!value)
+                {
+                    MLEnableNewUIIsChecked = false;
+                }
                 RaisePropertyChanged(nameof(NodeAutocompleteIsChecked));
                 RaisePropertyChanged(nameof(EnableHideNodesToggle));
                 RaisePropertyChanged(nameof(EnableConfidenceLevelSlider));
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Node autocomplete" toggle button
+        /// </summary>
+        public bool MLEnableNewUIIsChecked
+        {
+            get
+            {
+                return preferenceSettings.MLEnableNewUI;
+            }
+            set
+            {
+                preferenceSettings.MLEnableNewUI = value;
+                RaisePropertyChanged(nameof(MLEnableNewUIIsChecked));
             }
         }
 

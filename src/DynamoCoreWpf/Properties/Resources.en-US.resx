@@ -4155,4 +4155,15 @@ To make this file into a new template, save it to a different folder, then move 
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>This group is frozen. Click to unfreeze.</value>
   </data>
+  <data name="PreferencesViewMLEnableNewUI" xml:space="preserve">
+    <value>Enable New UI</value>
+    <comment>Preferences | Features | Node Autocomplete</comment>
+  </data>
+  <data name="PreferencesViewMLEnableNewUITooltipText" xml:space="preserve">
+    <value>Enable the new floating menu for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog.</value>
+    <comment>Preferences | Features | Node Autocomplete</comment>
+  </data>
+  <data name="String" xml:space="preserve">
+    <value>PreferencesViewMLEnableNewUITooltipText</value>
+  </data>
 </root>

@@ -912,6 +912,7 @@
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="Auto"/>
                                         <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
                                     </Grid.RowDefinitions>
 
                                     <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="0">
@@ -942,7 +943,37 @@
                                         </Label>
                                     </StackPanel>
 
-                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,0" Grid.Row="1"
+                                    <StackPanel Orientation="Horizontal" Margin="0,12,0,0" Grid.Row="1"
+                                                Visibility="{Binding IsDNAClusterPlacementEnabled, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                            <ToggleButton Name="MLNewUIToggle"
+                                                  IsEnabled="{Binding Path=NodeAutocompleteIsChecked}"
+                                                  Width="{StaticResource ToggleButtonWidth}"
+                                                  Height="{StaticResource ToggleButtonHeight}"
+                                                  VerticalAlignment="Center"
+                                                  IsChecked="{Binding Path=MLEnableNewUIIsChecked}"
+                                                  Style="{StaticResource EllipseToggleButton1}"/>
+                                        <Label Content="{x:Static p:Resources.PreferencesViewMLEnableNewUI}"
+                                           FontWeight="Normal"
+                                           Margin="10,0,0,0"
+                                           VerticalAlignment="Center"
+                                           Foreground="{StaticResource PreferencesWindowFontColor}"/>
+                                        <Label Name="MLNewUILabel">
+                                            <Image Name="MLNewUITooltip"
+                                               Margin="5,3,0,0"
+                                               Width="14"
+                                               Height="14"
+                                               HorizontalAlignment="Center"
+                                               VerticalAlignment="Center"
+                                               Style="{StaticResource QuestionIconClickable}"
+                                               ToolTipService.ShowDuration="30000">
+                                                <Image.ToolTip>
+                                                    <ToolTip Content="{x:Static p:Resources.PreferencesViewMLEnableNewUITooltipText}" Style="{StaticResource GenericToolTipLight}"/>
+                                                </Image.ToolTip>
+                                            </Image>
+                                        </Label>
+                                    </StackPanel>
+
+                                        <StackPanel Orientation="Horizontal" Margin="0,0,0,0" Grid.Row="2"
                                                 Visibility="{Binding HideAutocompleteMethodOptions, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}">
                                         <!-- This Grid contains controls for selecting the Node autocomplete method -->
                                         <Grid Margin="0,0,0,0">
@@ -999,7 +1030,6 @@
                                                   Margin="0,5,0,5">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition x:Name="colMachineLearning" Width="Auto"/>
-                                                    <ColumnDefinition x:Name="colMLbetaTag" Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
                                                 <RadioButton Grid.Column="0"
                                                      x:Name="RecommendedNodesRadioButton"

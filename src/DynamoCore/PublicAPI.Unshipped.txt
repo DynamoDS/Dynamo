@@ -202,6 +202,8 @@ Dynamo.Configuration.PreferenceSettings.Locale.set -> void
 Dynamo.Configuration.PreferenceSettings.MaxNumRecentFiles.get -> int
 Dynamo.Configuration.PreferenceSettings.MaxNumRecentFiles.set -> void
 Dynamo.Configuration.PreferenceSettings.MessageLogged -> System.Action<Dynamo.Logging.ILogMessage>
+Dynamo.Configuration.PreferenceSettings.MLEnableNewUI.get -> bool
+Dynamo.Configuration.PreferenceSettings.MLEnableNewUI.set -> void
 Dynamo.Configuration.PreferenceSettings.MLRecommendationConfidenceLevel.get -> int
 Dynamo.Configuration.PreferenceSettings.MLRecommendationConfidenceLevel.set -> void
 Dynamo.Configuration.PreferenceSettings.MLRecommendationNumberOfResults.get -> int
