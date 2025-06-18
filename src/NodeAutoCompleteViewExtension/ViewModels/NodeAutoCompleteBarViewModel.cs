@@ -56,7 +56,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         public bool SwitchIsEnabled => ResultsLoaded && !IsInput;
         public bool IsSingleAutocomplete
         {
-            get => _isSingleAutocomplete || IsInput;
+            get => _isSingleAutocomplete || IsInput || !dynamoViewModel.IsDNAClusterPlacementEnabled;
             set
             {
                 if (PortViewModel.PortType == PortType.Output && _isSingleAutocomplete != value)
@@ -385,6 +385,28 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             {
                 displayLowConfidence = value;
                 RaisePropertyChanged(nameof(DisplayLowConfidence));
+            }
+        }
+
+        /// <summary>
+        /// Expose IsDNAClusterPlacementEnabled feature flag as readonly in the viewmodel 
+        /// </summary>
+        public bool IsDNAClusterPlacementEnabled
+        {
+            get
+            {
+                return dynamoViewModel.IsDNAClusterPlacementEnabled;
+            }
+        }
+
+        /// <summary>
+        /// Calculated width of the bar dependng on whether to show the toggle
+        /// </summary>
+        public int BarViewWidth
+        {
+            get
+            {
+                return dynamoViewModel.IsDNAClusterPlacementEnabled ? 600 : 500;
             }
         }
 
