@@ -1651,7 +1651,12 @@ namespace Dynamo.Controls
             nodeHeaderContent.Visibility = Visibility.Visible;
             inputPortControl.Visibility = Visibility.Visible;
             outputPortControl.Visibility = Visibility.Visible;
-
+#if DEBUG
+            if (ViewModel != null)
+            {
+                ViewModel.WorkspaceViewModel.OnNodeViewLoaded();
+            }
+#endif
         }
 
         private Point PointToLocal(double x, double y, UIElement target)
