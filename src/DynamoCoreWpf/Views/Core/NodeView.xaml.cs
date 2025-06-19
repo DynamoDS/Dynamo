@@ -1418,7 +1418,7 @@ namespace Dynamo.Controls
             //Todo move to static resource file
             //Todo handle cases where Name is the same for multiple nodes (ie Point.ByCoordinate)
             var path = "E:\\rmWorkspace\\NodeCache\\" + ViewModel.Name + ".png";
-            if (System.IO.File.Exists(path))
+            if (ViewModel.WorkspaceViewModel.NodeCountOptimizationEnabled && System.IO.File.Exists(path))
             {
                 var bitmap = new BitmapImage(new Uri(path, UriKind.Absolute));
 
