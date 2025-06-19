@@ -1149,7 +1149,7 @@ namespace Dynamo.Controls
             Unloaded += OnNodeViewUnloaded;
             nodeBackground.Loaded += NodeViewReady;
 
-            nodeBorder.SizeChanged += OnSizeChanged;
+            nodeBorder.SizeChanged += OnSizeChangedBorder;
             this.SizeChanged += OnSizeChangedNodeView;
             DataContextChanged += OnDataContextChanged;
 
@@ -1555,7 +1555,7 @@ namespace Dynamo.Controls
             EditableNameBox.LostFocus -= EditableNameBox_OnLostFocus;
             EditableNameBox.KeyDown -= EditableNameBox_KeyDown;
             optionsButton.Click -= DisplayNodeContextMenu;
-            nodeBorder.SizeChanged -= OnSizeChanged;
+            nodeBorder.SizeChanged -= OnSizeChangedBorder;
             this.SizeChanged -= OnSizeChangedNodeView;
             nodeBackground.Loaded -= NodeViewReady;
 
@@ -1578,12 +1578,12 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="eventArgs"></param>
-        private void OnSizeChanged(object sender, SizeChangedEventArgs e)
+        private void OnSizeChangedBorder(object sender, SizeChangedEventArgs e)
         {
             if (ViewModel != null)
             {
                 ViewModel.WidthBorder = e.NewSize.Width;
-                ViewModel.HeightBorder = e.NewSize.Height;
+                ViewModel.HeightBorder = e.NewSize.Height;              
             }
         }
 
@@ -1591,8 +1591,8 @@ namespace Dynamo.Controls
         {
             if (ViewModel != null)
             {
-                ViewModel.Width = e.NewSize.Width;
-                ViewModel.Height = e.NewSize.Height;
+                var size = new[] { e.NewSize.Width, e.NewSize.Height };
+                ViewModel.SetModelSizeCommand.Execute(size);
             }
         }
 
@@ -1630,7 +1630,6 @@ namespace Dynamo.Controls
             {
                 nodeBorder.Width = ViewModel.WidthBorder;
                 nodeBorder.Height = ViewModel.HeightBorder;
-                nameBackground.Width = ViewModel.WidthBorder;
             }
 
 
