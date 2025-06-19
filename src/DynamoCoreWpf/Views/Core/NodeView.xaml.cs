@@ -271,6 +271,10 @@ namespace Dynamo.Controls
         private static BoolToVisibilityConverter _booleanToVisibilityConverter = new BoolToVisibilityConverter();
         private static EmptyToVisibilityCollapsedConverter _emptyToVisibilityCollapsedConverter = new EmptyToVisibilityCollapsedConverter();
         private static ZoomToVisibilityCollapsedConverter _zoomToVisibilityCollapsedConverter = new ZoomToVisibilityCollapsedConverter();
+        private static IValueConverter _sZoomFadeControl = SharedDictionaryManager.DynamoModernDictionary["SZoomFadeControl"] as IValueConverter;
+        private static IValueConverter _sZoomFadeInControl = SharedDictionaryManager.DynamoModernDictionary["SZoomFadeInControl"] as IValueConverter;
+        private static IValueConverter _sZoomFadeOutPreview = SharedDictionaryManager.DynamoModernDictionary["SZoomFadeOutPreview"] as IValueConverter;
+        private static IValueConverter _sZoomFadeInPreview = SharedDictionaryManager.DynamoModernDictionary["SZoomFadeInPreview"] as IValueConverter;
 
         // Font
         private static FontFamily _artifactElementReg = SharedDictionaryManager.DynamoModernDictionary["ArtifaktElementRegular"] as FontFamily;
@@ -286,12 +290,13 @@ namespace Dynamo.Controls
             Stretch = Stretch.UniformToFill
         };
 
-        private static Style _zoomFadeOpacity_OneToZeroStyle = GetZoomFadeOpacity_OneToZeroAnimatedStyle();
-        private static Style _zoomFadeOpacity_50PercentToZeroStyle = GetZoomFadeOpacity_50PercentToZeroAnimatedStyle();
-        private static Style _zoomFadeInOpacity_ZeroTo50PercentStyle = GetZoomFadeInOpacity_ZeroTo50PercentAnimatedStyle();
         private static Style _nodeButtonStyle = GetNodeButtonStyle();
         private static Style _codeBlockNodeItemControlStyle = GetCodeBlockPortItemControlStyle();
         internal static readonly Style DynamoToolTipTopStyle = GetDynamoToolTipTopStyle();
+        private static Binding _sZoomFadeControlStyleBinding = GetFadeToOpacityStyleBinding(_sZoomFadeControl);
+        private static Binding _sZoomFadeInControlStyleBinding = GetFadeToOpacityStyleBinding(_sZoomFadeInControl);
+        private static Binding _sZoomFadeInPreviewStyleBinding = GetFadeToOpacityStyleBinding(_sZoomFadeInPreview);
+        private static Binding _sZoomFadeOutPreviewStyleBinding = GetFadeToOpacityStyleBinding(_sZoomFadeOutPreview);
         // Initiate context menu style as static resource.
         private static ContextMenu nodeContextMenu = GetNodeContextMenu();
 
@@ -477,14 +482,14 @@ namespace Dynamo.Controls
                 Foreground = _primaryCharcoal100,
                 IsHitTestVisible = false,
                 TextAlignment = TextAlignment.Center,
-                FontFamily = _artifactElementReg,
-                Style = _zoomFadeOpacity_OneToZeroStyle
+                FontFamily = _artifactElementReg
             };
 
             NameBlock.SetBinding(TextBlock.TextProperty, new Binding("Name")
             {
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
+            NameBlock.SetBinding(TextBlock.StyleProperty, _sZoomFadeControlStyleBinding);
 
             nodeHeaderContent.Children.Add(NameBlock);
 
@@ -521,7 +526,7 @@ namespace Dynamo.Controls
                 Background = Brushes.Transparent,
             };
 
-            Canvas.SetZIndex(renameIndicator, 5);
+            SetValue(Panel.ZIndexProperty, 5);
             renameIndicator.SetValue(DockPanel.DockProperty, Dock.Right);
 
             // Create and configure the Ellipse
@@ -570,7 +575,7 @@ namespace Dynamo.Controls
             });
 
             dynamoRenameToolTip.Content = toolTipTextBlock;
-            nodeRenamedBlueDot.ToolTip = dynamoRenameToolTip;
+            renameIndicator.ToolTip = dynamoRenameToolTip;
 
             #endregion
 
@@ -614,9 +619,9 @@ namespace Dynamo.Controls
                 Margin = new System.Windows.Thickness(0, 0, 2, 2),
                 HorizontalAlignment = HorizontalAlignment.Right,
                 VerticalAlignment = VerticalAlignment.Bottom,
-                Orientation = Orientation.Horizontal,
-                Style = _zoomFadeOpacity_OneToZeroStyle
+                Orientation = Orientation.Horizontal
             };
+            GlyphStackPanel.SetBinding(StackPanel.StyleProperty, _sZoomFadeControlStyleBinding);
 
             var experimentalIcon = new FontAwesome5.ImageAwesome()
             {
@@ -722,6 +727,7 @@ namespace Dynamo.Controls
                 Converter = new LacingToAbbreviationConverter(),
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
+            LacingIconGlyph.SetBinding(Label.StyleProperty, _sZoomFadeControlStyleBinding);
 
             var alertsGlyph = new Grid
             {
@@ -730,6 +736,7 @@ namespace Dynamo.Controls
                 MinWidth = 16,
                 Margin = new Thickness(0, 0, 3, 0)
             };
+            alertsGlyph.SetBinding(Grid.StyleProperty, _sZoomFadeControlStyleBinding);
 
             // Create the Border
             Border border = new Border
@@ -914,7 +921,6 @@ namespace Dynamo.Controls
                 Margin = new Thickness(-8),
                 Fill = _darkBlue200,
                 IsHitTestVisible = false,
-                Style = _zoomFadeOpacity_50PercentToZeroStyle 
             };
             Grid.SetRow(nodeColorOverlayZoomIn, 1);
             Grid.SetRowSpan(nodeColorOverlayZoomIn, 4);
@@ -928,6 +934,7 @@ namespace Dynamo.Controls
                 Mode = BindingMode.OneWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
+            nodeColorOverlayZoomIn.SetBinding(Rectangle.StyleProperty, _sZoomFadeOutPreviewStyleBinding);
 
             // Node color overlay when zoomed In for Transient state
             var nodeTransientColorOverlayZoomIn = new Rectangle
@@ -936,7 +943,6 @@ namespace Dynamo.Controls
                 Margin = new Thickness(-8),
                 Fill = _nodeTransientOverlayColor,
                 IsHitTestVisible = false,
-                Style = _zoomFadeOpacity_50PercentToZeroStyle
             };
             Grid.SetRow(nodeTransientColorOverlayZoomIn, 1);
             Grid.SetRowSpan(nodeTransientColorOverlayZoomIn, 4);
@@ -950,6 +956,7 @@ namespace Dynamo.Controls
                 Mode = BindingMode.OneWay,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
+            nodeTransientColorOverlayZoomIn.SetBinding(Rectangle.StyleProperty, _sZoomFadeOutPreviewStyleBinding);
 
             #endregion
 
@@ -961,7 +968,6 @@ namespace Dynamo.Controls
                 Name = "nodeColorOverlayZoomOut",
                 Margin = new Thickness(-8),
                 IsHitTestVisible = false,
-                Style = _zoomFadeInOpacity_ZeroTo50PercentStyle
             };
             Grid.SetRow(nodeColorOverlayZoomOut, 1);
             Grid.SetRowSpan(nodeColorOverlayZoomOut, 4);
@@ -973,6 +979,7 @@ namespace Dynamo.Controls
             {
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
+            nodeColorOverlayZoomOut.SetBinding(Rectangle.StyleProperty, _sZoomFadeInPreviewStyleBinding);
 
             // Create the main Grid
             zoomGlyphsGrid = new Grid
@@ -983,7 +990,6 @@ namespace Dynamo.Controls
                 HorizontalAlignment = HorizontalAlignment.Stretch,
                 VerticalAlignment = VerticalAlignment.Stretch,
                 IsHitTestVisible = false,
-                Style = _zoomFadeInOpacity_ZeroTo50PercentStyle
             };
             Grid.SetRow(zoomGlyphsGrid, 0);
             Grid.SetRowSpan(zoomGlyphsGrid, 4);
@@ -997,6 +1003,7 @@ namespace Dynamo.Controls
                 RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
                 Converter = _zoomToVisibilityCollapsedConverter
             });
+            zoomGlyphsGrid.SetBinding(Grid.StyleProperty, _sZoomFadeInControlStyleBinding);
 
             // StackPanel
             var stackPanel = new StackPanel
@@ -1301,222 +1308,6 @@ namespace Dynamo.Controls
             return customTooltipStyle;
         }
 
-        private static Style GetZoomFadeOpacity_50PercentToZeroStyle()
-        {
-            Binding zoomBinding = new Binding("DataContext.Zoom")
-            {
-                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
-                Converter = new ZoomToBooleanConverter()
-            };
-
-            // Define the DataTrigger
-            DataTrigger dataTrigger = new DataTrigger
-            {
-                Binding = zoomBinding,
-                Value = true
-            };
-
-            // Define the setter for the DataTrigger to change Opacity to 0.5
-            Setter opacitySetter = new Setter(UIElement.OpacityProperty, 0.5);
-            dataTrigger.Setters.Add(opacitySetter);
-
-            // Create a Style to hold the DataTrigger and initial Opacity setter
-            Style controlStyle = new Style(typeof(FrameworkElement));
-            controlStyle.Setters.Add(new Setter(UIElement.OpacityProperty, 0.0));
-            controlStyle.Triggers.Add(dataTrigger);
-
-            return controlStyle;
-        }
-
-        private static Style GetZoomFadeOpacity_50PercentToZeroAnimatedStyle()
-        {
-            Binding zoomBinding = new Binding("DataContext.Zoom")
-            {
-                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
-                Converter = new ZoomToBooleanConverter()
-            };
-
-            // Define the DataTrigger
-            DataTrigger dataTrigger = new DataTrigger
-            {
-                Binding = zoomBinding,
-                Value = true
-            };
-
-            // EnterActions: Fade out to .5
-            var enterStoryboard = new Storyboard();
-            var enterAnimation = new DoubleAnimation
-            {
-                To = 0.5,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5))
-            };
-            Storyboard.SetTargetProperty(enterAnimation, new PropertyPath("Opacity"));
-            enterStoryboard.Children.Add(enterAnimation);
-            dataTrigger.EnterActions.Add(new BeginStoryboard { Storyboard = enterStoryboard });
-
-            // ExitActions: Fade in to 0.0
-            var exitStoryboard = new Storyboard();
-            var exitAnimation = new DoubleAnimation
-            {
-                To = 0.0,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5))
-            };
-            Storyboard.SetTargetProperty(exitAnimation, new PropertyPath("Opacity"));
-            exitStoryboard.Children.Add(exitAnimation);
-            dataTrigger.ExitActions.Add(new BeginStoryboard { Storyboard = exitStoryboard });
-
-            // Create a Style to hold the DataTrigger and initial Opacity setter
-            Style controlStyle = new Style(typeof(FrameworkElement));
-            controlStyle.Setters.Add(new Setter(UIElement.OpacityProperty, 0.0));
-            controlStyle.Triggers.Add(dataTrigger);
-
-            return controlStyle;
-        }
-
-        private static Style GetZoomFadeOpacity_OneToZeroStyle()
-        {
-            Binding zoomBinding = new Binding("DataContext.Zoom")
-            {
-                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
-                Converter = new ZoomToBooleanConverter()
-            };
-
-            // Define the DataTrigger
-            DataTrigger dataTrigger = new DataTrigger
-            {
-                Binding = zoomBinding,
-                Value = true
-            };
-
-            // Define the setter for the DataTrigger to change Opacity to 1
-            Setter opacitySetter = new Setter(UIElement.OpacityProperty, 1.0);
-            dataTrigger.Setters.Add(opacitySetter);
-
-            // Create a Style to hold the DataTrigger and initial Opacity setter
-            Style controlStyle = new Style(typeof(FrameworkElement));
-            controlStyle.Setters.Add(new Setter(UIElement.OpacityProperty, 0.0));
-            controlStyle.Triggers.Add(dataTrigger);
-
-            return controlStyle;
-        }
-
-        private static Style GetZoomFadeOpacity_OneToZeroAnimatedStyle()
-        {
-            Binding zoomBinding = new Binding("DataContext.Zoom")
-            {
-                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
-                Converter = new ZoomToBooleanConverter()
-            };
-
-            // Define the DataTrigger
-            DataTrigger dataTrigger = new DataTrigger
-            {
-                Binding = zoomBinding,
-                Value = true
-            };
-
-            // EnterActions: Fade out to 1
-            var enterStoryboard = new Storyboard();
-            var enterAnimation = new DoubleAnimation
-            {
-                To = 1.0,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5))
-            };
-            Storyboard.SetTargetProperty(enterAnimation, new PropertyPath("Opacity"));
-            enterStoryboard.Children.Add(enterAnimation);
-            dataTrigger.EnterActions.Add(new BeginStoryboard { Storyboard = enterStoryboard });
-
-            // ExitActions: Fade in to 0.0
-            var exitStoryboard = new Storyboard();
-            var exitAnimation = new DoubleAnimation
-            {
-                To = 0.0,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5))
-            };
-            Storyboard.SetTargetProperty(exitAnimation, new PropertyPath("Opacity"));
-            exitStoryboard.Children.Add(exitAnimation);
-            dataTrigger.ExitActions.Add(new BeginStoryboard { Storyboard = exitStoryboard });
-
-            // Create a Style to hold the DataTrigger and initial Opacity setter
-            Style controlStyle = new Style(typeof(FrameworkElement));
-            controlStyle.Setters.Add(new Setter(UIElement.OpacityProperty, 0.0));
-            controlStyle.Triggers.Add(dataTrigger);
-
-            return controlStyle;
-        }
-
-        private static Style GetZoomFadeInOpacity_ZeroTo50PercentStyle()
-        {
-            Binding zoomBinding = new Binding("DataContext.Zoom")
-            {
-                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
-                Converter = new ZoomToBooleanConverter()
-            };
-
-            // Define the DataTrigger
-            DataTrigger dataTrigger = new DataTrigger
-            {
-                Binding = zoomBinding,
-                Value = true
-            };
-
-            // Define the setter for the DataTrigger to change Opacity to 0.0
-            Setter opacitySetter = new Setter(UIElement.OpacityProperty, 0.0);
-            dataTrigger.Setters.Add(opacitySetter);
-
-            // Create a Style to hold the DataTrigger and initial Opacity setter
-            Style controlStyle = new Style(typeof(FrameworkElement));
-            controlStyle.Setters.Add(new Setter(UIElement.OpacityProperty, 0.5));
-            controlStyle.Triggers.Add(dataTrigger);
-
-            return controlStyle;
-        }
-
-        private static Style GetZoomFadeInOpacity_ZeroTo50PercentAnimatedStyle()
-        {
-            Binding zoomBinding = new Binding("DataContext.Zoom")
-            {
-                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
-                Converter = new ZoomToBooleanConverter()
-            };
-
-            // Define the DataTrigger
-            DataTrigger dataTrigger = new DataTrigger
-            {
-                Binding = zoomBinding,
-                Value = true
-            };
-
-            // EnterActions: Fade out to 0.0
-            var enterStoryboard = new Storyboard();
-            var enterAnimation = new DoubleAnimation
-            {
-                To = 0.0,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5))
-            };
-            Storyboard.SetTargetProperty(enterAnimation, new PropertyPath("Opacity"));
-            enterStoryboard.Children.Add(enterAnimation);
-            dataTrigger.EnterActions.Add(new BeginStoryboard { Storyboard = enterStoryboard });
-
-            // ExitActions: Fade in to 0.5
-            var exitStoryboard = new Storyboard();
-            var exitAnimation = new DoubleAnimation
-            {
-                To = 0.5,
-                Duration = new Duration(TimeSpan.FromSeconds(0.5))
-            };
-            Storyboard.SetTargetProperty(exitAnimation, new PropertyPath("Opacity"));
-            exitStoryboard.Children.Add(exitAnimation);
-            dataTrigger.ExitActions.Add(new BeginStoryboard { Storyboard = exitStoryboard });
-
-            // Create a Style to hold the DataTrigger and initial Opacity setter
-            Style controlStyle = new Style(typeof(FrameworkElement));
-            controlStyle.Setters.Add(new Setter(UIElement.OpacityProperty, 0.5));
-            controlStyle.Triggers.Add(dataTrigger);
-
-            return controlStyle;
-        }
-
         private static Style GetCodeBlockPortItemControlStyle()
         {
             Style inOutPortControlStyle = new Style(typeof(ItemsControl));
@@ -1541,6 +1332,15 @@ namespace Dynamo.Controls
             return inOutPortControlStyle;
         }
 
+        private static Binding GetFadeToOpacityStyleBinding(IValueConverter conv)
+        {
+            return new Binding("DataContext.NodeCountOptimizationEnabled")
+            {
+                RelativeSource = new RelativeSource(RelativeSourceMode.FindAncestor, typeof(WorkspaceView), 1),
+                Converter = conv
+            };
+        }
+
         #endregion
 
         private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)
@@ -1555,8 +1355,6 @@ namespace Dynamo.Controls
             ViewModel.NodeLogic.PropertyChanged -= NodeLogic_PropertyChanged;
             ViewModel.NodeModel.ConnectorAdded -= NodeModel_ConnectorAdded;
             MouseLeave -= NodeView_MouseLeave;
-
-            ViewModel.WorkspaceViewModel.PropertyChanged -= OnWorkspaceView_PropertyChanged;
 
             nameBackground.MouseDown -= NameBlock_OnMouseDown;
             EditableNameBox.LostFocus -= EditableNameBox_OnLostFocus;
@@ -1776,29 +1574,6 @@ namespace Dynamo.Controls
             ViewModel.NodeLogic.PropertyChanged += NodeLogic_PropertyChanged;
             ViewModel.NodeModel.ConnectorAdded += NodeModel_ConnectorAdded;
             MouseLeave += NodeView_MouseLeave;
-
-            ViewModel.WorkspaceViewModel.PropertyChanged += OnWorkspaceView_PropertyChanged;
-        }
-
-        private void OnWorkspaceView_PropertyChanged(object sender, PropertyChangedEventArgs args)
-        {
-            switch (args.PropertyName)
-            {
-                case "NodeCountOptimizationEnabled":
-                    if (ViewModel.WorkspaceViewModel.NodeCountOptimizationEnabled)
-                    {
-                        _zoomFadeOpacity_OneToZeroStyle = GetZoomFadeOpacity_OneToZeroAnimatedStyle();
-                        _zoomFadeOpacity_50PercentToZeroStyle = GetZoomFadeOpacity_50PercentToZeroAnimatedStyle();
-                        _zoomFadeInOpacity_ZeroTo50PercentStyle = GetZoomFadeInOpacity_ZeroTo50PercentAnimatedStyle();
-                    }
-                    else
-                    {
-                        _zoomFadeOpacity_OneToZeroStyle = GetZoomFadeOpacity_OneToZeroStyle();
-                        _zoomFadeOpacity_50PercentToZeroStyle = GetZoomFadeOpacity_50PercentToZeroStyle();
-                        _zoomFadeInOpacity_ZeroTo50PercentStyle = GetZoomFadeInOpacity_ZeroTo50PercentStyle();
-                    }
-                    break;
-            }
         }
 
         private void NodeModel_ConnectorAdded(Graph.Connectors.ConnectorModel obj)
