@@ -20,7 +20,7 @@ namespace Dynamo.Wpf.Utilities
             IEnumerable<NodeModel> misplacedNodes,
             bool skipInitialAutoLayout,
             bool checkWorkspaceNodes,
-            bool reuseUndoGroup,
+            PortType portType,
             Action finalizer)
         {
             if (Application.Current?.Dispatcher != null)
@@ -30,7 +30,7 @@ namespace Dynamo.Wpf.Utilities
                     misplacedNodes,
                     skipInitialAutoLayout,
                     checkWorkspaceNodes,
-                    reuseUndoGroup,
+                    portType,
                     finalizer), DispatcherPriority.ApplicationIdle);
             }
         }
@@ -99,24 +99,24 @@ namespace Dynamo.Wpf.Utilities
         /// </summary>
         /// <param name="wsModel">The workspace model containing the nodes to be arranged.</param>
         /// <param name="queryNode">The node used as a starting point for the layout operation.</param>
-        /// <param name="misplacedNodes">A collection of nodes that are not properly positioned and need to be arranged.</param>
+        /// <param name="newNodes">A collection of new nodes that are not properly positioned yet and need to be arranged.</param>
         /// <param name="skipInitialAutoLayout">Skip initial AutoLayout when we know that nodes are already in a good position.</param>
         /// <param name="checkWorkspaceNodes">Specifies whether to consider existing nodes in the workspace during the layout operation.</param>
         /// <param name="reuseUndoGroup">Specify if the AutoLayout should use the existing undo group</param>
         /// <param name="finalizer">An action to be executed after the layout operation is complete, typically for cleanup or further adjustments.</param>
         internal static void AutoLayoutNodes(WorkspaceModel wsModel,
             NodeModel queryNode,
-            IEnumerable<NodeModel> misplacedNodes,
+            IEnumerable<NodeModel> newNodes,
             bool skipInitialAutoLayout,
             bool checkWorkspaceNodes,
-            bool reuseUndoGroup,
+            PortType portType,
             Action finalizer)
         {
-            DynamoSelection.Instance.Selection.AddRange(misplacedNodes);
+            DynamoSelection.Instance.Selection.AddRange(newNodes);
 
             if (!skipInitialAutoLayout)
             {
-                wsModel.DoGraphAutoLayout(reuseUndoGroup, true, queryNode.GUID);
+                wsModel.DoGraphAutoLayoutAutocomplete(queryNode.GUID, newNodes, newNodes, portType);
             }
 
             // Check if the newly added nodes are still intersecting with other nodes in the workspace.
@@ -124,12 +124,11 @@ namespace Dynamo.Wpf.Utilities
             // disruption to the user's workspace.
             if (checkWorkspaceNodes)
             {
-                bool redoAutoLayout = AutoLayoutNeeded(wsModel, queryNode, misplacedNodes, out List<NodeModel> intersectedNodes);
+                bool redoAutoLayout = AutoLayoutNeeded(wsModel, queryNode, newNodes, out List<NodeModel> intersectedNodes);
                 if (redoAutoLayout)
                 {
-                    DynamoSelection.Instance.Selection.AddRange(intersectedNodes);
-                    wsModel.DoGraphAutoLayout(reuseUndoGroup, true, queryNode.GUID);
-                    DynamoSelection.Instance.Selection.RemoveRange(intersectedNodes);
+                    var misplacedNodes = newNodes.Union(intersectedNodes);
+                    wsModel.DoGraphAutoLayoutAutocomplete(queryNode.GUID, newNodes, misplacedNodes, portType);
                 }
             }
 
