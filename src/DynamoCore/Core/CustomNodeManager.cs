@@ -1,9 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.IO;
-using System.Linq;
-using System.Xml;
 using Dynamo.Engine;
 using Dynamo.Engine.NodeToCode;
 using Dynamo.Exceptions;
@@ -25,6 +19,14 @@ using Dynamo.Properties;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using System.Text.Json;
+using System.Threading;
+using System.Xml;
 using Symbol = Dynamo.Graph.Nodes.CustomNodes.Symbol;
 
 namespace Dynamo.Core
@@ -47,11 +49,15 @@ namespace Dynamo.Core
             this.nodeFactory = nodeFactory;
             this.migrationManager = migrationManager;
             this.libraryServices = libraryServices;
+
+            //Todo decide were we want to store this
+            customNodeInfoCache = new JsonCache<CustomNodeInfo> ("C:\\Temp\\CustomNodeInforCache.temp");
         }
 
         #region Fields and properties
 
         private LibraryServices libraryServices;
+        private JsonCache<CustomNodeInfo> customNodeInfoCache;
 
         private readonly OrderedSet<Guid> loadOrder = new OrderedSet<Guid>();
 
@@ -480,23 +486,11 @@ namespace Dynamo.Core
         /// </summary>
         private void SetNodeInfo(CustomNodeInfo newInfo)
         {
-            var guids = NodeInfos.Where(x =>
-                        {
-                            return !string.IsNullOrEmpty(x.Value.Path) &&
-                                string.Compare(x.Value.Path, newInfo.Path, StringComparison.OrdinalIgnoreCase) == 0;
-                        }).Select(x => x.Key).ToList();
-
-           
-            foreach (var guid in guids)
-            {
-                NodeInfos.Remove(guid);
-            }
-
             // we need to check with the packageManager that this node if this node is in a package or not - 
             // currently the package data is lost when the customNode workspace is loaded.
             // we'll only do this check for customNode infos which don't have a package currently to verify if this
             // is correct.
-            if(newInfo.IsPackageMember == false)
+            if (newInfo.IsPackageMember == false)
             {
                 var owningPackage = this.OnRequestCustomNodeOwner(newInfo.FunctionId);
                 
@@ -678,39 +672,54 @@ namespace Dynamo.Core
         /// <returns>The custom node info object - null if we failed</returns>
         internal bool TryGetInfoFromPath(string path, bool isTestMode, out CustomNodeInfo info)
         {
-            WorkspaceInfo header = null;
-            XmlDocument xmlDoc;
-            string jsonDoc;
-            Exception ex;
             try
             {
-                if (DynamoUtilities.PathHelper.isValidJson(path, out jsonDoc, out ex))
+                var fileinfo = new FileInfo(path);
+                var lastWriteTime = fileinfo.LastWriteTimeUtc;
+                var length = fileinfo.Length;
+
+                //create a fast check for checking if the file has been loaded before.  Could also do a file hash but we don't care too much about false negatives
+                var key = path + lastWriteTime.ToString() + length.ToString();
+
+                if (customNodeInfoCache.TryGet(key, out info))
                 {
-                    if (!WorkspaceInfo.FromJsonDocument(jsonDoc, path, isTestMode, false, AsLogger(), out header))
+                    return true;
+                }
+
+                if (CustomNodeInfo.GetFromJsonDocument(path, out info, out var ex))
+                {
+                    customNodeInfoCache.Set(key, info);
+
+                    return true;
+                }
+
+                if (DynamoUtilities.PathHelper.isValidXML(path, out var xmlDoc, out ex))
+                {
+                    if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(), out var header))
                     {
                         Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
                         info = null;
                         return false;
                     }
+
+                    info = new CustomNodeInfo(
+                        Guid.Parse(header.ID),
+                        header.Name,
+                        header.Category,
+                        header.Description,
+                        path,
+                        header.IsVisibleInDynamoLibrary);
+
+                    customNodeInfoCache.Set(key, info);
+
+                    return true;
                 }
-                else if (DynamoUtilities.PathHelper.isValidXML(path, out xmlDoc, out ex))
+                if (ex == null)
                 {
-                    if (!WorkspaceInfo.FromXmlDocument(xmlDoc, path, isTestMode, false, AsLogger(), out header))
-                    {
-                        Log(String.Format(Properties.Resources.FailedToLoadHeader, path));
-                        info = null;
-                        return false;
-                    }
+                    // TODO: Add resource string
+                    throw new InvalidOperationException("An unknown error occurred while processing the file.");
                 }
-                else throw ex;
-                info = new CustomNodeInfo(
-                    Guid.Parse(header.ID),
-                    header.Name,
-                    header.Category,
-                    header.Description,
-                    path,
-                    header.IsVisibleInDynamoLibrary);
-                return true;
+                throw ex;
             }
             catch (Exception e)
             {
@@ -1419,4 +1428,67 @@ namespace Dynamo.Core
             this.loadedCustomNodes.ToList().ForEach(x => Uninitialize(x.Value.FunctionId));
         }
     }
+
+    //Location temporary
+    public class JsonCache<T> : IDisposable
+    {
+        private readonly string cacheFilePath;
+        private readonly Dictionary<string, T> cache = new();
+        private bool dirty = false;
+        private readonly Timer flushTimer;
+
+        public JsonCache(string filePath)
+        {
+            cacheFilePath = filePath;
+            Load();
+            // Not sure if this covers all cases.  Can also add flush to Dispose
+            AppDomain.CurrentDomain.ProcessExit += (s, e) => FlushIfDirty();
+        }
+
+        public void Set(string key, T value)
+        {
+            cache[key] = value;
+            dirty = true;
+        }
+
+        public bool TryGet(string key, out T value) => cache.TryGetValue(key, out value);
+
+        public void Remove(string key)
+        {
+            if (cache.Remove(key))
+                dirty = true;
+        }
+
+        private void Load()
+        {
+            if (File.Exists(cacheFilePath))
+            {
+                var json = File.ReadAllText(cacheFilePath);
+                var loaded = JsonSerializer.Deserialize<Dictionary<string, T>>(json);
+                if (loaded != null)
+                    foreach (var kv in loaded)
+                        cache[kv.Key] = kv.Value;
+            }
+        }
+
+        private void FlushIfDirty()
+        {
+            if (dirty)
+                Flush();
+        }
+
+        public void Flush()
+        {
+            var json = JsonSerializer.Serialize(cache, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(cacheFilePath, json);
+            dirty = false;
+        }
+
+        public void Dispose()
+        {
+            flushTimer?.Dispose();
+            Flush();
+        }
+    }
+
 }
