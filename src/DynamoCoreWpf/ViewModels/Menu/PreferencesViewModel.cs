@@ -1122,6 +1122,10 @@ namespace Dynamo.ViewModels
             set
             {
                 preferenceSettings.EnableNodeAutoComplete = value;
+                if(!value)
+                {
+                    NodeAutocompleteNewUIIsChecked = false;
+                }
                 RaisePropertyChanged(nameof(NodeAutocompleteIsChecked));
                 RaisePropertyChanged(nameof(EnableHideNodesToggle));
                 RaisePropertyChanged(nameof(EnableConfidenceLevelSlider));
@@ -1139,6 +1143,10 @@ namespace Dynamo.ViewModels
             }
             set
             {
+                if(preferenceSettings.EnableNewNodeAutoCompleteUI == value)
+                {
+                    return;
+                }
                 preferenceSettings.EnableNewNodeAutoCompleteUI = value;
                 RaisePropertyChanged(nameof(NodeAutocompleteNewUIIsChecked));
             }
