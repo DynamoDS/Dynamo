@@ -13,10 +13,19 @@
              Background="Transparent"
              ShowInTaskbar="False"
              ResizeMode="NoResize"
-             Width="{Binding BarViewWidth}"
+             Width="600"
              Height="45"
              PreviewKeyDown="OnAutoCompleteKeyDown"
         >
+    <Window.Style>
+        <Style TargetType="Window">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsDNAClusterPlacementEnabled}" Value="False">
+                    <Setter Property="Width" Value="500"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

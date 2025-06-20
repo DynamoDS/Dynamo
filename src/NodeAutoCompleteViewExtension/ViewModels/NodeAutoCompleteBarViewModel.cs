@@ -399,17 +399,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
-        /// <summary>
-        /// Calculated width of the bar dependng on whether to show the toggle
-        /// </summary>
-        public int BarViewWidth
-        {
-            get
-            {
-                return dynamoViewModel.IsDNAClusterPlacementEnabled ? 600 : 500;
-            }
-        }
-
         internal event Action<NodeModel> ParentNodeRemoved;
 
         internal MLNodeClusterAutoCompletionResponse FullResults { private set; get; }
