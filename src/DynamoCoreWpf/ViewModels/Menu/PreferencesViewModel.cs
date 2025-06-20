@@ -1122,9 +1122,33 @@ namespace Dynamo.ViewModels
             set
             {
                 preferenceSettings.EnableNodeAutoComplete = value;
+                if(!value)
+                {
+                    NodeAutocompleteNewUIIsChecked = false;
+                }
                 RaisePropertyChanged(nameof(NodeAutocompleteIsChecked));
                 RaisePropertyChanged(nameof(EnableHideNodesToggle));
                 RaisePropertyChanged(nameof(EnableConfidenceLevelSlider));
+            }
+        }
+
+        /// <summary>
+        /// Controls the IsChecked property in the "Node autocomplete new menu" toggle button
+        /// </summary>
+        public bool NodeAutocompleteNewUIIsChecked
+        {
+            get
+            {
+                return preferenceSettings.EnableNewNodeAutoCompleteUI;
+            }
+            set
+            {
+                if(preferenceSettings.EnableNewNodeAutoCompleteUI == value)
+                {
+                    return;
+                }
+                preferenceSettings.EnableNewNodeAutoCompleteUI = value;
+                RaisePropertyChanged(nameof(NodeAutocompleteNewUIIsChecked));
             }
         }
 

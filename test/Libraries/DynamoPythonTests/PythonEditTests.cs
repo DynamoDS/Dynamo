@@ -16,6 +16,8 @@ using Dynamo.PythonServices;
 using DynCmd = Dynamo.Models.DynamoModel;
 using System.Threading;
 using PythonNodeModelsWpf;
+using CoreNodeModels;
+
 
 namespace Dynamo.Tests
 {
@@ -651,6 +653,41 @@ namespace Dynamo.Tests
 
             var getItemAtIndex2 = "ad1f2ed7-6373-4381-aa93-df707c5e6339";
             AssertPreviewValue(getItemAtIndex2, new string[] { "TSplineVertex", "TSplineVertex" });
+        }
+
+        [Test]
+        public void Test_With_Exception_Python()
+        {
+            //This piece of code will generate an exception in PythonScript node
+            var line_update = "vec = Vector.ByCordinates(10,20)";
+            var warningMessageExpected = "type object 'Vector' has no attribute 'ByCordinates'";
+
+            // open test graph
+            var examplePath = Path.Combine(TestDirectory, @"core\python", @"withStatementTest.dyn");
+            ViewModel.OpenCommand.Execute(examplePath);
+            ViewModel.HomeSpace.Run();
+
+            var watchNode = ViewModel.Model.CurrentWorkspace.Nodes.OfType<Watch>().First();
+            var pythonNode = ViewModel.Model.CurrentWorkspace.Nodes.OfType<PythonNode>().First();
+
+            //Verify that the initial run get the expected value
+            Assert.That(watchNode.OutputData.InitialValue, Is.EqualTo("test2"));
+
+            //Verify that don't have warnings/errors in the python node
+            Assert.AreEqual(pythonNode.NodeInfos.Count, 0);
+
+            var script = pythonNode.Script;
+            //Replacing this text in the code will generate an exception in the PythonScript node
+            script = script.Replace("result = \"test2\"", line_update);
+
+            UpdatePythonNodeContent(pythonNode, script);
+            pythonNode.OnNodeModified();
+
+            //Verity that we have 1 warning in the python node
+            Assert.AreEqual(pythonNode.NodeInfos.Count, 1);
+
+            //Check that the warning message expected is correct
+            Assert.IsTrue(pythonNode.NodeInfos.FirstOrDefault().Message.Contains(warningMessageExpected));
         }
 
         [Test]

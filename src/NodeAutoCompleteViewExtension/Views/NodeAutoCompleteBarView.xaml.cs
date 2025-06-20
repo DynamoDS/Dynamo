@@ -75,7 +75,7 @@ namespace Dynamo.NodeAutoComplete.Views
 
         private void MoveIndex(int step)
         {
-            ViewModel.SelectedIndex = Math.Min(ViewModel.DropdownResults.Count() - 1, Math.Max(0, ViewModel.SelectedIndex + step));
+            ViewModel.SelectedIndex = Math.Min(ViewModel.FilteredView.Cast<object>().Count() - 1, Math.Max(0, ViewModel.SelectedIndex + step));
         }
 
         private void PrevButton_OnClick(object sender, RoutedEventArgs e)

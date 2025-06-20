@@ -373,6 +373,10 @@ Dynamo.Controls.LeftThicknessConverter
 Dynamo.Controls.LeftThicknessConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.LeftThicknessConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.LeftThicknessConverter.LeftThicknessConverter() -> void
+Dynamo.Controls.LengthToVisibilityConverter
+Dynamo.Controls.LengthToVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.LengthToVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.LengthToVisibilityConverter.LengthToVisibilityConverter() -> void
 Dynamo.Controls.LibraryTreeItemsHostVisibilityConverter
 Dynamo.Controls.LibraryTreeItemsHostVisibilityConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.LibraryTreeItemsHostVisibilityConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
@@ -2019,6 +2023,8 @@ Dynamo.ViewModels.DynamoViewModel.DumpLibraryToXmlCommand.get -> Dynamo.UI.Comma
 Dynamo.ViewModels.DynamoViewModel.DumpLibraryToXmlCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.DumpNodeHelpDataCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.DynamoViewModel.DumpNodeHelpDataCommand.set -> void
+Dynamo.ViewModels.DynamoViewModel.DumpNodeIconsCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.DynamoViewModel.DumpNodeIconsCommand.set -> void
 Dynamo.ViewModels.DynamoViewModel.DynamoViewModel(Dynamo.ViewModels.DynamoViewModel.StartConfiguration startConfiguration) -> void
 Dynamo.ViewModels.DynamoViewModel.EditName.get -> string
 Dynamo.ViewModels.DynamoViewModel.EditName.set -> void
@@ -2867,6 +2873,8 @@ Dynamo.ViewModels.PreferencesViewModel.MLRecommendationNumberOfResults.get -> in
 Dynamo.ViewModels.PreferencesViewModel.MLRecommendationNumberOfResults.set -> void
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteIsChecked.set -> void
+Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteNewUIIsChecked.get -> bool
+Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteNewUIIsChecked.set -> void
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMachineLearningIsBeta.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMachineLearningIsChecked.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.NodeAutocompleteMachineLearningIsChecked.set -> void
@@ -4668,6 +4676,7 @@ static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuDebugModes.get -> stri
 static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuDumpData.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuDumpLibrary.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuDumpNodeHelpData.get -> string
+static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuDumpNodeIcons.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuForceReExecute.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuForceUpdate.get -> string
 static Dynamo.Wpf.Properties.Resources.DynamoViewDebugMenuRunMutationTest.get -> string
@@ -5065,6 +5074,8 @@ static Dynamo.Wpf.Properties.Resources.NodeAutocomplete.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutocompleteDocumentationUriString.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutoCompleteNotAvailableForCollapsedGroups.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeAutoCompleteToolTip.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteNewUI.get -> string
+static Dynamo.Wpf.Properties.Resources.PreferencesViewEnableNodeAutoCompleteNewUITooltipText.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuEnablePeriodicUpdate.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuHelp.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuIsInput.get -> string
@@ -5073,6 +5084,7 @@ static Dynamo.Wpf.Properties.Resources.NodeContextMenuPreview.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuRenameNode.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeContextMenuShowLabels.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeHelpIsDumped.get -> string
+static Dynamo.Wpf.Properties.Resources.NodeIconDataIsDumped.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeHelpWindowNodeCategory.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeHelpWindowNodeDescription.get -> string
 static Dynamo.Wpf.Properties.Resources.NodeHelpWindowNodeInput.get -> string

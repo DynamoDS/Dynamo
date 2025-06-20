@@ -923,4 +923,7 @@ This package likely contains an assembly that is blocked. You will need to load 
   <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
     <value>This node is currently experimental. Its behavior, name, and signature are subject to change.</value>
   </data>
+  <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
+    <value>Click on the sparkle icon next to the port to activate Node Autocomplete.</value>
+  </data>
 </root>
