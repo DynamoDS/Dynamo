@@ -1,0 +1,186 @@
+{
+  "Uuid": "ec1123a0-186a-4571-91f7-217331576507",
+  "IsCustomNode": false,
+  "Description": "",
+  "Name": "withDisposeFFITarget",
+  "ElementResolver": {
+    "ResolutionMap": {}
+  },
+  "Inputs": [],
+  "Outputs": [],
+  "Nodes": [
+    {
+      "ConcreteType": "PythonNodeModels.PythonNode, PythonNodeModels",
+      "Code": "import clr\r\nclr.AddReference('FFITarget')\r\nfrom FFITarget import AbstractDerivedDisposeTracer2, AbstractDisposeTracert\r\nclr.AddReference('ProtoGeometry')\r\nfrom Autodesk.DesignScript.Geometry import *\r\n\r\n\r\n\r\nwith AbstractDerivedDisposeTracer2() as test:\r\n    test.StupidPlaceHolderMethod()\r\n    Point.ByCoordinates(10,20)\r\n    \r\nOUT = AbstractDisposeTracert.DisposeCount",
+      "Engine": "CPython3",
+      "VariableInputPorts": true,
+      "Height": 117.0,
+      "Width": 176.0,
+      "WidthBorder": 176.0,
+      "HeightBorder": 117.0,
+      "Id": "ffb5025ebbbe40fd9b077d07f4558d9b",
+      "NodeType": "PythonScriptNode",
+      "Inputs": [
+        {
+          "Id": "c274c465a1e149d6960d1783b8361f89",
+          "Name": "IN[0]",
+          "Description": "Input #0",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false,
+          "Height": 34.0,
+          "Width": 100.0,
+          "WidthBorder": 100.0,
+          "HeightBorder": 100.0
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "c3426226dadb4822953d066cc1c9fbb0",
+          "Name": "OUT",
+          "Description": "Result of the python script",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false,
+          "Height": 34.0,
+          "Width": 100.0,
+          "WidthBorder": 100.0,
+          "HeightBorder": 100.0
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Runs an embedded Python script."
+    },
+    {
+      "ConcreteType": "CoreNodeModels.Watch, CoreNodeModels",
+      "WatchWidth": 28.0,
+      "WatchHeight": 40.0,
+      "Height": 117.0,
+      "Width": 129.0,
+      "WidthBorder": 129.0,
+      "HeightBorder": 117.0,
+      "Id": "fa61800d5cbf4ac18ed508029f5e9950",
+      "NodeType": "ExtensionNode",
+      "Inputs": [
+        {
+          "Id": "81b77fa9854b4756a77baadb954eed72",
+          "Name": "",
+          "Description": "Node to show output from",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false,
+          "Height": 34.0,
+          "Width": 100.0,
+          "WidthBorder": 100.0,
+          "HeightBorder": 100.0
+        }
+      ],
+      "Outputs": [
+        {
+          "Id": "b60b5c4b04ae4ddcb5f2cc729a84d5e6",
+          "Name": "",
+          "Description": "Node output",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false,
+          "Height": 34.0,
+          "Width": 100.0,
+          "WidthBorder": 100.0,
+          "HeightBorder": 100.0
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Visualizes a node's output"
+    }
+  ],
+  "Connectors": [
+    {
+      "Start": "c3426226dadb4822953d066cc1c9fbb0",
+      "End": "81b77fa9854b4756a77baadb954eed72",
+      "Id": "b4abe77dd1574a35a92bd1e6f9fd00e9",
+      "IsHidden": "False"
+    }
+  ],
+  "Dependencies": [],
+  "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
+  "Thumbnail": "",
+  "GraphDocumentationURL": null,
+  "ExtensionWorkspaceData": [
+    {
+      "ExtensionGuid": "28992e1d-abb9-417f-8b1b-05e053bee670",
+      "Name": "Properties",
+      "Version": "3.6",
+      "Data": {}
+    }
+  ],
+  "Author": "",
+  "Linting": {
+    "activeLinter": "None",
+    "activeLinterId": "7b75fb44-43fd-4631-a878-29f4d5d8399a",
+    "warningCount": 0,
+    "errorCount": 0
+  },
+  "Bindings": [],
+  "View": {
+    "Dynamo": {
+      "ScaleFactor": 1.0,
+      "HasRunWithoutCrash": true,
+      "IsVisibleInDynamoLibrary": true,
+      "Version": "3.6.0.6885",
+      "RunType": "Manual",
+      "RunPeriod": "1000"
+    },
+    "Camera": {
+      "Name": "_Background Preview",
+      "EyeX": -17.0,
+      "EyeY": 24.0,
+      "EyeZ": 50.0,
+      "LookX": 12.0,
+      "LookY": -13.0,
+      "LookZ": -58.0,
+      "UpX": 0.0,
+      "UpY": 1.0,
+      "UpZ": 0.0
+    },
+    "ConnectorPins": [],
+    "NodeViews": [
+      {
+        "Id": "ffb5025ebbbe40fd9b077d07f4558d9b",
+        "Name": "Python Script",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 122.0,
+        "Y": 194.0,
+        "Width": 176.0,
+        "Height": 117.0,
+        "WidthBorder": 176.0,
+        "HeightBorder": 117.0
+      },
+      {
+        "Id": "fa61800d5cbf4ac18ed508029f5e9950",
+        "Name": "Watch",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 414.0,
+        "Y": 165.5,
+        "Width": 129.0,
+        "Height": 117.0,
+        "WidthBorder": 129.0,
+        "HeightBorder": 117.0
+      }
+    ],
+    "Annotations": [],
+    "X": 0.0,
+    "Y": 0.0,
+    "Zoom": 1.0
+  }
+}
