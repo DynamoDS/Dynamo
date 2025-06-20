@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using ProtoCore.Properties;
 using ProtoCore.Runtime;
 
@@ -10,6 +10,12 @@ namespace ProtoCore.DSASM
             : base(size, heap)
         {
             MetaData = new MetaData { type = (int)PrimitiveType.Pointer };
+        }
+
+        public DSObject(int size, Heap heap, MetaData metaData)
+            : base(size, heap)
+        {
+            MetaData = metaData;
         }
 
         public DSObject(StackValue[] values, Heap heap)
