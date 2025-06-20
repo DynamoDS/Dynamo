@@ -1126,6 +1126,9 @@ Don't worry, you'll have the option to save your work.</value>
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>Download Warning</value>
   </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>Copy to clipboard</value>
+  </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>A Dynamo update is available. Click to install.</value>
   </data>
