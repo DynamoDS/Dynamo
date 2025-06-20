@@ -1637,7 +1637,6 @@ namespace ProtoScript.Runners
                 System.Diagnostics.Debug.WriteLine("SyncInternal => " + code);
             }
 
-            ResetForDeltaExecution();
             CompileAndExecute(code);
             PostExecution();
         }
@@ -1739,15 +1738,13 @@ namespace ProtoScript.Runners
         {
             runnerCore.Options.IsDeltaCompile = true;
 
+            ResetForDeltaExecution();
+
             if (string.IsNullOrEmpty(code))
             {
-                ResetForDeltaExecution();
                 return;
             }
-            else
-            {
-                CompileAndExecuteForDeltaExecution(code);
-            }
+            CompileAndExecuteForDeltaExecution(code);
         }
 
         /// <summary>
@@ -1791,21 +1788,24 @@ namespace ProtoScript.Runners
                 // Reset VM. This needs to be in mutex context as it turns DSExecutable null.
                 ReInitializeLiveRunner();
 
-                if (!libraries.Any())
+                var enumerable = libraries.ToList();
+                if (!enumerable.Any())
                 {
                     return;
                 }
 
                 // generate import node for each library in input list
-                List<AssociativeNode> importNodes = new List<AssociativeNode>();
-                foreach (string lib in libraries)
+                var importNodes = new List<AssociativeNode>();
+                foreach (string lib in enumerable)
                 {
-                    ProtoCore.AST.AssociativeAST.ImportNode importNode = new ProtoCore.AST.AssociativeAST.ImportNode();
-                    importNode.ModuleName = lib;
+                    var importNode = new ImportNode
+                    {
+                        ModuleName = lib
+                    };
 
                     importNodes.Add(importNode);
                 }
-                ProtoCore.CodeGenDS codeGen = new ProtoCore.CodeGenDS(importNodes);
+                var codeGen = new CodeGenDS(importNodes);
                 string code = codeGen.GenerateCode();
 
                 SynchronizeInternal(code);
