@@ -364,10 +364,8 @@ namespace Dynamo.Engine
                                 //get NodeCategoryAttribute for this function if it was defined
                                 var nodeCat = type.GetMethods().Where(x => x.Name == FunctionName)
                                     .Select(x => x.GetCustomAttribute(typeof(NodeCategoryAttribute)))
-                                    .Where(x => x != null)
-                                    .Cast<NodeCategoryAttribute>()
-                                    .Select(x => x.ElementCategory)
-                                    .FirstOrDefault();
+                                    .OfType<NodeCategoryAttribute>()
+                                    .FirstOrDefault()?.ElementCategory;
 
                                 //if attribute is found compose node category string with last part from attribute
                                 if (!string.IsNullOrEmpty(nodeCat) && (
@@ -375,7 +373,7 @@ namespace Dynamo.Engine
                                     || nodeCat == LibraryServices.Categories.Properties
                                     || nodeCat == LibraryServices.Categories.MemberFunctions))
                                 {
-                                    categoryBuf.Append("." + UnqualifedClassName + "." + nodeCat);
+                                    categoryBuf.Append($".{UnqualifedClassName}.{nodeCat}");
                                     category = categoryBuf.ToString();
                                     return category;
                                 }
@@ -391,20 +389,17 @@ namespace Dynamo.Engine
                 switch (Type)
                 {
                     case FunctionType.Constructor:
-                        categoryBuf.Append(
-                            "." + UnqualifedClassName + "." + LibraryServices.Categories.Constructors);
+                        categoryBuf.Append($".{UnqualifedClassName}.{LibraryServices.Categories.Constructors}");
                         break;
 
                     case FunctionType.StaticMethod:
                     case FunctionType.InstanceMethod:
-                        categoryBuf.Append(
-                            "." + UnqualifedClassName + "." + LibraryServices.Categories.MemberFunctions);
+                        categoryBuf.Append($".{UnqualifedClassName}.{LibraryServices.Categories.MemberFunctions}");
                         break;
 
                     case FunctionType.StaticProperty:
                     case FunctionType.InstanceProperty:
-                        categoryBuf.Append(
-                            "." + UnqualifedClassName + "." + LibraryServices.Categories.Properties);
+                        categoryBuf.Append($".{UnqualifedClassName}.{LibraryServices.Categories.Properties}");
                         break;
                 }
                 return categoryBuf.ToString();
@@ -420,7 +415,7 @@ namespace Dynamo.Engine
             {
                 return FunctionType.GenericFunction == Type
                     ? UserFriendlyName
-                    : ClassName + "." + UserFriendlyName;
+                    : $"{ClassName}.{UserFriendlyName}";
             }
         }
 
@@ -432,9 +427,8 @@ namespace Dynamo.Engine
         {
             get
             {
-                return Parameters != null && Parameters.Any()
-                    ? QualifiedName + "@" + string.Join(",", Parameters.Select(p => p.Type))
-                    : QualifiedName;
+                return Parameters?.Any() != true ? QualifiedName :
+                    $"{QualifiedName}@{string.Join(",", Parameters.Select(p => p.Type))}";
             }
         }
 
