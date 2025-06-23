@@ -23,7 +23,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             Assembly = nodeModel.GetType().Assembly.GetName().Name;
             IconName = nodeModel.GetType().Name;
             Description = nodeModel.Name;
-            CreationName = nodeModel.CreationName;
+            CreationName = string.IsNullOrWhiteSpace(nodeModel.CreationName) ? nodeModel.GetOriginalName(): nodeModel.CreationName;
             PortToConnect = portToConnect;
             Score = score;
         }

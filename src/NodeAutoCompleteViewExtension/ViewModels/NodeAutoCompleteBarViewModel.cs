@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Dynamo.Configuration;
@@ -613,85 +614,304 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
         /// <summary>
         /// Use local node help files to at least return one result that will work.
+        /// Enhanced to support both built-in nodes and package nodes.
         /// </summary>
         /// <returns></returns>
         private List<SingleResultItem> TryGetLocalAutoCompleteResult()
         {
             var dynamoModel = this.dynamoViewModel.Model;
-
-            var nodeHelpDocPath = new DirectoryInfo(Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName,
-                Configurations.DynamoNodeHelpDocs));
-
             var selectedNode = this.PortViewModel.NodeViewModel.NodeModel;
             var selectedPortModel = this.PortViewModel.PortModel;
 
-            string nodeFullName;
+            string nodeFullName = GetNodeFullName(selectedNode);
+            
+            // First try to find help files in package directories if the node belongs to a package
+            var packageResult = TryGetPackageAutoCompleteResult(selectedNode, selectedPortModel, nodeFullName);
+            if (packageResult.Any())
+            {
+                return packageResult;
+            }
 
+            // Fall back to built-in node help files
+            return TryGetBuiltInAutoCompleteResult(selectedNode, selectedPortModel, nodeFullName);
+        }
+
+        /// <summary>
+        /// Extract the full name from a node for help file lookup
+        /// </summary>
+        private string GetNodeFullName(NodeModel selectedNode)
+        {
             switch (selectedNode)
             {
                 case DSFunction dsFunction:
                     string fullSignature = dsFunction.FunctionSignature;
-                    nodeFullName = fullSignature.Split('@')[0];
-                    break;
+                    return fullSignature.Split('@')[0];
                 case Function function:
                     string fullFunctionSignature = function.FunctionSignature.ToString();
-                    nodeFullName = fullFunctionSignature.Split('@')[0];
-                    break;
+                    return fullFunctionSignature.Split('@')[0];
                 default:
-                    nodeFullName = selectedNode.GetType().ToString();
-                    break;
+                    return selectedNode.GetType().ToString();
             }
+        }
 
-            string sampleDynPath = Path.Combine(nodeHelpDocPath.FullName, $"{nodeFullName}.dyn");
-
-            if (!File.Exists(sampleDynPath))
-            {
-                var minimumQualifiedName = dynamoViewModel.GetMinimumQualifiedName(selectedNode);
-                var shortName = Hash.GetHashFilenameFromString(minimumQualifiedName);
-                sampleDynPath = Path.Combine(nodeHelpDocPath.FullName, $"{shortName}.dyn");
-            }
-
-            //no help file found, return nothing
-            if (!File.Exists(sampleDynPath))
+        /// <summary>
+        /// Try to get autocomplete results from package help files
+        /// </summary>
+        private List<SingleResultItem> TryGetPackageAutoCompleteResult(NodeModel selectedNode, PortModel selectedPortModel, string nodeFullName)
+        {
+            // Get the package manager extension
+            var packageManagerExtension = dynamoViewModel.Model.GetPackageManagerExtension();
+            if (packageManagerExtension?.PackageLoader == null)
             {
                 return new List<SingleResultItem>();
             }
 
-            Exception ex;
-            DynamoUtilities.PathHelper.isValidJson(sampleDynPath, out var fileContents, out ex);
+            // Try to find which package owns this node
+            Package ownerPackage = null;
+            
+            // For custom nodes (Function type), check by file path
+            if (selectedNode is Function function)
+            {
+                // Get the custom node info from the custom node manager
+                if (dynamoViewModel.Model.CustomNodeManager.TryGetNodeInfo(function.Definition.FunctionId, out CustomNodeInfo customNodeInfo) 
+                    && !string.IsNullOrEmpty(customNodeInfo.Path))
+                {
+                    ownerPackage = packageManagerExtension.PackageLoader.GetOwnerPackage(customNodeInfo.Path);
+                }
+            }
+            // For DSFunction nodes (zero-touch), check by assembly path
+            else if (selectedNode is DSFunction dsFunction)
+            {
+                ownerPackage = packageManagerExtension.PackageLoader.GetOwnerPackage(dsFunction.Controller.Definition.Assembly);
+            }
+            // For other DSFunctionBase nodes, check by assembly path
+            else if (selectedNode is DSFunctionBase dsFunctionBase)
+            {
+                ownerPackage = packageManagerExtension.PackageLoader.GetOwnerPackage(dsFunctionBase.Controller.Definition.Assembly);
+            }
+            // For other nodes, try to find by type
+            else
+            {
+                ownerPackage = packageManagerExtension.PackageLoader.GetOwnerPackage(selectedNode.GetType());
+            }
 
-            //get the workspace model from the sample to lookup the node
-            var workspace = WorkspaceModel.FromJson(fileContents, dynamoModel.LibraryServices,
-                dynamoModel.EngineController, dynamoModel.Scheduler,
-                dynamoModel.NodeFactory, false, false,
-                dynamoModel.CustomNodeManager,
-                dynamoModel.LinterManager);
+            if (ownerPackage == null)
+            {
+                return new List<SingleResultItem>();
+            }
+
+            // Search for help files in package directories
+            var searchDirectories = new List<string>();
+            
+            // Add package documentation directory
+            if (Directory.Exists(ownerPackage.NodeDocumentaionDirectory))
+            {
+                searchDirectories.Add(ownerPackage.NodeDocumentaionDirectory);
+            }
+            
+            // Add extra directory as fallback for sample files
+            if (Directory.Exists(ownerPackage.ExtraDirectory))
+            {
+                searchDirectories.Add(ownerPackage.ExtraDirectory);
+            }
+            
+            // Add root directory as fallback
+            if (Directory.Exists(ownerPackage.RootDirectory))
+            {
+                searchDirectories.Add(ownerPackage.RootDirectory);
+            }
+
+            foreach (var searchDir in searchDirectories)
+            {
+                var result = SearchForHelpFileInDirectory(searchDir, nodeFullName, selectedNode, selectedPortModel);
+                if (result.Any())
+                {
+                    return result;
+                }
+            }
+
+            return new List<SingleResultItem>();
+        }
+
+        /// <summary>
+        /// Try to get autocomplete results from built-in node help files (original logic)
+        /// </summary>
+        private List<SingleResultItem> TryGetBuiltInAutoCompleteResult(NodeModel selectedNode, PortModel selectedPortModel, string nodeFullName)
+        {
+            var nodeHelpDocPath = new DirectoryInfo(Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName,
+                Configurations.DynamoNodeHelpDocs));
+
+            if (!nodeHelpDocPath.Exists)
+            {
+                return new List<SingleResultItem>();
+            }
+
+            return SearchForHelpFileInDirectory(nodeHelpDocPath.FullName, nodeFullName, selectedNode, selectedPortModel);
+        }
+
+        /// <summary>
+        /// Search for help files in a specific directory and return autocomplete results
+        /// </summary>
+        private List<SingleResultItem> SearchForHelpFileInDirectory(string searchDirectory, string nodeFullName, NodeModel selectedNode, PortModel selectedPortModel)
+        {
+            if (!Directory.Exists(searchDirectory))
+            {
+                return new List<SingleResultItem>();
+            }
+
+            var candidateFiles = FindCandidateHelpFiles(searchDirectory, nodeFullName, selectedNode);
+            
+            foreach (var filePath in candidateFiles)
+            {
+                try
+                {
+                    var result = ProcessHelpFile(filePath, selectedNode, selectedPortModel);
+                    if (result.Any())
+                    {
+                        return result; // Return the first successful result
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log the error but continue trying other files
+                    dynamoViewModel.Model.Logger.Log($"Error processing help file {filePath}: {ex.Message}");
+                }
+            }
+
+            return new List<SingleResultItem>();
+        }
+
+        /// <summary>
+        /// Find all candidate help files that might contain relevant information
+        /// </summary>
+        private List<string> FindCandidateHelpFiles(string searchDirectory, string nodeFullName, NodeModel selectedNode)
+        {
+            var candidates = new List<string>();
+            
+            // Primary candidate: exact nodeFullName match
+            var primaryCandidate = Path.Combine(searchDirectory, $"{nodeFullName}.dyn");
+            if (File.Exists(primaryCandidate))
+            {
+                candidates.Add(primaryCandidate);
+            }
+
+            // Secondary candidate: hashed filename
+            var minimumQualifiedName = dynamoViewModel.GetMinimumQualifiedName(selectedNode);
+            var hashedName = Hash.GetHashFilenameFromString(minimumQualifiedName);
+            var hashedCandidate = Path.Combine(searchDirectory, $"{hashedName}.dyn");
+            if (File.Exists(hashedCandidate) && !candidates.Contains(hashedCandidate))
+            {
+                candidates.Add(hashedCandidate);
+            }
+
+            return candidates;
+        }
+
+ 
+
+        /// <summary>
+        /// Process a specific help file and extract autocomplete results
+        /// </summary>
+        private List<SingleResultItem> ProcessHelpFile(string filePath, NodeModel selectedNode, PortModel selectedPortModel)
+        {
+            // Early validation: check if file contains JSON and is not empty
+            if (!IsValidHelpFile(filePath))
+            {
+                return new List<SingleResultItem>();
+            }
+
+            // Read and validate JSON content
+            var fileContents = File.ReadAllText(filePath);
+            if (string.IsNullOrWhiteSpace(fileContents))
+            {
+                return new List<SingleResultItem>();
+            }
+
+            // Quick check if the file likely contains our target node before expensive parsing
+            if (!fileContents.Contains(selectedNode.CreationName, StringComparison.OrdinalIgnoreCase))
+            {
+                return new List<SingleResultItem>();
+            }
+
+            // Parse the workspace
+            var workspace = WorkspaceModel.FromJson(fileContents, dynamoViewModel.Model.LibraryServices,
+                dynamoViewModel.Model.EngineController, dynamoViewModel.Model.Scheduler,
+                dynamoViewModel.Model.NodeFactory, false, false,
+                dynamoViewModel.Model.CustomNodeManager,
+                dynamoViewModel.Model.LinterManager);
 
             var matchingNode = workspace.Nodes
                 .FirstOrDefault(n => n.CreationName == selectedNode.CreationName);
 
-            //no matching node found, return nothing
-            if (matchingNode is null) return new List<SingleResultItem>();
-            
-            //find the port model and the node to place
+            if (matchingNode == null) 
+                return new List<SingleResultItem>();
+
+            // Extract the prediction result
+            return ExtractPredictionFromWorkspace(matchingNode, selectedPortModel);
+        }
+
+        /// <summary>
+        /// Validate if a file is a potentially valid help file
+        /// </summary>
+        private bool IsValidHelpFile(string filePath)
+        {
+            try
+            {
+                var fileInfo = new FileInfo(filePath);
+                if (!fileInfo.Exists || fileInfo.Length == 0)
+                {
+                    return false;
+                }
+
+                // Quick JSON format check - read first few characters
+                using (var reader = new StreamReader(filePath))
+                {
+                    var firstChar = (char)reader.Read();
+                    return firstChar == '{' || firstChar == '[';
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Extract prediction result from a workspace containing the matching node
+        /// </summary>
+        private List<SingleResultItem> ExtractPredictionFromWorkspace(NodeModel matchingNode, PortModel selectedPortModel)
+        {
             NodeModel predictedNode = null;
             PortModel matchingPortModel = null;
+
             switch (selectedPortModel.PortType)
             {
                 case PortType.Input:
-                    matchingPortModel = matchingNode.InPorts[selectedPortModel.Index];
-                    predictedNode = matchingPortModel.Connectors.First().Start.Owner;
+                    if (matchingNode.InPorts.Count > selectedPortModel.Index)
+                    {
+                        matchingPortModel = matchingNode.InPorts[selectedPortModel.Index];
+                        if (matchingPortModel.Connectors.Any())
+                        {
+                            predictedNode = matchingPortModel.Connectors.First().Start.Owner;
+                        }
+                    }
                     break;
                 case PortType.Output:
-                    matchingPortModel = matchingNode.OutPorts[selectedPortModel.Index];
-                    predictedNode = matchingPortModel.Connectors.First().End.Owner;
+                    if (matchingNode.OutPorts.Count > selectedPortModel.Index)
+                    {
+                        matchingPortModel = matchingNode.OutPorts[selectedPortModel.Index];
+                        if (matchingPortModel.Connectors.Any())
+                        {
+                            predictedNode = matchingPortModel.Connectors.First().End.Owner;
+                        }
+                    }
                     break;
             }
 
-            if (predictedNode is null) return new List<SingleResultItem>();
-
-            SingleResultItem singleResultItem = new SingleResultItem(predictedNode, matchingPortModel.Index);
-            return [singleResultItem];
+            if (predictedNode == null) 
+                return new List<SingleResultItem>();
+            var singleResultItem = new SingleResultItem(predictedNode, matchingPortModel.Index);
+            return new List<SingleResultItem> { singleResultItem };
         }
 
         private T GetGenericAutocompleteResult<T>(string endpoint)
@@ -909,7 +1129,9 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 foreach (var nodeItem in nodeStack)
                 {
                     var typeInfo = new NodeModelTypeId(nodeItem.Type.Id);
-                    var newNode = dynamoModel.CreateNodeFromNameOrType(Guid.NewGuid(), typeInfo.FullName, true);
+
+                    NodeModel newNode = dynamoModel.CreateNodeFromNameOrType(Guid.NewGuid(), typeInfo.FullName, true);
+                    
                     if (newNode != null)
                     {
                         newNode.X = offset; // Adjust X position
@@ -1487,6 +1709,219 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 return int.MaxValue;
             }
 
+        }
+
+
+
+        /// <summary>
+        /// Calculate fuzzy matching score between two strings
+        /// </summary>
+        private double CalculateFuzzyScore(string text, string pattern)
+        {
+            if (string.IsNullOrEmpty(text) || string.IsNullOrEmpty(pattern))
+                return 0.0;
+
+            // Convert to lowercase for case-insensitive comparison
+            text = text.ToLowerInvariant();
+            pattern = pattern.ToLowerInvariant();
+
+            // Exact match gets highest score
+            if (text == pattern) return 1.0;
+
+            // Contains check (original logic)
+            if (text.Contains(pattern)) return 0.8;
+
+            // Fuzzy matching using multiple techniques
+            var scores = new List<double>();
+
+            // 1. Levenshtein distance-based score
+            var levenshteinScore = 1.0 - (double)LevenshteinDistance(text, pattern) / Math.Max(text.Length, pattern.Length);
+            scores.Add(levenshteinScore);
+
+            // 2. Subsequence matching (order matters)
+            var subsequenceScore = LongestCommonSubsequenceRatio(text, pattern);
+            scores.Add(subsequenceScore);
+
+            // 3. Word boundary matching (useful for camelCase or snake_case)
+            var wordScore = CalculateWordBoundaryScore(text, pattern);
+            scores.Add(wordScore);
+
+            // 4. Character frequency similarity
+            var frequencyScore = CalculateCharacterFrequencyScore(text, pattern);
+            scores.Add(frequencyScore);
+
+            // Return the highest score from all techniques
+            return scores.Max();
+        }
+
+        /// <summary>
+        /// Calculate Levenshtein distance between two strings
+        /// </summary>
+        private int LevenshteinDistance(string source, string target)
+        {
+            if (source.Length == 0) return target.Length;
+            if (target.Length == 0) return source.Length;
+
+            var matrix = new int[source.Length + 1, target.Length + 1];
+
+            for (int i = 0; i <= source.Length; i++)
+                matrix[i, 0] = i;
+            for (int j = 0; j <= target.Length; j++)
+                matrix[0, j] = j;
+
+            for (int i = 1; i <= source.Length; i++)
+            {
+                for (int j = 1; j <= target.Length; j++)
+                {
+                    var cost = (target[j - 1] == source[i - 1]) ? 0 : 1;
+                    matrix[i, j] = Math.Min(
+                        Math.Min(matrix[i - 1, j] + 1, matrix[i, j - 1] + 1),
+                        matrix[i - 1, j - 1] + cost);
+                }
+            }
+
+            return matrix[source.Length, target.Length];
+        }
+
+        /// <summary>
+        /// Calculate ratio of longest common subsequence
+        /// </summary>
+        private double LongestCommonSubsequenceRatio(string text, string pattern)
+        {
+            var lcs = LongestCommonSubsequence(text, pattern);
+            return (double)lcs / Math.Max(text.Length, pattern.Length);
+        }
+
+        /// <summary>
+        /// Find length of longest common subsequence
+        /// </summary>
+        private int LongestCommonSubsequence(string text, string pattern)
+        {
+            var matrix = new int[text.Length + 1, pattern.Length + 1];
+
+            for (int i = 1; i <= text.Length; i++)
+            {
+                for (int j = 1; j <= pattern.Length; j++)
+                {
+                    if (text[i - 1] == pattern[j - 1])
+                        matrix[i, j] = matrix[i - 1, j - 1] + 1;
+                    else
+                        matrix[i, j] = Math.Max(matrix[i - 1, j], matrix[i, j - 1]);
+                }
+            }
+
+            return matrix[text.Length, pattern.Length];
+        }
+
+        /// <summary>
+        /// Score based on word boundary matches (camelCase, snake_case, etc.)
+        /// </summary>
+        private double CalculateWordBoundaryScore(string text, string pattern)
+        {
+            // Extract "words" from both strings
+            var textWords = ExtractWords(text);
+            var patternWords = ExtractWords(pattern);
+
+            if (!patternWords.Any()) return 0.0;
+
+            var matchCount = 0;
+            foreach (var patternWord in patternWords)
+            {
+                if (textWords.Any(tw => tw.StartsWith(patternWord, StringComparison.OrdinalIgnoreCase)))
+                {
+                    matchCount++;
+                }
+            }
+
+            return (double)matchCount / patternWords.Count;
+        }
+
+        /// <summary>
+        /// Extract words from camelCase, snake_case, or space-separated text
+        /// </summary>
+        private List<string> ExtractWords(string text)
+        {
+            var words = new List<string>();
+            
+            // Split on common separators
+            var parts = text.Split(new char[] { '_', '-', ' ', '.', '/' }, StringSplitOptions.RemoveEmptyEntries);
+            
+            foreach (var part in parts)
+            {
+                // Handle camelCase
+                var camelWords = SplitCamelCase(part);
+                words.AddRange(camelWords.Where(w => w.Length > 1)); // Ignore single characters
+            }
+
+            return words.Where(w => !string.IsNullOrWhiteSpace(w)).ToList();
+        }
+
+        /// <summary>
+        /// Split camelCase string into individual words
+        /// </summary>
+        private List<string> SplitCamelCase(string text)
+        {
+            var words = new List<string>();
+            var currentWord = new StringBuilder();
+
+            foreach (char c in text)
+            {
+                if (char.IsUpper(c) && currentWord.Length > 0)
+                {
+                    words.Add(currentWord.ToString());
+                    currentWord.Clear();
+                }
+                currentWord.Append(c);
+            }
+
+            if (currentWord.Length > 0)
+            {
+                words.Add(currentWord.ToString());
+            }
+
+            return words;
+        }
+
+        /// <summary>
+        /// Score based on character frequency similarity
+        /// </summary>
+        private double CalculateCharacterFrequencyScore(string text, string pattern)
+        {
+            var textFreq = GetCharacterFrequency(text);
+            var patternFreq = GetCharacterFrequency(pattern);
+
+            var allChars = textFreq.Keys.Union(patternFreq.Keys);
+            var dotProduct = 0.0;
+            var textMagnitude = 0.0;
+            var patternMagnitude = 0.0;
+
+            foreach (var c in allChars)
+            {
+                var textCount = textFreq.GetValueOrDefault(c, 0);
+                var patternCount = patternFreq.GetValueOrDefault(c, 0);
+
+                dotProduct += textCount * patternCount;
+                textMagnitude += textCount * textCount;
+                patternMagnitude += patternCount * patternCount;
+            }
+
+            if (textMagnitude == 0 || patternMagnitude == 0) return 0.0;
+
+            // Cosine similarity
+            return dotProduct / (Math.Sqrt(textMagnitude) * Math.Sqrt(patternMagnitude));
+        }
+
+        /// <summary>
+        /// Get character frequency map for a string
+        /// </summary>
+        private Dictionary<char, int> GetCharacterFrequency(string text)
+        {
+            var frequency = new Dictionary<char, int>();
+            foreach (char c in text)
+            {
+                frequency[c] = frequency.GetValueOrDefault(c, 0) + 1;
+            }
+            return frequency;
         }
     }
 }
