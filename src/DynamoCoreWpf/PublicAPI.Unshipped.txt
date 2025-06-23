@@ -2438,7 +2438,6 @@ Dynamo.ViewModels.InfoBubbleViewModel.TargetTopLeft.get -> System.Windows.Point
 Dynamo.ViewModels.InfoBubbleViewModel.TargetTopLeft.set -> void
 Dynamo.ViewModels.InfoBubbleViewModel.Top.get -> double
 Dynamo.ViewModels.InfoBubbleViewModel.UndismissMessageCommand.get -> Dynamo.UI.Commands.DelegateCommand
-Dynamo.ViewModels.InfoBubbleViewModel.CopyToClipboardCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.InfoBubbleViewModel.UpdateContentCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.InfoBubbleViewModel.UpdatePositionCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.InfoBubbleViewModel.ZIndex.get -> double
@@ -4619,6 +4618,7 @@ static Dynamo.Wpf.Properties.Resources.ContinueInstall.get -> string
 static Dynamo.Wpf.Properties.Resources.ConverterMessageCurrentOffset.get -> string
 static Dynamo.Wpf.Properties.Resources.ConverterMessageTransformOrigin.get -> string
 static Dynamo.Wpf.Properties.Resources.ConverterMessageZoom.get -> string
+static Dynamo.Wpf.Properties.Resources.CopyToClipboardTooltip.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogCopyButton.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogCrashMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogDetailButton.get -> string
