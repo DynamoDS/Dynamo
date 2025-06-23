@@ -20,7 +20,7 @@ namespace Dynamo.ViewModels
             get
             {
                 if (copyToClipboardCommand == null)
-                    copyToClipboardCommand = new DelegateCommand(CopyTextToClipboard, CanCopyToClipboard);
+                    copyToClipboardCommand = new DelegateCommand(CopyTextToClipboard, CanCopyTextToClipboard);
                 return copyToClipboardCommand;
             }
         }

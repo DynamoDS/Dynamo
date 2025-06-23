@@ -537,7 +537,7 @@ namespace Dynamo.ViewModels
         /// </summary>
         /// <param name="parameter">The InfoBubbleDataPacket to check</param>
         /// <returns>True if the message can be copied</returns>
-        private bool CanCopyToClipboard(object parameter)
+        private bool CanCopyTextToClipboard(object parameter)
         {
             return parameter is InfoBubbleDataPacket infoBubbleDataPacket && 
                    !string.IsNullOrEmpty(infoBubbleDataPacket.Text);
