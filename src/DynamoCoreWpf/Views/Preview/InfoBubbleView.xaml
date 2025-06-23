@@ -34,8 +34,39 @@
                                  To="0"
                                  Duration="0:0:.25" />
             </Storyboard>
+            <Style x:Key="InfoBubbleCopyTextButtonStyle" TargetType="Button">
+                <Setter Property="Margin" Value="0,0,0,0"/>
+                <Setter Property="Width" Value="16"/>
+                <Setter Property="Height" Value="16"/>
+                <Setter Property="HorizontalAlignment" Value="Right"/>
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="ToolTip" Value="{x:Static p:Resources.CopyToClipboardTooltip}" />
+                <Setter Property="Background" Value="Transparent"/>
+                <Setter Property="BorderThickness" Value="0"/>
+                <Setter Property="Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="Button">
+                            <Grid>
+                                <Image x:Name="CopyIcon"
+                                       Width="16" Height="16"
+                                       Source="/DynamoCoreWpf;component/UI/Images/copy_16px_default.png"/>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="False">
+                                    <Setter TargetName="CopyIcon" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/copy_16px_default.png"/>
+                                </Trigger>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="CopyIcon" Property="Source" Value="/DynamoCoreWpf;component/UI/Images/copy_16px_hover.png"/>
+                                </Trigger>
+                                <Trigger Property="IsEnabled" Value="False">
+                                    <Setter TargetName="CopyIcon" Property="Opacity" Value="0.5"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
         </ResourceDictionary>
-
     </UserControl.Resources>
     <Canvas x:Name="mainCanvas">
         <Grid x:Name="mainGrid" Margin="10">
@@ -128,36 +159,14 @@
                                            Text="{x:Static p:Resources.InfoBubbleError}"
                                            Visibility="{Binding NodeErrorsSectionExpanded, FallbackValue=Collapsed, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                                 <!-- Copy to Clipboard Button -->
-                                <Button Name="ErrorCopyToClipboardButton"
-                                        Grid.Row="0"
-                                        Grid.Column="2"
-                                        Width="16"
-                                        Height="16"
-                                        Margin="0,0,10,0"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Center"
-                                        BorderThickness="0"
-                                        Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.CopyToClipboardCommand}"
-                                        CommandParameter="{Binding NodeErrorsToDisplay[0]}"
-                                        Visibility="{Binding NodeErrorsSectionExpanded, FallbackValue=Collapsed, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                                    <Button.ToolTip>
-                                        <ToolTip Content="{x:Static p:Resources.CopyToClipboardTooltip}" Style="{StaticResource GenericToolTipLight}" />
-                                    </Button.ToolTip>
-                                    <Image Width="16" Height="16" >
-                                        <Image.Style>
-                                            <Style TargetType="{x:Type Image}">
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="False">
-                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/copy_16px_default.png" />
-                                                    </Trigger>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/copy_16px_hover.png" />
-                                                    </Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Image.Style>
-                                    </Image>
-                                </Button>
+                                <Button
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Visibility="{Binding NodeErrorsSectionExpanded, FallbackValue=Collapsed, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                    Style="{StaticResource InfoBubbleCopyTextButtonStyle}"
+                                    Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.CopyTextToClipboardCommand}"
+                                    CommandParameter="{Binding NodeErrorsToDisplay[0]}"
+                                />
                             </Grid>
                             <!--  Error Info  -->
                             <ScrollViewer Grid.Row="1"
@@ -398,36 +407,14 @@
                                            Text="{x:Static p:Resources.InfoBubbleWarning}"
                                            Visibility="{Binding NodeWarningsSectionExpanded, FallbackValue=Collapsed, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                                 <!-- Copy to Clipboard Button -->
-                                <Button Name="WarningCopyToClipboardButton"
-                                        Grid.Row="0"
-                                        Grid.Column="2"
-                                        Width="16"
-                                        Height="16"
-                                        Margin="0,0,10,0"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Center"
-                                        BorderThickness="0"
-                                        Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.CopyToClipboardCommand}"
-                                        CommandParameter="{Binding NodeWarningsToDisplay[0]}"
-                                        Visibility="{Binding NodeWarningsSectionExpanded, FallbackValue=Collapsed, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                                    <Button.ToolTip>
-                                        <ToolTip Content="{x:Static p:Resources.CopyToClipboardTooltip}" Style="{StaticResource GenericToolTipLight}" />
-                                    </Button.ToolTip>
-                                    <Image Width="16" Height="16" >
-                                        <Image.Style>
-                                            <Style TargetType="{x:Type Image}">
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="False">
-                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/copy_16px_default.png" />
-                                                    </Trigger>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/copy_16px_hover.png" />
-                                                    </Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Image.Style>
-                                    </Image>
-                                </Button>
+                                <Button
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Visibility="{Binding NodeWarningsSectionExpanded, FallbackValue=Collapsed, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                    Style="{StaticResource InfoBubbleCopyTextButtonStyle}"
+                                    Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.CopyTextToClipboardCommand}"
+                                    CommandParameter="{Binding NodeWarningsToDisplay[0]}"
+                                />
                             </Grid>
 
                             <!--  Warning Info  -->
@@ -716,40 +703,18 @@
                                            Text="{x:Static p:Resources.InfoBubbleInfo}"
                                            Visibility="{Binding NodeInfoSectionExpanded, FallbackValue=Collapsed, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}" />
                                 <!-- Copy to Clipboard Button -->
-                                <Button Name="InfoCopyToClipboardButton"
-                                        Grid.Row="0"
-                                        Grid.Column="2"
-                                        Width="16"
-                                        Height="16"
-                                        Margin="0,0,10,0"
-                                        HorizontalAlignment="Right"
-                                        VerticalAlignment="Center"
-                                        BorderThickness="0"
-                                        Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.CopyToClipboardCommand}"
-                                        CommandParameter="{Binding NodeInfoToDisplay[0]}"
-                                        Visibility="{Binding NodeInfoSectionExpanded, FallbackValue=Collapsed, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}">
-                                    <Button.ToolTip>
-                                        <ToolTip Content="{x:Static p:Resources.CopyToClipboardTooltip}" Style="{StaticResource GenericToolTipLight}" />
-                                    </Button.ToolTip>
-                                    <Image Width="16" Height="16" >
-                                        <Image.Style>
-                                            <Style TargetType="{x:Type Image}">
-                                                <Style.Triggers>
-                                                    <Trigger Property="IsMouseOver" Value="False">
-                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/copy_16px_default.png" />
-                                                    </Trigger>
-                                                    <Trigger Property="IsMouseOver" Value="True">
-                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/copy_16px_hover.png" />
-                                                    </Trigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Image.Style>
-                                    </Image>
-                                </Button>
+                                <Button
+                                    Grid.Row="0"
+                                    Grid.Column="2"
+                                    Visibility="{Binding NodeInfoSectionExpanded, FallbackValue=Collapsed, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityCollapsedConverter}}"
+                                    Style="{StaticResource InfoBubbleCopyTextButtonStyle}"
+                                    Command="{Binding ElementName=InfoBubbleWindowUserControl, Path=DataContext.CopyTextToClipboardCommand}"
+                                    CommandParameter="{Binding NodeInfoToDisplay[0]}"
+                                />
                             </Grid>
                             <!--  Info Info  -->
                             <ScrollViewer Grid.Row="1"
-                                          MaxHeight="200"
+                                          MaxHeight="200"   
                                           PreviewMouseWheel="ScrollViewer_PreviewMouseWheel"
                                           VerticalScrollBarVisibility="Auto">
                                 <ListBox Margin="0,5,0,0"
