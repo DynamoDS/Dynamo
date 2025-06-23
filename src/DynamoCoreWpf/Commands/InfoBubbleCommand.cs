@@ -13,15 +13,15 @@ namespace Dynamo.ViewModels
         private DelegateCommand openDocumentationLinkCommand;
         private DelegateCommand dismissMessageCommand;
         private DelegateCommand undismissMessageCommand;
-        private DelegateCommand copyToClipboardCommand;
+        private DelegateCommand copyTextToClipboardCommand;
 
-        public DelegateCommand CopyToClipboardCommand
+        public DelegateCommand CopyTextToClipboardCommand
         {
             get
             {
-                if (copyToClipboardCommand == null)
-                    copyToClipboardCommand = new DelegateCommand(CopyTextToClipboard, CanCopyTextToClipboard);
-                return copyToClipboardCommand;
+                if (copyTextToClipboardCommand == null)
+                    copyTextToClipboardCommand = new DelegateCommand(CopyTextToClipboard, CanCopyTextToClipboard);
+                return copyTextToClipboardCommand;
             }
         }
 
