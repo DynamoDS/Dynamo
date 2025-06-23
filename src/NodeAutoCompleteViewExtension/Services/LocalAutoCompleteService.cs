@@ -174,7 +174,7 @@ namespace Dynamo.NodeAutoComplete.Services
         /// <returns>List of autocomplete results from built-in help files</returns>
         private List<SingleResultItem> TryGetBuiltInAutoCompleteResult(NodeModel selectedNode, PortModel selectedPortModel, string nodeFullName)
         {
-            var nodeHelpDocPath = new DirectoryInfo(Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName,
+            var nodeHelpDocPath = new DirectoryInfo(Path.Combine(new FileInfo(Assembly.GetAssembly(typeof(DynamoModel)).Location).DirectoryName,
                 Configurations.DynamoNodeHelpDocs));
 
             if (!nodeHelpDocPath.Exists)
