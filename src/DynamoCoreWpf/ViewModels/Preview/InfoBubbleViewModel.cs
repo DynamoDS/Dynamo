@@ -520,14 +520,13 @@ namespace Dynamo.ViewModels
                 try
                 {
                     System.Windows.Clipboard.SetText(infoBubbleDataPacket.Text);
-                    // Optional: Add analytics tracking for copy events
                     Analytics.TrackEvent(Actions.Copy, Categories.NodeOperations, 
                         infoBubbleDataPacket.Style.ToString(), 1);
                 }
                 catch (Exception ex)
                 {
-                    // Log the error but don't crash
-                    DynamoViewModel.Model.Logger.Log("Error copying text to clipboard: " + ex.Message);
+                    DynamoViewModel.Model.Logger.Log(Wpf.Properties.Resources.CopyToClipboardFailedMessage);
+                    DynamoViewModel.Model.Logger.Log(ex.Message);
                 }
             }
         }
