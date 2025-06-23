@@ -67,12 +67,7 @@ namespace Dynamo.ViewModels
         // In order to stay above these, we need a high ZIndex value. 
         private double zIndex;
         private Style infoBubbleStyle;
-        
-        /// <summary>
-        /// Command that copies the content of an info bubble message to clipboard
-        /// </summary>
-        public ICommand CopyToClipboardCommand { get; private set; }
-        
+                
         [Obsolete]
         public Direction connectingDirection;
         
@@ -508,9 +503,6 @@ namespace Dynamo.ViewModels
             DocumentationLink = null;
             InfoBubbleStyle = Style.None;
             InfoBubbleState = State.Minimized;
-
-            // Initialize commands
-            CopyToClipboardCommand = new DelegateCommand(CopyTextToClipboard, CanCopyToClipboard);
 
             NodeMessages.CollectionChanged += NodeInformation_CollectionChanged;
 

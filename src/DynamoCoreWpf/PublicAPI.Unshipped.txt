@@ -2438,6 +2438,7 @@ Dynamo.ViewModels.InfoBubbleViewModel.TargetTopLeft.get -> System.Windows.Point
 Dynamo.ViewModels.InfoBubbleViewModel.TargetTopLeft.set -> void
 Dynamo.ViewModels.InfoBubbleViewModel.Top.get -> double
 Dynamo.ViewModels.InfoBubbleViewModel.UndismissMessageCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.InfoBubbleViewModel.CopyToClipboardCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.InfoBubbleViewModel.UpdateContentCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.InfoBubbleViewModel.UpdatePositionCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.InfoBubbleViewModel.ZIndex.get -> double
