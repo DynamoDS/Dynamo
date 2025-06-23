@@ -34,6 +34,7 @@ using Dynamo.Graph;
 using System.Windows.Media;
 using System.ComponentModel;
 using System.Windows.Data;
+using Dynamo.NodeAutoComplete.Services;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
@@ -386,6 +387,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         private Guid LastRequestGuid;
 
         /// <summary>
+        /// Service for handling local autocomplete functionality
+        /// </summary>
+        private readonly LocalAutoCompleteService localAutoCompleteService;
+
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="dynamoViewModel">Dynamo ViewModel</param>
@@ -394,6 +400,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             // Off load some time consuming operation here
             DefaultResults = dynamoViewModel.DefaultAutocompleteCandidates.Values;
             ServiceVersion = string.Empty;
+            localAutoCompleteService = new LocalAutoCompleteService(dynamoViewModel);
         }
 
         /// <summary>
@@ -538,7 +545,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 AutocompleteMLMessage = Resources.AutocompleteNoRecommendationsMessage;
                 Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "NoRecommendation");
 
-                return TryGetLocalAutoCompleteResult();
+                return localAutoCompleteService.TryGetLocalAutoCompleteResult(PortViewModel.NodeViewModel.NodeModel, PortViewModel.PortModel);
             }
             ServiceVersion = MLresults.Version;
             var results = new List<SingleResultItem>();
@@ -612,307 +619,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             return results;
         }
 
-        /// <summary>
-        /// Use local node help files to at least return one result that will work.
-        /// Enhanced to support both built-in nodes and package nodes.
-        /// </summary>
-        /// <returns></returns>
-        private List<SingleResultItem> TryGetLocalAutoCompleteResult()
-        {
-            var dynamoModel = this.dynamoViewModel.Model;
-            var selectedNode = this.PortViewModel.NodeViewModel.NodeModel;
-            var selectedPortModel = this.PortViewModel.PortModel;
 
-            string nodeFullName = GetNodeFullName(selectedNode);
-            
-            // First try to find help files in package directories if the node belongs to a package
-            var packageResult = TryGetPackageAutoCompleteResult(selectedNode, selectedPortModel, nodeFullName);
-            if (packageResult.Any())
-            {
-                return packageResult;
-            }
-
-            // Fall back to built-in node help files
-            return TryGetBuiltInAutoCompleteResult(selectedNode, selectedPortModel, nodeFullName);
-        }
-
-        /// <summary>
-        /// Extract the full name from a node for help file lookup
-        /// </summary>
-        private string GetNodeFullName(NodeModel selectedNode)
-        {
-            switch (selectedNode)
-            {
-                case DSFunction dsFunction:
-                    string fullSignature = dsFunction.FunctionSignature;
-                    return fullSignature.Split('@')[0];
-                case Function function:
-                    string fullFunctionSignature = function.FunctionSignature.ToString();
-                    return fullFunctionSignature.Split('@')[0];
-                default:
-                    return selectedNode.GetType().ToString();
-            }
-        }
-
-        /// <summary>
-        /// Try to get autocomplete results from package help files
-        /// </summary>
-        private List<SingleResultItem> TryGetPackageAutoCompleteResult(NodeModel selectedNode, PortModel selectedPortModel, string nodeFullName)
-        {
-            // Get the package manager extension
-            var packageManagerExtension = dynamoViewModel.Model.GetPackageManagerExtension();
-            if (packageManagerExtension?.PackageLoader == null)
-            {
-                return new List<SingleResultItem>();
-            }
-
-            // Try to find which package owns this node
-            Package ownerPackage = null;
-            
-            // For custom nodes (Function type), check by file path
-            if (selectedNode is Function function)
-            {
-                // Get the custom node info from the custom node manager
-                if (dynamoViewModel.Model.CustomNodeManager.TryGetNodeInfo(function.Definition.FunctionId, out CustomNodeInfo customNodeInfo) 
-                    && !string.IsNullOrEmpty(customNodeInfo.Path))
-                {
-                    ownerPackage = packageManagerExtension.PackageLoader.GetOwnerPackage(customNodeInfo.Path);
-                }
-            }
-            // For DSFunction nodes (zero-touch), check by assembly path
-            else if (selectedNode is DSFunction dsFunction)
-            {
-                ownerPackage = packageManagerExtension.PackageLoader.GetOwnerPackage(dsFunction.Controller.Definition.Assembly);
-            }
-            // For other DSFunctionBase nodes, check by assembly path
-            else if (selectedNode is DSFunctionBase dsFunctionBase)
-            {
-                ownerPackage = packageManagerExtension.PackageLoader.GetOwnerPackage(dsFunctionBase.Controller.Definition.Assembly);
-            }
-            // For other nodes, try to find by type
-            else
-            {
-                ownerPackage = packageManagerExtension.PackageLoader.GetOwnerPackage(selectedNode.GetType());
-            }
-
-            if (ownerPackage == null)
-            {
-                return new List<SingleResultItem>();
-            }
-
-            // Search for help files in package directories
-            var searchDirectories = new List<string>();
-            
-            // Add package documentation directory
-            if (Directory.Exists(ownerPackage.NodeDocumentaionDirectory))
-            {
-                searchDirectories.Add(ownerPackage.NodeDocumentaionDirectory);
-            }
-            
-            // Add extra directory as fallback for sample files
-            if (Directory.Exists(ownerPackage.ExtraDirectory))
-            {
-                searchDirectories.Add(ownerPackage.ExtraDirectory);
-            }
-            
-            // Add root directory as fallback
-            if (Directory.Exists(ownerPackage.RootDirectory))
-            {
-                searchDirectories.Add(ownerPackage.RootDirectory);
-            }
-
-            foreach (var searchDir in searchDirectories)
-            {
-                var result = SearchForHelpFileInDirectory(searchDir, nodeFullName, selectedNode, selectedPortModel);
-                if (result.Any())
-                {
-                    return result;
-                }
-            }
-
-            return new List<SingleResultItem>();
-        }
-
-        /// <summary>
-        /// Try to get autocomplete results from built-in node help files (original logic)
-        /// </summary>
-        private List<SingleResultItem> TryGetBuiltInAutoCompleteResult(NodeModel selectedNode, PortModel selectedPortModel, string nodeFullName)
-        {
-            var nodeHelpDocPath = new DirectoryInfo(Path.Combine(new FileInfo(Assembly.GetExecutingAssembly().Location).DirectoryName,
-                Configurations.DynamoNodeHelpDocs));
-
-            if (!nodeHelpDocPath.Exists)
-            {
-                return new List<SingleResultItem>();
-            }
-
-            return SearchForHelpFileInDirectory(nodeHelpDocPath.FullName, nodeFullName, selectedNode, selectedPortModel);
-        }
-
-        /// <summary>
-        /// Search for help files in a specific directory and return autocomplete results
-        /// </summary>
-        private List<SingleResultItem> SearchForHelpFileInDirectory(string searchDirectory, string nodeFullName, NodeModel selectedNode, PortModel selectedPortModel)
-        {
-            if (!Directory.Exists(searchDirectory))
-            {
-                return new List<SingleResultItem>();
-            }
-
-            var candidateFiles = FindCandidateHelpFiles(searchDirectory, nodeFullName, selectedNode);
-            
-            foreach (var filePath in candidateFiles)
-            {
-                try
-                {
-                    var result = ProcessHelpFile(filePath, selectedNode, selectedPortModel);
-                    if (result.Any())
-                    {
-                        return result; // Return the first successful result
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // Log the error but continue trying other files
-                    dynamoViewModel.Model.Logger.Log($"Error processing help file {filePath}: {ex.Message}");
-                }
-            }
-
-            return new List<SingleResultItem>();
-        }
-
-        /// <summary>
-        /// Find all candidate help files that might contain relevant information
-        /// </summary>
-        private List<string> FindCandidateHelpFiles(string searchDirectory, string nodeFullName, NodeModel selectedNode)
-        {
-            var candidates = new List<string>();
-            
-            // Primary candidate: exact nodeFullName match
-            var primaryCandidate = Path.Combine(searchDirectory, $"{nodeFullName}.dyn");
-            if (File.Exists(primaryCandidate))
-            {
-                candidates.Add(primaryCandidate);
-            }
-
-            // Secondary candidate: hashed filename
-            var minimumQualifiedName = dynamoViewModel.GetMinimumQualifiedName(selectedNode);
-            var hashedName = Hash.GetHashFilenameFromString(minimumQualifiedName);
-            var hashedCandidate = Path.Combine(searchDirectory, $"{hashedName}.dyn");
-            if (File.Exists(hashedCandidate) && !candidates.Contains(hashedCandidate))
-            {
-                candidates.Add(hashedCandidate);
-            }
-
-            return candidates;
-        }
-
- 
-
-        /// <summary>
-        /// Process a specific help file and extract autocomplete results
-        /// </summary>
-        private List<SingleResultItem> ProcessHelpFile(string filePath, NodeModel selectedNode, PortModel selectedPortModel)
-        {
-            // Early validation: check if file contains JSON and is not empty
-            if (!IsValidHelpFile(filePath))
-            {
-                return new List<SingleResultItem>();
-            }
-
-            // Read and validate JSON content
-            var fileContents = File.ReadAllText(filePath);
-            if (string.IsNullOrWhiteSpace(fileContents))
-            {
-                return new List<SingleResultItem>();
-            }
-
-            // Quick check if the file likely contains our target node before expensive parsing
-            if (!fileContents.Contains(selectedNode.CreationName, StringComparison.OrdinalIgnoreCase))
-            {
-                return new List<SingleResultItem>();
-            }
-
-            // Parse the workspace
-            var workspace = WorkspaceModel.FromJson(fileContents, dynamoViewModel.Model.LibraryServices,
-                dynamoViewModel.Model.EngineController, dynamoViewModel.Model.Scheduler,
-                dynamoViewModel.Model.NodeFactory, false, false,
-                dynamoViewModel.Model.CustomNodeManager,
-                dynamoViewModel.Model.LinterManager);
-
-            var matchingNode = workspace.Nodes
-                .FirstOrDefault(n => n.CreationName == selectedNode.CreationName);
-
-            if (matchingNode == null) 
-                return new List<SingleResultItem>();
-
-            // Extract the prediction result
-            return ExtractPredictionFromWorkspace(matchingNode, selectedPortModel);
-        }
-
-        /// <summary>
-        /// Validate if a file is a potentially valid help file
-        /// </summary>
-        private bool IsValidHelpFile(string filePath)
-        {
-            try
-            {
-                var fileInfo = new FileInfo(filePath);
-                if (!fileInfo.Exists || fileInfo.Length == 0)
-                {
-                    return false;
-                }
-
-                // Quick JSON format check - read first few characters
-                using (var reader = new StreamReader(filePath))
-                {
-                    var firstChar = (char)reader.Read();
-                    return firstChar == '{' || firstChar == '[';
-                }
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Extract prediction result from a workspace containing the matching node
-        /// </summary>
-        private List<SingleResultItem> ExtractPredictionFromWorkspace(NodeModel matchingNode, PortModel selectedPortModel)
-        {
-            NodeModel predictedNode = null;
-            PortModel matchingPortModel = null;
-
-            switch (selectedPortModel.PortType)
-            {
-                case PortType.Input:
-                    if (matchingNode.InPorts.Count > selectedPortModel.Index)
-                    {
-                        matchingPortModel = matchingNode.InPorts[selectedPortModel.Index];
-                        if (matchingPortModel.Connectors.Any())
-                        {
-                            predictedNode = matchingPortModel.Connectors.First().Start.Owner;
-                        }
-                    }
-                    break;
-                case PortType.Output:
-                    if (matchingNode.OutPorts.Count > selectedPortModel.Index)
-                    {
-                        matchingPortModel = matchingNode.OutPorts[selectedPortModel.Index];
-                        if (matchingPortModel.Connectors.Any())
-                        {
-                            predictedNode = matchingPortModel.Connectors.First().End.Owner;
-                        }
-                    }
-                    break;
-            }
-
-            if (predictedNode == null) 
-                return new List<SingleResultItem>();
-            var singleResultItem = new SingleResultItem(predictedNode, matchingPortModel.Index);
-            return new List<SingleResultItem> { singleResultItem };
-        }
 
         private T GetGenericAutocompleteResult<T>(string endpoint)
         {   
