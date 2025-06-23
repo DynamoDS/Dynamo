@@ -2362,6 +2362,7 @@ Dynamo.ViewModels.InfoBubbleViewModel.ConnectingDirection.get -> Dynamo.ViewMode
 Dynamo.ViewModels.InfoBubbleViewModel.ConnectingDirection.set -> void
 Dynamo.ViewModels.InfoBubbleViewModel.Content.get -> string
 Dynamo.ViewModels.InfoBubbleViewModel.Content.set -> void
+Dynamo.ViewModels.InfoBubbleViewModel.CopyTextToClipboardCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.InfoBubbleViewModel.Direction
 Dynamo.ViewModels.InfoBubbleViewModel.Direction.Bottom = 4 -> Dynamo.ViewModels.InfoBubbleViewModel.Direction
 Dynamo.ViewModels.InfoBubbleViewModel.Direction.BottomLeft = 7 -> Dynamo.ViewModels.InfoBubbleViewModel.Direction
@@ -2820,7 +2821,6 @@ Dynamo.ViewModels.PreferencesViewModel.BackupLocation.get -> string
 Dynamo.ViewModels.PreferencesViewModel.BackupLocation.set -> void
 Dynamo.ViewModels.PreferencesViewModel.CanResetBackupLocation.get -> bool
 Dynamo.ViewModels.PreferencesViewModel.CanResetTemplateLocation.get -> bool
-Dynamo.ViewModels.PreferencesViewModel.CopyTextToClipboardCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.PreferencesViewModel.CopyToClipboardCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.PreferencesViewModel.CopyToClipboardCommand.set -> void
 Dynamo.ViewModels.PreferencesViewModel.CurrentWarningMessage.get -> string
