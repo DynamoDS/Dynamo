@@ -885,7 +885,7 @@ This package likely contains an assembly that is blocked. You will need to load 
     <value>There are no recommendations yet. You can try switching to node type match autocomplete.</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
-    <value>All recommendations are below the specified confidence level. You can try them or adjust the confidence settings in Preferences.</value>
+    <value>No confident suggestions available. The model is continuously improving - check back soon.</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
     <value>Show Recommendations that are below the confidence level.</value>
@@ -922,5 +922,8 @@ This package likely contains an assembly that is blocked. You will need to load 
   </data>
   <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
     <value>This node is currently experimental. Its behavior, name, and signature are subject to change.</value>
+  </data>
+  <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
+    <value>Click on the sparkle icon next to the port to activate Node Autocomplete.</value>
   </data>
 </root>
