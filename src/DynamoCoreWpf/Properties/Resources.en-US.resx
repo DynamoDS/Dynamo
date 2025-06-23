@@ -451,7 +451,7 @@ Don't worry, you'll have the option to save your work.</value>
     <value>Copy to clipboard</value>
   </data>
   <data name="CopyToClipboardFailedMessage" xml:space="preserve">
-    <value>Failed to copy to clipboard</value>
+    <value>Copy to clipboard failed</value>
   </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>A Dynamo update is available. Click to install.</value>

@@ -986,7 +986,16 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("ConverterMessageZoom", resourceCulture);
             }
         }
-                
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy to clipboard failed.
+        /// </summary>
+        public static string CopyToClipboardFailedMessage {
+            get {
+                return ResourceManager.GetString("CopyToClipboardFailedMessage", resourceCulture);
+            }
+        }
+        
         /// <summary>
         ///   Looks up a localized string similar to Copy to clipboard.
         /// </summary>
@@ -995,7 +1004,7 @@ namespace Dynamo.Wpf.Properties {
                 return ResourceManager.GetString("CopyToClipboardTooltip", resourceCulture);
             }
         }
-
+        
         /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
@@ -1504,24 +1513,15 @@ namespace Dynamo.Wpf.Properties {
             }
         }
         
-		/// <summary>
-        ///   Looks up a localized string similar to _Dump Node Icons.
+        /// <summary>
+        ///   Looks up a localized string similar to _Dump Node Icon Data.
         /// </summary>
         public static string DynamoViewDebugMenuDumpNodeIcons {
             get {
                 return ResourceManager.GetString("DynamoViewDebugMenuDumpNodeIcons", resourceCulture);
             }
         }
-		        
-		/// <summary>
-        ///   Looks up a localized string similar to NodeIconDataIsDumped.
-        /// </summary>
-        public static string NodeIconDataIsDumped {
-            get {
-                return ResourceManager.GetString("NodeIconDataIsDumped", resourceCulture);
-            }
-        }
-		
+        
         /// <summary>
         ///   Looks up a localized string similar to _Force Re-execute.
         /// </summary>
@@ -5260,6 +5260,15 @@ namespace Dynamo.Wpf.Properties {
         public static string NodeHelpWindowNodeType {
             get {
                 return ResourceManager.GetString("NodeHelpWindowNodeType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Node Icon Data is dumped to \&quot;{0}\&quot;..
+        /// </summary>
+        public static string NodeIconDataIsDumped {
+            get {
+                return ResourceManager.GetString("NodeIconDataIsDumped", resourceCulture);
             }
         }
         

@@ -4620,6 +4620,7 @@ static Dynamo.Wpf.Properties.Resources.ConverterMessageCurrentOffset.get -> stri
 static Dynamo.Wpf.Properties.Resources.ConverterMessageTransformOrigin.get -> string
 static Dynamo.Wpf.Properties.Resources.ConverterMessageZoom.get -> string
 static Dynamo.Wpf.Properties.Resources.CopyToClipboardTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.CopyToClipboardFailedMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogCopyButton.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogCrashMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogDetailButton.get -> string
