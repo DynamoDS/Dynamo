@@ -501,7 +501,6 @@ namespace ProtoFFI
         }
 
         private object[] parameters = null;
-        private FFIObjectMarshaler marshaller;
         private FFIParameterInfo[] paraminfos;
         private List<StackValue> referencedParameters;
         private object missing = Type.Missing;
@@ -511,7 +510,6 @@ namespace ProtoFFI
             if (parameters == null)
             {
                 parameters = new object[mArgTypes.Length];
-                marshaller = Module.GetMarshaler(dsi.runtime.RuntimeCore);
                 paraminfos = ReflectionInfo.GetParameters();
                 referencedParameters = new List<StackValue>();
             }
@@ -524,6 +522,7 @@ namespace ProtoFFI
                 s = dsi.runtime.rmem.Stack;
 
             object thisObject = null;
+            FFIObjectMarshaler marshaller = Module.GetMarshaler(dsi.runtime.RuntimeCore);
             if (!ReflectionInfo.IsStatic)
             {
                 try
