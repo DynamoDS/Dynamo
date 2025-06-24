@@ -443,14 +443,27 @@ namespace Dynamo.Nodes
             if (!ViewModel.IsExpanded) UpdateCollapsedBoundaryAsync();
         }
 
+        /// <summary>
+        /// Updates the annotation group size after port expansion or collapse.
+        /// Uses the Dispatcher to wait for layout completion, since port width is set dynamically in the view.
+        /// Stores the group's previous size so the ViewModel can calculate changes and reposition nearby items.
+        /// </summary>
         private void UpdateCollapsedBoundaryAsync()
         {
             var model = ViewModel.AnnotationModel;
+
+            // Store the current group size to calculate deltaX and deltaY after port expansion,
+            // so nearby items can be repositioned to prevent overlap.
+            model.HeightBeforePortToggle = model.ModelAreaHeight;
+            model.WidthBeforePortToggle = model.Width;
+
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 model.MinWidthOnCollapsed = GetMinWidthOnCollapsed();
                 model.MinCollapsedPortAreaHeight = GetMinCollapsedPortAreaHeight();
+
                 model.UpdateBoundaryFromSelection();
+                ViewModel.UpdateLayoutForGroupExpansion();
             }),
             System.Windows.Threading.DispatcherPriority.ApplicationIdle);
         }
