@@ -947,6 +947,7 @@
                                                       Width="{StaticResource ToggleButtonWidth}"
                                                       Height="{StaticResource ToggleButtonHeight}"
                                                       VerticalAlignment="Center"
+                                                      IsEnabled="{Binding Path=NodeAutocompleteIsChecked}"
                                                       IsChecked="{Binding Path=NodeAutocompleteNewUIIsChecked}"
                                                       Style="{StaticResource EllipseToggleButton1}"/>
                                             <Label Content="{x:Static p:Resources.PreferencesViewEnableNodeAutoCompleteNewUI}"
@@ -980,37 +981,11 @@
                                                 <RowDefinition Height="*" />
                                                 <RowDefinition Height="*" />
                                             </Grid.RowDefinitions>
-                                            <Grid Grid.Row="0">
-                                                <Grid.RowDefinitions>
-                                                    <RowDefinition Height="*" />
-                                                    <RowDefinition Height="*" />
-                                                    <RowDefinition Height="*" />
-                                                    <RowDefinition Height="*" />
-                                                </Grid.RowDefinitions>
-                                                <StackPanel Margin="-5,5,0,0" Orientation="Horizontal" Grid.Row="0">
-                                                    <Label Content="{x:Static p:Resources.MLRecommendationNumberOfResults}"
-                                                        VerticalAlignment="Center"
-                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                        FontWeight="Normal"/>
-                                                    <TextBox Name="MLRecommendationResultsNumber"                                                        
-                                                        HorizontalAlignment="Left"
-                                                        Margin="2,0,0,0"
-                                                        MinWidth="25"
-                                                        Height="20"
-                                                        FontWeight="Regular"
-                                                        Text="{Binding MLRecommendationNumberOfResults}"
-                                                        Background="{StaticResource PreferencesWindowBackgroundColor}"
-                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
-                                                        BorderThickness="0,0,0,2"
-                                                        PreviewTextInput="NumberValidationTextBox"
-                                                        IsEnabled="{Binding Path=NodeAutocompleteMachineLearningIsChecked}"/>
-                                                </StackPanel>
-                                            </Grid>
-                                            <Label Grid.Row="1" 
+                                            <Label Grid.Row="0" 
                                                 Margin="-5,5,0,0"                                               
                                                 Content="{x:Static p:Resources.PreferencesNodeAutocompleteMethod}" 
                                                 Foreground="{StaticResource PreferencesWindowFontColor}"/>
-                                            <Grid Grid.Row="2" 
+                                            <Grid Grid.Row="1" 
                                                   Margin="0,5,0,5">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition x:Name="colObjectType" Width="Auto"/>
@@ -1023,11 +998,10 @@
                                                      Content="{x:Static p:Resources.ObjectType}"
                                                      IsEnabled="{Binding Path=NodeAutocompleteIsChecked}"/>
                                                 </Grid>
-                                            <Grid Grid.Row="3"
+                                            <Grid Grid.Row="2"
                                                   Margin="0,5,0,5">
                                                 <Grid.ColumnDefinitions>
                                                     <ColumnDefinition x:Name="colMachineLearning" Width="Auto"/>
-                                                    <ColumnDefinition x:Name="colMLbetaTag" Width="Auto"/>
                                                 </Grid.ColumnDefinitions>
                                                 <RadioButton Grid.Column="0"
                                                      x:Name="RecommendedNodesRadioButton"
@@ -1037,6 +1011,49 @@
                                                      Content="{x:Static p:Resources.RecommendedNodes}"
                                                      Click="RecommendedNodesRadioButton_Click"
                                                      IsEnabled="{Binding Path=NodeAutocompleteIsChecked}"/>
+                                            </Grid>
+                                            <Grid Grid.Row="3">
+                                                <Grid.RowDefinitions>
+                                                    <RowDefinition Height="*" />
+                                                    <RowDefinition Height="*" />
+                                                    <RowDefinition Height="*" />
+                                                    <RowDefinition Height="*" />
+                                                </Grid.RowDefinitions>
+                                                <StackPanel Margin="-5,0,0,0" Orientation="Horizontal" Grid.Row="0">
+                                                    <Label Content="{x:Static p:Resources.MLRecommendationNumberOfResults}"
+                                                        VerticalAlignment="Center"
+                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                        FontWeight="Normal"/>
+                                                        <TextBox Name="MLRecommendationResultsNumber"                                                        
+                                                        HorizontalAlignment="Left"
+                                                        Margin="2,0,0,0"
+                                                        MinWidth="25"
+                                                        Height="20"
+                                                        FontWeight="Regular"
+                                                        Text="{Binding MLRecommendationNumberOfResults}"
+                                                        Background="{StaticResource PreferencesWindowBackgroundColor}"
+                                                        Foreground="{StaticResource PreferencesWindowFontColor}"
+                                                        BorderThickness="0,0,0,2"
+                                                        PreviewTextInput="NumberValidationTextBox">
+                                                            <TextBox.Style>
+                                                                <Style TargetType="TextBox">
+                                                                    <!-- Default state -->
+                                                                    <Setter Property="IsEnabled" Value="False"/>
+
+                                                                    <!-- Enable only when both conditions are true -->
+                                                                    <Style.Triggers>
+                                                                        <MultiDataTrigger>
+                                                                            <MultiDataTrigger.Conditions>
+                                                                                <Condition Binding="{Binding NodeAutocompleteMachineLearningIsChecked}" Value="True"/>
+                                                                                <Condition Binding="{Binding NodeAutocompleteIsChecked}" Value="True"/>
+                                                                            </MultiDataTrigger.Conditions>
+                                                                            <Setter Property="IsEnabled" Value="True"/>
+                                                                        </MultiDataTrigger>
+                                                                    </Style.Triggers>
+                                                                </Style>
+                                                            </TextBox.Style>
+                                                        </TextBox>
+                                                </StackPanel>
                                             </Grid>
                                         </Grid>
                                     </StackPanel>
