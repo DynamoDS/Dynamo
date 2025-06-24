@@ -39,14 +39,14 @@ namespace ProtoCore.Lang
 
         private void Init(RuntimeCore runtimeCore)
         {
-            if (mInterpreter != null) return;
+            //if (mInterpreter != null) return;
 
             mInterpreter = new ProtoCore.DSASM.Interpreter(runtimeCore, true);
         }
 
         public override StackValue Execute(ProtoCore.Runtime.Context c, List<StackValue> formalParameters, ProtoCore.DSASM.StackFrame stackFrame, RuntimeCore runtimeCore)
         {
-            if (mInterpreter == null)
+            if (mInterpreter == null || c.IsImplicitCall)
             {
                 Init(runtimeCore);
             }
