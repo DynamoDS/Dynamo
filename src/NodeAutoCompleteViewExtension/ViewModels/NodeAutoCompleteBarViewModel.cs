@@ -945,6 +945,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             //this should run on the UI thread, so thread safety is not a concern
             LastRequestGuid = Guid.NewGuid();
             var myRequest = LastRequestGuid;
+            SelectedIndex = -1;
 
             //start a background thread to make the http request
             Task.Run(() =>
