@@ -1795,7 +1795,7 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("Width");
                     RaisePropertyChanged(nameof(ModelAreaRect));
                     UpdateAllGroupedGroups();
-                    RedrawConnectors(false);                                                                                                // DO WE NEED THIS?
+                    RedrawConnectors(false);
                     break;
                 case "Height":
                     RaisePropertyChanged("Height");
@@ -1835,6 +1835,14 @@ namespace Dynamo.ViewModels
                     break;
                 case nameof(IsExpanded):
                     ManageAnnotationMVExpansionAndCollapse();
+                    break;
+                case nameof(AnnotationModel.IsOptionalInPortsCollapsed):
+                    isOptionalInPortsCollapsed = annotationModel.IsOptionalInPortsCollapsed;
+                    RaisePropertyChanged(nameof(IsOptionalInPortsCollapsed));
+                    break;
+                case nameof(AnnotationModel.IsUnconnectedOutPortsCollapsed):
+                    IsUnconnectedOutPortsCollapsed = annotationModel.IsUnconnectedOutPortsCollapsed;
+                    RaisePropertyChanged(nameof(IsUnconnectedOutPortsCollapsed));
                     break;
             }
         }
