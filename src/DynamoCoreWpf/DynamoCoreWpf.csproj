@@ -18,7 +18,7 @@
     <PreferredToolArchitecture>x64</PreferredToolArchitecture> 
   </PropertyGroup> 
   <PropertyGroup>
-    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672</NoWarn>
+    <NoWarn>MSB3539;CS1591;NUnit2005;NUnit2007;CS0618;CS0612;CS0672;CA1416</NoWarn>
   </PropertyGroup>
 
   <Target Name="NpmRunBuild" BeforeTargets="BeforeBuild">
@@ -59,7 +59,7 @@
 
     <Target Name="NpmRunBuildHomePage" BeforeTargets="BeforeBuild">
         <PropertyGroup>
-            <PackageVersion>1.0.23</PackageVersion>
+            <PackageVersion>1.0.24</PackageVersion>
             <PackageName>DynamoHome</PackageName>
         </PropertyGroup>
         <Exec Command="$(PowerShellCommand) -ExecutionPolicy Bypass -File &quot;$(SolutionDir)pkgexist.ps1&quot; &quot;$(PackageName)&quot; &quot;$(PackageVersion)&quot;" ConsoleToMSBuild="true">
@@ -128,6 +128,8 @@
     </Target>
 
     <ItemGroup>
+    <None Remove="Controls\OutPorts.xaml" />
+    <None Remove="Controls\InPorts.xaml" />
     <None Remove="Packages\PackageManagerWizard\dist\index.html" />
     <None Remove="Controls\Docs\cs-CZ\FileTrustWarningDocumentation.html" />
     <None Remove="Controls\Docs\cs-CZ\NodeAutocompleteDocumentation.html" />
@@ -169,6 +171,8 @@
     <None Remove="UI\Images\close_16px.png" />
     <None Remove="UI\Images\caret_drop_down.png" />
     <None Remove="UI\Images\error_48px.png" />
+    <None Remove="UI\Images\copy_16px_default.png" />
+    <None Remove="UI\Images\copy_16px_hover.png" />
     <None Remove="UI\Images\file-generic-16px.png" />
     <None Remove="UI\Images\finished_checkmark_30px.png" />
     <None Remove="UI\Images\folder-generic-16px.png" />
@@ -492,6 +496,7 @@
     <PackageReference Include="DotNetProjects.Extended.Wpf.Toolkit" Version="5.0.103" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controls\InPorts.xaml.cs" />
     <Compile Include="Controls\InstalledPackagesControl.xaml.cs">
       <DependentUpon>InstalledPackagesControl.xaml</DependentUpon>
     </Compile>
@@ -514,6 +519,7 @@
     <Compile Include="Controls\OutPortContextMenu.xaml.cs">
       <DependentUpon>OutPortContextMenu.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\OutPorts.xaml.cs" />
     <Compile Include="Controls\ParentMenuItem.cs" />
     <Compile Include="Controls\RunSettingsControl.xaml.cs">
       <DependentUpon>RunSettingsControl.xaml</DependentUpon>
@@ -898,6 +904,9 @@
     <Compile Include="Windows\ModelessChildWindow.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="Controls\InPorts.xaml">
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\InstalledPackagesControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -906,16 +915,11 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <None Include="UI\Themes\Modern\InPorts.xaml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Include="UI\Themes\Modern\OutPorts.xaml">
-      <SubType>Designer</SubType>
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <Page Include="Controls\OutPortContextMenu.xaml">
       <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\OutPorts.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Prompts\DynamoMessageBox.xaml">
@@ -1321,6 +1325,8 @@
     <Resource Include="UI\Images\closetab_normal.png" />
     <Resource Include="UI\Images\dynamonotext.png" />
     <Resource Include="UI\Images\error_48px.png" />
+    <Resource Include="UI\Images\copy_16px_default.png" />
+    <Resource Include="UI\Images\copy_16px_hover.png" />
     <Resource Include="UI\Images\file-generic-16px.png" />
     <Resource Include="UI\Images\finished_checkmark_30px.png" />
     <Resource Include="UI\Images\folder-generic-16px.png" />

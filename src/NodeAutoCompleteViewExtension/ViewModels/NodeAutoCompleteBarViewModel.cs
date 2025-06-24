@@ -31,7 +31,8 @@ using System.Reflection;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Graph;
 using System.Windows.Media;
-using Dynamo.Selection;
+using System.ComponentModel;
+using System.Windows.Data;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
@@ -55,7 +56,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         public bool SwitchIsEnabled => ResultsLoaded && !IsInput;
         public bool IsSingleAutocomplete
         {
-            get => _isSingleAutocomplete || IsInput;
+            get => _isSingleAutocomplete || IsInput || !dynamoViewModel.IsDNAClusterPlacementEnabled;
             set
             {
                 if (PortViewModel.PortType == PortType.Output && _isSingleAutocomplete != value)
@@ -127,7 +128,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         /// <summary>
         /// Cluster autocomplete search results.
         /// </summary>
-        public IEnumerable<DNADropdownViewModel> DropdownResults
+        internal IEnumerable<DNADropdownViewModel> DropdownResults
         {
             get
             {
@@ -136,16 +137,27 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             set
             {
                 dropdownResults = value;
-                RaisePropertyChanged(nameof(DropdownResults));
+                FilteredView = CollectionViewSource.GetDefaultView(dropdownResults);
+                if (FilteredView != null)
+                {
+                    FilteredView.Filter = FilterLogic;
+                }
+
                 RaisePropertyChanged(nameof(NthofTotal));
                 RaisePropertyChanged(nameof(ResultsLoaded));
                 RaisePropertyChanged(nameof(SwitchIsEnabled));
                 RaisePropertyChanged(nameof(ConfirmSource));
                 RaisePropertyChanged(nameof(PreviousSource));
                 RaisePropertyChanged(nameof(NextSource));
+                RaisePropertyChanged(nameof(FilteredView));
             }
         }
 
+        /// <summary>
+        /// Return the filter associated currently with dropdown results.
+        /// </summary>
+        public ICollectionView FilteredView { get; set; }
+                
         /// <summary>
         /// Return the qualified results from the ML service above preferred confidence threshold
         /// </summary>
@@ -179,9 +191,51 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
-        private int ClusterResultsCount => DropdownResults == null ? 0 : DropdownResults.Count();
+        private int ClusterResultsCount => FilteredView == null ? 0 : FilteredView.Cast<object>().ToList().Count;
 
         private int selectedIndex = 0;
+
+        private string _searchInput = string.Empty;
+
+        private bool FilterLogic(object item)
+        {
+            var dnaModel = item as DNADropdownViewModel;
+            if (dnaModel != null)
+            {
+                if (dnaModel.Description.IndexOf(SearchInput.Trim(), StringComparison.OrdinalIgnoreCase) >= 0)
+                {
+                    return true;
+                }
+                return false;
+            }
+
+            return true;
+        }
+
+        public string SearchInput
+        {
+            get
+            {
+                return _searchInput;
+            }
+            set
+            {
+                if (_searchInput == value)
+                {
+                    return;
+                }
+
+                _searchInput = value;
+
+                if (FilteredView != null)
+                {                    
+                    FilteredView.Refresh();
+                }
+
+                RaisePropertyChanged(nameof(SearchInput));
+            }
+        }
+
         /// <summary>
         /// Selected index of the current cluster autocomplete option
         /// </summary>
@@ -193,30 +247,19 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
             set
             {
-                /*don't try to add a node if the index is out of range or a selection is not made yet (-1)
-                an index of -1 occurs when using the switch to change between modes.*/
-                if (selectedIndex != value && value >= 0 && selectedIndex != -1)
+                if (selectedIndex != value && value >= -1)
                 {
-                    ReAddNode(value);
-                }
-                selectedIndex = value;
-                RaisePropertyChanged(nameof(SelectedIndex));
-                RaisePropertyChanged(nameof(NthofTotal));
-                RaisePropertyChanged(nameof(PreviousSource));
-                RaisePropertyChanged(nameof(NextSource));
-            }
-        }
+                    selectedIndex = value;
+                    if (selectedIndex != -1)
+                    {
+                        AddCluster(selectedIndex);
+                    }
 
-        private void ReAddNode(int index)
-        {
-            if(FullResults == null)
-            {
-                return;
-            }
-            var results = QualifiedResults.ToList();
-            if(index >=  0 && index  < results.Count)
-            {
-                AddCluster(results[index]);
+                    RaisePropertyChanged(nameof(SelectedIndex));
+                    RaisePropertyChanged(nameof(NthofTotal));
+                    RaisePropertyChanged(nameof(PreviousSource));
+                    RaisePropertyChanged(nameof(NextSource));
+                }
             }
         }
 
@@ -230,10 +273,10 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
 
             //set the last connector to be connected
-            var transientConnectors = node.WorkspaceViewModel.Connectors.Where(c => c.IsConnecting).ToList();
+            var transientConnectors = node.WorkspaceViewModel.Connectors.Where(c => c.IsTransient).ToList();
             foreach (var connector in transientConnectors)
             {
-                connector.IsConnecting = false;
+                connector.IsTransient = false;
             }
 
             NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, false, null);
@@ -345,6 +388,17 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
+        /// <summary>
+        /// Expose IsDNAClusterPlacementEnabled feature flag as readonly in the viewmodel 
+        /// </summary>
+        public bool IsDNAClusterPlacementEnabled
+        {
+            get
+            {
+                return dynamoViewModel.IsDNAClusterPlacementEnabled;
+            }
+        }
+
         internal event Action<NodeModel> ParentNodeRemoved;
 
         internal MLNodeClusterAutoCompletionResponse FullResults { private set; get; }
@@ -374,6 +428,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             FilteredResults = new List<NodeSearchElementViewModel>();
             FilteredHighConfidenceResults = new List<NodeSearchElementViewModel>();
             FilteredLowConfidenceResults = new List<NodeSearchElementViewModel>();
+            SearchInput = string.Empty;            
         }
 
         internal MLNodeAutoCompletionRequest GenerateRequestForMLAutocomplete()
@@ -744,6 +799,19 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
+
+        internal void AddCluster(int filterredIndex)
+        {
+            var currentFilter = FilteredView.Cast<DNADropdownViewModel>().ToList();
+            var currentItem = filterredIndex >= 0 && filterredIndex < currentFilter.Count ? currentFilter[filterredIndex] : null;
+
+            var realCluster = QualifiedResults.FirstOrDefault(x => x.Description.Equals(currentItem.Description));
+            if (realCluster != null)
+            {
+                AddCluster(realCluster);
+            }
+        }
+
         // Add Cluster from server result into the workspace
         internal void AddCluster(ClusterResultItem clusterResultItem)
         {
@@ -817,7 +885,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 {
                     entryConnector.IsHidden = true;
                     var entryConnectorViewModel = workspaceViewModel.Connectors.First(c => c.ConnectorModel.Equals(entryConnector));
-                    entryConnectorViewModel.IsConnecting = true;
+                    entryConnectorViewModel.IsTransient = true;
                     createdClusterItems.Add(entryConnector);
                 }
             }
@@ -841,6 +909,10 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                             {
                                 newConnector.IsHidden = true; // Hide the connector initially
                                 createdClusterItems.Add(newConnector);
+
+                                // toggle to be transient for preview purposes
+                                var newConnectorViewModel = workspaceViewModel.Connectors.First(c => c.ConnectorModel.Equals(newConnector));
+                                newConnectorViewModel.IsTransient = true;
                             }
                         }
                     }
@@ -919,7 +991,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                             Topology = new TopologyItem
                             {
                                 Nodes = new List<NodeItem> { new NodeItem {
-                                    Id = new Guid().ToString(),
+                                    Id = Guid.NewGuid().ToString(),
                                     Type = new NodeType { Id = x.CreationName } } },
                                 Connections = new List<ConnectionItem>()
                             }
@@ -942,7 +1014,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     if (!IsOpen)
                     {
                         // view disappeared while the background thread was waiting for the server response.
-                        // Ignore the results are we're no longer interested.
+                        // Ignore the results as we're no longer interested.
                         return;
                     }
 
@@ -964,10 +1036,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                             SearchViewModelRequestBitmapSource(iconRequest);
                             dict[singleResult.CreationName] = iconRequest.Icon;
                         }
-                        comboboxResults = QualifiedResults.Select(x => new DNADropdownViewModel
+                        comboboxResults = FullSingleResults.Where(x => x.Score * 100 > minClusterConfidenceScore).Select(x => new DNADropdownViewModel
                         {
                             Description = x.Description,
-                            SmallIcon = dict[x.Topology.Nodes.First().Type.Id],
+                            Parameters = x.Parameters,
+                            SmallIcon = dict[x.CreationName],
                         });
                     }
                     else
@@ -980,10 +1053,10 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     }
                     // this runs synchronously on the UI thread, so the UI can't disappear during execution
                     DropdownResults = comboboxResults;
-                    SelectedIndex = 0;
-
-                    var ClusterResultItem = QualifiedResults.First();
-                    AddCluster(ClusterResultItem);
+                    if (comboboxResults.Any())
+                    {
+                        SelectedIndex = 0;
+                    }
                     
                 });
             });

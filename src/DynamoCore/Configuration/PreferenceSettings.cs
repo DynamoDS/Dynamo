@@ -664,6 +664,11 @@ namespace Dynamo.Configuration
         public bool EnableNodeAutoComplete { get; set; }
 
         /// <summary>
+        /// This allows the user to enable or disable the new node auto complete menu.
+        /// </summary>
+        public bool EnableNewNodeAutoCompleteUI { get; set; }
+
+        /// <summary>
         /// PolyCurve normal and direction behavior has been made predictable in Dynamo 3.0 and has therefore changed. 
         /// This defines whether legacy (pre-3.0) PolyCurve behavior is selected by default.
         /// This flag can be overridden by individual workspaces that have the EnableLegacyPolyCurveBehavior flag defined.
@@ -1008,6 +1013,7 @@ namespace Dynamo.Configuration
             IsIronPythonDialogDisabled = false;
             ShowTabsAndSpacesInScriptEditor = false;
             EnableNodeAutoComplete = true;
+            EnableNewNodeAutoCompleteUI = true;
             DefaultEnableLegacyPolyCurveBehavior = true;
             HideNodesBelowSpecificConfidenceLevel = false;
             MLRecommendationConfidenceLevel = 10;

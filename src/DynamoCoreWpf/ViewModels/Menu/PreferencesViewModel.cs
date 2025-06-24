@@ -1129,6 +1129,22 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Controls the IsChecked property in the "Node autocomplete new menu" toggle button
+        /// </summary>
+        public bool NodeAutocompleteNewUIIsChecked
+        {
+            get
+            {
+                return preferenceSettings.EnableNewNodeAutoCompleteUI;
+            }
+            set
+            {
+                preferenceSettings.EnableNewNodeAutoCompleteUI = value;
+                RaisePropertyChanged(nameof(NodeAutocompleteNewUIIsChecked));
+            }
+        }
+
+        /// <summary>
         /// If MLAutocompleteTOU is approved
         /// </summary>
         internal bool IsMLAutocompleteTOUApproved
