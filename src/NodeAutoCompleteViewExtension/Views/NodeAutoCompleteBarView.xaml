@@ -13,7 +13,7 @@
              Background="Transparent"
              ShowInTaskbar="False"
              ResizeMode="NoResize"
-             Width="600"
+             Width="620"
              Height="45"
              PreviewKeyDown="OnAutoCompleteKeyDown"
         >
@@ -83,9 +83,9 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="Auto" />
@@ -267,7 +267,8 @@
                                         <Grid>
                                             <Border x:Name="DotsBackgroundBorder"
                                                     Background="Transparent"
-                                                    CornerRadius="2" />
+                                                    CornerRadius="2"
+                                                    Width="36"/>
                                             <Image x:Name="PrevImage"
                                                    Width="12px"
                                                    Height="12px"
@@ -329,7 +330,8 @@
                                         <Grid>
                                             <Border x:Name="DotsBackgroundBorder"
                                                     Background="Transparent"
-                                                    CornerRadius="2" />
+                                                    CornerRadius="2"
+                                                    Width="36"/>
                                             <Image x:Name="NextImage"
                                                    Width="12px"
                                                    Height="12px"
@@ -380,7 +382,8 @@
                                         <Grid>
                                             <Border x:Name="DotsBackgroundBorder"
                                                     Background="Transparent"
-                                                    CornerRadius="2" />
+                                                    CornerRadius="2" 
+                                                    Width="36"/>
                                             <Image x:Name="DotsImage"
                                                    Width="20px"
                                                    Height="20px"
@@ -432,7 +435,8 @@
                                         <Grid>
                                             <Border x:Name="DotsBackgroundBorder"
                                                     Background="Transparent"
-                                                    CornerRadius="2" />
+                                                    CornerRadius="2"
+                                                    Width="36"/>
                                             <Image x:Name="DotsImage"
                                                    Source="/DynamoCoreWpf;component/UI/Images/whiteclosetab.png"
                                                    Width="20px"
