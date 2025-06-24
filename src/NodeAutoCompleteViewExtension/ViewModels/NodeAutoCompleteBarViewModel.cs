@@ -146,9 +146,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 RaisePropertyChanged(nameof(NthofTotal));
                 RaisePropertyChanged(nameof(ResultsLoaded));
                 RaisePropertyChanged(nameof(SwitchIsEnabled));
-                RaisePropertyChanged(nameof(ConfirmSource));
-                RaisePropertyChanged(nameof(PreviousSource));
-                RaisePropertyChanged(nameof(NextSource));
+                RaisePropertyChanged(nameof(HasPrevious));
+                RaisePropertyChanged(nameof(HasNext));
                 RaisePropertyChanged(nameof(FilteredView));
             }
         }
@@ -257,8 +256,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
                     RaisePropertyChanged(nameof(SelectedIndex));
                     RaisePropertyChanged(nameof(NthofTotal));
-                    RaisePropertyChanged(nameof(PreviousSource));
-                    RaisePropertyChanged(nameof(NextSource));
+                    RaisePropertyChanged(nameof(HasPrevious));
+                    RaisePropertyChanged(nameof(HasNext));
                 }
             }
         }
@@ -296,35 +295,15 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         }
 
         /// <summary>
-        /// Bitmap Source for left caret
+        /// Boolean, true if its possible to select a previous autocomplete option
         /// </summary>
-        public string PreviousSource
-        {
-            get
-            {
-                return selectedIndex == 0 ? "/DynamoCoreWpf;component/UI/Images/caret-left-disabled.png" : "/DynamoCoreWpf;component/UI/Images/caret-left-default.png";
-            }
-        }
+        public bool HasPrevious => selectedIndex > 0;
+
         /// <summary>
-        /// Bitmap Source for right caret
+        /// Boolean, true if its possible to select a next autocomplete option
         /// </summary>
-        public string NextSource
-        {
-            get
-            {
-                return selectedIndex >= ClusterResultsCount - 1 ? "/DynamoCoreWpf;component/UI/Images/caret-right-disabled.png" : "/DynamoCoreWpf;component/UI/Images/caret-right-default.png";
-            }
-        }
-        /// <summary>
-        /// Bitmap Source for confirmation checkmark
-        /// </summary>
-        public string ConfirmSource
-        {
-            get
-            {
-                return ResultsLoaded ? "/DynamoCoreWpf;component/UI/Images/check.png" : "/DynamoCoreWpf;component/UI/Images/check-disabled.png";
-            }
-        }
+        public bool HasNext => selectedIndex < ClusterResultsCount - 1;
+
         /// <summary>
         /// Language agnostic way of showing current result ordinal
         /// </summary>

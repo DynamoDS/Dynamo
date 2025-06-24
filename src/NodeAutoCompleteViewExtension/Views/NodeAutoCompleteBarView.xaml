@@ -269,12 +269,22 @@
                                                     Background="Transparent"
                                                     CornerRadius="2" />
                                             <Image x:Name="PrevImage"
-                                                   Source="{Binding PreviousSource}"
-                                                   Width="16px"
-                                                   Height="16px"
+                                                   Width="12px"
+                                                   Height="12px"
                                                    HorizontalAlignment="Center"
                                                    VerticalAlignment="Center"
-                                                   Stretch="UniformToFill" />
+                                                   Stretch="UniformToFill" >
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/caret-left-disabled.png"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding HasPrevious}" Value="True">
+                                                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/caret-left-default.png"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
                                         </Grid>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver"
@@ -321,12 +331,22 @@
                                                     Background="Transparent"
                                                     CornerRadius="2" />
                                             <Image x:Name="NextImage"
-                                                   Source="{Binding NextSource}"
-                                                   Width="16px"
-                                                   Height="16px"
+                                                   Width="12px"
+                                                   Height="12px"
                                                    HorizontalAlignment="Center"
                                                    VerticalAlignment="Center"
-                                                   Stretch="UniformToFill" />
+                                                   Stretch="UniformToFill" >
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/caret-right-disabled.png"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding HasNext}" Value="True">
+                                                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/caret-right-default.png"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
                                         </Grid>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver"
@@ -362,13 +382,23 @@
                                                     Background="Transparent"
                                                     CornerRadius="2" />
                                             <Image x:Name="DotsImage"
-                                                   Source="{Binding ConfirmSource}"
-                                                   Width="16px"
-                                                   Height="16px"
-                                                   Margin="5"
+                                                   Width="20px"
+                                                   Height="20px"
+                                                   Margin="3"
                                                    HorizontalAlignment="Center"
                                                    VerticalAlignment="Center"
-                                                   Stretch="UniformToFill" />
+                                                   Stretch="UniformToFill" >
+                                                <Image.Style>
+                                                    <Style TargetType="Image">
+                                                        <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/check-disabled.png"/>
+                                                        <Style.Triggers>
+                                                            <DataTrigger Binding="{Binding ResultsLoaded}" Value="True">
+                                                                <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/check.png"/>
+                                                            </DataTrigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </Image.Style>
+                                            </Image>
                                         </Grid>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver"
@@ -405,9 +435,9 @@
                                                     CornerRadius="2" />
                                             <Image x:Name="DotsImage"
                                                    Source="/DynamoCoreWpf;component/UI/Images/whiteclosetab.png"
-                                                   Width="16px"
-                                                   Height="16px"
-                                                   Margin="5"
+                                                   Width="20px"
+                                                   Height="20px"
+                                                   Margin="3"
                                                    HorizontalAlignment="Center"
                                                    VerticalAlignment="Center"
                                                    Stretch="UniformToFill" />
