@@ -13,15 +13,15 @@
              Background="Transparent"
              ShowInTaskbar="False"
              ResizeMode="NoResize"
-             Width="620"
              Height="45"
              PreviewKeyDown="OnAutoCompleteKeyDown"
         >
     <Window.Style>
         <Style TargetType="Window">
+            <Setter Property="Width" Value="620" />
             <Style.Triggers>
                 <DataTrigger Binding="{Binding IsDNAClusterPlacementEnabled}" Value="False">
-                    <Setter Property="Width" Value="500"/>
+                    <Setter Property="Width" Value="510"/>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
