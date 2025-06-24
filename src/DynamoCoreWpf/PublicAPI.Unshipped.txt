@@ -2362,6 +2362,7 @@ Dynamo.ViewModels.InfoBubbleViewModel.ConnectingDirection.get -> Dynamo.ViewMode
 Dynamo.ViewModels.InfoBubbleViewModel.ConnectingDirection.set -> void
 Dynamo.ViewModels.InfoBubbleViewModel.Content.get -> string
 Dynamo.ViewModels.InfoBubbleViewModel.Content.set -> void
+Dynamo.ViewModels.InfoBubbleViewModel.CopyTextToClipboardCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.InfoBubbleViewModel.Direction
 Dynamo.ViewModels.InfoBubbleViewModel.Direction.Bottom = 4 -> Dynamo.ViewModels.InfoBubbleViewModel.Direction
 Dynamo.ViewModels.InfoBubbleViewModel.Direction.BottomLeft = 7 -> Dynamo.ViewModels.InfoBubbleViewModel.Direction
@@ -4618,6 +4619,8 @@ static Dynamo.Wpf.Properties.Resources.ContinueInstall.get -> string
 static Dynamo.Wpf.Properties.Resources.ConverterMessageCurrentOffset.get -> string
 static Dynamo.Wpf.Properties.Resources.ConverterMessageTransformOrigin.get -> string
 static Dynamo.Wpf.Properties.Resources.ConverterMessageZoom.get -> string
+static Dynamo.Wpf.Properties.Resources.CopyToClipboardTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.CopyToClipboardFailedMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogCopyButton.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogCrashMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogDetailButton.get -> string
