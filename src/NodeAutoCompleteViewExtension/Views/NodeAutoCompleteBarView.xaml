@@ -13,7 +13,7 @@
              Background="Transparent"
              ShowInTaskbar="False"
              ResizeMode="NoResize"
-             Width="620"
+             Width="640"
              Height="45"
              PreviewKeyDown="OnAutoCompleteKeyDown"
         >
