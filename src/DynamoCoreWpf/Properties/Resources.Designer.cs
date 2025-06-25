@@ -988,6 +988,24 @@ namespace Dynamo.Wpf.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Copy to clipboard failed.
+        /// </summary>
+        public static string CopyToClipboardFailedMessage {
+            get {
+                return ResourceManager.GetString("CopyToClipboardFailedMessage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Copy to clipboard.
+        /// </summary>
+        public static string CopyToClipboardTooltip {
+            get {
+                return ResourceManager.GetString("CopyToClipboardTooltip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Copy.
         /// </summary>
         public static string CrashPromptDialogCopyButton {
