@@ -858,7 +858,7 @@ Este pacote provavelmente contém uma montagem bloqueada. Será necessário carr
     <value>Ainda não há recomendações. É possível tentar alternar para o preenchimento automático da correspondência do tipo nó.</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
-    <value>Todas as recomendações estão abaixo do nível de confiança especificado. Você pode experimentá-las ou ajustar as configurações de confiança em Preferências.</value>
+    <value>No confident suggestions available. The model is continuously improving - check back soon.</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
     <value>Exiba recomendações que estejam abaixo do nível de confiança.</value>
@@ -895,5 +895,8 @@ Este pacote provavelmente contém uma montagem bloqueada. Será necessário carr
   </data>
   <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
     <value>Esse nó é atualmente experimental. Seu comportamento, nome e assinatura estão sujeitos a alterações.</value>
+  </data>
+  <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
+    <value>Click on the sparkle icon next to the port to activate Node Autocomplete.</value>
   </data>
 </root>

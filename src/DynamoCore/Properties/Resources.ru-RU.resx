@@ -858,7 +858,7 @@
     <value>Рекомендации пока отсутствуют. Попробуйте использовать метод автозаполнения «Соответствие типа узла».</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
-    <value>Все рекомендации находятся за пределами указанного уровня надежности. Можно использовать их или скорректировать настройки конфиденциальности в разделе «Настройки».</value>
+    <value>No confident suggestions available. The model is continuously improving - check back soon.</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
     <value>Показывать рекомендации за пределами уровня надежности.</value>
@@ -895,5 +895,8 @@
   </data>
   <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
     <value>Этот узел в настоящее время экспериментальный. Его поведение, имя и подпись могут быть изменены.</value>
+  </data>
+  <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
+    <value>Click on the sparkle icon next to the port to activate Node Autocomplete.</value>
   </data>
 </root>
