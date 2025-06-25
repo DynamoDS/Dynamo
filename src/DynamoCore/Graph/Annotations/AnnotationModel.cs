@@ -714,75 +714,98 @@ namespace Dynamo.Graph.Annotations
             var selectedModelsList = nodes.ToList();
             if (!selectedModelsList.Any())
             {
+                // No models in the group — set dimensions to zero
                 Width = 0;
                 Height = 0;
                 return;
             }
 
+            // Sort models left to right for consistent calculations
             var groupModels = selectedModelsList.OrderBy(x => x.X).ToList();
 
-            //Shifting x by 10 and y to the height of textblock
-            var regionX = groupModels.Min(x => x.X) - ExtendSize;
-            //Increase the Y value by 10. This provides the extra space between
-            // a model and textbox. Otherwise there will be some overlap
-            var regionY = groupModels.Min(y => (y as NoteModel) == null ? (y.Y) : (y.Y - NoteYAdjustment)) -
-                ExtendSize - (TextBlockHeight == 0.0 ? MinTextHeight : TextBlockHeight);
+            // Determine left boundary (smallest X), shifted left by padding
+            double regionX = groupModels.Min(x => x.X) - ExtendSize;
 
-            //calculates the distance between the nodes
-            var xDistance = groupModels.Max(x => (x.X + x.Width)) - regionX;
+            // Determine top boundary, adjusted for note offset and text block height
+            double regionY = groupModels.Min(y => (y as NoteModel) == null ? y.Y : y.Y - NoteYAdjustment)
+                             - ExtendSize
+                             - (TextBlockHeight == 0.0 ? MinTextHeight : TextBlockHeight);
 
-            // InitialTop is to store the Y value without the Textblock height
-            this.InitialTop = groupModels.Min(y => (y as NoteModel) == null ? (y.Y) : (y.Y - NoteYAdjustment));
+            // Compute the horizontal span of all models
+            double xDistance = groupModels.Max(x => x.X + x.Width) - regionX;
 
+            // Save the actual top-most Y value (before subtracting text block height)
+            this.InitialTop = groupModels.Min(y => (y as NoteModel) == null ? y.Y : y.Y - NoteYAdjustment);
+
+            // Track whether position has changed
             bool positionChanged = regionX != X || regionY != Y;
-            this.X = regionX;
-            this.Y = regionY;
+            X = regionX;
+            Y = regionY;
 
+            // Use different logic for expanded vs. collapsed state
             if (IsExpanded)
-            {
-                var yDistance = groupModels.Max(y => (y as NoteModel) == null ? (y.Y + y.Height) : (y.Y + y.Height - NoteYAdjustment)) - regionY;
-
-                var region = new Rect2D
-                {
-                    X = regionX,
-                    Y = regionY,
-                    Width = xDistance + ExtendSize + Math.Max(WidthAdjustment, 0),
-                    Height = yDistance + ExtendSize + ExtendYHeight + HeightAdjustment - TextBlockHeight
-                };
-
-                this.ModelAreaHeight = region.Height;
-                Height = this.ModelAreaHeight + TextBlockHeight;
-                Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);
-
-                //Initial Height is to store the Actual height of the group.
-                //that is the height should be the initial height without the textblock height.
-                if (this.InitialHeight <= 0.0)
-                    this.InitialHeight = region.Height;
-            }
-
-            // Keep expanded width, shrink height only of no collapse-to-min preference.
-            else if (!IsCollapsedToMinSize)
-            {
-                Width = Math.Max(xDistance + ExtendSize + WidthAdjustment, TextMaxWidth + ExtendSize);
-
-                ModelAreaHeight = MinCollapsedPortAreaHeight + CollapsedContentHeight;
-                Height = TextBlockHeight + ModelAreaHeight;
-            }
-            // Use minimum width and height if the preference is to collapse to minimum size.
+                UpdateExpandedLayout(groupModels, regionX, regionY, xDistance);
             else
-            {
-                Width = Math.Max(MinWidthOnCollapsed + ExtendSize, TextMaxWidth + ExtendSize);
+                UpdateCollapsedLayout(xDistance);
 
-                ModelAreaHeight = MinCollapsedPortAreaHeight + CollapsedContentHeight;
-                Height = TextBlockHeight + ModelAreaHeight;
-            }
-
+            // Store last expanded width for restoring later if needed
             lastExpandedWidth = Width;
 
+            // Notify UI if position changed
             if (positionChanged)
-            {
                 RaisePropertyChanged(nameof(Position));
+        }
+
+        /// <summary>
+        /// Calculates and sets the group size and bounds when the group is expanded.
+        /// Includes full height of contained models and padding.
+        /// </summary>
+        private void UpdateExpandedLayout(List<ModelBase> groupModels, double regionX, double regionY, double xDistance)
+        {
+            // Compute total vertical height of models in group
+            double yDistance = groupModels.Max(y => (y as NoteModel) == null ? y.Y + y.Height : y.Y + y.Height - NoteYAdjustment)
+                               - regionY;
+
+            // Define the full rectangular area of the group (excluding text block)
+            var region = new Rect2D
+            {
+                X = regionX,
+                Y = regionY,
+                Width = xDistance + ExtendSize + Math.Max(WidthAdjustment, 0),
+                Height = yDistance + ExtendSize + ExtendYHeight + HeightAdjustment - TextBlockHeight
+            };
+
+            // Store layout size and apply dimensions
+            ModelAreaHeight = region.Height;
+            Height = ModelAreaHeight + TextBlockHeight;
+            Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);
+
+            // Only store the first calculated initial height
+            if (InitialHeight <= 0.0)
+                InitialHeight = region.Height;
+        }
+
+        /// <summary>
+        /// Calculates and sets the group size when collapsed.
+        /// Supports two modes: full-width collapse and minimum-size collapse.
+        /// </summary>
+        private void UpdateCollapsedLayout(double xDistance)
+        {
+            // Choose width based on collapse preference
+            if (!IsCollapsedToMinSize)
+            {
+                // Collapse vertically, keep full width
+                Width = Math.Max(xDistance + ExtendSize + WidthAdjustment, TextMaxWidth + ExtendSize);
             }
+            else
+            {
+                // Fully minimize the group
+                Width = Math.Max(MinWidthOnCollapsed + ExtendSize, TextMaxWidth + ExtendSize);
+            }
+
+            // Use fixed height values for collapsed layout
+            ModelAreaHeight = MinCollapsedPortAreaHeight + CollapsedContentHeight;
+            Height = TextBlockHeight + ModelAreaHeight;
         }
 
         /// <summary>
