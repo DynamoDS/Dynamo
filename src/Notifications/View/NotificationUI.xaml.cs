@@ -79,6 +79,9 @@ namespace Dynamo.Notifications.View
 
         private void ForceMainWindowFocus()
         {
+            if (Application.Current?.MainWindow == null)
+                return;
+
             ReleaseCapture();
             SetForegroundWindow(new WindowInteropHelper(Application.Current.MainWindow).Handle);
         }
