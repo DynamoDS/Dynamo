@@ -401,6 +401,12 @@ Pas d'inquiétude, vous aurez la possibilité d'enregistrer votre travail.</valu
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>Avertissement sur le téléchargement</value>
   </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>Copier dans le Presse-papiers</value>
+  </data>
+  <data name="CopyToClipboardFailedMessage" xml:space="preserve">
+    <value>Copy to clipboard failed</value>
+  </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>Une mise à jour de Dynamo est disponible. Cliquez pour procéder à l'installation.</value>
   </data>
@@ -3787,6 +3793,18 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>Ce groupe est bloqué. Cliquez pour le débloquer.</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
+    <value>Enable New UI</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
+    <value>Enable the new floating menu for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog.</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
+    <value>_Dump Node Icon Data</value>
+  </data>
+  <data name="NodeIconDataIsDumped" xml:space="preserve">
+    <value>Node Icon Data is dumped to \"{0}\".</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

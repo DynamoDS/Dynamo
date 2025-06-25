@@ -236,6 +236,7 @@ namespace Dynamo.UI.Controls
             var mouseLeftButtonDownAction = new InvokeCommandAction()
             {
                 Command = viewModel.ConnectCommand,
+                PassEventArgsToCommand = true
             };
 
             mouseLeftButtonDownTrigger.Actions.Add(mouseLeftButtonDownAction);

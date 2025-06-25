@@ -56,7 +56,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         public bool SwitchIsEnabled => ResultsLoaded && !IsInput;
         public bool IsSingleAutocomplete
         {
-            get => _isSingleAutocomplete || IsInput;
+            get => _isSingleAutocomplete || IsInput || !dynamoViewModel.IsDNAClusterPlacementEnabled;
             set
             {
                 if (PortViewModel.PortType == PortType.Output && _isSingleAutocomplete != value)
@@ -146,9 +146,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 RaisePropertyChanged(nameof(NthofTotal));
                 RaisePropertyChanged(nameof(ResultsLoaded));
                 RaisePropertyChanged(nameof(SwitchIsEnabled));
-                RaisePropertyChanged(nameof(ConfirmSource));
-                RaisePropertyChanged(nameof(PreviousSource));
-                RaisePropertyChanged(nameof(NextSource));
+                RaisePropertyChanged(nameof(HasPrevious));
+                RaisePropertyChanged(nameof(HasNext));
                 RaisePropertyChanged(nameof(FilteredView));
             }
         }
@@ -191,7 +190,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
-        private int ClusterResultsCount => DropdownResults == null ? 0 : DropdownResults.Count();
+        private int ClusterResultsCount => FilteredView == null ? 0 : FilteredView.Cast<object>().ToList().Count;
 
         private int selectedIndex = 0;
 
@@ -231,6 +230,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 {                    
                     FilteredView.Refresh();
                 }
+
+                RaisePropertyChanged(nameof(SearchInput));
             }
         }
 
@@ -245,30 +246,19 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
             set
             {
-                /*don't try to add a node if the index is out of range or a selection is not made yet (-1)
-                an index of -1 occurs when using the switch to change between modes.*/
-                if (selectedIndex != value && value >= 0 && selectedIndex != -1)
+                if (selectedIndex != value && value >= -1)
                 {
-                    ReAddNode(value);
-                }
-                selectedIndex = value;
-                RaisePropertyChanged(nameof(SelectedIndex));
-                RaisePropertyChanged(nameof(NthofTotal));
-                RaisePropertyChanged(nameof(PreviousSource));
-                RaisePropertyChanged(nameof(NextSource));
-            }
-        }
+                    selectedIndex = value;
+                    if (selectedIndex != -1)
+                    {
+                        AddCluster(selectedIndex);
+                    }
 
-        private void ReAddNode(int index)
-        {
-            if(FullResults == null)
-            {
-                return;
-            }
-            var results = QualifiedResults.ToList();
-            if(index >=  0 && index  < results.Count)
-            {
-                AddCluster(results[index]);
+                    RaisePropertyChanged(nameof(SelectedIndex));
+                    RaisePropertyChanged(nameof(NthofTotal));
+                    RaisePropertyChanged(nameof(HasPrevious));
+                    RaisePropertyChanged(nameof(HasNext));
+                }
             }
         }
 
@@ -305,35 +295,15 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         }
 
         /// <summary>
-        /// Bitmap Source for left caret
+        /// Boolean, true if its possible to select a previous autocomplete option
         /// </summary>
-        public string PreviousSource
-        {
-            get
-            {
-                return selectedIndex == 0 ? "/DynamoCoreWpf;component/UI/Images/caret-left-disabled.png" : "/DynamoCoreWpf;component/UI/Images/caret-left-default.png";
-            }
-        }
+        public bool HasPrevious => selectedIndex > 0;
+
         /// <summary>
-        /// Bitmap Source for right caret
+        /// Boolean, true if its possible to select a next autocomplete option
         /// </summary>
-        public string NextSource
-        {
-            get
-            {
-                return selectedIndex >= ClusterResultsCount - 1 ? "/DynamoCoreWpf;component/UI/Images/caret-right-disabled.png" : "/DynamoCoreWpf;component/UI/Images/caret-right-default.png";
-            }
-        }
-        /// <summary>
-        /// Bitmap Source for confirmation checkmark
-        /// </summary>
-        public string ConfirmSource
-        {
-            get
-            {
-                return ResultsLoaded ? "/DynamoCoreWpf;component/UI/Images/check.png" : "/DynamoCoreWpf;component/UI/Images/check-disabled.png";
-            }
-        }
+        public bool HasNext => selectedIndex < ClusterResultsCount - 1;
+
         /// <summary>
         /// Language agnostic way of showing current result ordinal
         /// </summary>
@@ -397,6 +367,17 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
+        /// <summary>
+        /// Expose IsDNAClusterPlacementEnabled feature flag as readonly in the viewmodel 
+        /// </summary>
+        public bool IsDNAClusterPlacementEnabled
+        {
+            get
+            {
+                return dynamoViewModel.IsDNAClusterPlacementEnabled;
+            }
+        }
+
         internal event Action<NodeModel> ParentNodeRemoved;
 
         internal MLNodeClusterAutoCompletionResponse FullResults { private set; get; }
@@ -426,6 +407,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             FilteredResults = new List<NodeSearchElementViewModel>();
             FilteredHighConfidenceResults = new List<NodeSearchElementViewModel>();
             FilteredLowConfidenceResults = new List<NodeSearchElementViewModel>();
+            SearchInput = string.Empty;            
         }
 
         internal MLNodeAutoCompletionRequest GenerateRequestForMLAutocomplete()
@@ -796,6 +778,19 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
+
+        internal void AddCluster(int filterredIndex)
+        {
+            var currentFilter = FilteredView.Cast<DNADropdownViewModel>().ToList();
+            var currentItem = filterredIndex >= 0 && filterredIndex < currentFilter.Count ? currentFilter[filterredIndex] : null;
+
+            var realCluster = QualifiedResults.FirstOrDefault(x => x.Description.Equals(currentItem.Description));
+            if (realCluster != null)
+            {
+                AddCluster(realCluster);
+            }
+        }
+
         // Add Cluster from server result into the workspace
         internal void AddCluster(ClusterResultItem clusterResultItem)
         {
@@ -950,6 +945,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             //this should run on the UI thread, so thread safety is not a concern
             LastRequestGuid = Guid.NewGuid();
             var myRequest = LastRequestGuid;
+            SelectedIndex = -1;
 
             //start a background thread to make the http request
             Task.Run(() =>
@@ -1040,8 +1036,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     if (comboboxResults.Any())
                     {
                         SelectedIndex = 0;
-                        var ClusterResultItem = QualifiedResults.First();
-                        AddCluster(ClusterResultItem);
                     }
                     
                 });

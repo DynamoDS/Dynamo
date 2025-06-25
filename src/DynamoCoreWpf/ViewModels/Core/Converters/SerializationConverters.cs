@@ -127,20 +127,10 @@ namespace Dynamo.Wpf.ViewModels.Core.Converters
             writer.WriteValue(anno.AnnotationDescriptionText);
             writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.IsExpanded));
             writer.WriteValue(anno.IsExpanded);
-            writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.IsResizedWhileCollapsed));
-            writer.WriteValue(anno.IsResizedWhileCollapsed);
             writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.WidthAdjustment));
             writer.WriteValue(anno.WidthAdjustment);
             writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.HeightAdjustment));
             writer.WriteValue(anno.HeightAdjustment);
-            writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.WidthAdjustmentCollapsed));
-            writer.WriteValue(anno.WidthAdjustmentCollapsed);
-            writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.HeightAdjustmentCollapsed));
-            writer.WriteValue(anno.HeightAdjustmentCollapsed);
-            writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.WidthAdjustmentExpanded));
-            writer.WriteValue(anno.WidthAdjustmentExpanded);
-            writer.WritePropertyName(nameof(ExtraAnnotationViewInfo.HeightAdjustmentExpanded));
-            writer.WriteValue(anno.HeightAdjustmentExpanded);
             writer.WritePropertyName("Nodes");
             writer.WriteStartArray();
             foreach (var m in anno.Nodes)
