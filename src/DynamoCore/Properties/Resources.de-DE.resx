@@ -858,7 +858,7 @@ Dieses Paket enthält wahrscheinlich eine blockierte Assembly. Sie müssen das P
     <value>Es gibt noch keine Empfehlungen. Wechseln Sie ggf. zur Blockttyp-Autovervollständigung.</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
-    <value>Alle Empfehlungen liegen unterhalb der definierten Zuverlässigkeit. Sie können sie ausprobieren oder die Zuverlässigkeitseinstellungen in den Voreinstellungen anpassen.</value>
+    <value>No confident suggestions available. The model is continuously improving - check back soon.</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
     <value>Empfehlungen anzeigen, die als nicht zuverlässig gelten.</value>
@@ -895,5 +895,8 @@ Dieses Paket enthält wahrscheinlich eine blockierte Assembly. Sie müssen das P
   </data>
   <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
     <value>Dieser Block ist derzeit noch experimentell. Das Verhalten, der Name und die Signatur können geändert werden.</value>
+  </data>
+  <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
+    <value>Click on the sparkle icon next to the port to activate Node Autocomplete.</value>
   </data>
 </root>

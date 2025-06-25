@@ -858,7 +858,7 @@
     <value>还没有建议。可以尝试切换到节点类型匹配自动完成。</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
-    <value>所有建议都低于指定的置信度级别。您可以尝试它们或在“首选项”中调整置信度设置。</value>
+    <value>No confident suggestions available. The model is continuously improving - check back soon.</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
     <value>显示低于置信度级别的建议。</value>
@@ -895,5 +895,8 @@
   </data>
   <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
     <value>此节点当前是实验节点。其行为、名称和签名可能会更改。</value>
+  </data>
+  <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
+    <value>Click on the sparkle icon next to the port to activate Node Autocomplete.</value>
   </data>
 </root>
