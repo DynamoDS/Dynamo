@@ -75,19 +75,20 @@ namespace Dynamo.Notifications.View
         {
             // Ensure the application and main window are available and fully loaded.
             // This prevents trying to set focus on a window that is not ready or is shutting down.
-            if (Application.Current?.MainWindow is Window main && main.IsLoaded)
-            {
-                // If we're already on the UI thread, just call the focus method directly.
-                //if (Dispatcher.CheckAccess())
-                //{
-                //    ForceMainWindowFocus();
-                //}
-                //else
-                //{
-                //    // Otherwise, invoke the call synchronously on the UI thread.
-                //    Dispatcher.Invoke(ForceMainWindowFocus);
-                //}
-            }
+            ForceMainWindowFocus();
+            //if (Application.Current?.MainWindow is Window main && main.IsLoaded)
+            //{
+            //    // If we're already on the UI thread, just call the focus method directly.
+            //    if (Dispatcher.CheckAccess())
+            //    {
+            //        ForceMainWindowFocus();
+            //    }
+            //    else
+            //    {
+            //        // Otherwise, invoke the call synchronously on the UI thread.
+            //        Dispatcher.Invoke(ForceMainWindowFocus);
+            //    }
+            //}
         }
 
         private void ForceMainWindowFocus()
