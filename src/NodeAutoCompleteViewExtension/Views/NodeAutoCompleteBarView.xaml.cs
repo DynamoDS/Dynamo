@@ -24,8 +24,6 @@ namespace Dynamo.NodeAutoComplete.Views
             DataContext = viewModel;
             InitializeComponent();
 
-            viewModel.PortViewModel.Highlight = Visibility.Visible;
-
             if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
                 if (Application.Current?.MainWindow != null)
@@ -34,7 +32,14 @@ namespace Dynamo.NodeAutoComplete.Views
                 }
             }
             HomeWorkspaceModel.WorkspaceClosed += CloseAutoComplete;
+            viewModel.ParentNodeRemoved += OnParentNodeRemoved;
             viewModel.IsOpen = true;
+            LoadAndPopulate();
+        }
+
+        internal void ReloadDataContext(NodeAutoCompleteBarViewModel dataContext)
+        {
+            DataContext = dataContext;
             LoadAndPopulate();
         }
 
@@ -55,17 +60,8 @@ namespace Dynamo.NodeAutoComplete.Views
             Analytics.TrackEvent(
             Dynamo.Logging.Actions.Open,
             Dynamo.Logging.Categories.NodeAutoCompleteOperations);
-            ViewModel.DropdownResults = null;
 
-            // Visibility of textbox changed, but text box has not been initialized(rendered) yet.
-            // Call asynchronously focus, when textbox will be ready.
-            Dispatcher.BeginInvoke(new Action(() =>
-            {
-                ViewModel.PopulateAutoComplete();
-                //ViewModel.PopulateAutoCompleteCandidates();
-            }), DispatcherPriority.Loaded);
-
-            ViewModel.ParentNodeRemoved += OnParentNodeRemoved;
+            ViewModel.PopulateAutoComplete();
         }
 
         private void GripHandle_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

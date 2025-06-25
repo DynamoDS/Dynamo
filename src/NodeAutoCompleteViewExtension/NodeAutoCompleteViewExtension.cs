@@ -25,6 +25,7 @@ namespace Dynamo.NodeAutoComplete
         private const String extensionName = "Node Auto Complete";
         private ViewLoadedParams viewLoadedParamsReference;
         private NodeAutoCompletePanelViewModel nodeAutoCompleteViewModel;
+        private NodeAutoCompleteBarView nodeAutoCompleteBarView;
 
         internal MenuItem nodeAutocompleteMenuItem;
 
@@ -177,22 +178,24 @@ namespace Dynamo.NodeAutoComplete
                 nodeAutoCompleteBarViewModel = new NodeAutoCompleteBarViewModel(dynamoViewModel);
             }
 
-            if(nodeAutoCompleteBarViewModel.IsOpen)
-            {
-                return;
-            }
-
             if (nodeAutoCompleteBarViewModel.PortViewModel != null)
             {
                 nodeAutoCompleteBarViewModel.PortViewModel.Highlight = Visibility.Collapsed;
             }
 
             nodeAutoCompleteBarViewModel.PortViewModel = portViewModel;
+            portViewModel.Highlight = Visibility.Visible;
 
-            //TODO : I think we can reuse the window too.
-            var nodeAutoCompleteBarWindow = new NodeAutoCompleteBarView(parentWindow, nodeAutoCompleteBarViewModel);
-            nodeAutoCompleteBarWindow.Show();
-            portViewModel.SetupNodeAutoCompleteClusterWindowPlacement(nodeAutoCompleteBarWindow);
+            if (nodeAutoCompleteBarViewModel.IsOpen)
+            {
+                portViewModel.SetupNodeAutoCompleteClusterWindowPlacement(nodeAutoCompleteBarView);
+                nodeAutoCompleteBarView.ReloadDataContext(nodeAutoCompleteBarViewModel);
+                return;
+            }
+
+            nodeAutoCompleteBarView = new NodeAutoCompleteBarView(parentWindow, nodeAutoCompleteBarViewModel);
+            nodeAutoCompleteBarView.Show();
+            portViewModel.SetupNodeAutoCompleteClusterWindowPlacement(nodeAutoCompleteBarView);
         }
     }
 }
