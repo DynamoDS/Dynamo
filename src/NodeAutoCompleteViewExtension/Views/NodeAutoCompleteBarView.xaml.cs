@@ -1,13 +1,13 @@
-using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Workspaces;
-using Dynamo.Logging;
-using Dynamo.Models;
-using Dynamo.NodeAutoComplete.ViewModels;
 using System;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
+using Dynamo.Models;
+using Dynamo.NodeAutoComplete.ViewModels;
 
 namespace Dynamo.NodeAutoComplete.Views
 {
@@ -19,11 +19,24 @@ namespace Dynamo.NodeAutoComplete.Views
         private NodeAutoCompleteBarViewModel ViewModel => DataContext as NodeAutoCompleteBarViewModel;
 
         public NodeAutoCompleteBarView(Window window, NodeAutoCompleteBarViewModel viewModel)
-        {            
+        {
             Owner = window;
             DataContext = viewModel;
             InitializeComponent();
+            SubscribeEvents();
+            LoadAndPopulate();
+        }
 
+        internal void ReloadDataContext(NodeAutoCompleteBarViewModel dataContext)
+        {
+            DataContext = dataContext;
+            UnsubscribeEvents(this, null);
+            SubscribeEvents();
+            LoadAndPopulate();
+        }
+
+        private void SubscribeEvents()
+        {
             if (string.IsNullOrEmpty(DynamoModel.HostAnalyticsInfo.HostName) && Application.Current != null)
             {
                 if (Application.Current?.MainWindow != null)
@@ -32,15 +45,7 @@ namespace Dynamo.NodeAutoComplete.Views
                 }
             }
             HomeWorkspaceModel.WorkspaceClosed += CloseAutoComplete;
-            viewModel.ParentNodeRemoved += OnParentNodeRemoved;
-            viewModel.IsOpen = true;
-            LoadAndPopulate();
-        }
-
-        internal void ReloadDataContext(NodeAutoCompleteBarViewModel dataContext)
-        {
-            DataContext = dataContext;
-            LoadAndPopulate();
+            ViewModel.ParentNodeRemoved += OnParentNodeRemoved;
         }
 
         private void UnsubscribeEvents(object sender, System.ComponentModel.CancelEventArgs e)
@@ -53,13 +58,13 @@ namespace Dynamo.NodeAutoComplete.Views
                 }
             }
             HomeWorkspaceModel.WorkspaceClosed -= CloseAutoComplete;
+            ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
         }
 
         private void LoadAndPopulate()
         {
-            Analytics.TrackEvent(
-            Dynamo.Logging.Actions.Open,
-            Dynamo.Logging.Categories.NodeAutoCompleteOperations);
+            ViewModel.IsOpen = true;
+            Analytics.TrackEvent(Actions.Open, Categories.NodeAutoCompleteOperations);
 
             ViewModel.PopulateAutoComplete();
         }
@@ -99,7 +104,6 @@ namespace Dynamo.NodeAutoComplete.Views
             if (node == parent_node)
             {
                 CloseAutoComplete();
-                ViewModel.ParentNodeRemoved -= OnParentNodeRemoved;
             }
         }
 
@@ -157,7 +161,7 @@ namespace Dynamo.NodeAutoComplete.Views
                 ViewModel?.DeleteTransientNodes();
                 ViewModel?.ToggleUndoRedoLocked(false);
             }), DispatcherPriority.Loaded);
-            
+
             Close();
             UnsubscribeEvents(this, null);
         }

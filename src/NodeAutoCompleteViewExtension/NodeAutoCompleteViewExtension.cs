@@ -5,8 +5,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Extensions;
-using Dynamo.Logging;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.NodeAutoComplete.ViewModels;
 using Dynamo.NodeAutoComplete.Views;
 using Dynamo.Search.SearchElements;
@@ -35,7 +35,7 @@ namespace Dynamo.NodeAutoComplete
         /// </summary>
         internal IEnumerable<NodeAutocompleteCluster> nodeAutocompleteClusters;
 
-        
+
 
         internal NodeAutoCompleteView DependencyView
         {
@@ -171,7 +171,7 @@ namespace Dynamo.NodeAutoComplete
             {
                 return;
             }
-            
+
             if (nodeAutoCompleteBarViewModel is null)
             {
                 DynamoViewModel dynamoViewModel = portViewModel?.NodeViewModel?.WorkspaceViewModel?.DynamoViewModel;
@@ -188,8 +188,8 @@ namespace Dynamo.NodeAutoComplete
 
             if (nodeAutoCompleteBarViewModel.IsOpen)
             {
-                portViewModel.SetupNodeAutoCompleteClusterWindowPlacement(nodeAutoCompleteBarView);
                 nodeAutoCompleteBarView.ReloadDataContext(nodeAutoCompleteBarViewModel);
+                portViewModel.SetupNodeAutoCompleteClusterWindowPlacement(nodeAutoCompleteBarView);
                 return;
             }
 
