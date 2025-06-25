@@ -52,7 +52,6 @@ namespace Dynamo.Nodes
         private ItemsControl inputPortControl;
         private ItemsControl outputPortControl;
         private Thumb mainGroupThumb;
-        private Thumb collapsedGroupThumb;
 
         private bool _isUpdatingLayout = false;
 
@@ -235,12 +234,6 @@ namespace Dynamo.Nodes
                 mainGroupThumb.DragDelta -= AnnotationRectangleThumb_DragDelta;
                 mainGroupThumb.MouseEnter -= Thumb_MouseEnter;
                 mainGroupThumb.MouseLeave -= Thumb_MouseLeave;
-            }
-            if (collapsedGroupThumb != null)
-            {
-                collapsedGroupThumb.DragDelta -= CollapsedAnnotationRectangleThumb_DragDelta;
-                collapsedGroupThumb.MouseEnter -= Thumb_MouseEnter;
-                collapsedGroupThumb.MouseLeave -= Thumb_MouseLeave;
             }
             UnregisterNamesFromScope();
         }
@@ -586,25 +579,9 @@ namespace Dynamo.Nodes
             SetModelAreaHeight();
         }
 
-        private void CollapsedAnnotationRectangle_SizeChanged(object sender, SizeChangedEventArgs e)
-        {
-            SetModelAreaHeight();
-        }
-
         private void CollapsedAnnotationRectangle_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             SetModelAreaHeight();
-        }
-
-        private void SetModelAreaHeight()
-        {
-            // We only want to change the ModelAreaHeight
-            // if the CollapsedAnnotationRectangle is visible,
-            // as if its not it will be equal to the height of the
-            // contained nodes + the TextBlockHeight
-            if (ViewModel is null || !this.CollapsedAnnotationRectangle.IsVisible) return;
-            ViewModel.ModelAreaHeight = this.CollapsedAnnotationRectangle.ActualHeight;
-            ViewModel.AnnotationModel.UpdateBoundaryFromSelection();
         }
 
         private void contextMenu_Click(object sender, RoutedEventArgs e)
@@ -1435,22 +1412,12 @@ namespace Dynamo.Nodes
             return canvas;
         }
 
-        private Thumb CreateResizeThumb(bool isCollapsed = false)
+        private Thumb CreateResizeThumb()
         {
             var thumb = new Thumb();
-            if (isCollapsed)
-            {
-                Grid.SetRow(thumb, 1);
-                Grid.SetColumn(thumb, 2);
-
-                thumb.Name = "ResizeThumbCollapsed";
-                thumb.DragDelta += CollapsedAnnotationRectangleThumb_DragDelta;
-            }
-            else
-            {
-                thumb.Name = "ResizeThumb";
-                thumb.DragDelta += AnnotationRectangleThumb_DragDelta;
-            }
+            thumb.Name = "ResizeThumb";
+            thumb.DragDelta += AnnotationRectangleThumb_DragDelta;
+            
 
             thumb.Style = _groupResizeThumbStyle;
             thumb.MouseEnter += Thumb_MouseEnter;
@@ -1558,12 +1525,10 @@ namespace Dynamo.Nodes
             inputPortControl = CreateInputPortControl();
             outputPortControl = CreateOutputPortControl();
             var groupContent = CreateGroupContent();
-            collapsedGroupThumb = CreateResizeThumb(true);
 
             grid.Children.Add(inputPortControl);
             grid.Children.Add(outputPortControl);
             grid.Children.Add(groupContent);
-            grid.Children.Add(collapsedGroupThumb);
 
             return grid;
         }
