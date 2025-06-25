@@ -759,68 +759,77 @@ namespace Dynamo.Graph.Annotations
 
             var groupModels = selectedModelsList.OrderBy(x => x.X).ToList();
 
-            //Shifting x by 10 and y to the height of textblock
-            var regionX = groupModels.Min(x => x.X) - ExtendSize;
-            //Increase the Y value by 10. This provides the extra space between
-            // a model and textbox. Otherwise there will be some overlap
-            var regionY = groupModels.Min(y => (y as NoteModel) == null ? (y.Y) : (y.Y - NoteYAdjustment)) -
-                ExtendSize - (TextBlockHeight == 0.0 ? MinTextHeight : TextBlockHeight);
+            // Calculate left-most X value minus padding
+            double regionX = groupModels.Min(x => x.X) - ExtendSize;
 
-            //calculates the distance between the nodes
-            var xDistance = groupModels.Max(x => (x.X + x.Width)) - regionX;
+            // Calculate top-most Y value, adjusted for notes and padding
+            double regionY = groupModels.Min(y => (y as NoteModel) == null ? y.Y : y.Y - NoteYAdjustment)
+                             - ExtendSize
+                             - (TextBlockHeight == 0.0 ? MinTextHeight : TextBlockHeight);
 
-            // InitialTop is to store the Y value without the Textblock height
-            this.InitialTop = groupModels.Min(y => (y as NoteModel) == null ? (y.Y) : (y.Y - NoteYAdjustment));
+            // Calculate horizontal span of the group
+            double xDistance = groupModels.Max(x => x.X + x.Width) - regionX;
+
+            // Store top before text area is added
+            this.InitialTop = groupModels.Min(y => (y as NoteModel) == null ? y.Y : y.Y - NoteYAdjustment);
 
             bool positionChanged = regionX != X || regionY != Y;
-            this.X = regionX;
-            this.Y = regionY;
+            X = regionX;
+            Y = regionY;
 
+            // Choose layout calculation based on expanded/collapsed state
             if (IsExpanded)
-            {
-                var yDistance = groupModels.Max(y => (y as NoteModel) == null ? (y.Y + y.Height) : (y.Y + y.Height - NoteYAdjustment)) - regionY;
-
-                var region = new Rect2D
-                {
-                    X = regionX,
-                    Y = regionY,
-                    Width = xDistance + ExtendSize + Math.Max(WidthAdjustment, 0),
-                    Height = yDistance + ExtendSize + ExtendYHeight + HeightAdjustment - TextBlockHeight
-                };
-
-                this.ModelAreaHeight = region.Height;
-                Height = this.ModelAreaHeight + TextBlockHeight;
-                Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);
-
-                //Initial Height is to store the Actual height of the group.
-                //that is the height should be the initial height without the textblock height.
-                if (this.InitialHeight <= 0.0)
-                    this.InitialHeight = region.Height;
-            }
+                UpdateExpandedLayout(groupModels, regionX, regionY, xDistance);
             else
-            {
-                // Keep expanded width, shrink height only of no collapse-to-min preference.
-                if (!IsCollapsedToMinSize)
-                {
-                    Width = Math.Max(xDistance + ExtendSize + WidthAdjustment, TextMaxWidth + ExtendSize);
-                }
-                // Use minimum width and height if the preference is to collapse to minimum size.
-                else
-                {
-                    Width = Math.Max(MinWidthOnCollapsed + ExtendSize, TextMaxWidth + ExtendSize);
-                }
-
-                ModelAreaHeight = MinCollapsedPortAreaHeight + CollapsedContentHeight;
-                Height = TextBlockHeight + ModelAreaHeight;
-
-                WidthBeforeGroupExpands = Width;
-                HeightBeforeGroupExpands = ModelAreaHeight;
-            }
+                UpdateCollapsedLayout(regionX, xDistance);
 
             if (positionChanged)
-            {
                 RaisePropertyChanged(nameof(Position));
-            }
+        }
+
+        /// <summary>
+        /// Calculates group width and height when the group is expanded.
+        /// </summary>
+        private void UpdateExpandedLayout(List<ModelBase> groupModels, double regionX, double regionY, double xDistance)
+        {
+            // Calculate vertical span, adjusted for notes
+            double yDistance = groupModels.Max(y => (y as NoteModel) == null ? y.Y + y.Height : y.Y + y.Height - NoteYAdjustment) - regionY;
+
+            var region = new Rect2D
+            {
+                X = regionX,
+                Y = regionY,
+                Width = xDistance + ExtendSize + Math.Max(WidthAdjustment, 0),
+                Height = yDistance + ExtendSize + ExtendYHeight + HeightAdjustment - TextBlockHeight
+            };
+
+            ModelAreaHeight = region.Height;
+            Height = ModelAreaHeight + TextBlockHeight;
+            Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);
+
+            // Save actual model area height for future use
+            if (InitialHeight <= 0.0)
+                InitialHeight = region.Height;
+        }
+
+        /// <summary>
+        /// Calculates group width and height when the group is collapsed.
+        /// </summary>
+        private void UpdateCollapsedLayout(double regionX, double xDistance)
+        {
+            // Width depends on whether we want minimum collapsed size or not
+            if (!IsCollapsedToMinSize)
+                Width = Math.Max(xDistance + ExtendSize + WidthAdjustment, TextMaxWidth + ExtendSize);
+            else
+                Width = Math.Max(MinWidthOnCollapsed + ExtendSize, TextMaxWidth + ExtendSize);
+
+            // Fixed height for collapsed groups
+            ModelAreaHeight = MinCollapsedPortAreaHeight + CollapsedContentHeight;
+            Height = TextBlockHeight + ModelAreaHeight;
+
+            // Store collapsed dimensions in case group re-expands
+            WidthBeforeGroupExpands = Width;
+            HeightBeforeGroupExpands = ModelAreaHeight;
         }
 
         /// <summary>
