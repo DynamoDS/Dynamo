@@ -401,6 +401,12 @@
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>ダウンロードの警告</value>
   </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>クリップボードにコピー</value>
+  </data>
+  <data name="CopyToClipboardFailedMessage" xml:space="preserve">
+    <value>Copy to clipboard failed</value>
+  </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>Dynamo 更新プログラムを利用できます。インストールするにはクリックします。</value>
   </data>
@@ -3793,6 +3799,18 @@ Dynamo を再起動してアンインストールを完了します。
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>このグループはフリーズされています。クリックすると、フリーズが解除されます。</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
+    <value>Enable New UI</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
+    <value>Enable the new floating menu for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog.</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
+    <value>_Dump Node Icon Data</value>
+  </data>
+  <data name="NodeIconDataIsDumped" xml:space="preserve">
+    <value>Node Icon Data is dumped to \"{0}\".</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

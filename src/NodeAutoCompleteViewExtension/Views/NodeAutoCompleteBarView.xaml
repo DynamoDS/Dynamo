@@ -6,6 +6,7 @@
              xmlns:ui="clr-namespace:Dynamo.UI;assembly=DynamoCoreWpf"
              xmlns:local="clr-namespace:Dynamo.PackageManager.UI;assembly=DynamoCoreWpf"
              xmlns:dynconverters="clr-namespace:Dynamo.Controls;assembly=DynamoCoreWpf"
+             xmlns:resxother="clr-namespace:Dynamo.Wpf.Properties;assembly=DynamoCoreWpf"
              mc:Ignorable="d"
              WindowStyle="None"
              AllowsTransparency="True"
@@ -16,6 +17,15 @@
              Height="45"
              PreviewKeyDown="OnAutoCompleteKeyDown"
         >
+    <Window.Style>
+        <Style TargetType="Window">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding IsDNAClusterPlacementEnabled}" Value="False">
+                    <Setter Property="Width" Value="500"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Style>
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -40,6 +50,7 @@
             </Style>
             <dynconverters:BoolToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <dynconverters:InverseBoolToVisibilityConverter  x:Key="InverseBooleanToVisibilityConverter"/>
+            <dynconverters:LengthToVisibilityConverter  x:Key="LengthToVisibilityConverter"/>
         </ResourceDictionary>
     </Window.Resources>
 
@@ -160,21 +171,48 @@
                                 </Style>
                             </ComboBox.Style>
                             <ComboBox.Tag>
-                                <TextBox x:Name="AutoCompleteSearchBox"                                            
-                                    HorizontalAlignment="Stretch"
-                                    Height="24"
-                                    Margin="16,5,16,5"
-                                    Padding="2"                                                 
-                                    Width="Auto"                                    
-                                    Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}"
-                                    Background="{Binding Background, RelativeSource={RelativeSource AncestorType=ComboBox}}"
-                                    FontFamily="{Binding FontFamily, RelativeSource={RelativeSource AncestorType=ComboBox}}"
-                                    CaretBrush="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}"
-                                    FontSize="14">
-                                    <TextBox.Text>
-                                        <Binding Path="SearchInput" Mode="OneWayToSource" UpdateSourceTrigger="PropertyChanged" />
-                                    </TextBox.Text>
-                                </TextBox>
+                                <Grid>
+                                    <TextBox x:Name="AutoCompleteSearchBox"                                            
+                                        HorizontalAlignment="Stretch"
+                                        Height="28"
+                                        Margin="7,3,7,3"
+                                        Padding="2"                                                 
+                                        Width="Auto"
+                                        BorderThickness="0,0,0,1"
+                                        Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                        Background="{Binding Background, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                        FontFamily="{Binding FontFamily, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                        CaretBrush="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}"
+                                        FontSize="14">
+                                        <TextBox.Text>
+                                            <Binding Path="SearchInput" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" />
+                                        </TextBox.Text>
+                                    </TextBox>
+
+                                    <StackPanel x:Name="PlaceholderPanel"
+                                        Orientation="Horizontal"
+                                        VerticalAlignment="Center"
+                                        IsHitTestVisible="False"
+                                        HorizontalAlignment="Stretch"
+                                        Height="28"
+                                        Margin="12,3,7,3"
+                                        Width="Auto"
+                                        Visibility="{Binding Text.Length, ElementName=AutoCompleteSearchBox, Converter={StaticResource LengthToVisibilityConverter}}">
+                                        <Image x:Name="SearchIcon"
+                                            Width="20px"
+                                            Height="20px"                                            
+                                            HorizontalAlignment="Left"
+                                            VerticalAlignment="Center"
+                                            DockPanel.Dock="Left">
+                                            <Image.Style>
+                                                <Style TargetType="{x:Type Image}">
+                                                    <Setter Property="Source" Value="/DynamoCoreWpf;component/UI/Images/searchmagnifier.png" />
+                                                </Style>
+                                            </Image.Style>
+                                        </Image>
+                                        <TextBlock Padding="2" FontSize="14" Text="{x:Static resxother:Resources.LibraryViewSearchText}" Foreground="{Binding Foreground, RelativeSource={RelativeSource AncestorType=ComboBox}}" VerticalAlignment="Center"/>
+                                    </StackPanel>
+                                </Grid>
                             </ComboBox.Tag>
                             <ComboBox.ItemTemplate>
                                 <DataTemplate>
@@ -394,7 +432,7 @@
                         </Style>
                     </Button.Style>
                 </Button>
-                <Grid Grid.Column="8">
+                <Grid Grid.Column="8" Visibility="{Binding IsDNAClusterPlacementEnabled, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapse}">
                     <ToggleButton x:Name="SwitchButton" Width="100" Height="36" FocusVisualStyle="{x:Null}"
                       HorizontalAlignment="Center" VerticalAlignment="Center"
                       Background="{StaticResource DarkGreyBrush}" BorderBrush="DarkGray" BorderThickness="2"

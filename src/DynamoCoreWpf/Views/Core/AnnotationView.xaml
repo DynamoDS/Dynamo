@@ -403,26 +403,6 @@
                 </Setter.Value>
             </Setter>
         </Style>
-
-        <Style x:Key="GroupResizeThumbStyle" TargetType="{x:Type Thumb}">
-            <Setter Property="SnapsToDevicePixels" Value="True" />
-            <Setter Property="Margin" Value="0,0,2.5,2.5" />
-            <Setter Property="Width" Value="10" />
-            <Setter Property="Height" Value="10" />
-            <Setter Property="HorizontalAlignment" Value="Right" />
-            <Setter Property="VerticalAlignment" Value="Bottom" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="{x:Type Thumb}">
-                        <Polygon Points="0,8 8,8 8,0"
-                         Fill="{Binding DataContext.Background,
-                                RelativeSource={RelativeSource AncestorType=UserControl},
-                                Converter={StaticResource TextForegroundSaturationColorConverter},
-                                ConverterParameter=Thumb}" />
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
     </UserControl.Resources>
 
     <Grid Name="AnnotationGrid"
@@ -948,10 +928,27 @@
                 </Canvas>
 
                 <Thumb x:Name="ResizeThumb"
-                       Style="{StaticResource GroupResizeThumbStyle}"
+                       Width="10"
+                       Height="10"
+                       HorizontalAlignment="Right"
+                       VerticalAlignment="Bottom"
                        DragDelta="AnnotationRectangleThumb_DragDelta"
                        MouseEnter="Thumb_MouseEnter"
-                       MouseLeave="Thumb_MouseLeave" />
+                       MouseLeave="Thumb_MouseLeave">
+                    <Thumb.Style>
+                        <Style TargetType="{x:Type Thumb}">
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type Thumb}">
+                                        <Border BorderThickness="0"
+                                                BorderBrush="Transparent"
+                                                Background="Transparent" />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </Thumb.Style>
+                </Thumb>
             </Grid>
         </Expander>
         <!--
@@ -966,7 +963,6 @@
         -->
         <Border x:Name="CollapsedAnnotationRectangle"
                 Width="{Binding Width}"
-                Height="{Binding ModelAreaHeight}"
                 Visibility="{Binding ElementName=GroupExpander, Path=IsExpanded, Converter={StaticResource InverseBoolToVisibilityCollapsedConverter}}"
                 Grid.Row="1">
             <Border.Background>
@@ -980,7 +976,7 @@
                 </Grid.ColumnDefinitions>
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
+                    <RowDefinition Height="Auto" />
                 </Grid.RowDefinitions>
 
                 <!--INPUT PORTS-->
@@ -1058,7 +1054,6 @@
                             Background="#EEEEEE"
                             CornerRadius="{Binding Path=ActualHeight, ElementName=NodeCount}"
                             Width="{Binding Path=ActualHeight, ElementName=NodeCount}"
-                            VerticalAlignment="Bottom"
                             Height="32"
                             Margin="10">
                         <TextBlock Text="{Binding NodeContentCount, Mode=OneWay, StringFormat='+{0}'}"
@@ -1067,14 +1062,6 @@
                                    FontSize="14" />
                     </Border>
                 </Grid>
-
-                <Thumb x:Name="ResizeThumbCollapsed"
-                       Grid.Row="1"
-                       Grid.Column="2"
-                       Style="{StaticResource GroupResizeThumbStyle}"
-                       DragDelta="CollapsedAnnotationRectangleThumb_DragDelta"
-                       MouseEnter="Thumb_MouseEnter"
-                       MouseLeave="Thumb_MouseLeave" />
             </Grid>
         </Border>
     </Grid>
