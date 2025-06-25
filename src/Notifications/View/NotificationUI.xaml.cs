@@ -78,15 +78,15 @@ namespace Dynamo.Notifications.View
             if (Application.Current?.MainWindow is Window main && main.IsLoaded)
             {
                 // If we're already on the UI thread, just call the focus method directly.
-                if (Dispatcher.CheckAccess())
-                {
-                    ForceMainWindowFocus();
-                }
-                else
-                {
-                    // Otherwise, invoke the call synchronously on the UI thread.
-                    Dispatcher.Invoke(ForceMainWindowFocus);
-                }
+                //if (Dispatcher.CheckAccess())
+                //{
+                //    ForceMainWindowFocus();
+                //}
+                //else
+                //{
+                //    // Otherwise, invoke the call synchronously on the UI thread.
+                //    Dispatcher.Invoke(ForceMainWindowFocus);
+                //}
             }
         }
 
