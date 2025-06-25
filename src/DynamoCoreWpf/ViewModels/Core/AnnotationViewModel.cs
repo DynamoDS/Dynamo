@@ -11,7 +11,6 @@ using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Notes;
 using Dynamo.Interfaces;
 using Dynamo.Logging;
 using Dynamo.Models;
@@ -37,9 +36,6 @@ namespace Dynamo.ViewModels
         private ObservableCollection<Dynamo.Configuration.StyleItem> groupStyleList;
         private IEnumerable<Configuration.StyleItem> preferencesStyleItemsList;
         private PreferenceSettings preferenceSettings;
-
-        private const double MinSpacing = 50;
-        private const double MinChangeThreshold = 1;
 
         public readonly WorkspaceViewModel WorkspaceViewModel;
 
@@ -298,21 +294,13 @@ namespace Dynamo.ViewModels
             set
             {
                 if (isOptionalInPortsCollapsed == value) return;
-
-                // Record for undo
-                var undoRecorder = WorkspaceViewModel.Model.UndoRecorder;
-                using (undoRecorder.BeginActionGroup())
-                    undoRecorder.RecordModificationForUndo(annotationModel);
-
                 isOptionalInPortsCollapsed = value;
                 annotationModel.IsOptionalInPortsCollapsed = value;
-
                 RaisePropertyChanged(nameof(IsOptionalInPortsCollapsed));
-                WorkspaceViewModel.HasUnsavedChanges = true;
             }
         }
 
-        private bool isUnconnectedOutPortsCollapsed;
+        private bool isUnconnectedOutPortsCollapsed = true;
         /// <summary>
         /// Controls visibility of unconnected output ports in the group.
         /// </summary>
@@ -322,18 +310,9 @@ namespace Dynamo.ViewModels
             set
             {
                 if (isUnconnectedOutPortsCollapsed == value) return;
-
-                // Record for undo
-                var undoRecorder = WorkspaceViewModel.Model.UndoRecorder;
-                using (undoRecorder.BeginActionGroup())
-                    undoRecorder.RecordModificationForUndo(annotationModel);
-
-
                 isUnconnectedOutPortsCollapsed = value;
                 annotationModel.IsUnconnectedOutPortsCollapsed = value;
-
                 RaisePropertyChanged(nameof(IsUnconnectedOutPortsCollapsed));
-                WorkspaceViewModel.HasUnsavedChanges = true;
             }
         }
 
@@ -361,11 +340,6 @@ namespace Dynamo.ViewModels
 
                 // Methods to collapse or expand the group based on the new value of IsExpanded.
                 ManageAnnotationMVExpansionAndCollapse();
-
-                if (IsExpanded)
-                {
-                    UpdateLayoutForGroupExpansion();
-                }
             }
         }
 
@@ -1400,286 +1374,6 @@ namespace Dynamo.ViewModels
             ReportNodesPosition();
         }
 
-        /// <summary>
-        /// Adjusts layout by moving nearby elements to prevent overlap when the group expands.
-        /// </summary>
-        internal void UpdateLayoutForGroupExpansion()
-        {
-            var model = annotationModel;
-
-            double deltaY = model.IsExpanded ?
-                model.ModelAreaHeight - model.HeightBeforeGroupExpands :
-                model.HeightBeforePortToggle;
-            double deltaX = model.Width - model.WidthBeforeGroupExpands;
-
-            if (deltaX < MinChangeThreshold && deltaY < MinChangeThreshold)
-                return;
-
-            var alreadyMoved = new HashSet<ModelBase>();
-            var undoRecorder = WorkspaceViewModel.Model.UndoRecorder;
-
-            using (undoRecorder.BeginActionGroup())
-            {
-                if (deltaY > MinChangeThreshold)
-                    ApplySpacing(model, isHorizontal: false, alreadyMoved);
-
-                if (deltaX > MinChangeThreshold)
-                    ApplySpacing(model, isHorizontal: true, alreadyMoved);
-            }
-        }
-
-        /// <summary>
-        /// Applies spacing to reposition nearby models when a group expands, avoiding overlaps and updating boundaries.
-        /// </summary>
-        private void ApplySpacing(AnnotationModel expandingGroup, bool isHorizontal, HashSet<ModelBase> alreadyMoved)
-        {
-            var offsets = GetAffectedModels(expandingGroup, isHorizontal, alreadyMoved);
-            if (offsets.Count == 0) return;
-
-            // Ensure changes to all affected models are tracked for Undo
-            WorkspaceViewModel.Model.RecordModelsForModification(offsets.Keys.ToList());
-
-            foreach (var (model, offset) in offsets)
-            {
-                // Skip moving groups directly, just update pinned notes to ensure boundaries update
-                if (model is AnnotationModel) continue;
-                
-                if (isHorizontal)
-                    model.X += offset;
-                else
-                    model.Y += offset;
-
-                model.ReportPosition();
-                alreadyMoved.Add(model);
-            }
-
-            // To ensure group boundaries are updated correctly
-            foreach (var note in WorkspaceViewModel.Model.Annotations
-                .SelectMany(group => group.Nodes.OfType<NoteModel>())
-                .Where(note => note.PinnedNode != null))
-            {
-                note.ReportPosition();
-            }
-        }
-
-        /// <summary>
-        /// Calculates all models affected by a group's expansion and the offset needed to reposition them.
-        /// </summary>
-        private Dictionary<ModelBase, double> GetAffectedModels(
-            AnnotationModel expandingGroup,
-            bool isHorizontal,
-            HashSet<ModelBase> skip)
-        {
-            var visited = new HashSet<ModelBase>(skip);
-            foreach (var node in expandingGroup.Nodes)
-                visited.Add(node);
-
-            var toProcess = new List<ModelBase>();
-            var directlyAffected = new List<ModelBase>();
-            var otherGroups = WorkspaceViewModel.Model.Annotations.Where(g => g != expandingGroup);
-            var allGroupedItems = WorkspaceViewModel.Model.Annotations.SelectMany(g => g.Nodes);
-            double smallestSpacing = double.MaxValue;
-
-            var expandedBounds = GetExpandingGroupBounds(expandingGroup);
-            visited.Add(expandingGroup);
-            foreach (var node in expandingGroup.Nodes) visited.Add(node);
-
-            // Pick direction-specific helpers
-            Func<Rect2D, Rect2D, bool> overlaps = isHorizontal ? IsRightAndVerticallyOverlapping : IsBelowAndHorizontallyOverlapping;
-            Func<Rect2D, Rect2D, double> getSpacing = isHorizontal ? (a, b) => b.Left - a.Right : (a, b) => b.Top - a.Bottom;
-
-            // --- Step 1: Find directly affected items ---
-            // Groups
-            foreach (var group in otherGroups)
-            {
-                if (overlaps(expandedBounds, group.Rect))
-                {
-                    var spacing = getSpacing(expandedBounds, group.Rect);
-                    if (spacing < MinSpacing)
-                    {
-                        smallestSpacing = Math.Min(smallestSpacing, spacing);
-                        directlyAffected.Add(group);
-                        foreach (var node in group.Nodes)
-                            visited.Add(node);
-                    }
-                }
-            }
-
-            // Free-standing items
-            var freeItems = WorkspaceViewModel.Model.Notes.Cast<ModelBase>()
-                .Concat(WorkspaceViewModel.Model.Nodes.Cast<ModelBase>())
-                .Where(item => !allGroupedItems.Contains(item))
-                .ToList();
-
-            foreach (var item in freeItems)
-            {
-                if (overlaps(expandedBounds, item.Rect))
-                {
-                    var spacing = getSpacing(expandedBounds, item.Rect);
-                    if (spacing < MinSpacing)
-                    {
-                        smallestSpacing = Math.Min(smallestSpacing, spacing);
-                        directlyAffected.Add(item is NoteModel { PinnedNode: NodeModel pinned } ? pinned : item);
-                    }
-                }
-            }
-
-            // --- Step 2: Initialize movement ---
-            var moveBy = MinSpacing - smallestSpacing;
-            if (moveBy <= 0) return new();
-
-            var allToMove = new Dictionary<ModelBase, double>();
-            foreach (var model in directlyAffected)
-            {
-                toProcess.Add(model);
-                allToMove[model] = moveBy;
-
-                if (model is AnnotationModel group)
-                {
-                    foreach (var node in group.Nodes)
-                    {
-                        if (node is not NoteModel { PinnedNode: not null })
-                            allToMove[node] = moveBy;
-                    }
-                }
-            }
-
-            // --- Step 3: Recursively propagate movement downstream ---
-            for (int i = 0; i < toProcess.Count; i++)
-            {
-                var current = toProcess[i];
-                var offset = allToMove.GetValueOrDefault(current, moveBy);
-                var currentBounds = current.Rect;
-
-                // Simulate the moved position
-                currentBounds = isHorizontal
-                    ? new Rect2D(currentBounds.X, currentBounds.Y, currentBounds.Width + offset, currentBounds.Height)
-                    : new Rect2D(currentBounds.X, currentBounds.Y, currentBounds.Width, currentBounds.Height + offset);
-
-                // Groups
-                foreach (var group in otherGroups)
-                {
-                    if (!overlaps(currentBounds, group.Rect)) continue;
-
-                    var requiredOffset = MinSpacing - getSpacing(currentBounds, group.Rect);
-                    if (requiredOffset <= 0) continue;
-
-                    allToMove[group] = Math.Max(requiredOffset, allToMove.GetValueOrDefault(group, 0));
-                    toProcess.Add(group);
-
-                    foreach (var node in group.Nodes)
-                    {
-                        if (node is NoteModel note && note.PinnedNode != null) continue;
-
-                        allToMove[node] = Math.Max(requiredOffset, allToMove.GetValueOrDefault(node, 0));
-                        visited.Add(node);
-                    }
-                }
-
-                // Free-standing items
-                foreach (var item in freeItems)
-                {
-                    if (!overlaps(currentBounds, item.Rect)) continue;
-
-                    var requiredOffset = MinSpacing - getSpacing(currentBounds, item.Rect);
-                    if (requiredOffset <= 0) continue;
-
-                    if (item is NoteModel note && note.PinnedNode is NodeModel pinned)
-                    {
-                        if (!visited.Contains(pinned))
-                        {
-                            allToMove[pinned] = Math.Max(requiredOffset, allToMove.GetValueOrDefault(pinned, 0));
-                            toProcess.Add(pinned);
-                        }
-                    }
-                    else
-                    {
-                        allToMove[item] = Math.Max(requiredOffset, allToMove.GetValueOrDefault(item, 0));
-                        toProcess.Add(item);
-                    }
-                }
-            }
-
-            AddExternalConnectorPinsToMove(allToMove);
-            return allToMove;
-        }
-
-        /// <summary>
-        /// Adds external connector pins to the movement list if they connect nodes from different groups.
-        /// </summary>
-        private void AddExternalConnectorPinsToMove(Dictionary<ModelBase, double> allToMove)
-        {
-            // Get all moved nodes
-            var movedNodes = allToMove.Keys.OfType<NodeModel>().ToList();
-
-            // Collect only moved groups
-            var movedGroups = allToMove.Keys.OfType<AnnotationModel>();
-
-            // Map each node to its group
-            var nodeToGroup = new Dictionary<NodeModel, AnnotationModel>();
-
-            foreach (var group in movedGroups)
-            {
-                foreach (var node in group.Nodes.OfType<NodeModel>())
-                {
-                    nodeToGroup[node] = group;
-                }
-            }
-
-            foreach (var node in movedNodes)
-            {
-                if (!allToMove.TryGetValue(node, out var nodeOffset)) continue;
-
-                foreach (var connector in node.AllConnectors)
-                {
-                    var startNode = connector.Start.Owner;
-                    var endNode = connector.End.Owner;
-
-                    bool sameGroup =
-                        nodeToGroup.TryGetValue(startNode, out var groupA) &&
-                        nodeToGroup.TryGetValue(endNode, out var groupB) &&
-                        groupA == groupB;
-
-                    if (sameGroup) continue;
-
-                    // Add each pin with the largest offset from its connected node (if multiple nodes affect it)
-                    foreach (var pin in connector.ConnectorPinModels)
-                    {
-                        if (!allToMove.TryGetValue(pin, out var existingOffset))
-                        {
-                            allToMove[pin] = nodeOffset;
-                        }
-                        else
-                        {
-                            allToMove[pin] = Math.Max(existingOffset, nodeOffset);
-                        }
-                    }
-                }
-            }
-        }
-
-        private static Rect2D GetExpandingGroupBounds(AnnotationModel group)
-        {
-            var width = group.Width;
-            var height = group.ModelAreaHeight + group.TextBlockHeight;           
-
-            return new Rect2D(group.X, group.Y, width, height);
-        }
-
-        private bool IsBelowAndHorizontallyOverlapping(Rect2D thisGroup, Rect2D other)
-        {
-            return other.Top > thisGroup.Top &&
-                other.Left < thisGroup.Right &&
-                other.Right > thisGroup.Left;
-        }
-
-        private bool IsRightAndVerticallyOverlapping(Rect2D thisGroup, Rect2D other)
-        {
-            return other.Left > thisGroup.Left &&
-                other.Top < thisGroup.Bottom &&
-                other.Bottom > thisGroup.Top;
-        }
-
         private void UpdateFontSize(object parameter)
         {
             if (parameter == null) return;
@@ -1836,6 +1530,7 @@ namespace Dynamo.ViewModels
                 case nameof(IsExpanded):
                     ManageAnnotationMVExpansionAndCollapse();
                     break;
+
             }
         }
 

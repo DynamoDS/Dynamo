@@ -24,6 +24,8 @@ namespace Dynamo.Graph.Annotations
         private const double ExtendYHeight = 5.0;
         private const double NoteYAdjustment = 8.0;
 
+        double lastExpandedWidth = 0;
+
         /// <summary>
         /// The default height of the group's content area when collapsed.
         /// </summary>
@@ -571,46 +573,6 @@ namespace Dynamo.Graph.Annotations
             }
         }
 
-        private double heightBeforeGroupExpands;
-        /// <summary>
-        /// Stores the group height before it expands from collapsed state.
-        /// </summary>
-        public double HeightBeforeGroupExpands
-        {
-            get => heightBeforeGroupExpands;
-            private set => heightBeforeGroupExpands = value;
-        }
-
-        private double widthBeforeGroupExpands;
-        /// <summary>
-        /// Stores the group width before it expands from collapsed state.
-        /// </summary>
-        public double WidthBeforeGroupExpands
-        {
-            get => widthBeforeGroupExpands;
-            private set => widthBeforeGroupExpands = value;
-        }
-
-        private double heightBeforePortToggle;
-        /// <summary>
-        /// Stores the group height before toggling optional or unconnected ports.
-        /// </summary>
-        public double HeightBeforePortToggle
-        {
-            get => heightBeforePortToggle;
-            set => heightBeforePortToggle = value;
-        }
-
-        private double widthBeforePortToggle;
-        /// <summary>
-        /// Stores the group width before toggling optional or unconnected ports.
-        /// </summary>
-        public double WidthBeforePortToggle
-        {
-            get => widthBeforePortToggle;
-            set => widthBeforePortToggle = value;
-        }
-
         #endregion
 
         /// <summary>
@@ -779,9 +741,51 @@ namespace Dynamo.Graph.Annotations
 
             // Choose layout calculation based on expanded/collapsed state
             if (IsExpanded)
+<<<<<<< HEAD
                 UpdateExpandedLayout(groupModels, regionX, regionY, xDistance);
             else
                 UpdateCollapsedLayout(regionX, xDistance);
+=======
+            {
+                var yDistance = groupModels.Max(y => (y as NoteModel) == null ? (y.Y + y.Height) : (y.Y + y.Height - NoteYAdjustment)) - regionY;
+
+                var region = new Rect2D
+                {
+                    X = regionX,
+                    Y = regionY,
+                    Width = xDistance + ExtendSize + Math.Max(WidthAdjustment, 0),
+                    Height = yDistance + ExtendSize + ExtendYHeight + HeightAdjustment - TextBlockHeight
+                };
+
+                this.ModelAreaHeight = region.Height;
+                Height = this.ModelAreaHeight + TextBlockHeight;
+                Width = Math.Max(region.Width, TextMaxWidth + ExtendSize);
+
+                //Initial Height is to store the Actual height of the group.
+                //that is the height should be the initial height without the textblock height.
+                if (this.InitialHeight <= 0.0)
+                    this.InitialHeight = region.Height;
+            }
+
+            // Keep expanded width, shrink height only of no collapse-to-min preference.
+            else if (!IsCollapsedToMinSize)
+            {
+                Width = Math.Max(xDistance + ExtendSize + WidthAdjustment, TextMaxWidth + ExtendSize);
+
+                ModelAreaHeight = MinCollapsedPortAreaHeight + CollapsedContentHeight;
+                Height = TextBlockHeight + ModelAreaHeight;
+            }
+            // Use minimum width and height if the preference is to collapse to minimum size.
+            else
+            {
+                Width = Math.Max(MinWidthOnCollapsed + ExtendSize, TextMaxWidth + ExtendSize);
+
+                ModelAreaHeight = MinCollapsedPortAreaHeight + CollapsedContentHeight;
+                Height = TextBlockHeight + ModelAreaHeight;
+            }
+
+            lastExpandedWidth = Width;
+>>>>>>> parent of dd7f2f1a8c (clean working - AutoLayout)
 
             if (positionChanged)
                 RaisePropertyChanged(nameof(Position));
