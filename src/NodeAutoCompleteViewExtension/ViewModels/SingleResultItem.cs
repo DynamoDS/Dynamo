@@ -1,9 +1,10 @@
+using System;
+using System.Collections.Generic;
 using Dynamo.Search.SearchElements;
-using Dynamo.Wpf.ViewModels;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
-    internal class SingleResultItem
+    internal class SingleResultItem : ClusterResultItem
     {
 
         public SingleResultItem(NodeSearchElement model, double score = 1.0)
@@ -13,28 +14,26 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             Description = model.Name;
             Parameters = model.Parameters;
             CreationName = model.CreationName;
-            PortToConnect = model.AutoCompletionNodeElementInfo.PortToConnect;
-            Score = score;
-        }
-
-        public SingleResultItem(NodeSearchElementViewModel x) : this(x.Model)
-        {
-            //Convert percent to probability
-            Score = x.AutoCompletionNodeMachineLearningInfo.ConfidenceScore / 100.0;
+            Probability = score;
+            Title = Description;
+            EntryNodeIndex = 0;
+            EntryNodeInPort = model.AutoCompletionNodeElementInfo.PortToConnect;
+            EntryNodeOutPort = model.AutoCompletionNodeElementInfo.PortToConnect;
+            Topology = new TopologyItem
+            {
+                Nodes = new List<NodeItem> { new NodeItem {
+                    Id = Guid.NewGuid().ToString(),
+                    Type = new NodeType { Id = CreationName } } },
+                Connections = new List<ConnectionItem>()
+            };
         }
 
         internal string Assembly { get; set; }
 
         internal string IconName { get; set; }
 
-        internal string Description { get; set; }
-
         internal string Parameters { get; set; }
 
         internal string CreationName { get; set; }
-
-        internal int PortToConnect { get; set; }
-
-        internal double Score { get; set; }
     }
 }
