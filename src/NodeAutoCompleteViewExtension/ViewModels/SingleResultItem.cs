@@ -1,12 +1,26 @@
 using Dynamo.Graph.Nodes;
+using System;
+using System.Collections.Generic;
 using Dynamo.Search.SearchElements;
-using Dynamo.Wpf.ViewModels;
+using System.Linq;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
-    internal class SingleResultItem
+    internal class SingleResultItem : ClusterResultItem
     {
-
+        private void InitTopology(int port)
+        {
+            EntryNodeIndex = 0;
+            EntryNodeInPort = port;
+            EntryNodeOutPort = port;
+            Topology = new TopologyItem
+            {
+                Nodes = new List<NodeItem> { new NodeItem {
+                    Id = Guid.NewGuid().ToString(),
+                    Type = new NodeType { Id = CreationName } } },
+                Connections = new List<ConnectionItem>()
+            };
+        }
         public SingleResultItem(NodeSearchElement model, double score = 1.0)
         {
             Assembly = model.Assembly;
@@ -14,8 +28,9 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             Description = model.Name;
             Parameters = model.Parameters;
             CreationName = model.CreationName;
-            PortToConnect = model.AutoCompletionNodeElementInfo.PortToConnect;
-            Score = score;
+            Probability = score;
+            Title = Description;
+            InitTopology(model.AutoCompletionNodeElementInfo.PortToConnect);
         }
 
         public SingleResultItem(NodeModel nodeModel, int portToConnect, double score = 1.0)
@@ -23,29 +38,19 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             Assembly = nodeModel.GetType().Assembly.GetName().Name;
             IconName = nodeModel.GetType().Name;
             Description = nodeModel.Name;
+            Parameters = $"({string.Join(", ",nodeModel.InPorts.Select(x=>x.Name))})";
             CreationName = string.IsNullOrWhiteSpace(nodeModel.CreationName) ? nodeModel.GetOriginalName(): nodeModel.CreationName;
-            PortToConnect = portToConnect;
-            Score = score;
-        }
-
-        public SingleResultItem(NodeSearchElementViewModel x) : this(x.Model)
-        {
-            //Convert percent to probability
-            Score = x.AutoCompletionNodeMachineLearningInfo.ConfidenceScore / 100.0;
+            Probability = score;
+            Title = Description;
+            InitTopology(portToConnect);
         }
 
         internal string Assembly { get; set; }
 
         internal string IconName { get; set; }
 
-        internal string Description { get; set; }
-
         internal string Parameters { get; set; }
 
         internal string CreationName { get; set; }
-
-        internal int PortToConnect { get; set; }
-
-        internal double Score { get; set; }
     }
 }

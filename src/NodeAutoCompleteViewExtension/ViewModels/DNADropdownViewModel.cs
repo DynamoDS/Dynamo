@@ -1,4 +1,6 @@
+using System;
 using System.Windows.Media;
+using Dynamo.Search.SearchElements;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
@@ -7,5 +9,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         public string Description { get; set; }
         public string Parameters { get; set; }
         public ImageSource SmallIcon { get; set; }
+        internal ClusterResultItem ClusterResultItem { get; set; }
     }
 }
