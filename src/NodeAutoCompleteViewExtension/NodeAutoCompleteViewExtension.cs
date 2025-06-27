@@ -188,6 +188,11 @@ namespace Dynamo.NodeAutoComplete
 
             if (nodeAutoCompleteBarViewModel.IsOpen)
             {
+                if (nodeAutoCompleteBarView == null)
+                {
+                    nodeAutoCompleteBarView = new NodeAutoCompleteBarView(parentWindow, nodeAutoCompleteBarViewModel);
+                    nodeAutoCompleteBarView.Show();
+                }
                 nodeAutoCompleteBarView.ReloadDataContext(nodeAutoCompleteBarViewModel);
                 portViewModel.SetupNodeAutoCompleteClusterWindowPlacement(nodeAutoCompleteBarView);
                 return;
