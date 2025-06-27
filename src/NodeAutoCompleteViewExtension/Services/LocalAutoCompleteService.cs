@@ -16,6 +16,7 @@ using Dynamo.Search.SearchElements;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.NodeAutoComplete.ViewModels;
+using DynamoUtilities;
 
 namespace Dynamo.NodeAutoComplete.Services
 {
@@ -261,16 +262,23 @@ namespace Dynamo.NodeAutoComplete.Services
         /// <returns>List of autocomplete results from the help file</returns>
         private List<SingleResultItem> ProcessHelpFile(string filePath, NodeModel selectedNode, PortModel selectedPortModel)
         {
-            // Early validation: check if file contains JSON and is not empty
-            if (!IsValidHelpFile(filePath))
+            // Early validation: check if file exists and is not empty
+            var fileInfo = new FileInfo(filePath);
+            if (!fileInfo.Exists || fileInfo.Length == 0)
+            {
+                return new List<SingleResultItem>();
+            }
+            // Read and validate JSON content
+            var fileContents = File.ReadAllText(filePath);
+
+            if (string.IsNullOrWhiteSpace(fileContents))
             {
                 return new List<SingleResultItem>();
             }
 
-            // Read and validate JSON content
-            var fileContents = File.ReadAllText(filePath);
-            if (string.IsNullOrWhiteSpace(fileContents))
+            if (!PathHelper.isValidJson(filePath, out fileContents, out var exception))
             {
+                dynamoViewModel.Model.Logger.LogError($"Could not read help file: {exception.Message}");
                 return new List<SingleResultItem>();
             }
 
@@ -295,34 +303,6 @@ namespace Dynamo.NodeAutoComplete.Services
 
             // Extract the prediction result
             return ExtractPredictionFromWorkspace(matchingNode, selectedPortModel);
-        }
-
-        /// <summary>
-        /// Validate if a file is a potentially valid help file
-        /// </summary>
-        /// <param name="filePath">The path to the file to validate</param>
-        /// <returns>True if the file appears to be a valid help file</returns>
-        private bool IsValidHelpFile(string filePath)
-        {
-            try
-            {
-                var fileInfo = new FileInfo(filePath);
-                if (!fileInfo.Exists || fileInfo.Length == 0)
-                {
-                    return false;
-                }
-
-                // Quick JSON format check - read first few characters
-                using (var reader = new StreamReader(filePath))
-                {
-                    var firstChar = (char)reader.Read();
-                    return firstChar == '{' || firstChar == '[';
-                }
-            }
-            catch
-            {
-                return false;
-            }
         }
 
         /// <summary>
