@@ -53,6 +53,10 @@ Dynamo.Controls.BooleanNegationConverter
 Dynamo.Controls.BooleanNegationConverter.BooleanNegationConverter() -> void
 Dynamo.Controls.BooleanNegationConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.BooleanNegationConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.BooleanToAngleConverter
+Dynamo.Controls.BooleanToAngleConverter.BooleanToAngleConverter() -> void
+Dynamo.Controls.BooleanToAngleConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
+Dynamo.Controls.BooleanToAngleConverter.ConvertBack(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
 Dynamo.Controls.BooleanToBrushConverter
 Dynamo.Controls.BooleanToBrushConverter.BooleanToBrushConverter() -> void
 Dynamo.Controls.BooleanToBrushConverter.Convert(object value, System.Type targetType, object parameter, System.Globalization.CultureInfo culture) -> object
