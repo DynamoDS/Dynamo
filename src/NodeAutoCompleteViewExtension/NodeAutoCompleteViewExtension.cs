@@ -5,8 +5,8 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using Dynamo.Extensions;
-using Dynamo.Logging;
 using Dynamo.Graph.Workspaces;
+using Dynamo.Logging;
 using Dynamo.NodeAutoComplete.ViewModels;
 using Dynamo.NodeAutoComplete.Views;
 using Dynamo.Search.SearchElements;
@@ -25,6 +25,7 @@ namespace Dynamo.NodeAutoComplete
         private const String extensionName = "Node Auto Complete";
         private ViewLoadedParams viewLoadedParamsReference;
         private NodeAutoCompletePanelViewModel nodeAutoCompleteViewModel;
+        private NodeAutoCompleteBarView nodeAutoCompleteBarView;
 
         internal MenuItem nodeAutocompleteMenuItem;
 
@@ -34,7 +35,7 @@ namespace Dynamo.NodeAutoComplete
         /// </summary>
         internal IEnumerable<NodeAutocompleteCluster> nodeAutocompleteClusters;
 
-        
+
 
         internal NodeAutoCompleteView DependencyView
         {
@@ -175,16 +176,11 @@ namespace Dynamo.NodeAutoComplete
             {
                 return;
             }
-            
+
             if (nodeAutoCompleteBarViewModel is null)
             {
                 DynamoViewModel dynamoViewModel = portViewModel?.NodeViewModel?.WorkspaceViewModel?.DynamoViewModel;
                 nodeAutoCompleteBarViewModel = new NodeAutoCompleteBarViewModel(dynamoViewModel);
-            }
-
-            if(nodeAutoCompleteBarViewModel.IsOpen)
-            {
-                return;
             }
 
             if (nodeAutoCompleteBarViewModel.PortViewModel != null)
@@ -193,11 +189,23 @@ namespace Dynamo.NodeAutoComplete
             }
 
             nodeAutoCompleteBarViewModel.PortViewModel = portViewModel;
+            portViewModel.Highlight = Visibility.Visible;
 
-            //TODO : I think we can reuse the window too.
-            var nodeAutoCompleteBarWindow = new NodeAutoCompleteBarView(parentWindow, nodeAutoCompleteBarViewModel);
-            nodeAutoCompleteBarWindow.Show();
-            portViewModel.SetupNodeAutoCompleteClusterWindowPlacement(nodeAutoCompleteBarWindow);
+            if (nodeAutoCompleteBarViewModel.IsOpen)
+            {
+                if (nodeAutoCompleteBarView == null)
+                {
+                    nodeAutoCompleteBarView = new NodeAutoCompleteBarView(parentWindow, nodeAutoCompleteBarViewModel);
+                    nodeAutoCompleteBarView.Show();
+                }
+                nodeAutoCompleteBarView.ReloadDataContext(nodeAutoCompleteBarViewModel);
+                portViewModel.SetupNodeAutoCompleteClusterWindowPlacement(nodeAutoCompleteBarView);
+                return;
+            }
+
+            nodeAutoCompleteBarView = new NodeAutoCompleteBarView(parentWindow, nodeAutoCompleteBarViewModel);
+            nodeAutoCompleteBarView.Show();
+            portViewModel.SetupNodeAutoCompleteClusterWindowPlacement(nodeAutoCompleteBarView);
         }
     }
 }
