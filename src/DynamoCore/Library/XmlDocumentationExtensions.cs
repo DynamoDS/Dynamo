@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -130,23 +130,19 @@ namespace Dynamo.Engine
             XmlReader xml )
         {
             //customNodeDefinitions typedParameters don't have functionDescriptors
-            if (function == null)
+            if (function == null || string.IsNullOrEmpty(function.Assembly))
             {
                 return null;
             }
-            var assemblyName = function.Assembly;
 
-            if (string.IsNullOrEmpty(assemblyName))
-                return null;
-
-            var fullyQualifiedName = MemberDocumentNode.MakeFullyQualifiedName
-                (assemblyName, GetMemberElementName(function));
+            var fullyQualifiedName = MemberDocumentNode.MakeFullyQualifiedName(
+                function.Assembly, GetMemberElementName(function));
 
             if (!documentNodes.ContainsKey(fullyQualifiedName))
             {
                 if (xml == null)
                     xml = DocumentationServices.GetForAssembly(function.Assembly, function.PathManager);
-                LoadDataFromXml(xml, assemblyName);
+                LoadDataFromXml(xml, function.Assembly);
             }
 
             MemberDocumentNode documentNode = null;
@@ -156,13 +152,13 @@ namespace Dynamo.Engine
             {
                 // Note that the following may take the incorrect overload.
                 // Unfortunately we can't map back to the exact .NET parameter types from the DS function descriptor.
-                var overloadedName = documentNodes.Keys.
-                        Where(key => key.Contains(function.ClassName + "." + function.FunctionName)).FirstOrDefault();
+                var searchName = $"{function.ClassName}.{function.FunctionName}";
+                var overloadedName = documentNodes.Keys.FirstOrDefault(key => key.Contains(searchName));
 
                 if (overloadedName == null)
                     return null;
-                if (documentNodes.ContainsKey(overloadedName))
-                    documentNode = documentNodes[overloadedName];
+                if (documentNodes.TryGetValue(overloadedName, out documentNode))
+                    return documentNode;
             }
 
             return documentNode;
@@ -242,7 +238,7 @@ namespace Dynamo.Engine
 
             string memberName = member.FunctionName;
             if (!string.IsNullOrEmpty(member.ClassName))
-                memberName = member.ClassName + "." + member.FunctionName;
+                memberName = $"{member.ClassName}.{member.FunctionName}";
 
             switch (member.Type)
             {
@@ -266,10 +262,13 @@ namespace Dynamo.Engine
                     // parameters are listed according to their type, not their name
                     string paramTypesList = String.Join(
                         ",",
-                        member.Parameters.Select(x => x.Type.ToString()).Select(PrimitiveMap).ToArray()
+                        member.Parameters.Select(x => x.Type.ToString()).Select(PrimitiveMap)
                         );
-                    
-                    if (!String.IsNullOrEmpty(paramTypesList)) memberName += "(" + paramTypesList + ")";
+
+                    if (!String.IsNullOrEmpty(paramTypesList))
+                    {
+                        memberName = $"{memberName}({paramTypesList})";
+                    }
                     break;
 
                 case FunctionType.StaticMethod:
@@ -289,7 +288,7 @@ namespace Dynamo.Engine
             }
 
             // elements are of the form "M:Namespace.Class.Method"
-            return String.Format("{0}:{1}", prefixCode, memberName);
+            return $"{prefixCode}:{memberName}";
         }
 
         private enum XmlTagType
