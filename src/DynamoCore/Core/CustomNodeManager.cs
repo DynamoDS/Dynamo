@@ -486,7 +486,7 @@ namespace Dynamo.Core
         /// </summary>
         private void SetNodeInfo(CustomNodeInfo newInfo)
         {
-            // we need to check with the packageManager that this node if this node is in a package or not - 
+            // we need to check with the packageManager if this node is in a package or not - 
             // currently the package data is lost when the customNode workspace is loaded.
             // we'll only do this check for customNode infos which don't have a package currently to verify if this
             // is correct.
@@ -503,18 +503,17 @@ namespace Dynamo.Core
             }
 
 
-            CustomNodeInfo info;
             // if the custom node is part of a package make sure it does not overwrite another node
-            if (newInfo.IsPackageMember && NodeInfos.TryGetValue(newInfo.FunctionId, out info))
+            if (newInfo.IsPackageMember && NodeInfos.TryGetValue(newInfo.FunctionId, out CustomNodeInfo info))
             {
                 var newInfoPath = String.IsNullOrEmpty(newInfo.Path) ? string.Empty : Path.GetDirectoryName(newInfo.Path);
                 var infoPath = String.IsNullOrEmpty(info.Path) ? string.Empty : Path.GetDirectoryName(info.Path);
                 var message = string.Format(Resources.MessageCustomNodePackageFailedToLoad,
                     infoPath, newInfoPath);
 
-               
+
                 //only try to compare package info if both customNodeInfos have package info.
-                if(info.IsPackageMember && info.PackageInfo != null)
+                if (info.IsPackageMember && info.PackageInfo != null)
                 {
                     // if these are different packages raise an error.
                     // TODO (for now we don't raise an error for different
@@ -532,7 +531,7 @@ namespace Dynamo.Core
                 }
                 else //(newInfo has owning Package, oldInfo does not)
                 {
-                   
+
                     // This represents the case where a previous info was not from a package, but the current info
                     // has an owning package.
                     var looseCustomNodeToPackageMessage = String.Format(Properties.Resources.FunctionDefinitionOverwrittenMessage, newInfo.Name, newInfo.PackageInfo, info.Name);
@@ -1425,7 +1424,9 @@ namespace Dynamo.Core
         /// </summary>
         public void Dispose()
         {
-            this.loadedCustomNodes.ToList().ForEach(x => Uninitialize(x.Value.FunctionId));
+            // Unsubscribe event handlers
+            InfoUpdated = null;
+            loadedCustomNodes.ToList().ForEach(x => Uninitialize(x.Value.FunctionId));
         }
     }
 
