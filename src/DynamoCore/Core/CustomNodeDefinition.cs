@@ -354,7 +354,7 @@ namespace Dynamo
 
 
         private static readonly string[] topLevelJsonKeys = { "Uuid", "Category", "Description", "Name" };
-        private static readonly Dictionary<string, object> propertyLookup = [];
+        private static readonly Dictionary<string, object> propertyLookup = new Dictionary<string, object>();
         private static object isVisibleInDynamoLibraryProp = null;
         private static DefaultJsonNameTable propertyTable = null;
 
