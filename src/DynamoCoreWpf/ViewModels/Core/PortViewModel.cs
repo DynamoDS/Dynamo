@@ -100,6 +100,19 @@ namespace Dynamo.ViewModels
         }
 
         /// <summary>
+        /// Indicates whether this is the only output port in a Code Block Node.
+        /// Used to apply condensed styling and special alignment when a single output port is present.
+        /// </summary>
+        public bool IsOnlyOutputPortInCodeBlock
+        {
+            get
+            {
+                return this.PortModel.Owner is CodeBlockNodeModel codeBlock &&
+                       codeBlock.OutPorts.Count == 1;
+            }
+        }
+
+        /// <summary>
         /// If port is enabled.
         /// </summary>
         public bool IsEnabled

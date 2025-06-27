@@ -41,6 +41,7 @@ namespace Dynamo.Graph.Nodes
         private string code = string.Empty;
         private List<string> inputIdentifiers = new List<string>();
         private List<string> inputPortNames = new List<string>();
+        private Dictionary<string, string> outputPortNames = new Dictionary<string, string>();
         private string previewVariable;
         private readonly LibraryServices libraryServices;
 
@@ -805,6 +806,7 @@ namespace Dynamo.Graph.Nodes
                         OutPorts.Clear();
                         InPorts.Clear();
                         inputPortNames.Clear();
+                        outputPortNames.Clear();
                     }
                 }
 
@@ -855,6 +857,22 @@ namespace Dynamo.Graph.Nodes
                 {
                     inputIdentifiers.Clear();
                     inputPortNames.Clear();
+                }
+
+                // Collect output port labels and tooltips for assignment and expression statements.
+                outputPortNames.Clear();
+
+                foreach (var statement in codeStatements)
+                {
+                    var binExpr = statement.AstNode as BinaryExpressionNode;
+                    if (binExpr != null && binExpr.LeftNode != null)
+                    {
+                        var leftName = binExpr.LeftNode.Name;
+
+                        outputPortNames[leftName] = IsTempIdentifier(leftName) ?
+                            binExpr.RightNode.ToString() :
+                            leftName;
+                    }
                 }
 
                 // Set preview variable after gathering input identifiers. As a variable
@@ -1007,18 +1025,22 @@ namespace Dynamo.Graph.Nodes
             // Clear out all the output port models
             OutPorts.RemoveAll((p) => true);
 
+            // Add an output port for each definition. If there is only one port, force it to the top (LineIndex = 0)
+            // regardless of code line, so it is not shifted by comments or empty lines.
+            int totalPorts = allDefs.Count();
             foreach (var def in allDefs)
             {
-                var tooltip = IsTempIdentifier(def.Key) ? string.Format(Resources.CodeBlockTempIdentifierOutputLabel, def.Value) : def.Key;
+                string portLabel = outputPortNames.TryGetValue(def.Key, out var label) ? label : string.Empty;
+                int lineIndex = (totalPorts == 1) ? 0 : def.Value - 1;
+                var portHeight = ((totalPorts == 1) ? Configurations.PortHeightInPixels : Configurations.CodeBlockOutputPortHeightInPixels);
 
-                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(string.Empty, tooltip)
+                OutPorts.Add(new PortModel(PortType.Output, this, new PortData(portLabel, portLabel)
                 {
-                    LineIndex = def.Value - 1, // Logical line index.
-                    Height = Configurations.CodeBlockOutputPortHeightInPixels,
+                    LineIndex = lineIndex,
+                    Height = portHeight,
                 }));
             }
         }
-
 
         /// <summary>
         ///     Deletes all the connections and saves their data (the start and end port)
@@ -1118,7 +1140,6 @@ namespace Dynamo.Graph.Nodes
                                 connector.GUID = oldConnector.GUID;
                             }
                         }
-                        outportConnections[varName] = null;
                     }
                 }
             }

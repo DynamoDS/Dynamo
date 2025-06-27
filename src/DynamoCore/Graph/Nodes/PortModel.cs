@@ -185,11 +185,12 @@ namespace Dynamo.Graph.Nodes
                         case PortType.Input:
                             return new Point2D(Owner.X, y);
                         case PortType.Output:
-                            if (Owner is CodeBlockNodeModel)
+                            if (Owner is CodeBlockNodeModel && Owner.OutPorts.Count != 1)
                             {
-                                // Special case because code block outputs are smaller than regular outputs.
-                                // This ensures the output port of the first code block output aligns with
-                                // the first input port of any node.
+                                // Special case: When a code block node has multiple outputs, its output ports are smaller than regular node outputs.
+                                // Adding +9 here ensures the first code block output aligns visually with the first input port of any node.
+                                // For a single output port, we skip this offset so the port and its connector are centered at the very top,
+                                // regardless of any empty lines or comments in the code block.
                                 return new Point2D(Owner.X + Owner.Width, y + 9);
                             }
                             return new Point2D(Owner.X + Owner.Width, y);
