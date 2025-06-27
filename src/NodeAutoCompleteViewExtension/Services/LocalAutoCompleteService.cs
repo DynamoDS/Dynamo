@@ -76,8 +76,8 @@ namespace Dynamo.NodeAutoComplete.Services
                     string fullSignature = dsFunction.FunctionSignature;
                     return fullSignature.Split('@')[0];
                 case Function function:
-                    string fullFunctionSignature = function.FunctionSignature.ToString();
-                    return fullFunctionSignature.Split('@')[0];
+                    var daName = $"{selectedNode.Category}.{selectedNode.GetOriginalName()}";
+                    return $"{selectedNode.Category}.{selectedNode.GetOriginalName()}";
                 default:
                     return selectedNode.GetType().ToString();
             }
