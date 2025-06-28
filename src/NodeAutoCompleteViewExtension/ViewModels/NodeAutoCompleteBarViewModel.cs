@@ -278,7 +278,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 connector.IsTransient = false;
             }
 
-            NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, false, null);
+            NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, PortViewModel.PortType, null);
 
             (node.WorkspaceViewModel.Model as HomeWorkspaceModel)?.MarkNodesAsModifiedAndRequestRun(transientNodes.Select(x => x.NodeModel));
 
@@ -908,7 +908,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 createdNodes.Values,
                 false,
                 false,
-                false,
+                PortViewModel.PortType,
                 () =>
                 {
                     // Finalize visibility of nodes and connectors
