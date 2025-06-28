@@ -32,10 +32,17 @@ namespace Dynamo.ViewModels
         // vertical offset accounts for the port margins
         private const int verticalOffset = 17;
         private const int portVerticalMidPoint = 17;
-        private const int portToggleOffset = 30;
+        private const int portToggleOffset = 32;
         private ObservableCollection<Dynamo.Configuration.StyleItem> groupStyleList;
         private IEnumerable<Configuration.StyleItem> preferencesStyleItemsList;
         private PreferenceSettings preferenceSettings;
+
+        // Collapsed proxy ports for Code Block Nodes appear visually misaligned - 0.655px
+        // taller compared to their actual ports. This is due to the fixed height - 16.345px
+        // used inside CBNs for code lines, while proxy ports use 14px height + 3px top margin.
+        // To compensate for this visual mismatch and keep connector alignment consistent,
+        // we apply this adjusted proxy height.
+        private const double CBNProxyPortVisualHeight = 17;
 
         public readonly WorkspaceViewModel WorkspaceViewModel;
 
@@ -929,7 +936,7 @@ namespace Dynamo.ViewModels
                     if (portModel.Owner is CodeBlockNodeModel)
                     {
                         // Special case because code block outputs are smaller than regular outputs.
-                        return new Point2D(Left + Width, y - 8);
+                        return new Point2D(Left + Width, y - 7);
                     }
                     return new Point2D(Left + Width, y);
             }
@@ -1077,7 +1084,7 @@ namespace Dynamo.ViewModels
                         OutPorts.Add(proxyPortVM);
                         updatedOutputs = true;
                     }
-                    else if (!UnconnectedOutPorts.Contains(proxyPortVM))
+                    else if (!port.IsConnected && !UnconnectedOutPorts.Contains(proxyPortVM))
                     {
                         OutPorts.Remove(proxyPortVM);
                         UnconnectedOutPorts.Add(proxyPortVM);
@@ -1168,7 +1175,13 @@ namespace Dynamo.ViewModels
                 if (model?.IsProxyPort == true)
                 {
                     model.Center = CalculatePortPosition(model, y);
-                    y += model.Height;
+                    bool isCondensedCBN = model.Owner is CodeBlockNodeModel &&
+                              !InPorts.Contains(portVM) &&
+                              !OptionalInPorts.Contains(portVM);
+                    double height = isCondensedCBN ?
+                        CBNProxyPortVisualHeight :
+                        model.Height;
+                    y += height;
                 }
             }
 
@@ -1489,7 +1502,7 @@ namespace Dynamo.ViewModels
                     RaisePropertyChanged("Width");
                     RaisePropertyChanged(nameof(ModelAreaRect));
                     UpdateAllGroupedGroups();
-                    RedrawConnectors(false);                                                                                                // DO WE NEED THIS?
+                    RedrawConnectors(false);
                     break;
                 case "Height":
                     RaisePropertyChanged("Height");

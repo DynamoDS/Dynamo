@@ -23,13 +23,9 @@ namespace Dynamo.Graph.Annotations
         private const double ExtendSize = 10.0;
         private const double ExtendYHeight = 5.0;
         private const double NoteYAdjustment = 8.0;
+        private const double CollapsedContentHeight = 0.0;
 
-        double lastExpandedWidth = 0;
-
-        /// <summary>
-        /// The default height of the group's content area when collapsed.
-        /// </summary>
-        public const double CollapsedContentHeight = 82;
+        double lastExpandedWidth = 0;        
 
         #region Properties
 
@@ -560,7 +556,7 @@ namespace Dynamo.Graph.Annotations
         /// Gets or sets the minimum height of the port area when the group is collapsed.
         /// Used to calculate the total height of the collapsed group based on proxy ports
         /// </summary>
-        public double MinCollapsedPortAreaHeight
+        public double MinHeightOnCollapsed
         {
             get => minCollapsedPortAreaHeight;
             set
@@ -568,7 +564,7 @@ namespace Dynamo.Graph.Annotations
                 if (minCollapsedPortAreaHeight != value)
                 {
                     minCollapsedPortAreaHeight = value;
-                    RaisePropertyChanged(nameof(MinCollapsedPortAreaHeight));
+                    RaisePropertyChanged(nameof(MinHeightOnCollapsed));
                 }
             }
         }
@@ -808,7 +804,7 @@ namespace Dynamo.Graph.Annotations
             }
 
             // Use fixed height values for collapsed layout
-            ModelAreaHeight = MinCollapsedPortAreaHeight + CollapsedContentHeight;
+            ModelAreaHeight = MinHeightOnCollapsed + CollapsedContentHeight;
             Height = TextBlockHeight + ModelAreaHeight;
         }
 

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -55,6 +56,7 @@ namespace Dynamo.Nodes
         private ToggleButton outputToggleControl;
         private Grid inputPortsGrid;
         private Grid outputPortsGrid;
+        private Grid groupContent;
 
         private Thumb mainGroupThumb;
 
@@ -581,19 +583,16 @@ namespace Dynamo.Nodes
 
         }
 
-        // // // private void CollapsedAnnotationRectangle_SizeChanged(object sender, SizeChangedEventArgs e)
-        // // // {
-        // // //     SetModelAreaHeight();
-        // // // }
-
         private void CollapsedAnnotationRectangle_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            // // // SetModelAreaHeight();
             if (!ViewModel.IsExpanded) UpdateCollapsedBoundaryAsync();
         }
 
         private void contextMenu_Click(object sender, RoutedEventArgs e)
         {
+            var position = Mouse.GetPosition(this); // position relative to AnnotationView
+            Debug.WriteLine($"Context menu click at: X={position.X}, Y={position.Y}");
+
             ViewModel.SelectAll();
             this.AnnotationGrid.ContextMenu.DataContext = ViewModel;
             this.AnnotationGrid.ContextMenu.IsOpen = true;
@@ -666,6 +665,20 @@ namespace Dynamo.Nodes
             ViewModel.ReloadGroupStyles();
             // Tracking loading group style items
             Logging.Analytics.TrackEvent(Actions.Load, Categories.GroupStyleOperations, nameof(GroupStyleItem) + "s");
+        }
+
+        /// <summary>
+        /// Handles property changes from the ViewModel when the group is collapsed.
+        /// Triggers boundary update when optional input or unconnected output ports are toggled.
+        /// </summary>
+        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (ViewModel.IsExpanded) return;
+            if (e.PropertyName == nameof(ViewModel.IsUnconnectedOutPortsCollapsed) ||
+                e.PropertyName == nameof(ViewModel.IsOptionalInPortsCollapsed))
+            {
+                UpdateCollapsedBoundaryAsync();
+            }
         }
 
         #endregion
@@ -1530,15 +1543,10 @@ namespace Dynamo.Nodes
             grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(1, GridUnitType.Star) });
 
             // Add children
-            //inputPortControl = CreateInputPortControl();
-            //outputPortControl = CreateOutputPortControl();
-
             inputPortsGrid = CreateInputPortsGrid();
             outputPortsGrid = CreateOutputPortsGrid();
-            var groupContent = CreateGroupContent();
+            groupContent = CreateGroupContent();
 
-            //grid.Children.Add(inputPortControl);
-            //grid.Children.Add(outputPortControl);
             grid.Children.Add(inputPortsGrid);
             grid.Children.Add(outputPortsGrid);
             grid.Children.Add(groupContent);
@@ -1548,27 +1556,27 @@ namespace Dynamo.Nodes
 
         private Grid CreateGroupContent()
         {
-            var grid = new Grid
+            groupContentGrid = new Grid
             {
                 Name = "GroupContent"
             };
 
-            Grid.SetRow(grid, 1);
-            Grid.SetColumnSpan(grid, 3);
+            Grid.SetRow(groupContentGrid, 1);
+            Grid.SetColumnSpan(groupContentGrid, 3);
 
             // Add column definitions
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            groupContentGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            groupContentGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            groupContentGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
             // Add children
             var nestedGroupsLabel = CreateNestedGroupsLabel();
             var nodeCountBorder = CreateNodeCountBorder();
 
-            grid.Children.Add(nestedGroupsLabel);
-            grid.Children.Add(nodeCountBorder);
+            groupContentGrid.Children.Add(nestedGroupsLabel);
+            groupContentGrid.Children.Add(nodeCountBorder);
 
-            return grid;
+            return groupContentGrid;
         }
 
         private Label CreateNestedGroupsLabel()
@@ -1644,7 +1652,7 @@ namespace Dynamo.Nodes
 
         private Border CreateNodeCountBorder()
         {
-            var border = new Border
+            nodeCountBorder = new Border
             {
                 Name = "NodeCount",
                 BorderThickness = new Thickness(1),
@@ -1658,7 +1666,7 @@ namespace Dynamo.Nodes
                 VerticalAlignment = VerticalAlignment.Bottom,
             };
 
-            Grid.SetColumn(border, 1);
+            Grid.SetColumn(nodeCountBorder, 1);
 
             // Create and add TextBlock
             var textBlock = new TextBlock
@@ -1674,10 +1682,21 @@ namespace Dynamo.Nodes
                 StringFormat = "+{0}"
             });
 
-            border.Child = textBlock;
+            nodeCountBorder.Child = textBlock;
 
-            return border;
+            return nodeCountBorder;
         }
+
+
+
+
+
+        private Grid groupContentGrid;
+        private Border nodeCountBorder;
+
+
+
+
 
         #endregion
 
@@ -2829,35 +2848,6 @@ namespace Dynamo.Nodes
                 this.groupNameControl.DesiredSize.Height;
         }
 
-        private (double maxWidth, double totalHeight) MeasurePortBounds(ItemsControl portControl)
-        {
-            double maxWidth = 0;
-            double totalHeight = 0;
-
-            foreach (var item in portControl.Items)
-            {
-                if (portControl.ItemContainerGenerator.ContainerFromItem(item) is FrameworkElement container && container.IsVisible)
-                {
-                    container.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-                    var size = container.DesiredSize;
-
-                    maxWidth = Math.Max(maxWidth, size.Width);
-                    totalHeight += size.Height;
-                }
-            }
-
-            return (maxWidth, totalHeight);
-        }
-
-
-
-
-
-
-
-        // IP CHANGES:
-
-        // TEMPLATES
         private ControlTemplate CreateCollapsedPortToggleButtonTemplate()
         {
             var template = new ControlTemplate(typeof(ToggleButton));
@@ -2916,23 +2906,24 @@ namespace Dynamo.Nodes
             return template;
         }
 
-        private Style CreateBaseCollapsedPortToggleStyle()
+        private Style CreateBaseCollapsedPortToggleStyle()  
         {
             var style = new Style(typeof(ToggleButton));
-            style.Setters.Add(new Setter(Control.BackgroundProperty, Brushes.Transparent));
-            style.Setters.Add(new Setter(Control.BorderThicknessProperty, new Thickness(0)));
-            style.Setters.Add(new Setter(Control.CursorProperty, Cursors.Hand));
-            style.Setters.Add(new Setter(Control.TemplateProperty, CreateCollapsedPortToggleButtonTemplate()));
-            style.Setters.Add(new Setter(FrameworkElement.HeightProperty, 30.0));
+            style.Setters.Add(new Setter(BackgroundProperty, Brushes.Transparent));
+            style.Setters.Add(new Setter(BorderThicknessProperty, new Thickness(0)));
+            style.Setters.Add(new Setter(CursorProperty, Cursors.Hand));
+            style.Setters.Add(new Setter(TemplateProperty, CreateCollapsedPortToggleButtonTemplate()));
+            style.Setters.Add(new Setter(HeightProperty, 30.0));
 
             return style;
         }
 
-
-        // INPUTS
         private Grid CreateInputPortsGrid()
         {
-            var grid = new Grid { Name = "inputPortsGrid" };
+            var grid = new Grid
+            {
+                Name = "inputPortsGrid"
+            };
             Grid.SetRow(grid, 0);
             Grid.SetColumn(grid, 0);
 
@@ -2941,7 +2932,7 @@ namespace Dynamo.Nodes
             grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(34) });
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-            // --- Main Input Ports ---
+            // Main Input Ports
             inputPortControl = new ItemsControl
             {
                 Name = "inputPortControl",
@@ -2953,7 +2944,7 @@ namespace Dynamo.Nodes
             inputPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("InPorts"));
             grid.Children.Add(inputPortControl);
 
-            // --- Toggle Button for Collapsing Optional Ports ---
+            // Toggle Button for Collapsing Optional Ports
             inputToggleControl = new ToggleButton
             {
                 Name = "inputToggleControl",
@@ -2980,7 +2971,7 @@ namespace Dynamo.Nodes
             inputToggleControl.Style = toggleStyle;
             grid.Children.Add(inputToggleControl);
 
-            // --- Optional Input Ports ---
+            // Optional Input Ports
             optionalInputPortControl = new ItemsControl
             {
                 Name = "optionalInputPortControl",
@@ -3011,7 +3002,10 @@ namespace Dynamo.Nodes
 
         private Grid CreateOutputPortsGrid()
         {
-            var grid = new Grid { Name = "outputPortsGrid" };
+            var grid = new Grid
+            {
+                Name = "outputPortsGrid"
+            };
             Grid.SetRow(grid, 0);
             Grid.SetColumn(grid, 2);
 
@@ -3020,7 +3014,7 @@ namespace Dynamo.Nodes
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
             grid.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-            // --- Main Output Ports ---
+            // Main Output Ports
             outputPortControl = new ItemsControl
             {
                 Name = "outputPortControl",
@@ -3032,7 +3026,7 @@ namespace Dynamo.Nodes
             outputPortControl.SetBinding(ItemsControl.ItemsSourceProperty, new Binding("OutPorts"));
             grid.Children.Add(outputPortControl);
 
-            // --- Toggle Button for Collapsing Unconnected Ports ---
+            // Toggle Button for Collapsing Unconnected Ports
             outputToggleControl = new ToggleButton
             {
                 Name = "outputToggleControl",
@@ -3059,7 +3053,7 @@ namespace Dynamo.Nodes
             outputToggleControl.Style = toggleStyle;
             grid.Children.Add(outputToggleControl);
 
-            // --- Unconnected Output Ports ---
+            // Unconnected Output Ports
             unconnectedOutputPortControl = new ItemsControl
             {
                 Name = "unconnectedOutputPortControl",
@@ -3086,77 +3080,86 @@ namespace Dynamo.Nodes
             return grid;
         }
 
-
-
-        // NEW METHODS FROM XAML.CS
-        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (ViewModel.IsExpanded) return;
-            if (e.PropertyName == nameof(ViewModel.IsUnconnectedOutPortsCollapsed) ||
-                e.PropertyName == nameof(ViewModel.IsOptionalInPortsCollapsed))
-            {
-                UpdateCollapsedBoundaryAsync();
-            }
-        }
-
+        /// <summary>
+        /// Calculates the minimum width required for a collapsed group,
+        /// considering input/output ports, toggles, and their visibility states.
+        /// </summary>
         private double GetMinWidthOnCollapsed()
         {
-            var model = ViewModel.AnnotationModel;
+            //var model = ViewModel.AnnotationModel;
 
-            // Input ports
-            double inPortWidth = MeasureMaxPortWidth(inputPortControl);
-            double inToggleWidth = inputToggleControl.ActualWidth;
-            double optionalInPortWidth = model.IsOptionalInPortsCollapsed ? 0 : MeasureMaxPortWidth(optionalInputPortControl);
+            //// Input ports
+            //double inPortWidth = MeasureMaxPortWidth(inputPortControl);
+            //double inToggleWidth = inputToggleControl.ActualWidth;
+            //double optionalInPortWidth = model.IsOptionalInPortsCollapsed ? 0 : MeasureMaxPortWidth(optionalInputPortControl);
 
-            // Output ports
-            double outPortWidth = MeasureMaxPortWidth(outputPortControl);
-            double outToggleWidth = outputToggleControl.ActualWidth;
-            double unconnectedOutPortWidth = model.IsUnconnectedOutPortsCollapsed ? 0 : MeasureMaxPortWidth(unconnectedOutputPortControl);
+            //// Output ports
+            //double outPortWidth = MeasureMaxPortWidth(outputPortControl);
+            //double outToggleWidth = outputToggleControl.ActualWidth;
+            //double unconnectedOutPortWidth = model.IsUnconnectedOutPortsCollapsed ? 0 : MeasureMaxPortWidth(unconnectedOutputPortControl);
 
-            double maxInPortWidth = Math.Max(inPortWidth, Math.Max(inToggleWidth, optionalInPortWidth));
-            double maxOutPortWidth = Math.Max(outPortWidth, Math.Max(outToggleWidth, unconnectedOutPortWidth));
+            //double maxInPortWidth = Math.Max(inPortWidth, Math.Max(inToggleWidth, optionalInPortWidth));
+            //double maxOutPortWidth = Math.Max(outPortWidth, Math.Max(outToggleWidth, unconnectedOutPortWidth));
 
-            return maxInPortWidth + maxOutPortWidth;
+            //return maxInPortWidth + maxOutPortWidth;
+
+            return inputPortsGrid.ActualWidth + outputPortsGrid.ActualWidth;
         }
 
-        private double GetMinCollapsedPortAreaHeight()
+        /// <summary>
+        /// Calculates the total height needed to display all visible input and output ports
+        /// and their toggle buttons in the collapsed view.
+        /// </summary>
+        private double GetMinHeightOnCollapsed()
         {
-            // Measure input port heights
-            double requiredInputHeight = MeasureCombinedPortHeight(inputPortControl);
-            double optionalInputHeight = 0;
+            //// Measure input port heights
+            //double requiredInputHeight = MeasureCombinedPortHeight(inputPortControl);
+            //double optionalInputHeight = 0;
 
-            // Include the height of optional input ports if optional ports are visible
-            if (!ViewModel.IsOptionalInPortsCollapsed)
-            {
-                optionalInputHeight = MeasureCombinedPortHeight(optionalInputPortControl);
-            }
-            double totalInputHeight = requiredInputHeight + optionalInputHeight + inputToggleControl.ActualHeight;
+            //// Include the height of optional input ports if optional ports are visible
+            //if (!ViewModel.IsOptionalInPortsCollapsed)
+            //{
+            //    optionalInputHeight = MeasureCombinedPortHeight(optionalInputPortControl);
+            //}
+            //double totalInputHeight = requiredInputHeight + optionalInputHeight + inputToggleControl.ActualHeight;
 
-            // Measure output port heights
-            double requiredOutputHeight = MeasureCombinedPortHeight(outputPortControl);
-            double unconnectedOutputHeight = 0;
+            //// Measure output port heights
+            //double requiredOutputHeight = MeasureCombinedPortHeight(outputPortControl);
+            //double unconnectedOutputHeight = 0;
 
-            if (!ViewModel.IsUnconnectedOutPortsCollapsed)
-            {
-                unconnectedOutputHeight = MeasureCombinedPortHeight(unconnectedOutputPortControl);
-            }
-            double totalOutputHeight = requiredOutputHeight + unconnectedOutputHeight + inputToggleControl.ActualHeight;
+            //if (!ViewModel.IsUnconnectedOutPortsCollapsed)
+            //{
+            //    unconnectedOutputHeight = MeasureCombinedPortHeight(unconnectedOutputPortControl);
+            //}
+            //double totalOutputHeight = requiredOutputHeight + unconnectedOutputHeight + inputToggleControl.ActualHeight;
 
-            return Math.Max(totalInputHeight, totalOutputHeight);
+            //return Math.Max(totalInputHeight, totalOutputHeight);
+
+            var nodeCountHeight = nodeCountBorder.ActualHeight + nodeCountBorder.Margin.Bottom + nodeCountBorder.Margin.Top;
+
+            return Math.Max(inputPortsGrid.ActualHeight, outputPortControl.ActualHeight) + nodeCountHeight;
         }
 
+        /// <summary>
+        /// Asynchronously updates the collapsed boundary of the group based on
+        /// visible port controls and toggles.
+        /// </summary>
         private void UpdateCollapsedBoundaryAsync()
         {
             var model = ViewModel.AnnotationModel;
             Dispatcher.BeginInvoke(new Action(() =>
             {
                 model.MinWidthOnCollapsed = GetMinWidthOnCollapsed();
-                model.MinCollapsedPortAreaHeight = GetMinCollapsedPortAreaHeight();
+                model.MinHeightOnCollapsed = GetMinHeightOnCollapsed();
                 model.UpdateBoundaryFromSelection();
             }),
             System.Windows.Threading.DispatcherPriority.ApplicationIdle);
         }
 
+        /// <summary>
+        /// Handles the click event for the optional input ports toggle button.
+        /// Sets a flag indicating the user has manually toggled this state.
+        /// </summary>
         private void OptionalPortsToggle_Click(object sender, RoutedEventArgs e)
         {
             // Mark it as manually changed by user
@@ -3166,6 +3169,10 @@ namespace Dynamo.Nodes
             }
         }
 
+        /// <summary>
+        /// Handles the click event for the unconnected output ports toggle button.
+        /// Sets a flag indicating the user has manually toggled this state.
+        /// </summary>
         private void UnconnectedPortsToggle_Click(object sender, RoutedEventArgs e)
         {
             // Mark it as manually changed by user
@@ -3175,6 +3182,9 @@ namespace Dynamo.Nodes
             }
         }
 
+        /// <summary>
+        /// Measures and returns the widest visible container element in a port ItemsControl.
+        /// </summary>
         private double MeasureMaxPortWidth(ItemsControl portControl)
         {
             double max = 0;
@@ -3188,19 +3198,20 @@ namespace Dynamo.Nodes
             return max;
         }
 
-        private double MeasureCombinedPortHeight(ItemsControl portControl)
-        {
-            double total = 0;
-            foreach (var item in portControl.Items)
-            {
-                if (portControl.ItemContainerGenerator.ContainerFromItem(item) is FrameworkElement container && container.IsVisible)
-                {
-                    total += container.DesiredSize.Height;
-                }
-            }
-            return total;
-        }
-
-
+        ///// <summary>
+        ///// Measures and sums the heights of all visible container elements in a port ItemsControl.
+        ///// </summary>
+        //private double MeasureCombinedPortHeight(ItemsControl portControl)
+        //{
+        //    double total = 0;
+        //    foreach (var item in portControl.Items)
+        //    {
+        //        if (portControl.ItemContainerGenerator.ContainerFromItem(item) is FrameworkElement container && container.IsVisible)
+        //        {
+        //            total += container.DesiredSize.Height;
+        //        }
+        //    }
+        //    return total;
+        //}
     }
 }

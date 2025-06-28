@@ -47,7 +47,6 @@ const Dynamo.Engine.LibraryServices.Categories.Constructors = "Create" -> string
 const Dynamo.Engine.LibraryServices.Categories.MemberFunctions = "Actions" -> string
 const Dynamo.Engine.LibraryServices.Categories.Operators = "Operators" -> string
 const Dynamo.Engine.LibraryServices.Categories.Properties = "Query" -> string
-const Dynamo.Graph.Annotations.AnnotationModel.CollapsedContentHeight = 82 -> double
 const Dynamo.Graph.Nodes.BuiltinNodeCategories.ANALYZE_SOLAR = "Analyze.Solar" -> string
 const Dynamo.Graph.Nodes.BuiltinNodeCategories.CORE = "Core" -> string
 const Dynamo.Graph.Nodes.BuiltinNodeCategories.CORE_EVALUATE = "Core.Evaluate" -> string
