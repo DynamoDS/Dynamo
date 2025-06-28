@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -594,9 +593,6 @@ namespace Dynamo.Nodes
 
         private void contextMenu_Click(object sender, RoutedEventArgs e)
         {
-            var position = Mouse.GetPosition(this); // position relative to AnnotationView
-            Debug.WriteLine($"Context menu click at: X={position.X}, Y={position.Y}");
-
             ViewModel.SelectAll();
             this.AnnotationGrid.ContextMenu.DataContext = ViewModel;
             this.AnnotationGrid.ContextMenu.IsOpen = true;
