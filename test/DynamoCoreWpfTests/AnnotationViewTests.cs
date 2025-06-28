@@ -103,7 +103,6 @@ namespace DynamoCoreWpfTests
             Assert.That(groupContent.All(x => x.IsCollapsed == true));
 
             // Act
-            //annotationView.UngroupAnnotation.RaiseEvent(new RoutedEventArgs(MenuItem.ClickEvent));
             var ungrp = annotationView.AnnotationGrid.ContextMenu.Items
                 .OfType<MenuItem>()
                 .FirstOrDefault(x => x.Name == "UngroupAnnotation");

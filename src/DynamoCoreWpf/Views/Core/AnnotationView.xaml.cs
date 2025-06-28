@@ -57,7 +57,7 @@ namespace Dynamo.Nodes
         private Grid outputPortsGrid;
         private Grid groupContent;
         private Border nodeCountBorder;
-
+        
         private Thumb mainGroupThumb;
 
         private bool _isUpdatingLayout = false;
@@ -219,7 +219,6 @@ namespace Dynamo.Nodes
                 groupTextBlock.SizeChanged -= GroupTextBlock_SizeChanged;
             if (collapsedAnnotationRectangle != null)
             {
-                //////collapsedAnnotationRectangle.SizeChanged -= CollapsedAnnotationRectangle_SizeChanged;
                 collapsedAnnotationRectangle.IsVisibleChanged -= CollapsedAnnotationRectangle_IsVisibleChanged;
                 ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
             }
@@ -229,7 +228,7 @@ namespace Dynamo.Nodes
                 groupTextBox.GotFocus -= GroupTextBox_OnGotFocus;
                 groupTextBox.TextChanged -= GroupTextBox_OnTextChanged;
             }
-
+            
             if (groupDescriptionTextBox != null)
             {
                 groupDescriptionTextBox.IsVisibleChanged -= GroupDescriptionTextBox_OnIsVisibleChanged;
@@ -446,9 +445,8 @@ namespace Dynamo.Nodes
             {
                 ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
             }
-
         }
-
+        
         /// <summary>
         /// Handles the SizeChanged event of the groupTextBlock control.
         /// This function calculates the height of a group based on font size
@@ -460,7 +458,7 @@ namespace Dynamo.Nodes
             if (ViewModel != null && (e.HeightChanged || e.WidthChanged) && !_isUpdatingLayout)
             {
                 _isUpdatingLayout = true;
-
+                
                 // Use Dispatcher.BeginInvoke to batch layout updates
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
@@ -680,7 +678,7 @@ namespace Dynamo.Nodes
                 UpdateCollapsedBoundaryAsync();
             }
         }
-
+        
         #endregion
 
         #region Control Templates
@@ -1439,7 +1437,6 @@ namespace Dynamo.Nodes
             thumb.Name = "ResizeThumb";
             thumb.DragDelta += AnnotationRectangleThumb_DragDelta;
 
-
             thumb.Style = _groupResizeThumbStyle;
             thumb.MouseEnter += Thumb_MouseEnter;
             thumb.MouseLeave += Thumb_MouseLeave;
@@ -1549,6 +1546,7 @@ namespace Dynamo.Nodes
 
             grid.Children.Add(inputPortsGrid);
             grid.Children.Add(outputPortsGrid);
+
             grid.Children.Add(groupContent);
 
             return grid;
