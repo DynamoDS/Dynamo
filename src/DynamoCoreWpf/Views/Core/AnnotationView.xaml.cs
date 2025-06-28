@@ -57,6 +57,7 @@ namespace Dynamo.Nodes
         private Grid inputPortsGrid;
         private Grid outputPortsGrid;
         private Grid groupContent;
+        private Border nodeCountBorder;
 
         private Thumb mainGroupThumb;
 
@@ -585,7 +586,10 @@ namespace Dynamo.Nodes
 
         private void CollapsedAnnotationRectangle_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (!ViewModel.IsExpanded) UpdateCollapsedBoundaryAsync();
+            if (!ViewModel.IsExpanded)
+            {
+                UpdateCollapsedBoundaryAsync();
+            }
         }
 
         private void contextMenu_Click(object sender, RoutedEventArgs e)
@@ -1556,27 +1560,27 @@ namespace Dynamo.Nodes
 
         private Grid CreateGroupContent()
         {
-            groupContentGrid = new Grid
+            var grid = new Grid
             {
                 Name = "GroupContent"
             };
 
-            Grid.SetRow(groupContentGrid, 1);
-            Grid.SetColumnSpan(groupContentGrid, 3);
+            Grid.SetRow(grid, 1);
+            Grid.SetColumnSpan(grid, 3);
 
             // Add column definitions
-            groupContentGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
-            groupContentGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
-            groupContentGrid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = GridLength.Auto });
+            grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(1, GridUnitType.Star) });
 
             // Add children
             var nestedGroupsLabel = CreateNestedGroupsLabel();
             var nodeCountBorder = CreateNodeCountBorder();
 
-            groupContentGrid.Children.Add(nestedGroupsLabel);
-            groupContentGrid.Children.Add(nodeCountBorder);
+            grid.Children.Add(nestedGroupsLabel);
+            grid.Children.Add(nodeCountBorder);
 
-            return groupContentGrid;
+            return grid;
         }
 
         private Label CreateNestedGroupsLabel()
@@ -1686,17 +1690,6 @@ namespace Dynamo.Nodes
 
             return nodeCountBorder;
         }
-
-
-
-
-
-        private Grid groupContentGrid;
-        private Border nodeCountBorder;
-
-
-
-
 
         #endregion
 
@@ -3086,23 +3079,6 @@ namespace Dynamo.Nodes
         /// </summary>
         private double GetMinWidthOnCollapsed()
         {
-            //var model = ViewModel.AnnotationModel;
-
-            //// Input ports
-            //double inPortWidth = MeasureMaxPortWidth(inputPortControl);
-            //double inToggleWidth = inputToggleControl.ActualWidth;
-            //double optionalInPortWidth = model.IsOptionalInPortsCollapsed ? 0 : MeasureMaxPortWidth(optionalInputPortControl);
-
-            //// Output ports
-            //double outPortWidth = MeasureMaxPortWidth(outputPortControl);
-            //double outToggleWidth = outputToggleControl.ActualWidth;
-            //double unconnectedOutPortWidth = model.IsUnconnectedOutPortsCollapsed ? 0 : MeasureMaxPortWidth(unconnectedOutputPortControl);
-
-            //double maxInPortWidth = Math.Max(inPortWidth, Math.Max(inToggleWidth, optionalInPortWidth));
-            //double maxOutPortWidth = Math.Max(outPortWidth, Math.Max(outToggleWidth, unconnectedOutPortWidth));
-
-            //return maxInPortWidth + maxOutPortWidth;
-
             return inputPortsGrid.ActualWidth + outputPortsGrid.ActualWidth;
         }
 
@@ -3112,30 +3088,9 @@ namespace Dynamo.Nodes
         /// </summary>
         private double GetMinHeightOnCollapsed()
         {
-            //// Measure input port heights
-            //double requiredInputHeight = MeasureCombinedPortHeight(inputPortControl);
-            //double optionalInputHeight = 0;
-
-            //// Include the height of optional input ports if optional ports are visible
-            //if (!ViewModel.IsOptionalInPortsCollapsed)
-            //{
-            //    optionalInputHeight = MeasureCombinedPortHeight(optionalInputPortControl);
-            //}
-            //double totalInputHeight = requiredInputHeight + optionalInputHeight + inputToggleControl.ActualHeight;
-
-            //// Measure output port heights
-            //double requiredOutputHeight = MeasureCombinedPortHeight(outputPortControl);
-            //double unconnectedOutputHeight = 0;
-
-            //if (!ViewModel.IsUnconnectedOutPortsCollapsed)
-            //{
-            //    unconnectedOutputHeight = MeasureCombinedPortHeight(unconnectedOutputPortControl);
-            //}
-            //double totalOutputHeight = requiredOutputHeight + unconnectedOutputHeight + inputToggleControl.ActualHeight;
-
-            //return Math.Max(totalInputHeight, totalOutputHeight);
-
-            var nodeCountHeight = nodeCountBorder.ActualHeight + nodeCountBorder.Margin.Bottom + nodeCountBorder.Margin.Top;
+            var nodeCountHeight = nodeCountBorder.ActualHeight +
+                nodeCountBorder.Margin.Bottom +
+                nodeCountBorder.Margin.Top;
 
             return Math.Max(inputPortsGrid.ActualHeight, outputPortControl.ActualHeight) + nodeCountHeight;
         }
@@ -3181,37 +3136,5 @@ namespace Dynamo.Nodes
                 ViewModel.AnnotationModel.HasToggledUnconnectedOutPorts = true;
             }
         }
-
-        /// <summary>
-        /// Measures and returns the widest visible container element in a port ItemsControl.
-        /// </summary>
-        private double MeasureMaxPortWidth(ItemsControl portControl)
-        {
-            double max = 0;
-            foreach (var item in portControl.Items)
-            {
-                if (portControl.ItemContainerGenerator.ContainerFromItem(item) is FrameworkElement container && container.IsVisible)
-                {
-                    max = Math.Max(max, container.DesiredSize.Width);
-                }
-            }
-            return max;
-        }
-
-        ///// <summary>
-        ///// Measures and sums the heights of all visible container elements in a port ItemsControl.
-        ///// </summary>
-        //private double MeasureCombinedPortHeight(ItemsControl portControl)
-        //{
-        //    double total = 0;
-        //    foreach (var item in portControl.Items)
-        //    {
-        //        if (portControl.ItemContainerGenerator.ContainerFromItem(item) is FrameworkElement container && container.IsVisible)
-        //        {
-        //            total += container.DesiredSize.Height;
-        //        }
-        //    }
-        //    return total;
-        //}
     }
 }

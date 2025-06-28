@@ -1175,12 +1175,15 @@ namespace Dynamo.ViewModels
                 if (model?.IsProxyPort == true)
                 {
                     model.Center = CalculatePortPosition(model, y);
+
                     bool isCondensedCBN = model.Owner is CodeBlockNodeModel &&
                               !InPorts.Contains(portVM) &&
                               !OptionalInPorts.Contains(portVM);
+
                     double height = isCondensedCBN ?
                         CBNProxyPortVisualHeight :
                         model.Height;
+
                     y += height;
                 }
             }

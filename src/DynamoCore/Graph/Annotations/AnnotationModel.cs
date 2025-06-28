@@ -23,9 +23,6 @@ namespace Dynamo.Graph.Annotations
         private const double ExtendSize = 10.0;
         private const double ExtendYHeight = 5.0;
         private const double NoteYAdjustment = 8.0;
-        private const double CollapsedContentHeight = 0.0;
-
-        double lastExpandedWidth = 0;        
 
         #region Properties
 
@@ -748,9 +745,6 @@ namespace Dynamo.Graph.Annotations
                 UpdateCollapsedLayout(xDistance);
             }
 
-            // Store last expanded width for restoring later if needed
-            lastExpandedWidth = Width;
-
             // Notify UI if position changed
             if (positionChanged)
                 RaisePropertyChanged(nameof(Position));
@@ -804,7 +798,7 @@ namespace Dynamo.Graph.Annotations
             }
 
             // Use fixed height values for collapsed layout
-            ModelAreaHeight = MinHeightOnCollapsed + CollapsedContentHeight;
+            ModelAreaHeight = MinHeightOnCollapsed;
             Height = TextBlockHeight + ModelAreaHeight;
         }
 
