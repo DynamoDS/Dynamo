@@ -1,8 +1,8 @@
-using Dynamo.Graph.Nodes;
 using System;
 using System.Collections.Generic;
-using Dynamo.Search.SearchElements;
 using System.Linq;
+using Dynamo.Graph.Nodes;
+using Dynamo.Search.SearchElements;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
@@ -38,8 +38,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             Assembly = nodeModel.GetType().Assembly.GetName().Name;
             IconName = nodeModel.GetType().Name;
             Description = nodeModel.Name;
-            Parameters = $"({string.Join(", ",nodeModel.InPorts.Select(x=>x.Name))})";
-            CreationName = string.IsNullOrWhiteSpace(nodeModel.CreationName) ? nodeModel.GetOriginalName(): nodeModel.CreationName;
+            Parameters = $"({string.Join(", ", nodeModel.InPorts.Select(x => x.Name))})";
+            CreationName = string.IsNullOrWhiteSpace(nodeModel.CreationName) ? nodeModel.GetOriginalName() : nodeModel.CreationName;
             Probability = score;
             Title = Description;
             InitTopology(portToConnect);
