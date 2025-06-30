@@ -728,8 +728,6 @@ Dynamo.Graph.Annotations.AnnotationModel.IsUnconnectedOutPortsCollapsed.set -> v
 Dynamo.Graph.Annotations.AnnotationModel.IsVisible.get -> bool
 Dynamo.Graph.Annotations.AnnotationModel.loadFromXML.get -> bool
 Dynamo.Graph.Annotations.AnnotationModel.loadFromXML.set -> void
-Dynamo.Graph.Annotations.AnnotationModel.MinHeightOnCollapsed.get -> double
-Dynamo.Graph.Annotations.AnnotationModel.MinHeightOnCollapsed.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.MinWidthOnCollapsed.get -> double
 Dynamo.Graph.Annotations.AnnotationModel.MinWidthOnCollapsed.set -> void
 Dynamo.Graph.Annotations.AnnotationModel.ModelAreaHeight.get -> double

@@ -548,24 +548,6 @@ namespace Dynamo.Graph.Annotations
             }
         }
 
-        private double minCollapsedPortAreaHeight;
-        /// <summary>
-        /// Gets or sets the minimum height of the port area when the group is collapsed.
-        /// Used to calculate the total height of the collapsed group based on proxy ports
-        /// </summary>
-        public double MinHeightOnCollapsed
-        {
-            get => minCollapsedPortAreaHeight;
-            set
-            {
-                if (minCollapsedPortAreaHeight != value)
-                {
-                    minCollapsedPortAreaHeight = value;
-                    RaisePropertyChanged(nameof(MinHeightOnCollapsed));
-                }
-            }
-        }
-
         #endregion
 
         /// <summary>
@@ -797,8 +779,6 @@ namespace Dynamo.Graph.Annotations
                 Width = Math.Max(MinWidthOnCollapsed + ExtendSize, TextMaxWidth + ExtendSize);
             }
 
-            // Use fixed height values for collapsed layout
-            ModelAreaHeight = MinHeightOnCollapsed;
             Height = TextBlockHeight + ModelAreaHeight;
         }
 

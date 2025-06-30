@@ -165,7 +165,8 @@ namespace Dynamo.Nodes
 
             // Because the size of the collapsedAnnotationRectangle doesn't necessarily change 
             // when going from Visible to collapse (and other way around), we need to also listen
-            // to IsVisibleChanged.
+            // to IsVisibleChanged. Both of these handlers will set the ModelAreaHeight on the ViewModel
+            this.collapsedAnnotationRectangle.SizeChanged += CollapsedAnnotationRectangle_SizeChanged;
             this.collapsedAnnotationRectangle.IsVisibleChanged += CollapsedAnnotationRectangle_IsVisibleChanged;
         }
 
@@ -219,8 +220,8 @@ namespace Dynamo.Nodes
                 groupTextBlock.SizeChanged -= GroupTextBlock_SizeChanged;
             if (collapsedAnnotationRectangle != null)
             {
+                collapsedAnnotationRectangle.SizeChanged -= CollapsedAnnotationRectangle_SizeChanged;
                 collapsedAnnotationRectangle.IsVisibleChanged -= CollapsedAnnotationRectangle_IsVisibleChanged;
-                ViewModel.PropertyChanged -= ViewModel_PropertyChanged;
             }
             if (groupTextBox != null)
             {
@@ -291,8 +292,6 @@ namespace Dynamo.Nodes
             ViewModel = this.DataContext as AnnotationViewModel;
             if (ViewModel != null)
             {
-                ViewModel.PropertyChanged += ViewModel_PropertyChanged;
-
                 //Set the height and width of Textblock based on the content.
                 if (!ViewModel.AnnotationModel.loadFromXML)
                 {
@@ -581,12 +580,15 @@ namespace Dynamo.Nodes
 
         }
 
+        private void CollapsedAnnotationRectangle_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            GetMinWidthOnCollapsed();
+            SetModelAreaHeight();
+        }
+
         private void CollapsedAnnotationRectangle_IsVisibleChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
-            if (!ViewModel.IsExpanded)
-            {
-                UpdateCollapsedBoundaryAsync();
-            }
+            SetModelAreaHeight();
         }
 
         private void contextMenu_Click(object sender, RoutedEventArgs e)
@@ -663,20 +665,6 @@ namespace Dynamo.Nodes
             ViewModel.ReloadGroupStyles();
             // Tracking loading group style items
             Logging.Analytics.TrackEvent(Actions.Load, Categories.GroupStyleOperations, nameof(GroupStyleItem) + "s");
-        }
-
-        /// <summary>
-        /// Handles property changes from the ViewModel when the group is collapsed.
-        /// Triggers boundary update when optional input or unconnected output ports are toggled.
-        /// </summary>
-        private void ViewModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        {
-            if (ViewModel.IsExpanded) return;
-            if (e.PropertyName == nameof(ViewModel.IsUnconnectedOutPortsCollapsed) ||
-                e.PropertyName == nameof(ViewModel.IsOptionalInPortsCollapsed))
-            {
-                UpdateCollapsedBoundaryAsync();
-            }
         }
         
         #endregion
@@ -1500,8 +1488,6 @@ namespace Dynamo.Nodes
             };
 
             // Set bindings
-            border.SetBinding(FrameworkElement.WidthProperty, new Binding("Width"));
-            border.SetBinding(FrameworkElement.HeightProperty, new Binding("ModelAreaHeight"));
             border.SetBinding(UIElement.VisibilityProperty, new Binding("IsExpanded")
             {
                 ElementName = "GroupExpander",
@@ -2791,6 +2777,18 @@ namespace Dynamo.Nodes
 
         #endregion
 
+
+        private void SetModelAreaHeight()
+        {
+            // We only want to change the ModelAreaHeight
+            // if the collapsedAnnotationRectangle is visible,
+            // as if its not it will be equal to the height of the
+            // contained nodes + the TextBlockHeight
+            if (ViewModel is null || !this.collapsedAnnotationRectangle.IsVisible) return;
+            ViewModel.ModelAreaHeight = this.collapsedAnnotationRectangle.ActualHeight;
+            ViewModel.AnnotationModel.UpdateBoundaryFromSelection();
+        }
+
         //Set the max width of text area based on the width of the longest word in the text
         private void SetTextMaxWidth()
         {
@@ -2843,7 +2841,7 @@ namespace Dynamo.Nodes
             border.SetValue(Border.BackgroundProperty, Brushes.Transparent);
 
             var stackPanel = new FrameworkElementFactory(typeof(StackPanel));
-            stackPanel.SetValue(MarginProperty, new TemplateBindingExtension(MarginProperty));
+            stackPanel.SetValue(StackPanel.MarginProperty, new TemplateBindingExtension(MarginProperty));
             stackPanel.SetValue(StackPanel.OrientationProperty, Orientation.Horizontal);
 
             // TextBlock with MultiBinding text
@@ -2862,10 +2860,10 @@ namespace Dynamo.Nodes
 
             // Arrow Path
             var path = new FrameworkElementFactory(typeof(Path));
-            path.SetValue(WidthProperty, 8.0);
-            path.SetValue(HeightProperty, 6.0);
-            path.SetValue(MarginProperty, new Thickness(6, 0, 0, 0));
-            path.SetValue(VerticalAlignmentProperty, VerticalAlignment.Center);
+            path.SetValue(FrameworkElement.WidthProperty, 8.0);
+            path.SetValue(FrameworkElement.HeightProperty, 6.0);
+            path.SetValue(FrameworkElement.MarginProperty, new Thickness(6, 0, 0, 0));
+            path.SetValue(FrameworkElement.VerticalAlignmentProperty, VerticalAlignment.Center);
             path.SetValue(Path.DataProperty, Geometry.Parse("M0,0 L0,2 L4,6 L8,2 L8,0 L4,4 z"));
             path.SetBinding(Shape.FillProperty, new Binding("Background")
             {
@@ -2896,11 +2894,11 @@ namespace Dynamo.Nodes
         private Style CreateBaseCollapsedPortToggleStyle()  
         {
             var style = new Style(typeof(ToggleButton));
-            style.Setters.Add(new Setter(BackgroundProperty, Brushes.Transparent));
-            style.Setters.Add(new Setter(BorderThicknessProperty, new Thickness(0)));
-            style.Setters.Add(new Setter(CursorProperty, Cursors.Hand));
-            style.Setters.Add(new Setter(TemplateProperty, CreateCollapsedPortToggleButtonTemplate()));
-            style.Setters.Add(new Setter(HeightProperty, 30.0));
+            style.Setters.Add(new Setter(Control.BackgroundProperty, Brushes.Transparent));
+            style.Setters.Add(new Setter(Control.BorderThicknessProperty, new Thickness(0)));
+            style.Setters.Add(new Setter(Control.CursorProperty, Cursors.Hand));
+            style.Setters.Add(new Setter(Control.TemplateProperty, CreateCollapsedPortToggleButtonTemplate()));
+            style.Setters.Add(new Setter(Control.HeightProperty, 30.0));
 
             return style;
         }
@@ -3071,38 +3069,14 @@ namespace Dynamo.Nodes
         /// Calculates the minimum width required for a collapsed group,
         /// considering input/output ports, toggles, and their visibility states.
         /// </summary>
-        private double GetMinWidthOnCollapsed()
+        private void GetMinWidthOnCollapsed()
         {
-            return inputPortsGrid.ActualWidth + outputPortsGrid.ActualWidth;
-        }
-
-        /// <summary>
-        /// Calculates the total height needed to display all visible input and output ports
-        /// and their toggle buttons in the collapsed view.
-        /// </summary>
-        private double GetMinHeightOnCollapsed()
-        {
-            var nodeCountHeight = nodeCountBorder.ActualHeight +
-                nodeCountBorder.Margin.Bottom +
-                nodeCountBorder.Margin.Top;
-
-            return Math.Max(inputPortsGrid.ActualHeight, outputPortControl.ActualHeight) + nodeCountHeight;
-        }
-
-        /// <summary>
-        /// Asynchronously updates the collapsed boundary of the group based on
-        /// visible port controls and toggles.
-        /// </summary>
-        private void UpdateCollapsedBoundaryAsync()
-        {
-            var model = ViewModel.AnnotationModel;
-            Dispatcher.BeginInvoke(new Action(() =>
+            if (ViewModel != null)
             {
-                model.MinWidthOnCollapsed = GetMinWidthOnCollapsed();
-                model.MinHeightOnCollapsed = GetMinHeightOnCollapsed();
-                model.UpdateBoundaryFromSelection();
-            }),
-            System.Windows.Threading.DispatcherPriority.ApplicationIdle);
+                ViewModel.AnnotationModel.MinWidthOnCollapsed =
+                inputPortsGrid.ActualWidth +
+                outputPortsGrid.ActualWidth;
+            }
         }
 
         /// <summary>
