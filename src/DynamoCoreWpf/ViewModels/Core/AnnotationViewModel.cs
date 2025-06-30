@@ -7,6 +7,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Graph;
 using Dynamo.Graph.Annotations;
@@ -309,6 +310,8 @@ namespace Dynamo.ViewModels
 
                 RaisePropertyChanged(nameof(IsOptionalInPortsCollapsed));
                 WorkspaceViewModel.HasUnsavedChanges = true;
+
+                HandlePrePortToggleLayout();
             }
         }
 
@@ -334,6 +337,8 @@ namespace Dynamo.ViewModels
 
                 RaisePropertyChanged(nameof(IsUnconnectedOutPortsCollapsed));
                 WorkspaceViewModel.HasUnsavedChanges = true;
+
+                HandlePrePortToggleLayout();
             }
         }
 
@@ -361,11 +366,6 @@ namespace Dynamo.ViewModels
 
                 // Methods to collapse or expand the group based on the new value of IsExpanded.
                 ManageAnnotationMVExpansionAndCollapse();
-
-                if (IsExpanded)
-                {
-                    UpdateLayoutForGroupExpansion();
-                }
             }
         }
 
@@ -1385,6 +1385,7 @@ namespace Dynamo.ViewModels
             {
                 UnsubscribeFromProxyPortEvents();
                 this.ShowGroupContents();
+                UpdateLayoutForGroupExpansion();
             }
             else
             {
@@ -1407,11 +1408,16 @@ namespace Dynamo.ViewModels
         {
             var model = annotationModel;
 
-            double deltaY = model.IsExpanded ?
-                model.ModelAreaHeight - model.HeightBeforeGroupExpands :
-                model.HeightBeforePortToggle;
-            double deltaX = model.Width - model.WidthBeforeGroupExpands;
+            // Determine size change based on expansion or port toggle
+            double deltaY = model.ModelAreaHeight - (model.IsExpanded
+                ? model.HeightBeforeGroupExpands
+                : model.HeightBeforePortToggle);
 
+            double deltaX = model.Width - (model.IsExpanded
+                ? model.WidthBeforeGroupExpands
+                : model.WidthBeforePortToggle);
+
+            // Skip layout update if changes are negligible
             if (deltaX < MinChangeThreshold && deltaY < MinChangeThreshold)
                 return;
 
@@ -1678,6 +1684,25 @@ namespace Dynamo.ViewModels
             return other.Left > thisGroup.Left &&
                 other.Top < thisGroup.Bottom &&
                 other.Bottom > thisGroup.Top;
+        }
+
+        /// <summary>
+        /// Stores the current group size before port toggle,
+        /// and triggers layout adjustment if group is collapsed.
+        /// </summary>
+        private void HandlePrePortToggleLayout()
+        {
+            annotationModel.HeightBeforePortToggle = AnnotationModel.ModelAreaHeight;
+            annotationModel.WidthBeforePortToggle = AnnotationModel.Width;
+
+            if (!IsExpanded)
+            {
+                Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() =>
+                {
+                    UpdateLayoutForGroupExpansion();
+                }),
+                DispatcherPriority.ApplicationIdle);
+            }
         }
 
         private void UpdateFontSize(object parameter)
