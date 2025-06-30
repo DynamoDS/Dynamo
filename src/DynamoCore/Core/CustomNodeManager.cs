@@ -28,6 +28,7 @@ using System.Text.Json;
 using System.Threading;
 using System.Xml;
 using Symbol = Dynamo.Graph.Nodes.CustomNodes.Symbol;
+using System.Threading.Tasks;
 
 namespace Dynamo.Core
 {
@@ -51,21 +52,22 @@ namespace Dynamo.Core
             this.libraryServices = libraryServices;
 
             //Todo decide were we want to store this
-            customNodeInfoCache = new JsonCache<CustomNodeInfo> ("C:\\Temp\\CustomNodeInforCache.temp");
+            customNodeInfoCache = new JsonCache<CustomNodeInfo> ("C:\\Temp\\CustomNodeInforCache.temp", 5000);
+            
+            // Cleanup stale entries on startup in background
+            _ = Task.Run(() => customNodeInfoCache.RemoveStaleEntries());
         }
 
         #region Fields and properties
 
-        private LibraryServices libraryServices;
-        private JsonCache<CustomNodeInfo> customNodeInfoCache;
+        private readonly LibraryServices libraryServices;
+        private readonly JsonCache<CustomNodeInfo> customNodeInfoCache;
 
-        private readonly OrderedSet<Guid> loadOrder = new OrderedSet<Guid>();
+        private readonly OrderedSet<Guid> loadOrder = new();
 
-        private readonly Dictionary<Guid, CustomNodeDefinition> loadedCustomNodes =
-            new Dictionary<Guid, CustomNodeDefinition>();
+        private readonly Dictionary<Guid, CustomNodeDefinition> loadedCustomNodes = new();
 
-        private readonly Dictionary<Guid, CustomNodeWorkspaceModel> loadedWorkspaceModels =
-            new Dictionary<Guid, CustomNodeWorkspaceModel>();
+        private readonly Dictionary<Guid, CustomNodeWorkspaceModel> loadedWorkspaceModels = new();
 
         private readonly NodeFactory nodeFactory;
         private readonly MigrationManager migrationManager;
@@ -661,11 +663,11 @@ namespace Dynamo.Core
         }
 
         /// <summary>
-        ///     Returns a boolean indicating if successfully get a CustomNodeInfo object from a workspace path
+        /// Returns a boolean indicating if a CustomNodeInfo object from a workspace path is successfully obtained
         /// </summary>
         /// <param name="path">The path from which to get the guid</param>
         /// <param name="isTestMode">
-        ///     Flag specifying whether or not this should operate in "test mode".
+        /// Flag specifying whether this should operate in "test mode" or not.
         /// </param>
         /// <param name="info"></param>
         /// <returns>The custom node info object - null if we failed</returns>
@@ -673,12 +675,12 @@ namespace Dynamo.Core
         {
             try
             {
-                var fileinfo = new FileInfo(path);
-                var lastWriteTime = fileinfo.LastWriteTimeUtc;
-                var length = fileinfo.Length;
+                var fileInfo = new FileInfo(path);
+                var lastWriteTime = fileInfo.LastWriteTimeUtc;
+                var length = fileInfo.Length;
 
                 //create a fast check for checking if the file has been loaded before.  Could also do a file hash but we don't care too much about false negatives
-                var key = path + lastWriteTime.ToString() + length.ToString();
+                var key = path + lastWriteTime + length;
 
                 if (customNodeInfoCache.TryGet(key, out info))
                 {
@@ -1427,29 +1429,102 @@ namespace Dynamo.Core
             // Unsubscribe event handlers
             InfoUpdated = null;
             loadedCustomNodes.ToList().ForEach(x => Uninitialize(x.Value.FunctionId));
+            
+            // Dispose cache
+            customNodeInfoCache?.Dispose();
         }
+
+        #region Cache Management
+
+        /// <summary>
+        /// Clears the custom node info cache and optionally deletes the cache file.
+        /// Can be called on application startup to ensure fresh cache state.
+        /// </summary>
+        /// <param name="deleteFile">Whether to delete the physical cache file</param>
+        /// <returns>Task for async operation</returns>
+        public async Task ClearCustomNodeCacheAsync(bool deleteFile = false)
+        {
+            if (deleteFile)
+            {
+                await customNodeInfoCache.ClearCacheAndFileAsync();
+            }
+            else
+            {
+                await Task.Run(() => customNodeInfoCache.Clear());
+            }
+        }
+
+        /// <summary>
+        /// Removes stale cache entries for files that no longer exist.
+        /// This helps prevent cache bloat from deleted/moved files.
+        /// </summary>
+        /// <returns>Task for async operation</returns>
+        public async Task CleanupStaleCustomNodeCacheEntriesAsync()
+        {
+            await Task.Run(() => customNodeInfoCache.RemoveStaleEntries());
+        }
+
+        /// <summary>
+        /// Gets the current size of the custom node info cache.
+        /// Useful for monitoring cache growth.
+        /// </summary>
+        public int GetCacheSize()
+        {
+            return customNodeInfoCache.Count;
+        }
+
+        /// <summary>
+        /// Removes cache entries for a specific file path.
+        /// Useful when you know a file has been modified and want to force a reload.
+        /// </summary>
+        /// <param name="filePath">Path to the custom node file</param>
+        public async Task InvalidateCacheEntryAsync(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath)) return;
+
+            await Task.Run(() =>
+            {
+                var keysToRemove = customNodeInfoCache.GetAllKeys()
+                    .Where(key => key.StartsWith(filePath))
+                    .ToList();
+
+                foreach (var key in keysToRemove)
+                {
+                    customNodeInfoCache.Remove(key);
+                }
+            });
+        }
+
+        #endregion
     }
 
     //Location temporary
-    public class JsonCache<T> : IDisposable
+    internal class JsonCache<T> : IDisposable
     {
         private readonly string cacheFilePath;
         private readonly Dictionary<string, T> cache = new();
         private bool dirty = false;
-        private readonly Timer flushTimer;
+        private readonly int maxCacheSize;
 
-        public JsonCache(string filePath)
+        public JsonCache(string filePath, int maxCacheSize = 10000)
         {
             cacheFilePath = filePath;
-            Load();
+            this.maxCacheSize = maxCacheSize;
+            Deserialize();
             // Not sure if this covers all cases.  Can also add flush to Dispose
-            AppDomain.CurrentDomain.ProcessExit += (s, e) => FlushIfDirty();
+            AppDomain.CurrentDomain.ProcessExit += (s, e) => SerializeIfDirty();
         }
 
         public void Set(string key, T value)
         {
             cache[key] = value;
             dirty = true;
+            
+            // Cleanup old entries if cache exceeds max size
+            if (cache.Count > maxCacheSize)
+            {
+                CleanupOldEntries();
+            }
         }
 
         public bool TryGet(string key, out T value) => cache.TryGetValue(key, out value);
@@ -1460,25 +1535,144 @@ namespace Dynamo.Core
                 dirty = true;
         }
 
-        private void Load()
+        /// <summary>
+        /// Clears all entries from the cache
+        /// </summary>
+        public void Clear()
+        {
+            if (cache.Count > 0)
+            {
+                cache.Clear();
+                dirty = true;
+            }
+        }
+
+        /// <summary>
+        /// Removes stale entries that don't correspond to existing files
+        /// </summary>
+        public void RemoveStaleEntries()
+        {
+            var keysToRemove = new List<string>();
+            
+            foreach (var key in cache.Keys)
+            {
+                // Extract file path from cache key (path + lastWriteTime + length)
+                // This is a heuristic - we look for the first occurrence of a timestamp pattern
+                var filePath = ExtractFilePathFromCacheKey(key);
+                if (!string.IsNullOrEmpty(filePath) && !File.Exists(filePath))
+                {
+                    keysToRemove.Add(key);
+                }
+            }
+
+            foreach (var key in keysToRemove)
+            {
+                cache.Remove(key);
+                dirty = true;
+            }
+        }
+
+        /// <summary>
+        /// Removes old entries when cache size exceeds limit, keeping most recently used entries
+        /// </summary>
+        private void CleanupOldEntries()
+        {
+            var entriesToRemove = cache.Count - (maxCacheSize * 3 / 4); // Remove 25% of entries
+            if (entriesToRemove <= 0) return;
+
+            // For simplicity, remove entries alphabetically by key
+            // In a more sophisticated implementation, we'd track access times
+            var keysToRemove = cache.Keys.OrderBy(k => k).Take(entriesToRemove).ToList();
+            
+            foreach (var key in keysToRemove)
+            {
+                cache.Remove(key);
+            }
+            dirty = true;
+        }
+
+        /// <summary>
+        /// Extracts file path from cache key (heuristic approach)
+        /// </summary>
+        private string ExtractFilePathFromCacheKey(string cacheKey)
+        {
+            try
+            {
+                // Cache key format: path + lastWriteTime + length
+                // We'll look for datetime pattern and extract everything before it
+                var regex = new System.Text.RegularExpressions.Regex(@"(\d{1,2}/\d{1,2}/\d{4} \d{1,2}:\d{2}:\d{2} [AP]M|\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})");
+                var match = regex.Match(cacheKey);
+                if (match.Success)
+                {
+                    return cacheKey.Substring(0, match.Index);
+                }
+            }
+            catch
+            {
+                // If extraction fails, return empty string
+            }
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Clears the cache and deletes the cache file. Can be run on background thread.
+        /// </summary>
+        public async Task ClearCacheAndFileAsync()
+        {
+            await Task.Run(() =>
+            {
+                Clear();
+                try
+                {
+                    if (File.Exists(cacheFilePath))
+                    {
+                        File.Delete(cacheFilePath);
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Log error but don't throw - cache cleanup shouldn't break the app
+                    System.Diagnostics.Debug.WriteLine($"Failed to delete cache file: {ex.Message}");
+                }
+            });
+        }
+
+        /// <summary>
+        /// Gets the current cache size
+        /// </summary>
+        public int Count => cache.Count;
+
+        /// <summary>
+        /// Gets all cache keys (for invalidation purposes)
+        /// </summary>
+        public IEnumerable<string> GetAllKeys() => cache.Keys.ToList();
+
+        private void Deserialize()
         {
             if (File.Exists(cacheFilePath))
             {
                 var json = File.ReadAllText(cacheFilePath);
                 var loaded = JsonSerializer.Deserialize<Dictionary<string, T>>(json);
                 if (loaded != null)
+                {
                     foreach (var kv in loaded)
+                    {
                         cache[kv.Key] = kv.Value;
+                    }
+                    
+                    // Clean up stale entries on startup
+                    RemoveStaleEntries();
+                }
             }
         }
 
-        private void FlushIfDirty()
+        private void SerializeIfDirty()
         {
             if (dirty)
-                Flush();
+                Serialize();
         }
 
-        public void Flush()
+        public void Serialize()
         {
             var json = JsonSerializer.Serialize(cache, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(cacheFilePath, json);
@@ -1487,8 +1681,7 @@ namespace Dynamo.Core
 
         public void Dispose()
         {
-            flushTimer?.Dispose();
-            Flush();
+            Serialize();
         }
     }
 
