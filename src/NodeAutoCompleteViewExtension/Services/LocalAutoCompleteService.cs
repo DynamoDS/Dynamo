@@ -283,7 +283,7 @@ namespace Dynamo.NodeAutoComplete.Services
             }
 
             // Quick check if the file likely contains our target node before expensive parsing
-            if (!fileContents.Contains(selectedNode.CreationName, StringComparison.OrdinalIgnoreCase))
+            if (!fileContents.Contains(selectedNode.GetOriginalName(), StringComparison.OrdinalIgnoreCase))
             {
                 return new List<SingleResultItem>();
             }
@@ -296,7 +296,7 @@ namespace Dynamo.NodeAutoComplete.Services
                 dynamoViewModel.Model.LinterManager);
 
             var matchingNode = workspace.Nodes
-                .FirstOrDefault(n => n.CreationName == selectedNode.CreationName);
+                .FirstOrDefault(n => n.GetOriginalName() == selectedNode.GetOriginalName());
 
             if (matchingNode == null) 
                 return new List<SingleResultItem>();
