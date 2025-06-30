@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Xml;
+using Autodesk.DesignScript.Geometry;
 using Dynamo.Core;
 using Dynamo.Graph.Annotations;
 using Dynamo.Graph.Connectors;
@@ -145,7 +146,7 @@ namespace Dynamo.Graph.Workspaces
                 return;
 
             if (null != savedModels)
-            {
+            {   
                 // Before an existing connector is reconnected, we have one action group
                 // which records the deletion of the connector. Pop that out so that we can
                 // record the deletion and reconnection in one action group.
@@ -288,12 +289,11 @@ namespace Dynamo.Graph.Workspaces
 
                         RemoveAndDisposeNode(node);
                     }
-                    else if (model is ConnectorModel connector)
+                    else if (model is ConnectorModel conn)
                     {
-                        undoRecorder.RecordDeletionForUndo(connector);
-                        if (connector.ConnectorPinModels.Count > 0)
+                        if (conn.ConnectorPinModels.Count > 0)
                         {
-                            foreach (var connectorPin in connector.ConnectorPinModels.ToList())
+                            foreach (var connectorPin in conn.ConnectorPinModels.ToList())
                             {
                                 undoRecorder.RecordDeletionForUndo(connectorPin);
                                 var matchingConnector = Connectors.FirstOrDefault(c => c.GUID == connectorPin.ConnectorId);
@@ -301,6 +301,8 @@ namespace Dynamo.Graph.Workspaces
                                 matchingConnector.ConnectorPinModels.Remove(connectorPin);
                             }
                         }
+                        undoRecorder.RecordDeletionForUndo(conn);
+                        conn.Delete();
                     }
                     else if (model is ConnectorPinModel connectorPinModel)
                     {
@@ -323,9 +325,17 @@ namespace Dynamo.Graph.Workspaces
         {
             if (null != models)
             {
-                // If an existing connector is grabbed (to be reconnected), save the 
+                // Add connector pins if any
+                var allPins = models
+                    .OfType<ConnectorModel>()
+                    .SelectMany(connector => connector.ConnectorPinModels)
+                    .Cast<ModelBase>()
+                    .ToList();
+                var fullSet = allPins.Concat(models).ToList();
+
+                // If an existing connector/pin set is grabbed (to be reconnected), save the 
                 // models for deletion later in one action group.
-                savedModels = models;
+                savedModels = fullSet;
 
                 // After saving the models, delete them from the workspace
                 // in one action group.
