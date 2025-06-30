@@ -33,6 +33,7 @@ using Dynamo.Graph;
 using System.Windows.Media;
 using System.ComponentModel;
 using System.Windows.Data;
+using Dynamo.NodeAutoComplete.Services;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
@@ -385,6 +386,11 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         private Guid LastRequestGuid;
 
         /// <summary>
+        /// Service for handling local autocomplete functionality
+        /// </summary>
+        private readonly LocalAutoCompleteService localAutoCompleteService;
+
+        /// <summary>
         /// Constructor
         /// </summary>
         /// <param name="dynamoViewModel">Dynamo ViewModel</param>
@@ -393,6 +399,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             // Off load some time consuming operation here
             DefaultResults = dynamoViewModel.DefaultAutocompleteCandidates.Values;
             ServiceVersion = string.Empty;
+            localAutoCompleteService = new LocalAutoCompleteService(dynamoViewModel);
         }
 
         /// <summary>
@@ -536,7 +543,9 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 AutocompleteMLTitle = Resources.AutocompleteNoRecommendationsTitle;
                 AutocompleteMLMessage = Resources.AutocompleteNoRecommendationsMessage;
                 Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "NoRecommendation");
-                return new List<SingleResultItem>();
+
+                Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "FallbackToLocalAutocomplete");
+                return localAutoCompleteService.TryGetLocalAutoCompleteResult(PortViewModel.NodeViewModel.NodeModel, PortViewModel.PortModel);
             }
             ServiceVersion = MLresults.Version;
             var results = new List<SingleResultItem>();
@@ -609,6 +618,9 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             return results;
         }
+
+
+
         private T GetGenericAutocompleteResult<T>(string endpoint)
         {   
             var requestDTO = GenerateRequestForMLAutocomplete();
@@ -824,7 +836,9 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 foreach (var nodeItem in nodeStack)
                 {
                     var typeInfo = new NodeModelTypeId(nodeItem.Type.Id);
-                    var newNode = dynamoModel.CreateNodeFromNameOrType(Guid.NewGuid(), typeInfo.FullName, true);
+
+                    NodeModel newNode = dynamoModel.CreateNodeFromNameOrType(Guid.NewGuid(), typeInfo.FullName, true);
+                    
                     if (newNode != null)
                     {
                         newNode.X = offset; // Adjust X position
@@ -1401,7 +1415,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 //if we can't find a match then dist should indicate that.
                 return int.MaxValue;
             }
-
         }
     }
 }
