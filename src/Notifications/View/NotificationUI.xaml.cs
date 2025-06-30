@@ -82,15 +82,25 @@ namespace Dynamo.Notifications.View
             if (Application.Current?.MainWindow == null)
                 return;
 
-            ReleaseCapture();
-            SetForegroundWindow(new WindowInteropHelper(Application.Current.MainWindow).Handle);
+            if (!ReleaseCapture())
+            {
+                int errorCode = Marshal.GetLastWin32Error();
+                Console.WriteLine($"ReleaseCapture failed with error code: {errorCode}");
+            }
+
+            if (!SetForegroundWindow(new WindowInteropHelper(Application.Current.MainWindow).Handle))
+            {
+                int errorCode = Marshal.GetLastWin32Error();
+                Console.WriteLine($"SetForegroundWindow failed with error code: {errorCode}");
+            }   
         }
 
-        [DllImport("user32.dll")]
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool ReleaseCapture();
+
+        [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         private static extern bool SetForegroundWindow(IntPtr hWnd);
-
-        [DllImport("user32.dll")]
-        private static extern bool ReleaseCapture();
     }
 }
