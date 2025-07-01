@@ -33,6 +33,7 @@ using Dynamo.Graph;
 using System.Windows.Media;
 using System.ComponentModel;
 using System.Windows.Data;
+using Dynamo.NodeAutoComplete.Services;
 
 namespace Dynamo.NodeAutoComplete.ViewModels
 {
@@ -56,7 +57,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         public bool SwitchIsEnabled => ResultsLoaded && !IsInput;
         public bool IsSingleAutocomplete
         {
-            get => _isSingleAutocomplete || IsInput;
+            get => _isSingleAutocomplete || IsInput || !dynamoViewModel.IsDNAClusterPlacementEnabled;
             set
             {
                 if (PortViewModel.PortType == PortType.Output && _isSingleAutocomplete != value)
@@ -146,9 +147,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 RaisePropertyChanged(nameof(NthofTotal));
                 RaisePropertyChanged(nameof(ResultsLoaded));
                 RaisePropertyChanged(nameof(SwitchIsEnabled));
-                RaisePropertyChanged(nameof(ConfirmSource));
-                RaisePropertyChanged(nameof(PreviousSource));
-                RaisePropertyChanged(nameof(NextSource));
+                RaisePropertyChanged(nameof(HasPrevious));
+                RaisePropertyChanged(nameof(HasNext));
                 RaisePropertyChanged(nameof(FilteredView));
             }
         }
@@ -257,8 +257,8 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
                     RaisePropertyChanged(nameof(SelectedIndex));
                     RaisePropertyChanged(nameof(NthofTotal));
-                    RaisePropertyChanged(nameof(PreviousSource));
-                    RaisePropertyChanged(nameof(NextSource));
+                    RaisePropertyChanged(nameof(HasPrevious));
+                    RaisePropertyChanged(nameof(HasNext));
                 }
             }
         }
@@ -279,7 +279,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 connector.IsTransient = false;
             }
 
-            NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, false, null);
+            NodeAutoCompleteUtilities.PostAutoLayoutNodes(node.WorkspaceViewModel.Model, node.NodeModel, transientNodes.Select(x => x.NodeModel), true, true, PortViewModel.PortType, null);
 
             (node.WorkspaceViewModel.Model as HomeWorkspaceModel)?.MarkNodesAsModifiedAndRequestRun(transientNodes.Select(x => x.NodeModel));
 
@@ -296,35 +296,15 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         }
 
         /// <summary>
-        /// Bitmap Source for left caret
+        /// Boolean, true if its possible to select a previous autocomplete option
         /// </summary>
-        public string PreviousSource
-        {
-            get
-            {
-                return selectedIndex == 0 ? "/DynamoCoreWpf;component/UI/Images/caret-left-disabled.png" : "/DynamoCoreWpf;component/UI/Images/caret-left-default.png";
-            }
-        }
+        public bool HasPrevious => selectedIndex > 0;
+
         /// <summary>
-        /// Bitmap Source for right caret
+        /// Boolean, true if its possible to select a next autocomplete option
         /// </summary>
-        public string NextSource
-        {
-            get
-            {
-                return selectedIndex >= ClusterResultsCount - 1 ? "/DynamoCoreWpf;component/UI/Images/caret-right-disabled.png" : "/DynamoCoreWpf;component/UI/Images/caret-right-default.png";
-            }
-        }
-        /// <summary>
-        /// Bitmap Source for confirmation checkmark
-        /// </summary>
-        public string ConfirmSource
-        {
-            get
-            {
-                return ResultsLoaded ? "/DynamoCoreWpf;component/UI/Images/check.png" : "/DynamoCoreWpf;component/UI/Images/check-disabled.png";
-            }
-        }
+        public bool HasNext => selectedIndex < ClusterResultsCount - 1;
+
         /// <summary>
         /// Language agnostic way of showing current result ordinal
         /// </summary>
@@ -388,11 +368,27 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             }
         }
 
+        /// <summary>
+        /// Expose IsDNAClusterPlacementEnabled feature flag as readonly in the viewmodel 
+        /// </summary>
+        public bool IsDNAClusterPlacementEnabled
+        {
+            get
+            {
+                return dynamoViewModel.IsDNAClusterPlacementEnabled;
+            }
+        }
+
         internal event Action<NodeModel> ParentNodeRemoved;
 
         internal MLNodeClusterAutoCompletionResponse FullResults { private set; get; }
         internal List<SingleResultItem> FullSingleResults { set; get; }
         private Guid LastRequestGuid;
+
+        /// <summary>
+        /// Service for handling local autocomplete functionality
+        /// </summary>
+        private readonly LocalAutoCompleteService localAutoCompleteService;
 
         /// <summary>
         /// Constructor
@@ -403,6 +399,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             // Off load some time consuming operation here
             DefaultResults = dynamoViewModel.DefaultAutocompleteCandidates.Values;
             ServiceVersion = string.Empty;
+            localAutoCompleteService = new LocalAutoCompleteService(dynamoViewModel);
         }
 
         /// <summary>
@@ -546,7 +543,9 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 AutocompleteMLTitle = Resources.AutocompleteNoRecommendationsTitle;
                 AutocompleteMLMessage = Resources.AutocompleteNoRecommendationsMessage;
                 Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "NoRecommendation");
-                return new List<SingleResultItem>();
+
+                Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "FallbackToLocalAutocomplete");
+                return localAutoCompleteService.TryGetLocalAutoCompleteResult(PortViewModel.NodeViewModel.NodeModel, PortViewModel.PortModel);
             }
             ServiceVersion = MLresults.Version;
             var results = new List<SingleResultItem>();
@@ -619,6 +618,9 @@ namespace Dynamo.NodeAutoComplete.ViewModels
 
             return results;
         }
+
+
+
         private T GetGenericAutocompleteResult<T>(string endpoint)
         {   
             var requestDTO = GenerateRequestForMLAutocomplete();
@@ -834,7 +836,9 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 foreach (var nodeItem in nodeStack)
                 {
                     var typeInfo = new NodeModelTypeId(nodeItem.Type.Id);
-                    var newNode = dynamoModel.CreateNodeFromNameOrType(Guid.NewGuid(), typeInfo.FullName, true);
+
+                    NodeModel newNode = dynamoModel.CreateNodeFromNameOrType(Guid.NewGuid(), typeInfo.FullName, true);
+                    
                     if (newNode != null)
                     {
                         newNode.X = offset; // Adjust X position
@@ -918,7 +922,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 createdNodes.Values,
                 false,
                 false,
-                false,
+                PortViewModel.PortType,
                 () =>
                 {
                     // Finalize visibility of nodes and connectors
@@ -955,6 +959,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             //this should run on the UI thread, so thread safety is not a concern
             LastRequestGuid = Guid.NewGuid();
             var myRequest = LastRequestGuid;
+            SelectedIndex = -1;
 
             //start a background thread to make the http request
             Task.Run(() =>
@@ -1410,7 +1415,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 //if we can't find a match then dist should indicate that.
                 return int.MaxValue;
             }
-
         }
     }
 }

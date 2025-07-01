@@ -229,7 +229,7 @@ namespace Dynamo.Nodes
                 groupTextBox.GotFocus -= GroupTextBox_OnGotFocus;
                 groupTextBox.TextChanged -= GroupTextBox_OnTextChanged;
             }
-
+            
             if (groupDescriptionTextBox != null)
             {
                 groupDescriptionTextBox.IsVisibleChanged -= GroupDescriptionTextBox_OnIsVisibleChanged;
@@ -444,6 +444,7 @@ namespace Dynamo.Nodes
             {
                 ViewModel.WorkspaceViewModel.HasUnsavedChanges = true;
             }
+            
         }
 
         /// <summary>
@@ -457,7 +458,6 @@ namespace Dynamo.Nodes
             if (ViewModel != null && (e.HeightChanged || e.WidthChanged) && !_isUpdatingLayout)
             {
                 _isUpdatingLayout = true;
-
                 // Use Dispatcher.BeginInvoke to batch layout updates
                 Dispatcher.BeginInvoke(new Action(() =>
                 {
@@ -1449,7 +1449,6 @@ namespace Dynamo.Nodes
 
             // Create the Polygon
             var polygonFactory = new FrameworkElementFactory(typeof(Polygon));
-
             // Set Points collection
             var points = new PointCollection
             {
@@ -2776,7 +2775,6 @@ namespace Dynamo.Nodes
         }
 
         #endregion
-
 
         private void SetModelAreaHeight()
         {

@@ -19,10 +19,7 @@ namespace Dynamo.Graph.Workspaces
         /// to set up and run the graph layout algorithm.
         /// </summary>
         /// <param name="workspace">Workspace on which graph layout will be performed.</param>
-        /// <param name="reuseUndoRedoGroup">If true, skip initializing new undo action group.</param>
-        /// <param name="isNodeAutoComplete"></param>
-        /// <param name="originalNodeGUID"></param>
-        internal static List<GraphLayout.Graph> DoGraphAutoLayout(this WorkspaceModel workspace, bool reuseUndoRedoGroup = false, bool isNodeAutoComplete = false, Guid? originalNodeGUID = null)
+        internal static List<GraphLayout.Graph> DoGraphAutoLayout(this WorkspaceModel workspace)
         {
             if (workspace.Nodes.Count() < 2) return null;
 
@@ -39,11 +36,8 @@ namespace Dynamo.Graph.Workspaces
             GenerateCombinedGraph(workspace, isGroupLayout, out layoutSubgraphs, out subgraphClusters);
 
             //only record graph layout undo when it is not node autocomplete
-            if (!isNodeAutoComplete)
-            {
-                RecordUndoGraphLayout(workspace, isGroupLayout, reuseUndoRedoGroup);
-            }
-            
+            RecordUndoGraphLayout(workspace, isGroupLayout, false);
+
             // Generate subgraphs separately for each cluster
             subgraphClusters.ForEach(
                 x => GenerateSeparateSubgraphs(new HashSet<GraphLayout.Node>(x), layoutSubgraphs));
@@ -51,23 +45,107 @@ namespace Dynamo.Graph.Workspaces
             // Deselect all nodes
             subgraphClusters.ForEach(c => c.ForEach(x => x.IsSelected = false));
 
+            var activeComponents = layoutSubgraphs.Skip(1).ToList();
             // Run layout algorithm for each subgraph
-            layoutSubgraphs.Skip(1).ToList().ForEach(g => RunLayoutSubgraph(g, isGroupLayout));
+            activeComponents.ForEach(g => RunLayoutSubgraph(g, isGroupLayout));
+
             AvoidSubgraphOverlap(layoutSubgraphs);
 
-            if (isNodeAutoComplete)
-            {
-                SaveLayoutGraphForNodeAutoComplete(workspace, layoutSubgraphs, originalNodeGUID);
-            }
-            else {
-                SaveLayoutGraph(workspace, layoutSubgraphs);
-            }
+            SaveLayoutGraph(workspace, layoutSubgraphs);
 
             // Restore the workspace model selection information
             selection.ToList().ForEach(x => x.Select());
 
             return layoutSubgraphs;
         }
+        /// <summary>
+        /// This function wraps a few methods on the workspace model layer
+        /// to set up and run the graph layout algorithm.
+        /// </summary>
+        /// <param name="workspace">Workspace on which graph layout will be performed.</param>
+        /// <param name="originalNodeGUID"></param>
+        /// <param name="newNodes"></param>
+        /// <param name="misplacedNodes"></param>
+        /// <param name="portType"></param>
+        internal static List<GraphLayout.Graph> DoGraphAutoLayoutAutocomplete(this WorkspaceModel workspace,
+            Guid originalNodeGUID,
+            IEnumerable<NodeModel> newNodes,
+            IEnumerable<NodeModel> misplacedNodes, PortType portType)
+        {
+            if (workspace.Nodes.Count() < 2) return null;
+
+            const bool isGroupLayout = false;
+
+            List<GraphLayout.Graph> layoutSubgraphs;
+            List<List<GraphLayout.Node>> subgraphClusters;
+
+            GenerateCombinedGraph(workspace, isGroupLayout, out layoutSubgraphs, out subgraphClusters);
+
+            var misplacedGuidSet = misplacedNodes.Select(x => x.GUID).ToHashSet();
+            foreach (var node in layoutSubgraphs.First().Nodes)
+            {
+                //this is a virtual IsSelected - it doesnt change the workspace node models but marks it as touchable to the algorithm
+                node.IsSelected = node.Id == originalNodeGUID || misplacedGuidSet.Contains(node.Id);
+            }
+
+            // Generate subgraphs separately for each cluster
+            subgraphClusters.ForEach(
+                x => GenerateSeparateSubgraphs(new HashSet<GraphLayout.Node>(x), layoutSubgraphs));
+
+            // Deselect all nodes
+            subgraphClusters.ForEach(c => c.ForEach(x => x.IsSelected = false));
+
+            var activeComponents = layoutSubgraphs.Skip(1).ToList();
+            var targetSubgraph = activeComponents.FirstOrDefault(x => x.Nodes.Any(x => x.Id == originalNodeGUID));
+            var targetNode = targetSubgraph.Nodes.First(x => x.Id == originalNodeGUID);
+
+            // Run layout algorithm for each subgraph
+            activeComponents.ForEach(g => RunLayoutSubgraph(g, isGroupLayout));
+
+            //original node shouldn't move: move others around
+            var diffX = targetNode.X - targetNode.InitialX;
+            var diffY = targetNode.Y - targetNode.InitialY;
+            foreach (var relatedNode in targetSubgraph.Nodes)
+            {
+                relatedNode.X -= diffX;
+                relatedNode.Y -= diffY;
+            }
+
+            if (portType == PortType.Output)
+            {
+                double minX = double.MaxValue;
+                foreach (var relatedNode in targetSubgraph.Nodes)
+                {
+                    if (newNodes.Any(x => x.GUID == relatedNode.Id))
+                    {
+                        minX = Math.Min(minX, relatedNode.X);
+                    }
+                }
+                double targetMinX = targetNode.X + targetNode.Width + GraphLayout.Graph.HorizontalNodeDistance;
+                var displacement = minX == double.MaxValue ? 0 : targetMinX - minX;
+
+                foreach (var relatedNode in targetSubgraph.Nodes)
+                {
+                    if (newNodes.Any(x => x.GUID == relatedNode.Id))
+                    {
+                        relatedNode.X += displacement;
+                    }
+                }
+            }
+
+            // right now cluster nodes only work on outputs, single nodes dont need to be relayouted as above
+
+
+            AvoidSubgraphOverlap(layoutSubgraphs, originalNodeGUID);
+
+            var maybeUpdateSet = workspace.Nodes.Any(x => x.IsTransient) ?
+                workspace.Nodes.Where(x => x.GUID == originalNodeGUID || misplacedGuidSet.Contains(x.GUID)) :
+                workspace.Nodes;
+            SaveLayoutGraphForNodeAutoComplete(workspace, maybeUpdateSet.ToList(), layoutSubgraphs, originalNodeGUID);
+
+            return layoutSubgraphs;
+        }
+
 
         /// <summary>
         /// <param name="workspace">A <see cref="WorkspaceModel"/>.</param>
@@ -77,7 +155,7 @@ namespace Dynamo.Graph.Workspaces
         /// <param name="layoutSubgraphs"></param>
         /// <param name="subgraphClusters"></param>
         /// </summary>
-        private static void GenerateCombinedGraph(this WorkspaceModel workspace, bool isGroupLayout, 
+        private static void GenerateCombinedGraph(this WorkspaceModel workspace, bool isGroupLayout,
             out List<GraphLayout.Graph> layoutSubgraphs, out List<List<GraphLayout.Node>> subgraphClusters)
         {
             layoutSubgraphs = new List<GraphLayout.Graph>
@@ -135,8 +213,8 @@ namespace Dynamo.Graph.Workspaces
                     combinedGraph.AddNode(pin.GUID,
                         pin.Width,
                         pin.Height,
-                        pin.CenterX, 
-                        pin.CenterY, 
+                        pin.CenterX,
+                        pin.CenterY,
                         pin.IsSelected || DynamoSelection.Instance.Selection.Count == 0);
                 }
             }
@@ -154,12 +232,12 @@ namespace Dynamo.Graph.Workspaces
                     var groupsFiltered = workspace.Annotations.Where(g => !workspace.Annotations.ContainsModel(g));
 
                     startGroup = groupsFiltered
-                        .Where(g => g.ContainsModel(edge.Start.Owner) || 
+                        .Where(g => g.ContainsModel(edge.Start.Owner) ||
                                     g.Nodes.OfType<AnnotationModel>().SelectMany(x => x.Nodes).Contains(edge.Start.Owner))
                         .FirstOrDefault();
 
                     endGroup = groupsFiltered
-                        .Where(g => g.ContainsModel(edge.End.Owner) || 
+                        .Where(g => g.ContainsModel(edge.End.Owner) ||
                                     g.Nodes.OfType<AnnotationModel>().SelectMany(x => x.Nodes).Contains(edge.End.Owner))
                         .FirstOrDefault();
 
@@ -272,11 +350,11 @@ namespace Dynamo.Graph.Workspaces
 
             // Add an edge between the left-most (start) node 
             // (its corresponding port) to which this connector connects, and the first connectorPin.
-            combinedGraph.AddEdge(startGuid, 
+            combinedGraph.AddEdge(startGuid,
                 connector.ConnectorPinModels[0].GUID,
-                connector.Start.Center.X, 
-                connector.Start.Center.Y, 
-                connector.ConnectorPinModels[0].CenterX, 
+                connector.Start.Center.X,
+                connector.Start.Center.Y,
+                connector.ConnectorPinModels[0].CenterX,
                 connector.ConnectorPinModels[0].CenterY);
 
             // Add an edge between all other connectorPins that follow, 
@@ -285,11 +363,11 @@ namespace Dynamo.Graph.Workspaces
             {
                 if (i != connector.ConnectorPinModels.Count - 1)
                 {
-                    combinedGraph.AddEdge(connector.ConnectorPinModels[i].GUID, 
+                    combinedGraph.AddEdge(connector.ConnectorPinModels[i].GUID,
                         connector.ConnectorPinModels[i + 1].GUID,
-                        connector.ConnectorPinModels[i].CenterX, 
-                        connector.ConnectorPinModels[i].CenterY, 
-                        connector.ConnectorPinModels[i + 1].CenterX, 
+                        connector.ConnectorPinModels[i].CenterX,
+                        connector.ConnectorPinModels[i].CenterY,
+                        connector.ConnectorPinModels[i + 1].CenterX,
                         connector.ConnectorPinModels[i + 1].CenterY);
                 }
             }
@@ -298,9 +376,9 @@ namespace Dynamo.Graph.Workspaces
             // (its corresponding port) to which this connector connects.
             combinedGraph.AddEdge(connector.ConnectorPinModels[connector.ConnectorPinModels.Count - 1].GUID,
                 endGuid,
-                connector.ConnectorPinModels[connector.ConnectorPinModels.Count - 1].CenterX, 
-                connector.ConnectorPinModels[connector.ConnectorPinModels.Count - 1].CenterY, 
-                connector.End.Center.X, 
+                connector.ConnectorPinModels[connector.ConnectorPinModels.Count - 1].CenterX,
+                connector.ConnectorPinModels[connector.ConnectorPinModels.Count - 1].CenterY,
+                connector.End.Center.X,
                 connector.End.Center.Y);
         }
 
@@ -444,7 +522,7 @@ namespace Dynamo.Graph.Workspaces
         /// This method repeatedly shifts subgraphs away vertically from each other
         /// when there are any two nodes from different subgraphs overlapping.
         /// </summary>
-        private static void AvoidSubgraphOverlap(List<GraphLayout.Graph> layoutSubgraphs)
+        private static void AvoidSubgraphOverlap(List<GraphLayout.Graph> layoutSubgraphs, Guid? anchorNodeGuid = null)
         {
             bool done;
 
@@ -454,8 +532,10 @@ namespace Dynamo.Graph.Workspaces
 
                 foreach (var g1 in layoutSubgraphs.Skip(1))
                 {
+                    var g1HasAnchor = anchorNodeGuid != null && g1.Nodes.Any(x => x.Id == anchorNodeGuid.Value);
                     foreach (var g2 in layoutSubgraphs.Skip(1))
                     {
+                        var g2HasAnchor = anchorNodeGuid != null && g2.Nodes.Any(x => x.Id == anchorNodeGuid.Value);
                         // The first subgraph's center point must be higher than the second subgraph
                         if (!g1.Equals(g2) && (g1.GraphCenterY + g1.OffsetY <= g2.GraphCenterY + g2.OffsetY))
                         {
@@ -472,8 +552,9 @@ namespace Dynamo.Graph.Workspaces
                                         ((node2.X <= node1.X) && (node2.X + node2.Width + GraphLayout.Graph.HorizontalNodeDistance > node1.X))))
                                     {
                                         // Shift the first subgraph to the top and the second subgraph to the bottom
-                                        g1.OffsetY -= 5;
-                                        g2.OffsetY += 5;
+                                        // both cant have anchors simultaneously, since are different groups and there is only one anchor
+                                        if (!g1HasAnchor) g1.OffsetY -= 5;
+                                        if (!g2HasAnchor) g2.OffsetY += 5;
                                         done = false;
                                     }
                                     if (!done) break;
@@ -586,10 +667,10 @@ namespace Dynamo.Graph.Workspaces
         /// This method pushes changes from the GraphLayout.Graph objects
         /// back to the workspace models, but only for nodes placed by NodeAutocomplete.
         /// </summary>
-        private static void SaveLayoutGraphForNodeAutoComplete(this WorkspaceModel workspace, List<GraphLayout.Graph> layoutSubgraphs, Guid? originalNodeGUID)
+        private static void SaveLayoutGraphForNodeAutoComplete(WorkspaceModel workspace, List<NodeModel> nodes, List<GraphLayout.Graph> layoutSubgraphs, Guid? originalNodeGUID)
         {
             // Assign coordinates to nodes outside groups
-            foreach (var node in workspace.Nodes)
+            foreach (var node in nodes)
             {
                 GraphLayout.Graph graph = layoutSubgraphs
                     .FirstOrDefault(g => g.FindNode(node.GUID) != null);
