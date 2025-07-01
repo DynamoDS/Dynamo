@@ -571,44 +571,24 @@ namespace Dynamo.Graph.Annotations
             }
         }
 
-        private double heightBeforeGroupExpands;
+        private double heightBeforeToggle;
         /// <summary>
         /// Stores the group height before it expands from collapsed state.
         /// </summary>
-        public double HeightBeforeGroupExpands
+        public double HeightBeforeToggle
         {
-            get => heightBeforeGroupExpands;
-            private set => heightBeforeGroupExpands = value;
+            get => heightBeforeToggle;
+            set => heightBeforeToggle = value;
         }
 
-        private double widthBeforeGroupExpands;
+        private double widthBeforeToggle;
         /// <summary>
         /// Stores the group width before it expands from collapsed state.
         /// </summary>
-        public double WidthBeforeGroupExpands
+        public double WidthBeforeToggle
         {
-            get => widthBeforeGroupExpands;
-            private set => widthBeforeGroupExpands = value;
-        }
-
-        private double heightBeforePortToggle;
-        /// <summary>
-        /// Stores the group height before toggling optional or unconnected ports.
-        /// </summary>
-        public double HeightBeforePortToggle
-        {
-            get => heightBeforePortToggle;
-            set => heightBeforePortToggle = value;
-        }
-
-        private double widthBeforePortToggle;
-        /// <summary>
-        /// Stores the group width before toggling optional or unconnected ports.
-        /// </summary>
-        public double WidthBeforePortToggle
-        {
-            get => widthBeforePortToggle;
-            set => widthBeforePortToggle = value;
+            get => widthBeforeToggle;
+            set => widthBeforeToggle = value;
         }
 
         #endregion
@@ -843,10 +823,6 @@ namespace Dynamo.Graph.Annotations
             }
 
             Height = TextBlockHeight + ModelAreaHeight;
-
-            // Store collapsed dimensions so they can be used to reposition affected items during group expansion.
-            WidthBeforeGroupExpands = Width;
-            HeightBeforeGroupExpands = ModelAreaHeight;
         }
 
         /// <summary>
