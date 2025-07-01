@@ -858,7 +858,7 @@ value: bool = false</value>
     <value>아직 추천받은 항목이 없습니다. 노드 유형 일치 자동 완성으로 전환해 볼 수 있습니다.</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
-    <value>No confident suggestions available. The model is continuously improving - check back soon.</value>
+    <value>현재 확실한 추천을 제공할 수 없습니다. 모델은 계속 개선 중이니, 나중에 다시 확인해 주십시오.</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
     <value>신뢰도 수준보다 낮은 추천 표시</value>
@@ -897,6 +897,6 @@ value: bool = false</value>
     <value>이 노드는 현재 실험 단계입니다. 동작, 이름 및 서명은 변경될 수 있습니다.</value>
   </data>
   <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
-    <value>Click on the sparkle icon next to the port to activate Node Autocomplete.</value>
+    <value>포트 옆에 있는 반짝임 아이콘을 클릭하여 노드 자동 완성을 활성화하십시오.</value>
   </data>
 </root>
