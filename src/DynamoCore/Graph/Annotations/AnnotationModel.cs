@@ -24,11 +24,6 @@ namespace Dynamo.Graph.Annotations
         private const double ExtendYHeight = 5.0;
         private const double NoteYAdjustment = 8.0;
 
-        /// <summary>
-        /// The default height of the group's content area when collapsed.
-        /// </summary>
-        public const double CollapsedContentHeight = 82;
-
         #region Properties
 
         /// <summary>
