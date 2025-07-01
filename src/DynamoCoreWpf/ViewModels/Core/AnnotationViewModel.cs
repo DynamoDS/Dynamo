@@ -38,6 +38,8 @@ namespace Dynamo.ViewModels
         private ObservableCollection<Dynamo.Configuration.StyleItem> groupStyleList;
         private IEnumerable<Configuration.StyleItem> preferencesStyleItemsList;
         private PreferenceSettings preferenceSettings;
+        private double heightBeforeToggle;
+        private double widthBeforeToggle;
 
         private const double MinSpacing = 50;
         private const double MinChangeThreshold = 1;
@@ -1408,12 +1410,12 @@ namespace Dynamo.ViewModels
         {
             var model = annotationModel;
 
-            double deltaY = model.ModelAreaHeight - model.HeightBeforeToggle;
-            double deltaX = model.Width - model.WidthBeforeToggle;
+            double deltaY = ModelAreaHeight - heightBeforeToggle;
+            double deltaX = Width - widthBeforeToggle;
 
             // Log the current size
-            model.HeightBeforeToggle = model.ModelAreaHeight;
-            model.WidthBeforeToggle = model.Width;
+            heightBeforeToggle = ModelAreaHeight;
+            widthBeforeToggle = Width;
 
             // Skip layout update if changes are negligible
             if (deltaX < MinChangeThreshold && deltaY < MinChangeThreshold)

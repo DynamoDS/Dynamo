@@ -566,26 +566,6 @@ namespace Dynamo.Graph.Annotations
             }
         }
 
-        private double heightBeforeToggle;
-        /// <summary>
-        /// Stores the group height before it expands from collapsed state.
-        /// </summary>
-        public double HeightBeforeToggle
-        {
-            get => heightBeforeToggle;
-            set => heightBeforeToggle = value;
-        }
-
-        private double widthBeforeToggle;
-        /// <summary>
-        /// Stores the group width before it expands from collapsed state.
-        /// </summary>
-        public double WidthBeforeToggle
-        {
-            get => widthBeforeToggle;
-            set => widthBeforeToggle = value;
-        }
-
         #endregion
 
         /// <summary>
