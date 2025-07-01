@@ -307,7 +307,7 @@ namespace Dynamo.ViewModels
             return request;
         }
 
-        internal void ShowNodeAutocompleMLResults()
+        internal void ShowNodeAutocompleMLResults(Action? afterLoaded)
         {
             //this should run on the UI thread, so thread safety is not a concern
             LastRequestGuid = Guid.NewGuid();
@@ -326,24 +326,25 @@ namespace Dynamo.ViewModels
                 try
                 {
                     MLresults = GetMLNodeAutocompleteResults(jsonRequest);
-                    this.dynamoViewModel.UIDispatcher.BeginInvoke(() => UpdateUIWithRresults(MLresults, myRequest));
+                    this.dynamoViewModel.UIDispatcher.BeginInvoke(() => UpdateUIWithRresults(MLresults, myRequest, afterLoaded));
                 }
                 catch (Exception ex)
                 {
                     this.dynamoViewModel.UIDispatcher.BeginInvoke(() =>
                     {
+                        if (LastRequestGuid != myRequest || !IsOpen) return;
                         ResultsLoaded = true; //fail gracefully
+                        afterLoaded?.Invoke();
                         dynamoViewModel.Model.Logger.Log("Unable to fetch ML Node autocomplete results: " + ex.Message);
                         DisplayAutocompleteMLStaticPage = true;
                         AutocompleteMLTitle = Resources.LoginNeededTitle;
                         AutocompleteMLMessage = Resources.LoginNeededMessage;
                         Analytics.TrackEvent(Actions.View, Categories.NodeAutoCompleteOperations, "UnabletoFetch");
-                        return;
                     });
                 }
             });
         }
-        private void UpdateUIWithRresults(MLNodeAutoCompletionResponse MLresults, Guid myRequest)
+        private void UpdateUIWithRresults(MLNodeAutoCompletionResponse MLresults, Guid myRequest, Action? afterLoaded)
         {
             if (LastRequestGuid != myRequest)
             {
@@ -358,6 +359,7 @@ namespace Dynamo.ViewModels
                 return;
             }
             ResultsLoaded = true;
+            afterLoaded?.Invoke();
             // no results
             if (MLresults == null || MLresults.Results.Count() == 0)
             {
@@ -455,6 +457,9 @@ namespace Dynamo.ViewModels
 
                 OrganizeConfidenceSection(results);
             }
+
+            // Save the filtered results for search.
+            searchElementsCache = FilteredResults.ToList();
         }
 
         /// <summary>
@@ -588,7 +593,7 @@ namespace Dynamo.ViewModels
         /// <summary>
         /// Key function to populate node autocomplete results to display
         /// </summary>
-        internal void PopulateAutoCompleteCandidates()
+        internal void PopulateAutoCompleteCandidates(Action afterLoaded = null)
         {
             if (PortViewModel == null) return;
             
@@ -596,7 +601,7 @@ namespace Dynamo.ViewModels
 
             if (IsDisplayingMLRecommendation)
             {
-                ShowNodeAutocompleMLResults();
+                ShowNodeAutocompleMLResults(afterLoaded);
                 //Tracking Analytics when raising Node Autocomplete with the Recommended Nodes option selected (Machine Learning)
                 Analytics.TrackEvent(
                     Actions.Show,
@@ -605,6 +610,7 @@ namespace Dynamo.ViewModels
             }
             else
             {
+                ResultsLoaded = true; //whether succesful or errored out, no need for the loading as its done synchronously
                 //Tracking Analytics when raising Node Autocomplete with the Object Types option selected.
                 Analytics.TrackEvent(
                     Actions.Show,
@@ -622,10 +628,9 @@ namespace Dynamo.ViewModels
                 {
                     FilteredResults = GetViewModelForNodeSearchElements(objectTypeMatchingElements);
                 }
+                // Save the filtered results for search.
+                searchElementsCache = FilteredResults.ToList();
             }
-
-            // Save the filtered results for search.
-            searchElementsCache = FilteredResults.ToList();
         }
 
         internal void PopulateDefaultAutoCompleteCandidates()

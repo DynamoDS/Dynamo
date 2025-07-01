@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Dynamo.Graph.Nodes;
 using Dynamo.Graph.Workspaces;
 using Dynamo.Models;
@@ -35,7 +36,6 @@ namespace Dynamo.ViewModels
         private SolidColorBrush portBorderBrushColor = PortBorderBrushColorDefault;
         private SolidColorBrush portBackgroundColor = PortBackgroundColorDefault;
         private Visibility highlight = Visibility.Collapsed;
-        private bool nodeAutoCompleteMarkerEnabled = false;
 
         /// <summary>
         /// Port model.
@@ -225,12 +225,7 @@ namespace Dynamo.ViewModels
                     return false;
                 }
 
-                return CanHaveAutoCompleteMarker() && nodeAutoCompleteMarkerEnabled;
-            }
-            set
-            {
-                nodeAutoCompleteMarkerEnabled = value;
-                RaisePropertyChanged(nameof(NodeAutoCompleteMarkerEnabled));
+                return CanHaveAutoCompleteMarker();
             }
         }
 
@@ -279,9 +274,6 @@ namespace Dynamo.ViewModels
             this.node.PropertyChanged += NodePropertyChanged;
             this.node.WorkspaceViewModel.PropertyChanged += WorkspacePropertyChanged;
             this.node.WorkspaceViewModel.DynamoViewModel.PreferencesViewModel.PropertyChanged += PreferencesViewModelPropertyChanged;
-
-            //turn on the autocomplete marker if enabled
-            NodeAutoCompleteMarkerEnabled = NodeViewModel.DynamoViewModel.EnableNodeAutoComplete;
 
             RefreshPortColors();
         }
@@ -375,6 +367,8 @@ namespace Dynamo.ViewModels
         /// </summary>
         private void ConfigurePopupPlacement(Popup popup, double zoom)
         {
+            var dpiScale = GetDpiScale();
+
             popup.CustomPopupPlacementCallback = (popupSize, targetSize, offset) =>
             {
                 double x;
@@ -382,11 +376,11 @@ namespace Dynamo.ViewModels
 
                 if (this is InPortViewModel)
                 {
-                    x = -popupSize.Width + proxyPortContextMenuOffset * zoom;                    
+                    x = -popupSize.Width + proxyPortContextMenuOffset * zoom * dpiScale;                    
                 }
                 else
                 {
-                    x = targetSize.Width - proxyPortContextMenuOffset * zoom;
+                    x = targetSize.Width - proxyPortContextMenuOffset * zoom * dpiScale;
                 }
 
                 return new[] { new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None) };
@@ -398,6 +392,7 @@ namespace Dynamo.ViewModels
             // The actual zoom here is confusing
             // What matters is the zoom factor measured from the scaled : unscaled node size
             var zoom = node.WorkspaceViewModel.Zoom;
+            var dpiScale = GetDpiScale();
 
             double x;
             var scaledWidth = autocompletePopupSpacing * targetSize.Width / node.ActualWidth;
@@ -421,11 +416,29 @@ namespace Dynamo.ViewModels
             var rowOffset = PortModel.Index * PortModel.Height * zoom;
             var customNodeOffset = NodeModel.CustomNodeTopBorderHeight * zoom;
 
-            var y = popupHeightOffset + headerHeightOffset + portHalfHeight + rowOffset + customNodeOffset;
+            // popupSize.Height is already DPI-scaled (in screen pixels), so we do NOT apply dpiScale to it
+            // All other layout values are in logical units and must be multiplied by dpiScale for correct placement
+            var y = popupHeightOffset + (headerHeightOffset + portHalfHeight + rowOffset + customNodeOffset) * dpiScale;
 
             var placement = new CustomPopupPlacement(new Point(x, y), PopupPrimaryAxis.None);
 
             return new[] { placement };
+        }
+
+        private static double GetDpiScale()
+        {
+            double dpiScale = 1.0;
+            try
+            {
+                var source = PresentationSource.FromVisual(Application.Current.MainWindow);
+                dpiScale = source?.CompositionTarget?.TransformToDevice.M22 ?? 1.0;
+            }
+            catch
+            {
+                // fallback to default DPI scale of 1.0 if anything fails
+            }
+
+            return dpiScale;
         }
 
         private void WorkspacePropertyChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e)
@@ -509,7 +522,43 @@ namespace Dynamo.ViewModels
         {
             DynamoViewModel dynamoViewModel = this.node.DynamoViewModel;
             WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
+
             workspaceViewModel.HandlePortClicked(this);
+
+            //handle double click
+            if (parameter is MouseButtonEventArgs evArgs)
+            {
+                evArgs.Handled = true;
+                if (evArgs.ClickCount >=2)
+                {
+                    HandleDoubleClick();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Node AutoComplete used to be a double click. It isn't anymore, so we alert users to use the sparkle instead.
+        /// </summary>
+        private void HandleDoubleClick()
+        {
+            DynamoViewModel dynamoViewModel = this.node.DynamoViewModel;
+            WorkspaceViewModel workspaceViewModel = dynamoViewModel.CurrentSpaceViewModel;
+
+            workspaceViewModel.CancelActiveState();
+            dynamoViewModel.MainGuideManager.CreateRealTimeInfoWindow(Properties.Resources.ToastFileNodeAutoCompleteDoubleClick, true);
+
+            var timer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromSeconds(4)
+            };
+
+            timer.Tick += (s, e) =>
+            {
+                timer.Stop();
+                dynamoViewModel.MainGuideManager.CloseRealTimeInfoWindow();
+            };
+
+            timer.Start();
         }
 
         protected bool CanConnect(object parameter)
@@ -539,29 +588,23 @@ namespace Dynamo.ViewModels
                 return;
             }
 
-            var existingPort = wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel;
-            if (existingPort != null)
+            if (wsViewModel.DynamoViewModel.IsNewDNAUIEnabled)
             {
-                existingPort.Highlight = Visibility.Collapsed;
+                wsViewModel?.OnRequestNodeAutocompleteBar(this);
             }
-
-            wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
-
-            wsViewModel.OnRequestNodeAutoCompleteSearch();
-        }
-
-        // Handler to invoke Node autocomplete cluster
-        private void AutoCompleteCluster(object parameter)
-        {
-            //handle the mouse event to prevent connection from starting
-            MouseButtonEventArgs evArgs = parameter as MouseButtonEventArgs;
-            if (evArgs != null)
+            else
             {
-                evArgs.Handled = true;
-            }
+                var existingPort = wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel;
+                if (existingPort != null)
+                {
+                    existingPort.Highlight = Visibility.Collapsed;
+                }
 
-            var wsViewModel = node.WorkspaceViewModel;
-            wsViewModel?.OnRequestNodeAutocompleteBar(this);
+                wsViewModel.NodeAutoCompleteSearchViewModel.PortViewModel = this;
+
+                wsViewModel.OnRequestNodeAutoCompleteSearch();
+            }
+          
         }
 
         private void NodePortContextMenu(object obj)

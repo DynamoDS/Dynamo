@@ -124,7 +124,7 @@
     <value>Nie można zaktualizować zespołu</value>
   </data>
   <data name="DownloadPackageDisabled" xml:space="preserve">
-    <value>Package download is disabled in no-network mode.</value>
+    <value>Pobieranie pakietu jest wyłączone w trybie bez sieci.</value>
   </data>
   <data name="InvalidPackageFolderWarning" xml:space="preserve">
     <value>Folder „{0}” nie istnieje</value>

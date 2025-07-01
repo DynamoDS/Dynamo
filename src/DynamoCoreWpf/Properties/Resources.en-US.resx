@@ -447,6 +447,12 @@ Don't worry, you'll have the option to save your work.</value>
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>Download Warning</value>
   </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>Copy to clipboard</value>
+  </data>
+  <data name="CopyToClipboardFailedMessage" xml:space="preserve">
+    <value>Copy to clipboard failed</value>
+  </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>A Dynamo update is available. Click to install.</value>
   </data>
@@ -4154,5 +4160,20 @@ To make this file into a new template, save it to a different folder, then move 
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>This group is frozen. Click to unfreeze.</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
+    <value>Enable New UI</value>
+    <comment>Preferences | Features | Experimental | Enable Node AutoComplete New UI</comment>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
+    <value>Enable the new floating menu for node suggestions for a more streamlined workflow. Turn off to return to the traditional pop-up dialog.</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
+    <value>_Dump Node Icon Data</value>
+    <comment>Debug menu | Dump all node icon data</comment>
+  </data>
+  <data name="NodeIconDataIsDumped" xml:space="preserve">
+    <value>Node Icon Data is dumped to \"{0}\".</value>
+    <comment>Debug menu | Dump all node icons</comment>
   </data>
 </root>
