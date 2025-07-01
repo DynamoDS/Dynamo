@@ -25,7 +25,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text.Json;
-using System.Threading;
 using System.Xml;
 using Symbol = Dynamo.Graph.Nodes.CustomNodes.Symbol;
 using System.Threading.Tasks;
@@ -51,8 +50,15 @@ namespace Dynamo.Core
             this.migrationManager = migrationManager;
             this.libraryServices = libraryServices;
 
-            //Todo decide were we want to store this
-            customNodeInfoCache = new JsonCache<CustomNodeInfo> ("C:\\Temp\\CustomNodeInforCache.temp", 5000);
+            // With the following code to use a user-specific cache path:
+            string cacheDir = Environment.GetFolderPath(
+                Environment.OSVersion.Platform == PlatformID.Unix ? Environment.SpecialFolder.LocalApplicationData // On Linux, this usually resolves to ~/.local/share
+                    : Environment.SpecialFolder.ApplicationData      // On Windows, this resolves to %APPDATA%
+            );
+            string appSubDir = Path.Combine(cacheDir, "Dynamo", "Cache");
+            Directory.CreateDirectory(appSubDir);
+            string cacheFilePath = Path.Combine(appSubDir, "CustomNodeInfoCache.temp");
+            customNodeInfoCache = new JsonCache<CustomNodeInfo>(cacheFilePath);
             
             // Cleanup stale entries on startup in background
             _ = Task.Run(() => customNodeInfoCache.RemoveStaleEntries());
@@ -182,7 +188,7 @@ namespace Dynamo.Core
         ///     the given id could not be found.
         /// </param>
         /// <param name="isTestMode">
-        ///     Flag specifying whether or not this should operate in "test mode".
+        ///     Flag specifying whether this should operate in "test mode".
         /// </param>
         /// <param name="def">
         ///     Custom node definition data
@@ -402,7 +408,7 @@ namespace Dynamo.Core
         /// </summary>
         /// <param name="path">Path on disk to scan for custom nodes.</param>
         /// <param name="isTestMode">
-        ///     Flag specifying whether or not this should operate in "test mode".
+        ///     Flag specifying whether this should operate in "test mode".
         /// </param>
         /// <param name="isPackageMember">
         ///     Indicates whether custom node comes from package or not.
@@ -1433,69 +1439,6 @@ namespace Dynamo.Core
             // Dispose cache
             customNodeInfoCache?.Dispose();
         }
-
-        #region Cache Management
-
-        /// <summary>
-        /// Clears the custom node info cache and optionally deletes the cache file.
-        /// Can be called on application startup to ensure fresh cache state.
-        /// </summary>
-        /// <param name="deleteFile">Whether to delete the physical cache file</param>
-        /// <returns>Task for async operation</returns>
-        public async Task ClearCustomNodeCacheAsync(bool deleteFile = false)
-        {
-            if (deleteFile)
-            {
-                await customNodeInfoCache.ClearCacheAndFileAsync();
-            }
-            else
-            {
-                await Task.Run(() => customNodeInfoCache.Clear());
-            }
-        }
-
-        /// <summary>
-        /// Removes stale cache entries for files that no longer exist.
-        /// This helps prevent cache bloat from deleted/moved files.
-        /// </summary>
-        /// <returns>Task for async operation</returns>
-        public async Task CleanupStaleCustomNodeCacheEntriesAsync()
-        {
-            await Task.Run(() => customNodeInfoCache.RemoveStaleEntries());
-        }
-
-        /// <summary>
-        /// Gets the current size of the custom node info cache.
-        /// Useful for monitoring cache growth.
-        /// </summary>
-        public int GetCacheSize()
-        {
-            return customNodeInfoCache.Count;
-        }
-
-        /// <summary>
-        /// Removes cache entries for a specific file path.
-        /// Useful when you know a file has been modified and want to force a reload.
-        /// </summary>
-        /// <param name="filePath">Path to the custom node file</param>
-        public async Task InvalidateCacheEntryAsync(string filePath)
-        {
-            if (string.IsNullOrEmpty(filePath)) return;
-
-            await Task.Run(() =>
-            {
-                var keysToRemove = customNodeInfoCache.GetAllKeys()
-                    .Where(key => key.StartsWith(filePath))
-                    .ToList();
-
-                foreach (var key in keysToRemove)
-                {
-                    customNodeInfoCache.Remove(key);
-                }
-            });
-        }
-
-        #endregion
     }
 
     //Location temporary
@@ -1503,48 +1446,26 @@ namespace Dynamo.Core
     {
         private readonly string cacheFilePath;
         private readonly Dictionary<string, T> cache = new();
-        private bool dirty = false;
-        private readonly int maxCacheSize;
+        private bool dirty;
 
-        public JsonCache(string filePath, int maxCacheSize = 10000)
+        public JsonCache(string filePath)
         {
             cacheFilePath = filePath;
-            this.maxCacheSize = maxCacheSize;
             Deserialize();
-            // Not sure if this covers all cases.  Can also add flush to Dispose
-            AppDomain.CurrentDomain.ProcessExit += (s, e) => SerializeIfDirty();
         }
 
         public void Set(string key, T value)
         {
             cache[key] = value;
             dirty = true;
-            
-            // Cleanup old entries if cache exceeds max size
-            if (cache.Count > maxCacheSize)
-            {
-                CleanupOldEntries();
-            }
         }
 
         public bool TryGet(string key, out T value) => cache.TryGetValue(key, out value);
 
-        public void Remove(string key)
+        private void Remove(string key)
         {
             if (cache.Remove(key))
                 dirty = true;
-        }
-
-        /// <summary>
-        /// Clears all entries from the cache
-        /// </summary>
-        public void Clear()
-        {
-            if (cache.Count > 0)
-            {
-                cache.Clear();
-                dirty = true;
-            }
         }
 
         /// <summary>
@@ -1552,60 +1473,41 @@ namespace Dynamo.Core
         /// </summary>
         public void RemoveStaleEntries()
         {
-            var keysToRemove = new List<string>();
-            
             foreach (var key in cache.Keys)
             {
                 // Extract file path from cache key (path + lastWriteTime + length)
                 // This is a heuristic - we look for the first occurrence of a timestamp pattern
                 var filePath = ExtractFilePathFromCacheKey(key);
-                if (!string.IsNullOrEmpty(filePath) && !File.Exists(filePath))
+                if (!File.Exists(filePath))
                 {
-                    keysToRemove.Add(key);
+                    Remove(key);
+                }
+                else
+                {
+                    //Check the files write time and length (same mechanism as original key)
+                    var fileInfo = new FileInfo(filePath);
+                    var lastWriteTime = fileInfo.LastWriteTimeUtc;
+                    var length = fileInfo.Length;
+                    var newKey = filePath + lastWriteTime + length;
+                    if (newKey != key)
+                    {
+                        //If keys do not match then the file has been updated, remove from cache
+                        Remove(key);
+                    }
                 }
             }
-
-            foreach (var key in keysToRemove)
-            {
-                cache.Remove(key);
-                dirty = true;
-            }
         }
 
         /// <summary>
-        /// Removes old entries when cache size exceeds limit, keeping most recently used entries
+        /// Extracts file path from cache key
         /// </summary>
-        private void CleanupOldEntries()
-        {
-            var entriesToRemove = cache.Count - (maxCacheSize * 3 / 4); // Remove 25% of entries
-            if (entriesToRemove <= 0) return;
-
-            // For simplicity, remove entries alphabetically by key
-            // In a more sophisticated implementation, we'd track access times
-            var keysToRemove = cache.Keys.OrderBy(k => k).Take(entriesToRemove).ToList();
-            
-            foreach (var key in keysToRemove)
-            {
-                cache.Remove(key);
-            }
-            dirty = true;
-        }
-
-        /// <summary>
-        /// Extracts file path from cache key (heuristic approach)
-        /// </summary>
-        private string ExtractFilePathFromCacheKey(string cacheKey)
+        private string ExtractFilePathFromCacheKey(string key)
         {
             try
             {
                 // Cache key format: path + lastWriteTime + length
-                // We'll look for datetime pattern and extract everything before it
-                var regex = new System.Text.RegularExpressions.Regex(@"(\d{1,2}/\d{1,2}/\d{4} \d{1,2}:\d{2}:\d{2} [AP]M|\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2})");
-                var match = regex.Match(cacheKey);
-                if (match.Success)
-                {
-                    return cacheKey.Substring(0, match.Index);
-                }
+                int idx = key.IndexOf(".dyf", StringComparison.OrdinalIgnoreCase);
+                return idx >= 0 ? key.Substring(0, idx + 4) : string.Empty;
             }
             catch
             {
@@ -1613,39 +1515,6 @@ namespace Dynamo.Core
             }
             return string.Empty;
         }
-
-        /// <summary>
-        /// Clears the cache and deletes the cache file. Can be run on background thread.
-        /// </summary>
-        public async Task ClearCacheAndFileAsync()
-        {
-            await Task.Run(() =>
-            {
-                Clear();
-                try
-                {
-                    if (File.Exists(cacheFilePath))
-                    {
-                        File.Delete(cacheFilePath);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    // Log error but don't throw - cache cleanup shouldn't break the app
-                    System.Diagnostics.Debug.WriteLine($"Failed to delete cache file: {ex.Message}");
-                }
-            });
-        }
-
-        /// <summary>
-        /// Gets the current cache size
-        /// </summary>
-        public int Count => cache.Count;
-
-        /// <summary>
-        /// Gets all cache keys (for invalidation purposes)
-        /// </summary>
-        public IEnumerable<string> GetAllKeys() => cache.Keys.ToList();
 
         private void Deserialize()
         {
@@ -1659,21 +1528,14 @@ namespace Dynamo.Core
                     {
                         cache[kv.Key] = kv.Value;
                     }
-                    
-                    // Clean up stale entries on startup
-                    RemoveStaleEntries();
                 }
             }
         }
 
-        private void SerializeIfDirty()
+        private void Serialize()
         {
-            if (dirty)
-                Serialize();
-        }
+            if (!dirty) return;
 
-        public void Serialize()
-        {
             var json = JsonSerializer.Serialize(cache, new JsonSerializerOptions { WriteIndented = true });
             File.WriteAllText(cacheFilePath, json);
             dirty = false;
