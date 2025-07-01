@@ -1473,7 +1473,7 @@ namespace Dynamo.Core
         /// </summary>
         public void RemoveStaleEntries()
         {
-            foreach (var key in cache.Keys)
+            foreach (var key in cache.Keys.ToList())
             {
                 // Extract file path from cache key (path + lastWriteTime + length)
                 // This is a heuristic - we look for the first occurrence of a timestamp pattern
