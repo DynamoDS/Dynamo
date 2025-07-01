@@ -3184,6 +3184,7 @@ Dynamo.ViewModels.WorkspaceViewModel.GetSelectionMaxY() -> double
 Dynamo.ViewModels.WorkspaceViewModel.GetSelectionMinX() -> double
 Dynamo.ViewModels.WorkspaceViewModel.GetSelectionMinY() -> double
 Dynamo.ViewModels.WorkspaceViewModel.GraphAutoLayoutCommand.get -> Dynamo.UI.Commands.DelegateCommand
+Dynamo.ViewModels.WorkspaceViewModel.HandleAnnotationDoubleClick(System.Windows.Point position, Dynamo.Graph.Annotations.AnnotationModel annotation) -> void
 Dynamo.ViewModels.WorkspaceViewModel.HasSelection.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.HasUnsavedChanges.get -> bool
 Dynamo.ViewModels.WorkspaceViewModel.HasUnsavedChanges.set -> void
