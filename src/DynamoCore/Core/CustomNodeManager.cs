@@ -20,6 +20,7 @@ using Dynamo.Selection;
 using Dynamo.Utilities;
 using ProtoCore.AST.AssociativeAST;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -1445,8 +1446,8 @@ namespace Dynamo.Core
     internal class JsonCache<T> : IDisposable
     {
         private readonly string cacheFilePath;
-        private readonly Dictionary<string, T> cache = new();
-        private bool dirty;
+        private readonly ConcurrentDictionary<string, T> cache = new();
+        private volatile bool dirty;
 
         public JsonCache(string filePath)
         {
@@ -1456,7 +1457,7 @@ namespace Dynamo.Core
 
         public void Set(string key, T value)
         {
-            cache[key] = value;
+            cache.AddOrUpdate(key, value, (k, v) => value);
             dirty = true;
         }
 
@@ -1464,7 +1465,7 @@ namespace Dynamo.Core
 
         private void Remove(string key)
         {
-            if (cache.Remove(key))
+            if (cache.TryRemove(key, out _))
                 dirty = true;
         }
 
@@ -1473,27 +1474,39 @@ namespace Dynamo.Core
         /// </summary>
         public void RemoveStaleEntries()
         {
-            foreach (var key in cache.Keys.ToList())
+            // Create a snapshot of keys to avoid modification during enumeration
+            var keysSnapshot = cache.Keys.ToList();
+            
+            foreach (var key in keysSnapshot)
             {
-                // Extract file path from cache key (path + lastWriteTime + length)
-                // This is a heuristic - we look for the first occurrence of a timestamp pattern
-                var filePath = ExtractFilePathFromCacheKey(key);
-                if (!File.Exists(filePath))
+                try
                 {
-                    Remove(key);
-                }
-                else
-                {
-                    //Check the files write time and length (same mechanism as original key)
-                    var fileInfo = new FileInfo(filePath);
-                    var lastWriteTime = fileInfo.LastWriteTimeUtc;
-                    var length = fileInfo.Length;
-                    var newKey = filePath + lastWriteTime + length;
-                    if (newKey != key)
+                    // Extract file path from cache key (path + lastWriteTime + length)
+                    var filePath = ExtractFilePathFromCacheKey(key);
+                    if (string.IsNullOrEmpty(filePath) || !File.Exists(filePath))
                     {
-                        //If keys do not match then the file has been updated, remove from cache
                         Remove(key);
                     }
+                    else
+                    {
+                        // Check if the file's write time and length match the cached key
+                        var fileInfo = new FileInfo(filePath);
+                        var lastWriteTime = fileInfo.LastWriteTimeUtc;
+                        var length = fileInfo.Length;
+                        var newKey = filePath + lastWriteTime + length;
+                        if (newKey != key)
+                        {
+                            // File has been updated, remove from cache
+                            Remove(key);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // If we can't check the file (permissions, IO error, etc.), remove the entry
+                    // This prevents keeping potentially stale entries due to access issues
+                    Remove(key);
+                    Debug.WriteLine($"Error checking cache entry {key}: {ex.Message}");
                 }
             }
         }
@@ -1518,17 +1531,27 @@ namespace Dynamo.Core
 
         private void Deserialize()
         {
-            if (File.Exists(cacheFilePath))
+            try
             {
-                var json = File.ReadAllText(cacheFilePath);
-                var loaded = JsonSerializer.Deserialize<Dictionary<string, T>>(json);
-                if (loaded != null)
+                if (File.Exists(cacheFilePath))
                 {
-                    foreach (var kv in loaded)
+                    var json = File.ReadAllText(cacheFilePath);
+                    var loaded = JsonSerializer.Deserialize<Dictionary<string, T>>(json);
+                    if (loaded != null)
                     {
-                        cache[kv.Key] = kv.Value;
+                        foreach (var kv in loaded)
+                        {
+                            cache.TryAdd(kv.Key, kv.Value);
+                        }
                     }
                 }
+            }
+            catch (Exception ex)
+            {
+                // If deserialization fails, continue with empty cache
+                // This prevents crashes due to corrupted cache files
+                System.Diagnostics.Debug.WriteLine($"Failed to deserialize cache: {ex.Message}");
+                cache.Clear();
             }
         }
 
@@ -1536,10 +1559,21 @@ namespace Dynamo.Core
         {
             if (!dirty) return;
 
-            var json = JsonSerializer.Serialize(cache, new JsonSerializerOptions { WriteIndented = true });
-            File.WriteAllText(cacheFilePath, json);
-            dirty = false;
+            try
+            {
+                // Create a snapshot to avoid serialization issues if cache is modified during serialization
+                var snapshot = new Dictionary<string, T>(cache);
+                var json = JsonSerializer.Serialize(snapshot, new JsonSerializerOptions { WriteIndented = true });
+                File.WriteAllText(cacheFilePath, json);
+                dirty = false;
+            }
+            catch (Exception ex)
+            {
+                // Log error but don't throw - serialization failure shouldn't crash the app
+                System.Diagnostics.Debug.WriteLine($"Failed to serialize cache: {ex.Message}");
+            }
         }
+
 
         public void Dispose()
         {
