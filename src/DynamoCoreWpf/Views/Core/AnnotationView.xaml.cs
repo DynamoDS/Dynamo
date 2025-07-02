@@ -302,7 +302,7 @@ namespace Dynamo.Nodes
             if (Keyboard.Modifiers == ModifierKeys.Shift || Keyboard.Modifiers == ModifierKeys.Control)
                 return;
 
-            var workspace = FindParent<WorkspaceView>(this);
+            var workspace = WpfUtilities.FindParent<WorkspaceView>(this);
             if (workspace == null)
                 return;
 
@@ -2904,13 +2904,6 @@ namespace Dynamo.Nodes
             }
 
             return (maxWidth, totalHeight);
-        }
-
-        private T FindParent<T>(DependencyObject child) where T : DependencyObject
-        {
-            var parent = VisualTreeHelper.GetParent(child);
-            if (parent == null) return null;
-            return parent is T typedParent ? typedParent : FindParent<T>(parent);
         }
     }
 }

@@ -1229,7 +1229,7 @@ namespace Dynamo.ViewModels
         /// Handles double-clicks on annotation groups by creating a CBN at the click position
         /// and adding it to the group if the position intersects with the group's region.
         /// </summary>
-        public void HandleAnnotationDoubleClick(Point position, AnnotationModel annotation)
+        internal void HandleAnnotationDoubleClick(Point position, AnnotationModel annotation)
         {
             if (DynamoViewModel?.Model == null) return;
 
