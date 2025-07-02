@@ -49,7 +49,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         private bool displayLowConfidence;
         private const string nodeAutocompleteMLEndpoint = "MLNodeAutocomplete";
         private const string nodeClusterAutocompleteMLEndpoint = "MLNodeClusterAutocomplete";
-        private const double minClusterConfidenceScore = 0.1;
+        private const double minClusterConfidenceScore = 0.001;
         private static Assembly dynamoCoreWpfAssembly;
 
         private bool _isSingleAutocomplete;
@@ -169,7 +169,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 {
                     return null;
                 }
-                return FullResults.Results.Where(x => double.Parse(x.Probability) * 100 > minClusterConfidenceScore);
+                return FullResults.Results.Where(x => x.Probability > minClusterConfidenceScore);
             }
         }
 
@@ -382,7 +382,6 @@ namespace Dynamo.NodeAutoComplete.ViewModels
         internal event Action<NodeModel> ParentNodeRemoved;
 
         internal MLNodeClusterAutoCompletionResponse FullResults { private set; get; }
-        internal List<SingleResultItem> FullSingleResults { set; get; }
         private Guid LastRequestGuid;
 
         /// <summary>
@@ -796,11 +795,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
             var currentFilter = FilteredView.Cast<DNADropdownViewModel>().ToList();
             var currentItem = filterredIndex >= 0 && filterredIndex < currentFilter.Count ? currentFilter[filterredIndex] : null;
 
-            var realCluster = QualifiedResults.FirstOrDefault(x => x.Description.Equals(currentItem.Description));
-            if (realCluster != null)
-            {
-                AddCluster(realCluster);
-            }
+            AddCluster(currentItem.ClusterResultItem);
         }
 
         // Add Cluster from server result into the workspace
@@ -974,22 +969,7 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                     {
                         Version = "0.0",
                         NumberOfResults = fullSingleResults.Count,
-                        Results = fullSingleResults.Select(x => new ClusterResultItem
-                        {
-                            Description = x.Description,
-                            Title = x.Description,  
-                            Probability = x.Score.ToString(),
-                            EntryNodeIndex = 0,
-                            EntryNodeInPort = PortViewModel.PortType == PortType.Output ? x.PortToConnect : -1,
-                            EntryNodeOutPort = PortViewModel.PortType == PortType.Input ? x.PortToConnect : -1,
-                            Topology = new TopologyItem
-                            {
-                                Nodes = new List<NodeItem> { new NodeItem {
-                                    Id = Guid.NewGuid().ToString(),
-                                    Type = new NodeType { Id = x.CreationName } } },
-                                Connections = new List<ConnectionItem>()
-                            }
-                        })
+                        Results = fullSingleResults,
                     };
                 }
                 else
@@ -1012,15 +992,15 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                         return;
                     }
 
-                    FullSingleResults = fullSingleResults ?? FullSingleResults;
                     FullResults = fullResults ?? FullResults;
 
                     IEnumerable<DNADropdownViewModel> comboboxResults;
                     if (IsSingleAutocomplete || !IsDisplayingMLRecommendation)
                     {
+                        var singleResults = FullResults.Results as List<SingleResultItem>;
                         //getting bitmaps from resources necessarily has to be done in the UI thread
                         Dictionary<string, ImageSource> dict = [];
-                        foreach (var singleResult in FullSingleResults)
+                        foreach (var singleResult in singleResults)
                         {
                             if (dict.ContainsKey(singleResult.CreationName))
                             {
@@ -1030,18 +1010,20 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                             SearchViewModelRequestBitmapSource(iconRequest);
                             dict[singleResult.CreationName] = iconRequest.Icon;
                         }
-                        comboboxResults = FullSingleResults.Where(x => x.Score * 100 > minClusterConfidenceScore).Select(x => new DNADropdownViewModel
+                        comboboxResults = QualifiedResults.Select(x => new DNADropdownViewModel
                         {
                             Description = x.Description,
-                            Parameters = x.Parameters,
-                            SmallIcon = dict[x.CreationName],
+                            Parameters = (x as SingleResultItem).Parameters,
+                            SmallIcon = dict[(x as SingleResultItem).CreationName],
+                            ClusterResultItem = x
                         });
                     }
                     else
                     {
                         comboboxResults = QualifiedResults.Select(x => new DNADropdownViewModel
                         {
-                            Description = x.Description
+                            Description = x.Description,
+                            ClusterResultItem = x
                             //default icon (cluster) is set in the xaml view
                         });
                     }
