@@ -1518,7 +1518,9 @@ namespace Dynamo.Controls
                         if (!string.IsNullOrEmpty(base64String))
                         {
                             byte[] imageBytes = Convert.FromBase64String(base64String);
-                            return BytesToBitmapImage(imageBytes);
+                            var bi = BytesToBitmapImage(imageBytes);
+                            _cachedImages[nodeName] = bi;
+                            return bi;
                         }
                     }
                 }

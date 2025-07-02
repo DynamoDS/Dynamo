@@ -199,18 +199,18 @@ namespace Dynamo.ViewModels
         //internal event Action NodeViewLoaded;
         internal void OnNodeViewLoaded()
         {
-            if (loadedNodesCount < Nodes.Count)
+            if (LoadedNodesCount < Nodes.Count)
             {
                 if (!nodeLoadStopwatch.IsRunning)
                 {
                     nodeLoadStopwatch.Restart();
                 }
             }
-            loadedNodesCount++;
-            if (loadedNodesCount == Nodes.Count)
+            LoadedNodesCount++;
+            if (LoadedNodesCount == Nodes.Count)
             {
                 nodeLoadStopwatch.Stop();
-                DynamoViewModel.Model.Logger.Log($"{loadedNodesCount} nodes loaded in {nodeLoadStopwatch.ElapsedMilliseconds} ms");
+                DynamoViewModel.Model.Logger.Log($"{LoadedNodesCount} nodes loaded in {nodeLoadStopwatch.ElapsedMilliseconds} ms");
             }
         }
 
@@ -602,7 +602,7 @@ namespace Dynamo.ViewModels
             }
         }
 
-        internal bool NodesLoading
+        public bool NodesLoading
         {
             get
             {
@@ -611,7 +611,7 @@ namespace Dynamo.ViewModels
         }
 
         private int loadedNodesCount = 0;
-        internal int LoadedNodesCount
+        public int LoadedNodesCount
         {
             get
             {

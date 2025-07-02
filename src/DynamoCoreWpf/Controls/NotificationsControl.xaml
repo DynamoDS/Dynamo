@@ -130,17 +130,48 @@
             </ItemsControl.ItemsPanel>
         </ItemsControl>
 
-        <StackPanel
-            Grid.Column="2"
-            Orientation="Horizontal" Margin="30,0"
-            Visibility="{Binding HomeSpaceViewModel.NodesLoading, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToVisibilityConverter}}">
-            <Image Width="20"
-                Source="/DynamoCoreWpf;component/UI/Images/alert.png" />
-            <Label x:Name="LoadedNodesText"
-               Content="{Binding HomeSpaceViewModel.LoadedNodesCount}" 
-               FontSize="12" Padding="2 3 2 2" 
-               Foreground="{StaticResource PrimaryCharcoal200Brush}"/>
-        </StackPanel>
+
+        <Border Style="{StaticResource FooterNotificationItemStyle}" Grid.Column="2"
+                Visibility="{Binding HomeSpaceViewModel.NodesLoading, Converter={StaticResource BoolToVisibilityConverter}}">
+            <StackPanel
+                Orientation="Horizontal" Margin="5,0"
+                VerticalAlignment="Center">
+                <Image Name="downloadingIcon"
+                   Width="16"
+                   Height="16"
+                   VerticalAlignment="Center"
+                   RenderTransformOrigin="0.5,0.5"
+                   Source="/DynamoCoreWpf;component/UI/Images/Progress circle.png"
+                   Visibility="Visible">
+                    <Image.RenderTransform>
+                        <RotateTransform x:Name="AnimatedRotateTransform" Angle="0" />
+                    </Image.RenderTransform>
+                    <Image.Triggers>
+                        <EventTrigger RoutedEvent="Window.Loaded">
+                            <BeginStoryboard>
+                                <Storyboard>
+                                    <DoubleAnimation By="10"
+                                     FillBehavior="Stop"
+                                     RepeatBehavior="Forever"
+                                     Storyboard.TargetName="AnimatedRotateTransform"
+                                     Storyboard.TargetProperty="Angle"
+                                     To="360"
+                                     Duration="0:0:0.5" />
+                                </Storyboard>
+                            </BeginStoryboard>
+                        </EventTrigger>
+                    </Image.Triggers>
+                </Image>
+                <TextBlock Margin="10,0"
+                        Foreground="White" VerticalAlignment="Center">
+                    <Run Text="Loading nodes: " />
+                    <Run Text="{Binding HomeSpaceViewModel.LoadedNodesCount, Mode=OneWay}" />
+                    <Run Text="/" />
+                    <Run Text="{Binding HomeSpaceViewModel.Nodes.Count, Mode=OneWay}" />
+                </TextBlock>
+            </StackPanel>
+        </Border>
+        
 
         <StackPanel Orientation="Horizontal"
                     Grid.Column="3"
