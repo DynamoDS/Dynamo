@@ -1,10 +1,9 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 using System.Resources;
 using System.Windows;
@@ -14,13 +13,11 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 using Dynamo.Configuration;
 using Dynamo.Graph.Nodes;
-using Dynamo.Graph.Notes;
 using Dynamo.Selection;
 using Dynamo.UI;
 using Dynamo.UI.Controls;
@@ -28,7 +25,6 @@ using Dynamo.UI.Prompts;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
 using Dynamo.Views;
-using Dynamo.Wpf.Interfaces;
 using Dynamo.Wpf.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
 using Label = System.Windows.Controls.Label;
@@ -1424,6 +1420,7 @@ namespace Dynamo.Controls
                 greyPixels[i + 2] = 153; // Red
                 greyPixels[i + 3] = 255; // Alpha
             }
+        }
         private void DelayPreviewControlAction()
         {
             if (!IsMouseOver) return;
@@ -1525,7 +1522,6 @@ namespace Dynamo.Controls
                         }
                     }
                 }
-
                 return null;
             }
             catch (Exception ex)
@@ -1582,14 +1578,10 @@ namespace Dynamo.Controls
             }
             else
             {
-                var path = "C:\\Temp\\NodeCache\\" + ViewModel.Name + ".png";
-                if (System.IO.File.Exists(path))
+                var nodeName = GetNodeName(ViewModel);
+                var bitmap = GetNodeImage(nodeName);
+                if (bitmap != null)
                 {
-                //    var nodeName = GetNodeName(ViewModel);
-                //var bitmap = GetNodeImage(nodeName);
-                //if (bitmap != null)
-                //{
-                    var bitmap = new BitmapImage(new Uri(path, UriKind.Absolute));
                     var writeableBitmap = new WriteableBitmap(bitmap);
 
                     // Define rectangle position and size
@@ -1840,12 +1832,65 @@ namespace Dynamo.Controls
             grid.Children.Add(customFunctionCanvas);
         }
 
+        internal static string GetNodeQualifiedName(NodeModel nodeModel)
+        {
+            string result = string.Empty;
+            switch (nodeModel)
+            {
+                case Graph.Nodes.CustomNodes.Function function:
+                    var category = function.Category;
+                    var name = function.Name;
+                    result = GetNodeNameWithInputs(function, $"{category}.{name}");
+                    break;
+
+                case Graph.Nodes.ZeroTouch.DSFunctionBase dSFunction:
+                    var descriptor = dSFunction.Controller.Definition;
+                    result = GetNodeNameWithInputs(nodeModel, $"{descriptor.QualifiedName}");
+                    break;
+
+                case NodeModel node:
+                    var type = node.GetType();
+                    result = GetNodeNameWithInputs(nodeModel, $"{type.FullName}");
+                    break;
+            }
+
+            if (string.IsNullOrEmpty(result))
+                return result;
+
+            // Define the specific invalid characters to remove
+            char[] invalidChars = { '/', '\\', ':', '*', '?', '"', '<', '>', '|' };
+
+            // Remove each invalid character from the name
+            string sanitizedName = result;
+            foreach (char invalidChar in invalidChars)
+            {
+                sanitizedName = sanitizedName.Replace(invalidChar.ToString(), string.Empty);
+            }
+
+            return sanitizedName;
+        }
+
+        internal static string GetNodeNameWithInputs(NodeModel node, string prefix)
+        {
+            var inputNames = node.InPorts.Select(x => x.Name).ToArray();
+            var fullName = $"{prefix}({string.Join(", ", inputNames)})";
+            // Match https://github.com/DynamoDS/Dynamo/blame/master/src/DynamoCore/Search/SearchElements/ZeroTouchSearchElement.cs#L51
+            if (fullName.Length > 250)
+            {
+                //only take first 2 characters from each input
+                var truncatedInputNames = inputNames.Select(name => name.Length >= 2 ?
+                    name.Substring(0, 2) : name).ToArray();
+                fullName = $"{prefix}({string.Join(", ", truncatedInputNames)})";
+            }
+            return fullName;
+        }
+
         /// <summary>
         /// Returns the name of the node based on its original name.
         /// For some operators, that cannot be named as files, it returns a descriptive name rather than symbols.
         /// </summary>
         /// <returns></returns>
-        private string GetNodeName(NodeViewModel nvm)
+        private static string GetNodeName(NodeViewModel nvm)
         {
             switch (nvm.OriginalName)
             {
@@ -1864,7 +1909,7 @@ namespace Dynamo.Controls
                 case "/":
                     return "div";
                 default:
-                    return ViewModel.DynamoViewModel.GetMinimumQualifiedName(nvm.NodeModel);
+                    return GetNodeQualifiedName(nvm.NodeModel);
             }
         }
 

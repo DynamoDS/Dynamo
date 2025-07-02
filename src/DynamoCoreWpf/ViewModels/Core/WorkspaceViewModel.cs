@@ -195,7 +195,6 @@ namespace Dynamo.ViewModels
             RequestNodeAutoCompleteViewExtension?.Invoke(clusterNodeAutoComplete);
         }
 
-        private int loadedNodesCount = 0;
         private Stopwatch nodeLoadStopwatch = new Stopwatch();
         //internal event Action NodeViewLoaded;
         internal void OnNodeViewLoaded()
