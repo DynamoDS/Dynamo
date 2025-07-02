@@ -4454,6 +4454,7 @@ readonly Dynamo.Wpf.ViewModels.Watch3D.DefaultWatch3DViewModel.preferences -> Dy
 readonly Dynamo.Wpf.ViewModels.Watch3D.DefaultWatch3DViewModel.scheduler -> Dynamo.Scheduler.IScheduler
 readonly Dynamo.Wpf.ViewModels.Watch3D.DefaultWatch3DViewModel.watchModel -> Dynamo.Graph.Nodes.NodeModel
 static Dynamo.Controls.DynamoView.getUniqueAddOnCategories(System.Collections.Generic.IEnumerable<Dynamo.Search.SearchElements.NodeSearchElement> elements) -> System.Collections.Generic.IEnumerable<string>
+static Dynamo.Controls.NodeView.GetNodeImage(string nodeName) -> System.Windows.Media.Imaging.BitmapImage
 static Dynamo.Interfaces.WatchHandler.GenerateWatchViewModelForData(this Dynamo.Interfaces.IWatchHandler handler, dynamic value, System.Collections.Generic.IEnumerable<string> preferredDictionaryOrdering, ProtoCore.RuntimeCore runtimeCore, string tag, bool showRawData = true) -> Dynamo.ViewModels.WatchViewModel
 static Dynamo.Nodes.AnnotationView.SelectAllTextOnFocus -> System.Windows.DependencyProperty
 static Dynamo.PackageManager.PackageManagerSearchViewModel.FormatPackageVersionList(System.Collections.Generic.IEnumerable<System.Tuple<Greg.Responses.PackageHeader, Greg.Responses.PackageVersion>> packages) -> string
@@ -4509,11 +4510,13 @@ static Dynamo.Utilities.WindowsBaseExtensions.AsDynamoType(this System.Windows.P
 static Dynamo.Utilities.WindowsBaseExtensions.AsWindowsType(this Dynamo.Utilities.Point2D point) -> System.Windows.Point
 static Dynamo.Utilities.WindowsBaseExtensions.AsWindowsType(this Dynamo.Utilities.Thickness thickness) -> System.Windows.Thickness
 static Dynamo.ViewModels.ConnectorPinViewModel.OneThirdWidth.get -> double
+static Dynamo.ViewModels.DynamoViewModel.MigrateNodeCacheToResX() -> void
 static Dynamo.ViewModels.DynamoViewModel.ReportABug() -> void
 static Dynamo.ViewModels.DynamoViewModel.ReportABug(object bodyContent) -> void
 static Dynamo.ViewModels.DynamoViewModel.Start(Dynamo.ViewModels.DynamoViewModel.StartConfiguration startConfiguration = default(Dynamo.ViewModels.DynamoViewModel.StartConfiguration)) -> Dynamo.ViewModels.DynamoViewModel
 static Dynamo.ViewModels.GeometryScalingOptions.ConvertScaleFactorToUI(int scaleValue) -> int
 static Dynamo.ViewModels.GeometryScalingOptions.ConvertUIToScaleFactor(int index) -> int
+static Dynamo.ViewModels.NodeViewModel.GetNodeImage(string nodeName) -> System.Windows.Media.Imaging.BitmapImage
 static Dynamo.ViewModels.SearchViewModel.RemoveLastPartOfText(string text) -> string
 static Dynamo.Wpf.Extensions.ObservableCollectionExtension.TryInsert(this System.Collections.ObjectModel.ObservableCollection<Dynamo.Wpf.ViewModels.ISearchEntryViewModel> items, int index, Dynamo.Wpf.ViewModels.ISearchEntryViewModel entry) -> void
 static Dynamo.Wpf.Properties.Resources.AboutWindowCannotGetVersion.get -> string

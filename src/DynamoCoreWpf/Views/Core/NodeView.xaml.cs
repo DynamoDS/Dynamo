@@ -1,18 +1,12 @@
-using Dynamo.Configuration;
-using Dynamo.Graph.Nodes;
-using Dynamo.Selection;
-using Dynamo.UI;
-using Dynamo.UI.Controls;
-using Dynamo.UI.Prompts;
-using Dynamo.Utilities;
-using Dynamo.ViewModels;
-using Dynamo.Views;
-using Dynamo.Wpf.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
+using System.IO;
+using System.Reflection;
+using System.Resources;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
@@ -24,6 +18,18 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Threading;
+using Dynamo.Configuration;
+using Dynamo.Graph.Nodes;
+using Dynamo.Graph.Notes;
+using Dynamo.Selection;
+using Dynamo.UI;
+using Dynamo.UI.Controls;
+using Dynamo.UI.Prompts;
+using Dynamo.Utilities;
+using Dynamo.ViewModels;
+using Dynamo.Views;
+using Dynamo.Wpf.Interfaces;
+using Dynamo.Wpf.Utilities;
 using DynCmd = Dynamo.Models.DynamoModel;
 using Label = System.Windows.Controls.Label;
 using Thickness = System.Windows.Thickness;
@@ -301,6 +307,13 @@ namespace Dynamo.Controls
         private static ContextMenu nodeContextMenu = GetNodeContextMenu();
 
         #region constructors
+        private static readonly Dictionary<string, BitmapImage> _cachedImages =
+        new Dictionary<string, BitmapImage>(StringComparer.OrdinalIgnoreCase);
+        private static int nodeCounter = 0;
+
+        //private static readonly ResXResourceSet _resourceSet = InitializeResourceSet();
+
+        //Freeze the static resource to reduce memory overhead... Not sure we need this. 
         static NodeView()
         {
             //Freeze the static resource to reduce memory overhead
@@ -321,6 +334,7 @@ namespace Dynamo.Controls
             _nodeContextMenuSeparatorColor.Freeze();
             _nodeOptionsButtonBackground.Freeze();
             _nodeHoverColor.Freeze();
+            LoadBmpPorts();
         }
 
         public NodeView()
@@ -1172,6 +1186,21 @@ namespace Dynamo.Controls
         #endregion
 
         #region Styles methods
+        private void SetNodeBackgroundHeaderAndPortsVisible()
+        {
+            nodeBackground.Visibility = Visibility.Visible;
+            nameBackground.Visibility = Visibility.Visible;
+            nodeHeaderContent.Visibility = Visibility.Visible;
+            inputPortControl.Visibility = Visibility.Visible;
+            outputPortControl.Visibility = Visibility.Visible;
+#if DEBUG
+            if (ViewModel != null)
+            {
+                ViewModel.WorkspaceViewModel.OnNodeViewLoaded();
+            }
+#endif
+        }
+
         private static Style GetNodeButtonStyle()
         {
             // Create the Style
@@ -1285,13 +1314,13 @@ namespace Dynamo.Controls
             var tooltipGeometry = new PathGeometry();
             tooltipGeometry.Figures.Add(tooltipPathFigure);
 
-            FrameworkElementFactory pathFactory = new FrameworkElementFactory(typeof(Path));
-            pathFactory.SetValue(Path.HorizontalAlignmentProperty, HorizontalAlignment.Center);
-            pathFactory.SetValue(Path.VerticalAlignmentProperty, VerticalAlignment.Center);
-            pathFactory.SetValue(Path.FillProperty, infoBubbleBackNormalBrush);
-            pathFactory.SetValue(Path.StrokeProperty, infoBubbleEdgeNormalBrush);
-            pathFactory.SetValue(Path.StrokeThicknessProperty, 1.0);
-            pathFactory.SetValue(Path.DataProperty, tooltipGeometry);
+            FrameworkElementFactory pathFactory = new FrameworkElementFactory(typeof(System.Windows.Shapes.Path));
+            pathFactory.SetValue(System.Windows.Shapes.Path.HorizontalAlignmentProperty, HorizontalAlignment.Center);
+            pathFactory.SetValue(System.Windows.Shapes.Path.VerticalAlignmentProperty, VerticalAlignment.Center);
+            pathFactory.SetValue(System.Windows.Shapes.Path.FillProperty, infoBubbleBackNormalBrush);
+            pathFactory.SetValue(System.Windows.Shapes.Path.StrokeProperty, infoBubbleEdgeNormalBrush);
+            pathFactory.SetValue(System.Windows.Shapes.Path.StrokeThicknessProperty, 1.0);
+            pathFactory.SetValue(System.Windows.Shapes.Path.DataProperty, tooltipGeometry);
             pathFactory.SetValue(Grid.RowProperty, 1);
             gridFactory.AppendChild(pathFactory);
 
@@ -1343,6 +1372,48 @@ namespace Dynamo.Controls
 
         #endregion
 
+        //Set up pixel arrays for the port markers 
+        static byte[] bluePixels = new byte[5 * 29 * 4];
+        static byte[] bluePixelsDefault = new byte[4 * 27 * 4];
+        static byte[] redPixels = new byte[5 * 29 * 4];
+        static byte[] greyPixels = new byte[5 * 29 * 4];
+
+        //Initialize the port arrays
+        private static void LoadBmpPorts()
+        {
+            for (int i = 0; i < bluePixels.Length; i += 4)
+            {
+                bluePixels[i + 0] = 231; // Blue
+                bluePixels[i + 1] = 192; // Green
+                bluePixels[i + 2] = 106; // Red
+                bluePixels[i + 3] = 255; // Alpha
+            }
+
+            for (int i = 0; i < bluePixelsDefault.Length; i += 4)
+            {
+                bluePixelsDefault[i + 0] = 231; // Blue
+                bluePixelsDefault[i + 1] = 192; // Green
+                bluePixelsDefault[i + 2] = 106; // Red
+                bluePixelsDefault[i + 3] = 255; // Alpha
+            }
+
+            for (int i = 0; i < redPixels.Length; i += 4)
+            {
+                redPixels[i + 0] = 85; // Blue
+                redPixels[i + 1] = 85; // Green
+                redPixels[i + 2] = 235; // Red
+                redPixels[i + 3] = 255; // Alpha
+            }
+
+            for (int i = 0; i < greyPixels.Length; i += 4)
+            {
+                greyPixels[i + 0] = 153; // Blue
+                greyPixels[i + 1] = 153; // Green
+                greyPixels[i + 2] = 153; // Red
+                greyPixels[i + 3] = 255; // Alpha
+            }
+        }
+
         private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)
         {
             ViewModel.NodeLogic.DispatchedToUI -= NodeLogic_DispatchedToUI;
@@ -1393,6 +1464,62 @@ namespace Dynamo.Controls
             }
         }
 
+        public static BitmapImage GetNodeImage(string nodeName)
+        {
+            // Check cache first
+            if (_cachedImages.TryGetValue(nodeName, out BitmapImage cachedImage))
+                return cachedImage;
+
+            try
+            {
+                var assembly = Assembly.GetExecutingAssembly();
+
+                // Access the resource directly using the exact name from the error message
+                using (var stream = assembly.GetManifestResourceStream("Dynamo.Wpf.NodeCacheImages.resources"))
+                {
+                    if (stream == null)
+                        throw new InvalidOperationException("Could not find NodeCacheImages.resources");
+
+                    using (var resourceSet = new ResourceSet(stream))
+                    {
+                        // Get the resource value
+                        var base64String = resourceSet.GetString(nodeName);
+
+                        if (!string.IsNullOrEmpty(base64String))
+                        {
+                            byte[] imageBytes = Convert.FromBase64String(base64String);
+                            return BytesToBitmapImage(imageBytes);
+                        }
+                    }
+                }
+
+                return null;
+            }
+            catch (Exception ex)
+            {
+                _cachedImages[nodeName] = null;
+                return null;
+            }
+        }
+
+        private static BitmapImage BytesToBitmapImage(byte[] imageBytes)
+        {
+            if (imageBytes == null || imageBytes.Length == 0)
+                return null;
+
+            using (var memoryStream = new MemoryStream(imageBytes))
+            {
+                var bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memoryStream;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                bitmapImage.Freeze();
+
+                return bitmapImage;
+            }
+        }
+
         /// <summary>
         /// This event handler is called soon as the NodeViewModel is bound to this 
         /// NodeView, which happens way before OnNodeViewLoaded event is sent. 
@@ -1415,42 +1542,150 @@ namespace Dynamo.Controls
 
             ViewModel = e.NewValue as NodeViewModel;
 
-            //Todo move to static resource file
-            //Todo handle cases where Name is the same for multiple nodes (ie Point.ByCoordinate)
-            var path = "E:\\rmWorkspace\\NodeCache\\" + ViewModel.Name + ".png";
-            if (ViewModel.WorkspaceViewModel.NodeCountOptimizationEnabled && System.IO.File.Exists(path))
+            //Enable deferred node loading when node count is above the set threshold.
+            if (!ViewModel.WorkspaceViewModel.NodeCountOptimizationEnabled)
             {
-                var bitmap = new BitmapImage(new Uri(path, UriKind.Absolute));
-
-                // Create the Image control
-                imageControl = new Image
-                {
-                    Source = bitmap,
-                    Width = bitmap.PixelWidth,   // Set width to pixel width
-                    Height = bitmap.PixelHeight, // Set height to pixel height
-                    Stretch = System.Windows.Media.Stretch.None // Prevent scaling
-                };
-
-                Grid.SetRow(imageControl, 1);
-                Grid.SetRowSpan(imageControl, 4);
-                Grid.SetColumnSpan(imageControl, 3);
-
-                grid.Children.Add(imageControl);
-
-                Dispatcher.CurrentDispatcher.BeginInvoke(() =>
-                {
-                    if (imageControl != null)
-                    {
-                        grid.Children.Remove(imageControl);
-                        imageControl = null;
-
-                        SetNodeBackgroundHeaderAndPortsVisible();
-                    }
-                }, DispatcherPriority.Background);
+                SetNodeBackgroundHeaderAndPortsVisible();
             }
             else
             {
-                SetNodeBackgroundHeaderAndPortsVisible();
+                var path = "C:\\Temp\\NodeCache\\" + ViewModel.Name + ".png";
+                if (System.IO.File.Exists(path))
+                {
+                //    var nodeName = GetNodeName(ViewModel);
+                //var bitmap = GetNodeImage(nodeName);
+                //if (bitmap != null)
+                //{
+                    var bitmap = new BitmapImage(new Uri(path, UriKind.Absolute));
+                    var writeableBitmap = new WriteableBitmap(bitmap);
+
+                    // Define rectangle position and size
+                    int width = 5, height = 29;
+                    int bytesPerPixel = (writeableBitmap.Format.BitsPerPixel + 7) / 8;
+                    int bufferWidth = 5;
+                    int imageHeight = writeableBitmap.PixelHeight;
+
+                    byte[] transparentPixels = new byte[bufferWidth * imageHeight * bytesPerPixel];
+
+                    // Fill with transparent pixels (all zeros = transparent)
+                    for (int i = 0; i < transparentPixels.Length; i += 4)
+                    {
+                        transparentPixels[i + 0] = 0;   // Blue
+                        transparentPixels[i + 1] = 0;   // Green  
+                        transparentPixels[i + 2] = 0;   // Red
+                        transparentPixels[i + 3] = 0;   // Alpha (transparent)
+                    }
+
+                    // Write transparent pixels to the left 5px of the image
+                    writeableBitmap.WritePixels(
+                        new Int32Rect(0, 0, bufferWidth, imageHeight),
+                        transparentPixels,
+                        bufferWidth * bytesPerPixel,
+                        0
+                    );
+
+                    int j = 0;
+
+                    foreach (var item in ViewModel.InPorts)
+                    {
+                        var model = item as InPortViewModel;
+                        // Define the rectangle's position and size
+                        int x = 0; // X coordinate
+                        int y = 51 + j; // Y coordinate
+
+                        if (model.PortValueMarkerColor.Color.R == 106)
+                        {
+                            writeableBitmap.WritePixels(
+                                new Int32Rect(x + 5, y, width, height),
+                                bluePixels,
+                                width * bytesPerPixel,
+                                0
+                            );
+                        }
+                        else if (model.PortValueMarkerColor.Color.R == 235)
+                        {
+                            writeableBitmap.WritePixels(
+                                new Int32Rect(x + 5, y, width, height),
+                                redPixels,
+                                width * bytesPerPixel,
+                                0
+                            );
+                        }
+                        else
+                        {
+                            writeableBitmap.WritePixels(
+                                new Int32Rect(x + 5, y, width, height),
+                                greyPixels,
+                                width * bytesPerPixel,
+                                0
+                            );
+                        }
+
+                        if (model.PortDefaultValueMarkerVisible)
+                        {
+                            writeableBitmap.WritePixels(
+                                new Int32Rect(x, y + 1, width - 1, height - 2),
+                                bluePixelsDefault,
+                                (width - 1) * bytesPerPixel,
+                                0
+                            );
+                        }
+
+                        j += 34;
+                    }
+
+                    j = 0;
+                    foreach (var item in ViewModel.OutPorts)
+                    {
+                        var model = item as OutPortViewModel;
+                        // Define the rectangle's position and size
+                        int x = (int)writeableBitmap.Width - 5; // X coordinate 
+                        int y = 51 + j; // Y coordinate 
+
+                        if (model.PortDefaultValueMarkerVisible)
+                        {
+                            writeableBitmap.WritePixels(
+                                new Int32Rect(x, y, width, height),
+                                greyPixels,
+                                width * bytesPerPixel,
+                                0
+                            );
+                        }
+
+                        j += 34;
+                    }
+
+                    // Create the Image control
+                    imageControl = new Image
+                    {
+                        Source = writeableBitmap,
+                        Margin = new Thickness(-5, 0, 0, 0),
+                        Width = writeableBitmap.PixelWidth,   // Set width to pixel width
+                        Height = writeableBitmap.PixelHeight, // Set height to pixel height
+                        Stretch = System.Windows.Media.Stretch.None // Prevent scaling
+                    };
+
+                    Grid.SetRow(imageControl, 1);
+                    Grid.SetRowSpan(imageControl, 3);
+                    Grid.SetColumnSpan(imageControl, 3);
+
+                    grid.Children.Add(imageControl);
+
+                    Dispatcher.CurrentDispatcher.BeginInvoke(() =>
+                    {
+                        if (imageControl != null)
+                        {
+                            grid.Children.Remove(imageControl);
+                            imageControl = null;
+
+                            SetNodeBackgroundHeaderAndPortsVisible();
+                        }
+                    }, DispatcherPriority.Background);
+                }
+                else
+                {
+                    SetNodeBackgroundHeaderAndPortsVisible();
+                }
             }
 
             //Set NodeIcon
@@ -1557,13 +1792,42 @@ namespace Dynamo.Controls
             grid.Children.Add(customFunctionCanvas);
         }
 
+        /// <summary>
+        /// Returns the name of the node based on its original name.
+        /// For some operators, that cannot be named as files, it returns a descriptive name rather than symbols.
+        /// </summary>
+        /// <returns></returns>
+        private string GetNodeName(NodeViewModel nvm)
+        {
+            switch (nvm.OriginalName)
+            {
+                case "*":
+                    return "mul";
+                case "<":
+                    return "lt";
+                case "<=": 
+                    return "le";
+                case ">":
+                    return "gt";
+                case ">=":
+                    return "ge";
+                case "||":
+                    return "or";
+                case "/":
+                    return "div";
+                default:
+                    return ViewModel.DynamoViewModel.GetMinimumQualifiedName(nvm.NodeModel);
+            }
+        }
+
         private void OnNodeViewLoaded(object sender, RoutedEventArgs e)
         {
             // We no longer cache the DataContext (NodeViewModel) here because 
             // OnNodeViewLoaded gets called at a much later time and we need the 
             // ViewModel to be valid earlier (e.g. OnSizeChanged is called before
             // OnNodeViewLoaded, and it needs ViewModel for size computation).
-
+            // 
+            //ViewModel = this.DataContext as NodeViewModel;
             ViewModel.NodeLogic.DispatchedToUI += NodeLogic_DispatchedToUI;
             ViewModel.RequestShowNodeHelp += ViewModel_RequestShowNodeHelp;
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
@@ -1641,22 +1905,6 @@ namespace Dynamo.Controls
 
                 previewControl.BindToDataSource();
             }));
-        }
-
-        private void SetNodeBackgroundHeaderAndPortsVisible()
-        {
-
-            nodeBackground.Visibility = Visibility.Visible;
-            nameBackground.Visibility = Visibility.Visible;
-            nodeHeaderContent.Visibility = Visibility.Visible;
-            inputPortControl.Visibility = Visibility.Visible;
-            outputPortControl.Visibility = Visibility.Visible;
-#if DEBUG
-            if (ViewModel != null)
-            {
-                ViewModel.WorkspaceViewModel.OnNodeViewLoaded();
-            }
-#endif
         }
 
         private Point PointToLocal(double x, double y, UIElement target)

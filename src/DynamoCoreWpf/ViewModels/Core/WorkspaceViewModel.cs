@@ -603,6 +603,29 @@ namespace Dynamo.ViewModels
             }
         }
 
+        internal bool NodesLoading
+        {
+            get
+            {
+                return Nodes.Count() > LoadedNodesCount;
+            }
+        }
+
+        private int loadedNodesCount = 0;
+        internal int LoadedNodesCount
+        {
+            get
+            {
+                return loadedNodesCount;
+            }
+            set
+            {
+                loadedNodesCount = value;
+                RaisePropertyChanged(nameof(LoadedNodesCount));
+                RaisePropertyChanged(nameof(NodesLoading));
+            }
+        }
+
         #endregion
 
         public WorkspaceViewModel(WorkspaceModel model, DynamoViewModel dynamoViewModel)
@@ -978,6 +1001,7 @@ namespace Dynamo.ViewModels
             Errors.Clear();
 
             PostNodeChangeActions();
+            loadedNodesCount=0;
         }
 
         private void unsubscribeNodeEvents(NodeViewModel nodeViewModel)
@@ -1004,6 +1028,7 @@ namespace Dynamo.ViewModels
             PostNodeChangeActions();
 
             SetNodeCountOptimizationEnabled(zoomAnimationThresholdFeatureFlagVal);
+            loadedNodesCount--;
         }
 
         void Model_NodeAdded(NodeModel node)
