@@ -1919,8 +1919,7 @@ namespace Dynamo.Controls
             // OnNodeViewLoaded gets called at a much later time and we need the 
             // ViewModel to be valid earlier (e.g. OnSizeChanged is called before
             // OnNodeViewLoaded, and it needs ViewModel for size computation).
-            // 
-            //ViewModel = this.DataContext as NodeViewModel;
+
             ViewModel.NodeLogic.DispatchedToUI += NodeLogic_DispatchedToUI;
             ViewModel.RequestShowNodeHelp += ViewModel_RequestShowNodeHelp;
             ViewModel.RequestShowNodeRename += ViewModel_RequestShowNodeRename;
