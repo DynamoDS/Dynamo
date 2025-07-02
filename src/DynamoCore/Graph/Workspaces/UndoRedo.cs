@@ -146,7 +146,7 @@ namespace Dynamo.Graph.Workspaces
                 return;
 
             if (null != savedModels)
-            {   
+            {
                 // Before an existing connector is reconnected, we have one action group
                 // which records the deletion of the connector. Pop that out so that we can
                 // record the deletion and reconnection in one action group.
@@ -430,7 +430,7 @@ namespace Dynamo.Graph.Workspaces
 
                 RemoveAndDisposeNode(model as NodeModel);
             }
-            else if(model == null)
+            else if (model == null)
             {
                 return;
             }
@@ -461,7 +461,7 @@ namespace Dynamo.Graph.Workspaces
         public void ReloadModel(XmlElement modelData)
         {
             ModelBase model = GetModelForElement(modelData);
-            if(model != null)
+            if (model != null)
             {
                 model.Deserialize(modelData, SaveContext.Undo);
             }
@@ -599,7 +599,7 @@ namespace Dynamo.Graph.Workspaces
             ModelBase foundModel = GetModelInternal(modelGuid);
             if (null != foundModel)
                 return foundModel;
-            
+
             //if we could not find a matching model
             this.Log(string.Format("Please Report: Unhandled model type: {0}, could not find a matching model with given id", helper.ReadString("type", modelData.Name)), Logging.WarningLevel.Error);
             return null;
@@ -618,11 +618,11 @@ namespace Dynamo.Graph.Workspaces
                 ?? Annotations.FirstOrDefault(annotation => annotation.GUID == modelGuid) as ModelBase
                 ?? Presets.FirstOrDefault(preset => preset.GUID == modelGuid) as ModelBase);
 
-            if(foundModel is null)
+            if (foundModel is null)
             {
-                foreach(var connector in Connectors)
+                foreach (var connector in Connectors)
                 {
-                    foreach(var pin in connector.ConnectorPinModels)
+                    foreach (var pin in connector.ConnectorPinModels)
                     {
                         if (pin.GUID == modelGuid)
                             return pin as ModelBase;
