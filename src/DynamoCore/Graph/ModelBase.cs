@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.ComponentModel;
 using System.Xml;
 using Dynamo.Core;
@@ -71,13 +71,18 @@ namespace Dynamo.Graph
         /// </summary>
         public event EventHandler<CancelEventArgs> DeletionStarted;
 
+        internal static readonly double DefaultHeight = 100;
+        internal static readonly double DefaultWidth = 100;
+
         private Guid guid;
         private bool isSelected;
         private bool belongsToGroup;
         private double x;
         private double y;
-        private double height = 100;
-        private double width = 100;
+        private double height = DefaultHeight;
+        private double width = DefaultWidth;
+        private double heightBorder = DefaultHeight;
+        private double widthBorder = DefaultWidth;
 
         /// <summary>
         /// X coordinate of center point.
@@ -164,7 +169,6 @@ namespace Dynamo.Graph
         /// <summary>
         /// The height of the object.
         /// </summary>
-        [JsonIgnore]
         public virtual double Height
         {
             get { return height; }
@@ -178,7 +182,6 @@ namespace Dynamo.Graph
         /// <summary>
         /// The width of the object.
         /// </summary>
-        [JsonIgnore]
         public virtual double Width
         {
             get { return width; }
@@ -186,6 +189,36 @@ namespace Dynamo.Graph
             {
                 width = value;
                 //RaisePropertyChanged("Width");
+            }
+        }
+
+        /// <summary>Add commentMore actions
+        /// The width of the object.
+        /// </summary>
+        public virtual double WidthBorder
+        {
+            get { return widthBorder; }
+            set
+            {
+                if (value > 0)
+                {
+                    widthBorder = value;
+                }
+            }
+        }
+
+        /// <summary>
+        /// The height of the object.
+        /// </summary>
+        public virtual double HeightBorder
+        {
+            get { return heightBorder; }
+            set
+            {
+                if (value > 0)
+                {
+                    heightBorder = value;
+                }
             }
         }
 

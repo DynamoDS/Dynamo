@@ -401,6 +401,12 @@
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>下載警告</value>
   </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>複製到剪貼簿</value>
+  </data>
+  <data name="CopyToClipboardFailedMessage" xml:space="preserve">
+    <value>複製到剪貼簿失敗</value>
+  </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>有一個 Dynamo 更新可用。請按一下以安裝。</value>
   </data>
@@ -3230,7 +3236,7 @@
     <value>信賴水準會出現在每個建議的節點旁邊，表示適合使用該節點的預估機率。開啟時，此設定會隱藏未達到指定信賴水準的建議節點。您可以按一下「低信賴」標頭以顯示節點。</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Number of results for Recommended Nodes</value>
+    <value>建議的節點結果數</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>匯入</value>
@@ -3792,6 +3798,18 @@
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>此群組已凍結。按一下可解凍。</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
+    <value>啟用新的 UI</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
+    <value>對節點建議啟用新的浮動式功能表，使用更簡化的工作流程。關閉可回到傳統的快顯對話方塊。</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
+    <value>傾印節點圖示資料(_D)</value>
+  </data>
+  <data name="NodeIconDataIsDumped" xml:space="preserve">
+    <value>節點圖示資料已傾印至「{0}」。</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

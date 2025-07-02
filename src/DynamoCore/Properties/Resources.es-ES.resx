@@ -858,7 +858,7 @@ Es probable que este paquete contenga un montaje bloqueado. Deberá cargar de nu
     <value>Aún no hay recomendaciones. Puede intentar cambiar a la coincidencia de tipo de nodo Autocompletar.</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
-    <value>Todas las recomendaciones están por debajo del nivel de confianza especificado. Puede probarlas o ajustar la configuración de confianza en Preferencias.</value>
+    <value>No hay sugerencias fiables disponibles. El modelo está mejorando continuamente; vuelva a consultar pronto.</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
     <value>Visualice las recomendaciones que están por debajo del nivel de confianza.</value>
@@ -895,5 +895,8 @@ Es probable que este paquete contenga un montaje bloqueado. Deberá cargar de nu
   </data>
   <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
     <value>Este nodo se encuentra en fase experimental. Su comportamiento, nombre y firma están sujetos a cambios.</value>
+  </data>
+  <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
+    <value>Haga clic en el icono de brillo situado junto al puerto para activar la función Autocompletar nodo.</value>
   </data>
 </root>

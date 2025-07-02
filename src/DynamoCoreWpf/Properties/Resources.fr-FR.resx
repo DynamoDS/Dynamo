@@ -401,6 +401,12 @@ Pas d'inquiétude, vous aurez la possibilité d'enregistrer votre travail.</valu
   <data name="DownloadWarningMessageBoxTitle" xml:space="preserve">
     <value>Avertissement sur le téléchargement</value>
   </data>
+  <data name="CopyToClipboardTooltip" xml:space="preserve">
+    <value>Copier dans le Presse-papiers</value>
+  </data>
+  <data name="CopyToClipboardFailedMessage" xml:space="preserve">
+    <value>La copie dans le presse-papiers a échoué</value>
+  </data>
   <data name="DynamoUpdateAvailableToolTip" xml:space="preserve">
     <value>Une mise à jour de Dynamo est disponible. Cliquez pour procéder à l'installation.</value>
   </data>
@@ -3229,7 +3235,7 @@ Vous pouvez gérer ce paramètre dans Préférences -&gt; Sécurité.</value>
     <value>Le niveau de confiance apparaît en regard de chaque noeud recommandé et représente la probabilité estimée que le noeud soit un bon choix. Lorsque cette option est activée, ce paramètre masque les noeuds recommandés qui ne répondent pas au niveau de confiance spécifié. Vous pouvez cliquer sur l'en-tête Qualité faible pour afficher les noeuds.</value>
   </data>
   <data name="MLRecommendationNumberOfResults" xml:space="preserve">
-    <value>Number of results for Recommended Nodes</value>
+    <value>Nombre de résultats pour les noeuds recommandés.</value>
   </data>
   <data name="ImportPreferencesText" xml:space="preserve">
     <value>Importer</value>
@@ -3787,6 +3793,18 @@ Pour transformer ce fichier en nouveau gabarit, enregistrez-le dans un autre dos
   </data>
   <data name="GroupFrozenButtonToolTip" xml:space="preserve">
     <value>Ce groupe est bloqué. Cliquez pour le débloquer.</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUI" xml:space="preserve">
+    <value>Activer la nouvelle interface utilisateur</value>
+  </data>
+  <data name="PreferencesViewEnableNodeAutoCompleteNewUITooltipText" xml:space="preserve">
+    <value>Activez le nouveau menu flottant pour les suggestions de noeuds afin d'obtenir un flux de travail plus rationalisé. Désactivez-le pour revenir à la boîte de dialogue contextuelle classique.</value>
+  </data>
+  <data name="DynamoViewDebugMenuDumpNodeIcons" xml:space="preserve">
+    <value>Données de l'icône du noeud _Dump</value>
+  </data>
+  <data name="NodeIconDataIsDumped" xml:space="preserve">
+    <value>Les données de l'icône du noeud sont vidées vers \"{0}\".</value>
   </data>
   <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
   <data name="psDynamoMesh" type="System.Resources.ResXFileRef, System.Windows.Forms">

@@ -856,7 +856,7 @@ Tento balíček pravděpodobně obsahuje sestavu, která je blokována. Po odblo
     <value>Zatím nejsou žádná doporučení. Můžete zkusit přepnout na automatické dokončování shody typu uzlů.</value>
   </data>
   <data name="AutocompleteLowConfidenceMessage" xml:space="preserve">
-    <value>Všechna doporučení mají nízkou spolehlivost. Můžete je vyzkoušet nebo upravit nastavení spolehlivosti v dialogu Předvolby.</value>
+    <value>Nejsou dostupná žádná spolehlivá doporučení. Model se neustále vylepšuje – zkuste to brzy znovu.</value>
   </data>
   <data name="AutocompleteLowConfidenceTooltip" xml:space="preserve">
     <value>Zobrazení doporučení s nízkou spolehlivostí.</value>
@@ -893,5 +893,8 @@ Tento balíček pravděpodobně obsahuje sestavu, která je blokována. Po odblo
   </data>
   <data name="DocsExperimentalPrefixMessage" xml:space="preserve">
     <value>Tento uzel je v současné době experimentální. Jeho chování, název a podpis se mohou změnit.</value>
+  </data>
+  <data name="ToastFileNodeAutoCompleteDoubleClick" xml:space="preserve">
+    <value>Kliknutím na ikonu jiskřivky vedle portu aktivujete automatické dokončování uzlů.</value>
   </data>
 </root>
