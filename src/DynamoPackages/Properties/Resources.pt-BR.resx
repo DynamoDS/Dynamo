@@ -124,7 +124,7 @@
     <value>Não é possível atualizar a montagem</value>
   </data>
   <data name="DownloadPackageDisabled" xml:space="preserve">
-    <value>Package download is disabled in no-network mode.</value>
+    <value>O download do pacote está desativado no modo sem rede.</value>
   </data>
   <data name="InvalidPackageFolderWarning" xml:space="preserve">
     <value>A pasta '{0}' não existe</value>

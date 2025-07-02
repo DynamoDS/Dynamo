@@ -49,7 +49,6 @@ namespace Dynamo.Controls
         /// Old ZIndex of node. It's set, when mouse leaves node.
         /// </summary>
         private int oldZIndex;
-
         private bool nodeWasClicked;
 
         public NodeView TopControl
@@ -296,6 +295,9 @@ namespace Dynamo.Controls
         #region constructors
         static NodeView()
         {
+            //Set bitmap scaling mode to low quality for default node icon.
+            RenderOptions.SetBitmapScalingMode(_defaultNodeIcon, BitmapScalingMode.LowQuality);
+
             //Freeze the static resource to reduce memory overhead
             _frozenImageSource.Freeze();
             _transientImageSource.Freeze();
@@ -641,6 +643,8 @@ namespace Dynamo.Controls
                 Source = _frozenImageSource
             };
 
+            RenderOptions.SetBitmapScalingMode(FrozenImage, BitmapScalingMode.LowQuality);
+
             FrozenImage.SetBinding(Grid.VisibilityProperty, new Binding("IsFrozen")
             {
                 Converter = _boolToVisibilityCollapsedConverter,
@@ -659,6 +663,8 @@ namespace Dynamo.Controls
                 Source = _transientImageSource
             };
 
+            RenderOptions.SetBitmapScalingMode(TransientImage, BitmapScalingMode.LowQuality);
+
             TransientImage.SetBinding(Grid.VisibilityProperty, new Binding("IsTransient")
             {
                 Converter = _boolToVisibilityCollapsedConverter,
@@ -676,6 +682,8 @@ namespace Dynamo.Controls
                 Stretch = Stretch.UniformToFill,
                 Source = _hiddenEyeImageSource
             };
+
+            RenderOptions.SetBitmapScalingMode(HiddenEyeImage, BitmapScalingMode.LowQuality);
 
             HiddenEyeImage.SetBinding(Grid.VisibilityProperty, new Binding("IsVisible")
             {
@@ -1031,6 +1039,7 @@ namespace Dynamo.Controls
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged,
                 TargetNullValue = null
             });
+            RenderOptions.SetBitmapScalingMode(zoomStateImgOne, BitmapScalingMode.LowQuality);
 
             zoomGlyphRowZero.Children.Add(zoomStateImgOne);
 
@@ -1062,6 +1071,7 @@ namespace Dynamo.Controls
                 Converter = _emptyToVisibilityCollapsedConverter,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
+            RenderOptions.SetBitmapScalingMode(zoomStateImgTwo, BitmapScalingMode.LowQuality);
 
             // Image in column 1
             var zoomStateImgThree = new Image
@@ -1085,6 +1095,7 @@ namespace Dynamo.Controls
                 Converter = _emptyToVisibilityCollapsedConverter,
                 UpdateSourceTrigger = UpdateSourceTrigger.PropertyChanged
             });
+            RenderOptions.SetBitmapScalingMode(zoomStateImgThree, BitmapScalingMode.LowQuality);
 
             zoomGlyphRowOne.Children.Add(zoomStateImgTwo);
             zoomGlyphRowOne.Children.Add(zoomStateImgThree);
@@ -1150,7 +1161,8 @@ namespace Dynamo.Controls
             Unloaded += OnNodeViewUnloaded;
             nodeBackground.Loaded += NodeViewReady;
 
-            nodeBorder.SizeChanged += OnSizeChanged;
+            nodeBorder.SizeChanged += OnSizeChangedBorder;
+            this.SizeChanged += OnSizeChangedNodeView;
             DataContextChanged += OnDataContextChanged;
 
             Panel.SetZIndex(this, 1);
@@ -1536,6 +1548,21 @@ namespace Dynamo.Controls
 
         #endregion
 
+        private void DelayPreviewControlAction()
+        {
+            if (!IsMouseOver) return;
+
+            TryShowPreviewBubbles();
+        }
+
+        private void InitialTryShowPreviewBubble()
+        {
+            // Always set old ZIndex to the last value, even if mouse is not over the node.
+            oldZIndex = NodeViewModel.StaticZIndex;
+
+            viewModel.WorkspaceViewModel.DelayNodePreviewControl.Debounce(300, DelayPreviewControlAction);
+        }
+
         private void OnNodeViewUnloaded(object sender, RoutedEventArgs e)
         {
             ViewModel.NodeLogic.DispatchedToUI -= NodeLogic_DispatchedToUI;
@@ -1555,7 +1582,8 @@ namespace Dynamo.Controls
             EditableNameBox.LostFocus -= EditableNameBox_OnLostFocus;
             EditableNameBox.KeyDown -= EditableNameBox_KeyDown;
             optionsButton.Click -= DisplayNodeContextMenu;
-            nodeBorder.SizeChanged -= OnSizeChanged;
+            nodeBorder.SizeChanged -= OnSizeChangedBorder;
+            this.SizeChanged -= OnSizeChangedNodeView;
             nodeBackground.Loaded -= NodeViewReady;
 
             if (previewControl != null)
@@ -1577,13 +1605,20 @@ namespace Dynamo.Controls
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="eventArgs"></param>
-        private void OnSizeChanged(object sender, EventArgs eventArgs)
+        private void OnSizeChangedBorder(object sender, SizeChangedEventArgs e)
         {
-            if (ViewModel == null || ViewModel.PreferredSize.HasValue) return;
-
-            var size = new[] { ActualWidth, nodeBorder.ActualHeight };
-            if (ViewModel.SetModelSizeCommand.CanExecute(size))
+            if (ViewModel != null)
             {
+                ViewModel.WidthBorder = e.NewSize.Width;
+                ViewModel.HeightBorder = e.NewSize.Height;              
+            }
+        }
+
+        private void OnSizeChangedNodeView(object sender, SizeChangedEventArgs e)
+        {
+            if (ViewModel != null)
+            {
+                var size = new[] { e.NewSize.Width, e.NewSize.Height };
                 ViewModel.SetModelSizeCommand.Execute(size);
             }
         }
@@ -1609,6 +1644,21 @@ namespace Dynamo.Controls
             if (null != ViewModel) return;
 
             ViewModel = e.NewValue as NodeViewModel;
+
+            //This code should be only executed when loading a graph, if the node is being added to the workspace manually then the Width and Height should be auto-calculated.
+            //The default Width and Height values for nodes is 100 so only should be executed on graph loading if both values are 100
+            if (ViewModel.Width > NodeModel.DefaultWidth && ViewModel.Height > NodeModel.DefaultHeight)
+            {
+                Width = ViewModel.Width;
+                Height = ViewModel.Height;
+            }
+
+            if (ViewModel.WidthBorder > NodeModel.DefaultWidth && ViewModel.HeightBorder > NodeModel.DefaultHeight)
+            {
+                nodeBorder.Width = ViewModel.WidthBorder;
+                nodeBorder.Height = ViewModel.HeightBorder;
+            }
+
 
             //Set NodeIcon
             if (ViewModel.ImageSource == null)
@@ -1645,7 +1695,7 @@ namespace Dynamo.Controls
             nodeBorder.Height = size.Height;
             nodeBorder.RenderSize = size;
         }
-    
+
         private void SetCustomNodeVisuals()
         {
             customNodeBorder0 = new Border()
@@ -1763,7 +1813,14 @@ namespace Dynamo.Controls
             // try to show the preview bubble without new mouse enter event. 
             if (IsMouseOver)
             {
-                Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
+                if (DynCmd.IsTestMode)
+                {
+                    Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
+                }
+                else
+                {
+                    InitialTryShowPreviewBubble();
+                }
             }
         }
 
@@ -2065,15 +2122,19 @@ namespace Dynamo.Controls
             // if the node is located under "Hide preview bubbles" menu item and the item is clicked,
             // ViewModel.DynamoViewModel.ShowPreviewBubbles will be updated AFTER node mouse enter event occurs
             // so, wait while ShowPreviewBubbles binding updates value
-            Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
+            if (DynCmd.IsTestMode)
+            {
+                Dispatcher.BeginInvoke(new Action(TryShowPreviewBubbles), DispatcherPriority.Loaded);
+            }
+            else
+            {
+                InitialTryShowPreviewBubble();
+            }
         }
 
         private void TryShowPreviewBubbles()
         {
             nodeWasClicked = false;
-
-            // Always set old ZIndex to the last value, even if mouse is not over the node.
-            oldZIndex = NodeViewModel.StaticZIndex;
 
             // There is no need run further.
             if (IsPreviewDisabled()) return;
@@ -2099,23 +2160,30 @@ namespace Dynamo.Controls
             // Or the user is selecting nodes
             // Or preview is disabled for this node
             // Or preview shouldn't be shown for some nodes (e.g. number sliders, watch nodes etc.)
-            // Or node is frozen.
-            // Or node is transient state.
+            // Or node is frozen
+            // Or we are panning the view.
             return !ViewModel.DynamoViewModel.ShowPreviewBubbles ||
                 ViewModel.WorkspaceViewModel.IsConnecting ||
                 ViewModel.WorkspaceViewModel.IsSelecting || !previewEnabled ||
-                !ViewModel.IsPreviewInsetVisible || ViewModel.IsFrozen || viewModel.IsTransient;
+                !ViewModel.IsPreviewInsetVisible || ViewModel.IsFrozen ||
+                ViewModel.WorkspaceViewModel.IsPanning;
         }
 
         private void OnNodeViewMouseLeave(object sender, MouseEventArgs e)
         {
             ViewModel.ZIndex = oldZIndex;
+            viewModel.WorkspaceViewModel.DelayNodePreviewControl.Cancel();
 
-            //Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
+            // The preview hasn't been instantiated yet, we should stop here 
+            if (previewControl == null) return;
+
+            // Watch nodes doesn't have Preview so we should avoid to use any method/property in PreviewControl class due that Preview is created automatically
             if (ViewModel.NodeModel != null && ViewModel.NodeModel is CoreNodeModels.Watch) return;
 
             // If mouse in over node/preview control or preview control is pined, we can not hide preview control.
-            if (IsMouseOver || PreviewControl.IsMouseOver || PreviewControl.StaysOpen || IsMouseInsidePreview(e) ||
+            // check the field and not the property because that will trigger the instantiation
+            if (IsMouseOver || previewControl?.IsMouseOver == true ||
+                previewControl?.StaysOpen == true || IsMouseInsidePreview(e) ||
                 (Mouse.Captured is DragCanvas && IsMouseInsideNodeOrPreview(e.GetPosition(this)))) return;
 
             // If it's expanded, then first condense it.

@@ -171,6 +171,8 @@
     <None Remove="UI\Images\close_16px.png" />
     <None Remove="UI\Images\caret_drop_down.png" />
     <None Remove="UI\Images\error_48px.png" />
+    <None Remove="UI\Images\copy_16px_default.png" />
+    <None Remove="UI\Images\copy_16px_hover.png" />
     <None Remove="UI\Images\file-generic-16px.png" />
     <None Remove="UI\Images\finished_checkmark_30px.png" />
     <None Remove="UI\Images\folder-generic-16px.png" />
@@ -1323,6 +1325,8 @@
     <Resource Include="UI\Images\closetab_normal.png" />
     <Resource Include="UI\Images\dynamonotext.png" />
     <Resource Include="UI\Images\error_48px.png" />
+    <Resource Include="UI\Images\copy_16px_default.png" />
+    <Resource Include="UI\Images\copy_16px_hover.png" />
     <Resource Include="UI\Images\file-generic-16px.png" />
     <Resource Include="UI\Images\finished_checkmark_30px.png" />
     <Resource Include="UI\Images\folder-generic-16px.png" />

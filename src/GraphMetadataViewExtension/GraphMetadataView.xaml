@@ -144,7 +144,10 @@
             <HeaderedContentControl Header="{x:Static properties:Resources.GraphMetaData_Description}">
                 <TextBox Text="{Binding GraphDescription, Mode=TwoWay, FallbackValue='Graph Description'}"
                          Style="{StaticResource TextBoxStyle}"
-                         TextWrapping="WrapWithOverflow" />
+                         TextWrapping="WrapWithOverflow"
+                         AcceptsReturn="True"
+                         Height="200"
+                         VerticalScrollBarVisibility="Auto" />
             </HeaderedContentControl>
 
             <HeaderedContentControl Header="{x:Static properties:Resources.GraphMetaData_Image}">

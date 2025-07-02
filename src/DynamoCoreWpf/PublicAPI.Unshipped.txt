@@ -2362,6 +2362,7 @@ Dynamo.ViewModels.InfoBubbleViewModel.ConnectingDirection.get -> Dynamo.ViewMode
 Dynamo.ViewModels.InfoBubbleViewModel.ConnectingDirection.set -> void
 Dynamo.ViewModels.InfoBubbleViewModel.Content.get -> string
 Dynamo.ViewModels.InfoBubbleViewModel.Content.set -> void
+Dynamo.ViewModels.InfoBubbleViewModel.CopyTextToClipboardCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.InfoBubbleViewModel.Direction
 Dynamo.ViewModels.InfoBubbleViewModel.Direction.Bottom = 4 -> Dynamo.ViewModels.InfoBubbleViewModel.Direction
 Dynamo.ViewModels.InfoBubbleViewModel.Direction.BottomLeft = 7 -> Dynamo.ViewModels.InfoBubbleViewModel.Direction
@@ -2609,6 +2610,14 @@ Dynamo.ViewModels.NodeViewModel.X.get -> double
 Dynamo.ViewModels.NodeViewModel.X.set -> void
 Dynamo.ViewModels.NodeViewModel.Y.get -> double
 Dynamo.ViewModels.NodeViewModel.Y.set -> void
+Dynamo.ViewModels.NodeViewModel.Width.get -> double
+Dynamo.ViewModels.NodeViewModel.Width.set -> void
+Dynamo.ViewModels.NodeViewModel.Height.get -> double
+Dynamo.ViewModels.NodeViewModel.Height.set -> void
+Dynamo.ViewModels.NodeViewModel.WidthBorder.get -> double
+Dynamo.ViewModels.NodeViewModel.WidthBorder.set -> void
+Dynamo.ViewModels.NodeViewModel.HeightBorder.get -> double
+Dynamo.ViewModels.NodeViewModel.HeightBorder.set -> void
 Dynamo.ViewModels.NodeViewModel.ZIndex.get -> int
 Dynamo.ViewModels.NodeViewModel.ZIndex.set -> void
 Dynamo.ViewModels.NoteEventArgs
@@ -2797,7 +2806,6 @@ Dynamo.ViewModels.PortViewModel.MouseLeftButtonDownOnLevelCommand.get -> Dynamo.
 Dynamo.ViewModels.PortViewModel.MouseLeftUseLevelCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.PortViewModel.NodeAutoCompleteCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.PortViewModel.NodeAutoCompleteMarkerEnabled.get -> bool
-Dynamo.ViewModels.PortViewModel.NodeAutoCompleteMarkerEnabled.set -> void
 Dynamo.ViewModels.PortViewModel.NodePortContextMenuCommand.get -> Dynamo.UI.Commands.DelegateCommand
 Dynamo.ViewModels.PortViewModel.PortBackgroundColor.get -> System.Windows.Media.SolidColorBrush
 Dynamo.ViewModels.PortViewModel.PortBackgroundColor.set -> void
@@ -4618,6 +4626,8 @@ static Dynamo.Wpf.Properties.Resources.ContinueInstall.get -> string
 static Dynamo.Wpf.Properties.Resources.ConverterMessageCurrentOffset.get -> string
 static Dynamo.Wpf.Properties.Resources.ConverterMessageTransformOrigin.get -> string
 static Dynamo.Wpf.Properties.Resources.ConverterMessageZoom.get -> string
+static Dynamo.Wpf.Properties.Resources.CopyToClipboardTooltip.get -> string
+static Dynamo.Wpf.Properties.Resources.CopyToClipboardFailedMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogCopyButton.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogCrashMessage.get -> string
 static Dynamo.Wpf.Properties.Resources.CrashPromptDialogDetailButton.get -> string

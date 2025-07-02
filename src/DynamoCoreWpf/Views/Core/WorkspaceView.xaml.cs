@@ -901,6 +901,11 @@ namespace Dynamo.Views
                 GeoScalingPopup.IsOpen = false;
             
             if(PortContextMenu.IsOpen) DestroyPortContextMenu();
+
+            if (!ViewModel.IsPanning && e.MiddleButton == MouseButtonState.Pressed)
+            {
+                ViewModel.RequestTogglePanMode();
+            }
         }
 
         /// <summary>
@@ -936,6 +941,11 @@ namespace Dynamo.Views
                 // open if workspace is right-clicked itself 
                 // (not node, note, not buttons from viewControlPanel such as zoom, pan and so on)
                 ContextMenuPopup.IsOpen = true;
+            }
+
+            if (ViewModel.IsPanning && e.MiddleButton == MouseButtonState.Released)
+            {
+                ViewModel.RequestTogglePanMode();
             }
         }
 
