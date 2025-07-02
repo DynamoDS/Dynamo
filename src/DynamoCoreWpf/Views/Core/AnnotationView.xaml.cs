@@ -938,13 +938,21 @@ namespace Dynamo.Nodes
 
         private void OpenContextMenuAtMouse()
         {
-            isSearchFromGroupContext = true;
+            
 
             var workspaceView = FindParent<WorkspaceView>(this);
             if (workspaceView == null) return;
 
             var outerCanvas = workspaceView.OuterCanvas;
             if (outerCanvas == null) return;
+
+            // Firstly, close the workspace context menu if it's open            
+            if (workspaceView.ContextMenuPopup != null)
+            {
+                workspaceView.ContextMenuPopup.IsOpen = false;
+            }
+
+            isSearchFromGroupContext = true;
 
             var mousePosInOuter = Mouse.GetPosition(outerCanvas);
 
