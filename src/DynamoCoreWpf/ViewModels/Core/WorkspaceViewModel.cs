@@ -1010,7 +1010,7 @@ namespace Dynamo.ViewModels
             Errors.Clear();
 
             PostNodeChangeActions();
-            loadedNodesCount=0;
+            LoadedNodesCount=0;
         }
 
         private void unsubscribeNodeEvents(NodeViewModel nodeViewModel)
@@ -1037,7 +1037,7 @@ namespace Dynamo.ViewModels
             PostNodeChangeActions();
 
             SetNodeCountOptimizationEnabled(zoomAnimationThresholdFeatureFlagVal);
-            loadedNodesCount--;
+            LoadedNodesCount--;
         }
 
         void Model_NodeAdded(NodeModel node)

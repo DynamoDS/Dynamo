@@ -304,9 +304,6 @@ namespace Dynamo.Controls
         #region constructors
         private static readonly Dictionary<string, BitmapImage> _cachedImages =
         new Dictionary<string, BitmapImage>(StringComparer.OrdinalIgnoreCase);
-        private static int nodeCounter = 0;
-
-        //private static readonly ResXResourceSet _resourceSet = InitializeResourceSet();
 
         //Freeze the static resource to reduce memory overhead... Not sure we need this. 
         static NodeView()
