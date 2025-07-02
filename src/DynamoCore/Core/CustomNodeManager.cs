@@ -725,7 +725,7 @@ namespace Dynamo.Core
                 if (ex == null)
                 {
                     // TODO: Add resource string
-                    throw new InvalidOperationException("An unknown error occurred while processing the file.");
+                    throw new InvalidOperationException(Properties.Resources.UnknownErrorProcessingFile);
                 }
                 throw ex;
             }
