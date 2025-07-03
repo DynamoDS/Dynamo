@@ -158,6 +158,8 @@ namespace Dynamo.ViewModels
                 case "ForceRunCancelCommand":
                 case "SelectModelCommand":
                 case "MakeConnectionCommand":
+                    RaiseCanExecuteUndoRedo();
+                    break;
                 case "CreateCustomNodeCommand":
                 case "AddPresetCommand":
                 case "ApplyPresetCommand":

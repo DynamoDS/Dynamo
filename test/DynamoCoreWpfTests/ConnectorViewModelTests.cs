@@ -1,6 +1,8 @@
 using System;
 using System.IO;
 using System.Linq;
+using Dynamo.Graph.Nodes;
+using Dynamo.Models;
 using Dynamo.Selection;
 using Dynamo.Utilities;
 using Dynamo.ViewModels;
@@ -470,6 +472,62 @@ namespace DynamoCoreWpfTests
             //assert after one undo action we are back at the original connector count
             int finalConnectorCount = this.ViewModel.CurrentSpaceViewModel.Connectors.Count;
             Assert.AreEqual(initialConnectorCount, finalConnectorCount);
+        }
+
+        [Test]
+        public void CanUndoShiftReconnectionWithConnectorPin()
+        {
+            // Open a test graph with at least two connected nodes
+            Open(@"UI/ConnectorPinTests.dyn");
+
+            var id = Guid.Parse("90cd0dca-45c7-456b-bb63-726d2193dbb4");
+            var codeblock = this.ViewModel.Model.CurrentWorkspace.GetModelInternal(id);
+
+            var connectorViewModel = this.ViewModel.CurrentSpaceViewModel.Connectors.First();
+            var initialConnectorPinCount = connectorViewModel.ConnectorPinViewCollection.Count;
+
+            // Setup: hover and pin a connector manually
+            connectorViewModel.PanelX = 292.66666;
+            connectorViewModel.PanelY = 278;
+            connectorViewModel.FlipOnConnectorAnchor();
+            connectorViewModel.PinConnectorCommand.Execute(null);
+
+            // Sanity check: we added 1 pin
+            Assert.AreEqual(initialConnectorPinCount + 1, connectorViewModel.ConnectorPinViewCollection.Count);
+            var pinModelGuid = connectorViewModel.ConnectorModel.ConnectorPinModels.First().GUID;
+
+            // Begin reconnection – simulate grabbing the connector and starting a shift drag
+            var connectorGuid = connectorViewModel.ConnectorModel.GUID;
+            var startPort = connectorViewModel.ConnectorModel.Start;
+            var startNode = startPort.Owner;
+            var startPortIndex = startNode.OutPorts.IndexOf(startPort);
+
+            this.ViewModel.ExecuteCommand(
+                new DynamoModel.MakeConnectionCommand(startNode.GUID, startPortIndex, PortType.Output,
+                MakeConnectionCommand.Mode.BeginShiftReconnections));
+
+            // Execute the second part of the workflow - simulate placing the connectors over the new port
+            this.ViewModel.ExecuteCommand(
+                new DynamoModel.MakeConnectionCommand(codeblock.GUID, 0, PortType.Output,
+                MakeConnectionCommand.Mode.EndShiftReconnections));
+
+            // Validate that the pin does not exists anymore
+            var connectorAfterReconnect = this.ViewModel.CurrentSpaceViewModel.Connectors;
+            Assert.AreEqual(1, connectorAfterReconnect.Count());
+            Assert.AreEqual(0, connectorAfterReconnect.First().ConnectorPinViewCollection.Count());
+
+            // --- Undo ---
+            Model.ExecuteCommand(new UndoRedoCommand(UndoRedoCommand.Operation.Undo));
+
+            // Confirm that the pin is also undone (either removed, or restored to original connector)
+            var restoredConnector = this.ViewModel.CurrentSpaceViewModel.Connectors
+                .FirstOrDefault(c => c.ConnectorModel.GUID == connectorGuid);
+
+            Assert.IsNotNull(restoredConnector);
+            Assert.AreEqual(initialConnectorPinCount + 1, restoredConnector.ConnectorPinViewCollection.Count);
+
+            var restoredPin = restoredConnector.ConnectorModel.ConnectorPinModels.FirstOrDefault(p => p.GUID == pinModelGuid);
+            Assert.IsNotNull(restoredPin, "Expected pin model not found after undo.");
         }
         #endregion
     }

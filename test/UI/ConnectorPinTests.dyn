@@ -11,9 +11,8 @@
   "Nodes": [
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "NodeType": "CodeBlockNode",
-      "Code": "0..13;",
       "Id": "286e9f9ab34d4cbd9b154b58627d5b37",
+      "NodeType": "CodeBlockNode",
       "Inputs": [],
       "Outputs": [
         {
@@ -27,13 +26,13 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly"
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "0..13;"
     },
     {
       "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
-      "NodeType": "CodeBlockNode",
-      "Code": "asd;",
       "Id": "9d43c824812c4562be7a3877a4e865f1",
+      "NodeType": "CodeBlockNode",
       "Inputs": [
         {
           "Id": "b1f0ee501c7b4c628da090daacf5d73e",
@@ -57,7 +56,28 @@
         }
       ],
       "Replication": "Disabled",
-      "Description": "Allows for DesignScript code to be authored directly"
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "asd;"
+    },
+    {
+      "ConcreteType": "Dynamo.Graph.Nodes.CodeBlockNodeModel, DynamoCore",
+      "Id": "90cd0dca45c7456bbb63726d2193dbb4",
+      "NodeType": "CodeBlockNode",
+      "Inputs": [],
+      "Outputs": [
+        {
+          "Id": "e7682c9fd6734bfdb69ae97b2a8fef8e",
+          "Name": "",
+          "Description": "Value of expression at line 1",
+          "UsingDefaultValue": false,
+          "Level": 2,
+          "UseLevels": false,
+          "KeepListStructure": false
+        }
+      ],
+      "Replication": "Disabled",
+      "Description": "Allows for DesignScript code to be authored directly",
+      "Code": "\"Hello World\";"
     }
   ],
   "Connectors": [
@@ -65,11 +85,12 @@
       "Start": "ca4252c5e4174be28206765f5ce7d960",
       "End": "b1f0ee501c7b4c628da090daacf5d73e",
       "Id": "77f6e15a9d984ad4b6ecfe173920fd2a",
-      "IsVisible": "True"
+      "IsHidden": "False"
     }
   ],
   "Dependencies": [],
   "NodeLibraryDependencies": [],
+  "EnableLegacyPolyCurveBehavior": true,
   "Thumbnail": "",
   "GraphDocumentationURL": null,
   "ExtensionWorkspaceData": [
@@ -93,12 +114,12 @@
       "ScaleFactor": 1.0,
       "HasRunWithoutCrash": true,
       "IsVisibleInDynamoLibrary": true,
-      "Version": "2.13.0.2482",
+      "Version": "3.6.0.6885",
       "RunType": "Automatic",
       "RunPeriod": "1000"
     },
     "Camera": {
-      "Name": "Background Preview",
+      "Name": "_Background Preview",
       "EyeX": -17.0,
       "EyeY": 24.0,
       "EyeZ": 50.0,
@@ -112,24 +133,34 @@
     "ConnectorPins": [],
     "NodeViews": [
       {
-        "Name": "Code Block",
-        "ShowGeometry": true,
         "Id": "286e9f9ab34d4cbd9b154b58627d5b37",
+        "Name": "Code Block",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
+        "ShowGeometry": true,
         "X": 62.0,
         "Y": 184.0
       },
       {
-        "Name": "Code Block",
-        "ShowGeometry": true,
         "Id": "9d43c824812c4562be7a3877a4e865f1",
+        "Name": "Code Block",
         "IsSetAsInput": false,
         "IsSetAsOutput": false,
         "Excluded": false,
+        "ShowGeometry": true,
         "X": 507.3333333333332,
-        "Y": 281.33333333333331
+        "Y": 281.3333333333333
+      },
+      {
+        "Id": "90cd0dca45c7456bbb63726d2193dbb4",
+        "Name": "Code Block",
+        "IsSetAsInput": false,
+        "IsSetAsOutput": false,
+        "Excluded": false,
+        "ShowGeometry": true,
+        "X": 37.0,
+        "Y": 447.0
       }
     ],
     "Annotations": [],
