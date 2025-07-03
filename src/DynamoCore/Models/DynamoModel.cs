@@ -3352,6 +3352,10 @@ namespace Dynamo.Models
                 Background = model.Background,
                 FontSize = model.FontSize,
                 GroupStyleId = model.GroupStyleId,
+                IsOptionalInPortsCollapsed = model.IsOptionalInPortsCollapsed,
+                IsUnconnectedOutPortsCollapsed = model.IsUnconnectedOutPortsCollapsed,
+                HasToggledOptionalInPorts = model.HasToggledOptionalInPorts,
+                HasToggledUnconnectedOutPorts = model.HasToggledUnconnectedOutPorts,
             };
 
             modelLookup.Add(model.GUID, annotationModel);
