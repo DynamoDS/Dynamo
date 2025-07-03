@@ -195,6 +195,25 @@ namespace Dynamo.ViewModels
             RequestNodeAutoCompleteViewExtension?.Invoke(clusterNodeAutoComplete);
         }
 
+        private Stopwatch nodeLoadStopwatch = new Stopwatch();
+        //internal event Action NodeViewLoaded;
+        internal void OnNodeViewLoaded()
+        {
+            if (LoadedNodesCount < Nodes.Count)
+            {
+                if (!nodeLoadStopwatch.IsRunning)
+                {
+                    nodeLoadStopwatch.Restart();
+                }
+            }
+            LoadedNodesCount++;
+            if (LoadedNodesCount == Nodes.Count)
+            {
+                nodeLoadStopwatch.Stop();
+                DynamoViewModel.Model.Logger.Log($"{LoadedNodesCount} nodes loaded in {nodeLoadStopwatch.ElapsedMilliseconds} ms");
+            }
+        }
+
         #endregion
 
         #region Properties and Fields
@@ -583,6 +602,28 @@ namespace Dynamo.ViewModels
             }
         }
 
+        public bool NodesLoading
+        {
+            get
+            {
+                return Nodes.Count() > LoadedNodesCount;
+            }
+        }
+
+        private int loadedNodesCount = 0;
+        public int LoadedNodesCount
+        {
+            get
+            {
+                return loadedNodesCount;
+            }
+            set
+            {
+                loadedNodesCount = value;
+                RaisePropertyChanged(nameof(LoadedNodesCount));
+                RaisePropertyChanged(nameof(NodesLoading));
+            }
+        }
         /// <summary>
         /// Ensures that a preview control is initialized only when it is
         /// absolutely needed. It lives here so that it can be shared by
@@ -969,6 +1010,7 @@ namespace Dynamo.ViewModels
             Errors.Clear();
 
             PostNodeChangeActions();
+            LoadedNodesCount=0;
         }
 
         private void unsubscribeNodeEvents(NodeViewModel nodeViewModel)
@@ -995,6 +1037,7 @@ namespace Dynamo.ViewModels
             PostNodeChangeActions();
 
             SetNodeCountOptimizationEnabled(zoomAnimationThresholdFeatureFlagVal);
+            LoadedNodesCount--;
         }
 
         void Model_NodeAdded(NodeModel node)
