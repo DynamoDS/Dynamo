@@ -89,7 +89,7 @@ namespace Dynamo.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to No confident suggestions available. The model is continuously improving - check back soon.
+        ///   Looks up a localized string similar to No confident suggestions available. The model is continuously improving - check back soon..
         /// </summary>
         public static string AutocompleteLowConfidenceMessage {
             get {
@@ -2178,6 +2178,15 @@ namespace Dynamo.Properties {
         public static string UnhandledExceptionTitle {
             get {
                 return ResourceManager.GetString("UnhandledExceptionTitle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to An unknown error occurred while processing the file..
+        /// </summary>
+        public static string UnknownErrorProcessingFile {
+            get {
+                return ResourceManager.GetString("UnknownErrorProcessingFile", resourceCulture);
             }
         }
         
