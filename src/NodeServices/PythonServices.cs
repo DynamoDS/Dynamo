@@ -133,12 +133,50 @@ namespace Dynamo.PythonServices
         public static PythonEngineManager Instance { get { return lazy.Value; } }
         #endregion
 
-        //TODO see DYN-6550 when hiding/replacing this obsolete field.
+        /// <summary>
+        /// A readonly collection of all the loaded Python engines
+        /// </summary>
+        public ReadOnlyCollection<PythonEngine> PythonEngines => new ReadOnlyCollection<PythonEngine>(AvailableEngines);
+
         /// <summary>
         /// An observable collection of all the loaded Python engines
         /// </summary>
-        [Obsolete("AvailableEngines field will be replaced in a future Dynamo release.")]
-        public ObservableCollection<PythonEngine> AvailableEngines;
+        internal ObservableCollection<PythonEngine> AvailableEngines;
+
+        public delegate void PythonEngineChangedHandler(PythonEngine engine);
+
+        private Action<PythonEngine> customizeEngine;
+
+        /// <summary>
+        /// Provides an easy way to run initialization code on PythonEngine instances
+        /// </summary>
+        /// <param name="initAction">Action to be called on PythonEngines.</param>
+        /// <param name="callOnExistingEngines">If true, the action will be called on existing PythonEngines. If false the action will be called when new Python engines are added.</param>
+        public void ApplyInitializationAction(Action<PythonEngine> initAction, bool callOnExistingEngines = true)
+        {
+            if (initAction != null)
+            {
+                customizeEngine = initAction;
+
+                if (callOnExistingEngines)
+                {
+                    foreach (var engine in AvailableEngines)
+                    {
+                        initAction(engine);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Event that is triggered for every new engine that is added.
+        /// </summary>
+        public event PythonEngineChangedHandler PythonEngineAdded;
+
+        /// <summary>
+        /// Event that is triggered for every engine that is removed.
+        /// </summary>
+        public event PythonEngineChangedHandler PythonEngineRemoved;
 
         #region Constant strings
         
@@ -155,16 +193,11 @@ namespace Dynamo.PythonServices
         internal static readonly string IronPython2EngineName = "IronPython2";
         internal static string PythonEvaluatorSingletonInstance = "Instance";
 
-        internal static string IronPythonEvaluatorClass = "IronPythonEvaluator";
-        internal static string IronPythonEvaluationMethod = "EvaluateIronPythonScript";
-
         internal static string CPythonEvaluatorClass = "CPythonEvaluator";
         internal static string CPythonEvaluationMethod = "EvaluatePythonScript";
 
-        internal static string IronPythonAssemblyName = "DSIronPython";
         internal static string CPythonAssemblyName = "DSCPython";
 
-        internal static string IronPythonTypeName = IronPythonAssemblyName + "." + IronPythonEvaluatorClass;
         internal static string CPythonTypeName = CPythonAssemblyName + "." + CPythonEvaluatorClass;
 
         internal static string PythonInputMarshalerProperty = "InputMarshaler";
@@ -183,13 +216,55 @@ namespace Dynamo.PythonServices
             dynCorePaths = new FileInfo(Assembly.GetExecutingAssembly().Location).Directory.GetFiles("*.dll", SearchOption.AllDirectories).Select(x => x.FullName);
 
             AvailableEngines = new ObservableCollection<PythonEngine>();
-
+            AvailableEngines.CollectionChanged += AvailableEngines_CollectionChanged;
             // We check only for the default python engine because it is the only one loaded by static references.
             // Other engines can only be loaded through package manager
             LoadDefaultPythonEngine(AppDomain.CurrentDomain.GetAssemblies().
                FirstOrDefault(a => a != null && a.GetName().Name == CPythonAssemblyName));
 
             AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler((object sender, AssemblyLoadEventArgs args) => LoadDefaultPythonEngine(args.LoadedAssembly));
+        }
+
+        private void AvailableEngines_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Add)
+            {
+                for (var ii=0; ii< e.NewItems.Count; ii++)
+                {
+                    try
+                    {
+                        PythonEngineAdded?.Invoke(e.NewItems[ii] as PythonEngine);
+                    }
+                    catch(Exception ex)
+                    {
+                        Console.WriteLine("PythonEngineAdded event failed with error : " + ex.Message + Environment.NewLine + ex.StackTrace);
+                    }
+
+                    try
+                    {
+                        customizeEngine.Invoke(e.NewItems[ii] as PythonEngine);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("CustomizeEngine failed with error : " + ex.Message + Environment.NewLine + ex.StackTrace);
+                    }
+                }
+            }
+
+            if (e.Action == System.Collections.Specialized.NotifyCollectionChangedAction.Remove)
+            {
+                for (var ii = 0; ii < e.OldItems.Count; ii++)
+                {
+                    try
+                    {
+                        PythonEngineRemoved?.Invoke(e.OldItems[ii] as PythonEngine);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("PythonEngineRemoved event failed with error : " + ex.Message + Environment.NewLine + ex.StackTrace);
+                    }
+                }
+            }
         }
 
         private void LoadDefaultPythonEngine(Assembly a)
@@ -206,7 +281,7 @@ namespace Dynamo.PythonServices
             }
             catch (Exception e)
             {
-                System.Diagnostics.Debug.WriteLine($"Failed to load {CPythonAssemblyName} with error: {e.Message}");
+                Console.WriteLine($"Failed to load {CPythonAssemblyName} with error: {e.Message}");
             }
         }
 
@@ -215,16 +290,32 @@ namespace Dynamo.PythonServices
             return AvailableEngines.FirstOrDefault(x => x.Name == name);
         }
 
-        // This method can throw exceptions.
-        internal void LoadPythonEngine(IEnumerable<Assembly> assemblies)
+        /// <summary>
+        /// Load Python Engines from an array of assemblies
+        /// </summary>
+        /// <param name="assemblies"></param>
+        internal void LoadPythonEngine(Action<string> logger, IEnumerable<Assembly> assemblies)
         {
             foreach (var a in assemblies)
             {
-                LoadPythonEngine(a);
+                try
+                {
+                    LoadPythonEngine(a);
+                }
+                catch(Exception e)
+                {
+                    logger?.Invoke("Failed when looking for PythonEngines with error: " + e.Message + Environment.NewLine + e.StackTrace);
+                }
             }
         }
 
-        // This method can throw exceptions.
+        /// <summary>
+        /// Load Python Engines from an assembly
+        /// </summary>
+        /// <param name="assembly"></param>
+        /// <exception cref="Exception"></exception>
+        /// Make this public to support custom loading of Python Engines (ex load in isolated alc on the python assembly side)
+        /// How to transition to Dynamo loading in isolated ALC ? 
         private void LoadPythonEngine(Assembly assembly)
         {
             if (assembly == null)
