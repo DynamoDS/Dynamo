@@ -280,7 +280,10 @@ namespace Dynamo.NodeAutoComplete.ViewModels
                 if (isDropDownOpen != value)
                 {
                     isDropDownOpen = value;
-                    RefocusSearchBox?.Invoke();
+                    if (value)
+                    {
+                        RefocusSearchBox?.Invoke();
+                    }
                     RaisePropertyChanged(nameof(IsDropDownOpen));
                 }
             }

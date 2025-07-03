@@ -162,7 +162,7 @@
                             FontFamily="{StaticResource ArtifaktElementRegular}"
                             Foreground="{StaticResource DefaultSearchTextBlockText}"
                             ItemsSource="{Binding FilteredView, NotifyOnTargetUpdated=True}"
-                            IsDropDownOpen="{Binding IsDropDownOpen}"
+                            IsDropDownOpen="{Binding IsDropDownOpen, Mode=TwoWay}"
                             Visibility="{Binding ResultsLoaded, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"
                             TabIndex="0"
                         >
