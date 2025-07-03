@@ -288,6 +288,7 @@ namespace Dynamo.Graph.Nodes
         // This pattern matches with identifier lists such as Autodesk.DesignScript.Geometry.Point
         private static string identifierListPattern = string.Format("{0}([.]({0})+)*", variableNamePattern);
 
+
         // Maintains a stack of symbols in a nested expression being typed
         // where the symbols are nested based on brackets, braces or parentheses
         // An expression like: x[y[z.foo(). will be stacked up as follows:
@@ -415,19 +416,23 @@ namespace Dynamo.Graph.Nodes
 
         #region private methods
 
+        // This pattern is used to create a Regex to match expressions such as "a : Point" and add the Pair of ("a", "Point") to the dictionary
+        private static readonly string variablePattern = variableNamePattern + spacesOrNonePattern + colonPattern + spacesOrNonePattern + identifierListPattern;
+        private static readonly Regex variableRegex = new Regex(variablePattern, RegexOptions.Compiled);
+
+        private static readonly Regex whitespaceRegex = new Regex(@"\s", RegexOptions.Compiled);
+
+
         private static Dictionary<string, string> FindVariableTypes(string code)
         {
             // Contains pairs of variable names and their types
             Dictionary<string, string> variableTypes = new Dictionary<string, string>();
 
-            // This pattern is used to create a Regex to match expressions such as "a : Point" and add the Pair of ("a", "Point") to the dictionary
-            string pattern = variableNamePattern + spacesOrNonePattern + colonPattern + spacesOrNonePattern + identifierListPattern;
-
-            var varDeclarations = Regex.Matches(code, pattern);
+            var varDeclarations = variableRegex.Matches(code);
             for (int i = 0; i < varDeclarations.Count; i++)
             {
                 var match = varDeclarations[i].Value;
-                match = Regex.Replace(match, @"\s", "");
+                match = whitespaceRegex.Replace(match, "");
                 var groups = match.Split(':');
 
                 // Overwrite variable type for a redefinition
