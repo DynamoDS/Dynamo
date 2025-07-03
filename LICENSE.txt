@@ -522,9 +522,9 @@ https://github.com/DynamoDS/Dynamo/tree/master/tools/install/Extra/DirectX/Licen
 ImageMagick
 https://imagemagick.org/script/license.php
 
-LiveChartsCore v.2.0.0-rc3.3:
-LiveChartsCore.SkiaSharpView v.2.0.0- rc3.3:
-LiveChartsCore.SkiaSharpView.WPF v.2.0.0- rc3.3:
+LiveChartsCore v.2.0.0-rc5.4:
+LiveChartsCore.SkiaSharpView v.2.0.0-rc5.4:
+LiveChartsCore.SkiaSharpView.WPF v.2.0.0-rc5.4:
 Copyright (c) 2021 Alberto Rodriguez Orozco
 
 MIT License
